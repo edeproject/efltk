@@ -88,11 +88,16 @@ void Fl_Menu_Bar::draw()
            (selected_==i || last_selected_==i) ||
            (highlight_==i || last_highlight_==i) )
         {
+            Fl_Color save_color = widget->highlight_label_color();
+            widget->highlight_label_color(highlight_label_color());
+
             button_box()->draw(widget->x(), widget->y(), widget->w(), widget->h(), button_color(), f);
             fl_push_matrix();
             fl_translate(widget->x(), widget->y());
             widget->draw();
             fl_pop_matrix();
+
+            widget->highlight_label_color(save_color);
         }
     }
 

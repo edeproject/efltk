@@ -1248,7 +1248,7 @@ bool Fl_Browser::display(int line, bool value)
 ////////////////////////////////////////////////////////////////
 // Constructor
 
-#define SLIDER_WIDTH 16
+#define SLIDER_WIDTH scrollbar_width()
 
 static void revert(Fl_Style* s)
 {

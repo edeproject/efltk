@@ -28,6 +28,7 @@
 //
 
 #include <efltk/Fl_Image.h>
+#include <efltk/Fl_Pixmap.h>
 #include <efltk/Fl_Bitmap.h>
 
 #include <efltk/Fl.h>
@@ -47,7 +48,8 @@ Fl_Bitmap bitmap(escherknot_bits, escherknot_width, escherknot_height);
 ////////////////////////////////////////////////////////////////
 
 #include "porsche.xpm"
-Fl_Image pixmap = *Fl_Image::read_xpm(0, porsche_xpm);
+//Fl_Image pixmap = *Fl_Image::read_xpm(0, porsche_xpm);
+Fl_Pixmap pixmap(porsche_xpm);
 
 ////////////////////////////////////////////////////////////////
 
@@ -158,6 +160,7 @@ int main(int argc, char **argv)
 
     //Fl_Double_Window window(300,300); ::w = &window;
     Fl_Window window(400,300); ::w = &window;
+
     Fl_Toggle_Button b(100,55,100,100,"Fl_Pixmap"); ::b = &b;
     b.image(pixmap);
     b.tooltip("This Fl_Toggle_Button has:\n"

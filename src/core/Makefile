@@ -34,6 +34,7 @@ CPPFILES = \
 	Fl_Group.cpp \
 	Fl_Image.cpp \
 	Fl_Image_Filter.cpp \
+        Fl_Pixmap.cpp \
         Fl_Renderer.cpp \
         Fl_String.cpp \
 	Fl_Style.cpp \
@@ -76,6 +77,7 @@ CPPFILES = \
 	fl_dnd.cpp \
 	fl_draw.cpp \
 	fl_draw_image.cpp \
+        fl_draw_pixmap.cpp \
 	fl_font.cpp \
 	fl_glyph.cpp \
 	fl_labeltype.cpp \

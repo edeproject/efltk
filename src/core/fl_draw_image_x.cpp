@@ -11,8 +11,29 @@
 #include <config.h>
 
 void fl_restore_clip();
-void Fl_Image::to_screen(int X, int Y, int W, int H, int cx, int cy)
+void Fl_Image::to_screen(int XP, int YP, int WP, int HP, int, int)
 {
+    int X,Y,W,H;
+    fl_clip_box(XP, YP, WP, HP, X, Y, W, H);
+
+    int cx = X-XP;
+    int cy = Y-YP;
+
+    if(cx+W > WP)
+        W = WP-cx;
+
+    if(W <= 0)
+        return;
+
+    if(cy+H > HP)
+        H = HP-cy;
+
+    if(H <= 0)
+        return;
+
+    // convert to Xlib coordinates:
+    fl_transform(X,Y);
+
     //printf("TOSCREEN:    %d %d %d %d %d %d\n",X,Y,W,H,cx,cy);
     if(mask) {
         if(id) {
@@ -45,11 +66,19 @@ void Fl_Image::to_screen(int X, int Y, int W, int H, int cx, int cy)
     } // else { no mask or id, probably an error... }
 }
 
-void Fl_Image::to_screen_tiled(int X, int Y, int W, int H, int cx, int cy)
+void Fl_Image::to_screen_tiled(int XP, int YP, int WP, int HP, int, int)
 {
-    XGCValues	xgcval, xgcsave;
+    // Figure out the smallest rectangle enclosing this and the clip region:
+    int X,Y,W,H; fl_clip_box(XP, YP, WP, HP, X, Y, W, H);
+    if (W <= 0 || H <= 0) return;
+    int cx = 0;
+    int cy = 0;
+    cx += X-XP; cy += Y-YP;
+    fl_push_clip(X, Y, W, H);
 
-    if(mask) {
+    //XGCValues	xgcval, xgcsave;
+    //if(mask)
+    {
         int temp = -cx % w;
         cx = (temp>0 ? w : 0) - temp;
         temp = -cy % h;
@@ -58,32 +87,30 @@ void Fl_Image::to_screen_tiled(int X, int Y, int W, int H, int cx, int cy)
         int ccx=cx;
         while (-cy < H) {
             while (-cx < W) {
-                int WW = w-((X-cx+w)-(X+W));
-                int HH = h-((Y-cy+h)-(Y+H));
-                if(WW>w) WW=w;
-                if(HH>h) HH=h;
-                to_screen(X-cx, Y-cy, WW, HH, 0,0);
+                to_screen(X-cx, Y-cy, w, h, 0,0);
                 cx -= w;
             }
             cy -= h;
             cx = ccx;
         }
 
-    } else if(id) {
+    }/* else if(id) {
 
         xgcval.fill_style = FillTiled;
         xgcval.tile = (Pixmap)id;
-        XSetTSOrigin(fl_display, fl_gc, X, Y);
+        //XSetTSOrigin(fl_display, fl_gc, X, Y);
 
         XGetGCValues(fl_display, fl_gc, GCTile|GCFillStyle, &xgcsave);
         XChangeGC(fl_display, fl_gc, GCTile|GCFillStyle, &xgcval);
+
         XFillRectangle(fl_display, fl_window, fl_gc, X, Y, W, H);
 
         if( (xgcsave.tile & 0xe0000000) || (xgcsave.fill_style != FillTiled) )
             XChangeGC(fl_display, fl_gc, GCFillStyle, &xgcsave);
         else
             XChangeGC(fl_display, fl_gc, GCTile|GCFillStyle, &xgcsave);
-    }
+    }*/
+    fl_pop_clip();
 }
 
 static XImage s_image;	// static image used to pass info to X
@@ -93,39 +120,36 @@ static int  _scanline_add  = 0;
 static int  _scanline_mask = 0;
 
 Fl_PixelFormat sys_fmt;
-Display *sys_display = 0;
 
 Fl_PixelFormat *Fl_Renderer::system_format() { return &sys_fmt; }
 
 bool Fl_Renderer::system_inited()
 {
-    if(!sys_display)
-        return false;
-    return _system_inited;
+    return (_system_inited && fl_display);
 }
 
 ////////////////////////////////////////////////////////////////
-void Fl_Renderer::system_init(DisplayInfo d, VisualInfo v)
+void Fl_Renderer::system_init()
 {
+    fl_open_display();
     fl_xpixel(FL_BLACK); // make sure figure_out_visual in fl_color.cxx is called
 
-    sys_display = d;
 
     static XPixmapFormatValues *pfvlist;
     static int num_pfv;
 
-    if(!pfvlist) pfvlist = XListPixmapFormats(d, &num_pfv);
+    if(!pfvlist) pfvlist = XListPixmapFormats(fl_display, &num_pfv);
     XPixmapFormatValues *pfv;
     for(pfv = pfvlist; pfv < pfvlist+num_pfv; pfv++) {
-        if(pfv->depth == v->depth)
+        if(pfv->depth == fl_visual->depth)
             break;
     }
 
     //printf("System Image Format: %d bits per pixel / Display Visual %d bits per pixel\n", pfv->bits_per_pixel, v->depth);
 
     s_image.format = ZPixmap;
-    s_image.byte_order = ImageByteOrder(d);
-    s_image.depth = v->depth;
+    s_image.byte_order = ImageByteOrder(fl_display);
+    s_image.depth = fl_visual->depth;
     s_image.bits_per_pixel = pfv->bits_per_pixel;
 
     if(s_image.bits_per_pixel & 7) {
@@ -142,9 +166,9 @@ void Fl_Renderer::system_init(DisplayInfo d, VisualInfo v)
     _scanline_mask = -n;
 
     sys_fmt.init(pfv->bits_per_pixel,
-                 v->visual->red_mask,
-                 v->visual->green_mask,
-                 v->visual->blue_mask,
+                 fl_visual->visual->red_mask,
+                 fl_visual->visual->green_mask,
+                 fl_visual->visual->blue_mask,
                  0);
 
 #if USE_COLORMAP
@@ -158,7 +182,6 @@ void Fl_Renderer::system_init(DisplayInfo d, VisualInfo v)
 }
 
 //////////////////////////////////////////
-
 bool Fl_Renderer::render_to_pixmap(uint8 *src, Fl_Rect *src_rect, Fl_PixelFormat *src_fmt, int src_pitch,
                                    Pixmap dst, Fl_Rect *dst_rect, GC dst_gc, int flags)
 {
@@ -180,7 +203,7 @@ bool Fl_Renderer::render_to_pixmap(uint8 *src, Fl_Rect *src_rect, Fl_PixelFormat
                    dst_ptr, sys_fmt.bytespp, s_image.bytes_per_line, dst_rect))
         {
             s_image.data = (char *)dst_ptr;
-            XPutImage(sys_display, dst, dst_gc, &s_image, 0, 0, dst_rect->x(), dst_rect->y(), dst_rect->w(), dst_rect->h());
+            XPutImage(fl_display, dst, dst_gc, &s_image, 0, 0, dst_rect->x(), dst_rect->y(), dst_rect->w(), dst_rect->h());
         }
         delete []dst_ptr;
     }
@@ -191,7 +214,7 @@ bool Fl_Renderer::render_to_pixmap(uint8 *src, Fl_Rect *src_rect, Fl_PixelFormat
         s_image.data = (char *)src;
         s_image.bytes_per_line = ((src_rect->w() * sys_fmt.bytespp + _scanline_add) & _scanline_mask);
 
-        XPutImage(sys_display, dst, dst_gc, &s_image, 0, 0, dst_rect->x(), dst_rect->y(), src_rect->w(), src_rect->h());
+        XPutImage(fl_display, dst, dst_gc, &s_image, 0, 0, dst_rect->x(), dst_rect->y(), src_rect->w(), src_rect->h());
     }
 
     return true;

@@ -55,9 +55,13 @@ class Fl_Image {
     friend class Fl_Image_Filter;
 
 public:
+    // This reads all supported file formats from file or data stream.
+    // Except XPM stream, from file it will work.
     static Fl_Image *read(const char *filename, const uint8 *data = 0);
-    // XPM and similar...
-    static Fl_Image *read_xpm(const char *filename, const char **data=0);
+
+    // XPM ONLY: from file or data stream.
+    static Fl_Image *read_xpm(const char *filename, const char * const *data=0);
+    static Fl_Image *read_xpm(const char *filename, char **data=0) { return read_xpm(filename, (const char **)data); }
 
     Fl_Image() { }
 
@@ -245,7 +249,7 @@ protected:
 
     void init(int W, int H, int bits_pp, uint8 *data, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask, int flags);
 
-    void _draw(int x, int y, Fl_Flags) { to_screen(x,y,w,h,0,0); }
+    void _draw(int x, int y, Fl_Flags f) { if(f&FL_ALIGN_TILED) to_screen_tiled(x,y,w,h,0,0); else to_screen(x,y,w,h,0,0); }
 
     void to_screen(int X, int Y, int W, int H, int cx, int cy);
     void to_screen_tiled(int X, int Y, int W, int H, int cx, int cy);

@@ -554,8 +554,8 @@ void Fl_Widget::draw_box() const
     if(image()) {
         if(!image()->get_mask() &&
            ( ((align()&FL_ALIGN_TILED) || (align()&FL_ALIGN_SCALE)) &&
-           ( !(align()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT|FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) ||
-           (align()&FL_ALIGN_INSIDE) )
+            ( !(align()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT|FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) ||
+             (align()&FL_ALIGN_INSIDE) )
            ) ) {
             // We can draw only frame, if drawing image tiled or scale. If no mask found...
             draw_frame();

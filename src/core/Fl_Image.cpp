@@ -516,6 +516,7 @@ Pixmap Fl_Image::create_alpha_mask(Fl_Rect &rect, uint8 *data, int pitch, Fl_Pix
     // Set color to black...
     fl_color(fl_rgb(0,0,0));
 
+    bool mask_found=false;
     uint8 *ptr;
     for(int y = rect.y(), a=0; y < (rect.y()+rect.h()); y++,a++)
     {
@@ -527,6 +528,7 @@ Pixmap Fl_Image::create_alpha_mask(Fl_Rect &rect, uint8 *data, int pitch, Fl_Pix
             DISEMBLE_RGBA(ptr, format->bytespp, (format), pixel, r, g, b, alpha);
 
             if(alpha < threshold) {
+                mask_found = true;
                 fl_line(x,a,x,a); // Draw a dot.
             }
             ptr+=format->bytespp;
@@ -534,6 +536,11 @@ Pixmap Fl_Image::create_alpha_mask(Fl_Rect &rect, uint8 *data, int pitch, Fl_Pix
     }
 
     end_mask();
+
+    if(!mask_found) {
+        fl_delete_offscreen(maskbitmap);
+        maskbitmap=0;
+    }
 
     return maskbitmap;
 }
@@ -570,6 +577,7 @@ Pixmap Fl_Image::create_color_mask(Fl_Rect &rect, uint8 *data, int pitch, Fl_Pix
     RGBA_FROM_RGBA8888(color, cr, cg, cb, ca);	
 
     bool is_xpm = (color==0xFFFFFFFF);
+    bool mask_found=false;
 
     uint8 *ptr;
     for(int y = rect.y(), a=0; y < (rect.y()+rect.h()); y++,a++)
@@ -582,21 +590,30 @@ Pixmap Fl_Image::create_color_mask(Fl_Rect &rect, uint8 *data, int pitch, Fl_Pix
                 if(is_xpm && format->palette->colors[*ptr].a) {
                     // Fixes indexed XPM's
                     fl_line(x, a, x, a);
+                    mask_found = true;
                 }
                 else if(!is_xpm && r==cr && g==cg && b==cb) {
                     // For non-indexed images
                     fl_line(x, a, x, a);
+                    mask_found = true;
                 }
             }
             else if(r==cr && g==cg && b==cb) {
                 // For non-indexed images
                 fl_line(x, a, x, a);
+                mask_found = true;
             }
             ptr+=format->bytespp;
         }
     }
 
     end_mask();
+
+    if(!mask_found) {
+        fl_delete_offscreen(maskbitmap);
+        maskbitmap=0;
+    }
+
     return maskbitmap;
 }
 
@@ -617,6 +634,7 @@ Pixmap Fl_Image::create_pixel_mask(Fl_Rect &rect, uint8 *data, int pitch, Fl_Pix
     fl_color(fl_rgb(0,0,0));
 
     uint8 *ptr;
+    bool mask_found = false;
     for(int y = rect.y(), a=0; y < (rect.y()+rect.h()); y++,a++)
     {
         ptr = (data + (y * pitch) + (rect.x() * format->bytespp));
@@ -624,12 +642,19 @@ Pixmap Fl_Image::create_pixel_mask(Fl_Rect &rect, uint8 *data, int pitch, Fl_Pix
         {
             if(*ptr==pixel) {
                 fl_line(x, a, x, a);
+                mask_found = true;
             }
             ptr+=format->bytespp;
         }
     }
 
     end_mask();
+
+    if(!mask_found) {
+        fl_delete_offscreen(maskbitmap);
+        maskbitmap=0;
+    }
+
     return maskbitmap;
 }
 
@@ -664,6 +689,9 @@ Pixmap Fl_Image::create_mask(int W, int H)
     else if(_masktype == MASK_PIXELKEY) {
         bitmap = create_pixel_mask(rect2, dataptr, newpitch, format(), colorkey());
     }
+    if(!bitmap) {
+        _masktype = MASK_NONE;
+    }
 
     if(alloc) delete []alloc;
 
@@ -671,8 +699,8 @@ Pixmap Fl_Image::create_mask(int W, int H)
 }
 
 void Fl_Image::draw(int dx, int dy, int dw, int dh,
-                     int sx, int sy, int sw, int sh,
-                     Fl_Flags f)
+                    int sx, int sy, int sw, int sh,
+                    Fl_Flags f)
 {
     if(!_data || w < 1 || h < 1 || dw<1 || dh<1)
         return;
@@ -817,30 +845,10 @@ void Fl_Image::draw(int dx, int dy, int dw, int dh,
 
     if(!draw_flags && (f&FL_ALIGN_TILED)!=FL_ALIGN_TILED) { dw=w; dh=h; }
 
-    int X,Y,W,H;
-    fl_clip_box(dx, dy, dw, dh, X, Y, W, H);
-
-    int cx = X-dx;
-    int cy = Y-dy;
-
-    if(cx+W > dw)
-        W = dw-cx;
-
-    if(W <= 0)
-        return;
-
-    if(cy+H > dh)
-        H = dh-cy;
-
-    if(H <= 0)
-        return;
-
-    fl_transform(X,Y);
-
-    if( (f&FL_ALIGN_TILED)==FL_ALIGN_TILED ) {
-        to_screen_tiled(X,Y, W,H, cx, cy);
+    if( (f&FL_ALIGN_TILED)==FL_ALIGN_TILED) {
+        to_screen_tiled(dx, dy, dw, dh, 0, 0);
     } else {
-        to_screen(X,Y, W,H, cx, cy);
+        to_screen(dx, dy, dw, dh, 0, 0);
     }
 }
 
@@ -848,7 +856,7 @@ extern ImageReader xpm_reader;
 extern ImageReader bmp_reader;
 extern ImageReader gif_reader;
 
-Fl_Image* Fl_Image::read_xpm(const char *filename, const char **data)
+Fl_Image* Fl_Image::read_xpm(const char *filename, const char * const *data)
 {
     register_reader(&xpm_reader);
     register_reader(&bmp_reader);

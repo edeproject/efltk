@@ -256,7 +256,7 @@ void Fl_Scroll::scrollbar_cb(Fl_Widget* o, void*)
 }
 
 
-#define SLIDER_WIDTH 16
+#define SLIDER_WIDTH scrollbar_width()
 
 Fl_Scroll::Fl_Scroll(int X,int Y,int W,int H,const char* L)
 : Fl_Group(X,Y,W,H,L), endgroup(0),
@@ -268,6 +268,7 @@ hscrollbar(X,Y+H-SLIDER_WIDTH,W-SLIDER_WIDTH,SLIDER_WIDTH)
     yposition_ = 0;
     scrolldx = scrolldy = layoutdx = layoutdy = 0;
 
+    //hscrollbar.resize();
     hscrollbar.parent(this);
     hscrollbar.type(Fl_Slider::HORIZONTAL);
     hscrollbar.callback(hscrollbar_cb);

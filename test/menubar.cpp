@@ -33,6 +33,7 @@
 #include <efltk/Fl_Menu_Button.h>
 #include <efltk/Fl_Choice.h>
 #include <efltk/Fl_Tooltip.h>
+#include <efltk/Fl_Pixmap.h>
 #include <efltk/fl_draw.h>
 #include <stdio.h>
 #include <stdlib.h>

@@ -13,14 +13,33 @@
 #define LIST ((Fl_ListView *)parent())
 #define ITEM(i) ((Fl_ListView_Item *)i)
 
-void Fl_List_Header::draw()
+static void h_revert(Fl_Style* s) {
+    s->button_box = FL_UP_BOX;
+    s->button_color = FL_GRAY;
+    s->color = FL_GRAY;
+    //s->button_color = FL_GRAY;
+    //s->glyph = ::glyph;
+}
+static Fl_Named_Style h_style("ListHeader", h_revert, &Fl_ListHeader::default_style);
+Fl_Named_Style* Fl_ListHeader::default_style = &::h_style;
+
+Fl_ListHeader::Fl_ListHeader(int X,int Y,int W,int H,const char*l)
+    : Fl_Widget(X,Y,W,H,l)
+{
+    style(default_style);
+
+    cols=0;
+    for(int a=0;a<10;a++) { colw[a]=0; colf[a]=FL_ALIGN_LEFT; coli[a]=0;}
+}
+
+void Fl_ListHeader::draw()
 {
     fl_push_matrix();
     int total_w=0;
 
     for(int a=0; a<cols; a++)
     {
-        box()->draw(0, 0, colw[a], h(),color(), colf[a]);
+        button_box()->draw(0, 0, colw[a], h(),button_color(), colf[a]);
 
         char *txt = coln[a];
         if(txt) {
@@ -30,7 +49,7 @@ void Fl_List_Header::draw()
             }
 
             fl_font(label_font(), label_size());
-            char *pbuf = strdup(txt);//FLE_MdiTitlebar::get_line(txt, colw[a]-iw);
+            char *pbuf = fl_cut_line(txt, colw[a]-iw);
 
             //Clear CLIP flag if set, cause we clip anyway =)
             if(align() & FL_ALIGN_CLIP) Fl_Widget::clear_flag(FL_ALIGN_CLIP);
@@ -53,20 +72,20 @@ void Fl_List_Header::draw()
     }
 
     // Fill space after last column
-    int xf = LIST->w()-total_w;
+    int xf = LIST->xposition()+LIST->w()-total_w;
     if(xf>0) { fl_color(color()); fl_rectf(0, 0, xf, h()); }
 
     fl_pop_matrix();
 }
 
-void Fl_List_Header::layout()
+void Fl_ListHeader::layout()
 {
     Fl_Widget::layout();
     // No layout!
     // Header should be able to set any height user wants.
 }
 
-int Fl_List_Header::handle(int ev)
+int Fl_ListHeader::handle(int ev)
 {
     static bool dragging = false;
     static int col_start=0;
@@ -150,7 +169,7 @@ int Fl_List_Header::handle(int ev)
 }
 
 static void revert(Fl_Style* s) {
-    //s->box = FL_DOWN_BOX;
+    s->box = FL_DOWN_BOX;
     //s->color = FL_WHITE;
     //s->button_color = FL_GRAY;
     //s->glyph = ::glyph;
@@ -158,7 +177,8 @@ static void revert(Fl_Style* s) {
 static Fl_Named_Style style("ListView", revert, &Fl_ListView::default_style);
 Fl_Named_Style* Fl_ListView::default_style = &::style;
 
-#define SLIDER_WIDTH 16
+#define SLIDER_WIDTH scrollbar_width()
+
 Fl_ListView::Fl_ListView(int X,int Y,int W,int H,const char* L)
     : Fl_Group(X,Y,W,H,L),
     vscrollbar(X+W-SLIDER_WIDTH,Y,SLIDER_WIDTH,H-SLIDER_WIDTH),
@@ -970,7 +990,7 @@ int Fl_ListView::handle(int event)
         }
         return 1;
 
-    case FL_KEYBOARD:
+    case FL_KEY:
         {
             Fl::event_clicks(0); // make program not think it is a double-click
             switch(Fl::event_key())
@@ -1035,8 +1055,15 @@ int Fl_ListView::handle(int event)
                 return 1;
 
             default:
-                if(vscrollbar.send(event)) return 1;
-                if(hscrollbar.send(event)) return 1;
+                int ret=0;
+                ret = vscrollbar.send(event);
+                if(!ret) ret = hscrollbar.send(event);
+                if(ret) {
+                    //Set item to first visible
+                    layout();
+                    item(child(first_vis));
+                    return 1;
+                }
                 break;
 
             } // event_key

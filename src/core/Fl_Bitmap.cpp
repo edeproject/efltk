@@ -56,28 +56,14 @@ Pixmap fl_create_bitmap(const uchar* bitmap, int w, int h)
 }
 #endif
 
-void Fl_Bitmap::draw(int x, int y, int, int, Fl_Flags flags)
+void Fl_Bitmap::draw(int x, int y, int W, int H, Fl_Flags flags)
 {
     if(!mask) mask = (void*)fl_create_bitmap(_data, w, h);
 
-    int X,Y,W,H;
-    fl_clip_box(x, y, w, h,X,Y,W,H);
-    int cx = X-x;
-    int cy = Y-y;
-    // clip the box down to the size of image, quit if empty:
-    //if (cx < 0) {W += cx; X -= cx; cx = 0;}
-    if (cx+W > w) W = w-cx;
-    if (W <= 0) return;
-    //if (cy < 0) {H += cy; Y -= cy; cy = 0;}
-    if (cy+H > h) H = h-cy;
-    if (H <= 0) return;
-    // convert to Xlib coordinates:
-    fl_transform(X,Y);
-
     if( (flags&FL_ALIGN_TILED)==FL_ALIGN_TILED ) {
-        to_screen_tiled(X,Y, W,H, cx, cy);
+        to_screen_tiled(x,y, W,H, 0, 0);
     } else {
-        to_screen(X,Y, W,H, cx, cy);
+        to_screen(x,y, w,h, 0, 0);
     }
 }
 

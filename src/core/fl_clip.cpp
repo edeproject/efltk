@@ -81,7 +81,6 @@ void fl_clip_region(Region r)
     fl_restore_clip();
 }
 
-
 // Intersect & push a new clip rectangle:
 void fl_push_clip(int x, int y, int w, int h)
 {

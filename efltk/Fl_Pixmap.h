@@ -1,7 +1,7 @@
 //
 // "$Id$"
 //
-// Pack header file for the Fast Light Tool Kit (FLTK).
+// Pixmap header file for the Fast Light Tool Kit (FLTK).
 //
 // Copyright 1998-1999 by Bill Spitzak and others.
 //
@@ -23,24 +23,22 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
-#ifndef Fl_Pack_H
-#define Fl_Pack_H
+#ifndef Fl_Pixmap_H
+#define Fl_Pixmap_H
 
-#include "Fl_Group.h"
+#include "Fl_Image.h"
 
-class FL_API Fl_Pack : public Fl_Group {
-  int spacing_;
+class FL_API Fl_Pixmap : public Fl_Image {
 public:
-  static Fl_Named_Style* default_style;
-  enum { // values for type(int)
-    NORMAL	= GROUP_TYPE,
-    VERTICAL	= NORMAL, // for back compatability
-    HORIZONTAL	= GROUP_TYPE+1
-  };
-  void layout();
-  Fl_Pack(int x,int y,int w ,int h,const char *l = 0);
-  int spacing() const {return spacing_;}
-  void spacing(int i) {spacing_ = i;}
+    const char * const * data;
+    Fl_Pixmap(const char * const * d) : data(d) {w = -1;}
+    Fl_Pixmap(const unsigned char* const * d) : data((char**)d) {w = -1;}
+    // some compilers with bugs may need this one: (?)
+    Fl_Pixmap(char ** d)		    : data(d) {w = -1;}
+
+    void measure(int&,int&);
+    void draw(int, int, int, int, Fl_Flags = 0);
+    void draw(int x, int y, Fl_Flags f = 0) {draw(x,y,w,h,f);}
 };
 
 #endif

@@ -43,9 +43,17 @@
 
 #define is_vertical(widget) (type()&1 || widget->flags()&FL_PACK_VERTICAL)
 
+static void revert(Fl_Style *s) {
+    s->color = FL_GRAY;
+}
+
+static Fl_Named_Style style("Pack", revert, &Fl_Pack::default_style);
+Fl_Named_Style* Fl_Pack::default_style = &::style;
+
 Fl_Pack::Fl_Pack(int x,int y,int w ,int h,const char *l)
 : Fl_Group(x, y, w, h, l)
 {
+    style(default_style);
     spacing_ = 0;
     type(VERTICAL);
     //resizable(0);

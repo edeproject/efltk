@@ -3,7 +3,7 @@
 
 static void cb_none(Fl_Widget *, void *) { }
 
-#define SLIDER_WIDTH 16
+#define SLIDER_WIDTH scrollbar_width()
 
 Fl_MDI_Viewport::Fl_MDI_Viewport(int x, int y, int w, int h, const char *label)
     : Fl_ViewportType(x,y,w,h, label)

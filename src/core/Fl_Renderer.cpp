@@ -195,13 +195,3 @@ uint8 *Fl_Renderer::system_convert(Fl_PixelFormat *src_fmt, Fl_Size *src_size, u
     return tmp;
 }
 
-void Fl_Renderer::system_init()
-{
-    fl_open_display();
-#ifdef _WIN32
-    system_init(fl_display, fl_gc);
-#else
-    system_init(fl_display, fl_visual);
-#endif
-}
-

@@ -112,6 +112,8 @@ public:
     char *get_filename(const char *path, char *buf);
     // Returns full path to directory w/o filename, path could be e.g. 'c:\dir\somef' is returned c:\dir
     char *get_filepath(const char *path, char *buf);
+
+    int handle(int e);
 private:
 
     Fl_ListView *listview_;

@@ -346,8 +346,8 @@ int main(int argc, char **argv)
     create_the_forms();
 
     // Add tiled image as window background
-    Fl_Image *im = Fl_Image::read_xpm(0, tile_xpm);
-    form->image(im);
+    Fl_Image *tile = Fl_Image::read_xpm(0, tile_xpm);
+    form->image(tile);
     form->align(FL_ALIGN_TILED);
 
     char buf[256];

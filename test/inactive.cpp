@@ -18,7 +18,7 @@ int main (int argc, char **argv) {
    {Fl_Window* o = new Fl_Window(395, 280);
     w = o;
      {Fl_Group* o = the_group = new Fl_Group(5, 6, 384, 239, "activate()/deactivate() called on this Fl_Group");
-      o->box(FL_ENGRAVED_BOX);
+      //o->box(FL_ENGRAVED_BOX);
       o->align(FL_ALIGN_TOP|FL_ALIGN_INSIDE);
       new Fl_Button(25, 27, 105, 22, "button");
        {Fl_Group* o = new Fl_Group(25, 75, 105, 105, "Child group");

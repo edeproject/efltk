@@ -282,8 +282,7 @@ void MenuWindow::draw()
                 flags |= FL_SELECTED;
                 if (Fl::event_state(FL_BUTTONS) && widget->takesevents())
                     Fl::pushed_ = widget;
-                fl_color(selection_color());
-                fl_rectf(x,y,w,itemh);
+                button_box()->draw(x,y,w,itemh,selection_color(),flags);
 
             } else {
 
@@ -300,9 +299,12 @@ void MenuWindow::draw()
             int save_w = widget->w();
             widget->w(w);
             int save_flags = widget->flags();
+            Fl_Color save_scolor = widget->selection_text_color();
+            widget->selection_text_color(selection_text_color());
             widget->flags(flags);
             widget->draw();
             widget->flags(save_flags);
+            widget->selection_text_color(save_scolor);
             widget->w(save_w);
             Fl::pushed_ = 0;
             fl_pop_matrix();
@@ -326,7 +328,7 @@ void MenuWindow::draw()
                 fl_push_clip(lx+leading(), y, W-lx, itemh);
                 widget->label_type()->draw(Fl::key_name(widget->shortcut()),
                                            x, y, W, itemh,
-                                           (flags&FL_SELECTED) ? widget->selection_text_color() : widget->label_color(),
+                                           (flags&FL_SELECTED) ? selection_text_color() : widget->label_color(),
                                            flags|FL_ALIGN_RIGHT);
                 fl_pop_clip();
             }

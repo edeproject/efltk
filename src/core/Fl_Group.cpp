@@ -496,13 +496,12 @@ void Fl_Group::layout()
 
 ////////////////////////////////////////////////////////////////
 // Draw
-
 void Fl_Group::draw()
 {
     int numchildren = children();
     if (damage() & ~FL_DAMAGE_CHILD)
     {
-        #if 0
+#if 0
         // blinky-draw:
         draw_box();
         draw_inside_label();
@@ -512,7 +511,7 @@ void Fl_Group::draw()
             w.set_damage(FL_DAMAGE_ALL|FL_DAMAGE_EXPOSE);
             update_child(w);
         }
-        #else
+#else
         // Non-blinky draw, draw the inside widgets first, clip their areas
         // out, and then draw the background:
         fl_push_clip(0, 0, w(), h());
@@ -520,7 +519,7 @@ void Fl_Group::draw()
         draw_box();
         draw_inside_label();
         fl_pop_clip();
-        #endif
+#endif
         // labels are drawn without the clip for back compatability so they
         // can draw atop sibling widgets:
         for (n = 0; n < numchildren; n++) draw_outside_label(*child(n));
@@ -589,14 +588,14 @@ void Fl_Group::draw_group_box() const
     fl_pop_matrix();
 }
 
-
 // Widgets that want to outwit the clip-out can set this when they are
 // drawn to indicate that they did the clip-out. Only Fl_Tabs really uses
 // this (and I'm not certain it has to), plus a bunch of back-compatability
 // widgets that want to be "invisible" (they turn this on but don't draw
 // anything). This is a pointer so if it is left on by a child widget
 // it does not fool this into thinking the clipping is done.
-Fl_Widget* fl_did_clipping;
+Fl_Widget *fl_did_clipping=0;
+Fl_Widget *current_drawchild=0;
 
 // Force a child to redraw and remove the rectangle it used from the clip
 // region.
@@ -608,11 +607,15 @@ void Fl_Group::draw_child(Fl_Widget& w) const
         fl_push_matrix();
         fl_translate(w.x(), w.y());
         fl_did_clipping = 0;
+        current_drawchild = &w;
         w.set_damage(FL_DAMAGE_ALL|FL_DAMAGE_EXPOSE);
         w.draw();
         w.set_damage(0);
-        if (fl_did_clipping != &w) fl_clip_out(0,0,w.w(),w.h());
+        if (fl_did_clipping != &w) {
+            fl_clip_out(0,0,w.w(),w.h());
+        }
         fl_pop_matrix();
+        current_drawchild = 0;
     }
 }
 

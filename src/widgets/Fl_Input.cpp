@@ -1330,7 +1330,8 @@ int Fl_Input::handle(int event, int X, int Y, int W, int H)
         #else
             if (Fl::event() == FL_KEY || Fl::event() == FL_SHORTCUT)
             {
-                position(size(),0);
+                //We dont want to do mark whole text when we get focus.
+                //position(size(),0);
             }
             else
             {

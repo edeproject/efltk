@@ -16,15 +16,13 @@
 
 #define MAX_COLUMNS 32
 
-class Fl_List_Header : public Fl_Widget
+class Fl_ListHeader : public Fl_Widget
 {
 public:
-    Fl_List_Header(int X,int Y,int W,int H,const char*l=0) : Fl_Widget(X,Y,W,H,l) {
-        cols=0;
-        for(int a=0;a<10;a++) { colw[a]=0; colf[a]=FL_ALIGN_LEFT; coli[a]=0;}
-        box(FL_THIN_UP_BOX);
-        color(FL_GRAY);
-    }
+    static Fl_Named_Style* default_style;
+
+    Fl_ListHeader(int X,int Y,int W,int H,const char*l=0);
+
     void add_column(const char *name, int w) {
         ++cols;
         colw[cols-1] = w;
@@ -64,8 +62,8 @@ public:
     bool draw_stripes() { return draw_stripes_; }
     void draw_stripes(bool v) { draw_stripes_ = v; }
 
-    Fl_List_Header *header() { return _header; }
-    void header(Fl_List_Header *h) { _header = h; }
+    Fl_ListHeader *header() { return _header; }
+    void header(Fl_ListHeader *h) { _header = h; }
 
     void add_column(const char *name, int w=-1) { _header->add_column(name, w); if(w<0) find_def=true; }
     int columns() { return _header->columns(); }
@@ -168,8 +166,8 @@ private:
     bool find_def; // Set when needs to find default colmn sizes (called by layout)
     void find_def_sizes();
 
-    Fl_List_Header head; //Default header
-    Fl_List_Header *_header; //Pointer to current header
+    Fl_ListHeader head; //Default header
+    Fl_ListHeader *_header; //Pointer to current header
 
     Fl_Widget *item_;      // Current item
 

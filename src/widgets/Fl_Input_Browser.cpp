@@ -180,6 +180,8 @@ int ComboWindow::handle(int event)
             resizing=false;
             return 1;
         }
+
+    case FL_KEY:
     case FL_MOVE:
         if(combo->list) combo->list->handle(event);
         return 1;

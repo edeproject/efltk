@@ -1,7 +1,7 @@
 //
 // "$Id$"
 //
-// Pack header file for the Fast Light Tool Kit (FLTK).
+// Pixmap drawing code for the Fast Light Tool Kit (FLTK).
 //
 // Copyright 1998-1999 by Bill Spitzak and others.
 //
@@ -23,27 +23,36 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
-#ifndef Fl_Pack_H
-#define Fl_Pack_H
+// An Fl_Image that draws inline XPM data.
 
-#include "Fl_Group.h"
+// See fl_draw_pixmap.C for code used to get the actual data into pixmap.
+// Implemented without using the xpm library (which I can't use because
+// it interferes with the color cube used by fl_draw_image).
 
-class FL_API Fl_Pack : public Fl_Group {
-  int spacing_;
-public:
-  static Fl_Named_Style* default_style;
-  enum { // values for type(int)
-    NORMAL	= GROUP_TYPE,
-    VERTICAL	= NORMAL, // for back compatability
-    HORIZONTAL	= GROUP_TYPE+1
-  };
-  void layout();
-  Fl_Pack(int x,int y,int w ,int h,const char *l = 0);
-  int spacing() const {return spacing_;}
-  void spacing(int i) {spacing_ = i;}
-};
+#include <efltk/Fl.h>
+#include <efltk/fl_draw.h>
+#include <efltk/x.h>
+#include <efltk/Fl_Pixmap.h>
 
-#endif
+void Fl_Pixmap::measure(int& W,int& H) {
+    if(w < 0) fl_measure_pixmap(data, w, h);
+    W=w;
+    H=h;
+}
+
+extern ImageReader xpm_reader;
+void Fl_Pixmap::draw(int X, int Y, int W, int H, Fl_Flags flags)
+{
+    if(!id && xpm_reader.is_valid2((void**)data)) {
+        Fl_Image *i = Fl_Image::read_xpm(0, (const char **)data);
+        if(i) {
+            copy(*i, *this);
+            delete i;
+        }
+    }
+
+    Fl_Image::draw(X,Y,W,H,0,0,w,h,flags);
+}
 
 //
 // End of "$Id$".

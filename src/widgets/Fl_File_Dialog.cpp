@@ -193,6 +193,8 @@ static char **select_files(const char *path_, Filter **filters, const char *cap,
         if(len>0) {
             strncpy(read_path, path_, len);
         }
+    } else {
+        getcwd(read_path, FL_PATH_MAX);
     }
 
     d.filters(filters);
@@ -236,6 +238,8 @@ static char *select_file(const char *path_, Filter **filters, const char *cap, i
         if(len>0) {
             strncpy(read_path, path_, len);
         }
+    } else {
+        getcwd(read_path, FL_PATH_MAX);
     }
 
     d.filters(filters);
@@ -462,134 +466,134 @@ Filter **Fl_File_Dialog::build_filters(char *ptr)
 
 void Fl_File_Dialog::make_group(int w, int h)
 {	
-	{
-		Fl_Group* o = new Fl_Group(5, 5, w-10, 35);
-		o->box(FL_THIN_UP_BOX);
-		
-		up_ = new Fl_Highlight_Button(5, 5, 25, 25);
-		up_->image(up_pix);
-		home_ = new Fl_Highlight_Button(35, 5, 25, 25);
-		home_->image(home_pix);
-		refresh_ = new Fl_Highlight_Button(65, 5, 25, 25);
-		refresh_->image(refresh_pix);
-		new_folder_ = new Fl_Highlight_Button(95, 5, 25, 25);
-		new_folder_->image(new_pix);
-		
-		path_ = new Fl_Input_Browser(125, 5, w-140, 25); 
-		path_->type(Fl_Input_Browser::NONEDITABLE);
-		path_->end();
-		Fl_Group::current()->resizable(path_);
+    {
+        Fl_Group* o = new Fl_Group(5, 5, w-10, 35);
+        //o->box(FL_THIN_UP_BOX);
 
-		o->end();
-	} //end top
+        up_ = new Fl_Highlight_Button(5, 5, 25, 25);
+        up_->image(up_pix);
+        home_ = new Fl_Highlight_Button(35, 5, 25, 25);
+        home_->image(home_pix);
+        refresh_ = new Fl_Highlight_Button(65, 5, 25, 25);
+        refresh_->image(refresh_pix);
+        new_folder_ = new Fl_Highlight_Button(95, 5, 25, 25);
+        new_folder_->image(new_pix);
 
-	{
-		Fl_Group* o = new Fl_Group(5, 45, w-10, h-140);
-		o->box(FL_FLAT_BOX);
-		int W=o->w(), H=o->h();
+        path_ = new Fl_Input_Browser(125, 5, w-140, 25);
+        path_->type(Fl_Input_Browser::NONEDITABLE);
+        path_->end();
+        Fl_Group::current()->resizable(path_);
 
-		listview_ = new Fl_ListView(0, 0, W-5, H);
-		listview_->add_column("File");
-		listview_->add_column("Size",80);
-		listview_->add_column("Type",80);
-		listview_->add_column("Modified",120);
-		listview_->column_flags(0,FL_ALIGN_LEFT);
-		listview_->column_flags(1,FL_ALIGN_LEFT);
-		listview_->column_flags(2,FL_ALIGN_LEFT);
-		listview_->column_flags(3,FL_ALIGN_LEFT);		
-		listview_->end();
+        o->end();
+    } //end top
 
-		preview_ = new PreviewBox(0, 0, 0, 0);
-		preview_->label(preview_text);
-		preview_->hide();
-		preview_->box(FL_THIN_DOWN_BOX);
-		preview_info_ = new Fl_Box(0, 0, 0, 0);
-		preview_info_->label(preview_info);
-		preview_info_->hide();
-		preview_info_->box(FL_FLAT_BOX);
-		preview_info_->label_size(11);
-		preview_info_->label_font(FL_HELVETICA);
-		preview_info_->align(FL_ALIGN_CLIP|FL_ALIGN_INSIDE|FL_ALIGN_LEFT|FL_ALIGN_TOP);
-						
-		o->resizable(o);
-		o->end();
-		resizable(o);	
+    {
+        Fl_Group* o = new Fl_Group(5, 45, w-10, h-140);
+        o->box(FL_FLAT_BOX);
+        int W=o->w(), H=o->h();
 
-		// Outside of group
-		preview_but_ = new Fl_Check_Button(5, 45+H, W, 18, "Show Preview");
-		preview_but_->text_size(10);
-                preview_but_->value(Fl_File_Dialog::initial_preview);
-                if(mode()==DIRECTORY) preview_but_->deactivate();
-	}
+        listview_ = new Fl_ListView(0, 0, W-5, H);
+        listview_->add_column("File");
+        listview_->add_column("Size",80);
+        listview_->add_column("Type",80);
+        listview_->add_column("Modified",120);
+        listview_->column_flags(0,FL_ALIGN_LEFT);
+        listview_->column_flags(1,FL_ALIGN_LEFT);
+        listview_->column_flags(2,FL_ALIGN_LEFT);
+        listview_->column_flags(3,FL_ALIGN_LEFT);
+        listview_->end();
 
-	{
-		Fl_Group* o = new Fl_Group(5, h-70, w-10, 30);
-		
-		//location_ = new Fl_FileInput(55, 0, w-120, 25, "Location:");
-		location_ = new Fl_Input_Browser(55, 0, w-120, 25, "Location:");
-		location_->maxh(200);
-		location_->callback(cb_location, this);
-		location_->when(FL_WHEN_CHANGED | FL_WHEN_ENTER_KEY_ALWAYS);
+        preview_ = new PreviewBox(0, 0, 0, 0);
+        preview_->label(preview_text);
+        preview_->hide();
+        preview_->box(FL_THIN_DOWN_BOX);
+        preview_info_ = new Fl_Box(0, 0, 0, 0);
+        preview_info_->label(preview_info);
+        preview_info_->hide();
+        preview_info_->box(FL_FLAT_BOX);
+        preview_info_->label_size(11);
+        preview_info_->label_font(FL_HELVETICA);
+        preview_info_->align(FL_ALIGN_CLIP|FL_ALIGN_INSIDE|FL_ALIGN_LEFT|FL_ALIGN_TOP);
 
-		Fl_Group::current()->resizable(location_);
+        o->resizable(o);
+        o->end();
+        resizable(o);
 
-		ok_ = new Fl_Return_Button(w-60, 0, 50, 25, "OK");
-		ok_->shortcut(0xff0d);
-		
-		o->end();
-	} //loc, ok
-	
-	{
-		Fl_Group* o = new Fl_Group(5, h-35, w-10, 30);
-		
-		filter_ = new Fl_Input_Browser(40, 0, w-105, 25, "Filter:");		
-		filter_->type(Fl_Input_Browser::NONEDITABLE);
-		
-		filter_->end();
-		Fl_Group::current()->resizable(filter_);
-		
-		cancel_ = new Fl_Button(w-60, 0, 50, 25, "&Cancel");
-		
-		o->end();
-	}
+        // Outside of group
+        preview_but_ = new Fl_Check_Button(5, 45+H, W, 18, "Show Preview");
+        preview_but_->text_size(10);
+        preview_but_->value(Fl_File_Dialog::initial_preview);
+        if(mode()==DIRECTORY) preview_but_->deactivate();
+    }
 
-	preview(Fl_File_Dialog::initial_preview);	
+    {
+        Fl_Group* o = new Fl_Group(5, h-70, w-10, 30);
+
+        //location_ = new Fl_FileInput(55, 0, w-120, 25, "Location:");
+        location_ = new Fl_Input_Browser(55, 0, w-120, 25, "Location:");
+        location_->maxh(200);
+        location_->callback(cb_location, this);
+        location_->when(FL_WHEN_CHANGED | FL_WHEN_ENTER_KEY_ALWAYS);
+
+        Fl_Group::current()->resizable(location_);
+
+        ok_ = new Fl_Return_Button(w-60, 0, 50, 25, "OK");
+        ok_->shortcut(0xff0d);
+
+        o->end();
+    } //loc, ok
+
+    {
+        Fl_Group* o = new Fl_Group(5, h-35, w-10, 30);
+
+        filter_ = new Fl_Input_Browser(40, 0, w-105, 25, "Filter:");
+        filter_->type(Fl_Input_Browser::NONEDITABLE);
+
+        filter_->end();
+        Fl_Group::current()->resizable(filter_);
+
+        cancel_ = new Fl_Button(w-60, 0, 50, 25, "&Cancel");
+
+        o->end();
+    }
+
+    preview(Fl_File_Dialog::initial_preview);
 }
 
 char **Fl_File_Dialog::get_selected()
 {
-	if(!listview_->multi() || listview_->get_selection().empty())
-		return 0;
-		
-	char **tmp = (char **)malloc(sizeof(char *));
+    if(!listview_->multi() || listview_->get_selection().count()<=1)
+        return 0;
 
-	int sel = 0;
-	Fl_FileItem *w=0;
-	for(w = (Fl_FileItem *)listview_->get_selection().first(); w!=0; w = (Fl_FileItem *)listview_->get_selection().next())
-	{		
-		if(w->type()==Fl_FileItem::DEVICE) continue;
+    char **tmp = (char **)malloc(sizeof(char *));
 
-		tmp = (char **)realloc(tmp, (sel+1)*sizeof(char *)+sizeof(char *));
-		char filepath[FL_PATH_MAX];
-		snprintf(filepath, sizeof(filepath)-1, "%s%c%s", fullpath(), slash, w->label());
-		tmp[sel] = strdup(filepath);
-		sel++;
-	}
+    int sel = 0;
+    Fl_FileItem *w=0;
+    for(w = (Fl_FileItem *)listview_->get_selection().first(); w!=0; w = (Fl_FileItem *)listview_->get_selection().next())
+    {
+        if(w->type()==Fl_FileItem::DEVICE) continue;
 
-	if(sel==0) {
-		delete []tmp;
-		return 0;
-	}
+        tmp = (char **)realloc(tmp, (sel+1)*sizeof(char *)+sizeof(char *));
+        char filepath[FL_PATH_MAX];
+        snprintf(filepath, sizeof(filepath)-1, "%s%c%s", fullpath(), slash, w->label());
+        tmp[sel] = strdup(filepath);
+        sel++;
+    }
 
-	tmp[sel] = 0; //make sure last item in list is 0
-	return tmp;
+    if(sel==0) {
+        delete []tmp;
+        return 0;
+    }
+
+    tmp[sel] = 0; //make sure last item in list is 0
+    return tmp;
 }
 
 void Fl_File_Dialog::close(bool cancel)
 {
     cancelled_ = cancel;
+    location_->hide_popup();
     hide();
-    Fl::exit_modal();
 }
 
 void Fl_File_Dialog::init()
@@ -756,10 +760,15 @@ void Fl_File_Dialog::read_dir(const char *_path)
     if(_path && *_path) {
         normalize_path(_path, read_path);
         //strncpy(read_path, _path, FL_PATH_MAX);
-    } else read_path[0] = '\0';
+    } else {
+        read_path[0] = '\0';
+    }
 
 #ifndef _WIN32
-    if(!*read_path) { _path = "/"; }
+    if(!*read_path) {
+        _path = "/";
+        ok_->deactivate();
+    }
     if(!strcmp(read_path, "My Home")) {
         char *home = fl_get_homedir();
         strncpy(read_path, home, FL_PATH_MAX);
@@ -792,14 +801,13 @@ void Fl_File_Dialog::read_dir(const char *_path)
             read_net = true;
         }
     }
+    if(mode_!=Fl_File_Dialog::DIRECTORY || (mode_==Fl_File_Dialog::DIRECTORY && !fullpath_))
+        ok_->deactivate();
 #endif
     fullpath(_path);
 
     if(!fullpath_) up_->deactivate();
     else up_->activate();
-
-    if(mode_!=Fl_File_Dialog::DIRECTORY || (mode_==Fl_File_Dialog::DIRECTORY && !fullpath_))
-        ok_->deactivate();
 
     location_->value("");
 
@@ -895,7 +903,12 @@ void Fl_File_Dialog::read_dir(const char *_path)
         listview_->relayout();
     }
 
-    listview_->select_only(listview_->children()>0?listview_->child(0):0);
+    Fl_Widget *i = listview_->children()>0?listview_->child(0):0;
+    if(i) {
+        listview_->select_only(i);
+        Fl::event_clicks(0);
+        cb_list(listview_, this);
+    }
 }
 
 bool Fl_File_Dialog::new_dir()
@@ -939,64 +952,65 @@ bool Fl_File_Dialog::new_dir()
 
 void Fl_File_Dialog::file_clicked(Fl_FileItem *i)
 {
-	ok_->activate();
-	Fl_ListView_Item *item=0;
+    ok_->activate();
+    Fl_ListView_Item *item=0;
 
-	if(listview_->type()&Fl_ListView::MULTI_SELECTION)
-	{		
-		files[0] = '\0';
-		int tot=0;
-		int items=0;		
-		for(item = (Fl_ListView_Item *)listview_->get_selection().first(); item!=0; item = (Fl_ListView_Item *)listview_->get_selection().next())
-		{
-			if(items > 5) {
-				strcat(files, "....");
-				break;
-			}			
-			if(item->label()) {
-				int len = strlen(item->label());
-				tot += len+2;
-				
-				if(tot>4090) {
-					strcat(files, "....");
-					break;
-				}
+    if(listview_->type()&Fl_ListView::MULTI_SELECTION)
+    {
+        files[0] = '\0';
+        int tot=0;
+        int items=0;
+        for(item = (Fl_ListView_Item *)listview_->get_selection().first(); item!=0; item = (Fl_ListView_Item *)listview_->get_selection().next())
+        {
+            if(items > 5) {
+                strcat(files, "....");
+                break;
+            }
+            if(item->label()) {
+                int len = strlen(item->label());
+                tot += len+2;
 
-				char tmp[1024];
-				sprintf(tmp, "\"%s\" ", item->label());
-				strcat(files, tmp);
-				items++;
-			}
-		}
+                if(tot>4090) {
+                    strcat(files, "....");
+                    break;
+                }
 
-		if(items==1) {		
-			item = (Fl_ListView_Item *)listview_->item();
-			if(item) location_->value(item->label());				
-		} else if(items>1) {
-			location_->value(files);				
-		}
-	}
-	else
-	{
-		//D->fullpath((const char *)((Fl_File_DialogItem *)w)->fullpath());
-		location_->value(i->label());
-	}
-
-        if(Fl::event_clicks())
-            close(CLOSE_OK);
-        else {
-            item = (Fl_ListView_Item *)listview_->item();
-            if(item && preview()) {
-                char tmp[FL_PATH_MAX];
-                snprintf(tmp, sizeof(tmp)-1, "%s%c%s", fullpath(), slash, item->label());
-                update_preview(tmp);
+                char tmp[1024];
+                sprintf(tmp, "\"%s\" ", item->label());
+                strcat(files, tmp);
+                items++;
             }
         }
+
+        if(items==1) {
+            item = (Fl_ListView_Item *)listview_->item();
+            if(item) location_->value(item->label());
+        } else if(items>1) {
+            location_->value(files);
+        }
+    }
+    else
+    {
+        //D->fullpath((const char *)((Fl_File_DialogItem *)w)->fullpath());
+        location_->value(i->label());
+    }
+
+    if(Fl::event_clicks())
+        close(CLOSE_OK);
+    else {
+        item = (Fl_ListView_Item *)listview_->item();
+        if(item && preview()) {
+            char tmp[FL_PATH_MAX];
+            snprintf(tmp, sizeof(tmp)-1, "%s%c%s", fullpath(), slash, item->label());
+            update_preview(tmp);
+        }
+    }
 }
 
 void Fl_File_Dialog::folder_clicked(Fl_FileItem *i)
 {
     ok_->activate();
+    location_->value("");
 
     if(Fl::event_clicks()) {
         char tmp[FL_PATH_MAX];
@@ -1060,20 +1074,6 @@ void Fl_File_Dialog::cb_ok(Fl_Widget *, void *d)
         if(FD->fullpath()) { FD->close(CLOSE_OK); return; }
     }
 
-    if(i) {
-
-        if(i->type()>=Fl_FileItem::DIR) {
-            // Open directory
-            Fl::event_clicks(1);
-            FD->folder_clicked(i);
-            return;
-        } else if(FD->listview()->multi()) {
-
-            FD->close(CLOSE_OK);
-            return;
-        }
-    }
-
     if(FD->get_filename(FD->location_->value(), file)) {
 
         if(fl_is_dir(file)) {
@@ -1085,11 +1085,26 @@ void Fl_File_Dialog::cb_ok(Fl_Widget *, void *d)
 
             if(FD->mode()==SAVE) {
                 FD->close(CLOSE_OK);
+                return;
             }
             else if(FD->mode()==DEFAULT && fl_file_exists(file)) {
                 FD->close(CLOSE_OK);
+                return;
             }
+        }
+    }
 
+    if(i) {
+
+        if(i->type()>=Fl_FileItem::DIR) {
+            // Open directory
+            Fl::event_clicks(1);
+            FD->folder_clicked(i);
+            return;
+        } else if(FD->listview()->multi()) {
+
+            FD->close(CLOSE_OK);
+            return;
         }
     }
 }
@@ -1253,8 +1268,8 @@ void Fl_File_Dialog::cb_location(Fl_Widget *w, void *d)
             if(!fl_is_dir(tmp) && (FD->mode()==Fl_File_Dialog::DEFAULT?fl_file_exists(tmp):true)) {
                 FD->ok_->activate();
                 FD->cancelled_ = false;
-                FD->location_->hide_popup();
-                FD->ok_->do_callback();
+                //FD->location_->hide_popup();
+                //FD->ok_->do_callback();
                 return;
             } else {
                 FD->ok_->deactivate();
@@ -1480,6 +1495,16 @@ void Fl_File_Dialog::update_preview(const char *filename)
 	cursor(FL_CURSOR_DEFAULT);
 	Fl::check();
 }
+
+int Fl_File_Dialog::handle(int e)
+{
+    if(e==FL_KEYUP && Fl::event_key()==FL_BackSpace) {
+        cb_up(0, this);
+        return 1;
+    }
+    return Fl_Window::handle(e);
+}
+
 
 ////////////////////////////
 // WIN32 NETWORK

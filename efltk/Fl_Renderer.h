@@ -17,20 +17,13 @@
 # define __LITTLE_ENDIAN 1234
 # define __BIG_ENDIAN    4321
 # define __BYTE_ORDER __LITTLE_ENDIAN
-typedef HINSTANCE	Display;
-typedef HINSTANCE	DisplayInfo;
-typedef HDC	        GC;
-typedef HWND            Window;
-typedef HBITMAP         Pixmap;
-typedef HDC	        VisualInfo;
 
 #else
 
 # include <X11/Xlib.h>
 # include <X11/Xutil.h>
 # include <endian.h>
-typedef XVisualInfo*    VisualInfo;
-typedef Display*        DisplayInfo;
+
 #endif
 
 // blitting flags:
@@ -160,8 +153,7 @@ public:
     // All Functions starting with "system_" needs system TO BE INITIALIZED
     // If not, all of these will fail...
     static bool system_inited();
-    // Init renderer with given attributes
-    static void system_init(DisplayInfo d, VisualInfo v);
+    // Init renderer
     static void system_init();
 
     // Converts to system format, if flags is set to HW_SURFACE, then system
