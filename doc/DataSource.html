@@ -7,7 +7,7 @@
 	<META NAME="AUTHOR" CONTENT="Alexey Parshin">
 	<META NAME="CREATED" CONTENT="20030208;9244200">
 	<META NAME="CHANGEDBY" CONTENT="Alexey Parshin">
-	<META NAME="CHANGED" CONTENT="20030212;8204000">
+	<META NAME="CHANGED" CONTENT="20030212;19161500">
 	<STYLE>
 	<!--
 		@page { size: 21.59cm 27.94cm; margin-left: 3.18cm; margin-right: 3.18cm; margin-top: 2.54cm; margin-bottom: 2.54cm }
@@ -39,6 +39,8 @@ Alexey Parshin</FONT></FONT></P>
 	can a Data Source be used?</FONT></FONT></P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Clean"><FONT SIZE=3>Minimal
 	structure of a simple Data Source.</FONT></FONT></P>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Clean"><FONT SIZE=3>The
+	fastest way to make a new Data Source.</FONT></FONT></P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Clean"><FONT SIZE=3>Using
 	a Data Source in widgets.</FONT></FONT></P>
 	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Clean"><FONT SIZE=3>Using
@@ -178,7 +180,19 @@ precious Fl_Directory_DS such methods are directory(), pattern() and
 several others. User should define the directory() and pattern()
 prior to open() so Fl_Directory_DS would know what it has to open and
 read.</FONT></P>
-<H2 CLASS="western">4. Using a Datasource in widgets.</H2>
+<H2 CLASS="western">4. The fastest way to make a new Data Source.</H2>
+<P><FONT FACE="Clean">To make a simple task of creating a new Data
+Source even simpler, eFLTK has the Fl_Memory_DS class. That class is
+specially developed to derive other Data Sources from it. It's
+perfect, if your new Datasource downloads everything into memory in
+open() method, and then terminates the connection with the source of
+information. You can take src/widgets/Fl_Directory.cpp as the example
+of such DS. Another simple example is src/net/Fl_IMAP_DS. Both
+classes implement mostly open() method and some service particular
+DS-specific routines. In the open() method both these classes just
+create multiple Fl_Data_Fields objects and join them to the local
+list of rows (m_list). It is that simple.</FONT></P>
+<H2 CLASS="western">5. Using a Data Source in widgets.</H2>
 <P><FONT FACE="Clean">There are several ways to use a Datasource.
 Widgets like Fl_ListView that represent multiple data rows may
 implement fill(Fl_Data_Source&amp;) method. In the fill() method,
@@ -208,19 +222,19 @@ return;</I></FONT></BLOCKQUOTE>
 the data format and create the column</I></FONT></BLOCKQUOTE>
 <BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>for (unsigned col = 0;
 col &lt; columnCount; col++) {</I></FONT></BLOCKQUOTE>
-<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>Fl_Data_Field&amp;
+<BLOCKQUOTE STYLE="margin-left: 3cm; margin-right: 3cm"><FONT FACE="Arial, sans-serif"><I>Fl_Data_Field&amp;
 df = ds.field(col);</I></FONT></BLOCKQUOTE>
-<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>if
+<BLOCKQUOTE STYLE="margin-left: 3cm; margin-right: 3cm"><FONT FACE="Arial, sans-serif"><I>if
 (!df.visible) continue;</I></FONT></BLOCKQUOTE>
-<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>int
+<BLOCKQUOTE STYLE="margin-left: 3cm; margin-right: 3cm"><FONT FACE="Arial, sans-serif"><I>int
 width = 100;</I></FONT></BLOCKQUOTE>
-<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>if
+<BLOCKQUOTE STYLE="margin-left: 3cm; margin-right: 3cm"><FONT FACE="Arial, sans-serif"><I>if
 (df.width &gt;= 0) {</I></FONT></BLOCKQUOTE>
-<BLOCKQUOTE STYLE="margin-left: 3cm; margin-right: 3cm"><FONT FACE="Arial, sans-serif"><I>width
+<BLOCKQUOTE STYLE="margin-left: 4cm; margin-right: 4cm"><FONT FACE="Arial, sans-serif"><I>width
 = df.width * text_size() * 2 / 3;</I></FONT></BLOCKQUOTE>
-<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>}</I></FONT></BLOCKQUOTE>
-<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>add_column(df.name(),width);</I></FONT></BLOCKQUOTE>
-<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>column_flags(col,df.flags);</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE STYLE="margin-left: 3cm; margin-right: 3cm"><FONT FACE="Arial, sans-serif"><I>}</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE STYLE="margin-left: 3cm; margin-right: 3cm"><FONT FACE="Arial, sans-serif"><I>add_column(df.name(),width);</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE STYLE="margin-left: 3cm; margin-right: 3cm"><FONT FACE="Arial, sans-serif"><I>column_flags(col,df.flags);</I></FONT></BLOCKQUOTE>
 <BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>}</I></FONT></BLOCKQUOTE>
 <P STYLE="font-style: normal"><FONT FACE="Clean">Ok, now we have
 columns. Lets fill them with data. After the Datasource is opened,
@@ -236,36 +250,36 @@ go to the next data row. The code below illustrates it.</FONT></P>
 <BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>// Read every row until
 eof()</I></FONT></BLOCKQUOTE>
 <BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>while (!ds.eof()) {</I></FONT></BLOCKQUOTE>
-<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>//
+<BLOCKQUOTE STYLE="margin-left: 3cm; margin-right: 3cm"><FONT FACE="Arial, sans-serif"><I>//
 Create a new ListView item for a data row</I></FONT></BLOCKQUOTE>
-<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>Fl_ListView_ItemExt
+<BLOCKQUOTE STYLE="margin-left: 3cm; margin-right: 3cm"><FONT FACE="Arial, sans-serif"><I>Fl_ListView_ItemExt
 *item = new Fl_ListView_ItemExt();</I></FONT></BLOCKQUOTE>
-<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>item-&gt;columns(columnCount);</I></FONT></BLOCKQUOTE>
-<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>//
+<BLOCKQUOTE STYLE="margin-left: 3cm; margin-right: 3cm"><FONT FACE="Arial, sans-serif"><I>item-&gt;columns(columnCount);</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE STYLE="margin-left: 3cm; margin-right: 3cm"><FONT FACE="Arial, sans-serif"><I>//
 Read every field of the data row and put it in the ListView</I></FONT></BLOCKQUOTE>
-<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>for
+<BLOCKQUOTE STYLE="margin-left: 3cm; margin-right: 3cm"><FONT FACE="Arial, sans-serif"><I>for
 (int col = 0; col &lt; (int)columnCount; col++) {</I></FONT></BLOCKQUOTE>
-<BLOCKQUOTE STYLE="margin-left: 3cm; margin-right: 3cm"><FONT FACE="Arial, sans-serif"><I>Fl_Data_Field&amp;
+<BLOCKQUOTE STYLE="margin-left: 4cm; margin-right: 4cm"><FONT FACE="Arial, sans-serif"><I>Fl_Data_Field&amp;
 df = ds.field(col);</I></FONT></BLOCKQUOTE>
-<BLOCKQUOTE STYLE="margin-left: 3cm; margin-right: 3cm"><FONT FACE="Arial, sans-serif"><I>if
+<BLOCKQUOTE STYLE="margin-left: 4cm; margin-right: 4cm"><FONT FACE="Arial, sans-serif"><I>if
 (!df.visible) continue;</I></FONT></BLOCKQUOTE>
-<BLOCKQUOTE STYLE="margin-left: 3cm; margin-right: 3cm"><FONT FACE="Arial, sans-serif"><I>item-&gt;flags(col,
+<BLOCKQUOTE STYLE="margin-left: 4cm; margin-right: 4cm"><FONT FACE="Arial, sans-serif"><I>item-&gt;flags(col,
 df.flags);</I></FONT></BLOCKQUOTE>
-<BLOCKQUOTE STYLE="margin-left: 3cm; margin-right: 3cm"><FONT FACE="Arial, sans-serif"><I>if(df.type()
+<BLOCKQUOTE STYLE="margin-left: 4cm; margin-right: 4cm"><FONT FACE="Arial, sans-serif"><I>if(df.type()
 == VAR_IMAGEPTR) item-&gt;image(col, (Fl_Image *)df.as_image());</I></FONT></BLOCKQUOTE>
-<BLOCKQUOTE STYLE="margin-left: 3cm; margin-right: 3cm"><FONT FACE="Arial, sans-serif"><I>else
+<BLOCKQUOTE STYLE="margin-left: 4cm; margin-right: 4cm"><FONT FACE="Arial, sans-serif"><I>else
 item-&gt;label(col, ds.field(col).as_string());</I></FONT></BLOCKQUOTE>
-<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>}</I></FONT></BLOCKQUOTE>
-<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>//
+<BLOCKQUOTE STYLE="margin-left: 3cm; margin-right: 3cm"><FONT FACE="Arial, sans-serif"><I>}</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE STYLE="margin-left: 3cm; margin-right: 3cm"><FONT FACE="Arial, sans-serif"><I>//
 After the row is read, go to the next data row</I></FONT></BLOCKQUOTE>
-<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>ds.next();</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE STYLE="margin-left: 3cm; margin-right: 3cm"><FONT FACE="Arial, sans-serif"><I>ds.next();</I></FONT></BLOCKQUOTE>
 <BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>}</I></FONT></BLOCKQUOTE>
 <BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>// Close the dataset</I></FONT></BLOCKQUOTE>
-<BLOCKQUOTE><I><FONT FACE="Arial, sans-serif">ds.close();</FONT></I></BLOCKQUOTE>
+<BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>ds.close();</I></FONT></BLOCKQUOTE>
 <P><FONT FACE="Clean">That's it. After the Datasource is closed, it
 releases the allocated resources and may be opened again, returning
 us to the beginning of data.</FONT></P>
-<H2 CLASS="western">5. Using Fl_Query as a Datasource.</H2>
+<H2 CLASS="western">6. Using Fl_Query as a Datasource.</H2>
 <P><FONT FACE="Clean">Fl_Query is one of my favorite Datasources. It
 utilizes the best of the Datasource properties &ndash; the ability to
 adjust to different query results for different SQL statements. The
@@ -294,15 +308,16 @@ should close query after using it.</FONT></P>
 <P STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>//
 First, define a database connection</I></FONT></P>
 <P STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>Fl_String
-connect_string  &quot;DSN=odbc_demo;UID=username;PWD=password&quot;;</I></FONT></P>
+connect_string &quot;DSN=odbc_demo;UID=username;PWD=password&quot;;</I></FONT></P>
 <P STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>Fl_ODBC_Database
 db (connect_string);</I></FONT></P>
 <P STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><BR>
 </P>
 <P STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>//
 Second, define query. Database and SQL are defined in the constructor</I></FONT></P>
-<P ALIGN=LEFT STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>Fl_Query	query(&amp;db,&rdquo;SELECT
-department, fname, lname FROM employees WHERE department = :dept&rdquo;);</I></FONT></P>
+<P ALIGN=LEFT STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>Fl_Query
+query(&amp;db,&rdquo;SELECT department, fname, lname FROM employees
+WHERE department = :dept&rdquo;);</I></FONT></P>
 <P ALIGN=LEFT STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><BR>
 </P>
 <P ALIGN=LEFT STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>//
@@ -328,7 +343,7 @@ Print every column</I></FONT></P>
 <P ALIGN=LEFT STYLE="margin-left: 6.61cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>query[&ldquo;department&rdquo;].get_string(),
 </I></FONT>
 </P>
-<P ALIGN=LEFT STYLE="margin-left: 6.61cm; margin-bottom: 0cm"><I><FONT FACE="Arial, sans-serif">query[&ldquo;fname&rdquo;].get_string(),</FONT></I></P>
+<P ALIGN=LEFT STYLE="margin-left: 6.61cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>query[&ldquo;fname&rdquo;].get_string(),</I></FONT></P>
 <P ALIGN=LEFT STYLE="margin-left: 6.61cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>query[&ldquo;lname&rdquo;].get_string()</I></FONT></P>
 <P ALIGN=LEFT STYLE="margin-left: 4.41cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>);</I></FONT></P>
 <P ALIGN=LEFT STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>}
@@ -339,5 +354,32 @@ Close the query</I></FONT></P>
 <P ALIGN=LEFT STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>query.close();</I></FONT></P>
 <P ALIGN=LEFT STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><BR>
 </P>
+<H2 CLASS="western">7. Exceptions in Datasources.</H2>
+<P><FONT FACE="Clean">The conception of exceptions in Datasources is
+very important. The general rule is straight forward. If you're
+working with any Datasource the exception can be generated by any
+Datasource' operation. It doesn't matter if the Datasource is very
+simple, or it works with the server that is 100% reliable. Just
+always trap the exceptions, like this:</FONT></P>
+<P STYLE="margin-left: 2.2cm"><FONT FACE="Arial, sans-serif"><I>fl_try
+{</I></FONT></P>
+<P STYLE="margin-left: 4.41cm"><FONT FACE="Arial, sans-serif"><I>my_datasource.open();</I></FONT></P>
+<P STYLE="margin-left: 4.41cm"><FONT FACE="Arial, sans-serif"><I>while
+(!my_datasource.eof()) {</I></FONT></P>
+<P STYLE="margin-left: 6.61cm"><FONT FACE="Arial, sans-serif"><I>//
+do something here</I></FONT></P>
+<P STYLE="margin-left: 6.61cm"><FONT FACE="Arial, sans-serif"><I>my_datasource.next();</I></FONT></P>
+<P STYLE="margin-left: 4.41cm"><FONT FACE="Arial, sans-serif"><I>}</I></FONT></P>
+<P STYLE="margin-left: 4.41cm"><FONT FACE="Arial, sans-serif"><I>my_datasource.close();</I></FONT></P>
+<P STYLE="margin-left: 2.2cm"><FONT FACE="Arial, sans-serif"><I>}</I></FONT></P>
+<P STYLE="margin-left: 2.2cm"><FONT FACE="Arial, sans-serif"><I>fl_catch(exception)
+{</I></FONT></P>
+<P STYLE="margin-left: 4.41cm"><FONT FACE="Arial, sans-serif"><I>fputs(exception.text().c_str(),stderr);</I></FONT></P>
+<P STYLE="margin-left: 2.2cm"><FONT FACE="Arial, sans-serif"><I>}</I></FONT></P>
+<P><FONT FACE="Clean">This code catches all the exceptions that
+<B><SPAN STYLE="font-style: normal">my_datasource </SPAN></B>can
+create. If you don't use the exception catch around some code and
+that code generates the exception, your program most likely will be
+terminated.</FONT></P>
 </BODY>
 </HTML>
