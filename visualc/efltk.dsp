@@ -1030,6 +1030,10 @@ SOURCE=..\efltk\Fl_Ptr_List.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\efltk\Fl_Ptr_Stack.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\efltk\Fl_PtrList.h
 # End Source File
 # Begin Source File
