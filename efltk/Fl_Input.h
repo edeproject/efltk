@@ -23,6 +23,7 @@
 #define _FL_INPUT_H_
 
 #include "Fl_Widget.h"
+#include "Enumerations.h"
 
 /** Fl_Input */
 class FL_API Fl_Input : public Fl_Widget {
@@ -36,7 +37,6 @@ public:
         INPUT_TYPE = 7,
         READ_ONLY = 8,
         WORDWRAP = 16,
-        RIGHT_ALIGNED = 32
     };
 
     /** Creates new input widget using the given position, size, and label string. */
@@ -53,6 +53,9 @@ public:
     int input_type() const {return type() & INPUT_TYPE; }
     void input_type(int t) { type(t | readonly()); }
 
+    int text_align() const {return text_align_; }
+    void text_align(int v){ text_align_ = v; }
+    
     int readonly() const { return (type() & READ_ONLY); }
     void readonly(int b) { if (b) type(type() | READ_ONLY); else type(type() & ~READ_ONLY); }
 
@@ -121,6 +124,7 @@ private:
     int xscroll_, yscroll_;
     int mu_p;
     int inside_label_width;
+    uchar text_align_;
 
     /** ctor initializer */
     void ctor_init();

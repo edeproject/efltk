@@ -335,14 +335,16 @@ void Fl_Input::draw(int X, int Y, int W, int H)
     // If the text is rigth aligned (ony for non-multiline input)
     // has to be adjusted
     int ra_delta = 0;
-    if (type()&RIGHT_ALIGNED){
+    if (!(text_align()&FL_ALIGN_LEFT)){
         float width = fl_width(value(), size());
         if (W>width){
             ra_delta=int(W-width-6);
             if (ra_delta < 0)
                 ra_delta = 0;
+            if (!(text_align()&FL_ALIGN_RIGHT))
+                ra_delta /= 2;
         }
-        ALL=true;
+        ALL=true; // we cannot optimize the drawing, because the widget is redrawn
     }
 
     int selstart, selend;
@@ -390,16 +392,15 @@ void Fl_Input::draw(int X, int Y, int W, int H)
                 newscroll = curx-20;
             }
 
-        // if xscroll is not zero, the input is right aligned
-        // but there is some extra space after the text,
-        // adjust the xscroll
-            if (type()&RIGHT_ALIGNED){
+            // if xscroll is not zero, the input is right aligned
+            // but there is some extra space after the text,
+            // adjust the xscroll
+            if (!(text_align()&FL_ALIGN_LEFT)){
                 int len=(int)fl_width(p,e-p);
                 if (newscroll + (W-6) > len)
                     newscroll = len - (W-6);
             }
 
-            if (newscroll < 0) newscroll = 0;
             if (newscroll != xscroll_)
             {
                 xscroll_ = newscroll;
@@ -685,12 +686,15 @@ int Fl_Input::mouse_position(int X, int Y, int W, int ) const
 
     // Do a binary search for the character that starts before this position:
     int xpos = X-xscroll_; if (W > 12) xpos += 3;
-
-    if (type()&RIGHT_ALIGNED){
+    
+    if (!(text_align()&FL_ALIGN_LEFT)){
         int len=(int)fl_width(p,e-p);
-        if (len < W - 6) xpos += (W - 6) -len;
+        int diff = (W - 6) - len;
+        if (!(text_align()&FL_ALIGN_RIGHT))
+            diff /= 2;
+        if (diff > 0) xpos += diff;
     }
-
+    
     const char *l, *r, *t; float f0 = float(Fl::event_x()-xpos);
     for (l = p, r = e; l<r; )
     {
@@ -1036,6 +1040,7 @@ void Fl_Input::ctor_init() {
     value_ = "";
     xscroll_ = yscroll_ = 0;
     inside_label_width = 0;
+    text_align_ = FL_ALIGN_LEFT;
 
     style(default_style);   
 }
