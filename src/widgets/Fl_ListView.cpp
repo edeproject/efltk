@@ -1011,7 +1011,9 @@ int Fl_ListView::handle(int event)
 
             case FL_Up:
                 {
-                    Fl_Widget *i = prev();
+                    Fl_Widget *i;
+                    if(!item() && children()>0) i = child(children()-1);
+                    else i = prev();
                     if(i) {
                         if(i->y() <= yposition_)
                             scroll_up(i->height()+10);
@@ -1019,6 +1021,8 @@ int Fl_ListView::handle(int event)
                             select(i, 1);
                         else
                             select_only(i);
+
+                        show_item(i);
                         redraw(FL_DAMAGE_CONTENTS);
                     }
                     if((when()&FL_WHEN_RELEASE) && (changed() || (when()&FL_WHEN_NOT_CHANGED))) {
@@ -1030,7 +1034,9 @@ int Fl_ListView::handle(int event)
 
             case FL_Down:
                 {
-                    Fl_Widget *i = next();
+                    Fl_Widget *i;
+                    if(!item() && children()>0) i = child(0);
+                    else i = next();
                     if(i) {
                         if(i->y()+i->h() >= yposition_+H)
                             scroll_down(i->height()+10);
@@ -1038,6 +1044,8 @@ int Fl_ListView::handle(int event)
                             select(i, 1);
                         else
                             select_only(i);
+
+                        show_item(i);
                         redraw(FL_DAMAGE_CONTENTS);
                     }
                     if((when()&FL_WHEN_RELEASE) && (changed() || (when()&FL_WHEN_NOT_CHANGED))) {

@@ -1092,78 +1092,73 @@ void Fl_Text_Display::draw_string( int style, int X, int Y, int toX,
                                    const char *string, int nChars ) {
     Style_Table_Entry * styleRec=0;
 
-  /* Draw blank area rather than text, if that was the request */
-  if ( style & FILL_MASK ) {
-    clear_rect( style, X, Y, toX - X, mMaxsize );
-    return;
-  }
+    /* Draw blank area rather than text, if that was the request */
+    if ( style & FILL_MASK ) {
+        clear_rect( style, X, Y, toX - X, mMaxsize );
+        return;
+    }
 
-  /* Set font, color, and gc depending on style.  For normal text, GCs
+    /* Set font, color, and gc depending on style.  For normal text, GCs
      for normal drawing, or drawing within a Fl_Text_Selection or highlight are
      pre-allocated and pre-configured.  For syntax highlighting, GCs are
-     configured here, on the fly. */
+     configured here, on the fly.
+     */
 
-  Fl_Font font = text_font();
-  int size = text_size();
-  Fl_Color foreground;
-  Fl_Color background;
+    Fl_Font font = text_font();
+    int size = text_size();
+    Fl_Color foreground;
+    Fl_Color background;
 
-  if ( style & STYLE_LOOKUP_MASK ) {
-    styleRec = &mStyleTable[ ( style & STYLE_LOOKUP_MASK ) - 'A' ];
-    font = styleRec->font;
-    size = styleRec->size;
-    foreground = styleRec->color;
+    if ( style & STYLE_LOOKUP_MASK ) {
+        styleRec = &mStyleTable[ ( style & STYLE_LOOKUP_MASK ) - 'A' ];
+        font = styleRec->font;
+        size = styleRec->size;
+        foreground = styleRec->color;
 
-    if(style & PRIMARY_MASK)
-        background = fl_color_average(selection_color(), fl_invert(styleRec->color), 0.4);
-    else if(style & HIGHLIGHT_MASK)
-        background = fl_color_average(highlight_color(), fl_invert(styleRec->color), 0.4);
-    else
+        if(style & PRIMARY_MASK)
+            background = fl_color_average(selection_color(), fl_invert(styleRec->color), 0.4);
+        else if(style & HIGHLIGHT_MASK)
+            background = fl_color_average(highlight_color(), fl_invert(styleRec->color), 0.4);
+        else
+            background = color();
+
+        //background = style & PRIMARY_MASK ? selection_color() :
+        //style & HIGHLIGHT_MASK ? highlight_color() : color();
+
+        if ( foreground == background )   /* B&W kludge */
+            foreground = color();
+    } else if ( style & HIGHLIGHT_MASK ) {
+        foreground = highlight_label_color();
+        background = highlight_color();
+    } else if ( style & PRIMARY_MASK ) {
+        foreground = selection_text_color();
+        background = selection_color();
+    } else {
+        foreground = text_color();
         background = color();
+    }
 
-    //background = style & PRIMARY_MASK ? selection_color() :
-    //style & HIGHLIGHT_MASK ? highlight_color() : color();
+    fl_color( background );
+    fl_rectf( X, Y, toX - X, mMaxsize );
+    fl_color( foreground );
+    fl_font( font, size );
+    fl_draw( string, nChars, X, Y + mMaxsize - fl_descent());
 
-    if ( foreground == background )   /* B&W kludge */
-      foreground = color();
-  } else if ( style & HIGHLIGHT_MASK ) {
-    foreground = highlight_label_color();
-    background = highlight_color();
-  } else if ( style & PRIMARY_MASK ) {
-    foreground = selection_text_color();
-    background = selection_color();
-  } else {
-    foreground = text_color();
-    background = color();
-  }
+    /* Underline if style is UNDERLINE attr is set */
+    if(styleRec && styleRec->attr==ATTR_UNDERLINE)
+        fl_line(X, int(Y+mMaxsize-fl_descent()+1), toX-1, int(Y+mMaxsize-fl_descent()+1));
 
-  fl_color( background );
-  fl_rectf( X, Y, toX - X, mMaxsize );
-  fl_color( foreground );
-  fl_font( font, size );
-  fl_draw( string, nChars, X, Y + mMaxsize - fl_descent());
-
-  if(styleRec && styleRec->attr==ATTR_UNDERLINE)
-      fl_line(X, mMaxsize, toX - X, mMaxsize);
-
-  // CET - FIXME
-  /* If any space around the character remains unfilled (due to use of
+    // CET - FIXME
+    /* If any space around the character remains unfilled (due to use of
      different sized fonts for highlighting), fill in above or below
      to erase previously drawn characters */
-  /*
-      if (fs->ascent < mAscent)
-        clear_rect( style, X, Y, toX - X, mAscent - fs->ascent);
-      if (fs->descent < mDescent)
+    /*
+     if (fs->ascent < mAscent)
+     clear_rect( style, X, Y, toX - X, mAscent - fs->ascent);
+     if (fs->descent < mDescent)
         clear_rect( style, X, Y + mAscent + fs->descent, toX - x,
-                mDescent - fs->descent);
-  */
-  /* Underline if style is secondary Fl_Text_Selection */
-
-  /*
-      if (style & SECONDARY_MASK)
-        XDrawLine(XtDisplay(mW), XtWindow(mW), gc, x,
-                y + mAscent, toX - 1, Y + fs->ascent);
-  */
+        mDescent - fs->descent);
+        */
 }
 
 /*

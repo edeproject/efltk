@@ -31,14 +31,15 @@ CPPFILES = demo.cpp hello.cpp resizable.cpp scroll.cpp image.cpp file_chooser.cp
            clock.cpp color_chooser.cpp cube.cpp cursor.cpp curve.cpp fast_slow.cpp \
            fonts.cpp fullscreen.cpp gl_overlay.cpp iconize.cpp input.cpp navigation.cpp \
            output.cpp overlay.cpp pack.cpp radio.cpp shape.cpp tile.cpp CubeMain.cpp CubeView.cpp \
-           preferences.cpp
+           preferences.cpp image_manip.cpp listview.cpp alphablend.cpp
 
 ALL =   demo hello resizable scroll image file_chooser menubar browser \
 	threads progress editor inactive checkers valuators glpuzzle boxtype \
         multi_image help mdi_test resize tabs line_style doublebuffer subwindow \
         keyboard label layout arc ask button buttons clock color_chooser cube \
         cursor curve fast_slow fonts fullscreen gl_overlay iconize input navigation \
-        output overlay pack radio shape tile CubeView preferences
+        output overlay pack radio shape tile CubeView preferences image_manip \
+        listview alphablend
 
 all: demos
 
@@ -79,6 +80,9 @@ shape: shape.cpp $(FLGLLIB) $(FLCORELIB) $(FLUILIB)
 
 image_file: image_file.cpp $(FLIMAGESLIB) $(FLLIB)
 	$(CXX) -I.. $(CXXFLAGS) $< $(IMAGELIBS) $(PNGLIBS) $(JPEGLIBS) $(LDLIBS) -o $@
+
+alphablend: alphablend.cpp $(FLCORELIB) $(FLUILIB)
+	$(CXX) -I.. $(CXXFLAGS) $< $(LDLIBS) $(FLIMAGESLIB) $(PNGLIBS) $(JPEGLIBS) -o $@
 
 file_chooser: file_chooser.cpp $(FLCORELIB) $(FLUILIB)
 	$(CXX) -I.. $(CXXFLAGS) $< $(LDLIBS) $(FLIMAGESLIB) $(PNGLIBS) $(JPEGLIBS) -o $@
