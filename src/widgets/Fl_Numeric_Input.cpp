@@ -59,7 +59,7 @@ void Fl_Numeric_Input::value(int v)
     Fl_Input::value(buf);
 }
 
-
+static int clickmouse;
 int Fl_Numeric_Input::handle(int event)
 {
     switch (event)
@@ -75,6 +75,22 @@ int Fl_Numeric_Input::handle(int event)
             break;
         case FL_MOUSEWHEEL:
             return handle_arrow(Fl::event_dy());
+    case FL_PUSH:
+        if (Fl::event_state(FL_ALT))
+            clickmouse = Fl::event_x();
+        break;
+
+    case FL_DRAG:
+        if(Fl::event_state(FL_ALT|FL_CTRL)) {
+            int dx = (Fl::event_x()-clickmouse)/5;
+            if (dx<=-1 || dx>=1) {
+                clickmouse = Fl::event_x();
+                return handle_arrow(dx);
+            }
+            return 1;
+        }
+        break;
+
     }
     return Fl_Input::handle(event);
 }

@@ -346,7 +346,7 @@ Fl_Named_Style* Fl_MDI_Window::default_style = &::style;
 
 Fl_MDI_Window::Fl_MDI_Window(int x, int y, int w, int h, const char *label)
     : Fl_Window(x,y,w,h, _cap),
-    _titlebar(2,2,w,20, _cap)
+    _titlebar(2,2,w,18, _cap)
 {
     style(default_style);
 

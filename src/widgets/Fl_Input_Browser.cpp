@@ -362,7 +362,7 @@ void Fl_Input_Browser::popup()
     int X = x(); int Y = y()+h();
     for (Fl_Widget *o = parent(); o; o = o->parent()) {
         X += o->x(); Y += o->y();
-        if (o->is_window()) break;
+        //if (o->is_window()) break;
     }
     int down = Fl::h() - Y;
     int up = Y-h();
