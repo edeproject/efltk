@@ -77,7 +77,7 @@ void Fl_Group::clear()
         Fl_Widget*const* e = a+children_;
         // clear everything now, in case fl_fix_focus recursively calls us:
         children_ = 0;
-        focus_ = 0;
+        focus_ = -1;
         if (resizable_) resizable_ = this;
         // okay, now it is safe to destroy the children:
         while (e > a)
@@ -198,138 +198,139 @@ int Fl_Group::handle(int event)
 
     switch (event)
     {
-
-        case FL_FOCUS:
-            if (contains(Fl::focus()))
-            {
-                // The focus is being changed to some widget inside this.
-                focus_ = find(Fl::focus());
-                return true;
-            }
-            // otherwise it indicates an attempt to give this widget focus:
-            switch (navigation_key())
-            {
-                default:
-                {
-                    // try to give it to whatever child had focus last:
-                    if (focus_ >= 0 && focus_ < numchildren)
-                        if (child(focus_)->take_focus()) return true;
-                    // otherwise search for the widget that needs the focus, but
-                    // prefer a widget that returns 2:
-                    Fl_Widget* f1 = 0; int ret = 0;
-                    for (i = 0; i < numchildren; ++i)
-                    {
-                        Fl_Widget* w = child(i);
-                        int n = w->handle(FL_FOCUS);
-                        if (n) {ret = n; f1 = w; if (n & 2) break;}
-                    }
-                    if (f1 && !f1->contains(Fl::focus())) Fl::focus(f1);
-                    return ret;
-                }
-                case FL_Right:
-                case FL_Down:
-                    for (i=0; i < numchildren; ++i)
-                        if (child(i)->take_focus()) return true;
-                    break;
-                case FL_Left:
-                case FL_Up:
-                    for (i = numchildren; i--;)
-                        if (child(i)->take_focus()) return true;
-                    break;
-            }
-            return false;
-
-        case FL_PUSH:
-        case FL_ENTER:
-        case FL_MOVE:
-        case FL_DND_ENTER:
-        case FL_DND_DRAG:
-            // search the children in backwards (top to bottom) order:
-            for (i = numchildren; i--;)
-            {
-                Fl_Widget* child = this->child(i);
-                // ignore widgets we are not pointing at:
-                if (Fl::event_x() < child->x()) continue;
-                if (Fl::event_x() >= child->x()+child->w()) continue;
-                if (Fl::event_y() < child->y()) continue;
-                if (Fl::event_y() >= child->y()+child->h()) continue;
-                // see if it wants the event:
-                if (child->send(event)) return true;
-                // quit when we reach a widget that claims mouse points at it,
-                // so we don't pass the events to widgets "hidden" behind that one.
-                if (event != FL_ENTER && event != FL_MOVE &&
-                    child->contains(Fl::belowmouse())) return false;
-            }
-            return Fl_Widget::handle(event);
-
-        case FL_DRAG:
-        case FL_RELEASE:
-        case FL_KEY:
-        case FL_LEAVE:
-        case FL_DND_LEAVE:
-            // Ignore these. We handle them if the belowmouse of pushed widget
-            // has been set to this. Subclasses may do something with these.
-            // Definately do not pass them to child widgets!
-            return false;
-
-    }
-
-    // Try to give all other events to every child, starting at focus:
-    if (numchildren) {
-    // Try to give to each child, starting at focus:
-    int previous = focus_;
-    if (previous < 0 || previous >= numchildren) previous = 0;
-    for (i = previous;;)
-    {
-        if (child(i)->send(event)) return true;
-        i++;
-        if (i >= numchildren) i = 0;
-        if (i == previous) break;
-    }
-
-    if (event == FL_SHORTCUT)
-    {
-        // Try to do keyboard navigation for unused shortcut keys:
-        // Ignore if focus is not a child of this, but work if there is no focus:
-        if (Fl::focus()==this || Fl::focus() && !contains(Fl::focus())) return 0;
-        int key = navigation_key();
-        if (key) for (i = previous;;)
+    case FL_FOCUS:
+        if (contains(Fl::focus()))
         {
-            if (key == FL_Left || key == FL_Up)
+            // The focus is being changed to some widget inside this.
+            focus_ = find(Fl::focus());
+            return true;
+        }
+        // otherwise it indicates an attempt to give this widget focus:
+        switch (navigation_key())
+        {
+        default:
             {
-                if (i) --i;
+                // try to give it to whatever child had focus last:
+                if (focus_ >= 0 && focus_ < numchildren)
+                    if (child(focus_)->take_focus()) return true;
+                // otherwise search for the widget that needs the focus, but
+                // prefer a widget that returns 2:
+                Fl_Widget* f1 = 0; int ret = 0;
+                for (i = 0; i < numchildren; ++i)
+                {
+                    Fl_Widget* w = child(i);
+                    int n = w->handle(FL_FOCUS);
+                    if (n) {ret = n; f1 = w; if (n & 2) break;}
+                }
+                if (f1 && !f1->contains(Fl::focus())) Fl::focus(f1);
+                return ret;
+            }
+        case FL_Right:
+        case FL_Down:
+            for (i=0; i < numchildren; ++i)
+                if (child(i)->take_focus()) return true;
+            return false;
+        case FL_Left:
+        case FL_Up:
+            for (i = numchildren; i--;)
+                if (child(i)->take_focus()) return true;
+            return false;
+        }
+
+    case FL_DRAG:
+    case FL_RELEASE:
+    case FL_LEAVE:
+    case FL_DND_LEAVE:
+        // Ignore these. We handle them if the belowmouse of pushed widget
+        // has been set to this. Subclasses may do something with these.
+        // Definately do not pass them to child widgets!
+        break;
+
+    case FL_KEY: {
+        // keyboard navigation
+        if (!numchildren) break;
+        int key = navigation_key();
+        if (!key) break;
+
+        int previous = focus_;
+        if (previous < 0 || previous >= numchildren) previous = 0;
+        for (i = previous;;)
+        {
+            {
+                if (key == FL_Left || key == FL_Up)
+                {
+                    if (i) --i;
+                    else
+                    {
+                        if (parent()) return false;
+                        i = numchildren-1;
+                    }
+                }
                 else
                 {
-                    if (parent()) return false;
-                    i = numchildren-1;
+                    ++i;
+                    if (i >= numchildren)
+                    {
+                        if (parent()) return false;
+                        i = 0;
+                    }
                 }
-            }
-            else
-            {
-                ++i;
-                if (i >= numchildren)
+                if (i == previous) break;
+                if (key == FL_Down || key == FL_Up)
                 {
-                    if (parent()) return false;
-                    i = 0;
+                    // for up/down, the widgets have to overlap horizontally:
+                    Fl_Widget* o = child(i);
+                    Fl_Widget* p = child(previous);
+                    if (o->x() >= p->x()+p->w() || o->x()+o->w() <= p->x()) continue;
                 }
+                if (child(i)->take_focus()) return true;
             }
-            if (i == previous) break;
-            if (key == FL_Down || key == FL_Up)
-            {
-                // for up/down, the widgets have to overlap horizontally:
-                Fl_Widget* o = child(i);
-                Fl_Widget* p = child(previous);
-                if (o->x() >= p->x()+p->w() || o->x()+o->w() <= p->x()) continue;
-            }
-            if (child(i)->take_focus()) return true;
+            break;
         }
     }
+
+    case FL_PUSH:
+    case FL_ENTER:
+    case FL_MOVE:
+    case FL_DND_ENTER:
+    case FL_DND_DRAG:
+        // search the children in backwards (top to bottom) order:
+        for (i = numchildren; i--;) {
+            Fl_Widget* child = this->child(i);
+            // ignore widgets we are not pointing at:
+            if (Fl::event_x() < child->x()) continue;
+            if (Fl::event_x() >= child->x()+child->w()) continue;
+            if (Fl::event_y() < child->y()) continue;
+            if (Fl::event_y() >= child->y()+child->h()) continue;
+            // see if it wants the event:
+            if (child->send(event)) return true;
+            // quit when we reach a widget that claims mouse points at it,
+            // so we don't pass the events to widgets "hidden" behind that one.
+            if (event != FL_ENTER && event != FL_MOVE &&
+                child->contains(Fl::belowmouse())) return false;
+        }
+        return Fl_Widget::handle(event);
+
+    default: {
+        // Try to give all other events to every child, starting at focus:
+        if (!numchildren) break;
+        int previous = focus_;
+        if (previous < 0 || previous >= numchildren) previous = 0;
+        for (i = previous;;) {
+            if (child(i)->send(event)) return true;
+            if (++i >= numchildren) i = 0;
+            if (i == previous) break;
+
+        }
+        break;
     }
+    }
+
     return Fl_Widget::handle(event);
 }
 
 
-////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
 // Layout
 
 // So that resizing a window and then returing it to it's original

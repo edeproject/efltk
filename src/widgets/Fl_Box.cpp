@@ -23,12 +23,6 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
-// In fltk2 the only difference between Fl_Box and Fl_Widget is that
-// the box type defaults to FL_NO_BOX and there is a constructor that
-// sets the box type. Also the drawing function does a special hack
-// to do nothing if the widget is invisible, to avoid breaking old
-// programs (they should hide() the widget instead!)
-
 #include <efltk/Fl_Widget.h>
 #include <efltk/Fl_Box.h>
 

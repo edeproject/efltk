@@ -88,15 +88,16 @@ Fl_Widget* Fl_Browser::goto_top()
     open_level[HERE] = 0;
     item_position[HERE] = 0;
     item_index[HERE][0] = 0;
-    if (children(item_index[HERE],0) <= 0)
+    siblings = children(item_index[HERE],0);
+    if(siblings <= 0)
     {
         // empty browser must return a null widget
         item(0);
-        return 0;
+    } else {
+        item(child(item_index[HERE],0));
+        // skip leading invisible widgets:
+        if (!item()->visible()) return next_visible();
     }
-    item(child(item_index[HERE],0));
-    // skip leading invisible widgets:
-    if (!item()->visible()) return next_visible();
     return item();
 }
 
@@ -107,8 +108,12 @@ Fl_Widget* Fl_Browser::goto_mark(int mark)
     item_position[HERE] = item_position[mark];
     item_level[HERE] = item_level[mark];
     open_level[HERE] = open_level[mark];
-    for (int L = 0; L <= item_level[HERE]; L++)
-        item_index[HERE][L] = item_index[mark][L];
+
+    for (int L = 0; L <= item_level[HERE]; L++) {
+        int i = item_index[HERE][L] = item_index[mark][L];
+        siblings = children(item_index[HERE], L);
+        if (i < 0 || i >= siblings) {item(0); return 0;}
+    }
     item(child(item_index[HERE], item_level[HERE]));
     return item();
 }
@@ -191,6 +196,7 @@ Fl_Widget* Fl_Browser::next_visible()
             set_level(n);
             open_level[HERE] = n;
             item_index[HERE][n] = 0;
+            siblings = children(item_index[HERE], n);
         }
         else
         {
@@ -209,17 +215,17 @@ Fl_Widget* Fl_Browser::next_visible()
     for (;;)
     {
 
-        item(child(item_index[HERE], item_level[HERE]));
-
-        if (!item())
-        {
+        if (item_index[HERE][item_level[HERE]] >= siblings) {
             // we moved off the end of a group
-                                 // end of the entire browser
+            // end of the entire browser
             if (!item_level[HERE]) return 0;
             open_level[HERE] = --item_level[HERE];
             item_index[HERE][item_level[HERE]] ++;
+            siblings = children(item_index[HERE], item_level[HERE]);
             continue;
         }
+
+        item(child(item_index[HERE], item_level[HERE]));
 
         // skip invisible items:
         if (item()->visible()) break;
@@ -257,6 +263,7 @@ Fl_Widget* Fl_Browser::previous_visible()
             }
             open_level[HERE] = --item_level[HERE];
             item(child(item_index[HERE], item_level[HERE]));
+            siblings = children(item_index[HERE], item_level[HERE]);
             break;
         }
 
@@ -273,6 +280,7 @@ Fl_Widget* Fl_Browser::previous_visible()
             open_level[HERE] = item_level[HERE];
             item_index[HERE][item_level[HERE]] = n-1;
             item(child(item_index[HERE], item_level[HERE]));
+            siblings = n;
         }
 
         if (item()->visible()) break;
@@ -288,21 +296,24 @@ Fl_Widget* Fl_Browser::previous_visible()
 // Move forward to the next visible item (what down-arrow does).
 Fl_Widget* Fl_Browser::next()
 {
-    if (children(item_index[HERE], item_level[HERE]+1) > 0)
-    {
+    int n = children(item_index[HERE], item_level[HERE]+1);
+    if (n > 0) {
         set_level(item_level[HERE]+1);
         item_index[HERE][item_level[HERE]] = 0;
-    }
-    else
-    {
+        siblings = n;
+    } else {
         item_index[HERE][item_level[HERE]]++;
     }
     for (;;)
     {
-        if (item(child(item_index[HERE], item_level[HERE]))) return item();
-        if (item_level[HERE] <= 0) return 0;
+        if (item_index[HERE][item_level[HERE]] < siblings) {
+            item(child(item_index[HERE], item_level[HERE]));
+            return item();
+        }
+        if (item_level[HERE] <= 0) {item(0); return 0;}
         item_level[HERE]--;
         item_index[HERE][item_level[HERE]]++;
+        siblings = children(item_index[HERE], item_level[HERE]);
     }
 }
 
@@ -804,8 +815,12 @@ bool Fl_Browser::make_item_visible(linepos where)
     {
         for (int n = open_level[HERE]; n < item_level[HERE]; n++)
         {
+            if (item_index[HERE][n] < 0) break;
+            int children = this->children(item_index[HERE], n);
+            if (item_index[HERE][n] >= children) break;
+
             Fl_Widget* i = child(item_index[HERE], n);
-            if (!i) break;
+            
             i->set_visible();
             i->set_value();
             list()->flags_changed(this, item());
@@ -1154,9 +1169,11 @@ Fl_Widget* Fl_Browser::goto_index(const int* indexes, int level)
         open_level[HERE] = 0;
         item_position[HERE] = 0;
         item_index[HERE][0] = 0;
+        siblings = children(item_index[HERE],0);
+        if (siblings <= 0) {item(0); return 0;}// empty browser
         item(child(item_index[HERE],0));
-        // quit if this is correct or the browser is empty:
-        if (!indexes[0] && !level || !item()) return item();
+        // quit if this is correct:
+        if (!level && !indexes[0]) return item();
     }
     else
     {

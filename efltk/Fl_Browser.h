@@ -145,6 +145,8 @@ private:
   bool is_set(int mark);  // false if unset_mark was called
   void damage_item(int mark); // make this item redraw
 
+  int siblings; // # of children of parent of HERE item
+
   // For each mark:
   unsigned char item_level[NUMMARKS]; // depth in hierarchy of the item
   unsigned char open_level[NUMMARKS]; // depth of highest closed parent

@@ -1039,7 +1039,6 @@ bool Fl_Input::key_is_shortcut()
 
 bool Fl_Input::handle_key()
 {
-
     int i;
 
     // insert any text:
@@ -1165,7 +1164,7 @@ bool Fl_Input::handle_key()
 
         case FL_Enter:
         case FL_KP_Enter:
-            if (key_is_shortcut()) return true;
+            //if (key_is_shortcut()) return true;
 
             // Add new line, if MULTILINE input and Shift is hold down
             if(type()>=MULTILINE && shift) return replace(position(), mark(), '\n');
@@ -1180,8 +1179,9 @@ bool Fl_Input::handle_key()
             return replace(position(), mark(), '\n');
 
         case FL_Tab:
-            if (type() < MULTILINE || ctrl || shift) return false;
-            return replace(position(), mark(), Fl::event_text(), 1);
+            //if (type() < MULTILINE || ctrl || shift)
+                return false;
+            //return replace(position(), mark(), Fl::event_text(), 1);
 
         case 'k':                // Emacs clear-to-end-of-line
             if (key_is_shortcut()) return true;
@@ -1328,10 +1328,9 @@ int Fl_Input::handle(int event, int X, int Y, int W, int H)
                     position(position(),mark());
                     break;
             }
-        #else
-            if (Fl::event() == FL_KEY || Fl::event() == FL_SHORTCUT)
-            {
-                //We dont want to do mark whole text when we get focus.
+#else
+            if (Fl::event() == FL_KEY) {
+                //We dont want to do mark whole text when widget gets focus.
                 //position(size(),0);
             }
             else

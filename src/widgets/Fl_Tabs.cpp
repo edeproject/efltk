@@ -166,26 +166,29 @@ int Fl_Tabs::handle(int event)
             // otherwise this indicates that somebody is trying to give focus to this
             switch (navigation_key())
             {
-                default:
-                    //if (focus() < 0) break; // stay on the tab
-                    // else fall through...
-                case FL_Left:
-                case FL_Up:
-                    // Try to give the contents the focus. Also preserve a return value
-                    // of 2 (which indicates the contents have a text field):
-                    if (selected)
+            case FL_Left:
+            case FL_Up:
+                if (tab_height() < 0) goto GOTO_TABS; else goto GOTO_CONTENTS;
+            case FL_Right:
+            case FL_Down:
+                if (tab_height() < 0) goto GOTO_CONTENTS; else goto GOTO_TABS;
+            default:
+            GOTO_CONTENTS:
+                // Try to give the contents the focus. Also preserve a return value
+                // of 2 (which indicates the contents have a text field):
+                if (selected)
+                {
+                    int n = selected->handle(FL_FOCUS);
+                    if (n)
                     {
-                        int n = selected->handle(FL_FOCUS);
-                        if (n)
-                        {
-                            if (!selected->contains(Fl::focus())) Fl::focus(selected);
-                            return n;
-                        }
+                        if (!selected->contains(Fl::focus())) Fl::focus(selected);
+                        return n;
                     }
-                case FL_Right:
-                case FL_Down:
-                    // moving right moves focus to the tabs.
-                    return true;
+                }
+            GOTO_TABS:
+                focus(-1);
+                // moving right moves focus to the tabs.
+                return true;
             }
 
         case FL_UNFOCUS:

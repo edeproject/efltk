@@ -703,7 +703,10 @@ bool Fl::handle(int event, Fl_Window* window)
             // try sending keystroke to the focus:
             to = focus();
             if (modal_ && !modal_->contains(to)) to = modal_;
-            if (to && to->send(event)) return true;
+            while (to) {
+                if (to->send(event)) return true;
+                to = to->parent();
+            }
             // try sending a shortcut to the window:
             if (handle(FL_SHORTCUT, window)) return true;
             // Try using upper-case instead of lower-case for letter shortcuts:

@@ -111,6 +111,8 @@ FL_API bool fl_menu_replaced;    // hack so program can tell what replace() does
 // produce submenus (actually a totally unnecessary feature as you can
 // now add submenu titles directly by setting SUBMENU in the flags).
 // The replace flag allows the item to be replaced if it already exists.
+// Backslashes in the string "quote" the next character, which allows
+// you to put forward slashes into a menu item.
 
 Fl_Widget* Fl_Menu_::add(
 const char *text,
@@ -139,7 +141,7 @@ int flags
         // copy to buf, changing \x to x:
         char *q = buf; 
         const char *p;
-        for (p=text; *p && *p != '/'; *q++ = *p++) if (*p=='\\') p++;
+        for (p=text; *p && *p != '/'; *q++ = *p++) if (p[0]=='\\' && p[1]) p++;
         *q = 0;
         item = buf;
 

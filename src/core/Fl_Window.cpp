@@ -392,8 +392,7 @@ void Fl_Window::destroy()
     for (Fl_X *x1 = Fl_X::first; x1;)
     {
         Fl_Window* subwindow = x1->window;
-        if (subwindow->window() == this)
-        {
+        if (subwindow->window() == this || subwindow->child_of() == this) {
             subwindow->destroy();
             x1 = Fl_X::first;
         } else x1 = x1->next;

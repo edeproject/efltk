@@ -84,7 +84,7 @@ int ComboBrowser::handle(int event)
         break;
     }
 
-    case FL_SHORTCUT:
+    case FL_KEY:
         if(Fl::event_key() == FL_Escape) {
             combo->hide_popup();
             was_up = false;

@@ -165,6 +165,11 @@ int Fl_Scrollbar::handle(int event)
                 return Fl_Slider::handle(event, X,Y,W,H);
             }
             handle_push();
+            // middle/right click on arrows jumps to that end:
+            if (Fl::event_button()>1) {
+                if (which_part==UP_ARROW) handle_drag(vertical()?maximum():minimum());
+                else if (which_part==DOWN_ARROW) handle_drag(vertical()?minimum():maximum());
+            }
             goto J1;
         case FL_DRAG:
             if (which_pushed==SLIDER) return Fl_Slider::handle(event, X,Y,W,H);
