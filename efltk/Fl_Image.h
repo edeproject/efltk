@@ -82,7 +82,7 @@ public:
      @param allow_free, if this flag is set, Fl_Image will de-allocate date on clear() (destructor)
 			flag only affects, if data is NOT NULL
      */
-    Fl_Image(int W, int H, Fl_PixelFormat *fmt, uint8 *data=0, bool allow_free=true);
+    Fl_Image(int W, int H, Fl_PixelFormat *fmt, uint8 *data, bool allow_free=false);
     /*!
      @param W As a width of image
      @param H As a height of image
@@ -91,17 +91,9 @@ public:
      @param allow_free, if this flag is set, Fl_Image will de-allocate date on clear() (destructor)
 			flag only affects, if data is NOT NULL
 
-     You may also want to provide color masks, e.g. ARGB 32-bit image they are Rmask=0x00FF0000, Gmask=0x0000FF00, Bmask=0x000000FF, Amask=0xFF000000
+     You may also want to provide color masks, e.g. RGBA 32-bit image they are Rmask=0xFF000000, Gmask=0x00FF0000, Bmask=0x0000FF00, Amask=0x000000FF
      */
-    Fl_Image(int W, int H, int bits_pp, uint8 *data, bool allow_free=true, uint32 Rmask=0, uint32 Gmask=0, uint32 Bmask=0, uint32 Amask=0);
-    /*!
-     @param W As a width of image
-     @param H As a height of image
-     @param bits_pp As a bits per pixel (8,15,16,24,32)
-
-     Simplier contructor, data is allocated always by Fl_Image.
-     */
-    Fl_Image(int W, int H, int bits_pp=32);
+    Fl_Image(int W, int H, int bits_pp, uint8 *data=0, bool allow_free=false, uint32 Rmask=0, uint32 Gmask=0, uint32 Bmask=0, uint32 Amask=0);
 
     // Copies image 'i' to this
     Fl_Image(Fl_Image &i);
