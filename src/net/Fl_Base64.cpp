@@ -108,7 +108,6 @@ Fl_Base64::encode(Fl_Buffer* bufDest, Fl_Buffer* bufSource)
 			bufDest->append(&c, 1);
 		} /* else */
 	} /* if */
-	bufDest
 } /* encode(Fl_Buffer* bufDest, Fl_Buffer* bufSource) */
 /* ------------------------------------------------------------------------- */
 
