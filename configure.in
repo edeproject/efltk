@@ -394,7 +394,7 @@ fi
 
 AC_ARG_ENABLE(utf8,  [  --disable-utf8          do not use UTF-8 support],, enable_utf8=yes)
 if test "$enable_utf8" = yes; then
-      AC_DEFINE(HAVE_XUTF8)
+	AC_DEFINE(HAVE_XUTF8)    
 fi
 
 AC_ARG_ENABLE(threads, [  --disable-threads       dont require mt libraries],,enable_threads=yes)
@@ -413,6 +413,53 @@ if test "$have_pthread" = yes; then
     AC_DEFINE(HAVE_PTHREAD)
 fi
 AC_SUBST(THREADSLIBS)
+
+
+dnl ####
+dnl # Let's look for unixODBC...
+dnl # --with-unixODBC will probably be removed from here...
+dnl ####
+unixODBC="/usr/local"
+AC_ARG_WITH( unixODBC,
+	AC_HELP_STRING([--without-unixODBC], [Use alternative ODBC driver manager]),
+	[ unixODBC="$withval"])
+
+if test x$withval = xno
+then
+	AC_MSG_WARN(skipping unixODBC search)
+else
+	odbcdir=""
+	AC_MSG_CHECKING(for unixODBC files)
+	for d in $unixODBC /usr /usr/local
+	do
+		if test -f $d/lib/libodbc.so && test -f $d/lib/libodbcinst.so
+		then
+			AC_MSG_RESULT(found unixODBC in $d)
+			odbcdir=$d
+			AC_DEFINE(HAVE_UNIXODBC)
+			break
+		fi
+	done 
+ 
+	if test x$odbcdir = x
+	then
+		AC_MSG_ERROR( unixODBC not found )
+	fi
+dnl # Now set unixODBC variables
+dnl # Dejan.note = I have called variables UNIX* because later maybe we will try iODBC as well
+dnl #   or something else...
+	UNIXODBCIDIR=${odbcdir}/include
+	UNIXODBCLDIR=${odbcdir}/lib
+	UNIXODBCLIB=-lodbc
+	UNIXODBCINSTLIB=-lodbcinst
+	LD_UNIXODBCINSTLIB="-L$UNIXODBCLDIR -lodbcinst"
+
+	AC_SUBST(UNIXODBCIDIR)
+	AC_SUBST(UNIXODBCLDIR)
+	AC_SUBST(UNIXODBCLIB)
+	AC_SUBST(UNIXODBCINSTLIB)
+	AC_SUBST(LD_UNIXODBCINSTLIB)
+fi
 
 STRIP=strip
 AC_PATH_PROG(STRIP_PATH, ${STRIP},, $PATH)
