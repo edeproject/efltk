@@ -14,7 +14,9 @@
 #                  e.g. for images: PROGRAM_LIBS=$(IMAGESLIB)
 #
 
+ifneq ($(MAKEINCLUDE_INCLUDED), 1)
 include $(EFLTK_TOPDIR)/makeinclude
+endif
 
 OUT_MAGIC := $(shell mkdir $(EFLTK_TOPDIR)/lib > /dev/null 2>&1 || :)
 
