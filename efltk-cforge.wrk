@@ -1,7 +1,7 @@
 #
 #	File is generated automatically! Don't edit it!
 #
-# %IdeVersion:	3103
+# %IdeVersion:	3111
 #
 # %IdeAuthor:	Alexey Parshin
 #
@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x40041c
+# %FirstUniqueId:	0x40042c
 PROJECT_DIR = /develop/CVS/efltk/
 
 IDE_WORKING_DIR = /develop/CVS/efltk/
@@ -30,7 +30,7 @@ IDE_BLIND_LIBS = -L./
 
 MAKEFLAGS = $(MAKEOPTIONS)
 
-MAKEOPTIONS = -j1
+MAKEOPTIONS = -j4
 
 CCLINK = $(CC)
 
@@ -38,7 +38,7 @@ LD = $(CC)
 
 LDOPTIONS = $(LDFLAGS) $(IDE_BLIND_LDOPTIONS)
 
-LDFLAGS = -L. -L./lib -L/usr/X11R6/lib -lXext -liconv -lodbc -lpng -ljpeg -lstdc++
+LDFLAGS = -L. -L./lib -L/usr/X11R6/lib -lXext -liconv -lodbc -lpng -ljpeg -lm -lz -lstdc++
 
 IDE_BLIND_LDOPTIONS = -L./
 
@@ -50,17 +50,17 @@ G++ = g++
 
 CXX = g++
 
-CXXFLAGS = $(INCLUDES) $(CXXWARNFLAGS) $(CXXDEBUGFLAGS) $(CXXOPTIMIZEFLAGS) $(CXXCODEFLAGS) $(CXXLANGFLAGS) $(CXXSPECIFICFLAGS)
+CXXFLAGS = $(INCLUDES) $(CXXWARNFLAGS) $(CXXDEBUGFLAGS) $(CXXOPTIMIZEFLAGS) $(CXXCODEFLAGS) $(CXXLANGFLAGS) $(CXXSPECIFICFLAGS) -g0
 
 INCLUDES = -I./ -DFL_SHARED -DHAVE_CONFIG_H
 
 CXXWARNFLAGS = -Wall
 
-CXXDEBUGFLAGS = -g
+CXXDEBUGFLAGS = 
 
 CXXOPTIMIZEFLAGS = -O2
 
-CXXCODEFLAGS = 
+CXXCODEFLAGS = -fPIC
 
 CXXLANGFLAGS = 
 
@@ -80,13 +80,13 @@ CFLAGS = $(INCLUDES) $(CWARNFLAGS) $(CDEBUGFLAGS) $(COPTIMIZEFLAGS) $(CLANGFLAGS
 
 CWARNFLAGS = -Wall
 
-CDEBUGFLAGS = -g
+CDEBUGFLAGS = 
 
 COPTIMIZEFLAGS = -O2
 
 CLANGFLAGS = 
 
-CCODEFLAGS = 
+CCODEFLAGS = -fPIC
 
 TAGS = etags
 
@@ -151,6 +151,7 @@ lib/libefltk.so  :: 	lib/Fl.o\
 	lib/Fl_ListView.o\
 	lib/Fl_ListView_Header.o\
 	lib/Fl_ListView_Item.o\
+	lib/Fl_ListView_ItemExt.o\
 	lib/Fl_Lists.o\
 	lib/Fl_MDI_Bar.o\
 	lib/Fl_MDI_Window.o\
@@ -171,6 +172,7 @@ lib/libefltk.so  :: 	lib/Fl.o\
 	lib/Fl_Output.o\
 	lib/Fl_Overlay_Window.o\
 	lib/Fl_Pack.o\
+	lib/Fl_Packed_Strings.o\
 	lib/Fl_Params.o\
 	lib/Fl_Pixmap.o\
 	lib/Fl_PostScript.o\
@@ -196,6 +198,7 @@ lib/libefltk.so  :: 	lib/Fl.o\
 	lib/Fl_String_List.o\
 	lib/Fl_Style.o\
 	lib/Fl_Style_Set.o\
+	lib/Fl_Table_Base.o\
 	lib/Fl_Tabs.o\
 	lib/Fl_Text_Buffer.o\
 	lib/Fl_Text_Display.o\
@@ -245,8 +248,8 @@ lib/libefltk.so  :: 	lib/Fl.o\
 	lib/fl_clip.o\
 	lib/fl_color.o\
 	lib/fl_converters.o\
-	lib/fl_cursor.o\
 	lib/fl_curve.o\
+	lib/fl_cursor.o\
 	lib/fl_diamond_box.o\
 	lib/fl_dnd.o\
 	lib/fl_draw.o\
@@ -279,7 +282,8 @@ lib/libefltk.so  :: 	lib/Fl.o\
 	lib/fl_show_colormap.o\
 	lib/fl_symbols.o\
 	lib/scandir.o\
-	lib/vsnprintf.o
+	lib/vsnprintf.o\
+	lib/layout_sizes.o
 	rm -f $@
 	$(LD) -shared -o $@ $^ $(LDOPTIONS)
 
@@ -287,7 +291,7 @@ lib/libefltk_images.so  :: 	lib/Fl_Images.o\
 	lib/Fl_Jpeg.o\
 	lib/Fl_Png.o
 	rm -f $@
-	$(LD) -shared -o $@ $^ $(LDOPTIONS)
+	$(LD) -shared -o $@ $^ $(LDOPTIONS) -lefltk
 
 lib/libefltk_xml.so  :: 	lib/Fl_XmlDoc.o\
 	lib/Fl_XmlNode.o\
@@ -497,6 +501,9 @@ test/split  :: 	test/split.o
 
 test/hello  :: 	test/hello.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES)
+
+test/tabs  :: 	test/tabs.o
+	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %ObjectFilesLinking
 lib/Fl_ODBC_Database.o : src/db/odbc/Fl_ODBC_Database.cpp
@@ -1601,6 +1608,26 @@ lib/Fl_String_List.o : src/core/Fl_String_List.cpp
 
 test/hello.o : test/hello.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+lib/Fl_Table_Base.o : src/widgets/Fl_Table_Base.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+lib/Fl_ListView_ItemExt.o : src/widgets/Fl_ListView_ItemExt.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+lib/Fl_Packed_Strings.o : src/core/Fl_Packed_Strings.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+test/tabs.o : test/tabs.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+lib/layout_sizes.o : src/widgets/layout_sizes.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
 
 
 # DO NOT DELETE
@@ -5080,18 +5107,24 @@ lib/Fl_Light_Button.o :	efltk/Fl_Light_Button.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl.h
-lib/Fl_ListView.o :	efltk/fl_draw.h\
-	efltk/Fl_Device.h\
-	efltk/Fl_Group.h\
-	efltk/Fl_Int_List.h\
+lib/Fl_ListView.o :	efltk/Fl_ListView_Header.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Export.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
 	efltk/Fl_Widget_List.h\
 	efltk/Fl_Widget.h\
 	efltk/Fl_Data_Source.h\
 	efltk/Fl_Data_Fields.h\
-	efltk/Fl_Flags.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
 	efltk/Fl_String.h\
@@ -5100,23 +5133,20 @@ lib/Fl_ListView.o :	efltk/fl_draw.h\
 	efltk/Fl_Font.h\
 	efltk/Fl_String_List.h\
 	efltk/Fl_Labeltype.h\
-	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/fl_draw.h\
 	efltk/Fl_ListView.h\
+	efltk/Fl_ListView_Column.h\
+	efltk/Fl_ListView_Item.h\
+	efltk/Fl_Packed_Strings.h\
+	efltk/Fl_Table_Base.h\
 	efltk/Fl_Scrollbar.h\
 	efltk/Fl_Slider.h\
 	efltk/Fl_Valuator.h\
-	efltk/Fl_ListView_Item.h\
-	efltk/Fl_Image_List.h\
-	efltk/Fl_Image.h\
-	efltk/Fl_PtrList.h\
-	efltk/Fl_Renderer.h\
-	efltk/x.h\
-	efltk/win32.h\
-	efltk/Fl_Util.h\
-	efltk/filename.h\
-	efltk/Fl.h\
-	efltk/Fl_ListView_Header.h
+	efltk/Fl_Box.h\
+	efltk/Fl.h
 lib/Fl_ListView_Header.o :	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
 	efltk/Fl_String.h\
@@ -9396,7 +9426,7 @@ test/input_browser.o :	efltk/Fl_Input_Browser.h\
 	efltk/Fl_Input.h\
 	efltk/Fl.h
 test/split.o :	efltk/Fl_Split.h\
-	efltk/Fl_Box.h\
+	efltk/Fl_Widget_List.h\
 	efltk/Fl_Widget.h\
 	efltk/Fl_Data_Source.h\
 	efltk/Fl_Data_Fields.h\
@@ -9417,7 +9447,24 @@ test/split.o :	efltk/Fl_Split.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl_Window.h\
 	efltk/Fl_Group.h\
-	efltk/Fl_Widget_List.h\
+	efltk/Fl_ListView.h\
+	efltk/Fl_ListView_Column.h\
+	efltk/Fl_ListView_Header.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl_ListView_Item.h\
+	efltk/Fl_Packed_Strings.h\
+	efltk/Fl_Table_Base.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Box.h\
 	efltk/Fl.h
 lib/Fl_Split.o :	efltk/Fl.h\
 	efltk/Enumerations.h\
@@ -9442,8 +9489,7 @@ lib/Fl_Split.o :	efltk/Fl.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h\
-	efltk/Fl_Split.h\
-	efltk/Fl_Box.h
+	efltk/Fl_Split.h
 lib/Fl_Dialog_DS.o :	efltk/Fl_Exception.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_String.h\
@@ -9631,3 +9677,140 @@ test/hello.o :	efltk/Fl_Box.h\
 	efltk/Fl_Widget_List.h\
 	efltk/Fl.h\
 	efltk/Fl_Window.h
+lib/Fl_Table_Base.o :	efltk/fl_draw.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Table_Base.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Box.h\
+	efltk/Fl.h
+lib/Fl_ListView_ItemExt.o :	efltk/fl_draw.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_ListView.h\
+	efltk/Fl_ListView_Column.h\
+	efltk/Fl_ListView_Header.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl_ListView_Item.h\
+	efltk/Fl_Packed_Strings.h\
+	efltk/Fl_Table_Base.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Box.h\
+	efltk/Fl.h
+lib/Fl_Packed_Strings.o :	efltk/Fl_Packed_Strings.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h
+test/tabs.o :	efltk/Fl_ListView.h\
+	efltk/Fl_ListView_Column.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_ListView_Header.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl_ListView_Item.h\
+	efltk/Fl_Packed_Strings.h\
+	efltk/Fl_Table_Base.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Box.h\
+	efltk/Fl.h\
+	test/tabs.h\
+	efltk/Fl_Return_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Clock.h\
+	efltk/Fl_Wordwrap_Input.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Tabs.h\
+	efltk/Fl_Window.h
+lib/layout_sizes.o :	src/widgets/layout_sizes.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h
