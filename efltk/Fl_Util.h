@@ -55,6 +55,7 @@ extern FL_API char *fl_strdup_printf(char *s1, ...);
 extern FL_API char** fl_split(const char *string, const char *delimiter, int max_tokens);
 
 /** fl_start_child_process */
+extern FL_API int fl_start_child_process(char *cmd, bool wait);
 extern FL_API int fl_start_child_process(char *cmd);
 
 /** fl_freev */

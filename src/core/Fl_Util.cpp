@@ -216,13 +216,15 @@ void fl_freev(char **str_array)
     }
 }
 
-int fl_start_child_process(char *cmd)
+// wait - whether to wait for process to finish
+int fl_start_child_process(char *cmd, bool wait)
 {
 #ifndef _WIN32
     int pid, status;
     int nulldev;
     extern char **environ;
 
+    status=0;
     if (cmd == NULL)
         return (1);
 
@@ -253,7 +255,7 @@ int fl_start_child_process(char *cmd)
     }
     do
     {
-        if (waitpid (pid, &status, 0) == -1)
+        if ((wait) && (waitpid (pid, &status, 0) == -1))
         {
             if (errno != EINTR)
                 return (-1);
@@ -265,6 +267,12 @@ int fl_start_child_process(char *cmd)
     
 #endif
     return 0;
+}
+
+// for backward compatibility
+int fl_start_child_process(char *cmd)
+{
+	return fl_start_child_process(cmd, true);
 }
 
 //////////////////////////////////////////////////
