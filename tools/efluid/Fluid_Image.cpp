@@ -87,11 +87,10 @@ public:
 
 int generic_image::test_file(char *buffer)
 {
-	Fl_Image::read(0,0);
-	Fl_Ptr_List &list = fl_list_imageio();
+	Fl_Image::read(0,0);	
     
-	for(uint n=0; n<list.size(); n++) {
-		Fl_Image_IO *r=(Fl_Image_IO *)list[n];
+	for(uint n=0; n<fl_count_imageio(); n++) {
+		Fl_Image_IO *r = fl_get_imageio(n);
         if(r->is_valid_mem && r->is_valid_mem((const uint8*)buffer, 1024)) {
             return 1;
         }

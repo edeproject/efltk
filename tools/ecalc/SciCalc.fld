@@ -1,4 +1,4 @@
-# data file for the FLTK User Interface Designer (FLUID)
+# data file for the eFLTK User Interface Designer (eFLUID)
 version 2.0003 
 header_name {.h} 
 code_name {.cpp} 
@@ -70,23 +70,23 @@ class SciCalc {open
   } {
     Fl_Window win {
       label eCalc open
-      private xywh {588 134 181 262} align 0 label_type NO_LABEL visible
+      private xywh {588 134 181 262} align  resizable label_type NO_LABEL visible
     } {
       Fl_Box leddisplay {
         label Welcome
-        callback {o->label("0 ");} selected
-        private xywh {2 2 176 24} align 24 box THIN_DOWN_BOX label_font 4 color 207 label_color 59 label_size 14
+        callback {o->label("0 ");}
+        private xywh {2 2 176 24} align FL_ALIGN_RIGHT|FL_ALIGN_INSIDE box THIN_DOWN_BOX label_font 4 color 207 label_color 59 label_size 14
       }
       Fl_Box box_DEGRAD {
         callback {o->label(" ");}
-        private xywh {24 28 35 16} align 16 box THIN_DOWN_BOX label_color 1 label_size 9
+        private xywh {24 28 35 16} align FL_ALIGN_INSIDE box THIN_DOWN_BOX label_color 1 label_size 9
       }
       Fl_Box box_bracket {
-        private xywh {59 28 65 16} align 16 box THIN_DOWN_BOX label_color 1 label_size 9
+        private xywh {59 28 65 16} align FL_ALIGN_INSIDE box THIN_DOWN_BOX label_color 1 label_size 9
       }
       Fl_Box box_M {
         callback {o->label("M");}
-        private xywh {124 28 35 16} align 16 box THIN_DOWN_BOX label_color 1 label_size 9
+        private xywh {124 28 35 16} align FL_ALIGN_INSIDE box THIN_DOWN_BOX label_color 1 label_size 9
       }
       Fl_Group {} {open
         private xywh {46 46 93 22} color 46
@@ -483,8 +483,7 @@ else
       }
       Fl_Button but_quit {
         label Exit
-        callback {win->hide();
-delete win;}
+        callback {win->hide();} selected
         private xywh {144 47 30 20} label_font 1 label_color 33 shortcut 0x40071
       }
     }
