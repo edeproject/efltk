@@ -1,0 +1,459 @@
+dnl# -*- sh -*-
+dnl# the "configure" script is made from this by running GNU "autoconf"
+dnl#
+dnl# "$Id$"
+dnl#
+dnl# Configuration script for the Fast Light Tool Kit (FLTK).
+dnl#
+dnl# Copyright 1998-1999 by Bill Spitzak and others.
+dnl#
+dnl# This library is free software; you can redistribute it and/or
+dnl# modify it under the terms of the GNU Library General Public
+dnl# License as published by the Free Software Foundation; either
+dnl# version 2 of the License, or (at your option) any later version.
+dnl#
+dnl# This library is distributed in the hope that it will be useful,
+dnl# but WITHOUT ANY WARRANTY; without even the implied warranty of
+dnl# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+dnl# Library General Public License for more details.
+dnl#
+dnl# You should have received a copy of the GNU Library General Public
+dnl# License along with this library; if not, write to the Free Software
+dnl# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+dnl# USA.
+dnl#
+dnl# Please report all bugs and problems to "fltk-bugs@easysw.com".
+dnl#
+
+if test "configure" -ot "configure.in"; then
+  echo "*** You must run autoconf first! ***"
+  exit 1
+fi
+
+AC_INIT(src/core/Fl.cpp)
+
+AC_PROG_RANLIB
+
+LIBEXT=".a"
+if test "$RANLIB" != ":"; then
+  LIBCOMMAND="ar cr"
+else
+  LIBCOMMAND="ar crs"
+fi
+DSOCFLAGS=""
+DSOEXT=""
+DSOSHORTEXT=""
+DSOLIBS=""
+THEMELIBS=""
+dnl# Get the operating system and version number...
+
+uname=`uname`
+uversion=`uname -r | sed -e 's/-.*$//g;s/\.//g'`
+dnl# uversion=`uname -r | sed -e '1,$s/\.//g'`
+if test -z "$uname"; then uname="WIN32"; fi
+if test "$uname" = "IRIX64"; then uname="IRIX"; fi
+
+dnl# Clear debugging flags and only enable debugging if the user asks for
+dnl# it.
+
+LD="\${CXX}"
+LDLIBS="-lX11 -lXext -lm"
+FLCORELIB="../lib/libefltk_core${LIBEXT}"
+FLUILIB="../lib/libefltk_ui${LIBEXT}"
+FLGLLIB="../lib/libefltk_gl${LIBEXT}"
+FLGLUTLIB="../lib/libefltk_glut${LIBEXT}"
+FLFORMSLIB="../lib/libefltk_forms${LIBEXT}"
+FLIMAGESLIB="../lib/libefltk_images${LIBEXT}"
+DSOEXT=".so.2"
+DSOSHORTEXT=".so"
+BUILDTARGETS="static programs"
+INSTALLTARGETS="install_static install_programs"
+DEBUGFLAG=""
+CFLAGS="${CFLAGS:=}"
+CXXFLAGS="${CXXFLAGS:=}"
+SYSTYPE="UNIX"
+DSOCOMMAND=""
+THEMECOMMAND=""
+DSOCFLAGS=""
+
+AC_ARG_ENABLE(xdbe, [  --enable-xdbe           enable XWindow XDBE extension, if available],[if eval "test x$enable_xdbe = xyes"; then
+	AC_DEFINE(USE_XDBE)
+fi])
+
+AC_ARG_ENABLE(xft, [  --enable-xft            enable XWindow XFT extension],[if eval "test x$enable_xft = xyes"; then
+	AC_DEFINE(USE_XFT)
+fi])
+
+AC_ARG_ENABLE(cmap, [  --enable-cmap            enable support for 8bit displays],[if eval "test x$enable_cmap = xyes"; then
+	AC_DEFINE(USE_COLORMAP)
+fi])
+
+AC_ARG_ENABLE(debug, [  --enable-debug          compile with debug rather than optimized],[if eval "test x$enable_debug = xyes"; then
+    DEBUGFLAG="-g3 "
+fi])
+
+case $uname in
+    SunOS* | UNIX_S*)
+	  DSOCOMMAND="\${CXX} -Wl,-h,\${DSONAME} -G $DEBUGFLAG -o"
+	  THEMECOMMAND="\${CXX} -G $DEBUGFLAG -o"
+	  DSOCFLAGS="-KPIC"
+	  ;;
+    HP-UX*)
+	  DSOCOMMAND="ld -b -z +h \${DSONAME} $DEBUGFLAG -o"
+	  THEMECOMMAND="ld -b -z $DEBUGFLAG -o"
+	  DSOEXT=".sl.2"
+	  DSOSHORTEXT=".sl"
+	  ;;
+    CYGWIN* | WIN32)
+          uname="WIN32"
+	  CFLAGS="$CFLAGS -D_WIN32"
+	  CXXFLAGS="$CXXFLAGS -D_WIN32"
+	  LDLIBS="-lgdi32 -luser32 -lmsvcrt -lwsock32 -lws2_32 -lcomdlg32"
+	  SYSTYPE="WIN32"
+          DSOCOMMAND="\${CXX} -Wl,--out-implib,\$@.import -shared $DEBUGFLAG -o"
+          THEMECOMMAND="\${CXX} -shared $DEBUGFLAG -o"
+	  DSOLIBS="-lgdi32 -luser32 -lmsvcrt -lwsock32 -lws2_32 -lcomdlg32"
+	  THEMELIBS="-L ../lib -lefltk.2.dll"
+          DSOLIBimagesNAME="efltk_images"
+          DSOLIBformsNAME="efltk_forms"
+          DSOLIBglNAME="efltk_gl"
+          DSOLIBglutNAME="efltk_glut"
+	  DSOEXT=".2.dll"
+	  DSOSHORTEXT=""
+	  ;;
+
+    OSF1)
+          DSOCOMMAND="\${CXX} $DEBUGFLAG -o"
+          THEMECOMMAND="\${CXX} $DEBUGFLAG -o"
+	  ;;
+    *)
+          DSOCOMMAND="\${CXX} -Wl,-soname,\${DSONAME} -shared $DEBUGFLAG -o"
+          THEMECOMMAND="\${CXX} -shared $DEBUGFLAG -o"
+          DSOCFLAGS="-fPIC"
+	  ;;
+esac
+
+AC_ARG_ENABLE(shared, [  --enable-shared         created shared libraries])
+if test x$enable_shared = xyes; then
+    BUILDTARGETS="shared programs"
+    INSTALLTARGETS="install_shared install_programs"
+    FLCORELIB="../lib/libefltk_core${DSOEXT}"
+    FLUILIB="../lib/libefltk_ui${DSOEXT}"
+    FLGLLIB="../lib/libefltk_gl${DSOEXT}"
+    FLGLUTLIB="../lib/libefltk_glut${DSOEXT}"
+    FLFORMSLIB="../lib/libefltk_forms${DSOEXT}"
+    FLIMAGESLIB="../lib/libefltk_images${DSOEXT}"
+    CFLAGS="-DFL_SHARED $CFLAGS"
+    CXXFLAGS="-DFL_SHARED $CXXFLAGS"
+    case $uname in
+	WIN32)
+	    FLCORELIB="../lib/libefltk_core.2.dll.a"
+	    FLUILIB="../lib/libefltk_ui.2.dll.a"
+	    FLGLLIB="../lib/libefltk_gl.2.dll.a"
+	    FLGLUTLIB="../lib/libefltk_glut.2.dll.a"
+	    FLFORMSLIB="../lib/libefltk_forms.2.dll.a"
+	    FLIMAGESLIB="../lib/libefltk_images.2.dll.a"
+	    ;;
+    esac
+fi
+
+AC_ARG_ENABLE(opengl, [  --enable-opengl        turn on OpenGL support [default=yes]])
+
+AC_SUBST(LD)
+AC_SUBST(LDLIBS)
+AC_SUBST(FLUILIB)
+AC_SUBST(FLCORELIB)
+AC_SUBST(FLGLLIB)
+AC_SUBST(FLGLUTLIB)
+AC_SUBST(FLFORMSLIB)
+AC_SUBST(FLIMAGESLIB)
+AC_SUBST(DSOLIBS)
+AC_SUBST(BUILDTARGETS)
+AC_SUBST(INSTALLTARGETS)
+AC_SUBST(THEMELIBS)
+
+AC_PROG_CC
+AC_PROG_CXX
+dnl# AC_PROG_INSTALL
+
+AC_LANG_CPLUSPLUS
+
+AC_C_BIGENDIAN
+
+AC_CHECK_SIZEOF(short, 2)
+AC_CHECK_SIZEOF(int, 4)
+AC_CHECK_SIZEOF(long, 4)
+if test $ac_cv_sizeof_short -eq 2; then
+    AC_DEFINE(U16,unsigned short)
+fi
+if test $ac_cv_sizeof_int -eq 4; then
+    AC_DEFINE(U32,unsigned)
+else
+    if test $ac_cv_sizeof_long -eq 4; then
+        AC_DEFINE(U32,unsigned long)
+    fi
+fi
+if test $ac_cv_sizeof_int -eq 8; then
+    AC_DEFINE(U64,unsigned)
+else
+    if test $ac_cv_sizeof_long -eq 8; then
+        AC_DEFINE(U64,unsigned long)
+    fi
+fi
+
+AC_HEADER_DIRENT
+AC_CHECK_HEADER(sys/select.h)
+AC_CHECK_FUNCS(scandir,
+    if test "$uname" != "SunOS"; then
+        AC_DEFINE(HAVE_SCANDIR)
+    fi)
+AC_CHECK_FUNCS(vsnprintf,
+    if test "$uname" != "HP-UX"; then
+        AC_DEFINE(HAVE_VSNPRINTF)
+    fi)
+AC_CHECK_FUNCS(snprintf,
+    if test "$uname" != "HP-UX"; then
+        AC_DEFINE(HAVE_SNPRINTF)
+    fi)
+AC_CHECK_FUNCS(strcasecmp)
+AC_CHECK_FUNCS(vsprintf)
+
+dnl# AC_CHECK_FUNCS(strtok_r)
+dnl# this test is needed for Digital Unix, where C++ must be used?
+AC_MSG_CHECKING([for strtok_r])
+AC_TRY_LINK([#include <string.h>],[char *ptr; ptr=strtok_r("  ", ".", &ptr);],
+[AC_DEFINE(HAVE_STRTOK_R) AC_MSG_RESULT(yes)], [AC_MSG_RESULT(no)])]
+
+AC_PATH_X
+if test "$x_libraries" = "/usr/lib"; then
+    echo "Ignoring X library directory \"$x_libraries\" requested by configure."
+    x_libraries="NONE"
+fi
+
+if test ! "$x_libraries" = "NONE" -a ! "$x_libraries" = ""; then
+    LDFLAGS="$LDFLAGS -L$x_libraries"
+    if test "$uname" = "SunOS"; then
+	    LDFLAGS="$LDFLAGS -R$x_libraries"
+    fi
+fi
+
+if test "$x_includes" = "/usr/include"; then
+    echo "Ignoring X include directory \"$x_includes\" requested by configure."
+    x_includes="NONE"
+fi
+
+if test ! "$x_includes" = "NONE" -a ! "$x_includes" = ""; then
+    CFLAGS="$CFLAGS -I$x_includes"
+    CXXFLAGS="$CXXFLAGS -I$x_includes"
+fi
+
+AC_CHECK_LIB(X11,XOpenDisplay)
+AC_CHECK_LIB(Xext,XdbeQueryExtension)
+
+dnl# echo "Ignoring libraries \"$X_PRE_LIBS\" requested by configure."
+
+LIBS="$LIBS$X_LIBS"
+CFLAGS="$CFLAGS$X_CFLAGS"
+CXXFLAGS="$CXXFLAGS$X_CFLAGS"
+
+dnl# Test for libGL or libMesaGL
+GLLIB=
+if test x$enable_opengl != xno; then
+    if test "$uname" = "WIN32"
+    then
+	GLLIB="-lopengl32 -lglu32"
+	AC_DEFINE(HAVE_GL)
+    else
+	AC_CHECK_LIB(GL, glXMakeCurrent, \
+	    AC_DEFINE(HAVE_GL) GLLIB=" -lGLU -lGL", \
+	    AC_CHECK_LIB(MesaGL, glXMakeCurrent, \
+		AC_DEFINE(HAVE_GL) GLLIB=" -lMesaGLU -lMesaGL",,\
+		-lX11 -lXext $X_EXTRA_LIBS -lm), \
+	    -lX11 -lXext $X_EXTRA_LIBS -lm)
+    fi
+fi
+
+AC_SUBST(GLLIB)
+
+dnl# Test for libpng (and for libz by the way)
+dnl# We check for a 1.0 function so versions of libpng < 1.0 are not
+dnl# used...
+AC_CHECK_HEADER(png.h, AC_CHECK_LIB(png, png_set_sig_bytes, \
+	AC_DEFINE(HAVE_PNG) LIBPNG=" -lpng -lz"\
+        ,,$X_EXTRA_LIBS -lz -lm))
+AC_SUBST(LIBPNG)
+
+
+dnl# Test for libjpeg
+AC_CHECK_HEADER(jpeglib.h, AC_CHECK_LIB(jpeg, jpeg_stdio_src, \
+	AC_DEFINE(HAVE_JPEG) LIBJPEG=" -ljpeg"\ 
+        ,,))
+AC_SUBST(LIBJPEG)
+ 
+AC_CHECK_HEADER(X11/extensions/Xdbe.h, AC_DEFINE(HAVE_XDBE))
+
+ac_cv_have_overlay=no
+if test "$uname" != "WIN32"; then
+    AC_CACHE_CHECK("for X overlay visuals", ac_cv_have_overlay,
+	if xprop -root 2>/dev/null | grep -c "SERVER_OVERLAY_VISUALS" >/dev/null; then
+	    ac_cv_have_overlay=yes
+	fi)
+fi
+
+if test "$ac_cv_have_overlay" = yes; then
+    AC_DEFINE(HAVE_OVERLAY)
+fi
+
+AC_ARG_ENABLE(threads, [  --disable-threads       dont require mt libraries],,enable_threads=yes)
+
+dnl See if we need a .exe extension on executables...
+AC_EXEEXT
+
+have_pthread=no
+if test "$enable_threads" = yes; then
+  AC_CHECK_LIB(c, pthread_create, \
+     have_pthread=yes,
+     AC_CHECK_LIB(pthread, pthread_create, \
+        THREADSLIBS=-lpthread have_pthread=yes,,),
+  )
+fi
+
+if test "$have_pthread" = yes; then
+    LDLIBS="$LDLIBS"
+    GLDLIBS="$GLDLIBS"
+    AC_DEFINE(HAVE_PTHREAD)
+fi
+AC_SUBST(THREADSLIBS)
+
+AC_ARG_ENABLE(plugins, [  --enable-plugins       enable FLTK plug-in support])
+
+have_dlopen=no
+if test x$enable_plugins != xno; then
+  AC_CHECK_LIB(c, dlopen, \
+     have_dlopen=yes,
+     AC_CHECK_LIB(dl, dlopen, \
+      LDLIBS="$LDLIBS -ldl" GLDLIBS="$GLDLIBS -ldl" have_dlopen=yes,,),
+  )
+fi
+
+if test x$have_dlopen = xyes; then
+    AC_DEFINE(HAVE_DLOPEN)
+fi
+
+MAKEDEPEND="\${CXX} -M"
+
+dnl# add warnings to compiler switches:
+dnl# do this last so messing with switches does not break tests
+if test -n "$GXX"; then
+    CFLAGS="-Wall $CFLAGS"
+    CXXFLAGS="-Wall $CXXFLAGS"
+    if test -z "$DEBUGFLAG"; then
+    	# Note: Can't use -fomit-frame-pointer - prevents tools like
+	#       libsafe from working!
+	# WAS: I removed the -fforce-mem, -fforce-addr, -fcaller-saves
+	#      They all seemed to make either no difference or enlarged
+	#      the code by a few hundred bytes.
+        DEBUGFLAG="-O2 "
+    fi
+
+    # See if GCC supports -fno-exceptions...
+    # WAS: this DOES make a big difference in the code size!
+    echo "Testing if GCC supports -fno-exceptions..."
+    OLDCFLAGS="$CFLAGS"
+    CFLAGS="$CFLAGS -fno-exceptions"
+    AC_TRY_COMPILE(,,
+	CXXFLAGS="$CXXFLAGS -fno-exceptions"
+	echo "Congratulations - your GCC supports exceptions; disabling them for FLTK...",
+	CFLAGS="$OLDCFLAGS"
+	echo "GCC does not support exceptions...")
+
+    # See if we are running Solaris; if so, try the -fpermissive option...
+    if test $uname = SunOS; then
+	echo "Testing if GCC supports -fpermissive..."
+
+	OLDCFLAGS="$CFLAGS"
+	CFLAGS="$CFLAGS -fpermissive"
+	AC_TRY_COMPILE(,,
+	    CXXFLAGS="$CXXFLAGS -fpermissive"
+	    echo "Enabling -fpermissive to work around X header bugs...",
+	    CFLAGS="$OLDCFLAGS"
+	    echo "The -fpermissive option is not required by your GCC...")
+    fi
+else
+    case `(uname) 2>/dev/null` in
+        IRIX*)
+	    # Running some flavor of IRIX; see which version and
+	    # set things up according...
+	    if test "$uversion" -ge 62; then
+	        # We are running IRIX 6.2 or higher; uncomment the following
+		# lines if you don't have IDO 7.2 or higher:
+		#
+		#     CXX="CC -n32"
+		#     CC="cc -n32"
+		#     LD="ld -n32"
+		#     MAKEDEPEND="CC -M"
+
+        	CFLAGS="-fullwarn $CFLAGS"
+        	CXXFLAGS="-fullwarn $CXXFLAGS"
+		if test -z "$DEBUGFLAG"; then
+	            DEBUGFLAG="-O2 -OPT:Olimit=3000"
+		fi
+	    else
+        	CXXFLAGS="+w +pp $CXXFLAGS"
+		if test -z "$DEBUGFLAG"; then
+	            DEBUGFLAG="-O2 -Olimit=3000"
+		fi
+	    fi
+	    ;;
+	HP-UX*)
+	    # Running HP-UX; these options should work for the HP compilers.
+	    if test -z "$DEBUGFLAG"; then
+		DEBUGFLAG="+O2"
+	    fi
+	    ;;
+	SunOS*)
+	    # Solaris
+	    if test -z "$DEBUGFLAG"; then
+		DEBUGFLAG="-O"
+	    fi
+	    ;;
+	*)
+	    # Running some other operating system; inform the user they
+	    # should contribute the necessary options to fltk-bugs@easysw.com...
+	    echo "Building FLTK with default compiler optimizations; contact"
+	    echo "fltk-bugs@easysw.com with uname and compiler options needed"
+	    echo "for your platform, or set the CFLAGS and CXXFLAGS options"
+	    echo "before running configure."
+	    if test -z "$DEBUGFLAG"; then
+		DEBUGFLAG="-O"
+	    fi
+	    ;;
+    esac
+fi
+
+PREFIX=${prefix}
+AC_SUBST(DEBUGFLAG)
+
+dnl# if test "$PREFIX" = "NONE"; then
+dnl#     AC_DEFINE_UNQUOTED(CONFIGDIR, "${ac_default_prefix}/lib/fltk")
+dnl# else
+dnl#     AC_DEFINE_UNQUOTED(CONFIGDIR, "${prefix}/lib/fltk")
+dnl# fi
+
+AC_SUBST(DSOEXT)
+AC_SUBST(DSOSHORTEXT)
+AC_SUBST(DSOCOMMAND)
+AC_SUBST(THEMECOMMAND)
+AC_SUBST(DSOCFLAGS)
+AC_SUBST(LIBEXT)
+AC_SUBST(LIBCOMMAND)
+AC_SUBST(MAKEDEPEND)
+AC_SUBST(SYSTYPE)
+AC_CONFIG_HEADER(config.h:configh.in)
+AC_OUTPUT(makeinclude efltk-config)
+
+chmod +x efltk-config
+
+dnl#
+dnl# End of "$Id$".
+dnl#

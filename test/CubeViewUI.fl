@@ -1,0 +1,79 @@
+# data file for the FLTK User Interface Designer (FLUID)
+version 2.0001 
+images_dir ./ 
+header_name {.h} 
+code_name {.cpp} 
+gridx 2 
+gridy 2 
+snap 2
+class CubeViewUI {open
+} {
+  Function {CubeViewUI()} {open
+  } {
+    Fl_Window mainWindow {
+      label CubeView open
+      private xywh {405 226 498 442} resizable visible
+    } {
+      Fl_Group {} {open
+        xywh {5 3 454 435} resizable
+      } {
+        Fl_Group VChange {open
+          xywh {0 104 37 213}
+        } {
+          Fl_Roller vrot {
+            label {V Rot}
+            callback {cube->v_angle(((Fl_Roller *)o)->value());
+cube->redraw();}
+            xywh {0 0 17 186} align 128 label_type NO_LABEL minimum -180 maximum 180 step 1
+            extra_code {\#include <stdio.h>}
+          }
+          Fl_Slider ypan {
+            callback {cube->pany(((Fl_Slider *)o)->value());
+cube->redraw();}
+            xywh {20 0 17 186} align 0 label_type NO_LABEL label_color 136 minimum -25 maximum 25 step 0.1
+          }
+        }
+        Fl_Group HChange {
+          xywh {132 395 236 40}
+        } {
+          Fl_Slider xpan {
+            callback {cube->panx(((Fl_Slider *)o)->value());
+cube->redraw();}
+            xywh {2 2 186 17} type HORIZONTAL align 0 label_type NO_LABEL label_color 136 minimum 25 maximum -25 step 0.1
+          }
+          Fl_Roller hrot {
+            label {H Rotation}
+            callback {cube->h_angle(((Fl_Roller *)o)->value());
+cube->redraw();}
+            xywh {2 21 186 17} type HORIZONTAL align 8 label_type NO_LABEL minimum -180 maximum 180 step 1
+          }
+        }
+        Fl_Group MainView {open
+          xywh {41 24 413 369} resizable
+        } {
+          Fl_Box cframe {
+            xywh {0 0 413 369} box DOWN_BOX color 4 selection_color 69
+          }
+          Fl_Box cube {
+            xywh {2 2 409 365} resizable
+            extra_code {\#include "CubeView.h"}
+            class CubeView
+          }
+        }
+        Fl_Value_Slider zoom {
+          label Zoom
+          callback {cube->size=((Fl_Value_Slider *)o)->value();
+cube->redraw();}
+          xywh {115 0 281 19} type HORIZONTAL align 4 label_font 1 label_color 136 minimum 1 maximum 50 step 0.1 value 10
+        }
+      }
+    }
+  }
+  Function {show()} {open
+  } {
+    code {mainWindow->show();
+cube->pany(0);
+cube->redraw();} {selected
+    }
+  }
+} 

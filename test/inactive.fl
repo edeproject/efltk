@@ -1,0 +1,91 @@
+# data file for the FLTK User Interface Designer (FLUID)
+version 2.0001 
+images_dir ./ 
+header_name {.h} 
+code_name {.cpp} 
+gridx 5 
+gridy 11 
+snap 3
+Function {} {open
+} {
+  Fl_Window {} {open
+    xywh {46 192 395 280} resizable visible
+  } {
+    Fl_Group the_group {
+      label {activate()/deactivate() called on this Fl_Group} open
+      xywh {5 6 384 239} align 17 resizable box ENGRAVED_BOX
+    } {
+      Fl_Button {} {
+        label button
+        xywh {25 27 105 22}
+      }
+      Fl_Group {} {
+        label {Child group} open
+        xywh {25 75 105 105}
+      } {
+        Fl_Check_Button {} {
+          label red
+          xywh {0 0 105 25} type RADIO label_color 1 selection_color 1 selected_text_color 1 highlight_label_color 1
+        }
+        Fl_Check_Button {} {
+          label green
+          xywh {0 25 105 25} type RADIO label_color 2 selection_color 2 selected_text_color 2 highlight_label_color 2
+        }
+        Fl_Check_Button {} {
+          label blue
+          xywh {0 50 105 25} type RADIO label_color 4 selection_color 4 selected_text_color 4 highlight_label_color 4
+        }
+        Fl_Check_Button {} {
+          label white
+          xywh {0 75 105 25} type RADIO label_color 7 selection_color 7 selected_text_color 55 highlight_label_color 55
+        }
+      }
+      Fl_Slider {} {
+        label Fl_Slider
+        xywh {140 25 24 150} value 0.5
+      }
+      Fl_Input {} {
+        xywh {170 27 195 22}
+        extra_code {o->static_value("Fl_Input");}
+      }
+      Fl_Input_Browser {} {
+        label {input browser} open
+        xywh {255 60 110 22}
+        extra_code {o->value("Shemp");}
+      } {
+        Fl_Item {} {
+          label Moe
+          }
+        Fl_Item {} {
+          label Larry
+          }
+        Fl_Item {} {
+          label Curly
+          }
+      }
+      Fl_Box {} {
+        label Fl_Box
+        xywh {215 137 145 88} box ENGRAVED_BOX label_font 3 label_type SHADOW_LABEL label_size 38
+      }
+      Fl_Value_Output {} {
+        label {value:} selected
+        tooltip {This Fl_Value_Output widget has a tooltip.}
+        xywh {230 93 135 33} text_font 5 text_color 4 text_size 24 maximum 10000 step 1
+      }
+      Fl_Scrollbar {} {
+        label scrollbar
+        xywh {15 195 180 20} type HORIZONTAL maximum 100
+      }
+    }
+    Fl_Button {} {
+      label active
+      callback {the_group->activate();}
+      xywh {5 250 190 25} type RADIO value 1
+    }
+    Fl_Button {} {
+      label inactive
+      callback {the_group->deactivate();}
+      xywh {205 250 184 25} type RADIO
+    }
+  }
+} 
