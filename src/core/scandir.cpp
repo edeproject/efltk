@@ -126,7 +126,4 @@ lose:
 
 # endif /* !HAVE_SCANDIR */
 
-int fl_alphasort(struct dirent **a, struct dirent **b) { return strcmp((*a)->d_name, (*b)->d_name); }
-int fl_casealphasort(struct dirent **a, struct dirent **b) { return strcasecmp((*a)->d_name, (*b)->d_name); }
-
 #endif

@@ -35,23 +35,14 @@
 #include <efltk/filename.h>
 #include <efltk/Fl_String.h>
 
-#if defined(__linux__)
-
-# define __USE_LARGEFILE64
-# define __USE_GNU
-# include <sys/types.h>
-# include <dirent.h>
-# define dirent dirent64
-# define scandir scandir64
-
-#endif
-
-
 #if !HAVE_SCANDIR
   extern int fl_scandir(const char *dir, dirent ***namelist,
 						int (*select)(dirent *),
 						int (*compar)(dirent **, dirent **));
 #endif
+
+int fl_alphasort(struct dirent **a, struct dirent **b) { return strcmp((*a)->d_name, (*b)->d_name); }
+int fl_casealphasort(struct dirent **a, struct dirent **b) { return strcasecmp((*a)->d_name, (*b)->d_name); }
 
 int fl_filename_list(const char *dir, dirent ***list, Fl_File_Sort_F *sort) 
 {
