@@ -1,5 +1,5 @@
 # data file for the FLTK User Interface Designer (FLUID)
-version 2,0003 
+version 2.0003 
 images_dir ./ 
 i18n 
 header_name {.h} 
@@ -9,21 +9,21 @@ gridy 5
 snap 2
 Function {make_widget_panel()} {open
 } {
-  Fl_Window {} {open selected
-    xywh {741 217 380 405}
+  Fl_Window {} {open
+    xywh {205 168 380 405}
     extra_code {\#include <efltk/Fl_WM.h>
 o->window_type(Fl_WM::UTIL);
 o->size_range(o->w(), o->h());} visible
   } {
     Fl_Tabs panel_tabs {
       callback propagate_tabs open
-      xywh {0 3 380 353}
+      xywh {0 3 380 353} color 0xfffffffe
       extra_code {o->parent()->resizable(o);}
     } {
       Fl_Group {} {
         label GUI
         callback propagate_group open
-        xywh {0 20 380 333}
+        xywh {1 23 378 329}
         extra_code {o->parent()->resizable(o);}
       } {
         Fl_Input {} {
@@ -98,21 +98,21 @@ o->size_range(o->w(), o->h());} visible
           user_data FL_ALIGN_INSIDE
           callback align_cb
           tooltip {Places label inside the widget}
-          xywh {170 79 60 20} type TOGGLE label_type SYMBOL_LABEL
+          xywh {170 79 40 20} type TOGGLE label_type SYMBOL_LABEL
         }
         Fl_Button {} {
           label clip
           user_data FL_ALIGN_CLIP
           callback align_cb
           tooltip {Turn on clipping to the widget's area when drawing label.  This is slower so it should be left off if label will fit}
-          xywh {235 79 60 20} type TOGGLE
+          xywh {210 79 40 20} type TOGGLE
         }
         Fl_Button {} {
           label wrap
           user_data FL_ALIGN_WRAP
           callback align_cb
           tooltip {Word-wrap the label}
-          xywh {300 79 60 20} type TOGGLE
+          xywh {250 79 40 20} type TOGGLE
         }
         Fl_Value_Input widget_x {
           label x
@@ -265,20 +265,26 @@ To get out of shortcut-setting mode:
           user_data FL_ALIGN_TILED
           callback align_cb
           tooltip {Tile image}
-          xywh {170 102 60 20} type TOGGLE
+          xywh {290 79 40 20} type TOGGLE
         }
         Fl_Button {} {
           label scale
           user_data FL_ALIGN_SCALE
           callback align_cb
           tooltip {Scale image}
-          xywh {235 102 60 20} type TOGGLE
+          xywh {330 79 40 20} type TOGGLE
         }
+        Fl_Choice {} {
+          label {Layout:}
+          callback layoutalign_cb open selected
+          tooltip {Change the layout align}
+          xywh {79 101 291 22}
+        } {}
       }
       Fl_Group {} {
         label Style
         callback propagate_group open
-        xywh {0 20 380 333} hide
+        xywh {1 23 378 329} hide
       } {
         Fl_Choice {} {
           label box
@@ -396,7 +402,7 @@ To get out of shortcut-setting mode:
       Fl_Group {} {
         label {C++}
         callback propagate_group open
-        xywh {0 20 380 333} hide
+        xywh {1 23 378 329} hide
       } {
         Fl_Input {} {
           label Name

@@ -1027,6 +1027,49 @@ void align_cb(Fl_Button* i, void *v) {
     }
 }
 
+static const Enumeration layoutalignmenu[] = {
+    {"None",    "FL_ALIGN_NONE",    (void*)(FL_ALIGN_CENTER)},
+    {"Top",     "FL_ALIGN_TOP",       (void*)(FL_ALIGN_TOP)},
+    {"Bottom",  "FL_ALIGN_BOTTOM",    (void*)(FL_ALIGN_BOTTOM)},
+    {"Left",    "FL_ALIGN_LEFT",  (void*)(FL_ALIGN_LEFT)},
+    {"Right",   "FL_ALIGN_RIGHT", (void*)(FL_ALIGN_RIGHT)},
+    {"Client",  "FL_ALIGN_CLIENT",    (void*)(FL_ALIGN_INSIDE)},
+
+    {0}};
+
+void layoutalign_cb(Fl_Choice* i, void *v) {
+    if (v == LOAD) {
+        set_menu(i, layoutalignmenu);
+        int fval = 0, val = current_widget->o->layout_align();
+        const Enumeration * e;
+        for(e = layoutalignmenu; e->menu_entry; e++, fval++){
+            if (val == (int)e->compiled) break;
+        }
+        if (e->menu_entry == 0) fval = 0;
+        i->value(fval);
+/*
+        Fl_Color c = FL_BLACK;
+        Fl_Color d = FL_RED;
+        if (fval != 0) {c = FL_RED; d = FL_BLACK;}
+        if (i->label_color() != c) {i->label_color(c); i->redraw();}
+        i->selection_text_color(d);
+        i->selection_color(i->color());
+*/
+    } else {
+        for_all_selected_widgets() {
+            Fl_Widget_Type* q = (Fl_Widget_Type*)o;
+            int al = (int)layoutalignmenu[i->value()].compiled;
+            int oal = q->o->layout_align();
+            if (al != oal) {
+                q->o->layout_align((Fl_AlignEnum)al);
+                q->o->parent()->relayout();
+                q->redraw();
+                modflag = 1;
+            }
+        }
+    }
+}
+
 void image_inlined_cb(Fl_Check_Button* i, void *v) {
     if (v==LOAD) {
         if(current_widget->image) {
@@ -1680,6 +1723,8 @@ void Fl_Widget_Type::write_code1() {
     if (is_menu_button()) write_c("); o->begin();\n");
     else write_c(");\n");
     indentation += 2;
+    if (o->layout_align())
+        write_c("o->layout_align((Fl_AlignEnum)%d);\n", o->layout_align());
     if (this == last_group) write_c("%sw = o;\n",indent());
     if (varused) write_widget_code();
 }
@@ -1883,6 +1928,8 @@ void Fl_Widget_Type::write_properties() {
     }
     if (o->align() != tplate->align())
         write_string("align %d", o->align());
+    if (o->layout_align())
+        write_string("layout_align %d", o->layout_align());
     if (o->when() != tplate->when())
         write_string("when %s", number_to_text(o->when(), whenmenu));
     if (!o->visible()) write_string("hide");
@@ -1986,6 +2033,8 @@ void Fl_Widget_Type::read_property(const char *c) {
         set_xy = 0;
     } else if (!strcmp(c,"align")) {
         o->align((int)strtoul(read_word(),0,0));
+    } else if (!strcmp(c,"layout_align")) {
+        o->layout_align((Fl_AlignEnum)strtoul(read_word(),0,0));
     } else if (!strcmp(c,"when")) {
         o->when(number_from_text(read_word(), whenmenu));
     } else if (!strcmp(c,"hide")) {
