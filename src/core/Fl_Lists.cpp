@@ -166,7 +166,7 @@ void Fl_String_List::prepend(Fl_String item) {
     Fl_Ptr_List::prepend((void *)new Fl_String(item));
 }
 
-void Fl_String_List::insert(uint pos, Fl_String &item) {
+void Fl_String_List::insert(uint pos, const Fl_String &item) {
     Fl_Ptr_List::insert(pos, (void *)new Fl_String(item));
 }
 
