@@ -714,8 +714,13 @@ void Fl_Simple_Html::draw()
 					if (qch < 0)
 						*s++ = '&';
 					else {
-						*s++ = qch;
-						ptr = strchr(ptr, ';') + 1;
+						char *ptr_n = strchr(ptr, ';');
+						if (ptr_n)
+						{
+						    *s++ = qch;
+						    ptr = ptr_n + 1;
+						}    
+						else *s++ = '&';
 					}
 
 					if ((size + 2) > hh)
@@ -1359,11 +1364,17 @@ void Fl_Simple_Html::format()
 		{
 			ptr ++;
 			int qch = quote_char(ptr);
-			if (qch < 0)
+			if (qch < 0) {
 				*s++ = '&';
+			}
 			else {
-				*s++ = qch;
-				ptr = strchr(ptr, ';') + 1;
+				char *ptr_n = strchr(ptr, ';');
+				if (ptr_n)
+				{
+				    *s++ = qch;
+				    ptr = ptr_n + 1;
+				}    
+				else *s++ = '&';
 			}
 			
 			if ((size + 2) > hh)
@@ -1371,13 +1382,13 @@ void Fl_Simple_Html::format()
 		}
 		else
 		{
-			if (s < (buf + sizeof(buf) - 1))
-				*s++ = *ptr++;
-			else
-				ptr ++;
+		    if (s < (buf + sizeof(buf) - 1))
+			*s++ = *ptr++;
+		    else
+			ptr ++;
 			
-			if ((size + 2) > hh)
-				hh = size + 2;
+		    if ((size + 2) > hh)
+			hh = size + 2;
 		}
 		
 		}
@@ -1777,9 +1788,15 @@ void Fl_Simple_Html::format_table(int *table_width,	// O - Total table width
 				if (qch < 0)
 					*s++ = '&';
 				else {
-					*s++ = qch;
-					ptr = strchr(ptr, ';') + 1;
+					char *ptr_n = strchr(ptr, ';');
+					if (ptr_n)
+					{
+					    *s++ = qch;
+					    ptr = ptr_n + 1;
+					}    
+					else *s++ = '&';
 				}
+
 			}
 			else
 			{
