@@ -6,11 +6,13 @@
 <node1 value="true" visible="false">
 <!-- Comment after node1 -->
 
-<![CDATA[ Fixed cdata section.
+<![CDATA[ Fixed cdata section. '>a?'
 This can contain any characters ]]>
 
  <CdataItem>This is a '&xml;'</CdataItem>
+ Normal cdata text between cdataitem1 and cdataitem2
  <CdataItem2>Fixed Cdata and '&sampleEnt;' Cdata</CdataItem2>
+ Normal cdata text before node2
  <node2>
   <node3 val="123"/>
   <node3 val='456'/>
