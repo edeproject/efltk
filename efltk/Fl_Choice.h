@@ -40,26 +40,31 @@ class FL_API Fl_Choice : public Fl_Menu_ {
 public:
     static Fl_Named_Style* default_style;
 
-	/** Creates a new Fl_Choice widget using the given position, size, and label string. */
+     /** Creates a new choice widget using the given position, size, and label string. */
     Fl_Choice(int x, int y, int w, int h, const char *l=0);
 
-	/**
-	 * The value is the index into the Fl_Menu array of the last item chosen by the user. 
-	 * It is zero initially. You can set it as an integer. 
-	 * The set routines return non-zero if the new value is different than the old one. Changing it causes a redraw(). 
-	 */
+    /** The new style constructor creates the choice widget using the label, size, alignment, and label_width. */
+    Fl_Choice(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
+
+     /**
+     * The value is the index into the Fl_Menu array of the last item chosen by the user. 
+     * It is zero initially. You can set it as an integer. 
+     * The set routines return non-zero if the new value is different than the old one. Changing it causes a redraw(). 
+     */
     int value(int v);
 
-	/**
-	 * The value is the index into the Fl_Menu array of the last item chosen by the user. 
-	 * It is zero initially. You can set it as an integer. 
-	 * Returns current selected item index.
-	 */
+     /**
+     * The value is the index into the Fl_Menu array of the last item chosen by the user. 
+     * It is zero initially. You can set it as an integer. 
+     * Returns current selected item index.
+     */
     int value() const { return Fl_Menu_::value(); }
 
     virtual int popup(int X, int Y, int W, int H);
     virtual int handle(int);
     virtual void draw();
+private:
+    void ctor_init();
 };
 
 #endif

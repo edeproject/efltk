@@ -250,8 +250,8 @@ static void revert(Fl_Style* s)
 static Fl_Named_Style style("Choice", revert, &Fl_Choice::default_style);
 Fl_Named_Style* Fl_Choice::default_style = &::style;
 
-Fl_Choice::Fl_Choice(int x,int y,int w,int h, const char *l)
-: Fl_Menu_(x,y,w,h,l)
+// ctor initializer - used in both ctors
+void Fl_Choice::ctor_init()
 {
     value(0);
     style(default_style);
@@ -263,6 +263,19 @@ Fl_Choice::Fl_Choice(int x,int y,int w,int h, const char *l)
     anim_flags(TOP_TO_BOTTOM);
 }
 
+// Traditional ctor
+Fl_Choice::Fl_Choice(int x,int y,int w,int h, const char *l)
+: Fl_Menu_(x,y,w,h,l)
+{
+    ctor_init();
+}
+
+// New style ctor
+Fl_Choice::Fl_Choice(const char* l,int layout_size,Fl_Align layout_al,int label_w)
+: Fl_Menu_(l,layout_size,layout_al,label_w)
+{
+    ctor_init();
+}
 
 //
 // End of "$Id$".
