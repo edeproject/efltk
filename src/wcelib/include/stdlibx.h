@@ -12,7 +12,7 @@
 #include <atlconv.h>
 #include <winnetwk.h>
 
-#define assert(e) 
+//#define assert(e) 
 inline void abort() { exit(3); }
 
 #define _environ (NULL)

@@ -1627,7 +1627,7 @@ void Fl_X::create(Fl_Window* window)
 			fl_utf2unicode((unsigned char*)window->label(), l, (unsigned short*)lab);
 			lab[l] = 0;			
 		}
-		x->xid = CreateWindowExW(
+		x->xid = CreateWindowEx(
 			styleEx,
 			class_namew, lab, style,
 			xp, yp, window->w()+dw, window->h()+dh,
@@ -1935,17 +1935,18 @@ bool fl_get_system_colors()
 	int sncm = sizeof(ncm);
 	ncm.cbSize = sncm;
 	SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sncm, &ncm, SPIF_SENDCHANGE);
-
-    Fl_Font font=0; int size=0;
+*/
+    Fl_Font font=0; int size=12;
     // get font info for regular widgets from LOGFONT structure
     //  font = fl_font((const char*)ncm.lfMessageFont.lfFaceName);
-    font = fl_find_font((const char*)ncm.lfMessageFont.lfFaceName);
+//--    font = fl_find_font((const char*)ncm.lfMessageFont.lfFaceName);
 
 	if(!font) font = FL_HELVETICA; //Just to be sure!
 
-    if (ncm.lfMessageFont.lfWeight >= FW_SEMIBOLD) font = font->bold();
+    /*if (ncm.lfMessageFont.lfWeight >= FW_SEMIBOLD) font = font->bold();
     if (ncm.lfMessageFont.lfItalic) font = font->italic();
     size = win_fontsize(ncm.lfMessageFont.lfHeight);
+
 
     Fl_Widget::default_style->label_font = font;
     Fl_Widget::default_style->text_font = font;

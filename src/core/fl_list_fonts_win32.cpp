@@ -279,7 +279,11 @@ int fl_list_fonts(Fl_Font*& arrayp)
 	lf.lfFaceName[0] = '\0';
 	lf.lfCharSet = DEFAULT_CHARSET;
 
+#ifndef _WIN32_WCE
     EnumFontFamiliesEx(dc, &lf, (FONTENUMPROC)enumcb, 0, 0);
+#else
+    EnumFontFamilies(dc, &lf, (FONTENUMPROC)enumcb, 0);
+#endif
     
     qsort(font_array, num_fonts, sizeof(Fl_Font), sort_function);
     arrayp = font_array;
