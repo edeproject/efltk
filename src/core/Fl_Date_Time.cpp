@@ -611,6 +611,21 @@ Fl_Date_Time Fl_Date_Time::convert(const long tt) {
    return dat + tim;
 }
 
+#ifdef _WIN32
+#define FILETIME_1970 0x019db1ded53e8000
+const BYTE DWLEN = sizeof(DWORD) * 8;
+/* Code ripped from some xntp implementation on http://src.openresources.com. */
+long get_usec()
+{
+  FILETIME ft;
+  __int64 msec;
+  GetSystemTimeAsFileTime(&ft);
+  msec = (__int64) ft.dwHighDateTime << DWLEN | ft.dwLowDateTime;
+  msec = (msec - FILETIME_1970) / 10;
+  return (long) (msec % 1000000);
+}
+#endif
+
 // Get the current system time
 Fl_Date_Time Fl_Date_Time::System() {
    time_t tt;
@@ -618,15 +633,12 @@ Fl_Date_Time Fl_Date_Time::System() {
    double datetime = convert(tt);
 #ifndef _WIN32
    timeval tp;
-   gettimeofday(&tp,0L);
+   silc_gettimeofday(&tp,0L);
    double mcsec = tp.tv_usec / 1000000.0 / (3600 * 24);
 #else
-   // This works now almost.. We cant right value, since GetTickCount() has nothing to do
-   // with actual time, it's milliseconds since boot. Problem becomes when measuring time
-   // less then second. If "time_t tt" is still in same second, but second is changed in 
-   // GetTickCount()... Any solution to this?? -Mikko
-   double mcsec = (GetTickCount() % 1000) / 1000.0;// / (3600 * 24);   
-#endif   
+   // This works now!
+   double mcsec = get_usec() / 1000000.0 / (3600 * 24);
+#endif
    return datetime + mcsec;
 }
 
