@@ -32,17 +32,30 @@
  struct dirent { char d_name[1]; };
 
 #elif defined(__linux__)
+// Newest Linux libc is broken when it emulates the 32-bit dirent, it
+// generates errors when the data like the inode number does not fit, even
+// though we are not going to look at anything other than the name. This
+// code seems to force the 64-bit version to be used:
 
-# define __USE_LARGEFILE64
-# define __USE_GNU
-# include <sys/types.h>
-# include <dirent.h>
-# define dirent dirent64
-# define scandir scandir64
+#define _GNU_SOURCE
+#include <features.h>
+#include <sys/types.h>
+#include <dirent.h>
+#define dirent dirent64
+#define scandir scandir64
 
 #else
 
-# include <dirent.h>
+ // warning: on some systems (very few nowadays?) <dirent.h> may not exist.
+// The correct information is in one of these three files:
+//  #include <sys/ndir.h>
+//  #include <sys/dir.h>
+//  #include <ndir.h>
+// plus you must do the following #define:
+//  #define dirent direct
+// I recommend you create a /usr/include/dirent.h containing the correct info
+#include <sys/types.h>
+#include <dirent.h>
 
 #endif
 
