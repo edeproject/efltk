@@ -170,6 +170,9 @@ protected:
 
     void calc_last_char();
 
+    int find_next_char(int pos);
+    int find_prev_char(int pos);
+
     int position_to_line( int pos, int* lineNum );
     int string_width(const char* string, int length, int style);
 

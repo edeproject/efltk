@@ -27,8 +27,8 @@
 #else
 
 // only include if ENABLE_NLS=1
-#include <libintl.h>
-# define _(String) dgettext ("efltk", String)
+#include <efltk/Fl_Translator.h>
+# define _(String) Fl_Translator::dtr("efltk", String)
 
 #endif
 

@@ -29,7 +29,7 @@
 #include <config.h>
 
 #if HAVE_XUTF8
-# include <efltk/Xutf8.h>
+//# include <efltk/Xutf8.h>
 #endif
 
 #include <efltk/Fl.h>
@@ -70,6 +70,55 @@ void Fl::sleep(int ms) {
     t.tv_sec = int(ms/1000);
     t.tv_usec = 1000*ms;
     ::select(1,0,0,0,&t);
+}
+
+extern unsigned int KeySymToUcs4(KeySym keysym);
+#define XKeysymToUcs(ks) KeySymToUcs4(ks)
+
+int XConvertEucToUtf8(const char*	locale,
+                      char*		buffer_return,
+                      int		len,
+                      int		bytes_buffer)
+{
+    char *buf = (char*) malloc(len);
+    memcpy(buf, buffer_return, len);
+
+    int cvt = fl_convert2utf(locale,
+                             (const uchar*)buf, len,
+                             buffer_return, len);
+
+    free(buf);
+    return cvt;
+}
+
+int XUtf8LookupString(XIC                 ic,
+                      XKeyPressedEvent*   event,
+                      char*               buffer_return,
+                      int                 bytes_buffer,
+                      KeySym*             keysym,
+                      Status*             status_return)
+{
+    long ucs = -1;
+    int len;
+    len = XmbLookupString(ic, event, buffer_return, bytes_buffer / 2,
+                          keysym, status_return);
+    if (*keysym > 0 && *keysym < 0x100) {
+        ucs = (unsigned char)buffer_return[0];
+        //ucs = *keysym;
+    } else  if (((*keysym >= 0x100 && *keysym <= 0xf000) ||
+                 (*keysym & 0xff000000U) == 0x01000000))
+    {
+        ucs = XKeysymToUcs(*keysym);
+    } else {
+        ucs = -2;
+    }
+    //if (ucs == -1) len = 0;
+    if (ucs > 0) {
+        len = fl_ucs2utf(ucs, (char *)buffer_return);
+    } else if (len > 0) {
+        len = XConvertEucToUtf8(XLocaleOfIM(XIMOfIC(ic)), buffer_return, len, bytes_buffer);
+    }
+    return len;
 }
 
 ////////////////////////////////////////////////////////////////

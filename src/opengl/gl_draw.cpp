@@ -29,30 +29,12 @@
 #include <config.h>
 #if HAVE_GL
 
-#if HAVE_XUTF8
-#include <efltk/fl_draw.h>
-#include <efltk/Xutf8.h>
-#include <efltk/gl.h>
-#include "Fl_Gl_Choice.h"
-#include <string.h>
-#include <stdlib.h>
-#include <efltk/Fl.h>
-#include <efltk/fl_utf8.h>
-#else
 #include <efltk/fl_draw.h>
 #include <efltk/gl.h>
 #include "Fl_Gl_Choice.h"
 #include <string.h>
-#endif
 
 #include <stdlib.h>
-
-#if HAVE_XUTF8
-# define xfont ((XUtf8FontStruct*)fl_xfont())
-#else
-# define xfont ((XFontStruct*)fl_xfont())
-#endif
-
 
 // binary tree of all the fonts+sizes we have made so far:
 struct FontSize
@@ -95,24 +77,13 @@ void gl_font(Fl_Font font, float size)
         wglUseFontBitmaps(hdc, base, size, current->listbase+base);
         SelectObject(hdc, oldFid);
 #else
-#if HAVE_XUTF8
-        Fl::warning("gl_font and gl_draw are not UTF-8 compatible");
-        if (xfont->nb_font > 0 && xfont->fonts[0]) {
-	    XFontStruct *font = xfont->fonts[0];
-            int base = font->min_char_or_byte2;
-            int size = font->max_char_or_byte2-base+1;
-            current->listbase = glGenLists(256);
-            glXUseXFont(font->fid, base, size, current->listbase+base);
-        }
-#else
-        //XFontStruct* xfont = fl_xfont();
+        XFontStruct* xfont = fl_xfont();
 #if USE_XFT
         current->xfont = xfont;
 #endif
         int base = xfont->min_char_or_byte2;
         int size = xfont->max_char_or_byte2-base+1;
         glXUseXFont(xfont->fid, base, size, current->listbase+base);
-#endif
 #endif
     }
 GOTIT:
@@ -128,15 +99,6 @@ void gl_font(int fontid, float size)
 
 void gl_draw(const char* str, int n)
 {
-#if HAVE_XUTF8
-    static char *buf = NULL;
-    static int l = 0;
-    if (n > l) {
-        buf = (char*) realloc(buf, n + 20);
-        l = n + 20;
-    }
-    n = fl_utf2latin1((const unsigned char*)str, n, buf);
-#endif
     glCallLists(n, GL_UNSIGNED_BYTE, str);
 }
 

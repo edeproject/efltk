@@ -18,16 +18,17 @@
 #include <efltk/math.h>
 #include <config.h>
 
+#include <efltk/fl_utf8.h>
+#include <efltk/vsnprintf.h>
+#include <efltk/Fl_String.h>
+#include <efltk/Fl_Util.h>
+
 #include <config.h>
 #include <string.h>
 #include <stdarg.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <errno.h>
-
-#include <efltk/vsnprintf.h>
-#include <efltk/Fl_String.h>
-#include <efltk/Fl_Util.h>
 
 #ifdef _WIN32_WCE
 #include <wince.h>
@@ -154,7 +155,7 @@ bool Fl_String::cmp(Fl_String &s) {
 }
 
 bool Fl_String::casecmp(Fl_String &s) {
-    return strcasecmp(str_, s.str_) != 0;
+    return fl_utf_strcasecmp(str_, s.str_) != 0;
 }
 
 //------------------------------------------------------------------------------
@@ -274,16 +275,16 @@ Fl_String Fl_String::trimLeft() const
 
 Fl_String Fl_String::lower_case() const
 {
-    Fl_String  s = str_;
-    fl_tolower(s.str_);
-    return s;
+    char *temp = (char*)malloc(length()*3);
+    int len = fl_utf_tolower((const uchar*)str_, length(), temp);
+    return Fl_String(temp, len, true);
 }
 
 Fl_String Fl_String::upper_case() const
 {
-    Fl_String  s = str_;
-    fl_toupper(s.str_);
-    return s;
+    char *temp = (char*)malloc(length()*3);
+    int len = fl_utf_toupper((const uchar*)str_, length(), temp);
+    return Fl_String(temp, len, true);
 }
 
 extern int fl_va_len(char *format, va_list ap); //Fl_Util.cpp
@@ -309,8 +310,7 @@ Fl_String &Fl_String::printf(const char *string, ...)
     free((char*)str_);
     str_ = s;
     len_ = strlen(str_);
-
-	return *this;
+    return *this;
 }
 
 Fl_String Fl_String::remove(const char *pattern) const
@@ -546,3 +546,24 @@ bool operator != (const Fl_String &s1, const char *s2) {
 }
 //------------------------------------------------------------------------------
 
+Fl_String Fl_String::from_codeset(int conv_index, const char *str, int str_len)
+{
+    if(str_len<=0) str_len = strlen(str);
+
+    int outsize = str_len*3;
+    char *outbuf = (char*)malloc(outsize);
+
+    int len = fl_convert2utf(conv_index,
+                             (const uchar*)str, str_len,
+                             outbuf, outsize);
+    Fl_String ret;
+    if(len>0) ret.append(outbuf, len);
+    //else ret.append(str, str_len);
+
+    free(outbuf);
+    return ret;
+}
+
+Fl_String Fl_String::from_codeset(Fl_String codeset, const char *str, int str_len) {
+    return Fl_String::from_codeset(fl_find_converter(codeset.c_str()), str, str_len);
+}

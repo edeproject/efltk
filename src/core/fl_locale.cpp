@@ -8,21 +8,11 @@
 # include <X11/Xlocale.h>
 #endif
 
-#if NO_BIND_TEXTDOMAIN_CODESET_DECLARATION
-extern "C" {
-    extern char *bind_textdomain_codeset(const char *__domainname,
-                                         const char *__codeset);
-};
-#endif
-
-// This is used on future...
-bool fl_gettext_utf8 = false;
+char *last_locale = 0;
 
 static void set_locale()
 {
     char *current_locale;
-    static char *last_locale = 0;
-
     // Initialize the i18n stuff
     current_locale = setlocale(LC_ALL, "");
 
@@ -51,12 +41,7 @@ bool Fl::init_locale()
 
     static bool inited=false;
     if(!inited) {
-        bindtextdomain("efltk", PREFIX"/share/locale");
-#if HAVE_TEXTDOMAIN_CODESET
-        char *charset = bind_textdomain_codeset("efltk", "UTF-8");
-        if(charset && !strcmp(charset, "UTF-8"))
-            fl_gettext_utf8 = true;
-#endif
+        Fl_Translator::bindtextdomain("efltk", PREFIX"/share/locale");
         inited=true;
     }
     return true;
@@ -71,13 +56,8 @@ bool Fl::init_locale(const char *app_domain, const char *directory)
 #if ENABLE_NLS
     // App specific:
     if(app_domain) {
-        bindtextdomain(app_domain, directory);
-        textdomain(app_domain);
-
-#if HAVE_TEXTDOMAIN_CODESET
-        //Set conversions:
-        bind_textdomain_codeset(app_domain, "UTF-8");
-#endif
+        Fl_Translator::bindtextdomain(app_domain, directory);
+        //textdomain(app_domain);
     }
     return Fl::init_locale();
 #else

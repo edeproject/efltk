@@ -50,9 +50,8 @@ struct FL_API Fl_Font_ {
     Fl_Int_List *sizes_;
 #else
     // XWindows cache stuff:
-    Fl_CString_List *xlist_; //Cached xlist
-    Fl_Int_List xlist_offsets_; // Offsets of different fonts in xlists
-    Fl_Int_List xlist_sizes_;   // Sizes of different font lists in xlists
+    char **xlist_;
+    int xlist_n_;
 
     uint cache_xlist();
     Fl_FontSize *load_font(float size);

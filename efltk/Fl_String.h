@@ -111,6 +111,9 @@ public:
     char  operator [] (const int i) const { return str_[i]; }
 
     static Fl_String IntToString(int val);
+
+    static Fl_String from_codeset(int conv_index, const char *str, int str_len);
+    static Fl_String from_codeset(Fl_String codeset, const char *str, int str_len);
 };
 
 #endif

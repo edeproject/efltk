@@ -112,10 +112,7 @@ extern FL_API GC	fl_gc;
 extern FL_API struct Fl_Drawable* fl_drawable;
 extern FL_API Window	fl_window;
 
-// If fl_supports_utf8() returns true
-// this returns XUtf8FontStruct* found in Xutf8.h
-// Otherwise it's: XFontStruct* found in X11
-extern FL_API void* fl_xfont();
+extern FL_API XFontStruct* fl_xfont();
 
 extern FL_API ulong	fl_pixel; // ==fl_xpixel(fl_color())
 extern FL_API ulong	fl_xpixel(Fl_Color i);

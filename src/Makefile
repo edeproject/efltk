@@ -44,28 +44,26 @@ static:
 	@rm -f $(LIBRARY)$(LIBEXT)
 	$(MAKE) -C core static
 	$(MAKE) -C widgets static
-	$(MAKE) -C xutf static
 	$(MAKE) -C db static
+	$(MAKE) -C xml static
 	$(MAKE) $(LIBRARY)$(LIBEXT)
 	$(MAKE) -C images static
 	$(MAKE) -C opengl static
-	$(MAKE) -C xml static
 
 shared:
 	rm -f $(LIBRARY)$(DSOEXT)
 	$(MAKE) -C core shared
 	$(MAKE) -C widgets shared
-	$(MAKE) -C xutf shared
 	$(MAKE) -C db shared
+	$(MAKE) -C xml shared
 	$(MAKE) $(DSO)$(DSOEXT)
 	$(MAKE) -C images shared
 	$(MAKE) -C opengl shared
-	$(MAKE) -C xml shared
 
 programs:
 
-STATIC_OBJECTS = core/*.static.o widgets/*.static.o xutf/*.static.o db/*.static.o
-SHARED_OBJECTS = core/*.shared.o widgets/*.shared.o xutf/*.shared.o db/*.shared.o
+STATIC_OBJECTS = core/*.static.o widgets/*.static.o db/*.static.o
+SHARED_OBJECTS = core/*.shared.o widgets/*.shared.o db/*.shared.o
 
 $(LIBRARY).a:
 	@echo $(LIBCOMMAND) $@ ...
@@ -91,21 +89,19 @@ $(DSO).2.dll:
 clean:
 	$(MAKE) -C core clean
 	$(MAKE) -C widgets clean
-	$(MAKE) -C xutf clean
 	$(MAKE) -C db clean
+	$(MAKE) -C xml clean
 	$(MAKE) -C images clean
 	$(MAKE) -C opengl clean
-	$(MAKE) -C xml clean
 	@rm -f *~ $(LIBRARY).*
 
 depend:
 	$(MAKE) -C core depend
 	$(MAKE) -C widgets depend
-	$(MAKE) -C xutf depend
 	$(MAKE) -C db depend
+	$(MAKE) -C xml depend
 	$(MAKE) -C images depend
 	$(MAKE) -C opengl depend
-	$(MAKE) -C xml depend
 
 ################################################################
 
@@ -118,10 +114,9 @@ install_static: static
 	@cp -f $(LIBRARY)$(LIBEXT) $(libdir)
 	@-chmod 644 $(libdir)/$(LIBNAME)$(LIBEXT)
 
+	$(MAKE) -C xml install_static
 	$(MAKE) -C images install_static
 	$(MAKE) -C opengl install_static
-	$(MAKE) -C xml install_static
-	$(MAKE) -C db install_static
 
 install_shared: shared
 	@echo "Installing shared libraries..."
@@ -134,11 +129,10 @@ install_shared: shared
 		ln -s $(DSOLIBNAME)$(DSOEXT) $(libdir)/$(DSOLIBNAME)$(DSOSHORTEXT); fi
 	@if [ -f "../lib/$(DLLIMPORTNAME)" ]; then cp ../lib/$(DLLIMPORTNAME) $(libdir); fi
 
+	$(MAKE) -C xml install_shared
 	$(MAKE) -C images install_shared
 	$(MAKE) -C opengl install_shared
-	$(MAKE) -C xml install_shared
-	$(MAKE) -C db install_shared
-
+ 
 install_programs:
 
 #

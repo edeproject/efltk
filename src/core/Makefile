@@ -12,6 +12,7 @@ CPPFILES = \
 	Fl_Exception.cpp \
 	Fl_Gif.cpp \
 	Fl_Group.cpp \
+	Fl_Hashs.cpp \
 	Fl_Image.cpp \
 	Fl_Image_Filter.cpp \
 	Fl_Lists.cpp \
@@ -22,6 +23,7 @@ CPPFILES = \
 	Fl_Style.cpp \
 	Fl_Style_Set.cpp \
 	Fl_Thread.cpp \
+	Fl_Translator.cpp \
 	Fl_Util.cpp \
 	Fl_Variant.cpp \
 	Fl_WM.cpp \
@@ -42,6 +44,7 @@ CPPFILES = \
 	Fl_lock.cpp \
 	Fl_own_colormap.cpp \
 	Fl_visual.cpp \
+        KStoUCS.cpp \
 	filename_absolute.cpp \
 	filename_expand.cpp \
 	filename_ext.cpp \
@@ -63,6 +66,7 @@ CPPFILES = \
 	fl_blit_n.cpp \
 	fl_clip.cpp \
 	fl_color.cpp \
+	fl_converters.cpp \
 	fl_cursor.cpp \
 	fl_curve.cpp \
 	fl_dnd.cpp \

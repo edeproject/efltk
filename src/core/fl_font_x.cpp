@@ -23,78 +23,68 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
+#include <efltk/Fl_String_Hash.h>
 #include <efltk/Fl.h>
 #include <efltk/Fl_Font.h>
-#include <efltk/x.h>
 #include <efltk/fl_draw.h>
 #include <efltk/Fl_Util.h>
 #include <efltk/Fl_String.h>
+#include <efltk/x.h>
+#include <efltk/fl_utf8.h>
 
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#if HAVE_XUTF8
-# include <efltk/Xutf8.h>
-#endif
+extern const int fl_encoding_number(const char *enc);
+extern const int fl_ucs2fontmap(char *s, unsigned int ucs, int enc);
 
 class Fl_FontSize {
 public:
-  Fl_FontSize* next;	// linked list for a single Fl_Font_
-  
-#if HAVE_XUTF8
-  XUtf8FontStruct* font; // X UTF-8 font information
-#else
-  XFontStruct* font;
-#endif  
-  const char* encoding;
-  Fl_FontSize(const char* xfontname);
-  unsigned minsize;	// smallest point size that should use this
-  unsigned maxsize;	// largest point size that should use this
-  //  ~Fl_FontSize();
+    Fl_FontSize* next;	// linked list for a single Fl_Font_
+
+    Fl_FontSize(const char* xfontname);
+
+    XFontStruct* font;
+    const char* encoding;
+    int encoding_num;
+
+    unsigned minsize;	// smallest point size that should use this
+    unsigned maxsize;	// largest point size that should use this
+    //  ~Fl_FontSize();
 };
 
 static Fl_FontSize *fl_fontsize;
-
 static GC font_gc; // which gc the font was set in last time
 
-static void
-set_current_fontsize(Fl_FontSize* f) {
-  if (f != fl_fontsize) {
-    fl_fontsize = f;
-    font_gc = 0;
-  }
+static void set_current_fontsize(Fl_FontSize* f)
+{
+    if (f != fl_fontsize) {
+        fl_fontsize = f;
+        font_gc = 0;
+    }
 }
 
 #define current_font (fl_fontsize->font)
-void* fl_xfont() { return (void*)current_font; }
+XFontStruct* fl_xfont() { return current_font; }
 
-Fl_FontSize::Fl_FontSize(const char* name) {
-#  if HAVE_XUTF8
-  font = XCreateUtf8FontStruct(fl_display, name);
-#  else
-  font = XLoadQueryFont(fl_display, name);
-# endif  
-  if (!font) {
-    Fl::warning("bad font: %s", name);
-#  if HAVE_XUTF8
-    font = XCreateUtf8FontStruct(fl_display, "fixed"); 
-#  else
-    font = XLoadQueryFont(fl_display, "fixed"); // if fixed fails we crash
-#  endif    
-  }
-  encoding = 0;
+Fl_FontSize::Fl_FontSize(const char* name)
+{
+    font = XLoadQueryFont(fl_display, name);
+    if(!font) {
+        Fl::warning("bad font: %s", name);
+        // if fixed fails we crash
+        font = XLoadQueryFont(fl_display, "fixed");
+    }
+    encoding = 0;
 }
 
 #if 0 // this is never called!
-Fl_FontSize::~Fl_FontSize() {
-  if (this == fl_fontsize) fl_fontsize = 0;
-#  if HAVE_XUTF8
-  XFreeUtf8FontStruct(fl_display, font);
-#  else
-  XFreeFont(fl_display, font);
-#  endif  
+Fl_FontSize::~Fl_FontSize()
+{
+    if (this == fl_fontsize) fl_fontsize = 0;
+    XFreeFont(fl_display, font);
 }
 #endif
 
@@ -102,75 +92,140 @@ Fl_FontSize::~Fl_FontSize() {
 // Things you can do once the font+size has been selected:
 
 // Placeholder function, Xft version needs to free something:
-void Fl_Drawable::free_gc() {draw = 0;}
+void Fl_Drawable::free_gc() { draw = 0; }
 
-void fl_transformed_draw(const char *str, int n, float x, float y) {
-  if (font_gc != fl_gc) {
-    // I removed this, the user MUST set the font before drawing: (was)
-    // if (!fl_fontsize) fl_font(FL_HELVETICA, FL_NORMAL_SIZE);
-    font_gc = fl_gc;
-#if !HAVE_XUTF8    
-    XSetFont(fl_display, fl_gc, current_font->fid);
-#endif    
-  }
-#if HAVE_XUTF8
-  XUtf8DrawString(fl_display, fl_window, current_font, fl_gc, int(floorf(x+.5f)),
-							      int(floorf(y+.5f)), str, n);
-#else
-  XDrawString(fl_display, fl_window, fl_gc,
-	      int(floorf(x+.5f)),
-	      int(floorf(y+.5f)), str, n);
-#endif	      
+void fl_transformed_draw(const char *str, int n, float x, float y)
+{
+    if (font_gc != fl_gc) {
+        font_gc = fl_gc;
+        XSetFont(fl_display, fl_gc, current_font->fid);
+    }
+
+    int X = int(floorf(x+.5f));
+    int Y = int(floorf(y+.5f));
+
+    char glyph[2];       // byte1 and byte2 value of the UTF-8 char
+    XChar2b buf[128];    // drawing buffer
+    int pos = 0;         // position in buffer
+    int  ulen;           // byte length of the UTF-8 char
+    unsigned int ucs;    // Unicode value of the UTF-8 char
+    unsigned int no_spc; // Spacing char equivalent of a non-spacing char
+
+    while(n > 0) {
+
+        if(pos>120) {
+            XDrawString16(fl_display, fl_window, fl_gc, X, Y, buf, pos);
+            X += XTextWidth16(current_font, buf, pos);
+            pos = 0;
+        }
+
+        ulen = fl_fast_utf2ucs((unsigned char*)str, n, &ucs);
+        if (ulen < 1) ulen = 1;
+        no_spc = fl_nonspacing(ucs);
+        if(no_spc) ucs = no_spc;
+
+        if(fl_ucs2fontmap(glyph, ucs, fl_fontsize->encoding_num) < 0) {
+            // the char is not valid in this encoding
+            fl_ucs2fontmap(glyph, '?', fl_fontsize->encoding_num);
+        }
+
+        if(no_spc) {
+            XDrawString16(fl_display, fl_window, fl_gc, X, Y, buf, pos);
+            X += XTextWidth16(current_font, buf, pos);
+            pos = 0;
+            (*buf).byte1 = glyph[0];
+            (*buf).byte2 = glyph[1];
+            X -= XTextWidth16(current_font, buf, 1);
+        } else {
+            (*(buf + pos)).byte1 = glyph[0];
+            (*(buf + pos)).byte2 = glyph[1];
+        }
+
+        pos++;
+        str += ulen;
+        n-=ulen;
+    }
+    if(pos>0)
+        XDrawString16(fl_display, fl_window, fl_gc, X, Y, buf, pos);
 }
-
 
 void fl_rtl_draw(const char *str, int n, float x, float y) {
     if (font_gc != fl_gc) {
         font_gc = fl_gc;
-#if !HAVE_XUTF8
         XSetFont(fl_display, fl_gc, ((XFontStruct*)fl_xfont())->fid);
-#endif
     }
-#if HAVE_XUTF8
-    XUtf8DrawRtlString(fl_display, fl_window, current_font, fl_gc,
-                       int(floorf(x+.5f)), int(floorf(y+.5f)), str, n);
-#else
-    XDrawString(fl_display, fl_window, fl_gc,
-                int(floorf(x+.5f)),
-                int(floorf(y+.5f)), str, n);
-#endif
+    ///
+    ///
 }
 
-
-float fl_height() {
-  return (current_font->ascent + current_font->descent);
-}
-
+float fl_height() { return (current_font->ascent + current_font->descent); }
 float fl_descent() { return current_font->descent; }
 
-float fl_width(const char *c, int n) {
-#if HAVE_XUTF8
-    return (float) XUtf8TextWidth(current_font, c, n);
-#else
-    return XTextWidth(current_font, c, n);
-#endif    
+float fl_width(const char *str, int n)
+{
+    char glyph[2];       // byte1 and byte2 value of the UTF-8 char
+    XChar2b buf[128];    // measure buffer
+    int pos = 0;         // position in buffer
+    int  ulen;           // byte length of the UTF-8 char
+    unsigned int ucs;    // Unicode value of the UTF-8 char
+    unsigned int no_spc; // Spacing char equivalent of a non-spacing char
+    float W=0;
+
+    while(n > 0) {
+        if(pos>120) {
+            W += XTextWidth16(current_font, buf, pos);
+            pos = 0;
+        }
+
+        ulen = fl_fast_utf2ucs((unsigned char*)str, n, &ucs);
+        if (ulen < 1) ulen = 1;
+        no_spc = fl_nonspacing(ucs);
+        if(no_spc) ucs = no_spc;
+
+        if(fl_ucs2fontmap(glyph, ucs, fl_fontsize->encoding_num) < 0) {
+            // the char is not valid in this encoding
+            fl_ucs2fontmap(glyph, '?', fl_fontsize->encoding_num);
+        }
+
+        if(no_spc) {
+            W += XTextWidth16(current_font, buf, pos);
+            pos = 0;
+            (*buf).byte1 = glyph[0];
+            (*buf).byte2 = glyph[1];
+            W -= XTextWidth16(current_font, buf, 1);
+        } else {
+            (*(buf + pos)).byte1 = glyph[0];
+            (*(buf + pos)).byte2 = glyph[1];
+        }
+
+        pos++;
+        str += ulen;
+        n-=ulen;
+    }
+    if(pos>0)
+        W += XTextWidth16(current_font, buf, pos);
+    return W;
 }
 
-float fl_width(unsigned int c) {
-#if HAVE_XUTF8
-    return (float) XUtf8UcsWidth(current_font, c);
-    //return fl_width((const char*)&(c), 1);
-#else
-    if(c>255) c=255;
-    XCharStruct* p = current_font->per_char;
-    if (p) {
-        int a = current_font->min_char_or_byte2;
-        int b = current_font->max_char_or_byte2 - a;
-        int x = c-a;
-        if (x >= 0 && x <= b) return p[x].width;
+float fl_width(unsigned int c)
+{
+    unsigned int ucs;
+    unsigned int ulen = fl_fast_utf2ucs((unsigned char*)&c, 1, &ucs);
+    if (ulen < 1) ulen = 1;
+    unsigned int no_spc = fl_nonspacing(ucs);
+    if(no_spc) ucs = no_spc;
+
+    char glyph[2];
+    if(fl_ucs2fontmap(glyph, ucs, fl_fontsize->encoding_num) < 0) {
+        // the char is not valid in this encoding
+        fl_ucs2fontmap(glyph, '?', fl_fontsize->encoding_num);
     }
-    return current_font->min_bounds.width;
-#endif    
+
+    XChar2b char2[2];
+    char2[0].byte1 = glyph[0];
+    char2[0].byte2 = glyph[1];
+    char2[1].byte1 = char2[1].byte2 = 0;
+    return XTextWidth16(current_font, char2, 1);
 }
 
 Fl_Font fl_create_font(const char *system_name)
@@ -240,25 +295,23 @@ int fl_correct_encoding(const char* name) {
 
 #define MAXSIZE 32767
 
-static char *find_best_font(Fl_Font_ *f, const char *fname, int size, int index)
+static char *find_best_font(Fl_Font_ *f, const char *fname, int size)
 {
-    char **list = NULL;
-    int cnt, offset;
+    char **list = f->xlist_;
+    int cnt = f->xlist_n_;
 
-    cnt = (int)f->xlist_sizes_[index];
-    offset = (int)f->xlist_offsets_[index];
-    list = (char**)f->xlist_->data();
+    if(!list) return "fixed";
 
-    if(!list || cnt<=0) return "fixed";
+    if(cnt<0) cnt = -cnt;
 
     // search for largest <= font size:
-    char* name = list[offset];
+    char* name = list[0];
     int ptsize = 0; // best one found so far
     int matchedlength = 32767;
     static char namebuffer[1024]; // holds scalable font name
     bool found_encoding = false;
 
-    for(int n=offset; n < offset+cnt; n++)
+    for(int n=0; n < cnt; n++)
     {
         char* thisname = list[n];
         if (fl_correct_encoding(thisname)) {
@@ -308,71 +361,13 @@ static char *find_best_font(Fl_Font_ *f, const char *fname, int size, int index)
     return name;
 }
 
-static char *put_font_size(Fl_Font_ *font, int size)
-{
-    int i = 0;
-    char *buf;
-    const char *ptr;
-    char *f;
-    char *name;
-    int nbf = 1;
-
-    name = strdup(font->name_);
-    while (name[i]) {
-        if (name[i] == ',') {nbf++; name[i] = '\0';}
-        i++;
-    }
-
-    buf = (char*) malloc(nbf * 256);
-    buf[0] = '\0';
-    ptr = name;
-    i = 0;
-    int cnt=0;
-    while (ptr && nbf > 0) {
-        f = find_best_font(font, ptr, size, cnt);
-        while (*f) {
-            buf[i] = *f;
-            f++; i++;
-        }
-        nbf--; cnt++;
-        while (*ptr) ptr++;
-        if (nbf) {
-            ptr++;
-            buf[i] = ',';
-            i++;
-        }
-        while(isspace(*ptr)) ptr++;
-    }
-
-    buf[i] = '\0';
-    free(name);
-    return buf;
-}
-
 uint Fl_Font_::cache_xlist()
 {
     fl_open_display();
-    if(xlist_) return xlist_->size();
+    if(xlist_) return xlist_n_;
 
-    xlist_ = new Fl_CString_List();
-
-    char **names = fl_split(name_, ",", 255);
-    if(!names) return 0;
-
-    for(int n=0; names[n]; n++) {
-        int cnt;
-        char **xlist = XListFonts(fl_display, names[n], 255, &cnt);
-
-        xlist_offsets_.append(xlist_->size());
-        xlist_sizes_.append(cnt);
-        for(int a=0; a<cnt; a++) {
-            // Add all matching fonts to cache list
-            xlist_->append(xlist[a]);
-        }
-    }
-
-    fl_freev(names);
-    return xlist_->size();
+    xlist_ = XListFonts(fl_display, name_, 255, &xlist_n_);
+    return xlist_n_;
 }
 
 Fl_FontSize *Fl_Font_::load_font(float psize)
@@ -380,14 +375,15 @@ Fl_FontSize *Fl_Font_::load_font(float psize)
     if(cache_xlist()==0) return 0;
 
     unsigned size = unsigned(psize);
-    char *name = put_font_size(this, size);
+    char *name = find_best_font(this, name_, size);
 
     // okay, make the font:
     Fl_FontSize* f = new Fl_FontSize(name);
-
-    // we pretend it has the current encoding even if it does not, so that
-    // it is quickly matched when searching for it again with the same
-    // encoding:
+    const char *enc = font_word(name, 13);
+    if(*enc++) {
+        f->encoding_num = fl_encoding_number(enc);
+    } else
+        f->encoding_num = 1; //ISO8859-1
 
     f->encoding = fl_encoding_;
     f->minsize = size;
@@ -395,8 +391,6 @@ Fl_FontSize *Fl_Font_::load_font(float psize)
 
     f->next = first;
     first = f;
-
-    delete []name;
 
     return f;
 }
@@ -411,7 +405,8 @@ void fl_font(Fl_Font font, float psize)
 
     // See if the current font is correct:
     if(fl_font_ && font==fl_font_ && psize == fl_size_
-       && (!f->encoding || !strcmp(f->encoding, fl_encoding_)))
+       && (!f->encoding || !strcmp(f->encoding, fl_encoding_))
+      )
         return;
 
     fl_font_ = font;
@@ -428,9 +423,9 @@ void fl_font(Fl_Font font, float psize)
         }
     }
 
-  Fl_Font_ *t = (Fl_Font_*)font; // cast away const
-  f = t->load_font(size);
-  set_current_fontsize(f);
+    Fl_Font_ *t = (Fl_Font_*)font; // cast away const
+    f = t->load_font(size);
+    set_current_fontsize(f);
 }
 
 // Change the encoding to use for the next font selection.

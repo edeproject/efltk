@@ -827,56 +827,22 @@ Fl_Window* new_view() {
     m->end();
 
 #if !STYLES && HAVE_XUTF8
-	if(!myfont) 
-		myfont = fl_create_font(
+    if(!myfont)
+        myfont = fl_create_font(
 #ifdef _WIN32
-			"Arial Unicode MS"
-			//"MS Gothic"				
+                                "Arial Unicode MS"
+                                //"MS Gothic"
 #else
-			"-*-courier-medium-r-normal--*,"
-			"-*-fixed-medium-*-*--*-*-*-*-*-*-iso8859-15,"
-			"-*-symbol-*-*-*--*-*-*-*-*-*-adobe-fontspecific,"
-			"-*-*dingbats-*-*-*--*-*-*-*-*-*-adobe-fontspecific,"
-			"-*-fixed-*-*-*--*-*-*-*-*-*-iso8859-2,"
-			"-*-fixed-*-*-*--*-*-*-*-*-*-iso8859-3,"
-			"-*-fixed-*-*-*--*-*-*-*-*-*-iso8859-4,"
-			"-*-fixed-*-*-*--*-*-*-*-*-*-iso8859-5,"
-			"-*-fixed-*-*-*--*-*-*-*-*-*-iso8859-6,"
-			"-*-fixed-*-*-*--*-*-*-*-*-*-iso8859-7,"
-			"-*-fixed-*-*-*--*-*-*-*-*-*-iso8859-8,"
-			"-*-fixed-*-*-*--*-*-*-*-*-*-iso8859-9,"
-			"-*-fixed-*-*-*--*-*-*-*-*-*-iso8859-13,"
-			"-*-fixed-*-*-*--*-*-*-*-*-*-iso8859-14,"
-			"-*-fixed-*-*-*--*-*-*-*-*-*-koi8-*,"
-			"-*-fixed-*-*-*--*-*-*-*-*-*-jisx0208.1983-*,"
-			//"-*-fixed-*-*-*--*-*-*-*-*-*-jisc6226.1978-*,"
-			"-*-fixed-*-*-*--*-*-*-*-*-*-jisx0201.1976-*,"
-			"-*-*-*-*-*--*-*-*-*-*-*-ksc5601.1987-*,"
-			//"-*-fixed-*-*-*--*-*-*-*-*-*-jisx0208.1990-*,"
-			"-*-fixed-medium-r-normal--*-*-*-*-*-*-big5*-*,"
-			//"-*-fixed-*-*-*--*-*-*-*-*-*-iso646.1991-*,"
-			//"-*-fixed-*-*-*--*-*-*-*-*-*-mulearabic-1,"
-			//"-*-fixed-*-*-*--*-*-*-*-*-*-muleindian-1,"
-			//"-*-fixed-*-*-*--*-*-*-*-*-*-muleindian-2,"
-			//"-*-fixed-*-*-*--*-*-*-*-*-*-mulelao-*,"
-			//"-*-fixed-*-*-*--*-*-*-*-*-*-tis620.2529-*,"
-			//"-*-fixed-*-*-*--*-*-*-*-*-*-is13194-*,"
-			//"-*-fixed-*-*-*--*-*-*-*-*-*-mulearabic-2,"
-			//"-*-fixed-*-*-*--*-*-*-*-*-*-sisheng_cwnn-*,"
-			//"-*-fixed-*-*-*--*-*-*-*-*-*-omron_udc_zh-*,"
-			//"-*-fixed-*-*-*--*-*-*-*-*-*-muleipa-*,"
-			//"-*-fixed-*-*-*--*-*-*-*-*-*-viscii1.1-*,"
-			//"-*-fixed-*-*-*--*-*-*-*-*-*-gost19768.74-*,"
-			"-*-unifont-*-*-*--*-*-*-*-*-*-iso10646-1"
-#endif	
-			);
+                                "-*-fixed-medium-r-*--*-*-*-*-*-*-iso10646-1"
+#endif
+                               );
 #endif
 
     w->editor = new Fl_Text_Editor(0, 30, 660, 370);
 #if !STYLES
     w->editor->text_size(14);
 #if HAVE_XUTF8
-	w->editor->text_font(myfont);
+    w->editor->text_font(myfont);
 #endif
 #endif
     //w->editor->cursor_style(Fl_Text_Editor::BLOCK_CURSOR);
