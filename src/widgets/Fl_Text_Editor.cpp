@@ -309,13 +309,12 @@ extern void fl_text_drag_me(int pos, Fl_Text_Display* d);
 
 int Fl_Text_Editor::kf_move(int c, Fl_Text_Editor* e)
 {
-    int i;
-	int vis_lines = e->mNVisibleLines-1;
+    int vis_lines = e->mNVisibleLines-1;
     int selected = e->buffer()->selected();
     if (!selected)
         e->dragPos = e->insert_position();
     e->buffer()->unselect();
-	e->display_insert_position_hint = 1;
+
     switch (c)
     {
         case FL_Home:
@@ -339,8 +338,8 @@ int Fl_Text_Editor::kf_move(int c, Fl_Text_Editor* e)
         case FL_Page_Up:
             e->move_up(vis_lines);
             break;
-        case FL_Page_Down:            
-			e->move_down(vis_lines);
+        case FL_Page_Down:
+            e->move_down(vis_lines);
             break;
     }
     e->show_insert_position();
