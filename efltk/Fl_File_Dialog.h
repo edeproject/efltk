@@ -38,19 +38,23 @@ public:
 
     enum {
         FILE = 0,
-        DIR = 1,
+        DIR,
         DEVICE,
         NETWORK
     };
 
-    Fl_FileAttr *attr;
-    char fname[FL_PATH_MAX];
-    char size[32];
-    char free[32]; //used in device
+	int compare(Fl_ListView_Item *other, int column, int sort_type);
 
     uchar type() const { return type_; }
     void  type(uchar t) { type_ = t; }
     uchar type_;
+
+	Fl_FileAttr *attr;
+    char fname[FL_PATH_MAX];
+    char size[32];
+#ifdef _WIN32
+    char free[32]; //used in device type
+#endif
 };
 
 #define CLOSE_OK     false

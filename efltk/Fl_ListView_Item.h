@@ -40,6 +40,8 @@ public:
 
     uchar damage() const { return damage_; }
     void set_damage(uchar c) { damage_ = c; }
+	void redraw(uchar c);
+	void redraw() { redraw(FL_DAMAGE_ALL); }
 
     Fl_ListView *parent() { return parent_; }
     void parent(Fl_ListView *l) { parent_ = l; }
@@ -67,8 +69,15 @@ public:
     int h() { return h_; }
     void h(int H) { h_ = H; }
 
+	// Current index on the list
     void index(int i) { index_ = i; }
     int index() { return index_; }
+
+	// Returns absolute index, i.e. adding order
+	void abs_index(int i) { abs_index_ = i; }
+	int abs_index() { return abs_index_; }
+
+	virtual int compare(Fl_ListView_Item *other, int column, int sort_type);
 
 protected:
     Fl_Ptr_List attr_list;
@@ -79,7 +88,7 @@ protected:
 
 private:
     int y_, h_;
-    int index_;
+    int index_, abs_index_;
     uchar damage_;
     Fl_Image *image_;
     void *user_data_;

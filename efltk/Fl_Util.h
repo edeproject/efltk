@@ -2,6 +2,7 @@
 #define _FL_UTILS_H
 
 #include "Enumerations.h"
+#include "Fl_Flags.h"
 
 #define FL_DIR	  (1<<1) //Directory
 #define FL_FILE   (1<<2) //Regular file
@@ -11,13 +12,18 @@
 class Fl_FileAttr
 {
 public:
-	Fl_FileAttr() { size=0; free=used=0; flags=0; }
+	Fl_FileAttr() { size=0; flags=0; }
 	bool parse(const char *filename);
-	uint size; // size for files
-	char time[128]; // time str
+	
+	ulong size; // size of file
+	ulong modified; // time modified
+	char time[128]; // time modified str
+	Fl_Flags flags; // type flags
+
+#ifdef _WIN32
 	uint64 free; //Free space
-	uint64 used; //Used space
-	int flags;
+	uint64 capacity; //total capacity space
+#endif
 };
 
 // return pointer to .ext or NULL if no extension

@@ -25,9 +25,10 @@ public:
     };
 
     enum {
-        SORT_ASC = 0,
+        SORT_ABSOLUTE = 0,
+		SORT_ASC,
         SORT_DESC,
-        SORT_UNKNOWN
+        SORT_LAST_TYPE //number of last type
     };
 
     Fl_ListView(int X,int Y,int W,int H,const char*l=0);
@@ -35,6 +36,9 @@ public:
 
     void begin();
     void end();
+
+	Fl_ListView_Item *find_userdata(void *data, uint start_index=0);
+	Fl_ListView_Item *find_text(const char *text, uint column, uint start_index=0);
 
     Fl_ListView_Item *child(uint index) { return items.item(index); }
     uint children() { return items.size(); }
