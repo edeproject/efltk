@@ -27,7 +27,7 @@
 
 void cb(Fl_Widget *,void *) {
    fl_try {
-      fl_throw(Fl_Exception("Error happened",__FILE__,__LINE__));
+      fl_throw("Error happened");
    }
    fl_catch(exc) {
       fl_alert(exc.text().c_str());
