@@ -171,11 +171,9 @@ int main(int argc, char **argv)
     mainwin->menu()->tooltip("This is a menu bar");
     mainwin->menu()->callback(test_cb);
 
-    // Set default button sizes, toolbar defaults is 24x24
-    Fl_Tool_Bar::button_h = 32;
-    Fl_Tool_Bar::button_w = 40;
     // Add some buttons, add_button(label, tooltip, image, callback)
     Fl_Tool_Bar *toolbar = mainwin->toolbar();
+    toolbar->tb_size(Fl_Tool_Bar::TB_SIZE_BIG);
     toolbar->spacing(4);
     toolbar->add_button("This", "Toolbar button 1", 0, 0);
     toolbar->add_button("Is",   "Toolbar button 2", 0, 0);
