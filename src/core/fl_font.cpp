@@ -56,7 +56,8 @@ fl_draw(const char* str, int n, float x, float y) {
 }
 
 float
-fl_width(const char* c) { return fl_width(c, strlen(c)); }
+fl_width(const char* c) {return fl_width(c, strlen(c));
+}
 
 //
 // End of "$Id$".

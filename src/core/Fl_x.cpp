@@ -39,6 +39,11 @@
 #include <sys/time.h>
 #include <limits.h>
 
+#if HAVE_XUTF8
+#include "fl_utf8_x.h"
+#endif
+
+
 ////////////////////////////////////////////////////////////////
 // interface to poll/select call:
 
@@ -297,6 +302,47 @@ extern "C"
     }
 }
 
+#ifdef HAVE_XUTF8
+XIM fl_xim_im;
+XIC fl_xim_ic;
+
+
+void fl_init_xim()
+{
+        XIMStyles* xim_styles;
+        if (!fl_display) return;
+        if (fl_xim_im) return;
+
+        fl_xim_im = XOpenIM(fl_display, NULL, NULL, NULL);
+        xim_styles = NULL;
+        fl_xim_ic = NULL;
+
+        if (fl_xim_im) {
+                XGetIMValues (fl_xim_im, XNQueryInputStyle,
+                        &xim_styles, NULL, NULL);
+        } else {
+                Fl::warning("XOpenIM() failed\n");
+                return;
+        }
+        if (xim_styles && xim_styles->count_styles) {
+                fl_xim_ic = XCreateIC(fl_xim_im,
+                        XNInputStyle, (XIMPreeditNothing | XIMStatusNothing),
+                        NULL);
+        } else {
+                Fl::warning("No XIM style found\n");
+                XCloseIM(fl_xim_im);
+                fl_xim_im = NULL;
+                return;
+        }
+        if (!fl_xim_ic) {
+                Fl::warning("XCreateIC() failed\n");
+                XCloseIM(fl_xim_im);
+                XFree(xim_styles);
+                fl_xim_im = NULL;
+        }
+}
+#endif
+
 
 void fl_open_display()
 {
@@ -379,9 +425,13 @@ void fl_open_display(Display* d)
     fl_visual = XGetVisualInfo(d, VisualIDMask, &templt, &num);
     fl_colormap = DefaultColormap(d, fl_screen);
 
-    #if !USE_COLORMAP
+#  if HAVE_XUTF8
+    fl_init_xim();
+#  endif
+
+#if !USE_COLORMAP
     Fl::visual(FL_RGB);
-    #endif
+#endif
 }
 
 
@@ -899,6 +949,7 @@ bool fl_handle()
             if (fl_xevent.type == KeyPress)
             {
                 event = FL_KEY;
+		
                 fl_key_vector[keycode/8] |= (1 << (keycode%8));
                 // Make repeating keys increment the click counter:
                 if (keycode == lastkeycode)
@@ -912,9 +963,38 @@ bool fl_handle()
                     Fl::e_is_click = 1;
                     lastkeycode = keycode;
                 }
-                static char buffer[21];
-                KeySym keysym;
-                int len = XLookupString(&(fl_xevent.xkey), buffer, 20, &keysym, 0);
+                static char buffer[256];
+                KeySym keysym = 0;
+		
+#if HAVE_XUTF8
+		static Window xim_win = 0;
+	        int filtered = 0;
+	        if (xim_win != fl_window) 
+		{
+	    	    XDestroyIC(fl_xim_ic);
+	            fl_xim_ic = XCreateIC(fl_xim_im,
+                        XNInputStyle, (XIMPreeditNothing | XIMStatusNothing),
+                        XNClientWindow, fl_window,
+                        XNFocusWindow, fl_window,
+                        NULL);
+        	    xim_win = fl_window;
+    		}
+		
+    		filtered = XFilterEvent((XEvent *)&fl_xevent, fl_xevent.xany.window);
+		int len = 0;
+	        if (!filtered) {
+	            Status status;
+		    len = XUtf8LookupString(fl_xim_ic, (XKeyPressedEvent *)&fl_xevent.xkey,
+                               buffer, 255, &keysym, &status);
+		}
+		else {
+	          keysym = XKeycodeToKeysym(fl_display, keycode, 0);
+    		}
+	       
+#else
+		int len = XLookupString(&(fl_xevent.xkey), buffer, 255, &keysym, 0);
+#endif
+		
                 // Make ctrl+dash produce ^_ like it used to:
                 if (fl_xevent.xbutton.state&4 && keysym == '-') buffer[0] = 0x1f;
                 // Any keys producing foreign letters produces the bottom 8 bits:
@@ -970,7 +1050,7 @@ bool fl_handle()
             else if (!keysym)
             {
                 keysym = keycode|0x8000;
-                #ifdef __sgi
+#ifdef __sgi
                 // You can plug a microsoft keyboard into an Irix box but these
                 // keys are not translated.  Make them translate like XFree86 does:
                 switch (keycode)
@@ -979,13 +1059,12 @@ bool fl_handle()
                     case 148: keysym = FL_Win_R; break;
                     case 149: keysym = FL_Menu; break;
                 }
-                #endif
+#endif
             }
             Fl::e_keysym = int(keysym);
             set_event_xy(true);
             break;
         }
-
         case SelectionNotify:
         {
             if (!fl_selection_requestor) return false;

@@ -23,6 +23,8 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
+#include <config.h>
+
 #include <efltk/Fl.h>
 #include <efltk/Fl_Font.h>
 #include <efltk/x.h>
@@ -33,10 +35,20 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if HAVE_XUTF8
+#include "fl_utf8_x.h"
+#endif
+
+
 class Fl_FontSize {
 public:
   Fl_FontSize* next;	// linked list for a single Fl_Font_
+  
+#if HAVE_XUTF8
+  XUtf8FontStruct* font; // X UTF-8 font information
+#else
   XFontStruct* font;
+#endif  
   const char* encoding;
   Fl_FontSize(const char* xfontname);
   unsigned minsize;	// smallest point size that should use this
@@ -57,13 +69,25 @@ set_current_fontsize(Fl_FontSize* f) {
 }
 
 #define current_font (fl_fontsize->font)
+#if HAVE_XUTF8
+XUtf8FontStruct* fl_xfont() {return current_font;}
+#else
 XFontStruct* fl_xfont() {return current_font;}
+#endif
 
 Fl_FontSize::Fl_FontSize(const char* name) {
+#  if HAVE_XUTF8
+  font = XCreateUtf8FontStruct(fl_display, name);
+#  else
   font = XLoadQueryFont(fl_display, name);
+# endif  
   if (!font) {
     Fl::warning("bad font: %s", name);
+#  if HAVE_XUTF8
+    font = XCreateUtf8FontStruct(fl_display, "fixed"); 
+#  else
     font = XLoadQueryFont(fl_display, "fixed"); // if fixed fails we crash
+#  endif    
   }
   encoding = 0;
 }
@@ -71,7 +95,11 @@ Fl_FontSize::Fl_FontSize(const char* name) {
 #if 0 // this is never called!
 Fl_FontSize::~Fl_FontSize() {
   if (this == fl_fontsize) fl_fontsize = 0;
+#  if HAVE_XUTF8
+  XFreeUtf8FontStruct(fl_display, font);
+#  else
   XFreeFont(fl_display, font);
+#  endif  
 }
 #endif
 
@@ -86,12 +114,38 @@ void fl_transformed_draw(const char *str, int n, float x, float y) {
     // I removed this, the user MUST set the font before drawing: (was)
     // if (!fl_fontsize) fl_font(FL_HELVETICA, FL_NORMAL_SIZE);
     font_gc = fl_gc;
+#if !HAVE_XUTF8    
     XSetFont(fl_display, fl_gc, current_font->fid);
+#endif    
   }
+#if HAVE_XUTF8
+  XUtf8DrawString(fl_display, fl_window, current_font, fl_gc, int(floorf(x+.5f)),
+							      int(floorf(y+.5f)), str, n);
+#else
   XDrawString(fl_display, fl_window, fl_gc,
 	      int(floorf(x+.5f)),
 	      int(floorf(y+.5f)), str, n);
+#endif	      
 }
+
+
+void fl_rtl_draw(const char *str, int n, float x, float y) {
+    if (font_gc != fl_gc) {
+	font_gc = fl_gc;
+#if !HAVE_XUTF8
+        XSetFont(fl_display, fl_gc, fl_xfont->fid);
+#endif
+    }
+#ifdef HAVE_XUTF8
+    XUtf8DrawRtlString(fl_display, fl_window, current_font, fl_gc, 
+		    int(floorf(x+.5f)), int(floorf(y+.5f)), str, n);
+#else
+    XDrawString(fl_display, fl_window, fl_gc,
+	      int(floorf(x+.5f)),
+	      int(floorf(y+.5f)), str, n);
+#endif
+}
+
 
 float fl_height() {
   return (current_font->ascent + current_font->descent);
@@ -100,10 +154,17 @@ float fl_height() {
 float fl_descent() { return current_font->descent; }
 
 float fl_width(const char *c, int n) {
+#if HAVE_XUTF8
+    return (float) XUtf8TextWidth(current_font, c, n);
+#else
     return XTextWidth(current_font, c, n);
+#endif    
 }
 
 float fl_width(uchar c) {
+#if HAVE_XUTF8
+  return (float) XUtf8UcsWidth(current_font, c);
+#else
     XCharStruct* p = current_font->per_char;
     if (p) {
         int a = current_font->min_char_or_byte2;
@@ -112,6 +173,7 @@ float fl_width(uchar c) {
         if (x >= 0 && x <= b) return p[x].width;
     }
     return current_font->min_bounds.width;
+#endif    
 }
 
 

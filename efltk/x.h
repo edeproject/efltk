@@ -65,6 +65,10 @@
  typedef struct _XftDraw XftDraw;
 #endif
 
+#    if HAVE_XUTF8
+#include "../src/core/fl_utf8_x.h"
+#    endif
+
 ////////////////////////////////////////////////////////////////
 // constant info about the X server connection:
 
@@ -103,7 +107,14 @@ extern FL_API Atom fl_dnd_action;
 extern FL_API GC	fl_gc;
 extern FL_API struct Fl_Drawable* fl_drawable;
 extern FL_API Window	fl_window;
+#    if HAVE_XUTF8
+extern FL_API XUtf8FontStruct* fl_xfont();
+#    else 
 extern FL_API XFontStruct*	fl_xfont();
+#    endif
+
+
+
 extern FL_API ulong	fl_pixel; // ==fl_xpixel(fl_color())
 extern FL_API ulong	fl_xpixel(Fl_Color i);
 extern FL_API void	fl_clip_region(Region);
