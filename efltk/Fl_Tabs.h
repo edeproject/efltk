@@ -12,42 +12,74 @@
  * This library is distributed under the GNU LIBRARY GENERAL PUBLIC LICENSE
  * version 2. See COPYING for details.
  *
- * Author : Mikko Lahteenmaki
- * Email  : mikko@fltk.net
+ * Author : Alexey Parshin
+ * Email  : alexey@fltk.net
  *
  * Please report all bugs and problems to "efltk-bugs@fltk.net"
  *
  */
 
-#ifndef _FL_TABS_H_
-#define _FL_TABS_H_
+#ifndef _Fl_Tabs_H_
+#define _Fl_Tabs_H_
 
 #include "Fl_Group.h"
 
+class Fl_Scroll;
+class Fl_Tabs_Matrix;
+class Fl_Tab_Info;
+
 /** Fl_Tabs */
 class FL_API Fl_Tabs : public Fl_Group {
+    friend class Fl_Tabs_Matrix;
 public:
+    static const Fl_Color auto_color_table[16];
     static Fl_Named_Style* default_style;
-    Fl_Tabs(int,int,int,int,const char * = 0);
+
+    Fl_Tabs(int x,int y,int w,int h,const char *label = 0);
+    virtual ~Fl_Tabs();
+
+    Fl_Group* new_group(const char *label,bool autoColor=false);
+    Fl_Scroll* new_scroll(const char *label,bool autoColor=false);
+    Fl_Group* new_page(const char *label,bool autoColor=false) { return (Fl_Group*)new_scroll(label, autoColor); }
 
     Fl_Widget *value();
     int value(Fl_Widget *);
-
-    Fl_Widget *push() const {return push_;}
+    
+	Fl_Widget *push() const {return push_;}
     int push(Fl_Widget *);
+    
+	Fl_Widget *which(int event_x, int event_y);
 
-    Fl_Widget *which(int event_x, int event_y);
+    void show_tabs(bool st);
+    bool show_tabs() { return m_showTabs; }
 
-    virtual int handle(int);
+    void tabs_mode(Fl_Align tm);
+    Fl_Align tabs_mode() { return m_tabsMode; }
+
     virtual void draw();
+    virtual void layout();
+    virtual int handle(int);
 
+protected:
+    bool              m_showTabs;
+    int               m_tabsWidth;
+    int               m_tabsHeight;
+    int               m_rowHeight;
+    void draw_tab(Fl_Tab_Info *tab,Fl_Flags flags);
+    Fl_Group* last_tab();
+
+    void resize_tabs();
+    void extend_tabs();
+
+    Fl_Scroll* create_new_scroll(const char *label);
+    Fl_Group* create_new_group(const char *label);
 private:
-    friend class Fl_Group;
-    Fl_Widget *push_;
-    int tab_positions(int*, int*);
-    int tab_height();
-    void draw_tab(int x1, int x2, int W, int H, Fl_Widget* o, int sel=0);
-    int tabH;
+    Fl_Widget        *value_;
+    Fl_Widget        *push_;
+    Fl_Tabs_Matrix   *m_tabsMatrix;
+    int               m_autoColorIndex;
+    Fl_Align          m_tabsMode;
+
 };
 
 #endif

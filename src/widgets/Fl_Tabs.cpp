@@ -1,278 +1,655 @@
-//
-// "$Id$"
-//
-// Tab widget for the Fast Light Tool Kit (FLTK).
-//
-// Copyright 1998-1999 by Bill Spitzak and others.
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Library General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Library General Public License for more details.
-//
-// You should have received a copy of the GNU Library General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA.
-//
-// Please report all bugs and problems to "fltk-bugs@easysw.com".
-//
+/***************************************************************************
+                          Fl_Tabs.cpp  -  description
+                             -------------------
+    begin                : Tue Feb 26 2002
+    version              : 0.98, Jun 1 2002
+    copyright            : (C) 2002 by Alexey S.Parshin
+    email                : alexeyp@m7.tts-sf.com
+ ***************************************************************************/
 
-// This is the "file card tabs" interface to allow you to put lots and lots
-// of buttons and switches in a panel, as popularized by many toolkits.
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
-// Each child widget is a card, and it's label() is printed on the card tab.
-// Clicking the tab makes that card visible.
-
+#include <efltk/fl_math.h>
 #include <efltk/Fl.h>
 #include <efltk/Fl_Tabs.h>
 #include <efltk/fl_draw.h>
-#include <efltk/Fl_Tooltip.h>
+#include <efltk/Fl_Scroll.h>
+#include <efltk/Fl_Image.h>
+#include <string.h>
+#include <stdio.h>
 
+#define BORDER 10
 #define TABSLOPE 5
-#define EXTRASPACE 5+button_box()->dw()
+#define EXTRASPACE 2
 
-// return the left edges of each tab (plus a fake left edge for a tab
-// past the right-hand one).  These position are actually of the left
-// edge of the slope.  They are either seperated by the correct distance
-// or by TABSLOPE or by zero.
-// Return value is the index of the selected item.
+class Fl_Tab_Info {
+public:
+    int       m_x, m_y, m_width, m_height;
+    int       m_id;
+    Fl_Widget *m_widget;
+public:
+    Fl_Tab_Info(int x,int y,int width,int height,int id,Fl_Widget *widget);
+    Fl_Tab_Info(const Fl_Tab_Info& );
+    bool includes_coord(int x,int y);
+    Fl_Widget *widget() { return m_widget; }
+};
 
-int Fl_Tabs::tab_positions(int* p, int* w)
-{
-    int selected = -1;
-    int i;
-    p[0] = 0;
-    int numchildren = children();
-    for (i=0; i<numchildren; i++)
-    {
-        Fl_Widget* o = child(i);
-        if(o->visible()) selected = i;
-        if(!o->label().empty())
-        {
-            int wt = 0; int ht = 0; o->measure_label(wt,ht);
-            w[i] = wt+TABSLOPE+EXTRASPACE;
-            //if (2*TABSLOPE > w[i]) w[i] = 2*TABSLOPE;
-        } else
-            w[i] = 2*TABSLOPE;
-        p[i+1] = p[i]+w[i]+1;
-    }
-    int r = this->w()-TABSLOPE-1;
-    if (p[i] <= r) return selected;
-    // uh oh, they are too big:
-    // pack them against right edge:
-    p[i] = r;
-    for (i = children(); i--;)
-    {
-        int l = r-w[i];
-        if (p[i+1]-TABSLOPE < l) l = p[i+1]-TABSLOPE;
-        if (p[i] <= l) break;
-        p[i] = l;
-        r -= TABSLOPE;
-    }
-    // pack them against left edge and truncate width if they still don't fit:
-    for (i = 0; i<children(); i++)
-    {
-        if (p[i] >= i*TABSLOPE) break;
-        p[i] = i*TABSLOPE;
-        int W = this->w()-1-TABSLOPE*(children()-i) - p[i];
-        if (w[i] > W) w[i] = W;
-    }
-    // adjust edges according to visiblity:
-    for (i = children(); i > selected; i--)
-    {
-        p[i] = p[i-1]+w[i-1]+1;
-    }
-    return selected;
+class Fl_Tabs_List {
+    friend class Fl_Tabs_Matrix;
+    friend class Fl_Tabs;
+private:
+    Fl_Tab_Info   *m_list[32];
+    unsigned       m_count;
+    int            m_active;
+protected:
+    void      sety(int ycoord);
+    Fl_Tab_Info *tab_at(int x,int y) const;
+    Fl_Tab_Info *tab_for(Fl_Widget *group) const;
+    void      extend(int width);
+public:
+    Fl_Tabs_List();
+    ~Fl_Tabs_List() { clear(); }
+    void     add(Fl_Tab_Info *ti);
+    void     clear();
+    unsigned count()                          { return m_count; }
+    Fl_Tab_Info * operator [] (unsigned index)   { return m_list[index]; }
+    int       active()                        { return m_active; }
+    void      active(int activeIndex)         { m_active = activeIndex; }
+    Fl_Tab_Info *active_tab();
+    int       index_of(Fl_Tab_Info *ti);
+};
+
+class Fl_Tabs_Matrix {
+    friend class Fl_Tabs;
+private:
+    unsigned            m_count;
+    Fl_Tabs_List *m_list[16];
+    Fl_Tabs      *m_multiTabs;
+protected:
+    Fl_Tab_Info        *m_activeTab;
+
+    Fl_Tab_Info *tab_at(int x,int y) const;
+    Fl_Tab_Info *tab_for(Fl_Widget *group) const;
+public:
+    Fl_Tabs_Matrix(Fl_Tabs * multiTabs) { m_count = 0; m_activeTab = 0L; m_multiTabs = multiTabs; }
+    ~Fl_Tabs_Matrix() { clear(); }
+    void     add(Fl_Tabs_List *tl);
+    void     clear();
+    unsigned count() { return m_count; }
+    Fl_Tabs_List * operator [] (unsigned index) { return (Fl_Tabs_List *)m_list[index]; }
+
+    void     activate(int rowIndex,int tabIndex,Fl_Align tmode);
+    void     activate(Fl_Tab_Info *,Fl_Align tmode);
+};
+
+Fl_Tab_Info::Fl_Tab_Info(int tx,int ty,int twidth,int theight,int tid,Fl_Widget *twidget) {
+    m_x = tx;
+    m_y = ty;
+    m_width = twidth;
+    m_height = theight;
+    m_id = tid;
+    m_widget = twidget;
 }
 
+Fl_Tab_Info::Fl_Tab_Info(const Fl_Tab_Info& ti) {
+    m_x = ti.m_x;
+    m_y = ti.m_y;
+    m_width = ti.m_width;
+    m_height = ti.m_height;
+    m_id = ti.m_id;
+    m_widget = ti.m_widget;
+}
 
-// return space needed for tabs.  Negative to put them on the bottom:
-int Fl_Tabs::tab_height()
-{
-    int H = h();
-    int H2 = 0;
-    int numchildren = children();
-    for (int i=0; i < numchildren; i++)
-    {
-        Fl_Widget* o = child(i);
-        if (o->y() < H) H = o->y();
-        if (o->y()+o->h() > H2) H2 = o->y()+o->h();
+bool Fl_Tab_Info::includes_coord(int xx,int yy) {
+    return ( xx > m_x && xx < m_x + m_width && yy > m_y && yy < m_y + m_height );
+}
+
+Fl_Tabs_List::Fl_Tabs_List()  {
+    m_active = -1;
+    m_count = 0;
+}
+
+void Fl_Tabs_List::extend(int width) {
+    if (!m_count) return;
+    Fl_Tab_Info *ti = m_list[m_count-1];
+    int totalWidth = ti->m_x + ti->m_width;
+    int extendX = (width - totalWidth) / (int)m_count;
+    for (unsigned t=0; t < m_count; t++) {
+        Fl_Tab_Info *ti = m_list[t];
+        ti->m_x += int(t) * extendX;
+        ti->m_width += int( extendX );
     }
-    H2 = h()-H2;
-    int dx=0; int dy=0; int dw=0; int dh=0; box()->inset(dx,dy,dw,dh);
-    if (H2 > H)
-    {
-        H = H2-dy;
-        return (H <= 0) ? 0 : -H-1;
+   // step 2 - finalizing
+    totalWidth = ti->m_x + ti->m_width;
+
+    extendX = width - totalWidth;
+    ti->m_width += extendX;
+}
+
+Fl_Tab_Info * Fl_Tabs_List::tab_for(Fl_Widget *widget) const {
+    for (unsigned i=0; i < m_count; i++) {
+        Fl_Tab_Info *ti = m_list[i];
+        if (ti->m_widget == widget) return ti;
     }
-    else
-    {
-        H = H-dy;
-        return (H <= 0) ? 0 : H;
+    return 0L;
+}
+
+void Fl_Tabs_List::add(Fl_Tab_Info *ti) {
+    if (m_count >= 32) return;
+    m_list[m_count] = ti;
+    m_count++;
+}
+
+void Fl_Tabs_List::clear() {
+    for (unsigned i=0; i < m_count; i++) {
+        delete m_list[i];
+    }
+    m_count = 0;
+}
+
+Fl_Tab_Info *Fl_Tabs_List::active_tab() {
+    if (m_active == -1) return 0;
+    return m_list[m_active];
+}
+
+void Fl_Tabs_List::sety(int ycoord) {
+    for (unsigned i=0; i < m_count; i++) {
+        m_list[i]->m_y = ycoord;
     }
 }
 
-
-// this is used by fluid to pick tabs:
-Fl_Widget *Fl_Tabs::which(int event_x, int event_y)
-{
-    int H = tab_height();
-    if (H < 0)
-    {
-        if (event_y > h() || event_y < h()+H) return 0;
-    }
-    else
-    {
-        if (event_y > H || event_y < 0) return 0;
-    }
-    if (event_x < 0) return 0;
-    int p[128], w[128];
-    int selected = tab_positions(p, w);
-    int d = (event_y-(H>=0?0:h()))*TABSLOPE/(H==0?1:H);
-    for (int i=0; i<children(); i++)
-    {
-        if (event_x < p[i+1]+(i<selected ? TABSLOPE-d : d)) return child(i);
+Fl_Tab_Info *Fl_Tabs_List::tab_at(int x,int y) const {
+    for (unsigned i=0; i < m_count; i++) {
+        Fl_Tab_Info * tab = m_list[i];
+        if (tab->includes_coord(x,y))
+            return tab;
     }
     return 0;
 }
 
+int Fl_Tabs_List::index_of(Fl_Tab_Info *ti) {
+    for (unsigned i=0; i < m_count; i++) {
+        Fl_Tab_Info * tab = m_list[i];
+        if (tab == ti)
+            return i;
+    }
+    return -1;
+}
 
-int Fl_Tabs::handle(int event)
-{
+void Fl_Tabs_Matrix::add(Fl_Tabs_List *tl) {
+    if (m_count >= 8) return;
+    m_list[m_count] = tl;
+    m_count++;
+}
 
-    Fl_Widget *selected = this->value();
+void Fl_Tabs_Matrix::clear() {
+    for (unsigned i=0; i < m_count; i++) {
+        delete m_list[i];
+    }
+    m_count = 0;
+}
+
+Fl_Tab_Info * Fl_Tabs_Matrix::tab_for(Fl_Widget *group) const {
+    for (unsigned i=0; i < m_count; i++) {
+        Fl_Tab_Info *ti = m_list[i]->tab_for(group);
+        if (ti)
+            return ti;
+    }
+    return 0L;
+}
+
+void Fl_Tabs_Matrix::activate(int rowIndex,int tabIndex,Fl_Align tmode) {
+   // find currently active row
+    if (!m_count) return;
+
+    unsigned activeRowIndex = 0;
+    if (tmode != FL_ALIGN_BOTTOM)
+        activeRowIndex = m_count - 1;
+
+    Fl_Tabs_List *activeRow = (Fl_Tabs_List *)m_list[activeRowIndex];
+    Fl_Tabs_List *row = (Fl_Tabs_List *)m_list[rowIndex];
+    int ycoordActiveRow = (*activeRow)[0]->m_y;
+    int ycoordRow = (*row)[0]->m_y;
+
+    if (m_count > 1)
+        row->sety(ycoordActiveRow);
+    row->active(tabIndex);
+    if ((int)activeRowIndex != rowIndex) {
+      // move row coordinates for the currently active row
+        if (m_count > 1)
+            activeRow->sety(ycoordRow);
+        activeRow->active(-1);
+      // swap the rows visually
+        m_list[rowIndex] = activeRow;
+        m_list[activeRowIndex] = row;
+    }
+    m_activeTab = row->active_tab();
+}
+
+void Fl_Tabs_Matrix::activate(Fl_Tab_Info *ti,Fl_Align tmode) {
+   // find tab's row
+    for (unsigned i=0; i < m_count; i++) {
+        int tabIndex = m_list[i]->index_of(ti);
+        if (tabIndex > -1) {
+            activate(i,tabIndex,tmode);
+            break;
+        }
+    }
+}
+
+Fl_Tab_Info *Fl_Tabs_Matrix::tab_at(int x,int y) const {
+    for (unsigned i=0; i < m_count; i++) {
+        Fl_Tab_Info *tab = m_list[i]->tab_at(x,y);
+        if (tab)
+            return tab;
+    }
+    return 0;
+}
+
+inline
+int sign(int v) {
+    if (v > 0) return 1;
+    if (v < 0) return -1;
+    return 0;
+}
+
+struct Point {
+    int x;
+    int y;
+};
+
+void draw3Dshape(int pointsCount,Point *points,Fl_Color fillColor,Fl_Boxtype boxType) {
     int i;
-    int backwards = 0;
+    Point *p = points;
 
-    switch (event)
-    {
+    fl_color(fillColor);
+    fl_newpath();
+    for (i = 0; i < pointsCount; i++) {
+        fl_vertex(p->x,p->y);
+        p++;
+    }
+    fl_closepath();
+    fl_fill();
+
+    int  border = boxType->dx();
+
+    Fl_Color upColor = FL_BLACK;
+    Fl_Color upColor2 = fillColor;
+    Fl_Color downColor2 = fillColor;
+    Fl_Color downColor =  FL_BLACK;
+
+    if ( boxType == FL_THIN_UP_BOX || boxType == FL_UP_BOX ) {
+        upColor = fl_lighter(fillColor);
+        upColor2 = fl_lighter(fl_lighter(upColor));
+        downColor2 = fl_darker(fillColor);
+        downColor =  fl_darker(fl_darker(downColor2));
+    } else
+        if ( boxType == FL_THIN_DOWN_BOX || boxType == FL_DOWN_BOX ) {
+            downColor = fl_lighter(fillColor);
+            downColor2 = fl_lighter(fl_lighter(downColor));
+            upColor2 = fl_darker(fillColor);
+            upColor =  fl_darker(fl_darker(upColor2));
+        }
+
+    if (border < 2) {
+        downColor = downColor2;
+        upColor = upColor2;
+    }
+
+    Point *p1 = points;
+    Point *p2 = points + 1;
+    int    lastx = 0, lasty = 0;
+    for (i = 1; i < pointsCount; i++) {
+        int dx = p2->x - p1->x;
+        int dy = p2->y - p1->y;
+        int x1 = p1->x;
+        int y1 = p1->y;
+        int x2 = p2->x;
+        int y2 = p2->y;
+
+        Fl_Color clr;
+        if ( (dx >= 0 && fabs(dy) <= dx) || (dy <= 0 && fabs(dx) <= -dy) )
+            clr = upColor;
+        else  clr = downColor;
+
+        fl_color(clr);
+        fl_line(x1,y1,x2,y2);
+
+        if (border > 1) {
+            if (clr == upColor)
+                fl_color(upColor2);
+            else  fl_color(downColor2);
+
+            switch (sign(dx)) {
+                case 1:  // dx > 0
+                    switch (sign(dy)) {
+                        case  1: // dy > 0
+                            y1++;
+                            x2--;
+                            break;
+                        case -1: // dy < 0
+                            x1++;
+                            y2++;
+                            break;
+                        default: // dy == 0
+                            y1++;
+                            y2++;
+                            x1++;
+                            x2--;
+                            break;
+                    }
+                    break;
+                case -1:  // dx < 0
+                    switch (sign(dy)) {
+                        case  1: // dy > 0
+                            x1--;
+                            y2--;
+                            break;
+                        case -1: // dy < 0
+                            y1--;
+                            x2++;
+                            break;
+                        default: // dy == 0
+                            y1--;
+                            y2--;
+                            x1--;
+                            x2++;
+                            break;
+                    }
+                    break;
+                case 0:  // dx == 0
+                    switch (sign(dy)) {
+                        case  1: // dy > 0
+                            x1--;
+                            x2--;
+                            y1++;
+                            y2--;
+                            break;
+                        case -1: // dy < 0
+                            x1++;
+                            x2++;
+                            break;
+                    }
+                    break;
+            }
+            if (i > 1 && lastx != x1 && lasty != y1)
+                fl_line(lastx,lasty,x1,y1);
+            fl_line(x1,y1,x2,y2);
+            lastx = x2;
+            lasty = y2;
+        }
+        p1++;
+        p2++;
+    }
+}
+
+#define CORNER TABSLOPE-1
+
+#define FL_TAB_BOX_UP         0x01000000
+#define FL_TAB_BOX_DOWN       0x02000000
+#define FL_TAB_BOX_THICK      0x04000000
+
+#define C(c) fl_color(c + (FL_GRAY_RAMP-'A'));
+
+class MultiTabBox : public Fl_Flat_Box {
+public:
+    MultiTabBox() : Fl_Flat_Box(0) { dx_=dy_=2; dw_=dh_=4;}
+    void draw(int x1,int y1,int w,int h, Fl_Color color, Fl_Flags f) const {
+        fl_color(color);
+        int x2 = x1 + w - 1;
+        int y2 = y1 + h - 1;
+        Fl_Boxtype tab_box_type = FL_FLAT_BOX;
+        if (f&FL_TAB_BOX_UP) {
+            if (f&FL_TAB_BOX_THICK)
+                tab_box_type = FL_UP_BOX;
+            else  tab_box_type = FL_THIN_UP_BOX;
+        } else {
+            if (f&FL_TAB_BOX_THICK)
+                tab_box_type = FL_DOWN_BOX;
+            else  tab_box_type = FL_THIN_DOWN_BOX;
+        }
+
+        if (f&FL_ALIGN_TOP) {
+            if (f&FL_SELECTED)
+                fl_rectf(x1+3,y2,w-4,dy()+1);
+
+            fl_push_clip(x1,y1,w,h-1);
+            Point points[] = {
+                { x1+2, y2 + 4 },
+                { x1+2, y1+TABSLOPE },
+                { x1+2+TABSLOPE, y1 },
+                { x1+w-1, y1 },
+                { x2, y2 + 4 }
+            };
+            draw3Dshape(5,points,color,tab_box_type);
+            fl_pop_clip();
+        }
+        else if (f&FL_ALIGN_BOTTOM) {
+            int extra_h = 0;
+            if (f&FL_SELECTED) {
+                fl_rectf(x1+3,y1-dy(),w-5,dy());
+                extra_h = 1;
+            }
+
+            fl_push_clip(x1,y1,w,h);
+            Point points[] = {
+                { x2-1, y1-2 },
+                { x2-1, y2 },
+                { x1+2+TABSLOPE, y2 },
+                { x1+2, y2-TABSLOPE },
+                { x1+2, y1-2 }
+            };
+            draw3Dshape(5,points,color,tab_box_type);
+            fl_pop_clip();
+        }
+        else if (f&FL_ALIGN_RIGHT) {
+            if (f & FL_SELECTED)
+                fl_rectf(x1-dx(),y1+dy()/2,dx(),h-dy());
+
+            fl_push_clip(x1,y1,w,h);
+            Point points[] = {
+                { x1-2, y1 },
+                { x2, y1 },
+                { x2, y2-TABSLOPE },
+                { x2-TABSLOPE, y2 },
+                { x1-2, y2 }
+            };
+            draw3Dshape(5,points,color,tab_box_type);
+            fl_pop_clip();
+        }
+        else {
+            if (f & FL_SELECTED)
+                fl_rectf(x2,y1+dy()/2,dh(),h-dy());
+            fl_push_clip(x1,y1,w,h);
+            Point points[] = {
+                { x2+3, y2 },
+                { x1+TABSLOPE, y2 },
+                { x1, y2-TABSLOPE },
+                { x1, y1 },
+                { x2+3, y1 }
+            };
+            draw3Dshape(5,points,color,tab_box_type);
+            fl_pop_clip();
+        }
+    }
+};
+MultiTabBox multitab_box;
+
+class MultiTabFocusBox : public Fl_Flat_Box {
+public:
+    MultiTabFocusBox() : Fl_Flat_Box(0) { }
+    void draw(int x1,int y1,int w,int h, Fl_Color color, Fl_Flags f) const    {
+        int x2 = x1 + w - 1;
+        int y2 = y1 + h - 1;
+        fl_line_style(FL_DOT);
+        fl_color(color);
+        if (f&FL_ALIGN_TOP) {
+            int cX=x1+CORNER;
+            int cY=y1+CORNER;
+            fl_line(x1, y2, x1, cY);
+            fl_line(x1, cY, cX, y1);
+            fl_line(cX, y1, x2, y1);
+            fl_line(x2, y1, x2, y2);
+            fl_line(x2, y2, x1, y2);
+        }
+        else if (f&(FL_ALIGN_BOTTOM|FL_ALIGN_LEFT)) {
+            int cX=x1+CORNER;
+            int cY=y2-CORNER+2;
+            fl_line(x1, y1, x1, cY);
+            fl_line(x1, cY, cX, y2);
+            fl_line(cX, y2, x2, y2);
+            fl_line(x2, y2, x2, y1);
+            fl_line(x1, y1, x2, y1);
+        } else {
+            int cX=x2-CORNER;
+            int cY=y2-CORNER;
+            fl_line(x1, y1, x2, y1);
+            fl_line(x2, y1, x2, cY);
+            fl_line(x2, cY, cX, y2);
+            fl_line(cX, y2, x1, y2);
+            fl_line(x1, y2, x1, y1);
+        }
+        fl_line_style(0);
+    }
+};
+MultiTabFocusBox multitab_focusbox;
+
+static void revert(Fl_Style* s)
+{
+    s->box = FL_THIN_UP_BOX;
+    s->button_box = &multitab_box;
+    s->focus_box = &multitab_focusbox;
+    s->color = FL_GRAY;
+    s->selection_color = FL_GRAY;
+}
+
+static Fl_Named_Style style("Multi_Tabs", revert, &Fl_Tabs::default_style);
+Fl_Named_Style* Fl_Tabs::default_style = &::style;
+
+Fl_Tabs::Fl_Tabs(int X,int Y,int W, int H,const char *l)
+: Fl_Group(X,Y,W,H,l) {
+    m_tabsMatrix = new Fl_Tabs_Matrix(this);
+    push_ = 0;
+    m_showTabs = true;
+    m_autoColorIndex = 0;
+    m_tabsMode = FL_ALIGN_TOP;
+    m_tabsWidth = m_tabsHeight = 0;
+    m_rowHeight = 0;
+    style(default_style);
+   // This is not allowed:
+   //box(FL_THIN_UP_BOX);
+   // If you want to change default behaviour of tabs,
+   // Change box is revert function
+}
+
+Fl_Tabs::~Fl_Tabs() {
+    delete m_tabsMatrix;
+}
+
+// this is used by fluid to pick tabs:
+Fl_Widget *Fl_Tabs::which(int event_x, int event_y) {
+    Fl_Tab_Info *tab = m_tabsMatrix->tab_at(event_x-x(),event_y-y());
+    if (tab) {
+        m_tabsMatrix->activate(tab,m_tabsMode);
+        return tab->m_widget;
+    }
+    return 0;
+}
+
+int focusFirstAvailableChild(Fl_Group *g) {
+    for (int i = 0; i < g->children(); i++) {
+        Fl_Widget *w = g->child(i);
+        if (w->visible() && w->take_focus()) {
+            g->redraw();
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int focusLastAvailableChild(Fl_Group *g) {
+    for (int i = g->children()-1; i >= 0; i--) {
+        Fl_Widget *w = g->child(i);
+        if (w->visible() && w->take_focus()) {
+            g->redraw();
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int Fl_Tabs::handle(int event) {
+    int            i;
+    Fl_Tab_Info   *tab;
+
+    int ex = Fl::event_x();
+    int ey = Fl::event_y();
+    Fl_Group *selected = (Fl_Group *)this->value();
+
+    switch (event) {
+
+        case FL_PUSH:
+            switch (m_tabsMode) {
+                case FL_ALIGN_TOP:  if (ey > m_tabsHeight) goto DEFAULT;
+                    break;
+                case FL_ALIGN_LEFT: if (ex > m_tabsWidth) goto DEFAULT;
+                    break;
+                case FL_ALIGN_RIGHT: if (ex < w()-m_tabsWidth) goto DEFAULT;
+                    break;
+                case FL_ALIGN_BOTTOM: if (ey < h() - m_tabsHeight) goto DEFAULT;
+                    break;
+            }
+
+      //if (Fl::visible_focus()) 
+            Fl::focus(this);
+            tab = m_tabsMatrix->tab_at(ex,ey);
+            if (tab)
+                value(tab->m_widget);
+            return 1;
 
         case FL_FOCUS:
-            if (contains(Fl::focus()))
-            {
-                // this is called to indicate that some child got the focus
-                                 /*if (Fl::focus() == this || focus() < 0)*/
-                redraw(FL_DAMAGE_VALUE);
-                focus(Fl::focus() == this ? -1 : 0);
-                return true;
-            }
-            // otherwise this indicates that somebody is trying to give focus to this
-            switch (navigation_key())
-            {
-                case FL_Left:
-                case FL_Up:
-                    if (tab_height() < 0) goto GOTO_TABS; else goto GOTO_CONTENTS;
+        case FL_UNFOCUS:
+            if (true) { //Fl::visible_focus()
+                redraw();
+                return 1;
+            } else return 0;
+
+        case FL_KEYBOARD:
+            switch (Fl::event_key()) {
                 case FL_Right:
                 case FL_Down:
-                    if (tab_height() < 0) goto GOTO_CONTENTS; else goto GOTO_TABS;
-                default:
-                GOTO_CONTENTS:
-                // Try to give the contents the focus. Also preserve a return value
-                // of 2 (which indicates the contents have a text field):
-                    if (selected)
-                    {
-                        int n = selected->handle(FL_FOCUS);
-                        if (n)
-                        {
-                            if (!selected->contains(Fl::focus())) Fl::focus(selected);
-                            return n;
-                        }
-                    }
-                GOTO_TABS:
-                    focus(-1);
-                // moving right moves focus to the tabs.
-                    return true;
-            }
-
-        case FL_UNFOCUS:
-            if (focus() < 0) redraw(FL_DAMAGE_VALUE);
-            return 1;
-
-            // handle mouse events in the tabs:
-        case FL_PUSH:
-            {
-                int H = tab_height();
-                if (H >= 0)
-                {
-                    if (Fl::event_y() > H) break;
-                }
-                else
-                {
-                    if (Fl::event_y() < h()+H) break;
-                }
-            }
-        case FL_DRAG:
-        case FL_RELEASE:
-            selected = which(Fl::event_x(), Fl::event_y());
-            if (event == FL_RELEASE && !Fl::pushed())
-            {
-                push(0);
-                if (selected && value(selected)) 
-                    do_callback(event);
-            }
-            else
-            {
-                push(selected);
-            }
-            return 1;
-
-            // handle pointing at the tabs to bring up tooltip:
-        case FL_ENTER:
-        case FL_MOVE:
-            {
-                int H = tab_height();
-                if (H >= 0)
-                {
-                    if (Fl::event_y() > H) break;
-                }
-                else
-                {
-                    if (Fl::event_y() < h()+H) break;
-                }
-                Fl_Widget* item = which(Fl::event_x(), Fl::event_y());
-            //Fl::belowmouse(this);
-                if (item) Fl_Tooltip::enter(this, 0, H<0?h()+H:0, w(), H<0?-H:H, item->tooltip().c_str());
-                return 1;
-            }
-
-        case FL_KEY:
-            switch (Fl::event_key())
-            {
-                case ' ':
-                case FL_Right:
-                    break;
-                case FL_BackSpace:
+                    return focusFirstAvailableChild(selected);
                 case FL_Left:
-                    backwards = 1;
-                    break;
+                case FL_Up:
+                    return focusLastAvailableChild(selected);
                 default:
-                    return 0;
+                    Fl_Group::handle(event);
             }
-        MOVE:
-            for (i = children()-1; i>0; i--) if (child(i)->visible()) break;
-            if (backwards) {i = i ? i-1 : children()-1;}
-            else {i++; if (i >= children()) i = 0;}
-            value(child(i)); 
-            do_callback(event);
-            return 1;
+            return Fl_Group::handle(event);
 
         case FL_SHORTCUT:
-            if (Fl::event_key()==FL_Tab && Fl::event_state(FL_CTRL))
-            {
-                backwards = Fl::event_state(FL_SHIFT);
-                goto MOVE;
+            if (Fl::event_key()==FL_Tab && Fl::event_state(FL_CTRL)) {
+                bool backwards = Fl::event_state(FL_SHIFT);
+                for (i = children()-1; i>0; i--) if (child(i)->visible()) break;
+                if (backwards) {
+                    i = i ? i-1 : children()-1;
+                } else {
+                    i++; if (i >= children()) i = 0;
+                }
+                value(child(i)); do_callback(event);
+                return 1;
             }
             if (!selected) return 0;
             if (selected->send(event)) return 1;
             if (!contains(Fl::focus())) return 0;
-            switch (navigation_key())
-            {
+            switch (navigation_key()) {
                 case FL_Right:
                 case FL_Down:
                     if (focus() < 0 && selected) return selected->take_focus();
@@ -284,275 +661,498 @@ int Fl_Tabs::handle(int event)
                 default:
                     return 0;
             }
+        default:
+        DEFAULT:
+            return Fl_Group::handle(event);
     }
-
-    if (selected) return selected->send(event);
-    return 0;
 }
 
-
-int Fl_Tabs::push(Fl_Widget *o)
-{
+int Fl_Tabs::push(Fl_Widget *o) {
     if (push_ == o) return 0;
     if (push_ && !push_->visible() || o && !o->visible())
-        redraw(FL_DAMAGE_VALUE);
+        redraw(FL_DAMAGE_EXPOSE);
     push_ = o;
     return 1;
 }
 
-
-// The value() is the first visible child (or the last child if none
-// are visible) and this also hides any other children.
-// This allows the tabs to be deleted, moved to other groups, and
-// show()/hide() called without it screwing up.
-Fl_Widget* Fl_Tabs::value()
-{
+Fl_Widget* Fl_Tabs::value() {
     Fl_Widget* v = 0;
-    int numchildren = children();
-    for (int i=0; i < numchildren; i++)
-    {
+    for (int i = 0; i < children(); i++) {
         Fl_Widget* o = child(i);
-        if (v) o->hide();
-        else if (o->visible()) v = o;
-        else if (i==numchildren-1) {o->show(); v = o;}
+        if (o->visible()) {
+            v = o;
+            color(v->color());
+        }
     }
     return v;
 }
 
-
 // Setting the value hides all other children, and makes this one
 // visible, iff it is really a child:
-int Fl_Tabs::value(Fl_Widget *newvalue)
-{
-    int setfocus = !focused() && contains(Fl::focus());
-    int numchildren = children();
-    for (int i=0; i < numchildren; i++)
-    {
+int Fl_Tabs::value(Fl_Widget *newvalue) {
+    int ret = 0;
+    for (int i = 0; i < children(); i++) {
         Fl_Widget* o = child(i);
-        if (o == newvalue)
-        {
-            // no change
-            if (o->visible()) return 0;
+        if (o == newvalue) {
+            if (!o->visible()) ret = 1;
             o->show();
-            if (setfocus) o->take_focus();
-        }
-        else
-        {
+        } else {
             o->hide();
         }
     }
-    return 1;
+    relayout();
+    return ret;
 }
-
 
 enum {LEFT, RIGHT, SELECTED};
 
-extern Fl_Widget* fl_did_clipping;
-
-static int p[128];
-void Fl_Tabs::draw()
-{
+void Fl_Tabs::draw() {
     Fl_Widget *v = value();
-    int selected=-1;
-    int i;
-    int w[128];
-
-    tabH = tab_height();
-    if (damage() & FL_DAMAGE_ALL)// redraw the entire thing:
-    {
+    if (damage() & FL_DAMAGE_ALL) { // redraw the entire thing:
         fl_push_clip(0,0,this->w(),this->h());
         if (v) draw_child(*v);
         parent()->draw_group_box();
-        box()->draw(0, (tabH>=0?tabH:0), this->w(), this->h()-(tabH>=0?tabH:-tabH)+1, v ? v->color() : color(), FL_INVISIBLE);
+        switch (m_tabsMode) {
+            case FL_ALIGN_BOTTOM:
+                box()->draw(0, 0, this->w() - m_tabsWidth, this->h() - m_tabsHeight, v ? v->color() : color(), FL_INVISIBLE);
+                break;
+            case FL_ALIGN_LEFT:
+                box()->draw(m_tabsWidth, 0, this->w() - m_tabsWidth, this->h() - m_tabsHeight, v ? v->color() : color(), FL_INVISIBLE);
+                break;
+            default:
+                box()->draw(0, m_tabsHeight, this->w() - m_tabsWidth, this->h() - m_tabsHeight, v ? v->color() : color(), FL_INVISIBLE);
+                break;
+        }
         fl_pop_clip();
     }                            // redraw the child
-    else
-    {
+    else {
         if (v) update_child(*v);
     }
 
-    if(!(fl_current_dev->capabilities() & Fl_Device::CAN_CLIPOUT)) {
-        set_damage(FL_DAMAGE_ALL);
-    }
-
-    // draw the tabs if needed:
-    if (damage() & (FL_DAMAGE_VALUE|FL_DAMAGE_ALL))
-    {               
-        selected = tab_positions(p,w);        
-
-        for(i=0; i<selected; i++)
-            draw_tab(p[i], p[i+1], w[i], tabH, child(i), LEFT);
-        for(i=children()-1; i > selected; i--)
-            draw_tab(p[i], p[i+1], w[i], tabH, child(i), RIGHT);
-        if(v) {
-            i = selected;
-            draw_tab(p[i], p[i+1], w[i], tabH, child(i), SELECTED);
+    Fl_Flags button_box_flags = m_tabsMode;
+    Fl_Flags tab_flags = 0L;
+    if ( box() == FL_THIN_UP_BOX || box() == FL_UP_BOX ) {
+        button_box_flags |= FL_TAB_BOX_UP;
+        if (box() == FL_UP_BOX)
+            button_box_flags |= FL_TAB_BOX_THICK;
+    } else
+        if ( box() == FL_THIN_DOWN_BOX || box() == FL_DOWN_BOX ) {
+            button_box_flags |= FL_TAB_BOX_DOWN;
+            if (box() == FL_DOWN_BOX)
+                button_box_flags |= FL_TAB_BOX_THICK;
         }
-    }
 
-    if (damage() & FL_DAMAGE_EXPOSE) {
-        fl_clip_out(0, tabH>=0 ? 0 : h()+tabH, p[children()]+TABSLOPE, (tabH>=0?tabH:-tabH));
-        fl_clip_out(0, tabH>0 ? tabH : 0, this->w(), h()-(tabH>=0?tabH:-tabH-1));
-        fl_did_clipping = this;
+    if (damage() & (FL_DAMAGE_EXPOSE|FL_DAMAGE_ALL)) {
+        unsigned rowCount = m_tabsMatrix->count();
+        if (m_tabsMode==FL_ALIGN_BOTTOM) {
+            for (int r = rowCount - 1; r >= 0; r--) {
+                Fl_Tabs_List& row = *(*m_tabsMatrix)[r];
+                int rowTabCount = row.count();
+                for (int t = 0; t < rowTabCount; t++) {
+                    Fl_Tab_Info *tab = row[t];
+                    tab_flags = button_box_flags;
+                    if (row.active()==t)
+                        tab_flags |= FL_SELECTED;
+                    draw_tab(tab,tab_flags);
+                }
+            }
+        } else {
+            for (unsigned r = 0; r < rowCount; r++) {
+                Fl_Tabs_List& row = *(*m_tabsMatrix)[r];
+                int rowTabCount = row.count();
+                for (int t = 0; t < rowTabCount; t++) {
+                    Fl_Tab_Info *tab = row[t];
+                    tab_flags = button_box_flags;
+                    if (row.active()==t)
+                        tab_flags |= FL_SELECTED;
+                    draw_tab(tab,tab_flags);
+                }
+            }
+        }
     }
 }
 
+void Fl_Tabs::draw_tab(Fl_Tab_Info *tab,Fl_Flags flags) {
+    if (!m_showTabs) return;
 
-void Fl_Tabs::draw_tab(int x1, int x2, int W, int H, Fl_Widget* o, int what)
-{   
-    bool sel = (what == SELECTED);
+    Fl_Color tabColor = ! (flags & FL_SELECTED) ? fl_color_average(tab->m_widget->color(),FL_BLACK,0.85f) : tab->m_widget->color();
 
-    if ((x2 < x1+W) && what == RIGHT) x1 = x2 - W;
+   // Draw the background of the tab
+    int x1 = tab->m_x;
+    int y1 = tab->m_y;
+    int y2 = m_tabsHeight;
+    int s_offset = 0;
+    if (flags & FL_SELECTED)
+        s_offset = 1;
 
-    Fl_Color c = (!sel && o==push_) ? fl_color_average(selection_color(), o->selection_color(), 0.8) : o->color();
-    Fl_Flags f=sel?FL_SELECTED:0;
+    switch (m_tabsMode) {
+        case FL_ALIGN_TOP:
+            button_box()->draw(tab->m_x,tab->m_y,tab->m_width,m_tabsHeight-tab->m_y,tabColor,flags);
+            break;
 
-    if (H >= 0) {
-        H--;
-        int adjust = (sel?box()->dy()+1:0);
-        button_box()->draw(x1, 0, W, H+adjust, c, f|FL_ALIGN_TOP);
-        o->draw_label(x1, button_box()->dy(), W, H, FL_ALIGN_CENTER);
-        if (focused() && o->visible())
-            focus_box()->draw(x1+button_box()->dx(),
-                button_box()->dy(),
-                W-button_box()->dw(),
-                H-button_box()->dh()+adjust,
-                FL_BLACK, FL_INVISIBLE|FL_ALIGN_TOP|f);
+        case FL_ALIGN_BOTTOM:
+            y1 = h() - m_tabsHeight - s_offset;
+            y2 = tab->m_y + tab->m_height;
+            button_box()->draw(tab->m_x,y1,tab->m_width,y2-y1+1,tabColor,flags);
+            break;
+
+        case FL_ALIGN_RIGHT:
+        case FL_ALIGN_LEFT:
+            button_box()->draw(tab->m_x,y1,tab->m_width,tab->m_height,tabColor,flags);
+            break;
+    }
+
+    Fl_Align labelAlign = FL_ALIGN_CENTER;
+    int      labelLeft = 0;
+
+    int wt = 0, ht = 0;
+    int focus_dx = box()->dx();
+    int focus_dw = box()->dw() + 2;
+    int focus_dy = box()->dy();
+    int focus_dh = box()->dh() + 2;
+
+    fl_font(label_font(),label_size());
+    tab->m_widget->measure_label(wt,ht);
+
+    switch (m_tabsMode) {
+        case FL_ALIGN_TOP:
+            labelLeft = x1 + 4 + (tab->m_width-6) / 2 - wt / 2;
+            focus_dx += 2;
+            focus_dw += 1;
+            focus_dh -= box()->dw();
+            break;
+
+        case FL_ALIGN_BOTTOM:
+            labelLeft = x1 + 4 + (tab->m_width-6) / 2 - wt / 2;
+            focus_dx += 2;
+            focus_dw += 1;
+            focus_dy -= box()->dy();
+            focus_dh -= box()->dh();
+            break;
+
+        case FL_ALIGN_RIGHT:
+            labelAlign = FL_ALIGN_LEFT;
+            labelLeft = x1 + box()->dx();
+            focus_dh -= box()->dy();
+            focus_dx -= box()->dx();
+            focus_dw -= box()->dw();
+            break;
+
+        case FL_ALIGN_LEFT:
+            labelAlign = FL_ALIGN_LEFT;
+            labelLeft = x1 + 4 + box()->dx();
+            focus_dw -= box()->dw();
+            focus_dh -= box()->dy();
+            break;
+    }
+    Fl_Widget *widget = tab->m_widget;
+    Fl_Image *image = widget->image();
+    if (image) {
+        labelLeft = x1 + 7;
+
+        int imw = image->width();
+        int imh = image->height();
+        image->draw(labelLeft,tab->m_y+tab->m_height/2-imh/2,imw,imh);
+        labelLeft += imw + 3;
+    }
+    int yt = tab->m_y + tab->m_height / 2 - ht / 2;
+    widget->label_type()->draw(widget->label().c_str(), labelLeft, yt, wt, ht, widget->label_color(), 0);
+    if (Fl::focus() == this && (flags & FL_SELECTED)) {
+        focus_box()->draw(tab->m_x+focus_dx,tab->m_y+focus_dy,tab->m_width-focus_dw,tab->m_height-focus_dh,0,m_tabsMode | FL_INVISIBLE);
+    }
+}
+
+void Fl_Tabs::layout() 
+{
+    int wt = 0;
+    int i;
+    unsigned r;
+    int group_x = box()->dx(), group_y = box()->dy();
+    int group_w = w() - box()->dw(), group_h = h() - box()->dh();
+    int voffset = 0, hoffset = 0;
+
+    Fl_Tab_Info *activeTab = 0L;
+    Fl_Widget *activeWidget = 0L;
+
+    if(!(layout_damage() & FL_LAYOUT_WH) || !m_showTabs && value()) {
+        if((layout_damage() & FL_LAYOUT_XY)) value()->layout_damage(value()->layout_damage()|FL_LAYOUT_XY);       
+        value()->resize(group_x, group_y, group_w, group_h);
+        if(value()->layout_damage()) value()->layout();
+    }
+
+    Fl_Tabs_Matrix *old_tabsMatrix = m_tabsMatrix;
+    m_tabsMatrix = new Fl_Tabs_Matrix(this);
+
+    Fl_Tabs_List *row = new Fl_Tabs_List;
+    m_tabsMatrix->add(row);
+
+    fl_font(label_font(),label_size());
+    m_tabsWidth = 0;
+    int max_wt = 0;
+    int max_ht = int(fl_height()+10);
+    for (i=0; i<children(); i++) {
+        Fl_Widget * group = child(i);
+        Fl_Tab_Info *tab = old_tabsMatrix->tab_for(group);
+        Fl_Image *glyph = 0L;
+        if (tab && tab->m_widget)
+            glyph = tab->m_widget->image();
+        wt = 0;
+        if(!group->label().empty()) {
+            wt = int(fl_width(group->label()));
+            wt += box()->dw() + 4;
+            if (glyph)
+                wt += glyph->width();
+        }
+        if (wt > max_wt) max_wt = wt;
+        if (glyph && glyph->height() + 2 > max_ht)
+            max_ht = glyph->height() + 2;
+    }
+
+    int xpos = 0;
+    int ypos = 0;
+    int ystep = 0;
+    if (m_showTabs) { 
+        ystep = max_ht + 4;
+        m_rowHeight = ystep;
+    }
+
+    switch (m_tabsMode) {
+        case FL_ALIGN_BOTTOM:
+        case FL_ALIGN_TOP:
+            m_tabsWidth = 0;
+            m_tabsHeight = 0; // to be determined
+            break;
+
+        case FL_ALIGN_RIGHT:
+        case FL_ALIGN_LEFT:
+            ystep += box()->dh()+3;
+            m_rowHeight += box()->dh();
+            m_tabsWidth  = max_wt + 6;
+            m_tabsHeight = 0;
+            ypos = 3;
+            if (m_tabsMode == FL_ALIGN_RIGHT)
+                xpos = w() - m_tabsWidth;
+            break;
+    }
+
+    for (i=0; i<children(); i++) {
+        Fl_Widget *group = child(i);
+        wt = 0;
+
+        Fl_Tab_Info *tab = old_tabsMatrix->tab_for(group);
+        Fl_Image *glyph = 0L;
+
+        if (tab && tab->m_widget)
+            glyph = tab->m_widget->image();
+
+        switch (m_tabsMode) {
+            case FL_ALIGN_TOP:
+            case FL_ALIGN_BOTTOM:
+                if(!group->label().empty())
+                    wt = int(fl_width(group->label()));
+                wt += 10;
+                if (glyph)
+                    wt += glyph->width() + 4;
+                if (xpos + wt > w()) {
+                    if (row->count() > 0) {
+                        xpos = 0;
+                        ypos += ystep;
+                        row = new Fl_Tabs_List;
+                        m_tabsMatrix->add(row);
+                    } else {
+                        wt = w() - xpos;
+                    }
+                }
+                tab  = new Fl_Tab_Info(xpos,ypos,wt,m_rowHeight,i, group);
+                row->add(tab);
+                if (group->visible())
+                    m_tabsMatrix->m_activeTab = tab;
+                xpos += wt;
+                break;
+            case FL_ALIGN_LEFT:
+            case FL_ALIGN_RIGHT:
+                if (ypos + ystep < h()) {
+                    tab  = new Fl_Tab_Info(xpos,ypos,m_tabsWidth,m_rowHeight,i, group);
+                    row->add(tab);
+                }
+                ypos += ystep;
+                break;
+        }
+
+        if (!tab) break;
+
+        if (group->visible()) {
+            activeTab = tab;
+            activeWidget = group;
+        }
+    }
+    delete old_tabsMatrix;
+
+    switch (m_tabsMode) {
+        case FL_ALIGN_TOP:
+            m_tabsHeight = ypos + ystep;
+            m_tabsMatrix->activate(activeTab,m_tabsMode);
+            extend_tabs();
+            group_y = m_tabsHeight + box()->dy();
+            break;
+        case FL_ALIGN_BOTTOM:
+            m_tabsHeight = ypos + ystep;
+            voffset = h() - m_tabsHeight;
+            for (r = 0; r < m_tabsMatrix->count(); r++) {
+                Fl_Tabs_List *row = (*m_tabsMatrix)[r];
+                for (unsigned t = 0; t < row->count(); t++) {
+                    Fl_Tab_Info *tab = (*row)[t];
+                    tab->m_y += voffset;
+                    tab->m_height--;
+                }
+            }
+            m_tabsMatrix->activate(activeTab,m_tabsMode);
+            extend_tabs();
+            group_y = box()->dy();
+            voffset = 0;
+            break;
+        case FL_ALIGN_RIGHT:
+            m_tabsMatrix->activate(activeTab,m_tabsMode);
+            break;
+        case FL_ALIGN_LEFT:
+            hoffset = m_tabsWidth;
+            m_tabsMatrix->activate(activeTab,m_tabsMode);
+            break;
+    }
+
+    group_w -= m_tabsWidth;
+    group_h -= m_tabsHeight;
+
+   // Only need to resize visible tab.
+    if(activeWidget) {
+        if((layout_damage() & FL_LAYOUT_XY)) activeWidget->layout_damage(activeWidget->layout_damage()|FL_LAYOUT_XY);       
+        activeWidget->resize(group_x+hoffset, group_y+voffset, group_w, group_h);
+        if(activeWidget->layout_damage()) activeWidget->layout();
+    }
+
+    Fl_Widget::layout();
+}
+
+void Fl_Tabs::extend_tabs() {
+    unsigned cnt = m_tabsMatrix->count();
+    if (cnt > 1)
+        for (unsigned r = 0; r < cnt; r++) {
+            (*m_tabsMatrix)[r]->extend(w()-2);
+        }
+}
+
+const Fl_Color Fl_Tabs::auto_color_table[16] = {
+    fl_rgb(0xB0,0xD0,0xD0),
+    fl_rgb(0xC0,0xC0,0xE0),
+    fl_rgb(192,176,160),
+    fl_rgb(0xD0,0xD0,0xB0),
+    fl_rgb(240,190,190),
+    fl_rgb(0xC0,0xB0,0xC0),
+    fl_rgb(0xC0,0xA0,0x90),
+    fl_rgb(0xD0,0xD0,0xE8),
+    fl_rgb(0xE8,0xC0,0xC0),
+    fl_rgb(0xC0,0xE8,0xC0),
+    fl_rgb(0xE8,0xC0,0xE8),
+    fl_rgb(0xE0,0xE0,0xC0),
+    fl_rgb(0xC0,0xE0,0xE0),
+    fl_rgb(0xE0,0xC0,0xE0),
+    fl_rgb(0xA0,0xB8,0xA0),
+    fl_rgb(0xB8,0xC0,0xE8)
+};
+
+Fl_Scroll* Fl_Tabs::create_new_scroll(const char *label) 
+{
+    begin();
+    Fl_Scroll *scroll = new Fl_Scroll(0,0,w(),h(),label);
+    end();
+    return scroll;
+}
+
+Fl_Group* Fl_Tabs::create_new_group(const char *label) 
+{
+    begin();
+    Fl_Group *group = new Fl_Group(0,0,w(),h(),label);
+    end();
+    return group;
+}
+
+Fl_Scroll* Fl_Tabs::new_scroll(const char *label,bool autoColor) 
+{
+    Fl_Scroll* group = create_new_scroll(label);
+    group->box(FL_FLAT_BOX);
+
+    if(children() > 1)
+        group->hide();
+
+    if (autoColor) {
+        Fl_Color clr = auto_color_table[m_autoColorIndex&0xF];
+        group->color( clr );
+        m_autoColorIndex++;
+    }
+
+    int rowNumber = m_tabsMatrix->count()-1;
+    Fl_Tabs_List *row = 0L;
+    if (rowNumber < 0) {
+        row = new Fl_Tabs_List();
+        m_tabsMatrix->add(row);
     } else {
-        H = -H;
-        int adjust = (sel?(box()->dh()-box()->dy()):0);
-        button_box()->draw(x1, h()-H-adjust+1, W, H+adjust-2, c, f|FL_ALIGN_BOTTOM);
-        o->draw_label(x1, h()-H, W, H-1, FL_ALIGN_CENTER);
-        if(focused() && o->visible())
-            focus_box()->draw(x1+button_box()->dx(),
-                h()-H+button_box()->dy()-adjust,
-                W-button_box()->dw(),
-                H-button_box()->dh()+adjust-1,
-                FL_BLACK, FL_INVISIBLE|FL_ALIGN_BOTTOM|f);
+        row = (*m_tabsMatrix)[rowNumber];
     }
+    row->add(new Fl_Tab_Info(0,0,0,0,0,group));
+
+    group->begin();
+    return group;
 }
 
-#define CORNER 5
-
-#define C(c) fl_color(c + (FL_GRAY_RAMP-'A'));
-//#define C(c) fl_color(fl_gray_ramp(c))
-
-class TabBox : public Fl_Flat_Box {
-public:
-    TabBox() : Fl_Flat_Box(0) { dx_=dy_=2; dw_=dh_=4;}
-    void draw(int x,int y,int w,int h, Fl_Color color, Fl_Flags f) const
-    {
-        if(f&FL_ALIGN_TOP) {            
-            int cX=x+CORNER;
-            int cY=y+CORNER;
-            C('W');
-            fl_line(x, y+h-1, x, cY);
-            fl_line(x, cY, cX, y);
-            fl_line(cX, y, x+w, y);
-            C('A');
-            fl_line(x+w, y, x+w, y+h-1);
-
-            x++; y++; w-=2;
-            C('T');
-            fl_line(x, y+h-1, x, cY);
-            fl_line(x, cY, cX, y);
-            fl_line(cX, y, x+w, y);
-            C('M');
-            fl_line(x+w, y, x+w, y+h-1);
-
-            x++; y++; w--; h--;
-            fl_color(color);
-            fl_newpath();
-            fl_vertex(x, y+h-1);   fl_vertex(x, cY);
-            fl_vertex(cX, y);    fl_vertex(x+w, y);
-            fl_vertex(x+w, y+h-1); fl_vertex(x, y+h-1);
-            fl_closepath();
-            fl_fill();
-
-        } else {
-
-            int cX=x+CORNER;
-            int cY=y+h-CORNER;
-            C('W');
-            fl_line(x, y, x, cY);       // '|'
-            fl_line(x, cY, cX, y+h);    // '\'
-            C('A');
-            fl_line(cX, y+h, x+w, y+h); // '_'
-            fl_line(x+w, y+h, x+w, y);  // '|'
-
-            x++; w-=2; h--;
-            C('T');
-            fl_line(x, y, x, cY);
-            fl_line(x, cY, cX, y+h);
-            C('M');
-            fl_line(cX, y+h, x+w, y+h);
-            fl_line(x+w, y+h, x+w, y);
-
-            x++; w--;
-            fl_color(color);
-            fl_newpath();
-            fl_vertex(x, y);    fl_vertex(x, cY);
-            fl_vertex(cX, y+h); fl_vertex(x+w, y+h);
-            fl_vertex(x+w, y);  fl_vertex(x, y);
-            fl_closepath();
-            fl_fill();
-        }
-    }
-};
-TabBox tabbox;
-
-class TabFocusBox : public Fl_Flat_Box {
-public:
-    TabFocusBox() : Fl_Flat_Box(0) { }
-    void draw(int x,int y,int w,int h, Fl_Color color, Fl_Flags f) const
-    {
-        fl_line_style(FL_DOT);
-        fl_color(color);
-        if(f&FL_ALIGN_TOP) {
-            int cX=x+CORNER;
-            int cY=y+CORNER;
-            fl_line(x, y+h, x, cY+1);
-            fl_line(x, cY, cX, y);
-            fl_line(cX+1, y, x+w, y);
-            fl_line(x+w, y, x+w, y+h);
-            fl_line(x+w, y+h, x, y+h);
-        } else {
-            int cX=x+CORNER;
-            int cY=y+h-CORNER;
-            fl_line(x, y, x, cY-1);
-            fl_line(x, cY, cX, y+h);
-            fl_line(cX+1, y+h, x+w, y+h);
-            fl_line(x+w, y+h, x+w, y);
-            fl_line(x, y, x+w, y);
-        }
-        fl_line_style(0);
-    }
-};
-TabFocusBox tabfocusbox;
-
-static void revert(Fl_Style* s)
+Fl_Group* Fl_Tabs::new_group(const char *label,bool autoColor) 
 {
-    s->box = FL_UP_BOX;
-    s->button_box = &tabbox;
-    s->focus_box = &tabfocusbox;
-    //s->focus_box = FL_NO_BOX;
-    s->color = FL_GRAY;
-    s->selection_color = FL_GRAY;
+    Fl_Group* group = create_new_group(label);
+    group->box(FL_FLAT_BOX);
+
+    if(children() > 1)
+        group->hide();
+
+    if (autoColor) {
+        Fl_Color clr = auto_color_table[m_autoColorIndex&0xF];
+        group->color( clr );
+        m_autoColorIndex++;
+    }
+
+    int rowNumber = m_tabsMatrix->count()-1;
+    Fl_Tabs_List *row = 0L;
+    if (rowNumber < 0) {
+        row = new Fl_Tabs_List();
+        m_tabsMatrix->add(row);
+    } else {
+        row = (*m_tabsMatrix)[rowNumber];
+    }
+    row->add(new Fl_Tab_Info(0,0,0,0,0,group));
+
+    group->begin();
+    return group;
 }
 
-
-static Fl_Named_Style style("Tabs", revert, &Fl_Tabs::default_style);
-Fl_Named_Style* Fl_Tabs::default_style = &::style;
-
-Fl_Tabs::Fl_Tabs(int X,int Y,int W, int H, const char *l)
-: Fl_Group(X,Y,W,H,l)
-{
-    style(default_style);
-    push_ = 0;
-    tabH = 0;
+Fl_Group* Fl_Tabs::last_tab() {
+   // find the last children
+    int n = children() - 1;
+    if (n < 0)
+        return 0L;
+    else  return (Fl_Group*) child(n);
 }
 
+void Fl_Tabs::show_tabs(bool st) {
+    if (m_showTabs != st) {
+        m_showTabs = st;
+        if (parent())
+            parent()->redraw(FL_DAMAGE_ALL);
+    }
+}
 
-//
-// End of "$Id$".
-//
+void Fl_Tabs::tabs_mode(Fl_Align tm) {
+    if (m_tabsMode != tm) {
+        m_tabsMode = tm;
+        relayout();
+        if (parent())
+            parent()->redraw(FL_DAMAGE_ALL);
+    }
+}

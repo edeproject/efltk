@@ -28,7 +28,7 @@
 #include "Fl_Variant.h"
 
 class Fl_Button;
-class Fl_Multi_Tabs;
+class Fl_Tabs;
 
 /** Fl_Dialog */
 class FL_API Fl_Dialog : public Fl_Window {
@@ -84,7 +84,7 @@ private:
     static void buttons_callback(Fl_Widget *,void *);
     static void help_callback(Fl_Widget *,void *);
 
-    Fl_Multi_Tabs  *m_tabs;
+    Fl_Tabs        *m_tabs;
 
     Fl_Button      *m_defaultButton;
     Fl_Group       *m_buttonPanel;

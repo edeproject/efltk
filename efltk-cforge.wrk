@@ -163,7 +163,6 @@ lib/libefltk.so ::	lib/Fl.o\
 	lib/Fl_Menu_add.o\
 	lib/Fl_Menu_global.o\
 	lib/Fl_Multi_Image.o\
-	lib/Fl_Multi_Tabs.o\
 	lib/Fl_Numeric_Input.o\
 	lib/Fl_Output.o\
 	lib/Fl_Overlay_Window.o\
@@ -377,12 +376,6 @@ test/directory ::	test/directory.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 test/doublebuffer ::	test/doublebuffer.o
-	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
-
-test/multitabs2 ::	test/multitabs2.o
-	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
-
-test/multitabs1 ::	test/multitabs1.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 test/imap_connect ::	test/imap_connect.o\
@@ -1103,10 +1096,6 @@ lib/Fl_Multi_Image.o : src/widgets/Fl_Multi_Image.cpp
 	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
 
 
-lib/Fl_Multi_Tabs.o : src/widgets/Fl_Multi_Tabs.cpp
-	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
-
-
 lib/Fl_Numeric_Input.o : src/widgets/Fl_Numeric_Input.cpp
 	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
 
@@ -1301,14 +1290,6 @@ test/doublebuffer.o : test/doublebuffer.cpp
 
 test/net/Fl_FTP_Connect.o : src/net/Fl_FTP_Connect.cpp
 	$(CXX) -c -o $@ $< -Itest/net -Itest/net $(CXXFLAGS)
-
-
-test/multitabs2.o : test/multitabs2.cpp
-	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
-
-
-test/multitabs1.o : test/multitabs1.cpp
-	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
 lib/Fl_FTP_Connect.o : src/net/Fl_FTP_Connect.cpp
@@ -3973,7 +3954,6 @@ lib/Fl_Dialog.o :	efltk/Fl_Dialog.h\
 	efltk/win32.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h\
-	efltk/Fl_Multi_Tabs.h\
 	efltk/Fl_Input.h\
 	efltk/Fl_Box.h\
 	efltk/Fl_Button.h\
@@ -4903,44 +4883,6 @@ lib/Fl_Multi_Image.o :	efltk/Fl_Multi_Image.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h\
 	efltk/Fl_String.h
-lib/Fl_Multi_Tabs.o :	efltk/Fl_Image.h\
-	efltk/Fl_Flags.h\
-	efltk/Fl_Export.h\
-	efltk/Fl_PtrList.h\
-	efltk/Fl_Ptr_List.h\
-	efltk/Enumerations.h\
-	efltk/Fl_Renderer.h\
-	efltk/x.h\
-	efltk/win32.h\
-	efltk/Fl_Color.h\
-	efltk/Fl_Util.h\
-	efltk/filename.h\
-	efltk/Fl_String.h\
-	efltk/Fl_Scroll.h\
-	efltk/Fl_Scrollbar.h\
-	efltk/Fl_Slider.h\
-	efltk/Fl_Valuator.h\
-	efltk/Fl_Widget.h\
-	efltk/Fl_Data_Source.h\
-	efltk/Fl_Data_Fields.h\
-	efltk/Fl_Variant.h\
-	efltk/Fl_Date_Time.h\
-	efltk/Fl_Exception.h\
-	efltk/Fl_Style.h\
-	efltk/Fl_Font.h\
-	efltk/Fl_Int_List.h\
-	efltk/Fl_String_List.h\
-	efltk/Fl_Labeltype.h\
-	efltk/Fl_Boxtype.h\
-	efltk/Fl_Group.h\
-	efltk/Fl_Widget_List.h\
-	efltk/fl_draw.h\
-	efltk/Fl_Device.h\
-	efltk/Fl_Bitmap.h\
-	efltk/Fl_Pixmap.h\
-	efltk/Fl_Multi_Tabs.h\
-	efltk/Fl.h\
-	efltk/fl_math.h
 lib/Fl_Numeric_Input.o :	src/core/fl_internal.h\
 	efltk/Fl_Translator.h\
 	efltk/Fl_Ptr_List.h\
@@ -6124,77 +6066,6 @@ test/net/Fl_FTP_Connect.o :	efltk/net/Fl_FTP_Connect.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
 	efltk/Fl_String_List.h
-test/multitabs2.o :	test/multitabs_glyph3.xpm\
-	test/multitabs_glyph2.xpm\
-	test/multitabs_glyph1.xpm\
-	efltk/Fl_Pixmap.h\
-	efltk/Fl_Image.h\
-	efltk/Fl_Flags.h\
-	efltk/Fl_Export.h\
-	efltk/Fl_PtrList.h\
-	efltk/Fl_Ptr_List.h\
-	efltk/Enumerations.h\
-	efltk/Fl_Renderer.h\
-	efltk/x.h\
-	efltk/win32.h\
-	efltk/Fl_Color.h\
-	efltk/Fl_Util.h\
-	efltk/filename.h\
-	efltk/Fl_String.h\
-	efltk/Fl_Multi_Tabs.h\
-	efltk/Fl_Group.h\
-	efltk/Fl_Int_List.h\
-	efltk/Fl_Widget_List.h\
-	efltk/Fl_Widget.h\
-	efltk/Fl_Data_Source.h\
-	efltk/Fl_Data_Fields.h\
-	efltk/Fl_Variant.h\
-	efltk/Fl_Date_Time.h\
-	efltk/Fl_Exception.h\
-	efltk/Fl_Style.h\
-	efltk/Fl_Font.h\
-	efltk/Fl_String_List.h\
-	efltk/Fl_Labeltype.h\
-	efltk/Fl_Boxtype.h\
-	test/tabs.h\
-	efltk/Fl_Return_Button.h\
-	efltk/Fl_Button.h\
-	efltk/Fl_Clock.h\
-	efltk/Fl_Wordwrap_Input.h\
-	efltk/Fl_Input.h\
-	efltk/Fl_Tabs.h\
-	efltk/Fl_Window.h\
-	efltk/Fl.h
-test/multitabs1.o :	efltk/Fl_Multi_Tabs.h\
-	efltk/Fl_Group.h\
-	efltk/Fl_Int_List.h\
-	efltk/Fl_Ptr_List.h\
-	efltk/Enumerations.h\
-	efltk/Fl_Export.h\
-	efltk/Fl_Widget_List.h\
-	efltk/Fl_Widget.h\
-	efltk/Fl_Data_Source.h\
-	efltk/Fl_Data_Fields.h\
-	efltk/Fl_Flags.h\
-	efltk/Fl_Variant.h\
-	efltk/Fl_Date_Time.h\
-	efltk/Fl_String.h\
-	efltk/Fl_Exception.h\
-	efltk/Fl_Style.h\
-	efltk/Fl_Font.h\
-	efltk/Fl_String_List.h\
-	efltk/Fl_Labeltype.h\
-	efltk/Fl_Color.h\
-	efltk/Fl_Boxtype.h\
-	test/tabs.h\
-	efltk/Fl_Return_Button.h\
-	efltk/Fl_Button.h\
-	efltk/Fl_Clock.h\
-	efltk/Fl_Wordwrap_Input.h\
-	efltk/Fl_Input.h\
-	efltk/Fl_Tabs.h\
-	efltk/Fl_Window.h\
-	efltk/Fl.h
 lib/Fl_FTP_Connect.o :	efltk/net/Fl_FTP_Connect.h\
 	efltk/Fl_Socket.h\
 	efltk/Fl_Buffer.h\

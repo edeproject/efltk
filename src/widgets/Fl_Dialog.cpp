@@ -21,7 +21,7 @@
 #include <efltk/Fl_Button.h>
 #include <efltk/Fl_Box.h>
 #include <efltk/Fl_Input.h>
-#include <efltk/Fl_Multi_Tabs.h>
+#include <efltk/Fl_Tabs.h>
 #include <efltk/Fl_Pixmap.h>
 #include <efltk/fl_ask.h>
 #include <efltk/fl_draw.h>
@@ -374,7 +374,7 @@ Fl_Dialog::Fl_Dialog(int ww, int hh, const char *label, Fl_Data_Source *ds)
     m_buttonPanel->layout_spacing(3);
     m_buttonPanel->end();
 
-    m_tabs = new Fl_Multi_Tabs(0,0,10,10);
+    m_tabs = new Fl_Tabs(0,0,10,10);
     m_tabs->show_tabs(false);
     m_tabs->layout_align(FL_ALIGN_CLIENT);
     m_modalResult = 0;

@@ -170,7 +170,6 @@ lib/libefltk.so ::	lib/Fl.o\
 	lib/Fl_Menu_add.o\
 	lib/Fl_Menu_global.o\
 	lib/Fl_Multi_Image.o\
-	lib/Fl_Multi_Tabs.o\
 	lib/Fl_Numeric_Input.o\
 	lib/Fl_Output.o\
 	lib/Fl_Overlay_Window.o\
@@ -559,26 +558,6 @@ test/directory ::	test/directory.o
 # %IncDir:	test
 # %ObjsDir:	test
 test/doublebuffer ::	test/doublebuffer.o
-	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
-
-# %UniqueId:	0x40035a
-# %TargetType:	C++_EXE
-# %IDEFlags:	0x8
-# %ComplexTarget
-# %SrcDir:	test
-# %IncDir:	test
-# %ObjsDir:	test
-test/multitabs2 ::	test/multitabs2.o
-	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
-
-# %UniqueId:	0x400361
-# %TargetType:	C++_EXE
-# %IDEFlags:	0x8
-# %ComplexTarget
-# %SrcDir:	test
-# %IncDir:	test
-# %ObjsDir:	test
-test/multitabs1 ::	test/multitabs1.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x400364
@@ -1885,13 +1864,6 @@ lib/Fl_Multi_Image.o : src/widgets/Fl_Multi_Image.cpp
 
 # %TargetType:	C++_OBJ
 # %ParentTarget:	0x400002
-# %SourceTarget:	0x400312
-lib/Fl_Multi_Tabs.o : src/widgets/Fl_Multi_Tabs.cpp
-	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
-
-
-# %TargetType:	C++_OBJ
-# %ParentTarget:	0x400002
 # %SourceTarget:	0x400313
 lib/Fl_Numeric_Input.o : src/widgets/Fl_Numeric_Input.cpp
 	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
@@ -2231,20 +2203,6 @@ test/doublebuffer.o : test/doublebuffer.cpp
 # %SourceTarget:	0x400356
 test/net/Fl_FTP_Connect.o : src/net/Fl_FTP_Connect.cpp
 	$(CXX) -c -o $@ $< -Itest/net -Itest/net $(CXXFLAGS)
-
-
-# %TargetType:	C++_OBJ
-# %ParentTarget:	0x40035a
-# %SourceTarget:	0x40035b
-test/multitabs2.o : test/multitabs2.cpp
-	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
-
-
-# %TargetType:	C++_OBJ
-# %ParentTarget:	0x400361
-# %SourceTarget:	0x400362
-test/multitabs1.o : test/multitabs1.cpp
-	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
 # %TargetType:	C++_OBJ
@@ -5056,7 +5014,6 @@ lib/Fl_Dialog.o :	efltk/Fl_Dialog.h\
 	efltk/win32.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h\
-	efltk/Fl_Multi_Tabs.h\
 	efltk/Fl_Input.h\
 	efltk/Fl_Box.h\
 	efltk/Fl_Button.h\
@@ -5986,44 +5943,6 @@ lib/Fl_Multi_Image.o :	efltk/Fl_Multi_Image.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h\
 	efltk/Fl_String.h
-lib/Fl_Multi_Tabs.o :	efltk/Fl_Image.h\
-	efltk/Fl_Flags.h\
-	efltk/Fl_Export.h\
-	efltk/Fl_PtrList.h\
-	efltk/Fl_Ptr_List.h\
-	efltk/Enumerations.h\
-	efltk/Fl_Renderer.h\
-	efltk/x.h\
-	efltk/win32.h\
-	efltk/Fl_Color.h\
-	efltk/Fl_Util.h\
-	efltk/filename.h\
-	efltk/Fl_String.h\
-	efltk/Fl_Scroll.h\
-	efltk/Fl_Scrollbar.h\
-	efltk/Fl_Slider.h\
-	efltk/Fl_Valuator.h\
-	efltk/Fl_Widget.h\
-	efltk/Fl_Data_Source.h\
-	efltk/Fl_Data_Fields.h\
-	efltk/Fl_Variant.h\
-	efltk/Fl_Date_Time.h\
-	efltk/Fl_Exception.h\
-	efltk/Fl_Style.h\
-	efltk/Fl_Font.h\
-	efltk/Fl_Int_List.h\
-	efltk/Fl_String_List.h\
-	efltk/Fl_Labeltype.h\
-	efltk/Fl_Boxtype.h\
-	efltk/Fl_Group.h\
-	efltk/Fl_Widget_List.h\
-	efltk/fl_draw.h\
-	efltk/Fl_Device.h\
-	efltk/Fl_Bitmap.h\
-	efltk/Fl_Pixmap.h\
-	efltk/Fl_Multi_Tabs.h\
-	efltk/Fl.h\
-	efltk/fl_math.h
 lib/Fl_Numeric_Input.o :	src/core/fl_internal.h\
 	efltk/Fl_Translator.h\
 	efltk/Fl_Ptr_List.h\
@@ -7207,77 +7126,6 @@ test/net/Fl_FTP_Connect.o :	efltk/net/Fl_FTP_Connect.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
 	efltk/Fl_String_List.h
-test/multitabs2.o :	test/multitabs_glyph3.xpm\
-	test/multitabs_glyph2.xpm\
-	test/multitabs_glyph1.xpm\
-	efltk/Fl_Pixmap.h\
-	efltk/Fl_Image.h\
-	efltk/Fl_Flags.h\
-	efltk/Fl_Export.h\
-	efltk/Fl_PtrList.h\
-	efltk/Fl_Ptr_List.h\
-	efltk/Enumerations.h\
-	efltk/Fl_Renderer.h\
-	efltk/x.h\
-	efltk/win32.h\
-	efltk/Fl_Color.h\
-	efltk/Fl_Util.h\
-	efltk/filename.h\
-	efltk/Fl_String.h\
-	efltk/Fl_Multi_Tabs.h\
-	efltk/Fl_Group.h\
-	efltk/Fl_Int_List.h\
-	efltk/Fl_Widget_List.h\
-	efltk/Fl_Widget.h\
-	efltk/Fl_Data_Source.h\
-	efltk/Fl_Data_Fields.h\
-	efltk/Fl_Variant.h\
-	efltk/Fl_Date_Time.h\
-	efltk/Fl_Exception.h\
-	efltk/Fl_Style.h\
-	efltk/Fl_Font.h\
-	efltk/Fl_String_List.h\
-	efltk/Fl_Labeltype.h\
-	efltk/Fl_Boxtype.h\
-	test/tabs.h\
-	efltk/Fl_Return_Button.h\
-	efltk/Fl_Button.h\
-	efltk/Fl_Clock.h\
-	efltk/Fl_Wordwrap_Input.h\
-	efltk/Fl_Input.h\
-	efltk/Fl_Tabs.h\
-	efltk/Fl_Window.h\
-	efltk/Fl.h
-test/multitabs1.o :	efltk/Fl_Multi_Tabs.h\
-	efltk/Fl_Group.h\
-	efltk/Fl_Int_List.h\
-	efltk/Fl_Ptr_List.h\
-	efltk/Enumerations.h\
-	efltk/Fl_Export.h\
-	efltk/Fl_Widget_List.h\
-	efltk/Fl_Widget.h\
-	efltk/Fl_Data_Source.h\
-	efltk/Fl_Data_Fields.h\
-	efltk/Fl_Flags.h\
-	efltk/Fl_Variant.h\
-	efltk/Fl_Date_Time.h\
-	efltk/Fl_String.h\
-	efltk/Fl_Exception.h\
-	efltk/Fl_Style.h\
-	efltk/Fl_Font.h\
-	efltk/Fl_String_List.h\
-	efltk/Fl_Labeltype.h\
-	efltk/Fl_Color.h\
-	efltk/Fl_Boxtype.h\
-	test/tabs.h\
-	efltk/Fl_Return_Button.h\
-	efltk/Fl_Button.h\
-	efltk/Fl_Clock.h\
-	efltk/Fl_Wordwrap_Input.h\
-	efltk/Fl_Input.h\
-	efltk/Fl_Tabs.h\
-	efltk/Fl_Window.h\
-	efltk/Fl.h
 lib/Fl_FTP_Connect.o :	efltk/net/Fl_FTP_Connect.h\
 	efltk/Fl_Socket.h\
 	efltk/Fl_Buffer.h\
@@ -9673,7 +9521,6 @@ test/combobox.o :	efltk/fl_ask.h\
 # %TargetInfo src/widgets/Fl_Menu_add.cpp	SourceOrHeader,	UniqueId=0x40030f,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Menu_global.cpp	SourceOrHeader,	UniqueId=0x400310,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Multi_Image.cpp	SourceOrHeader,	UniqueId=0x400311,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Multi_Tabs.cpp	SourceOrHeader,	UniqueId=0x400312,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Numeric_Input.cpp	SourceOrHeader,	UniqueId=0x400313,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Output.cpp	SourceOrHeader,	UniqueId=0x400314,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Overlay_Window.cpp	SourceOrHeader,	UniqueId=0x400315,	TargetType=C++,	IDEFlags=0x4
@@ -9720,8 +9567,6 @@ test/combobox.o :	efltk/fl_ask.h\
 # %TargetInfo test/directory.cpp	SourceOrHeader,	UniqueId=0x400353,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/doublebuffer.cpp	SourceOrHeader,	UniqueId=0x400355,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/net/Fl_FTP_Connect.cpp	SourceOrHeader,	UniqueId=0x400356,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/multitabs2.cpp	SourceOrHeader,	UniqueId=0x40035b,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/multitabs1.cpp	SourceOrHeader,	UniqueId=0x400362,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/net/Fl_IMAP_Connect.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400363,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/net/imap_connect.cpp	SourceOrHeader,	UniqueId=0x400365,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Memory_DS.cpp	SourceOrHeader,	UniqueId=0x400367,	TargetType=C++,	IDEFlags=0x4
@@ -9766,6 +9611,7 @@ test/combobox.o :	efltk/fl_ask.h\
 # %TargetInfo tools/etranslate/main_ui.cpp	SourceOrHeader,	UniqueId=0x4003c1,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo tools/etranslate/modify_info.cpp	SourceOrHeader,	UniqueId=0x4003c2,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Combo_Box.cpp	SourceOrHeader,	UniqueId=0x4003c4,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/combobox.cpp	SourceOrHeader,	UniqueId=0x4003c7,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x4
@@ -9909,7 +9755,6 @@ test/combobox.o :	efltk/fl_ask.h\
 # %TargetInfo efltk/Fl_Dialog.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40015b,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Scroll.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40015c,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/fl_ask.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40015d,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Multi_Tabs.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40015e,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Directory_DS.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40015f,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Double_Window.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400160,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_FileBrowser.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400161,	TargetType=INC,	IDEFlags=0xe
@@ -10031,7 +9876,6 @@ test/combobox.o :	efltk/fl_ask.h\
 # %TargetInfo efltk/xml/Fl_XmlNode_List.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003bc,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo tools/etranslate/extract.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003c3,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Combo_Box.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003c5,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo test/combobox.cpp	SourceOrHeader,	UniqueId=0x4003c7,	TargetType=C++,	IDEFlags=0x4
 
 
 # %UniqueId:	0x400001
@@ -10093,9 +9937,7 @@ test/combobox.o :	efltk/fl_ask.h\
 #	0x40037e
 #	0x40033f
 #	0x400364
-#	0x400361
 #	0x40038a
-#	0x40035a
 #	0x40033a
 #	0x400388
 #

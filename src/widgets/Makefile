@@ -43,7 +43,6 @@ CPPFILES = \
 	Fl_Menu_Window.cpp \
 	Fl_Menu_global.cpp \
 	Fl_Multi_Image.cpp \
-	Fl_Multi_Tabs.cpp \
 	Fl_Numeric_Input.cpp \
 	Fl_Output.cpp \
 	Fl_Overlay_Window.cpp \
@@ -57,20 +56,20 @@ CPPFILES = \
 	Fl_Scroll.cpp \
 	Fl_Scrollbar.cpp \
 	Fl_Shaped_Window.cpp \
-        Fl_Simple_Html.cpp \
+	Fl_Simple_Html.cpp \
 	Fl_Single_Window.cpp \
 	Fl_Slider.cpp \
-	Fl_Tabs.cpp \
 	Fl_Text_Buffer.cpp \
 	Fl_Text_Display.cpp \
 	Fl_Text_Editor.cpp \
+	Fl_Tabs.cpp \
 	Fl_Tile.cpp \
-        Fl_Tool_Bar.cpp \
+	Fl_Tool_Bar.cpp \
 	Fl_Tooltip.cpp  \
 	Fl_Valuator.cpp \
 	Fl_Value_Input.cpp \
 	Fl_Value_Slider.cpp \
-        Fl_Workspace.cpp \
+	Fl_Workspace.cpp \
 	fl_ask.cpp \
 	fl_engraved_label.cpp \
 	fl_show_colormap.cpp \
