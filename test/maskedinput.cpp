@@ -27,18 +27,18 @@
 #include <efltk/Fl_Masked_Input.h>
 
 int main(int argc, char **argv) {
-    Fl_Window *window = new Fl_Window(300,180);
+    Fl_Window *window = new Fl_Window(350,150);
 
-    Fl_Masked_Input *d = new Fl_Masked_Input(100,20,150,24,"date (YYYY-MM-DD):");
+    Fl_Masked_Input *d = new Fl_Masked_Input(150,20,150,24,"date (YYYY-MM-DD):");
     d->mask("2999\\-19\\-39");
     
-    Fl_Masked_Input *t1 = new Fl_Masked_Input(100,50,150,24,"time (HH:MM:SS):");
+    Fl_Masked_Input *t1 = new Fl_Masked_Input(150,50,150,24,"time (HH:MM:SS):");
     t1->mask("29\\:59\\:59");
     
-    Fl_Masked_Input *t2 = new Fl_Masked_Input(100,80,150,24,"time (HH:MM AM/PM):");
+    Fl_Masked_Input *t2 = new Fl_Masked_Input(150,80,150,24,"time (HH:MM AM/PM):");
     t2->mask("29\\:59T\\M");
     
-    Fl_Masked_Input *n = new Fl_Masked_Input(100,110,150,24,"name (Xxxxxxxxxxxxx):");
+    Fl_Masked_Input *n = new Fl_Masked_Input(150,110,150,24,"name (Xxxxxxxxxxxxx):");
     n->mask("Lzzzzzzzzzzz");
     
     window->end();
