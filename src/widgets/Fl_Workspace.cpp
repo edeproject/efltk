@@ -27,34 +27,58 @@ Fl_MDI_Viewport::Fl_MDI_Viewport(int x, int y, int w, int h, const char *label)
     _scrolldx = _scrolldy = 0;
 }
 
-void Fl_MDI_Viewport::top(Fl_MDI_Window *w)
+void Fl_MDI_Viewport::top(Fl_MDI_Window *win)
 {
-    if(w && w!=_top) {
+	if(win && win->toplevel()) {
+		win->show();
+		return;
+	}
+
+    if(win && win!=_top) {
 
         // Insert new top to last of the stack
-        insert(*w, children());
+        insert(*win, children());
 
         //Just in case... :)
-        w->take_focus();
-        w->show();
+        win->take_focus();
+        win->show();
 
-        if(w->shown()) {
+        if(win->shown()) {
 #ifndef _WIN32
-            XRaiseWindow(fl_display, fl_xid(w));
+            XRaiseWindow(fl_display, fl_xid(win));
 #else
-            BringWindowToTop(fl_xid(w));
+            BringWindowToTop(fl_xid(win));
 #endif
-        }
+        }		
         if(_top) {
             // set to inactive and redraw old _top
             _top->active(false);
             _top->redraw();
         }
 
+		if(_top && maximum()==_top) {
+			_top->state_ = Fl_MDI_Window::NORMAL;
+			_top->titlebar()->show();
+			_top->resize(_top->_ox, _top->_oy, _top->_ow, _top->_oh);			
+			_top->relayout();
+
+			if(win->resizable()) {			
+				_max = win;
+				if(menu()) win->titlebar()->hide();
+				win->add_menu_buttons();
+				win->state_ = Fl_MDI_Window::MAXIMIZED;
+				win->_ox=win->x(); win->_oy=win->y(); win->_ow=win->w(); win->_oh=win->h();
+				win->resize(0, 0, w(), h());
+			} else 
+				_max = 0;
+		}
+
         // Set new top, and redraw it
-        _top = w;
+        _top = win;
         _top->active(true);
         _top->redraw();
+
+		if(_aot) insert(*win,_aot);
 
         do_callback();
     }
@@ -63,8 +87,7 @@ void Fl_MDI_Viewport::top(Fl_MDI_Window *w)
 void Fl_MDI_Viewport::maximum(Fl_MDI_Window *w)
 {
     top(w);
-    if(_aot)
-        insert(*w,_aot);
+    if(_aot) insert(*w,_aot);
     _max = w;
     relayout();
 }
@@ -355,13 +378,13 @@ Fl_Workspace::Fl_Workspace(int x, int y, int w, int h, const char *label)
     vscrollbar->linesize(10);
 
     _viewport = new Fl_MDI_Viewport(box()->dy(), box()->dx(), w-box()->dw(), h-box()->dh());
-    _viewport->end();
-
-    Fl_Group::current(this);
+	_viewport->parent(this);
+    
+	_viewport->begin();
 }
 
 Fl_Workspace::~Fl_Workspace()
-{
+{	
 }
 
 void Fl_Workspace::focus_moves_pos(bool val)
@@ -589,8 +612,8 @@ void Fl_Workspace::tileH()
         return;
 
     int i=0;
-    int m_height = height() / count;
-    int m_width = width() -1;
+    int m_height = (height()-box()->dh()) / count;
+    int m_width = width()-box()->dw();
     int f_x = 0;
     int f_y = 0;
 
@@ -603,9 +626,12 @@ void Fl_Workspace::tileH()
             Fl_MDI_Window *w = (Fl_MDI_Window *)widget;
             if(!w->minimized() && w->visible())
             {
+				if(w->maximized()) {
+					w->state_ = Fl_MDI_Window::NORMAL;
+					w->titlebar()->show();
+				}
                 w->resize(f_x,f_y,m_width,m_height);
-                f_y += m_height;
-                w->_maximized = false;
+                f_y += m_height;				
                 w->relayout();
             }
         }
@@ -621,8 +647,8 @@ void Fl_Workspace::tileV()
         return;
 
     int i=0;
-    int m_height = height();
-    int m_width = width() / count;
+    int m_height = height()-box()->dh();
+    int m_width = (width()-box()->dw()) / count;
     int f_x = 0;
     int f_y = 0;
 
@@ -635,9 +661,12 @@ void Fl_Workspace::tileV()
             Fl_MDI_Window *w = (Fl_MDI_Window *)widget;
             if(!w->minimized() && w->visible())
             {
-                w->resize(f_x,f_y,m_width,m_height);
+				if(w->maximized()) {
+					w->state_ = Fl_MDI_Window::NORMAL;
+					w->titlebar()->show();
+				}
+                w->resize(f_x,f_y,m_width, m_height);
                 f_x += m_width;
-                w->_maximized = false;
                 w->relayout();
             }
         }
@@ -663,11 +692,14 @@ void Fl_Workspace::cascade()
             Fl_MDI_Window *w = (Fl_MDI_Window *)widget;
             if(!w->minimized() && w->visible())
             {
+				if(w->maximized()) {
+					w->state_ = Fl_MDI_Window::NORMAL;
+					w->titlebar()->show();
+				}
                 w->resize(f_x, f_y, width()-(width()/4), height()-(height()/4));
                 f_x += w->titlebar()->h()+1;
 				f_y += w->titlebar()->h()+1;
-
-                w->_maximized = false;
+                
                 w->relayout();
             }
         }

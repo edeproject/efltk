@@ -32,12 +32,48 @@
 #include <stdlib.h>              // free
 #include <config.h>
 
+#include <efltk/Fl_Callback.h>
+
+/*void Fl_Widget::add_callback(Fl_Callback_Func *cb, void *p)
+{
+	user_data_=(void*)p;
+	if(!callbacks_) callbacks_ = new Fl_Callback_();
+	callbacks_->add(cb);
+	callbacks_->debug();
+}
+
+void Fl_Widget::add_callback(Fl_Callback_Func *cb, long p)
+{
+	user_data_=(void*)p;
+	if(!callbacks_) callbacks_ = new Fl_Callback_();
+	callbacks_->add(cb);
+	callbacks_->debug();
+}*/
+
+Fl_Callback_Signal *Fl_Widget::cb_signal() {
+	if(!signal_) signal_ = new Fl_Callback_Signal();
+	return signal_;
+}
+
+void Fl_Widget::do_callback(Fl_Widget* o, void* arg)
+{	
+	if(callback_) callback_(o, arg);
+	if(signal_) signal_->do_callback(o);
+}
+
+void Fl_Widget::do_callback(Fl_Widget* o, long arg)
+{
+	if(callback_) callback_(o,(void*)arg);
+	if(signal_) signal_->do_callback(o);
+}
+
 void Fl_Widget::default_callback(Fl_Widget* w, void*) {w->set_changed();}
 
 Fl_Widget::Fl_Widget(int X, int Y, int W, int H, const char* L)
 {
     style_    = default_style;
     parent_   = 0;
+	signal_   = 0;
     callback_ = default_callback;
     user_data_    = 0;
     label_    = L;
@@ -66,6 +102,7 @@ Fl_Widget::~Fl_Widget()
         delete (Fl_Style*)style_;// cast away const
     }
     if (flags_&FL_COPIED_LABEL) free((void*)label_);
+	if(signal_) delete signal_;
 }
 
 void Fl_Widget::label(const char* a)

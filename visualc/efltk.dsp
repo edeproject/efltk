@@ -202,6 +202,10 @@ SOURCE=..\src\core\fl_call_main.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\core\Fl_Callback.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\widgets\Fl_Check_Button.cpp
 # End Source File
 # Begin Source File
@@ -727,6 +731,10 @@ SOURCE=..\efltk\Fl_Browser.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Callback.h
 # End Source File
 # Begin Source File
 

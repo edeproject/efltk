@@ -232,7 +232,8 @@ public:
         Item *iter, *next=First;
         do {
             iter=next;
-            if(autodel_ && iter->stor) delete iter->stor;
+            if(autodel_ && iter->stor) 
+				if(iter->stor) delete iter->stor;
             next = iter->next;
             delete iter;
         } while(next);

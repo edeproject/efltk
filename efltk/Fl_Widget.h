@@ -27,18 +27,20 @@
 #define Fl_Widget_H
 
 #include "Fl_Style.h"
+#include "Fl_Callback.h"
 
+class FL_API Fl_Callback_;
 class FL_API Fl_Widget;
 class FL_API Fl_Window;
 class FL_API Fl_Image;
 class FL_API Fl_Group;
 
-typedef void (Fl_Callback )(Fl_Widget*, void*);
+typedef void (Fl_Callback)(Fl_Widget*, void*);
 typedef Fl_Callback* Fl_Callback_p; // needed for BORLAND
 typedef void (Fl_Callback0)(Fl_Widget*);
 typedef void (Fl_Callback1)(Fl_Widget*, long);
 
-class FL_API Fl_Widget {
+class FL_API Fl_Widget : public Fl_Callback_Object {
   // disable the copy assignment/constructors:
   Fl_Widget & operator=(const Fl_Widget &);
   Fl_Widget(const Fl_Widget &);
@@ -98,13 +100,14 @@ public:
   void  tooltip(const char *t)  { tooltip_ = t; }
 
   int shortcut() const		{return shortcut_;}
-  void shortcut(int s)		{shortcut_ = s;}
+  void shortcut(int s)		{shortcut_ = s;}  
 
   Fl_Callback_p callback() const {return callback_;}
   void	callback(Fl_Callback* c, void* p) {callback_=c; user_data_=p;}
   void	callback(Fl_Callback* c) {callback_=c;}
   void	callback(Fl_Callback0*c) {callback_=(Fl_Callback*)c;}
-  void	callback(Fl_Callback1*c, long p=0) {callback_=(Fl_Callback*)c; user_data_=(void*)p;}
+  void	callback(Fl_Callback1*c, long p=0) {callback_=(Fl_Callback*)c; user_data_=(void*)p;}  
+
   void*	user_data() const	{return user_data_;}
   void	user_data(void* v)	{user_data_ = v;}
   long	argument() const	{return (long)user_data_;}
@@ -112,10 +115,19 @@ public:
   uchar when() const		{return when_;}
   void	when(uchar i)		{when_ = i;}
 
+  Fl_Callback_Signal *cb_signal();
+  template<typename T> void connect_cb(Fl_Callback_Object *o, void (T::*func)(Fl_Widget *, void *), void *p=0)  { cb_signal()->connect(o, func, p); user_data_=p; }
+  template<typename T> void connect_cb(Fl_Callback_Object *o, void (T::*func)(Fl_Widget *, long), long p=0) { cb_signal()->connect(o, func, (void*)p); user_data_=(void*)p; }
+  template<typename T> void connect_cb(Fl_Callback_Object *o, void (T::*func)(), void *p) { cb_signal()->connect(o, func, p); user_data_=p; }
+
+  template<typename T> void disconnect_cb(Fl_Callback_Object *o, void (T::*func)(Fl_Widget *, void *), void *p=0) { cb_signal()->disconnect(o, (void**)&func, p); }
+  template<typename T> void disconnect_cb(Fl_Callback_Object *o, void (T::*func)(Fl_Widget *, long), long p=0) { cb_signal()->disconnect(o, (void**)&func, (void*)p); }
+  template<typename T> void disconnect_cb(Fl_Callback_Object *o, void (T::*func)(), void *p=0) { cb_signal()->disconnect(o, (void**)&func, p); }
+
   static void default_callback(Fl_Widget*, void*);
-  void	do_callback()		{callback_(this,user_data_);}
-  void	do_callback(Fl_Widget* o,void* arg=0) {callback_(o,arg);}
-  void	do_callback(Fl_Widget* o,long arg) {callback_(o,(void*)arg);}
+  void	do_callback()		{ do_callback(this, user_data_);}
+  void	do_callback(Fl_Widget* o, void* arg=0);
+  void	do_callback(Fl_Widget* o, long arg);
   int	test_shortcut() const	;
   bool	contains(const Fl_Widget*) const;
   bool	inside(const Fl_Widget* o) const {return o && o->contains(this);}
@@ -279,8 +291,6 @@ private:
   int			shortcut_; // encode in the label?
   unsigned		flags_;
   const Fl_Style*	style_;
-  Fl_Callback*		callback_;
-  void*			user_data_;
   const char*		tooltip_; // make this into another widget?
   Fl_Group*		parent_;
   int			x_,y_,w_,h_;
@@ -289,6 +299,10 @@ private:
   uchar			layout_damage_;
   uchar			when_;
 
+  Fl_Callback *callback_;
+  void *user_data_;  
+
+  Fl_Callback_Signal *signal_;  
 };
 
 #endif

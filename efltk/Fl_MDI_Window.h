@@ -22,7 +22,6 @@
 #define LEFTBOTTOM  7
 
 class Fl_MDI_Window;
-class Fl_MDI_MenuButtons;
 
 class Fl_MDI_Titlebar : public Fl_Group {
     friend class Fl_MDI_Window;
@@ -52,6 +51,12 @@ class Fl_MDI_Window : public Fl_Window {
     friend class Fl_Workspace;
     friend class Fl_MDI_Titlebar;
 public:
+	enum {
+		NORMAL = 0,
+		MAXIMIZED,
+		MINIMIZED
+	};
+
     static Fl_Named_Style* default_style;
 
     Fl_MDI_Window(int x, int y, int w, int h, const char *label);
@@ -87,15 +92,17 @@ public:
     Fl_MDI_Viewport *owner() { return _owner; }
 
     void close_callback();
-    void minimize(bool val);
-
-    bool minimized() { return _minimized; }
 
     void setTop() { if(!_toplevel && _owner) _owner->top(this); else show(); }
     bool isTop() { return _toplevel==true ? 0 : (_owner->top()==this); }
 
-    void maximize(bool val);
-    bool maximized() { return _maximized; }
+	void state(int s);
+	int state() { return state_; }
+	
+	void maximize(bool val) { state(val?MAXIMIZED:NORMAL); }
+    bool maximized() { return (state_==MAXIMIZED); }
+    void minimize(bool val) { state(val?MINIMIZED:NORMAL); }
+    bool minimized() { return (state_==MINIMIZED); }
 
     static void animate_opaque(bool o) { anim_opaque_ = o; }
     static bool animate_opaque()       { return anim_opaque_; }
@@ -110,7 +117,6 @@ public:
     void minw(int w) { _minw = w+box()->dw(); }
     void minh(int h) { _minh = h+box()->dw()+titlebar()->h(); }
 
-protected:
     virtual int handle(int ev);
     virtual void handle_resize(int where);
     virtual void draw();
@@ -123,12 +129,8 @@ private:
     void animate(int fx, int fy, int fw, int fh,
                  int tx, int ty, int tw, int th);
 
-    //void animate_min(int mx, int my, int mw, int mh);
-    //void animate_max(int mx, int my, int mw, int mh);
-
     void _resize(int x, int y, int w, int h);
     void _position(int x, int y);
-    void minmax();
 
     Fl_MDI_Viewport *_owner; //Workspace who own this window.
     Fl_Group *prv;
@@ -139,21 +141,12 @@ private:
     bool _toplevel;
 	bool _active;
 
-    void h_oldsize(int w, int h) { _how = w; _hoh = h; }
-    void h_oldpos(int x, int y)  { _hox = x; _hoy = y; }
-    int _hox, _hoy, _how, _hoh;
-
-    void oldsize(int w, int h) { _ow = w; _oh = h; }
-    void oldpos(int x, int y)  { _ox = x; _oy = y; }
     int _ox, _oy, _oh, _ow;
 
     bool _boundaries;
-    bool _maximized;
-    bool _minimized;
+	int state_;
 
     int _resize_where;
-
-    int old_title_h, old_title_fh;
 
     int tx,ty,tw,th; //Box for titlebar
     int px,py,pw,ph; //Box for view
@@ -176,7 +169,6 @@ private:
 
     void add_menu_buttons();
     void delete_menu_buttons();
-    Fl_MDI_MenuButtons *menubuttons;
 };
 
 #endif

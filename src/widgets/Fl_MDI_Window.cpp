@@ -384,7 +384,7 @@ Fl_MDI_Window::Fl_MDI_Window(int x, int y, int w, int h, const char *label)
     h+=titlebar()->h();
     w+=box()->dw();
 
-    _maximized = false;
+	state_ = NORMAL;
     _active    = false;
 
     _resize_where = NO_RESIZE;
@@ -393,9 +393,6 @@ Fl_MDI_Window::Fl_MDI_Window(int x, int y, int w, int h, const char *label)
     _oy = y;
     _oh = h;
     _ow = w;
-    _minimized = false;
-    old_title_h = _titlebar.h();
-    old_title_fh = _titlebar.label_size();
 
     minw(100);
     minh(0);
@@ -412,8 +409,6 @@ Fl_MDI_Window::Fl_MDI_Window(int x, int y, int w, int h, const char *label)
 
     callback(closeMdiWin, this);
     //_titlebar.activate(0);
-
-    menubuttons = 0;
 
     _boundaries=true;
 
@@ -476,7 +471,7 @@ void Fl_MDI_Window::draw()
 
 void Fl_MDI_Window::layout()
 {
-    if(!_toplevel && !_minimized) {
+    if(!_toplevel && state_==NORMAL) {
         if(w() < _minw) w(_minw);
         if(h() < _minh) h(_minh);
     }
@@ -536,10 +531,10 @@ void Fl_MDI_Window::layout()
             //if(_maximized && _owner->maximum() != this)
             //	maximize(false);
 
-            if(!prv->resizable() && (_titlebar._max.visible() || _titlebar._min.visible())) {
+            if(!prv->resizable()) {
                 _titlebar._max.hide();
                 //_titlebar._min.hide();
-            } else if(prv->resizable() && (!_titlebar._max.visible() || !_titlebar._min.visible())) {
+            } else if(prv->resizable()) {
                 _titlebar._max.show();
                 //_titlebar._min.show();
             }
@@ -659,13 +654,7 @@ void Fl_MDI_Window::check_move_boundary(int &x, int &y)
 
 void Fl_MDI_Window::handle_resize(int where)
 {
-    if(!prv->resizable() || _maximized || _minimized) return;
-
-    if(_maximized) {
-        _resize(0,0,_owner->w(), _owner->h());
-        _maximized = false;
-        return;
-    }
+    if(!prv->resizable() || state_!=NORMAL) return;
 
     switch(where)
     {
@@ -773,21 +762,24 @@ int Fl_MDI_Window::handle(int event)
 
     switch(event)
     {
-    case FL_MOUSEWHEEL: {
-        //send(event, *prv);
-        prv->handle(FL_MOUSEWHEEL);
+    case FL_MOUSEWHEEL: {		
+        prv->send(event);
         break;
     }
     case FL_SHOW: {
         Fl_Window::handle(event);
-        if(_toplevel) return 1;
-        setTop();
+        if(_toplevel) return 1;		
+		setTop();
+		_owner->relayout();
+		Fl::flush();
         return 1;
     }
     case FL_HIDE: {
         delete_menu_buttons();
         Fl_Window::handle(event);
         _active = false;
+		_owner->relayout();
+		Fl::flush();
         return 1;
     }
     case FL_FOCUS: {
@@ -797,7 +789,7 @@ int Fl_MDI_Window::handle(int event)
         if(_toplevel)
             return Fl_Window::handle(event);
 
-        if(!_minimized) setTop();
+        if(!minimized()) setTop();
 
         // Send event to widgets...
         for(int i = children(); i--;) {
@@ -815,49 +807,47 @@ int Fl_MDI_Window::handle(int event)
         }
 
         button = Fl::event_button();
-        if(button == FL_LEFT_MOUSE && !_minimized) {
-            if(prv->resizable() && !_maximized) {
-                if( rbcorn.posInRect(Fl::event_x(), Fl::event_y()) ) {
-                    fl_cursor(FL_CURSOR_NWSE, 0, 255);
-                    _resize_where = RIGHTBOTTOM;
-                    return 1;
-                }
-                else if( lbcorn.posInRect(Fl::event_x(), Fl::event_y()) ) {
-                    fl_cursor(FL_CURSOR_NESW, 0, 255);
-                    _resize_where = LEFTBOTTOM;
-                    return 1;
-                }
-                else if(ltcorn.posInRect(Fl::event_x(),Fl::event_y()) ) {
-                    fl_cursor(FL_CURSOR_NWSE, 0, 255);
-                    _resize_where = LEFTTOP;
-                    return 1;
-                }
-                else if( rtcorn.posInRect(Fl::event_x(),Fl::event_y()) ) {
-                    fl_cursor(FL_CURSOR_NESW, 0, 255);
-                    _resize_where = RIGHTTOP;
-                    return 1;
-                }
-                else if( left.posInRect(Fl::event_x(),Fl::event_y()) ) {
-                    fl_cursor(FL_CURSOR_WE, 0, 255);
-                    _resize_where = LEFT;
-                    return 1;
-                }
-                else if(right.posInRect(Fl::event_x(),Fl::event_y()) ) {
-                    fl_cursor(FL_CURSOR_WE, 0, 255);
-                    _resize_where = RIGHT;
-                    return 1;
-                }
-                else if(top.posInRect(Fl::event_x(),Fl::event_y()) ) {
-                    fl_cursor(FL_CURSOR_NS, 0, 255);
-                    _resize_where = TOP;
-                    return 1;
-                }
-                else if(  bot.posInRect(Fl::event_x(),Fl::event_y()) ) {
-                    fl_cursor(FL_CURSOR_NS, 0, 255);
-                    _resize_where = BOTTOM;
-                    return 1;
-                }
-            }
+        if(button == FL_LEFT_MOUSE && state_==NORMAL && prv->resizable() ) {
+			if( rbcorn.posInRect(Fl::event_x(), Fl::event_y()) ) {
+				fl_cursor(FL_CURSOR_NWSE, 0, 255);
+				_resize_where = RIGHTBOTTOM;
+				return 1;
+			}
+			else if( lbcorn.posInRect(Fl::event_x(), Fl::event_y()) ) {
+				fl_cursor(FL_CURSOR_NESW, 0, 255);
+				_resize_where = LEFTBOTTOM;
+				return 1;
+			}
+			else if(ltcorn.posInRect(Fl::event_x(),Fl::event_y()) ) {
+				fl_cursor(FL_CURSOR_NWSE, 0, 255);
+				_resize_where = LEFTTOP;
+				return 1;
+			}
+			else if( rtcorn.posInRect(Fl::event_x(),Fl::event_y()) ) {
+				fl_cursor(FL_CURSOR_NESW, 0, 255);
+				_resize_where = RIGHTTOP;
+				return 1;
+			}
+			else if( left.posInRect(Fl::event_x(),Fl::event_y()) ) {
+				fl_cursor(FL_CURSOR_WE, 0, 255);
+				_resize_where = LEFT;
+				return 1;
+			}
+			else if(right.posInRect(Fl::event_x(),Fl::event_y()) ) {
+				fl_cursor(FL_CURSOR_WE, 0, 255);
+				_resize_where = RIGHT;
+				return 1;
+			}
+			else if(top.posInRect(Fl::event_x(),Fl::event_y()) ) {
+				fl_cursor(FL_CURSOR_NS, 0, 255);
+				_resize_where = TOP;
+				return 1;
+			}
+			else if(  bot.posInRect(Fl::event_x(),Fl::event_y()) ) {
+				fl_cursor(FL_CURSOR_NS, 0, 255);
+				_resize_where = BOTTOM;
+				return 1;
+			}
         }
 
         return 0;
@@ -868,7 +858,7 @@ int Fl_MDI_Window::handle(int event)
 
     case FL_ENTER:
     case FL_MOVE: {
-        if(_toplevel || _maximized || !prv->resizable() || _minimized) {
+        if(_toplevel || !prv->resizable() || state_!=NORMAL) {
             return prv->send(event);
         }
         // Left or right side
@@ -931,9 +921,10 @@ void Fl_MDI_Window::close_callback()
         if(_owner->aot() == this)
             _owner->aot(0);
         if(_owner->maximum() == this)
-            _owner->maximum(0);
+            _owner->maximum(0);					
         if(_owner->top() == this)
             _owner->_top=0;
+		state_ = NORMAL;
         hide();
         throw_focus();
     } else {
@@ -954,7 +945,8 @@ void Fl_MDI_Window::detach()
     if(_owner->top() == this)
         _owner->_top = 0;
 
-    _maximized=false;
+
+	state_ = NORMAL;
     _titlebar.hide();
 
     _toplevel = true;
@@ -1018,19 +1010,19 @@ void Fl_MDI_Window::attach(Fl_MDI_Viewport *ws)
     int _x=x()-WX;
     int _y=y()-WY-_titlebar.h();
     int _w=w()+4, _h=h()+_titlebar.h()+4;
-
+	
     if(_x<0) _x=0;
     if(_y<0) _y=0;
     if(_x+_w>_owner->w()) _x=_owner->w()-_w;
     if(_y+_h>_owner->h()) _y=_owner->h()-_h;
-
+	
     if(_w > _owner->w()) {
         _x=0;
-        _w=_owner->w();
+        //_w=_owner->w();
     }
     if(_h > _owner->h()) {
         _y=0;
-        _h=_owner->h();
+        //_h=_owner->h();
     }
 
     _titlebar.show();
@@ -1042,20 +1034,36 @@ void Fl_MDI_Window::attach(Fl_MDI_Viewport *ws)
 class Fl_MDI_MenuButtons : public Fl_Widget
 {
 public:
-    Fl_MDI_MenuButtons(Fl_MDI_Window *w, Fl_Menu_Bar *b) : Fl_Widget(0,0,0,0) {
+    Fl_MDI_MenuButtons() : Fl_Widget(0,0,0,0) {
         type(Fl_Item::NO_EXECUTE);
         index = -1;
-        box(FL_THIN_UP_BOX);
-        win = w;
+        box(FL_THIN_UP_BOX);        
+    }
+    ~Fl_MDI_MenuButtons() {        
+    }
+	void set_control(Fl_MDI_Window *w, Fl_Menu_Bar *b)
+	{
+		index = -1;
+		win = w;
         bar = b;
+		if(!bar->contains(this)) {
+			bar->add(this);
+	        stored_rlayout = bar->right_layout();
+		    bar->right_layout(this);
+		}
+	}
+	void release_control()
+	{
+		if(bar) {
+			bar->remove(this);
+			bar->right_layout(stored_rlayout);
+		}
+		bar=0;
+		stored_rlayout=0;
+		win=0;
+		bar=0;
+	}
 
-        stored_rlayout = bar->right_layout();
-        bar->right_layout(this);
-    }
-    ~Fl_MDI_MenuButtons() {
-        bar->remove(this);
-        bar->right_layout(stored_rlayout);
-    }
     void draw() {
         int size = h()-4;
 
@@ -1147,12 +1155,18 @@ public:
     Fl_Rect buttons[3];
 };
 
+Fl_MDI_MenuButtons *menubuttons = 0;
+
 void Fl_MDI_Window::add_menu_buttons()
 {
     Fl_Menu_Bar *menu = owner()->menu();
     if(menu) {
+		if(!menubuttons) {
+			Fl_Group::current(0); 
+			menubuttons = new Fl_MDI_MenuButtons();
+		}
         menu->begin();
-        menubuttons = new Fl_MDI_MenuButtons(this, menu);
+        menubuttons->set_control(this, menu);
         menu->end();
 
         menu->relayout();
@@ -1163,8 +1177,7 @@ void Fl_MDI_Window::add_menu_buttons()
 void Fl_MDI_Window::delete_menu_buttons()
 {
     if(menubuttons) {
-        delete menubuttons;
-        menubuttons = 0;
+        menubuttons->release_control();
 
         Fl_Menu_Bar *menu = owner()->menu();
         if(menu) {
@@ -1198,6 +1211,7 @@ void Fl_MDI_Window::animate(int fx, int fy, int fw, int fh,
 		rw=float(fw), rh=float(fh);	
 
 #ifdef _WIN32
+	if(!_owner->shown()) return;
 	HDC saved = fl_gc, new_gc;
 	fl_gc = new_gc = GetDCEx(fl_xid(_owner), NULL, DCX_LOCKWINDOWUPDATE); //Draws top of child windows...
 #endif
@@ -1237,112 +1251,70 @@ void Fl_MDI_Window::animate(int fx, int fy, int fw, int fh,
     resize(tx,ty,tw,th);
 }
 
-void Fl_MDI_Window::minmax()
+void Fl_MDI_Window::state(int s)
 {
-    if(_maximized) {
-        int _W,_H;
-        _W=_owner->w(); _H=_owner->h();
+    int X, Y, W, H;
+	switch(s)
+	{
+	case NORMAL:
+		if(state_>NORMAL) {
+	        if(_owner->maximum()==this) _owner->_max=0;
+	        if(animate()) animate(x(), y(), w(), h(), _ox, _oy, _ow, _oh);
+			else resize(_ox, _oy, _ow, _oh);
+	        _titlebar.show();
+	        delete_menu_buttons();
+			setTop();
+			active(true);
+			layout();
+			redraw();					
+		}		
+		break;
 
-        if(animate())
-            animate(x(), y(), w(), h(), 0, 0, _W, _H);
-        else
-            resize(0, 0, _W, _H);
+	case MAXIMIZED:
+		_ox=x(); _oy=y(); _ow=w(); _oh=h();
+		X=Y=0; W=_owner->w(); H=_owner->h();
+
+		if(!resizable()) {			
+			state(NORMAL);
+			return;
+		}
+
+		if(animate()) animate(x(), y(), w(), h(), X, Y, W, H);
+        else resize(X, Y, W, H);
 
         _owner->maximum(this);
+	    if(_owner->menu()) _titlebar.hide();
+		add_menu_buttons();
+		take_focus();
+		active(true);
+		
+		layout();		
+		redraw();		
+		break;
 
-        if(_owner->menu()) _titlebar.hide();
-        add_menu_buttons();
+	case MINIMIZED:
+		_ox=x(); _oy=y(); _ow=w(); _oh=h();      
+		X=0; Y=_owner->h()-_titlebar.h()+4; W=100; H=_titlebar.h()+4;
+		
+        if(animate()) animate(x(), y(), w(), h(), X, Y, W, H);
+        else resize(X, Y, W, H);
 
-    } else {
+		if(state_==MAXIMIZED) {
+			_owner->maximum(0);
+			_titlebar.show();
+			delete_menu_buttons();
+		}
+		throw_focus();
+		active(false);
+		
+		redraw();
+		break;
 
-        check_size_boundary(_ow, _oh);
-        if(_ox+_ow > _owner->w())
-            _ox=_ox-((_ox+_ow)-_owner->w());
-        if(_oy+_oh > _owner->h())
-            _oy=_oy-((_oy+_oh)-_owner->h());
+	default:
+		return;
+	}
 
-        if(_owner->maximum() == this) _owner->_max = (0);
-
-        if(animate())
-            animate(x(), y(), w(), h(), _ox, _oy, _ow, _oh);
-        else
-            resize(_ox, _oy, _ow, _oh);
-
-        _titlebar.show();
-
-        delete_menu_buttons();
-    }
-
-    layout();
-
-    setTop();
-    _minimized = false;
-}
-
-void Fl_MDI_Window::maximize(bool val)
-{
-    if(_toplevel) return;
-
-    if(!_maximized && !_minimized)
-    {
-        oldpos(x(),y());
-        oldsize(w(),h());
-    }
-
-    _maximized = val;
-    minmax();
-
-    take_focus();
-    active(true);
-    setTop();
-
-    _owner->redraw_all();
-    _owner->relayout_all();
-}
-
-void Fl_MDI_Window::minimize(bool val)
-{
-    if(_toplevel) return;
-
-    if(_maximized) {
-        delete_menu_buttons();
-        _maximized=false;
-        _titlebar.show();
-    }
-    if(_owner->_max==this) _owner->_max=0;
-
-    if(!val && _minimized)
-    {
-        _minimized = false;
-        _maximized = false;
-
-        if(animate()) {
-            animate(x(), y(), w(), h(), _hox, _hoy, _how, _hoh);
-        } else
-            resize(_hox,_hoy,_how,_hoh);
-
-        take_focus();
-        active(true);
-        setTop();
-    }
-    else if(val && !_minimized)
-    {
-        h_oldsize(w(), h());
-        h_oldpos(x(),y());
-
-        if(animate()) {
-            animate(x(), y(), w(), h(),
-                    0,_owner->h()-_titlebar.h()+4, 100, _titlebar.h()+4);
-        } else
-            resize(0,_owner->h()-_titlebar.h()+4, 100, _titlebar.h()+4);
-
-        _maximized = false;
-        _minimized = true;
-
-        throw_focus();
-        active(false);
-    }
-
+	state_ = s;
     _owner->redraw_all();
     _owner->relayout_all();
 }

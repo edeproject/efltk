@@ -83,10 +83,10 @@ void Fl_Group::clear()
         while (e > a)
         {
             Fl_Widget* o = *--e;
-            o->parent(0);        // stops it from calling remove()
-            delete o;
+            o->parent(0);        // stops it from calling remove()			
+			delete o;
         }
-        free((void*)a);
+        free((void*)a);		
     }
 }
 

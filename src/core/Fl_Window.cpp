@@ -159,7 +159,7 @@ int Fl_Window::handle(int event)
             }
             // make the child windows map first
             Fl_Group::handle(event);
-
+	
 #ifdef _WIN32
             int showtype;
             if (parent())

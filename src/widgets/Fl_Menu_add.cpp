@@ -174,8 +174,8 @@ int flags
     Fl_Widget* o = 0;
     if (replace_flag | find_flag) for (int n = group->children(); n--;)
     {
-        Fl_Widget* w = group->child(n);
-        if (w->label() && !compare(w->label(), item) && !w->is_group())
+        Fl_Widget* w = group->child(n);		
+        if (w->label() && !compare(w->label(), item) )// && !w->is_group()) //Finding groups are also allowed!
         {
             if (find_flag) return w;
             o = w;

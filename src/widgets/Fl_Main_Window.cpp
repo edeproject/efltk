@@ -43,8 +43,7 @@ Fl_Main_Window::Fl_Main_Window(int w, int h, const char *l)
 }
 
 Fl_Main_Window::~Fl_Main_Window()
-{
-
+{	
 }
 
 void Fl_Main_Window::menu(Fl_Menu_Bar *w)

@@ -150,7 +150,7 @@ public:
         Iterator first = Iterator( item_node->next );
         Iterator last = Iterator( item_node );
         while( first != last) {
-            if ( *first == x )
+            if ( item == *first )
                 ++result;
             ++first;
         }
@@ -165,7 +165,7 @@ public:
         Iterator first = Iterator(item_node->next);
         Iterator last = Iterator(item_node);
         while(first != last) {
-            if(*first == it) {
+            if(it == *first) {
                 first = remove(first);
                 ++result;
             } else
