@@ -55,24 +55,30 @@ int main (int argc, char *argv[])
 	printf ("Ok");
 
 	printStepName ("Creating the temp table");
-        Fl_Query query (&db, "CREATE TEMP TABLE _test_ (id int,name char(40))");
+        Fl_Query query (&db, "CREATE TEMP TABLE _test_ (id int,name char(40),age int,position char(40))");
 	query.exec ();
 	printf ("Ok");
 
 	printStepName ("Filling in the temp table");
 
-	query.sql ("INSERT INTO _test_ (id,name) VALUES (:var_id,:var_name)");
+	query.sql ("INSERT INTO _test_ (id,name,age,position) VALUES (:var_id,:var_name,:var_age,:var_pos)");
 
 	query.param ("var_id") = 1;
 	query.param ("var_name") = "Alex";
+	query.param ("var_age") = 38;
+	query.param ("var_pos") = "EFLTK developer";	
 	query.exec ();
 
 	query.param ("var_id") = 2;
 	query.param ("var_name") = "Dejan";
+	query.param ("var_age") = 32;
+	query.param ("var_pos") = "EFLTK developer";	
 	query.exec ();
 
 	query.param ("var_id") = 3;
 	query.param ("var_name") = "Mikko";
+	query.param ("var_age") = 28;
+	query.param ("var_pos") = "EFLTK developer";	
 	query.exec ();
 
 	printf ("Ok");
