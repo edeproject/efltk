@@ -2,6 +2,7 @@
   * Implementation of Fl_Base64 class
   * 
   * The source below is under LGPL license.
+  * Copyright (c) EDE Team. More information: http://ede.sf.net .
   * Authors (sorted by time they worked on this source file):
   * 	Dejan Lekic <dejan§nu6.org>
   * Contributors (ie. people that have sent patches, ideas, suggestions):
@@ -107,12 +108,82 @@ void Fl_Base64::encode(Fl_String& strDest, const Fl_Buffer& bufSource)
 {
 	Fl_Buffer bufOut;
 	encode(bufOut, bufSource);
-	if(!strDest.empty()) strDest.clear();
+	if (!strDest.empty()) 
+		strDest.clear();
 	strDest.append(bufOut.data(), bufOut.bytes());
 } /* encode(Fl_String& strDest, const Fl_Buffer& bufSource) */
 /* ------------------------------------------------------------------------- */
 
-/***** $id$
+int 
+Fl_Base64::decode(Fl_Buffer &bufDest, const Fl_Buffer& bufSource)
+{
+    unsigned char *current, *result;
+    unsigned char c;
+    int ch, i=0, j=0;
+
+    if (bufSource.bytes() <= 0)
+		return -1;						/* If source buffer is empty return -1  */
+    if ((bufSource.bytes() % 4) != 0)	/* Source buffer MUST be dividable by 4 */
+		return -1;						/* (no reminders)						*/
+    bufDest.reset();
+    current = bufSource.data();
+    result  = bufDest.data();
+    for (i=0; i < bufSource.bytes(); i++)
+    {
+		ch = current[i];
+
+		if (ch == '=') 
+			break;
+        if (ch == ' ') 
+			ch = '+';
+		ch = Index_64[ch];
+		if (ch < 0) 
+		{
+			continue;
+		} /* if */
+		switch (i % 4)
+		{
+			case 0:
+				c = (unsigned char)((ch << 2) & 0xFF);
+				bufDest.append(&c, 1);
+				break;
+			case 1:
+                bufDest.data()[j] |= ((ch >> 4) & 0xFF);
+                j++;
+                if (current[i+1] != '=')
+                {
+                    c = (unsigned char)((ch << 4) & 0xFF);
+                    bufDest.append(&c, 1);
+                } /* if */
+                break;
+            case 2:
+                bufDest.data()[j] |= ((ch >> 2) & 0x0f);
+                j++;
+                if (current[i+1] != '=')
+                {
+                    c = (unsigned char)((ch << 6) & 0xFF);
+                    bufDest.append(&c, 1);
+                } /* if */
+                break;
+            case 3:
+                bufDest.data()[j] |= ch;
+                j++;
+                break;
+		} /* switch */
+	} /* for */
+	return j;
+} /* decode(Fl_Buffer &bufDest, const Fl_Buffer &bufSource) */
+/* ------------------------------------------------------------------------- */
+
+int decode(Fl_Buffer &bufDest, const Fl_String& strSource)
+{
+	Fl_Buffer bufIn;
+	bufIn.set(strSource);
+    return decode(bufDest, bufIn);
+} /* decode(Fl_Buffer &bufDest, const Fl_String &strSource) */
+/* ------------------------------------------------------------------------- */
+
+/***** $Id$
  *     Project: eFLTK
  ***   This source code is released under GNU LGPL License
  *     Copyright (c) EDE Team, 2000-DWYRT  (DWYRT = Date When You Read This)
