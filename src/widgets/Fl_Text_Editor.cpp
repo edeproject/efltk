@@ -544,20 +544,19 @@ int Fl_Text_Editor::handle(int event)
     {
         switch (event)
         {
+        case FL_PUSH:
+            if (Fl::event_button() == 2)
+            {
+                dragType = -1;
+                Fl::paste(*this,false);
+            }
+            return 1;
 
-            case FL_PUSH:
-                if (Fl::event_button() == 2)
-                {
-                    dragType = -1;
-                    Fl::paste(*this,false);
-                }
-                return 1;
+        case FL_FOCUS:
+            return 3;        // indicate that this widget should get initial focus
 
-            case FL_FOCUS:
-                return 3;        // indicate that this widget should get initial focus
-
-            default:
-                return 1;
+        default:
+            return 1;
         }
     }
     else
@@ -565,8 +564,8 @@ int Fl_Text_Editor::handle(int event)
         switch (event)
         {
 
-            case FL_KEY:
-                return handle_key();
+        case FL_KEY:
+            return handle_key();
 
         case FL_PASTE:
             if(!Fl::event_length() || !Fl::event_text()) return 0;
@@ -577,12 +576,12 @@ int Fl_Text_Editor::handle(int event)
             show_insert_position();
             return 1;
 
-                // CET - FIXME - this will clobber the window's current cursor state!
-                //    case FL_ENTER:
-                //    case FL_MOVE:
-                //    case FL_LEAVE:
-                //      if (Fl::event_inside(text_area)) fl_cursor(FL_CURSOR_INSERT);
-                //      else fl_cursor(FL_CURSOR_DEFAULT);
+            // CET - FIXME - this will clobber the window's current cursor state!
+            //    case FL_ENTER:
+            //    case FL_MOVE:
+            //    case FL_LEAVE:
+            //      if (Fl::event_inside(text_area)) fl_cursor(FL_CURSOR_INSERT);
+            //      else fl_cursor(FL_CURSOR_DEFAULT);
         }
         return 0;
     }

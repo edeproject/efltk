@@ -695,6 +695,8 @@ void Fl_MDI_Window::handle_resize(int where)
     }
 }
 
+#include <stdio.h>
+
 int Fl_MDI_Window::handle(int event)
 {
     static int button = 0;
@@ -790,17 +792,16 @@ int Fl_MDI_Window::handle(int event)
 
         return 0;
     }// Fl_PUSH
-    case FL_LEAVE: {
+
+    case FL_LEAVE:
         fl_cursor(FL_CURSOR_DEFAULT, 0, 255);
-        break;
-    }
-    case FL_ENTER: {
-        break;
-    }
+    case FL_ENTER:
+        return 1;
+
     case FL_MOVE: {
-        if(_toplevel || _maximized || !prv->resizable() || _minimized) {
+        /*if(_toplevel || _maximized || !prv->resizable() || _minimized) {
             return prv->send(event);
-        }
+        }*/
         // Left or right side
         if( left.posInRect(Fl::event_x(),Fl::event_y()) || right.posInRect(Fl::event_x(),Fl::event_y()) ) {
             fl_cursor(FL_CURSOR_WE, 0, 255);

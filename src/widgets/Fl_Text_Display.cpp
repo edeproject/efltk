@@ -26,6 +26,8 @@
 #include <efltk/Fl_Text_Buffer.h>
 #include <efltk/Fl_Text_Display.h>
 #include <efltk/Fl_Style.h>
+#include <efltk/Fl_Menu_.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -61,59 +63,105 @@ static int max( int i1, int i2 );
 static int min( int i1, int i2 );
 static int countlines( const char *string );
 
+static Fl_Menu_ menu_(0,0,0,0,0);
+static bool menu_inited=false;
+static Fl_Text_Display *menu_widget=0;
+
+#define CUT   1
+#define COPY  2
+#define PASTE 3
+
+static void cb_menu(Fl_Widget *w, void *d)
+{
+    if(!menu_widget) return;
+    const char *selection = 0;
+    switch((int)d) {
+    case COPY:
+        selection = menu_widget->buffer()->selection_text();
+        if(*selection) {
+            Fl::copy(selection, strlen(selection), true);
+            free((void*)selection);
+        }
+        break;
+    case CUT:
+        selection = menu_widget->buffer()->selection_text();
+        if(*selection) {
+            Fl::copy(selection, strlen(selection), true);
+            free((void*)selection);
+            menu_widget->buffer()->remove_selection();
+        }
+        break;
+
+    case PASTE:
+        Fl::paste(*menu_widget, true);
+        break;
+
+    default:
+        break;
+    };
+}
+
 // CET - FIXME
 #define TMPFONTWIDTH 6
 
 Fl_Text_Display::Fl_Text_Display(int X, int Y, int W, int H,  const char* l)
-    : Fl_Group(X, Y, W, H, l) {
-  set_click_to_focus();
-  mMaxsize = 0;
-  damage_range1_start = damage_range1_end = -1;
-  damage_range2_start = damage_range2_end = -1;
-  dragPos = dragType = dragging = 0;
-  display_insert_position_hint = 0;
+: Fl_Group(X, Y, W, H, l)
+{
+    if(!menu_inited) {
+        menu_.add("Cut", 0, cb_menu, (void *)CUT);
+        menu_.add("Copy", 0, cb_menu, (void *)COPY);
+        menu_.add("Paste", 0, cb_menu, (void *)PASTE);
+        menu_inited = true;
+    }
 
-  text_area.x = 0;
-  text_area.y = 0;
-  text_area.w = 0;
-  text_area.h = 0;
+    set_click_to_focus();
+    mMaxsize = 0;
+    damage_range1_start = damage_range1_end = -1;
+    damage_range2_start = damage_range2_end = -1;
+    dragPos = dragType = dragging = 0;
+    display_insert_position_hint = 0;
 
-  begin();
+    text_area.x = 0;
+    text_area.y = 0;
+    text_area.w = 0;
+    text_area.h = 0;
 
-  mVScrollBar = new Fl_Scrollbar(0,0,0,0);
-  mVScrollBar->callback((Fl_Callback*)v_scrollbar_cb, this);
-  mHScrollBar = new Fl_Scrollbar(0,0,0,0);
-  mHScrollBar->callback((Fl_Callback*)h_scrollbar_cb, this);
-  mHScrollBar->type(Fl_Scrollbar::HORIZONTAL);
+    begin();
 
-  end();
+    mVScrollBar = new Fl_Scrollbar(0,0,0,0);
+    mVScrollBar->callback((Fl_Callback*)v_scrollbar_cb, this);
+    mHScrollBar = new Fl_Scrollbar(0,0,0,0);
+    mHScrollBar->callback((Fl_Callback*)h_scrollbar_cb, this);
+    mHScrollBar->type(Fl_Scrollbar::HORIZONTAL);
 
-  mCursorOn = 0;
-  mCursorPos = 0;
-  mCursorOldY = -100;
-  mCursorToHint = NO_HINT;
-  mCursorStyle = NORMAL_CURSOR;
-  mCursorPreferredCol = -1;
-  mBuffer = 0;
-  mFirstChar = 0;
-  mLastChar = 0;
-  mNBufferLines = 0;
-  mTopLineNum = mTopLineNumHint = 1;
-  mHorizOffset = mHorizOffsetHint = 0;
+    end();
 
-  mCursor_color = FL_BLACK;
+    mCursorOn = 0;
+    mCursorPos = 0;
+    mCursorOldY = -100;
+    mCursorToHint = NO_HINT;
+    mCursorStyle = NORMAL_CURSOR;
+    mCursorPreferredCol = -1;
+    mBuffer = 0;
+    mFirstChar = 0;
+    mLastChar = 0;
+    mNBufferLines = 0;
+    mTopLineNum = mTopLineNumHint = 1;
+    mHorizOffset = mHorizOffsetHint = 0;
 
-  mFixedFontWidth = TMPFONTWIDTH;// CET - FIXME
-  mStyleBuffer = 0;
-  mStyleTable = 0;
-  mNStyles = 0;
-  mNVisibleLines = 1;
-  mLineStarts = new int[mNVisibleLines];
-  mLineStarts[0] = 0;
+    mCursor_color = FL_BLACK;
 
-  mUnfinishedStyle = 0;
-  mUnfinishedHighlightCB = 0;
-  mHighlightCBArg = 0;
+    mFixedFontWidth = TMPFONTWIDTH;// CET - FIXME
+    mStyleBuffer = 0;
+    mStyleTable = 0;
+    mNStyles = 0;
+    mNVisibleLines = 1;
+    mLineStarts = new int[mNVisibleLines];
+    mLineStarts[0] = 0;
+
+    mUnfinishedStyle = 0;
+    mUnfinishedHighlightCB = 0;
+    mHighlightCBArg = 0;
 }
 
 /*
@@ -321,7 +369,7 @@ void Fl_Text_Display::layout() {
 
   update_v_scrollbar();
   update_h_scrollbar();
-  redraw(FL_DAMAGE_ALL);
+  //redraw();
 
   // clear the layout flag
   Fl_Widget::layout();
@@ -1559,6 +1607,7 @@ void Fl_Text_Display::scroll(int topLineNum, int horizOffset) {
   mTopLineNumHint = topLineNum;
   mHorizOffsetHint = horizOffset;
   relayout();
+  redraw();
 }
 
 void Fl_Text_Display::scroll_(int topLineNum, int horizOffset) {
@@ -1741,6 +1790,7 @@ void Fl_Text_Display::extend_range_for_styles( int *start, int *end ) {
 
 // The draw() method.  It tries to minimize what is draw as much as possible.
 void Fl_Text_Display::draw(void) {
+
   // don't even try if there is no associated text buffer!
   if (!buffer()) { draw_box(); return; }
 
@@ -1896,6 +1946,15 @@ int Fl_Text_Display::handle(int event) {
             return Fl_Group::handle(event);
         }
 
+        if(Fl::event_button()==3) {
+            if(!buffer()->selected()) menu_.find("Cut")->deactivate();
+            else menu_.find("Cut")->activate();
+            ((Fl_Group *)&menu_)->focus(-1);
+            menu_widget = this;
+            menu_.popup(Fl::event_x(), Fl::event_y());
+            return 1;
+        }
+
         //take_focus();
         if (Fl::event_state()&FL_SHIFT) return handle(FL_DRAG);
         dragging = 1;
@@ -1992,7 +2051,7 @@ int Fl_Text_Display::handle(int event) {
 #endif
     }
 
-    return 0;
+    return Fl_Widget::handle(event);
 }
 
 
