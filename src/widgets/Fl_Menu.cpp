@@ -938,15 +938,19 @@ int Fl_Menu_::popup(int X, int Y, int W, int H)
     // fix possible programmer error...
     Fl_Group::current(0);
 
-    // figure out where to pop up in screen coordinates:
-    if (parent()) {
-        for (Fl_Widget* w = this; w; w = w->parent()) {
-            X += w->x();
-            Y += w->y();
+    // Lame hack to detect if user meant to popup in absolute position (many does this)
+    if(X!=Fl::event_x_root() || Y!=Fl::event_y_root())
+    {
+        // figure out where to pop up in screen coordinates:
+        if(parent()) {
+            for (Fl_Widget* w = this; w; w = w->parent()) {
+                X += w->x();
+                Y += w->y();
+            }
+        } else {
+            X += Fl::event_x_root()-Fl::event_x();
+            Y += Fl::event_y_root()-Fl::event_y();
         }
-    } else {
-        X += Fl::event_x_root()-Fl::event_x();
-        Y += Fl::event_y_root()-Fl::event_y();
     }
     Y+=H;
 
