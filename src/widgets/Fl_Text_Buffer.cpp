@@ -1196,10 +1196,10 @@ int Fl_Text_Buffer::count_lines( int startPos, int endPos )
    pos = startPos;
    while ( pos < mGapStart )
    {
-      //if ( pos == endPos )
-      //return lineCount;
-      if ( mBuf[ pos++ ] == '\n' )
-         lineCount++;
+       if ( pos == endPos )
+           return lineCount;
+       if ( mBuf[ pos++ ] == '\n' )
+           lineCount++;
    }
    while ( pos < mLength )
    {
