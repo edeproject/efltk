@@ -91,6 +91,7 @@ int ComboBrowser::handle(int event)
             break;
 
         case FL_PUSH: {
+                Fl::event_clicks(1);
                 Fl_Rect size_grip(w()-SIZE_GRIP, h(), SIZE_GRIP, SIZE_GRIP);
                 if(size_grip.posInRect(Fl::event_x(), Fl::event_y())) return 1;
 
