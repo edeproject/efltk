@@ -85,9 +85,11 @@ rm -fr $RPM_BUILD_ROOT
 %files -n %{name}-devel
 %defattr(-, root, root)
 %{_libdir}/*.so*
+%{_libdir}/*.theme
 #%{_libdir}/*.a
 #%{_libdir}/*.la
 %{_includedir}/*
+%{_prefix}/share/locale/*/LC_MESSAGES/efltk.mo
 %doc doc/*
 
 %changelog
