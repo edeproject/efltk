@@ -152,8 +152,8 @@ public:
     bool    focused() const     ;
     bool    belowmouse() const  ;
 
-    Fl_Flags layout_align()     { return layout_flags_; }
-    void layout_align(Fl_Flags f) { layout_flags_ = f; }
+    Fl_Align layout_align()     { return (Fl_Align)layout_flags_; }
+    void layout_align(Fl_Align f) { layout_flags_ = f; }
 
     Fl_Flags flags() const      {return flags_;}
     Fl_Flags flags(Fl_Flags f)  {return flags_ = f;}

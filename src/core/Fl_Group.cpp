@@ -414,9 +414,12 @@ static int widget_total_width(Fl_Widget *w,int pref_w) {
 }
 
 static int widget_total_height(Fl_Widget *w,int pref_h) {
-    if (w->align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) 
-        return w->label_height() + pref_h;
-    return max(w->label_height(),pref_h);
+    if (!w->align() & FL_ALIGN_INSIDE) {
+        if (w->align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) 
+            return w->label_height() + pref_h;
+        return max(w->label_height(),pref_h);
+    }
+    return pref_h;
 }
 
 static void widget_position(Fl_Widget *w,int x,int y,int& wx,int& wy) {
@@ -425,13 +428,15 @@ static void widget_position(Fl_Widget *w,int x,int y,int& wx,int& wy) {
     if (w->align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) {
         wx = x;
         wy = y;
-        if (w->align() & FL_ALIGN_TOP)
-            wy = y + w->label_height();
+        if (!w->align() & FL_ALIGN_INSIDE)
+            if (w->align() & FL_ALIGN_TOP)
+                wy = y + w->label_height();
     } else {
         wx = x;
         wy = y;
-        if (w->align() & FL_ALIGN_LEFT)
-            wx = x + label_w;
+        if (!w->align() & FL_ALIGN_INSIDE)
+            if (w->align() & FL_ALIGN_LEFT)
+                wx = x + label_w;
     }
 }
 
@@ -568,6 +573,7 @@ void Fl_Group::layout()
 
                     pref_w = ww;
                     pref_h = o->h();
+
                     if (!(o->align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM))) {
                         label_w = o->label_width();
                         if (label_w < 0) label_w = 0;
@@ -577,6 +583,7 @@ void Fl_Group::layout()
                     o->preferred_size(pref_w,pref_h);
 
                     total_h = widget_total_height(o,pref_h);
+                    //total_h = pref_h;
 
                     widget_position(o,xx,yy+hh-total_h,pref_x,pref_y);
 
@@ -588,6 +595,8 @@ void Fl_Group::layout()
                 case FL_ALIGN_CLIENT:
                     if(!o->visible()) break;
                     client = o;
+                    break;
+                default:
                     break;
             }
             //if (o->layout_align())
