@@ -714,10 +714,10 @@ extern "C"
 extern Window fl_wmspec_check_window;
 bool fl_handle()
 {
-	try {
-	
     Fl_Window* window = fl_find(fl_xevent.xany.window);
     int event = 0;
+
+	try {
 
 #if HAVE_XUTF8
     int filtered = 0;
