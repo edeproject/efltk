@@ -63,10 +63,9 @@ static Fl_Font grok_font(Fl_Config *cf, const char* fontstr)
     long l = strtoul(p, &q, 0);
     if (!*q) return fl_fonts+l;
     
-    if (p && p[0]=='-') 
-        return fl_create_font(p);
-    else	
-	return fl_find_font(p);
+    Fl_Font r = fl_create_font(p);
+    if (!r) r = fl_find_font(p);
+    return r;
 }
 
 extern "C" bool fltk_theme()
@@ -199,12 +198,14 @@ extern "C" bool fltk_theme()
 
             // font used for widget's label
             if(!conf.read("label font", valstr, 0, sizeof(valstr))) {
+                if (valstr[0] == '_') valstr[0] = ' ';
                 font = grok_font(&conf, valstr);
                 if (font) style->label_font = font;
             }
 
             // font used for text within widget
             if(!conf.read("text font", valstr, 0, sizeof(valstr))) {
+                if (valstr[0] == '_') valstr[0] = ' ';
                 font = grok_font(&conf, valstr);
                 if (font) style->text_font = font;
             }
