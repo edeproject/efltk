@@ -46,11 +46,11 @@ static Matrix m = {1, 0, 0, 1, 0, 0, 0, 0, true};
 static Matrix stack[64];
 static int sptr = 0;
 
-void fl_push_matrix() {stack[sptr++] = m;}
+void Fl_Device::push_matrix() {stack[sptr++] = m;}
 
-void fl_pop_matrix() {m = stack[--sptr];}
+void Fl_Device::pop_matrix() {m = stack[--sptr];}
 
-void fl_mult_matrix(float a, float b, float c, float d, float x, float y) {
+void Fl_Device::mult_matrix(float a, float b, float c, float d, float x, float y) {
   if (m.trivial) {
     m.a = a; m.b = b; m.c = c; m.d = d;
     m.x += x; m.ix = int(floorf(m.x+.5f));
@@ -69,15 +69,15 @@ void fl_mult_matrix(float a, float b, float c, float d, float x, float y) {
   }
 }
 
-void fl_scale(float x,float y) {
+void Fl_Device::scale(float x,float y) {
   if (x != 1.0 && y != 1.0) fl_mult_matrix(x,0,0,y,0,0);
 }
 
-void fl_scale(float x) {
+void Fl_Device::scale(float x) {
   if (x != 1.0) fl_mult_matrix(x,0,0,x,0,0);
 }
 
-void fl_translate(float x,float y) {
+void Fl_Device::translate(float x,float y) {
   if (m.trivial) {
     m.x += x; m.ix = int(floorf(m.x+.5f));
     m.y += y; m.iy = int(floorf(m.y+.5f));
@@ -87,7 +87,7 @@ void fl_translate(float x,float y) {
   }
 }
 
-void fl_translate(int x, int y) {
+void Fl_Device::translate(int x, int y) {
   if (m.trivial) {
     m.ix += x; m.x = float(m.ix);
     m.iy += y; m.y = float(m.iy);
@@ -96,7 +96,7 @@ void fl_translate(int x, int y) {
   }
 }
 
-void fl_rotate(float d) {
+void Fl_Device::rotate(float d) {
   if (d) {
     float s, c;
     if (d == 0) {s = 0; c = 1;}
@@ -108,7 +108,7 @@ void fl_rotate(float d) {
   }
 }
 
-void fl_load_identity() {
+void Fl_Device::load_identity() {
   m.a = 1; m.b = 0; m.c = 0; m.d = 1;
   m.x = 0; m.y = 0;
   m.ix = 0; m.iy = 0;
@@ -118,7 +118,7 @@ void fl_load_identity() {
 ////////////////////////////////////////////////////////////////
 // Return the transformation of points:
 
-void fl_transform(float& x, float& y) {
+void Fl_Device::transform(float& x, float& y) {
   if (!m.trivial) {
     float t = x*m.a + y*m.c + m.x;
     y = x*m.b + y*m.d + m.y;
@@ -129,7 +129,7 @@ void fl_transform(float& x, float& y) {
   }
 }
 
-void fl_transform_distance(float& x, float& y) {
+void Fl_Device::transform_distance(float& x, float& y) {
   if (!m.trivial) {
     float t = x*m.a + y*m.c;
     y = x*m.b + y*m.d;
@@ -137,7 +137,7 @@ void fl_transform_distance(float& x, float& y) {
   }
 }
 
-void fl_transform(int& x, int& y) {
+void Fl_Device::transform(int& x, int& y) {
   if (!m.trivial) {
     int t = int(floorf(x*m.a + y*m.c + m.x + .5f));
     y = int(floorf(x*m.b + y*m.d + m.y + .5f));
@@ -159,140 +159,151 @@ typedef short COORD_T;
 #endif
 
 // Storage of the current path:
+
+// Points:
 static XPoint *point_; // all the points
 static int point_array_size;
 static int points_; // number of points
+
+// Loop:
 static int loop_start; // point at start of current loop
 static int* loop; // number of points in each loop
 static int loops; // number of loops
 static int loop_array_size;
 
-static void add_n_points(int n) {
-  point_array_size = point_array_size ? 2*point_array_size : 16;
-  if (points_+n >= point_array_size) point_array_size = n;
-  point_ = (XPoint*)realloc((void*)point_, (point_array_size+1)*sizeof(XPoint));
+static void add_n_points(int n)
+{
+    point_array_size = (point_array_size>0) ? 2*point_array_size : 16;
+    if(points_+n >= point_array_size) point_array_size = n;
+    point_ = (XPoint*)realloc((void*)point_, (point_array_size+1)*sizeof(XPoint));
 }
 
-void Fl_Device::vertex(float X, float Y) {
-  COORD_T x = COORD_T(floorf(X*m.a + Y*m.c + m.x + .5f));
-  COORD_T y = COORD_T(floorf(X*m.b + Y*m.d + m.y + .5f));
-  if (!points_ || x != point_[points_-1].x || y != point_[points_-1].y) {
-    if (points_+1 >= point_array_size) add_n_points(1);
-    point_[points_].x = x;
-    point_[points_].y = y;
-    points_++;
-  }
+void Fl_Device::vertex(float X, float Y)
+{
+    COORD_T x = COORD_T(floorf(X*m.a + Y*m.c + m.x + .5f));
+    COORD_T y = COORD_T(floorf(X*m.b + Y*m.d + m.y + .5f));
+    if (!points_ || x != point_[points_-1].x || y != point_[points_-1].y) {
+        if (points_+1 >= point_array_size) add_n_points(1);
+        point_[points_].x = x;
+        point_[points_].y = y;
+        points_++;
+    }
 }
 
-void Fl_Device::vertex(int X, int Y) {
-  COORD_T x,y;
-  if (m.trivial) {
-    x = COORD_T(X+m.ix);
-    y = COORD_T(Y+m.iy);
-  } else {
-    x = COORD_T(floorf(X*m.a + Y*m.c + m.x + .5f));
-    y = COORD_T(floorf(X*m.b + Y*m.d + m.y + .5f));
-  }
-  if (!points_ || x != point_[points_-1].x || y != point_[points_-1].y) {
-    if (points_+1 >= point_array_size) add_n_points(1);
-    point_[points_].x = x;
-    point_[points_].y = y;
-    points_++;
-  }
+void Fl_Device::vertex(int X, int Y)
+{
+    COORD_T x,y;
+    if (m.trivial) {
+        x = COORD_T(X+m.ix);
+        y = COORD_T(Y+m.iy);
+    } else {
+        x = COORD_T(floorf(X*m.a + Y*m.c + m.x + .5f));
+        y = COORD_T(floorf(X*m.b + Y*m.d + m.y + .5f));
+    }
+    if (!points_ || x != point_[points_-1].x || y != point_[points_-1].y) {
+        if (points_+1 >= point_array_size) add_n_points(1);
+        point_[points_].x = x;
+        point_[points_].y = y;
+        points_++;
+    }
 }
 
-void Fl_Device::vertices(int n, const float array[][2]) {
-  if (points_+n >= point_array_size) add_n_points(n);
-  const float* a = array[0];
-  const float* e = a+2*n;
-  int pn = points_;
-  if (m.trivial) {
+void Fl_Device::vertices(int n, const float array[][2])
+{
+    if (points_+n >= point_array_size) add_n_points(n);
+    const float* a = array[0];
+    const float* e = a+2*n;
+    int pn = points_;
+    if (m.trivial) {
+        for (; a < e; a += 2) {
+            COORD_T x = COORD_T(floorf(a[0] + m.x + .5f));
+            COORD_T y = COORD_T(floorf(a[1] + m.y + .5f));
+            if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
+                point_[pn].x = x;
+                point_[pn].y = y;
+                pn++;
+            }
+        }
+    } else {
+        for (; a < e; a += 2) {
+            COORD_T x = COORD_T(floorf(a[0]*m.a + a[1]*m.c + m.x + .5f));
+            COORD_T y = COORD_T(floorf(a[0]*m.b + a[1]*m.d + m.y + .5f));
+            if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
+                point_[pn].x = x;
+                point_[pn].y = y;
+                pn++;
+            }
+        }
+    }
+    points_ = pn;
+}
+
+void Fl_Device::vertices(int n, const int array[][2])
+{
+    if (points_+n >= point_array_size) add_n_points(n);
+    const int* a = array[0];
+    const int* e = a+2*n;
+    int pn = points_;
+    if (m.trivial) {
+        for (; a < e; a += 2) {
+            COORD_T x = COORD_T(a[0]+m.ix);
+            COORD_T y = COORD_T(a[1]+m.iy);
+            if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
+                point_[pn].x = x;
+                point_[pn].y = y;
+                pn++;
+            }
+        }
+    } else {
+        for (; a < e; a += 2) {
+            COORD_T x = COORD_T(floorf(a[0]*m.a + a[1]*m.c + m.x + .5f));
+            COORD_T y = COORD_T(floorf(a[0]*m.b + a[1]*m.d + m.y + .5f));
+            if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
+                point_[pn].x = x;
+                point_[pn].y = y;
+                pn++;
+            }
+        }
+    }
+    points_ = pn;
+}
+
+void Fl_Device::transformed_vertices(int n, const float array[][2])
+{
+    if (points_+n >= point_array_size) add_n_points(n);
+    const float* a = array[0];
+    const float* e = a+2*n;
+    int pn = points_;
     for (; a < e; a += 2) {
-      COORD_T x = COORD_T(floorf(a[0] + m.x + .5f));
-      COORD_T y = COORD_T(floorf(a[1] + m.y + .5f));
-      if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
-	point_[pn].x = x;
-	point_[pn].y = y;
-	pn++;
-      }
+        COORD_T x = COORD_T(floorf(a[0] + .5f));
+        COORD_T y = COORD_T(floorf(a[1] + .5f));
+        if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
+            point_[pn].x = x;
+            point_[pn].y = y;
+            pn++;
+        }
     }
-  } else {
-    for (; a < e; a += 2) {
-      COORD_T x = COORD_T(floorf(a[0]*m.a + a[1]*m.c + m.x + .5f));
-      COORD_T y = COORD_T(floorf(a[0]*m.b + a[1]*m.d + m.y + .5f));
-      if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
-	point_[pn].x = x;
-	point_[pn].y = y;
-	pn++;
-      }
-    }
-  }
-  points_ = pn;
+    points_ = pn;
 }
 
-void Fl_Device::vertices(int n, const int array[][2]) {
-  if (points_+n >= point_array_size) add_n_points(n);
-  const int* a = array[0];
-  const int* e = a+2*n;
-  int pn = points_;
-  if (m.trivial) {
-    for (; a < e; a += 2) {
-      COORD_T x = COORD_T(a[0]+m.ix);
-      COORD_T y = COORD_T(a[1]+m.iy);
-      if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
-	point_[pn].x = x;
-	point_[pn].y = y;
-	pn++;
-      }
+void Fl_Device::closepath()
+{
+    if (points_ > loop_start+2) {
+        // close the shape by duplicating first point_:
+        XPoint& q = point_[loop_start];
+        // the array always has one extra point_ so we don't need to check
+        XPoint& p = point_[points_-1];
+        if (p.x != q.x || p.y != q.y) point_[points_++] = q;
+        // remember the new loop:
+        if (loops >= loop_array_size) {
+            loop_array_size = loop_array_size ? 2*loop_array_size : 16;
+            loop = (int*)realloc((void*)loop, loop_array_size*sizeof(int));
+        }
+        loop[loops++] = points_-loop_start;
+        loop_start = points_;
+    } else {
+        points_ = loop_start;
     }
-  } else {
-    for (; a < e; a += 2) {
-      COORD_T x = COORD_T(floorf(a[0]*m.a + a[1]*m.c + m.x + .5f));
-      COORD_T y = COORD_T(floorf(a[0]*m.b + a[1]*m.d + m.y + .5f));
-      if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
-	point_[pn].x = x;
-	point_[pn].y = y;
-	pn++;
-      }
-    }
-  }
-  points_ = pn;
-}
-
-void Fl_Device::transformed_vertices(int n, const float array[][2]) {
-  if (points_+n >= point_array_size) add_n_points(n);
-  const float* a = array[0];
-  const float* e = a+2*n;
-  int pn = points_;
-  for (; a < e; a += 2) {
-    COORD_T x = COORD_T(floorf(a[0] + .5f));
-    COORD_T y = COORD_T(floorf(a[1] + .5f));
-    if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
-      point_[pn].x = x;
-      point_[pn].y = y;
-      pn++;
-    }
-  }
-  points_ = pn;
-}
-
-void Fl_Device::closepath() {
-  if (points_ > loop_start+2) {
-    // close the shape by duplicating first point_:
-    XPoint& q = point_[loop_start];
-    // the array always has one extra point_ so we don't need to check
-    XPoint& p = point_[points_-1];
-    if (p.x != q.x || p.y != q.y) point_[points_++] = q;
-    // remember the new loop:
-    if (loops >= loop_array_size) {
-      loop_array_size = loop_array_size ? 2*loop_array_size : 16;
-      loop = (int*)realloc((void*)loop, loop_array_size*sizeof(int));
-    }
-    loop[loops++] = points_-loop_start;
-    loop_start = points_;
-  } else {
-    points_ = loop_start;
-  }
 }
 
 ////////////////////////////////////////////////////////////////

@@ -68,6 +68,9 @@ Fl_Named_Style* Fl_Window::default_style = &::style;
 
 void Fl_Window::_Fl_Window()
 {
+    m_minw = m_minh = m_maxw = m_maxh = m_dw = m_dh = 0;
+    m_size_range = false;
+
     style(default_style);
     widget_type(WINDOW_TYPE);
     window_type_ = 0;
@@ -107,19 +110,17 @@ Fl_Window::Fl_Window(int W, int H, const char *l)
 
 // This is set by Fl::arg to argv[0], or the user can set it.
 // It is used by X to look up stuff in the X resource database:
-Fl_String Fl_Window::xclass_("fltk");
+Fl_String Fl_Window::xclass_("EFLTK");
 
 extern void fl_fix_focus();
 
 bool fl_show_iconic;             // set by iconize() or by -i Fl::arg switch
 
-#include <stdio.h>
-
-void Fl_Window::size_range(int minw, int minh, int maxw, int maxh)
+void Fl_Window::size_range(int minw, int minh, int maxw, int maxh, int dw, int dh)
 {
-    m_dw = m_dh = 0;
     m_minw=minw; m_minh=minh;
     m_maxw=maxw; m_maxh=maxh;
+    m_dw = dw;   m_dh = dh;
     size_range_();
 }
 
@@ -142,28 +143,6 @@ int Fl_Window::handle(int event)
             for(int n = 0; n < children(); n++) child(n)->layout_damage(child(n)->layout_damage()|FL_LAYOUT_XYWH);
             layout_damage(layout_damage()|FL_LAYOUT_XYWH);
             layout();
-
-            if (!parent() && !has_size_range())
-            {
-                if (resizable())
-                {
-                    // find the innermost nested resizable():
-                    Fl_Widget *o = resizable();
-                    while (o->is_group())
-                    {
-                        Fl_Widget* p = ((Fl_Group*)o)->resizable();
-                        if (!p || p == o) break;
-                        o = p;
-                    }
-                    int minw = w(); if (o->w() > 72) minw -= (o->w()-72);
-                    int minh = h(); if (o->h() > 72) minh -= (o->h()-72);
-                    size_range(minw, minh, 0, 0);
-                }
-                else
-                {
-                    size_range(w(), h(), w(), h());
-                }
-            }
 
             if (!shown()) {
                 create();

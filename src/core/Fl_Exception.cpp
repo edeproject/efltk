@@ -22,6 +22,8 @@
 #include <stdlib.h>
 #include <exception>
 
+using namespace std;
+
 static void fl_terminate_handler() {	
     Fl::warning("Exception termination handler called.\n"
 				"This is due to unhandled exception in application,\n"

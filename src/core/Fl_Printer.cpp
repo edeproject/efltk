@@ -4,52 +4,56 @@
 
 //const int Fl_Printer::NO_PAGE_FORMATS=30;
 
-
 //const char * Fl_Printer::format_names = fl_printer_format_names_en;
-const int Fl_Printer::page_formats[NO_PAGE_FORMATS+1][2]={
+const int Fl_Printer::page_formats[NO_PAGE_FORMATS+1][2] =
+{
+    // A* //
+    {0,0},
+    {2384, 3370},
+    {1684, 2384},
+    {1191, 1684},
+    {842, 1191},
+    {595, 842},
+    {420, 595},
+    {297, 420},
+    {210, 297},
+    {148, 210},
+    {105, 148},
 
-	// A* //
-	{0,0},
-	{2384, 3370},
-	{1684, 2384},
-	{1191, 1684},
-	{842, 1191},
-	{595, 842},
-	{420, 595},
-	{297, 420},
-	{210, 297},
-	{148, 210},
-	{105, 148},
-	
-	// B* //
-	{2920, 4127},
-	{2064, 2920},
-	{1460, 2064},
-	{1032, 1460},
-	{729, 1032},
-	{516, 729},
-	{316, 516},
-	{258, 516},
-	{181, 258},
-	{127, 181},
-	{91,127},
-	
-	// others (look at Fl_PostScript.H} //
-	{462, 649},
-	{312, 623},
-	{541, 719},
-	{595, 935},
-	{1224, 790},
-	{612, 1009},
-	{612, 790},
-	{791, 1224},
-	{297, 683}
+    // B* //
+    {2920, 4127},
+    {2064, 2920},
+    {1460, 2064},
+    {1032, 1460},
+    {729, 1032},
+    {516, 729},
+    {316, 516},
+    {258, 516},
+    {181, 258},
+    {127, 181},
+    {91,127},
 
+    // others (look at Fl_PostScript.H} //
+    {462, 649},
+    {312, 623},
+    {541, 719},
+    {595, 935},
+    {1224, 790},
+    {612, 1009},
+    {612, 790},
+    {791, 1224},
+    {297, 683}
 };
-FL_API void Fl_Printer::fit(Fl_Widget * w, int align){fit(w->x(), w->y(), w->w(), w->h(), align);};
-FL_API void Fl_Printer::fit(Fl_Widget * w, double dpi, int align){fit(w->x(), w->y(), w->w(), w->h(), dpi,  align);};
 
-// it rerurns: 
+void Fl_Printer::fit(Fl_Widget * w, int align) {
+    fit(w->x(), w->y(), w->width(), w->height(), align);
+}
+
+void Fl_Printer::fit(Fl_Widget * w, double dpi, int align) {
+    fit(w->x(), w->y(), w->width(), w->height(), dpi, align);
+};
+
+// it rerurns:
 // -2 - out of range
 // -1  - syntax error
 // 0  non-filled
@@ -57,13 +61,11 @@ FL_API void Fl_Printer::fit(Fl_Widget * w, double dpi, int align){fit(w->x(), w-
 
 // This will  go in the foture to  Fl_Printer_Chooser...
 /*
-
  static const char * fl_printer_format_names_en = "User defined|A0|A1|A2|A3|A4|A5|A6|A7|A8|A9|"
-	"B0|B1|B2|B3|B4|B5|B6|B7|B8|B9|B10|C5 sheet|DLE|Executive|Folio|Ledger|Legal"
-	"Letter|Tabloid|Common Envelope #9";
+ "B0|B1|B2|B3|B4|B5|B6|B7|B8|B9|B10|C5 sheet|DLE|Executive|Folio|Ledger|Legal"
+ "Letter|Tabloid|Common Envelope #9";
 
-
-int get_number (const char **selection, int * number){
+ int get_number (const char **selection, int * number){
 
 	int i;
 	int ret = 0;
@@ -118,9 +120,6 @@ int get_number (const char **selection, int * number){
 	return ret;
 }
 
-
-
-
 int fl_validate_selection(const char * selection, int max, bool **pages=0){
 
 	int i;
@@ -172,11 +171,5 @@ int fl_validate_selection(const char * selection, int max, bool **pages=0){
 	if(pages && (result <=0)) delete[] * pages;
 	return result;
 };
-
-
-
-
-
-
 
 */

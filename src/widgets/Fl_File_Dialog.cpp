@@ -471,7 +471,7 @@ bool Fl_File_Chooser::show_dialog(const char *caption)
 	Fl_Group *saved_parent = parent();
 
 	Fl_Dialog w(this->h()+40, this->w()+20, caption);
-	if(has_size_range()) w.size_range(minw(), minh());
+	w.size_range(300, 300);
 	w.buttons(Fl_Dialog::BTN_OK|Fl_Dialog::BTN_CANCEL, Fl_Dialog::BTN_OK);
 	w.resizable(w);
 

@@ -28,6 +28,7 @@
 #include <efltk/Fl_Color_Chooser.h>
 #include <efltk/fl_draw.h>
 #include <efltk/Fl_Item.h>
+#include <efltk/Fl_Image.h>
 
 //#include <stdio.h>
 
@@ -115,47 +116,49 @@ void Fl_Color_Chooser::set_valuators() {
   }
 }
 
-int Fl_Color_Chooser::rgb(float r, float g, float b) {
-  if (r == r_ && g == g_ && b == b_) return 0;
-  r_ = r; g_ = g; b_ = b;
-  float ph = hue_;
-  float ps = saturation_;
-  float pv = value_;
-  rgb2hsv(r,g,b,hue_,saturation_,value_);
-  set_valuators();
-  if (value_ != pv) {
+int Fl_Color_Chooser::rgb(float r, float g, float b)
+{
+    if (r == r_ && g == g_ && b == b_) return 0;
+    r_ = r; g_ = g; b_ = b;
+    float ph = hue_;
+    float ps = saturation_;
+    float pv = value_;
+    rgb2hsv(r,g,b,hue_,saturation_,value_);
+    set_valuators();
+    if (value_ != pv) {
 #ifdef UPDATE_HUE_BOX
-    huebox.redraw(FL_DAMAGE_CONTENTS);
+        huebox.redraw(FL_DAMAGE_ALL);
 #endif
-    valuebox.redraw(FL_DAMAGE_VALUE);}
-  if (hue_ != ph || saturation_ != ps) {
-    huebox.redraw(FL_DAMAGE_VALUE); 
-    valuebox.redraw(FL_DAMAGE_CONTENTS);
-  }
-  return 1;
+        valuebox.redraw(FL_DAMAGE_ALL);}
+    if (hue_ != ph || saturation_ != ps) {
+        huebox.redraw(FL_DAMAGE_VALUE);
+        valuebox.redraw(FL_DAMAGE_VALUE);
+    }
+    return 1;
 }
 
-int Fl_Color_Chooser::hsv(float h, float s, float v) {
-  h = fmod(h,6.0f); if (h < 0) h += 6.0f;
-  if (s < 0) s = 0; else if (s > 1) s = 1;
-  if (v < 0) v = 0; else if (v > 1) v = 1;
-  if (h == hue_ && s == saturation_ && v == value_) return 0;
-  float ph = hue_;
-  float ps = saturation_;
-  float pv = value_;
-  hue_ = h; saturation_ = s; value_ = v;
-  if (value_ != pv) {
+int Fl_Color_Chooser::hsv(float h, float s, float v)
+{
+    h = fmod(h,6.0f); if (h < 0) h += 6.0f;
+    if (s < 0) s = 0; else if (s > 1) s = 1;
+    if (v < 0) v = 0; else if (v > 1) v = 1;
+    if (h == hue_ && s == saturation_ && v == value_) return 0;
+    float ph = hue_;
+    float ps = saturation_;
+    float pv = value_;
+    hue_ = h; saturation_ = s; value_ = v;
+    if (value_ != pv) {
 #ifdef UPDATE_HUE_BOX
-    huebox.redraw(FL_DAMAGE_CONTENTS);
+        huebox.redraw(FL_DAMAGE_ALL);
 #endif
-    valuebox.redraw(FL_DAMAGE_VALUE);}
-  if (hue_ != ph || saturation_ != ps) {
-    huebox.redraw(FL_DAMAGE_VALUE); 
-    valuebox.redraw(FL_DAMAGE_CONTENTS);
-  }
-  hsv2rgb(h,s,v,r_,g_,b_);
-  set_valuators();
-  return 1;
+        valuebox.redraw(FL_DAMAGE_ALL);}
+    if (hue_ != ph || saturation_ != ps) {
+        huebox.redraw(FL_DAMAGE_VALUE);
+        valuebox.redraw(FL_DAMAGE_VALUE);
+    }
+    hsv2rgb(h,s,v,r_,g_,b_);
+    set_valuators();
+    return 1;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -173,151 +176,244 @@ static void tohs(float x, float y, float& h, float& s) {
 #endif
 }
 
-int Flcc_HueBox::handle(int e) {
-  static float is;
-  Fl_Color_Chooser* c = (Fl_Color_Chooser*)parent();
-  switch (e) {
-  case FL_PUSH:
-    is = c->s();
-  case FL_DRAG: {
-    float Xf, Yf, H, S;
-    int ix = 0; int iy = 0; int iw = w(); int ih = h();
-    box()->inset(ix, iy, iw, ih);
-    Xf = (Fl::event_x()-ix)/float(iw);
-    Yf = (Fl::event_y()-iy)/float(ih);
-    tohs(Xf, Yf, H, S);
-    if (fabs(H-ih) < 3*6.0f/w()) H = float(ih);
-    if (fabs(S-is) < 3*1.0f/h()) S = is;
-    if (Fl::event_state(FL_CTRL)) H = float(ih);
-    if (c->hsv(H, S, c->v())) c->do_callback();
-    } return 1;
-  default:
-    return 0;
-  }
+Flcc_HueBox::Flcc_HueBox(int X, int Y, int W, int H)
+: Fl_Widget(X,Y,W,H)
+{
+    bg = 0;
+    px = py = 0;
 }
 
-static void generate_image(void* vv, int X, int Y, int W, uchar* buf) {
-  Flcc_HueBox* v = (Flcc_HueBox*)vv;
-  int x1 = 0; int y1 = 0; int w1 = v->w(); int h1 = v->h();
-  v->box()->inset(x1,y1,w1,h1);
-  float Yf = float(Y)/h1;
+Flcc_HueBox::~Flcc_HueBox()
+{
+    if(bg) delete bg;
+}
+
+int Flcc_HueBox::handle(int e)
+{
+    static float is;
+    Fl_Color_Chooser* c = (Fl_Color_Chooser*)parent();
+    switch (e) {
+    case FL_PUSH:
+        is = c->s();
+    case FL_DRAG: {
+        float Xf, Yf, H, S;
+        int ix = 0; int iy = 0; int iw = w(); int ih = h();
+        box()->inset(ix, iy, iw, ih);
+        Xf = (Fl::event_x()-ix)/float(iw);
+        Yf = (Fl::event_y()-iy)/float(ih);
+        tohs(Xf, Yf, H, S);
+        if (fabs(H-ih) < 3*6.0f/w()) H = float(ih);
+        if (fabs(S-is) < 3*1.0f/h()) S = is;
+        if (Fl::event_state(FL_CTRL)) H = float(ih);
+        if (c->hsv(H, S, c->v())) c->do_callback();
+    }
+    return 1;
+
+    default:
+        return 0;
+    }
+}
+
+void Flcc_HueBox::layout()
+{
+    if(layout_damage() & FL_LAYOUT_WH) {
+        generate();
+    }
+
+    Fl_Widget::layout();
+}
+
+void Flcc_HueBox::generate()
+{
+    int X = 0, Y = 0, W = w(), H = h();
+    box()->inset(X,Y,W,H);
+
 #ifdef UPDATE_HUE_BOX
-  const float V = ((Fl_Color_Chooser*)(v->parent()))->v();
+    const float V = ((Fl_Color_Chooser*)(parent()))->v();
 #else
-  const float V = 1.0f;
+    const float V = 1.0f;
 #endif
-  for (int x = X; x < X+W; x++) {
-    float Xf = float(x)/w1;
-    float H,S; tohs(Xf,Yf,H,S);
-    float r,g,b;
-    Fl_Color_Chooser::hsv2rgb(H,S,V,r,g,b);
-    *buf++ = uchar(255*r+.5f);
-    *buf++ = uchar(255*g+.5f);
-    *buf++ = uchar(255*b+.5f);
-  }
+
+    Fl_Image *im = new Fl_Image(W, H, 32);
+
+    uint32 *dst = (uint32 *)im->data();
+    int skip = im->pitch() - W * im->bytespp();
+    register float r,g,b;
+
+    for(int y = 0; y < H; y++) {
+
+        float Yf = (float)y / H;
+
+        for (int x = 0; x < W; x++)
+        {
+            float Xf = (float)x / W;
+            float H,S; tohs(Xf, Yf, H, S);
+            Fl_Color_Chooser::hsv2rgb(H,S,V,r,g,b);
+            fl_rgb888_from_rgb(*dst++, uchar(255*r+.5f), uchar(255*g+.5f), uchar(255*b+.5f));
+        }
+        ((uint8*)dst) += skip;
+    }
+
+    if(bg) delete bg;
+    bg = im;
 }
 
-#define BUTTON_SIZE 7
+#define BUTTON_SIZE 8
+void Flcc_HueBox::draw()
+{
+    if (damage() & FL_DAMAGE_ALL) {
+        draw_frame();
+        generate();
+    }
 
-void Flcc_HueBox::draw() {
-  if (damage()&FL_DAMAGE_ALL) draw_frame();
-  int x1 = 0; int y1 = 0; int w1 = w(); int h1 = h();
-  box()->inset(x1,y1,w1,h1);
-  if (damage() == FL_DAMAGE_VALUE) fl_push_clip(x1+px,y1+py,BUTTON_SIZE,BUTTON_SIZE);
-  fl_draw_image(generate_image, this, x1, y1, w1, h1);
-  if (damage() == FL_DAMAGE_VALUE) fl_pop_clip();
-  Fl_Color_Chooser* c = (Fl_Color_Chooser*)parent();
+    int x1 = 0; int y1 = 0; int w1 = w(); int h1 = h();
+    box()->inset(x1,y1,w1,h1);
+
+    if (damage() & FL_DAMAGE_VALUE) fl_push_clip(x1+px,y1+py,BUTTON_SIZE,BUTTON_SIZE);
+    if(bg) bg->draw(x1,y1,w1,h1);
+    if (damage() & FL_DAMAGE_VALUE) fl_pop_clip();
+
+    Fl_Color_Chooser* c = (Fl_Color_Chooser*)parent();
+
 #ifdef CIRCLE
-  int X = int(.5f*(cos(c->h()*float(M_PI/3.0))*c->s()+1) * (w1-BUTTON_SIZE));
-  int Y = int(.5f*(1-sin(c->h()*float(M_PI/3.0))*c->s()) * (h1-BUTTON_SIZE));
+    int X = int(.5f*(cos(c->h()*float(M_PI/3.0))*c->s()+1) * (w1-BUTTON_SIZE));
+    int Y = int(.5f*(1-sin(c->h()*float(M_PI/3.0))*c->s()) * (h1-BUTTON_SIZE));
 #else
-  int X = int(c->h()/6.0f*(w1-BUTTON_SIZE));
-  int Y = int((1-c->s())*(h1-BUTTON_SIZE));
+    int X = int(c->h()/6.0f*(w1-BUTTON_SIZE));
+    int Y = int((1-c->s())*(h1-BUTTON_SIZE));
 #endif
 
-  if (X < 0) X = 0; else if (X > w1-BUTTON_SIZE) X = w1-BUTTON_SIZE;
-  if (Y < 0) Y = 0; else if (Y > h1-BUTTON_SIZE) Y = h1-BUTTON_SIZE;
-  //  fl_color(c->v()>.75 ? FL_BLACK : FL_WHITE);
-  button_box()->draw(x1+X, y1+Y, BUTTON_SIZE, BUTTON_SIZE, button_color(), 0);
-  px = X; py = Y;
+    if (X < 0) X = 0; else if (X > w1-BUTTON_SIZE) X = w1-BUTTON_SIZE;
+    if (Y < 0) Y = 0; else if (Y > h1-BUTTON_SIZE) Y = h1-BUTTON_SIZE;
+
+    button_box()->draw(x1+X, y1+Y, BUTTON_SIZE, BUTTON_SIZE, button_color(), 0);
+    px = X;
+    py = Y;
 }
 
 ////////////////////////////////////////////////////////////////
 
-int Flcc_ValueBox::handle(int e) {
-  static float iv;
-  Fl_Color_Chooser* c = (Fl_Color_Chooser*)parent();
-  switch (e) {
-  case FL_PUSH:
-    iv = c->v();
-  case FL_DRAG: {
-    float Yf;
-    int x1 = 0; int y1 = 0; int w1 = w(); int h1 = h();
-    box()->inset(x1,y1,w1,h1);
-    Yf = 1-(Fl::event_y()-y1)/float(h1);
-    if (fabs(Yf-iv)<(3*1.0f/h())) Yf = iv;
-    if (c->hsv(c->h(),c->s(),Yf)) c->do_callback();
-    } return 1;
-  default:
-    return 0;
-  }
+int Flcc_ValueBox::handle(int e)
+{
+    static float iv;
+    Fl_Color_Chooser* c = (Fl_Color_Chooser*)parent();
+    switch (e) {
+    case FL_PUSH:
+        iv = c->v();
+    case FL_DRAG: {
+        float Yf;
+        int x1 = 0; int y1 = 0; int w1 = w(); int h1 = h();
+        box()->inset(x1,y1,w1,h1);
+        Yf = 1-(Fl::event_y()-y1)/float(h1);
+        if (fabs(Yf-iv)<(3*1.0f/h())) Yf = iv;
+        if (c->hsv(c->h(),c->s(),Yf)) c->do_callback();
+    }
+    return 1;
+    default:
+        return 0;
+    }
+}
+
+Flcc_ValueBox::Flcc_ValueBox(int X, int Y, int W, int H)
+: Fl_Widget(X,Y,W,H)
+{
+    py = 0;
+    bg = 0;
+}
+
+Flcc_ValueBox::~Flcc_ValueBox()
+{
+    if(bg) delete bg;
+}
+
+void Flcc_ValueBox::layout()
+{
+    if(layout_damage() & FL_LAYOUT_WH) {
+        generate();
+    }
+
+    Fl_Widget::layout();
 }
 
 static float tr, tg, tb;
-static void generate_vimage(void* vv, int X, int Y, int W, uchar* buf) {
-  Flcc_ValueBox* v = (Flcc_ValueBox*)vv;
-  int x1 = 0; int y1 = 0; int w1 = v->w(); int h1 = v->h();
-  v->box()->inset(x1,y1,w1,h1);
-  float Yf = 255*(1.0-float(Y)/h1);
-  uchar r = uchar(tr*Yf+.5f);
-  uchar g = uchar(tg*Yf+.5f);
-  uchar b = uchar(tb*Yf+.5f);
-  for (int x = X; x < X+W; x++) {
-    *buf++ = r; *buf++ = g; *buf++ = b;
-  }
+void Flcc_ValueBox::generate()
+{
+    int X = 0, Y = 0, W = w(), H = h();
+    box()->inset(X,Y,W,H);
+
+    Fl_Image *im = new Fl_Image(W, H, 32);
+
+    uint32 *dst = (uint32*)im->data();
+    uint32 rgb;
+    int skip = im->pitch() - W * im->bytespp();
+
+    for(int y = 0; y < H; y++) {
+
+        float Yf = 255*(1.0-float(y)/H);
+        fl_rgb888_from_rgb(rgb, uchar(tr*Yf+.5f), uchar(tg*Yf+.5f), uchar(tb*Yf+.5f));
+
+        for(int x = 0; x < W; x++) {
+            *dst++ = rgb;
+        }
+
+        ((uint8*)dst) += skip;
+    }
+    if(bg) delete bg;
+    bg = im;
 }
 
-void Flcc_ValueBox::draw() {
-  if (damage()&FL_DAMAGE_ALL) draw_frame();
-  Fl_Color_Chooser* c = (Fl_Color_Chooser*)parent();
-  c->hsv2rgb(c->h(),c->s(),1.0f,tr,tg,tb);
-  int x1 = 0; int y1 = 0; int w1 = w(); int h1 = h();
-  box()->inset(x1,y1,w1,h1);
-  if (damage() == FL_DAMAGE_VALUE) fl_push_clip(x1,y1+py,w1,6);
-  fl_draw_image(generate_vimage, this, x1, y1, w1, h1);
-  if (damage() == FL_DAMAGE_VALUE) fl_pop_clip();
-  int Y = int((1-c->v()) * (h1-6));
-  if (Y < 0) Y = 0; else if (Y > h1-6) Y = h1-6;
-  button_box()->draw(x1, y1+Y, w1, 6, color(), 0);
-  py = Y;
+void Flcc_ValueBox::draw()
+{
+    int d = damage();
+    int x1 = 0; int y1 = 0; int w1 = w(); int h1 = h();
+
+    box()->inset(x1,y1,w1,h1);
+
+    Fl_Color_Chooser* c = (Fl_Color_Chooser*)parent();
+    c->hsv2rgb(c->h(), c->s(), 1.0f, tr, tg, tb);
+
+    if(d & FL_DAMAGE_ALL) {
+        draw_frame();
+        generate();
+    }
+
+    if (d & FL_DAMAGE_VALUE) fl_push_clip(x1,y1+py,w1,6);
+    bg->draw(x1,y1,w1,h1);
+    if (d & FL_DAMAGE_VALUE) fl_pop_clip();
+
+    int Y = int((1-c->v()) * (h1-6));
+    if (Y < 0) Y = 0; else if (Y > h1-6) Y = h1-6;
+    button_box()->draw(x1, y1+Y, w1, 6, color(), 0);
+
+    py = Y;
 }
 
 ////////////////////////////////////////////////////////////////
 
-void Fl_Color_Chooser::rgb_cb(Fl_Widget* o, void*) {
-  Fl_Color_Chooser* c = (Fl_Color_Chooser*)(o->parent()->parent());
-  float r = c->rvalue.value();
-  float g = c->gvalue.value();
-  float b = c->bvalue.value();
-  if (c->mode() == M_HSV) {
-    if (c->hsv(r,g,b)) c->do_callback();
-    return;
-  }
-  if (c->mode() != M_RGB) {
-    r = r/255;
-    g = g/255;
-    b = b/255;
-  }
-  if (c->rgb(r,g,b)) c->do_callback();
+void Fl_Color_Chooser::rgb_cb(Fl_Widget* o, Fl_Color_Chooser *c)
+{
+    float r = c->rvalue.value();
+    float g = c->gvalue.value();
+    float b = c->bvalue.value();
+    if (c->mode() == M_HSV) {
+        if (c->hsv(r,g,b)) c->do_callback();
+        return;
+    }
+    if (c->mode() != M_RGB) {
+        r = r/255;
+        g = g/255;
+        b = b/255;
+    }
+    if (c->rgb(r,g,b)) c->do_callback();
 }
 
-void Fl_Color_Chooser::mode_cb(Fl_Widget* o, void*) {
-  Fl_Color_Chooser* c = (Fl_Color_Chooser*)(o->parent()->parent());
-  // force them to redraw even if value is the same:
-  c->rvalue.value(-1);
-  c->gvalue.value(-1);
-  c->bvalue.value(-1);
-  c->set_valuators();
+void Fl_Color_Chooser::mode_cb(Fl_Widget* o, Fl_Color_Chooser *c)
+{
+    // force them to redraw even if value is the same:
+    c->rvalue.value(-1);
+    c->gvalue.value(-1);
+    c->bvalue.value(-1);
+    c->set_valuators();
 }
 
 ////////////////////////////////////////////////////////////////
@@ -340,38 +436,40 @@ Fl_Color_Chooser::Fl_Color_Chooser(int X, int Y, int W, int H, const char* L)
     gvalue(0,44,60,21),
     bvalue(0,66,60,21)
 {
-  style(Fl_Color_Chooser::default_style);
-  huebox.box(box());
-  huebox.button_box(button_box());
-  valuebox.box(box());
+    style(Fl_Color_Chooser::default_style);
 
-  box(FL_FLAT_BOX);
+    huebox.box(box());
+    huebox.button_box(button_box());
 
-  nrgroup.end();
-  choice.begin();
-  new Fl_Item("rgb");
-  new Fl_Item("byte");
-  new Fl_Item("hex");
-  new Fl_Item("hsv");
-  choice.end();
-  end();
-  resizable(huebox);
-  sizes();
-  resize(X,Y,W,H);
-  r_ = g_ = b_ = 0;
-  hue_ = 0.0;
-  saturation_ = 0.0;
-  value_ = 0.0;
-  set_valuators();
+    valuebox.box(box());
 
-  rvalue.callback(rgb_cb);
-  gvalue.callback(rgb_cb);
-  bvalue.callback(rgb_cb);
-  choice.callback(mode_cb);
+    box(FL_FLAT_BOX);
 
-  rvalue.step(0.01);
-  gvalue.step(0.01);
-  bvalue.step(0.01);
+    nrgroup.end();
+    choice.begin();
+    new Fl_Item("rgb");
+    new Fl_Item("byte");
+    new Fl_Item("hex");
+    new Fl_Item("hsv");
+    choice.end();
+    end();
+    resizable(huebox);
+    sizes();
+    resize(X,Y,W,H);
+    r_ = g_ = b_ = 0;
+    hue_ = 0.0;
+    saturation_ = 0.0;
+    value_ = 0.0;
+    set_valuators();
+
+    rvalue.callback((Fl_Callback*)rgb_cb, this);
+    gvalue.callback((Fl_Callback*)rgb_cb, this);
+    bvalue.callback((Fl_Callback*)rgb_cb, this);
+    choice.callback((Fl_Callback*)mode_cb, this);
+
+    rvalue.step(0.01);
+    gvalue.step(0.01);
+    bvalue.step(0.01);
 }
 
 Fl_Color Fl_Color_Chooser::value() const {

@@ -42,6 +42,8 @@
 #include <sys/time.h>
 #include <limits.h>
 
+using namespace std;
+
 /* The first ticks value of the application */
 static struct timeval start;
 static bool ticks_started=false;
@@ -717,7 +719,7 @@ bool fl_handle()
     Fl_Window* window = fl_find(fl_xevent.xany.window);
     int event = 0;
 
-	try {
+    try {
 
 #if HAVE_XUTF8
     int filtered = 0;
@@ -930,12 +932,14 @@ bool fl_handle()
         // window managers do not send this fake event anyway)
         // So anyway, do a round trip to find the correct x,y:
         // WAS: Actually, TWO round trips! Is X stoopid or what?
-        case ConfigureNotify:
         case MapNotify:
-        {
+            event = FL_SHOW;
+        case ConfigureNotify:
+            {
             window = fl_find(fl_xevent.xmapping.window);
             if (!window) break;
-                                 // ignore child windows
+
+            // ignore child windows
             if (window->parent()) break;
 
             // figure out where OS really put window
@@ -943,8 +947,8 @@ bool fl_handle()
             XGetWindowAttributes(fl_display, fl_xid(window), &actual);
             Window cr; int X, Y, W = actual.width, H = actual.height;
             XTranslateCoordinates(fl_display, fl_xid(window), actual.root,
-                0, 0, &X, &Y, &cr);
-            #if 0
+                                  0, 0, &X, &Y, &cr);
+#if 0
             // Faster version that does not bother with calling resize as the
             // user drags the window around. This was what most Win32 versions
             // of fltk did. This breaks programs that want to track the current
@@ -956,7 +960,7 @@ bool fl_handle()
                 window->y(Y);
                 break;
             }
-            #endif
+#endif
             // tell Fl_Window about it and set flag to prevent echoing:
             if (window->resize(X, Y, W, H)) resize_from_system = window;
             break;               // allow add_handler to do something too
@@ -965,10 +969,11 @@ bool fl_handle()
         case UnmapNotify:
             window = fl_find(fl_xevent.xmapping.window);
             if (!window) break;
-                                 // ignore child windows
+            // ignore child windows
             if (window->parent()) break;
             // turning this flag makes iconic() return true:
             Fl_X::i(window)->wait_for_expose = true;
+            event = FL_HIDE;
             break;               // allow add_handler to do something too
 
         case Expose:
@@ -1018,13 +1023,13 @@ bool fl_handle()
 
         case MotionNotify:
             set_event_xy(false);
-        #if CONSOLIDATE_MOTION
+#if CONSOLIDATE_MOTION
             send_motion = window;
             return false;
-        #else
+#else
             event = FL_MOVE;
             goto J1;
-        #endif
+#endif
 
         case ButtonRelease:
         {
@@ -1329,10 +1334,10 @@ bool fl_handle()
         return true;
 
     }
-    
-   	} catch(...) {
-   		terminate();	
-   	}
+
+    } catch(...) {
+        terminate();
+    }
 
     return Fl::handle(event, window);
 }
@@ -1461,14 +1466,13 @@ int background)
     x->next = Fl_X::first;
     Fl_X::first = x;
 
-                                 // send junk to X window manager:
+    // send junk to X window manager:
     if (!window->parent() && !window->override())
     {
-
         // Setting this allows the window manager to use the window's class
         // to look up things like border colors and icons in the xrdb database:
         XChangeProperty(fl_display, x->xid, XA_WM_CLASS, XA_STRING, 8, 0,
-                        (unsigned char *)window->xclass().c_str(), window->xclass().length());
+                        (unsigned char *)Fl_Window::xclass().c_str(), Fl_Window::xclass().length()+1);
 
         // Set the labels
         Fl_WM::set_window_title(x->xid, window->label().c_str(), window->label().length());
@@ -1483,10 +1487,13 @@ int background)
         XChangeProperty(fl_display, x->xid, WM_PROTOCOLS,
                         XA_ATOM, 32, 0, (uchar*)&WM_DELETE_WINDOW, 1);
 
+        // send size limits and border:
+        x->sendxjunk();
+
         // Make it receptive to DnD:
         int version = 4;
         XChangeProperty(fl_display, x->xid, fl_XdndAware,
-            XA_ATOM, sizeof(int)*8, 0, (unsigned char*)&version, 1);
+                        XA_ATOM, sizeof(int)*8, 0, (unsigned char*)&version, 1);
 
         // Send child window information:
         if (window->child_of() && window->child_of()->shown())
@@ -1508,9 +1515,6 @@ int background)
             hints.flags       |= IconPixmapHint;
         }
         XSetWMHints(fl_display, x->xid, &hints);
-
-        // send size limits and border:
-        x->sendxjunk();
     }
 }
 
@@ -1522,6 +1526,18 @@ void Fl_X::sendxjunk()
 {
     // it's not a window manager window!
     if (window->parent() || window->override()) return;
+
+    if (!window->has_size_range()) { // default size_range based on resizable():
+        if (window->resizable()) {
+            Fl_Widget *o = window->resizable();
+            int minw = o->w(); if (minw > 100) minw = 100;
+            int minh = o->h(); if (minh > 100) minh = 100;
+            window->size_range(window->w() - o->w() + minw, window->h() - o->h() + minh, 0, 0);
+        } else {
+            window->size_range(window->w(), window->h(), window->w(), window->h());
+        }
+        return; // because this recursively called here
+    }
 
     XSizeHints hints;
     // memset(&hints, 0, sizeof(hints)); jreiser suggestion to fix purify?
@@ -1590,7 +1606,7 @@ void Fl_X::sendxjunk()
 
 void Fl_Window::size_range_()
 {
-    m_size_range = 1;
+    m_size_range = true;
     if (i) i->sendxjunk();
 }
 
