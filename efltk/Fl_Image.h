@@ -158,8 +158,11 @@ public:
     // Mask handling
     int mask_type() { return fmt.masktype; }
     void mask_type(int mask) { fmt.masktype = mask; }
-    void set_mask(Pixmap m);
+
+    void set_mask(Pixmap m, bool allow_free=false);
     Pixmap get_mask() { return (Pixmap)mask; }
+
+    void set_offscreen(Pixmap p, bool allow_free=false);
     Pixmap get_offscreen() { return (Pixmap)id; }
 
     // Creates masks, scales if needed. Uses automatically mask_type and threshold/colorkey...
@@ -291,7 +294,7 @@ protected:
     uint8 _threshold;
     uint8 *_data;
 
-    bool _data_alloc, _mask_alloc;
+    bool _data_alloc, _id_alloc, _mask_alloc;
     int last_w, last_h; //last scaled size
 
     // Data store for selected, inactive...

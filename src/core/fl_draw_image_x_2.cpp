@@ -361,7 +361,7 @@ static void figure_out_visual()
     fl_scanline_mask = -n;
 
 #  if USE_COLORMAP
-    if (bytes_per_pixel == 1) {
+    if (fl_bytes_per_pixel == 1) {
         converter = color8_converter;
         mono_converter = mono8_converter;
         return;

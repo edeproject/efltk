@@ -151,6 +151,7 @@ void Fl_Image::init(int W, int H, int bits_pp, uint8 *data, uint32 Rmask, uint32
     _mod_data = 0;
     last_w = last_h = 0;
     _mask_alloc = false;
+    _id_alloc = false;
 
     w = W;
     h = H;
@@ -257,6 +258,7 @@ void Fl_Image::invalidate()
     }
     if(id) {
         fl_delete_offscreen((Pixmap)id);
+        _id_alloc = false;
         id = 0;
     }
 }
@@ -485,11 +487,18 @@ Fl_Image *Fl_Image::blend(Fl_Image *back, Fl_Rect *back_rect, Fl_PixelFormat *ne
     return ret;
 }
 
-void Fl_Image::set_mask(Pixmap m) 
+void Fl_Image::set_offscreen(Pixmap p, bool allow_free)
+{
+    if(id && _id_alloc) fl_delete_offscreen((Pixmap)id);
+    id = (void*)p;
+    _id_alloc = allow_free;
+}
+
+void Fl_Image::set_mask(Pixmap m, bool allow_free)
 {
     if(mask && _mask_alloc) fl_delete_bitmap((Pixmap)mask);
     mask = (void*)m;
-    _mask_alloc = false;
+    _mask_alloc = allow_free;
 }
 
 #ifdef _WIN32
@@ -825,15 +834,16 @@ void Fl_Image::draw(int dx, int dy, int dw, int dh,
 
             // Stretching with mask! This very NOT EFFICIENT!
             // This should be should used only when it's absolutely necessary!
-			// THIS IS DISABLED! IF SOME APP WANTS TO DO THIS, ITHAS TO IT BY IT SELF!
+            // THIS IS DISABLED! IF SOME APP WANTS TO DO THIS, ITHAS TO IT BY IT SELF!
             if(mask && _mask_alloc) fl_delete_offscreen((Pixmap)mask);
             //mask = (void *)create_mask(dw, dh);
             _mask_alloc = false;//(mask!=0);
-			mask=0;
+            mask=0;
 
         } else {
 
             id = (void *)fl_create_offscreen(w, h);
+            _id_alloc = true;
             if(!mask) {
                 mask = (void *)create_mask(w, h);
                 _mask_alloc = (mask!=0);

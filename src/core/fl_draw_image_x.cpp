@@ -256,7 +256,41 @@ static void Tmp_HandleXError(Display * d, XErrorEvent * ev)
     _x_err=1;
 }
 
-uint8 *Fl_Renderer::data_from_window(Window src, Fl_Rect &rect, int &bitspp)
+uint8 *ximage_to_data(XImage *im, Fl_PixelFormat &fmt)
+{
+    int W=im->width;
+    int H=im->height;
+
+    if(!(im->red_mask && im->green_mask && im->blue_mask)) {
+        // No masks?, Set default masks
+        Visual *visual = fl_visual->visual;
+        im->red_mask = visual->red_mask;
+        im->green_mask = visual->green_mask;
+        im->blue_mask = visual->blue_mask;
+    }
+
+
+    fmt.realloc(im->depth, im->red_mask, im->green_mask, im->blue_mask, 0);
+    int pitch = Fl_Renderer::calc_pitch(fmt.bytespp, W);
+
+    uint32 pixel;
+    uint8 *data = new uint8[H*pitch];
+    uint8 *ptr;
+    uint8 r, g, b;
+    int x, y;
+    for(y = 0; y < H; y++) {
+        ptr = (uint8*)data + (y*pitch);
+        for(x = 0; x < W; x++) {
+            pixel = XGetPixel(im, x, y);
+            fl_rgb_from_pixel(pixel, &fmt, r,g,b);
+            fl_assemble_rgb(ptr, fmt.bytespp, &fmt, r, g, b);
+            ptr+=fmt.bytespp;
+        }
+    }
+    return data;
+}
+
+uint8 *Fl_Renderer::data_from_window(Window src, Fl_Rect &rect, Fl_PixelFormat &fmt)
 {
     // Init renderer
     Fl_Renderer::system_init();
@@ -331,19 +365,17 @@ uint8 *Fl_Renderer::data_from_window(Window src, Fl_Rect &rect, int &bitspp)
     h = height;
 
     //printf("%d %d %d %d\n", x, y, w, h);
+    rect.set(x,y,w,h);
     XImage *im = XGetImage(fl_display, src, x, y, w, h, AllPlanes, ZPixmap);
     XSetErrorHandler((XErrorHandler) prev_erh);
-    if(!im)
-        return 0;
+    if(!im) return 0;
 
-    uint8 *im_pixels = new uint8[im->height*im->bytes_per_line];
-    memcpy(im_pixels, im->data, im->height*im->bytes_per_line);
+    uint8 *im_pixels = ximage_to_data(im, fmt);
     XDestroyImage(im);
-    bitspp = im->bits_per_pixel;
     return im_pixels;
 }
 
-uint8 *Fl_Renderer::data_from_pixmap(Pixmap src, Fl_Rect &rect, int &bitspp)
+uint8 *Fl_Renderer::data_from_pixmap(Pixmap src, Fl_Rect &rect, Fl_PixelFormat &fmt)
 {
     // Init renderer
     Fl_Renderer::system_init();
@@ -351,10 +383,8 @@ uint8 *Fl_Renderer::data_from_pixmap(Pixmap src, Fl_Rect &rect, int &bitspp)
     XImage *im = ximage_from_pixmap(src, rect);
     if(!im) return 0;
 
-    uint8 *im_pixels = new uint8[im->height*im->bytes_per_line];
-    memcpy(im_pixels, im->data, im->height*im->bytes_per_line);
+    uint8 *im_pixels = ximage_to_data(im, fmt);
     XDestroyImage(im);
-    bitspp = im->bits_per_pixel;
     return im_pixels;
 }
 
@@ -424,10 +454,11 @@ XImage *Fl_Renderer::ximage_from_pixmap(Pixmap src, Fl_Rect &rect)
     w = width;
     h = height;
 
+    rect.set(x,y,w,h);
     XImage *im = XGetImage(fl_display, src, x, y, w, h, AllPlanes, ZPixmap);
     XSetErrorHandler((XErrorHandler) prev_erh);
-    if(!im) return 0;
 
+    if(!im) return 0;
     return im;
 }
 

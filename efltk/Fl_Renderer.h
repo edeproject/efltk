@@ -122,11 +122,11 @@ public:
     static Window root_window();
 
     // Returns data, either from PIXMAP or WINDOW. depth of data is stored in 'bitspp' argument
-    static uint8 *data_from_pixmap(Pixmap src, Fl_Rect &rect, int &bitspp);
-    static uint8 *data_from_window(Window src, Fl_Rect &rect, int &bitspp);    
+    static uint8 *data_from_pixmap(Pixmap src, Fl_Rect &rect, Fl_PixelFormat &fmt);
+    static uint8 *data_from_window(Window src, Fl_Rect &rect, Fl_PixelFormat &fmt);
 
 #ifndef _WIN32
-	// Special XWindows method
+    // Special XWindows method
     static XImage *ximage_from_pixmap(Pixmap src, Fl_Rect &rect);
 #endif
 

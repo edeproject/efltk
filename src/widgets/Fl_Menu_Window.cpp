@@ -164,15 +164,14 @@ void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
     if(x+w>Fl::w()) w -= (x+w)-Fl::w();
     if(y+h>Fl::h()) h -= (y+h)-Fl::h();
 
-    int bpp=0;
-
     Fl_Rect screen_rect(x, y, w, h);
-    uint8 *screen_data = Fl_Renderer::data_from_window(Fl_Renderer::root_window(), screen_rect, bpp);
-    int screen_pitch = Fl_Renderer::calc_pitch(Fl_Renderer::system_format()->bytespp, w);
+    Fl_PixelFormat screen_fmt;
+    uint8 *screen_data = Fl_Renderer::data_from_window(Fl_Renderer::root_window(), screen_rect, screen_fmt);
     if(!screen_data) {
         //printf("data_from_window(1) FAILED\n");
         return;
     }
+    int screen_pitch = Fl_Renderer::calc_pitch(screen_fmt.bytespp, w);
 
     // Make sure that fl_gc is NOT NULL!
     make_current();
@@ -188,19 +187,16 @@ void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
     animating=true;
 
     Fl_Rect window_rect(0,0,ow,oh);
-    uint8 *window_data = Fl_Renderer::data_from_pixmap(pm, window_rect, bpp);
+    Fl_PixelFormat window_fmt;
+    uint8 *window_data = Fl_Renderer::data_from_pixmap(pm, window_rect, window_fmt);
     if(!window_data) {
         delete []screen_data;
         //printf("data_from_pixmap(2) FAILED\n");
         animating=false;
         return;
     }    
-
-    int window_pitch = Fl_Renderer::calc_pitch(Fl_Renderer::system_format()->bytespp, ow);
-
-    Fl_PixelFormat fmt;
-    fmt.copy(Fl_Renderer::system_format());
-    fmt.map_this(Fl_Renderer::system_format());
+    int window_pitch = Fl_Renderer::calc_pitch(window_fmt.bytespp, ow);
+    window_fmt.map_this(Fl_Renderer::system_format());
 
 #ifdef _WIN32
     SetWindowPos(fl_xid(this), HWND_TOPMOST, x, y, w, h, (SWP_NOSENDCHANGING | SWP_NOACTIVATE));
@@ -226,15 +222,15 @@ void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
             break;
         }
 
-        fmt.alpha = alpha;
+        window_fmt.alpha = alpha;
         alpha+=step;
         if(alpha>255) alpha=255;
 
-        if(Fl_Renderer::alpha_blit(window_data, &src_rect, &fmt, window_pitch,
-                                   screen_data, &dst_rect, Fl_Renderer::system_format(), screen_pitch, 0))
+        if(Fl_Renderer::alpha_blit(window_data, &src_rect, &window_fmt, window_pitch,
+                                   screen_data, &dst_rect, &screen_fmt, screen_pitch, 0))
         {
             make_current();
-            if(!Fl_Renderer::render_to_pixmap(screen_data, &dst_rect, Fl_Renderer::system_format(), screen_pitch,
+            if(!Fl_Renderer::render_to_pixmap(screen_data, &dst_rect, &screen_fmt, screen_pitch,
                                               (Pixmap)fl_xid(this), &dst_rect, fl_gc, 0))
                 error=true;
         } else
