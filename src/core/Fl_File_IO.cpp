@@ -18,7 +18,7 @@ Fl_File_IO::Fl_File_IO()
 {
 	m_eos = false;
 	m_handle = INVALID_HANDLE_VALUE;
-	m_flags.set(CAN_SEEK|CAN_WRITE|CAN_WRITE);
+	m_flags.set(CAN_SEEK|CAN_WRITE|CAN_READ);
 	m_mode = IO_READ | IO_WRITE;
 }
 
@@ -26,7 +26,7 @@ Fl_File_IO::Fl_File_IO(const char *filename, int mode)
 {
 	m_eos = false;
 	m_handle = INVALID_HANDLE_VALUE;
-	m_flags.set(CAN_SEEK|CAN_WRITE|CAN_WRITE);
+	m_flags.set(CAN_SEEK|CAN_WRITE|CAN_READ);
 	m_filename = filename;
 	this->mode(mode);
 	open();
@@ -36,14 +36,14 @@ Fl_File_IO::Fl_File_IO(FILE *file)
 {		
 	m_eos = false;
 	m_handle = (void*)_get_osfhandle(fileno(file));
-	m_flags.set(CAN_SEEK|CAN_WRITE|CAN_WRITE|IO_EXTERN_HANDLE);	
+	m_flags.set(CAN_SEEK|CAN_WRITE|CAN_READ|IO_EXTERN_HANDLE);	
 	m_mode = IO_READ | IO_WRITE;
 }
 
 Fl_File_IO::Fl_File_IO(int fd)
 {
 	m_handle = (void*)_get_osfhandle(fd);
-	m_flags.set(CAN_SEEK|CAN_WRITE|CAN_WRITE|IO_EXTERN_HANDLE);
+	m_flags.set(CAN_SEEK|CAN_WRITE|CAN_READ|IO_EXTERN_HANDLE);
 	m_mode = IO_READ | IO_WRITE;
 }
 
