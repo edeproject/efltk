@@ -39,10 +39,6 @@
 
 #ifndef _WIN32
 
-#if HAVE_XUTF8
-# include <efltk/Xutf8.h>
-#endif
-
 #if USE_XFT
 #include <X11/Xft/Xft.h>
 #endif
@@ -279,27 +275,6 @@ void Fl_Text_Display::set_font()
 
 #if !USE_XFT
 
-#if HAVE_XUTF8
-    XUtf8FontStruct *fontStruct = (XUtf8FontStruct *)fl_xfont(), *styleFont;
-    mMaxFontBound = fontStruct->fonts[0]->max_bounds.width;
-    mMinFontBound = fontStruct->fonts[0]->min_bounds.width;
-    fontWidth = fontStruct->fonts[0]->max_bounds.width;
-    if (fontWidth != fontStruct->fonts[0]->min_bounds.width) {
-        fontWidth = -1;
-    } else {
-        for (i=0; i<mNStyles; i++)
-        {
-            unsigned size = mStyleTable[i].size;
-            if(text_size()!=size) { fontWidth = -1; break; }
-            fl_font(mStyleTable[i].font, mStyleTable[i].size);
-            styleFont = (XUtf8FontStruct *)fl_xfont();
-            if(styleFont != NULL && (styleFont->fonts[0]->max_bounds.width != fontWidth || styleFont->fonts[0]->max_bounds.width != styleFont->fonts[0]->min_bounds.width)) {
-                fontWidth = -1;
-                break;
-            }
-        }
-    }
-#else
     XFontStruct *fontStruct = (XFontStruct *)fl_xfont(), *styleFont;
     mMaxFontBound = fontStruct->max_bounds.width;
     mMinFontBound = fontStruct->min_bounds.width;
@@ -319,7 +294,6 @@ void Fl_Text_Display::set_font()
             }
         }
     }
-#endif    
 
 #else
     extern XftFont* fl_xftfont();
@@ -555,23 +529,8 @@ void Fl_Text_Display::draw_text( int left, int top, int width, int height )
 void Fl_Text_Display::redisplay_range(int start, int end)
 {
 #if HAVE_XUTF8
-    int ok = 0;
-    while (!ok && start > 0) {
-		char c = buffer()->character( start );
-        if (!((c & 0x80) && !(c & 0x40))) {
-			ok = 1;
-		} else {
-			start--;
-		}
-    }
-	while (!ok && end < buffer()->length()) {
-		char c = buffer()->character( end );
-		if (!((c & 0x80) && !(c & 0x40))) {
-			ok = 1;
-		} else {
-			end++;
-		}
-	} 	
+    start -= find_prev_char(start-1);
+    end   += find_next_char(end+1);
 #endif
     if (damage_range1_start == -1 && damage_range1_end == -1) {
         damage_range1_start = start;
@@ -670,13 +629,13 @@ void Fl_Text_Display::insert_position( int newPos )
   mCursorPreferredCol = -1;
 
   /* erase the cursor at it's previous position */
-  redisplay_range(mCursorPos - 1, mCursorPos + 1);
+  redisplay_range(mCursorPos - 2, mCursorPos + 2);
 
   mCursorPos = newPos;
 
   /* draw cursor at its new position */
  
-  redisplay_range(mCursorPos - 1, mCursorPos + 1);  
+  redisplay_range(mCursorPos - 2, mCursorPos + 2);
   layout_damage(0);
 }
 
@@ -941,17 +900,6 @@ int Fl_Text_Display::position_to_linecol( int pos, int* lineNum, int* column ) {
 int Fl_Text_Display::in_selection( int X, int Y ) {
   int row, column, pos = xy_to_position( X, Y, CHARACTER_POS );
   Fl_Text_Buffer *buf = mBuffer;
-#if HAVE_XUTF8
-  int ok = 0;
-  while (!ok) {
-    char c = buffer()->character( pos );
-    if (!((c & 0x80) && !(c & 0x40))) {
-      ok = 1;
-    } else {
-      pos++;
-    }
-  }
-#endif
 
   xy_to_rowcol( X, Y, &row, &column, CHARACTER_POS );
   if (range_touches_selection(buf->primary_selection(), mFirstChar, mLastChar))
@@ -1056,45 +1004,77 @@ void Fl_Text_Display::show_insert_position() {
   relayout();
 }
 
+int Fl_Text_Display::find_next_char(int pos)
+{
+    unsigned ucs;
+    char *ptr = buffer()->static_buffer()+pos;
+    int len=0;
+    char c;
+    bool again;
+
+    do {
+        again = false;
+        while(true) {
+            if(pos <= 0) return 0;
+            c = buffer()->character( pos++ );
+            if(!((c & 0x80) && !(c & 0x40))) break;
+        }
+        if(!len) len = fl_utf_charlen(c);
+        int ulen = fl_utf2ucs((uchar*)(ptr+len), len, &ucs);
+        if(fl_nonspacing(ucs)) {
+            len+=ulen;
+            again = true;;
+        }
+    } while(again);
+
+    return len;
+}
+
+int Fl_Text_Display::find_prev_char(int pos)
+{
+    unsigned ucs;
+    char *ptr = buffer()->static_buffer()+pos;
+    int len=0;
+    char c;
+    bool again;
+
+    do {
+        again = false;
+        while(true) {
+            if(pos <= 0) return 0;
+            c = buffer()->character( --pos );
+            if(!((c & 0x80) && !(c & 0x40))) break;
+        }
+        if(!len) len = fl_utf_charlen(c);
+        int ulen = fl_utf2ucs((uchar*)(ptr-len), len, &ucs);
+        if(fl_nonspacing(ucs)) {
+            len+=ulen;
+            again = true;;
+        }
+    } while(again);
+
+    return len;
+}
+
 /*
 ** Cursor movement functions
 */
 int Fl_Text_Display::move_right() {
 #if HAVE_XUTF8
-  int ok = 0;
-  while (!ok) {
-    if ( mCursorPos >= mBuffer->length() )
-      return 0;
-    insert_position( mCursorPos + 1 );
-    int pos = insert_position();
-    char c = buffer()->character( pos );
-    if (!((c & 0x80) && !(c & 0x40))) ok = 1;
-  }
+    insert_position( mCursorPos + find_next_char(insert_position()) );
 #else
-  if ( mCursorPos >= mBuffer->length() )
-    return 0;
-  insert_position( mCursorPos + 1 );
-#endif  
-  return 1;
+    if ( mCursorPos >= mBuffer->length() )
+        return 0;
+    insert_position( mCursorPos + 1 );
+#endif
+    return 1;
 }
 
 int Fl_Text_Display::move_left() {
 #if HAVE_XUTF8
-  int ok = 0;
-  while (!ok) {
-    if ( mCursorPos <= 0 )
-      return 0;
-    insert_position( mCursorPos - 1 );
-    int pos = insert_position();
-    char c = buffer()->character( pos );
-    if (!((c & 0x80) && !(c & 0x40))) ok = 1;
-  }
-#else
-  if ( mCursorPos <= 0 )
-    return 0;
-  insert_position( mCursorPos - 1 );
-#endif  
-  return 1;
+    insert_position( mCursorPos - find_prev_char(insert_position()) );
+#endif
+    return 1;
 }
 
 int Fl_Text_Display::move_up(int lines) 
@@ -1130,20 +1110,10 @@ int Fl_Text_Display::move_up(int lines)
 
   /* move the cursor */
   insert_position( newPos );
-  
 #if HAVE_XUTF8
-   int ok = 0;
-  while (!ok) {
-    int pos = insert_position();
-    char c = buffer()->character( pos );
-    if (!((c & 0x80) && !(c & 0x40))) {
-      ok = 1;
-    } else {
-      insert_position( mCursorPos + 1 );
-    }
-  }
-  
+  insert_position( (mCursorPos-1) + find_next_char(newPos) );
 #endif
+
   /* if a preferred column wasn't aleady established, establish it */
   mCursorPreferredCol = column;
   return 1;
@@ -1172,19 +1142,9 @@ int Fl_Text_Display::move_down(int lines)
       newPos = min(newPos, line_end(nextLineStartPos, true));
 
   insert_position( newPos );
-
 #if HAVE_XUTF8
-  int ok = 0;
-  while (!ok) {
-    int pos = insert_position();
-    char c = buffer()->character( pos );
-    if (!((c & 0x80) && !(c & 0x40))) {
-      ok = 1;
-    } else {
-      insert_position( mCursorPos + 1 );
-    }
-  }
-#endif  
+  insert_position( (mCursorPos-1) + find_next_char(newPos) );
+#endif
   
   mCursorPreferredCol = column;
   return 1;
@@ -1802,22 +1762,20 @@ void Fl_Text_Display::draw_string( int style, int X, int Y, int toX,
     /*if (damage() & FL_DAMAGE_SCROLL && X>text_area.x) {
         fl_rectf( X+1, Y, toX-X-1, mMaxsize );
     } else {*/
-        fl_rectf( X, Y, toX - X, mMaxsize );
+    fl_rectf( X, Y, toX - X , mMaxsize );
     //}
 
-	if(styleRec && styleRec->attr==ATTR_IMAGE && styleRec->image) {
-		
-		int iX = X;
-		for(int n=0; n<nChars; n++) {
-			styleRec->image->draw(iX, Y + mMaxsize - styleRec->image->height(), styleRec->image->width(), mMaxsize, (style&PRIMARY_MASK)?FL_SELECTED:0);
-			iX += styleRec->image->width();
-		}
-		
-	} else {
-		fl_color( foreground );
-		fl_font( font, size );
-		fl_draw( string, nChars, X, Y + mMaxsize - fl_descent());
-	}
+    if(styleRec && styleRec->attr==ATTR_IMAGE && styleRec->image) {
+        int iX = X;
+        for(int n=0; n<nChars; n++) {
+            styleRec->image->draw(iX, Y + mMaxsize - styleRec->image->height(), styleRec->image->width(), mMaxsize, (style&PRIMARY_MASK)?FL_SELECTED:0);
+            iX += styleRec->image->width();
+        }
+    } else {
+        fl_color( foreground );
+        fl_font( font, size );
+        fl_draw( string, nChars, X, Y + mMaxsize - fl_descent());
+    }
 
     /* Underline if style is UNDERLINE attr is set */
     if(styleRec && styleRec->attr==ATTR_UNDERLINE)
@@ -2051,9 +2009,9 @@ int Fl_Text_Display::xy_to_position( int X, int Y, int posType )
         charLen = Fl_Text_Buffer::expand_character( lineStr[ charIndex ], outIndex, expandedChar,
                                                    mBuffer->tab_distance(), mBuffer->null_substitution_character() );
 #if HAVE_XUTF8
-	if (charLen > 1 && (lineStr[ charIndex ] & 0x80)) {
-    	    int i, ii = 0;;
-	    i = fl_utf_charlen(lineStr[ charIndex ]);
+        if (charLen > 1 && (lineStr[ charIndex ] & 0x80)) {
+            int i, ii = 0;;
+            i = fl_utf_charlen(lineStr[ charIndex ]);
 	    while (i > 1) {
 	        i--;
     		ii++;
@@ -3171,16 +3129,16 @@ void Fl_Text_Display::draw()
     if (damage() & (FL_DAMAGE_ALL | FL_DAMAGE_SCROLL | FL_DAMAGE_VALUE)
         && !buffer()->primary_selection()->selected() &&
         mCursorOn && Fl::focus() == this ) {
-        /*fl_push_clip(text_area.x-LEFT_MARGIN,
+        fl_push_clip(text_area.x-LEFT_MARGIN,
                      text_area.y,
                      text_area.w+LEFT_MARGIN+RIGHT_MARGIN,
-                     text_area.h);*/
+                     text_area.h);
 
         int X, Y;
         if (position_to_xy(mCursorPos, &X, &Y)) draw_cursor(X, Y);
         //printf("drew cursor at pos: %d (%d,%d)\n", mCursorPos, X, Y);
         mCursorOldY = Y;
-        /*fl_pop_clip();*/
+        fl_pop_clip();
     }
 }
 
@@ -3401,19 +3359,19 @@ void Fl_Text_Display::draw_line_numbers(bool clearAll)
     nCols = min(12, int(mLineNumWidth / charWidth) );
     y = Y+lineHeight;
     line = get_absolute_top_line_number();
-    for (visLine=0; visLine <= mNVisibleLines; visLine++)
+    for (visLine=0; visLine < mNVisibleLines-1; visLine++)
     {
         lineStart = mLineStarts[visLine];
         if(lineStart != -1 && (lineStart==0 || buffer()->character(lineStart-1)=='\n'))
         {
             fl_color(text_color());
 
-			sprintf(lineNumString, "%d", line);			
-			fl_draw(lineNumString, strlen(lineNumString), W-int(fl_width(lineNumString)), y);
-			
-			//sprintf(lineNumString, "%*d", nCols, line);
-            //fl_draw(lineNumString, strlen(lineNumString), X, y);            
-			
+            sprintf(lineNumString, "%d", line);
+            fl_draw(lineNumString, strlen(lineNumString), W-int(fl_width(lineNumString)), y);
+
+            //sprintf(lineNumString, "%*d", nCols, line);
+            //fl_draw(lineNumString, strlen(lineNumString), X, y);
+
             line++;
         } else if(!clearAll || mContinuousWrap)
         {

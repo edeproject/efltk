@@ -72,29 +72,6 @@ static const char *ControlCodeTable[ 32 ] =
     "can", "em", "sub", "esc", "fs", "gs", "rs", "us"
 };
 
-#if HAVE_XUTF8
-static int utf_len(char c)
-{
-  if (!(c & 0x80)) return 1;
-  if (c & 0x40) {
-    if (c & 0x20) {
-      if (c & 0x10) {
-        if (c & 0x08) {
-          if (c & 0x04) {
-            return 6;
-          }
-          return 5;
-        }
-        return 4;
-      }
-      return 3;
-    }
-    return 2;
-  }
-  return 0;
-}
-#endif
-
 class UndoNode
 {
 public:
@@ -1068,14 +1045,13 @@ int Fl_Text_Buffer::expand_character( int pos, int indent, char *outStr )
     char c = character( pos );
     ret = expand_character( c, indent, outStr,  mTabDist, mNullSubsChar );
     if (ret > 1 && (c & 0x80)) {
-	int i;
-        i = utf_len(c);
+        int i = fl_utf_charlen(c);
 	while (i > 1) {
-    	    i--;
+            i--;
             pos++;
-    	    outStr++;
-    	    *outStr = character( pos );
-	}
+            outStr++;
+            *outStr = character( pos );
+        }
     }
     return ret;
 #else
@@ -1129,7 +1105,7 @@ int Fl_Text_Buffer::expand_character( char c, int indent, char *outStr, int tabD
 	return 0;
     } else if (c & 0x80) {
 	*outStr = c;
-	return utf_len(c);
+	return fl_utf_charlen(c);
     }
 #endif
     /* Otherwise, just return the character */
@@ -1160,7 +1136,7 @@ int Fl_Text_Buffer::character_width( char c, int indent, int tabDist, char nullS
     else if ((c & 0x80) && !(c & 0x40))
         return 0;
     else if (c & 0x80) {
-        return utf_len(c);
+        return fl_utf_charlen(c);
     }
 #endif	
     return 1;
