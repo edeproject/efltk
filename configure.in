@@ -164,16 +164,16 @@ if test "$uname" = "IRIX64"; then uname="IRIX"; fi
 case $uname in
     SunOS* | UNIX_S*)
           if test "$uversion" -ge 50; then
-	    DSOCOMMAND="\${CXX} -R\${DSONAME} -G $DEBUGFLAG -o"
+	    DSOCOMMAND="\${CXX} -R\${EFLTK_LIBDIR} -G $DEBUGFLAG -o"
 	    THEMECOMMAND="\${CXX} -G $DEBUGFLAG -o"
     	  else
-            DSOCOMMAND="\${CXX} -L\${DSONAME} $DEBUGFLAG -o"
+            DSOCOMMAND="\${CXX} -L\${EFLTK_LIBDIR} $DEBUGFLAG -o"
 	    THEMECOMMAND="\${CXX} $DEBUGFLAG -o"
           fi
           DSOCFLAGS="-fPIC"
 	  ;;
     HP-UX*)
-	  DSOCOMMAND="ld +b\${DSONAME} $DEBUGFLAG -b -o"
+	  DSOCOMMAND="ld +b\${EFLTK_LIBDIR} $DEBUGFLAG -b -o"
 	  THEMECOMMAND="ld -b $DEBUGFLAG -o"
 	  DSOEXT=".sl.$FL_API_VERSION"
 	  DSOSHORTEXT=".sl"
