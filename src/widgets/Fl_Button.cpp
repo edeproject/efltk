@@ -112,7 +112,7 @@ int Fl_Button::handle(int event)
         // grab initial focus if we are an Fl_Return_Button:
         return shortcut()=='\r' ? 2 : 1;
     case FL_KEY:
-        if (Fl::event_key() == ' ' || Fl::event_key == FL_Enter) goto EXECUTE;
+        if (Fl::event_key() == ' ' || Fl::event_key() == FL_Enter) goto EXECUTE;
         return 0;
     case FL_SHORTCUT:
         if (!test_shortcut()) return 0;
