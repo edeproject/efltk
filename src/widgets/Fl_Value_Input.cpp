@@ -92,6 +92,7 @@ void Fl_Value_Input::draw()
     input.label(label());
     input.align(align());
     input.copy_style(style());
+    input.set_damage(damage());
     input.draw(X, Y, W, H);
     input.set_damage(0);
 }
@@ -249,7 +250,6 @@ void Fl_Value_Input::value_damage()
 Fl_Value_Input::Fl_Value_Input(int x, int y, int w, int h, const char* l)
 : Fl_Valuator(x, y, w, h, l), input(x, y, w, h, 0)
 {
-    step(.01);
     //soft_ = 0;
     if (input.parent())          // defeat automatic-add
         input.parent()->remove(input);

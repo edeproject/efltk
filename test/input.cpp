@@ -89,6 +89,7 @@ int main(int argc, char **argv) {
   int y = 10;
   input[0] = new Fl_Input(70,y,300,23,"Normal:"); y += 27;
   input[0]->tooltip("Normal input field");
+  input[0]->box(FL_NO_BOX);
   // input[0]->cursor_color(FL_SELECTION_COLOR);
   //  input[0]->maximum_size(20);
   // input[0]->static_value("this is a testgarbage");

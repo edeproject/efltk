@@ -243,6 +243,7 @@ void Fl_Input::draw()
 
 void Fl_Input::draw(int X, int Y, int W, int H)
 {
+    Fl_Flags f=flags();
     setfont();
     int height = line_height();
     float desc = height-fl_descent()-leading()/2.0f;
@@ -255,8 +256,14 @@ void Fl_Input::draw(int X, int Y, int W, int H)
             fl_font(label_font(), float(label_size()));
             float width = fl_width(label());
             label_width = int(width+fl_width(":")+2.5f);
-            fl_color(color());
-            fl_rectf(X, Y, label_width, H);
+
+            //fl_color(color());
+            fl_push_clip(X, Y, label_width, H);
+            if(box()->fills_rectangle()) box()->draw(0,0,w(),h(),color(),f);
+            else if(parent()) parent()->draw_group_box();
+            fl_pop_clip();
+            //fl_rectf(X, Y, label_width, H);
+
             Fl_Color color = label_color();
             if (!active_r()) color = fl_inactive(color);
             fl_color(color);
@@ -272,7 +279,7 @@ void Fl_Input::draw(int X, int Y, int W, int H)
     }
     X += label_width; W -= label_width;
 
-    Fl_Color background = color();
+    //Fl_Color background = color();
     bool erase_cursor_only =
         this == ::erase_cursor_only &&
         !(damage() & (FL_DAMAGE_ALL|FL_DAMAGE_EXPOSE));
@@ -280,8 +287,13 @@ void Fl_Input::draw(int X, int Y, int W, int H)
     // handle a totally blank one quickly:
     if (!size() && !focused() && this != dnd_target)
     {
-        fl_color(background);
-        fl_rectf(X, Y, W, H);
+        //fl_color(background);
+        //fl_rectf(X, Y, W, H);
+        fl_push_clip(X, Y, W, H);
+        if(box()->fills_rectangle()) box()->draw(0,0,w(),h(),color(),f);
+        else if(parent()) parent()->draw_group_box();
+        fl_pop_clip();
+        //draw_box();
         return;
     }
 
@@ -360,15 +372,19 @@ void Fl_Input::draw(int X, int Y, int W, int H)
         yscroll_ = -((H-height)>>1);
     }
 
+    fl_push_clip(X, Y, W, H);
+
     // if we are not doing minimal update a single erase is done,
     // rather than one per line:
     if (damage() & FL_DAMAGE_ALL)
     {
-        fl_color(background);
-        fl_rectf(X, Y, W, H);
+        //fl_color(background);
+        if(box()->fills_rectangle()) box()->draw(0,0,w(),h(),color(),f);
+        else if(parent()) parent()->draw_group_box();
+        //fl_rectf(X, Y, W, H);
     }
 
-    fl_push_clip(X, Y, W, H);
+    //fl_push_clip(X, Y, W, H);
 
     Fl_Color textcolor = text_color();
     if (!active_r()) textcolor = fl_inactive(text_color());
@@ -414,9 +430,12 @@ void Fl_Input::draw(int X, int Y, int W, int H)
                 else if (readonly()) x -= 3;
             }
             // clip to and erase it:
-            fl_color(background);
-            fl_rectf(x, Y+ypos, r-x, height);
+            //fl_color(background);
             fl_push_clip(x, Y+ypos, r-x, height);
+            if(box()->fills_rectangle()) box()->draw(0,0,w(),h(),color(),f);
+            else if(parent()) parent()->draw_group_box();
+            //fl_rectf(x, Y+ypos, r-x, height);
+
             // it now draws entire line over it
             // this should not draw letters to left of erased area, but
             // that is nyi.
@@ -487,8 +506,12 @@ void Fl_Input::draw(int X, int Y, int W, int H)
         && (!erase_cursor_only || p <= value()+mu_p))
     {
         if (ypos < 0) ypos = 0;
-        fl_color(background);
-        fl_rectf(X, Y+ypos, W, H-ypos);
+        //fl_color(background);
+        //fl_rectf(X, Y+ypos, W, H-ypos);
+        fl_push_clip(X, Y+ypos, W, H-ypos);
+        if(box()->fills_rectangle()) box()->draw(0,0,w(),h(),color(),f);
+        else if(parent()) parent()->draw_group_box();
+        fl_pop_clip();
     }
 
     fl_pop_clip();
@@ -1310,7 +1333,7 @@ static void dnd_timeout(void* p)
     Fl::dnd();
 }
 #endif
-#include <stdio.h>
+
 int Fl_Input::handle(int event, int X, int Y, int W, int H)
 {
     X += label_width; W -= label_width;
