@@ -150,12 +150,6 @@ void Fl_Menu_Window::layout()
 #endif
 }
 
-#ifdef _WIN32
-# define GetMs() GetTickCount()
-#else
-# define GetMs() int( (double)Fl_Date_Time::Now()*1000.0 )
-#endif
-
 // Fade effect, blend to opacity (thats NYI)
 void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
 {	
@@ -214,23 +208,24 @@ void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
     Fl_Rect src_rect(cx,cy,w,h);
     Fl_Rect dst_rect(0,0,w,h);
 
-	int anim_time = 200; //milliseconds
+    int anim_time = 200; //milliseconds
 
     if(anim_speed()>0) { anim_time = int(floor((anim_time*anim_speed())+.5f)); }
     bool error=false;
-	int sleep_time=int(anim_time/20);
+    int sleep_time=int(anim_time/20);
+    int elapsed = 0;
 
-    while(!error && anim_time>0)
+    while(!error && anim_time>0 && elapsed<500)
     {
         Fl::check();
 
         if(!animating || !shown() || !visible()) {
             break;
-        }		
-        
-		window_fmt.alpha += 6;
+        }
 
-		int time1 = GetMs();
+        window_fmt.alpha += 6;
+
+        uint32 time1 = Fl::ticks();
 
         if(Fl_Renderer::alpha_blit(window_data, &src_rect, &window_fmt, window_pitch,
                                    screen_data, &dst_rect, Fl_Renderer::system_format(), screen_pitch, 0))
@@ -240,11 +235,12 @@ void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
                                               (Pixmap)fl_xid(this), &dst_rect, fl_gc, 0))
                 error=true;
         } else
-            error=true;		
-        Fl::sleep_ms(sleep_time);
+            error=true;
+        Fl::sleep(sleep_time);
 
-		int time2 = GetMs();
-		anim_time -= (time2-time1);
+        uint32 time2 = Fl::ticks();
+        anim_time -= (time2-time1);
+        elapsed += (time2-time1);
     }
 
     delete []screen_data;
@@ -306,13 +302,12 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
 	int anim_time = 200; //milliseconds
 
     if(anim_speed()>0) { anim_time = int(floor((anim_time*anim_speed())+.5f)); }
-    bool error=false;
 
-	while(anim_time>0 && steps-->0) {    
+    while(anim_time>0 && steps-->0) {
 
         if(!animating || !shown() || !visible()) {
             break;
-        }		
+        }
 
         rx+=(sx*xinc);
         ry+=(sy*yinc);
@@ -322,31 +317,31 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
         X=(int)rx;
         Y=(int)ry;
         W=(int)rw;
-        H=(int)rh;		
+        H=(int)rh;
 
-        if(X!=ox || Y!=oy || W!=ow || H!=oh) 
-		{
-			int time1 = GetMs();
-			Fl::check();			
+        if(X!=ox || Y!=oy || W!=ow || H!=oh)
+        {
+            uint32 time1 = Fl::ticks();
+            Fl::check();
 
             // Make sure we copy to this window!
             make_current();
-#ifdef _WIN32            
+#ifdef _WIN32
             SetWindowPos(fl_xid(this), HWND_TOPMOST, X, Y, W, H, (SWP_NOSENDCHANGING | SWP_NOACTIVATE));
             fl_copy_offscreen(0, 0, W, H, pm, tw-W, th-H);
 #else
             XMoveResizeWindow(fl_display, fl_xid(this), X, Y, W, H);
             fl_copy_offscreen(0, 0, W, H, pm, tw-W, th-H);
             //XCopyArea(fl_display, pm, fl_xid(this), fl_gc, 0, 0, W, H, tw-W, th-H); //This is a bit too fast :)) If we use this we dont need to call make_current()
-#endif            			
-			int time2 = GetMs();
-			anim_time -= (time2-time1);			
-		}
+#endif
+            uint32 time2 = Fl::ticks();
+            anim_time -= (time2-time1);
+        }
 
         ox=X;
         oy=Y;
         ow=W;
-        oh=H;		
+        oh=H;
     }
 
     fl_delete_offscreen(pm);
