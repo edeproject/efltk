@@ -35,6 +35,7 @@ class FL_API Fl_Widget;
 class FL_API Fl_Window;
 class FL_API Fl_Image;
 class FL_API Fl_Group;
+class FL_API Fl_Data_Source;
 
 class FL_API Fl_Widget : public Fl_Callback_Object {
 public:
@@ -253,6 +254,10 @@ public:
   void label_size(unsigned a)	;
   void text_size(unsigned a)	;
   void leading(unsigned a)	;
+  
+  // Data source support
+  virtual bool load_data(Fl_Data_Source *ds) { return true; }
+  virtual bool save_data(Fl_Data_Source *ds) const { return true; }
 
 protected:
   Fl_Widget(int,int,int,int,const char* =0);

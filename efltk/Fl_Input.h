@@ -69,6 +69,10 @@ public:
   int maximum_size() { return maximum_size_; }
   void maximum_size(int m) { maximum_size_ = m; }
 
+  // Data source support
+  virtual bool load_data(Fl_Data_Source *ds);
+  virtual bool save_data(Fl_Data_Source *ds) const;
+
   int position() const {return position_;}
   int mark() const {return mark_;}
   void position(int p, int m);

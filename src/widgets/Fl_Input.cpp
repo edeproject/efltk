@@ -32,6 +32,7 @@
 
 #include <efltk/Fl.h>
 #include <efltk/Fl_Input.h>
+#include <efltk/Fl_Variant.h>
 #include <efltk/fl_draw.h>
 #include <efltk/math.h>
 #include <efltk/fl_ask.h>
@@ -1721,6 +1722,27 @@ int Fl_Input::handle(int event, int X, int Y, int W, int H)
     }
 }
 
+// Data source support
+// loading data from DS
+bool Fl_Input::load_data(Fl_Data_Source *ds) {
+   if (!field_name() || !strlen(field_name()))
+      return true;
+   Fl_Variant   fld_value;
+   if (ds->read_field(field_name(),fld_value)) {
+      value(fld_value.get_string());
+      return true;
+   }
+   return false;
+}
+
+// saving data to DS
+bool Fl_Input::save_data(Fl_Data_Source *ds) const {
+   if (!field_name() || !strlen(field_name()))
+      return true;
+   Fl_Variant  fld_value;
+   fld_value.set_string(value());
+   return ds->write_field(field_name(),fld_value);
+}
 
 //
 // End of "$Id$".
