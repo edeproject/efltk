@@ -646,6 +646,10 @@ SOURCE=..\src\widgets\Fl_Split.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\widgets\Fl_Stock_Images.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\core\fl_stretch.cpp
 # End Source File
 # Begin Source File
@@ -1343,6 +1347,10 @@ SOURCE=..\efltk\Fl_Socket.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_Split.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Stock_Images.h
 # End Source File
 # Begin Source File
 
