@@ -9,76 +9,110 @@
 
 #include <config.h>
 
-static int X = 10, Y=100, TY=-20;
+static int X = 10, Y=100;
+static int oX=0, oY=0;
+static int dX = 1, dY = 1;
+
+static int tY=-20, tW=0;
+char *str = "EFLTK ROCKS!";
+
+typedef Fl_Window BBWinType;
+//typedef Fl_Double_Window BBWinType;
 
 //Bouncing Ball
-class BBWin : public Fl_Double_Window
+class BBWin : public BBWinType
 {
 public:
-    BBWin(Fl_Image *back, Fl_Image *ball) : Fl_Double_Window(200, 200, "Bouncing Ball") {
-        bg = back;
-        b = ball;
-        scale_bg=0;
-        alpha_b=0;
+    BBWin(Fl_Image *back, Fl_Image *ball) : BBWinType(200, 200, "Bouncing Ball") {
+        this->back = backing = back;
+        this->ball = ball;
+        blended=0;
     }
-	
+
+    void layout()
+    {
+        if(backing->width() != w() || backing->height() != h()) {
+            if(backing!=back) delete backing;
+            backing = back->scale(w(), h());
+        }
+        backing->no_screen(true);
+        BBWinType::layout();
+    }
+
     void draw()
     {
-        if(scale_bg) {
-            if(scale_bg->width() != w() || scale_bg->height() != h()) {
-                delete scale_bg;
-                scale_bg = 0;
-            }
+        if(!tW) {
+            fl_font(FL_HELVETICA_BOLD, 14);
+            tW = int(fl_width(str));
         }
-        if(!scale_bg) {
-            scale_bg = bg->scale(w(),h());
-        }
-        if(scale_bg)
-            scale_bg->draw(0, 0, w(), h());
-        else
-            bg->draw(0, 0, bg->width(), bg->height());
 
-        if(alpha_b) {
-            delete alpha_b;
-            alpha_b = 0;
-        }
-        if(!alpha_b && scale_bg) {
-            alpha_b = b->blend(scale_bg, X,Y, b->width(), b->height());
-        }
-        if(alpha_b)
-            alpha_b->draw(X, Y, b->width(), b->height());
+        if(!backing->get_offscreen())
+            backing->draw(0,0);
 
-        fl_font(FL_HELVETICA, 12);
-        fl_draw("Alpha Blending with\neFLTK, nice...", 10, TY, w()-20, 20, FL_ALIGN_CENTER);
+        Pixmap id = backing->get_offscreen();
+
+        int tX = (w()/2)-(tW/2);
+        int bW = ball->width();
+        int bH = ball->height();
+
+        if(damage()!=FL_DAMAGE_VALUE) {
+
+            fl_copy_offscreen(0, 0, w(), h(), id, 0, 0);
+
+        } else {
+
+            // Erase bg under text
+            fl_copy_offscreen(tX, tY, tW, int(fl_height()), id, tX, tY);
+
+            // Erase only area affected, by moving ball!
+
+            // X axis
+            if(dX>0) fl_copy_offscreen(oX, Y, dX, bH, id, oX, Y);
+            else fl_copy_offscreen(X+bW, Y, -dX, bH, id, X+bW, Y);
+
+            // Y axis
+            if(dY>0) fl_copy_offscreen(X, oY, bW, dY, id, X, oY);
+            else fl_copy_offscreen(X, Y+bH, bW, -dY, id, X, Y+bH);
+        }
+
+        if(blended) delete blended;
+        // Do alphablend and draw it to screen
+        if( (blended = ball->blend(backing, X,Y, bW, bH)) ) {
+            blended->draw(X, Y);
+        }
+
+        // Draw string
+        fl_draw(str, tX, tY+int(fl_height()));
+
+        oX=X; oY=Y;
     }
 
-    Fl_Image *b, *bg, *scale_bg, *alpha_b;
+    Fl_Image *ball, *back, *backing, *blended;
 };
 
 void bb_timeout(void *data)
 {
-    static int xdir = 1, ydir = 1;
-    if(X > ((BBWin *)data)->width()-((BBWin *)data)->b->width()+1)
-        xdir = -2;
+    if(X > ((BBWin *)data)->width()-((BBWin *)data)->ball->width()+1)
+        dX = -2;
     else if(X < 1)
-        xdir = 2;
+        dX = 2;
 
-    X += xdir;
+    X += dX;
 
-    if(Y > ((BBWin *)data)->height()-((BBWin *)data)->b->height()+1)
-        ydir = -3;
+    if(Y > ((BBWin *)data)->height()-((BBWin *)data)->ball->height()+1)
+        dY = -3;
     else if(Y < 1)
-        ydir = 1;
+        dY = 1;
 
-    Y += ydir;
+    Y += dY;
 
-    TY++;
-    if(TY-20>((BBWin *)data)->h())
-        TY=-20;
+    tY++;
+    if(tY-20>((BBWin *)data)->h())
+        tY=-20;
 
-    ((BBWin *)data)->redraw();
+    ((BBWin *)data)->redraw(FL_DAMAGE_VALUE);
 
-    Fl::repeat_timeout(0.01, bb_timeout, data);
+    Fl::repeat_timeout(.01f, bb_timeout, data);
 }
 
 #define WIDTH 200
