@@ -36,6 +36,7 @@ public:
     Fl_Return_Button(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP);
 
     virtual void draw();
+    virtual void preferred_size(int &w, int &h) const;
 };
 
 #endif
