@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x400456
+# %FirstUniqueId:	0x400455
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -36,13 +36,13 @@ CCLINK = $(CC)
 
 LD = $(CC)
 
-LDOPTIONS = $(IDE_BLIND_LDOPTIONS) $(LDFLAGS)
+LDOPTIONS = $(LDFLAGS) $(IDE_BLIND_LDOPTIONS)
 
 LDFLAGS = -L. -L./lib -L/usr/X11R6/lib -lX11 -lXext -liconv -lodbc -lpng -ljpeg -lm -lz -lstdc++ -lsocket -lnsl
 
 IDE_BLIND_LDOPTIONS = -L./
 
-IDE_PROJECT_TOOLS = MAKE CCLINK G++ IDE_C_PARSER GCC TAGS IDE_CXX_PARSER
+IDE_PROJECT_TOOLS = MAKE CCLINK G++ IDE_C_PARSER GCC TAGS IDE_CXX_PARSER WEB_BROWSER BASH
 
 IDE_RCS_TYPE = cvs
 
@@ -103,6 +103,10 @@ IDE_CXX_PARSER_OPTIONS = -I/usr/local/lib/gcc-lib/sparc-sun-solaris2.8/2.95.3/..
 WEB_BROWSER = $(BROWSER)
 
 WEB_BROWSER_FLAGS = 
+
+BASH = sh
+
+BASHFLAGS = 
 
 # %UniqueId:	0x400002
 # %TargetType:	DLL
@@ -2493,10 +2497,10 @@ test/progress.o : test/progress.cpp
 
 
 # %TargetType:	C++_OBJ
-# %ParentTarget:	0x40038a
+# %ParentTarget:	0x40044a
 # %SourceTarget:	0x40044c
 test/menubar.o : test/menubar.cpp
-	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+	$(CXX) -c -o $@ $< $(CXXFLAGS)
 
 
 # %TargetType:	C++_OBJ
@@ -6407,8 +6411,7 @@ lib/Fl_Light_Button.o :	efltk/Fl_Light_Button.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl.h
-lib/Fl_ListView.o :	efltk/Fl_Events.h\
-	efltk/Fl_ListView_Header.h\
+lib/Fl_ListView.o :	efltk/Fl_ListView_Header.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Export.h\
@@ -6719,7 +6722,6 @@ lib/Fl_Menu_.o :	efltk/Fl_Item.h\
 	efltk/Fl_Flags.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Enumerations.h\
-	efltk/Fl_Events.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
@@ -8587,20 +8589,14 @@ test/listview.o :	efltk/x.h\
 	efltk/Fl_Renderer.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h\
-	efltk/Fl_Size.h\
-	efltk/Fl_Point.h\
-	efltk/Fl_Rect.h\
 	efltk/Fl_ListView_Item.h\
-	efltk/Fl_Packed_Strings.h\
+	efltk/Fl_Image_List.h\
+	efltk/Fl.h\
 	efltk/Fl_ListView.h\
-	efltk/Fl_ListView_Column.h\
-	efltk/Fl_ListView_Header.h\
-	efltk/Fl_Table_Base.h\
 	efltk/Fl_Scrollbar.h\
 	efltk/Fl_Slider.h\
 	efltk/Fl_Valuator.h\
-	efltk/Fl_Box.h\
-	efltk/Fl.h\
+	efltk/Fl_ListView_Header.h\
 	efltk/Fl_Button.h\
 	efltk/Fl_Window.h\
 	efltk/Fl_Double_Window.h
@@ -10287,7 +10283,6 @@ lib/Fl_Combo_Box.o :	efltk/Fl_Combo_Box.h\
 	efltk/Fl_ListView_Column.h\
 	efltk/Fl_String.h\
 	efltk/Enumerations.h\
-	efltk/Fl_Events.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_ListView_Header.h\
 	efltk/Fl_Ptr_List.h\
@@ -11665,7 +11660,7 @@ test/tabs2.o :	/cvs/efltk/test/multitabs_glyph3.xpm\
 # %TargetInfo src/net/Fl_Mail_Message.cpp	SourceOrHeader,	UniqueId=0x400377,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/net/mail_accounts.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400379,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/net/Fl_Base64.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x40037c,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo test/listview.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x40037f,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/listview.cpp	SourceOrHeader,	UniqueId=0x40037f,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/listview_ds.cpp	SourceOrHeader,	UniqueId=0x400381,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/fonts.cpp	SourceOrHeader,	UniqueId=0x400383,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/fullscreen.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400385,	TargetType=C++,	IDEFlags=0x6
@@ -11727,7 +11722,6 @@ test/tabs2.o :	/cvs/efltk/test/multitabs_glyph3.xpm\
 # %TargetInfo src/widgets/Fl_Stock_Images.cpp	SourceOrHeader,	UniqueId=0x400437,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/main_window.cpp	SourceOrHeader,	UniqueId=0x400448,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/mdi_test.cpp	SourceOrHeader,	UniqueId=0x40044b,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo /cvs/efltk/test/tabs2.cpp	SourceOrHeader,	UniqueId=0x400451,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x6
@@ -12025,11 +12019,11 @@ test/tabs2.o :	/cvs/efltk/test/multitabs_glyph3.xpm\
 # %TargetInfo src/widgets/images/stock_delete.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x400444,	TargetType=XPM,	IDEFlags=0xe
 # %TargetInfo src/widgets/images/stock_cancel.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x400445,	TargetType=XPM,	IDEFlags=0xe
 # %TargetInfo test/net/mail_accounts.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400446,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo /cvs/efltk/test/tabs.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400450,	TargetType=INC,	IDEFlags=0x4
-# %TargetInfo /cvs/efltk/test/multitabs_glyph3.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x400452,	TargetType=XPM,	IDEFlags=0x4
-# %TargetInfo /cvs/efltk/test/multitabs_glyph2.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x400453,	TargetType=XPM,	IDEFlags=0x4
-# %TargetInfo /cvs/efltk/test/multitabs_glyph1.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x400454,	TargetType=XPM,	IDEFlags=0x4
-# %TargetInfo efltk/Fl_Events.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400455,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo /cvs/efltk/test/tabs.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400450,	TargetType=INC,	IDEFlags=0x6
+# %TargetInfo /cvs/efltk/test/tabs2.cpp	SourceOrHeader,	UniqueId=0x400451,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo /cvs/efltk/test/multitabs_glyph3.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x400452,	TargetType=XPM,	IDEFlags=0x6
+# %TargetInfo /cvs/efltk/test/multitabs_glyph2.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x400453,	TargetType=XPM,	IDEFlags=0x6
+# %TargetInfo /cvs/efltk/test/multitabs_glyph1.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x400454,	TargetType=XPM,	IDEFlags=0x6
 
 
 # %UniqueId:	0x400001
@@ -12099,9 +12093,9 @@ test/tabs2.o :	/cvs/efltk/test/multitabs_glyph3.xpm\
 #	0x4003dc
 #	0x4003c8
 #	0x4003d8
-#	0x40037e
 #	0x400380
 #	0x4003e0
+#	0x40037e
 #	0x400447
 #	0x4003e4
 #	0x400449

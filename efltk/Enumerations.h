@@ -73,8 +73,62 @@ typedef signed char   int8;
 typedef unsigned char uint8;
 typedef uint32        uint;
 
-#include "Fl_Events.h"
-/*
+enum {  // events
+    FL_NO_EVENT         = 0,
+    FL_PUSH             = 1,
+    FL_RELEASE          = 2,
+    FL_ENTER            = 3,
+    FL_LEAVE            = 4,
+    FL_DRAG             = 5,
+    FL_FOCUS            = 6,
+    FL_UNFOCUS          = 7,
+    FL_KEY              = 8,
+    FL_KEYUP            = 9,
+    FL_MOVE             = 10,
+    FL_SHORTCUT         = 11,
+    FL_ACTIVATE         = 12,
+    FL_DEACTIVATE       = 13,
+    FL_SHOW             = 14,
+    FL_HIDE             = 15,
+    FL_MOUSEWHEEL       = 16,
+    FL_PASTE            = 17,
+    FL_DND_ENTER        = 18,
+    FL_DND_DRAG         = 19,
+    FL_DND_LEAVE        = 20,
+    FL_DND_RELEASE      = 21,
+
+    // This is the end of standard eFLTK events.
+
+    // window events
+    FL_WND_CLOSE        = 30,
+    FL_WND_DESTROY      = 31,
+
+    // dialog events
+    FL_DIALOG_BTN       = 40,
+    FL_DIALOG_OK        = 41,
+    FL_DIALOG_CANCEL    = 42,
+    FL_DIALOG_HELP      = 43,
+
+    // data events
+    FL_DATA_CHANGE      = 50,
+
+    // menu events
+    FL_MENU_DEFAULT     = 60,
+    FL_MENU_ITEM        = 61,
+
+    // button events
+    FL_BUTTON_PRESSED   = 70,
+
+    // user command events
+    FL_UC_INSERT            = 80,
+    FL_UC_DELETE            = 81,
+    FL_UC_EDIT              = 82,
+    FL_UC_REFRESH           = 83,
+
+     // back compatability values:
+    FL_KEYBOARD         = FL_KEY
+};
+
 enum { // Fl_Widget::when():
     FL_WHEN_NEVER       = 0,
     FL_WHEN_CHANGED = 1,
@@ -85,7 +139,7 @@ enum { // Fl_Widget::when():
     FL_WHEN_ENTER_KEY_CHANGED=11,
     FL_WHEN_NOT_CHANGED = 2 // modifier bit to disable changed() test
 };
-*/
+
 // Fl::event_key() and Fl::get_key(n) (use ascii letters for all other keys):
 #define FL_Space    32
 #define FL_Button(n)    (0xfee8+(n))    // use Fl_Button(FL_*_MOUSE)
@@ -198,32 +252,30 @@ enum { // Values for Fl::visual(), Fl::gl_visual(), Fl_Gl_Window::mode()
 };
 
 // damage
-enum Fl_Damage {
-    FL_DAMAGE_NONE        = 0,
-    FL_DAMAGE_VALUE       = 0x01,
-    FL_DAMAGE_PUSHED      = 0x02,
-    FL_DAMAGE_SCROLL      = 0x04,
-    FL_DAMAGE_OVERLAY     = 0x04, // reused value
+enum {
+    FL_DAMAGE_VALUE = 0x01,
+    FL_DAMAGE_PUSHED    = 0x02,
+    FL_DAMAGE_SCROLL    = 0x04,
+    FL_DAMAGE_OVERLAY   = 0x04, // reused value
     FL_DAMAGE_HIGHLIGHT   = 0x08,
     FL_DAMAGE_CHILD       = 0x10,
     FL_DAMAGE_CHILD_LABEL = 0x20,
     FL_DAMAGE_EXPOSE      = 0x40,
-    FL_DAMAGE_CONTENTS    = 0x40, // reused value
+    FL_DAMAGE_CONTENTS  = 0x40, // reused value
     FL_DAMAGE_ALL         = 0x80
 };
 
 // layout damage
-enum Fl_Layout_Damage {
-    FL_LAYOUT_NONE    = 0,
-    FL_LAYOUT_X       = 0x01,
-    FL_LAYOUT_Y       = 0x02,
-    FL_LAYOUT_XY      = 0x03,
-    FL_LAYOUT_W       = 0x04,
-    FL_LAYOUT_H       = 0x08,
-    FL_LAYOUT_WH      = 0x0C,
-    FL_LAYOUT_XYWH    = 0x0F,
-    FL_LAYOUT_CHILD   = 0x10,
-    FL_LAYOUT_DAMAGE  = 0x80
+enum {
+    FL_LAYOUT_X     = 0x01,
+    FL_LAYOUT_Y     = 0x02,
+    FL_LAYOUT_XY        = 0x03,
+    FL_LAYOUT_W     = 0x04,
+    FL_LAYOUT_H     = 0x08,
+    FL_LAYOUT_WH        = 0x0C,
+    FL_LAYOUT_XYWH  = 0x0F,
+    FL_LAYOUT_CHILD = 0x10,
+    FL_LAYOUT_DAMAGE    = 0x80
 };
 
 // effect types for menus/tooltips
@@ -235,8 +287,8 @@ enum {
 
 /* Prevent Visual C++ 6.0 from printing out stupid warnings */
 #if defined(_MSC_VER) && (_MSC_VER >= 600)
-# pragma warning(disable: 4550)
-# pragma warning(disable: 4244)
+#pragma warning(disable: 4550)
+#pragma warning(disable: 4244)
 #endif
 
 #endif
