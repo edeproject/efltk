@@ -92,6 +92,9 @@ Fl_Text_Buffer::Fl_Text_Buffer( int requestedSize )
     mHighlight.mStart = mHighlight.mEnd = 0;
     mHighlight.mRectangular = 0;
     mNodifyProcs = NULL;
+	mNPredeleteProcs = 0; 
+    mPredeleteProcs = NULL; 
+    mPredeleteCbArgs = NULL; 
     mCbArgs = NULL;
     mNModifyProcs = 0;
     mNullSubsChar = '\0';
@@ -112,6 +115,10 @@ Fl_Text_Buffer::~Fl_Text_Buffer()
         free( ( void * ) mNodifyProcs );
         free( ( void * ) mCbArgs );
     }
+	if ( mNPredeleteProcs != 0 ) { 
+		free( ( void * ) mPredeleteProcs ); 
+		free( ( void * ) mPredeleteCbArgs ); 
+	} 
 }
 
 char * Fl_Text_Buffer::static_buffer() {
@@ -142,6 +149,8 @@ void Fl_Text_Buffer::text( const char *t )
 {
     int length, deletedLength;
     const char *deletedText;
+
+	this->call_predelete_callbacks(0, this->length());
 
     /* Save information for redisplay, and get rid of the old buffer */
     deletedText = text();
@@ -243,6 +252,9 @@ void Fl_Text_Buffer::insert( int pos, const char *text )
     if ( pos > mLength ) pos = mLength;
     if ( pos < 0 ) pos = 0;
 
+	/* Even if nothing is deleted, we must call these callbacks */ 
+    call_predelete_callbacks( pos, 0 ); 
+
     /* insert and redisplay */
     nInserted = insert_( pos, text );
     mCursorPosHint = pos + nInserted;
@@ -259,6 +271,7 @@ void Fl_Text_Buffer::replace( int start, int end, const char *text )
     const char * deletedText;
     int nInserted;
 
+	call_predelete_callbacks( start, end-start );
     deletedText = text_range( start, end );
     remove_( start, end );
     nInserted = insert_( start, text );
@@ -284,6 +297,7 @@ void Fl_Text_Buffer::remove( int start, int end )
     if ( end > mLength ) end = mLength;
     if ( end < 0 ) end = 0;
 
+	call_predelete_callbacks( start, end-start );
     /* Remove and redisplay */
     deletedText = text_range( start, end );
     remove_( start, end );
@@ -351,6 +365,9 @@ int *charsInserted, int *charsDeleted )
     lineStartPos = line_start( startPos );
     nDeleted = line_end( skip_lines( startPos, nLines ) ) -
         lineStartPos;
+	
+	call_predelete_callbacks( lineStartPos, nDeleted );
+
     deletedText = text_range( lineStartPos, lineStartPos + nDeleted );
     insert_column_( column, lineStartPos, text, &insertDeleted, &nInserted,
         &mCursorPosHint );
@@ -381,6 +398,9 @@ int rectEnd, const char *text, int *charsInserted, int *charsDeleted )
     lineStartPos = line_start( startPos );
     nDeleted = line_end( skip_lines( startPos, nLines ) ) -
         lineStartPos;
+	
+	call_predelete_callbacks( lineStartPos, nDeleted );
+
     deletedText = text_range( lineStartPos, lineStartPos + nDeleted );
     overlay_rectangular_( lineStartPos, rectStart, rectEnd, text, &insertDeleted,
         &nInserted, &mCursorPosHint );
@@ -414,6 +434,8 @@ int rectEnd, const char *text )
        columnar delete and insert operations will replace whole lines */
     start = line_start( start );
     end = line_end( end );
+
+	call_predelete_callbacks( start, end-start );
 
     /* If more lines will be deleted than inserted, pad the inserted text
        with newlines to make it as long as the number of deleted lines.  This
@@ -470,6 +492,9 @@ int rectEnd )
 
     start = line_start( start );
     end = line_end( end );
+
+	call_predelete_callbacks( start, end-start );
+
     deletedText = text_range( start, end );
     remove_rectangular_( start, end, rectStart, rectEnd, &nInserted,
         &mCursorPosHint );
@@ -544,6 +569,11 @@ int rectStart, int rectEnd )
 void Fl_Text_Buffer::tab_distance( int tabDist )
 {
     const char * deletedText;
+
+	/* First call the pre-delete callbacks with the previous tab setting 
+      still active. */ 
+    call_predelete_callbacks( 0, mLength ); 
+
 
     /* Change the tab setting */
     mTabDist = tabDist;
@@ -797,6 +827,79 @@ void *cbArg )
     mCbArgs = newCBArgs;
 }
 
+/* 
+** Add a callback routine to be called before text is deleted from the buffer. 
+*/ 
+void Fl_Text_Buffer::add_predelete_callback(Fl_Text_Predelete_Cb bufPreDeleteCB, 
+											void *cbArg) { 
+	Fl_Text_Predelete_Cb *newPreDeleteProcs; 
+	void **newCBArgs; 
+	int i; 
+    
+	newPreDeleteProcs = new Fl_Text_Predelete_Cb[ mNPredeleteProcs + 1 ]; 
+	newCBArgs = new void * [ mNPredeleteProcs + 1 ]; 
+	for ( i = 0; i < mNPredeleteProcs; i++ ) { 
+		newPreDeleteProcs[i + 1] = mPredeleteProcs[i]; 
+		newCBArgs[i + 1] = mPredeleteCbArgs[i]; 
+	} 
+	if (! mNPredeleteProcs != 0) { 
+		delete [] mPredeleteProcs; 
+		delete [] mPredeleteCbArgs; 
+	} 
+	newPreDeleteProcs[0] =  bufPreDeleteCB; 
+	newCBArgs[0] = cbArg; 
+	mNPredeleteProcs++; 
+	mPredeleteProcs = newPreDeleteProcs; 
+	mPredeleteCbArgs = newCBArgs; 
+} 
+
+void Fl_Text_Buffer::remove_predelete_callback( 
+											   Fl_Text_Predelete_Cb bufPreDeleteCB, void *cbArg) { 
+	int i, toRemove = -1; 
+	Fl_Text_Predelete_Cb *newPreDeleteProcs; 
+	void **newCBArgs; 
+    
+	/* find the matching callback to remove */ 
+	for ( i = 0; i < mNPredeleteProcs; i++) { 
+		if (mPredeleteProcs[i] == bufPreDeleteCB && 
+			mPredeleteCbArgs[i] == cbArg) { 
+			toRemove = i; 
+			break; 
+		} 
+	} 
+	if (toRemove == -1) { 
+		fprintf(stderr, "Internal Error: Can't find pre-delete CB to remove\n"); 
+		return; 
+	} 
+    
+	/* Allocate new lists for remaining callback procs and args (if 
+	any are left) */ 
+	mNPredeleteProcs--; 
+	if (mNPredeleteProcs == 0) { 
+		mNPredeleteProcs = 0; 
+		delete[] mPredeleteProcs; 
+		mPredeleteProcs = NULL; 
+		delete[] mPredeleteCbArgs; 
+		mPredeleteCbArgs = NULL; 
+		return; 
+	} 
+	newPreDeleteProcs = new Fl_Text_Predelete_Cb [ mNPredeleteProcs ]; 
+	newCBArgs = new void * [ mNPredeleteProcs ]; 
+    
+	/* copy out the remaining members and free the old lists */ 
+	for ( i = 0; i < toRemove; i++) { 
+		newPreDeleteProcs[i] = mPredeleteProcs[i]; 
+		newCBArgs[i] = mPredeleteCbArgs[i]; 
+	} 
+	for ( ; i < mNPredeleteProcs; i++) { 
+		newPreDeleteProcs[i] = mPredeleteProcs[i+1]; 
+		newCBArgs[i] = mPredeleteCbArgs[i+1]; 
+	} 
+	delete[] mPredeleteProcs; 
+	delete[] mPredeleteCbArgs; 
+	mPredeleteProcs = newPreDeleteProcs; 
+	mPredeleteCbArgs = newCBArgs; 
+} 
 
 /*
  ** Return the text from the entire line containing position "pos"
@@ -2065,6 +2168,17 @@ int nInserted, int nRestyled, const char *deletedText )
         ( *mNodifyProcs[ i ] ) ( pos, nInserted, nDeleted, nRestyled,
         deletedText, mCbArgs[ i ] );
 }
+
+/* 
+** Call the stored pre-delete callback procedure(s) for this buffer to update 
+** the changed area(s) on the screen and any other listeners. 
+*/ 
+void Fl_Text_Buffer::call_predelete_callbacks(int pos, int nDeleted) { 
+	int i; 
+    
+	for (i=0; i<mNPredeleteProcs; i++) 
+		(*mPredeleteProcs[i])(pos, nDeleted, mPredeleteCbArgs[i]); 
+} 
 
 
 /*

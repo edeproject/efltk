@@ -481,7 +481,7 @@ void replall_cb(Fl_Widget*, void*);
 void replace2_cb(Fl_Widget*, void*);
 void replcan_cb(Fl_Widget*, void*);
 
-class EditorWindow : public Fl_Double_Window {
+class EditorWindow : public Fl_Window {
 public:
     EditorWindow(int w, int h, const char* t);
     ~EditorWindow();
@@ -497,7 +497,7 @@ public:
     char               search[256];
 };
 
-EditorWindow::EditorWindow(int w, int h, const char* t) : Fl_Double_Window(w, h, t) {
+EditorWindow::EditorWindow(int w, int h, const char* t) : Fl_Window(w, h, t) {
   replace_dlg = new Fl_Window(300, 105, "Replace");
     replace_find = new Fl_Input(80, 10, 210, 25, "Find:");
     replace_find->align(FL_ALIGN_LEFT);
@@ -540,20 +540,25 @@ int check_save(void) {
 
 int loading = 0;
 void load_file(char *newfile, int ipos)
-{
+{	
+	printf("LOAD\n");
+
     loading = 1;
     int insert = (ipos != -1);
-    changed = insert;
+    changed = insert;	
     if (!insert) strcpy(filename, "");
-    int r;
+    int r;	
     if (!insert) r = textbuf->loadfile(newfile);
     else r = textbuf->insertfile(newfile, ipos);
     if (r)
         fl_alert("Error reading from file \'%s\':\n%s.", newfile, strerror(errno));
     else
         if (!insert) strcpy(filename, newfile);
+		printf("L1\n");
     loading = 0;
-    textbuf->call_modify_callbacks();
+    textbuf->call_modify_callbacks();	
+
+	printf("LOAD DONE\n");
 }
 
 void save_file(char *newfile) {
@@ -821,32 +826,38 @@ Fl_Window* new_view() {
     m->end();
 
     w->editor = new Fl_Text_Editor(0, 30, 660, 370);
+	w->editor->text_size(12);
+	//w->editor->cursor_style(Fl_Text_Editor::BLOCK_CURSOR);
+	//w->editor->cursor_color(FL_RED);
+	//w->editor->wrap_mode(1, 0);
+	w->editor->set_linenumber_area(0, 40);
     w->editor->buffer(textbuf);
     w->editor->highlight_data(stylebuf, styletable,
                               sizeof(styletable) / sizeof(styletable[0]),
-                              'A', style_unfinished_cb, 0);
-    w->editor->textfont(FL_COURIER);
+                              UNFINISHED, style_unfinished_cb, 0);    
     w->end();
     w->callback((Fl_Callback *)close_cb, w);
 
     pack->resizable(w->editor);
-    w->resizable(pack);
+    w->resizable(pack);	
 
     textbuf->add_modify_callback(style_update, w->editor);
     textbuf->add_modify_callback(changed_cb, w);
     textbuf->call_modify_callbacks();
+	
     num_windows++;
     return w;
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv) 
+{
   textbuf = new Fl_Text_Buffer;
   textbuf->tab_distance(4);
   style_init();
 
   Fl_Window* window = new_view();
 
-  window->show(1, argv);
+  window->show(argc, argv);
 
   if (argc > 1) load_file(argv[1], -1);
 

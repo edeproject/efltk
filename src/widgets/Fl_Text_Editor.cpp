@@ -29,7 +29,14 @@
 #include <string.h>
 #include <ctype.h>
 
-static void revert(Fl_Style*) {}
+static void revert(Fl_Style *s) {
+	s->text_font = FL_COURIER;
+    s->box = FL_DOWN_BOX;
+    s->color = FL_WHITE;
+    s->button_box = FL_BORDER_BOX;
+    s->button_color = FL_GRAY;  
+}
+
 static Fl_Named_Style style("Text_Editor", revert, &Fl_Text_Editor::default_style);
 Fl_Named_Style* Fl_Text_Editor::default_style = &::style;
 
@@ -108,7 +115,8 @@ default_key_bindings[] =
     { FL_Delete,    FL_SHIFT,                 Fl_Text_Editor::kf_cut        },
     { 'x',          FL_CTRL,                  Fl_Text_Editor::kf_cut        },
     { 'c',          FL_CTRL,                  Fl_Text_Editor::kf_copy       },
-    { 'v',          FL_CTRL,                  Fl_Text_Editor::kf_paste      },
+	{ FL_Insert,    FL_CTRL,                  Fl_Text_Editor::kf_copy       },
+    { 'v',          FL_CTRL,                  Fl_Text_Editor::kf_paste      },	
     { 0,            0,                        0                             }
 };
 
@@ -302,17 +310,19 @@ extern void fl_text_drag_me(int pos, Fl_Text_Display* d);
 int Fl_Text_Editor::kf_move(int c, Fl_Text_Editor* e)
 {
     int i;
+	int vis_lines = e->mNVisibleLines-1;
     int selected = e->buffer()->selected();
     if (!selected)
         e->dragPos = e->insert_position();
     e->buffer()->unselect();
+	e->display_insert_position_hint = 1;
     switch (c)
     {
         case FL_Home:
-            e->insert_position(e->buffer()->line_start(e->insert_position()));
+            e->insert_position(e->line_start(e->insert_position()));
             break;
         case FL_End:
-            e->insert_position(e->buffer()->line_end(e->insert_position()));
+            e->insert_position(e->line_end(e->insert_position(), false));
             break;
         case FL_Left:
             e->move_left();
@@ -327,10 +337,10 @@ int Fl_Text_Editor::kf_move(int c, Fl_Text_Editor* e)
             e->move_down();
             break;
         case FL_Page_Up:
-            for (i = 0; i < e->mNVisibleLines - 1; i++) e->move_up();
+            e->move_up(vis_lines);
             break;
-        case FL_Page_Down:
-            for (i = 0; i < e->mNVisibleLines - 1; i++) e->move_down();
+        case FL_Page_Down:            
+			e->move_down(vis_lines);
             break;
     }
     e->show_insert_position();

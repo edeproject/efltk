@@ -64,6 +64,7 @@ class FL_API Fl_Text_Selection {
 typedef void (*Fl_Text_Modify_Cb)(int pos, int nInserted, int nDeleted,
                                   int nRestyled, const char* deletedText,
                                   void* cbArg);
+typedef void (*Fl_Text_Predelete_Cb)(int pos, int nDeleted, void* cbArg);
 
 class FL_API Fl_Text_Buffer {
   public:
@@ -142,6 +143,13 @@ class FL_API Fl_Text_Buffer {
     void remove_modify_callback(Fl_Text_Modify_Cb bufModifiedCB, void* cbArg);
 
     void call_modify_callbacks() { call_modify_callbacks(0, 0, 0, 0, 0); }
+	
+	void add_predelete_callback(Fl_Text_Predelete_Cb bufPredelCB, void* cbArg); 
+    void remove_predelete_callback(Fl_Text_Predelete_Cb predelCB, void* cbArg); 
+    
+	void call_predelete_callbacks() { call_predelete_callbacks(0, 0); } 
+
+
 
     const char* line_text(int pos);
     int line_start(int pos);
@@ -180,6 +188,8 @@ class FL_API Fl_Text_Buffer {
   protected:
     void call_modify_callbacks(int pos, int nDeleted, int nInserted,
                                int nRestyled, const char* deletedText);
+
+	void call_predelete_callbacks(int pos, int nDeleted);
 
     int insert_(int pos, const char* text);
     void remove_(int start, int end);
@@ -227,6 +237,12 @@ class FL_API Fl_Text_Buffer {
     Fl_Text_Modify_Cb*          /* procedures to call when buffer is */
     mNodifyProcs;               /* modified to redisplay contents */
     void** mCbArgs;             /* caller arguments for modifyProcs above */
+
+	int mNPredeleteProcs;       /* number of pre-delete procs attached */ 
+    Fl_Text_Predelete_Cb*       /* procedure to call before text is deleted */ 
+         mPredeleteProcs;       /* from the buffer; at most one is supported. */ 
+    void **mPredeleteCbArgs;    /* caller argument for pre-delete proc above */ 
+
     int mCursorPosHint;         /* hint for reasonable cursor position after
                                    a buffer modification operation */
     char mNullSubsChar;         /* NEdit is based on C null-terminated strings,
