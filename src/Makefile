@@ -43,6 +43,7 @@ OBJECTS = $(CPPFILES:.cpp=.o) $(CFILES:.c=.o)
 all: $(BUILDTARGETS)
 
 static:
+	@rm -f $(LIBRARY)$(LIBEXT)
 	$(MAKE) -C core static
 	$(MAKE) -C widgets static
 	$(MAKE) -C xutf static
@@ -51,6 +52,7 @@ static:
 	$(MAKE) -C opengl static
 
 shared:
+	rm -f $(LIBRARY)$(DSOEXT)
 	$(MAKE) -C core shared
 	$(MAKE) -C widgets shared
 	$(MAKE) -C xutf shared
@@ -61,7 +63,6 @@ shared:
 programs:
 
 $(LIBRARY).a:
-	@rm -f $@
 	@echo $(LIBCOMMAND) $@ ...
 	@$(LIBCOMMAND) $@ core/*.static.o widgets/*.static.o xutf/*.static.o
 	@$(RANLIB) $@
