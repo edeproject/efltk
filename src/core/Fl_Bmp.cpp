@@ -318,6 +318,7 @@ error:
     if(data) delete []data;
     data = 0;
     fputs(error_str ? error_str : "BMP: Unknown error!", stderr);
+    return false;
 }
 
 static bool bmp_read_file(const char *filename, int quality, uint8 *&data, Fl_PixelFormat &data_format, int &w, int &h)
