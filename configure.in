@@ -353,7 +353,7 @@ AC_CHECK_LIB(iconv, iconv_open, AC_DEFINE(HAVE_ICONV) LDLIBS="$LDLIBS -liconv" i
 if test x$iconv_found = xyes; then
 
 AC_MSG_CHECKING([for iconv declaration])
-AC_TRY_LINK([#include <iconv.h>],[ char **tmp; const char **tmp2; iconv(NULL, tmp, NULL, tmp, NULL); ],
+AC_TRY_LINK([#include <iconv.h>],[ char **tmp; char **tmp2; iconv(NULL, tmp, NULL, tmp, NULL); ],
 [AC_DEFINE(ICONV_CONST, const) AC_MSG_RESULT(const)], [AC_DEFINE(ICONV_CONST, ) AC_MSG_RESULT(non-const)])]
 
 fi
