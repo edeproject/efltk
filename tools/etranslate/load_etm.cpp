@@ -80,30 +80,35 @@ Fl_String quote_controls(Fl_String str)
 
 void ETranslate::load_etm(FILE *fp)
 {
-    Fl_String text;
     try {
-        Fl_XmlDoc xml(&ctx);
-        xml.load(fp);
+        Fl_XmlDoc *xml = Fl_XmlParser::create_dom(fp);
         Fl_XmlNode *node;
-        node = xml.root_node()->child("Info");
+        node = xml->root_node()->child("Info");
         if(node) {
             Fl_XmlNode *tmp;
             tmp = node->child("Comment");
-            if(tmp) comment = tmp->text();
+            if(tmp) tmp->text(comment);
+
             tmp = node->child("Project");
-            if(tmp) name = tmp->text();
+            if(tmp) tmp->text(name);
+
             tmp = node->child("Version");
-            if(tmp) version = tmp->text();
+            if(tmp) tmp->text(version);
+
             tmp = node->child("Language");
-            if(tmp) lang = tmp->text();
+            if(tmp) tmp->text(lang);
+
             tmp = node->child("Translator");
-            if(tmp) translator = tmp->text();
+            if(tmp) tmp->text(translator);
+
             tmp = node->child("Email");
-            if(tmp) email = tmp->text();
+            if(tmp) tmp->text(email);
+
             tmp = node->child("StartDate");
-            if(tmp) start_date = tmp->text();
+            if(tmp) tmp->text(start_date);
+
             tmp = node->child("ModifyDate");
-            if(tmp) mod_date = tmp->text();
+            if(tmp) tmp->text(mod_date);
 
             if(start_date.length()==0)
                 start_date = Fl_Date_Time::Now().date_string() + " " + Fl_Date_Time::Now().time_string();
@@ -115,33 +120,49 @@ void ETranslate::load_etm(FILE *fp)
         }
 
         browser->begin();
-        NodeList nodes = xml.root_node()->nodes("String");
+        Fl_XmlNode_List nodes = xml->root_node()->nodes("String");
         for(uint n=0; n<nodes.size(); n++) {
             node = nodes[n];
             Fl_XmlNode *orig = node->child("Original", false);
             Fl_XmlNode *tr = node->child("Translation", false);
-            if(!orig || orig->text()=="") continue;
+			Fl_String orig_text; orig->text(orig_text);
+            if(!orig || orig_text=="") continue;
 
             TranslateItem *i = new TranslateItem();
-            text = orig->text();
-            i->orig(ctx.unXMLize(convert_quoted_controls(text)));
+            i->orig(convert_quoted_controls(orig_text));
             if(tr) {
-                text = tr->text();
-                i->tr(ctx.unXMLize(convert_quoted_controls(text)));
+				Fl_String tr_text;
+                tr->text(tr_text);
+                i->tr(convert_quoted_controls(tr_text));
             }
 
-            i->finished((node->attribute("Finished")=="1"));
+            i->finished((node->get_attribute("Finished")=="1"));
             node = node->child("Comment");
             if(node) {
-                text = node->text();
-                i->comment(ctx.unXMLize(convert_quoted_controls(text)));
+				Fl_String comment_text;
+                node->text(comment_text);
+                i->comment(convert_quoted_controls(comment_text));
             }
         }
         browser->end();
 
     } catch(Fl_Exception &exc) {
-        fl_alert(exc.text().c_str());
+		Fl::warning(exc.text().c_str());
     }
+}
+
+void ETranslate::write_tag(FILE *fp, const Fl_String &str, const char *name)
+{
+	Fl_String wr;
+	Fl_String ret;
+
+	if(doctype.encode_entities(str, ret))
+		wr = quote_controls(ret);		
+	else
+		wr = quote_controls(str);		
+
+	fprintf(fp, "  <%s>%s</%s>\n", name, wr.c_str(), name);
+	fprintf(fp, "\n");
 }
 
 void ETranslate::save(const char *file)
@@ -177,10 +198,13 @@ void ETranslate::save(const char *file)
 
     for(uint n=0; n<browser->children(); n++) {
         TranslateItem *i = (TranslateItem *)browser->child(n);
+
         fprintf(fp, " <String Finished=\"%d\">\n", i->finished());
-        fprintf(fp, "  <Comment>%s</Comment>\n", quote_controls(ctx.XMLize(i->comment())).c_str());
-        fprintf(fp, "  <Original>%s</Original>\n", quote_controls(ctx.XMLize(i->orig())).c_str());
-        fprintf(fp, "  <Translation>%s</Translation>\n", quote_controls(ctx.XMLize(i->tr())).c_str());
+
+		write_tag(fp, i->comment(), "Comment");
+		write_tag(fp, i->orig(), "Original");
+		write_tag(fp, i->tr(), "Translation");
+
         fprintf(fp, " </String>\n");
     }
 

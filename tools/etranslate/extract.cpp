@@ -147,7 +147,7 @@ void Extractor::extract_files(Fl_String_List &glob_files, bool all)
         print_xml(stdout);
 }
 
-Fl_String& normalize(Fl_String &str)
+Fl_String& normalize(const Fl_String &str)
 {
     static Fl_String ret;
     ret.clear();
@@ -161,6 +161,19 @@ Fl_String& normalize(Fl_String &str)
         }
     }
     return ret;
+}
+
+void Extractor::write_tag(FILE *fp, const Fl_String &str, const char *name)
+{
+	Fl_String &norm = normalize(str);
+	Fl_String ret;
+
+	if(doctype.encode_entities(norm, ret)) {
+		fprintf(fp, "  <%s>%s</%s>\n", name, ret.c_str(), name);
+	} else {
+		fprintf(fp, "  <%s>%s</%s>\n", name, norm.c_str(), name);
+	}
+	fprintf(fp, "\n");
 }
 
 void Extractor::print_xml(FILE *outfile)
@@ -184,10 +197,13 @@ void Extractor::print_xml(FILE *outfile)
     for(uint n=0; n<list.size(); n++)
     {
         t = (TrString*)list[n];
-        fprintf(outfile, " <String Finished=\"0\">\n");
-        fprintf(outfile, "  <Comment>%s</Comment>\n", ctx.XMLize(normalize(t->comment)).c_str());
-        fprintf(outfile, "  <Original>%s</Original>\n", ctx.XMLize(normalize(t->str)).c_str());
-        fprintf(outfile, "  <Translation>%s</Translation>\n", ctx.XMLize(normalize(t->str)).c_str());
+
+		fprintf(outfile, " <String Finished=\"0\">\n");
+
+        write_tag(outfile, t->comment, "Comment");
+		write_tag(outfile, t->str, "Original");
+		write_tag(outfile, t->str, "Translation");
+        
         fprintf(outfile, " </String>\n");
     }
 

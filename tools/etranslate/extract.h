@@ -16,6 +16,7 @@ public:
     void add_string(Fl_String &str, Fl_String &comment);
 
     void print_xml(FILE *outfile);
+	void write_tag(FILE *fp, const Fl_String &str, const char *name);
 
     typedef struct {
         Fl_String str;
@@ -24,7 +25,7 @@ public:
 
     Fl_String outfile;
     Fl_Ptr_List list;
-    Fl_XmlContext ctx;
+    Fl_XmlDocType doctype;
 };
 
 #endif
