@@ -1751,8 +1751,11 @@ void Fl_Text_Display::draw_string( int style, int X, int Y, int toX,
         background = color();
     }
 
-    fl_color(background);
-    fl_rectf( X, Y, toX - X , mMaxsize );
+    // Draw BG only if not FL_DAMAGE_ALL or bg color is something else than widget bg
+    if(!(damage()&FL_DAMAGE_ALL) || background!=color()) {
+        fl_color(background);
+        fl_rectf( X, Y, toX - X , mMaxsize );
+    }
 
     if(styleRec && styleRec->attr==ATTR_IMAGE && styleRec->image) {
         int iX = X;
@@ -3020,7 +3023,9 @@ void Fl_Text_Display::draw() {
     if (damage() & FL_DAMAGE_ALL) {
         //printf("drawing all\n");
 
-        // draw the box()
+        // draw the box
+        draw_box();
+        /*
         draw_frame();
 
         // left margin
@@ -3040,7 +3045,7 @@ void Fl_Text_Display::draw() {
         // bottom margin
         fl_rectf(text_area.x, text_area.y+text_area.h,
             text_area.w, BOTTOM_MARGIN, color());
-
+            */
         // draw that little box in the corner of the scrollbars
         if (mVScrollBar->visible() && mHScrollBar->visible()) {
             fl_color(parent()?parent()->color():color());
