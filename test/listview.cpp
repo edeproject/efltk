@@ -6,7 +6,7 @@
 #include <efltk/Fl_ListView_Item.h>
 #include <efltk/Fl_Image.h>
 
-static Fl_Image *im, *bg;
+static Fl_Image *im;
 
 Fl_Button *moveb, *multib, *stripeb;
 
@@ -15,10 +15,10 @@ void callback(Fl_ListView *l, void *)
     Fl_ListView_Item *i = (Fl_ListView_Item *)l->item();
     if(i) {
         if(Fl::event_clicks()) printf("Double ");
-        printf("Clicked '");
+        printf("Clicked: ");
         for(int a=0; a<l->columns(); a++)
-            printf("%s ", i->label(a));
-        printf("'\n");
+            printf("'%s' ", i->label(a));
+        printf("\n");
     }
 }
 
@@ -30,6 +30,7 @@ void cb_multi(Fl_Widget *w, void *d)
 	else
 		l->type(l->type() &~ Fl_ListView::MULTI_SELECTION);
 }
+
 void cb_move(Fl_Widget *w, void *d)
 {
 	Fl_ListView *l = (Fl_ListView *)d;
@@ -38,18 +39,19 @@ void cb_move(Fl_Widget *w, void *d)
 	else
 		l->type(l->type() &~ Fl_ListView::MOVE_SELECTION);
 }
+
 void cb_single(Fl_Widget *w, void *d)
 {
 	Fl_ListView *l = (Fl_ListView *)d;
 	l->type( l->type() &~ (Fl_ListView::MULTI_SELECTION|Fl_ListView::MOVE_SELECTION) );
 
-        l->draw_stripes(false);
+    l->draw_stripes(false);
 
-        multib->value(0);
-        moveb->value(0);
-        stripeb->value(0);
+	multib->value(0);
+	moveb->value(0);
+	stripeb->value(0);
 
-        l->redraw();
+	l->redraw();
 }
 
 void cb_stripes(Fl_Widget *w, void *d)
@@ -95,60 +97,36 @@ static char * ball_xpm[] = {
 "    .+@##@+.    ",
 "                "};
 
-#define WIDTH 200
-#define HEIGHT 200
-uchar* make_image()
-{
-    // pitch = WORD alignment bits per line
-    int pitch=Fl_Renderer::calc_pitch(3, WIDTH);
-    int skip = pitch - WIDTH * 3;
-
-    uchar *image = new uchar[HEIGHT*pitch];
-    uchar *p = image;
-
-    for (int y = 0; y < HEIGHT; y++) {
-        double Y = double(y)/(HEIGHT-1);
-        for (int x = 0; x < WIDTH; x++) {
-            double X = double(x)/(WIDTH-1);
-            *p++ = uchar(255*((1-X)*(1-Y))); // red in upper-left
-            *p++ = uchar(255*((1-X)*Y));	// green in lower-left
-            *p++ = uchar(255*(X*Y));	// blue in lower-right
-        }
-        p+=skip;
-    }
-    return image;
-}
-
 int main()
 {
     Fl::init();
 
     im = Fl_Image::read_xpm(0, ball_xpm);
-    bg = new Fl_Image(WIDTH, HEIGHT, 24, make_image(), 0x0000FF, 0x00FF00, 0xFF0000, 0);
 
     //Fl_Double_Window w(300,300,"ListView Test");
     Fl_Window w(300, 300, "ListView Test");
     w.begin();
 
     Fl_ListView l(10,10,280,250);
+	l.array().blocksize(512);
     //l.header()->hide();
     l.callback((Fl_Callback*)callback);
 
-    // Set some look for header
-    l.header()->box(FL_VERT_SHADE_UP_BOX);
-    l.header()->label_color(FL_WHITE);
-    l.header()->label_font(FL_HELVETICA_BOLD);
-
     // Add 4 cols
-    l.add_column("First");
-    l.add_column("Second");
+    l.add_column("First", 100);
+    l.add_column("Second", 80);
     l.add_column("Third");
     l.add_column("Fourth");
+
+    // Set some look for header
+    l.header()->box(FL_VERT_SHADE_UP_BOX);
+    l.header()->label_font(0, FL_HELVETICA_BOLD);
+	l.header()->label_color(1, FL_RED);
 
     // Add images for cols
     l.column_image(0, im);
     l.column_image(1, im);
-    l.column_image(2, im);
+    //l.column_image(2, im);
     l.column_image(3, im);
 
     // Set alignment flags
@@ -160,9 +138,8 @@ int main()
     // Set type for multi and move selection support
     //l.type(l.type()|Fl_ListView::MULTI_SELECTION|Fl_ListView::MOVE_SELECTION);
 
-
-    // Add 100 items
-    for(int a=0; a<100; a++) {
+    // Add 1000 items
+    for(int a=0; a<1000; a++) {
         Fl_ListView_Item *i = new Fl_ListView_Item(0, "Some Text", "COL 3", "-----------Long column-----------");
 
         char tmp[32];
@@ -180,15 +157,16 @@ int main()
         i->color(1, FL_RED);
 
         // Set font for column 3
-        i->font(2, FL_HELVETICA_BOLD, 14);
+        i->label_font(2, FL_HELVETICA_BOLD);
+		i->label_size(2, 16);
 
         // Images for cols 1,2,3
         i->image(0, im);
         i->image(1, im);
         i->image(2, im);
+		
     }
 
-    l.relayout();
     l.end();
 
     Fl_Button but(10, 265, 50, 20, "Move");
@@ -213,14 +191,9 @@ int main()
     w.end();
     w.show();
 
-    // Speed up things littlebit
-    Fl::check(); // Get FLTK display info
-    bg->system_convert(); // Convert to system format, no conversion during scaling...
-
     Fl::run();
 
     delete im;
-    delete bg;
 
     return 0;
 }
