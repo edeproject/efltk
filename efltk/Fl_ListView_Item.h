@@ -15,8 +15,7 @@
 
 class Fl_ListView_Item : public Fl_Widget {
 public:
-    Fl_ListView_Item();
-    Fl_ListView_Item(const char *label1,
+    Fl_ListView_Item(const char *label1=0,
                  const char *label2=0,
                  const char *label3=0,
                  const char *label4=0,
