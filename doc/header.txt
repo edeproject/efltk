@@ -12,5 +12,7 @@
   *
   * Contributors (ie. people that have sent patches, ideas, suggestions):
   * 	Fname2 Sname2, example2§fltk.net
-  * 
+  *
+  * PLEASE report any bug, bugfix, improvement or suggestion to 
+  * 	efltk-bugs@fltk.net
   ****************************************************************************/
