@@ -926,8 +926,8 @@ void Fl_ListView::moveselection_up(int dy)
     while(n--)
     {
         i = selection[n];
-        if(items.remove(i->index()))
-            items.insert(i->index()-dy, i);
+        items.remove(i->index());
+        items.insert(i->index()-dy, i);
     }
 
     // Update Y positions and indexes for safe range, after move.
@@ -961,8 +961,8 @@ void Fl_ListView::moveselection_down(int dy)
     for(n=0; n<selection.size(); n++)
     {
         i = selection[n];
-        if(items.remove(i->index()))
-            items.insert(i->index()+dy, i);
+        items.remove(i->index());
+        items.insert(i->index()+dy, i);
     }
 
     // Update Y positions and indexes for safe range, after move.
