@@ -26,6 +26,7 @@
 //
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
+#include <efltk/math.h>
 #include <config.h>
 
 #include <efltk/Fl_Menu_.h>
@@ -38,7 +39,6 @@
 #include <efltk/Fl_Item.h> // for TOGGLE, RADIO
 #include <efltk/Fl_Tooltip.h>
 #include <efltk/Fl_Image.h>
-#include <efltk/math.h>
 
 #define checkmark(item) (item->type()>=Fl_Item::TOGGLE && item->type()<=Fl_Item::RADIO)
 
