@@ -30,7 +30,7 @@ else
 	MAKE=make
 fi
 
-$MAKE $MFLAGS $*
+($MAKE $MFLAGS $*) || exit
 
 if [ "$1" = "" ]; then
 	echo
