@@ -65,8 +65,8 @@ else
 fi
 
 dnl Don't automatically add "-g" to compiler options...
-CFLAGS=
-CXXFLAGS=
+CFLAGS="-fexceptions"
+CXXFLAGS="-fexceptions"
 
 dnl# See if we need a .exe extension on executables...
 AC_EXEEXT
@@ -384,15 +384,6 @@ if test x$have_dlopen = xyes; then
     AC_DEFINE(HAVE_DLOPEN)
 fi
 
-AC_ARG_ENABLE(stdexceptions, [  --enable-stdexceptions  enable std C++ exceptions inside efltk],enable_stdexceptions=yes)
-if test "$enable_stdexceptions" = yes; then
- 	CFLAGS="$CFLAGS -DSTD_EXCEPTIONS"
-        CXXFLAGS="$CXXFLAGS -DSTD_EXCEPTIONS"
-else
-	CFLAGS="$CFLAGS -fno-exceptions"
-        CXXFLAGS="$CXXFLAGS -fno-exceptions"
-fi
-
 AC_ARG_ENABLE(cmap, [  --disable-cmap          disable 8bit display support],,enable_cmap=yes)
 if test "$enable_cmap" = yes; then
 	AC_DEFINE(USE_COLORMAP)
@@ -560,7 +551,6 @@ if test "$exec_prefix" = NONE; then
 fi
 
 AC_SUBST(DEBUGFLAG)
-AC_SUBST(EXCEPTIONFLAG)
 
 AC_DEFINE_UNQUOTED(PREFIX, "${prefix}")
 AC_DEFINE_UNQUOTED(CONFIGDIR, "${prefix}/share/ede")
