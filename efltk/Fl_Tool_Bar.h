@@ -46,11 +46,11 @@ public:
     static Fl_Named_Style* default_style;
 
     /**
-     * Size of toolbar buttons.
+     * Size of toolbar button icons.
      */
     enum TbSize {
-        TB_SIZE_SMALL = 0, ///< Small size, default small size is 28x28
-        TB_SIZE_BIG,       ///< Big size, default big size is 40x40
+        TB_SIZE_SMALL = 0, ///< Small size, default small icon size is 20x20
+        TB_SIZE_BIG,       ///< Big size, default big icon size is 32x32
         TB_SIZE_DEFAULT    ///< Select small/big regarding to system default.
     };
 
@@ -149,12 +149,12 @@ public:
      * Set default button sizes for ALL tool bars.
      * @see enum TbSize
      */
-    static void set_button_sizes(TbSize size, int w, int h) { m_button_sizes[size][0] = w; m_button_sizes[size][1] = h; }
+    static void set_icon_size(TbSize size, int w, int h) { m_icon_sizes[size][0] = w; m_icon_sizes[size][1] = h; }
     /**
      * Get default button sizes.
      * @see enum TbSize
      */
-    static void get_button_sizes(TbSize size, int &w, int &h) { w = m_button_sizes[size][0]; h = m_button_sizes[size][1]; }
+    static void get_icon_size(TbSize size, int &w, int &h) { w = m_icon_sizes[size][0]; h = m_icon_sizes[size][1]; }
 
     /**
      * Return current size mode.
@@ -181,7 +181,7 @@ public:
 private:
     TbSize m_tb_size;
     static TbSize m_tb_def_size;
-    static int m_button_sizes[2][2];
+    static int m_icon_sizes[2][2];
 
     Fl_Widget *m_item;
 
@@ -205,7 +205,6 @@ public:
     enum TbTextPos {
         POS_BOTTOM = 1, ///< Text placed at bottom of the image
         POS_RIGHT,      ///< Text placed at right of the image
-        POS_AUTO,       ///< Automatic placement, regarding to size of label+image and tool bar.
         POS_DEFAULT     ///< Default placement, regarding to system default.
     };
 
@@ -222,6 +221,7 @@ public:
 
     /** Create tool button for Fl_Tool_Bar 'bar' */
     Fl_Tool_Button(Fl_Tool_Bar *bar);
+    virtual ~Fl_Tool_Button();
 
     /**
      * Create tool button woth given parameters.
@@ -249,6 +249,8 @@ public:
 
     /** void Fl_Widget::layout() */
     virtual void layout();
+
+    virtual void preferred_size(int &w, int &h) const;
 
     /**
      * Returns current show mode.
@@ -290,6 +292,8 @@ private:
     Fl_Tool_Bar *m_bar;
     TbShowMode m_showmode;
     TbTextPos m_textpos;
+
+    Fl_Image *small, *big;
 
     static TbShowMode m_def_showmode;
     static TbTextPos m_def_textpos;

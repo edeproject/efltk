@@ -48,6 +48,8 @@ void cb_size(Fl_Button_Group *g, void *arg)
     int id = g->find(Fl::focus());
     Fl_Tool_Bar::default_tb_size((Fl_Tool_Bar::TbSize)id);
 
+    mainwin->toolbar()->relayout();
+    mainwin->toolbar()->redraw();
     mainwin->relayout();
     mainwin->redraw();
 }
@@ -60,6 +62,8 @@ void cb_pos_mode(Fl_Button_Group *g, void *arg)
 
     mainwin->toolbar()->relayout();
     mainwin->toolbar()->redraw();
+    mainwin->relayout();
+    mainwin->redraw();
 }
 
 void cb_show_mode(Fl_Button_Group *g, void *arg)
@@ -70,6 +74,8 @@ void cb_show_mode(Fl_Button_Group *g, void *arg)
 
     mainwin->toolbar()->relayout();
     mainwin->toolbar()->redraw();
+    mainwin->relayout();
+    mainwin->redraw();
 }
 
 int main(int argc, char **argv)
@@ -107,11 +113,11 @@ int main(int argc, char **argv)
     size_group.buttons(strlist);
     size_group.value("Small");
 
-    strlist.from_string("Bottom|Right|Auto", "|");
+    strlist.from_string("Bottom|Right", "|");
     Fl_Radio_Buttons pos_group("Position Modes:");
     pos_group.callback((Fl_Callback*)cb_pos_mode);
     pos_group.buttons(strlist);
-    pos_group.value("Auto");
+    pos_group.value("Bottom");
 
     strlist.from_string("Text|Image|Both|Auto", "|");
     Fl_Radio_Buttons show_group("Show Modes:");
