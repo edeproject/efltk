@@ -388,8 +388,8 @@ static unsigned char browser_plus_bits[] = {
    0xff, 0x01, 0x01, 0x01, 0x11, 0x01, 0x11, 0x01, 0x7d, 0x01, 0x11, 0x01,
    0x11, 0x01, 0x01, 0x01, 0xff, 0x01};
 
-static Fl_Bitmap browser_plus(browser_plus_bits, browser_plus_width, browser_plus_height);
-static Fl_Bitmap browser_minus(browser_minus_bits, browser_minus_width, browser_minus_height);
+static Fl_Bitmap browser_plus(browser_plus_bits, browser_plus_width, browser_plus_height, false);
+static Fl_Bitmap browser_minus(browser_minus_bits, browser_minus_width, browser_minus_height, false);
 
 static void
 glyph(const Fl_Widget* widget, int glyph, int x,int y,int w,int h, Fl_Flags f)

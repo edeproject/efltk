@@ -304,7 +304,7 @@ bool Fl_WM::get_window_icon(Window xid, Fl_Image *&icon, int w, int h)
                 fmt.copy(Fl_Renderer::system_format());
             }
             // Create Fl_Image, masks are calculated automaticly
-            image = new Fl_Image(xim->width, xim->height, &fmt, data);
+            image = new Fl_Image(xim->width, xim->height, &fmt, data, true);
             image->mask_type(FL_MASK_NONE);
             XDestroyImage(xim);
         }
@@ -322,7 +322,7 @@ bool Fl_WM::get_window_icon(Window xid, Fl_Image *&icon, int w, int h)
         xim = Fl_Renderer::ximage_from_pixmap(wm_hints->icon_mask, r);
         if(xim) {
             uint8 *data = cvt1to32(xim, xim->width, xim->height);
-            mask = new Fl_Image(xim->width, xim->height, 32, data);
+            mask = new Fl_Image(xim->width, xim->height, 32, data, true);
             mask->no_screen(true);
             XDestroyImage(xim);
         }

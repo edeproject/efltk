@@ -30,8 +30,8 @@
 
 class FL_API Fl_Bitmap : public Fl_Image {
 public:
-    Fl_Bitmap(const uint8 *bits, int W, int H) : Fl_Image(W, H, 1, (uint8*)bits) { }
-    Fl_Bitmap(const char  *bits, int W, int H) : Fl_Image(W, H, 1, (uint8*)bits) { }
+    Fl_Bitmap(const uint8 *bits, int W, int H, bool allow_free=false) : Fl_Image(W, H, 1, (uint8*)bits, allow_free) { }
+    Fl_Bitmap(const char  *bits, int W, int H, bool allow_free=false) : Fl_Image(W, H, 1, (uint8*)bits, allow_free) { }
 
     virtual void draw(int dx, int dy, int dw, int dh,
                       int sx, int sy, int sw, int sh,

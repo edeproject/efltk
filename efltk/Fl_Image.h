@@ -80,6 +80,7 @@ public:
      @param fmt As a Pixel format to use in image
      @param data As pre-allocated data of image, or 0 (allocated by Fl_Image)
      @param allow_free, if this flag is set, Fl_Image will de-allocate date on clear() (destructor)
+			flag only affects, if data is NOT NULL
      */
     Fl_Image(int W, int H, Fl_PixelFormat *fmt, uint8 *data=0, bool allow_free=true);
     /*!
@@ -88,6 +89,7 @@ public:
      @param bits_pp As a bits per pixel (8,15,16,24,32)
      @param data As pre-allocated data of image, or 0 (allocated by Fl_Image)
      @param allow_free, if this flag is set, Fl_Image will de-allocate date on clear() (destructor)
+			flag only affects, if data is NOT NULL
 
      You may also want to provide color masks, e.g. ARGB 32-bit image they are Rmask=0x00FF0000, Gmask=0x0000FF00, Bmask=0x000000FF, Amask=0xFF000000
      */

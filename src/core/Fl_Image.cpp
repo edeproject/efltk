@@ -90,7 +90,7 @@ Fl_Image::Fl_Image(const char * const *data, int quality)
 Fl_Image::Fl_Image(int W, int H, Fl_PixelFormat *fmt, uint8 *data, bool allow_free)
 {
     init(W, H, fmt->bitspp, data, fmt->Rmask, fmt->Gmask, fmt->Bmask, fmt->Amask);
-    _data_alloc = allow_free;
+	if(data) _data_alloc = allow_free;
 }
 
 Fl_Image::Fl_Image(int W, int H, int bits_pp)
@@ -118,7 +118,7 @@ Fl_Image::Fl_Image(int W, int H, int bits_pp)
 Fl_Image::Fl_Image(int W, int H, int bits_pp, uint8 *data, bool allow_free, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask)
 {
     init(W, H, bits_pp, data, Rmask, Gmask, Bmask, Amask);
-    _data_alloc = allow_free;
+    if(data) _data_alloc = allow_free;
 }
 
 Fl_Image::Fl_Image(Fl_Image &i)
@@ -470,7 +470,7 @@ Fl_Image *Fl_Image::blend(Fl_Image *back, Fl_Rect *back_rect, Fl_PixelFormat *ne
     if(back_rect->w() < 1 || back_rect->h() < 1)
         return 0;
 
-    Fl_Image *ret = new Fl_Image(W, H, new_format);
+    Fl_Image *ret = new Fl_Image(W, H, new_format, 0, true);
     ret->fmt.copy(new_format);
 
     Fl_Rect tmp_r(0, 0, W, H);
