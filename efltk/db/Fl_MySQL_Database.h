@@ -32,7 +32,6 @@ protected:
    virtual void close_connection();
 
 private:
-	unsigned query_count_cols(Fl_Query *query) const;
 	void parse_parameters(Fl_Query *query, Fl_String &real_sql);
 	void get_param(const Fl_Params &params, unsigned param_num, Fl_String &ret);
 
