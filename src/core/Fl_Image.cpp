@@ -119,6 +119,7 @@ Fl_Image::Fl_Image(int W, int H, int bits_pp, uint8 *data, uint32 Rmask, uint32 
 
 Fl_Image::Fl_Image(Fl_Image &i)
 {
+    init(0,0,0,0,0,0,0,0);
     copy(i, *this);
 }
 
