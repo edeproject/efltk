@@ -179,89 +179,101 @@ static const char dead_keys[] =
 int Fl::compose_state;
 
 #if HAVE_XUTF8
-bool Fl::compose(int& del) {
-  del = 0;
-  char ascii = e_text[0];
+bool Fl::compose(int& del)
+{
+    del = 0;
+    char ascii = e_text[0];
 
-  // Alt+letters are reserved for shortcuts.  But alt+foreign letters
-  // has to be allowed, because some key layouts require alt to be held
-  // down in order to type them...
-  if (e_state & (FL_ALT|FL_META) && !(ascii & 128)) return 0;
+    if      (ascii == '"' || ascii == ';') ascii = ':';
+    else if (ascii == '/') ascii = '|';
+    else if (ascii == '_' || ascii == '=') ascii = '-';
 
-  if (compose_state == 1) { // after the compose key
-
-    if (ascii == ' ') { // space turns into nbsp
-      //e_text[0] = char(0xA0);
-      int len = fl_ucs2utf(0xA0, e_text);
-      e_text[len] = '\0';
-      e_length = len;
-      compose_state = 0;
-      return 1;
+    // Alt+letters are reserved for shortcuts.  But alt+foreign letters
+    // has to be allowed, because some key layouts require alt to be held
+    // down in order to type them...
+    if ((e_state & (FL_ALT|FL_WIN)) && !(ascii & 128)) {
+        return false;
     }
 
-    // see if it is either character of any pair:
-    for (const char *p = compose_pairs; *p; p += 2) 
-      if (p[0] == ascii || p[1] == ascii) {
-	if (p[1] == ' ') {
-		//e_text[0] = (p-compose_pairs)/2+0xA0;
-      		int len = fl_ucs2utf((p-compose_pairs)/2+0xA0, e_text);
-      		e_text[len] = '\0';
-      		e_length = len;
-	}
-	compose_state = ascii;
-	return 1;
-      }
+    if (compose_state == 1) { // after the compose key
 
-    if (e_length) { // compose key also "quotes" control characters
-      compose_state = 0;
-      return 1;
+        if (ascii == ' ') { // space turns into nbsp
+            int len = fl_ucs2utf(0xA0, e_text);
+            e_text[len] = '\0';
+            e_length = len;
+            compose_state = 0;
+            return 1;
+        }
+
+        // see if it is either character of any pair:
+        for (const char *p = compose_pairs; *p; p += 2)
+            if (p[0] == ascii || p[1] == ascii) {
+                compose_state = ascii;
+                if (p[1] == ' ') {
+                    int len = fl_ucs2utf((p-compose_pairs)/2+0xA0, e_text);
+                    e_text[len] = '\0';
+                    e_length = len;
+                    return true;
+                }
+                // prefer the single-character versions:
+                // if (p[1] == ' ') {e_text[0] = (p-compose_pairs)/2+0xA0; }
+            }
+        if (compose_state != 1) return true;
+
+        // The right-hand ctrl and any letter "quotes" the control character:
+        if (e_length && Fl::event_key()<128) {
+            compose_state = 0;
+            return true;
+        }
+
+    } else if (compose_state) { // second character of compose
+
+        char c1 = char(compose_state); // retrieve first character
+        // now search for the pair in either order:
+        for (const char *p = compose_pairs; *p; p += 2) {
+            if (p[0] == ascii && p[1] == c1 || p[1] == ascii && p[0] == c1) {
+                //e_text[0] = (p-compose_pairs)/2+0xA0;
+                int len = fl_ucs2utf((p-compose_pairs)/2+0xA0, e_text);
+                e_text[len] = '\0';
+                e_length = len;
+                del = 1; // delete the old character and insert new one
+                compose_state = 0;
+                return true;
+            }
+        }
+
     }
 
-  } else if (compose_state) { // second character of compose
+    int i = e_keysym;
 
-    char c1 = char(compose_state); // retrieve first character
-    // now search for the pair in either order:
-    for (const char *p = compose_pairs; *p; p += 2) {
-      if (p[0] == ascii && p[1] == c1 || p[1] == ascii && p[0] == c1) {
-	//e_text[0] = (p-compose_pairs)/2+0xA0;
-     	int len = fl_ucs2utf((p-compose_pairs)/2+0xA0, e_text);
-      	e_text[len] = '\0';
-      	e_length = len;
-	del = 1; // delete the old character and insert new one
-	compose_state = 0;
-	return 1;
-      }
+    // See if they type the compose prefix key:
+    if (i == FL_Control_R || i == 0xff20/* Multi-Key */) {
+        compose_state = 1;
+        return true;
     }
 
-  }
-
-  int i = e_keysym;
-
-  // See if they type the compose prefix key:
-  if (i == FL_Control_R || i == 0xff20/* Multi-Key */) {
-    compose_state = 1;
-    return 1;
-  }
-
-#ifndef WIN32 // X only
-  // See if they typed a dead key.  This gets it into the same state as
-  // typing prefix+accent:
-  if (i >= 0xfe50 && i <= 0xfe5b) {
-    ascii = dead_keys[i-0xfe50];
-    for (const char *p = compose_pairs; *p; p += 2)
-      if (p[0] == ascii) {
-      compose_state = ascii;
-      return 1;
+#ifndef _WIN32 // X only
+    // See if they typed a dead key.  This gets it into the same state as
+    // typing prefix+accent:
+    if (i >= 0xfe50 && i <= 0xfe5b) {
+        ascii = dead_keys[i-0xfe50];
+        for (const char *p = compose_pairs; *p; p += 2)
+            if (p[0] == ascii) {
+                compose_state = ascii;
+                return true;
+            }
+        compose_state = 0;
+        return true;
     }
-    compose_state = 0;
-    return 1;
-  }
 #endif
 
-  // Only insert non-control characters:
-  if (e_length && (ascii & ~31 && ascii!=127)) {compose_state = 0; return 1;}
+    // Only insert non-control characters:
+    if (e_length && (ascii & ~31 && ascii != 127)) {
+        compose_state = 0;
+        return true;
+    }
 
-  return 0;
+    return false;
 }
 
 #else

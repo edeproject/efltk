@@ -30,6 +30,7 @@
 
 #if HAVE_XUTF8
 # include <efltk/Xutf8.h>
+# include <efltk/fl_utf8.h>
 #endif
 
 #include <efltk/Fl.h>
@@ -293,6 +294,7 @@ Atom fl_XdndFinished;
 Atom fl_textplain;
 Atom fl_texturilist;
 //Atom fl_XdndProxy;
+Atom fl_XaUtf8String;
 
 extern "C"
 {
@@ -312,7 +314,7 @@ extern "C"
 #ifdef HAVE_XUTF8
 XIM fl_xim_im;
 XIC fl_xim_ic;
-
+char fl_ping_xim = 0;
 
 void fl_init_xim()
 {
@@ -390,6 +392,7 @@ void fl_open_display(Display* d)
     fl_textplain          = XInternAtom(d, "text/plain",      0);
     fl_texturilist        = XInternAtom(d, "text/uri-list",   0);
     //fl_XdndProxy        = XInternAtom(d, "XdndProxy",		0);
+    fl_XaUtf8String	= XInternAtom(d, "UTF8_STRING",		0);
 
     fl_screen = DefaultScreen(d);
 
@@ -517,8 +520,12 @@ void Fl::paste(Fl_Widget &receiver, bool clipboard)
     // otherwise get the window server to return it:
     fl_selection_requestor = &receiver;
     Atom property = clipboard ? CLIPBOARD : XA_PRIMARY;
-    XConvertSelection(fl_display, property, XA_STRING, property,
-        fl_xid(Fl::first_window()), fl_event_time);
+    //XConvertSelection(fl_display, property, XA_STRING, property,
+    //fl_xid(Fl::first_window()), fl_event_time);
+    // TO UTF-8:
+    XConvertSelection(fl_display, property, fl_XaUtf8String, property,
+                      fl_xid(Fl::first_window()), fl_event_time);
+
 }
 
 
@@ -634,6 +641,41 @@ bool fl_handle()
 {
     Fl_Window* window = fl_find(fl_xevent.xany.window);
     int event = 0;
+    int filtered = 0;
+
+#if HAVE_XUTF8
+    if(fl_xevent.type == DestroyNotify) {
+        XIM xim_im;
+        xim_im = XOpenIM(fl_display, NULL, NULL, NULL);
+        if (!xim_im) {
+            /*  XIM server has crashed */
+            XSetLocaleModifiers("@im=");
+            fl_xim_im = NULL;
+            fl_init_xim();
+        } else {
+            XCloseIM(xim_im);
+        }
+    }
+
+    filtered = XFilterEvent((XEvent *)&fl_xevent, fl_xevent.xany.window);
+    if (fl_xim_ic  && fl_ping_xim && (fl_xevent.type == KeyPress ||
+                                      fl_xevent.type == FocusIn || fl_xevent.type == KeyRelease))
+    {
+        // ping the xim server !!!
+        static XVaNestedList list = NULL;
+        static XIC xic = NULL;
+        if (!list || xic != fl_xim_ic) {
+            static unsigned int c;
+            xic = fl_xim_ic;
+            if (list) XFree(list);
+            list = XVaCreateNestedList(0, XNForeground, c, NULL);
+            XGetICValues(fl_xim_ic, XNPreeditAttributes, &list, NULL);
+        }
+        XSetICValues(fl_xim_ic, XNPreeditAttributes, list, NULL);
+        if (filtered) return 1;
+    }
+#endif
+
 
     switch (fl_xevent.type)
     {
@@ -945,80 +987,95 @@ bool fl_handle()
             break;
 
         case FocusIn:
+            if (fl_xim_ic) XSetICFocus(fl_xim_ic);
             xfocus = window;
             if (window) {fl_fix_focus(); return true;}
             break;
 
         case FocusOut:
+            if (fl_xim_ic) XUnsetICFocus(fl_xim_ic);
             if (window && window == xfocus) {xfocus = 0; fl_fix_focus(); return true;}
             break;
 
         case KeyPress:
         case KeyRelease:
         {
-            KEYPRESS:
+        KEYPRESS:
             //if (Fl::grab_) XAllowEvents(fl_display, SyncKeyboard, CurrentTime);
-            unsigned keycode = fl_xevent.xkey.keycode;
-            static unsigned lastkeycode;
+            int keycode = fl_xevent.xkey.keycode;
+            static int lastkeycode;
+
+            static char buffer[255];
+            KeySym keysym;
+
             if (fl_xevent.type == KeyPress)
             {
                 event = FL_KEY;
-		
+                int len=0;
                 fl_key_vector[keycode/8] |= (1 << (keycode%8));
+
                 // Make repeating keys increment the click counter:
-                if (keycode == lastkeycode)
-                {
+                if (keycode == lastkeycode) {
                     Fl::e_clicks++;
                     Fl::e_is_click = 0;
-                }
-                else
-                {
+
+                } else {
+
                     Fl::e_clicks = 0;
                     Fl::e_is_click = 1;
                     lastkeycode = keycode;
                 }
-                static char buffer[256];
-                KeySym keysym = 0;
-		
 #if HAVE_XUTF8
-		static Window xim_win = 0;
-	        int filtered = 0;
-	        if (xim_win != fl_window) 
-		{
-	    	    XDestroyIC(fl_xim_ic);
-	            fl_xim_ic = XCreateIC(fl_xim_im,
-                        XNInputStyle, (XIMPreeditNothing | XIMStatusNothing),
-                        XNClientWindow, fl_window,
-                        XNFocusWindow, fl_window,
-                        NULL);
-        	    xim_win = fl_window;
-    		}
-		
-    		filtered = XFilterEvent((XEvent *)&fl_xevent, fl_xevent.xany.window);
-		int len = 0;
-	        if (!filtered) {
-	            Status status;
-                    len = XUtf8LookupString(fl_xim_ic, (XKeyPressedEvent *)&fl_xevent.xkey,
-                                            buffer, 255, &keysym, &status);
-		}
-		else {
-	          keysym = XKeycodeToKeysym(fl_display, keycode, 0);
-    		}
-	       
-#else
-		int len = XLookupString(&(fl_xevent.xkey), buffer, 255, &keysym, 0);
+                if (fl_xim_ic) {
+                    static Window xim_win = 0;
+                    if (xim_win != fl_xid(window))
+                    {
+                        XDestroyIC(fl_xim_ic);
+                        xim_win = fl_xid(window);
+                        fl_xim_ic = XCreateIC(fl_xim_im,
+                                              XNInputStyle, (XIMPreeditNothing | XIMStatusNothing),
+                                              XNClientWindow, xim_win,
+                                              XNFocusWindow, xim_win,
+                                              NULL);
+                    }
+                    if (!filtered) {
+                        Status status;
+                        len = XUtf8LookupString(fl_xim_ic, (XKeyPressedEvent *)&fl_xevent.xkey,
+                                                buffer, 255, &keysym, &status);
+                    } else {
+                        keysym = XKeycodeToKeysym(fl_display, keycode, 0);
+                    }
+
+                } else
 #endif
-		
-                // Make ctrl+dash produce ^_ like it used to:
-                if (fl_xevent.xbutton.state&4 && keysym == '-') buffer[0] = 0x1f;
+                {
+                    len = XLookupString((XKeyEvent*)&(fl_xevent.xkey), buffer, 20, &keysym, 0);
+                    if (keysym && keysym < 0x400) { // a character in latin-1,2,3,4 sets
+                        // force it to type a character (not sure if this ever is needed):
+                        // if (!len) {buffer[0] = char(keysym); len = 1;}
+#if HAVE_XUTF8
+                        len = fl_ucs2utf(XKeysymToUcs(keysym), buffer);
+#else
+                        len = 1;
+                        buffer[0] = (char)(keysym&0xFF);
+#endif
+                        if (len < 1) len = 1;
+                        // ignore all effects of shift on the keysyms, which makes it a lot
+                        // easier to program shortcuts and is Windoze-compatable:
+                        keysym = XKeycodeToKeysym(fl_display, keycode, 0);
+                    }
+                }
+                if (Fl::event_state(FL_CTRL) && keysym == '-') buffer[0] = 0x1f; // ^_
+
                 // Any keys producing foreign letters produces the bottom 8 bits:
-                if (!len && keysym < 0xf00) {buffer[0]=(char)keysym; len = 1;}
+                // if (!len && keysym < 0xf00) {buffer[0]=(char)keysym; len = 1;}
+
                 buffer[len] = 0;
                 Fl::e_text = buffer;
                 Fl::e_length = len;
-            }
-            else
-            {
+
+            } else {
+
                 // Stupid X sends fake key-up events when a repeating key is held
                 // down, probably due to some back compatability problem. Fortunatley
                 // we can detect this because the repeating KeyPress event is in
@@ -1035,12 +1092,15 @@ bool fl_handle()
                 Fl::e_is_click = (keycode == lastkeycode);
                 // make next keypress not be a repeating one:
                 lastkeycode = 0;
+                keysym = XKeycodeToKeysym(fl_display, keycode, 0);
             }
+
             // Use the unshifted keysym! This matches the symbols that the Win32
             // version produces. However this will defeat older keyboard layouts
             // that use shifted values for function keys.
-            KeySym keysym = XKeycodeToKeysym(fl_display, keycode, 0);
-                                 // XK_KP_*
+            // keysym = XKeycodeToKeysym(fl_display, keycode, 0);
+
+            // XK_KP_*
             if (keysym >= 0xff95 && keysym <= 0xff9f)
             {
                 // Make all keypad keys act like NumLock is on all the time. This
@@ -1149,7 +1209,7 @@ bool fl_handle()
             e.property = fl_xevent.xselectionrequest.property;
             if (e.target == TARGETS)
             {
-                Atom a = XA_STRING;
+                Atom a = fl_XaUtf8String; //XA_STRING;
                 XChangeProperty(fl_display, e.requestor, e.property,
                     XA_ATOM, sizeof(Atom)*8, 0, (unsigned char*)&a,
                     sizeof(Atom));
