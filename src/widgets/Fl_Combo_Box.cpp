@@ -236,10 +236,10 @@ bool Fl_Popup_ListView::popup(Fl_Widget *editControl, int X, int Y, int W, int H
         resize(X, Y, width, height);
         layout(); // Make sure window moves
     }
-    bool rc = Fl_Popup_Window::show_popup();
-	if(!rc) m_listView->item(0);
+    bool rc = Fl_Popup_Window::show_popup();	
+	if(!rc) m_listView->item(0);	
     if (editControl)
-        editControl->redraw();
+        editControl->redraw();	
     return rc;
 }
 
@@ -263,13 +263,14 @@ Fl_Combo_Box_Panel::Fl_Combo_Box_Panel(Fl_Combo_Box *cb)
 : Fl_Box(0,0,10,10) {
     m_comboBox = cb;
     align(FL_ALIGN_LEFT);
-    box(FL_FLAT_BOX);
+    box(FL_NO_BOX);
 }
 
 void Fl_Combo_Box_Panel::draw()
 {
-    box(m_comboBox->box());
-    draw_box();
+	fl_push_clip(0,0,w(),h());
+	m_comboBox->draw_group_box();
+	fl_pop_clip();
 
     int dd = 2;
 
@@ -422,13 +423,13 @@ void Fl_Combo_Box::cb_browse(Fl_Widget *w, void *) {
     Fl_Popup_ListView *popup = cb->m_popup;
     int saveValue = cb->value();
     if (popup->popup(w->parent(),0,w->parent()->h())) {
-        // Call the callback function if the value has changed
+        // Call the callback function if the value has changed		
         if (cb->value() != saveValue) 
             cb->do_callback(FL_DATA_CHANGE);
-    } else {
+    } else {		
         // Restore original value
-        cb->value(saveValue);
-    }
+        cb->value(saveValue);		
+    }	
 }
 
 void Fl_Combo_Box::cb_button(Fl_Widget *w, void *) {

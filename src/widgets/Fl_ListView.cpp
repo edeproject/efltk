@@ -678,6 +678,8 @@ void Fl_ListView::end()
 
 int Fl_ListView::find_userdata_row(void *data, unsigned start_index, unsigned end_index) const
 {
+	if(row_count()<=0) return 0;
+
     if(start_index >= row_count())
         start_index = 0;
     if(end_index <= start_index || end_index >= row_count())
@@ -692,12 +694,14 @@ int Fl_ListView::find_userdata_row(void *data, unsigned start_index, unsigned en
 
 Fl_ListView_Item *Fl_ListView::find_userdata(void *data, unsigned start_index, unsigned end_index) const
 {
+	if(row_count()<=0) return 0;
+
     if(start_index >= row_count())
         start_index = 0;
-    if(end_index <= start_index || end_index >= row_count())
-        end_index = row_count() - 1;
+    if(end_index <= start_index || end_index >= row_count())		
+		end_index = row_count() - 1;
 
-    for(unsigned n=start_index; n<=end_index; n++) {
+    for(unsigned n=start_index; n<=end_index; n++) {		
         if(items[n]->user_data()==data)
             return items[n];
     }
@@ -713,6 +717,7 @@ bool Fl_ListView::match_text(const Fl_String &key, const char *text) const
 
 int Fl_ListView::find_text_row(const char *text, int column, unsigned start_index, unsigned end_index) const
 {
+	if(row_count()<=0) return -1;
 	if(!text || !*text) return -1;
 
     if(start_index >= row_count())
@@ -735,6 +740,7 @@ int Fl_ListView::find_text_row(const char *text, int column, unsigned start_inde
 
 Fl_ListView_Item *Fl_ListView::find_text(const char *text, int column, unsigned start_index, unsigned end_index) const
 {
+	if(row_count()<=0) return 0;
 	if(!text || !*text) return 0;
 
     if(start_index >= row_count())
