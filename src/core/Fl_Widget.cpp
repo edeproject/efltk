@@ -65,13 +65,14 @@ Fl_Widget::Fl_Widget(int X, int Y, int W, int H, const char* L)
 {
     style_    = default_style;
     parent_   = 0;
-	signal_   = 0;
+    signal_   = 0;
     callback_ = default_callback;
     user_data_    = 0;
     label_    = L;
     image_    = 0;
     tooltip_  = 0;
     shortcut_ = 0;
+    field_name_ = 0L;
 #if CLICK_MOVES_FOCUS
     flags_    = FL_CLICK_TO_FOCUS;
 #else
@@ -96,6 +97,8 @@ Fl_Widget::~Fl_Widget()
     if (flags_&FL_COPIED_LABEL) free((void*)label_);
 	if(signal_) delete signal_;
 	signal_=0;
+    if (field_name_)
+	free(field_name_);
 }
 
 void Fl_Widget::label(const char* a)
@@ -637,6 +640,12 @@ void Fl_Widget::draw()
 {
     draw_box();
     draw_inside_label();
+}
+
+void Fl_Widget::field_name(const char *fname) {
+    if (field_name_)
+	free(field_name_);
+    field_name_ = strdup(fname);
 }
 
 //

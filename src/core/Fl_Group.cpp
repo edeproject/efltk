@@ -56,7 +56,8 @@ children_(0),
 focus_(-1),
 array_(0),
 resizable_(0),                   // fltk 1.0 used (this)
-sizes_(0)
+sizes_(0),
+data_source_(0L)
 {
     type(GROUP_TYPE);
     style(::group_style);
@@ -674,16 +675,16 @@ void Fl_Group::draw_outside_label(Fl_Widget& w) const
 }
 
 // data source support methods
-int Fl_Group::load {
-    if (!data_source_)
-	return false;
-    return data_source_->load();
+int Fl_Group::load() {
+   if (!data_source_)
+	   return false;
+   return data_source_->load();
 }
 
-int Fl_Group::save {
-    if (!data_source_)
-	return false;
-    return data_source_->save();
+int Fl_Group::save() {
+   if (!data_source_)
+	   return false;
+   return data_source_->save();
 }
 
 //
