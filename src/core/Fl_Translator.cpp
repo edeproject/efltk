@@ -11,7 +11,7 @@
 #include <errno.h>
 #include <stdlib.h>
 
-class MessageHash : public Fl_String_Hash
+class MessageHash : public Fl_String_String_Map
 {
 public:
     MessageHash() { }
@@ -63,23 +63,21 @@ Fl_Translator::~Fl_Translator()
 
 char *Fl_Translator::tr(const char *string)
 {
-    Fl_String *ret;
     for(uint n=0; n<catalogs_.size(); n++) {
         struct catalog *cat = (struct catalog*)catalogs_[n];
-        ret = cat->hash.find(string);
-        if(ret) return (char*)ret->c_str();
+        Fl_String &ret = cat->hash.get_value(string);
+        if(!ret.empty()) return (char*)ret.c_str();
     }
     return (char*)string;
 }
 
 char *Fl_Translator::dtr(const char *domain, const char *string)
 {
-    Fl_String *ret;
     for(uint n=0; n<catalogs_.size(); n++) {
         struct catalog *cat = (struct catalog*)catalogs_[n];
         if(cat->domain==domain) {
-            ret = cat->hash.find(string);
-            if(ret) return (char*)ret->c_str();
+            Fl_String &ret = cat->hash.get_value(string);
+            if(!ret.empty()) return (char*)ret.c_str();
         }
     }
     return (char*)string;
@@ -386,9 +384,9 @@ bool MessageHash::load_etb(FILE *fp)
 
     bool swap = (magic!=etb_magic);
 
-    m_size = SWAP(head->hashsize);
+    m_lists_size = SWAP(head->hashsize);
     if(m_lists) delete []m_lists;
-    m_lists = new Fl_Ptr_List[m_size];
+    m_lists = new Fl_Ptr_List[m_lists_size];
 
     uint numstrings = SWAP(head->numstrings);
 
@@ -399,17 +397,14 @@ bool MessageHash::load_etb(FILE *fp)
     int lenpos=0;
     for(uint n=0; n<numstrings; n++)
     {
-        Fl_String orig, *tr;
+        MessageHash::Pair *entry = new MessageHash::Pair;
 
-        orig.append(dataptr, SWAP(lengths[lenpos]));
+        entry->id.append(dataptr, SWAP(lengths[lenpos]));
         dataptr += lengths[lenpos++];
 
-        tr = new Fl_String(dataptr, SWAP(lengths[lenpos]));
+        entry->val.append(dataptr, SWAP(lengths[lenpos]));
         dataptr += lengths[lenpos++];
 
-        HashEntry *entry = new HashEntry;
-        entry->key = orig;
-        entry->val = tr;
         m_lists[SWAP(indexes[n])].append(entry);
     }
 
@@ -472,10 +467,10 @@ bool MessageHash::load_mo(FILE *fp)
     struct string_desc *trans_tab = (struct string_desc *)((char *) data + SWAP(data->trans_tab_offset));
 
     uint numstrings = SWAP(data->nstrings);
-    m_size = numstrings;
-    if(m_size<100) m_size=100;
+    m_lists_size = numstrings;
+    if(m_lists_size<100) m_lists_size=100;
     if(m_lists) delete []m_lists;
-    m_lists = new Fl_Ptr_List[m_size];
+    m_lists = new Fl_Ptr_List[m_lists_size];
 
     // Get charset information
     int info_pos = SWAP(orig_tab[numstrings-1].offset) + SWAP(orig_tab[numstrings-1].length) + 1;
@@ -510,4 +505,3 @@ bool MessageHash::load_mo(FILE *fp)
     free(data);
     return true;
 }
-
