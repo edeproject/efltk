@@ -160,31 +160,31 @@ static void free_colorhash(struct color_hash *hash)
 static int color_to_rgb(char *spec, uint32 *rgb)
 {
     if(!strcasecmp("none", spec) || !strcasecmp("#background", spec)) {
-        *rgb = 0xffffffff;
+        *rgb = 0x00000000;
         return 1;
     }
 #ifndef _WIN32
     XColor x;
     fl_open_display();
     if(!XParseColor(fl_display, fl_colormap, spec, &x)) {
-        *rgb = 0xffffffff;
+        *rgb = 0x00000000;
         return 1;
     }
     int16 r = x.red>>8;
     int16 g = x.green>>8;
     int16 b = x.blue>>8;
-    *rgb = (r<<16)|(g<<8)|b;
+    *rgb = (r<<24)|(g<<16)|(b<<8)|255;
     return 1;
 #else
     /* poor man's rgb.txt */
     static struct { char *name; uint32 rgb; } known[] = {
         { "none",  0xffffffff },
         { "background",  0xffffffff },
-        { "black", 0x00000000 },
-        { "white", 0x00ffffff },
-        { "red",   0x00ff0000 },
-        { "green", 0x0000ff00 },
-        { "blue",  0x000000ff }
+        { "black", 0x000000ff },
+        { "white", 0xffffffff },
+        { "red",   0xff0000ff },
+        { "green", 0x00ff00ff },
+        { "blue",  0x0000ffff }
     };
 
     if(spec[0] == '#') {
@@ -209,7 +209,7 @@ static int color_to_rgb(char *spec, uint32 *rgb)
             break;
         }
         buf[6] = '\0';
-        *rgb = strtol(buf, NULL, 16);
+        *rgb = (strtol(buf, NULL, 16) << 8) | 255;
         return 1;
     } else {
         for(int i = 0; i < ARRAYSIZE(known); i++)
@@ -299,7 +299,8 @@ static bool xpm_create(Fl_IO *xpm_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
         fmt.palette->ncolors = ncolors;
     } else {
         indexed = 0;
-        fmt.realloc(32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0);
+        //fmt.realloc(32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0);
+        fmt.realloc(32, 0xFF000000, 0x00FF0000, 0x0000FF00, 0);
     }
 
     int pitch = Fl_Renderer::calc_pitch(fmt.bytespp, w);
@@ -375,22 +376,31 @@ static bool xpm_create(Fl_IO *xpm_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
                 continue;
             }
 
+            if(rgb == 0x00000000) {
+                if(!indexed) {
+                    if(!fmt.Amask) {
+                        fmt.realloc(32, 0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF);
+                        fmt.masktype = FL_MASK_ALPHA;
+                    }
+                    rgb = 0xffffff00;
+                } else {
+                    fmt.masktype = FL_MASK_COLORKEY;
+                    fmt.colorkey = rgb;
+                }
+            }
+
             memcpy(nextkey, key, cpp);
             if(indexed) {
                 Fl_Colormap_Color *c = im_colors + index;
-                c->r = rgb >> 16;
-                c->g = rgb >> 8;
-                c->b = rgb;
+                c->r = rgb >> 24;
+                c->g = rgb >> 16;
+                c->b = rgb >> 8;
                 c->a = 0;
-                if(rgb == 0xffffffff) c->a = 1;
+                if(rgb == 0x00000000) c->a = 1;
                 add_colorhash(colors, nextkey, cpp, index);
             } else
                 add_colorhash(colors, nextkey, cpp, rgb);
             nextkey += cpp;
-            if(rgb == 0xffffffff) {
-                fmt.masktype = FL_MASK_COLORKEY;
-                fmt.colorkey = rgb;
-            }
             break;
         }
     }

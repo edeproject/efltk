@@ -106,9 +106,7 @@ void Fl_Widget::draw_label(int X, int Y, int W, int H, Fl_Flags flags) const
         color = label_color();
     }
 
-    if (flags & FL_ALIGN_CLIP) {
-        fl_push_clip(X, Y, W, H);
-    }
+    if (flags & FL_ALIGN_CLIP) fl_push_clip(X, Y, W, H);
 
     if(image_)
     {
@@ -145,15 +143,15 @@ void Fl_Widget::draw_label(int X, int Y, int W, int H, Fl_Flags flags) const
             }
 
             int cx,cy;               // point in image to put at X,Y
-            if (flags & FL_ALIGN_RIGHT)
-            {
+
+            if (flags & FL_ALIGN_RIGHT) {
                 cx = w-W;
                 if (flags & FL_ALIGN_LEFT && cx < 0) cx = 0;
             }
             else if (flags & FL_ALIGN_LEFT) cx = 0;
             else cx = w/2-W/2;
-            if (flags & FL_ALIGN_BOTTOM)
-            {
+
+            if (flags & FL_ALIGN_BOTTOM) {
                 cy = h-H;
                 if (flags & FL_ALIGN_TOP && cy < 0) cy = 0;
             }
@@ -167,16 +165,13 @@ void Fl_Widget::draw_label(int X, int Y, int W, int H, Fl_Flags flags) const
             else if (flags & FL_ALIGN_RIGHT) W -= (w+4);
             else if (flags & FL_ALIGN_TOP) {Y += h; H -= h;}
             else if (flags & FL_ALIGN_BOTTOM) H -= h;
-            else                     /*flags |= FL_ALIGN_TOP;*/
-            {
+            else { /*flags |= FL_ALIGN_TOP;*/
                 Y += (h-cy); H -= (h-cy);
             }
         }
     }
 
-    //if (label_ && *label_)
-    if(!label_.empty())
-    {
+    if(!label_.empty()) {
         label_type()->draw(label_.c_str(), X, Y, W, H, color, flags);
     }
 

@@ -10,7 +10,8 @@
 
 #include <config.h>
 
-void fl_restore_clip();
+extern void fl_restore_clip();
+
 void Fl_Image::to_screen(int XP, int YP, int WP, int HP, int, int)
 {
     int X,Y,W,H;
@@ -41,15 +42,16 @@ void Fl_Image::to_screen(int XP, int YP, int WP, int HP, int, int)
             // I can't figure out how to combine a mask with existing region,
             // so the mask replaces the region instead. This can draw some of
             // the image outside the current clip region if it is not rectangular.
+
             XSetClipMask(fl_display, fl_gc, (Pixmap)mask);
             XSetClipOrigin(fl_display, fl_gc, X-cx, Y-cy);
 
             fl_copy_offscreen(X, Y, W, H, (Pixmap)id, cx, cy);
 
-            XSetClipOrigin(fl_display, fl_gc, 0, 0);
             fl_restore_clip();
+            XSetClipOrigin(fl_display, fl_gc, 0, 0);
 
-        } else {
+        } else if(mask) {
             // mask only
             XSetStipple(fl_display, fl_gc, (Pixmap)mask);
             int ox = X-cx; if (ox < 0) ox += width();
@@ -69,16 +71,29 @@ void Fl_Image::to_screen(int XP, int YP, int WP, int HP, int, int)
 void Fl_Image::to_screen_tiled(int XP, int YP, int WP, int HP, int, int)
 {
     // Figure out the smallest rectangle enclosing this and the clip region:
-    int X,Y,W,H; fl_clip_box(XP, YP, WP, HP, X, Y, W, H);
-    if (W <= 0 || H <= 0) return;
-    int cx = 0;
-    int cy = 0;
-    cx += X-XP; cy += Y-YP;
-    fl_push_clip(X, Y, W, H);
+    int X,Y,W,H;
+    fl_clip_box(XP, YP, WP, HP, X, Y, W, H);
 
-    //XGCValues	xgcval, xgcsave;
-    //if(mask)
+    if (W <= 0 || H <= 0) return;
+    int cx = X-XP;
+    int cy = Y-YP;
+
+    if(cx+W > WP)
+        W = WP-cx;
+
+    if(W <= 0)
+        return;
+
+    if(cy+H > HP)
+        H = HP-cy;
+
+    if(H <= 0)
+        return;
+
+    if(mask)
     {
+        fl_push_clip(X, Y, W, H);
+
         int temp = -cx % width();
         cx = (temp>0 ? width() : 0) - temp;
         temp = -cy % height();
@@ -94,23 +109,38 @@ void Fl_Image::to_screen_tiled(int XP, int YP, int WP, int HP, int, int)
             cx = ccx;
         }
 
-    }/* else if(id) {
+        fl_pop_clip();
+    }
+    else if(id) {
 
+        fl_transform(X,Y);
+
+        XGCValues xgcval, xgcsave;
         xgcval.fill_style = FillTiled;
         xgcval.tile = (Pixmap)id;
         //XSetTSOrigin(fl_display, fl_gc, X, Y);
 
         XGetGCValues(fl_display, fl_gc, GCTile|GCFillStyle, &xgcsave);
         XChangeGC(fl_display, fl_gc, GCTile|GCFillStyle, &xgcval);
+        XSetTSOrigin(fl_display, fl_gc, X, Y);
+
+        if(mask) {
+            XSetClipMask(fl_display, fl_gc, (Pixmap)mask);
+            XSetClipOrigin(fl_display, fl_gc, X-cx, Y-cy);
+        }
 
         XFillRectangle(fl_display, fl_window, fl_gc, X, Y, W, H);
+
+        if(mask) {
+            fl_restore_clip();
+            XSetClipOrigin(fl_display, fl_gc, 0, 0);
+        }
 
         if( (xgcsave.tile & 0xe0000000) || (xgcsave.fill_style != FillTiled) )
             XChangeGC(fl_display, fl_gc, GCFillStyle, &xgcsave);
         else
             XChangeGC(fl_display, fl_gc, GCTile|GCFillStyle, &xgcsave);
-    }*/
-    fl_pop_clip();
+    }
 }
 
 static XImage s_image;	// static image used to pass info to X
@@ -194,58 +224,6 @@ void Fl_Renderer::system_init()
 #endif
 
     _system_inited = true;
-}
-
-//////////////////////////////////////////
-bool Fl_Renderer::render_to_pixmap(uint8 *src, Fl_Rect *src_rect, Fl_PixelFormat *src_fmt, int src_pitch,
-                                   Pixmap dst, Fl_Rect *dst_rect, GC dst_gc, int flags)
-{
-    // Init renderer
-    Fl_Renderer::system_init();
-
-    if(flags&FL_ALIGN_SCALE && src_rect->w()==dst_rect->w() && src_rect->h()==dst_rect->h()) {
-        flags = 0;
-    }
-
-    if(flags & FL_ALIGN_SCALE)
-    {
-        s_image.width 	= dst_rect->w();
-        s_image.height 	= dst_rect->h();
-        s_image.bytes_per_line = ((dst_rect->w() * sys_fmt.bytespp + _scanline_add) & _scanline_mask);
-
-        uint8 *dst_ptr = new uint8[dst_rect->h()*s_image.bytes_per_line];
-        if(stretch(src, sys_fmt.bytespp, src_pitch, src_rect,
-                   dst_ptr, sys_fmt.bytespp, s_image.bytes_per_line, dst_rect))
-        {
-            s_image.data = (char *)dst_ptr;
-            XPutImage(fl_display, dst, dst_gc, &s_image, 0, 0, dst_rect->x(), dst_rect->y(), dst_rect->w(), dst_rect->h());
-        }
-        delete []dst_ptr;
-    }
-    else
-    {
-        int X=src_rect->x(), Y=src_rect->y();
-        int W=src_rect->w(), H=src_rect->h();
-
-        s_image.bytes_per_line = ((W * sys_fmt.bytespp + _scanline_add) & _scanline_mask);
-        s_image.width  = W;
-        s_image.height = H;
-
-        if(X>0 || Y>0) {
-            // We need to draw 1 pixel height lines, since we need to change
-            // data buffer pointer to correct place in image buffer...
-            for(int y=0; y<H; y++) {
-                s_image.data = (char *)src + ((Y+y)*src_pitch)+(X*sys_fmt.bytespp);
-                XPutImage(fl_display, dst, dst_gc, &s_image, 0, 0, dst_rect->x(), dst_rect->y()+y, W, 1);
-            }
-        } else {
-            s_image.data = (char *)src;
-            s_image.bytes_per_line = ((src_rect->w() * sys_fmt.bytespp + _scanline_add) & _scanline_mask);
-            XPutImage(fl_display, dst, dst_gc, &s_image, 0, 0, dst_rect->x(), dst_rect->y(), src_rect->w(), src_rect->h());
-        }
-    }
-
-    return true;
 }
 
 static int _x_err = 0;
@@ -467,5 +445,57 @@ Window Fl_Renderer::root_window() {
     return RootWindow(fl_display, fl_screen);
 }
 
-#endif
 
+//////////////////////////////////////////
+bool Fl_Renderer::render_to_pixmap(uint8 *src, Fl_Rect *src_rect, Fl_PixelFormat *src_fmt, int src_pitch,
+                                   Pixmap dst, Fl_Rect *dst_rect, GC dst_gc, int flags)
+{
+    // Init renderer
+    Fl_Renderer::system_init();
+
+    if(flags&FL_ALIGN_SCALE && src_rect->w()==dst_rect->w() && src_rect->h()==dst_rect->h()) {
+        flags = 0;
+    }
+
+    if(flags & FL_ALIGN_SCALE)
+    {
+        s_image.width 	= dst_rect->w();
+        s_image.height 	= dst_rect->h();
+        s_image.bytes_per_line = ((dst_rect->w() * sys_fmt.bytespp + _scanline_add) & _scanline_mask);
+
+        uint8 *dst_ptr = new uint8[dst_rect->h()*s_image.bytes_per_line];
+        if(stretch(src, sys_fmt.bytespp, src_pitch, src_rect,
+                   dst_ptr, sys_fmt.bytespp, s_image.bytes_per_line, dst_rect))
+        {
+            s_image.data = (char *)dst_ptr;
+            XPutImage(fl_display, dst, dst_gc, &s_image, 0, 0, dst_rect->x(), dst_rect->y(), dst_rect->w(), dst_rect->h());
+        }
+        delete []dst_ptr;
+    }
+    else
+    {
+        int X=src_rect->x(), Y=src_rect->y();
+        int W=src_rect->w(), H=src_rect->h();
+
+        s_image.bytes_per_line = ((W * sys_fmt.bytespp + _scanline_add) & _scanline_mask);
+        s_image.width  = W;
+        s_image.height = H;
+
+        if(X>0 || Y>0) {
+            // We need to draw 1 pixel height lines, since we need to change
+            // data buffer pointer to correct place in image buffer...
+            for(int y=0; y<H; y++) {
+                s_image.data = (char *)src + ((Y+y)*src_pitch)+(X*sys_fmt.bytespp);
+                XPutImage(fl_display, dst, dst_gc, &s_image, 0, 0, dst_rect->x(), dst_rect->y()+y, W, 1);
+            }
+        } else {
+            s_image.data = (char *)src;
+            s_image.bytes_per_line = ((src_rect->w() * sys_fmt.bytespp + _scanline_add) & _scanline_mask);
+            XPutImage(fl_display, dst, dst_gc, &s_image, 0, 0, dst_rect->x(), dst_rect->y(), src_rect->w(), src_rect->h());
+        }
+    }
+
+    return true;
+}
+
+#endif

@@ -83,7 +83,21 @@ public:
     virtual bool execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFormat *fmt, float val1, float val2, float val3);
 };
 
-class FilterDesaturate : public Fl_Image_Filter
+class FilterGrayscale : public Fl_Image_Filter
+{
+public:
+    // Takes 1 value, grayscales image. val1 as intensity
+    virtual bool execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFormat *fmt, float val1, float val2, float val3);
+};
+
+class FilterForeBlend : public Fl_Image_Filter
+{
+public:
+    // Takes 0 value, grayscales image
+    virtual bool execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFormat *fmt, float val1, float val2, float val3);
+};
+
+class FilterBackBlend : public Fl_Image_Filter
 {
 public:
     // Takes 0 value, grayscales image
@@ -99,7 +113,13 @@ extern FL_API FilterContrast filter_contrast;
 extern FL_API FilterGamma filter_gamma;
 #define FILTER_GAMMA (&filter_gamma)
 
-extern FL_API FilterDesaturate filter_desaturate;
-#define FILTER_DESATURATE (&filter_desaturate)
+extern FL_API FilterGrayscale filter_grayscale;
+#define FILTER_GRAYSCALE (&filter_grayscale)
+
+extern FL_API FilterForeBlend filter_foreblend;
+#define FILTER_FOREBLEND (&filter_foreblend)
+
+extern FL_API FilterBackBlend filter_backblend;
+#define FILTER_BACKBLEND (&filter_backblend)
 
 #endif

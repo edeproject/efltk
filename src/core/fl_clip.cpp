@@ -65,20 +65,19 @@ void fl_restore_clip()
 {
     Region r = rstack[rstackptr];
     fl_clip_state_number++;
-    #ifdef _WIN32
+#ifdef _WIN32
     SelectClipRgn(fl_gc, r);     //if r is NULL, clip is automatically cleared
-    #else
+#else
     if (r) XSetRegion(fl_display, fl_gc, r);
     else XSetClipMask(fl_display, fl_gc, 0);
-    #endif
+#endif
 }
-
 
 // Replace the top of the clip stack:
 void fl_clip_region(Region r)
 {
     Region oldr = rstack[rstackptr];
-    if (oldr) XDestroyRegion(oldr);
+    if(oldr && r) XDestroyRegion(oldr);
     rstack[rstackptr] = r;
     fl_restore_clip();
 }
@@ -94,28 +93,27 @@ void fl_push_clip(int x, int y, int w, int h)
         Region current = rstack[rstackptr];
         if (current)
         {
-            #ifndef _WIN32
+#ifndef _WIN32
             Region temp = XCreateRegion();
             XIntersectRegion(current, r, temp);
             XDestroyRegion(r);
             r = temp;
-            #else
+#else
             CombineRgn(r,r,current,RGN_AND);
-            #endif
+#endif
         }
     }                            // make empty clip region:
     else
     {
-        #ifndef _WIN32
+#ifndef _WIN32
         r = XCreateRegion();
-        #else
+#else
         r = CreateRectRgn(0,0,0,0);
-        #endif
+#endif
     }
     if (rstackptr < STACK_MAX) rstack[++rstackptr] = r;
     fl_restore_clip();
 }
-
 
 // Replace top of stack with top of stack minus this rectangle:
 void fl_clip_out(int x, int y, int w, int h)
@@ -127,16 +125,16 @@ void fl_clip_out(int x, int y, int w, int h)
     if (!current) return;
     fl_transform(x,y);
     Region r = XRectangleRegion(x, y, w, h);
-    #ifndef _WIN32
+#ifndef _WIN32
     Region temp = XCreateRegion();
     XSubtractRegion(current, r, temp);
     XDestroyRegion(r);
     XDestroyRegion(current);
     rstack[rstackptr] = temp;
-    #else
+#else
     CombineRgn(current,current,r,RGN_DIFF);
     DeleteObject(r);
-    #endif
+#endif
     fl_restore_clip();
 }
 

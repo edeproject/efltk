@@ -214,7 +214,7 @@ static void BlitNto1(BlitInfo *info)
     bool hw=info->hw_surface;
 
     ERROR_DIFF_START();
-
+ 
     if(map == NULL) {
         while ( height-- ) {
             DUFFS_LOOP(
@@ -263,16 +263,16 @@ static void BlitNtoN(BlitInfo *info)
     int srcbpp = srcfmt->bytespp;
     Fl_PixelFormat *dstfmt = info->dst;
     int dstbpp = dstfmt->bytespp;
-    unsigned alpha = dstfmt->Amask ? 255 : 0;
 
     uint32 pixel;
-    uint8 sR=0, sG=0, sB=0;
+    uint8 sR=0, sG=0, sB=0, alpha = dstfmt->Amask ? 255 : 0;
 
     while ( height-- ) {
         DUFFS_LOOP(
                    {
                        fl_disemble_rgb(src, srcbpp, srcfmt, pixel, sR, sG, sB);
                        fl_assemble_rgba(dst, dstbpp, dstfmt, sR, sG, sB, alpha);
+
                        dst += dstbpp;
                        src += srcbpp;
                    },

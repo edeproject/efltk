@@ -523,7 +523,16 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
   }
 }
 
-#define DITHER_RECTF (fl_visual->depth > 16)
+void fl_rectf(int x, int y, int w, int h, Fl_Color C) {
+    if (fl_visual->depth >= 15) {
+        fl_color(C);
+        fl_rectf(x,y,w,h);
+    } else {
+        uchar c[3];
+        fl_get_color(C, c[0], c[1], c[2]);
+        innards(c,x,y,w,h,0,0,0,0,0);
+    }
+}
 
 //
 // End of "$Id$"

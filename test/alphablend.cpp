@@ -8,7 +8,6 @@
 #include <stdio.h>
 
 static int X = 10, Y=100;
-static int oX=0, oY=0;
 static int dX = 1, dY = 1;
 
 static int tY=-20, tW=0;
@@ -39,6 +38,8 @@ public:
 
     void draw()
     {
+        static int oX=0, oY=0;
+
         if(!tW) {
             fl_font(FL_HELVETICA_BOLD, 14);
             tW = int(fl_width(str));
@@ -63,21 +64,22 @@ public:
             fl_copy_offscreen(tX, tY, tW, int(fl_height()), id, tX, tY);
 
             // Erase only area affected, by moving ball!
-            int DX = dX>0?dX:-dX;
-            int DY = dY>0?dY:-dY;
+            int DX = dX>0 ? dX : -dX;
+            int DY = dY>0 ? dY : -dY;
+            DX+=2; DY+=2;
 
             // X axis
-            if(dX>0) fl_copy_offscreen(oX, Y-DY, dX, bH+DY, id, oX, Y);
-            else fl_copy_offscreen(X+bW, Y, -dX, bH+DY, id, X+bW, Y);
+            if(dX>0) fl_copy_offscreen(oX,   Y-DY, dX,  bH+(DY*2), id, oX, Y-DY);
+            else     fl_copy_offscreen(X+bW, Y-DY, -dX, bH+(DY*2), id, X+bW, Y-DY);
 
             // Y axis
-            if(dY>0) fl_copy_offscreen(oX, oY, bW+DX, dY, id, oX, oY);
-            else fl_copy_offscreen(oX, Y+bH, bW, -dY, id, oX, Y+bH);
+            if(dY>0) fl_copy_offscreen(oX, oY,   bW+DX,  dY, id, oX, oY);
+            else     fl_copy_offscreen(oX, Y+bH, bW+DX, -dY, id, oX, Y+bH);
         }
 
         if(blended) delete blended;
         // Do alphablend and draw it to screen
-        if( (blended = ball->blend(backing, X,Y, bW, bH)) ) {
+        if( (blended = ball->blend(backing, X,Y)) ) {
             blended->draw(X, Y);
         }
 
@@ -87,26 +89,27 @@ public:
         oX=X; oY=Y;
     }
 
-	int handle(int e)
-	{		
-		return BBWinType::handle(e);
-	}
-	
+    int handle(int e)
+    {
+        return BBWinType::handle(e);
+    }
+
     Fl_Image *ball, *back, *backing, *blended;
 };
 
 void bb_timeout(void *data)
 {
-    if(X > ((BBWin *)data)->width()-((BBWin *)data)->ball->width()+1)
+    BBWin *win = (BBWin *)data;
+    if(X > win->width() - win->ball->width()+3)
         dX = -2;
-    else if(X < 1)
+    else if(X < 3)
         dX = 2;
 
     X += dX;
 
-    if(Y > ((BBWin *)data)->height()-((BBWin *)data)->ball->height()+1)
+    if(Y > win->height() - win->ball->height()+3)
         dY = -3;
-    else if(Y < 1)
+    else if(Y < 3)
         dY = 1;
 
     Y += dY;
@@ -115,13 +118,12 @@ void bb_timeout(void *data)
     if(tY-20>((BBWin *)data)->h())
         tY=-20;
 
-    ((BBWin *)data)->redraw(FL_DAMAGE_VALUE);
-
+    win->redraw(FL_DAMAGE_VALUE);
     Fl::repeat_timeout(.01f, bb_timeout, data);
 }
 
 // Generate 16 bit images
-// #define GENERATE_16BIT
+//#define GENERATE_16BIT
 
 Fl_Image *make_ball(int radius)
 {
@@ -185,7 +187,7 @@ Fl_Image *make_ball(int radius)
                 trans = (uint8)((range*alphamask)/radius);
 
                 /* Lights are very transparent */
-                addition = (alphamask+1)/8;
+                addition = (alphamask+1)/16;
                 if ( (int)trans+addition > alphamask ) {
                     trans = alphamask;
                 } else {
@@ -204,9 +206,9 @@ Fl_Image *make_ball(int radius)
 Fl_Image *make_bg(int w, int h)
 {
 #ifdef GENERATE_16BIT
-    Fl_Image *ret = new Fl_Image(w,h,16);
+    Fl_Image *ret = new Fl_Image(w, h, 16, 0, true, 0x0000F000, 0x00000F00, 0x000000F0, 0x0000000F);
 #else
-    Fl_Image *ret = new Fl_Image(w,h,24);
+    Fl_Image *ret = new Fl_Image(w, h, 32, 0, true, 0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF);
 #endif
 
     printf("BG Format:\n Rmask: 0x%08x\n Gmask: 0x%08x\n Bmask: 0x%08x\n", ret->format()->Rmask, ret->format()->Gmask, ret->format()->Bmask);
@@ -244,12 +246,9 @@ int main(int argc, char *argv[])
     // Bouncing ball...
     Fl_Image *bb_bg, *bb;
     bb_bg = make_bg(200,200);
-    bb = make_ball(30);
+    bb = make_ball(35);
 
     if(bb_bg && bb) {
-        // Speed up things
-        bb_bg->system_convert();
-
         BBWin bwin(bb_bg, bb);
         bwin.resizable(bwin);
         Fl::add_timeout(0.1f, bb_timeout, (void *)&bwin);

@@ -25,6 +25,7 @@ static void BlitCopy(BlitInfo *info)
     }
 }
 
+#include <stdio.h>
 bool Fl_Renderer::blit(uint8 *src, Fl_Rect *src_rect, Fl_PixelFormat *src_fmt, int src_pitch,
                        uint8 *dst, Fl_Rect *dst_rect, Fl_PixelFormat *dst_fmt, int dst_pitch, int flags)
 {

@@ -682,8 +682,10 @@ static void BlitNtoNPixelAlpha(BlitInfo *info)
     srcbpp = srcfmt->bytespp;
     dstbpp = dstfmt->bytespp;
 
-	uint8 sR, sG, sB, sA;
-	uint8 dR, dG, dB, dA;
+    uint8 sR, sG, sB, sA;
+    uint8 dR, dG, dB, dA;
+
+    bool hw=info->hw_surface;
 
     /* FIXME: for 8bpp source alpha, this doesn't get opaque values
      quite right. for <8bpp source alpha, it gets them very wrong
@@ -697,7 +699,11 @@ static void BlitNtoNPixelAlpha(BlitInfo *info)
             fl_disemble_rgba(src, srcbpp, srcfmt, pixel, sR, sG, sB, sA);
             fl_disemble_rgba(dst, dstbpp, dstfmt, pixel, dR, dG, dB, dA);
             fl_alpha_blend(sR, sG, sB, sA, dR, dG, dB);
-            fl_assemble_rgba(dst, dstbpp, dstfmt, dR, dG, dB, dA);
+
+            //if(hw && info->table) *dst = fl_xpixel(info->table[*src]);
+            //else
+                fl_assemble_rgba(dst, dstbpp, dstfmt, dR, dG, dB, dA);
+
             src += srcbpp;
             dst += dstbpp;
         },

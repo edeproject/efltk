@@ -110,9 +110,10 @@ public:
     bool identity;
 };
 
-// blitting flags for Fl_Renderer blit functions:
-#define FL_BLIT_COLOR_KEY     (1<<1) // Blits using colorkey...
-#define	FL_BLIT_HW_PALETTE    (1<<2) // Blits using hw palette (indexed 8bit)
+// Blitting flags for Fl_Renderer blit functions:
+// Number of blitting flags may grow in future.
+#define FL_BLIT_COLOR_KEY     (1<<1) // Blits using colorkey.
+#define FL_BLIT_HW_PALETTE    (1<<2) // Blits using system allocated palette
 
 class Fl_Renderer {
 public:
@@ -151,9 +152,10 @@ public:
     static void system_init();
     static bool system_inited();
 
-    // Converts to system format, if flags is set to HW_SURFACE, then system
-    // colormap is used if needed
-    static uint8 *system_convert(Fl_PixelFormat *src_fmt, Fl_Size *src_size, uint8 *src, int flags=FL_BLIT_HW_PALETTE);
+    // Converts to system format.
+    // If 'hw_surface' is set to true, then system colormap is used if needed.
+    // NOTE: needed only when drawing to system pixmap!
+    static uint8 *system_convert(Fl_PixelFormat *src_fmt, Fl_Size *src_size, uint8 *src, bool hw_surface=false);
     static Fl_PixelFormat *system_format();
 
     // Image byte order

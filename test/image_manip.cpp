@@ -34,8 +34,8 @@ void button_cb(Fl_Widget *w, void *d)
         slider[0]->activate();
         slider[1]->deactivate();
         slider[2]->deactivate();
-        slider[0]->range(-1, 1);
-        slider[0]->value(0); slider[1]->value(0); slider[2]->value(0);
+        slider[0]->range(-3, 3);
+        slider[0]->value(1); slider[1]->value(0); slider[2]->value(0);
         current = FILTER_BRIGHTNESS;
         break;
     case 2:
@@ -55,12 +55,12 @@ void button_cb(Fl_Widget *w, void *d)
         current = FILTER_GAMMA;
         break;
     case 4:
-/*        slider[0]->deactivate();
+        slider[0]->activate();
         slider[1]->deactivate();
-        slider[2]->deactivate();*/
+        slider[2]->deactivate();
         slider[0]->range(-3, 3);
         slider[0]->value(1); slider[1]->value(1); slider[2]->value(1);
-        current = FILTER_DESATURATE;
+        current = FILTER_GRAYSCALE;
         break;
     };
 
@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
     b2.callback(button_cb, (void*)2);
     Fl_Radio_Button b3(2,50,88,20,"Gamma");
     b3.callback(button_cb, (void*)3);
-    Fl_Radio_Button b4(2,70,88,20,"Desaturate");
+    Fl_Radio_Button b4(2,70,88,20,"Grayscale");
     b4.callback(button_cb, (void*)4);
     g.end();
 

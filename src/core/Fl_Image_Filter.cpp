@@ -71,7 +71,7 @@ bool FilterBrightness::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelF
     uint8 R=0, G=0, B=0, A=255;
     int dR,dG,dB;
 
-    int val = (int)(val1 * 255);
+    int val = (int)((val1-1) * 255);
 
     uint8 *ptr = (uint8 *)*data + rect.y() * pitch + rect.x() * srcfmt->bytespp;
     if(srcbpp>1) {
@@ -231,8 +231,8 @@ bool FilterGamma::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFormat
     return true;
 }
 
-FilterDesaturate filter_desaturate;
-bool FilterDesaturate::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFormat *fmt, float val1, float val2, float val3)
+FilterGrayscale filter_grayscale;
+bool FilterGrayscale::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFormat *fmt, float val1, float val2, float val3)
 {	
     Fl_PixelFormat *srcfmt = fmt;
 
@@ -246,6 +246,10 @@ bool FilterDesaturate::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelF
     uint8 R=0, G=0, B=0, A=255;
     int D;
 
+    val3 = .114f * val1;
+    val2 = .587f * val1;
+    val1 = .299f * val1;
+
     uint8 *ptr = (uint8 *)*data + rect.y() * pitch + rect.x() * srcfmt->bytespp;
     if(srcbpp>1) {
         while ( height-- ) {
@@ -253,10 +257,64 @@ bool FilterDesaturate::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelF
             {
                 fl_disemble_rgba(ptr, srcbpp, srcfmt, pixel, R, G, B, A);
 
-                D = (31 * R + 61 * G + 8 * B) / 100;
+                D = (int)(val1 * R + val2 * G + val3 * B);
                 if(D > 255) D = 255; else if(D < 0) D=0;
 
-                fl_assemble_rgba(ptr, srcbpp, srcfmt, D, D, D, D);
+                fl_assemble_rgba(ptr, srcbpp, srcfmt, D, D, D, A);
+                ptr+=srcbpp;
+            }, width);
+            ptr += srcskip;
+        }
+    } else {
+        // indexed
+        Fl_Colormap *pal = srcfmt->palette;
+        for(int n=0;n<pal->ncolors; n++) {
+
+            D = (int)(val1 * pal->colors[n].r + val2 * pal->colors[n].g + val3 * pal->colors[n].b);
+            if(D > 255) D = 255; else if(D < 0) D=0;
+
+            pal->colors[n].r = D;
+            pal->colors[n].b = D;
+            pal->colors[n].g = D;
+        }
+    }
+
+    return true;
+}
+
+FilterForeBlend filter_foreblend;
+bool FilterForeBlend::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFormat *fmt, float val1, float val2, float val3)
+{	
+    Fl_PixelFormat *srcfmt = fmt;
+
+    int width = rect.w();
+    int height = rect.h();
+    int srcskip = pitch - width * srcfmt->bytespp;
+
+    int srcbpp = srcfmt->bytespp;
+
+    if(val1>1.0f) val1=1.0f; else if(val1<0) val1=0;
+    if(val2>1.0f) val2=1.0f; else if(val2<0) val2=0;
+    if(val3>1.0f) val3=1.0f; else if(val3<0) val3=0;
+
+    int sR = (int)(val1 * 255);
+    int sG = (int)(val2 * 255);
+    int sB = (int)(val3 * 255);
+    int sA = fmt->alpha;
+
+    uint32 pixel=0;
+    uint8 R=0, G=0, B=0;
+
+    uint8 *ptr = (uint8 *)*data + rect.y() * pitch + rect.x() * srcfmt->bytespp;
+    if(srcbpp>1) {
+        while ( height-- ) {
+            DUFFS_LOOP4(
+            {
+                fl_disemble_rgb(ptr, srcbpp, srcfmt, pixel, R, G, B);
+
+                fl_alpha_blend(sR, sG, sB, sA, R, G, B);
+
+                fl_assemble_rgba(ptr, srcbpp, srcfmt, R, G, B, sA);
                 ptr+=srcbpp;
             }, width);
             ptr += srcskip;
@@ -265,13 +323,81 @@ bool FilterDesaturate::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelF
 
         // indexed
         Fl_Colormap *pal = srcfmt->palette;
-        for(int n=0;n<pal->ncolors; n++) {
-            D = (31 * pal->colors[n].r + 61 * pal->colors[n].g + 8 * pal->colors[n].b) / 100;
-            if(D > 255) D = 255; else if(D < 0) D=0;
+        for(int n=0;n<pal->ncolors; n++)
+        {
+            R = pal->colors[n].r;
+            G = pal->colors[n].g;
+            B = pal->colors[n].b;
 
-            pal->colors[n].r = D;
-            pal->colors[n].b = D;
-            pal->colors[n].g = D;
+            fl_alpha_blend(sR, sG, sB, sA, R, G, B);
+
+            pal->colors[n].r = R;
+            pal->colors[n].g = G;
+            pal->colors[n].b = B;
+        }
+    }
+
+    return true;
+}
+
+FilterBackBlend filter_backblend;
+bool FilterBackBlend::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFormat *fmt, float val1, float val2, float val3)
+{	
+    Fl_PixelFormat *srcfmt = fmt;
+
+    int width = rect.w();
+    int height = rect.h();
+    int srcskip = pitch - width * srcfmt->bytespp;
+
+    int srcbpp = srcfmt->bytespp;
+
+    if(val1>1.0f) val1=1.0f; else if(val1<0) val1=0;
+    if(val2>1.0f) val2=1.0f; else if(val2<0) val2=0;
+    if(val3>1.0f) val3=1.0f; else if(val3<0) val3=0;
+
+    int sR = (int)(val1 * 255);
+    int sG = (int)(val2 * 255);
+    int sB = (int)(val3 * 255);
+    uint8 A = fmt->alpha;
+    uint8 bR, bG, bB;
+
+    uint32 pixel=0;
+    uint8 R=0, G=0, B=0;
+
+    uint8 *ptr = (uint8 *)*data + rect.y() * pitch + rect.x() * srcfmt->bytespp;
+    if(srcbpp>1) {
+        while ( height-- ) {
+            DUFFS_LOOP4(
+            {
+                if(srcfmt->Amask)
+                    fl_disemble_rgba(ptr, srcbpp, srcfmt, pixel, R, G, B, A);
+                else
+                    fl_disemble_rgb(ptr, srcbpp, srcfmt, pixel, R, G, B);
+
+                bR=sR; bG=sG; bB=sB;
+                fl_alpha_blend(R, G, B, A, bR, bG, bB);
+
+                fl_assemble_rgba(ptr, srcbpp, srcfmt, bR, bG, bB, A);
+                ptr+=srcbpp;
+            }, width);
+            ptr += srcskip;
+        }
+    } else {
+
+        // indexed
+        Fl_Colormap *pal = srcfmt->palette;
+        for(int n=0;n<pal->ncolors; n++)
+        {
+            R = pal->colors[n].r;
+            G = pal->colors[n].g;
+            B = pal->colors[n].b;
+
+            bR=sR; bG=sG; bB=sB;
+            fl_alpha_blend(R, G, B, A, bR, bG, bB);
+
+            pal->colors[n].r = bR;
+            pal->colors[n].b = bG;
+            pal->colors[n].g = bB;
         }
     }
 

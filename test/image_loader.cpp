@@ -14,6 +14,11 @@ Fl_Box* filename_box;
 static void cb_Load(Fl_Button*, void*) {
   const char *f = fl_select_file(filename_box->label(), "Image Files, *.{bmp|png|jpg|jpeg|xpm|gif}", "Select File");
   if(f) {
+        if(show_image && show_image!=image) {
+            delete show_image;
+            show_image = 0;
+        }
+  
   	if(image) {
   		delete image;
   	}
@@ -122,11 +127,17 @@ Fl_Double_Window* make_window() {
          {Fl_Item* o = new Fl_Item("Contrast");
           o->user_data((void*)(FILTER_CONTRAST));
         }
-         {Fl_Item* o = new Fl_Item("Desaturate");
-          o->user_data((void*)(FILTER_DESATURATE));
+         {Fl_Item* o = new Fl_Item("Grayscale");
+          o->user_data((void*)(FILTER_GRAYSCALE));
         }
          {Fl_Item* o = new Fl_Item("Gamma");
           o->user_data((void*)(FILTER_GAMMA));
+        }
+         {Fl_Item* o = new Fl_Item("Fore Blend");
+          o->user_data((void*)(FILTER_FOREBLEND));
+        }
+         {Fl_Item* o = new Fl_Item("Back Blend");
+          o->user_data((void*)(FILTER_BACKBLEND));
         }
         o->end();
       }
@@ -188,12 +199,19 @@ int main(int argc, char *argv[]) {
   Fl_Window *w = make_window();
   w->show();
   
+  if(argc>1)
+  {
+  	char *f = argv[1];
+      image = Fl_Image::read(f);
+      filename_box->label(f);
+      filename_box->redraw();
+      apply_cur_effect();
+    }
+  
   return Fl::run();
 }
 
 void apply_cur_effect() {
-  if(show_image && show_image!=image) 
-  	delete show_image;
   if(cur_effect && image) {
   	if(lock->value())
   		show_image = Fl_Image_Filter::apply_to_new(image, 0, cur_effect, Rslider->value(), Rslider->value(), Rslider->value());

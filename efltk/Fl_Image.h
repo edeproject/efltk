@@ -69,6 +69,10 @@ typedef struct
     bool (*write_file)(FILE *fp, int quality, uint8 *data, Fl_PixelFormat &data_format, int w, int h);
 } Fl_Image_IO;
 
+class Fl_Image;
+
+typedef bool (check_mask_pixel)(const Fl_Image *i, uint8 *buf);
+
 /*!
  IMAGE
  */
@@ -146,7 +150,7 @@ public:
     bool write_image(uint8 *&data, int &data_size, Fl_Image_IO *io);
 
     // Quality in read/write time
-    int quality() { return m_quality; }
+    int quality() const { return m_quality; }
     void quality(int q) { m_quality = q; }
 
     // Copies 'src' to 'dst'
@@ -177,61 +181,54 @@ public:
     void draw(int x, int y, int w=0, int h=0, Fl_Flags f=0) { if(!w) w=width(); if(!h) h=height(); _draw(x,y,w,h,0,0,0,0,f); }
 
     // Mask handling
-    int mask_type() { return m_fmt.masktype; }
+    int mask_type() const { return m_fmt.masktype; }
     void mask_type(int mask) { m_fmt.masktype = mask; }
 
     void set_mask(Pixmap m, bool allow_free=false);
-    Pixmap get_mask() { return (Pixmap)mask; }
+    Pixmap get_mask() const { return (Pixmap)mask; }
 
     void set_offscreen(Pixmap p, bool allow_free=false);
-    Pixmap get_offscreen() { return (Pixmap)id; }
+    Pixmap get_offscreen() const { return (Pixmap)id; }
 
-    // Creates masks, scales if needed. Uses automatically mask_type and threshold/colorkey...
-    // Call this for creating mask.
-    Pixmap create_mask(int w, int h);
+    Region create_region_mask(check_mask_pixel *func = 0) const;
+    Region create_scaled_region_mask(int w, int h, check_mask_pixel *func = 0);
 
-    // Create masks from data, do not call directly, unless you know what you are doing
-    Pixmap create_alpha_mask(Fl_Rect &rect, uint8 *data, int pitch, Fl_PixelFormat *format, uint8 threshold);
-    Pixmap create_color_mask(Fl_Rect &rect, uint8 *data, int pitch, Fl_PixelFormat *format, uint32 color);
-    Pixmap create_pixel_mask(Fl_Rect &rect, uint8 *data, int pitch, Fl_PixelFormat *format, uint32 pixel);
+    // Create masks.
+    Pixmap create_bitmap_mask(check_mask_pixel *func = 0) const;
+    Pixmap create_scaled_bitmap_mask(int w, int h, check_mask_pixel *func = 0);
+    Pixmap create_mask(int w, int h) { return create_scaled_bitmap_mask(w,h); }
 
-    // Scales image to new image. SLOW (Only very little asm optimization)
+    /*!
+     Scales image, Returns new image.
+     Format of image is pre-served
+     */
     Fl_Image *scale(int W, int H);
 
     /*!
      Converts image to grayscale.
-
-     Default argument makes new image to be system format
-
-     Supported depths in format are <b>15, 16, 24, 32</b>
+     Format of image is pre-served
      */
-    Fl_Image *grayscale(Fl_PixelFormat *new_format=Fl_Renderer::system_format());
+    Fl_Image *grayscale();
 
     /*!
-     Blends image to new image, using <i>color</i> as foregroud (top of it)
-
-     Default argument makes new image to be system format
-
-     Supported depths in format are <b>8, 15, 16, 24, 32</b>
+     Blends image to new image, using 'color' as foregroud (top of it)
+     alpha() is used as opacity of 'color'
+     Format of this image is preserved to returned image
      */
-    Fl_Image *fore_blend(uint color, Fl_PixelFormat *new_format=Fl_Renderer::system_format());
+    Fl_Image *fore_blend(uint color);
 
     /*!
-     Blends image to new image, using <i>color</i> as backgroud
-
-     Default argument makes new image to be system format
-
-     Supported depths in format are <b>8, 15, 16, 24, 32</b>
+     Blends image to new image, using 'color' as backgroud.
+     alpha() is used as opacity of image, if no alpha pixel in image.
+     Format of this image is preserved to returned image
     */
-    Fl_Image *back_blend(uint color, Fl_PixelFormat *new_format=Fl_Renderer::system_format());
+    Fl_Image *back_blend(uint color);
 
-    // Blends image to new image, using 'back' as background
-    // Default makes new image to be system fmt(no need to convert)
-    // supported bits_per_pixels = 8, 15, 16, 24, 32
-    Fl_Image *blend(Fl_Image *back, Fl_Rect *back_rect, Fl_PixelFormat *new_format=Fl_Renderer::system_format());
-    Fl_Image *blend(Fl_Image *back, int x, int y, int w, int h, Fl_PixelFormat *new_format=Fl_Renderer::system_format()) {
-        Fl_Rect tmp(x,y,w,h); return blend(back, &tmp, new_format);
-    }
+    /*!
+     Blends this to top of 'back'. New image is returned.
+     Format of 'back' image is preserved to returned image
+     */
+    Fl_Image *blend(Fl_Image *back, int x, int y);
 
     // Frees all allocated buffers
     void clear();
@@ -245,33 +242,33 @@ public:
     // Image data
     uint8 *data() { return m_data; }
 
-    int width()  { return m_width; }
-    int height() { return m_height; }
+    int width()  const { return m_width; }
+    int height() const { return m_height; }
 
-    int pitch() { if(!m_pitch) m_pitch = Fl_Renderer::calc_pitch(bytespp(), width()); return m_pitch; }
-    inline int bytespp() { return m_fmt.bytespp; } //Bytes per pixel
-    inline int bitspp()  { return m_fmt.bitspp;  } //Bits per pixel
+    int pitch()   const { return m_pitch; }
+    int bytespp() const { return m_fmt.bytespp; } //Bytes per pixel
+    int bitspp()  const { return m_fmt.bitspp;  } //Bits per pixel
 
-    int state()       { return m_state; }
+    int state() const { return m_state; }
     void state(int s) { m_state = s; }
 
     // For colorkey blitting and masking (colorkey in RGBA)
-    inline uint32 colorkey()       { return m_fmt.colorkey; }
+    inline uint32 colorkey() const { return m_fmt.colorkey; }
     inline void colorkey(uint32 c) { m_fmt.colorkey = c; }
 
     // 0 - 255 Surface alpha
-    inline uint8 alpha()       { return m_fmt.alpha; }
+    inline uint8 alpha() const { return m_fmt.alpha; }
     inline void alpha(uint8 a) { m_fmt.alpha = a; }
 
     // For masks:
+    inline uint8 threshold() const { return m_threshold; }
     inline void threshold(uint8 t) { m_threshold = t; }
-    inline uint8 threshold() { return m_threshold; }
 
     // Indexed images colormap:
-    inline Fl_Colormap *colormap() { return m_fmt.palette; }
+    inline Fl_Colormap *colormap() const { return m_fmt.palette; }
     Fl_Colormap *colormap(Fl_Colormap *new_map) { Fl_Colormap *old = m_fmt.palette; m_fmt.palette = new_map; return old; }
 
-    Fl_PixelFormat *format() { return &m_fmt; }
+    Fl_PixelFormat *format() const { return (Fl_PixelFormat*)&m_fmt; }
 
     // Checks and maps format to other, if needed
     bool check_map(Fl_PixelFormat *cur_fmt, Fl_PixelFormat *new_fmt);
@@ -279,11 +276,11 @@ public:
 
     // Only draw to offscreen.
     void no_screen(bool v) { m_no_screen = v; }
-    bool no_screen() { return m_no_screen; }
+    bool no_screen() const { return m_no_screen; }
 
     // Set this to false, to disable state effects in THIS image, e.g. DISABLED, SELECTED...
     void state_effect(bool value) { m_state_effect = value; }
-    bool state_effect() { return m_state_effect; }
+    bool state_effect() const { return m_state_effect; }
 
     // Set this to false, to disable state effects in ALL images, e.g. DISABLED, SELECTED...
     static bool state_effect_all() { return m_state_effect_all; }
@@ -310,9 +307,9 @@ protected:
 
     uint8 *m_data; ///< Uncompressed data is stored to this.
 
-    bool m_data_alloc; ///< True, if m_data is allocated by Fl_Image or free permission is granted
-    bool m_id_alloc;   ///< True, 'id' offscreen pixmap is allocated by Fl_Image or permission to free granted
-    bool m_mask_alloc; ///< True, 'mask' offscreen bitmap is allocated by Fl_Image or permission to free granted
+    bool m_data_alloc;   ///< True, if m_data is allocated by Fl_Image or free permission is granted
+    bool m_id_alloc;     ///< True, 'id' offscreen pixmap is allocated by Fl_Image or permission to free granted
+    bool m_mask_alloc;   ///< True, 'mask' offscreen bitmap is allocated by Fl_Image or permission to free granted
 
     void *id;   ///< offsreen id for drawing to screen. type of this is Pixmap. (under w32 HBITMAP)
     void *mask; ///< mask for offscreen id. type of this is Pixmap. (under w32 HBITMAP)

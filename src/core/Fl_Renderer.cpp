@@ -36,7 +36,7 @@ Fl_PixelFormat::Fl_PixelFormat()
     Rmask = Gmask = Bmask = Amask = 0;
 
     colorkey = 0;
-    alpha = 255;
+    alpha = 128;//255;
     masktype = FL_MASK_NONE;
 
     dst=0;
@@ -198,8 +198,8 @@ void Fl_PixelFormat::init(int bits_pp, uint32 R_mask, uint32 G_mask, uint32 B_ma
       Bmask = ((0xFF>>Bloss)<<Bshift);
   }
 }
-
-uint8 *Fl_Renderer::system_convert(Fl_PixelFormat *src_fmt, Fl_Size *src_size, uint8 *src, int flags)
+#include <stdio.h>
+uint8 *Fl_Renderer::system_convert(Fl_PixelFormat *src_fmt, Fl_Size *src_size, uint8 *src, bool hw_surface)
 {
     // Init renderer before first convert
     Fl_Renderer::system_init();
@@ -210,13 +210,18 @@ uint8 *Fl_Renderer::system_convert(Fl_PixelFormat *src_fmt, Fl_Size *src_size, u
     int src_pitch = Fl_Renderer::calc_pitch(sbpp, src_size->w());
     int dst_pitch = Fl_Renderer::calc_pitch(dbpp, src_size->w());
 
-    uint8 *tmp = new uint8[dst_pitch*src_size->h()];
+    uint8 *converted = (uint8*)malloc(sizeof(uint8) * (dst_pitch*src_size->h()));
 
-    Fl_Rect r(0,0,src_size->w(), src_size->h());
+    int flags=9;
+    if(hw_surface) {
+        flags = FL_BLIT_HW_PALETTE;
+    }
+
+    Fl_Rect r(0, 0, src_size->w(), src_size->h());
     Fl_Renderer::blit(src, &r, src_fmt, src_pitch,
-                       tmp, &r, Fl_Renderer::system_format(), dst_pitch, flags);
+                      converted, &r, Fl_Renderer::system_format(), dst_pitch, flags);
 
-    return tmp;
+    return converted;
 }
 
 //////////////////////////////////////////////////////////
@@ -486,11 +491,20 @@ void fl_rgba_from_abgr8888(uint32 pixel, uint8 &r, uint8 &g, uint8 &b, uint8 &a)
 void fl_disemble_rgba(uint8 *buf, int bpp, Fl_PixelFormat *fmt, uint32 &pixel, uint8 &r, uint8 &g, uint8 &b, uint8 &a)
 {
     switch (bpp) {
+    case 1:
+        r = fmt->palette->colors[*buf].r;
+        g = fmt->palette->colors[*buf].g;
+        b = fmt->palette->colors[*buf].b;
+        a = fmt->palette->colors[*buf].a;
+        pixel = (r<<24)|(g<<16)|(b<<8)|a;
+        pixel &= ~fmt->Amask;
+        return;
+
     case 2:
         pixel = *((uint16 *)buf);
         break;
 
-    case 3:	{
+    case 3: {
         /* FIXME: broken code (no alpha) */
         uint8 *b = (uint8 *)buf;
         if(Fl_Renderer::lil_endian())
@@ -516,10 +530,11 @@ void fl_disemble_rgba(uint8 *buf, int bpp, Fl_PixelFormat *fmt, uint32 &pixel, u
 /* FIXME: this isn't correct, especially for Alpha (maximum != 255) */
 void fl_pixel_from_rgba(uint32 &pixel, Fl_PixelFormat *fmt, uint8 r, uint8 g, uint8 b, uint8 a)
 {
-    pixel = (((r)>>fmt->Rloss)<<fmt->Rshift)|
-        ((g>>fmt->Gloss)<<fmt->Gshift)|
-        ((b>>fmt->Bloss)<<fmt->Bshift)|
-        ((a<<fmt->Aloss)<<fmt->Ashift);
+    int R=r, G=g, B=b, A=a;
+    pixel = (((R)>>fmt->Rloss)<<fmt->Rshift) |
+        ((G>>fmt->Gloss)<<fmt->Gshift) |
+        ((B>>fmt->Bloss)<<fmt->Bshift) |
+        ((A<<fmt->Aloss)<<fmt->Ashift);
 }
 
 void fl_assemble_rgba(uint8 *buf, int bpp, Fl_PixelFormat *fmt, uint8 r, uint8 g, uint8 b, uint8 a)

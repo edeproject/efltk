@@ -1,5 +1,5 @@
 # data file for the FLTK User Interface Designer (FLUID)
-version 2.0003 
+version 2,0003 
 header_name {.h} 
 code_name {.cpp} 
 gridx 5 
@@ -34,6 +34,11 @@ Function {make_window()} {open
         label {Load File}
         callback {const char *f = fl_select_file(filename_box->label(), "Image Files, *.{bmp|png|jpg|jpeg|xpm|gif}", "Select File");
 if(f) {
+      if(show_image && show_image!=image) {
+          delete show_image;
+          show_image = 0;
+      }
+
 	if(image) {
 		delete image;
 	}
@@ -43,7 +48,7 @@ if(f) {
 	filename_box->label("No file loaded...");
 }
 filename_box->redraw();
-apply_cur_effect();} selected
+apply_cur_effect();}
         xywh {10 10 140 25} box THIN_UP_BOX
         extra_code {\#include <efltk/Fl_File_Dialog.h>}
       }
@@ -54,7 +59,7 @@ apply_cur_effect();} selected
       }
       Fl_Divider {} {
         label label
-        xywh {10 75 140 15} color 49
+        xywh {10 75 140 15}
       }
       Fl_Button {} {
         label {Fit To Box}
@@ -94,12 +99,20 @@ imbox->redraw();}
           user_data FILTER_CONTRAST
           }
         Fl_Item {} {
-          label Desaturate
-          user_data FILTER_DESATURATE
+          label Grayscale
+          user_data FILTER_GRAYSCALE
           }
         Fl_Item {} {
           label Gamma
           user_data FILTER_GAMMA
+          }
+        Fl_Item {} {
+          label {Fore Blend}
+          user_data FILTER_FOREBLEND
+          }
+        Fl_Item {} {
+          label {Back Blend}
+          user_data FILTER_BACKBLEND selected
           }
       }
       Fl_Box {} {
@@ -152,14 +165,21 @@ Function {main(int argc, char *argv[])} {open return_type int
 Fl_Window *w = make_window();
 w->show();
 
+if(argc>1)
+{
+	char *f = argv[1];
+    image = Fl_Image::read(f);
+    filename_box->label(f);
+    filename_box->redraw();
+    apply_cur_effect();
+  }
+
 return Fl::run();} {}
 } 
 
 Function {apply_cur_effect()} {open return_type void
 } {
-  code {if(show_image && show_image!=image) 
-	delete show_image;
-if(cur_effect && image) {
+  code {if(cur_effect && image) {
 	if(lock->value())
 		show_image = Fl_Image_Filter::apply_to_new(image, 0, cur_effect, Rslider->value(), Rslider->value(), Rslider->value());
 	else

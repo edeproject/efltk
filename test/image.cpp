@@ -91,6 +91,7 @@ Fl_Image rgb_image(WIDTH, HEIGHT, 24, make_image(), true, 0x0000FF, 0x00FF00, 0x
 Fl_Check_Button *leftb,*rightb,*topb,*bottomb,*insideb,*tileb,
   *clipb, *wrapb, *scaleb;
 Fl_Button *b;
+//Fl_Box *b;
 Fl_Window *w;
 
 void button_cb(Fl_Widget *,void *) {
@@ -115,7 +116,7 @@ void choice_cb(Fl_Widget* item, void* data) {
   w->redraw();
 }
 
-#ifndef _WIN32
+#if 0//ndef _WIN32
 #include <efltk/x.h>
 #include "list_visuals.cpp"
 
@@ -133,7 +134,7 @@ int arg(int argc, char **argv, int &i) {
 
 int main(int argc, char **argv)
 {
-#ifndef _WIN32
+#if 0//ndef _WIN32
     int i = 1;
     if (Fl::args(argc,argv,i,arg) < argc) {
         fprintf(stderr," -v # : use visual\n%s\n",Fl::help);
@@ -165,7 +166,10 @@ int main(int argc, char **argv)
     sprintf(title, "System byte order is '%s'", Fl_Renderer::big_endian()?"BIG-ENDIAN":"LIL-ENDIAN");
     window.label(title);
 
-    Fl_Toggle_Button b(100,55,100,100,"Fl_Pixmap"); ::b = &b;
+    Fl_Toggle_Button b(10,10,200,200,"Fl_Pixmap");
+    //Fl_Box b(10,10,200,200,"Fl_Pixmap");
+    //b.box(FL_ENGRAVED_BOX);
+    ::b = &b;
     b.image(pixmap);
     b.tooltip("This Fl_Toggle_Button has:\n"
               "image() set to the Fl_Image class selected below.\n"
