@@ -46,7 +46,7 @@ Fl_Bar::Fl_Bar(int x, int y, int w, int h, const char* l)
 }
 
 Fl_Bar::Fl_Bar(const char* l,Fl_Align layout_al,int layout_size,int label_w) 
-: Fl_Group(l,layout_al,layout_size,label_w)
+: Fl_Group(l,layout_size,layout_al,label_w)
 {
     ctor_init(h());
 }

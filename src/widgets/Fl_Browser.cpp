@@ -336,11 +336,11 @@ Fl_Widget* Fl_Browser::goto_position(int Y)
     }
     // move forward to the item:
     if (item()) for (;;)
-    {
-        int h = item()->height();
-        if (item_position[HERE]+h > Y) break;
-        if (!next_visible()) {previous_visible(); return 0;}
-    }
+        {
+            int h = item()->height();
+            if (item_position[HERE]+h > Y) break;
+            if (!next_visible()) {previous_visible(); return 0;}
+        }
     return item();
 }
 
@@ -379,23 +379,23 @@ enum
 #define browser_minus_width 9
 #define browser_minus_height 9
 static unsigned char browser_minus_bits[] = {
-   0xff, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x7d, 0x01, 0x01, 0x01,
-   0x01, 0x01, 0x01, 0x01, 0xff, 0x01};
+    0xff, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x7d, 0x01, 0x01, 0x01,
+    0x01, 0x01, 0x01, 0x01, 0xff, 0x01};
 
 #define browser_plus_width 9
 #define browser_plus_height 9
 static unsigned char browser_plus_bits[] = {
-   0xff, 0x01, 0x01, 0x01, 0x11, 0x01, 0x11, 0x01, 0x7d, 0x01, 0x11, 0x01,
-   0x11, 0x01, 0x01, 0x01, 0xff, 0x01};
+    0xff, 0x01, 0x01, 0x01, 0x11, 0x01, 0x11, 0x01, 0x7d, 0x01, 0x11, 0x01,
+    0x11, 0x01, 0x01, 0x01, 0xff, 0x01};
 
 static Fl_Bitmap browser_plus(browser_plus_bits, browser_plus_width, browser_plus_height, false);
 static Fl_Bitmap browser_minus(browser_minus_bits, browser_minus_width, browser_minus_height, false);
 
 static void
-glyph(const Fl_Widget* widget, int glyph, int x,int y,int w,int h, Fl_Flags f)
+    glyph(const Fl_Widget* widget, int glyph, int x,int y,int w,int h, Fl_Flags f)
 {
     fl_color((f&FL_SELECTED) ? widget->selection_text_color()
-        : fl_inactive(widget->text_color()));
+            : fl_inactive(widget->text_color()));
     int lx = x+w/2;
     int ly = y+(h-1)/2;
     switch (glyph)
@@ -413,7 +413,7 @@ glyph(const Fl_Widget* widget, int glyph, int x,int y,int w,int h, Fl_Flags f)
             fl_line(lx, y, lx, y+h-1);
             fl_line(lx, ly, x+w, ly);
             break;
-        #if TRIANGLE_GLYPH
+#if TRIANGLE_GLYPH
         case CLOSED_TEE:
         case OPEN_TEE:
             fl_line(lx, y, lx, y+h-1);
@@ -421,21 +421,21 @@ glyph(const Fl_Widget* widget, int glyph, int x,int y,int w,int h, Fl_Flags f)
         case CLOSED_ELL:
         case OPEN_ELL:
             fl_yxline(lx, y, lx, ly);
-            J1:
+        J1:
             fl_glyph(widget, glyph < OPEN_ELL ? FL_GLYPH_RIGHT : FL_GLYPH_DOWN,
                 x, y, w, h, f);
             break;
-        #else
+#else
         default:
-        {
-            Fl_Bitmap* image = (glyph < OPEN_ELL) ? &browser_plus : &browser_minus;
-            const int boxsize = browser_plus_width/2;
-            image->draw(lx-boxsize, ly-boxsize);
-            fl_line(lx, y, lx, ly-boxsize);
-            if (glyph&1) fl_line(lx, ly+boxsize, lx, y+h-1);
-            fl_line(lx+boxsize, ly, x+w, ly);
-        }
-        #endif
+            {
+                Fl_Bitmap* image = (glyph < OPEN_ELL) ? &browser_plus : &browser_minus;
+                const int boxsize = browser_plus_width/2;
+                image->draw(lx-boxsize, ly-boxsize);
+                fl_line(lx, y, lx, ly-boxsize);
+                if (glyph&1) fl_line(lx, ly+boxsize, lx, y+h-1);
+                fl_line(lx+boxsize, ly, x+w, ly);
+            }
+#endif
     }
 }
 
@@ -467,7 +467,7 @@ void Fl_Browser::draw_item()
     {
         widget->clear_selected();
         flags = 0;
-        #if DRAW_STRIPES
+#if DRAW_STRIPES
         Fl_Color c0 = color();
         Fl_Color c1 = button_color();
         int x=1; for (int j=0; j<=item_level[HERE]; j++) x ^= item_index[HERE][j]+1;
@@ -487,10 +487,10 @@ void Fl_Browser::draw_item()
             fl_color(c0);
             fl_rectf(X, y, W, h);
         }
-        #else
+#else
         fl_color(color());
         fl_rectf(X, y, W, h);
-        #endif
+#endif
     }
 
     int arrow_size = text_size()|1;
@@ -544,12 +544,12 @@ void Fl_Browser::draw_clip(int x, int y, int w, int h)
 
     int draw_all = damage() & (FL_DAMAGE_ALL|FL_DAMAGE_CONTENTS);
     if (goto_mark(FIRST_VISIBLE)) for (;;)
-    {
-        int item_y = Y+item_position[HERE]-yposition_;
-        if (item_y >= y+h) break;
-        if (draw_all || !at_mark(REDRAW_0) && !at_mark(REDRAW_1)) draw_item();
-        if (!next_visible()) break;
-    }
+        {
+            int item_y = Y+item_position[HERE]-yposition_;
+            if (item_y >= y+h) break;
+            if (draw_all || !at_mark(REDRAW_0) && !at_mark(REDRAW_1)) draw_item();
+            if (!next_visible()) break;
+        }
 
     // erase the area below the last item:
     int bottom_y = Y+item_position[HERE]-yposition_;
@@ -676,24 +676,24 @@ void Fl_Browser::layout()
     int arrow_size = text_size()|1;
     if (!goto_top()) yposition_ = 0;
     else for (;;)
-    {
-        if (item_position[HERE]+item()->height() > yposition_) break;
+        {
+            if (item_position[HERE]+item()->height() > yposition_) break;
         //if (!indented_ && item_is_parent()) indented_ = true;
-        if (at_mark(FOCUS)) set_mark(FOCUS, HERE);
-        int w = item()->width()+arrow_size*item_level[HERE];
-        if (w > max_width_) max_width_ = w;
-        if (!next_visible()) {goto_top(); yposition_ = 0; break;}
-    }
+            if (at_mark(FOCUS)) set_mark(FOCUS, HERE);
+            int w = item()->width()+arrow_size*item_level[HERE];
+            if (w > max_width_) max_width_ = w;
+            if (!next_visible()) {goto_top(); yposition_ = 0; break;}
+        }
     set_mark(FIRST_VISIBLE, HERE);
     // count all the rest of the items:
     if (item()) for (;;)
-    {
-        if (at_mark(FOCUS)) set_mark(FOCUS, HERE);
-        int w = item()->width()+arrow_size*item_level[HERE];
-        if (w > max_width_) max_width_ = w;
+        {
+            if (at_mark(FOCUS)) set_mark(FOCUS, HERE);
+            int w = item()->width()+arrow_size*item_level[HERE];
+            if (w > max_width_) max_width_ = w;
         //if (!indented_ && item_is_parent()) indented_ = true;
-        if (!next_visible()) break;
-    }
+            if (!next_visible()) break;
+        }
     if (indented()) max_width_ += arrow_size;
     max_height_ = item_position[HERE];
 
@@ -820,7 +820,7 @@ bool Fl_Browser::make_item_visible(linepos where)
             if (item_index[HERE][n] >= children) break;
 
             Fl_Widget* i = child(item_index[HERE], n);
-            
+
             i->set_visible();
             i->set_value();
             list()->flags_changed(this, item());
@@ -917,15 +917,15 @@ bool Fl_Browser::select_only_this(int do_callback)
         bool ret = false;
         // Turn off all other items and set damage:
         if (goto_top()) do
-        {
-            if (set_item_selected(at_mark(FOCUS), do_callback)) ret = true;
-        } while (next_visible());
+            {
+                if (set_item_selected(at_mark(FOCUS), do_callback)) ret = true;
+            } while (next_visible());
         // turn off any invisible ones:
         nodamage = true;
         if (goto_top()) do
-        {
-            if (set_item_selected(at_mark(FOCUS), do_callback)) ret = true;
-        } while (next());
+            {
+                if (set_item_selected(at_mark(FOCUS), do_callback)) ret = true;
+            } while (next());
         nodamage = false;
         goto_mark(FOCUS);
         return ret;
@@ -964,84 +964,84 @@ int Fl_Browser::handle(int event)
             // For all mouse events check to see if we are in the scrollbar
             // areas and send to them:
             if (scrollbar.visible() &&
-                (scrollbar_align()&FL_ALIGN_LEFT ?
-                (Fl::event_x() < scrollbar.x()+scrollbar.w()) :
-                (Fl::event_x() >= scrollbar.x())))
+                    (scrollbar_align()&FL_ALIGN_LEFT ?
+                        (Fl::event_x() < scrollbar.x()+scrollbar.w()) :
+                        (Fl::event_x() >= scrollbar.x())))
                 return scrollbar.send(event);
             if (hscrollbar.visible() &&
-                (scrollbar_align()&FL_ALIGN_TOP ?
-                (Fl::event_y() < hscrollbar.y()+hscrollbar.h()) :
-                (Fl::event_y() >= hscrollbar.y())))
+                    (scrollbar_align()&FL_ALIGN_TOP ?
+                        (Fl::event_y() < hscrollbar.y()+hscrollbar.h()) :
+                        (Fl::event_y() >= hscrollbar.y())))
                 return hscrollbar.send(event);
                                  // return true for enter/move
             if (event != FL_PUSH) return 1;
             //take_focus();
             openclose_drag = 0;
         case FL_DRAG:
-        {
-            if (!goto_position(Fl::event_y()-Y+yposition_) && !item()) break;
+            {
+                if (!goto_position(Fl::event_y()-Y+yposition_) && !item()) break;
 
             // see if they clicked the open/close box
-            int arrow_size = text_size()|1;
-            int xx = (item_level[HERE]+indented())*arrow_size+X-xposition_-Fl::event_x();
-            if ((event==FL_PUSH || openclose_drag) && xx > 0 && xx < arrow_size &&
-                item_is_parent())
-            {
-                if (openclose_drag != 1) {openclose_drag = 1; damage_item(HERE);}
-            }
-            else
-            {
-                if (openclose_drag == 1) {openclose_drag = 2; damage_item(HERE);}
-            }
+                int arrow_size = text_size()|1;
+                int xx = (item_level[HERE]+indented())*arrow_size+X-xposition_-Fl::event_x();
+                if ((event==FL_PUSH || openclose_drag) && xx > 0 && xx < arrow_size &&
+                        item_is_parent())
+                {
+                    if (openclose_drag != 1) {openclose_drag = 1; damage_item(HERE);}
+                }
+                else
+                {
+                    if (openclose_drag == 1) {openclose_drag = 2; damage_item(HERE);}
+                }
 
-            if (multi())
-            {
-                if (event == FL_PUSH)
+                if (multi())
                 {
-                    if (Fl::event_state(FL_CTRL))
+                    if (event == FL_PUSH)
                     {
+                        if (Fl::event_state(FL_CTRL))
+                        {
                         // start a new selection block without changing state
-                        drag_type = !item()->selected();
+                            drag_type = !item()->selected();
                                  // don't change it
-                        if (openclose_drag) drag_type = !drag_type;
-                        set_item_selected(drag_type, FL_WHEN_CHANGED);
-                        set_focus();
+                            if (openclose_drag) drag_type = !drag_type;
+                            set_item_selected(drag_type, FL_WHEN_CHANGED);
+                            set_focus();
                                  // make it not be a double-click for callback
-                        Fl::event_clicks(0);
-                        return 1;
-                    }
-                    else if (Fl::event_state(FL_SHIFT))
-                    {
+                            Fl::event_clicks(0);
+                            return 1;
+                        }
+                        else if (Fl::event_state(FL_SHIFT))
+                        {
                         // extend the current focus
-                        drag_type = !item()->selected();
+                            drag_type = !item()->selected();
                                  // make it not be a double-click for callback
-                        Fl::event_clicks(0);
+                            Fl::event_clicks(0);
+                        }
+                        else
+                        {
+                            select_only_this(FL_WHEN_CHANGED);
+                            drag_type = true;
+                            return 1;
+                        }
                     }
-                    else
-                    {
-                        select_only_this(FL_WHEN_CHANGED);
-                        drag_type = true;
-                        return 1;
-                    }
-                }
                 // set everything from old focus to current to drag_type:
-                int direction = compare_marks(HERE,FOCUS);
-                set_mark(TEMP, HERE);
-                for (;;)
-                {
-                    set_item_selected(drag_type, FL_WHEN_CHANGED);
-                    if (at_mark(FOCUS)) break;
-                    if (!(direction<0 ? next_visible() : previous_visible())) break;
+                    int direction = compare_marks(HERE,FOCUS);
+                    set_mark(TEMP, HERE);
+                    for (;;)
+                    {
+                        set_item_selected(drag_type, FL_WHEN_CHANGED);
+                        if (at_mark(FOCUS)) break;
+                        if (!(direction<0 ? next_visible() : previous_visible())) break;
+                    }
+                    goto_mark(TEMP);
+                    set_focus();
                 }
-                goto_mark(TEMP);
-                set_focus();
+                else
+                {
+                    select_only_this(FL_WHEN_CHANGED);
+                }
+                return 1;
             }
-            else
-            {
-                select_only_this(FL_WHEN_CHANGED);
-            }
-            return 1;
-        }
 
         case FL_RELEASE:
             goto_mark(FOCUS);
@@ -1068,18 +1068,18 @@ int Fl_Browser::handle(int event)
             {
                 case FL_Right:
                     if (goto_visible_focus())
-                        {set_item_opened(true); next_visible();}
-                        goto AFTER_MOVEMENT_KEY;
+                    {set_item_opened(true); next_visible();}
+                    goto AFTER_MOVEMENT_KEY;
                 case FL_Left:
                     if (goto_visible_focus())
                         if (!set_item_opened(false)) {previous_visible(); set_item_opened(false);}
-                        goto AFTER_MOVEMENT_KEY;
+                    goto AFTER_MOVEMENT_KEY;
                 case FL_Up:
                     if (goto_visible_focus()) previous_visible();
                     goto AFTER_MOVEMENT_KEY;
                 case FL_Down:
                     if (goto_visible_focus()) next_visible();
-                    AFTER_MOVEMENT_KEY:
+                AFTER_MOVEMENT_KEY:
                     if (!item()) return 1;
                     if (multi() && Fl::event_state(FL_SHIFT|FL_CTRL))
                     {
@@ -1094,9 +1094,9 @@ int Fl_Browser::handle(int event)
                 case ' ':
                     if (!multi() || !goto_visible_focus()) break;
                     set_item_selected(!item()->selected(), FL_WHEN_CHANGED);
-                    RELEASE:
+                RELEASE:
                     if ((when()&FL_WHEN_RELEASE) &&
-                        (changed() || (when()&FL_WHEN_NOT_CHANGED)))
+                            (changed() || (when()&FL_WHEN_NOT_CHANGED)))
                     {
                         clear_changed();
                         execute(item());
@@ -1116,14 +1116,14 @@ int Fl_Browser::handle(int event)
 
         case FL_MOUSEWHEEL:
             return scrollbar.send(event);
-        #if 0
+#if 0
             int n = Fl::event_dy() * Fl_Style::wheel_scroll_lines;
             goto_mark(FIRST_VISIBLE);
             while (n > 0 && previous_visible()) n--;
             while (n < 0 && next_visible()) n++;
             set_top();
             return 1;
-        #endif
+#endif
     }
     return 0;
 }
@@ -1136,7 +1136,7 @@ int Fl_Browser::handle(int event)
 Fl_Widget* Fl_Browser::goto_visible_focus()
 {
     if (item_position[FOCUS] >= yposition_ &&
-        item_position[FOCUS] <= yposition_+H)
+            item_position[FOCUS] <= yposition_+H)
     {
         if (goto_mark(FOCUS)) return item();
     }
@@ -1276,11 +1276,7 @@ static void revert(Fl_Style* s)
 static Fl_Named_Style style("Browser", revert, &Fl_Browser::default_style);
 Fl_Named_Style* Fl_Browser::default_style = &::style;
 
-Fl_Browser::Fl_Browser(int X,int Y,int W,int H,const char* L)
-: Fl_Menu_(X,Y,W,H,L), endgroup(0),
-scrollbar(X+W-SLIDER_WIDTH,Y,SLIDER_WIDTH,H-SLIDER_WIDTH),
-hscrollbar(X,Y+H-SLIDER_WIDTH,W-SLIDER_WIDTH,SLIDER_WIDTH)
-{
+void Fl_Browser::ctor_init() {
     set_click_to_focus();
     style(default_style);
     xposition_ = 0;
@@ -1306,6 +1302,21 @@ hscrollbar(X,Y+H-SLIDER_WIDTH,W-SLIDER_WIDTH,SLIDER_WIDTH)
     Fl_Group::current(parent());
 }
 
+Fl_Browser::Fl_Browser(int X,int Y,int W,int H,const char* L)
+: Fl_Menu_(X,Y,W,H,L), endgroup(0),
+scrollbar(X+W-SLIDER_WIDTH,Y,SLIDER_WIDTH,H-SLIDER_WIDTH),
+hscrollbar(X,Y+H-SLIDER_WIDTH,W-SLIDER_WIDTH,SLIDER_WIDTH)
+{
+    ctor_init();
+}
+
+Fl_Browser::Fl_Browser(const char* l,int layout_sz,Fl_Align layout_al,int label_w) 
+: Fl_Menu_(l,layout_sz,layout_al,label_w), endgroup(0),
+scrollbar(X+W-SLIDER_WIDTH,Y,SLIDER_WIDTH,H-SLIDER_WIDTH),
+hscrollbar(X,Y+H-SLIDER_WIDTH,W-SLIDER_WIDTH,SLIDER_WIDTH)
+{
+    ctor_init();
+}
 
 Fl_Browser::~Fl_Browser()
 {

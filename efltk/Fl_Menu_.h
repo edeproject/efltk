@@ -32,9 +32,9 @@ class FL_API Fl_Menu_;
 
 class FL_API Fl_List {
 public:
-  virtual int children(const Fl_Menu_*, const int* indexes, int level);
-  virtual Fl_Widget* child(const Fl_Menu_*, const int* indexes, int level);
-  virtual void flags_changed(const Fl_Menu_*, Fl_Widget*);
+    virtual int children(const Fl_Menu_*, const int* indexes, int level);
+    virtual Fl_Widget* child(const Fl_Menu_*, const int* indexes, int level);
+    virtual void flags_changed(const Fl_Menu_*, Fl_Widget*);
 };
 
 /** Fl_Menu_ */
@@ -43,6 +43,7 @@ public:
     // Constructors does end()
     Fl_Menu_();
     Fl_Menu_(int,int,int,int, const char* l=0);
+    Fl_Menu_(const char* l,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=-1);
 
     Fl_Callback *about_to_show;
     Fl_Callback *about_to_hide;
@@ -160,6 +161,8 @@ private:
 
     static float default_anim_speed_;
     float anim_speed_;
+
+    void ctor_init();
 
 protected:
     static bool key_event;

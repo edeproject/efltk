@@ -266,7 +266,7 @@ protected:
      * x(), y(), w() , h(), and an optional value for  label().
      */
     Fl_Widget(int,int,int,int,const char* =0);
-    Fl_Widget(const char* l = 0,Fl_Align layout_al=FL_ALIGN_TOP,int layout_size=30,int label_w=100);
+    Fl_Widget(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
 
 private:
     // disable the copy assignment/constructors:

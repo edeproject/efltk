@@ -36,8 +36,8 @@ public:
         dw_ = dh_ = 0;
     }
 
-    Fl_Align_Group(const char* L = 0,Fl_Align layout_al=FL_ALIGN_TOP,int layout_size=30,int label_w=100) 
-    : Fl_Group(L,layout_al,layout_size,label_w) {
+    Fl_Align_Group(const char* L = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100) 
+    : Fl_Group(L,layout_size,layout_al,label_w) {
         n_to_break_ = 0; vertical_ = 1;
         align_ = FL_ALIGN_LEFT;
         dw_ = dh_ = 0;

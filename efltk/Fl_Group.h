@@ -53,7 +53,7 @@ public:
      * Creates a new Fl_Group widget using the given position, size, and label string. The default boxtype is FL_NO_BOX. 
      */
     Fl_Group(int x, int y, int w, int h, const char *l=0);
-    Fl_Group(const char* l = 0,Fl_Align layout_al=FL_ALIGN_TOP,int layout_size=30,int label_w=100);
+    Fl_Group(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
 
     /**
      * The destructor also deletes all the children. 

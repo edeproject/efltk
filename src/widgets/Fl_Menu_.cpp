@@ -85,9 +85,7 @@ float Fl_Menu_::default_anim_speed_ = 1.5f;
 bool Fl_Menu_::effects_ = false;
 bool Fl_Menu_::subwindow_effect_ = false;
 
-Fl_Menu_::Fl_Menu_()
-    : Fl_Group(0,0,0,0,0), list_(&default_list), item_(0)
-{
+void Fl_Menu_::ctor_init() {
     about_to_show = about_to_hide = 0;
     delay_ = -1;
     effect_type_ = -1;
@@ -97,21 +95,26 @@ Fl_Menu_::Fl_Menu_()
 
     callback(default_callback);
     end();
+}
+
+Fl_Menu_::Fl_Menu_()
+    : Fl_Group(0,0,0,0,0), list_(&default_list), item_(0)
+{
+    ctor_init();
 }
 
 Fl_Menu_::Fl_Menu_(int x,int y,int w, int h,const char* l)
 : Fl_Group(x,y,w,h,l), list_(&default_list), item_(0)
 {
-    about_to_show = about_to_hide = 0;
-    delay_ = -1;
-    effect_type_ = -1;
-    anim_speed_ = -1;
-
-    anim_flags_ = TOP_TO_BOTTOM|LEFT_TO_RIGHT;
-
-    callback(default_callback);
-    end();
+    ctor_init();
 }
+
+Fl_Menu_::Fl_Menu_(const char* l,int layout_size,Fl_Align layout_al,int label_w)
+: Fl_Group(l,layout_size,layout_al,label_w), list_(&default_list), item_(0)
+{
+    ctor_init();
+}
+
 
 int Fl_Menu_::children(const int* indexes, int level) const
 {

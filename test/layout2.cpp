@@ -12,12 +12,12 @@ int main(int argc, char *argv[])
 
     group->begin();
 
-    Fl_Box   *button1 = new Fl_Box("Left",FL_ALIGN_LEFT,40);
-    Fl_Box   *button2 = new Fl_Box("Right",FL_ALIGN_RIGHT,40);
-    Fl_Box   *button3 = new Fl_Box("Top",FL_ALIGN_TOP,40);
-    Fl_Box   *button4 = new Fl_Box("Bottom",FL_ALIGN_BOTTOM,40);
-    Fl_Box   *button5 = new Fl_Box("Client",FL_ALIGN_CLIENT);
-    Fl_Box   *button6 = new Fl_Box("Left\nat\nthe\nend",FL_ALIGN_LEFT,40);
+    Fl_Box   *button1 = new Fl_Box("Left",40,FL_ALIGN_LEFT);
+    Fl_Box   *button2 = new Fl_Box("Right",40,FL_ALIGN_RIGHT);
+    Fl_Box   *button3 = new Fl_Box("Top",40,FL_ALIGN_TOP);
+    Fl_Box   *button4 = new Fl_Box("Bottom",40,FL_ALIGN_BOTTOM);
+    Fl_Box   *button5 = new Fl_Box("Client",40,FL_ALIGN_CLIENT);
+    Fl_Box   *button6 = new Fl_Box("Left\nat\nthe\nend",40,FL_ALIGN_LEFT);
 
     button1->box(FL_THIN_UP_BOX);
     button2->box(FL_THIN_UP_BOX);
