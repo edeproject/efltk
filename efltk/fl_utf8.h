@@ -27,42 +27,24 @@
 #ifndef fl_utf8_h
 #define fl_utf8_h
 
-#ifndef FL_API
-#if defined(FL_DLL) && defined(_MSC_VER)
-#  ifdef FL_LIBRARY
-#    define FL_API   __declspec(dllexport)
-#  else
-#    define FL_API   __declspec(dllimport)
-#  endif /* FL_LIBRARY */
-#else
-#  define FL_API
-#endif /* FL_DLL && _MSC_VER */
-#endif /* FL_EXPORT */
+#include "Fl_Export.h"
 
-#  ifdef __cplusplus
-extern "C" {
-#  endif
-
-FL_API int fl_utf2ucs( const unsigned char *buf, int len, unsigned int *ucs);
-FL_API int fl_ucs2utf(unsigned int ucs, char *buf);
-FL_API int fl_utflen(const unsigned char *buf, int len);
-FL_API int fl_utf_nb_char(const unsigned char *buf, int len);
-FL_API int fl_utf_strncasecmp(const char *s1, const char *s2, int n);
-FL_API int fl_utf_strcasecmp(const char *s1, const char *s2);
-FL_API int fl_tolower(unsigned int ucs);
-FL_API int fl_toupper(unsigned int ucs);
-FL_API int fl_utf_tolower(const unsigned char *str, int len, char *buf);
-FL_API int fl_utf_toupper(const unsigned char *str, int len, char *buf);
-FL_API int fl_utf2unicode(const unsigned char *str, int len, 
-		unsigned short *buf);
-FL_API int fl_unicode2utf(unsigned short *str, int len, char *buf);
-FL_API int fl_utf2latin1(const unsigned char *str, int len, char *buf);
-FL_API int fl_latin12utf(const unsigned char *str, int len, char *buf);
-FL_API unsigned int fl_nonspacing(unsigned int ucs);
-
-#  ifdef __cplusplus
-}
-#  endif
+extern FL_API int fl_utf2ucs( const unsigned char *buf, int len, unsigned int *ucs);
+extern FL_API int fl_ucs2utf(unsigned int ucs, char *buf);
+extern FL_API int fl_utflen(const unsigned char *buf, int len);
+extern FL_API int fl_utf_nb_char(const unsigned char *buf, int len);
+extern FL_API int fl_utf_strncasecmp(const char *s1, const char *s2, int n);
+extern FL_API int fl_utf_strcasecmp(const char *s1, const char *s2);
+extern FL_API int fl_tolower(unsigned int ucs);
+extern FL_API int fl_toupper(unsigned int ucs);
+extern FL_API int fl_utf_tolower(const unsigned char *str, int len, char *buf);
+extern FL_API int fl_utf_toupper(const unsigned char *str, int len, char *buf);
+extern FL_API int fl_utf2unicode(const unsigned char *str, int len, 
+                                 unsigned short *buf);
+extern FL_API int fl_unicode2utf(unsigned short *str, int len, char *buf);
+extern FL_API int fl_utf2latin1(const unsigned char *str, int len, char *buf);
+extern FL_API int fl_latin12utf(const unsigned char *str, int len, char *buf);
+extern FL_API unsigned int fl_nonspacing(unsigned int ucs);
 
 #endif
  

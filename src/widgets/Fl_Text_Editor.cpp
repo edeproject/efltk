@@ -168,6 +168,7 @@ default_key_bindings[] =
     { 0,            0,                        0                             }
 };
 
+#if HAVE_XUTF8
 static int utf_len(char c)
 {
   if (!(c & 0x80)) return 1;
@@ -188,7 +189,7 @@ static int utf_len(char c)
   }
   return 0;
 }
-
+#endif
 
 void Fl_Text_Editor::add_default_key_bindings(Key_Binding** list)
 {

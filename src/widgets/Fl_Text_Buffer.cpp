@@ -70,7 +70,7 @@ static const char *ControlCodeTable[ 32 ] =
     "can", "em", "sub", "esc", "fs", "gs", "rs", "us"
 };
 
-#ifdef HAVE_XUTF8
+#if HAVE_XUTF8
 static int utf_len(char c)
 {
   if (!(c & 0x80)) return 1;
@@ -1050,7 +1050,7 @@ int Fl_Text_Buffer::expand_character( char c, int indent, char *outStr, int tabD
         sprintf( outStr, "<nul>" );
         return 5;
     }
-#ifdef HAVE_XUTF8    
+#if HAVE_XUTF8
     else if ((c & 0x80) && !(c & 0x40)) {
 	return 0;
     } else if (c & 0x80) {
@@ -1082,7 +1082,7 @@ int Fl_Text_Buffer::character_width( char c, int indent, int tabDist, char nullS
         return 5;
     else if ( c == nullSubsChar )
         return 5;
-#ifdef HAVE_XUTF8	
+#if HAVE_XUTF8
     else if ((c & 0x80) && !(c & 0x40))
         return 0;
     else if (c & 0x80) {

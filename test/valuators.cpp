@@ -107,7 +107,7 @@ int main (int argc, char **argv) {
       o->selection_color((Fl_Color)1);
       o->maximum(100);
       o->step(1);
-      o->linesize(2);
+      o->linesize(0);
       o->callback((Fl_Callback*)callback);
       o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
     }

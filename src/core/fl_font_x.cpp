@@ -131,18 +131,18 @@ void fl_transformed_draw(const char *str, int n, float x, float y) {
 
 void fl_rtl_draw(const char *str, int n, float x, float y) {
     if (font_gc != fl_gc) {
-	font_gc = fl_gc;
+        font_gc = fl_gc;
 #if !HAVE_XUTF8
-        XSetFont(fl_display, fl_gc, fl_xfont->fid);
+        XSetFont(fl_display, fl_gc, fl_xfont()->fid);
 #endif
     }
-#ifdef HAVE_XUTF8
-    XUtf8DrawRtlString(fl_display, fl_window, current_font, fl_gc, 
-		    int(floorf(x+.5f)), int(floorf(y+.5f)), str, n);
+#if HAVE_XUTF8
+    XUtf8DrawRtlString(fl_display, fl_window, current_font, fl_gc,
+                       int(floorf(x+.5f)), int(floorf(y+.5f)), str, n);
 #else
     XDrawString(fl_display, fl_window, fl_gc,
-	      int(floorf(x+.5f)),
-	      int(floorf(y+.5f)), str, n);
+                int(floorf(x+.5f)),
+                int(floorf(y+.5f)), str, n);
 #endif
 }
 

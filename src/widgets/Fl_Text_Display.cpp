@@ -638,7 +638,7 @@ void Fl_Text_Display::draw_text( int left, int top, int width, int height )
 
 void Fl_Text_Display::redisplay_range(int start, int end)
 {
-#ifdef HAVE_XUTF8
+#if HAVE_XUTF8
     int ok = 0;
     while (!ok && start > 0) {
 	char c = buffer()->character( start );
@@ -909,7 +909,7 @@ int Fl_Text_Display::position_to_xy( int pos, int* X, int* Y )
   for ( charIndex = 0; charIndex < pos - lineStartPos; charIndex++ ) {
     charLen = Fl_Text_Buffer::expand_character( lineStr[ charIndex ], outIndex, expandedChar,
               mBuffer->tab_distance(), mBuffer->null_substitution_character() );
-#ifdef HAVE_XUTF8	      
+#if HAVE_XUTF8
     if (charLen > 1 && (lineStr[ charIndex ] & 0x80)) {
       int i, ii = 0;;
       i = utf_len(lineStr[ charIndex ]);
@@ -1026,7 +1026,7 @@ int Fl_Text_Display::position_to_linecol( int pos, int* lineNum, int* column ) {
 int Fl_Text_Display::in_selection( int X, int Y ) {
   int row, column, pos = xy_to_position( X, Y, CHARACTER_POS );
   Fl_Text_Buffer *buf = mBuffer;
-#ifdef HAVE_XUTF8
+#if HAVE_XUTF8
   int ok = 0;
   while (!ok) {
     char c = buffer()->character( pos );
@@ -1216,7 +1216,7 @@ int Fl_Text_Display::move_up(int lines)
   /* move the cursor */
   insert_position( newPos );
   
-#ifdef HAVE_XUTF8
+#if HAVE_XUTF8
    int ok = 0;
   while (!ok) {
     int pos = insert_position();
@@ -1258,7 +1258,7 @@ int Fl_Text_Display::move_down(int lines)
 
   insert_position( newPos );
 
-#ifdef HAVE_XUTF8  
+#if HAVE_XUTF8
   int ok = 0;
   while (!ok) {
     int pos = insert_position();
@@ -1701,7 +1701,7 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
         charLen = charIndex >= lineLen ? 1 :
             Fl_Text_Buffer::expand_character( lineStr[ charIndex ], outIndex,
                                              expandedChar, buf->tab_distance(), buf->null_substitution_character() );
-#ifdef HAVE_XUTF8					     
+#if HAVE_XUTF8
 	if (charIndex < lineLen && charLen > 1 && (lineStr[ charIndex ] & 0x80)) {
     	    int i, ii = 0;;
 	    i = utf_len(lineStr[ charIndex ]);
@@ -1738,7 +1738,7 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
         charLen = charIndex >= lineLen ? 1 :
             Fl_Text_Buffer::expand_character( lineStr[ charIndex ], outIndex, expandedChar,
                                              buf->tab_distance(), buf->null_substitution_character() );
-#ifdef HAVE_XUTF8					     
+#if HAVE_XUTF8
        if (charIndex < lineLen && charLen > 1 && (lineStr[ charIndex ] & 0x80)) {
           int i, ii = 0;;
 	  i = utf_len(lineStr[ charIndex ]);
@@ -1769,7 +1769,7 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
             }
             if ( charIndex < lineLen ) {
                 *outPtr = expandedChar[ i ];
-#ifdef HAVE_XUTF8		
+#if HAVE_XUTF8
 		int l = 1;
 	        if (*outPtr & 0x80) {
     		    l = utf_len(*outPtr);
@@ -2111,7 +2111,7 @@ int Fl_Text_Display::xy_to_position( int X, int Y, int posType )
     {
         charLen = Fl_Text_Buffer::expand_character( lineStr[ charIndex ], outIndex, expandedChar,
                                                    mBuffer->tab_distance(), mBuffer->null_substitution_character() );
-#ifdef HAVE_XUTF8						   
+#if HAVE_XUTF8
 	if (charLen > 1 && (lineStr[ charIndex ] & 0x80)) {
     	    int i, ii = 0;;
 	    i = utf_len(lineStr[ charIndex ]);
@@ -3306,7 +3306,7 @@ int Fl_Text_Display::handle(int event) {
         dragging = 1;
         int pos = xy_to_position(Fl::event_x(), Fl::event_y(), CURSOR_POS);
 	
-#ifdef HAVE_XUTF8
+#if HAVE_XUTF8
 	int ok = 0;
   	while (!ok) {
     	  char c = buffer()->character( pos );
@@ -3366,7 +3366,7 @@ int Fl_Text_Display::handle(int event) {
             pos = insert_position();
         } else {
 	    pos = xy_to_position(X, Y, CURSOR_POS);
-#ifdef HAVE_XUTF8	    
+#if HAVE_XUTF8
 	    int ok = 0;
             while (!ok) {
             char c = buffer()->character( pos );

@@ -248,7 +248,7 @@ void Fl_Input::draw()
 
 void Fl_Input::draw(int X, int Y, int W, int H)
 {
-	bool ALL = (damage() & (FL_DAMAGE_ALL|FL_DAMAGE_EXPOSE))>0?true:false;	
+    bool ALL = (damage() & (FL_DAMAGE_ALL|FL_DAMAGE_EXPOSE))>0?true:false;
 
     Fl_Flags f=flags();
     setfont();
@@ -263,11 +263,11 @@ void Fl_Input::draw(int X, int Y, int W, int H)
             fl_font(label_font(), float(label_size()));
             float width = fl_width(label());
             label_width = int(width+fl_width(":")+2.5f);
-            
+
             fl_push_clip(X, Y, label_width, H);
             if(!box()->fills_rectangle() && parent()) parent()->draw_group_box();
-			box()->draw(0,0,w(),h(),color(),f);            
-            fl_pop_clip();            
+            box()->draw(0,0,w(),h(),color(),f);
+            fl_pop_clip();
 
             Fl_Color color = label_color();
             if (!active_r()) color = fl_inactive(color);
@@ -283,14 +283,16 @@ void Fl_Input::draw(int X, int Y, int W, int H)
         }
     }
     X += label_width; W -= label_width;
-    
+
     bool erase_cursor_only = (this == ::erase_cursor_only && !ALL);
 
     // handle a totally blank one quickly:
     if (!size() && !focused() && this != dnd_target)
-    {		        
-		if(!box()->fills_rectangle() && parent()) parent()->draw_group_box();
-        box()->draw(0,0,w(),h(),color(),f);        		
+    {
+        fl_push_clip(0, 0, w(), h());
+        if(!box()->fills_rectangle() && parent()) parent()->draw_group_box();
+        box()->draw(0,0,w(),h(),color(),f);
+        fl_pop_clip();
         return;
     }
 
@@ -372,12 +374,12 @@ void Fl_Input::draw(int X, int Y, int W, int H)
     // if we are not doing minimal update a single erase is done,
     // rather than one per line:
     if (ALL)
-    {		
-		if(!box()->fills_rectangle() && parent()) parent()->draw_group_box();
-        box()->draw(0,0,w(),h(),color(),f);		
+    {
+        if(!box()->fills_rectangle() && parent()) parent()->draw_group_box();
+        box()->draw(0,0,w(),h(),color(),f);
     }
 
-	fl_push_clip(X, Y, W, H);
+    fl_push_clip(X, Y, W, H);
 
     Fl_Color textcolor = text_color();
     if (!active_r()) textcolor = fl_inactive(text_color());
@@ -649,7 +651,7 @@ void Fl_Input::position(int p, int m)
     if (m>size()) m = size();
     if (p == position_ && m == mark_) return;
 
-#ifdef HAVE_XUTF8    
+#if HAVE_XUTF8
      while (p < position_ && p > 0 && (size() - p) > 0 && 
 	(fl_utflen((unsigned char *)value() + p, size() - p) < 1)) { p--; }
      int ul = fl_utflen((unsigned char *)value() + p, size() - p);
@@ -755,7 +757,6 @@ static void undobuffersize(int n)
 // all changes go through here, delete characters b-e and insert text:
 bool Fl_Input::replace(int b, int e, const char* text, int ilen)
 {
-    int ul;
     was_up_down = false;
 
     if (b<0) b = 0;
@@ -764,7 +765,8 @@ bool Fl_Input::replace(int b, int e, const char* text, int ilen)
     if (e>size_) e = size_;
     if (e<b) {int t=b; b=e; e=t;}
     
-#ifdef HAVE_XUTF8    
+#if HAVE_XUTF8
+    int ul;
     while (b != e && b > 0 && (size_ - b) > 0 && 
 	(fl_utflen((unsigned char *)value_ + b, size_ - b) < 1)) { b--; }
     ul = fl_utflen((unsigned char *)value_ + e, size_ - e);

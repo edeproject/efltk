@@ -24,8 +24,7 @@ static int JpegRead(void *buf, int len)
 /* See if an image is contained in a data source */
 static bool jpeg_is_valid(void *stream, bool file)
 {
-    setup_read(stream, 10);
-
+    read_ptr=(uint8*)stream;
     uint8 magic[4];
 
     if ( JpegRead(magic, 2) ) {
@@ -171,10 +170,10 @@ static void output_no_message(j_common_ptr cinfo)
 }
 
 /* Load a JPEG type image from an stream datasource */
-Fl_Image *jpeg_create(void *stream, int size, bool file)
-{    
-	read_ptr=(uint8*)stream; 
-	
+Fl_Image *jpeg_create(void *stream, bool file)
+{
+    read_ptr=(uint8*)stream;
+
     struct jpeg_decompress_struct cinfo;
     JSAMPROW rowptr[1];
     Fl_Image *surface = NULL;

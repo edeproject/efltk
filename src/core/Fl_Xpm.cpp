@@ -10,9 +10,6 @@
 #include <ctype.h>
 
 static uint8 *read_ptr = 0;
-static int    readed   = 0;
-static int    read_size= 0;
-
 static int Read(void *buf, int len)
 {
     memcpy(buf, read_ptr, len);
