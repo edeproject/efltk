@@ -1,11 +1,14 @@
 #ifndef _Fl_RENDERER_H
 #define _Fl_RENDERER_H
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "Enumerations.h"
 #include "Fl_Util.h"
 #include "x.h"
 
-#include <config.h>
 #include <string.h>
 
 #ifdef _WIN32

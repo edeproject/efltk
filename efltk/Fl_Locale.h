@@ -3,7 +3,9 @@
 
 #ifndef _WIN32
 
-#define ENABLE_NLS 1
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,7 +14,7 @@
 
 #include "Fl_Export.h"
 
-#ifdef ENABLE_NLS
+#if ENABLE_NLS
 
 #    include <libintl.h>
 #    define _(String) gettext (String)
