@@ -108,7 +108,7 @@ void Fl_ListView_Item::width_changed(unsigned row, int col)
             if(h < m_image->height())
                 h = m_image->height();
         }
-        h += parent()->button_box()->dh() + parent()->leading() + 2;
+        h += parent()->button_box()->dh() + parent()->leading();
 
         parent()->row_height(row, h);
     }
@@ -153,7 +153,7 @@ void Fl_ListView_Item::setup(unsigned row)
             H=m_image->height();
     }
 
-    H += parent()->button_box()->dh() + parent()->leading() + 2;
+    H += parent()->button_box()->dh() + parent()->leading();
     parent()->row_height(row, H);
 }
 

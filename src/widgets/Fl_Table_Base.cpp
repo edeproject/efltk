@@ -16,8 +16,8 @@ void Fl_Table_Base::ctor_init()
     m_rows = m_cols = 0;
     m_row_header_w = 50;
     m_default_col_w = 70;
-    m_col_header_h = 25;
-    m_default_row_h = 22;
+    m_col_header_h = 20;
+    m_default_row_h = 20;
     m_row_header = m_col_header = 0;
     m_row_resize = m_col_resize = 0;
     m_row_resize_min = m_col_resize_min = 1;
