@@ -282,19 +282,21 @@ Fl_Pixmap   pixmap_ok(ok_xpm),
             pixmap_cancel(cancel_xpm),
             pixmap_no(no_xpm),
             pixmap_retry(retry_xpm),
+            pixmap_refresh(refresh_xpm),
             pixmap_help(help_xpm);
 
 // THESE ARE REPLACED BY Fl_Stock_Button?
 static const Fl_Dialog_Button_Template buttonTemplates[] = {
-   { FL_DLG_OK,     N_("Ok"),     &pixmap_ok },
-   { FL_DLG_CANCEL, N_("Cancel"), &pixmap_cancel },
-   { FL_DLG_YES,    N_("Yes"),    &pixmap_ok },
-   { FL_DLG_NO,     N_("No"),     &pixmap_no },
-   { FL_DLG_RETRY,  N_("Retry"),  &pixmap_retry },
-   { FL_DLG_CONFIRM,N_("Confirm"),&pixmap_ok },
-   { FL_DLG_IGNORE, N_("Ignore"), &pixmap_no },
-   { FL_DLG_HELP,   N_("Help"),   &pixmap_help },
-   { 0,             "",       &pixmap_help }
+    { Fl_Dialog::OK,     N_("Ok"),     &pixmap_ok },
+    { Fl_Dialog::CANCEL, N_("Cancel"), &pixmap_cancel },
+    { Fl_Dialog::YES,    N_("Yes"),    &pixmap_ok },
+    { Fl_Dialog::NO,     N_("No"),     &pixmap_no },
+    { Fl_Dialog::RETRY,  N_("Retry"),  &pixmap_retry },
+    { Fl_Dialog::REFRESH,N_("Refresh"),&pixmap_refresh },
+    { Fl_Dialog::CONFIRM,N_("Confirm"),&pixmap_ok },
+    { Fl_Dialog::IGNORE, N_("Ignore"), &pixmap_no },
+    { Fl_Dialog::HELP,   N_("Help"),   &pixmap_help },
+    { 0,             "",       &pixmap_help }
 };
 
 // Internal DS for Fl_Dialog
@@ -335,9 +337,9 @@ Fl_Variant& Fl_Dialog_Data_Source::operator [] (const char *field_name) {
 
 void Fl_Dialog::escape_callback(Fl_Widget *window,void *) {
    Fl_Dialog *dialog = (Fl_Dialog *)window;
-   if (dialog->m_buttons & FL_DLG_CANCEL) {
+   if (dialog->m_buttons & Fl_Dialog::CANCEL) {
       Fl::exit_modal();
-      dialog->m_modalResult = FL_DLG_CANCEL;
+      dialog->m_modalResult = Fl_Dialog::CANCEL;
    }
 }
 
@@ -473,7 +475,7 @@ void Fl_Dialog::buttons(int buttons_mask,int default_button)
 				btn = new Fl_Button(0,0,10,10, _(buttonTemplate.label));
 			}
 			
-			if (id == FL_DLG_HELP)
+			if (id == Fl_Dialog::HELP)
 				btn->callback(Fl_Dialog::help_callback);
 			else  
 				btn->callback(Fl_Dialog::buttons_callback);
@@ -488,7 +490,7 @@ void Fl_Dialog::buttons(int buttons_mask,int default_button)
 				int ih = btn->image()->height();
 				if (ih > hh) hh = ih;
 			}
-			hh += btn->box()->dh() * 2;
+			hh += btn->box()->dh();// * 2;
 			if (hh > maxh) maxh = hh;
 		}
 	}
@@ -531,7 +533,7 @@ int Fl_Dialog::handle(int event)
       switch(Fl::event_key()) {
       case FL_Escape:
          clear_value();
-         m_modalResult = (int)FL_DLG_CANCEL;
+         m_modalResult = (int)Fl_Dialog::CANCEL;
          Fl::exit_modal();
          return 1;
       case FL_Enter:
@@ -547,7 +549,7 @@ int Fl_Dialog::handle(int event)
 int Fl_Dialog::show_modal() {
    load_data();
    exec(0,false);
-   if (m_modalResult & (FL_DLG_OK|FL_DLG_YES)) 
+   if (m_modalResult & (Fl_Dialog::OK|Fl_Dialog::YES)) 
       save_data();
    return m_modalResult;
 }
