@@ -12,7 +12,7 @@ class Fl_ListHeader_Attr
 {
 public:
     Fl_String label;
-    unsigned short width;
+    int width;
     Fl_Flags flags;
     Fl_Font font;
     int font_size;
@@ -372,8 +372,8 @@ int Fl_ListView_Header::handle(int ev)
         if(dragging) {
             Fl_ListHeader_Attr *a = (Fl_ListHeader_Attr*)attr_list[col_to_drag];
             a->width = mx-col_start;
-            if(a->width-col_start-1/*-DRAG_DIST*/ < -col_start)
-                a->width = 1;//DRAG_DIST;
+            if(a->width < DRAG_DIST)
+                a->width = DRAG_DIST;
             set_damage(FL_DAMAGE_ALL);
             LIST->layout_scrollbars();
             LIST->redraw();
