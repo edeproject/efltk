@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x4003c8
+# %FirstUniqueId:	0x4003ca
 PROJECT_DIR = /develop/CVS/efltk/
 
 IDE_WORKING_DIR = /develop/CVS/efltk/
@@ -446,6 +446,9 @@ tools/etranslate/etranslate ::	tools/etranslate/compile.o\
 
 test/combobox ::	test/combobox.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+test/labelwidth ::	test/labelwidth.o
+	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %ObjectFilesLinking
 lib/Fl_ODBC_Database.o : src/db/odbc/Fl_ODBC_Database.cpp
@@ -1485,6 +1488,10 @@ lib/Fl_Combo_Box.o : src/widgets/Fl_Combo_Box.cpp
 
 
 test/combobox.o : test/combobox.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+test/labelwidth.o : test/labelwidth.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
@@ -2542,15 +2549,27 @@ lib/Fl_WM.o :	efltk/Fl_Callback_List.h\
 	config.h
 lib/Fl_Widget.o :	config.h\
 	efltk/fl_draw.h\
-	efltk/Fl_Font.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Group.h\
 	efltk/Fl_Int_List.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Export.h\
-	efltk/Fl_String_List.h\
-	efltk/Fl_String.h\
-	efltk/Fl_Color.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
 	efltk/Fl_Flags.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
 	efltk/Fl_Image.h\
 	efltk/Fl_PtrList.h\
 	efltk/Fl_Renderer.h\
@@ -2559,17 +2578,6 @@ lib/Fl_Widget.o :	config.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h\
 	efltk/Fl_Window.h\
-	efltk/Fl_Group.h\
-	efltk/Fl_Widget_List.h\
-	efltk/Fl_Widget.h\
-	efltk/Fl_Data_Source.h\
-	efltk/Fl_Data_Fields.h\
-	efltk/Fl_Variant.h\
-	efltk/Fl_Date_Time.h\
-	efltk/Fl_Exception.h\
-	efltk/Fl_Style.h\
-	efltk/Fl_Labeltype.h\
-	efltk/Fl_Boxtype.h\
 	efltk/Fl.h
 lib/Fl_Window.o :	efltk/Fl_WM.h\
 	efltk/x.h\
@@ -3196,21 +3204,24 @@ lib/fl_labeltype.o :	config.h\
 	efltk/x.h\
 	efltk/win32.h\
 	efltk/Fl_Color.h\
-	efltk/Fl_Util.h\
-	efltk/filename.h\
-	efltk/Fl_String.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Widget_List.h\
 	efltk/Fl_Widget.h\
 	efltk/Fl_Data_Source.h\
 	efltk/Fl_Data_Fields.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
 	efltk/Fl_Exception.h\
 	efltk/Fl_Style.h\
 	efltk/Fl_Font.h\
-	efltk/Fl_Int_List.h\
 	efltk/Fl_String_List.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Boxtype.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
 	efltk/fl_draw.h
 lib/fl_list_fonts.o :	src/core/fl_list_fonts_x.cpp\
 	config.h\
@@ -4280,6 +4291,7 @@ lib/Fl_Input.o :	efltk/Fl_Menu_Button.h\
 	efltk/fl_utf8.h\
 	efltk/fl_ask.h\
 	efltk/fl_draw.h\
+	efltk/Fl_Device.h\
 	efltk/Fl_Input.h\
 	efltk/Fl.h\
 	efltk/fl_math.h
@@ -8297,3 +8309,26 @@ test/combobox.o :	efltk/fl_ask.h\
 	efltk/Fl.h\
 	efltk/Fl_ListView_Header.h\
 	efltk/Fl_Window.h
+test/labelwidth.o :	efltk/Fl_Input.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl.h

@@ -40,8 +40,8 @@ Fl_No_Label fl_no_label("none");
 
 
 void Fl_Labeltype_::draw(const char* label,
-int X, int Y, int W, int H,
-Fl_Color color, Fl_Flags flags) const
+    int X, int Y, int W, int H,
+    Fl_Color color, Fl_Flags flags) const
 {
     if (flags & FL_INACTIVE)
     {
@@ -96,7 +96,7 @@ void Fl_Widget::draw_label(int X, int Y, int W, int H, Fl_Flags flags) const
         if (flags&FL_SELECTED)
             color = selection_text_color();
         else if (flags&FL_HIGHLIGHT && (color = highlight_label_color()))
-            ;
+        ;
         else
             color = label_color();
         if (focused()) flags |= FL_SELECTED;
@@ -108,7 +108,16 @@ void Fl_Widget::draw_label(int X, int Y, int W, int H, Fl_Flags flags) const
 
     if (flags & FL_ALIGN_CLIP) fl_push_clip(X, Y, W, H);
 
-    if(image_)
+    if (label_width_ > 0) {
+        flags |= FL_ALIGN_WRAP | FL_ALIGN_TOP;
+        int x_right = X + W;
+        if (W > label_width_) 
+            W = label_width_;
+        if (flags & FL_ALIGN_RIGHT) 
+            X = x_right - W;
+    }
+
+    if (image_)
     {
         fl_color(fl_inactive(color, flags));
 
@@ -123,7 +132,7 @@ void Fl_Widget::draw_label(int X, int Y, int W, int H, Fl_Flags flags) const
             // If all the flags are off, draw the image and label centered "nicely"
             // by measuring their total size and centering that rectangle:
             if (!(flags & (FL_ALIGN_LEFT|FL_ALIGN_RIGHT|FL_ALIGN_TOP|FL_ALIGN_BOTTOM|
-                           FL_ALIGN_INSIDE)) && !label_.empty())
+                            FL_ALIGN_INSIDE)) && !label_.empty())
             {
                 int d = (H-int(h+fl_height()))>>1;
                 if (d >= 0)
@@ -181,8 +190,17 @@ void Fl_Widget::draw_label(int X, int Y, int W, int H, Fl_Flags flags) const
 void Fl_Widget::measure_label(int& w, int& h) const
 {
     fl_font(label_font(), float(label_size()));
-    w = h = 300;                 // rather arbitrary choice for maximum wrap width
-    fl_measure(label().c_str(), w, h, flags());
+    int flags = this->flags();
+    if (label_width_ < 0)
+        w = h = 300;               // default, rather arbitrary choice for maximum wrap width
+    if (label_width_ == 0)
+        w = h = 0;                 // no limits at all
+    if (label_width_ > 0) {
+        w = label_width_;
+        flags |= FL_ALIGN_WRAP;
+        h = 0;                     // define wrap width
+    }
+    fl_measure(label().c_str(), w, h, flags);
 }
 
 

@@ -27,99 +27,99 @@
 /** Fl_Input */
 class FL_API Fl_Input : public Fl_Widget {
 public:
-  enum { // values for type()
-    NORMAL = 0,
+    enum { // values for type()
+        NORMAL = 0,
     // this hole was used by float & int types
-    SECRET = 3,
-    MULTILINE = 4,
+        SECRET = 3,
+        MULTILINE = 4,
     // 5 and 6 not used now...
-    INPUT_TYPE = 7,
-    READ_ONLY = 8,
-    WORDWRAP = 16
-  };
+        INPUT_TYPE = 7,
+        READ_ONLY = 8,
+        WORDWRAP = 16
+    };
 
-  Fl_Input(int, int, int, int, const char* = 0);
-  ~Fl_Input();
-  static Fl_Named_Style* default_style;
+    Fl_Input(int, int, int, int, const char* = 0);
+    ~Fl_Input();
+    static Fl_Named_Style* default_style;
 
-  int input_type() const {return type() & INPUT_TYPE; }
-  void input_type(int t) { type(t | readonly()); }
-  int readonly() const { return (type() & READ_ONLY); }
-  void readonly(int b) { if (b) type(type() | READ_ONLY); else type(type() & ~READ_ONLY); }
-  int wordwrap() const { return (type() & WORDWRAP); }
-  void wordwrap(int b) { if (b) type(type() | WORDWRAP); else type(type() & ~WORDWRAP); }
+    int input_type() const {return type() & INPUT_TYPE; }
+    void input_type(int t) { type(t | readonly()); }
+    int readonly() const { return (type() & READ_ONLY); }
+    void readonly(int b) { if (b) type(type() | READ_ONLY); else type(type() & ~READ_ONLY); }
+    int wordwrap() const { return (type() & WORDWRAP); }
+    void wordwrap(int b) { if (b) type(type() | WORDWRAP); else type(type() & ~WORDWRAP); }
 
-  virtual void draw();
-  virtual void draw(int, int, int, int);
-  virtual int handle(int);
-  virtual int handle(int event, int, int, int, int);
+    virtual void draw();
+    virtual void draw(int, int, int, int);
+    virtual int handle(int);
+    virtual int handle(int event, int, int, int, int);
 
-  bool value(const char*);
-  bool value(const char*, int);
-  bool static_value(const char*);
-  bool static_value(const char*, int);
-  const char* value() const {return value_;}
-  char index(int i) const {return value_[i];}
-  int size() const {return size_;}
-  int maximum_size() { return maximum_size_; }
-  void maximum_size(int m) { maximum_size_ = m; }
+    bool value(const char*);
+    bool value(const char*, int);
+    bool static_value(const char*);
+    bool static_value(const char*, int);
+    const char* value() const {return value_;}
+    char index(int i) const {return value_[i];}
+    int size() const {return size_;}
+    int maximum_size() { return maximum_size_; }
+    void maximum_size(int m) { maximum_size_ = m; }
 
   // Data source support
-  virtual bool load_data(Fl_Data_Source *ds);
-  virtual bool save_data(Fl_Data_Source *ds) const;
+    virtual bool load_data(Fl_Data_Source *ds);
+    virtual bool save_data(Fl_Data_Source *ds) const;
 
-  int position() const {return position_;}
-  int mark() const {return mark_;}
-  void position(int p, int m);
-  void position(int p) {position(p, p);}
-  void up_down_position(int position, bool extend);
-  void mark(int m) { position(position(), m);}
+    int position() const {return position_;}
+    int mark() const {return mark_;}
+    void position(int p, int m);
+    void position(int p) {position(p, p);}
+    void up_down_position(int position, bool extend);
+    void mark(int m) { position(position(), m);}
 
-  virtual bool replace(int, int, const char*, int);
-  bool cut() {return replace(position(), mark(), 0, 0);}
-  bool cut(int n) {return replace(position(), position()+n, 0, 0);}
-  bool cut(int a, int b) {return replace(a, b, 0, 0);}
-  bool insert(const char* t, int l=0){return replace(position_, mark_, t, l);}
-  bool replace(int a, int b, char c) {return replace(a,b,&c,1);}
-  bool copy(bool clipboard = true);
-  bool undo();
-  void maybe_do_callback();
+    virtual bool replace(int, int, const char*, int);
+    bool cut() {return replace(position(), mark(), 0, 0);}
+    bool cut(int n) {return replace(position(), position()+n, 0, 0);}
+    bool cut(int a, int b) {return replace(a, b, 0, 0);}
+    bool insert(const char* t, int l=0){return replace(position_, mark_, t, l);}
+    bool replace(int a, int b, char c) {return replace(a,b,&c,1);}
+    bool copy(bool clipboard = true);
+    bool undo();
+    void maybe_do_callback();
 
-  int word_start(int i) const;
-  int word_end(int i) const;
-  int line_start(int i) const;
-  int line_end(int i) const;
-  int mouse_position(int, int, int, int) const;
-  int xscroll() const {return xscroll_;}
-  int yscroll() const {return yscroll_;}
+    int word_start(int i) const;
+    int word_end(int i) const;
+    int line_start(int i) const;
+    int line_end(int i) const;
+    int mouse_position(int, int, int, int) const;
+    int xscroll() const {return xscroll_;}
+    int yscroll() const {return yscroll_;}
 
 private:
 
-  const char* value_;
-  char* buffer;
+    const char* value_;
+    char* buffer;
 
-  int size_;
-  int maximum_size_;
-  int bufsize;
-  int position_;
-  int mark_;
-  int xscroll_, yscroll_;
-  int mu_p;
-  int label_width;
+    int size_;
+    int maximum_size_;
+    int bufsize;
+    int position_;
+    int mark_;
+    int xscroll_, yscroll_;
+    int mu_p;
+    int m_label_width;
 
-  const char* expand(const char*, char*, int) const;
-  float expandpos(const char*, const char*, const char*, int*) const;
-  void minimal_update(int, int);
-  void minimal_update(int p);
-  void erase_cursor_at(int p);
-  void put_in_buffer(int newsize);
+    const char* expand(const char*, char*, int) const;
+    float expandpos(const char*, const char*, const char*, int*) const;
+    void minimal_update(int, int);
+    void minimal_update(int p);
+    void erase_cursor_at(int p);
+    void put_in_buffer(int newsize);
 
-  void setfont() const;
+    void setfont() const;
 
-  bool handle_key();
-  bool key_is_shortcut();
-  void shift_position(int p);
-  void shift_up_down_position(int p);
+    bool handle_key();
+    bool key_is_shortcut();
+    void shift_position(int p);
+    void shift_up_down_position(int p);
 
 };
 

@@ -295,12 +295,14 @@ void Fl_Input::draw(int X, int Y, int W, int H)
         // draw and measure the inside label:
         if(!label().empty() && (!(flags()&15)||(flags()&FL_ALIGN_INSIDE)))
         {
-            fl_font(label_font(), float(label_size()));
-            float width = fl_width(label());
-            label_width = int(width+fl_width(":")+2.5f);
+            int hh = 0;
+            measure_label(m_label_width,hh);
+            float width = m_label_width;
+            m_label_width = int(width+fl_width(":")+2.5f);
 
-            fl_push_clip(X, Y, label_width, H);
-            if(!box()->fills_rectangle() && parent()) parent()->draw_group_box();
+            fl_push_clip(X, Y, m_label_width, H);
+            if(!box()->fills_rectangle() && parent()) 
+                parent()->draw_group_box();
             box()->draw(0,0,w(),h(),color(),f);
             fl_pop_clip();
 
@@ -314,10 +316,10 @@ void Fl_Input::draw(int X, int Y, int W, int H)
         }
         else
         {
-            label_width = 0;
+            m_label_width = 0;
         }
     }
-    X += label_width; W -= label_width;
+    X += m_label_width; W -= m_label_width;
 
     bool erase_cursor_only = (this == ::erase_cursor_only && !ALL);
 
@@ -1005,7 +1007,7 @@ Fl_Input::Fl_Input(int x, int y, int w, int h, const char* l)
     value_ = "";
     xscroll_ = yscroll_ = 0;
     style(default_style);
-    label_width = 0;
+    m_label_width = 0;
 }
 
 void Fl_Input::put_in_buffer(int len)
@@ -1416,7 +1418,7 @@ static void dnd_timeout(void* p)
 
 int Fl_Input::handle(int event, int X, int Y, int W, int H)
 {
-    X += label_width; W -= label_width;
+    X += m_label_width; W -= m_label_width;
     int newpos, newmark;
 
     switch (event)

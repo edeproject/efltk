@@ -34,9 +34,10 @@
 
 void Fl_Widget::do_callback(Fl_Widget* o, void* arg, uchar event)
 {   
+    label_width_ = -1; // No label width limit
     event_ = event;
     // Call callback_ only if NO slots connected!
-    if(callback_) callback_(o,(void*)arg);
+    if (callback_) callback_(o,(void*)arg);
 }
 
 void Fl_Widget::do_callback(Fl_Widget* o, long arg, uchar event)
@@ -600,6 +601,12 @@ void Fl_Widget::draw()
 {
     draw_box();
     draw_inside_label();
+}
+
+void Fl_Widget::preffered_size(int& w, int& h) const {
+    measure_label(w,h);
+    if (h < this->h()) h = this->h();
+    w = this->w();
 }
 
 //
