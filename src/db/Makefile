@@ -5,7 +5,10 @@ CPPFILES = \
 	Fl_Query.cpp \
 	Fl_Params.cpp 
 
-CFILES =
+################################################################
+
+DSOCFLAGS += -DFL_LIBRARY
+DSOCXXFLAGS += -DFL_LIBRARY
 
 LIBNAME = libefltk
 DSOLIBNAME = $(LIBNAME)
@@ -29,10 +32,9 @@ $(LIBRARY).a: $(STATIC_OBJECTS)
 
 $(DSO).so.2 $(DSO).sl.2: $(SHARED_OBJECTS)
 
-DLLIMPORTNAME = $(LIBNAME).2.dll$(LIBEXT)
 $(DSO).2.dll: $(SHARED_OBJECTS)
 
-clean :
+clean:
 	@rm -f *.o *~ makedepend
 	@touch makedepend
 
