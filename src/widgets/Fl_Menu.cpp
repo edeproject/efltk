@@ -139,14 +139,6 @@ MenuWindow::MenuWindow(MenuWindow *parent, Fl_Widget *widget, Fl_Menu_ *menu, in
     menubar = false;
     
     anim_flags = 0;
-	if(parent) {
-		if(Fl_Menu_::subwindow_animate()) {
-			anim_flags = Fl_Menu_::LEFT_TO_RIGHT;
-			slow_down_to_w = 15;
-		}
-	} else {
-		slow_down_to_h = 20;
-	}
 
     child_win = 0;
     add_items = false;
@@ -224,6 +216,14 @@ void MenuWindow::layout()
         ow = W;
         oh = H;
         add_items = false;
+
+        if(parent) {
+            if(Fl_Menu_::subwindow_animate()) {
+                anim_flags = Fl_Menu_::LEFT_TO_RIGHT;
+                slow_down_to_w = 15;
+            }
+        }
+
     }
 
     if(!indexes_ || empty) {
@@ -928,7 +928,7 @@ int Fl_Menu_::popup(int X, int Y, int W, int H)
 
     MenuWindow::default_style->color = color();
 
-	float speed = (anim_speed_==-1)?Fl_Menu_Window::default_anim_speed():anim_speed_;
+    float speed = (anim_speed_==-1)?Fl_Menu_Window::default_anim_speed():anim_speed_;
 
     MenuWindow w(0, this, this, indexes, level, W, H);
     w.anim_flags = anim_flags_;
@@ -938,6 +938,12 @@ int Fl_Menu_::popup(int X, int Y, int W, int H)
     Fl_Menu_::first_menu = &w;
 
     w.relayout(indexes, level);
+
+    if(type()&7) {
+        if(w.ow>w.oh) w.slow_down_to_w = 10;
+        else w.slow_down_to_h = 10;
+    } else
+        w.slow_down_to_h = 20;
 
     // Force menu X/Y on screen
     if(Y+w.oh > Fl::h()) {
@@ -1002,10 +1008,11 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
     w.anim_flags = anim_flags_;
     w.anim_speed(speed);		
     w.menubar = true;
+    w.slow_down_to_h = 20;
     w.child_of(Fl::first_window());
     MenuWindow *saved_first = Fl_Menu_::first_menu;
     Fl_Menu_::first_menu = &w;
-
+    
     Fl_Widget* saved_modal = Fl::modal();
     bool saved_grab = Fl::grab();
     int cur_index = -1;
