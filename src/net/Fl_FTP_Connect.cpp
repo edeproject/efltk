@@ -3,17 +3,17 @@
 
 Fl_FTP_Connect::Fl_FTP_Connect() 
 : m_commandSocket(), m_dataSocket(), m_response(m_commandSocket.response()) {
-	m_passive = true;
+    m_passive = true;
 }
 
 Fl_FTP_Connect::~Fl_FTP_Connect() {
-	close();
+    close();
 }
 
 void Fl_FTP_Connect::host(Fl_String hostName,int portNumber) {
-	close();
-	m_port = portNumber;
-	m_host = hostName;
+    close();
+    m_port = portNumber;
+    m_host = hostName;
 }
 
 void Fl_FTP_Connect::open() {
@@ -32,6 +32,14 @@ void Fl_FTP_Connect::command(Fl_String cmd) {
 	if (!active())
 		fl_throw("Connection doesn't exist yet");
 	m_commandSocket.command(cmd);
+    if (cmd == "nlst") {
+        Fl_Buffer   buffer;
+        int         len;
+        do {
+            len = m_dataSocket.read_line(buffer);
+            printf(buffer.data());
+        } while (len > 1);
+    }
 }
 
 void Fl_FTP_Connect::open_data_port() {

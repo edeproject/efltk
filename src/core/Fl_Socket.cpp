@@ -55,8 +55,7 @@ Fl_Socket::~Fl_Socket() {
 		cleanup();
 }
 
-int Fl_Socket::control(int flag, unsigned long *check)
-{
+int Fl_Socket::control(int flag, unsigned long *check) {
 #ifdef _WIN32
 	return ioctlsocket(m_sockfd, flag, check);
 #else
@@ -144,7 +143,7 @@ int Fl_Socket::read_line(char *buffer,int size) {
 		char ch = get_char();
 		*p = ch;
 		p++;
-		if (ch == '\n')
+		if (ch == 0 || ch == '\n')
 			break;
 	}
 	*p = 0;

@@ -6907,7 +6907,7 @@ test/net/Fl_FTP_Connect.o :	efltk/net/Fl_FTP_Connect.h\
 # %TargetInfo src/core/Fl_Socket.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400342,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/socket.cpp	SourceOrHeader,	UniqueId=0x40033b,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/net/Fl_FTP_Socket.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400341,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/net/ftp_socket.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400340,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/net/ftp_socket.cpp	SourceOrHeader,	UniqueId=0x400340,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/db/db_odbc.cpp	SourceOrHeader,	UniqueId=0x400346,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_Gdi.cpp	SourceOrHeader,	UniqueId=0x400347,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_PostScript.cpp	SourceOrHeader,	UniqueId=0x40034b,	TargetType=C++,	IDEFlags=0x4
@@ -6916,6 +6916,7 @@ test/net/Fl_FTP_Connect.o :	efltk/net/Fl_FTP_Connect.h\
 # %TargetInfo test/dialog.cpp	SourceOrHeader,	UniqueId=0x400351,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/directory.cpp	SourceOrHeader,	UniqueId=0x400353,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/doublebuffer.cpp	SourceOrHeader,	UniqueId=0x400355,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/net/Fl_FTP_Connect.cpp	SourceOrHeader,	UniqueId=0x400356,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x4
@@ -7137,7 +7138,6 @@ test/net/Fl_FTP_Connect.o :	efltk/net/Fl_FTP_Connect.h\
 # %TargetInfo efltk/Fl_Gdi.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400349,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Device.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40034a,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_PostScript.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40034c,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo src/net/Fl_FTP_Connect.cpp	SourceOrHeader,	UniqueId=0x400356,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo efltk/net/Fl_FTP_Connect.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400357,	TargetType=INC,	IDEFlags=0xe
 
 
