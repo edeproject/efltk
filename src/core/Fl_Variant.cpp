@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <Fl_Variant.h>
+#include <efltk/Fl_Variant.h>
 #include <string.h>
 #include <stdlib.h>
 

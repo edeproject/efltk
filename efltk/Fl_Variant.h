@@ -17,11 +17,12 @@
 #ifndef __FL_VARIANT_H__
 #define __FL_VARIANT_H__
 
-#include <Fl_Date_Time.h>
+#include "Fl_Export.h"
+#include "Fl_Date_Time.h"
 
 enum variantType { CVT_NONE, CVT_INT, CVT_FLOAT, CVT_STRING, CVT_TEXT, CVT_BUFFER, CVT_DATETIME };
 
-class Fl_Variant {
+class FL_API Fl_Variant {
    union variantData {
       int       intData;
       double    floatData;
@@ -32,39 +33,39 @@ class Fl_Variant {
    int            m_size;
    variantType    m_type;
 protected:
-   SP_EXPORT void setData(const Fl_Variant &C);
-   SP_EXPORT void releaseBuffers();
+    void setData(const Fl_Variant &C);
+    void releaseBuffers();
 public:
-   SP_EXPORT Fl_Variant() { m_type = CVT_NONE; }
-   SP_EXPORT ~Fl_Variant() { releaseBuffers(); }
+    Fl_Variant() { m_type = CVT_NONE; }
+    ~Fl_Variant() { releaseBuffers(); }
 
-   SP_EXPORT Fl_Variant& operator =(const Fl_Variant &C) { // ASSIGNMENT OPERATOR.
+    Fl_Variant& operator =(const Fl_Variant &C) { // ASSIGNMENT OPERATOR.
       if (this == &C) return *this;
       setData(C);
       return *this;
    };
 
-   SP_EXPORT void setInteger(int value);
-   SP_EXPORT void setFloat(double value);
-   SP_EXPORT void setString(const char * value,int maxlen=0);
-   SP_EXPORT void setText(const char * value);
-   SP_EXPORT void setBuffer(const void * value,int sz);
-   SP_EXPORT void setDateTime(CDateTime value);
+    void setInteger(int value);
+    void setFloat(double value);
+    void setString(const char * value,int maxlen=0);
+    void setText(const char * value);
+    void setBuffer(const void * value,int sz);
+    void setDateTime(Fl_Date_Time value);
 
-   SP_EXPORT int    getInteger() const;
-   SP_EXPORT double getFloat() const;
-   SP_EXPORT const char * getString() const;
-   SP_EXPORT const void * getBuffer() const;
-   SP_EXPORT CDateTime getDateTime() const;
+    int    getInteger() const;
+    double getFloat() const;
+    const char * getString() const;
+    const void * getBuffer() const;
+    Fl_Date_Time getDateTime() const;
 
-   SP_EXPORT variantType dataType() const { return m_type; }
-   SP_EXPORT int dataSize() const { return m_size; }
-   SP_EXPORT void * dataBuffer() const { return (void *)(variantData *)&m_data; }
+    variantType dataType() const { return m_type; }
+    int dataSize() const { return m_size; }
+    void * dataBuffer() const { return (void *)(variantData *)&m_data; }
 
-   SP_EXPORT operator int () const;
-   SP_EXPORT operator double () const;
-   SP_EXPORT operator const char * () const;
-   SP_EXPORT operator CDateTime () const;
+    operator int () const;
+    operator double () const;
+    operator const char * () const;
+    operator Fl_Date_Time () const;
 };
 //---------------------------------------------------------------------------
 #endif

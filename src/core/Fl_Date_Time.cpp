@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <Fl_Date_Time.h>
+#include <efltk/Fl_Date_Time.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -380,8 +380,8 @@ Fl_Date_Time::Fl_Date_Time (short year,short month,short day,short hour,short mi
 }
 
 Fl_Date_Time::Fl_Date_Time (const char * dat) {
-   CString  s1( CString(dat).trim() );
-   CString  s2;
+   Fl_String  s1( Fl_String(dat).trim() );
+   Fl_String  s2;
 
    if (!*dat) {
       m_dateTime = 0;
@@ -632,25 +632,25 @@ short Fl_Date_Time::dayOfWeek (void) const {
    return short((int(m_dateTime) - 1) % 7 + 1);
 }
 
-CString Fl_Date_Time::dayOfWeekName (void) const {
+Fl_String Fl_Date_Time::dayOfWeekName (void) const {
    return dayname[dayOfWeek() - 1];
 }
 
-CString Fl_Date_Time::monthName() const {
+Fl_String Fl_Date_Time::monthName() const {
    return mname[month()-1];
 
 }
 
-CString Fl_Date_Time::dateString() const {
+Fl_String Fl_Date_Time::dateString() const {
    char  buffer[32];
    formatDate(buffer);
-   return CString(buffer);
+   return Fl_String(buffer);
 }
 
-CString Fl_Date_Time::timeString() const {
+Fl_String Fl_Date_Time::timeString() const {
    char  buffer[32];
    formatTime(buffer,!time24Mode);
-   return CString(buffer);
+   return Fl_String(buffer);
 }
 
 void Fl_Date_Time::decodeDate(short *y,short *m,short *d) const {

@@ -33,6 +33,7 @@ CPPFILES = \
 	Fl_Callback.cpp \
 	Fl_Config.cpp \
 	Fl_Data_Source.cpp \
+	Fl_Date_Time.cpp \
 	Fl_Gif.cpp \
 	Fl_Group.cpp \
 	Fl_Image.cpp \
@@ -44,6 +45,7 @@ CPPFILES = \
 	Fl_Style_Set.cpp \
 	Fl_Thread.cpp \
 	Fl_Util.cpp \
+	Fl_Variant.cpp \
 	Fl_WM.cpp \
 	Fl_Widget.cpp \
 	Fl_Window.cpp \
