@@ -101,6 +101,12 @@ public:
     static bool set_active_window(Window xid);
 
     /**
+     * Close window 'xid'. NET-WM only
+     * Returns true on success.
+     */
+    static bool close_window(Window xid);
+
+    /**
      * Set window strut, i.e. reserve some space from workspace, so e.g. maximized windows doesn't overlap it.
      * Returns true on success.
      * Used commonly in taskbars (panels). NET-WM only.
