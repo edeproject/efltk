@@ -326,7 +326,11 @@ bool Fl_WM::get_window_icon(Window xid, Fl_Image *&icon, int w, int h)
             XDestroyImage(xim);
         }
         if(mask) {
-            Fl_Image *smask  = mask->scale(w, h);
+            Fl_Image *smask = mask;
+            if(mask->width()!=w || mask->height()!=h) {
+                smask = mask->scale(w, h);
+                delete mask;
+            }
             smask->mask_type(MASK_COLORKEY);
             smask->colorkey(0xFFFFFFFF);
             mask_bitmap = smask->create_mask(w, h);
@@ -334,10 +338,15 @@ bool Fl_WM::get_window_icon(Window xid, Fl_Image *&icon, int w, int h)
         }
     }
 
-    icon = image->scale(w,h);
-    if(mask_bitmap) icon->set_mask(mask_bitmap, true);
+    icon = image;
+    if(image->width()!=w || image->height()!=h) {
+        icon = image->scale(w,h);
+        delete image;
+    }
 
-    return true;
+    if(mask_bitmap && icon) icon->set_mask(mask_bitmap, true);
+
+    return (icon!=(Fl_Image*)0);
 }
 
 bool Fl_WM::get_window_title(Window xid, char *&title)
