@@ -42,6 +42,8 @@ public:
     virtual void draw();
     virtual void measure(int& w,int& h) const;
 
+    virtual void reset() { date(Fl_Date_Time::Now()); }
+
     void date(Fl_Date_Time dt);
     Fl_Date_Time date() const;
 
