@@ -1714,6 +1714,7 @@ int Fl_Input::handle(int event, int X, int Y, int W, int H)
             // Fake Up and Down arrow clicks :)
             if(input_type() == MULTILINE && size()>0) {
                 Fl::e_length = 0;
+                Fl::e_text = "";
                 if(Fl::event_dy()<0) Fl::e_keysym = FL_Down;
                 else Fl::e_keysym = FL_Up;
                 return handle_key();
