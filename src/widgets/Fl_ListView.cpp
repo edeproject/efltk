@@ -79,8 +79,8 @@ void Fl_ListView::table_draw(TableContext context, unsigned R, unsigned C,
     if(context==CONTEXT_NONE) return;
 
     static int drawing_row = -1;
-    static bool drawed_header = -1;
-    bool damage_all = (damage() & ~FL_DAMAGE_CHILD);
+    static bool drawed_header = false;
+    bool damage_all = (damage() & ~FL_DAMAGE_CHILD)>0;
 
     if(drawed_header && context!=CONTEXT_COL_HEADER) {
         header()->set_damage(0);
@@ -706,12 +706,15 @@ Fl_ListView_Item *Fl_ListView::find_userdata(void *data, unsigned start_index, u
 
 bool Fl_ListView::match_text(const Fl_String &key, const char *text) const
 {
-    Fl_String tmp(text);
-    return (strncmp(tmp.lower_case(), key, key.length()) == 0);
+	if(!text || !*text) return false;
+	Fl_String tmp(text);
+    return (strncmp(tmp.lower_case().c_str(), key.c_str(), key.length()) == 0);
 }
 
 int Fl_ListView::find_text_row(const char *text, int column, unsigned start_index, unsigned end_index) const
 {
+	if(!text || !*text) return -1;
+
     if(start_index >= row_count())
         start_index = 0;
     if(end_index <= start_index || end_index >= row_count())
@@ -732,6 +735,8 @@ int Fl_ListView::find_text_row(const char *text, int column, unsigned start_inde
 
 Fl_ListView_Item *Fl_ListView::find_text(const char *text, int column, unsigned start_index, unsigned end_index) const
 {
+	if(!text || !*text) return 0;
+
     if(start_index >= row_count())
         start_index = 0;
     if(end_index <= start_index || end_index >= row_count())
@@ -741,7 +746,7 @@ Fl_ListView_Item *Fl_ListView::find_text(const char *text, int column, unsigned 
     if(col<0) col = 0;
 
     Fl_String tmp(text);
-    Fl_String search = tmp.lower_case();
+    Fl_String search = tmp.lower_case();	
 
     for(unsigned n=start_index; n<=end_index; n++) {
         if(match_text(search, items[n]->label(col)))
@@ -821,11 +826,12 @@ bool Fl_ListView::select_row(unsigned row, int value)
 }
 
 bool Fl_ListView::select_only_row(unsigned row)
-{
+{	
     unselect_all();
     if(set_select_flag(row, 1)) {
         selection.append(row);
         items[row]->redraw();
+		set_changed();
     }
     cur_row = row;
     return true;
@@ -849,6 +855,7 @@ void Fl_ListView::select_items(unsigned from, unsigned to)
             selection.append(n);
         }
     }
+	set_changed();
 }
 
 bool Fl_ListView::unselect_all()

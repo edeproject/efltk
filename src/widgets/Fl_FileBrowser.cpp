@@ -324,7 +324,9 @@ int                                         // O - Number of files loaded
     m_dir_ds.directory(dir);
 
     clear();
-    header()->clear();
+    clear_columns();
+	sort_col(1);
+
     m_up_item = 0;
 
     if(dir.empty()) {

@@ -418,6 +418,10 @@ SOURCE=..\src\widgets\Fl_ListView_Item.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\widgets\Fl_ListView_ItemExt.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\core\fl_load_plugin.cpp
 # End Source File
 # Begin Source File
@@ -523,6 +527,10 @@ SOURCE=..\src\core\Fl_own_colormap.cpp
 # Begin Source File
 
 SOURCE=..\src\widgets\Fl_Pack.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Packed_Strings.cpp
 # End Source File
 # Begin Source File
 
@@ -646,6 +654,10 @@ SOURCE=..\src\core\Fl_String.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\core\Fl_String_List.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\core\Fl_Style.cpp
 # End Source File
 # Begin Source File
@@ -655,6 +667,10 @@ SOURCE=..\src\core\Fl_Style_Set.cpp
 # Begin Source File
 
 SOURCE=..\src\widgets\fl_symbols.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Table_Base.cpp
 # End Source File
 # Begin Source File
 
@@ -1162,6 +1178,10 @@ SOURCE=..\efltk\Fl_Pack.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\efltk\Fl_Packed_Strings.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\efltk\db\Fl_Params.h
 # End Source File
 # Begin Source File
@@ -1203,6 +1223,10 @@ SOURCE=..\efltk\db\Fl_Query.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_Radio_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Radio_Buttons.h
 # End Source File
 # Begin Source File
 
@@ -1307,6 +1331,10 @@ SOURCE=..\efltk\Fl_Style.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_Style_Set.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Table_Base.h
 # End Source File
 # Begin Source File
 

@@ -96,14 +96,14 @@ public:
     bool unselect_all();
 
     void inactive_row(unsigned row, bool val);
-    bool inactive_row(unsigned row) const { return (row_flags(row)&INACTIVE); }
+    bool inactive_row(unsigned row) const { return (row_flags(row)&INACTIVE)==INACTIVE; }
     bool inactive(Fl_ListView_Item *w) const { return inactive_row(find(w)); }
 
     void selectable_row(unsigned row, bool val);
     bool selectable_row(unsigned row) const { return !(row_flags(row)&NON_SELECTABLE); }
     bool selectable(Fl_ListView_Item *w) const { return selectable_row(find(w)); }
 
-    bool selected_row(unsigned row) const { return (row_flags(row) & SELECTED); }
+    bool selected_row(unsigned row) const { return (row_flags(row) & SELECTED)==SELECTED; }
     bool selected(Fl_ListView_Item *w) const { return selected_row(find(w)); }
 
     bool select_row(unsigned row, int value=1);
