@@ -414,7 +414,7 @@ static int widget_total_width(Fl_Widget *w,int pref_w) {
 }
 
 static int widget_total_height(Fl_Widget *w,int pref_h) {
-    if (!w->align() & FL_ALIGN_INSIDE) {
+    if (!(w->align() & FL_ALIGN_INSIDE)) {
         if (w->align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) 
             return w->label_height() + pref_h;
         return max(w->label_height(),pref_h);
