@@ -75,7 +75,7 @@ int prime_func(void* p)
         Fl::unlock();
         Fl::awake((void*)(browser == browser1? p:0));	// Cause the browser to redraw ...
     }
-    Fl::sleep_ms(10);
+    Fl::sleep(10);
   }
   return 0;
 }
