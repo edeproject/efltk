@@ -1921,28 +1921,28 @@ lib/Fl_FTP_Socket.o : src/net/Fl_FTP_Socket.cpp
 # %TargetType:	C++_OBJ
 # %ParentTarget:	0x40033f
 # %SourceTarget:	0x400340
-test/net/ftp_socket.o : /distr/develop/CVS/efltk/test/net/ftp_socket.cpp
+test/net/ftp_socket.o : test/net/ftp_socket.cpp
 	$(CXX) -c -o $@ $< -Itest/net -Itest/net $(CXXFLAGS)
 
 
 # %TargetType:	C++_OBJ
 # %ParentTarget:	0x40033f
 # %SourceTarget:	0x400341
-test/net/Fl_FTP_Socket.o : /distr/develop/CVS/efltk/src/net/Fl_FTP_Socket.cpp
+test/net/Fl_FTP_Socket.o : src/net/Fl_FTP_Socket.cpp
 	$(CXX) -c -o $@ $< -Itest/net -Itest/net $(CXXFLAGS)
 
 
 # %TargetType:	C++_OBJ
 # %ParentTarget:	0x40033f
 # %SourceTarget:	0x400342
-test/net/Fl_Socket.o : /distr/develop/CVS/efltk/src/core/Fl_Socket.cpp
+test/net/Fl_Socket.o : src/core/Fl_Socket.cpp
 	$(CXX) -c -o $@ $< -Itest/net -Itest/net $(CXXFLAGS)
 
 
 # %TargetType:	C++_OBJ
 # %ParentTarget:	0x40033a
 # %SourceTarget:	0x400343
-test/Fl_Buffer.o : /distr/develop/CVS/efltk/src/core/Fl_Buffer.cpp
+test/Fl_Buffer.o : src/core/Fl_Buffer.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
@@ -6720,10 +6720,10 @@ test/Fl_Buffer.o :	efltk/Fl_Exception.h\
 # %TargetInfo efltk/db/Fl_Database.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400337,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Socket.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400339,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/net/Fl_FTP_Socket.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40033e,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo /distr/develop/CVS/efltk/test/net/ftp_socket.cpp	SourceOrHeader,	UniqueId=0x400340,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo /distr/develop/CVS/efltk/src/net/Fl_FTP_Socket.cpp	SourceOrHeader,	UniqueId=0x400341,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo /distr/develop/CVS/efltk/src/core/Fl_Socket.cpp	SourceOrHeader,	UniqueId=0x400342,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo /distr/develop/CVS/efltk/src/core/Fl_Buffer.cpp	SourceOrHeader,	UniqueId=0x400343,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/net/ftp_socket.cpp	SourceOrHeader,	UniqueId=0x400340,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/net/Fl_FTP_Socket.cpp	SourceOrHeader,	UniqueId=0x400341,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/core/Fl_Socket.cpp	SourceOrHeader,	UniqueId=0x400342,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/core/Fl_Buffer.cpp	SourceOrHeader,	UniqueId=0x400343,	TargetType=C++,	IDEFlags=0x4
 
 
 # %UniqueId:	0x400001
