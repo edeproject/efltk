@@ -402,80 +402,79 @@ void Fl_Group::layout()
     int layout_damage = this->layout_damage();
     Fl_Widget::layout();
 
-    if(children() && resizable()) {
-        int* p = sizes();        // initialize the size array
+    if(children() > 0 && layout_damage&FL_LAYOUT_WH)
+    {
+        int *p=0;
+        if(resizable()) p = sizes(); // initialize the size array
 
-        if(layout_damage&FL_LAYOUT_WH)
-        {
+        Fl_Widget *client = NULL;
+        int dw=0, dh=0, IX=0, IR=0, IY=0, IB=0;
+        if(p) {
             // get changes in size from the initial size:
-            int dw = w()-p[1];
-            int dh = h()-p[3];
+            dw = w()-p[1];
+            dh = h()-p[3];
             p+=4;
-
-            int xx = 0, yy = 0;
-            int ww = w(), hh = h();
-
-            Fl_Widget *client = NULL;
 
             // Calculate a new size & position for every child widget:
             // get initial size of resizable():
-            int IX = *p++;
-            int IR = *p++;
-            int IY = *p++;
-            int IB = *p++;
-
-            for (int i = 0; i < children(); i++) {
-
-                Fl_Widget* o = child(i);
-                switch (o->layout_align()) {
-                case 0: {
-                    if(!resizable()) break;
-
-                    int X = p[0];
-                    if (X >= IR) X += dw;
-                    else if (X > IX) X = X + dw * (X-IX)/(IR-IX);
-                    int R = p[1];
-                    if (R >= IR) R += dw;
-                    else if (R > IX) R = R + dw * (R-IX)/(IR-IX);
-
-                    int Y = p[2];
-                    if (Y >= IB) Y += dh;
-                    else if (Y > IY) Y = Y + dh*(Y-IY)/(IB-IY);
-                    int B = p[3];
-                    if (B >= IB) B += dh;
-                    else if (B > IY) B = B + dh*(B-IY)/(IB-IY);
-
-                    o->resize(X, Y, R-X, B-Y);
-                    p += 4;
-                }
-                break;
-
-                case FL_ALIGN_LEFT:
-                    o->resize(xx,yy,o->w(),hh);
-                    xx += o->w();
-                    ww -= o->w();
-                    break;
-                case FL_ALIGN_RIGHT:
-                    o->resize(xx+ww-o->w(),yy,o->w(),hh);
-                    ww -= o->w();
-                    break;
-                case FL_ALIGN_TOP:
-                    o->resize(xx,yy,ww,o->h());
-                    yy += o->h();
-                    hh -= o->h();
-                    break;
-                case FL_ALIGN_BOTTOM:
-                    o->resize(xx,yy+hh-o->h(),ww,o->h());
-                    hh -= o->h();
-                    break;
-                case FL_ALIGN_CLIENT:
-                    client = o;
-                    break;
-                }
-            }
-            // use the remaining space for the only client-size widget, if any
-            if(client) client->resize(xx,yy,ww,hh);
+            IX = *p++; IR = *p++; IY = *p++; IB = *p++;
         }
+        int xx = 0, yy = 0;
+        int ww = w(), hh = h();
+
+        Fl_Widget*const* a = array_.data();
+        Fl_Widget*const* e = a+children();
+        while (a < e)
+        {
+            Fl_Widget *o = *a++;
+            switch (o->layout_align()) {
+            case 0: {
+                if(!p) break;
+
+                int X = p[0];
+                if (X >= IR) X += dw;
+                else if (X > IX) X = X + dw * (X-IX)/(IR-IX);
+                int R = p[1];
+                if (R >= IR) R += dw;
+                else if (R > IX) R = R + dw * (R-IX)/(IR-IX);
+
+                int Y = p[2];
+                if (Y >= IB) Y += dh;
+                else if (Y > IY) Y = Y + dh*(Y-IY)/(IB-IY);
+                int B = p[3];
+                if (B >= IB) B += dh;
+                else if (B > IY) B = B + dh*(B-IY)/(IB-IY);
+
+                o->resize(X, Y, R-X, B-Y);
+                p += 4;
+            }
+            break;
+
+            case FL_ALIGN_LEFT:
+                o->resize(xx,yy,o->w(),hh);
+                xx += o->w();
+                ww -= o->w();
+                break;
+            case FL_ALIGN_RIGHT:
+                o->resize(xx+ww-o->w(),yy,o->w(),hh);
+                ww -= o->w();
+                break;
+            case FL_ALIGN_TOP:
+                o->resize(xx,yy,ww,o->h());
+                yy += o->h();
+                hh -= o->h();
+                break;
+            case FL_ALIGN_BOTTOM:
+                o->resize(xx,yy+hh-o->h(),ww,o->h());
+                hh -= o->h();
+                break;
+            case FL_ALIGN_CLIENT:
+                client = o;
+                break;
+            }
+        }
+        // use the remaining space for the only client-size widget, if any
+        if(client) client->resize(xx,yy,ww,hh);
     }
 
     Fl_Widget*const* a = array_.data();

@@ -140,6 +140,7 @@ int Fl_Window::handle(int event)
             fl_open_display();
 
             for(int n = 0; n < children(); n++) child(n)->layout_damage(child(n)->layout_damage()|FL_LAYOUT_XYWH);
+            layout_damage(layout_damage()|FL_LAYOUT_XYWH);
             layout();
 
             if (!parent() && !has_size_range())
