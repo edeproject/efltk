@@ -31,6 +31,8 @@ class Fl_Button;
 /** Fl_Date_Input */
 class FL_API Fl_Date_Input : public Fl_Group {
 public:
+    static Fl_Named_Style* default_style;
+
     Fl_Date_Input(int,int,int,int,const char * = 0);
 
     void value(const char *);
@@ -40,7 +42,7 @@ public:
     Fl_Date_Time date_value();
 
     virtual void layout();
-    virtual void prepare_layout();
+    virtual void draw();
     virtual void preferred_size(int& w,int &h) const;
 
 protected:
@@ -55,6 +57,8 @@ protected:
 
 class FL_API Fl_Date_Time_Input : public Fl_Date_Input {
 public:
+    static Fl_Named_Style* default_style;
+
     Fl_Date_Time_Input(int,int,int,int,const char * = 0);
 
     void value(const char *);
@@ -63,7 +67,8 @@ public:
     void date_value(Fl_Date_Time);
     Fl_Date_Time date_value();
 
-    virtual void prepare_layout();
+    virtual void layout();
+    virtual void draw();
     virtual void preferred_size(int& w,int &h) const;
 
 protected:
