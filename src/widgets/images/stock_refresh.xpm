@@ -1,5 +1,5 @@
 /* XPM */
-static char * refresh_xpm[] = {
+static char * stock_refresh_xpm[] = {
 "18 18 12 1",
 " 	c None",
 ".	c #878700",

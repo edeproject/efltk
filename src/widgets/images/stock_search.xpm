@@ -1,5 +1,5 @@
 /* XPM */
-static char * search_xpm[] = {
+static char * stock_search_xpm[] = {
 "20 20 14 1",
 " 	c None",
 ".	c #4C4C4C",
