@@ -73,6 +73,38 @@ void Fl_ListView::clear()
 	relayout();
 }
 
+void Fl_ListView::draw_row(unsigned row, int w, int h) const
+{
+    if(selected_row(row)) {
+
+        fl_color(selection_color());
+        fl_rectf(0, 0, w, h);
+		return;
+    }
+	
+	if(draw_stripes()) {
+
+        Fl_Color c1 = fl_lighter(button_color());
+        if(row & 1) {
+            // draw odd-numbered items with a dark stripe, plus contrast-enhancing
+            // pixel rows on top and bottom:
+            fl_color(c1);
+            fl_rectf(0, 0, w, h);
+
+            fl_color(fl_lighter(c1));
+            fl_line(0, 0, w, 0);
+            fl_line(0, h-1, w, h-1);
+			return;
+        }
+	}
+
+	fl_push_clip(0, 0, w, h);
+	draw_group_box();
+	fl_pop_clip();
+	//fl_color(parent()->color());
+    //fl_rectf(x, y, w, h);
+}
+
 void Fl_ListView::table_draw(TableContext context, unsigned R, unsigned C,
 	int X, int Y, int W, int H)
 {
@@ -99,12 +131,17 @@ void Fl_ListView::table_draw(TableContext context, unsigned R, unsigned C,
 		fl_push_matrix();		
 		fl_translate(X, Y);
 
-		Fl_ListView_Item *item = items[R];
+		Fl_ListView_Item *item = items[R];				
+
+		// Draw row
+		if(C==leftcol && (damage_all || item->damage()&FL_DAMAGE_ALL)) {
+			draw_row(R, table_w, row_height(R));
+		}
 
 		if(!damage_all) {
 			if(item->damage())
 				item->draw_cell(R, C, W, H);
-		} else {
+		} else {			
 			item->set_damage(FL_DAMAGE_ALL|FL_DAMAGE_EXPOSE);
 			item->draw_cell(R, C, W, H);
 		}
@@ -294,11 +331,12 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
             // CTRL does not unselect others
 					if(shiftstate!=FL_CTRL)
 					{
-                // Turn off items that are not in selection
-                //unselect_all();
+						// Turn off items that are not in selection
+						unselect_all();
 
-                // minimum drawing:
-                // Maybe leaves some items undamaged..? test test test... :)
+						// minimum drawing:
+						// Maybe leaves some items undamaged..? test test test... :) naah.. Too slow :)
+						/*
 						int start=0, end=0;
 						int from = sel_item, to = current_item;
 						if(to < from) {
@@ -321,7 +359,7 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
 
 						for(n=0; n<clear_list.size(); n++) {
 							selection.remove(clear_list[n]);
-						}
+						}*/
 					}
 
 					if(sel_item != current_item || sel_item==0 || sel_item==int(children()-1))
@@ -1088,7 +1126,7 @@ int Fl_ListView::preferred_col_width(int col)
 
 void Fl_ListView::find_default_sizes()
 {
-	uint a;
+	unsigned a;
 	unsigned i;
 	Fl_Int_List max_col_w;
 

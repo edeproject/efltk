@@ -214,6 +214,8 @@ protected:
     virtual void table_layout(TableContext context, unsigned row, unsigned col);
     virtual int  table_handle(TableContext context, unsigned row, unsigned col, int event);
 
+	virtual void draw_row(unsigned row, int w, int h) const;
+
     virtual int handle_key();
 
     // returns true, if key matches somehow text.

@@ -69,8 +69,6 @@ public:
 protected:
     Fl_Packed_Strings strings;
 
-    void draw_row(unsigned row, int x, int y, int w, int h) const;
-
     int compare_strings(Fl_ListView_Item *other, int column, int sort_type) const;
     int compare_integers(Fl_ListView_Item *other, int column, int sort_type) const;
     int compare_floats(Fl_ListView_Item *other, int column, int sort_type) const;

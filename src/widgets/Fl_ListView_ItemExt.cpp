@@ -160,9 +160,7 @@ void Fl_ListView_ItemExt::setup(unsigned row)
 void Fl_ListView_ItemExt::draw_cell(unsigned row, unsigned col, int width, int height)
 {
     if(!(damage() & FL_DAMAGE_ALL|FL_DAMAGE_EXPOSE))
-        return;
-
-    fl_push_clip(0, 0, width, height);
+        return;    
 
 	Fl_Flags f = (col>=columns()) ? 0 : flags(col);
     if(parent()->selected_row(row)) f |= FL_SELECTED;
@@ -171,17 +169,20 @@ void Fl_ListView_ItemExt::draw_cell(unsigned row, unsigned col, int width, int h
     int X=0, Y=0, W=width, H=height;
     // Draw user defined border
     Fl_Boxtype box = parent()->button_box();
-    box->draw(0, 0, W, H, fl_inactive(parent()->button_color(), f), FL_INVISIBLE);
-    box->inset(X,Y,W,H);
-    draw_row(row, X, Y, W, H);
+	box->draw(0, 0, W, H, fl_inactive(parent()->button_color(), f), FL_INVISIBLE);
+	box->inset(X,Y,W,H);
 
-	if(f&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT)) {
-		X += 3;
-		W -= 6;
-	}
-	draw_label(col, label(col), X, Y, W, H, f);
+	const char *str = label(col);
+    if(str && *str) {
+		fl_push_clip(0, 0, width, height);
 
-    fl_pop_clip();
+		if(f&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT)) {
+			X += 3; W -= 6;
+		}
+		draw_label(col, str, X, Y, W, H, f);
+
+		fl_pop_clip();
+	}    
 }
 
 void Fl_ListView_ItemExt::draw_label(unsigned col, const char *label, int X, int Y, int W, int H, Fl_Flags flags)

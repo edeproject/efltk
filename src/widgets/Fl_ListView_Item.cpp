@@ -161,45 +161,10 @@ void Fl_ListView_Item::setup(unsigned row)
     parent()->row_height(row, H);
 }
 
-void Fl_ListView_Item::draw_row(unsigned row, int x, int y, int w, int h) const
-{
-    if(parent()->selected_row(row)) {
-
-        fl_color(parent()->selection_color());
-        fl_rectf(x, y, w, h);
-		return;
-
-    }
-	
-	if(parent()->draw_stripes()) {
-
-        Fl_Color c1 = fl_lighter(parent()->button_color());
-        if(row & 1) {
-            // draw odd-numbered items with a dark stripe, plus contrast-enhancing
-            // pixel rows on top and bottom:
-            fl_color(c1);
-            fl_rectf(x, y, w, h);
-
-            fl_color(fl_lighter(c1));
-            fl_line(x, y, w, y);
-            fl_line(x, y+h-1, w, y+h-1);
-			return;
-        }
-	}
-
-	fl_push_clip(x, y, w, h);
-	parent()->draw_group_box();
-	fl_pop_clip();
-	//fl_color(parent()->color());
-    //fl_rectf(x, y, w, h);
-}
-
 void Fl_ListView_Item::draw_cell(unsigned row, unsigned col, int width, int height)
 {
     if(!(damage() & FL_DAMAGE_ALL|FL_DAMAGE_EXPOSE))
-        return;
-
-    fl_push_clip(0, 0, width, height);
+        return;    
 
     Fl_Flags f = 0;
     if(parent()->selected_row(row)) f |= FL_SELECTED;
@@ -210,7 +175,6 @@ void Fl_ListView_Item::draw_cell(unsigned row, unsigned col, int width, int heig
     Fl_Boxtype box = parent()->button_box();
     box->draw(0, 0, W, H, fl_inactive(parent()->button_color(), f), FL_INVISIBLE);
     box->inset(X,Y,W,H);
-    draw_row(row, X, Y, W, H);
 
     if(col==0 && m_image) {
         m_image->draw(X, H/2-m_image->height()/2, m_image->width(), m_image->height(), f);
@@ -220,12 +184,16 @@ void Fl_ListView_Item::draw_cell(unsigned row, unsigned col, int width, int heig
 
     const char *str = label(col);
     if(str && *str) {
-        fl_font(parent()->text_font(), parent()->text_size());
+		fl_push_clip(0, 0, width, height);
+        
+		fl_font(parent()->text_font(), parent()->text_size());
         Fl_Color color = (f&FL_SELECTED) ? parent()->selection_text_color() : parent()->text_color();
 
-        parent()->label_type()->draw(str, X, Y, W, H, color, parent()->column(col)->flags()|f);
-    }
-    fl_pop_clip();
+		fl_color(fl_inactive(color, f));
+		fl_draw(str, X, Y, W, H, parent()->column(col)->flags()|f);
+
+		fl_pop_clip();
+    }    
 }
 
 /////////////////////////////////////////////

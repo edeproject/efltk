@@ -837,7 +837,7 @@ static int min_row_y    = -1;    // Minimum Y for dragged row
 
 #define fill_rect(xx,yy,ww,hh) \
 	fl_push_clip( (xx), (yy), (ww), (hh) ); \
-	draw_box(); \
+	draw_group_box(); \
 	fl_pop_clip()
 
 // Draw the entire Fl_Table_Base
@@ -972,8 +972,9 @@ void Fl_Table_Base::draw()
 
     // Draw little rectangle in corner of headers
     if(row_header() && col_header()) {
-        fl_color(button_color());
-        fl_rectf(tix-row_header_width(), tiy-col_header_height(), row_header_width(), col_header_height());
+        //fl_color(button_color());
+        //fl_rectf(tix-row_header_width(), tiy-col_header_height(), row_header_width(), col_header_height());
+		fill_rect(tix-row_header_width(), tiy-col_header_height(), row_header_width(), col_header_height());
     }
 
     // Set drawing color for rest of method
@@ -1034,8 +1035,9 @@ void Fl_Table_Base::draw()
         hscrollbar->set_damage(FL_DAMAGE_ALL);
         if(vscrollbar->visible() && hscrollbar->visible()) {
             // fill in the little box in the corner
-            fl_color(button_color());
-            fl_rectf(vscrollbar->x(), hscrollbar->y(), vscrollbar->w(), hscrollbar->h());
+            //fl_color(button_color());
+            //fl_rectf(vscrollbar->x(), hscrollbar->y(), vscrollbar->w(), hscrollbar->h());
+			fill_rect(vscrollbar->x(), hscrollbar->y(), vscrollbar->w(), hscrollbar->h());
         }
     }
     update_child(*vscrollbar);
