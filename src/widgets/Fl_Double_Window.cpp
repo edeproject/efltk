@@ -29,6 +29,16 @@
 #include <efltk/x.h>
 #include <efltk/fl_draw.h>
 
+Fl_Double_Window::Fl_Double_Window(int W, int H, const char *l) 
+	: Fl_Window(W,H,l) 
+{
+}
+
+Fl_Double_Window::Fl_Double_Window(int X, int Y, int W, int H, const char *l)
+    : Fl_Window(X,Y,W,H,l) 
+{
+}
+
 // On systems that support double buffering "naturally" the base
 // Fl_Window class will probably do double-buffer and this subclass
 // does nothing.

@@ -27,13 +27,9 @@
 #include <efltk/fl_draw.h>
 #include <efltk/Fl_Menu_Window.h>
 
-extern bool tt_anim;
-extern bool tt_enabled;
-extern float tt_delay;
-
-float Fl_Tooltip::delay_ = tt_delay;
-bool  Fl_Tooltip::enabled_ = tt_enabled;
-bool  Fl_Tooltip::animate_ = tt_anim;
+float Fl_Tooltip::delay_ = 1.0f;
+bool  Fl_Tooltip::enabled_ = true;
+bool  Fl_Tooltip::animate_ = true;
 
 #define MAX_WIDTH 400
 

@@ -43,8 +43,8 @@ public:
 
     ~Fl_Menu_Window();
 
-    Fl_Menu_Window(int W, int H, const char *l = 0) : Fl_Single_Window(W,H,l) { animating=false; step_div_=default_step_div; }
-    Fl_Menu_Window(int X, int Y, int W, int H, const char *l = 0) : Fl_Single_Window(X,Y,W,H,l) { animating=false; step_div_=default_step_div; }
+    Fl_Menu_Window(int W, int H, const char *l = 0);
+    Fl_Menu_Window(int X, int Y, int W, int H, const char *l = 0);
 
     static float default_step_div;
 

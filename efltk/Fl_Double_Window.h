@@ -29,14 +29,12 @@
 #include "Fl_Window.h"
 
 class FL_API Fl_Double_Window : public Fl_Window {
-
 public:
+  Fl_Double_Window(int W, int H, const char *l = 0);
+  Fl_Double_Window(int X, int Y, int W, int H, const char *l = 0);
+  ~Fl_Double_Window();
 
   virtual void layout();
-  ~Fl_Double_Window();
-  Fl_Double_Window(int W, int H, const char *l = 0) : Fl_Window(W,H,l) {}
-  Fl_Double_Window(int X, int Y, int W, int H, const char *l = 0)
-    : Fl_Window(X,Y,W,H,l) {}
 
 protected:
 
@@ -48,7 +46,6 @@ protected:
 private:
 
   void free_backbuffer();
-
 };
 
 #endif

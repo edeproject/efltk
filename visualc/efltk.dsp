@@ -41,7 +41,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /MD /W1 /GX /Os /Oy /Ob2 /I "." /I ".." /I "../visualc" /D "NDEBUG" /D "_MSC_DLL" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /D "VC_EXTRA_LEAN" /D "WIN32_EXTRA_LEAN" /YX /FD /c
+# ADD CPP /nologo /MD /GX /Os /Oy /Ob2 /I "." /I ".." /I "../visualc" /D "NDEBUG" /D "_MSC_DLL" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /D "VC_EXTRA_LEAN" /D "WIN32_EXTRA_LEAN" /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -64,7 +64,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /Gm /GX /ZI /Od /Ob0 /I "../visualc" /I "../.." /I "../" /I "." /D "_DEBUG" /D "_MSC_DLL" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /D "VC_EXTRA_LEAN" /D "WIN32_EXTRA_LEAN_MBCS" /D "_LIB" /FD /GZ /c
+# ADD CPP /nologo /MDd /Gm /GX /ZI /Od /I "../visualc" /I "../.." /I "../" /I "." /D "_DEBUG" /D "_MSC_DLL" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /D "VC_EXTRA_LEAN" /D "WIN32_EXTRA_LEAN_MBCS" /D "_LIB" /FD /GZ /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
@@ -678,7 +678,67 @@ SOURCE=..\src\core\ARRAY.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\efltk\Enumerations.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\widgets\fastarrow.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\filename.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Adjuster.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Align_Group.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\fl_ask.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Bar.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Bitmap.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Box.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Boxtype.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Browser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Check_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Choice.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Clock.h
 # End Source File
 # Begin Source File
 
@@ -686,11 +746,475 @@ SOURCE=..\src\core\fl_cmap.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\efltk\Fl_Color.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Color_Chooser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Config.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Dial.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Divider.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Double_Window.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\fl_draw.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Export.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_File_Dialog.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_FileBrowser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_FileInput.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Flags.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Float_Input.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Font.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Gl_Window.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Group.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Help_Dialog.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Highlight_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Hor_Fill_Slider.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Hor_Nice_Slider.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Hor_Slider.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Hor_Value_Slider.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Image.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Image_Cache.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Image_Filter.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Images.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Input.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Input_Browser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Int_Input.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\core\fl_internal.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\efltk\Fl_Item.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Item_Group.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Labeltype.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Light_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Line_Dial.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_ListView.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_ListView_Item.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\fl_load_plugin.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Locale.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Main_Window.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_MDI_Window.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Menu_.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Menu_Bar.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Menu_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Menu_Item.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Menu_Window.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\fl_message.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Multi_Browser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Multi_Image.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Multiline_Input.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Multiline_Output.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Nice_Slider.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Numeric_Input.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Output.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Overlay_Window.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Pack.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Pixmap.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_ProgressBar.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_PtrList.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Radio_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Radio_Item.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Radio_Light_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Radio_Round_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Renderer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Repeat_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Return_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Roller.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Round_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Round_Clock.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Scroll.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Scrollbar.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Secret_Input.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Select_Browser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Shaped_Window.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\fl_show_colormap.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Simple_Counter.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Simple_Html.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Single_Window.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Slider.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_String.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Style.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Style_Set.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Tabs.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Text_Buffer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Text_Display.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Text_Editor.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Thread.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Thread_Linux.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Thread_w32.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Threads.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Tile.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Timer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Toggle_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Toggle_Item.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Toggle_Light_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Toggle_Round_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Tool_Bar.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Tooltip.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Tree.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Util.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Valuator.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Value_Input.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Value_List.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Value_Map.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Value_Output.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Value_Slider.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Value_Stack.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Widget.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Window.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_WM.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Wordwrap_Input.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Wordwrap_Output.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Workspace.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\core\Fl_XColor.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\gl.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\gl2opengl.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\gl_draw.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\math.h
 # End Source File
 # Begin Source File
 
@@ -703,6 +1227,18 @@ SOURCE=..\src\widgets\Pixmaps.h
 # Begin Source File
 
 SOURCE=..\src\widgets\slowarrow.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\vsnprintf.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\win32.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\x.h
 # End Source File
 # End Group
 # End Target

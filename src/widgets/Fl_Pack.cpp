@@ -45,6 +45,7 @@
 
 static void revert(Fl_Style *s) {
     s->color = FL_GRAY;
+	s->box = FL_FLAT_BOX;
 }
 
 static Fl_Named_Style style("Pack", revert, &Fl_Pack::default_style);

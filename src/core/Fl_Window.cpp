@@ -65,7 +65,6 @@ static void revert(Fl_Style* s)
     s->box = FL_FLAT_BOX;
 }
 
-
 static Fl_Named_Style style("Window", revert, &Fl_Window::default_style);
 Fl_Named_Style* Fl_Window::default_style = &::style;
 

@@ -332,11 +332,8 @@ int Fl_MDI_Titlebar::handle(int event)
     }
 }
 
-extern bool mdi_anim;
-extern bool mdi_anim_opaque;
-
-bool Fl_MDI_Window::anim_opaque_ = mdi_anim_opaque;
-bool Fl_MDI_Window::animate_ = mdi_anim;
+bool Fl_MDI_Window::animate_ = true;
+bool Fl_MDI_Window::anim_opaque_ = false;
 
 static void revert(Fl_Style* s) {
     s->box = FL_THICK_UP_BOX;
@@ -849,9 +846,9 @@ int Fl_MDI_Window::handle(int event)
         return 1;
 
     case FL_MOVE: {
-        /*if(_toplevel || _maximized || !prv->resizable() || _minimized) {
+        if(_toplevel || _maximized || !prv->resizable() || _minimized) {
             return prv->send(event);
-        }*/
+        }
         // Left or right side
         if( left.posInRect(Fl::event_x(),Fl::event_y()) || right.posInRect(Fl::event_x(),Fl::event_y()) ) {
             fl_cursor(FL_CURSOR_WE, 0, 255);
@@ -926,9 +923,11 @@ void Fl_MDI_Window::detach()
     if(_toplevel || !parent()) return;
 
     if(_owner->aot() == this)
-        _owner->aot(0);
+        _owner->_aot = 0;
     if(_owner->maximum() == this)
-        _owner->maximum(0);
+        _owner->_max = 0;
+    if(_owner->top() == this)
+        _owner->_top = 0;
 
     _maximized=false;
     _titlebar.hide();

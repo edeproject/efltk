@@ -33,11 +33,28 @@
 # include <winsock.h>
 #endif
 
-extern bool menu_anim;
-extern float menu_speed;
+#ifndef _WIN32
+float Fl_Menu_Window::default_step_div = 4.0f;
+#else
+float Fl_Menu_Window::default_step_div = 1.0f;
+#endif
 
-float Fl_Menu_Window::default_step_div = menu_speed;
-bool Fl_Menu_Window::animate_ = menu_anim;
+bool Fl_Menu_Window::animate_ = true;
+
+Fl_Menu_Window::Fl_Menu_Window(int W, int H, const char *l) 
+	: Fl_Single_Window(W,H,l) 
+{ 
+	animating=false; 
+	step_div_=default_step_div; 
+}
+
+Fl_Menu_Window::Fl_Menu_Window(int X, int Y, int W, int H, const char *l) 
+	: Fl_Single_Window(X,Y,W,H,l) 
+{ 
+	animating=false; 
+	step_div_=default_step_div; 
+}
+
 
 // This is the window type used by Fl_Menu to make the pop-ups, and for
 // tooltip popups.
@@ -139,22 +156,23 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
     Fl_Window::layout();
     Fl::check();
 
-    double max_steps = max( (tw-fw), (th-fh) );
-    double min_steps = max( (fw-tw), (fh-th) );
-    double steps = max(max_steps, min_steps);
-	steps/=step_div_;
+    float max_steps = max( (tw-fw), (th-fh) );
+    float min_steps = max( (fw-tw), (fh-th) );
+    float steps = max(max_steps, min_steps);
+	
+	steps/=step_div_;	
 
-    double sx = max( ((double)(fx-tx)/steps), ((double)(tx-fx)/steps) );
-    double sy = max( ((double)(fy-ty)/steps), ((double)(ty-fy)/steps) );
-    double sw = max( ((double)(fw-tw)/steps), ((double)(tw-fw)/steps) );
-    double sh = max( ((double)(fh-th)/steps), ((double)(th-fh)/steps) );
+    float sx = max( ((float)(fx-tx)/steps), ((float)(tx-fx)/steps) );
+    float sy = max( ((float)(fy-ty)/steps), ((float)(ty-fy)/steps) );
+    float sw = max( ((float)(fw-tw)/steps), ((float)(tw-fw)/steps) );
+    float sh = max( ((float)(fh-th)/steps), ((float)(th-fh)/steps) );
 
     int xinc = fx < tx ? 1 : -1;
     int yinc = fy < ty ? 1 : -1;
     int winc = fw < tw ? 1 : -1;
     int hinc = fh < th ? 1 : -1;
-    double rx=fx,ry=fy,rw=fw,rh=fh;
-	
+    float rx=fx,ry=fy,rw=fw,rh=fh;
+		
     // Make sure we copy to this window!
     make_current();
 
@@ -171,11 +189,7 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
 #ifdef _WIN32
         SetWindowPos(fl_xid(this), HWND_TOPMOST, (int)rx, (int)ry, (int)rw, (int)rh, (SWP_SHOWWINDOW|SWP_NOACTIVATE));
         fl_copy_offscreen(0, 0, (int)rw, (int)rh, pm, 0, 0);
-        GdiFlush();
-        timeval t;
-        t.tv_sec = 0;
-        t.tv_usec = 1000;
-        ::select(0,0,0,0, &t);
+        GdiFlush();		
 #else
         XMoveResizeWindow(fl_display, fl_xid(this), (int)rx, (int)ry, (int)rw, (int)rh);
         XCopyArea(fl_display, pm, fl_xid(this), fl_gc, 0, 0, (int)rw, (int)rh, 0, 0);

@@ -805,8 +805,8 @@ int Fl_Menu_::popup(int X, int Y, int W, int H)
     if(X+w.ow > Fl::w()) {
         X = Fl::w()-w.ow;
     }
-
-    w.position(X, Y);
+    
+	w.position(X, Y);
 
     Fl_Widget* saved_modal = Fl::modal();
     bool saved_grab = Fl::grab();
