@@ -1,45 +1,33 @@
 [Closed Files]
-File_0=SourceModule,'D:\efltk\src\core\Fl_win32.cpp',0,1,1295,1,1298,0,0
-File_1=SourceModule,'D:\efltk\test\buttons.cpp',0,1,1,30,9,0,0
-File_2=SourceModule,'D:\efltk\test\button.cpp',0,1,48,1,1,0,0
-File_3=SourceModule,'D:\efltk\test\browser.cpp',0,1,1,28,7,0,0
-File_4=SourceModule,'D:\efltk\src\core\fl_labeltype.cpp',0,1,83,1,88,0,0
-File_5=SourceModule,'D:\efltk\src\core\fl_font_win32.cpp',0,1,136,1,141,0,0
-File_6=SourceModule,'D:\efltk\src\core\fl_diamond_box.cpp',0,1,61,32,64,0,0
-File_7=SourceModule,'D:\efltk\src\core\fl_round_box.cpp',0,1,113,38,115,0,0
-File_8=SourceModule,'r:\efltk\efltk\filename.h',0,1,40,1,45,0,0
-File_9=SourceModule,'R:\efltk\src\widgets\Fl_Numeric_Input.cpp',0,1,1,1,1,0,0
+File_0=SourceModule,'D:\efltk\src\core\scandir.c',0,1,48,12,49,0,0
+File_1=SourceModule,'D:\efltk\src\core\Fl_win32.cpp',0,1,1798,52,1803,0,0
+File_2=SourceModule,'D:\efltk\efltk\Fl_Widget.h',0,1,89,1,98,0,0
+File_3=SourceModule,'D:\efltk\efltk\Fl_Window.h',0,1,38,1,43,0,0
+File_4=SourceModule,'D:\efltk\src\core\Fl_x.cpp',0,1,1597,1,1608,0,0
+File_5=SourceModule,'D:\efltk\test\arc.cpp',0,1,18,21,29,0,0
+File_6=SourceModule,'D:\efltk\src\core\scandir_win32.c',0,1,18,1,25,0,0
+File_7=SourceModule,'D:\efltk\efltk\filename.h',0,1,19,1,32,0,0
+File_8=SourceModule,'D:\efltk\efltk\fl_utf8.h',0,1,97,1,107,0,0
+File_9=SourceModule,'D:\efltk\src\core\Fl_add_idle.cpp',0,1,1,1,1,0,0
 
 [Modules]
-Module0=D:\efltk\test\clock.cpp
-Module1=D:\efltk\bcb6\clock.bpr
-Module2=D:\efltk\test\calendar.cpp
-Module3=D:\efltk\bcb6\calendar.bpr
-Module4=D:\efltk\bcb6\buttons.bpr
-Count=5
+Module0=D:\efltk\src\core\Fl_Lists.cpp
+Module1=D:\efltk\src\core\Fl_String.cpp
+Module2=D:\efltk\bcb6\clock.bpr
+Count=3
 EditWindowCount=1
 
-[D:\efltk\test\clock.cpp]
+[D:\efltk\src\core\Fl_Lists.cpp]
+ModuleType=SourceModule
+FormState=0
+FormOnTop=0
+
+[D:\efltk\src\core\Fl_String.cpp]
 ModuleType=SourceModule
 FormState=0
 FormOnTop=0
 
 [D:\efltk\bcb6\clock.bpr]
-ModuleType=SourceModule
-FormState=0
-FormOnTop=0
-
-[D:\efltk\test\calendar.cpp]
-ModuleType=SourceModule
-FormState=0
-FormOnTop=0
-
-[D:\efltk\bcb6\calendar.bpr]
-ModuleType=SourceModule
-FormState=0
-FormOnTop=0
-
-[D:\efltk\bcb6\buttons.bpr]
 ModuleType=SourceModule
 FormState=0
 FormOnTop=0
@@ -76,18 +64,24 @@ FormOnTop=0
 FormState=0
 FormOnTop=0
 
+[D:\efltk\bcb6\buttons.bpr]
+FormState=0
+FormOnTop=0
+
+[D:\efltk\bcb6\calendar.bpr]
+FormState=0
+FormOnTop=0
+
 [D:\efltk\bcb6\checkers.bpr]
 FormState=0
 FormOnTop=0
 
 [EditWindow0]
-ViewCount=5
-CurrentView=4
+ViewCount=3
+CurrentView=1
 View0=0
 View1=1
 View2=2
-View3=3
-View4=4
 MessageView=MessageView@EditWindow0
 Create=1
 Visible=1
@@ -107,38 +101,24 @@ BottomPanelClients=MessageView@EditWindow0
 BottomPanelData=000004000000000000000000000000000000000000000000000100000000000000000B0000004D65737361676556696577FFFFFFFF
 
 [View0]
-Module=D:\efltk\bcb6\buttons.bpf
-CursorX=1
-CursorY=1
+Module=D:\efltk\bcb6\clock.bpf
+CursorX=15
+CursorY=3
 TopLine=1
 LeftCol=1
 
 [View1]
-Module=D:\efltk\bcb6\calendar.bpf
-CursorX=1
-CursorY=1
-TopLine=1
+Module=D:\efltk\src\core\Fl_Lists.cpp
+CursorX=2
+CursorY=169
+TopLine=163
 LeftCol=1
 
 [View2]
-Module=D:\efltk\test\calendar.cpp
+Module=D:\efltk\src\core\Fl_String.cpp
 CursorX=1
-CursorY=1
-TopLine=1
-LeftCol=1
-
-[View3]
-Module=D:\efltk\bcb6\clock.bpf
-CursorX=1
-CursorY=1
-TopLine=1
-LeftCol=1
-
-[View4]
-Module=D:\efltk\test\clock.cpp
-CursorX=49
-CursorY=7
-TopLine=1
+CursorY=517
+TopLine=511
 LeftCol=1
 
 [Watches]
@@ -184,8 +164,8 @@ Dockable=0
 Create=1
 Visible=0
 State=0
-Left=7
-Top=619
+Left=153
+Top=372
 Width=533
 Height=353
 MaxLeft=-1
@@ -353,9 +333,9 @@ TBDockHeight=255
 LRDockWidth=283
 Dockable=1
 TabPosition=0
-ActiveTab=Call stack
+ActiveTab=Call Stack
 TabDockClients=CallStackWindow,WatchWindow
 
 [ActiveProject]
-ActiveProject=12
+ActiveProject=1
 

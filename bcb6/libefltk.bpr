@@ -52,7 +52,9 @@
       obj\Fl_Text_Display.obj obj\Fl_Text_Editor.obj obj\Fl_Tile.obj 
       obj\Fl_Tool_Bar.obj obj\Fl_Tooltip.obj obj\Fl_Valuator.obj 
       obj\Fl_Value_Input.obj obj\Fl_Value_Slider.obj obj\Fl_Adjuster.obj 
-      obj\numericsort.obj obj\scandir.obj obj\vsnprintf.obj obj\fl_utf8.obj"/>
+      obj\numericsort.obj obj\scandir.obj obj\vsnprintf.obj obj\fl_utf8.obj 
+      obj\fl_iconv_converters.obj obj\Fl_Hashs.obj obj\fl_converters.obj 
+      obj\Fl_Exception.obj"/>
     <RESFILES value=""/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -61,7 +63,7 @@
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
     <PACKAGES value=""/>
-    <PATHCPP value=".;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\core;..\src\core;..\src\core;..\src\core"/>
+    <PATHCPP value=".;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core"/>
     <PATHPAS value=".;"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
@@ -253,18 +255,22 @@
       <FILE FILENAME="..\src\core\scandir.c" FORMNAME="" UNITNAME="scandir.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\core\vsnprintf.c" FORMNAME="" UNITNAME="vsnprintf.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\core\fl_utf8.c" FORMNAME="" UNITNAME="fl_utf8" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_iconv_converters.cpp" FORMNAME="" UNITNAME="fl_iconv_converters.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Hashs.cpp" FORMNAME="" UNITNAME="Fl_Hashs.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_converters.cpp" FORMNAME="" UNITNAME="fl_converters.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Exception.cpp" FORMNAME="" UNITNAME="Fl_Exception" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
 
   <FILES>
     <FILE type="override" value="..\src\core\numericsort.c" translator="Auto">
-      <CFLAG1 value=" -P-"/>
-    </FILE>
-    <FILE type="override" value="..\src\core\vsnprintf.c" translator="Auto">
-      <CFLAG1 value=" -P-"/>
+      <CFLAG1 value="-P-"/>
     </FILE>
     <FILE type="override" value="..\src\core\scandir.c" translator="Auto">
+      <CFLAG1 value="-P"/>
+    </FILE>
+    <FILE type="override" value="..\src\core\vsnprintf.c" translator="Auto">
       <CFLAG1 value=" -P-"/>
     </FILE>
     <FILE type="override" value="..\src\core\fl_utf8.c" translator="Auto">
