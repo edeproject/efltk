@@ -2,6 +2,7 @@
 
 #include <efltk/fl_ask.h>
 #include <efltk/Fl.h>
+#include <efltk/Fl_Exception.h>
 #include <efltk/Fl_Window.h>
 #include <efltk/Fl_Browser.h>
 #include <efltk/Fl_File_Dialog.h>
@@ -59,32 +60,20 @@ int main(int argc, char **argv)
     if(!fp) return -1;
 
     Fl_XmlDoc doc;
-    int time1 = Fl::ticks();
-    bool ret = doc.load(fp);
-    int time2 = Fl::ticks();
 
-    fclose(fp);
-
-    Fl_String label;
-    label.printf("XML Test - loaded file in %d ms", time2-time1);
-
-    printf("%s\n", label.c_str());
     Fl_Window *window = new Fl_Window(20,20,300,300);
-    window->copy_label(label.c_str());
     window->begin();
 
-    if(!ret) {
-        Fl_String error = doc.context()->get_error();
-        error += "\n------------------------\n";
-        error += doc.context()->get_error_line(f) + "\n";
+    fl_try {
 
-        Fl_Input *i = new Fl_Input(10,30,280,260,"ERROR:");
-        i->input_type(Fl_Input::MULTILINE);
-        i->wordwrap(1);
-        i->value(error.c_str());
-        i->position(i->size());
+        int time1 = Fl::ticks();
+        doc.load(fp);
+        int time2 = Fl::ticks();
 
-    } else {
+        Fl_String label;
+        label.printf("XML Test - loaded file in %d ms", time2-time1);
+        printf("%s\n", label.c_str());
+        window->copy_label(label.c_str());
 
         Fl_Browser *tree = new Fl_Browser(10,10,280,280);
         tree->indented(1);
@@ -94,8 +83,21 @@ int main(int argc, char **argv)
 
         tree->end();
         tree->relayout();
+
+    } fl_catch(exp) {
+
+        Fl_String error = doc.context()->get_error();
+        error += "\n------------------------\n";
+        error += doc.context()->get_error_line(f) + "\n";
+
+        Fl_Input *i = new Fl_Input(10,30,280,260,"ERROR:");
+        i->align(FL_ALIGN_TOP);
+        i->input_type(Fl_Input::MULTILINE);
+        i->value(error.c_str());
+        i->position(i->size());
     }
 
+    fclose(fp);
     window->end();
     window->show();
 

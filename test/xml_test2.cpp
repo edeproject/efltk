@@ -2,6 +2,7 @@
 
 #include <efltk/fl_ask.h>
 #include <efltk/Fl.h>
+#include <efltk/Fl_Exception.h>
 #include <efltk/Fl_Window.h>
 #include <efltk/Fl_Browser.h>
 #include <efltk/Fl_File_Dialog.h>
@@ -102,16 +103,23 @@ int main(int argc, char *argv[])
     Fl_XmlDoc d;
     d.context()->handler(&h, false);
 
-    int time1 = Fl::ticks();
-    d.load(fp);
-    int time2 = Fl::ticks();
-    fclose(fp);
+    fl_try {
 
-    Fl_String label;
-    label.printf("XML Test - loaded file in %d ms", time2-time1);
-    printf("%s\n", label.c_str());
-    if(h.win)
-        h.win->copy_label(label.c_str());
+        int time1 = Fl::ticks();
+        d.load(fp);
+        int time2 = Fl::ticks();
+
+        Fl_String label;
+        label.printf("XML Test - loaded file in %d ms", time2-time1);
+        printf("%s\n", label.c_str());
+
+        if(h.win) h.win->copy_label(label.c_str());
+
+    } fl_catch(exc) {
+        fl_alert(exc.text());
+    }
+
+    fclose(fp);
 
     return Fl::run();
 }
