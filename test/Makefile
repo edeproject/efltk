@@ -48,7 +48,7 @@ CPPFILES = demo.cpp sizes.cpp hello.cpp resizable.cpp scroll.cpp image.cpp file_
 	thread_ball.cpp images.cpp image_loader.cpp multitabs1.cpp multitabs2.cpp \
 	popup_window.cpp symbols.cpp calendar.cpp maskedinput.cpp bitmap.cpp utf8.cpp \
 	dialog.cpp directory.cpp listview_ds.cpp xml_test.cpp xml_test2.cpp \
-        exceptions.cpp layout2.cpp
+        exceptions.cpp layout2.cpp socket.cpp
 
 ALL =   demo sizes hello resizable scroll image file_chooser menubar browser \
 	threads progress editor inactive checkers valuators glpuzzle boxtype \
@@ -58,7 +58,7 @@ ALL =   demo sizes hello resizable scroll image file_chooser menubar browser \
         output overlay pack radio shape tile CubeView preferences image_manip \
         listview alphablend thread_ball images image_loader layout2 \
 	multitabs1 multitabs2 popup_window symbols calendar maskedinput bitmap utf8 \
-        dialog directory listview_ds xml_test xml_test2 exceptions 
+        dialog directory listview_ds xml_test xml_test2 exceptions socket
 
 all: demos
 
