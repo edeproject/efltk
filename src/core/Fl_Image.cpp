@@ -93,28 +93,6 @@ Fl_Image::Fl_Image(int W, int H, Fl_PixelFormat *fmt, uint8 *data, bool allow_fr
 	if(data) _data_alloc = allow_free;
 }
 
-Fl_Image::Fl_Image(int W, int H, int bits_pp)
-{
-    uint32 Rmask=0, Gmask=0, Bmask=0, Amask=0;
-    switch(bits_pp)
-    {
-    case 32:
-        Amask = 0xFF000000;
-    case 24:
-        Rmask = 0x00FF0000;
-        Gmask = 0x0000FF00;
-        Bmask = 0x000000FF;
-        break;
-    case 15:
-    case 16:
-        Rmask = 0x7C00;
-        Gmask = 0x03E0;
-        Bmask = 0x001F;
-        break;
-    }
-    init(W, H, bits_pp, 0, Rmask, Gmask, Bmask, Amask);
-}
-
 Fl_Image::Fl_Image(int W, int H, int bits_pp, uint8 *data, bool allow_free, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask)
 {
     init(W, H, bits_pp, data, Rmask, Gmask, Bmask, Amask);
