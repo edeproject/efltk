@@ -76,9 +76,6 @@ void show_help_()
 
 int main(int argc, char *argv[])
 {
-    Fl::init_locale();
-    ETranslate app;
-
     int i = 1;
     if(!Fl::args(argc,argv,i,arg) || i < argc-1) {
         show_help_();
@@ -97,6 +94,9 @@ int main(int argc, char *argv[])
         comp.compile(compile_file, outfile);
         return 1;
     }
+
+    ETranslate app;
+    Fl::init_locale();
 
     if(file) app.load(file);
     return Fl::run();
