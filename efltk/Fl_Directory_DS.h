@@ -87,8 +87,8 @@ protected:
     virtual bool load_data() { return true; }
     virtual bool save_data() { return true; }
 
-	Fl_String get_file_type(const struct stat &st, const Fl_Image *&image) const;
-
+	Fl_String get_file_type(const struct stat &st, const Fl_String &filename, const Fl_Image *&image) const;
+	
     Fl_Ptr_List     m_list;
     Fl_Data_Fields *m_current;
     int             m_currentIndex;

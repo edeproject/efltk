@@ -227,7 +227,7 @@ bool Fl_Directory_DS::write_field(const char *fname, const Fl_Variant& fvalue)
 }
 
 // Returns typename
-Fl_String Fl_Directory_DS::get_file_type(const struct stat &st, const Fl_Image *&image) const
+Fl_String Fl_Directory_DS::get_file_type(const struct stat &st, const Fl_String &filename, const Fl_Image *&image) const
 {
 	bool executable = S_ISEXEC(st.st_mode);
 	image = &documentPixmap;
@@ -244,7 +244,7 @@ Fl_String Fl_Directory_DS::get_file_type(const struct stat &st, const Fl_Image *
 	}
 #ifndef _WIN32
 	if ((st.st_mode & S_IFLNK) == S_IFLNK) {
-		stat(fullName.c_str(), &st);
+		stat(filename.c_str(), &st);
 		if (S_ISDIR(st.st_mode)) {
 			modeName = _("Directory");
 			image = &folderPixmap;
@@ -315,7 +315,7 @@ bool Fl_Directory_DS::open()
 				if((showpolicy()&HIDE_DIRECTORIES) && S_ISDIR(st.st_mode)) continue;
 
 				const Fl_Image *pixmapPtr = 0;
-				Fl_String modeName = get_file_type(st, pixmapPtr);
+				Fl_String modeName = get_file_type(st, fullName, pixmapPtr);
 
 				df->add("")				= pixmapPtr;
 				df->add(N_("Name"))		= file;
