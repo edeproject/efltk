@@ -34,7 +34,7 @@ CPPFILES = demo.cpp sizes.cpp hello.cpp resizable.cpp scroll.cpp image.cpp file_
            preferences.cpp image_manip.cpp listview.cpp alphablend.cpp \
 	thread_ball.cpp images.cpp image_loader.cpp multitabs1.cpp multitabs2.cpp \
 	popup_window.cpp symbols.cpp calendar.cpp maskedinput.cpp bitmap.cpp utf8.cpp \
-	dialog.cpp directory.cpp listview_ds.cpp xml_test.cpp
+	dialog.cpp directory.cpp listview_ds.cpp xml_test.cpp xml_test2.cpp
 
 ALL =   demo sizes hello resizable scroll image file_chooser menubar browser \
 	threads progress editor inactive checkers valuators glpuzzle boxtype \
@@ -44,7 +44,7 @@ ALL =   demo sizes hello resizable scroll image file_chooser menubar browser \
         output overlay pack radio shape tile CubeView preferences image_manip \
         listview alphablend thread_ball images image_loader \
 	multitabs1 multitabs2 popup_window symbols calendar maskedinput bitmap utf8 \
-        dialog directory listview_ds xml_test
+        dialog directory listview_ds xml_test xml_test2
 
 all: demos
 
@@ -84,6 +84,9 @@ shape: shape.cpp $(FLGLLIB) $(FLCORELIB) $(FLUILIB)
 	$(CXX) -I.. $(CXXFLAGS) $< $(GLDLIBS) $(LDLIBS) -o $@
 
 xml_test: xml_test.cpp $(FLXMLLIB) $(FLLIB)
+	$(CXX) -I.. $(CXXFLAGS) $< $(FLXMLLIB) $(LDLIBS) -o $@
+
+xml_test2: xml_test2.cpp $(FLXMLLIB) $(FLLIB)
 	$(CXX) -I.. $(CXXFLAGS) $< $(FLXMLLIB) $(LDLIBS) -o $@
         
 thread_ball: thread_ball.cpp $(FLIMAGESLIB) $(FLLIB)
