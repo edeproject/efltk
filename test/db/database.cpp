@@ -88,7 +88,7 @@ int fetch_function(void* p)
 		query.close();
    
 	} catch(Fl_Exception &e) {
-		Fl::warning("Error occured: %s\n", e.text());
+		Fl::warning("Error occured: %s\n", e.text().c_str());
 	}
 
 	sql_input->value("");
@@ -137,7 +137,7 @@ void connect_cb(Fl_Widget *, void *)
 	}
 
 	} catch(Fl_Exception &e) {
-		Fl::warning("Error occured: %s\n", e.text());
+		Fl::warning("Error occured: %s\n", e.text().c_str());
 	}
 }
 
@@ -332,23 +332,23 @@ void build_window()
 void setup_styles()
 {
 	Fl_Style *s;
-	if(s = Fl_Style::find("Button")) {
+	if((s = Fl_Style::find("Button"))) {
 		s->box = FL_THIN_UP_BOX;
 		s->highlight_color = fl_lighter(FL_GRAY);
 	}
-	if(s = Fl_Style::find("Input")) {
+	if((s = Fl_Style::find("Input"))) {
 		s->box = FL_THIN_DOWN_BOX;
 		s->selection_color = fl_lighter(FL_BLUE);
 	}
-	if(s = Fl_Style::find("Scrollbar")) {
+	if((s = Fl_Style::find("Scrollbar"))) {
 		s->button_box = FL_THIN_UP_BOX;
 		Fl_Style::scrollbar_width = 14;
 	}
-	if(s = Fl_Style::find("ListView")) {
+	if((s = Fl_Style::find("ListView"))) {
 		s->box = FL_THIN_DOWN_BOX;			
 		s->selection_color = fl_lighter(FL_BLUE);
 	}
-	if(s = Fl_Style::find("ListView Header")) {
+	if((s = Fl_Style::find("ListView Header"))) {
 		s->button_box = FL_THIN_UP_BOX;
 	}	
 }

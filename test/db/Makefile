@@ -6,12 +6,18 @@ include ../../makeinclude
 
 ifneq ($(UNIXODBCLIB), )
 # Add ODBC, if not disabled..
-ODBCCPP = db_odbc.cpp
+ODBCCPP = database.cpp
 ODBC = db_odbc
 endif
 
+ifneq ($(MYSQLCONFIG), )
+# Add MySQL, if not disabled..
+MYSQLCPP = database.cpp
+MYSQL = db_mysql
+endif
+
 CPPFILES = $(ODBCCPP)
-ALL = $(ODBC)
+ALL = $(ODBC) $(MYSQL)
 
 all: demos
 
@@ -23,20 +29,18 @@ demos: $(ALL)
 
 programs: demos
 
-# DB programs needing special "help"...
-db_odbc: db_odbc.cpp $(FLODBCLIB) $(FLLIB)
-	$(CXX) -I../.. $(CXXFLAGS) $< $(ODBCLIBS) $(LDLIBS) -o $@
+$(ODBC): $(ODBCCPP)
+	$(CXX) -DODBC_DRIVER -I../.. $(CXXFLAGS) $< $(FLLIB) $(ODBCLIBS) $(LDLIBS) -o $@
 
+$(MYSQL): $(MYSQLCPP)
+	$(CXX) -DMYSQL_DRIVER $(MYSQLFLAGS) -I../.. $(CXXFLAGS) $< $(FLLIB) $(MYSQLLIBS_) $(LDLIBS) -o $@
+ 
 depend:
 	$(MAKEDEPEND) -I.. $(CXXFLAGS) $(CPPFILES) > makedepend
 
 clean:
 	@ rm -f $(ALL) *.exe *.o core *~ makedepend
 	@touch makedepend
-
-regenerate:
-	@echo "Generating tests.."
-	@sed -e "s'__DRIVER__'Fl_ODBC_Database'g" db_test_template.cpp > db_odbc.cpp;
 
 install:
 
