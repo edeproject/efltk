@@ -97,8 +97,10 @@ bool Fl_XmlDoc::load(FILE *fp)
 
 void Fl_XmlDoc::save(Fl_String &str)
 {
+	uint n;
+
     // output all processing instructions
-    for(uint n=0; n<procinstructions_.size(); n++) {
+    for(n=0; n<procinstructions_.size(); n++) {
         Fl_XmlNode *np = procinstructions_.item(n);
         // output pi tag
         WRITE("<?");
@@ -135,7 +137,7 @@ void Fl_XmlDoc::save(Fl_String &str)
     }
 
     // call save() method of the first (and hopefully only) node in xmldocument
-    for(uint n=0; n<nodelist_.size(); n++) {
+    for(n=0; n<nodelist_.size(); n++) {
         Fl_XmlNode *nd = nodelist_.item(n);
         nd->save(str, 0);
     }

@@ -1,3 +1,5 @@
+#include <config.h>
+
 #include <efltk/xml/Fl_XmlParser.h>
 #include <efltk/xml/Fl_XmlCtx.h>
 #include <efltk/xml/Fl_XmlDoc.h>
@@ -86,10 +88,10 @@ bool Fl_XmlParser::parse_document( Fl_XmlDoc &doc, Fl_XmlContext *ctxptr)
     // parse the only one subnode
     Fl_XmlNode *subnode = new Fl_XmlNode(ctxptr);
 
-    bool ret = parse_node(*subnode, ctxptr);
+    int ret = parse_node(*subnode, ctxptr);
 
     // if successful, put node into nodelist
-    if(ret) {
+    if(ret==1) {
         doc.add_child( subnode );
     } else {
         delete subnode;
@@ -98,7 +100,7 @@ bool Fl_XmlParser::parse_document( Fl_XmlDoc &doc, Fl_XmlContext *ctxptr)
     if(handle)
         ctxptr->handler()->end_document();
 
-    return ret;
+    return (ret==1);
 }
 
 // parses the doctype
@@ -290,7 +292,7 @@ bool Fl_XmlParser::parse_header( Fl_XmlDoc &doc, Fl_XmlContext *ctxptr)
 }
 
 // parses the contents of the current node
-bool Fl_XmlParser::parse_node( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
+int Fl_XmlParser::parse_node( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
 {
     bool handle = ctxptr->handle_events();
     Fl_String token1, token2;
@@ -307,23 +309,19 @@ bool Fl_XmlParser::parse_node( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
         // check if we have cdata
         if(!is_literal(token1))
         {
+			Fl_String &cdata = node.parent()->cdata();
             // parse cdata section(s) and return
-            node.cdata_.clear();
+            cdata.clear();
 
             while(!tokenizer.eos() && !is_literal(token1)) {
-                node.cdata_ += token1;
+                cdata += token1;
                 token1 = *tokenizer++;
             }
             tokenizer.put_back();
 
-            Fl_String cdataname("cdata");
-            node.nodenamehandle_ = ctxptr->insert_tagname( cdataname );
-            node.nodetype_ = FL_XML_TYPE_CDATA;
-
-            if (handle) ctxptr->handler()->cdata(node.cdata());
-            return true;
+            if (handle) ctxptr->handler()->cdata(cdata);
+            return 2; //CDATA PARSED!
         }
-
         // no cdata, try to continue parsing node content
         if(token1 != '<') {
             ctxptr->lasterror_ = FL_XML_OPENTAG_CDATA_EXPECTED;
@@ -345,39 +343,37 @@ bool Fl_XmlParser::parse_node( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
 
             case '!': {
                 // peek next 2 chars
-                token1 = tokenizer.peek(2);
+                Fl_String tmp = tokenizer.peek(2);
 
-                if(token1[0] == '-' && token1[1] == '-') {
+                if(tmp[0] == '-' && tmp[1] == '-') {
 
                     if(!parse_comment(node, ctxptr))
                         return false;
                     return true;
 
-                } else if(token1[0] == '[') {
+                } 
+				else if(tmp[0] == '[') {
 
                     token1 = tokenizer.peek(7); // Read check
                     if(!strncmp(token1.c_str(), "[CDATA[", 7))
                     {
-                        // parse cdata section(s) and return
-                        node.cdata_.clear();
+						// parse cdata section(s) and return
+						Fl_String &cdata = node.parent()->cdata();                        
+                        cdata.clear();
 
                         token1 = tokenizer.read(7); // Read [CDATA away
                         tokenizer.cdata_mode(true);
                         while(!tokenizer.eos()) {
-                            node.cdata_ += *tokenizer++;
-                            if(node.cdata_[node.cdata_.length()-1]=='>')
+                            cdata += *tokenizer++;
+                            if(cdata[cdata.length()-1]=='>')
                                 break;
                         }
                         tokenizer.cdata_mode(false);
 
-                        node.cdata_.sub_delete(node.cdata_.length()-3, 3); //Delete "]]>"
+                        cdata.sub_delete(cdata.length()-3, 3); //Delete "]]>"
 
-                        Fl_String cdataname("cdata");
-                        node.nodenamehandle_ = ctxptr->insert_tagname( cdataname );
-                        node.nodetype_ = FL_XML_TYPE_FIXED_CDATA;
-
-                        if (handle) ctxptr->handler()->cdata(node.cdata());
-                        return true;
+                        if (handle) ctxptr->handler()->cdata(cdata);
+                        return 2; //CDATA PARSED!
                     }
 
                     // Skip to next literal, cant do anything with this data :(
@@ -434,7 +430,6 @@ bool Fl_XmlParser::parse_node( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
     if(ctxptr->html_mode()) {
         if(is_html_leaf(tagname)) {
             //tokenizer.put_back(token1);
-            node.nodetype_ = FL_XML_TYPE_LEAF;
             if(handle) ctxptr->handler()->end_node(tagname);
             return true;
         }
@@ -449,7 +444,6 @@ bool Fl_XmlParser::parse_node( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
             return false; // Close Tag expected
         }
 
-        node.nodetype_ = FL_XML_TYPE_LEAF;
         if(handle) ctxptr->handler()->end_node(tagname);
 
         // return, let the caller continue to parse
@@ -463,20 +457,32 @@ bool Fl_XmlParser::parse_node( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
     }
 
     // loop to parse all subnodes
-    while(true) {
+	bool failed = false;
+	Fl_XmlNode *subnode = 0;
+    while(!failed) {
 
-        Fl_XmlNode *subnode = new Fl_XmlNode(ctxptr);
-        subnode->parent(&node);
+		if(!subnode) {
+			subnode = new Fl_XmlNode(ctxptr);
+			subnode->parent(&node);
+		}
 
-        // try to parse possible sub nodes
-        if(parse_node( *subnode, ctxptr )) {
-            // if successful, put node into nodelist
-            node.add_node(subnode);
-        } else {
-            delete subnode;
-            break;
-        }
+		switch(parse_node( *subnode, ctxptr ))
+		{
+		default:
+		case 0:	
+			failed = true; 
+			break;
+		case 1:
+			node.add_node(subnode);
+			subnode = 0;
+			break;
+		case 2:
+			// CDATA parsed!
+			break;
+		}
     }
+	if(subnode) 
+		delete subnode;
 
     if(ctxptr->lasterror_)
         return false;
@@ -596,14 +602,14 @@ bool Fl_XmlParser::parse_comment( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
 
     comment.sub_delete(0, 2);
     comment.sub_delete(comment.length()-2, 2);
-    node.cdata_ = comment.trim();
+    node.cdata(comment.trim());
 
     Fl_String tagname("comment");
     node.nodenamehandle_ = ctxptr->insert_tagname( tagname );
     node.type(FL_XML_TYPE_COMMENT);
 
     if(handle)
-        ctxptr->handler()->comment(node.cdata_);
+        ctxptr->handler()->comment(node.cdata());
 
     return true;
 }

@@ -23,7 +23,7 @@ void Fl_XmlTokenizer::get_next()
     char c;
     do {
         if (putback_char == -1 ) {
-            c = getchar();
+            c = _getchar();
             ctxptr->pos_++;
         } else {
             c = putback_char;
@@ -66,7 +66,7 @@ void Fl_XmlTokenizer::get_next()
             generic = c;
             char delim = c;
             do {
-                c = getchar();
+                c = _getchar();
                 ctxptr->pos_++;
                 if(eos()) break;
                 generic += c;
@@ -206,7 +206,7 @@ Fl_String Fl_XmlStreamIterator::peek(int length)
 {
     if(!eos()) {
         int pos = ((Fl_IO*)io_ctx)->tell();
-        char *tmp = new char[length];
+        char *tmp = (char *)malloc(length+1);
         int readed = ((Fl_IO*)io_ctx)->read(tmp, length);
         ((Fl_IO*)io_ctx)->seek(pos);
         if(readed==length) {
@@ -221,10 +221,10 @@ Fl_String Fl_XmlStreamIterator::peek(int length)
 Fl_String Fl_XmlStreamIterator::read(int length)
 {
     if(!eos()) {
-        char *tmp = new char[length+1];
+        char *tmp = (char *)malloc(length+1);
         int readed = ((Fl_IO*)io_ctx)->read(tmp, length);
         if(readed==length) {
-            tmp[length] = '\0';
+			tmp[length] = '\0';
             return Fl_String(tmp, length, true);
         } else
             delete []tmp;
@@ -232,7 +232,7 @@ Fl_String Fl_XmlStreamIterator::read(int length)
     return Fl_String((char)EOF);
 }
 
-char Fl_XmlStreamIterator::getchar()
+char Fl_XmlStreamIterator::_getchar()
 {
     if(!eos()) {
         char c;

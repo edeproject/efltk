@@ -85,7 +85,11 @@ void Fl_Group::clear()
     }
 }
 
-Fl_Group::~Fl_Group() { clear(); }
+Fl_Group::~Fl_Group() { 
+	clear(); 
+	if(Fl_Group::current()==this)
+		Fl_Group::current(parent());
+}
 
 void Fl_Group::insert(Fl_Widget &o, int index)
 {

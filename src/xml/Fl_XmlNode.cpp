@@ -60,7 +60,7 @@ void Fl_XmlNode::copy(const Fl_XmlNode &node)
     nodenamehandle_	= node.nodenamehandle_;
     nodetype_		= node.nodetype_;
     attributes_		= node.attributes_;
-    cdata_		= node.cdata_;
+    chardata_		= node.chardata_;
     nodelist_		= node.nodelist_;
     parent_		= node.parent_;
 }
@@ -167,11 +167,11 @@ bool Fl_XmlNode::load(const char *ptr, int len)
 
     Fl_XmlStreamIterator it(ctx, ptr, len);
     Fl_XmlParser parser(it);
-    return parser.parse_node( *this, context() );
+    return (parser.parse_node( *this, context() )==1);
 }
 
 #define WRITE_INDENT() if(indent > -1) str += Fl_String(' ', indent)
-#define WRITE(text) str += Fl_String(text);
+#define WRITE(text) str += (text);
 
 void Fl_XmlNode::save(Fl_String &str, int indent)
 {
@@ -181,7 +181,7 @@ void Fl_XmlNode::save(Fl_String &str, int indent)
     // output indendation spaces
     WRITE_INDENT();
 
-    if(nodetype_ == FL_XML_TYPE_NODE || nodetype_ == FL_XML_TYPE_LEAF) {
+    if(is_normal()) {
         // Output tag name
         WRITE("<" + ctx->get_tagname(nodenamehandle_));
         // Output attributes
@@ -194,6 +194,7 @@ void Fl_XmlNode::save(Fl_String &str, int indent)
     // depending on the nodetype, do output
     switch(nodetype_)
     {
+		/*
     case FL_XML_TYPE_CDATA: {
         WRITE(cdata_);
     }
@@ -203,34 +204,44 @@ void Fl_XmlNode::save(Fl_String &str, int indent)
         // output all subnodes
         WRITE("<![CDATA[" + cdata_ + "]]>\n");
     }
-    break;
+    break;*/
 
     case FL_XML_TYPE_COMMENT: {
         // output all subnodes
-        WRITE("<!-- " + cdata_ + " -->\n");
+        WRITE("<!-- " + cdata() + " -->\n");
     }
     break;
 
     case FL_XML_TYPE_NODE: {
+
+		if(is_leaf()) {
+			WRITE("/>\n");
+			break;
+		}
+
         bool only_cdata;
-        if(nodelist_.size()==1 && nodelist_.item(0)->type()==FL_XML_TYPE_CDATA) {
-            WRITE(">");
+        if(children()==0) {
             only_cdata = true;
+			WRITE(">");            
         } else {
-            WRITE(">\n");
-            only_cdata = false;
+			only_cdata = false;
+            WRITE(">\n");            
         }
+
+		if(cdata().length()) {
+			if(is_fixed_cdata()) {
+				WRITE("<![CDATA[" + cdata() + "]]>\n");
+			} else {
+				WRITE(cdata());
+				if(!only_cdata && chardata_[chardata_.length()-1] != '\n')
+					str += '\n';
+			}
+		}
 
         // output all subnodes
         for(uint n=0; n<nodelist_.size(); n++) {
             Fl_XmlNode *np = nodelist_.item(n);
-            if(only_cdata) {
-                np->save(str, -1);
-            } else {
-                np->save(str, indent+Fl_XmlContext::indent_spaces());
-                if(np->type()==FL_XML_TYPE_CDATA && str[str.length()-1]!='\n')
-                    str+="\n";
-            }
+            np->save(str, indent+Fl_XmlContext::indent_spaces());
         }
 
         // output indendation spaces
@@ -239,12 +250,6 @@ void Fl_XmlNode::save(Fl_String &str, int indent)
 
         // output closing tag
         WRITE("</" + ctx->get_tagname(nodenamehandle_) + ">\n");
-    }
-    break;
-
-    case FL_XML_TYPE_LEAF: {
-        // a leaf has no subnodes
-        WRITE("/>\n");
     }
     break;
 

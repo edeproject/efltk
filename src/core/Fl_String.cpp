@@ -289,7 +289,7 @@ void Fl_String::printf(const char *string, ...)
     valen = fl_va_len((char *)string, ap);
     va_end(ap);
 
-    s = (char*)malloc(valen);
+    s = (char*)malloc(valen+1);
     va_start(ap, string);
     vsnprintf(s, valen, string, ap);
     va_end(ap);
