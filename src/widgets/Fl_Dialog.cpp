@@ -525,8 +525,6 @@ int Fl_Dialog::handle(int event)
 int Fl_Dialog::show_modal() {
     load_data();
     exec(0,false);
-    if (m_modalResult & (Fl_Dialog::BTN_OK|Fl_Dialog::BTN_YES)) 
-        save_data();
     return m_modalResult;
 }
 
