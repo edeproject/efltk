@@ -2,7 +2,6 @@
 #include <efltk/Fl_Renderer.h>
 #include <efltk/Fl_Exception.h>
 #include <efltk/Fl_Translator.h>
-#include <efltk/Fl_String_Hash.h>
 #include <efltk/filename.h>
 #include <efltk/vsnprintf.h>
 #include <efltk/fl_utf8.h>

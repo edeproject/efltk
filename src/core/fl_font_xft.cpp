@@ -157,11 +157,17 @@ XftFont* fl_xftfont()
 // a pretty good job of selecting X fonts...
 XFontStruct* fl_xfont()
 {
+    static XFontStruct *bitch = 0;
+    if(!bitch) bitch = XLoadQueryFont(fl_display, "fixed");
+    return bitch;
+    /*
+     // This wont work on XFT2+
     if (current_font->core) return current_font->u.core.font;
     static XftFont* xftfont;
     if (xftfont) XftFontClose (fl_display, xftfont);
     xftfont = fontopen(fl_font_->name_, true);
     return xftfont->u.core.font;
+    */
 }
 
 #if 0 // this is never called!

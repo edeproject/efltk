@@ -1142,7 +1142,7 @@ bool fl_handle()
                             if (!filtered) {
                                 Status status;
                                 len = XUtf8LookupString(fl_xim_ic, (XKeyPressedEvent *)&fl_xevent.xkey,
-                                        buffer, 255, &keysym, &status);
+                                                        buffer, 255, &keysym, &status);
                                 if(buffer[0] && len < 1) len = 1;
 
                             } else {

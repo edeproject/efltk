@@ -29,6 +29,7 @@ Atom _XA_NET_WORKAREA = 0;
 Atom _XA_NET_CLIENT_LIST = 0;
 Atom _XA_NET_CLIENT_LIST_STACKING = 0;
 Atom _XA_NET_ACTIVE_WINDOW = 0;
+Atom _XA_NET_CLOSE_WINDOW = 0;
 Atom _XA_NET_WM_NAME = 0;
 Atom _XA_NET_WM_ICON_NAME = 0;
 Atom _XA_NET_WM_VISIBLE_NAME = 0;
@@ -119,6 +120,7 @@ static struct {
     { &_XA_NET_CLIENT_LIST,     "_NET_CLIENT_LIST" },
     { &_XA_NET_CLIENT_LIST_STACKING, "_NET_CLIENT_LIST_STACKING" },
     { &_XA_NET_ACTIVE_WINDOW,   "_NET_ACTIVE_WINDOW" },
+    { &_XA_NET_CLOSE_WINDOW,    "_NET_CLOSE_WINDOW" },
     { &_XA_NET_WM_NAME,         "_NET_WM_NAME" },
     { &_XA_NET_WM_ICON_NAME,    "_NET_WM_ICON_NAME" },
     { &_XA_NET_WM_VISIBLE_NAME, "_NET_WM_VISIBLE_NAME" },
@@ -373,6 +375,16 @@ bool Fl_WM::set_active_window(Window xid)
     init_atom(&_XA_NET_ACTIVE_WINDOW);
     if(fl_netwm_supports(_XA_NET_ACTIVE_WINDOW)) {
         sendClientMessage(xid, _XA_NET_ACTIVE_WINDOW, xid);
+        return true;
+    }
+    return false;
+}
+
+bool Fl_WM::close_window(Window xid)
+{
+    init_atom(&_XA_NET_CLOSE_WINDOW);
+    if(fl_netwm_supports(_XA_NET_CLOSE_WINDOW)) {
+        sendClientMessage(xid, _XA_NET_CLOSE_WINDOW, xid);
         return true;
     }
     return false;
