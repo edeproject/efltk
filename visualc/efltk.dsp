@@ -270,6 +270,10 @@ SOURCE=..\src\widgets\Fl_Dialog.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\widgets\Fl_Dialog_DS.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\core\fl_diamond_box.cpp
 # End Source File
 # Begin Source File
@@ -630,6 +634,10 @@ SOURCE=..\src\core\Fl_Socket.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\widgets\Fl_Split.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\core\fl_stretch.cpp
 # End Source File
 # Begin Source File
@@ -899,6 +907,10 @@ SOURCE=..\efltk\Fl_Dial.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_Dialog.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Dialog_DS.h
 # End Source File
 # Begin Source File
 
@@ -1271,6 +1283,10 @@ SOURCE=..\efltk\Fl_Slider.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_Socket.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Split.h
 # End Source File
 # Begin Source File
 
