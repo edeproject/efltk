@@ -219,7 +219,10 @@ Fl_Widget* Widget_List::child(const Fl_Menu_*, const int* indexes, int level) {
   if (item->is_parent() && item->open_) widget->set_value();
   else widget->clear_value();
 
-  widget->label(item->title());
+  if(!item->title())
+      widget->label("NO LABEL!");
+  else
+      widget->label(item->title());
   widget->w(0);
   widget->h(0);
 
@@ -413,8 +416,9 @@ int storestring(const char *n, Fl_String& p, int nostrip)
 
 void Fl_Type::name(const char *n) 
 {
-	if (storestring(n, name_)) 
-		widget_browser->redraw();
+    if (storestring(n, name_)) {
+        widget_browser->redraw();
+    }
 }
 
 void Fl_Type::label(const char *n) 

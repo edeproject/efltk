@@ -160,7 +160,7 @@ public:
   int ismain() { return name_.empty(); } //==0
   
   virtual const char *type_name() const { return "Function"; }
-  virtual const char *title() { return name().empty() ? "main()" : name(); }
+  virtual const char *title() { return name().empty() ? "main()" : name().c_str(); }
 
   int is_parent() const {return 1;}
   int is_code_block() const {return 1;}
