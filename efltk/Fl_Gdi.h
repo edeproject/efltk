@@ -30,10 +30,12 @@
 #include <windows.h>
 #include <commdlg.h>
 
+#include <efltk/Fl_Color.h>
+#include <efltk/Fl_Font.h>
 
 extern FL_API Fl_Color fl_color_;
 extern FL_API float    fl_size_;
-extern FL_API Fl_font  fl_font_;
+extern FL_API Fl_Font  fl_font_;
 extern FL_API HDC      fl_gc;
 /*
 struct Fl_Ext{

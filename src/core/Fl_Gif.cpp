@@ -327,8 +327,10 @@ static int GetCode(Fl_IO &gif_io, int code_size, int flag)
                 RWSetMsg("GIF: Ran off the end of my bits");
             return -1;
         }
-        buf[0] = buf[last_byte - 2];
-        buf[1] = buf[last_byte - 1];
+        if (last_byte > 1) { // Blocks 'access underrun'
+            buf[0] = buf[last_byte - 2];
+            buf[1] = buf[last_byte - 1];
+        }
 
         if ((count = GetDataBlock(gif_io, &buf[2])) == 0)
             done = TRUE;

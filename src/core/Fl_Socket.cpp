@@ -16,6 +16,98 @@ typedef int socklen_t;
 int 	Fl_Socket::m_socketCount;
 bool	Fl_Socket::m_inited = false;
 
+Fl_Socket_Reader::Fl_Socket_Reader(int buffer_size)
+: Fl_Buffer(buffer_size) {
+   m_socket = 0;
+   m_readOffset = 0;
+   m_buffer[buffer_size-1] = 0;
+}
+
+void Fl_Socket_Reader::open(int socket) {
+   m_socket = socket;
+   m_readOffset = 0;
+}
+
+int Fl_Socket_Reader::read_available(char *dest,int sz,bool read_line) {
+    char *readPosition = m_buffer+m_readOffset;
+    bool completeLine = false;
+
+    // check if we have enough data read already in buffer
+    int availableBytes = m_bytes - m_readOffset;
+    int bytesToRead = sz;
+    if (availableBytes <= bytesToRead) bytesToRead = availableBytes;
+
+    if (!availableBytes) return 0;
+
+    if (read_line) {
+        char *cr = (char *)strchr(readPosition,'\n');
+        if (cr) {
+            int bytes = cr - readPosition;
+            if (bytes && *(cr-1) == '\r')
+                    *(cr-1) = 0;
+            else    *cr = 0;
+            bytesToRead = bytes+1;
+            completeLine = true;
+        }
+    }
+
+    // copy data to dest, advance the read offset
+    memcpy(dest,readPosition,bytesToRead);
+    m_readOffset += bytesToRead;
+
+    if (completeLine)
+        return -(bytesToRead-1);
+
+    return bytesToRead;
+}
+
+int Fl_Socket_Reader::read(char *dest,int sz,bool read_line) {
+    int total = 0;
+    int eol = 0;
+    // Check the existing buffer
+    int bytes = read_available(dest,sz,read_line);
+    if (read_line && bytes < 0) // The complete line found
+        return -bytes;
+
+    dest += bytes;
+    total += bytes;
+
+    int bytesToRead = sz - bytes;
+    if (bytesToRead == 0) return sz;
+    if (m_socket <= 0)
+        fl_throw("Can't read from closed socket");
+    while (bytesToRead) {
+        m_readOffset = 0;
+#ifdef _WIN32
+        bytes = recv(m_socket, m_buffer, m_size-2, NULL);
+#else
+        bytes = ::read(m_socket, m_buffer, m_size-2);
+#endif
+        m_bytes = bytes;
+        if (read_line) {
+            char *cr = (char *)strchr(m_buffer,'\n');
+            if (cr) {
+                bytes = cr - m_buffer + 1;
+                if (bytes && *(cr-1) == '\r')
+                        *(cr-1) = 0;
+                else    *cr = 0;
+                bytesToRead = bytes;
+                eol = 1;
+            }
+        }
+        if (bytes > bytesToRead)
+            bytes = bytesToRead;
+        total += bytesToRead;
+        memcpy(dest,m_buffer,bytes);
+        if (read_line)
+            *(dest + bytes) = 0;
+        dest += bytes;
+        m_readOffset += bytes;
+        bytesToRead -= bytes;
+    }
+    return total - eol;
+}
+
 void Fl_Socket::init() {
     if (m_inited) return;
     m_inited =  true;
@@ -31,7 +123,8 @@ void Fl_Socket::cleanup() {
 }
 
 // Constructor
-Fl_Socket::Fl_Socket(int domain,int type,int protocol) {
+Fl_Socket::Fl_Socket(int domain,int type,int protocol)
+: m_reader(16384) {
     init();
 
     m_socketCount++;
@@ -43,8 +136,8 @@ Fl_Socket::Fl_Socket(int domain,int type,int protocol) {
     m_host     = NULL;
     m_port     = 0;
 
-    FD_ZERO(&inputs);
-    FD_ZERO(&outputs);
+    FD_ZERO(&m_inputs);
+    FD_ZERO(&m_outputs);
 }
 
 // Destructor
@@ -86,8 +179,10 @@ void Fl_Socket::open_addr(struct sockaddr_in& addr) {
         fl_throw("Can't connect. Host is unreachible.");
     }
 
-    FD_SET(m_sockfd, &inputs);
-    FD_SET(m_sockfd, &outputs);
+    FD_SET(m_sockfd, &m_inputs);
+    FD_SET(m_sockfd, &m_outputs);
+
+    m_reader.open(m_sockfd);
 }
 
 void Fl_Socket::open(Fl_String hostName,int portNumber) {
@@ -100,7 +195,7 @@ void Fl_Socket::open(Fl_String hostName,int portNumber) {
     struct hostent *host_info;
 
     host_info = gethostbyname(m_host);
-    if (!host_info) 
+    if (!host_info)
         fl_throw("Can't connect. Host is unknown.");
 
     memset(&addr, 0, sizeof(addr));
@@ -115,8 +210,9 @@ void Fl_Socket::open(Fl_String hostName,int portNumber) {
 
 void Fl_Socket::close() {
     if (m_sockfd != INVALID_SOCKET) {
-        FD_CLR(m_sockfd,&inputs);
-        FD_CLR(m_sockfd,&outputs);
+        m_reader.close();
+        FD_CLR(m_sockfd,&m_inputs);
+        FD_CLR(m_sockfd,&m_outputs);
 #ifndef _WIN32
         shutdown(m_sockfd, SHUT_RDWR);
 #else
@@ -139,37 +235,21 @@ char Fl_Socket::get_char() {
 }
 
 int Fl_Socket::read_line(char *buffer,int size) {
-    int bytes = 0;
-    char *p = buffer;
-    for (; bytes < size - 1; bytes++) {
-        char ch = get_char();
-        *p = ch;
-        p++;
-        if (ch == 0 || ch == '\n')
-            break;
-    }
-    *p = 0;
-    return bytes + 1;
+    return m_reader.read(buffer,size,true);
 }
 
 int Fl_Socket::read_line(Fl_Buffer& buffer) {
-    int rc = read_line(buffer.data(),buffer.size());
+    int rc = m_reader.read(buffer.data(),buffer.size(),true);
     buffer.bytes(rc+1);
     return rc;
 }
 
 int Fl_Socket::read(char *buffer,int size) {
-#ifdef _WIN32
-    int bytes = recv(m_sockfd, buffer, size - 1, NULL);
-#else
-    int bytes = ::read(m_sockfd, buffer, size - 1);
-#endif
-    buffer[bytes] = 0;
-    return bytes;
+    return m_reader.read(buffer,size);
 }
 
 int Fl_Socket::read(Fl_Buffer& buffer) {
-    int rc = read(buffer.data(),buffer.size());
+    int rc = m_reader.read(buffer.data(),buffer.size(),true);
     buffer.bytes(rc);
     return rc;
 }
@@ -207,10 +287,10 @@ bool Fl_Socket::ready_to_read(int wait_msec) {
     timeout.tv_usec = wait_msec % 1000 * 1000;
 
     //FD_ZERO(&inputs);
-    FD_SET(m_sockfd,&inputs);
+    FD_SET(m_sockfd,&m_inputs);
 
-    select(FD_SETSIZE, &inputs, NULL, NULL, &timeout);
-    return FD_ISSET(m_sockfd ,&inputs);
+    select(FD_SETSIZE, &m_inputs, NULL, NULL, &timeout);
+    return FD_ISSET(m_sockfd ,&m_inputs);
 }
 
 bool Fl_Socket::ready_to_write() {

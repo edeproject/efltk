@@ -45,7 +45,10 @@
 Fl_Device fl_fltk_dev;
 Fl_Device *fl_current_dev = &fl_fltk_dev;
 
+#ifndef _WIN32
 #warning Where are they?
+#endif
+
 void Fl_Device::font(const char* s, float size){puts("font 1");};
 void Fl_Device::font(const char* s, int attributes, float size){puts("font 2");};
 const char* Fl_Device::fontname(Fl_Font, int *){puts("font 3"); return 0;};	

@@ -16,15 +16,27 @@ typedef int SOCKET;
 #include <efltk/Fl_String.h>
 #include <efltk/Fl_Buffer.h>
 
+class Fl_Socket_Reader : protected Fl_Buffer {
+   int m_socket;
+   int m_readOffset;
+   int read_available(char *dest,int sz,bool read_line);
+public:
+   Fl_Socket_Reader(int buffer_size=16384);
+   void open(int socket);
+   void close() { m_socket = 0; }
+   int  read(char *dest,int sz,bool read_line=false);
+};
+
 class FL_API Fl_Socket {
 protected:
-	SOCKET		m_sockfd;
-	int			m_domain;
-	int			m_type;
-	int 	   	m_protocol;
-	Fl_String	m_host;
-	int			m_port;
-	fd_set		inputs,outputs;
+	SOCKET		        m_sockfd;
+	int			        m_domain;
+	int			        m_type;
+	int 	   	        m_protocol;
+	Fl_String	        m_host;
+	int			        m_port;
+	fd_set		        m_inputs,m_outputs;
+    Fl_Socket_Reader    m_reader;
 
 protected:
 	static int	m_socketCount;

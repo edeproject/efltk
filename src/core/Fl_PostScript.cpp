@@ -1001,7 +1001,9 @@ void Fl_PostScript::pie(int x, int y, int w, int h, float a1, float a2) {
     fprintf(output, "GS\n");
     fprintf(output, "%g %g TR\n", x + w/2.0 , y + h/2.0);
     fprintf(output, "%g %g SC\n", w/2.0 , h/2.0 );
+#ifndef __BORLANDC__
 #warning begin polygon	and arc todo
+#endif
 //	begin_polygon();
 //	arc(0.0, 0.0, 1, a1, a2);
 //	end_polygon();

@@ -34,8 +34,8 @@ void printStepName (const char *stepName)
 int main (int argc, char *argv[])
 {
 #ifdef _WIN32
-    const char *tmp=0;
-    if(!(tmp=fl_input("Connect String?")))
+    const char *tmp = fl_input("Connect String?");
+    if(!tmp)
         Fl::fatal("Usage: %s \"Connect String\"", argv[0]);
     Fl_String connect_string(tmp);
 #else

@@ -104,7 +104,7 @@ void Fl_FTP_Connect::open_data_port() {
 
         memset(&sin, 0, l);
         sin.in.sin_family = AF_INET;
-        char *cp = strchr(resp.c_str(),'(');
+        const char *cp = strchr(resp.c_str(),'(');
         if (cp == NULL)
             fl_throw(resp);
         cp++;
@@ -116,10 +116,11 @@ void Fl_FTP_Connect::open_data_port() {
         sin.sa.sa_data[0] = v[0];
         sin.sa.sa_data[1] = v[1];
     }
-    if (m_passive) {
+    // Current implementation supports only passive mode, sorry
+    //if (m_passive) {
         m_dataSocket.open_addr(sin.in);
         setsockopt(m_dataSocket.handle(),SOL_SOCKET,SO_LINGER,(char *)&lng,sizeof(lng));
-    }
+    //}
 }
 
 void Fl_FTP_Connect::cmd_quit() {
@@ -164,7 +165,7 @@ void Fl_FTP_Connect::get_list(Fl_String cmd,Fl_String_List& list) {
     m_commandSocket.get_response();
 }
 
-void Fl_FTP_Connect::Fl_FTP_Connect::cmd_list(Fl_String_List& result) {
+void Fl_FTP_Connect::cmd_list(Fl_String_List& result) {
     get_list("LIST",result);
 }
 

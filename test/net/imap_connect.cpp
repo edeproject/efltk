@@ -132,9 +132,9 @@ void cb_browser(Fl_Widget *browser,void *) {
         list_view->fill(imap_ds);
         list_view->redraw();
     }
-fl_catch(exception) {
-    puts(exception.text().c_str());
-}
+    fl_catch(exception) {
+        puts(exception.text().c_str());
+    }
 }
 
 void cb_read(Fl_Widget *,void *) {

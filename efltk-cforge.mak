@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x400373
+# %FirstUniqueId:	0x400375
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -6900,7 +6900,9 @@ lib/Fl_FTP_Connect.o :	efltk/net/Fl_FTP_Connect.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
 	efltk/Fl_String_List.h
-test/imap_connect.o :	efltk/Fl_Choice.h\
+test/imap_connect.o :	test/net/file_small.xpm\
+	test/net/folder_small.xpm\
+	efltk/Fl_Item_Group.h\
 	efltk/Fl_Menu_.h\
 	efltk/Fl_Menu_Item.h\
 	efltk/Fl_Widget.h\
@@ -6923,6 +6925,12 @@ test/imap_connect.o :	efltk/Fl_Choice.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl_Group.h\
 	efltk/Fl_Widget_List.h\
+	efltk/Fl_Item.h\
+	efltk/Fl_Browser.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Choice.h\
 	efltk/Fl_Config.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h\
@@ -6942,9 +6950,6 @@ test/imap_connect.o :	efltk/Fl_Choice.h\
 	efltk/Fl_Input.h\
 	efltk/Fl_Box.h\
 	efltk/Fl_ListView.h\
-	efltk/Fl_Scrollbar.h\
-	efltk/Fl_Slider.h\
-	efltk/Fl_Valuator.h\
 	efltk/Fl_ListView_Item.h\
 	efltk/Fl_Image_List.h\
 	efltk/Fl_ListView_Header.h\
@@ -7328,7 +7333,7 @@ test/file_chooser.o :	efltk/Fl_FileBrowser.h\
 # %TargetInfo test/multitabs2.cpp	SourceOrHeader,	UniqueId=0x40035b,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/multitabs1.cpp	SourceOrHeader,	UniqueId=0x400362,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/net/Fl_IMAP_Connect.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400363,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/net/imap_connect.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400365,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/net/imap_connect.cpp	SourceOrHeader,	UniqueId=0x400365,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Memory_DS.cpp	SourceOrHeader,	UniqueId=0x400367,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/net/Fl_IMAP_DS.cpp	SourceOrHeader,	UniqueId=0x400369,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/exceptions.cpp	SourceOrHeader,	UniqueId=0x40036c,	TargetType=C++,	IDEFlags=0x4
@@ -7565,6 +7570,8 @@ test/file_chooser.o :	efltk/Fl_FileBrowser.h\
 # %TargetInfo efltk/net/Fl_IMAP_DS.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40036a,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo test/fast_slow.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40036f,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Images.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400372,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo test/net/file_small.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x400373,	TargetType=XPM,	IDEFlags=0xe
+# %TargetInfo test/net/folder_small.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x400374,	TargetType=XPM,	IDEFlags=0xe
 
 
 # %UniqueId:	0x400001

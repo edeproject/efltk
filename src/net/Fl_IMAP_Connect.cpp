@@ -8,27 +8,22 @@
 Fl_IMAP_Connect::Fl_IMAP_Connect() {
    m_port = 143;
    m_ident = 1;
-   m_sockf = NULL;
 }
 
 Fl_IMAP_Connect::~Fl_IMAP_Connect() {
-   if (m_sockf)
-      fclose(m_sockf);
    close();
 }
 
-#define RSP_BLOCK_SIZE 255
+#define RSP_BLOCK_SIZE 1024
 bool Fl_IMAP_Connect::get_response(Fl_String ident) {
    char    readBuffer[RSP_BLOCK_SIZE+1];
 
    for (;;) {
-      char *p = fgets(readBuffer,RSP_BLOCK_SIZE,m_sockf);
-      int len = strlen(readBuffer);
+      int len = read_line(readBuffer,RSP_BLOCK_SIZE);
 		Fl_String longLine = readBuffer;
 		if (len == RSP_BLOCK_SIZE && readBuffer[RSP_BLOCK_SIZE]!='\n') {
 			do {
-				p = fgets(readBuffer,RSP_BLOCK_SIZE,m_sockf);
-				len = strlen(readBuffer);
+				len = read_line(readBuffer,RSP_BLOCK_SIZE);
 				longLine += readBuffer;
 			} while(len == RSP_BLOCK_SIZE);
 		}
@@ -84,11 +79,8 @@ void Fl_IMAP_Connect::command(Fl_String cmd,const Fl_String& arg1,const Fl_Strin
 }
 
 void Fl_IMAP_Connect::cmd_login(Fl_String user,Fl_String password) {
-	if (m_sockf)
-		fclose(m_sockf);
 	close();
 	open();
-	m_sockf = fdopen(handle(),"r+b");
 	m_response.clear();
 	get_response("");
 	command("login "+user+" "+password);
@@ -164,11 +156,6 @@ static void parse_header(const Fl_String& header,Fl_String& header_name,Fl_Strin
 	if (header[p-1] == ':') {
 		header_name = header.sub_str(0,p-1);
 		header_value = header.sub_str(p+1,header.length());
-		int hvlen = header_value.length();
-		if ((unsigned char)header_value[hvlen-1] <= '\n')
-			header_value.set_length(hvlen-1);
-		if ((unsigned char)header_value[hvlen-2] <= '\n')
-			header_value.set_length(hvlen-2);
 	}
 }
 
@@ -253,8 +240,6 @@ void Fl_IMAP_Connect::parse_message(Fl_Data_Fields& results,bool headers_only) {
 	unsigned i = 1;
 	for (; i < m_response.count() - 1; i++) {
 		Fl_String& st = m_response[i];
-		if (st[0] == '\n' || st[0] == '\r')
-			break;
 		Fl_String header_name, header_value;
 		parse_header(st,header_name,header_value);
 		if (header_name.length()) {
@@ -299,20 +284,12 @@ void Fl_IMAP_Connect::parse_folder_list() {
 		Fl_String& st = m_response[i];
 		if (st.pos(prefix) == 0) {
 			// passing the attribute(s)
-			char *p = strchr(st.c_str() + prefix.length(),' ');
+			const char *p = strchr(st.c_str() + prefix.length(),' ');
 			if (!p) continue;
 			// passing the reference
 			p = strchr(p + 1,' ');
 			if (!p) continue;
             p++;
-            char *r = strchr(p,'\r');
-            if (r) {
-                *r = 0;
-            } else {
-                r = strchr(p,'\n');
-                if (r)
-                    *r = 0;
-            }
 			// Ok, we found the path
 			folder_names.append(strip_framing_quotes(p));
 		}

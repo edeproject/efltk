@@ -25,9 +25,10 @@ Fl_Buffer::Fl_Buffer(unsigned sz) {
     m_buffer = (char *)calloc(1,sz);
     if (m_buffer) {
         m_size = sz; 
-    } else { m_size = 0;
-        m_bytes = 0;
+    } else {
+        m_size = 0;
     }
+    m_bytes = 0;
 }
 
 Fl_Buffer::~Fl_Buffer() {

@@ -87,7 +87,7 @@ char *get_sys_dir() {
     if(RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"Software\\Microsoft\\Windows\\CurrentVersion", 0, KEY_READ, &hKey)==ERROR_SUCCESS)
     {
         DWORD size=4096;
-        LONG result=RegQueryValueExW(hKey, L"CommonFilesDir", NULL, NULL, (LPBYTE)path, &size);
+        RegQueryValueExW(hKey, L"CommonFilesDir", NULL, NULL, (LPBYTE)path, &size);
         RegCloseKey(hKey);
         return path;
     }
@@ -119,7 +119,6 @@ char *Fl_Config::find_config_file(const char *filename, bool create, int mode)
         snprintf(path, sizeof(path)-1, "%s%c%s", get_sys_dir(), slash, filename);
         return (create || !access(path, R_OK)) ? path : 0;
     }
-	return 0;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -253,7 +252,9 @@ bool Fl_Config::read_file(bool create)
         return false;
     }
 
-    char *buffer = (char*)malloc(size*sizeof(char));
+    unsigned bsize = size*sizeof(char);
+    char *buffer = (char*)malloc(bsize+1);
+    buffer[bsize] = 0;
     if(!buffer) {
         m_error = CONF_ERR_MEMORY;
         return false;
@@ -726,8 +727,8 @@ int Fl_Config::_write_string(Section *s, const char *key, const Fl_String &value
     if(!s) return (m_error = CONF_ERR_SECTION);
     if(!key) return (m_error = CONF_ERR_KEY);
 
-    Line *line;
-    if((line = find_string(s, key))) {
+    Line *line = find_string(s, key);
+    if(line) {
         line->value = value;
     } else
         create_string(s, key, value);
