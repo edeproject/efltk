@@ -21,14 +21,17 @@
 #include <efltk/Fl_Export.h>
 #include <efltk/Fl_Date_Time.h>
 
+class Fl_Image;
+
 enum Fl_Variant_Type {
-      VAR_NONE = 0,
-      VAR_INT,
-      VAR_FLOAT,
-      VAR_STRING,
-      VAR_TEXT,
-      VAR_BUFFER,
-      VAR_DATETIME
+      VAR_NONE     = 0,
+      VAR_INT      = 1,
+      VAR_FLOAT    = 2,
+      VAR_STRING   = 4,
+      VAR_TEXT     = 8,
+      VAR_BUFFER   = 16,
+      VAR_DATETIME = 32,
+      VAR_IMAGEPTR = 64
    };
 
 class FL_API Fl_Variant {
@@ -41,12 +44,14 @@ public:
    void set_string(const char * value,int maxlen=0);
    void set_text(const char * value);
    void set_buffer(const void * value,int sz);
+   void set_image_ptr(const Fl_Image * value);
    void set_date(Fl_Date_Time value);
 
    int    get_int() const;
    double get_float() const;
    const char * get_string() const;
    const void * get_buffer() const;
+   const Fl_Image * get_image_ptr() const;
    Fl_Date_Time get_date() const;
 
    Fl_Variant_Type type() const { return m_type; }
@@ -56,6 +61,7 @@ public:
    operator int () const;
    operator double () const;
    operator const char * () const;
+   operator const Fl_Image * () const;
    operator Fl_Date_Time () const;
 
    // ASSIGNMENT OPERATORS
@@ -85,6 +91,11 @@ public:
       return *this;
    };
 
+   Fl_Variant& operator =(const Fl_Image *pm) {
+      set_image_ptr(pm);
+      return *this;
+   };
+
 protected:
    void set_data(const Fl_Variant &C);
    void free_buffers();
@@ -94,8 +105,9 @@ private:
       int       intData;
       double    floatData;
       double    timeData;
-      char *    stringData;
-      void *    blobData;
+      char      *stringData;
+      void      *blobData;
+      const Fl_Image *imagePtr;
    } m_data;
    int m_size;
    Fl_Variant_Type m_type;

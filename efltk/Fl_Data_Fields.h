@@ -29,32 +29,36 @@ class FL_API Fl_Data_Field {
 protected:
    Fl_String   m_name;
 public:
-   Fl_Data_Field(const char *name)  { m_name = name; width = -1; align = FL_ALIGN_LEFT; }
+   Fl_Data_Field(const char *name)    { m_name = name; width = -1; align = FL_ALIGN_LEFT; }
    Fl_Variant  value;
 
    // attributes
    int         width;
    Fl_Align    align;
 
-   const char *name() const         { return m_name.c_str();   }
+   const char *name() const           { return m_name.c_str();   }
+   Fl_Variant_Type type() const       { return value.type();     }
 
    // convertors
-   operator int () const            { return as_int();         }
-   operator double () const         { return as_float();       }
-   operator Fl_String () const      { return as_string();      }
-   operator Fl_Date_Time () const   { return as_date();        }
+   operator int () const              { return as_int();         }
+   operator double () const           { return as_float();       }
+   operator Fl_String () const        { return as_string();      }
+   operator Fl_Date_Time () const     { return as_date();        }
+   operator const Fl_Image * () const { return as_image();       }
 
    // assignments
-   Fl_Data_Field& operator = (int v)           { value = v; return *this; }
-   Fl_Data_Field& operator = (double v)        { value = v; return *this; }
-   Fl_Data_Field& operator = (Fl_String v)     { value = v; return *this; }
-   Fl_Data_Field& operator = (Fl_Date_Time v)  { value = v; return *this; }
-   Fl_Data_Field& operator = (const char *v)   { value = v; return *this; }
+   Fl_Data_Field& operator = (int v)             { value = v; return *this; }
+   Fl_Data_Field& operator = (double v)          { value = v; return *this; }
+   Fl_Data_Field& operator = (Fl_String v)       { value = v; return *this; }
+   Fl_Data_Field& operator = (Fl_Date_Time v)    { value = v; return *this; }
+   Fl_Data_Field& operator = (const char *v)     { value = v; return *this; }
+   Fl_Data_Field& operator = (const Fl_Image *v) { value = v; return *this; }
 
    int as_int() const;
    double as_float() const;
    Fl_String as_string() const;
    Fl_Date_Time as_date() const;
+   const Fl_Image *as_image() const;
 };
 
 class FL_API Fl_Data_Fields {

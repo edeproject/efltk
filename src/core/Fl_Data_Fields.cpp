@@ -30,6 +30,7 @@ int Fl_Data_Field::as_int() const {
    case VAR_TEXT:
    case VAR_BUFFER:     return atoi(value.get_string());     break;
    case VAR_DATETIME:   return int(value.get_date());        break;
+   case VAR_IMAGEPTR:
    case VAR_NONE:       break;
    }
    return 0;
@@ -43,6 +44,7 @@ double Fl_Data_Field::as_float() const {
    case VAR_TEXT:
    case VAR_BUFFER:     return atof(value.get_string());     break;
    case VAR_DATETIME:   return double(value.get_date());     break;
+   case VAR_IMAGEPTR:
    case VAR_NONE:       break;
    }
    return 0;
@@ -59,6 +61,7 @@ Fl_String Fl_Data_Field::as_string() const {
    case VAR_TEXT:
    case VAR_BUFFER:     return Fl_String(value.get_string());
    case VAR_DATETIME:   return value.get_date().date_string() + " " + value.get_date().time_string();
+   case VAR_IMAGEPTR:   fl_throw("Can't convert image field");
    case VAR_NONE:       break;
    }
    return "";
@@ -77,10 +80,17 @@ Fl_Date_Time Fl_Data_Field::as_date() const {
                         break;
    case VAR_DATETIME:   result = value.get_date();
                         break;
-   case VAR_NONE:
-                        break;
+   case VAR_IMAGEPTR:   fl_throw("Can't convert image field");
+   case VAR_NONE:       break;
    }
    return result;
+}
+
+const Fl_Image *Fl_Data_Field::as_image() const {
+   switch (value.type()) {
+   default:             fl_throw("Can't convert image field");
+   case VAR_IMAGEPTR:   return value.get_image_ptr();
+   }
 }
 
 void Fl_Data_Fields::clear() {
@@ -127,24 +137,21 @@ Fl_Variant& Fl_Data_Fields::operator [] (const char *fname) {
    Fl_Data_Field *field=0;
    int index = field_index(fname);
    if (index < 0) {
-       fl_throw("Field name not found");
-       //field = new Fl_Data_Field(fname);
-       //m_list.append(field);
+      fl_throw("Field name not found");
    } else {
-       field = (Fl_Data_Field *)m_list[index];
+      field = (Fl_Data_Field *)m_list[index];
    }
    return field->value;
 }
 
 const Fl_Variant& Fl_Data_Fields::operator [] (const char *fname) const {
-    int index = field_index(fname);
-    if (index < 0) {
-        fl_throw("Field name not found");
-        //return m_fieldNotFound;
-    }
+   int index = field_index(fname);
+   if (index < 0) {
+      fl_throw("Field name not found");
+   }
 
-    Fl_Data_Field *field = (Fl_Data_Field *)m_list[index];
-    return field->value;
+   Fl_Data_Field *field = (Fl_Data_Field *)m_list[index];
+   return field->value;
 }
 
 const Fl_Data_Field& Fl_Data_Fields::field(unsigned index) const {

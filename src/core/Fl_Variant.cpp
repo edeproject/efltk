@@ -26,7 +26,7 @@
 #endif
 
 void Fl_Variant::free_buffers() {
-   if (m_type == VAR_STRING || m_type == VAR_BUFFER) {
+   if (m_type & (VAR_STRING|VAR_BUFFER)) {
       if (m_data.stringData)
          free(m_data.stringData);
    }
@@ -99,6 +99,13 @@ void Fl_Variant::set_buffer(const void *value, int sz) {
    }
 }
 //---------------------------------------------------------------------------
+void Fl_Variant::set_image_ptr(const Fl_Image *value) {
+   free_buffers();
+   m_type = VAR_IMAGEPTR;
+   m_size = sizeof(value);
+   m_data.imagePtr = value;
+}
+//---------------------------------------------------------------------------
 void Fl_Variant::set_date(Fl_Date_Time value) {
    free_buffers();
    m_type = VAR_DATETIME;
@@ -112,6 +119,10 @@ int Fl_Variant::get_int() const {
 //---------------------------------------------------------------------------
 double Fl_Variant::get_float() const {
    return m_data.floatData;
+}
+//---------------------------------------------------------------------------
+const Fl_Image * Fl_Variant::get_image_ptr() const {
+   return m_data.imagePtr;
 }
 //---------------------------------------------------------------------------
 const char * Fl_Variant::get_string() const {
@@ -134,6 +145,7 @@ void Fl_Variant::set_data(const Fl_Variant &C) {
    case VAR_TEXT:       set_buffer(C.get_buffer(),C.size()); break;
    case VAR_BUFFER:     set_buffer(C.get_buffer(),C.size()); break;
    case VAR_DATETIME:   set_date(C.get_date());              break;
+   case VAR_IMAGEPTR:   set_image_ptr(C.get_image_ptr());    break;
    case VAR_NONE:       break;
    }
 }
@@ -152,5 +164,9 @@ Fl_Variant::operator const char * () const {
 
 Fl_Variant::operator Fl_Date_Time () const {
    return m_data.floatData;
+}
+
+Fl_Variant::operator const Fl_Image * () const {
+   return m_data.imagePtr;
 }
 

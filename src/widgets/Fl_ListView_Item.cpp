@@ -47,22 +47,22 @@ Fl_ListView_Item::~Fl_ListView_Item()
 
 void Fl_ListView_Item::redraw(uchar c) 
 { 
-	damage_ = c; 
-	if(parent()) parent()->redraw(FL_DAMAGE_CHILD); 
+   damage_ = c;
+   if(parent()) parent()->redraw(FL_DAMAGE_CHILD);
 }
 
 Fl_ListItem_Attr *Fl_ListView_Item::create_attr(int col)
 {
-    Fl_ListItem_Attr *a = new Fl_ListItem_Attr;
-    a->col_label = 0;
-    a->col_label_copied = false;
-    a->col_width = 0;
-	return a;
+   Fl_ListItem_Attr *a = new Fl_ListItem_Attr;
+   a->col_label = 0;
+   a->col_label_copied = false;
+   a->col_width = 0;
+   return a;
 }
 
 void Fl_ListView_Item::add_attr(int col)
 {
-    attr_list[col] = create_attr(col);
+   attr_list[col] = create_attr(col);
 }
 
 int Fl_ListView_Item::compare(Fl_ListView_Item *other, int column, int sort_type)

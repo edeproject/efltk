@@ -1088,11 +1088,15 @@ void Fl_ListView::fill(Fl_Data_Source &ds) {
    }
 
    begin();
+
    while (!ds.eof()) {
-      Fl_ListView_Item *item = new Fl_ListView_Item("");
+      Fl_ListView_ItemExt *item = new Fl_ListView_ItemExt("*");
       item->columns(columnCount);
-      for (unsigned col = 0; col < columnCount; col++) {
-         item->copy_label(col, ds.field(col).as_string().c_str());
+      for (int col = 0; col < (int)columnCount; col++) {
+         Fl_Data_Field& df = ds.field(col);
+         if (df.type() == VAR_IMAGEPTR)
+               item->image(col, *(Fl_Image *)df.as_image());
+         else  item->copy_label(col, ds.field(col).as_string().c_str());
       }
       ds.next();
    }
