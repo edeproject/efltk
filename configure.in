@@ -401,11 +401,6 @@ if test "$enable_asm" != yes; then
         AC_DEFINE(DISABLE_ASM)
 fi
 
-AC_ARG_ENABLE(nls, [  --disable-nls           disable localization],,enable_nls=yes)
-if test "$enable_nls" = yes; then
-        AC_DEFINE(ENABLE_NLS)
-fi
-
 AC_ARG_ENABLE(duffs, [  --disable-duffs         disable duffs looping optimization, makes lib ~80kb smaller],,enable_duffs=yes)
 if test "$enable_duffs" = yes; then
 	AC_DEFINE(USE_DUFFS_LOOP)
@@ -415,6 +410,23 @@ AC_ARG_ENABLE(utf8,  [  --disable-utf8          do not use UTF-8 support],, enab
 if test "$enable_utf8" = yes; then
 	AC_DEFINE(HAVE_XUTF8)    
 fi
+
+AC_DEFUN([AC_WITH_EFLTK_NLS],
+[   AC_MSG_CHECKING([whether NLS is requested])
+    dnl Default is enabled NLS
+    AC_ARG_ENABLE(nls,
+      [  --disable-nls           do not use Native Language Support],
+      USE_NLS=$enableval, USE_NLS=yes)
+    AC_MSG_RESULT($USE_NLS)
+    AC_SUBST(USE_NLS)
+
+    dnl If we use NLS figure out what method
+    if test "$USE_NLS" = "yes"; then
+      AC_DEFINE(ENABLE_NLS, 1, [Define to 1 if translation of program messages to the user's native language is requested.])
+    fi      
+])   
+
+AC_WITH_EFLTK_NLS
 
 AC_ARG_ENABLE(threads, [  --disable-threads       dont require mt libraries],,enable_threads=yes)
 have_pthread=no
