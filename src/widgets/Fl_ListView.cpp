@@ -264,21 +264,23 @@ Fl_ListView::Fl_ListView(int X,int Y,int W,int H,const char* L)
 Fl_ListView::~Fl_ListView() {
 }
 
-static int scol;
+static int scol=-1;
 static int col_sort_asc(const void *w1, const void *w2) {
     Fl_ListView_Item *i1 = ITEM(*(Fl_ListView_Item **)w1);
     Fl_ListView_Item *i2 = ITEM(*(Fl_ListView_Item **)w2);
-    return strcmp(i1->label(scol), i2->label(scol));
+    return strcmp(i1->label(scol)?i1->label(scol):"", i2->label(scol)?i2->label(scol):"");
 }
 static int col_sort_desc(const void *w1, const void *w2) {
     Fl_ListView_Item *i1 = ITEM(*(Fl_ListView_Item **)w1);
     Fl_ListView_Item *i2 = ITEM(*(Fl_ListView_Item **)w2);
-    return strcmp(i2->label(scol), i1->label(scol));
+    return strcmp(i2->label(scol)?i2->label(scol):"", i1->label(scol)?i1->label(scol):"");
 }
 
 // Returns sort mode: ASC,DESC,UNKNOWN
 int Fl_ListView::sort(int column)
 {
+	if(scol!=column) sort_type_=SORT_UNKNOWN;
+
     scol = column;
     sort_type_++;
     if(sort_type_>SORT_UNKNOWN)

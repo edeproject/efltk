@@ -28,6 +28,8 @@
 
 #include "Fl_Value_List.h"
 
+#if 0
+
 template <class KEY, class VALUE> class Fl_Map_Pair {
 public:
     Fl_Map_Pair(const KEY &_key, const VALUE &_value) : key(_key), value(_value) { }
@@ -104,5 +106,7 @@ private:
 template <class KEY, class VALUE> inline Fl_Map_Pair<KEY, VALUE> fl_makepair(const KEY &key, const VALUE &val) {
     return Fl_Map_Pair<KEY, VALUE>(key, val);
 }
+
+#endif
 
 #endif

@@ -35,6 +35,7 @@ void Fl_Ptr_List::clear()
 
 void Fl_Ptr_List::resize(uint newsize)
 {
+	if(blocksize_<=0) blocksize_=1; //For some reason this is 0 after create in WIN32??!?
     if(newsize>capacity_) {
         // Grow list capacity
         capacity_= (newsize/blocksize_+1)*blocksize_;
