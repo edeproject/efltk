@@ -28,12 +28,14 @@ static inline BOOL successful(int ret) {
     return ret==SQL_SUCCESS || ret==SQL_SUCCESS_WITH_INFO;
 }
 
-// Driver-specific Fl_Param extension. ODBC handles time
-// parameters using TIMESTAMP_STRUCT. Every database may
-// have it's own way to work with time and date.
-// Driver TO DO: define native time structures for parameters here
-// to support conversion from Fl_Date_Time to native date and time.
-// (replace TIMESTAMP_STRUCT)
+/**
+ * Driver-specific Fl_Param extension. ODBC handles time
+ * parameters using TIMESTAMP_STRUCT. Every database may
+ * have it's own way to work with time and date.
+ * Driver TO DO: define native time structures for parameters here
+ * to support conversion from Fl_Date_Time to native date and time.
+ * (replace TIMESTAMP_STRUCT)
+ */
 class Fl_ODBC_Param : public Fl_Param {
     friend class Fl_ODBC_Database;
 protected:
@@ -43,10 +45,12 @@ public:
     Fl_ODBC_Param(const char *paramName) : Fl_Param(paramName) {}
 };
 
-// Driver-specific Fl_Data_Field extension. Contains all the information
-// we can get from the database about the field in 'select' query.
-// Driver TO DO: define native field information
-// (replace m_columnType,m_columnLength,m_columnScale)
+/**
+ * Driver-specific Fl_Data_Field extension. Contains all the information
+ * we can get from the database about the field in 'select' query.
+ * Driver TO DO: define native field information
+ * (replace m_columnType,m_columnLength,m_columnScale)
+ */
 class FL_API Fl_ODBC_Field : public Fl_Data_Field {
     friend class Fl_Data_Fields;
     friend class Fl_ODBC_Database;
@@ -60,9 +64,11 @@ public:
     char *check_buffer(unsigned sz);
 };
 
-// Field ctor
-// Driver TO DO: initialize the column information. Depending on native field type,
-// initialize Fl_Data_Field::value to one of the Fl_Variant types
+/**
+ * Field ctor
+ * Driver TO DO: initialize the column information. Depending on native field type,
+ * initialize Fl_Data_Field::value to one of the Fl_Variant types
+ */
 Fl_ODBC_Field::Fl_ODBC_Field(const char *name,short number,short type,short length,short scale) : Fl_Data_Field(name) {
     m_columnNumber = number;
     m_columnType = type;
@@ -88,8 +94,10 @@ Fl_ODBC_Field::Fl_ODBC_Field(const char *name,short number,short type,short leng
     }
 }
 
-// Non-driver specific. Checks the allocated data buffer
-// and allocates more memory, if needed
+/**
+ * Non-driver specific. Checks the allocated data buffer
+ * and allocates more memory, if needed
+ */
 char *Fl_ODBC_Field::check_buffer(unsigned sz) {
     if ((unsigned)value.size() <= sz) {
         sz = (sz / 16 + 1) * 16;
@@ -98,39 +106,49 @@ char *Fl_ODBC_Field::check_buffer(unsigned sz) {
     return (char *)value.get_buffer();
 }
 
-// Constructor
-// Driver TO DO: put here your connection object initialization
-// w/o establishing a connection.
+/**
+ * Constructor
+ * Driver TO DO: put here your connection object initialization
+ * w/o establishing a connection.
+ */
 Fl_ODBC_Database::Fl_ODBC_Database(const Fl_String connString) 
 : Fl_Database(connString) {
     m_connect = new ODBCConnection;
 }
 
-// Destructor
-// Driver TO DO: cleanup. close() and close_connection() are MUST.
+/** 
+ * Destructor
+ * Driver TO DO: cleanup. close() and close_connection() are MUST.
+ */
 Fl_ODBC_Database::~Fl_ODBC_Database() {
     close();
     close_connection();
     delete m_connect;
 }
 
-// Create a database connection
-// Driver TO DO: establish a connection using connect string and other 
-// driver-specific parameters, like server, port number, user name,  etc..
+/**
+ * Create a database connection
+ * Driver TO DO: establish a connection using connect string and other 
+ * driver-specific parameters, like server, port number, user name,  etc..
+ */
 void Fl_ODBC_Database::open_connection() {
     Fl_String finalConnectionString;
     m_connect->connect(m_connString,finalConnectionString,false);
 }
 
-// Close a database connection
-// Terminate connection with the database
+/**
+ * Close a database connection
+ * Terminate connection with the database
+ */
 void Fl_ODBC_Database::close_connection() {
     m_connect->disconnect();
 }
 
-// Begin database transaction
-// Driver TO DO: begin the transaction, if supported by database,
-// otherwise - fl_throw("Transactions are not supported")
+/**
+ * Begin database transaction
+ * Driver TO DO: begin the transaction, if supported by database,
+ * otherwise - fl_throw("Transactions are not supported")
+ */
 void Fl_ODBC_Database::begin_transaction() {
     if (m_inTransaction)
         fl_throw("Transaction already started.");
@@ -139,9 +157,11 @@ void Fl_ODBC_Database::begin_transaction() {
     m_inTransaction = true;
 }
 
-// Commit database transaction
-// Driver TO DO: commit the transaction, if supported by database,
-// otherwise - fl_throw("Transactions are not supported")
+/**
+ * Commit database transaction
+ * Driver TO DO: commit the transaction, if supported by database,
+ * otherwise - fl_throw("Transactions are not supported")
+ */
 void Fl_ODBC_Database::commit_transaction() {
     if (!m_inTransaction)
         fl_throw("Transaction isn't started.");
@@ -151,9 +171,11 @@ void Fl_ODBC_Database::commit_transaction() {
     m_inTransaction = false;
 }
 
-// Rollback database transaction
-// Driver TO DO: rollback the transaction, if supported by database,
-// otherwise - fl_throw("Transactions are not supported")
+/**
+ * Rollback database transaction
+ * Driver TO DO: rollback the transaction, if supported by database,
+ * otherwise - fl_throw("Transactions are not supported")
+ */
 void Fl_ODBC_Database::rollback_transaction() {
     if (!m_inTransaction)
         fl_throw("Transaction isn't started.");
@@ -163,9 +185,11 @@ void Fl_ODBC_Database::rollback_transaction() {
     m_inTransaction = false;
 }
 
-// Create query handle, ODBC-specific
-// Driver TO DO: allocate query object resources, like handle for future
-// query, if applicable. Otherwise, you don't need that method
+/**
+ * Create query handle, ODBC-specific
+ * Driver TO DO: allocate query object resources, like handle for future
+ * query, if applicable. Otherwise, you don't need that method.
+ */
 void Fl_ODBC_Database::allocate_query(Fl_Query *query) {
     deallocate_query(query);
 
@@ -177,9 +201,11 @@ void Fl_ODBC_Database::allocate_query(Fl_Query *query) {
     query_handle(query,qhandle);
 }
 
-// Release query handle, ODBC-specific
-// Driver TO DO: deallocate query object resources, like handle of the
-// query, if applicable. Otherwise, you don't need that method
+/**
+ * Release query handle, ODBC-specific
+ * Driver TO DO: deallocate query object resources, like handle of the
+ * query, if applicable. Otherwise, you don't need that method
+ */
 void Fl_ODBC_Database::deallocate_query(Fl_Query *query) {
     void *qhandle = query_handle(query);
     if (!qhandle) // Not allocated
@@ -189,11 +215,13 @@ void Fl_ODBC_Database::deallocate_query(Fl_Query *query) {
     query_handle(query,SQL_NULL_HSTMT);
 }
 
-// Get error description for the query, ODBC-specific
-// Driver TO DO: for the last operation, retrieve the error from
-// the database. Usually, you can use query/statement handle to retrieve
-// the error for that query/statement. It's possible that database returns 
-// a set of errors - from every layer of DB driver
+/**
+ * Get error description for the query, ODBC-specific
+ * Driver TO DO: for the last operation, retrieve the error from
+ * the database. Usually, you can use query/statement handle to retrieve
+ * the error for that query/statement. It's possible that database returns 
+ * a set of errors - from every layer of DB driver.
+ */
 Fl_String Fl_ODBC_Database::query_error(Fl_Query *query) const {
     char  errorDescription[SQL_MAX_MESSAGE_LENGTH];
     char  errorState[SQL_MAX_MESSAGE_LENGTH];
@@ -210,17 +238,21 @@ Fl_String Fl_ODBC_Database::query_error(Fl_Query *query) const {
     return errorDescription;
 }
 
-// Prepare query handle
-// Driver TO DO: if database supports the 'prepare' conception,
-// prepare the query/handle for the faster execution in the future.
-// Otherwise, do nothing inside the method.
+/**
+ * Prepare query handle
+ * Driver TO DO: if database supports the 'prepare' conception,
+ * prepare the query/handle for the faster execution in the future.
+ * Otherwise, do nothing inside the method.
+ */
 void Fl_ODBC_Database::prepare_query(Fl_Query *query) {
     if (!successful(SQLPrepare(query_handle(query),(UCHAR FAR *)(LPCSTR)query->sql().c_str(),SQL_NTS))) {
         fl_throw(query_error(query));
     }
 }
 
-// Bind binary query parameters to query handle
+/**
+ * Bind binary query parameters to query handle
+ */
 void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
     static SQLINTEGER cbLen;
     int rc;
@@ -296,7 +328,9 @@ void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
     }
 }
 
-// Get the number of columns in result dataset
+/**
+ * Get the number of columns in result dataset
+ */
 unsigned Fl_ODBC_Database::query_count_cols(Fl_Query *query) const {
     short count;
 
@@ -306,7 +340,9 @@ unsigned Fl_ODBC_Database::query_count_cols(Fl_Query *query) const {
     return count;
 }
 
-// Get the column information
+/**
+ * Get the column information
+ */
 void Fl_ODBC_Database::query_col_attributes(Fl_Query *query,short column,short descType,long& value) {
     int m_retcode = SQLColAttributes(query_handle(query),column,descType,0,0,0,(SQLINTEGER *)&value);
 
@@ -314,7 +350,9 @@ void Fl_ODBC_Database::query_col_attributes(Fl_Query *query,short column,short d
         fl_throw(query_error(query));
 }
 
-// Get the extended column information
+/** 
+ * Get the extended column information
+ */
 void Fl_ODBC_Database::query_col_attributes(Fl_Query *query,short column,short descType,LPSTR buff,int len) {
     short available;
     if (!buff || len <= 0)
@@ -326,7 +364,9 @@ void Fl_ODBC_Database::query_col_attributes(Fl_Query *query,short column,short d
         fl_throw(query_error(query));
 }
 
-// Conversion of ODBC data type to C data type
+/**
+ * Conversion of ODBC data type to C data type
+ */
 static short ODBCtypeToCType(int odbcType) {
     switch(odbcType) {
         case SQL_BIGINT:
@@ -344,7 +384,7 @@ static short ODBCtypeToCType(int odbcType) {
         case SQL_VARCHAR:
         case SQL_CHAR:       return SQL_C_CHAR;
 
-   // ODBC 3.0 only
+   /** ODBC 3.0 only */
         case SQL_TYPE_TIME:
         case SQL_TYPE_TIMESTAMP:
         case SQL_TYPE_DATE:  return SQL_C_TIMESTAMP;
@@ -362,7 +402,9 @@ static short ODBCtypeToCType(int odbcType) {
     return VAR_NONE;
 }
 
-// Execute query and fetch results, if any
+/**
+ * Execute query and fetch results, if any
+ */
 void Fl_ODBC_Database::open_query(Fl_Query *query) {
    // Open the database if necessary
     if (!active()) open();
@@ -430,7 +472,8 @@ void Fl_ODBC_Database::open_query(Fl_Query *query) {
     fetch_query(query);
 }
 
-unsigned trim_field(char *s,int sz) {
+unsigned trim_field(char *s,int sz) 
+{
     register char *p = s + sz;
     char ch = s[0];
     s[0] = '!';
@@ -443,7 +486,12 @@ unsigned trim_field(char *s,int sz) {
     return p - s;
 }
 
-void Fl_ODBC_Database::fetch_query(Fl_Query *query) {
+/**
+ * Fetches query
+ * @param query Fl_Query* Pointer to Fl_Query object
+ */
+void Fl_ODBC_Database::fetch_query(Fl_Query *query) 
+{
     if (!query->active())
         fl_throw("Dataset isn't open");
 
@@ -520,7 +568,11 @@ void Fl_ODBC_Database::fetch_query(Fl_Query *query) {
     }
 }
 
-void Fl_ODBC_Database::close_query(Fl_Query *query) {
+/**
+ * Closes query
+ */
+void Fl_ODBC_Database::close_query(Fl_Query *query) 
+{
     query_active(query,false);
 
     query_active(query,false);
