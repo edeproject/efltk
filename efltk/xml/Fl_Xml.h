@@ -10,32 +10,33 @@
 
 //XML parsing error codes enumeration
 enum {
+    // Operation success
     FL_XML_NO_ERROR = 0,
-    //unspecified or unknown error
+    // Unspecified or unknown error
     FL_XML_UNKNOWN,
-    //expected an open tag literal '<'
+    // Expected an open tag literal '<'
     FL_XMP_OPENTAG_EXPECTED,
-    //expected a '<' or cdata
+    // Expected a '<' or cdata
     FL_XML_OPENTAG_CDATA_EXPECTED,
-    //expected a '>' closing tag literal
+    // Expected a '>' closing tag literal
     FL_XML_CLOSETAG_EXPECTED,
-    //expected a processing instruction or doctype tag
+    // Expected a processing instruction or doctype tag
     FL_XML_PI_DOCTYPE_EXPECTED,
-    //expected a tag name after '<' or '</'
+    // Expected a tag name after '<' or '</'
     FL_XML_TAGNAME_EXPECTED,
-    //starting "--" of comment expected after !
+    // Starting "--" of comment expected after !
     FL_XML_COMMENT_START_EXPECTED,
-    //ending "-->" missing
+    // Ending "-->" missing
     FL_XML_COMMENT_END_MISSING,
-    //expected a '/' after closing tag literal '<'
+    // Expected a '/' after closing tag literal '<'
     FL_XML_SLASH_EXPECTED,
-    //tag name from start and end tag mismatch
+    // Tag name from start and end tag mismatch
     FL_XML_TAGNAME_MISMATCH,
-    //expected '=' after attribute name
+    // Expected '=' after attribute name
     FL_XML_EQUAL_EXPECTED,
-    //expected value after an '=' in attribute
+    // Expected value after an '=' in attribute
     FL_XML_VALUE_EXPECTED,
-    //requested name not found
+    // Requested name not found
     FL_XML_NAME_NOT_FOUND
 };
 
