@@ -16,31 +16,31 @@ Fl_Window* make_window() {
    {Fl_Window* o = new Fl_Window(430, 304);
     w = o;
      {Fl_Box* o = new Fl_Box(5, 5, 195, 55, "XPM");
-      o->image(Fl_Image::read_xpm("/home/Laza/develop/efltk/test/rgb.xpm"));
+      o->image(Fl_Image::read_xpm("rgb.xpm"));
       o->label_font(fl_fonts+1);
       o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
     }
      {Fl_Box* o = new Fl_Box(5, 65, 190, 55, "BMP");
-      o->image(Fl_Image::read("/home/Laza/develop/efltk/test/rgb.bmp"));
+      o->image(Fl_Image::read("rgb.bmp"));
       o->label_font(fl_fonts+1);
       o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
     }
      {Fl_Box* o = new Fl_Box(5, 125, 190, 55, "GIF");
-      o->image(Fl_Image::read("/home/Laza/develop/efltk/test/rgb.gif"));
+      o->image(Fl_Image::read("rgb.gif"));
       o->label_font(fl_fonts+1);
       o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
     }
      {Fl_Box* o = new Fl_Box(5, 185, 195, 55, "PNG");
-      o->image(Fl_Image::read("/home/Laza/develop/efltk/test/rgb.png"));
+      o->image(Fl_Image::read("rgb.png"));
       o->label_font(fl_fonts+1);
       o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
-      o->label("PNG support not compiled");
+      if(HAVE_PNG==0) o->label("PNG support not compiled");
     }
      {Fl_Box* o = new Fl_Box(5, 245, 200, 55, "JPEG");
-      o->image(Fl_Image::read("/home/Laza/develop/efltk/test/rgb.jpg"));
+      o->image(Fl_Image::read("rgb.jpg"));
       o->label_font(fl_fonts+1);
       o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
-      o->label("PNG support not compiled");
+      if(HAVE_JPEG==0) o->label("JPEG support not compiled");
     }
      {Fl_Box* o = new Fl_Box(220, 10, 200, 195, "EFltk image test.\nAll should look exactly same.\n50 pixels of each color, RG\
 B from left to right.\n\nThis ofcourse means, that all formats are compiled in\

@@ -27,16 +27,12 @@ Function {make_window()} {open
     Fl_Box {} {
       label PNG
       xywh {5 185 195 55} align 20 label_font 1 image not_inlined {rgb.png}
-      extra_code {\#if !HAVE_PNG
-o->label("PNG support not compiled");
-\#endif}
+      extra_code {if(HAVE_PNG==0) o->label("PNG support not compiled");}
     }
     Fl_Box {} {
-      label JPEG
+      label JPEG selected
       xywh {5 245 200 55} align 20 label_font 1 image not_inlined {rgb.jpg}
-      extra_code {\#if !HAVE_PNG
-o->label("PNG support not compiled");
-\#endif}
+      extra_code {if(HAVE_JPEG==0) o->label("JPEG support not compiled");}
     }
     Fl_Box {} {
       label {EFltk image test.
@@ -50,7 +46,7 @@ XPM, BMP and GIF should always work.}
     }
     Fl_Button {} {
       label EXIT
-      callback {o->window()->hide();} selected
+      callback {o->window()->hide();}
       xywh {220 215 200 80} label_font 1 label_type ENGRAVED_LABEL label_size 36
     }
   }
