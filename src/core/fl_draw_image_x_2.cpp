@@ -279,14 +279,14 @@ static void rrr_converter(const uchar *from, uchar *to, int w, int delta) {
 // 32bit TrueColor converters on a 32 or 64-bit machine:
 
 #ifdef U64
-#define STORETYPE U64
-#if WORDS_BIGENDIAN
-#define INNARDS32(f) \
+# define STORETYPE U64
+# if WORDS_BIGENDIAN
+# define INNARDS32(f) \
   U64 *t = (U64*)to; \
   int w1 = (w+1)/2; \
   for (;;from += delta) {U64 i = f; from += delta; *t++ = (i<<32)|(f); if (!--w1) break;}
 #else
-#define INNARDS32(f) \
+# define INNARDS32(f) \
   U64 *t = (U64*)to; \
   int w1 = (w+1)/2; \
   for (;; from += delta) {U64 i = f; from += delta; *t++ = ((U64)(f)<<32)|i; if (!--w1) break;}

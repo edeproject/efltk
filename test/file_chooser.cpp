@@ -1,4 +1,5 @@
 #include <efltk/Fl.h>
+#include <efltk/Fl_Item.h>
 #include <efltk/Fl_Window.h>
 #include <efltk/Fl_Button.h>
 #include <efltk/Fl_Menu_Button.h>

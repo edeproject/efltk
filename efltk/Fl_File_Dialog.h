@@ -22,8 +22,8 @@
 #include "Fl_Return_Button.h"
 #include "Fl_Input.h"
 #include "Fl_FileInput.h"
-#include "Fl_Item.h"
 #include "Fl_Highlight_Button.h"
+#include "filename.h"
 
 typedef struct {
     const char *type_str;

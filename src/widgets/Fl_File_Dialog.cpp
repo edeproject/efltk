@@ -1,8 +1,8 @@
 #include <efltk/Fl_File_Dialog.h>
 #include <efltk/Fl_Divider.h>
+#include <efltk/Fl_Item.h>
 #include <efltk/vsnprintf.h>
 #include <efltk/fl_ask.h>
-#include <efltk/filename.h>
 
 // For NLS stuff
 #include "../core/fl_internal.h"

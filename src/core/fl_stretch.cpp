@@ -199,8 +199,8 @@ bool Fl_Renderer::stretch(uint8 *src, int src_bpp, int src_pitch, Fl_Rect *srcre
             break;
         default:
 #ifdef __GNUC__
-            __asm__ __volatile__ ("
-                                  call copy_row
+            __asm__ __volatile__ ("\
+                                  call copy_row\
             "
             : "=&D" (u1), "=&S" (u2)
             : "0" (dstp), "1" (srcp)

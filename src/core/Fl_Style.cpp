@@ -24,6 +24,7 @@
 //
 
 #include <efltk/Fl.h>
+#include <efltk/filename.h>
 #include <efltk/Fl_Widget.h>
 #include <efltk/Fl_Config.h>
 #include <efltk/fl_load_plugin.h>

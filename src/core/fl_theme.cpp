@@ -12,6 +12,7 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <efltk/Fl.h>
+#include <efltk/filename.h>
 #include <efltk/fl_load_plugin.h>
 #include <efltk/Fl_Color.h>
 #include <efltk/Fl_Font.h>

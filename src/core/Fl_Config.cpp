@@ -4,6 +4,7 @@
 
 #include <efltk/vsnprintf.h>
 #include <efltk/Fl_Config.h>
+#include <efltk/filename.h>
 
 #include <stdlib.h>
 #include <stdio.h>

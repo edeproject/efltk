@@ -3,8 +3,6 @@
 
 #include "Enumerations.h"
 
-#define FL_PATH_MAX 4096 // all buffers are assummed to be at least this long
-
 #define FL_DIR	   (1<<1) //Directory
 #define FL_FILE   (1<<2) //Regular file
 #define FL_LINK   (1<<3) //Sym link (ignored on WIN32)
