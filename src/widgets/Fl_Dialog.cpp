@@ -316,7 +316,7 @@ void Fl_Dialog::buttons_callback(Fl_Button *btn, long id)
                 return;
         }
         catch (Fl_Exception& e) {
-            fl_alert("Can't save data.\n\n" + e.text());
+			Fl::warning("Can't save data. " + e.text());
             return;
         }
     }
@@ -326,7 +326,7 @@ void Fl_Dialog::buttons_callback(Fl_Button *btn, long id)
         dialog->m_modalResult = (int)id;
     } else {
         // this requires event_argument!
-        do_callback(FL_DIALOG_BTN);
+        dialog->do_callback(FL_DIALOG_BTN);
     }
 }
 
@@ -366,10 +366,22 @@ void Fl_Dialog::enable_button(int button_mask,bool enabled)
     for(unsigned i = 0; i < m_buttonList.size(); i++) {
         Fl_Button *btn = (Fl_Button*)m_buttonList[i];
         if(button_mask & btn->argument()) {
-            if (enabled)
-                btn->activate();
-            btn->deactivate();
-        }
+			if (enabled)
+				btn->activate();
+			else
+				btn->deactivate();			
+		}
+    }
+}
+
+void Fl_Dialog::submit(int button_id)
+{
+	for(unsigned i = 0; i < m_buttonList.size(); i++) {
+        Fl_Button *btn = (Fl_Button*)m_buttonList[i];
+        if(button_id == btn->argument()) {
+			btn->do_callback(btn->argument());
+			return; // Only one allowed
+		}
     }
 }
 
@@ -546,7 +558,7 @@ bool Fl_Dialog::load_data(Fl_Data_Source *ds)
     return ds->load();
 }
 
-bool Fl_Dialog::save_data(Fl_Data_Source *ds) const {
+bool Fl_Dialog::save_data(Fl_Data_Source *ds) {
     if (!ds) ds = m_dataSource;
     return ds->save();
 }
