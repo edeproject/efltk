@@ -201,6 +201,17 @@ static void motif_glyph(const Fl_Widget* widget, int t,
     }
 }
 
+static void motif_slider_glyph(const Fl_Widget* widget, int t,
+                               int x, int y, int w, int h, Fl_Flags f)
+{
+    if(t) {
+        motif_glyph(widget, t, x, y, w, h, f);
+    } else {
+        FL_UP_BOX->draw(x,y,w,h,widget->color(),0);
+        //Fl_Widget::default_glyph(widget, t, x,y,w,h, 0);
+    }
+}
+
 // Glyphs that are drawn to the left of items.  Enumeration order
 // is important!
 enum {
@@ -336,6 +347,7 @@ extern "C" bool fltk_theme()
     }
 
     if ((s = Fl_Style::find("scrollbar"))) {
+        s->glyph = motif_slider_glyph;
         s->box = down_box;
         s->color = FL_DARK1;
     }
