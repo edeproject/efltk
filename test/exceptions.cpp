@@ -17,13 +17,14 @@
 #include <config.h>
 
 #include <efltk/fl_ask.h>
+#include <efltk/Fl.h>
 #include <efltk/Fl_Window.h>
 #include <efltk/Fl_Button.h>
 #include <efltk/Fl_Exception.h>
 
 void cb(Fl_Widget *,void *) {
    fl_try {
-      fl_throw("Error happened",__FILE__,__LINE__);
+      fl_throw(Fl_Exception("Error happened",__FILE__,__LINE__));
    }
    fl_catch(exc) {
       fl_alert(exc.text().c_str());
@@ -33,4 +34,9 @@ void cb(Fl_Widget *,void *) {
 int main (int argc,char *argv[]) {
    Fl_Window window(400,300);
    Fl_Button button(50,50,150,30,"Create exception");
+   button.callback(cb);
+   window.end();
+   window.show();
+   
+Fl::run();
 }
