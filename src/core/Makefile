@@ -18,6 +18,7 @@ CPPFILES = \
 	Fl_Maps.cpp \
 	Fl_Pixmap.cpp \
 	Fl_Renderer.cpp \
+	Fl_Socket.cpp \
 	Fl_String.cpp \
 	Fl_Style.cpp \
 	Fl_Style_Set.cpp \
@@ -43,7 +44,7 @@ CPPFILES = \
 	Fl_lock.cpp \
 	Fl_own_colormap.cpp \
 	Fl_visual.cpp \
-        KStoUCS.cpp \
+	KStoUCS.cpp \
 	filename.cpp \
 	filename_list.cpp \
 	filename_match.cpp \
