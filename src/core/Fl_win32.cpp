@@ -1503,7 +1503,7 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 		// In other words, if an exception occurs within the scope 
 		// of a message or command handler, it must be caught there, 
 		// before the next message is processed.
-		terminate();
+		std::terminate();
 	}
 
     return DefWindowProc(hWnd, uMsg, wParam, lParam);
