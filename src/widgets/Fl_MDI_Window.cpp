@@ -425,8 +425,10 @@ Fl_MDI_Window::~Fl_MDI_Window()
     if(_owner->_top == this)
         _owner->_top = 0;
 
-    delete prv;
-    prv=0;
+    if(prv) {
+        delete prv;
+        prv=0;
+    }
 
     destroy();
 }
