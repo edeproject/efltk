@@ -1368,8 +1368,8 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         {
             static int delta = 0;// running total of all motion
             delta += (SHORT)(HIWORD(wParam));
-            if ((Fl::e_dy = delta / WHEEL_DELTA)) {
-                Fl::e_dy = delta / WHEEL_DELTA;
+            Fl::e_dy = delta / WHEEL_DELTA);
+            if (Fl::e_dy) {
                 delta -= Fl::e_dy * WHEEL_DELTA;
                 Fl::handle(FL_MOUSEWHEEL, window);
             }
