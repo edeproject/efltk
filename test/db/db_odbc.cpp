@@ -46,7 +46,7 @@ int main (int argc, char *argv[])
     fl_try
     {
         //"DSN=odbc_demo;UID=username;PWD=password";
-        __DRIVER__ db (connect_string);
+        Fl_ODBC_Database db (connect_string);
 
         printf("Connect string: %s", connect_string.c_str());
 	printStepName ("Openning the database");
