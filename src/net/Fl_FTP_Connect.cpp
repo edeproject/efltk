@@ -1,5 +1,8 @@
 #include <efltk/net/Fl_FTP_Connect.h>
 #include <stdio.h>
+#ifdef __linux__
+#  include <netinet/in.h>
+#endif
 
 Fl_FTP_Socket::Fl_FTP_Socket()
 : Fl_Socket() {
