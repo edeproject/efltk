@@ -160,8 +160,8 @@ public:
     uchar when() const        { return when_; }
     void  when(uchar i)       { when_ = i; }
 
-    void do_callback(Fl_Widget *o, void *arg, void * widget_data = 0)	{ if (!emit_signal(FL_VALUE_CHANGED, widget_data)) do_callback_(); }
-    void do_callback(Fl_Widget *o, long arg, void * widget_data = 0)	{ if (!emit_signal(FL_VALUE_CHANGED, widget_data)) do_callback_(); }
+    void do_callback(Fl_Widget *o, void *arg, void * widget_data = 0)	{ if (!emit_signal(FL_VALUE_CHANGED, widget_data)) do_callback_(o, arg); }
+    void do_callback(Fl_Widget *o, long arg, void * widget_data = 0)	{ if (!emit_signal(FL_VALUE_CHANGED, widget_data)) do_callback_(o, arg); }
     void do_callback(void * widget_data = 0)							{ if (!emit_signal(FL_VALUE_CHANGED, widget_data)) do_callback_(); }
 
     void connect(int event, void * obj, Fl_Signal_Callback *cb);
