@@ -24,11 +24,11 @@ void copy_row3(uint8 *src, int src_w, uint8 *dst, int dst_w)
 	}
 }
 
-//#define NO_ASMBLIT
+//#define DISABLE_ASM 1
 
 #if (defined(_WIN32) && !defined(_M_ALPHA) && !defined(_WIN32_WCE) && \
     !defined(__WATCOMC__) && !defined(__LCC__) && !defined(__FREEBCC__)) || \
-    (defined(i386) && defined(__GNUC__) && !defined(NO_ASMBLIT))
+    (defined(i386) && defined(__GNUC__) && !DISABLE_ASM)
 # define USE_ASM_STRETCH
 #endif
 
