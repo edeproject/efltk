@@ -385,9 +385,9 @@ if test x$have_dlopen = xyes; then
     AC_DEFINE(HAVE_DLOPEN)
 fi
 
-AC_ARG_ENABLE(exceptions, [  --disable-exceptions    disable exception handling inside efltk lib],,enable_exceptions=yes)
-if test "$enable_exceptions" = yes; then
-	AC_DEFINE(__FL_EXCEPTIONS__)
+AC_ARG_ENABLE(stdexceptions, [  --enable-stdexceptions    enable std C++ exceptions inside efltk],enable_stdexceptions=yes)
+if test "$enable_stdexceptions" = yes; then
+	AC_DEFINE(USE_STD_EXCEPTIONS)
 else
 	CFLAGS="$CFLAGS -fno-exceptions"
         CXXFLAGS="$CXXFLAGS -fno-exceptions"

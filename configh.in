@@ -228,8 +228,8 @@
 # define sqrtf(a)	float(sqrt(float(a)))
 #endif
 
-/* Defined if exceptions enabled */
-#define __FL_EXCEPTIONS__ 0
+/* Defined if EFLTK should use C++ std exceptions */
+#define USE_STD_EXCEPTIONS 0
 
 #endif /*EFLTK_CONFIG_FILE_INCLUDED*/
 
