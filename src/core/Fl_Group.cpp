@@ -397,7 +397,7 @@ void Fl_Group::layout()
     // child can turn it back on and subclasses like Fl_Pack can detect that:
     int layout_damage = this->layout_damage();
     int pref_w, pref_h;
-    int label_w, label_h;
+    int label_w=0, label_h=0;
     Fl_Widget::layout();
 
     int* p = 0;
@@ -507,11 +507,15 @@ void Fl_Group::layout()
                     if (m_use_preffered_sizes) 
                         o->preferred_size(pref_w,pref_h);
 
-                    label_h = o->label_height();
-                    if (label_h < o->h())
-                        label_h = o->h();
-
                     o->resize(xx+label_w,yy,pref_w,pref_h);
+
+                    label_h = o->h();
+                    if (m_use_label_widths) {
+                        label_h = o->label_height();
+                        if (label_h < o->h())
+                            label_h = o->h();
+                    }
+
                     yy += label_h+offset*2;
                     hh -= label_h+offset*2;
                     break;
@@ -530,11 +534,15 @@ void Fl_Group::layout()
                     if (m_use_preffered_sizes) 
                         o->preferred_size(pref_w,pref_h);
 
-                    label_h = o->label_height();
-                    if (label_h < o->h())
-                        label_h = o->h();
-
                     o->resize(xx+label_w,yy+hh-label_h,pref_w,pref_h);
+
+                    label_h = o->h();
+                    if (m_use_label_widths) {
+                        label_h = o->label_height();
+                        if (label_h < o->h())
+                            label_h = o->h();
+                    }
+
                     hh -= label_h+offset*2;
                     break;
 

@@ -33,8 +33,7 @@
 #include <config.h>
 
 void Fl_Widget::do_callback(Fl_Widget* o, void* arg, uchar event)
-{   
-    label_width_ = -1; // No label width limit
+{
     event_ = event;
     // Call callback_ only if NO slots connected!
     if (callback_) callback_(o,(void*)arg);
@@ -51,6 +50,7 @@ void Fl_Widget::default_callback(Fl_Widget* w, void*) {w->set_changed();}
 
 Fl_Widget::Fl_Widget(int X, int Y, int W, int H, const char* L)
 {
+    label_width_ = -1; // No label width limit
     layout_flags_ = 0;
     style_    = default_style;
     parent_   = 0;
