@@ -22,87 +22,89 @@
 
 class FL_API Fl_Date_Time {
 public:
-	static char   dateInputFormat[32];
-	static char   timeInputFormat[32];
-	static char   dateFormat[32];
-	static char   timeFormat[32];
-	static char   datePartsOrder[4];
-	static char   dateSeparator;
-	static char   timeSeparator;
-	static bool   time24Mode;
+   static char   dateInputFormat[32];
+   static char   timeInputFormat[32];
+   static char   dateFormat[32];
+   static char   timeFormat[32];
+   static char   datePartsOrder[4];
+   static char   dateSeparator;
+   static char   timeSeparator;
+   static bool   time24Mode;
 
-    Fl_Date_Time (short y,short m,short d,short hour=0,short minute=0,short second=0);
-    Fl_Date_Time (const char * dat);
-    Fl_Date_Time (const Fl_Date_Time &dt);
-    Fl_Date_Time (const double dt=0);
+   Fl_Date_Time (short y,short m,short d,short hour=0,short minute=0,short second=0);
+   Fl_Date_Time (const char * dat);
+   Fl_Date_Time (const Fl_Date_Time &dt);
+   Fl_Date_Time (const double dt=0);
 
-    void format_date(char *str) const;
-    void format_time(char *str, bool ampm=true) const;
+   static Fl_Date_Time convert (const time_t);
 
-	// These functions don't affect the actual system time.
-	// You can only alter the time for the current program.
-    static void Now(Fl_Date_Time dt);     // Sets to current date and time
-    static Fl_Date_Time System();         // Gets to current system date and time
-    static Fl_Date_Time Now();            // Gets to current date and time
-    static Fl_Date_Time Date();           // Gets to current date
-    static Fl_Date_Time Time();           // Gets to current time
+   void format_date(char *str) const;
+   void format_time(char *str, bool ampm=true) const;
 
-    short days_in_month() const;				// Number of days in month (1..31)
-    short day_of_week() const;				// (1..7)
-    short day_of_year() const;				// returns relative date since Jan. 1
+   // These functions don't affect the actual system time.
+   // You can only alter the time for the current program.
+   static void Now(Fl_Date_Time dt);      // Sets to current date and time
+   static Fl_Date_Time System();          // Gets to current system date and time
+   static Fl_Date_Time Now();             // Gets to current date and time
+   static Fl_Date_Time Date();            // Gets to current date
+   static Fl_Date_Time Time();            // Gets to current time
 
-    Fl_String day_name() const;   // Character Day Of Week ('Sunday'..'Saturday')
-    Fl_String month_name() const; // Character Month name
+   short days_in_month() const;           // Number of days in month (1..31)
+   short day_of_week() const;             // (1..7)
+   short day_of_year() const;             // returns relative date since Jan. 1
 
-    unsigned date() const;                // Numeric date of date object
-    short day() const;                    // Numeric day of date object
-    short month() const;                  // Month number (1..12)
-    short year() const;
+   Fl_String day_name() const;            // Character Day Of Week ('Sunday'..'Saturday')
+   Fl_String month_name() const;          // Character Month name
 
-    Fl_String date_string() const;
-    Fl_String time_string() const;
+   unsigned date() const;                 // Numeric date of date object
+   short day() const;                     // Numeric day of date object
+   short month() const;                   // Month number (1..12)
+   short year() const;
 
-    void decode_date(short *y,short *m,short *d) const;
-    void decode_time(short *h,short *m,short *s,short *ms) const;
+   Fl_String date_string() const;
+   Fl_String time_string() const;
 
-    operator double (void) const;
+   void decode_date(short *y,short *m,short *d) const;
+   void decode_time(short *h,short *m,short *s,short *ms) const;
 
-    void operator = (const Fl_Date_Time& date);
-    void operator = (const char * dat);
+   operator double (void) const;
 
-    Fl_Date_Time  operator + (int i);
-    Fl_Date_Time  operator - (int i);
-    Fl_Date_Time  operator + (Fl_Date_Time& dt);
-    Fl_Date_Time  operator - (Fl_Date_Time& dt);
+   void operator = (const Fl_Date_Time& date);
+   void operator = (const char * dat);
 
-    Fl_Date_Time& operator += (int i);
-    Fl_Date_Time& operator -= (int i);
-    Fl_Date_Time& operator += (Fl_Date_Time& dt);
-    Fl_Date_Time& operator -= (Fl_Date_Time& dt);
+   Fl_Date_Time  operator + (int i);
+   Fl_Date_Time  operator - (int i);
+   Fl_Date_Time  operator + (Fl_Date_Time& dt);
+   Fl_Date_Time  operator - (Fl_Date_Time& dt);
 
-    Fl_Date_Time& operator ++ ();     // Prefix increment
-    Fl_Date_Time& operator ++ (int);  // Postfix increment
-    Fl_Date_Time& operator -- ();     // Prefix decrement
-    Fl_Date_Time& operator -- (int);  // Postfix decrement
+   Fl_Date_Time& operator += (int i);
+   Fl_Date_Time& operator -= (int i);
+   Fl_Date_Time& operator += (Fl_Date_Time& dt);
+   Fl_Date_Time& operator -= (Fl_Date_Time& dt);
 
-    friend bool operator <  (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
-    friend bool operator <= (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
-    friend bool operator >  (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
-    friend bool operator >= (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
-    friend bool operator == (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
-    friend bool operator != (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
+   Fl_Date_Time& operator ++ ();     // Prefix increment
+   Fl_Date_Time& operator ++ (int);  // Postfix increment
+   Fl_Date_Time& operator -- ();     // Prefix decrement
+   Fl_Date_Time& operator -- (int);  // Postfix decrement
+
+   friend bool operator <  (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
+   friend bool operator <= (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
+   friend bool operator >  (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
+   friend bool operator >= (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
+   friend bool operator == (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
+   friend bool operator != (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
 
 protected:
-    static void   decode_date(const double dt,short& y,short& m,short& d);
-    static void   decode_time(const double dt,short& h,short& m,short& s,short& ms);
-    static void   encode_date(double &dt,short y=0,short m=0,short d=0);
-    static void   encode_date(double &dt,const char *dat);
-    static void   encode_time(double &dt,short h=0,short m=0,short s=0,short ms=0);
-    static void   encode_time(double &dt,const char *tim);
-    static bool   is_leap_year(const short year);
+   static void   decode_date(const double dt,short& y,short& m,short& d);
+   static void   decode_time(const double dt,short& h,short& m,short& s,short& ms);
+   static void   encode_date(double &dt,short y=0,short m=0,short d=0);
+   static void   encode_date(double &dt,const char *dat);
+   static void   encode_time(double &dt,short h=0,short m=0,short s=0,short ms=0);
+   static void   encode_time(double &dt,const char *tim);
+   static bool   is_leap_year(const short year);
 
-	double        m_dateTime;
-	static double dateTimeOffset;    // The offset from current' system time for synchronization
+   double        m_dateTime;
+   static double dateTimeOffset;    // The offset from current' system time for synchronization
                                      // with outside system
 };
 

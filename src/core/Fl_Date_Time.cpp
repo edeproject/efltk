@@ -29,13 +29,13 @@
 #endif
 
 static const char *dayname[] = {
-    "Sunday", "Monday", "Tuesday", "Wednesday",
-    "Thursday", "Friday", "Saturday"
+   "Sunday", "Monday", "Tuesday", "Wednesday",
+   "Thursday", "Friday", "Saturday"
 };
 
 static const char *mname[] = {
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
+   "January", "February", "March", "April", "May", "June",
+   "July", "August", "September", "October", "November", "December"
 };
 
 static const short _monthDays[2][12] = {
@@ -604,14 +604,19 @@ short Fl_Date_Time::day_of_year( void ) const {
     return (short) (m_dateTime - temp.m_dateTime);
 }
 
-// Get the current system time
-Fl_Date_Time Fl_Date_Time::System() {
-   time_t tt;
-   time(&tt);
+Fl_Date_Time Fl_Date_Time::convert(const time_t tt) {
    struct tm *t = localtime(&tt);
    double dat,tim;
    encode_date(dat,short(t->tm_year+1900),short(t->tm_mon+1),short(t->tm_mday));
    encode_time(tim,short(t->tm_hour),short(t->tm_min),short(t->tm_sec),short(0));
+   return dat + tim;
+}
+
+// Get the current system time
+Fl_Date_Time Fl_Date_Time::System() {
+   time_t tt;
+   time(&tt);
+   double datetime = convert(tt);
 #ifndef _WIN32
    timeval tp;
    gettimeofday(&tp,0L);
@@ -619,7 +624,7 @@ Fl_Date_Time Fl_Date_Time::System() {
 #else
    double mcsec = (GetTickCount() % 1000) / 1000 / (3600 * 24);
 #endif
-   return dat + tim + mcsec;
+   return datetime + mcsec;
 }
 
 // Get the current system time with optional synchronization offset
