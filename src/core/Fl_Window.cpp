@@ -127,15 +127,17 @@ void Fl_Window::size_range(int minw, int minh, int maxw, int maxh, int dw, int d
 }
 
 #ifdef _WIN32
-static void keep_app_active() {
-	// activate some other window so the active app does not change!
-	if(Fl::grab()) return;
-	for (Fl_X *x = Fl_X::first; x; x = x->next)
+static inline void keep_app_active() {
+	// activate some other window so the active app does not change!	
+	// -- This is bad, after tooltip disappears it raises window that received last events..
+	/*if(Fl::grab()) return;
+	for (Fl_X *x = Fl_X::first; x; x = x->next) {
 		if (!x->window->parent() && x->window->visible()) {
 			//BringWindowToTop(x->xid);
 			SetActiveWindow(x->xid);
 			break;
 		}
+	}*/
 }
 #endif
 
