@@ -48,7 +48,7 @@ the their size.
 In both cases Fl_Split will block the resizing, when a neighbouring
 widget (or the attached, or client widget) will have 0 dimensions.
 *****************************************************************************/
-class Fl_Split: public Fl_Box
+class Fl_Split: public Fl_Widget
 {
 	Fl_Widget * ref_;
     int dir_;

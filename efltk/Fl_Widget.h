@@ -273,7 +273,7 @@ protected:
     Fl_Widget(int,int,int,int,const char* =0);
 
     /** New style ctor */
-    Fl_Widget(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
+    Fl_Widget(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=-1);
 
 private:
     // disable the copy assignment/constructors:
