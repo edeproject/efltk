@@ -167,7 +167,7 @@ void Fl_ListView_Item::draw_row(unsigned row, int x, int y, int w, int h) const
     } else if(parent()->draw_stripes()) {
 
         Fl_Color c0 = parent()->color();
-        Fl_Color c1 = fl_lighter(c0);
+        Fl_Color c1 = fl_lighter(parent()->button_color());
         if(row & 1 && c1 != c0) {
             // draw odd-numbered items with a dark stripe, plus contrast-enhancing
             // pixel rows on top and bottom:
