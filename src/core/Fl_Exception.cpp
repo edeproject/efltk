@@ -19,7 +19,7 @@
 #include <efltk/Fl.h>
 
 static void default_exception_handler(Fl_Exception &e) {
-	Fl::fatal("Unhandled exception:\n%s", e.text());
+	Fl::fatal("Unhandled exception:\n%s", e.text().c_str());
 }
 
 void (*fl_exception_handler)(Fl_Exception &e) = default_exception_handler;
