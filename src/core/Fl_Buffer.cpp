@@ -47,7 +47,7 @@ bool Fl_Buffer::check_size(unsigned sz) {
 }
 
 void Fl_Buffer::set(const char *data,unsigned sz) {
-   if ( checkSize(sz) ) {
+   if ( check_size(sz) ) {
       if (data)
          memcpy(m_buffer,data,sz);
       m_bytes = sz;
@@ -55,7 +55,7 @@ void Fl_Buffer::set(const char *data,unsigned sz) {
 }
 
 bool Fl_Buffer::append(const char *data,unsigned sz) {
-   if ( checkSize(sz) ) {
+   if ( check_size(sz) ) {
       if (data)
          memcpy(m_buffer+m_bytes,data,sz);
       m_bytes += sz;
