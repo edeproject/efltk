@@ -577,7 +577,7 @@ void Fl_File_Dialog::make_group(int w, int h)
         Fl_Group::current()->resizable(location_);
 
         ok_ = new Fl_Return_Button(w-65, 0, 55, 23, _("OK"));
-        ok_->deactivate();
+        //ok_->deactivate();
         ok_->shortcut(0xff0d);
 
         o->end();
@@ -953,14 +953,16 @@ void Fl_File_Dialog::read_dir(const char *_path)
         listview_->relayout();
     }
 
-    if(mode()!=DIRECTORY) {
-		ok_->deactivate();    
+    if(mode()!=DIRECTORY) {		
+		ok_->deactivate();
 		if(selected) {
 			listview_->select_only(selected);	
-			listview_->show_item(selected);
+			listview_->show_item(selected);			
+		}
+		if(default_filename_) {
+			location(default_filename_);
 			ok_->activate();
 		}
-		if(default_filename_) location(default_filename_);
 	} else {
 		ok_->activate();
 	}

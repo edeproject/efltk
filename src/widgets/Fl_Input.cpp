@@ -236,6 +236,7 @@ void Fl_Input::setfont() const
 
 void Fl_Input::draw()
 {    
+	if(damage() & (FL_DAMAGE_ALL|FL_DAMAGE_EXPOSE)) draw_frame();
     int X=0; int Y=0; int W=w(); int H=h(); box()->inset(X,Y,W,H);
     draw(X, Y, W, H);
 }
@@ -290,7 +291,7 @@ void Fl_Input::draw(int X, int Y, int W, int H)
     // handle a totally blank one quickly:
     if (!size() && !focused() && this != dnd_target)
     {
-        fl_push_clip(0, 0, w(), h());
+		fl_push_clip(X, Y, W, H);        
         if(!box()->fills_rectangle() && parent()) parent()->draw_group_box();
         box()->draw(0,0,w(),h(),color(),f);
         fl_pop_clip();
@@ -372,15 +373,15 @@ void Fl_Input::draw(int X, int Y, int W, int H)
         yscroll_ = -((H-height)>>1);
     }    		
 
+	fl_push_clip(X, Y, W, H);
+
     // if we are not doing minimal update a single erase is done,
     // rather than one per line:
     if (ALL)
     {
         if(!box()->fills_rectangle() && parent()) parent()->draw_group_box();
         box()->draw(0,0,w(),h(),color(),f);
-    }
-
-    fl_push_clip(X, Y, W, H);
+    }    
 
     Fl_Color textcolor = text_color();
     if (!active_r()) textcolor = fl_inactive(text_color());
