@@ -21,6 +21,7 @@
 #include <efltk/Fl_String.h>
 #include <efltk/Fl_Ptr_List.h>
 #include <efltk/Fl_Exception.h>
+#include <efltk/Fl_Thread.h>
 #include <efltk/db/Fl_Query.h>
 
 enum Fl_Database_Capabilities {
@@ -38,6 +39,7 @@ protected:
    Fl_String      m_connString;
    bool           m_active;
    bool           m_inTransaction;
+   Fl_Mutex      *m_mutex;
 
 protected:
    // Operations over query handle
@@ -65,14 +67,19 @@ protected:
    Fl_Data_Fields& query_fields(Fl_Query *q)       { return q->m_fields; }
 
 public:
-   Fl_Database(const Fl_String connString)         { m_inTransaction = m_active = false; m_connString = connString; }
-   virtual ~Fl_Database()                          {}
+   Fl_Database(const Fl_String connString,bool threadSafe=false);
+   virtual ~Fl_Database();
    void open(const Fl_String connString="");
    void close();
    Fl_String connect_string() const                { return m_connString; }
 
    bool active() const                             { return m_active; }
    bool in_transaction() const                     { return m_inTransaction; }
+
+   void thread_safe(bool threadSafe);
+   bool thread_safe() const                        { return m_mutex; }
+   void lock()                                     { if (m_mutex) m_mutex->lock(); }
+   void unlock()                                   { if (m_mutex) m_mutex->unlock(); }
 
    // These methods should be implemented in actual database class
    virtual unsigned capabilities()                 { return  FL_DB_UNKNOWN; }
