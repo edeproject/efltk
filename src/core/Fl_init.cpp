@@ -38,9 +38,9 @@
 # endif
 # ifndef SPI_GETTOOLTIPANIMATION
 #  define SPI_GETTOOLTIPANIMATION             0x1016
+# endif
 # ifndef SPI_GETMENUSHOWDELAY
 #  define SPI_GETMENUSHOWDELAY       0x006A
-# endif
 # endif
 
 #endif
