@@ -196,11 +196,12 @@ void Fl_Popup_ListView::cb_clicked(Fl_Widget *w, void *d) {
 }
 
 Fl_Popup_ListView::Fl_Popup_ListView(Fl_Widget *masterWidget,Fl_Widget *editControl)
-: Fl_Popup_Window(150,150,"ListView") {
+: Fl_Popup_Window(150,150,"istView") {
     m_masterWidget = masterWidget;
     m_editControl = editControl;
     m_listView = new Fl_ListView(0,0,w(),h());
     m_listView->callback(Fl_Popup_ListView::cb_clicked);
+    m_listView->when(FL_WHEN_CHANGED|FL_WHEN_RELEASE);
     m_listView->layout_align(FL_ALIGN_CLIENT);
     m_listView->layout_spacing(0);
     box(FL_THIN_UP_BOX);

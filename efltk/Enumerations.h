@@ -73,61 +73,7 @@ typedef signed char   int8;
 typedef unsigned char uint8;
 typedef uint32        uint;
 
-enum {  // events
-    FL_NO_EVENT         = 0,
-    FL_PUSH             = 1,
-    FL_RELEASE          = 2,
-    FL_ENTER            = 3,
-    FL_LEAVE            = 4,
-    FL_DRAG             = 5,
-    FL_FOCUS            = 6,
-    FL_UNFOCUS          = 7,
-    FL_KEY              = 8,
-    FL_KEYUP            = 9,
-    FL_MOVE             = 10,
-    FL_SHORTCUT         = 11,
-    FL_ACTIVATE         = 12,
-    FL_DEACTIVATE       = 13,
-    FL_SHOW             = 14,
-    FL_HIDE             = 15,
-    FL_MOUSEWHEEL       = 16,
-    FL_PASTE            = 17,
-    FL_DND_ENTER        = 18,
-    FL_DND_DRAG         = 19,
-    FL_DND_LEAVE        = 20,
-    FL_DND_RELEASE      = 21,
-
-    // This is the end of standard eFLTK events.
-
-    // window events
-    FL_WND_CLOSE        = 30,
-    FL_WND_DESTROY      = 31,
-
-    // dialog events
-    FL_DIALOG_BTN       = 40,
-    FL_DIALOG_OK        = 41,
-    FL_DIALOG_CANCEL    = 42,
-    FL_DIALOG_HELP      = 43,
-
-    // data events
-    FL_DATA_CHANGE      = 50,
-
-    // menu events
-    FL_MENU_DEFAULT     = 60,
-    FL_MENU_ITEM        = 61,
-
-    // button events
-    FL_BUTTON_PRESSED   = 70,
-
-    // user command events
-    FL_UC_INSERT            = 80,
-    FL_UC_DELETE            = 81,
-    FL_UC_EDIT              = 82,
-    FL_UC_REFRESH           = 83,
-
-     // back compatability values:
-    FL_KEYBOARD         = FL_KEY
-};
+#include "Fl_Events.h"
 
 enum { // Fl_Widget::when():
     FL_WHEN_NEVER       = 0,

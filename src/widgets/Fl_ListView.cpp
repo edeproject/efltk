@@ -1,6 +1,7 @@
 #include <efltk/Fl_ListView.h>
 #include <efltk/fl_draw.h>
 #include <efltk/Fl_ListView_Header.h>
+#include <efltk/Fl_Events.h>
 
 static void revert(Fl_Style* s) {
         //s->box = FL_DOWN_BOX;

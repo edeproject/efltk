@@ -101,7 +101,7 @@ void Fl_Menu_::ctor_init() {
 
 // Default ctor
 Fl_Menu_::Fl_Menu_()
-    : Fl_Group(0,0,0,0,0), list_(&default_list), item_(0)
+: Fl_Group(0,0,0,0,0), list_(&default_list), item_(0)
 {
     ctor_init();
 }
@@ -187,7 +187,7 @@ void Fl_Menu_::execute(Fl_Widget* widget)
 void Fl_Menu_::default_callback(Fl_Widget* widget, void*)
 {
     Fl_Widget* item = ((Fl_Menu_*)widget)->item();
-    if(item) item->do_callback(FL_MENU_DEFAULT);
+    if(item) item->do_callback(FL_MENU_ITEM);
 }
 
 
