@@ -39,7 +39,7 @@
 
 void Fl_Dial::draw()
 {
-	int X = 0, Y = 0, W = w(), H = h();
+    int X = 0, Y = 0, W = w(), H = h();
     if (!(type() == FILL && box() == FL_OVAL_BOX))
     {
         if (damage()&FL_DAMAGE_ALL) draw_box();
@@ -116,29 +116,29 @@ int Fl_Dial::handle(int event)
         case FL_PUSH:
             handle_push();
         case FL_DRAG:
-        {
-            int mx = Fl::event_x()-X-W/2;
-            int my = Fl::event_y()-Y-H/2;
-            if (!mx && !my) return 1;
-            float angle = 270-atan2f((float)-my, (float)mx)*float(180/M_PI);
-            float oldangle = (a2-a1)*float((value()-minimum())/(maximum()-minimum())) + a1;
-            while (angle < oldangle-180) angle += 360;
-            while (angle > oldangle+180) angle -= 360;
-            float val;
-            if ((a1<a2) ? (angle <= a1) : (angle >= a1))
             {
-                val = minimum();
-            }
-            else if ((a1<a2) ? (angle >= a2) : (angle <= a2))
-            {
-                val = maximum();
-            }
-            else
-            {
-                val = minimum() + (maximum()-minimum())*(angle-a1)/(a2-a1);
-            }
-            handle_drag(val);
-        } return 1;
+                int mx = Fl::event_x()-X-W/2;
+                int my = Fl::event_y()-Y-H/2;
+                if (!mx && !my) return 1;
+                float angle = 270-atan2f((float)-my, (float)mx)*float(180/M_PI);
+                float oldangle = (a2-a1)*float((value()-minimum())/(maximum()-minimum())) + a1;
+                while (angle < oldangle-180) angle += 360;
+                while (angle > oldangle+180) angle -= 360;
+                float val;
+                if ((a1<a2) ? (angle <= a1) : (angle >= a1))
+                {
+                    val = minimum();
+                }
+                else if ((a1<a2) ? (angle >= a2) : (angle <= a2))
+                {
+                    val = maximum();
+                }
+                else
+                {
+                    val = minimum() + (maximum()-minimum())*(angle-a1)/(a2-a1);
+                }
+                handle_drag(val);
+            } return 1;
         case FL_RELEASE:
             if (!Fl::pushed()) handle_release();
             return 1;
@@ -160,16 +160,23 @@ static void revert(Fl_Style* s)
 static Fl_Named_Style style("Dial", revert, &Fl_Dial::default_style);
 Fl_Named_Style* Fl_Dial::default_style = &::style;
 
+// Traditional ctor
 Fl_Dial::Fl_Dial(int x, int y, int w, int h, const char* l)
 : Fl_Valuator(x, y, w, h, l)
 {
     style(default_style);
     a1 = 45;
     a2 = 315;
-    //set_click_to_focus();
-    //clear_click_to_focus();
 }
 
+// New style ctor
+Fl_Dial::Fl_Dial(const char* l,int layout_size,Fl_Align layout_al,int label_w)
+: Fl_Valuator(l,layout_size,layout_al,label_w)
+{
+    style(default_style);
+    a1 = 45;
+    a2 = 315;
+}
 
 //
 // End of "$Id$".

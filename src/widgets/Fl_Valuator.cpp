@@ -32,9 +32,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-Fl_Valuator::Fl_Valuator(int X, int Y, int W, int H, const char* L)
-: Fl_Widget(X,Y,W,H,L)
-{
+// ctor initializer - used in both ctors
+void Fl_Valuator::ctor_init() {
     clear_flag(FL_ALIGN_MASK);
     set_flag(FL_ALIGN_BOTTOM);
     when(FL_WHEN_CHANGED);
@@ -43,6 +42,20 @@ Fl_Valuator::Fl_Valuator(int X, int Y, int W, int H, const char* L)
     minimum_ = 0;
     maximum_ = 1;
     linesize_ = 0.1f;
+}
+
+// Traditional ctor
+Fl_Valuator::Fl_Valuator(int X, int Y, int W, int H, const char* L)
+: Fl_Widget(X,Y,W,H,L)
+{
+    ctor_init();
+}
+
+// New style ctor
+Fl_Valuator::Fl_Valuator(const char* l,int layout_size,Fl_Align layout_al,int label_w)
+: Fl_Widget(l,layout_size,layout_al,label_w)
+{
+    ctor_init();
 }
 
 void Fl_Valuator::value_damage()

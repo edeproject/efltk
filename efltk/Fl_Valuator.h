@@ -49,7 +49,13 @@ public:
     int handle(int);
 
 protected:
+    /** Creates the valuater widget using the given position, size, and label string. */
     Fl_Valuator(int X, int Y, int W, int H, const char* L);
+
+    /** Creates the valuater widget using the label, size, alignment, and label_width. */
+    Fl_Valuator(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
+
+    void ctor_init();    
 
     double previous_value() const { return previous_value_; }
     void handle_push() { previous_value_ = value_; }
