@@ -43,16 +43,20 @@ DSO = $(EFLTK_TOPDIR)/lib/$(LIBNAME)
 DSONAME = $(LIBNAME)$(DSOEXT)
 
 static: $(LIBRARY)$(LIBEXT)
+ifneq ($(DIRS), )
 	@for dir in $(DIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
         	(cd $$dir;$(MAKE) $(MFLAGS) static) || break;\
 	done
+endif
 
 shared: $(DSO)$(DSOEXT)
+ifneq ($(DIRS), )
 	@for dir in $(DIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
         	(cd $$dir;$(MAKE) $(MFLAGS) shared) || break;\
 	done
+endif
 
 $(LIBRARY).a: $(STATIC_OBJECTS)
 	@rm -f $@
@@ -79,9 +83,11 @@ $(DSO).$(FL_API_VERSION).dll: $(SHARED_OBJECTS)
 clean:
 	@rm -f *~ *.o *.bak $(LIBRARY).* makedepend
 	@touch makedepend
+ifneq ($(DIRS), )
 	@for dir in $(DIRS); do\
 		(cd $$dir;$(MAKE) $(MFLAGS) clean) || break;\
 	done
+endif
 
 ################################################################
 
@@ -91,10 +97,12 @@ install_static: static
 	@rm -f $(libdir)/$(LIBNAME)$(LIBEXT)
 	@cp -f $(LIBRARY)$(LIBEXT) $(libdir)
 	@chmod 644 $(libdir)/$(LIBNAME)$(LIBEXT)
+ifneq ($(DIRS), )
 	@for dir in $(DIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
         	(cd $$dir;$(MAKE) $(MFLAGS) install_static) || break;\
 	done
+endif
 
 install_shared: shared
 	@echo "Installing shared libraries..."
@@ -105,44 +113,56 @@ install_shared: shared
 	@chmod 755 $(libdir)/$(DSOLIBNAME)$(DSOEXT)
 	@if [ "$(DSOSHORTEXT)" ]; then ln -s $(DSOLIBNAME)$(DSOEXT) $(libdir)/$(DSOLIBNAME)$(DSOSHORTEXT); fi
 	@if [ -f "$(EFLTK_TOPDIR)/lib/$(DLLIMPORTNAME)" ]; then cp $(EFLTK_TOPDIR)/lib/$(DLLIMPORTNAME) $(libdir); fi
+ifneq ($(DIRS), )
 	@for dir in $(DIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
 		(cd $$dir;$(MAKE) $(MFLAGS) install_shared) || break;\
 	done
+endif
 
 else
 # LIBNAME was empty, compile only files
 
 static: $(STATIC_OBJECTS)
+ifneq ($(DIRS), )
 	@for dir in $(DIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
         	(cd $$dir;$(MAKE) $(MFLAGS) static) || break;\
 	done
+endif
 
 shared: $(SHARED_OBJECTS)
+ifneq ($(DIRS), )
 	@for dir in $(DIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
         	(cd $$dir;$(MAKE) $(MFLAGS) shared) || break;\
 	done
+endif
 
 install_static: static
+ifneq ($(DIRS), )
 	@for dir in $(DIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
         	(cd $$dir;$(MAKE) $(MFLAGS) install_static) || break;\
 	done
+endif
 
 install_shared: shared
+ifneq ($(DIRS), )
 	@for dir in $(DIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
 		(cd $$dir;$(MAKE) $(MFLAGS) install_shared) || break;\
 	done
+endif
 
 clean:
 	@rm -f *~ *.o *.bak makedepend
 	@touch makedepend
+ifneq ($(DIRS), )
 	@for dir in $(DIRS); do\
 		(cd $$dir;$(MAKE) $(MFLAGS) clean) || break;\
 	done
+endif
 
 endif
 
@@ -158,15 +178,19 @@ ifneq ($(CPPFILES), )
 	@cat foo >> makedepend
 	@rm foo
 endif
+ifneq ($(DIRS), )
 	@for dir in $(DIRS); do\
         	(cd $$dir;$(MAKE) $(MFLAGS) depend) || break;\
 	done
+endif
 
 programs: $(PROGRAM)
+ifneq ($(DIRS), )
 	@for dir in $(DIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
         	(cd $$dir;$(MAKE) $(MFLAGS) programs) || break;\
 	done
+endif
 
 install_programs: $(PROGRAM)
 ifneq ($(PROGRAM), )
@@ -179,10 +203,12 @@ ifneq ($(PROGRAM), )
 		cp $(EFLTK_BINDIR)/$(PROGRAM).exe $(bindir)/; \
 	fi
 endif
+ifneq ($(DIRS), )
 	@for dir in $(DIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
         	(cd $$dir;$(MAKE) $(MFLAGS) install_programs) || break;\
 	done
+endif
 
 ifneq ($(PROGRAM), )
 
