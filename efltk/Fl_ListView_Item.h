@@ -37,17 +37,17 @@ class Fl_ListView;
 class Fl_ListItem_Attr
 {
 public:
-    Fl_String col_label;
-    int16 col_width;
+    Fl_String       col_label;
+    int16           col_width;
 };
 
 class FL_API Fl_ListView_Item {
 public:
     Fl_ListView_Item(const char *label1=0,
-                     const char *label2=0,
-                     const char *label3=0,
-                     const char *label4=0,
-                     const char *label5=0);
+        const char *label2=0,
+        const char *label3=0,
+        const char *label4=0,
+        const char *label5=0);
     virtual ~Fl_ListView_Item();
 
     bool selected() const;
@@ -70,7 +70,7 @@ public:
     void check_columns(uint count);
     void columns(uint count);
     uint columns() const;
-    
+
     virtual void draw_cell(int col, int width, bool selected);
     virtual void layout();
 
@@ -85,14 +85,14 @@ public:
     Fl_Image *image() { return image_; }
     const Fl_Image *image() const { return image_; }
     void image(int col, Fl_Image &im) { image(im); }
-	void image(int col, Fl_Image *im) { image(im); }
+    void image(int col, Fl_Image *im) { image(im); }
 
     int y() const { return y_; }
     void y(int Y) { y_ = Y; }
     int h() const { return h_; }
     void h(int H) { h_ = H; }
 
-	// Current index on the list
+    // Current index on the list
     void index(int i) { index_ = i; }
     int index() const { return index_; }
 
@@ -134,10 +134,10 @@ public:
 class FL_API Fl_ListView_ItemExt : public Fl_ListView_Item {
 public:
     Fl_ListView_ItemExt(const char *label1=0,
-                        const char *label2=0,
-                        const char *label3=0,
-                        const char *label4=0,
-                        const char *label5=0);
+        const char *label2=0,
+        const char *label3=0,
+        const char *label4=0,
+        const char *label5=0);
     virtual ~Fl_ListView_ItemExt();
 
     virtual void draw_cell(int col, int width, bool selected);

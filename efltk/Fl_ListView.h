@@ -33,15 +33,15 @@ public:
     static Fl_ListView *current;
 
     enum { // values for type()
-        HORIZONTAL			= 1,
-        VERTICAL			= 2,
-        BOTH				= 3,
-        ALWAYS_ON			= 4,
-        HORIZONTAL_ALWAYS	= 5,
-        VERTICAL_ALWAYS		= 6,
-        BOTH_ALWAYS			= 7,
-        MULTI_SELECTION		= 8,
-        MOVE_SELECTION		= 16
+        HORIZONTAL          = 1,
+        VERTICAL            = 2,
+        BOTH                = 3,
+        ALWAYS_ON           = 4,
+        HORIZONTAL_ALWAYS   = 5,
+        VERTICAL_ALWAYS     = 6,
+        BOTH_ALWAYS         = 7,
+        MULTI_SELECTION     = 8,
+        MOVE_SELECTION      = 16
     };
 
     enum {
@@ -72,12 +72,15 @@ public:
     Fl_ListView_Header *header() const { return _header; }
     void header(Fl_ListView_Header *h) { _header = h; }
 
-    void add_column(const char *name, int w=-1) { _header->add_column(name, w); if(w<0) find_def=true; }
+    void add_column(const char *name, int w=-1,int ctype=VAR_STRING) { _header->add_column(name, w, ctype); if(w<0) find_def=true; }
     int columns() const { return _header->columns(); }
     void columns(int cnt) { _header->columns(cnt); }
 
     int column_width(int c) const { return _header->column_width(c); }
     void column_width(int c, int w) { _header->column_width(c, w); if(w<0) find_def=true; }
+
+    int column_type(int c) const { return _header->column_type(c); }
+    void column_type(int c, int t) { _header->column_type(c, t); }
 
     const char *column_name(int c) const { return _header->column_label(c); }
     void column_name(int c, const char *name) { _header->column_copy_label(c, name); }
@@ -99,9 +102,9 @@ public:
     void recalc_totalheight() { calc_total_h = true; relayout(); }
     int totalheight() const { return total_height; }
 
-    int	yposition() const {return yposition_;}
+    int yposition() const {return yposition_;}
     void yposition(int Y);
-    int	xposition() const {return xposition_;}
+    int xposition() const {return xposition_;}
     void xposition(int X);
 
     Fl_ListView_Item* top();             // move to top and set first item to current
@@ -192,9 +195,9 @@ protected:
     bool find_def; // Set when needs to find default colmn sizes (called by layout)
 
     int sort_type_;
-    
+
     uint find_safe_top() const;
-	Fl_Int_List m_ypos_lookup;
+    Fl_Int_List m_ypos_lookup;
 };
 
 #endif
