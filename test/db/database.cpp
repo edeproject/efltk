@@ -20,8 +20,7 @@
 #ifdef MYSQL_DRIVER
 #include <efltk/db/Fl_MySQL_Database.h>
 #define DATABASE Fl_MySQL_Database
-//#define CONSTR_TEMPLATE "HOST=hostname;UID=user;PWD=passwd;DB=db_name"
-#define CONSTR_TEMPLATE "HOST=127.0.0.1;UID=Laza;PWD=moe;DB=laza"
+#define CONSTR_TEMPLATE "HOST=hostname;UID=user;PWD=passwd;DB=db_name"
 #endif
 
 //#define USE_THREADS
