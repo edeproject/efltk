@@ -61,7 +61,7 @@ numprocs=`egrep -c ^cpu[0-9]+ /proc/stat || :`
 if [ "$numprocs" = "0" ]; then
 	numprocs=1
 fi
-make -j$numprocs static
+#make -j$numprocs static
 make -j$numprocs
 
 %install
