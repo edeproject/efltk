@@ -1,6 +1,28 @@
 #ifndef FL_VALUE_LIST_H_
 #define FL_VALUE_LIST_H_
 
+/*
+ Simple "value" based double linked list.
+ This is like std::vector.
+ Items stored in this list, must have:
+ - copy constructor
+ - assing operator
+ - !=, == compare operators
+
+ These kind a objects could be, e.g. std::string, Fl_String, int, float...
+
+ example usage:
+
+ Fl_Value_List<int> list;
+ for(int n=0; n<1000; n++)
+   list.append(n);
+
+ Fl_Value_List<int>::Iterator it = list.begin();
+ while(it!=list.end())
+   do_something( (*it++) );
+
+*/
+
 template <class T> class Fl_Value_Item {
 public:
     Fl_Value_Item(const T &t) : next(0), prev(0), stor(t) { }
@@ -15,12 +37,14 @@ template <class  T> class Fl_Value_Iterator
 {
 public:
     Fl_Value_Iterator() : item(0) { }
-    Fl_Value_Iterator(Fl_Value_ListItem<T> *i) : item(i) { }
+    Fl_Value_Iterator(Fl_Value_Item<T> *i) : item(i) { }
 
     Fl_Value_Item<T> *item;
 
     bool operator==( const Fl_Value_Iterator<T>& it ) { return item == it.item; }
     bool operator!=( const Fl_Value_Iterator<T>& it ) { return item != it.item; }
+
+    // de-reference operator returns reference to item
     const T& operator*() { return item->stor; }
     Fl_Value_Iterator<T>& operator++() {
         item = item->next;
@@ -52,6 +76,37 @@ protected:
     int items;
     Item *item_node;
 
+public:
+    Fl_Value_List() : items(0) { item_node = new Item; item_node->next=item_node->prev=item_node; }
+    Fl_Value_List(Fl_Value_List<T> &list) { item_node = new Item; item_node->next=item_node->prev=item_node; copy(list); }
+    ~Fl_Value_List() { clear(); }
+
+    //////////////////////
+    // Operators
+
+    // Assing:
+    Fl_Value_List<T>& operator = (const Fl_Value_List<T> &list) { if(this==&list) return *this; copy(list); return *this; }
+
+    //Compare:
+    bool operator!= (const Fl_Value_List<T> &list ) { return !( *this == list ); }
+    bool operator== (const Fl_Value_List<T> &list ) {
+        if( count() != list.count() ) return false;
+        Iterator first = Iterator( item_node->next );
+        Iterator first2 = Iterator( item_node->next );
+        Iterator end = Iterator( item_node );
+        for( ; first != end; ++first, ++first2 )
+            if ( !( *first == *first2 ) ) return false;
+        return true;
+    }
+
+    // Returns item at 'index', index starts from 0!
+    inline T operator[](int index) {
+        return item(index);
+    }
+
+    ///////////////
+
+    // Copies list to this
     virtual void copy(const Fl_Value_List<T> &list) {
         clear();
         if(list.items>0) {
@@ -59,7 +114,6 @@ protected:
             Iterator last( list.item_node );
             Iterator it( item_node );
             while( first != last) {
-
                 Item *p = new Item(first.item->stor);
                 p->next = it.item;
                 p->prev = it.item->prev;
@@ -72,37 +126,13 @@ protected:
         }
     }
 
-public:
-    Fl_Value_List() : items(0) { item_node = new Item; item_node->next=item_node->prev=item_node; }
-    Fl_Value_List(Fl_Value_List<T> &list) { item_node = new Item; item_node->next=item_node->prev=item_node; copy(list); }
-    ~Fl_Value_List() { clear(); }
-
-    //////////////////////
-    // Operators
-
-    // Assing:
-    Fl_Value_List<T>& operator = (const Fl_Value_List<T> &list) { if(this==&list) return *this; copy(list); return *this; }
-    //Compare:
-    bool operator!= (const Fl_Value_List<T> &list ) { return !( *this == list ); }
-    bool operator== (const Fl_Value_List<T> &list ) {
-        if( count() != list.count() ) return false;
-        Iterator first = Iterator( item_node->next );
-        Iterator first2 = Iterator( item_node->next );
-        Iterator end = Iterator( item_node );
-        for( ; first != end; ++first, ++first2 )
-            if ( !( *first == *first2 ) ) return false;
-        return true;
-    }
-    // Returns item at 'index', index starts from 0!
-    inline T operator[](int index) {
-        return item(index);
-    }
-
     //////////////////
-    inline Iterator begin() { return Iterator(item_node->next); }
-    inline Iterator end()	 { return Iterator(item_node); }
-    inline Iterator last_iter() { return Iterator(item_node->prev); }
 
+    // Iterators
+    inline Iterator begin()     { return Iterator(item_node->next); }
+    inline Iterator end()	{ return Iterator(item_node); }
+
+    // Returns copy of item
     inline T first() 	 { return item_node->next ? item_node->next->stor : T(); }
     inline T last() 	 { return item_node->prev ? item_node->prev->stor : T(); }
 
@@ -129,7 +159,7 @@ public:
 
     inline void remove(int index) { remove(at(index)); }
 
-    //Return number of deleted items
+    //Returns number of deleted items
     inline int remove(T &it) {
         int result = 0;
         Iterator first = Iterator(item_node->next);
@@ -152,6 +182,7 @@ public:
         return Iterator(p);
     }
 
+    // Returns iterator from list, very fast method
     inline Iterator remove( Iterator it ) {
         Item *next = it.item->next;
         Item *prev = it.item->prev;

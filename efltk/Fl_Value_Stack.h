@@ -1,7 +1,20 @@
 #ifndef FL_VALUE_STACK_H_
 #define FL_VALUE_STACK_H_
 
-#define Fl_Stack Fl_Value_Stack
+/*
+ Simple "value" based stack
+ Items stored in this list, must have:
+ - copy constructor
+ - assing operator
+ - !=, == compare operators
+
+ This is very self-explaining :)
+
+ push() appends item
+ pop() returns and removes item
+ top() returns last pushed item
+
+*/
 
 #include "Fl_Value_List.h"
 

@@ -2,7 +2,29 @@
 #define FL_LIST_H_
 
 /*
- * Simple double-linked template list.
+ Simple double-linked template list.
+
+ Example usage:
+ Fl_PtrList<Object> list;
+ list.append(obj);
+ ...
+ list.prepend(obj);
+ ...
+ list.remove(obj);
+
+
+ Iterating throught the list: (several ways)
+ reverse iterating by changing calls: "[first()|begin()] to [last()|end()]" and "next() to prev()"
+
+ for(Object *o=list.first(); o; o=list.next())
+   do_something(o);
+
+ OR
+
+ list.begin();
+ while(list.next())
+   do_something(list.current());
+
  */
 
 template <class T> class Fl_PtrList
@@ -25,13 +47,19 @@ public:
     Fl_PtrList(const Fl_PtrList<T> &list) : items(0), First(0), Last(0), Current(0) { autodel_=false; copy(list); }
     ~Fl_PtrList() { clear(); }
 
-    void begin() { Current = 0; }
-    void end()	 { Current = 0; }
-    T *first() 	 { Current = First; return First ? First->stor : 0; }
-    T *last() 	 { Current = Last;  return Last ? Last->stor : 0; 	}
+    // Moves to the begin of list
+    inline void begin()  { Current = First; }
+    // Moves to the end of list
+    inline void end()	 { Current = Last; }
+    // Moves to begin and returns item
+    inline T *first() 	 { Current = First; return First ? First->stor : 0; }
+    // Moves to end and returns item
+    inline T *last() 	 { Current = Last;  return Last ? Last->stor : 0; 	}
 
-    T *current() { return Current ? Current->stor : 0; }
-    void current(T *it) { Current = item(it); }
+    // Returns current item, changed by calls: begin(), end(), first(), last(), next(), prev(), item()
+    inline T *current() { return Current ? Current->stor : 0; }
+    // Sets current pointer
+    inline void current(T *it) { Current = item(it); }
 
     //////////////////////
     // Operators
@@ -55,6 +83,7 @@ public:
 
     //////////////////
 
+    // Copies list to this
     void copy(const Fl_PtrList<T> &list) {
         clear();
         First = Last = Current = 0;
@@ -74,7 +103,8 @@ public:
         Current=0;
     }
 
-    // This function sets 'Current' pointer!
+    // Returns item at position 'index'
+    // NOTE: This function sets 'Current' pointer!
     inline T *item(int index) {
         if(index < 0 || index >= items) return 0;
         Item *it = First;
@@ -85,7 +115,7 @@ public:
     }
 
     // Returns item 'it', if it's found in list.
-    // This function sets 'Current' pointer!
+    // NOTE: This function sets 'Current' pointer!
     inline T *item(T *it) {
         if(items<=0 || !First || !it) return;
         if(Current && it == Current->stor) {
@@ -102,8 +132,7 @@ public:
     }
 
     // Remove item 'it' from list,
-    // DOES NOT set 'Current' pointer, this allows removing
-    // while iterating throught the list.
+    // NOTE: DOES NOT set 'Current' pointer, this allows fast removing while iterating throught the list.
     inline void remove(T *it) {
         if(items<=0 || !First || !it) return;
 
@@ -148,10 +177,12 @@ public:
         }
     }
 
+    // Remove item at 'index'
     inline void remove(int index) {
         remove(item(index));
     }
 
+    // Returns and moves to the next item in list
     inline T *next() {
         if(Current) {
             Current = Current->next;
@@ -161,6 +192,7 @@ public:
         return Current ? Current->stor : 0;
     }
 
+    // Returns and moves to the previous item in list
     inline T *prev() {
         if(Current) {
             Current = Current->prev;
@@ -170,6 +202,7 @@ public:
         return Current ? Current->stor : 0;
     }
 
+    // Adds 'item' to start of the list
     inline void prepend(T *item) {
         Item *temp = new Item(item);
         if(First) First->prev = temp;
@@ -180,6 +213,7 @@ public:
         items++;
     }
 
+    // Adds 'item' at end of the list.
     inline void append(T *item) {
         Item *temp = new Item(item);
         if(Last) Last->next = temp;
@@ -190,6 +224,8 @@ public:
         items++;
     }
 
+    // Clear the list
+    // NOTE: items are deleted, if auto_delete is set to true!
     inline void clear() {
         items = 0;
         if(!First) return;
@@ -203,9 +239,13 @@ public:
         First=Last=Current=0;
     }
 
+    // Returns items in list
     inline const int  count() { return items; }
+
+    // Returns true if empty
     inline const bool empty() { return (count()==0); }
 
+    // If auto_delete is true, item are deleted automaticaly, when removing from list.
     inline bool auto_delete() { return autodel_; }
     inline void auto_delete(bool d) { autodel_ = d; }
 };

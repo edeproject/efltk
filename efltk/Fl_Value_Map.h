@@ -1,7 +1,30 @@
 #ifndef FL_VALUE_MAP_H_
 #define FL_VALUE_MAP_H_
 
-#define Fl_Map Fl_Value_Map
+/*
+ Simple std::map like storage class.
+ Items stored in this list, must have:
+ - copy constructor
+ - assing operator
+ - !=, == compare operators
+
+ example usage:
+ Fl_Value_Map<int, Fl_String> map;
+ for(n=0; n<10; n++) {
+   Fl_String str;
+   str.printf("Item %d", n)
+   map.append(fl_makepair(n, str));
+ }
+ Now you can access items with:
+
+ map[10] <- returns string associated with number 10
+ This works even if key doesnt exists:
+ map[1000] = some_string;
+
+ Itarating is done exactly same way as in Fl_Value_List
+ see Fl_Value_List.h for example.
+
+*/
 
 #include "Fl_Value_List.h"
 
@@ -32,7 +55,7 @@ public:
         MapPair pair(key, value);
         append(pair);
     }
-    void append(MapPair &pair) {
+    void append(MapPair pair) {
         Fl_Value_List<MapPair>::append(pair);
     }
 
