@@ -320,14 +320,16 @@ int Fl_XmlParser::parse_node(Fl_XmlNode *node)
         {
             Fl_String *cdata_pointer;
             if(ctxptr->store_tree()) {
-                cdata_pointer = &node->parent()->cdata();
+                cdata_pointer = &node->cdata();
+                node->nodenamehandle_ = ctxptr->insert_tagname("cdata");
+                node->type(FL_XML_TYPE_CDATA);
             } else {
                 static Fl_String temp_cdata;
                 cdata_pointer = &temp_cdata;
             }
             Fl_String &cdata = *cdata_pointer;
 
-            // parse cdata section(s) and return
+            // parse cdata section and return as new node.
             cdata.clear();
 
             while(!tokenizer.eos() && !is_literal(token1)) {
@@ -336,9 +338,10 @@ int Fl_XmlParser::parse_node(Fl_XmlNode *node)
             }
             tokenizer.put_back();
 
-            if (ctxptr->handle_events()) ctxptr->handler()->cdata(cdata);
-            return 2; //CDATA PARSED!
+            if(ctxptr->handle_events()) ctxptr->handler()->cdata(cdata);
+            return true;
         }
+
         // no cdata, try to continue parsing node content
         if(token1 != '<') {
             throw_error(FL_XML_OPENTAG_CDATA_EXPECTED);
@@ -375,14 +378,16 @@ int Fl_XmlParser::parse_node(Fl_XmlNode *node)
                     {
                         Fl_String *cdata_pointer;
                         if(ctxptr->store_tree()) {
-                            cdata_pointer = &node->parent()->cdata();
+                            cdata_pointer = &node->cdata();
+                            node->nodenamehandle_ = ctxptr->insert_tagname("cdata");
+                            node->type(FL_XML_TYPE_CDATA_SECTION);
                         } else {
                             static Fl_String temp_cdata;
                             cdata_pointer = &temp_cdata;
                         }
 
                         Fl_String &cdata = *cdata_pointer;
-                        // parse cdata section(s) and return
+                        // parse cdata section and return as new node.
                         cdata.clear();
 
                         tokenizer.cdata_mode(true);
@@ -396,7 +401,7 @@ int Fl_XmlParser::parse_node(Fl_XmlNode *node)
                         cdata.sub_delete(cdata.length()-3, 3); //Delete "]]>"
 
                         if(ctxptr->handle_events()) ctxptr->handler()->cdata(cdata);
-                        return 2; //CDATA PARSED!
+                        return true;
                     }
 
                     // Skip to next literal, cant do anything with this data :(
@@ -419,8 +424,7 @@ int Fl_XmlParser::parse_node(Fl_XmlNode *node)
     // Store tagname
     Fl_String tagname( token2 );
     // insert tag name and set handle for it
-    if(node)
-        node->nodenamehandle_ = ctxptr->insert_tagname( tagname );
+    if(node) node->nodenamehandle_ = ctxptr->insert_tagname( tagname );
 
     // HMTL
     if(ctxptr->html_mode())
@@ -462,6 +466,7 @@ int Fl_XmlParser::parse_node(Fl_XmlNode *node)
     if(ctxptr->html_mode()) {
         if(is_html_leaf(tagname)) {
             //tokenizer.put_back(token1);
+            if(node) node->type(FL_XML_TYPE_LEAF);
             if(ctxptr->handle_events()) ctxptr->handler()->end_node(tagname);
             return true;
         }
@@ -476,6 +481,7 @@ int Fl_XmlParser::parse_node(Fl_XmlNode *node)
             return false; // Close Tag expected
         }
 
+        if(node) node->type(FL_XML_TYPE_LEAF);
         if(ctxptr->handle_events()) ctxptr->handler()->end_node(tagname);
 
         // return, let the caller continue to parse
@@ -489,29 +495,20 @@ int Fl_XmlParser::parse_node(Fl_XmlNode *node)
     }
 
     // loop to parse all subnodes
-    bool failed = false;
     Fl_XmlNode *subnode = 0;
-    while(!failed) {
+    while(true) {
 
         if(!subnode && ctxptr->store_tree()) {
             subnode = new Fl_XmlNode(ctxptr);
             subnode->parent(node);
         }
 
-        switch(parse_node(subnode))
-        {
-        default:
-        case 0:
-            failed = true;
-            break;
-        case 1:
+        if(parse_node(subnode)) {
             if(subnode && ctxptr->store_tree()) {
                 node->add_node(subnode);
                 subnode = 0;
             }
-            break;
-        case 2:
-            // CDATA parsed!
+        } else {
             break;
         }
     }

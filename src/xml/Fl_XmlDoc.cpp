@@ -77,6 +77,7 @@ void Fl_XmlDoc::clear()
 /* true if success */
 bool Fl_XmlDoc::load( const char *ptr, int len )
 {
+    clear();
     context_->reset_error();
     Fl_XmlStreamIterator it(context_, ptr, len);
     Fl_XmlParser parser(context_, it);
@@ -86,6 +87,7 @@ bool Fl_XmlDoc::load( const char *ptr, int len )
 /* true if success */
 bool Fl_XmlDoc::load(FILE *fp)
 {
+    clear();
     context_->reset_error();
     Fl_XmlStreamIterator it(context_, fp);
     Fl_XmlParser parser(context_, it);

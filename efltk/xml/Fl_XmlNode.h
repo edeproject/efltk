@@ -16,20 +16,18 @@ typedef Fl_XmlNode_List NodeList;
 
 // Node type enumeration
 enum {
-    //Document node
+    // Document node
     FL_XML_TYPE_DOC = 0,
-    //Normal node, can contain subnodes
+    // Normal node, can contain subnodes
     FL_XML_TYPE_NODE,
-    //Comment node
+    // Leaf node, cannot contain any subnodes. They are ignored.
+    FL_XML_TYPE_LEAF,
+    // Cdata where all default entities MUST be escaped.
+    FL_XML_TYPE_CDATA,
+    // Cdata section, which can contain preformatted char data. e.g. <[CDATA[ <xml rules> ]]>
+    FL_XML_TYPE_CDATA_SECTION,
+    // Comment node
     FL_XML_TYPE_COMMENT
-};
-
-// CDATA types
-enum {
-    //Cdata where all default entities MUST be encoded
-    FL_XML_CDATA_NORMAL = 0,
-    //Fixed cdata, which can contain preformatted char data. e.g. <[CDATA[ <my text> ]]>
-    FL_XML_CDATA_FIXED
 };
 
 class Fl_XmlNode
@@ -54,27 +52,25 @@ public:
     int type() { return nodetype_; }
     void type(int type) { nodetype_ = (char)type; }
 
-	// Shortcuts to types
-	bool is_normal()  { return (nodetype_==FL_XML_TYPE_NODE); }
-	bool is_leaf()    { return (chardata_.length()==0 && children()==0); }
-	bool is_doc()     { return (nodetype_==FL_XML_TYPE_DOC); }
-	bool is_comment() { return (nodetype_==FL_XML_TYPE_COMMENT); }
+    // Shortcuts to types
+    bool is_normal()  { return (nodetype_==FL_XML_TYPE_NODE); }
+    bool is_leaf()    { return (nodetype_==FL_XML_TYPE_LEAF); }
+    bool is_doc()     { return (nodetype_==FL_XML_TYPE_DOC);  }
+    bool is_comment() { return (nodetype_==FL_XML_TYPE_COMMENT); }
+    bool is_cdata()   { return (nodetype_==FL_XML_TYPE_CDATA); }
+    bool is_cdata_section() { return (nodetype_==FL_XML_TYPE_CDATA_SECTION); }
 
-    // Returns node type
-    int cdatatype() { return cdatatype_; }
-    void cdatatype(int type) { cdatatype_ = (char)type; }
-
-	// Shortcuts to cdata	
-	bool is_fixed_cdata() { return (cdatatype_==FL_XML_CDATA_FIXED); }
-	bool has_cdata() { return (chardata_.length()>0); }
+    bool has_cdata() { return (chardata_.length()>0); }
 
     // Returns reference to attribute map
     AttrMap &attributes() { return attributes_; }
     // Sets new attribute map
     void attributes(AttrMap &attr) { attributes_.clear(); attributes_ = attr; }
 
+    // Returns true, if given attribute is found
+    bool has_attribute(Fl_String attr);
     // Returns attribute value for given attribute
-    Fl_String attribute(Fl_String attr);
+    Fl_String &attribute(Fl_String attr);
     // Sets new value to attribute 'attr'
     void attribute(Fl_String attr, Fl_String value);
 
@@ -141,7 +137,7 @@ protected:
     unsigned short nodenamehandle_;
 
     // Nodetype
-    char nodetype_, cdatatype_;
+    char nodetype_;
 
     // Attributes of the tag
     AttrMap attributes_;
