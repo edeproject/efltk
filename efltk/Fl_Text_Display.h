@@ -139,9 +139,6 @@ public:
     // Calculates fontmetrics
     void set_font();
 
-    Fl_Color cursor_color() { return mCursor_color; }
-    void cursor_color(Fl_Color c) { mCursor_color = c; }
-
 protected:
 	void do_scroll(int topLineNum, int horizOffset);
 
@@ -152,12 +149,15 @@ protected:
 
     void draw_text(int X, int Y, int W, int H);
     void draw_range(int start, int end);
-    void draw_cursor(int, int);
+    
+	void clear_cursor();
+	void draw_cursor();
+	void draw_cursor(int pos);
 
     void draw_string(int style, int x, int y, int toX, const char *string,
         int nChars);
 
-    void draw_line_numbers(bool clearAll);
+    void draw_line_numbers();
 
     void draw_vline(int visLineNum, int leftClip, int rightClip,
         int leftCharIndex, int rightCharIndex);
@@ -229,10 +229,9 @@ protected:
 
     int damage_range1_start, damage_range1_end;
     int damage_range2_start, damage_range2_end;
-    int mCursorPos;
+    int mCursorPos, mCursorPosOld;
     int mCursorOn;
-    int mCursorOldY;        /* Y pos. of cursor for blanking */
-    int mCursorToHint;      /* Tells the buffer modified callback
+    int mCursorToHint;			/* Tells the buffer modified callback
                                    where to move the cursor, to reduce
                                    the number of redraw calls */
     int mCursorStyle;           /* One of enum cursorStyles above */
@@ -288,17 +287,19 @@ protected:
 
     int mLongestVline; // Longest vline, measured in layout()
 
-    Fl_Color mCursor_color;
-
     Fl_Scrollbar* mHScrollBar;
     Fl_Scrollbar* mVScrollBar;
     int dragPos, dragType, dragging;
-    struct { int x, y, w, h; } text_area;
+    struct area { int x, y, w, h; } text_area;
 
     int mLineNumLeft, mLineNumWidth;  /* Line number margin and width */
-    Fl_String_Buffer    m_lineBuffer;
+    Fl_String_Buffer m_lineBuffer;
+
+	static void fl_scroll_cb(void* v,int X, int Y, int W, int H);
+	int scrolldx, scrolldy;
+
 private:
-    void ctor_init();
+    void ctor_init();	
 };
 
 #endif

@@ -94,18 +94,17 @@ void Fl_Valuator::handle_drag(double v)
 
     // If original value was in-range, clamp the new value:
     double A = minimum_; double B = maximum_;
-    if (A > B) {A = B; B = minimum_;}
-    if (v < A && previous_value_ >= A) v = A;
-    else if (v > B && previous_value_ <= B) v = B;
-    // store the value, redraw the widget, and do callback:
+    if(A > B) { A = B; B = minimum_; }
+    if(v < A && previous_value_ >= A) v = A;
+    else if(v > B && previous_value_ <= B) v = B;
 
+	// store the value, redraw the widget, and do callback:	
     if (v != value_) {
         value_ = v;
         value_damage();
         if (when() & FL_WHEN_CHANGED || !Fl::pushed()) {
-            do_callback();
-        }
-        else set_changed();
+				do_callback();
+        } else	set_changed();
     }
 }
 
