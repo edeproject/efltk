@@ -41,9 +41,7 @@ extern const int fl_ucs2fontmap(char *s, unsigned int ucs, int enc);
 
 class Fl_FontSize {
 public:
-    Fl_FontSize* next;	// linked list for a single Fl_Font_
-
-    Fl_FontSize(const char* xfontname);
+    Fl_FontSize* next;	   // linked list for a single Fl_Font_
 
     XFontStruct* font;
     const char* encoding;
@@ -51,7 +49,9 @@ public:
 
     unsigned minsize;	// smallest point size that should use this
     unsigned maxsize;	// largest point size that should use this
-    //  ~Fl_FontSize();
+
+    Fl_FontSize(const char* xfontname);
+    ~Fl_FontSize();
 };
 
 static Fl_FontSize *fl_fontsize;
@@ -78,15 +78,15 @@ Fl_FontSize::Fl_FontSize(const char* name)
     }
     encoding = 0;
     encoding_num = -1;
+
+    append_font(this);
 }
 
-#if 0 // this is never called!
 Fl_FontSize::~Fl_FontSize()
 {
     if (this == fl_fontsize) fl_fontsize = 0;
     XFreeFont(fl_display, font);
 }
-#endif
 
 ////////////////////////////////////////////////////////////////
 // Things you can do once the font+size has been selected:

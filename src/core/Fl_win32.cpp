@@ -1857,22 +1857,6 @@ void Fl_Window::label(const Fl_String &l, const Fl_String &il)
 const Fl_Window *Fl_Window::current_;
 HDC fl_gc;                       // the current context
 
-extern void fl_font_rid();
-
-// clean up after Windows
-static struct Cleanup { ~Cleanup(); }
-cleanup;
-
-Cleanup::~Cleanup()
-{
-    // nasty but works (I think) - deallocates GDI resources in windows
-    while (Fl_X* x = Fl_X::first) x->window->destroy();
-
-    // get rid of allocated font resources
-    fl_font_rid();
-}
-
-
 // make X drawing go into this window (called by subclass flush() impl.)
 void Fl_Window::make_current() const
 {
