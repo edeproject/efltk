@@ -248,13 +248,15 @@ void Fl_Style::reload_theme()
 // settings the theme made.
 void Fl_Style::load_theme()
 {
-    if (theme_loaded) return;
+#ifndef _WIN32_WCE
+	if (theme_loaded) return;
     theme_loaded = true;
     if (!theme_) theme_ = load_theme("default");
     if(theme_) theme_();
     else fltk_theme();
 
     if (fl_bg_switch) fl_background(fl_bg_switch);
+#endif
 }
 
 
