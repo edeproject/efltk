@@ -95,7 +95,7 @@ enum {	// events
   FL_MOUSEWHEEL		= 16,
   FL_PASTE		= 17,
   FL_DND_ENTER		= 18,
-  FL_DND_DRAG		= 29,
+  FL_DND_DRAG		= 19,
   FL_DND_LEAVE		= 20,
   FL_DND_RELEASE	= 21,
 
