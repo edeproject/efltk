@@ -10,6 +10,11 @@
 
 #include <config.h>
 
+#ifdef _WIN32_WCE
+// WIN CE doesnt have GetDibBits...
+# define NO_GETDIBITS
+#endif
+
 /* helper fn */
 static int SussScreenDepth();
 static bool _system_inited = false;
@@ -367,6 +372,9 @@ void Fl_Image::to_screen_tiled(int XP, int YP, int WP, int HP, int, int)
 
 uint8 *Fl_Renderer::data_from_pixmap(Pixmap src, Fl_Rect &rect, Fl_PixelFormat *desired)
 {
+#ifdef NO_GETDIBITS
+    return 0;
+#else
     Fl_Renderer::system_init();
 
     int x = rect.x();
@@ -454,11 +462,15 @@ uint8 *Fl_Renderer::data_from_pixmap(Pixmap src, Fl_Rect &rect, Fl_PixelFormat *
 	} else
 		ret = lpvBits;
 
-    return ret;
+        return ret;
+#endif /* NO_GETDIBITS */
 }
 
 uint8 *Fl_Renderer::data_from_window(Window src, Fl_Rect &rect, Fl_PixelFormat *desired)
 {
+#ifdef NO_GETDIBITS
+    return 0;
+#else
     Fl_Renderer::system_init();
     int ww=0, wh=0;
     int px=rect.x(), py=rect.y(), pw=rect.w(), ph=rect.h();
@@ -501,6 +513,7 @@ uint8 *Fl_Renderer::data_from_window(Window src, Fl_Rect &rect, Fl_PixelFormat *
     DeleteDC(dst_dc);
 
     return data;
+#endif /* NO_GETDIBITS */
 }
 
 Window Fl_Renderer::root_window() {
