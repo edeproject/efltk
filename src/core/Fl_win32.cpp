@@ -1771,7 +1771,7 @@ const char *fl_file_filename(const char *name)
     return q;
 }
 
-void set_label(Fl_Window *win, char *name, const char *iname)
+void set_label(Fl_Window *win, const char *name, const char *iname)
 {
     if(win->shown() && !win->parent()) {
         if (!name) name = "";
