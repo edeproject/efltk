@@ -205,7 +205,7 @@ extern "C" bool fltk_theme()
         s->box = up;
     }
     if ((s = Fl_Style::find("pack"))) {
-        s->box = flat;
+        s->box = flat_blue;
     }
     if ((s = Fl_Style::find("slider"))) {
         s->box = FL_NO_BOX;
