@@ -409,18 +409,19 @@ static short ODBCtypeToCType(int odbcType) {
 
    /** ODBC 3.0 only */
         case SQL_TYPE_TIME:
-        case SQL_TYPE_TIMESTAMP:
-        case SQL_TYPE_DATE:  return SQL_C_TIMESTAMP;
+        case SQL_TYPE_TIMESTAMP: return SQL_C_TIMESTAMP;
+
+        case SQL_DATE:
+        case SQL_TYPE_DATE: return SQL_C_DATE;
 
         case SQL_TIME:
-        case SQL_TIMESTAMP:
-        case SQL_DATE:       return SQL_C_TIMESTAMP;
+        case SQL_TIMESTAMP: return SQL_C_TIMESTAMP;
 
         case SQL_BINARY:
         case SQL_LONGVARBINARY:
-        case SQL_VARBINARY:  return SQL_C_BINARY;
+        case SQL_VARBINARY: return SQL_C_BINARY;
 
-        case SQL_BIT:        return SQL_C_BIT;
+        case SQL_BIT:           return SQL_C_BIT;
     }
     return VAR_NONE;
 }
@@ -556,6 +557,14 @@ void Fl_ODBC_Database::fetch_query(Fl_Query *query)
                 buffer = (char *)field->value.data();
                 rc = SQLGetData(stmt,column,fieldType,buffer,0,&dataLength);
                 break;
+
+            case SQL_C_DATE: {
+                    DATE_STRUCT t;
+                    rc = SQLGetData(stmt,column,fieldType,&t,0,&dataLength);
+                    Fl_Date_Time dt(t.year,t.month,t.day,0,0,0);
+                    field->value.set_date(dt);
+                    break;
+                }
 
             case SQL_C_TIMESTAMP: {
                     TIMESTAMP_STRUCT t;
