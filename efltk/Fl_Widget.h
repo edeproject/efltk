@@ -266,11 +266,14 @@ protected:
      * x(), y(), w() , h(), and an optional value for  label().
      */
     Fl_Widget(int,int,int,int,const char* =0);
+    Fl_Widget(const char* l = 0,Fl_Align layout_al=FL_ALIGN_TOP,int layout_size=30,int label_w=100);
 
 private:
     // disable the copy assignment/constructors:
     Fl_Widget & operator=(const Fl_Widget &);
     Fl_Widget(const Fl_Widget &);
+
+    void ctor_init(int,int,int,int,const char*);
 
     unsigned        flags_;
     int             shortcut_; // encode in the label?

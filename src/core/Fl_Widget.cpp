@@ -48,10 +48,7 @@ void Fl_Widget::do_callback(Fl_Widget* o, long arg, uchar event)
 
 void Fl_Widget::default_callback(Fl_Widget* w, void*) {w->set_changed();}
 
-Fl_Widget::Fl_Widget(int X, int Y, int W, int H, const char* L)
-{
-    label_width_ = -1; // No label width limit
-    layout_flags_ = 0;
+void Fl_Widget::ctor_init(int X, int Y, int W, int H, const char* L) {
     style_    = default_style;
     parent_   = 0;
     callback_ = default_callback;
@@ -73,6 +70,31 @@ Fl_Widget::Fl_Widget(int X, int Y, int W, int H, const char* L)
 
     if(L) label_ = L;
     if (Fl_Group::current()) Fl_Group::current()->add(this);
+}
+
+Fl_Widget::Fl_Widget(int X, int Y, int W, int H, const char* L)
+{
+    label_width_ = -1; // No label width limit
+    layout_flags_ = 0;
+    ctor_init(X, Y, W, H, L);
+}
+
+Fl_Widget::Fl_Widget(const char* l,Fl_Align layout_al,int layout_size,int label_w) {
+    label_width_ = label_w; // No label width limit
+    layout_flags_ = layout_al;
+    ctor_init(0, 0, 10, 10, l);
+    switch (layout_flags_) {
+        case FL_ALIGN_LEFT:
+        case FL_ALIGN_RIGHT:
+            w_ = layout_size;
+            break;
+        case FL_ALIGN_TOP:
+        case FL_ALIGN_BOTTOM:
+            h_ = layout_size;
+            break;
+        default:
+            break;
+    }
 }
 
 Fl_Widget::~Fl_Widget()
@@ -553,7 +575,7 @@ void Fl_Widget::draw_box() const
     if(image() && !image()->get_mask()) {
         if((align()&FL_ALIGN_TILED || align()&FL_ALIGN_SCALE) &&
                 ( !(align()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT|FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) || (align()&FL_ALIGN_INSIDE) )
-          ) {
+            ) {
             // We can draw only frame, if there's no mask and drawing image in tiled or scaled mode
             draw_frame();
             return;
