@@ -30,16 +30,17 @@
 Fl_Popup_Calendar *pc;
 Fl_Input          *input;
 static void cb_test(Fl_Widget*, void*) {
-   char buffer[24];
-   //pc->resize(100,100,200,100);
-   pc->popup();
-   pc->date().format_date(buffer);
-   if (pc->value())
-       input->value(buffer);
-   else  input->value("Canceled");
+    if (Fl::event() == FL_BUTTON_PRESSED) {
+        char buffer[24];
+        pc->popup();
+        pc->date().format_date(buffer);
+        if (pc->value())
+            input->value(buffer);
+        else  input->value("Canceled");
+    }
 }
 
-#include <efltk/fl_utf8.h>
+//#include <efltk/fl_utf8.h>
 int main(int argc, char **argv)
 {
     Fl_Window *window = new Fl_Window(300,180);
