@@ -19,35 +19,37 @@
 #include <string.h>
 #include <stdlib.h>
 
-void Fl_Variant::releaseBuffers() {
-   if (m_type == CVT_STRING || m_type == CVT_BUFFER) {
+void Fl_Variant::free_buffers() {
+   if (m_type == STRING || m_type == BUFFER) {
       if (m_data.stringData)
          free(m_data.stringData);
    }
 }
 //---------------------------------------------------------------------------
-void Fl_Variant::setInteger(int value) {
-   releaseBuffers();
-   m_type = CVT_INT;
+void Fl_Variant::set_int(int value) {
+   free_buffers();
+   m_type = INT;
    m_size = sizeof(value);
 
    m_data.intData = value;
 }
 //---------------------------------------------------------------------------
-void Fl_Variant::setFloat(double value) {
-   releaseBuffers();
-   m_type = CVT_FLOAT;
+void Fl_Variant::set_float(double value) {
+   free_buffers();
+   m_type = FLOAT;
    m_size = sizeof(value);
    m_data.floatData = value;
 }
 //---------------------------------------------------------------------------
-void Fl_Variant::setString(const char * value,int maxlen) {
-   if (m_type == CVT_STRING && maxlen && m_size == maxlen+1) {
-      if (value)
-            strncpy(m_data.stringData,value,m_size);
-      else  m_data.stringData[0] = 0;
+void Fl_Variant::set_string(const char * value,int maxlen) {
+   if (m_type == STRING && maxlen && m_size == maxlen+1) {
+
+      if (value) strncpy(m_data.stringData,value,m_size);
+      else m_data.stringData[0] = 0;
+
    } else {
-      releaseBuffers();
+
+      free_buffers();
       if (value) {
          if (maxlen) {
             m_size = maxlen + 1;
@@ -63,12 +65,12 @@ void Fl_Variant::setString(const char * value,int maxlen) {
          m_size = 0;
       }
    }
-   m_type = CVT_STRING;
+   m_type = STRING;
 }
 //---------------------------------------------------------------------------
-void Fl_Variant::setText(const char * value) {
-   releaseBuffers();
-   m_type = CVT_TEXT;
+void Fl_Variant::set_text(const char * value) {
+   free_buffers();
+   m_type = TEXT;
    if (value) {
       m_size = strlen(value);
       m_data.stringData = strdup(value);
@@ -78,9 +80,9 @@ void Fl_Variant::setText(const char * value) {
    }
 }
 //---------------------------------------------------------------------------
-void Fl_Variant::setBuffer(const void * value,int sz) {
-   releaseBuffers();
-   m_type = CVT_BUFFER;
+void Fl_Variant::set_buffer(const void *value, int sz) {
+   free_buffers();
+   m_type = BUFFER;
    if (value) {
       m_size = sz;
       m_data.stringData = (char *)malloc(sz);
@@ -91,42 +93,42 @@ void Fl_Variant::setBuffer(const void * value,int sz) {
    }
 }
 //---------------------------------------------------------------------------
-void Fl_Variant::setDateTime(Fl_Date_Time value) {
-   releaseBuffers();
-   m_type = CVT_DATETIME;
+void Fl_Variant::set_date(Fl_Date_Time value) {
+   free_buffers();
+   m_type = DATETIME;
    m_size = sizeof(value);
    m_data.floatData = value;
 }
 //---------------------------------------------------------------------------
-int Fl_Variant::getInteger() const {
+int Fl_Variant::get_int() const {
    return m_data.intData;
 }
 //---------------------------------------------------------------------------
-double Fl_Variant::getFloat() const {
+double Fl_Variant::get_float() const {
    return m_data.floatData;
 }
 //---------------------------------------------------------------------------
-const char * Fl_Variant::getString() const {
+const char * Fl_Variant::get_string() const {
    return m_data.stringData;
 }
 //---------------------------------------------------------------------------
-const void * Fl_Variant::getBuffer() const {
+const void * Fl_Variant::get_buffer() const {
    return m_data.stringData;
 }
 //---------------------------------------------------------------------------
-Fl_Date_Time Fl_Variant::getDateTime() const {
+Fl_Date_Time Fl_Variant::get_date() const {
    return m_data.floatData;
 }
 //---------------------------------------------------------------------------
-void Fl_Variant::setData(const Fl_Variant &C) {
+void Fl_Variant::set_data(const Fl_Variant &C) {
    switch (C.m_type) {
-   case CVT_INT:     	setInteger(C.getInteger());            break;
-   case CVT_FLOAT:   	setFloat(C.getFloat());                break;
-   case CVT_STRING:  	setString(C.getString());              break;
-   case CVT_TEXT:  	   setBuffer(C.getBuffer(),C.dataSize()); break;
-   case CVT_BUFFER:  	setBuffer(C.getBuffer(),C.dataSize()); break;
-   case CVT_DATETIME:   setDateTime(C.getDateTime());          break;
-   case CVT_NONE:    	break;
+   case INT:     	set_int(C.get_int());            break;
+   case FLOAT:   	set_float(C.get_float());                break;
+   case STRING:  	set_string(C.get_string());              break;
+   case TEXT:  	    set_buffer(C.get_buffer(),C.size()); break;
+   case BUFFER:  	set_buffer(C.get_buffer(),C.size()); break;
+   case DATETIME:   set_date(C.get_date());          break;
+   case NONE:    	break;
    }
 }
 //---------------------------------------------------------------------------

@@ -16,11 +16,9 @@
  ***************************************************************************/
 
 #include <efltk/Fl_Date_Time.h>
+#include <efltk/Fl_Util.h>
 
 #include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
 #include <time.h>
 #include <ctype.h>
 
@@ -42,12 +40,12 @@ static const char *mname[] = {
 
 static const short _monthDays[2][12] = {
    {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31},
-   {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
+   {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31} //Leap year
 };
 
 static const short _monthDaySums[2][12] = {
    {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334},
-   {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335}
+   {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335} //Leap year
 };
 
 #define DateDelta 693594
@@ -60,12 +58,25 @@ char Fl_Date_Time::dateSeparator;
 char Fl_Date_Time::timeSeparator;
 double Fl_Date_Time::dateTimeOffset;
 
-static void upperCase(char *dest,const char *src) {
+static void upperCase(char *dest, const char *src, int dest_len) {
    int i = 0;
    int len = strlen(src);
+   if(len>dest_len) len=dest_len; //No buffer overflow.
    for (; i < len; i++)
-      dest[i] = (char) toupper( src[i] );
-   dest[i] = 0;
+      dest[i] = (char)toupper( src[i] );
+   dest[i] = '\0';
+}
+
+static int trimRight(char *s) {
+   int len = strlen(s);
+   while( (len--) >= 0) {
+      if( (unsigned char)s[len] > 32 ) {
+         len++;
+         s[len] = '\0';
+         break;
+      }
+   }
+   return len;
 }
 
 static char parseDateOrTime(char *format,char *dt) {
@@ -122,6 +133,11 @@ static char parseDateOrTime(char *format,char *dt) {
    return separator[0];
 }
 
+class Fl_Date_Time_Format {
+public:
+   Fl_Date_Time_Format();
+};
+
 Fl_Date_Time_Format::Fl_Date_Time_Format() {
    char  dateBuffer[32];
    char  timeBuffer[32];
@@ -149,13 +165,14 @@ Fl_Date_Time_Format::Fl_Date_Time_Format() {
       strcat(Fl_Date_Time::timeFormat,"AM");
 }
 
+// This is the only instance to Fl_Date_Time_Format. 
 static Fl_Date_Time_Format dateFormat;
 
-int Fl_Date_Time::isLeapYear(const short year) {
-   return (year&3) == 0 && year%100 != 0 || year%400 == 0;
+bool Fl_Date_Time::is_leap_year(const short year) {
+   return ((year&3) == 0 && year%100 != 0 || year%400 == 0);
 }
 
-void Fl_Date_Time::encodeDate(double &dt,short year,short month,short day) {
+void Fl_Date_Time::encode_date(double &dt,short year,short month,short day) {
    if (year == 0 && month == 0 && day == 0) {
       dt = 0;
       return;
@@ -164,7 +181,7 @@ void Fl_Date_Time::encodeDate(double &dt,short year,short month,short day) {
       dt = 0;
       return;
    }
-   int yearKind = isLeapYear(year);
+   int yearKind = is_leap_year(year);
    if (day < 1 || day > _monthDays[yearKind][month-1]) {
       dt = 0;
       return;
@@ -180,14 +197,14 @@ void Fl_Date_Time::encodeDate(double &dt,short year,short month,short day) {
    dt = i * 365 + i / 4 - i / 100 + i / 400 + day - DateDelta;
 }
 
-void Fl_Date_Time::encodeDate(double &dt,const char *dat) {
+void Fl_Date_Time::encode_date(double &dt,const char *dat) {
    char     bdat[64];
    short    datePart[7], partNumber = 0;
    char     *ptr = NULL;
    int i;
 
    memset(datePart,0,sizeof(datePart));
-   upperCase(bdat,dat);
+   upperCase(bdat, dat, sizeof(bdat));
 
    if (strcmp(bdat,"TODAY") == 0) {
       dt = Date();        // Sets the current date
@@ -228,10 +245,10 @@ void Fl_Date_Time::encodeDate(double &dt,const char *dat) {
          else           year = short(year + 1900);
       }
       double dd;
-      encodeDate(dd,year,month,day);
+      encode_date(dd,year,month,day);
       if (partNumber > 3) { // Time part included into string
          double d;
-         encodeTime(d,datePart[3],datePart[4],datePart[5],datePart[6]);
+         encode_time(d,datePart[3],datePart[4],datePart[5],datePart[6]);
          dd += d;
       }
       dt = dd;
@@ -239,31 +256,18 @@ void Fl_Date_Time::encodeDate(double &dt,const char *dat) {
    }
 }
 
-void Fl_Date_Time::encodeTime(double& dt,short h,short m,short s,short ms) {
+void Fl_Date_Time::encode_time(double& dt,short h,short m,short s,short ms) {
    dt = (h + ((m + (s + ms / 100.0) / 60.0) / 60.0)) / 24.0;
 }
 
-static int trimRight(char *s) {
-   int   len = strlen(s);
-
-   while ((len--) >= 0) {
-      if ( (unsigned char)s[len] > 32 ) {
-         len++;
-         s[len] = 0;
-         break;
-      }
-   }
-   return len;
-}
-
-void Fl_Date_Time::encodeTime(double& dt,const char *tim) {
+void Fl_Date_Time::encode_time(double& dt,const char *tim) {
    char  bdat[32];
    short timePart[4] = { 0, 0, 0, 0},
          partNumber = 0;
    char  *ptr = NULL;
    bool  afternoon = false;
 
-   upperCase(bdat,tim);
+   upperCase(bdat, tim, sizeof(bdat));
 
    if (!trimRight(bdat)) {
       dt = 0;
@@ -305,13 +309,13 @@ void Fl_Date_Time::encodeTime(double& dt,const char *tim) {
       }
       if (afternoon && timePart[0] != 12)
          timePart[0] = short(timePart[0] + 12);
-      encodeTime(dt,timePart[0],timePart[1],timePart[2],timePart[3]);
+      encode_time(dt,timePart[0],timePart[1],timePart[2],timePart[3]);
    }
 }
 
 const int S1 = 24 * 60 * 60; // seconds in 1 day
 
-void Fl_Date_Time::decodeTime(const double dt,short& h,short& m,short& s,short& ms) {
+void Fl_Date_Time::decode_time(const double dt,short& h,short& m,short& s,short& ms) {
    double t = dt - (int) dt;
 
    int secs = int(t * S1 + 0.5);
@@ -333,7 +337,7 @@ static void DivMod(int op1, int op2, int& div, int& mod) {
    mod = op1 % op2;
 }
 
-void Fl_Date_Time::decodeDate(const double dat,short& year,short& month,short& day) {
+void Fl_Date_Time::decode_date(const double dat, short& year, short& month, short& day) {
    int Y, M, D, I;
    int T = (int) dat + DateDelta;
 
@@ -362,7 +366,7 @@ void Fl_Date_Time::decodeDate(const double dat,short& year,short& month,short& d
    year = Y;
    //year  = short (Y + 1900);
 
-   int leapYear = isLeapYear(short(year));
+   int leapYear = is_leap_year(short(year));
    for (M = 0;;M++) {
       I = _monthDays[leapYear][M];
       if (D < I)
@@ -379,8 +383,8 @@ void Fl_Date_Time::decodeDate(const double dat,short& year,short& month,short& d
 //----------------------------------------------------------------
 Fl_Date_Time::Fl_Date_Time (short year,short month,short day,short hour,short minute,short second) {
    double t;
-   encodeDate(m_dateTime,year,month,day);
-   encodeTime(t,hour,minute,second);
+   encode_date(m_dateTime,year,month,day);
+   encode_time(t,hour,minute,second);
    m_dateTime += t;
 }
 
@@ -398,14 +402,14 @@ Fl_Date_Time::Fl_Date_Time (const char * dat) {
       s1[p] = 0;
    }
    if ( strchr(s1.c_str(),dateSeparator) ) {
-      encodeDate(m_dateTime, s1.c_str());
+      encode_date(m_dateTime, s1.c_str());
       if ( strchr(s2.c_str(),timeSeparator) ) {
          double dt;
-         encodeTime(dt, s2.c_str());
+         encode_time(dt, s2.c_str());
          m_dateTime += dt;
       }
    }
-   else  encodeTime(m_dateTime, s1.c_str());
+   else  encode_time(m_dateTime, s1.c_str());
 
 }
 
@@ -424,7 +428,7 @@ void Fl_Date_Time::operator = (const Fl_Date_Time &dt) {
 }
 
 void Fl_Date_Time::operator = (const char * dat) {
-   encodeDate(m_dateTime, dat);
+   encode_date(m_dateTime, dat);
 }
 
 //----------------------------------------------------------------
@@ -524,7 +528,7 @@ bool operator != (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2) {
 //----------------------------------------------------------------
 // Format routine
 //----------------------------------------------------------------
-void Fl_Date_Time::formatDate (char *str) const {
+void Fl_Date_Time::format_date (char *str) const {
    char *ptr = str;
    short month, day, year;
 
@@ -532,7 +536,7 @@ void Fl_Date_Time::formatDate (char *str) const {
       *str = 0;
       return;
    }
-   decodeDate(m_dateTime,year,month,day);
+   decode_date(m_dateTime,year,month,day);
    for (int i = 0; i < 3; i++) {
       switch (datePartsOrder[i]) {
       case 'M':   sprintf(ptr,"%02i%c",month,dateSeparator);
@@ -547,14 +551,14 @@ void Fl_Date_Time::formatDate (char *str) const {
    *(ptr-1) = 0;
 }
 
-void Fl_Date_Time::formatTime (char *str,bool ampm) const {
+void Fl_Date_Time::format_time (char *str,bool ampm) const {
    short h,m,s,ms;
 
    if (m_dateTime == 0) {
       *str = 0;
       return;
    }
-   decodeTime(m_dateTime,h,m,s,ms);
+   decode_time(m_dateTime,h,m,s,ms);
    if (ampm) {
       char format[] = "%02i%c%02iAM";
       if (h > 11) format[10] = 'P';
@@ -565,7 +569,7 @@ void Fl_Date_Time::formatTime (char *str,bool ampm) const {
 //----------------------------------------------------------------
 //  Miscellaneous Routines
 //----------------------------------------------------------------
-short Fl_Date_Time::dayOfYear( void ) const {
+short Fl_Date_Time::day_of_year( void ) const {
     Fl_Date_Time temp( 1, 1, year() );
 
     return (short) (m_dateTime - temp.m_dateTime);
@@ -577,8 +581,8 @@ Fl_Date_Time Fl_Date_Time::System() {
    time(&tt);
    struct tm *t = localtime(&tt);
    double dat,tim;
-   encodeDate(dat,short(t->tm_year+1900),short(t->tm_mon+1),short(t->tm_mday));
-   encodeTime(tim,short(t->tm_hour),short(t->tm_min),short(t->tm_sec),short(0));
+   encode_date(dat,short(t->tm_year+1900),short(t->tm_mon+1),short(t->tm_mday));
+   encode_time(tim,short(t->tm_hour),short(t->tm_min),short(t->tm_sec),short(0));
 #ifndef _WIN32
    timeval tp;
    gettimeofday(&tp,0L);
@@ -609,10 +613,10 @@ Fl_Date_Time Fl_Date_Time::Time() {
    return dat - int(dat);
 }
 
-short Fl_Date_Time::daysInMonth() const {
+short Fl_Date_Time::days_in_month() const {
    short y, m, d;
-   decodeDate(m_dateTime,y,m,d);
-   return _monthDays[isLeapYear(y)][m-1];
+   decode_date(m_dateTime,y,m,d);
+   return _monthDays[is_leap_year(y)][m-1];
 }
 
 unsigned Fl_Date_Time::date() const {
@@ -621,52 +625,51 @@ unsigned Fl_Date_Time::date() const {
 
 short Fl_Date_Time::day() const {
    short y, m, d;
-   decodeDate(m_dateTime,y,m,d);
+   decode_date(m_dateTime,y,m,d);
    return d;
 }
 
 short Fl_Date_Time::month() const {
    short y, m, d;
-   decodeDate(m_dateTime,y,m,d);
+   decode_date(m_dateTime,y,m,d);
    return m;
 }
 
 short Fl_Date_Time::year() const {
    short y, m, d;
-   decodeDate(m_dateTime,y,m,d);
+   decode_date(m_dateTime,y,m,d);
    return y;
 }
 
-short Fl_Date_Time::dayOfWeek (void) const {
+short Fl_Date_Time::day_of_week (void) const {
    return short((int(m_dateTime) - 1) % 7 + 1);
 }
 
-Fl_String Fl_Date_Time::dayOfWeekName (void) const {
-   return dayname[dayOfWeek() - 1];
+Fl_String Fl_Date_Time::day_name (void) const {
+   return dayname[day_of_week() - 1];
 }
 
-Fl_String Fl_Date_Time::monthName() const {
+Fl_String Fl_Date_Time::month_name() const {
    return mname[month()-1];
-
 }
 
-Fl_String Fl_Date_Time::dateString() const {
+Fl_String Fl_Date_Time::date_string() const {	
+	char  buffer[32];
+	format_date(buffer);
+	return Fl_String(buffer);
+}
+
+Fl_String Fl_Date_Time::time_string() const {
    char  buffer[32];
-   formatDate(buffer);
+   format_time(buffer,!time24Mode);
    return Fl_String(buffer);
 }
 
-Fl_String Fl_Date_Time::timeString() const {
-   char  buffer[32];
-   formatTime(buffer,!time24Mode);
-   return Fl_String(buffer);
+void Fl_Date_Time::decode_date(short *y,short *m,short *d) const {
+   decode_date(m_dateTime,*y,*m,*d);
 }
 
-void Fl_Date_Time::decodeDate(short *y,short *m,short *d) const {
-   decodeDate(m_dateTime,*y,*m,*d);
-}
-
-void Fl_Date_Time::decodeTime(short *h,short *m,short *s,short *ms) const {
-   decodeTime(m_dateTime,*h,*m,*s,*ms);
+void Fl_Date_Time::decode_time(short *h,short *m,short *s,short *ms) const {
+   decode_time(m_dateTime,*h,*m,*s,*ms);
 }
 

@@ -20,60 +20,56 @@
 #include "Fl_Export.h"
 #include "Fl_String.h"
 
-class Fl_Date_Time_Format {
-public:
-   Fl_Date_Time_Format();
-   Fl_String dateFormat();
-   Fl_String timeFormat();
-   void    weekDayNames(Fl_String wdn[7]);
-};
-
-class Fl_Date_Time;
-
-bool operator <  (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
-bool operator <  (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
-bool operator <= (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
-bool operator >  (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
-bool operator >= (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
-bool operator == (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
-bool operator != (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
-
-enum cdtdate_format_type {cdtMDY, cdtDAY, cdtMONTH, cdtFULL, cdtEUROPEAN};
-
 class FL_API Fl_Date_Time {
-	friend class Fl_Date_Time_Format;
-protected:
-    static void   decodeDate(const double dt,short& y,short& m,short& d);
-    static void   decodeTime(const double dt,short& h,short& m,short& s,short& ms);
-    static void   encodeDate(double &dt,short y=0,short m=0,short d=0);
-    static void   encodeDate(double &dt,const char *dat);
-    static void   encodeTime(double &dt,short h=0,short m=0,short s=0,short ms=0);
-    static void   encodeTime(double &dt,const char *tim);
-    static int    isLeapYear(const short year);
-protected:
-   double        m_dateTime;
-   static double dateTimeOffset;    // The offset from current' system time for synchronization
-                                    // with outside system
 public:
-   static char   dateFormat[32];
-   static char   timeFormat[32];
-   static char   datePartsOrder[4];
-   static char   dateSeparator;
-   static char   timeSeparator;
-   static bool   time24Mode;
-public:
+	static char   dateFormat[32];
+	static char   timeFormat[32];
+	static char   datePartsOrder[4];
+	static char   dateSeparator;
+	static char   timeSeparator;
+	static bool   time24Mode;
+
     Fl_Date_Time (short y,short m,short d,short hour=0,short minute=0,short second=0);
     Fl_Date_Time (const char * dat);
     Fl_Date_Time (const Fl_Date_Time &dt);
     Fl_Date_Time (const double dt=0);
+
+    void format_date(char *str) const;
+    void format_time(char *str, bool ampm=true) const;
+
+	// These functions don't affect the actual system time.
+	// You can only alter the time for the current program.
+    static void Now(Fl_Date_Time dt);     // Sets to current date and time
+    static Fl_Date_Time System();         // Gets to current system date and time
+    static Fl_Date_Time Now();            // Gets to current date and time
+    static Fl_Date_Time Date();           // Gets to current date
+    static Fl_Date_Time Time();           // Gets to current time
+
+    short days_in_month() const;				// Number of days in month (1..31)
+    short day_of_week() const;				// (1..7)
+    short day_of_year() const;				// returns relative date since Jan. 1
+
+    Fl_String day_name() const;   // Character Day Of Week ('Sunday'..'Saturday')
+    Fl_String month_name() const; // Character Month name
+
+    unsigned date() const;                // Numeric date of date object
+    short day() const;                    // Numeric day of date object
+    short month() const;                  // Month number (1..12)
+    short year() const;
+
+    Fl_String date_string() const;
+    Fl_String time_string() const;
+
+    void decode_date(short *y,short *m,short *d) const;
+    void decode_time(short *h,short *m,short *s,short *ms) const;
 
     operator double (void) const;
 
     void operator = (const Fl_Date_Time& date);
     void operator = (const char * dat);
 
-    Fl_Date_Time  operator + (int  i);
-    Fl_Date_Time  operator - (int  i);
+    Fl_Date_Time  operator + (int i);
+    Fl_Date_Time  operator - (int i);
     Fl_Date_Time  operator + (Fl_Date_Time& dt);
     Fl_Date_Time  operator - (Fl_Date_Time& dt);
 
@@ -94,34 +90,28 @@ public:
     friend bool operator == (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
     friend bool operator != (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
 
-    void formatDate(char *str) const;
-    void formatTime(char *str,bool ampm=true) const;
+protected:
+    static void   decode_date(const double dt,short& y,short& m,short& d);
+    static void   decode_time(const double dt,short& h,short& m,short& s,short& ms);
+    static void   encode_date(double &dt,short y=0,short m=0,short d=0);
+    static void   encode_date(double &dt,const char *dat);
+    static void   encode_time(double &dt,short h=0,short m=0,short s=0,short ms=0);
+    static void   encode_time(double &dt,const char *tim);
+    static bool   is_leap_year(const short year);
 
-   // These functions don't affect the actual system time.
-   // You can only alter the time for the current program.
-    static void Now(Fl_Date_Time dt);     // Sets to current date and time
-    static Fl_Date_Time System();         // Gets to current system date and time
-    static Fl_Date_Time Now();            // Gets to current date and time
-    static Fl_Date_Time Date();           // Gets to current date
-    static Fl_Date_Time Time();           // Gets to current time
-
-    short daysInMonth() const;            // Number of days in month (1..31)
-    short dayOfWeek(void) const;          // (1..7)
-    short dayOfYear()  const;             // returns relative date since Jan. 1
-
-    Fl_String dayOfWeekName(void) const;  // Character Day Of Week ('Sunday'..'Saturday')
-    Fl_String monthName() const ;         // Character Month name
-
-    unsigned date() const;                // Numeric date of date object
-    short day() const;                    // Numeric day of date object
-    short month() const;                  // Month number (1..12)
-    short year() const;
-public:
-    Fl_String dateString() const;
-    Fl_String timeString() const;
-public:
-    void decodeDate(short *y,short *m,short *d) const;
-    void decodeTime(short *h,short *m,short *s,short *ms) const;
+	double        m_dateTime;
+	static double dateTimeOffset;    // The offset from current' system time for synchronization
+                                     // with outside system
 };
+
+bool operator <  (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
+bool operator <  (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
+bool operator <= (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
+bool operator >  (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
+bool operator >= (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
+bool operator == (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
+bool operator != (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2);
+
 #endif
+
 

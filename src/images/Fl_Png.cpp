@@ -274,6 +274,8 @@ static bool png_write(uint8 *data, Fl_PixelFormat &fmt, int w, int h)
     png_infop info_ptr;
     png_colorp palette=0;
     uint pitch = Fl_Renderer::calc_pitch(fmt.bytespp, w);
+	uint y; 
+	int n;
 
     png_uint_32 width;
     png_uint_32 height;
@@ -353,7 +355,7 @@ static bool png_write(uint8 *data, Fl_PixelFormat &fmt, int w, int h)
         palette = new png_color[wr_fmt->palette->ncolors];
         //int* trans = new int[fmt.palette->ncolors];
         //int num_trans = 0;
-        for(int n=0; n<wr_fmt->palette->ncolors; n++) {
+        for(n=0; n<wr_fmt->palette->ncolors; n++) {
             palette[n].red   = wr_fmt->palette->colors[n].r;
             palette[n].green = wr_fmt->palette->colors[n].g;
             palette[n].blue  = wr_fmt->palette->colors[n].b;
@@ -398,7 +400,7 @@ static bool png_write(uint8 *data, Fl_PixelFormat &fmt, int w, int h)
                  0, 0, 0);
 
     rows = new png_bytep[height];
-    for(uint y=0; y<height; y++) {
+    for(y=0; y<height; y++) {
         rows[y] = wr_data + y * wr_pitch;
     }
     png_write_image(png_ptr, rows);

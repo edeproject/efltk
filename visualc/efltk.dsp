@@ -246,6 +246,14 @@ SOURCE=..\src\core\fl_curve.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\core\Fl_Data_Source.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Date_Time.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\widgets\Fl_Dial.cpp
 # End Source File
 # Begin Source File
@@ -622,6 +630,10 @@ SOURCE=..\src\widgets\Fl_Value_Slider.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\core\Fl_Variant.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\core\fl_vertex.cpp
 # End Source File
 # Begin Source File
@@ -763,6 +775,14 @@ SOURCE=..\efltk\Fl_Color_Chooser.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_Config.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Data_Source.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Date_Time.h
 # End Source File
 # Begin Source File
 
@@ -1179,6 +1199,10 @@ SOURCE=..\efltk\Fl_Value_Slider.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_Value_Stack.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Variant.h
 # End Source File
 # Begin Source File
 

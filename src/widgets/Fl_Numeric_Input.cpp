@@ -96,7 +96,6 @@ int Fl_Numeric_Input::handle(int event)
     return Fl_Input::handle(event);
 }
 
-
 #include "../core/fl_internal.h"
 // Handle and up or down arrow key:
 int Fl_Numeric_Input::handle_arrow(int dir)
