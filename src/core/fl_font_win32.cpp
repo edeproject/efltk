@@ -27,7 +27,6 @@
 #include <efltk/x.h>
 #include <ctype.h>
 #include <stdlib.h>
-#include <efltk/math.h>
 #include <efltk/fl_utf8.h>
 
 #ifdef _WIN32_WCE

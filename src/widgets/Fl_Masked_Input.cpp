@@ -15,13 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <efltk/math.h>
 #include <efltk/Fl.h>
 #include <efltk/fl_draw.h>
-#include <math.h>
-#include <string.h>
-#include <ctype.h>
 #include <efltk/Fl_Masked_Input.h>
 #include <efltk/Fl_Date_Time.h>
+
+#include <string.h>
+#include <ctype.h>
 
 // If you define this symbol as zero you will get the peculiar fltk
 // behavior where moving off the end of an input field will move the

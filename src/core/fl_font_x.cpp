@@ -27,7 +27,6 @@
 #include <efltk/Fl_Font.h>
 #include <efltk/x.h>
 #include <efltk/fl_draw.h>
-#include <efltk/math.h>
 #include <efltk/Fl_Util.h>
 #include <efltk/Fl_String.h>
 

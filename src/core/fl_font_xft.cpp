@@ -60,7 +60,6 @@
 #include <efltk/Fl_Font.h>
 #include <efltk/fl_draw.h>
 #include <efltk/x.h>
-#include <efltk/math.h>
 
 #include <X11/Xft/Xft.h>
 

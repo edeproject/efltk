@@ -25,9 +25,10 @@
 
 // Base class for sliders and all other one-value "knobs"
 
+#include <efltk/math.h>
+
 #include <efltk/Fl.h>
 #include <efltk/Fl_Valuator.h>
-#include <efltk/math.h>
 #include <stdio.h>
 #include <stdlib.h>
 

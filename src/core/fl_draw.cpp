@@ -37,8 +37,8 @@
 // Word wraps the labels to fit into their column (if FL_ALIGN_WRAP
 // flag is on) and aligns them agains the inside of their boxes.
 
-#include <efltk/fl_draw.h>
 #include <efltk/math.h>
+#include <efltk/fl_draw.h>
 #include <string.h>
 
 // Any string longer than this does not get &x underscore processing.

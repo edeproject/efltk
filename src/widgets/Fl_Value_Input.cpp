@@ -29,10 +29,11 @@
 // However Fl_Widget::parent() returns an Fl_Group, not an Fl_Widget
 // like it did in fltk 1.1 so this may not be proper C++.
 
+#include <efltk/math.h>
+
 #include <efltk/Fl.h>
 #include <efltk/Fl_Value_Input.h>
 #include <efltk/Fl_Group.h>
-#include <efltk/math.h>
 
 #include <stdlib.h>
 

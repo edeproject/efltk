@@ -23,6 +23,7 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
+#include <efltk/math.h>
 #include <config.h>
 
 #include <efltk/Fl.h>
@@ -33,7 +34,6 @@
 #include <efltk/vsnprintf.h>
 #include <string.h>
 #include <stdlib.h>
-#include <efltk/math.h>
 #include <config.h>
 #if defined(_WIN32)
 # include <io.h>

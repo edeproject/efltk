@@ -23,13 +23,15 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
+#include <efltk/math.h>
+
 #include <efltk/Fl.h>
 #include <efltk/Fl_Slider.h>
 #include <efltk/Fl_Group.h>
 #include <efltk/fl_draw.h>
-#include <efltk/math.h>
+#include <efltk/vsnprintf.h>
+
 #include <config.h>
-#include <stdio.h>
 
 // Return the location of the left/top edge of a box of slider_size() would
 // be if the area the slider can move in is of width/height w.

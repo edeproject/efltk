@@ -33,13 +33,14 @@
 // This is merged into a single function to make writing a dispatch
 // table easier.
 
+#ifdef _WIN32
+#include <efltk/math.h>
+#endif
+
 #include <config.h>
 
 #include <efltk/fl_draw.h>
 #include <efltk/x.h>
-#ifdef _WIN32
-#include <efltk/math.h>
-#endif
 
 void fl_pie(int x,int y,int w,int h,float a1,float a2, int what) {
   if (w <= 0 || h <= 0) return;

@@ -1,10 +1,10 @@
+#include <efltk/math.h>
 #include <efltk/Fl_Tool_Bar.h>
 #include <efltk/Fl_Divider.h>
 #include <efltk/fl_draw.h>
 #include <efltk/Fl.h>
 #include <efltk/Fl_Item.h>
 #include <efltk/Fl_Button.h>
-#include <efltk/math.h>
 
 class ToolMenuButton : public Fl_Widget
 {
