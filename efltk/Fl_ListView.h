@@ -55,8 +55,8 @@ public:
     Fl_ListView(int X,int Y,int W,int H,const char*l=0);
     virtual ~Fl_ListView();
 
-    void begin();
-    void end();
+    virtual void begin();
+    virtual void end();
 
     Fl_ListItem_List &array() { return items; }
 
