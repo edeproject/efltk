@@ -380,7 +380,7 @@ Line *Fl_Config::create_string(Section *section, const Fl_String &key, const Fl_
 {
     if(key.empty()) return 0;
 
-    Line *line = new Line(key, value);
+    Line *line = new Line(key.trim(), value.trim());
     m_error=0;
 
     if(section) section->lines.append(line);
