@@ -28,9 +28,9 @@
 
 // Based on code donated by Jim Wilson
 
+#include <efltk/math.h>
 #include <config.h>
 #include <efltk/fl_draw.h>
-#include <efltk/math.h>
 
 void fl_arc(float l, float b, float w, float h, float start, float end) {
 

@@ -23,12 +23,12 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
+#include <efltk/math.h>
 #include <config.h>
 #include <efltk/Fl.h>
 #include <efltk/Fl_Window.h>
 #include <efltk/Fl_Hor_Slider.h>
 #include <efltk/Fl_Toggle_Button.h>
-#include <efltk/math.h>
 
 #if !HAVE_GL
 #include <efltk/Fl_Box.h>

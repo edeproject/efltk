@@ -31,6 +31,7 @@
 #include <efltk/vsnprintf.h>
 #include <string.h>
 #include <stdlib.h>
+#include <efltk/math.h>
 #include <config.h>
 #if defined(_WIN32)
 # include <io.h>

@@ -51,12 +51,12 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
+#include <efltk/math.h>
 #include <config.h>
 #include <efltk/Fl.h>
 #include <efltk/Fl_Single_Window.h>
 #include <efltk/Fl_Hor_Slider.h>
 #include <efltk/Fl_Toggle_Light_Button.h>
-#include <efltk/math.h>
 #include <stdio.h>
 
 #if HAVE_GL

@@ -33,6 +33,7 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
+#include <efltk/math.h>
 #include <config.h>
 #include <efltk/Fl.h>
 #include <efltk/Fl_Single_Window.h>
@@ -41,7 +42,6 @@
 #include <efltk/fl_draw.h>
 #include <efltk/Fl_Slider.h>
 #include <stdlib.h>
-#include <efltk/math.h>
 #include <stdio.h>
 
 int sides[2] = {20,20};

@@ -23,6 +23,7 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
+#include <efltk/math.h>
 #include <config.h>
 #include <efltk/Fl_Font.h>
 #include <efltk/fl_draw.h>
