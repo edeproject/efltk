@@ -271,10 +271,12 @@ void Fl_ODBC_Database::prepare_query(Fl_Query *query) {
  */
 void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
     int rc;
+    SQLINTEGER  cbLen;
 
     SQLHSTMT    statement = (SQLHSTMT)query_handle(query);
     Fl_Params&  params = query->params();
     unsigned    cnt = params.count();
+    int intParam;
     for (unsigned i = 0; i < cnt; i++) {
         Fl_ODBC_Param *param = (Fl_ODBC_Param *)&params[i];
         unsigned  pcnt = param->bind_count();
@@ -285,7 +287,7 @@ void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
             short paramNumber = short(param->bind_index(j) + 1);
             short parameterMode = SQL_PARAM_INPUT;
             switch (param->type()) {
-                case VAR_INT:
+                case VAR_INT: 
                     paramType = SQL_C_SLONG;
                     sqlType   = SQL_INTEGER;
                     break;
@@ -353,7 +355,7 @@ void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
                     fl_throw("Unknown type of parameter " + Fl_String(paramNumber));
             }
             //param->m_cbValue = len;
-            //cbLen = len;
+            //SQLINTEGER cbLen = len;
             if (!buff) {
                 len = 0;
                 scale = 0;
@@ -361,7 +363,6 @@ void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
             rc = SQLBindParameter(statement,paramNumber,parameterMode,paramType,sqlType,len,scale,buff,short(len),NULL);
             if (rc != 0)
                 fl_throw("Can't bind parameter " + Fl_String(paramNumber) + ": " + query_error(query));
-                //fl_throw("Can't bind parameter " + Fl_String(paramNumber));
         }
     }
 }

@@ -7,7 +7,6 @@
 #include <efltk/Fl_Pixmap.h>
 #include <efltk/fl_draw.h>
 #include <efltk/Fl_Combo_Box.h>
-//#include <efltk/Fl_Group.h>
 
 static char * add_small_xpm[] = {
     "15 15 6 1",

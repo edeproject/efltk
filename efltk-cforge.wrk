@@ -1,7 +1,7 @@
 #
 #	File is generated automatically! Don't edit it!
 #
-# %IdeVersion:	2623
+# %IdeVersion:	3103
 #
 # %IdeAuthor:	Alexey Parshin
 #
@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x4003f6
+# %FirstUniqueId:	0x4003fa
 PROJECT_DIR = /develop/CVS/efltk/
 
 IDE_WORKING_DIR = /develop/CVS/efltk/
@@ -118,6 +118,7 @@ lib/libefltk.so  :: 	lib/Fl.o\
 	lib/Fl_Color_Chooser.o\
 	lib/Fl_Combo_Box.o\
 	lib/Fl_Config.o\
+	lib/Fl_Data_Dialog.o\
 	lib/Fl_Data_Fields.o\
 	lib/Fl_Data_Source.o\
 	lib/Fl_Database.o\
@@ -125,6 +126,7 @@ lib/libefltk.so  :: 	lib/Fl.o\
 	lib/Fl_Date_Time_Input.o\
 	lib/Fl_Dial.o\
 	lib/Fl_Dialog.o\
+	lib/Fl_Dialog_DS.o\
 	lib/Fl_Directory_DS.o\
 	lib/Fl_Double_Window.o\
 	lib/Fl_Exception.o\
@@ -173,6 +175,7 @@ lib/libefltk.so  :: 	lib/Fl.o\
 	lib/Fl_ProgressBar.o\
 	lib/Fl_Query.o\
 	lib/Fl_Radio_Button.o\
+	lib/Fl_Record_DS.o\
 	lib/Fl_Renderer.o\
 	lib/Fl_Repeat_Button.o\
 	lib/Fl_Return_Button.o\
@@ -271,8 +274,7 @@ lib/libefltk.so  :: 	lib/Fl.o\
 	lib/fl_symbols.o\
 	lib/scandir.o\
 	lib/vsnprintf.o\
-	lib/Fl_Split.o\
-	lib/Fl_Dialog_DS.o
+	lib/Fl_Split.o
 	rm -f $@
 	$(LD) -shared -o $@ $^ $(LDOPTIONS)
 
@@ -1568,6 +1570,14 @@ test/Fl_Dialog.o : src/widgets/Fl_Dialog.cpp
 
 test/Fl_Dialog_DS.o : src/widgets/Fl_Dialog_DS.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+lib/Fl_Data_Dialog.o : src/db/Fl_Data_Dialog.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+lib/Fl_Record_DS.o : src/db/Fl_Record_DS.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
 
 
 # DO NOT DELETE
@@ -9498,3 +9508,69 @@ test/Fl_Dialog_DS.o :	efltk/Fl_Exception.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl_Dialog_DS.h
+lib/Fl_Data_Dialog.o :	efltk/db/Fl_Data_Dialog.h\
+	efltk/db/Fl_Record_DS.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Dialog_DS.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/db/Fl_Database.h\
+	efltk/db/Fl_Query.h\
+	efltk/db/Fl_Params.h\
+	efltk/Fl_Thread.h\
+	efltk/Fl_Thread_Linux.h\
+	efltk/Fl_Thread_w32.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Map.h\
+	efltk/Fl_Dialog.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Scroll.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Tabs.h
+lib/Fl_Record_DS.o :	efltk/db/Fl_Record_DS.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Dialog_DS.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/db/Fl_Database.h\
+	efltk/db/Fl_Query.h\
+	efltk/db/Fl_Params.h\
+	efltk/Fl_Thread.h\
+	efltk/Fl_Thread_Linux.h\
+	efltk/Fl_Thread_w32.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Map.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h
