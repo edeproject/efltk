@@ -9,6 +9,7 @@ CPPFILES = \
 	Fl_Data_Fields.cpp \
 	Fl_Data_Source.cpp \
 	Fl_Date_Time.cpp \
+	Fl_Exception.cpp \
 	Fl_Gif.cpp \
 	Fl_Group.cpp \
 	Fl_Image.cpp \
