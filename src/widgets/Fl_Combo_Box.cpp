@@ -145,7 +145,7 @@ public:
     Fl_ListView *listview() { return m_listView; }
 
     void clicked() { set_value(); }
-    void layout();
+    //void layout();
     void draw();
     int  handle(int);
 
@@ -170,20 +170,22 @@ Fl_Popup_ListView::Fl_Popup_ListView(Fl_Widget *editControl)
     m_listView = new Fl_ListView(0,0,w(),h());
     m_listView->callback(Fl_Popup_ListView::cb_clicked);
     m_listView->box(FL_NO_BOX);
-
+    m_listView->layout_align(FL_ALIGN_CLIENT);
+    m_listView->layout_spacing(0);
+    box(FL_THIN_UP_BOX);
     end();
 }
 
 void Fl_Popup_ListView::draw() {
     Fl_Popup_Window::draw();
 }
-
+/*
 void Fl_Popup_ListView::layout() {
     m_listView->resize(box()->dx(),box()->dy(),w()-box()->dw(),h()-box()->dh());
     m_listView->layout();
     Fl_Popup_Window::layout();
 }
-
+*/
 bool Fl_Popup_ListView::popup() {
     if (m_editControl) {
         int width = m_editControl->w();
@@ -342,16 +344,16 @@ Fl_Combo_Box::Fl_Combo_Box(int x,int y,int w,int h,const char *label)
                 b->callback(cb_browse);
                 break;
             case 1: 
-                b->image(refresh_pixmap); 
+                b->image(add_pixmap); 
                 break;
             case 2: 
-                b->image(add_pixmap); 
+                b->image(edit_pixmap); 
                 break;
             case 3: 
                 b->image(delete_pixmap); 
                 break;
             case 4: 
-                b->image(edit_pixmap); 
+                b->image(refresh_pixmap); 
                 break;
         }
         if (i == 0) 
