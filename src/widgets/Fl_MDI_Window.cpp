@@ -498,6 +498,7 @@ void Fl_MDI_Window::layout()
 
         prv->resize(px,py,pw,ph);
         _titlebar.resize(tx,ty,tw,th);
+        prv->layout_damage(layout_damage());
         prv->layout();
         _titlebar.layout();
 

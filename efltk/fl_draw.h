@@ -123,6 +123,7 @@ inline float fl_size() {return fl_size_;}
 FL_API const char *fl_fontname(Fl_Font, int * = 0);
 
 // measure things in the current font:
+FL_API float fl_width(uchar);
 FL_API float fl_width(const char*);
 FL_API float fl_width(const char*, int n);
 FL_API float fl_height();

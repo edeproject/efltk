@@ -221,12 +221,6 @@ bool Fl_Config::read_file(bool create)
     sections.clear();
 
     /////
-    FILE *fp = fopen(filename_, "r");
-    if(!fp) {
-        //fprintf(stderr, "fp == 0: %s\n", filename_);
-        _error = CONF_ERR_FILE;
-        return false;
-    }
 
     struct stat fileStat;
     stat(filename_, &fileStat);
@@ -234,6 +228,13 @@ bool Fl_Config::read_file(bool create)
     if(size == 0) {
         _error = 0;
         return true;
+    }
+
+    FILE *fp = fopen(filename_, "r");
+    if(!fp) {
+        //fprintf(stderr, "fp == 0: %s\n", filename_);
+        _error = CONF_ERR_FILE;
+        return false;
     }
 
     char *buffer, *lines, *tmp;

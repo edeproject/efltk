@@ -105,7 +105,7 @@ static void cb_menu(Fl_Widget *w, void *d)
 Fl_Text_Display::Fl_Text_Display(int X, int Y, int W, int H,  const char* l)
 	: Fl_Group(X, Y, W, H, l)
 {
-	int i;
+    int i;
 
     if(!menu_inited) {
         menu_.add("Cut", 0, cb_menu, (void *)CUT);
@@ -160,25 +160,23 @@ Fl_Text_Display::Fl_Text_Display(int X, int Y, int W, int H,  const char* l)
     mLineStarts = new int[mNVisibleLines];
     mLineStarts[0] = 0;
 
-	for (i=1; i<mNVisibleLines; i++) 
-		mLineStarts[i] = -1; 
-	mSuppressResync = 0; 
-	mNLinesDeleted = 0; 
-	mModifyingTabDistance = 0; 
-	
+    for (i=1; i<mNVisibleLines; i++)
+        mLineStarts[i] = -1;
+    mSuppressResync = 0;
+    mNLinesDeleted = 0;
+    mModifyingTabDistance = 0;
+
     mUnfinishedStyle = 0;
     mUnfinishedHighlightCB = 0;
     mHighlightCBArg = 0;
-	
-	mLineNumLeft = mLineNumWidth = 0; 
-	mContinuousWrap = 0; 
-	mWrapMargin = 0; 
-	mSuppressResync = mNLinesDeleted = mModifyingTabDistance = 0; 
-	mMaxFontBound = mMinFontBound = 0;
 
-	mOldWidth = 0;
-	
-	set_font();
+    mLineNumLeft = mLineNumWidth = 0;
+    mContinuousWrap = 0;
+    mWrapMargin = 0;
+    mSuppressResync = mNLinesDeleted = mModifyingTabDistance = 0;
+    mMaxFontBound = mMinFontBound = 0;
+
+    mOldWidth = 0;
 }
 
 /*
@@ -201,7 +199,8 @@ Fl_Text_Display::~Fl_Text_Display()
 /*
 ** Attach a text buffer to display, replacing the current buffer (if any)
 */
-void Fl_Text_Display::buffer( Fl_Text_Buffer *buf ) {
+void Fl_Text_Display::buffer( Fl_Text_Buffer *buf )
+{
   /* If the text display is already displaying a buffer, clear it off
      of the display and remove our callback from it */
   if ( mBuffer != 0 ) {
@@ -251,76 +250,74 @@ void Fl_Text_Display::highlight_data(Fl_Text_Buffer *styleBuffer,
   primary font, adjust font-related parameters, and then redisplay */ 
   set_font();
 
-  relayout();
+  relayout(FL_LAYOUT_DAMAGE | FL_LAYOUT_XYWH);
   redraw();
 }
 
 /* 
 ** Change the (non highlight) font 
 */ 
-void Fl_Text_Display::set_font() 
-{ 
-	int fontWidth, i;
+void Fl_Text_Display::set_font()
+{
+    int fontWidth, i;
 
-	/* If font size changes, cursor will be redrawn in a new position */ 
-	//blankCursorProtrusions(textD); 
-    
-	/* If there is a (syntax highlighting) style table in use, find the new 
-	maximum font height for this text display */ 
-	fl_font(text_font(), text_size());
-	mMaxsize = int(fl_height()+leading());
-	for (i = 0; i < mNStyles; i++) {
-		fl_font(mStyleTable[i].font, mStyleTable[i].size);
-		mMaxsize = max(mMaxsize, int(fl_height()+leading()));
-	}
+    /* If font size changes, cursor will be redrawn in a new position */
+    //blankCursorProtrusions(textD);
 
-	/* If all of the current fonts are fixed and match in width, compute */ 	
-	fl_font(text_font(), text_size());	
-#ifdef _WIN32	
-	TEXTMETRIC *fontStruct = fl_textmetric(), *styleFont; 
-	mMaxFontBound = fontStruct->tmMaxCharWidth;
-	mMinFontBound = fontStruct->tmAveCharWidth;
-	fontWidth = fontStruct->tmAveCharWidth;
-	if((fontStruct->tmPitchAndFamily&TMPF_FIXED_PITCH)) {
-		fontWidth = -1;
-	} else {
-		for (i=0; i<mNStyles; i++) 
-		{
-			int size = mStyleTable[i].size;
-			if(text_size()!=size) { fontWidth = -1; break; }
-			fl_font(mStyleTable[i].font, mStyleTable[i].size);
-			styleFont = fl_textmetric();
-			if(styleFont != NULL && (styleFont->tmPitchAndFamily&TMPF_FIXED_PITCH) ) {
-				fontWidth = -1; 
-				break;
-			}
-		} 	
-	}
+    /* If there is a (syntax highlighting) style table in use, find the new
+     maximum font height for this text display */
+    fl_font(text_font(), text_size());
+    mMaxsize = int(fl_height()+leading());
+    for (i = 0; i < mNStyles; i++) {
+        fl_font(mStyleTable[i].font, mStyleTable[i].size);
+        mMaxsize = max(mMaxsize, int(fl_height()+leading()));
+    }
+
+    /* If all of the current fonts are fixed and match in width, compute */
+    fl_font(text_font(), text_size());
+#ifdef _WIN32
+    TEXTMETRIC *fontStruct = fl_textmetric(), *styleFont;
+    mMaxFontBound = fontStruct->tmMaxCharWidth;
+    mMinFontBound = fontStruct->tmAveCharWidth;
+    fontWidth = fontStruct->tmAveCharWidth;
+    if((fontStruct->tmPitchAndFamily&TMPF_FIXED_PITCH)) {
+        fontWidth = -1;
+    } else {
+        for (i=0; i<mNStyles; i++)
+        {
+            int size = mStyleTable[i].size;
+            if(text_size()!=size) { fontWidth = -1; break; }
+            fl_font(mStyleTable[i].font, mStyleTable[i].size);
+            styleFont = fl_textmetric();
+            if(styleFont != NULL && (styleFont->tmPitchAndFamily&TMPF_FIXED_PITCH) ) {
+                fontWidth = -1;
+                break;
+            }
+        }
+    }
 #else
-	XFontStruct *fontStruct = fl_xfont(), *styleFont;
-	mMaxFontBound = fontStruct->max_bounds.width;
-	mMinFontBound = fontStruct->min_bounds.width;
-	fontWidth = fontStruct->max_bounds.width; 
-	if (fontWidth != fontStruct->min_bounds.width) {
-		fontWidth = -1; 
-	} else {
-		for (i=0; i<mNStyles; i++)
-		{ 
-			unsigned size = mStyleTable[i].size;
-			if(text_size()!=size) { fontWidth = -1; break; }
-			fl_font(mStyleTable[i].font, mStyleTable[i].size);
-			styleFont = fl_xfont();
-			if(styleFont != NULL && (styleFont->max_bounds.width != fontWidth || styleFont->max_bounds.width != styleFont->min_bounds.width)) {
-				fontWidth = -1; 
-				break;
-			}
-		} 
-	} 
+    XFontStruct *fontStruct = fl_xfont(), *styleFont;
+    mMaxFontBound = fontStruct->max_bounds.width;
+    mMinFontBound = fontStruct->min_bounds.width;
+    fontWidth = fontStruct->max_bounds.width;
+    if (fontWidth != fontStruct->min_bounds.width) {
+        fontWidth = -1;
+    } else {
+        for (i=0; i<mNStyles; i++)
+        {
+            unsigned size = mStyleTable[i].size;
+            if(text_size()!=size) { fontWidth = -1; break; }
+            fl_font(mStyleTable[i].font, mStyleTable[i].size);
+            styleFont = fl_xfont();
+            if(styleFont != NULL && (styleFont->max_bounds.width != fontWidth || styleFont->max_bounds.width != styleFont->min_bounds.width)) {
+                fontWidth = -1;
+                break;
+            }
+        }
+    }
 #endif
-	mFixedFontWidth = fontWidth;
-
-        //printf("mFixedFontWidth = %d\n", mFixedFontWidth);
-} 
+    mFixedFontWidth = fontWidth;
+}
 
 #if 0
 int TextDMinFontWidth(textDisp *textD, Boolean considerStyles) { 
@@ -355,10 +352,10 @@ int TextDMaxFontWidth(textDisp *textD, Boolean considerStyles) {
 #endif
 
 int Fl_Text_Display::longest_vline() {
-  int longest = 0;
-  for (int i = 0; i < mNVisibleLines; i++)
-    longest = max(longest, measure_vline(i));
-  return longest;
+    int longest = 0;
+    for (int i = 0; i < mNVisibleLines; i++)
+        longest = max(longest, measure_vline(i));
+    return longest;
 }
 
 /*
@@ -366,189 +363,201 @@ int Fl_Text_Display::longest_vline() {
 */
 void Fl_Text_Display::layout() 
 {
-  if (!buffer() || !visible_r()) {
-    return;
-  }
+    if (!buffer() || !visible_r() || !layout_damage()) {
+        return;
+    }
 
-  const int oldWidth = mOldWidth;
+    const int oldWidth = mOldWidth;
 
-  int X = 0, Y = 0, W = w(), H = h();
-  box()->inset(X, Y, W, H);
-  text_area.x = X+LEFT_MARGIN + mLineNumLeft + mLineNumWidth;
-  text_area.y = Y+BOTTOM_MARGIN;
-  text_area.w = W-LEFT_MARGIN-RIGHT_MARGIN - mLineNumWidth - mLineNumLeft;
-  text_area.h = H-TOP_MARGIN-BOTTOM_MARGIN;
-  //int i;
+    int X = 0, Y = 0, W = w(), H = h();
+    box()->inset(X, Y, W, H);
+    text_area.x = X+LEFT_MARGIN + mLineNumLeft + mLineNumWidth;
+    text_area.y = Y+BOTTOM_MARGIN;
+    text_area.w = W-LEFT_MARGIN-RIGHT_MARGIN - mLineNumWidth - mLineNumLeft;
+    text_area.h = H-TOP_MARGIN-BOTTOM_MARGIN;
 
-  /* Find the new maximum font height for this text display */
 #if 0
-  // This is done in set_font()
-  fl_font(text_font(), text_size());
-  mMaxsize = int(fl_height()+leading());
-  for (i = 0; i < mNStyles; i++) {
-    fl_font(mStyleTable[i].font, mStyleTable[i].size);
-    mMaxsize = max(mMaxsize, int(fl_height()+leading()));
-  }
+    /* Find the new maximum font height for this text display */
+    int i;
+    // This is done in set_font()
+    fl_font(text_font(), text_size());
+    mMaxsize = int(fl_height()+leading());
+    for (i = 0; i < mNStyles; i++) {
+        fl_font(mStyleTable[i].font, mStyleTable[i].size);
+        mMaxsize = max(mMaxsize, int(fl_height()+leading()));
+    }
 #endif
 
-  // did we have scrollbars initially?
-  bool hscrollbarvisible = mHScrollBar->visible();
-  bool vscrollbarvisible = mVScrollBar->visible();
+    // did we have scrollbars initially?
+    bool hscrollbarvisible = mHScrollBar->visible();
+    bool vscrollbarvisible = mVScrollBar->visible();
 
-  // try without scrollbars first
-  mVScrollBar->clear_visible();
-  mHScrollBar->clear_visible();
+    // try without scrollbars first
+    mVScrollBar->clear_visible();
+    mHScrollBar->clear_visible();
 
-//  printf("Layout\n");
-  for (int again = 0; again<2; again++) 
-  {
-      //printf("Again %d\n", again);
+    //printf("Layout %x\n", layout_damage());
+    for (int again = 0; again<2; again++)
+    {
+        //printf("Again %d\n", again);
 
-      /* In continuous wrap mode, a change in width affects the total number of
-       lines in the buffer, and can leave the top line number incorrect, and
-       the top character no longer pointing at a valid line start */
-      if(mContinuousWrap && !mWrapMargin && W!=oldWidth) {
-          int oldFirstChar = mFirstChar;
-          mNBufferLines = count_lines(0, buffer()->length(), true);
-          mFirstChar = line_start(mFirstChar);
-          mTopLineNum = count_lines(0, mFirstChar, true)+1;
-          absolute_top_line_number(oldFirstChar);
-      } else
-          again++;
+        /* In continuous wrap mode, a change in width affects the total number of
+         lines in the buffer, and can leave the top line number incorrect, and
+         the top character no longer pointing at a valid line start */
+        if(mContinuousWrap && !mWrapMargin && W!=oldWidth) {
+            int oldFirstChar = mFirstChar;
+            mNBufferLines = count_lines(0, buffer()->length(), true);
+            mFirstChar = line_start(mFirstChar);
+            mTopLineNum = count_lines(0, mFirstChar, true)+1;
+            absolute_top_line_number(oldFirstChar);
+        } else
+            again++;
 
-      // figure the scrollbars
+        // figure the scrollbars
 
-      /* Decide if the vertical scroll bar needs to be visible */
-      if (scrollbar_align() & (FL_ALIGN_LEFT|FL_ALIGN_RIGHT) && mNBufferLines >= mNVisibleLines - 1)
-      {
-          mVScrollBar->set_visible();
-          if (scrollbar_align() & FL_ALIGN_LEFT) {
-              text_area.x = X+scrollbar_width()+LEFT_MARGIN + mLineNumLeft + mLineNumWidth;
-              text_area.w = W-scrollbar_width()-LEFT_MARGIN-RIGHT_MARGIN - mLineNumWidth - mLineNumLeft;
-              mVScrollBar->resize(X, text_area.y-TOP_MARGIN, scrollbar_width(), text_area.h+TOP_MARGIN+BOTTOM_MARGIN);
+        /* Decide if the vertical scroll bar needs to be visible */
+        if (scrollbar_align() & (FL_ALIGN_LEFT|FL_ALIGN_RIGHT) && mNBufferLines >= mNVisibleLines - 1)
+        {
+            mVScrollBar->set_visible();
+            if (scrollbar_align() & FL_ALIGN_LEFT) {
+                text_area.x = X+scrollbar_width()+LEFT_MARGIN + mLineNumLeft + mLineNumWidth;
+                text_area.w = W-scrollbar_width()-LEFT_MARGIN-RIGHT_MARGIN - mLineNumWidth - mLineNumLeft;
+                mVScrollBar->resize(X, text_area.y-TOP_MARGIN, scrollbar_width(), text_area.h+TOP_MARGIN+BOTTOM_MARGIN);
 
-          } else {
+            } else {
 
-              text_area.x = X+LEFT_MARGIN + mLineNumLeft + mLineNumWidth;
-              text_area.w = W-scrollbar_width()-LEFT_MARGIN-RIGHT_MARGIN - mLineNumWidth - mLineNumLeft;
-              mVScrollBar->resize(X+W-scrollbar_width(), text_area.y-TOP_MARGIN,
-                                  scrollbar_width(), text_area.h+TOP_MARGIN+BOTTOM_MARGIN);
-          }
-      }
+                text_area.x = X+LEFT_MARGIN + mLineNumLeft + mLineNumWidth;
+                text_area.w = W-scrollbar_width()-LEFT_MARGIN-RIGHT_MARGIN - mLineNumWidth - mLineNumLeft;
+                mVScrollBar->resize(X+W-scrollbar_width(), text_area.y-TOP_MARGIN,
+                                    scrollbar_width(), text_area.h+TOP_MARGIN+BOTTOM_MARGIN);
+            }
+        }
 
-      if(!mContinuousWrap || (mContinuousWrap && mWrapMargin>0))
-      if(hscrollbarvisible && scrollbar_align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM) && (mVScrollBar->visible() || longest_vline() > text_area.w)) {
-          // Pre-check, if we need hscrollbar and it's already visible.
-          // i.e. We don't need to re-calc lines.
-          again++;
-      }
+        if(!mContinuousWrap || (mContinuousWrap && mWrapMargin>0))
+            if(hscrollbarvisible && scrollbar_align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM) && (mVScrollBar->visible() || longest_vline() > text_area.w)) {
+                // Pre-check, if we need hscrollbar and it's already visible.
+                // i.e. We don't need to re-calc lines.
+                if (scrollbar_align() & FL_ALIGN_TOP)
+                    text_area.h = H - scrollbar_width()-TOP_MARGIN-BOTTOM_MARGIN;
+                else
+                    text_area.h = H - TOP_MARGIN-BOTTOM_MARGIN-scrollbar_width();
+                again++;
+            }
 
-      int old_vlines = mNVisibleLines;
-      int new_vlines = (text_area.h + mMaxsize - 1) / mMaxsize;
+        if( (layout_damage()&FL_LAYOUT_WH) || mContinuousWrap) {
+            int old_vlines = mNVisibleLines;
+            int new_vlines = (text_area.h + mMaxsize - 1) / mMaxsize;
 
-      /* reallocate and update the line starts array, which may have changed
-       size and / or contents.  */
-      if(old_vlines != new_vlines)
-      {
-          delete[] mLineStarts;
-          mLineStarts = new int [new_vlines];
-          mNVisibleLines = new_vlines;
-          calc_line_starts(0, mNVisibleLines);
-          calc_last_char();
-      } else if(mContinuousWrap && !mWrapMargin) {
-          // need to do this...
-          calc_line_starts(0, mNVisibleLines);
-          calc_last_char();
-      }
+            /* reallocate and update the line starts array, which may have changed
+             size and / or contents.  */
+            if(old_vlines != new_vlines)
+            {
+                delete[] mLineStarts;
+                mLineStarts = new int [new_vlines];
+                mNVisibleLines = new_vlines;
+                calc_line_starts(0, mNVisibleLines);
+                calc_last_char();
+            } else if(mContinuousWrap && !mWrapMargin) {
+                // need to do this...
+                calc_line_starts(0, mNVisibleLines);
+                calc_last_char();
+            }
+        }
 
-      /*
-	  Decide if the horizontal scroll bar needs to be visible.  If there
-          is a vertical scrollbar, a horizontal is always created too.  This
-	  is because the alternatives are unatractive:
-	  * Dynamically creating a horizontal scrollbar based on the currently
-	  visible lines is what the original nedit does, but it always wastes
-	  space for the scrollbar even when it's not used.  Since the FLTK
-	  widget dynamically allocates the space for the scrollbar and
-	  rearranges the widget to make room for it, this would create a very
-	  visually displeasing "bounce" effect when the vertical scrollbar is
-	  dragged.  Trust me, I tried it and it looks really bad.
-	  * The other alternative would be to keep track of what the longest
-	  line in the entire buffer is and base the scrollbar on that.  I
-	  didn't do this because I didn't see any easy way to do that using
-	  the nedit code and this could involve a lengthy calculation for
-	  large buffers.  If an efficient and non-costly way of doing this
-	  can be found, this might be a way to go.
-          */
-	  /* WAS: Suggestion: Try turning the horizontal scrollbar on when
-	  you first see a line that is too wide in the window, but then
-	  don't turn it off (ie mix both of your solutions). */
+        /*
+         Decide if the horizontal scroll bar needs to be visible.  If there
+         is a vertical scrollbar, a horizontal is always created too.  This
+         is because the alternatives are unatractive:
+         * Dynamically creating a horizontal scrollbar based on the currently
+         visible lines is what the original nedit does, but it always wastes
+         space for the scrollbar even when it's not used.  Since the FLTK
+         widget dynamically allocates the space for the scrollbar and
+         rearranges the widget to make room for it, this would create a very
+         visually displeasing "bounce" effect when the vertical scrollbar is
+         dragged.  Trust me, I tried it and it looks really bad.
+         * The other alternative would be to keep track of what the longest
+         line in the entire buffer is and base the scrollbar on that.  I
+         didn't do this because I didn't see any easy way to do that using
+         the nedit code and this could involve a lengthy calculation for
+         large buffers.  If an efficient and non-costly way of doing this
+         can be found, this might be a way to go.
+         */
+        /* WAS: Suggestion: Try turning the horizontal scrollbar on when
+         you first see a line that is too wide in the window, but then
+         don't turn it off (ie mix both of your solutions). */
 
-          if(!mContinuousWrap || (mContinuousWrap && mWrapMargin>0))
-	  if(scrollbar_align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM) && (mVScrollBar->visible() || longest_vline() > text_area.w))
-          {
-              if(!mHScrollBar->visible()) {
-                  mHScrollBar->set_visible();
-                  again--; // loop again to see if we now need vert. & recalc sizes
-              }
+        if(!mContinuousWrap || (mContinuousWrap && mWrapMargin>0))
+        if(scrollbar_align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM) && (mVScrollBar->visible() || longest_vline() > text_area.w))
+        {
+            if(!mHScrollBar->visible()) {
+                mHScrollBar->set_visible();
+                again--; // loop again to see if we now need vert. & recalc sizes
+            }
 
-              if (scrollbar_align() & FL_ALIGN_TOP) {
-                  text_area.y = Y + scrollbar_width()+TOP_MARGIN;
-                  text_area.h = H - scrollbar_width()-TOP_MARGIN-BOTTOM_MARGIN;
-                  mHScrollBar->resize(text_area.x-LEFT_MARGIN, Y,
-                                      text_area.w+LEFT_MARGIN+RIGHT_MARGIN, scrollbar_width());
+            if (scrollbar_align() & FL_ALIGN_TOP) {
+                text_area.y = Y + scrollbar_width()+TOP_MARGIN;
+                text_area.h = H - scrollbar_width()-TOP_MARGIN-BOTTOM_MARGIN;
+                mHScrollBar->resize(text_area.x-LEFT_MARGIN, Y,
+                                    text_area.w+LEFT_MARGIN+RIGHT_MARGIN, scrollbar_width());
 
-                  mVScrollBar->resize(X+W-scrollbar_width(), text_area.y-TOP_MARGIN,
-                                      scrollbar_width(), text_area.h+TOP_MARGIN+BOTTOM_MARGIN);
+                mVScrollBar->resize(X+W-scrollbar_width(), text_area.y-TOP_MARGIN,
+                                    scrollbar_width(), text_area.h+TOP_MARGIN+BOTTOM_MARGIN);
 
-              } else {
+            } else {
 
-                  text_area.y = Y+TOP_MARGIN;
-                  text_area.h = H - TOP_MARGIN-BOTTOM_MARGIN-scrollbar_width();
-                  mHScrollBar->resize(text_area.x-LEFT_MARGIN, Y+H-scrollbar_width(),
-                                      text_area.w+LEFT_MARGIN+RIGHT_MARGIN, scrollbar_width());
+                text_area.y = Y+TOP_MARGIN;
+                text_area.h = H - TOP_MARGIN-BOTTOM_MARGIN-scrollbar_width();
+                mHScrollBar->resize(text_area.x-LEFT_MARGIN, Y+H-scrollbar_width(),
+                                    text_area.w+LEFT_MARGIN+RIGHT_MARGIN, scrollbar_width());
 
-                  mVScrollBar->resize(X+W-scrollbar_width(), text_area.y-TOP_MARGIN,
-                                      scrollbar_width(), text_area.h+TOP_MARGIN+BOTTOM_MARGIN);
-              }
-          }
-      mOldWidth = W;
-  }
+                mVScrollBar->resize(X+W-scrollbar_width(), text_area.y-TOP_MARGIN,
+                                    scrollbar_width(), text_area.h+TOP_MARGIN+BOTTOM_MARGIN);
+            }
+        }
 
-  // user request to change viewport
-  if (mTopLineNumHint != mTopLineNum || mHorizOffsetHint != mHorizOffset)
-    scroll_(mTopLineNumHint, mHorizOffsetHint);
+        mOldWidth = W;
+    }
 
-  // everything will fit in the viewport
-  if (mNBufferLines < mNVisibleLines)
-    scroll_(1, mHorizOffset);
-  /* if empty lines become visible, there may be an opportunity to
+    // user request to change viewport
+    if (mTopLineNumHint != mTopLineNum || mHorizOffsetHint != mHorizOffset)
+    {
+        scroll_(mTopLineNumHint, mHorizOffsetHint);
+    }
+
+    // everything will fit in the viewport
+    if (mNBufferLines < mNVisibleLines) {
+        scroll_(1, mHorizOffset);
+    }
+    /* if empty lines become visible, there may be an opportunity to
      display more text by scrolling down */
-  else while (mLineStarts[mNVisibleLines-2] == -1)
-    scroll_(mTopLineNum-1, mHorizOffset);
+    else while (mLineStarts[mNVisibleLines-2] == -1) {
+        scroll_(mTopLineNum-1, mHorizOffset);
+    }
 
-  // user request to display insert position
-  if (display_insert_position_hint)
-    display_insert();
+    // user request to display insert position
+    if (display_insert_position_hint)
+        display_insert();
 
-  // in case horizontal offset is now greater than longest line
-  int maxhoffset = max(0, longest_vline()-text_area.w);
-  if (mHorizOffset > maxhoffset)
-    scroll_(mTopLineNumHint, maxhoffset);
+    // in case horizontal offset is now greater than longest line
+    int maxhoffset = max(0, longest_vline()-text_area.w);
+    if (mHorizOffset > maxhoffset) {
+        scroll_(mTopLineNumHint, maxhoffset);
+    }
 
-  mTopLineNumHint = mTopLineNum;
-  mHorizOffsetHint = mHorizOffset;
-  display_insert_position_hint = 0;
+    mTopLineNumHint = mTopLineNum;
+    mHorizOffsetHint = mHorizOffset;
+    display_insert_position_hint = 0;
 
-  if(/*mContinuousWrap || */
-      hscrollbarvisible != mHScrollBar->visible() || 
-      vscrollbarvisible != mVScrollBar->visible())
-    redraw();
+    if(/*mContinuousWrap || */
+       hscrollbarvisible != mHScrollBar->visible() ||
+       vscrollbarvisible != mVScrollBar->visible())
+        redraw();
 
-  update_v_scrollbar();
-  update_h_scrollbar();
+    update_v_scrollbar();
+    update_h_scrollbar();
 
-  // clear the layout flag
-  Fl_Widget::layout();
+    // clear the layout flag
+    Fl_Widget::layout();
 }
 
 /*
@@ -561,47 +570,47 @@ void Fl_Text_Display::draw_text( int left, int top, int width, int height )
 
     int fontHeight, firstLine, lastLine, line;
 
-  /* find the line number range of the display */
-  fontHeight = mMaxsize;
-  firstLine = ( top - text_area.y - fontHeight + 1 ) / fontHeight;
-  lastLine = ( top + height - text_area.y ) / fontHeight + 1;
+    /* find the line number range of the display */
+    fontHeight = mMaxsize;
+    firstLine = ( top - text_area.y - fontHeight + 1 ) / fontHeight;
+    lastLine = ( top + height - text_area.y ) / fontHeight + 1;
 
-  fl_push_clip( left, top, width, height );
+    fl_push_clip( left, top, width, height );
 
-  /* draw the lines */
-  for ( line = firstLine; line <= lastLine; line++ )
-    draw_vline( line, left, left + width, 0, INT_MAX );
+    /* draw the lines */
+    for ( line = firstLine; line <= lastLine; line++ )
+        draw_vline( line, left, left + width, 0, INT_MAX );
 
-  /* draw the line numbers if exposed area includes them */ 
-  //if (mLineNumWidth != 0 && left <= mLineNumLeft + mLineNumWidth)
-  //      draw_line_numbers(false);
+    /* draw the line numbers if exposed area includes them */
+    //if (mLineNumWidth != 0 && left <= mLineNumLeft + mLineNumWidth)
+    //      draw_line_numbers(false);
 
-  fl_pop_clip();
+    fl_pop_clip();
 }
 
-void Fl_Text_Display::redisplay_range(int start, int end) 
+void Fl_Text_Display::redisplay_range(int start, int end)
 {
-  if (damage_range1_start == -1 && damage_range1_end == -1) {
-    damage_range1_start = start;
-    damage_range1_end = end;
-  } else if ((start >= damage_range1_start && start <= damage_range1_end) ||
-             (end >= damage_range1_start && end <= damage_range1_end)) {
-    damage_range1_start = min(damage_range1_start, start);
-    damage_range1_end = max(damage_range1_end, end);
-  } else if (damage_range2_start == -1 && damage_range2_end == -1) {
-    damage_range2_start = start;
-    damage_range2_end = end;
-  } else {
-    damage_range2_start = min(damage_range2_start, start);
-    damage_range2_end = max(damage_range2_end, end);
-  }
-  
-  redraw(FL_DAMAGE_SCROLL);
-  //redraw();
+    if (damage_range1_start == -1 && damage_range1_end == -1) {
+        damage_range1_start = start;
+        damage_range1_end = end;
+    } else if ((start >= damage_range1_start && start <= damage_range1_end) ||
+               (end >= damage_range1_start && end <= damage_range1_end)) {
+        damage_range1_start = min(damage_range1_start, start);
+        damage_range1_end = max(damage_range1_end, end);
+    } else if (damage_range2_start == -1 && damage_range2_end == -1) {
+        damage_range2_start = start;
+        damage_range2_end = end;
+    } else {
+        damage_range2_start = min(damage_range2_start, start);
+        damage_range2_end = max(damage_range2_end, end);
+    }
+
+    redraw(FL_DAMAGE_SCROLL);
+    //redraw();
 }
 
 /*
-** Refresh all of the text between buffer positions "start" and "end"
+ ** Refresh all of the text between buffer positions "start" and "end"
 ** not including the character at the position "end".
 ** If end points beyond the end of the buffer, refresh the whole display
 ** after pos, including blank lines which are not technically part of
@@ -609,60 +618,59 @@ void Fl_Text_Display::redisplay_range(int start, int end)
 */
 void Fl_Text_Display::draw_range(int start, int end) 
 {
-  int i, startLine, lastLine, startIndex, endIndex;
+    int i, startLine, lastLine, startIndex, endIndex;
 
-  /* If the range is outside of the displayed text, just return */
-  if ( end < mFirstChar || ( start > mLastChar &&
-                             !empty_vlines() ) )
-    return;
+    /* If the range is outside of the displayed text, just return */
+    if ( end < mFirstChar || ( start > mLastChar && !empty_vlines() ) )
+        return;
 
-  /* Clean up the starting and ending values */
-  if ( start < 0 ) start = 0;
-  if ( start > mBuffer->length() ) start = mBuffer->length();
-  if ( end < 0 ) end = 0;
-  if ( end > mBuffer->length() ) end = mBuffer->length();
+    /* Clean up the starting and ending values */
+    if ( start < 0 ) start = 0;
+    if ( start > mBuffer->length() ) start = mBuffer->length();
+    if ( end < 0 ) end = 0;
+    if ( end > mBuffer->length() ) end = mBuffer->length();
 
-  /* Get the starting and ending lines */
-  if ( start < mFirstChar )
-    start = mFirstChar;
-  if ( !position_to_line( start, &startLine ) )
-    startLine = mNVisibleLines - 1;
-  if ( end >= mLastChar ) {
-    lastLine = mNVisibleLines - 1;
-  } else {
-    if ( !position_to_line( end, &lastLine ) ) {
-      /* shouldn't happen */
-      lastLine = mNVisibleLines - 1;
+    /* Get the starting and ending lines */
+    if ( start < mFirstChar )
+        start = mFirstChar;
+    if ( !position_to_line( start, &startLine ) )
+        startLine = mNVisibleLines - 1;
+    if ( end >= mLastChar ) {
+        lastLine = mNVisibleLines - 1;
+    } else {
+        if ( !position_to_line( end, &lastLine ) ) {
+            /* shouldn't happen */
+            lastLine = mNVisibleLines - 1;
+        }
     }
-  }
 
-  /* Get the starting and ending positions within the lines */
-  startIndex = mLineStarts[ startLine ] == -1 ? 0 :
-               start - mLineStarts[ startLine ];
-  if ( end >= mLastChar )
-    endIndex = INT_MAX;
-  else if ( mLineStarts[ lastLine ] == -1 )
-    endIndex = 0;
-  else
-    endIndex = end - mLineStarts[ lastLine ];
+    /* Get the starting and ending positions within the lines */
+    startIndex = mLineStarts[ startLine ] == -1 ? 0 :
+        start - mLineStarts[ startLine ];
+    if ( end >= mLastChar )
+        endIndex = INT_MAX;
+    else if ( mLineStarts[ lastLine ] == -1 )
+        endIndex = 0;
+    else
+        endIndex = end - mLineStarts[ lastLine ];
 
-  /* If the starting and ending lines are the same, redisplay the single
+    /* If the starting and ending lines are the same, redisplay the single
      line between "start" and "end" */
-  if ( startLine == lastLine ) {
-    draw_vline( startLine, 0, INT_MAX, startIndex, endIndex );
-    return;
-  }
+    if ( startLine == lastLine ) {
+        draw_vline( startLine, 0, INT_MAX, startIndex, endIndex );
+        return;
+    }
 
-  /* Redisplay the first line from "start" */
-  draw_vline( startLine, 0, INT_MAX, startIndex, INT_MAX );
+    /* Redisplay the first line from "start" */
+    draw_vline( startLine, 0, INT_MAX, startIndex, INT_MAX );
 
-  /* Redisplay the lines in between at their full width */
-  for ( i = startLine + 1; i < lastLine; i++ )
-    draw_vline( i, 0, INT_MAX, 0, INT_MAX );
+    /* Redisplay the lines in between at their full width */
+    for ( i = startLine + 1; i < lastLine; i++ )
+        draw_vline( i, 0, INT_MAX, 0, INT_MAX );
 
-  /* Redisplay the last line to "end" */
-  draw_vline( lastLine, 0, INT_MAX, 0, endIndex );
-}	
+    /* Redisplay the last line to "end" */
+    draw_vline( lastLine, 0, INT_MAX, 0, endIndex );
+}
 
 /*
 ** Set the position of the text insertion cursor for text display
@@ -698,28 +706,28 @@ void Fl_Text_Display::cursor_style(int style) {
 }
 
 void Fl_Text_Display::wrap_mode(int wrap, int wrapMargin) { 
-	mWrapMargin = wrapMargin; 
-	mContinuousWrap = wrap; 
-    
-	if(buffer()) {
-		/* wrapping can change change the total number of lines, re-count */ 
-		mNBufferLines = count_lines(0, buffer()->length(), true);
-    
-		/* changing wrap margins wrap or changing from wrapped mode to non-wrapped 
-		can leave the character at the top no longer at a line start, and/or 
-		change the line number */ 
-		mFirstChar = line_start(mFirstChar); 
-		mTopLineNum = count_lines(0, mFirstChar, true) + 1; 
-		reset_absolute_top_line_number(); 
-    
-		/* update the line starts array */ 
-		calc_line_starts(0, mNVisibleLines); 
-		calc_last_char(); 
-	}
-    
-	relayout();
-	redraw();
-} 
+    mWrapMargin = wrapMargin;
+    mContinuousWrap = wrap;
+
+    if(buffer()) {
+        /* wrapping can change change the total number of lines, re-count */
+        mNBufferLines = count_lines(0, buffer()->length(), true);
+
+        /* changing wrap margins wrap or changing from wrapped mode to non-wrapped
+         can leave the character at the top no longer at a line start, and/or
+         change the line number */
+        mFirstChar = line_start(mFirstChar);
+        mTopLineNum = count_lines(0, mFirstChar, true) + 1;
+        reset_absolute_top_line_number();
+
+        /* update the line starts array */
+        calc_line_starts(0, mNVisibleLines);
+        calc_last_char();
+    }
+
+    relayout(FL_LAYOUT_DAMAGE | FL_LAYOUT_XYWH);
+    redraw();
+}
 
 /*
 ** Insert "text" at the current cursor location.  This has the same
@@ -871,14 +879,14 @@ int Fl_Text_Display::get_absolute_top_line_number() {
 /* 
 ** Re-calculate absolute top line number for a change in scroll position. 
 */ 
-void Fl_Text_Display::absolute_top_line_number(int oldFirstChar) { 
-	if (maintaining_absolute_top_line_number()) { 
-		if (mFirstChar < oldFirstChar) 
-			mAbsTopLineNum -= buffer()->count_lines(mFirstChar, oldFirstChar); 
-		else 
-			mAbsTopLineNum += buffer()->count_lines(oldFirstChar, mFirstChar); 
-	} 
-} 
+void Fl_Text_Display::absolute_top_line_number(int oldFirstChar) {
+    if (maintaining_absolute_top_line_number()) {
+        if (mFirstChar < oldFirstChar)
+            mAbsTopLineNum -= buffer()->count_lines(mFirstChar, oldFirstChar);
+        else
+            mAbsTopLineNum += buffer()->count_lines(oldFirstChar, mFirstChar);
+    }
+}
 
 /* 
 ** Return true if a separate absolute top line number is being maintained 
@@ -939,8 +947,8 @@ int Fl_Text_Display::in_selection( int X, int Y ) {
   Fl_Text_Buffer *buf = mBuffer;
 
   xy_to_rowcol( X, Y, &row, &column, CHARACTER_POS );
-  if (range_touches_selection(buf->primary_selection(), mFirstChar, mLastChar)) 
-       column = wrapped_column(row, column); 
+  if (range_touches_selection(buf->primary_selection(), mFirstChar, mLastChar))
+      column = wrapped_column(row, column);
   return buf->primary_selection()->includes(pos, buf->line_start( pos ), column);
 }
 
@@ -949,23 +957,23 @@ int Fl_Text_Display::in_selection( int X, int Y ) {
 ** Correct a column number based on an unconstrained position (as returned by 
 ** TextDXYToUnconstrainedPosition) to be relative to the last actual newline 
 ** in the buffer before the row and column position given, rather than the 
-** last line start created by line wrapping.  This is an adapter 
-** for rectangular selections and code written before continuous wrap mode, 
-** which thinks that the unconstrained column is the number of characters 
-** from the last newline.  Obviously this is time consuming, because it 
+** last line start created by line wrapping.  This is an adapter
+** for rectangular selections and code written before continuous wrap mode,
+** which thinks that the unconstrained column is the number of characters
+** from the last newline.  Obviously this is time consuming, because it
 ** invloves character re-counting. 
-*/ 
-int Fl_Text_Display::wrapped_column(int row, int column) { 
-	int lineStart, dispLineStart; 
-    
-	if (!mContinuousWrap || row < 0 || row > mNVisibleLines) 
-		return column; 
-	dispLineStart = mLineStarts[row]; 
-	if (dispLineStart == -1) 
-		return column; 
-	lineStart = buffer()->line_start(dispLineStart); 
-	return column + buffer()->count_displayed_characters(lineStart, dispLineStart); 
-} 
+*/
+int Fl_Text_Display::wrapped_column(int row, int column) {
+    int lineStart, dispLineStart;
+
+    if (!mContinuousWrap || row < 0 || row > mNVisibleLines)
+        return column;
+    dispLineStart = mLineStarts[row];
+    if (dispLineStart == -1)
+        return column;
+    lineStart = buffer()->line_start(dispLineStart);
+    return column + buffer()->count_displayed_characters(lineStart, dispLineStart);
+}
 
 /* 
 ** Correct a row number from an unconstrained position (as returned by 
@@ -975,10 +983,10 @@ int Fl_Text_Display::wrapped_column(int row, int column) {
 ** needs a row, it needs it in terms of un-wrapped lines. 
 */ 
 int Fl_Text_Display::wrapped_row(int row) { 
-	if (!mContinuousWrap || row < 0 || row > mNVisibleLines) 
-		return row; 
-	return buffer()->count_lines(mFirstChar, mLineStarts[row]); 
-} 
+    if (!mContinuousWrap || row < 0 || row > mNVisibleLines)
+        return row;
+    return buffer()->count_lines(mFirstChar, mLineStarts[row]);
+}
 
 /*
 ** Scroll the display to bring insertion cursor into view.
@@ -990,48 +998,48 @@ int Fl_Text_Display::wrapped_row(int row) {
 */
 void Fl_Text_Display::display_insert() 
 {
-  int hOffset, topLine, X, Y;
-  hOffset = mHorizOffset;
-  topLine = mTopLineNum;
+    int hOffset, topLine, X, Y;
+    hOffset = mHorizOffset;
+    topLine = mTopLineNum;
 
-  if (insert_position() < mFirstChar) {
-	  
-	  topLine -= count_lines(insert_position(), mFirstChar, false);
+    if (insert_position() < mFirstChar) {
 
-  } else if (insert_position() > mLastChar && !empty_vlines()) 
-  {	
-	  topLine += count_lines(mLastChar -
-    	    	(wrap_uses_character(mLastChar) ? 0 : 1),
-    	    	insert_position(), false);
-  } else if(insert_position() == mLastChar && !empty_vlines() &&
-    	    !wrap_uses_character(mLastChar))
-  {	
-	  topLine++;
-  }
+        topLine -= count_lines(insert_position(), mFirstChar, false);
 
-  if (topLine < 1) {
-    	fprintf(stderr, "internal consistency check tl1 failed\n");
-    	topLine = 1;
-  }
+    } else if (insert_position() > mLastChar && !empty_vlines())
+    {
+        topLine += count_lines(mLastChar -
+                               (wrap_uses_character(mLastChar) ? 0 : 1),
+                               insert_position(), false);
+    } else if(insert_position() == mLastChar && !empty_vlines() &&
+              !wrap_uses_character(mLastChar))
+    {
+        topLine++;
+    }
 
-  /* Find the new setting for horizontal offset (this is a bit ungraceful).
+    if (topLine < 1) {
+        fprintf(stderr, "internal consistency check tl1 failed\n");
+        topLine = 1;
+    }
+
+    /* Find the new setting for horizontal offset (this is a bit ungraceful).
      If the line is visible, just use PositionToXY to get the position
      to scroll to, otherwise, do the vertical scrolling first, then the
      horizontal */
-  if (!position_to_xy( mCursorPos, &X, &Y )) 
-  {
-    scroll_(topLine, hOffset);
     if (!position_to_xy( mCursorPos, &X, &Y ))
-      return;   /* Give up, it's not worth it (but why does it fail?) */
-  }
-  if (X > text_area.x + text_area.w)
-    hOffset += X-(text_area.x + text_area.w);
-  else if (X < text_area.x)
-    hOffset += X-text_area.x;
+    {
+        scroll_(topLine, hOffset);
+        if (!position_to_xy( mCursorPos, &X, &Y ))
+            return;   /* Give up, it's not worth it (but why does it fail?) */
+    }
+    if (X > text_area.x + text_area.w)
+        hOffset += X-(text_area.x + text_area.w);
+    else if (X < text_area.x)
+        hOffset += X-text_area.x;
 
-  /* Do the scroll */
-  if (topLine != mTopLineNum || hOffset != mHorizOffset)
-	scroll_(topLine, hOffset);
+    /* Do the scroll */
+    if (topLine != mTopLineNum || hOffset != mHorizOffset)
+        scroll_(topLine, hOffset);
 }
 
 void Fl_Text_Display::show_insert_position() {
@@ -1129,19 +1137,19 @@ int Fl_Text_Display::move_down(int lines)
 ** by avoiding the additional step of scanning back to the last newline. 
 */ 
 int Fl_Text_Display::count_lines(int startPos, int endPos, 
-								 bool startPosIsLineStart) 
+                                 bool startPosIsLineStart)
 { 
-	int retLines, retPos, retLineStart, retLineEnd; 
-    
-	/* If we're not wrapping use simple (and more efficient) BufCountLines */ 
-	if (!mContinuousWrap) 
-		return buffer()->count_lines(startPos, endPos); 
-    
-	wrapped_line_counter(buffer(), startPos, endPos, INT_MAX, 
-		startPosIsLineStart, 0, &retPos, &retLines, &retLineStart, 
-		&retLineEnd); 
-	return retLines; 
-} 
+    int retLines, retPos, retLineStart, retLineEnd;
+
+    /* If we're not wrapping use simple (and more efficient) BufCountLines */
+    if (!mContinuousWrap)
+        return buffer()->count_lines(startPos, endPos);
+
+    wrapped_line_counter(buffer(), startPos, endPos, INT_MAX,
+                         startPosIsLineStart, 0, &retPos, &retLines, &retLineStart,
+                         &retLineEnd);
+    return retLines;
+}
 
 /* 
 ** Same as BufCountForwardNLines, but takes in to account line breaks when 
@@ -1149,24 +1157,24 @@ int Fl_Text_Display::count_lines(int startPos, int endPos,
 ** it can pass "startPosIsLineStart" as True to make the call more efficient 
 ** by avoiding the additional step of scanning back to the last newline. 
 */ 
-int Fl_Text_Display::skip_lines(int startPos, int nLines, bool startPosIsLineStart) 
-{ 
-	int retLines, retPos, retLineStart, retLineEnd; 
-    
-	/* if we're not wrapping use more efficient BufCountForwardNLines */ 
-	if (!mContinuousWrap) 
-		return buffer()->skip_lines(startPos, nLines); 
-    
-	/* wrappedLineCounter can't handle the 0 lines case */ 
-	if (nLines == 0) 
-		return startPos; 
-    
-	/* use the common line counting routine to count forward */ 
-	wrapped_line_counter(buffer(), startPos, buffer()->length(), 
-		nLines, startPosIsLineStart, 0, &retPos, &retLines, &retLineStart, 
-		&retLineEnd); 
-	return retPos; 
-} 
+int Fl_Text_Display::skip_lines(int startPos, int nLines, bool startPosIsLineStart)
+{
+    int retLines, retPos, retLineStart, retLineEnd;
+
+    /* if we're not wrapping use more efficient BufCountForwardNLines */
+    if (!mContinuousWrap)
+        return buffer()->skip_lines(startPos, nLines);
+
+    /* wrappedLineCounter can't handle the 0 lines case */
+    if (nLines == 0)
+        return startPos;
+
+    /* use the common line counting routine to count forward */
+    wrapped_line_counter(buffer(), startPos, buffer()->length(),
+                         nLines, startPosIsLineStart, 0, &retPos, &retLines, &retLineStart,
+                         &retLineEnd);
+    return retPos;
+}
 
 /* 
 ** Same as BufEndOfLine, but takes in to account line breaks when wrapping 
@@ -1414,7 +1422,7 @@ void Fl_Text_Display::buffer_modified_cb( int pos, int nInserted, int nDeleted,
               be affected (the insertion or removal of a line break always 
               results in at least two lines being redrawn). */ 
      
-	//textD->draw_line_numbers(false); 
+    //textD->draw_line_numbers(false);
   }
 
   /* If there is a style buffer, check if the modification caused additional
@@ -1432,7 +1440,8 @@ void Fl_Text_Display::buffer_modified_cb( int pos, int nInserted, int nDeleted,
 ** Find the line number of position "pos" relative to the first line of
 ** displayed text. Returns 0 if the line is not displayed.
 */
-int Fl_Text_Display::position_to_line( int pos, int *lineNum ) {
+int Fl_Text_Display::position_to_line( int pos, int *lineNum )
+{
   int i;
 
   if ( pos < mFirstChar )
@@ -1472,133 +1481,145 @@ int Fl_Text_Display::position_to_line( int pos, int *lineNum ) {
 void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
                                  int leftCharIndex, int rightCharIndex) 
 {
-  Fl_Text_Buffer * buf = mBuffer;
-  int i, X, Y, startX, charIndex, lineStartPos, lineLen, fontHeight;
-  int stdCharWidth, charWidth, startIndex, charStyle, style;
-  int charLen, outStartIndex, outIndex; //hasCursor=0, cursorX=0;
-  int dispIndexOffset;//, cursorPos = mCursorPos;
-  char expandedChar[ FL_TEXT_MAX_EXP_CHAR_LEN ], outStr[ MAX_DISP_LINE_LEN ];
-  char *outPtr;
-  const char *lineStr;
+    Fl_Text_Buffer * buf = mBuffer;
+    int i, X, Y, startX, charIndex, lineStartPos, lineLen, fontHeight;
+    int stdCharWidth, charWidth, startIndex, charStyle, style;
+    int charLen, outStartIndex, outIndex; //hasCursor=0, cursorX=0;
+    int dispIndexOffset;//, cursorPos = mCursorPos;
+    char expandedChar[ FL_TEXT_MAX_EXP_CHAR_LEN ], outStr[ MAX_DISP_LINE_LEN ];
+    char *outPtr;
+    const char *lineStr;
 
-  /* If line is not displayed, skip it */
-  if ( visLineNum < 0 || visLineNum > mNVisibleLines )
-    return;
+    /* If line is not displayed, skip it */
+    if ( visLineNum < 0 || visLineNum > mNVisibleLines )
+        return;
 
-  /* Calculate Y coordinate of the string to draw */
-  fontHeight = mMaxsize;
-  Y = text_area.y + visLineNum * fontHeight;
+    /* Calculate Y coordinate of the string to draw */
+    fontHeight = mMaxsize;
+    Y = text_area.y + visLineNum * fontHeight;
 
-  /* Get the text, length, and  buffer position of the line to display */
-  lineStartPos = mLineStarts[ visLineNum ];
-  if ( lineStartPos == -1 ) {
-    lineLen = 0;
-    lineStr = NULL;
-  } else {
-    lineLen = vline_length( visLineNum );
-    lineStr = buf->text_range( lineStartPos, lineStartPos + lineLen );
-  }
+    /* Get the text, length, and  buffer position of the line to display */
+    lineStartPos = mLineStarts[ visLineNum ];
+    if ( lineStartPos == -1 ) {
+        lineLen = 0;
+        lineStr = NULL;
+    } else {
+        lineLen = vline_length( visLineNum );
+        lineStr = buf->text_range( lineStartPos, lineStartPos + lineLen );
+    }
 
-  /* Space beyond the end of the line is still counted in units of characters
+    /* Space beyond the end of the line is still counted in units of characters
      of a standardized character width (this is done mostly because style
      changes based on character position can still occur in this region due
      to rectangular Fl_Text_Selections).  stdCharWidth must be non-zero to prevent a
      potential infinite loop if X does not advance */
-  stdCharWidth = mMaxFontBound;//TMPFONTWIDTH; //mFontStruct->max_bounds.width;
-  if ( stdCharWidth <= 0 ) {
-    fprintf( stderr, "Internal Error, bad font measurement\n" );
-    delete [] (char *)lineStr;
-    return;
-  }
+    stdCharWidth = mMaxFontBound;//TMPFONTWIDTH; //mFontStruct->max_bounds.width;
+    if ( stdCharWidth <= 0 ) {
+        fprintf( stderr, "Internal Error, bad font measurement\n" );
+        delete [] (char *)lineStr;
+        return;
+    }
 
-  /* Shrink the clipping range to the active display area */
-  leftClip = max( text_area.x, leftClip );
-  rightClip = min( rightClip, text_area.x + text_area.w );
+    /* Shrink the clipping range to the active display area */
+    leftClip = max( text_area.x, leftClip );
+    rightClip = min( rightClip, text_area.x + text_area.w );
 
-  /* Rectangular Fl_Text_Selections are based on "real" line starts (after a newline
+    /* Rectangular Fl_Text_Selections are based on "real" line starts (after a newline
      or start of buffer).  Calculate the difference between the last newline
      position and the line start we're using.  Since scanning back to find a
      newline is expensive, only do so if there's actually a rectangular
      Fl_Text_Selection which needs it */
-  if (mContinuousWrap && (range_touches_selection(buf->primary_selection(), 
-      lineStartPos, lineStartPos + lineLen) || range_touches_selection( 
-      buf->secondary_selection(), lineStartPos, lineStartPos + lineLen) || 
-      range_touches_selection(buf->highlight_selection(), lineStartPos, 
-      lineStartPos + lineLen))) { 
-	    dispIndexOffset = buf->count_displayed_characters( 
-        buf->line_start(lineStartPos), lineStartPos); 
-  } else 
-	dispIndexOffset = 0;
+    if (mContinuousWrap && (range_touches_selection(buf->primary_selection(),
+                                                    lineStartPos, lineStartPos + lineLen) || range_touches_selection(
+                                                    buf->secondary_selection(), lineStartPos, lineStartPos + lineLen) ||
+                            range_touches_selection(buf->highlight_selection(), lineStartPos,
+                                                    lineStartPos + lineLen)))
+    {
+        dispIndexOffset = buf->count_displayed_characters(buf->line_start(lineStartPos), lineStartPos);
+    } else
+        dispIndexOffset = 0;
 
-  /* Step through character positions from the beginning of the line (even if
+    /* Step through character positions from the beginning of the line (even if
      that's off the left edge of the displayed area) to find the first
      character position that's not clipped, and the X coordinate for drawing
      that character */
-  X = text_area.x - mHorizOffset;
-  outIndex = 0;
-  for ( charIndex = 0; ; charIndex++ ) {
-    charLen = charIndex >= lineLen ? 1 :
-              Fl_Text_Buffer::expand_character( lineStr[ charIndex ], outIndex,
-                                                expandedChar, buf->tab_distance(), buf->null_substitution_character() );
-    style = position_style( lineStartPos, lineLen, charIndex,
-                            outIndex + dispIndexOffset );
-    charWidth = charIndex >= lineLen ? stdCharWidth :
-                string_width( expandedChar, charLen, style );
-    if ( X + charWidth >= leftClip && charIndex >= leftCharIndex ) {
-      startIndex = charIndex;
-      outStartIndex = outIndex;
-      startX = X;
-      break;
+    X = text_area.x - mHorizOffset;
+    outIndex = 0;
+    for ( charIndex = 0; ; charIndex++ )
+    {
+        charLen = charIndex >= lineLen ? 1 :
+            Fl_Text_Buffer::expand_character( lineStr[ charIndex ], outIndex,
+                                             expandedChar, buf->tab_distance(), buf->null_substitution_character() );
+        style = position_style( lineStartPos, lineLen, charIndex,
+                               outIndex + dispIndexOffset );
+        charWidth = charIndex >= lineLen ? stdCharWidth :
+            string_width( expandedChar, charLen, style );
+        if ( X + charWidth >= leftClip && charIndex >= leftCharIndex ) {
+            startIndex = charIndex;
+            outStartIndex = outIndex;
+            startX = X;
+            break;
+        }
+        X += charWidth;
+        outIndex += charLen;
     }
+
+    /* Scan character positions from the beginning of the clipping range, and
+     draw parts whenever the style changes (also note if the cursor is on
+     this line, and where it should be drawn to take advantage of the x
+     position which we've gone to so much trouble to calculate) */
+    outPtr = outStr;
+    outIndex = outStartIndex;
+    X = startX;
+    for ( charIndex = startIndex; charIndex < rightCharIndex; charIndex++ )
+    {
+        charLen = charIndex >= lineLen ? 1 :
+            Fl_Text_Buffer::expand_character( lineStr[ charIndex ], outIndex, expandedChar,
+                                             buf->tab_distance(), buf->null_substitution_character() );
+        charStyle = position_style( lineStartPos, lineLen, charIndex,
+                                   outIndex + dispIndexOffset );
+        for ( i = 0; i < charLen; i++ )
+        {
+            if ( i != 0 && charIndex < lineLen && lineStr[ charIndex ] == '\t' )
+                charStyle = position_style( lineStartPos, lineLen,
+                                           charIndex, outIndex + dispIndexOffset );
+            if ( charStyle != style ) {
+
+                charWidth = string_width( outStr, outPtr-outStr, style );
+                X += charWidth;
+
+                draw_string( style, startX, Y, X, outStr, outPtr - outStr );
+
+                outPtr = outStr;
+                startX = X;
+                style = charStyle;
+            }
+            if ( charIndex < lineLen ) {
+                *outPtr = expandedChar[ i ];
+                //charWidth = string_width( &expandedChar[ i ], 1, charStyle );
+            } else {
+                charWidth = stdCharWidth;
+                X += charWidth;
+            }
+            outPtr++;
+            //X += charWidth;
+            outIndex++;
+        }
+        if ( outPtr - outStr + FL_TEXT_MAX_EXP_CHAR_LEN >= MAX_DISP_LINE_LEN || X >= rightClip )
+            break;
+    }
+
+    /* Draw the remaining style segment */
+    charWidth = string_width( outStr, outPtr-outStr, style );
     X += charWidth;
-    outIndex += charLen;
-  }
+    draw_string( style, startX, Y, X, outStr, outPtr - outStr );
 
-  /* Scan character positions from the beginning of the clipping range, and
-   draw parts whenever the style changes (also note if the cursor is on
-   this line, and where it should be drawn to take advantage of the x
-   position which we've gone to so much trouble to calculate) */
-  outPtr = outStr;
-  outIndex = outStartIndex;
-  X = startX;
-  for ( charIndex = startIndex; charIndex < rightCharIndex; charIndex++ ) {
-      charLen = charIndex >= lineLen ? 1 :
-          Fl_Text_Buffer::expand_character( lineStr[ charIndex ], outIndex, expandedChar,
-                                           buf->tab_distance(), buf->null_substitution_character() );
-      charStyle = position_style( lineStartPos, lineLen, charIndex,
-                                 outIndex + dispIndexOffset );
-      for ( i = 0; i < charLen; i++ ) {
-          if ( i != 0 && charIndex < lineLen && lineStr[ charIndex ] == '\t' )
-              charStyle = position_style( lineStartPos, lineLen,
-                                         charIndex, outIndex + dispIndexOffset );
-          if ( charStyle != style ) {
-              draw_string( style, startX, Y, X, outStr, outPtr - outStr );
-              outPtr = outStr;
-              startX = X;
-              style = charStyle;
-          }
-          if ( charIndex < lineLen ) {
-              *outPtr = expandedChar[ i ];
-              charWidth = string_width( &expandedChar[ i ], 1, charStyle );
-          } else
-              charWidth = stdCharWidth;
-          outPtr++;
-          X += charWidth;
-          outIndex++;
-      }
-      if ( outPtr - outStr + FL_TEXT_MAX_EXP_CHAR_LEN >= MAX_DISP_LINE_LEN || X >= rightClip )
-          break;
-  }
-
-  /* Draw the remaining style segment */
-  draw_string( style, startX, Y, X, outStr, outPtr - outStr );
-
-  /* Draw the cursor if part of it appeared on the redisplayed part of
+    /* Draw the cursor if part of it appeared on the redisplayed part of
      this line.  Also check for the cases which are not caught as the
      line is scanned above: when the cursor appears at the very end
      of the redisplayed section. */
     //CET - FIXME
-/*  if ( mCursorOn )
+    /*  if ( mCursorOn )
   {
       if ( hasCursor )
           draw_cursor( cursorX, Y );
@@ -1613,8 +1634,8 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
       }
   }
   */
-  if ( lineStr != NULL )
-    delete [] (char *)lineStr;
+    if ( lineStr != NULL )
+        delete [] (char *)lineStr;
 }
 
 /*
@@ -1653,22 +1674,21 @@ void Fl_Text_Display::draw_string( int style, int X, int Y, int toX,
         size = styleRec->size;
         foreground = styleRec->color;
 
-		
         if(style & PRIMARY_MASK) {
             //background = fl_color_average(selection_color(), fl_invert(styleRec->color), 0.2);
-			background = selection_color();
-			foreground = fl_color_average(foreground, FL_WHITE, 0.3);
-		}
+            background = selection_color();
+            foreground = fl_color_average(foreground, FL_WHITE, 0.3);
+        }
         else if(style & HIGHLIGHT_MASK) {
             //background = fl_color_average(highlight_color(), fl_invert(styleRec->color), 0.2);
-			background = highlight_color();
-			foreground = fl_color_average(foreground, FL_WHITE, 0.3);			
-		}
+            background = highlight_color();
+            foreground = fl_color_average(foreground, FL_WHITE, 0.3);
+        }
         else
             background = color();
-		
+
         //background = style & PRIMARY_MASK ? selection_color() :
-        //style & HIGHLIGHT_MASK ? highlight_color() : color();		
+        //style & HIGHLIGHT_MASK ? highlight_color() : color();
 
         if ( foreground == background )   /* B&W kludge */
             foreground = color();
@@ -1687,7 +1707,7 @@ void Fl_Text_Display::draw_string( int style, int X, int Y, int toX,
     fl_rectf( X, Y, toX - X, mMaxsize );
     fl_color( foreground );
     fl_font( font, size );
-    fl_draw( string, nChars, float(X), float(Y + mMaxsize - fl_descent()) );
+    fl_draw( string, nChars, X, Y + mMaxsize - fl_descent());
 
     /* Underline if style is UNDERLINE attr is set */
     if(styleRec && styleRec->attr==ATTR_UNDERLINE)
@@ -1816,32 +1836,32 @@ void Fl_Text_Display::draw_cursor( int X, int Y )
 int Fl_Text_Display::position_style( int lineStartPos,
                                      int lineLen, int lineIndex, int dispIndex ) 
 {
-  Fl_Text_Buffer * buf = mBuffer;
-  Fl_Text_Buffer *styleBuf = mStyleBuffer;
-  int pos, style = 0;
+    Fl_Text_Buffer * buf = mBuffer;
+    Fl_Text_Buffer *styleBuf = mStyleBuffer;
+    int pos, style = 0;
 
-  if ( lineStartPos == -1 || buf == NULL )
-    return FILL_MASK;
+    if ( lineStartPos == -1 || buf == NULL )
+        return FILL_MASK;
 
-  pos = lineStartPos + min( lineIndex, lineLen );
+    pos = lineStartPos + min( lineIndex, lineLen );
 
-  if ( lineIndex >= lineLen )
-    style = FILL_MASK;
-  else if ( styleBuf != NULL ) {
-    style = ( unsigned char ) styleBuf->character( pos );
-    if (style == mUnfinishedStyle) {
-        // encountered "unfinished" style, trigger parsing
-        (mUnfinishedHighlightCB)(this, pos, mHighlightCBArg);
-        style = (unsigned char) styleBuf->character( pos);
+    if ( lineIndex >= lineLen )
+        style = FILL_MASK;
+    else if ( styleBuf != NULL ) {
+        style = ( unsigned char ) styleBuf->character( pos );
+        if (style == mUnfinishedStyle) {
+            // encountered "unfinished" style, trigger parsing
+            (mUnfinishedHighlightCB)(this, pos, mHighlightCBArg);
+            style = (unsigned char) styleBuf->character( pos);
+        }
     }
-  }
-  if (buf->primary_selection()->includes(pos, lineStartPos, dispIndex))
-    style |= PRIMARY_MASK;
-  if (buf->highlight_selection()->includes(pos, lineStartPos, dispIndex))
-    style |= HIGHLIGHT_MASK;
-  if (buf->secondary_selection()->includes(pos, lineStartPos, dispIndex))
-    style |= SECONDARY_MASK;
-  return style;
+    if (buf->primary_selection()->includes(pos, lineStartPos, dispIndex))
+        style |= PRIMARY_MASK;
+    if (buf->highlight_selection()->includes(pos, lineStartPos, dispIndex))
+        style |= HIGHLIGHT_MASK;
+    if (buf->secondary_selection()->includes(pos, lineStartPos, dispIndex))
+        style |= SECONDARY_MASK;
+    return style;
 }
 
 /*
@@ -1849,24 +1869,25 @@ int Fl_Text_Display::position_style( int lineStartPos,
 */
 int Fl_Text_Display::string_width( const char *string, int length, int style ) 
 {
-  Fl_Font font;
-  int size;
+    Fl_Font font;
+    int size;
 
-  if ( style & STYLE_LOOKUP_MASK && ( style & STYLE_LOOKUP_MASK ) - 'A' < mNStyles) {
-      int si = (style & STYLE_LOOKUP_MASK) - 'A';
-      if (si < 0) si = 0;
-      else if (si >= mNStyles) si = mNStyles - 1;
+    if ( style & STYLE_LOOKUP_MASK && ( style & STYLE_LOOKUP_MASK ) - 'A' < mNStyles) {
+        int si = (style & STYLE_LOOKUP_MASK) - 'A';
+        if (si < 0) si = 0;
+        else if (si >= mNStyles) si = mNStyles - 1;
 
-      font  = mStyleTable[si].font;
-      size = mStyleTable[si].size;
-  } else {
-      font = text_font();
-      size = text_size();
-  }
-  
-  fl_font( font, size );
-  
-  return int( fl_width( string, length ) );
+        font  = mStyleTable[si].font;
+        size = mStyleTable[si].size;
+    } else {
+        font = text_font();
+        size = text_size();
+    }
+
+    fl_font( font, size );
+
+    if(length==1) return (int)fl_width(uchar( string[0]) );
+    return (int)fl_width( string, length );
 }
 
 /*
@@ -1878,52 +1899,52 @@ int Fl_Text_Display::string_width( const char *string, int length, int style )
 */
 int Fl_Text_Display::xy_to_position( int X, int Y, int posType ) 
 {
-  int charIndex, lineStart, lineLen, fontHeight;
-  int charWidth, charLen, charStyle, visLineNum, xStep, outIndex;
-  char expandedChar[ FL_TEXT_MAX_EXP_CHAR_LEN ];
-  const char *lineStr;
+    int charIndex, lineStart, lineLen, fontHeight;
+    int charWidth, charLen, charStyle, visLineNum, xStep, outIndex;
+    char expandedChar[ FL_TEXT_MAX_EXP_CHAR_LEN ];
+    const char *lineStr;
 
-  /* Find the visible line number corresponding to the Y coordinate */
-  fontHeight = mMaxsize;
-  visLineNum = ( Y - text_area.y ) / fontHeight;
-  if ( visLineNum < 0 )
-    return mFirstChar;
-  if ( visLineNum >= mNVisibleLines )
-    visLineNum = mNVisibleLines - 1;
+    /* Find the visible line number corresponding to the Y coordinate */
+    fontHeight = mMaxsize;
+    visLineNum = ( Y - text_area.y ) / fontHeight;
+    if ( visLineNum < 0 )
+        return mFirstChar;
+    if ( visLineNum >= mNVisibleLines )
+        visLineNum = mNVisibleLines - 1;
 
-  /* Find the position at the start of the line */
-  lineStart = mLineStarts[ visLineNum ];
+    /* Find the position at the start of the line */
+    lineStart = mLineStarts[ visLineNum ];
 
-  /* If the line start was empty, return the last position in the buffer */
-  if ( lineStart == -1 )
-    return mBuffer->length();
+    /* If the line start was empty, return the last position in the buffer */
+    if ( lineStart == -1 )
+        return mBuffer->length();
 
-  /* Get the line text and its length */
-  lineLen = vline_length( visLineNum );
-  lineStr = mBuffer->text_range( lineStart, lineStart + lineLen );
+    /* Get the line text and its length */
+    lineLen = vline_length( visLineNum );
+    lineStr = mBuffer->text_range( lineStart, lineStart + lineLen );
 
-  /* Step through character positions from the beginning of the line
+    /* Step through character positions from the beginning of the line
      to find the character position corresponding to the X coordinate */
-  xStep = text_area.x - mHorizOffset;
-  outIndex = 0;
-  for ( charIndex = 0; charIndex < lineLen; charIndex++ ) 
-  {
-    charLen = Fl_Text_Buffer::expand_character( lineStr[ charIndex ], outIndex, expandedChar,
-              mBuffer->tab_distance(), mBuffer->null_substitution_character() );
-    charStyle = position_style( lineStart, lineLen, charIndex, outIndex );
-    charWidth = string_width( expandedChar, charLen, charStyle );
-    if ( X < xStep + ( posType == CURSOR_POS ? charWidth / 2 : charWidth ) ) {
-      delete [] (char *)lineStr;
-      return lineStart + charIndex;
+    xStep = text_area.x - mHorizOffset;
+    outIndex = 0;
+    for ( charIndex = 0; charIndex < lineLen; charIndex++ )
+    {
+        charLen = Fl_Text_Buffer::expand_character( lineStr[ charIndex ], outIndex, expandedChar,
+                                                   mBuffer->tab_distance(), mBuffer->null_substitution_character() );
+        charStyle = position_style( lineStart, lineLen, charIndex, outIndex );
+        charWidth = string_width( expandedChar, charLen, charStyle );
+        if ( X < xStep + ( posType == CURSOR_POS ? charWidth / 2 : charWidth ) ) {
+            delete [] (char *)lineStr;
+            return lineStart + charIndex;
+        }
+        xStep += charWidth;
+        outIndex += charLen;
     }
-    xStep += charWidth;
-    outIndex += charLen;
-  }
 
-  /* If the X position was beyond the end of the line, return the position
+    /* If the X position was beyond the end of the line, return the position
      of the newline at the end of the line */
-  delete [] (char *)lineStr;
-  return lineStart + lineLen;
+    delete [] (char *)lineStr;
+    return lineStart + lineLen;
 }
 
 /*
@@ -1936,16 +1957,16 @@ int Fl_Text_Display::xy_to_position( int X, int Y, int posType )
 */
 void Fl_Text_Display::xy_to_rowcol( int X, int Y, int *row,
                                     int *column, int posType ) {
-  int fontHeight = mMaxsize;
-  int fontWidth = mMaxFontBound;//TMPFONTWIDTH; //mFontStruct->max_bounds.width;
+    int fontHeight = mMaxsize;
+    int fontWidth = mMaxFontBound;//TMPFONTWIDTH; //mFontStruct->max_bounds.width;
 
-  /* Find the visible line number corresponding to the Y coordinate */
-  *row = ( Y - text_area.y ) / fontHeight;
-  if ( *row < 0 ) * row = 0;
-  if ( *row >= mNVisibleLines ) * row = mNVisibleLines - 1;
-  *column = ( ( X - text_area.x ) + mHorizOffset +
-              ( posType == CURSOR_POS ? fontWidth / 2 : 0 ) ) / fontWidth;
-  if ( *column < 0 ) * column = 0;
+    /* Find the visible line number corresponding to the Y coordinate */
+    *row = ( Y - text_area.y ) / fontHeight;
+    if ( *row < 0 ) * row = 0;
+    if ( *row >= mNVisibleLines ) * row = mNVisibleLines - 1;
+    *column = ( ( X - text_area.x ) + mHorizOffset +
+               ( posType == CURSOR_POS ? fontWidth / 2 : 0 ) ) / fontWidth;
+    if ( *column < 0 ) * column = 0;
 }
 
 /*
@@ -1957,60 +1978,60 @@ void Fl_Text_Display::xy_to_rowcol( int X, int Y, int *row,
 */
 void Fl_Text_Display::offset_line_starts( int newTopLineNum ) 
 {
-  int oldTopLineNum = mTopLineNum;
-  int oldFirstChar = mFirstChar;
+    int oldTopLineNum = mTopLineNum;
+    int oldFirstChar = mFirstChar;
 
-  int lineDelta = newTopLineNum - oldTopLineNum;
-  int nVisLines = mNVisibleLines;
-  int *lineStarts = mLineStarts;
-  int i, lastLineNum;
-  Fl_Text_Buffer *buf = mBuffer;
+    int lineDelta = newTopLineNum - oldTopLineNum;
+    int nVisLines = mNVisibleLines;
+    int *lineStarts = mLineStarts;
+    int i, lastLineNum;
+    Fl_Text_Buffer *buf = mBuffer;
 
-  /* If there was no offset, nothing needs to be changed */
-  if ( lineDelta == 0 )
-    return;
+    /* If there was no offset, nothing needs to be changed */
+    if ( lineDelta == 0 )
+        return;
 
-  /* Find the new value for firstChar by counting lines from the nearest
+    /* Find the new value for firstChar by counting lines from the nearest
      known line start (start or end of buffer, or the closest value in the
      lineStarts array) */
-  lastLineNum = oldTopLineNum + nVisLines - 1;
-  if ( newTopLineNum < oldTopLineNum && newTopLineNum < -lineDelta ) {
-	  mFirstChar = skip_lines( 0, newTopLineNum - 1, true );
-      //mFirstChar = buffer()->skip_lines( 0, newTopLineNum - 1 );
-  } else if ( newTopLineNum < oldTopLineNum ) {
-    mFirstChar = rewind_lines( mFirstChar, -lineDelta );
-  } else if ( newTopLineNum < lastLineNum ) {
-    mFirstChar = lineStarts[ newTopLineNum - oldTopLineNum ];
-  } else if ( newTopLineNum - lastLineNum < mNBufferLines - newTopLineNum ) {
-	  
-	  mFirstChar = skip_lines( lineStarts[ nVisLines - 1 ],
-		  newTopLineNum - lastLineNum, true );
-      //mFirstChar = buffer()->skip_lines( lineStarts[ nVisLines - 1 ],
-      //                                 newTopLineNum - lastLineNum );
+    lastLineNum = oldTopLineNum + nVisLines - 1;
+    if ( newTopLineNum < oldTopLineNum && newTopLineNum < -lineDelta ) {
+        mFirstChar = skip_lines( 0, newTopLineNum - 1, true );
+        //mFirstChar = buffer()->skip_lines( 0, newTopLineNum - 1 );
+    } else if ( newTopLineNum < oldTopLineNum ) {
+        mFirstChar = rewind_lines( mFirstChar, -lineDelta );
+    } else if ( newTopLineNum < lastLineNum ) {
+        mFirstChar = lineStarts[ newTopLineNum - oldTopLineNum ];
+    } else if ( newTopLineNum - lastLineNum < mNBufferLines - newTopLineNum ) {
 
-  } else {
-    mFirstChar = rewind_lines( buf->length(), mNBufferLines - newTopLineNum + 1 );
-  }
+        mFirstChar = skip_lines( lineStarts[ nVisLines - 1 ],
+                                newTopLineNum - lastLineNum, true );
+        //mFirstChar = buffer()->skip_lines( lineStarts[ nVisLines - 1 ],
+        //                                 newTopLineNum - lastLineNum );
 
-  /* Fill in the line starts array */
-  if ( lineDelta < 0 && -lineDelta < nVisLines ) {
-    for ( i = nVisLines - 1; i >= -lineDelta; i-- )
-      lineStarts[ i ] = lineStarts[ i + lineDelta ];
-    calc_line_starts( 0, -lineDelta );
-  } else if ( lineDelta > 0 && lineDelta < nVisLines ) {
-    for ( i = 0; i < nVisLines - lineDelta; i++ )
-      lineStarts[ i ] = lineStarts[ i + lineDelta ];
-    calc_line_starts( nVisLines - lineDelta, nVisLines - 1 );
-  } else
-    calc_line_starts( 0, nVisLines );
+    } else {
+        mFirstChar = rewind_lines( buf->length(), mNBufferLines - newTopLineNum + 1 );
+    }
 
-  /* Set lastChar and topLineNum */
-  calc_last_char();
-  mTopLineNum = newTopLineNum;
+    /* Fill in the line starts array */
+    if ( lineDelta < 0 && -lineDelta < nVisLines ) {
+        for ( i = nVisLines - 1; i >= -lineDelta; i-- )
+            lineStarts[ i ] = lineStarts[ i + lineDelta ];
+        calc_line_starts( 0, -lineDelta );
+    } else if ( lineDelta > 0 && lineDelta < nVisLines ) {
+        for ( i = 0; i < nVisLines - lineDelta; i++ )
+            lineStarts[ i ] = lineStarts[ i + lineDelta ];
+        calc_line_starts( nVisLines - lineDelta, nVisLines - 1 );
+    } else
+        calc_line_starts( 0, nVisLines );
 
-   /* If we're numbering lines or being asked to maintain an absolute line 
-      number, re-calculate the absolute line number */ 
-   absolute_top_line_number(oldFirstChar); 
+    /* Set lastChar and topLineNum */
+    calc_last_char();
+    mTopLineNum = newTopLineNum;
+
+    /* If we're numbering lines or being asked to maintain an absolute line
+     number, re-calculate the absolute line number */
+    absolute_top_line_number(oldFirstChar);
 }
 
 /*
@@ -2022,96 +2043,96 @@ void Fl_Text_Display::offset_line_starts( int newTopLineNum )
 void Fl_Text_Display::update_line_starts( int pos, int charsInserted,
     int charsDeleted, int linesInserted, int linesDeleted, int *scrolled ) 
 {
-  int * lineStarts = mLineStarts;
-  int i, lineOfPos, lineOfEnd, nVisLines = mNVisibleLines;
-  int charDelta = charsInserted - charsDeleted;
-  int lineDelta = linesInserted - linesDeleted;
+    int * lineStarts = mLineStarts;
+    int i, lineOfPos, lineOfEnd, nVisLines = mNVisibleLines;
+    int charDelta = charsInserted - charsDeleted;
+    int lineDelta = linesInserted - linesDeleted;
 
-  /* If all of the changes were before the displayed text, the display
+    /* If all of the changes were before the displayed text, the display
      doesn't change, just update the top line num and offset the line
      start entries and first and last characters */
-  if ( pos + charsDeleted < mFirstChar ) {
-    mTopLineNum += lineDelta;
-	//for ( i = 0; i < nVisLines; i++ )
-	for ( i = 0; i < nVisLines && lineStarts[i] != -1; i++ )    
-      lineStarts[ i ] += charDelta;
-    mFirstChar += charDelta;
-    mLastChar += charDelta;
-    *scrolled = 0;
-    return;
-  }
-
-  /* The change began before the beginning of the displayed text, but
-     part or all of the displayed text was deleted */
-  if ( pos < mFirstChar ) {
-    /* If some text remains in the window, anchor on that  */
-    if ( position_to_line( pos + charsDeleted, &lineOfEnd ) &&
-         ++lineOfEnd < nVisLines && lineStarts[ lineOfEnd ] != -1 ) {
-      mTopLineNum = max( 1, mTopLineNum + lineDelta );
-
-      //mFirstChar = buffer()->rewind_lines( lineStarts[ lineOfEnd ] + charDelta, lineOfEnd );
-	  mFirstChar = rewind_lines( lineStarts[ lineOfEnd ] + charDelta, lineOfEnd ); 
-
-      /* Otherwise anchor on original line number and recount everything */
-    } else {
-      if ( mTopLineNum > mNBufferLines + lineDelta ) {
-        mTopLineNum = 1;
-        mFirstChar = 0;
-      } else
-		  mFirstChar = skip_lines( 0, mTopLineNum - 1, true );
-        //mFirstChar = buffer()->skip_lines( 0, mTopLineNum - 1 );
+    if ( pos + charsDeleted < mFirstChar ) {
+        mTopLineNum += lineDelta;
+        //for ( i = 0; i < nVisLines; i++ )
+        for ( i = 0; i < nVisLines && lineStarts[i] != -1; i++ )
+            lineStarts[ i ] += charDelta;
+        mFirstChar += charDelta;
+        mLastChar += charDelta;
+        *scrolled = 0;
+        return;
     }
-    calc_line_starts( 0, nVisLines - 1 );
-    /* calculate lastChar by finding the end of the last displayed line */
-    calc_last_char();
-    *scrolled = 1;
-    return;
-  }
 
-  /* If the change was in the middle of the displayed text (it usually is),
+    /* The change began before the beginning of the displayed text, but
+     part or all of the displayed text was deleted */
+    if ( pos < mFirstChar ) {
+        /* If some text remains in the window, anchor on that  */
+        if ( position_to_line( pos + charsDeleted, &lineOfEnd ) &&
+            ++lineOfEnd < nVisLines && lineStarts[ lineOfEnd ] != -1 ) {
+            mTopLineNum = max( 1, mTopLineNum + lineDelta );
+
+            //mFirstChar = buffer()->rewind_lines( lineStarts[ lineOfEnd ] + charDelta, lineOfEnd );
+            mFirstChar = rewind_lines( lineStarts[ lineOfEnd ] + charDelta, lineOfEnd );
+
+            /* Otherwise anchor on original line number and recount everything */
+        } else {
+            if ( mTopLineNum > mNBufferLines + lineDelta ) {
+                mTopLineNum = 1;
+                mFirstChar = 0;
+            } else
+                mFirstChar = skip_lines( 0, mTopLineNum - 1, true );
+            //mFirstChar = buffer()->skip_lines( 0, mTopLineNum - 1 );
+        }
+        calc_line_starts( 0, nVisLines - 1 );
+        /* calculate lastChar by finding the end of the last displayed line */
+        calc_last_char();
+        *scrolled = 1;
+        return;
+    }
+
+    /* If the change was in the middle of the displayed text (it usually is),
      salvage as much of the line starts array as possible by moving and
      offsetting the entries after the changed area, and re-counting the
      added lines or the lines beyond the salvaged part of the line starts
      array */
-  if ( pos <= mLastChar ) {
-    /* find line on which the change began */
-    position_to_line( pos, &lineOfPos );
-    /* salvage line starts after the changed area */
-    if ( lineDelta == 0 ) {
-      for ( i = lineOfPos + 1; i < nVisLines && lineStarts[ i ] != -1; i++ )
-        lineStarts[ i ] += charDelta;
-    } else if ( lineDelta > 0 ) {
-      for ( i = nVisLines - 1; i >= lineOfPos + lineDelta + 1; i-- )
-        lineStarts[ i ] = lineStarts[ i - lineDelta ] +
-                          ( lineStarts[ i - lineDelta ] == -1 ? 0 : charDelta );
-    } else /* (lineDelta < 0) */ {
-      for ( i = max( 0, lineOfPos + 1 ); i < nVisLines + lineDelta; i++ )
-        lineStarts[ i ] = lineStarts[ i - lineDelta ] +
-                          ( lineStarts[ i - lineDelta ] == -1 ? 0 : charDelta );
+    if ( pos <= mLastChar ) {
+        /* find line on which the change began */
+        position_to_line( pos, &lineOfPos );
+        /* salvage line starts after the changed area */
+        if ( lineDelta == 0 ) {
+            for ( i = lineOfPos + 1; i < nVisLines && lineStarts[ i ] != -1; i++ )
+                lineStarts[ i ] += charDelta;
+        } else if ( lineDelta > 0 ) {
+            for ( i = nVisLines - 1; i >= lineOfPos + lineDelta + 1; i-- )
+                lineStarts[ i ] = lineStarts[ i - lineDelta ] +
+                    ( lineStarts[ i - lineDelta ] == -1 ? 0 : charDelta );
+        } else /* (lineDelta < 0) */ {
+            for ( i = max( 0, lineOfPos + 1 ); i < nVisLines + lineDelta; i++ )
+                lineStarts[ i ] = lineStarts[ i - lineDelta ] +
+                    ( lineStarts[ i - lineDelta ] == -1 ? 0 : charDelta );
+        }
+        /* fill in the missing line starts */
+        if ( linesInserted >= 0 )
+            calc_line_starts( lineOfPos + 1, lineOfPos + linesInserted );
+        if ( lineDelta < 0 )
+            calc_line_starts( nVisLines + lineDelta, nVisLines );
+        /* calculate lastChar by finding the end of the last displayed line */
+        calc_last_char();
+        *scrolled = 0;
+        return;
     }
-    /* fill in the missing line starts */
-    if ( linesInserted >= 0 )
-      calc_line_starts( lineOfPos + 1, lineOfPos + linesInserted );
-    if ( lineDelta < 0 )
-      calc_line_starts( nVisLines + lineDelta, nVisLines );
-    /* calculate lastChar by finding the end of the last displayed line */
-    calc_last_char();
-    *scrolled = 0;
-    return;
-  }
 
-  /* Change was past the end of the displayed text, but displayable by virtue
+    /* Change was past the end of the displayed text, but displayable by virtue
      of being an insert at the end of the buffer into visible blank lines */
-  if ( empty_vlines() ) {
-    position_to_line( pos, &lineOfPos );
-    calc_line_starts( lineOfPos, lineOfPos + linesInserted );
-    calc_last_char();
-    *scrolled = 0;
-    return;
-  }
+    if ( empty_vlines() ) {
+        position_to_line( pos, &lineOfPos );
+        calc_line_starts( lineOfPos, lineOfPos + linesInserted );
+        calc_last_char();
+        *scrolled = 0;
+        return;
+    }
 
-  /* Change was beyond the end of the buffer and not visible, do nothing */
-  *scrolled = 0;
+    /* Change was beyond the end of the buffer and not visible, do nothing */
+    *scrolled = 0;
 }
 
 /*
@@ -2155,24 +2176,24 @@ void Fl_Text_Display::calc_line_starts( int startLine, int endLine )
      start of the next line in lineStarts */
   for ( line = startLine; line <= endLine; line++ ) 
   {
-	  find_line_end(startPos, true, &lineEnd, &nextLineStart);
-	  //lineEnd = buffer()->line_end(startPos);
-	  //nextLineStart = min(buffer()->length(), lineEnd + 1);
+      find_line_end(startPos, true, &lineEnd, &nextLineStart);
+      //lineEnd = buffer()->line_end(startPos);
+      //nextLineStart = min(buffer()->length(), lineEnd + 1);
+      startPos = nextLineStart;
 
-    startPos = nextLineStart;
-    if ( startPos >= bufLen ) {
-      /* If the buffer ends with a newline or line break, put
-         buf->length() in the next line start position (instead of
-         a -1 which is the normal marker for an empty line) to
-         indicate that the cursor may safely be displayed there */
-      if ( line == 0 || ( lineStarts[ line - 1 ] != bufLen &&
-                          lineEnd != nextLineStart ) ) {
-        lineStarts[ line ] = bufLen;
-        line++;
+      if ( startPos >= bufLen ) {
+          /* If the buffer ends with a newline or line break, put
+           buf->length() in the next line start position (instead of
+           a -1 which is the normal marker for an empty line) to
+           indicate that the cursor may safely be displayed there */
+          if ( line == 0 || ( lineStarts[ line - 1 ] != bufLen &&
+                             lineEnd != nextLineStart ) ) {
+              lineStarts[ line ] = bufLen;
+              line++;
+          }
+          break;
       }
-      break;
-    }
-    lineStarts[ line ] = startPos;
+      lineStarts[ line ] = startPos;
   }
 
   /* Set any entries beyond the end of the text to -1 */
@@ -2187,7 +2208,7 @@ void Fl_Text_Display::calc_line_starts( int startLine, int endLine )
 void Fl_Text_Display::calc_last_char() 
 {
   int i;
-  int vis_lines = mNVisibleLines - 2;//(mHScrollBar->visible()?1:2);
+  int vis_lines = mNVisibleLines - 1;
   for (i = vis_lines; i >= 0 && mLineStarts[i] == -1; i--) ;
   mLastChar = i < 0 ? 0 : line_end(mLineStarts[i], true);
 }
@@ -2197,8 +2218,6 @@ void Fl_Text_Display::scroll(int topLineNum, int horizOffset)
   mTopLineNumHint = topLineNum;
   mHorizOffsetHint = horizOffset;
   relayout();
-  //redraw();
-  //redraw(FL_DAMAGE_VALUE);
 }
 
 void Fl_Text_Display::scroll_(int topLineNum, int horizOffset)
@@ -2208,9 +2227,11 @@ void Fl_Text_Display::scroll_(int topLineNum, int horizOffset)
     topLineNum = mNBufferLines + 3 - mNVisibleLines;
   if (topLineNum < 1) topLineNum = 1;
 
+
   if (horizOffset > longest_vline() - text_area.w)
     horizOffset = longest_vline() - text_area.w;
-  if (horizOffset < 0) horizOffset = 0;
+  if (horizOffset < 0)
+      horizOffset = 0;
 
   /* Do nothing if scroll position hasn't actually changed or there's no
      window to draw in yet */
@@ -2225,8 +2246,7 @@ void Fl_Text_Display::scroll_(int topLineNum, int horizOffset)
   mHorizOffset = horizOffset;
 
   // redraw all text
-  //redraw(FL_DAMAGE_SCROLL);
-  redraw();
+  redraw(FL_DAMAGE_SCROLL | FL_DAMAGE_ALL);
 }
 
 /*
@@ -2276,17 +2296,52 @@ static int min( int i1, int i2 ) {
 */
 static int countlines( const char *string ) {
     if(!string) return 0;
-  const char * c;
-  int lineCount = 0;
+    const char * c;
+    int lineCount = 0;
 
-  for ( c = string; *c != '\0'; c++ )
-    if ( *c == '\n' ) lineCount++;
-  return lineCount;
+    for ( c = string; *c != '\0'; c++ )
+        if ( *c == '\n' ) lineCount++;
+    return lineCount;
 }
 
 /*
 ** Return the width in pixels of the displayed line pointed to by "visLineNum"
 */
+#if 0
+// Old method from fltk2.0
+int Fl_Text_Display::measure_vline( int visLineNum ) {
+  int i, width = 0, len, style, lineLen = vline_length( visLineNum );
+  int charCount = 0, lineStartPos = mLineStarts[ visLineNum ];
+  char expandedChar[ FL_TEXT_MAX_EXP_CHAR_LEN ];
+
+  if ( mStyleBuffer == NULL ) {
+    for ( i = 0; i < lineLen; i++ ) {
+      len = mBuffer->expand_character( lineStartPos + i,
+                                       charCount, expandedChar );
+
+      fl_font( text_font(), text_size() );
+
+      width += ( int ) fl_width( expandedChar, len );
+
+      charCount += len;
+    }
+  } else {
+    for ( i = 0; i < lineLen; i++ ) {
+      len = mBuffer->expand_character( lineStartPos + i,
+                                       charCount, expandedChar );
+      style = ( unsigned char ) mStyleBuffer->character(
+                lineStartPos + i ) - 'A';
+
+      fl_font( mStyleTable[ style ].font, mStyleTable[ style ].size );
+
+      width += ( int ) fl_width( expandedChar, len );
+
+      charCount += len;
+    }
+  }
+  return width;
+}
+#else
 int Fl_Text_Display::measure_vline( int visLineNum )
 {
     int i, width = 0, charlen, charCount = 0;
@@ -2342,6 +2397,7 @@ int Fl_Text_Display::measure_vline( int visLineNum )
     }
     return width;
 }
+#endif
 
 /*
 ** Return true if there are lines visible with no corresponding buffer text
@@ -2385,145 +2441,144 @@ int Fl_Text_Display::vline_length( int visLineNum )
 void Fl_Text_Display::find_wrap_range(const char *deletedText, int pos, 
 									  int nInserted, int nDeleted, int *modRangeStart, int *modRangeEnd, 
 									  int *linesInserted, int *linesDeleted) 
-{ 
-	int length, retPos, retLines, retLineStart, retLineEnd; 
-	Fl_Text_Buffer *deletedTextBuf, *buf = buffer(); 
-	int nVisLines = mNVisibleLines; 
-	int *lineStarts = mLineStarts; 
-	int countFrom, countTo, lineStart, adjLineStart, i; 
-	int visLineNum = 0, nLines = 0; 
+{
+    int length, retPos, retLines, retLineStart, retLineEnd;
+    Fl_Text_Buffer *deletedTextBuf, *buf = buffer();
+    int nVisLines = mNVisibleLines;
+    int *lineStarts = mLineStarts;
+    int countFrom, countTo, lineStart, adjLineStart, i;
+    int visLineNum = 0, nLines = 0;
+
+    /*
+     ** Determine where to begin searching: either the previous newline, or
+     ** if possible, limit to the start of the (original) previous displayed
+     ** line, using information from the existing line starts array
+     */
+    if (pos >= mFirstChar && pos <= mLastChar) {
+        for (i=nVisLines-1; i>0; i--)
+            if (lineStarts[i] != -1 && pos >= lineStarts[i])
+                break;
+        if (i > 0) {
+            countFrom = lineStarts[i-1];
+            visLineNum = i-1;
+        } else
+            countFrom = buf->line_start(pos);
+    } else
+        countFrom = buf->line_start(pos);
+
+    /*
+     ** Move forward through the (new) text one line at a time, counting
+     ** displayed lines, and looking for either a real newline, or for the
+     ** line starts to re-sync with the original line starts array
+     */
+    lineStart = countFrom;
+    *modRangeStart = countFrom;
+    while (true) {
+
+        /* advance to the next line.  If the line ended in a real newline
+         or the end of the buffer, that's far enough */
+        wrapped_line_counter(buf, lineStart, buf->length(), 1, true, 0,
+                             &retPos, &retLines, &retLineStart, &retLineEnd);
+        if (retPos >= buf->length()) {
+            countTo = buf->length();
+            *modRangeEnd = countTo;
+            if (retPos != retLineEnd)
+                nLines++;
+            break;
+        } else
+            lineStart = retPos;
+        nLines++;
+        if (lineStart > pos + nInserted &&
+            buf->character(lineStart-1) == '\n') {
+            countTo = lineStart;
+            *modRangeEnd = lineStart;
+            break;
+        }
+
+        /* Don't try to resync in continuous wrap mode with non-fixed font
+         sizes; it would result in a chicken-and-egg dependency between
+         the calculations for the inserted and the deleted lines.
+         If we're in that mode, the number of deleted lines is calculated in
+         advance, without resynchronization, so we shouldn't resynchronize
+         for the inserted lines either. */
+        if (mSuppressResync)
+            continue;
+
+        /* check for synchronization with the original line starts array
+         before pos, if so, the modified range can begin later */
+        if (lineStart <= pos) {
+            while (visLineNum<nVisLines && lineStarts[visLineNum] < lineStart)
+                visLineNum++;
+            if (visLineNum < nVisLines && lineStarts[visLineNum] == lineStart) {
+                countFrom = lineStart;
+                nLines = 0;
+                if (visLineNum+1 < nVisLines && lineStarts[visLineNum+1] != -1)
+                    *modRangeStart = min(pos, lineStarts[visLineNum+1]-1);
+                else
+                    *modRangeStart = countFrom;
+            } else
+                *modRangeStart = min(*modRangeStart, lineStart-1);
+        }
+
+        /* check for synchronization with the original line starts array
+         after pos, if so, the modified range can end early */
+        else if (lineStart > pos + nInserted) {
+            adjLineStart = lineStart - nInserted + nDeleted;
+            while (visLineNum<nVisLines && lineStarts[visLineNum]<adjLineStart)
+                visLineNum++;
+            if (visLineNum < nVisLines && lineStarts[visLineNum] != -1 &&
+                lineStarts[visLineNum] == adjLineStart) {
+                countTo = line_end(lineStart, true);
+                *modRangeEnd = lineStart;
+                break;
+            }
+        }
+    }
+    *linesInserted = nLines;
+
+
+    /* Count deleted lines between countFrom and countTo as the text existed
+     before the modification (that is, as if the text between pos and
+     pos+nInserted were replaced by "deletedText").  This extra context is
+     necessary because wrapping can occur outside of the modified region
+     as a result of adding or deleting text in the region. This is done by
+     creating a textBuffer containing the deleted text and the necessary
+     additional context, and calling the wrappedLineCounter on it.
     
-	/* 
-	** Determine where to begin searching: either the previous newline, or 
-	** if possible, limit to the start of the (original) previous displayed 
-	** line, using information from the existing line starts array 
-	*/ 
-	if (pos >= mFirstChar && pos <= mLastChar) { 
-		for (i=nVisLines-1; i>0; i--) 
-			if (lineStarts[i] != -1 && pos >= lineStarts[i]) 
-				break; 
-			if (i > 0) { 
-				countFrom = lineStarts[i-1]; 
-				visLineNum = i-1; 
-			} else 
-				countFrom = buf->line_start(pos); 
-	} else 
-		countFrom = buf->line_start(pos); 
-    
-    
-		/* 
-		** Move forward through the (new) text one line at a time, counting 
-		** displayed lines, and looking for either a real newline, or for the 
-		** line starts to re-sync with the original line starts array 
-	*/ 
-	lineStart = countFrom; 
-	*modRangeStart = countFrom; 
-	while (true) { 
-		
-	/* advance to the next line.  If the line ended in a real newline 
-		or the end of the buffer, that's far enough */ 
-		wrapped_line_counter(buf, lineStart, buf->length(), 1, true, 0, 
-			&retPos, &retLines, &retLineStart, &retLineEnd); 
-		if (retPos >= buf->length()) { 
-			countTo = buf->length(); 
-			*modRangeEnd = countTo; 
-			if (retPos != retLineEnd) 
-				nLines++; 
-			break; 
-		} else 
-			lineStart = retPos; 
-		nLines++; 
-		if (lineStart > pos + nInserted && 
-			buf->character(lineStart-1) == '\n') { 
-			countTo = lineStart; 
-			*modRangeEnd = lineStart; 
-			break; 
-		} 
-		
-		/* Don't try to resync in continuous wrap mode with non-fixed font 
-		sizes; it would result in a chicken-and-egg dependency between 
-		the calculations for the inserted and the deleted lines. 
-		If we're in that mode, the number of deleted lines is calculated in 
-		advance, without resynchronization, so we shouldn't resynchronize 
-		for the inserted lines either. */ 
-		if (mSuppressResync) 
-			continue; 
-		
-			/* check for synchronization with the original line starts array 
-		before pos, if so, the modified range can begin later */ 
-		if (lineStart <= pos) { 
-			while (visLineNum<nVisLines && lineStarts[visLineNum] < lineStart) 
-				visLineNum++; 
-			if (visLineNum < nVisLines && lineStarts[visLineNum] == lineStart) { 
-				countFrom = lineStart; 
-				nLines = 0; 
-				if (visLineNum+1 < nVisLines && lineStarts[visLineNum+1] != -1) 
-					*modRangeStart = min(pos, lineStarts[visLineNum+1]-1); 
-				else 
-					*modRangeStart = countFrom; 
-			} else 
-				*modRangeStart = min(*modRangeStart, lineStart-1); 
-		} 
-		
-		/* check for synchronization with the original line starts array 
-		after pos, if so, the modified range can end early */ 
-		else if (lineStart > pos + nInserted) { 
-			adjLineStart = lineStart - nInserted + nDeleted; 
-			while (visLineNum<nVisLines && lineStarts[visLineNum]<adjLineStart) 
-				visLineNum++; 
-			if (visLineNum < nVisLines && lineStarts[visLineNum] != -1 && 
-				lineStarts[visLineNum] == adjLineStart) { 
-				countTo = line_end(lineStart, true); 
-				*modRangeEnd = lineStart; 
-				break; 
-			} 
-		} 
-	} 
-	*linesInserted = nLines; 
-    
-    
-	/* Count deleted lines between countFrom and countTo as the text existed 
-	before the modification (that is, as if the text between pos and 
-	pos+nInserted were replaced by "deletedText").  This extra context is 
-	necessary because wrapping can occur outside of the modified region 
-	as a result of adding or deleting text in the region. This is done by 
-	creating a textBuffer containing the deleted text and the necessary 
-	additional context, and calling the wrappedLineCounter on it. 
-    
-	  NOTE: This must not be done in continuous wrap mode when the font 
-	  width is not fixed. In that case, the calculation would try 
-	  to access style information that is no longer available (deleted 
-	  text), or out of date (updated highlighting), possibly leading 
-	  to completely wrong calculations and/or even crashes eventually. 
-	  (This is not theoretical; it really happened.) 
-	  
-		In that case, the calculation of the number of deleted lines 
-		has happened before the buffer was modified (only in that case, 
-		because resynchronization of the line starts is impossible 
-		in that case, which makes the whole calculation less efficient). 
-	*/ 
-	if (mSuppressResync) { 
-		*linesDeleted = mNLinesDeleted; 
-		mSuppressResync = 0; 
-		return; 
-	} 
-    
-	length = (pos-countFrom) + nDeleted +(countTo-(pos+nInserted)); 
-	deletedTextBuf = new Fl_Text_Buffer(length); 
-	deletedTextBuf->copy(buffer(), countFrom, pos, 0); 
-	if (nDeleted != 0) 
-		deletedTextBuf->insert(pos-countFrom, deletedText); 
-	deletedTextBuf->copy(buffer(), 
-		pos+nInserted, countTo, pos-countFrom+nDeleted); 
-		/* Note that we need to take into account an offset for the style buffer: 
-	the deletedTextBuf can be out of sync with the style buffer. */ 
-	wrapped_line_counter(deletedTextBuf, 0, length, INT_MAX, true, 
-		countFrom, &retPos, &retLines, &retLineStart, &retLineEnd, false); 
-	delete deletedTextBuf; 
-	*linesDeleted = retLines; 
-	mSuppressResync = 0; 
-} 
-   
+    NOTE: This must not be done in continuous wrap mode when the font
+    width is not fixed. In that case, the calculation would try
+    to access style information that is no longer available (deleted
+    text), or out of date (updated highlighting), possibly leading
+    to completely wrong calculations and/or even crashes eventually.
+    (This is not theoretical; it really happened.)
+
+    In that case, the calculation of the number of deleted lines
+    has happened before the buffer was modified (only in that case,
+    because resynchronization of the line starts is impossible
+    in that case, which makes the whole calculation less efficient).
+    */
+    if (mSuppressResync) {
+        *linesDeleted = mNLinesDeleted;
+        mSuppressResync = 0;
+        return;
+    }
+
+    length = (pos-countFrom) + nDeleted +(countTo-(pos+nInserted));
+    deletedTextBuf = new Fl_Text_Buffer(length);
+    deletedTextBuf->copy(buffer(), countFrom, pos, 0);
+    if (nDeleted != 0)
+        deletedTextBuf->insert(pos-countFrom, deletedText);
+    deletedTextBuf->copy(buffer(),
+                         pos+nInserted, countTo, pos-countFrom+nDeleted);
+    /* Note that we need to take into account an offset for the style buffer:
+     the deletedTextBuf can be out of sync with the style buffer. */
+    wrapped_line_counter(deletedTextBuf, 0, length, INT_MAX, true,
+                         countFrom, &retPos, &retLines, &retLineStart, &retLineEnd, false);
+    delete deletedTextBuf;
+    *linesDeleted = retLines;
+    mSuppressResync = 0;
+}
+
 /* 
 ** This is a stripped-down version of the findWrapRange() function above, 
 ** intended to be used to calculate the number of "deleted" lines during 
@@ -2538,70 +2593,70 @@ void Fl_Text_Display::find_wrap_range(const char *deletedText, int pos,
 */ 
 void Fl_Text_Display::measure_deleted_lines(int pos, int nDeleted) 
 { 
-	int retPos, retLines, retLineStart, retLineEnd; 
-	Fl_Text_Buffer *buf = buffer(); 
-	int nVisLines = mNVisibleLines; 
-	int *lineStarts = mLineStarts; 
-	int countFrom, lineStart; 
-	int visLineNum = 0, nLines = 0, i; 
-	/* 
-	** Determine where to begin searching: either the previous newline, or 
-	** if possible, limit to the start of the (original) previous displayed 
-	** line, using information from the existing line starts array 
-	*/ 
-	if (pos >= mFirstChar && pos <= mLastChar) { 
-		for (i=nVisLines-1; i>0; i--) 
-			if (lineStarts[i] != -1 && pos >= lineStarts[i]) 
-				break; 
-			if (i > 0) { 
-				countFrom = lineStarts[i-1]; 
-				visLineNum = i-1; 
-			} else 
-				countFrom = buf->line_start(pos); 
-	} else 
-		countFrom = buf->line_start(pos); 
-	   
-		/* 
-		** Move forward through the (new) text one line at a time, counting 
-		** displayed lines, and looking for either a real newline, or for the 
-		** line starts to re-sync with the original line starts array 
-	*/ 
-	lineStart = countFrom; 
-	while (true) { 
-	   /* advance to the next line.  If the line ended in a real newline 
-		or the end of the buffer, that's far enough */ 
-		wrapped_line_counter(buf, lineStart, buf->length(), 1, true, 0, 
-			&retPos, &retLines, &retLineStart, &retLineEnd); 
-		if (retPos >= buf->length()) { 
-			if (retPos != retLineEnd) 
-				nLines++; 
-			break; 
-		} else 
-			lineStart = retPos; 
-		nLines++; 
-		if (lineStart > pos + nDeleted && 
-			buf->character(lineStart-1) == '\n') { 
-			break; 
-		} 
-		
-		/* Unlike in the findWrapRange() function above, we don't try to 
-		resync with the line starts, because we don't know the length 
-		of the inserted text yet, nor the updated style information. 
-		
-		  Because of that, we also shouldn't resync with the line starts 
-		  after the modification either, because we must perform the 
-		  calculations for the deleted and inserted lines in the same way. 
-		  
-			This can result in some unnecessary recalculation and redrawing 
-			overhead, and therefore we should only use this two-phase mode 
-			of calculation when it's really needed (continuous wrap + variable 
-		font width). */ 
-	} 
-	mNLinesDeleted = nLines; 
-	mSuppressResync = 1; 
-} 
+    int retPos, retLines, retLineStart, retLineEnd;
+    Fl_Text_Buffer *buf = buffer();
+    int nVisLines = mNVisibleLines;
+    int *lineStarts = mLineStarts;
+    int countFrom, lineStart;
+    int visLineNum = 0, nLines = 0, i;
+    /*
+     ** Determine where to begin searching: either the previous newline, or
+     ** if possible, limit to the start of the (original) previous displayed
+     ** line, using information from the existing line starts array
+     */
+    if (pos >= mFirstChar && pos <= mLastChar) {
+        for (i=nVisLines-1; i>0; i--)
+            if (lineStarts[i] != -1 && pos >= lineStarts[i])
+                break;
+        if (i > 0) {
+            countFrom = lineStarts[i-1];
+            visLineNum = i-1;
+        } else
+            countFrom = buf->line_start(pos);
+    } else
+        countFrom = buf->line_start(pos);
 
-/* 
+    /*
+     ** Move forward through the (new) text one line at a time, counting
+     ** displayed lines, and looking for either a real newline, or for the
+     ** line starts to re-sync with the original line starts array
+     */
+    lineStart = countFrom;
+    while (true) {
+        /* advance to the next line.  If the line ended in a real newline
+         or the end of the buffer, that's far enough */
+        wrapped_line_counter(buf, lineStart, buf->length(), 1, true, 0,
+                             &retPos, &retLines, &retLineStart, &retLineEnd);
+        if (retPos >= buf->length()) {
+            if (retPos != retLineEnd)
+                nLines++;
+            break;
+        } else
+            lineStart = retPos;
+        nLines++;
+        if (lineStart > pos + nDeleted &&
+            buf->character(lineStart-1) == '\n') {
+            break;
+        }
+
+        /* Unlike in the findWrapRange() function above, we don't try to
+         resync with the line starts, because we don't know the length
+         of the inserted text yet, nor the updated style information.
+
+         Because of that, we also shouldn't resync with the line starts
+         after the modification either, because we must perform the
+         calculations for the deleted and inserted lines in the same way.
+
+         This can result in some unnecessary recalculation and redrawing
+         overhead, and therefore we should only use this two-phase mode
+         of calculation when it's really needed (continuous wrap + variable
+         font width). */
+    }
+    mNLinesDeleted = nLines;
+    mSuppressResync = 1;
+}
+
+/*
 ** Count forward from startPos to either maxPos or maxLines (whichever is 
 ** reached first), and return all relevant positions and line count. 
 ** The provided textBuffer may differ from the actual text buffer of the 
@@ -2618,136 +2673,135 @@ void Fl_Text_Display::measure_deleted_lines(int pos, int nDeleted)
 **   retLineStart:  Start of the line where counting ended 
 **   retLineEnd:    End position of the last line traversed 
 */ 
+void Fl_Text_Display::wrapped_line_counter(Fl_Text_Buffer *buf, int startPos,
+                                           int maxPos, int maxLines, bool startPosIsLineStart, int styleBufOffset,
+                                           int *retPos, int *retLines, int *retLineStart, int *retLineEnd,
+                                           bool countLastLineMissingNewLine)
+{
+    int lineStart, newLineStart = 0, b, p, colNum, wrapMargin;
+    int maxWidth, i, foundBreak, width;
+    bool countPixels;
+    int nLines = 0, tabDist = buffer()->tab_distance();
+    unsigned char c;
+    char nullSubsChar = buffer()->null_substitution_character();
 
-void Fl_Text_Display::wrapped_line_counter(Fl_Text_Buffer *buf, int startPos, 
-										   int maxPos, int maxLines, bool startPosIsLineStart, int styleBufOffset, 
-										   int *retPos, int *retLines, int *retLineStart, int *retLineEnd, 
-										   bool countLastLineMissingNewLine) 
-{ 
-	int lineStart, newLineStart = 0, b, p, colNum, wrapMargin; 
-	int maxWidth, i, foundBreak, width; 
-	bool countPixels; 
-	int nLines = 0, tabDist = buffer()->tab_distance(); 
-	unsigned char c; 
-	char nullSubsChar = buffer()->null_substitution_character(); 
-	   
-	/* If the font is fixed, or there's a wrap margin set, it's more efficient 
-	   to measure in columns, than to count pixels.  Determine if we can count 
-	   in columns (countPixels == False) or must count pixels (countPixels == 
-	   True), and set the wrap target for either pixels or columns */ 	
-	if (mFixedFontWidth != -1 || mWrapMargin != 0) { 				
-		countPixels = false; 
-		wrapMargin = mWrapMargin ? mWrapMargin : text_area.w / (mFixedFontWidth); 
-		maxWidth = INT_MAX; 
-	} else { 
-		countPixels = true; 
-		wrapMargin = INT_MAX; 
-		maxWidth = text_area.w; 
-	} 
-	   
-	/* Find the start of the line if the start pos is not marked as a 
-	   line start. */ 
-	if (startPosIsLineStart) 
-		lineStart = startPos; 
-	else 
-		lineStart = line_start(startPos); 
-	   
-		/* 
-		** Loop until position exceeds maxPos or line count exceeds maxLines. 
-		** (actually, contines beyond maxPos to end of line containing maxPos, 
-		** in case later characters cause a word wrap back before maxPos) 
-	*/ 
-	colNum = 0; 
-	width = 0; 
-	for (p=lineStart; p<buf->length(); p++) 
-	{
-		c = buf->character(p); 
-		
-		/* If the character was a newline, count the line and start over, 
-		otherwise, add it to the width and column counts */ 
-		if (c == '\n') { 
-			if (p >= maxPos) { 
-				*retPos = maxPos; 
-				*retLines = nLines; 
-				*retLineStart = lineStart; 
-				*retLineEnd = maxPos; 
-				return; 
-			} 
-			nLines++; 
-			if (nLines >= maxLines) { 
-				*retPos = p + 1; 
-				*retLines = nLines; 
-				*retLineStart = p + 1; 
-				*retLineEnd = p; 
-				return; 
-			} 
-			lineStart = p + 1; 
-			colNum = 0; 
-			width = 0; 
-		} else { 
-			colNum += Fl_Text_Buffer::character_width(c, colNum, tabDist, nullSubsChar); 
-			if (countPixels) 
-				width += measure_proportional_character(c, colNum, p+styleBufOffset); 
-		} 
-		
-		/* If character exceeded wrap margin, find the break point 
-		and wrap there */ 
-		if (colNum > wrapMargin || width > maxWidth) { 
-			foundBreak = false; 
-			for (b=p; b>=lineStart; b--) { 
-				c = buf->character(b); 
-				if (c == '\t' || c == ' ') { 
-					newLineStart = b + 1; 
-					if (countPixels) { 
-						colNum = 0; 
-						width = 0; 
-						for (i=b+1; i<p+1; i++) { 
-							width += measure_proportional_character( 
-								buf->character(i), colNum, 
-								i+styleBufOffset); 
-							colNum++; 
-						} 
-					} else 
-						colNum = buf->count_displayed_characters(b+1, p+1); 
-					foundBreak = true; 
-					break; 
-				} 
-			} 
-			if (!foundBreak) { /* no whitespace, just break at margin */ 
-				newLineStart = max(p, lineStart+1); 
-				colNum = Fl_Text_Buffer::character_width(c, colNum, tabDist, nullSubsChar); 
-				if (countPixels) 
-					width = measure_proportional_character(c, colNum, p+styleBufOffset); 
-			} 
-			if (p >= maxPos) { 
-				*retPos = maxPos; 
-				*retLines = maxPos < newLineStart ? nLines : nLines + 1; 
-				*retLineStart = maxPos < newLineStart ? lineStart : 
-				newLineStart; 
-				*retLineEnd = maxPos; 
-				return; 
-			} 
-			nLines++; 
-			if (nLines >= maxLines) { 
-				*retPos = foundBreak ? b + 1 : max(p, lineStart+1); 
-				*retLines = nLines; 
-				*retLineStart = lineStart; 
-				*retLineEnd = foundBreak ? b : p; 
-				return; 
-			} 
-			lineStart = newLineStart; 
-		} 
-	} 
-	   
-	/* reached end of buffer before reaching pos or line target */ 
-	*retPos = buf->length(); 
-	*retLines = nLines; 
-	if (countLastLineMissingNewLine && colNum > 0) 
-		++(*retLines); 
-    *retLineStart = lineStart; 
-    *retLineEnd = buf->length(); 
-} 
-   
+    /* If the font is fixed, or there's a wrap margin set, it's more efficient
+     to measure in columns, than to count pixels.  Determine if we can count
+     in columns (countPixels == False) or must count pixels (countPixels ==
+     True), and set the wrap target for either pixels or columns */
+    if (mFixedFontWidth != -1 || mWrapMargin != 0) {
+        countPixels = false;
+        wrapMargin = mWrapMargin ? mWrapMargin : text_area.w / (mFixedFontWidth);
+        maxWidth = INT_MAX;
+    } else {
+        countPixels = true;
+        wrapMargin = INT_MAX;
+        maxWidth = text_area.w;
+    }
+
+    /* Find the start of the line if the start pos is not marked as a
+     line start. */
+    if (startPosIsLineStart)
+        lineStart = startPos;
+    else
+        lineStart = line_start(startPos);
+
+    /*
+     ** Loop until position exceeds maxPos or line count exceeds maxLines.
+     ** (actually, contines beyond maxPos to end of line containing maxPos,
+     ** in case later characters cause a word wrap back before maxPos)
+     */
+    colNum = 0;
+    width = 0;
+    for (p=lineStart; p<buf->length(); p++)
+    {
+        c = buf->character(p);
+
+        /* If the character was a newline, count the line and start over,
+         otherwise, add it to the width and column counts */
+        if (c == '\n') {
+            if (p >= maxPos) {
+                *retPos = maxPos;
+                *retLines = nLines;
+                *retLineStart = lineStart;
+                *retLineEnd = maxPos;
+                return;
+            }
+            nLines++;
+            if (nLines >= maxLines) {
+                *retPos = p + 1;
+                *retLines = nLines;
+                *retLineStart = p + 1;
+                *retLineEnd = p;
+                return;
+            }
+            lineStart = p + 1;
+            colNum = 0;
+            width = 0;
+        } else {
+            colNum += Fl_Text_Buffer::character_width(c, colNum, tabDist, nullSubsChar);
+            if (countPixels)
+                width += measure_proportional_character(c, colNum, p+styleBufOffset);
+        }
+
+        /* If character exceeded wrap margin, find the break point
+         and wrap there */
+        if (colNum > wrapMargin || width > maxWidth) {
+            foundBreak = false;
+            for (b=p; b>=lineStart; b--) {
+                c = buf->character(b);
+                if (c == '\t' || c == ' ') {
+                    newLineStart = b + 1;
+                    if (countPixels) {
+                        colNum = 0;
+                        width = 0;
+                        for (i=b+1; i<p+1; i++) {
+                            width += measure_proportional_character(
+                                                                    buf->character(i), colNum,
+                                                                    i+styleBufOffset);
+                            colNum++;
+                        }
+                    } else
+                        colNum = buf->count_displayed_characters(b+1, p+1);
+                    foundBreak = true;
+                    break;
+                }
+            }
+            if (!foundBreak) { /* no whitespace, just break at margin */
+                newLineStart = max(p, lineStart+1);
+                colNum = Fl_Text_Buffer::character_width(c, colNum, tabDist, nullSubsChar);
+                if (countPixels)
+                    width = measure_proportional_character(c, colNum, p+styleBufOffset);
+            }
+            if (p >= maxPos) {
+                *retPos = maxPos;
+                *retLines = maxPos < newLineStart ? nLines : nLines + 1;
+                *retLineStart = maxPos < newLineStart ? lineStart :
+                    newLineStart;
+                *retLineEnd = maxPos;
+                return;
+            }
+            nLines++;
+            if (nLines >= maxLines) {
+                *retPos = foundBreak ? b + 1 : max(p, lineStart+1);
+                *retLines = nLines;
+                *retLineStart = lineStart;
+                *retLineEnd = foundBreak ? b : p;
+                return;
+            }
+            lineStart = newLineStart;
+        }
+    }
+
+    /* reached end of buffer before reaching pos or line target */
+    *retPos = buf->length();
+    *retLines = nLines;
+    if (countLastLineMissingNewLine && colNum > 0)
+        ++(*retLines);
+    *retLineStart = lineStart;
+    *retLineEnd = buf->length();
+}
+
 /* 
 ** Measure the width in pixels of a character "c" at a particular column 
 ** "colNum" and buffer position "pos".  This is for measuring characters in 
@@ -2763,34 +2817,34 @@ void Fl_Text_Display::wrapped_line_counter(Fl_Text_Buffer *buf, int startPos,
 ** should now be solid because they are now used for online help display. 
 */ 
 int Fl_Text_Display::measure_proportional_character(char c, int colNum, int pos) 
-{ 
-	int charLen, style; 
-	char expChar[ FL_TEXT_MAX_EXP_CHAR_LEN ]; 
-	Fl_Text_Buffer *styleBuf = mStyleBuffer; 
+{
+    int charLen, style;
+    char expChar[ FL_TEXT_MAX_EXP_CHAR_LEN ];
+    Fl_Text_Buffer *styleBuf = mStyleBuffer;
 
-        charLen = Fl_Text_Buffer::expand_character(c, colNum, expChar,
-                                                   buffer()->tab_distance(), buffer()->null_substitution_character());
-        if (styleBuf == 0) {
-            style = 0;
-        } else {
+    charLen = Fl_Text_Buffer::expand_character(c, colNum, expChar,
+                                               buffer()->tab_distance(), buffer()->null_substitution_character());
+    if (styleBuf == 0) {
+        style = 0;
+    } else {
+        style = (unsigned char)styleBuf->character(pos);
+        if (style == mUnfinishedStyle) {
+            /* encountered "unfinished" style, trigger parsing */
+            (mUnfinishedHighlightCB)(this, pos, mHighlightCBArg);
             style = (unsigned char)styleBuf->character(pos);
-            if (style == mUnfinishedStyle) {
-                /* encountered "unfinished" style, trigger parsing */
-                (mUnfinishedHighlightCB)(this, pos, mHighlightCBArg);
-                style = (unsigned char)styleBuf->character(pos);
-            }
         }
-        return string_width(expChar, charLen, style);
+    }
+    return string_width(expChar, charLen, style);
 }
 
-/* 
-** Finds both the end of the current line and the start of the next line.  Why? 
-** In continuous wrap mode, if you need to know both, figuring out one from the 
-** other can be expensive or error prone.  The problem comes when there's a 
-** trailing space or tab just before the end of the buffer.  To translate an 
-** end of line value to or from the next lines start value, you need to know 
-** whether the trailing space or tab is being used as a line break or just a 
-** normal character, and to find that out would otherwise require counting all 
+/*
+ ** Finds both the end of the current line and the start of the next line.  Why?
+ ** In continuous wrap mode, if you need to know both, figuring out one from the
+ ** other can be expensive or error prone.  The problem comes when there's a
+ ** trailing space or tab just before the end of the buffer.  To translate an
+ ** end of line value to or from the next lines start value, you need to know
+ ** whether the trailing space or tab is being used as a line break or just a
+ ** normal character, and to find that out would otherwise require counting all
 ** the way back to the beginning of the line. 
 */ 
 void Fl_Text_Display::find_line_end(int startPos, bool startPosIsLineStart, 
@@ -2887,119 +2941,117 @@ void Fl_Text_Display::extend_range_for_styles( int *start, int *end ) {
 // The draw() method.  It tries to minimize what is draw as much as possible.
 void Fl_Text_Display::draw() 
 {
-  // don't even try if there is no associated text buffer!
-  if (!buffer()) { draw_box(); return; }
+    // don't even try if there is no associated text buffer!
+    if (!buffer()) { draw_box(); return; }
 
-//  printf("DRAW\n");
+    // draw the non-text, non-scrollbar areas.
+    if (damage() & FL_DAMAGE_ALL) {
+        //printf("drawing all\n");
 
-  // draw the non-text, non-scrollbar areas.
-  if (damage() & FL_DAMAGE_ALL) {
-      //printf("drawing all\n");
+        // draw the box()
+        draw_frame();
 
-    // draw the box()
-    draw_frame();	
+        // left margin
+        fl_rectf(text_area.x-LEFT_MARGIN, text_area.y-TOP_MARGIN,
+                 LEFT_MARGIN, text_area.h+TOP_MARGIN+BOTTOM_MARGIN,
+                 color());
 
-    // left margin
-    fl_rectf(text_area.x-LEFT_MARGIN, text_area.y-TOP_MARGIN,
-             LEFT_MARGIN, text_area.h+TOP_MARGIN+BOTTOM_MARGIN,
-             color());
+        // right margin
+        fl_rectf(text_area.x+text_area.w, text_area.y-TOP_MARGIN,
+                 RIGHT_MARGIN, text_area.h+TOP_MARGIN+BOTTOM_MARGIN,
+                 color());
 
-    // right margin
-    fl_rectf(text_area.x+text_area.w, text_area.y-TOP_MARGIN,
-             RIGHT_MARGIN, text_area.h+TOP_MARGIN+BOTTOM_MARGIN,
-             color());
+        // top margin
+        fl_rectf(text_area.x, text_area.y-TOP_MARGIN,
+                 text_area.w, TOP_MARGIN, color());
 
-    // top margin
-    fl_rectf(text_area.x, text_area.y-TOP_MARGIN,
-             text_area.w, TOP_MARGIN, color());
+        // bottom margin
+        fl_rectf(text_area.x, text_area.y+text_area.h,
+                 text_area.w, BOTTOM_MARGIN, color());
 
-    // bottom margin
-    fl_rectf(text_area.x, text_area.y+text_area.h,
-             text_area.w, BOTTOM_MARGIN, color());
+        // draw that little box in the corner of the scrollbars
+        if (mVScrollBar->visible() && mHScrollBar->visible()) {
+            fl_color(button_color());
+            fl_rectf(mVScrollBar->x(), mHScrollBar->y(),
+                     mVScrollBar->w(), mHScrollBar->h());
+        }
 
-    // draw that little box in the corner of the scrollbars
-    if (mVScrollBar->visible() && mHScrollBar->visible()) {
-      fl_color(button_color());
-      fl_rectf(mVScrollBar->x(), mHScrollBar->y(),
-	       mVScrollBar->w(), mHScrollBar->h());
+        draw_line_numbers(true);
+
+        // blank the previous cursor protrusions
+    }
+    else if (damage() & (FL_DAMAGE_SCROLL | FL_DAMAGE_VALUE)) {
+        //printf("blanking previous cursor extrusions at Y: %d\n", mCursorOldY);
+
+        // CET - FIXME - save old cursor position instead and just draw side needed?
+        fl_push_clip(text_area.x-LEFT_MARGIN,
+                     text_area.y,
+                     text_area.w+LEFT_MARGIN+RIGHT_MARGIN,
+                     text_area.h);
+        fl_rectf(text_area.x-LEFT_MARGIN, mCursorOldY,
+                 LEFT_MARGIN, mMaxsize, color());
+        fl_rectf(text_area.x+text_area.w, mCursorOldY,
+                 RIGHT_MARGIN, mMaxsize, color());
+        fl_pop_clip();
+
+        draw_line_numbers(false);
+
     }
 
-    draw_line_numbers(true);
+    // draw the scrollbars
+    if (damage() & (FL_DAMAGE_ALL | FL_DAMAGE_CHILD)) {
+        mVScrollBar->set_damage(FL_DAMAGE_ALL);
+        mHScrollBar->set_damage(FL_DAMAGE_ALL);
+    }
+    update_child(*mVScrollBar);
+    update_child(*mHScrollBar);
 
-    // blank the previous cursor protrusions
-  }
-  else if (damage() & (FL_DAMAGE_SCROLL | FL_DAMAGE_VALUE)) {
-      //printf("blanking previous cursor extrusions at Y: %d\n", mCursorOldY);
+    // draw all of the text
+    if (damage() & (FL_DAMAGE_ALL | FL_DAMAGE_VALUE))
+    {
+        //printf("drawing all text\n");
+        int X, Y, W, H;
+        if (fl_clip_box(text_area.x, text_area.y, text_area.w, text_area.h,
+                        X, Y, W, H)) {
+            // Draw text using the intersected clipping box...
+            // (this sets the clipping internally)
+            draw_text(X, Y, W, H);
+        } else {
+            // Draw the whole area...
+            draw_text(text_area.x, text_area.y, text_area.w, text_area.h);
+        }
+    }
+    else if (damage() & FL_DAMAGE_SCROLL) {
+        // draw some lines of text
 
-    // CET - FIXME - save old cursor position instead and just draw side needed?
-    fl_push_clip(text_area.x-LEFT_MARGIN,
-                 text_area.y,
-                 text_area.w+LEFT_MARGIN+RIGHT_MARGIN,
-                 text_area.h);
-    fl_rectf(text_area.x-LEFT_MARGIN, mCursorOldY,
-             LEFT_MARGIN, mMaxsize, color());
-    fl_rectf(text_area.x+text_area.w, mCursorOldY,
-             RIGHT_MARGIN, mMaxsize, color());
-    fl_pop_clip();
+        fl_push_clip(text_area.x, text_area.y,
+                     text_area.w, text_area.h);
+        //printf("drawing text from %d to %d\n", damage_range1_start, damage_range1_end);
+        draw_range(damage_range1_start, damage_range1_end);
+        if (damage_range2_end != -1) {
+            //printf("drawing text from %d to %d\n", damage_range2_start, damage_range2_end);
+            draw_range(damage_range2_start, damage_range2_end);
+        }
+        damage_range1_start = damage_range1_end = -1;
+        damage_range2_start = damage_range2_end = -1;
+        fl_pop_clip();
+    }
 
-    draw_line_numbers(false);
+    // draw the text cursor
+    if (damage() & (FL_DAMAGE_ALL | FL_DAMAGE_SCROLL | FL_DAMAGE_VALUE)
+        && !buffer()->primary_selection()->selected() &&
+        mCursorOn && Fl::focus() == this ) {
+        fl_push_clip(text_area.x-LEFT_MARGIN,
+                     text_area.y,
+                     text_area.w+LEFT_MARGIN+RIGHT_MARGIN,
+                     text_area.h);
 
-  }
-
-  // draw the scrollbars
-  if (damage() & (FL_DAMAGE_ALL | FL_DAMAGE_CHILD)) {
-    mVScrollBar->set_damage(FL_DAMAGE_ALL);
-    mHScrollBar->set_damage(FL_DAMAGE_ALL);
-  }
-  update_child(*mVScrollBar);
-  update_child(*mHScrollBar);
-
-  // draw all of the text
-  if (damage() & (FL_DAMAGE_ALL | FL_DAMAGE_VALUE))
-  {
-      //printf("drawing all text\n");
-      int X, Y, W, H;
-      if (fl_clip_box(text_area.x, text_area.y, text_area.w, text_area.h,
-                      X, Y, W, H)) {
-          // Draw text using the intersected clipping box...
-          // (this sets the clipping internally)
-          draw_text(X, Y, W, H);
-      } else {
-          // Draw the whole area...
-          draw_text(text_area.x, text_area.y, text_area.w, text_area.h);
-      }
-  }
-  else if (damage() & FL_DAMAGE_SCROLL) {
-      // draw some lines of text
-
-      fl_push_clip(text_area.x, text_area.y,
-                   text_area.w, text_area.h);
-      //printf("drawing text from %d to %d\n", damage_range1_start, damage_range1_end);
-      draw_range(damage_range1_start, damage_range1_end);
-      if (damage_range2_end != -1) {
-          //printf("drawing text from %d to %d\n", damage_range2_start, damage_range2_end);
-          draw_range(damage_range2_start, damage_range2_end);
-      }
-      damage_range1_start = damage_range1_end = -1;
-      damage_range2_start = damage_range2_end = -1;
-      fl_pop_clip();
-  }
-
-  // draw the text cursor
-  if (damage() & (FL_DAMAGE_ALL | FL_DAMAGE_SCROLL | FL_DAMAGE_VALUE)
-      && !buffer()->primary_selection()->selected() &&
-      mCursorOn && Fl::focus() == this ) {
-      fl_push_clip(text_area.x-LEFT_MARGIN,
-                   text_area.y,
-                   text_area.w+LEFT_MARGIN+RIGHT_MARGIN,
-                   text_area.h);
-
-      int X, Y;
-      if (position_to_xy(mCursorPos, &X, &Y)) draw_cursor(X, Y);
-      //printf("drew cursor at pos: %d (%d,%d)\n", mCursorPos, X, Y);
-      mCursorOldY = Y;
-      fl_pop_clip();
-  }
+        int X, Y;
+        if (position_to_xy(mCursorPos, &X, &Y)) draw_cursor(X, Y);
+        //printf("drew cursor at pos: %d (%d,%d)\n", mCursorPos, X, Y);
+        mCursorOldY = Y;
+        fl_pop_clip();
+    }
 }
 
 // this processes drag events due to mouse for Fl_Text_Display and
@@ -3040,8 +3092,8 @@ int Fl_Text_Display::handle(int event) {
     switch (event) {
 
     case FL_SHOW:
-        relayout();
-        redraw();
+        relayout(FL_LAYOUT_DAMAGE|FL_LAYOUT_XYWH);
+        redraw(FL_DAMAGE_ALL);
         break;
 
     case FL_FOCUS:
@@ -3176,56 +3228,56 @@ int Fl_Text_Display::handle(int event) {
 void Fl_Text_Display::draw_line_numbers(bool clearAll) 
 {
     /* Don't draw if mLineNumWidth == 0 (line numbers are hidden), or widget is not yet realized */
-    if (mLineNumWidth == 0 || !visible_r())
+    if(mLineNumWidth == 0 || !visible_r() || !visible())
         return;
 
-	int X = mLineNumLeft+box()->dx();
-	int Y = box()->dy();
-	int W = mLineNumWidth;
-	int H = h()-box()->dh();
+    int X = mLineNumLeft+box()->dx();
+    int Y = box()->dy();
+    int W = mLineNumWidth;
+    int H = h()-box()->dh();
 
-	fl_font(text_font(), text_size());
+    fl_font(text_font(), text_size());
 
-	int y, line, visLine, nCols, lineStart; 
-	char lineNumString[12]; 
-	int lineHeight = mMaxsize ? mMaxsize : int(fl_height()+leading());
-	int charWidth = mMaxFontBound;
-    
-	/* Erase the previous contents of the line number area, if requested */ 
-	if (clearAll) {		
-		fl_color(button_color());
-		button_box()->draw(X,Y,W,H,button_color());
-		//fl_rectf(X, Y, W, H);
-	}
-	button_box()->inset(X,Y,W,H);
-	fl_push_clip(X,Y,W,H);
-	Y-=box()->dy();
+    int y, line, visLine, nCols, lineStart;
+    char lineNumString[12];
+    int lineHeight = mMaxsize ? mMaxsize : int(fl_height()+leading());
+    int charWidth = mMaxFontBound;
 
-	/* Draw the line numbers, aligned to the text */ 
-	nCols = min(11, mLineNumWidth / charWidth); 
-	y = Y+lineHeight;
-	line = get_absolute_top_line_number();
-	for (visLine=0; visLine < mNVisibleLines; visLine++) 
-	{ 
-		lineStart = mLineStarts[visLine]; 
-		if(lineStart != -1 && (lineStart==0 || buffer()->character(lineStart-1)=='\n')) 
-		{ 
-			sprintf(lineNumString, "%*d", nCols, line); 
-			fl_color(text_color());			
-			fl_draw(lineNumString, strlen(lineNumString), X, y);
-			line++; 
-		} else if(!clearAll) 
-		{ 
-			fl_color(button_color());
-			fl_rectf(X, y, W, int(fl_height()));
-			if (visLine == 0) 
-				line++; 
-		}
-		y += lineHeight; 
-	} 
+    /* Erase the previous contents of the line number area, if requested */
+    if (clearAll) {
+        fl_color(button_color());
+        button_box()->draw(X,Y,W,H,button_color());
+        //fl_rectf(X, Y, W, H);
+    }
+    button_box()->inset(X,Y,W,H);
+    fl_push_clip(X,Y,W,H);
+    Y-=box()->dy();
 
-	fl_pop_clip();
-} 
+    /* Draw the line numbers, aligned to the text */
+    nCols = min(11, mLineNumWidth / charWidth);
+    y = Y+lineHeight;
+    line = get_absolute_top_line_number();
+    for (visLine=0; visLine < mNVisibleLines; visLine++)
+    {
+        lineStart = mLineStarts[visLine];
+        if(lineStart != -1 && (lineStart==0 || buffer()->character(lineStart-1)=='\n'))
+        {
+            sprintf(lineNumString, "%*d", nCols, line);
+            fl_color(text_color());
+            fl_draw(lineNumString, strlen(lineNumString), X, y);
+            line++;
+        } else if(!clearAll)
+        {
+            fl_color(button_color());
+            fl_rectf(X, y, W, int(fl_height()));
+            if (visLine == 0)
+                line++;
+        }
+        y += lineHeight;
+    }
+
+    fl_pop_clip();
+}
 
 void Fl_Text_Display::set_linenumber_area(int left, int width)
 {

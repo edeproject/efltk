@@ -81,7 +81,7 @@ Fl_FontSize::Fl_FontSize(const char* name, int size, int charset) {
   GetTextMetrics(dc, &fl_fontsize->metr);
   //BOOL ret = GetCharWidthFloat(dc, metr.tmFirstChar, metr.tmLastChar, font->width+metr.tmFirstChar);
   //...would be the right call, but is not implemented into Window95! (WinNT?)
-  //GetCharWidth(dc, 0, 255, fl_fontsize->width);
+  GetCharWidth(dc, 0, 255, width);
 
   this->font = font;
   this->size = size;
@@ -165,7 +165,8 @@ float fl_height() {
 }
 
 float fl_descent() { return float(fl_fontsize->metr.tmDescent); }
-  
+
+/*
 float fl_width(const char* c, int n) {
   SIZE size;
   HDC dc = fl_getDC();
@@ -173,6 +174,17 @@ float fl_width(const char* c, int n) {
   // I think win32 has a fractional version of this:
   GetTextExtentPoint(dc, c, n, &size);
   return float(size.cx);
+}
+*/
+
+float fl_width(const char* c, int n) {
+    float w = 0;
+    while (n--) w += fl_fontsize->width[uchar(*c++)];
+    return w;
+}
+
+float fl_width(uchar c) {
+    return fl_fontsize->width[c];
 }
 
 void fl_transformed_draw(const char *str, int n, float x, float y) {
