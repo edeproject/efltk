@@ -74,6 +74,9 @@ typedef void (*Fl_Text_Modify_Cb)(int pos, int nInserted, int nDeleted,
                                   void* cbArg);
 typedef void (*Fl_Text_Predelete_Cb)(int pos, int nDeleted, void* cbArg);
 
+//Forward declare...
+class Fl_UndoNode_Stack;
+
 class FL_API Fl_Text_Buffer {
   public:
     Fl_Text_Buffer(int requestedSize = 0);
@@ -81,6 +84,11 @@ class FL_API Fl_Text_Buffer {
 
     char *Fl_Text_Buffer::static_buffer();
 
+    // Undo stack size: (default 50)
+    int undo_size();
+    void undo_size(int newsize);
+
+    // Returns insert position
     int undo();
     void add_undo(const char *str, int pos, int len, bool inserted, bool replaced);
 
@@ -227,7 +235,7 @@ class FL_API Fl_Text_Buffer {
 
     void update_selections(int pos, int nDeleted, int nInserted);
 
-    Fl_Ptr_Stack undo_stack;
+    Fl_UndoNode_Stack *undo_stack;
 
     Fl_Text_Selection mPrimary; /* highlighted areas */
     Fl_Text_Selection mSecondary;
