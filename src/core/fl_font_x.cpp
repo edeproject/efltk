@@ -244,7 +244,8 @@ float Fl_Device::width(unsigned int c) const
 Fl_Font fl_create_font(const char *system_name)
 {
     Fl_Font_ *f = new Fl_Font_;
-    f->name_ = system_name;
+    f->name_ = strdup(system_name);
+    //f->name_ = system_name;
     f->bold_ = f;
     f->italic_ = f;
     f->xlist_ = 0;
@@ -368,11 +369,49 @@ static char *find_best_font(Fl_Font_ *f, const char *fname, int size)
     return name;
 }
 
+static char *find_direct_font(const char *fname, int size)
+{
+    // search for largest <= font size:
+    char* name = (char*)fname;
+    int ptsize = 0; // best one found so far
+    static char namebuffer[1024]; // holds scalable font name
+
+    char* thisname = name;
+
+    char *c = (char*)fl_find_fontsize(thisname);
+    int thissize = c ? strtol(c,NULL,10) : MAXSIZE;
+
+    if (thissize == size) {
+        // exact match, use it:
+        name = thisname;
+        ptsize = size;
+        return name;
+    } 
+    else 
+    {
+        // Use a scalable font if no exact match found:
+        int l = c-thisname;
+        memcpy(namebuffer,thisname,l);
+        // print the pointsize into it:
+        if (size>=100) namebuffer[l++] = size/100+'0';
+        if (size>=10) namebuffer[l++] = (size/10)%10+'0';
+        namebuffer[l++] = (size%10)+'0';
+        //while (*c == '0') c++;
+	while (*c != '-') c++;
+        strcpy(namebuffer+l,c);
+        name = namebuffer;
+        ptsize = size;
+    } 
+
+    return name;
+}
+
+
+
 uint Fl_Font_::cache_xlist()
 {
     fl_open_display();
     if(xlist_) return xlist_n_;
-
     xlist_ = XListFonts(fl_display, name_, 255, &xlist_n_);
     return xlist_n_;
 }
@@ -387,7 +426,13 @@ Fl_FontSize *Fl_Font_::load_font(float psize)
         f->maxsize = 32767;
     } else {
         unsigned size = unsigned(psize);
-        char *name = find_best_font(this, name_, size);
+	char *name = 0;
+	if (name_ && name_[strlen(name_)-1] != '*') {
+    	    name = find_direct_font(name_, size);
+	}    
+	else {
+	    name = find_best_font(this, name_, size);
+	}   
         // okay, make the font:
         f = new Fl_FontSize(name);
         const char *enc = font_word(name, 13);

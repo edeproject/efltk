@@ -62,8 +62,12 @@ static Fl_Font grok_font(Fl_Config *cf, const char* fontstr)
     char* q;
     long l = strtoul(p, &q, 0);
     if (!*q) return fl_fonts+l;
-
-    return fl_find_font(p);
+    
+    if (p && p[0]=='-') 
+        return fl_create_font(p);
+    else	
+	return fl_find_font(p);
+    return 0;	
 }
 
 extern "C" bool fltk_theme()
