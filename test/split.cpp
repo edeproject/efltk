@@ -1,6 +1,7 @@
 #include <efltk/Fl.h>
 #include <efltk/Fl_Box.h>
 #include <efltk/Fl_ListView.h>
+#include <efltk/Fl_Button.h>
 #include <efltk/Fl_Group.h>
 #include <efltk/Fl_Window.h>
 
@@ -10,40 +11,44 @@ int main(int argc, char *argv[])
 {
     // First window demonstrates the use of Fl_Split with
     // the new layout style
-	Fl_Window *window = new Fl_Window(300,300,"Fl_Split and new style layout");
+	Fl_Window *window = new Fl_Window(640,480,"Fl_Split and new style layout");
 	Fl_Group *group = new Fl_Group(5,5,290,290);
 	window->resizable(group);
 	group->layout_align(FL_ALIGN_CLIENT);
 
 	group->begin();
 
+	//Fl_Group *listView1 = new Fl_Group("Left",40,FL_ALIGN_LEFT);
+	//listView1->color(FL_RED); listView1->box(FL_UP_BOX);
+	//Fl_Box *listView1 = new Fl_Box("Left",40,FL_ALIGN_LEFT);
 	Fl_ListView   *listView1 = new Fl_ListView("Left",40,FL_ALIGN_LEFT);
 	listView1->end();
-	listView1->add_column("column 1");
+	listView1->add_column("column 1", 200);
 	Fl_Split *split1  = new Fl_Split(listView1);
 
 	Fl_ListView   *listView2 = new Fl_ListView("Right",40,FL_ALIGN_RIGHT);
 	listView2->end();
-	listView2->add_column("column 1");
+	listView2->add_column("column 1", 200);
 	Fl_Split *split2  = new Fl_Split(listView2);
 
-	Fl_ListView   *listView3 = new Fl_ListView("Top",10,FL_ALIGN_TOP);
+	Fl_ListView   *listView3 = new Fl_ListView("Top",50,FL_ALIGN_TOP);
 	listView3->end();
 	Fl_Split *split3  = new Fl_Split(listView3);
-	listView3->add_column("column 1");
+	listView3->add_column("column 1", 200);
 
 	Fl_ListView   *listView4 = new Fl_ListView("Bottom",40,FL_ALIGN_BOTTOM);
 	listView4->end();
 	Fl_Split *split4  = new Fl_Split(listView4);
-	listView4->add_column("column 1");
+	listView4->add_column("column 1", 200);
 
+	//Fl_Button *b1 = new Fl_Button("Client", 40, FL_ALIGN_CLIENT);
 	Fl_ListView   *listView5 = new Fl_ListView("Client",40,FL_ALIGN_CLIENT);
 	listView5->end();
-	listView5->add_column("column 1");
+	listView5->add_column("column 1", 200);
 
 	Fl_ListView   *listView6 = new Fl_ListView("Left\nat\nthe\nend",40,FL_ALIGN_LEFT);
 	listView6->end();
-	listView6->add_column("column 1");
+	listView6->add_column("column 1", 200);
 
 	group->end();
 	window->end();
@@ -92,7 +97,6 @@ int main(int argc, char *argv[])
 	group->end();
 	window->end();
 	window->show();
-
 
 	return Fl::run();
 }
