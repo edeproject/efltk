@@ -1,5 +1,4 @@
 #include <efltk/xml/Fl_XmlDoc.h>
-#include <efltk/xml/Fl_XmlCtx.h>
 #include <efltk/xml/Fl_XmlParser.h>
 
 int Fl_XmlDoc::m_indent_spaces = 2;
@@ -117,7 +116,6 @@ Fl_XmlDocType::Fl_XmlDocType(const char *name, const char *public_id, const char
 }
 
 #include <efltk/fl_utf8.h>
-#include <efltk/Fl_Ptr_Hash.h>
 
 #include <ctype.h>
 #include <stdlib.h>

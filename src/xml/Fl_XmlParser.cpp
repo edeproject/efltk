@@ -1,10 +1,8 @@
 #include <config.h>
 
 #include <efltk/Fl_Exception.h>
-#include <efltk/Fl_Ptr_Hash.h>
 
 #include <efltk/xml/Fl_XmlParser.h>
-#include <efltk/xml/Fl_XmlCtx.h>
 #include <efltk/xml/Fl_XmlDoc.h>
 #include <efltk/xml/Fl_XmlNode.h>
 
