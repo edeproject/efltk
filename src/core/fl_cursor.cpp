@@ -337,7 +337,7 @@ void Fl_Window::cursor(Fl_Cursor c, Fl_Color fg, Fl_Color bg)
     {
         if (c >= FL_CURSOR_NS)
         {
-			TableEntry *q = (c > FL_CURSOR_NO) ? table+5 : table+(c-FL_CURSOR_NS);            
+            TableEntry *q = (c > FL_CURSOR_NO) ? table+5 : table+(c-FL_CURSOR_NS);
             if (!(q->cursor))
             {
                 XColor dummy;

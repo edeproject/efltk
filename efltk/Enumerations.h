@@ -190,6 +190,7 @@ enum Fl_Cursor {	// standard cursors
   FL_CURSOR_WE		= 79,
   FL_CURSOR_NWSE	= 80,
   FL_CURSOR_NESW	= 81,
+  FL_CURSOR_NO          = 82,
   FL_CURSOR_NONE	= 255,
   // for back compatability (non MSWindows ones):
   FL_CURSOR_N		= 70,

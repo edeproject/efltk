@@ -17,7 +17,7 @@ static void read_data_fn(png_structp /*png_ptr*/, png_bytep d, png_size_t length
 	png_io.read(d, length);
 }
 
-static void png_warning(png_structp png_ptr, png_const_charp message)
+static void my_png_warning(png_structp png_ptr, png_const_charp message)
 {
    char *name = "UNKNOWN (ERROR!)";
    if (png_ptr != NULL && png_ptr->error_ptr != NULL)
@@ -67,7 +67,7 @@ static bool png_create(uint8 *&data, Fl_PixelFormat &fmt, int &w, int &h)
 
 	if(setjmp (png_ptr->jmpbuf)) goto error;
 
-	png_set_error_fn(png_ptr, (png_voidp)0, png_warning, png_warning);
+	png_set_error_fn(png_ptr, (png_voidp)0, my_png_warning, my_png_warning);
 	png_set_read_fn(png_ptr, (png_voidp)0, read_data_fn);
 
 	png_read_info(png_ptr, info_ptr);

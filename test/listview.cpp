@@ -136,7 +136,7 @@ int main()
     Fl::init();
 
     im = Fl_Image::read_xpm(0, ball_xpm);
-    bg = new Fl_Image(WIDTH, HEIGHT, 24, make_image(), 0x0000FF, 0x00FF00, 0xFF0000, 0 ,0);
+    bg = new Fl_Image(WIDTH, HEIGHT, 24, make_image(), 0x0000FF, 0x00FF00, 0xFF0000, 0);
 
     //Fl_Double_Window w(300,300,"ListView Test");
     Fl_Window w(300, 300, "ListView Test");

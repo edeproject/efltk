@@ -115,7 +115,7 @@ int main(int argc, char ** argv) {
   Fl_Box image_box(140,200,120,120,0);
   make_image();
 
-  image_box.image(new Fl_Image(width, height, 24, image, 0x0000FF, 0x00FF00, 0xFF0000, 0 ,0));
+  image_box.image(new Fl_Image(width, height, 24, image, 0x0000FF, 0x00FF00, 0xFF0000, 0));
 
   Fl_Box b(140,320,120,0,"Example of fl_draw_image()");
   Pens p(80,200,3*8,120,"lines");

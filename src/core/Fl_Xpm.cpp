@@ -174,7 +174,7 @@ static int color_to_rgb(char *spec, uint32 *rgb)
         *rgb = 0xffffffff;
         return 1;
     }
-    RGB888_FROM_RGB((*rgb), x.red>>8, x.green>>8, x.blue>>8);
+    fl_rgb888_from_rgb((*rgb), x.red>>8, x.green>>8, x.blue>>8);
     return 1;
 #else
     /* poor man's rgb.txt */
