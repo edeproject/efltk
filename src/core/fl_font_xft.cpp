@@ -184,12 +184,21 @@ float Fl_Device::descent() { return fl_size_/4;}
 float Fl_Device::width(const char *str, int n)
 {
     XGlyphInfo i;
+#if HAVE_XUTF8    
+    XftTextExtentsUtf8(fl_display, current_font, (XftChar8 *)str, n, &i);
+#else    
     XftTextExtents8(fl_display, current_font, (XftChar8 *)str, n, &i);
+#endif    
     return i.xOff;
 }
 
-float Fl_Device::width(uchar c) {
-    return fl_width((const char *)(&c), 1);
+//float fl_width(uchar c) {
+//    return fl_width((const char *)(&c), 1);
+//}
+
+float Fl_Device::width(unsigned int c)
+{
+    return width((const char *)(&c), 1);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -214,6 +223,7 @@ void Fl_Drawable::free_gc()
         clipped_draw = 0;
     }
 };
+
 
 void Fl_Device::transformed_draw(const char *str, int n, float x, float y)
 {
@@ -250,9 +260,18 @@ void Fl_Device::transformed_draw(const char *str, int n, float x, float y)
     color.color.blue  = b*0x101;
     color.color.alpha = 0xffff;
 
+#if HAVE_XUTF8
+    XftDrawStringUtf8(draw, &color, current_font,
+#else    
     XftDrawString8(draw, &color, current_font,
+#endif    
                    int(floorf(x+.5f)), int(floorf(y+.5f)),
                    (XftChar8 *)str, n);
+}
+
+void Fl_Device::rtl_draw(const char *str, int n, float x, float y) 
+{
+    transformed_draw(str, n, x, y);
 }
 
 ////////////////////////////////////////////////////////////////
