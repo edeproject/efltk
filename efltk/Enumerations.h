@@ -63,6 +63,8 @@ typedef unsigned long long uint64;
 
 typedef unsigned char uchar;
 typedef unsigned long ulong;
+typedef unsigned short ushort;
+
 typedef signed int    int32;
 typedef unsigned int  uint32;
 typedef signed short  int16;

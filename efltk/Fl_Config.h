@@ -120,10 +120,10 @@ public:
 
     /**
      * Find section named 'name'.
-     * @param name of section to find
+     * @param section_name name of section to find
      * @param recursive set true to perform recursive search.
      */
-    Fl_Config_Section *find_section(const char *name, bool recursive=false) const;
+    Fl_Config_Section *find(const char *section_name, bool recursive=false) const;
 
 protected:
     Fl_Config_Section *m_parent;

@@ -30,14 +30,16 @@ typedef int (*Fl_Foreach_Function)(void *item,void *arg);
 /**
  * Fl_Ptr_List is implementation of EFLTK generic pointer-list...
  *
- * (More information about this class is comming soon :)
+ * (More information about this class is comming soon, or not.. :)
  */
 class FL_API Fl_Ptr_List {
 public:
     Fl_Ptr_List();
     virtual ~Fl_Ptr_List();
+
     virtual void clear();
-    void resize(uint newsize);
+
+    void resize(unsigned newsize);
 
     void auto_delete(bool val) { auto_delete_ = val; }
     bool auto_delete() { return auto_delete_; }
@@ -46,23 +48,24 @@ public:
     void blocksize(int s) { blocksize_ = s; }
     int blocksize() { return blocksize_; }
 
-    uint count() const { return size_; }
-    uint size() const { return size_; }
+    bool empty() const { return size_==0; }
+    unsigned count() const { return size_; }
+    unsigned size() const { return size_; }
 
     void append(void *item);
     void prepend(void *item);
 
-    void insert(uint pos, Fl_Ptr_List_Item item);
-    void replace(uint pos, Fl_Ptr_List_Item item);
+    void insert(unsigned pos, Fl_Ptr_List_Item item);
+    void replace(unsigned pos, Fl_Ptr_List_Item item);
 
-    void remove(uint pos);
+    void remove(unsigned pos);
     bool remove(Fl_Ptr_List_Item ptr);
 
     void sort(int (*fcmp)(const void *, const void *));
     int index_of(const Fl_Ptr_List_Item p) const;
 
-    Fl_Ptr_List_Item item(uint index) const;
-    Fl_Ptr_List_Item& operator [] (uint ind) const { return items[ind]; }
+    Fl_Ptr_List_Item item(unsigned index) const;
+    Fl_Ptr_List_Item& operator [] (unsigned ind) const { return items[ind]; }
 
     Fl_Ptr_List_Item *data() const { return items; }	
 
@@ -84,9 +87,9 @@ protected:
     bool auto_delete_;
 
 private:
-    uint blocksize_;
-    uint capacity_;
-    uint size_;
+    unsigned blocksize_;
+    unsigned capacity_;
+    unsigned size_;
 };
 
 #endif
