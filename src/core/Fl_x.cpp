@@ -89,6 +89,7 @@ int XConvertEucToUtf8(const char*   locale,
     return cvt;
 }
 
+#if HAVE_XUTF8
 int XUtf8LookupString(XIC                 ic,
     XKeyPressedEvent*   event,
     char*               buffer_return,
@@ -118,6 +119,7 @@ int XUtf8LookupString(XIC                 ic,
     }
     return len;
 }
+#endif
 
 ////////////////////////////////////////////////////////////////
 // interface to poll/select call:
