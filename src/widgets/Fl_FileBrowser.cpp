@@ -26,6 +26,10 @@
 // Contents:
 //   Fl_FileBrowser::load()         - Load a directory into the browser.
 //   Fl_FileBrowser::up()           - Up one directory, and load it
+//
+//
+// Sanel Z.: fixed refreshing content when default_callback() is done
+//
 
 #include <config.h>
 #include "../core/fl_internal.h"
@@ -192,7 +196,7 @@ static Fl_Pixmap hd_pix(datas_harddisk);
 #ifndef R_OK
 # define R_OK 04
 #endif
-
+#include <stdio.h>
 void Fl_File_Browser::default_callback(Fl_Widget *w, void *)
 {
     Fl_File_Browser *b = (Fl_File_Browser*)w;
@@ -202,15 +206,18 @@ void Fl_File_Browser::default_callback(Fl_Widget *w, void *)
     Fl_String dir(b->directory());
 
     if(b->item() != b->up_item()) {
-
         dir += b->item()->label(1);
 
         if(access(dir, R_OK)!=0) return;
 
         if(fl_is_dir(dir)) {
             b->load(dir);
-            b->redraw();
-            b->relayout();
+		  b->top_row(1);			// Dirty hack. It seems that there is bug in Fl_ListView refreshing
+		  b->resetup();			// so to avoid it we set up that each time we open directory
+		  b->relayout();			// we go to first row.
+    		  b->redraw();				
+		  b->parent()->relayout();
+     	  b->parent()->redraw();
         }
 
     } else {
@@ -293,7 +300,11 @@ void Fl_File_Browser::up()
     else dir = dir.sub_str(0, pos+1);
 
     load(dir);
+	resetup();
+    relayout();
     redraw();
+    parent()->relayout();
+    parent()->redraw();
 }
 
 // Returns relative selected filename.
@@ -325,8 +336,7 @@ int                                         // O - Number of files loaded
 
     clear();
     clear_columns();
-	sort_col(1);
-
+    sort_col(1);
     m_up_item = 0;
 
     if(dir.empty()) {
@@ -334,7 +344,7 @@ int                                         // O - Number of files loaded
 
         // No directory specified:
         //  - For UNIX list all mount points.
-        //  - For Woe32 list all valid drive letters.
+        //  - For Win32 list all valid drive letters.
 
         //icon      = Fl_FileIcon::find("any", Fl_FileIcon::DEVICE);
         //if (icon == (Fl_FileIcon *)0)
