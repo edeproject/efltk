@@ -180,7 +180,7 @@ endif
 
 depend:
 ifneq ($(CPPFILES), )
-	@echo Resolving depencies..
+	@echo Resolving dependencies..
 	@$(MAKEDEPEND) -I$(EFLTK_TOPDIR) $(CXXFLAGS) $(CPPFILES) $(CFILES) > makedepend
 	@sed -e "s'\.o'\.shared\.o'" makedepend > foo
 	@cat foo >> makedepend
