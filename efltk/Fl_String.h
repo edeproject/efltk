@@ -64,8 +64,10 @@ public:
     // operations
     Fl_String  operator +  (const char * s) const;
     Fl_String  operator +  (const Fl_String& s) const;
+    Fl_String  operator +  (const char s) const;
     Fl_String& operator += (const char * s);
     Fl_String& operator += (const Fl_String& s);
+    Fl_String& operator += (const char s);
 
     // usefull methods
     void clear();

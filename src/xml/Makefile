@@ -23,84 +23,78 @@
 # Please report all bugs and problems to "fltk-bugs@easysw.com".
 #
 
-OUT_MAGIC := $(shell mkdir ../lib > /dev/null 2>&1 || :)
+OUT_MAGIC := $(shell mkdir ../../lib > /dev/null 2>&1 || :)
 
-include ../makeinclude
+include ../../makeinclude
+
+CPPFILES = \
+	Fl_XmlCtx.cpp \
+        Fl_XmlDoc.cpp \
+        Fl_XmlNode.cpp \
+        Fl_XmlParser.cpp \
+        Fl_XmlTokenizer.cpp
+
+CFILES =
 
 ################################################################
 
 DSOCFLAGS += -DFL_LIBRARY
 DSOCXXFLAGS += -DFL_LIBRARY
 
-LIBNAME = libefltk
+LIBNAME = libefltk_xml
 DSOLIBNAME = $(LIBNAME)
-LIBRARY = ../lib/$(LIBNAME)
-DSO = ../lib/$(LIBNAME)
+LIBRARY = ../../lib/$(LIBNAME)
+DSO = ../../lib/$(LIBNAME)
 DSONAME = $(LIBNAME)$(DSOEXT)
 
 OBJECTS = $(CPPFILES:.cpp=.o) $(CFILES:.c=.o)
+STATIC_OBJECTS = $(OBJECTS:.o=.static.o)
+SHARED_OBJECTS = $(OBJECTS:.o=.shared.o)
 
 all: $(BUILDTARGETS)
 
-static:
-	@rm -f $(LIBRARY)$(LIBEXT)
-	$(MAKE) -C core static
-	$(MAKE) -C widgets static
-	$(MAKE) -C xutf static
-	$(MAKE) $(LIBRARY)$(LIBEXT)
-	$(MAKE) -C images static
-	$(MAKE) -C opengl static
-	$(MAKE) -C xml static
+static: $(LIBRARY)$(LIBEXT)
 
-shared:
-	rm -f $(LIBRARY)$(DSOEXT)
-	$(MAKE) -C core shared
-	$(MAKE) -C widgets shared
-	$(MAKE) -C xutf shared
-	$(MAKE) $(DSO)$(DSOEXT)
-	$(MAKE) -C images shared
-	$(MAKE) -C opengl shared
-	$(MAKE) -C xml shared
+shared: $(DSO)$(DSOEXT)
 
 programs:
 
-$(LIBRARY).a:
+$(LIBRARY).a: $(STATIC_OBJECTS)
+	@rm -f $@
 	@echo $(LIBCOMMAND) $@ ...
-	@$(LIBCOMMAND) $@ core/*.static.o widgets/*.static.o xutf/*.static.o
+	@$(LIBCOMMAND) $@ $(STATIC_OBJECTS)
 	@$(RANLIB) $@
 
-$(DSO).so.2 $(DSO).sl.2: $(OBJECTS:.o=.shared.o)
+$(DSO).so.2 $(DSO).sl.2: $(SHARED_OBJECTS)
 	@rm -f $@
 	@echo $(DSOCOMMAND) $(DSONAME) ...
-	@$(DSOCOMMAND) $(DSONAME) core/*.shared.o widgets/*.shared.o xutf/*.shared.o $(DSOLIBS)
+	@$(DSOCOMMAND) $(DSONAME) $(SHARED_OBJECTS) $(DSOLIBS)
 ifeq ($(HAVE_STRIP), 1) 
 	@$(STRIP) $(DSONAME)
 endif
 	@mv $(DSONAME) $@
 
 DLLIMPORTNAME = $(LIBNAME).2.dll$(LIBEXT)
-$(DSO).2.dll: $(OBJECTS:.o=.shared.o)
+$(DSO).2.dll: $(SHARED_OBJECTS)
 	@-rm -f $@
 	@echo $(DSOCOMMAND) $@ ...
-	@$(DSOCOMMAND) $@ core/*.shared.o widgets/*.shared.o xutf/*.shared.o $(DSOLIBS)
+	@$(DSOCOMMAND) $@ $(SHARED_OBJECTS) $(DSOLIBS)
 	-mv $@.import ../lib/$(DLLIMPORTNAME)
 
-clean:
-	$(MAKE) -C core clean
-	$(MAKE) -C widgets clean
-	$(MAKE) -C xutf clean
-	$(MAKE) -C images clean
-	$(MAKE) -C opengl clean
-	$(MAKE) -C xml clean
-	@rm -f *~ $(LIBRARY).*
+clean :
+	@rm -f *.o $(LIBRARY).* *~ makedepend
+	@touch makedepend
 
 depend:
-	$(MAKE) -C core depend
-	$(MAKE) -C widgets depend
-	$(MAKE) -C xutf depend
-	$(MAKE) -C images depend
-	$(MAKE) -C opengl depend
-	$(MAKE) -C xml depend
+	$(MAKEDEPEND) -I../.. $(CXXFLAGS) $(CPPFILES) $(CFILES) > makedepend
+	sed -e "s'\.o'\.shared\.o'" makedepend > foo
+	cat foo >> makedepend
+	rm foo
+
+# include dependency files if it exist
+ifeq (makedepend, $(wildcard makedepend))
+include makedepend
+endif
 
 ################################################################
 
@@ -113,10 +107,6 @@ install_static: static
 	@cp -f $(LIBRARY)$(LIBEXT) $(libdir)
 	@-chmod 644 $(libdir)/$(LIBNAME)$(LIBEXT)
 
-	$(MAKE) -C images install_static
-	$(MAKE) -C opengl install_static
-	$(MAKE) -C xml install_static
-
 install_shared: shared
 	@echo "Installing shared libraries..."
 	@rm -f $(libdir)/$(DLLIMPORTNAME)
@@ -126,11 +116,7 @@ install_shared: shared
 	@-chmod 755 $(libdir)/$(DSOLIBNAME)$(DSOEXT)
 	@if [ "$(DSOSHORTEXT)" ]; then \
 		ln -s $(DSOLIBNAME)$(DSOEXT) $(libdir)/$(DSOLIBNAME)$(DSOSHORTEXT); fi
-	@if [ -f "../lib/$(DLLIMPORTNAME)" ]; then cp ../lib/$(DLLIMPORTNAME) $(libdir); fi
-
-	$(MAKE) -C images install_shared
-	$(MAKE) -C opengl install_shared
-	$(MAKE) -C xml install_shared
+	@if [ -f "../../lib/$(DLLIMPORTNAME)" ]; then cp ../../lib/$(DLLIMPORTNAME) $(libdir); fi
 
 install_programs:
 

@@ -8,7 +8,6 @@
 // Internal define file for EFLTK
 // include ONLY from source files!
 
-
 ////////////////////////////////////////
 // NLS
 
@@ -155,68 +154,74 @@ extern void fl_allocate_xpixel(Fl_XColor& xmap, uchar r, uchar g, uchar b);
 #include <string.h>
 #include <stdio.h>
 
-// Used in image reader/writers
+// Used by image reader/writers
+// And XML
 class Fl_IO
 {
 public:
-	Fl_IO() { fp=0; buf=0; buf_size=buf_offset=0; }
-	Fl_IO(FILE *f) { init_io(f,0,0); }
-	Fl_IO(uint8 *b, uint32 size) { init_io(0, b, size); }
-	
-	void init_io(FILE *file_fp, uint8 *buffer, uint32 buffer_size) {
-		fp = file_fp;
-		buf = buffer;
-		buf_size = buffer_size;
-		buf_offset=0;
-	}
+    Fl_IO() { fp=0; buf=0; buf_size=buf_offset=0; }
+    Fl_IO(FILE *f) { init_io(f,0,0); }
+    Fl_IO(uint8 *b, uint32 size) { init_io(0, b, size); }
+
+    void init_io(FILE *file_fp, uint8 *buffer, uint32 buffer_size) {
+        fp = file_fp;
+        buf = buffer;
+        buf_size = buffer_size;
+        buf_offset=0;
+    }
 
 	uint read(void *b, int len) {
-		if(fp) {
-			return fread(b, 1, len, fp);
-		} else if(buf) {		
-			buf_offset+=len;
-			if(buf_offset<=buf_size) {
-				memcpy(b, buf+(buf_offset-len), len);				
-				return len;
-			}
-		}
-		return 0;
-	}
-	uint write(void *b, int len) {
-		if(fp) {			
-			return fwrite(b, 1, len, fp);
-		} else if(buf) {		
-			buf_offset+=len;
-			if(buf_offset<=buf_size) {
-				memcpy(buf+(buf_offset-len), b, len);
-				return len;
-			}
-		}
-		return 0;
-	}
-	uint seek(uint pos) {
-		if(fp) {
-			return fseek(fp, pos, SEEK_SET);
-		} else if(buf) {			
-			if(pos>buf_size) pos = buf_size;
-			buf_offset = pos;
-			return pos;
-		}
-		return 0;
-	}
-	uint tell() {
-		if(fp) {
-			return ftell(fp);
-		} else if(buf) {
-			return buf_offset;
-		}
-		return 0;
-	}
+            if(fp) {
+                return fread(b, 1, len, fp);
+            } else if(buf) {
+                buf_offset+=len;
+                if(buf_offset<=buf_size) {
+                    memcpy(b, buf+(buf_offset-len), len);
+                    return len;
+                }
+            }
+            return 0;
+        }
+    uint write(void *b, int len) {
+        if(fp) {
+            return fwrite(b, 1, len, fp);
+        } else if(buf) {
+            buf_offset+=len;
+            if(buf_offset<=buf_size) {
+                memcpy(buf+(buf_offset-len), b, len);
+                return len;
+            }
+        }
+        return 0;
+    }
+    uint seek(uint pos) {
+        if(fp) {
+            return fseek(fp, pos, SEEK_SET);
+        } else if(buf) {
+            if(pos>buf_size) pos = buf_size;
+            buf_offset = pos;
+            return pos;
+        }
+        return 0;
+    }
+    uint tell() {
+        if(fp) {
+            return ftell(fp);
+        } else if(buf) {
+            return buf_offset;
+        }
+        return 0;
+    }
+    bool eos() {
+        if(fp) return feof(fp)!=0;
+        else if(buf) return buf_offset>=buf_size;
+        return true;
+    }
 
-	FILE *fp;
-	uint8 *buf;
-	uint32 buf_size;
-	uint32 buf_offset;	
+    FILE *fp;
+    uint8 *buf;
+    uint32 buf_size;
+    uint32 buf_offset;
 };
 
 #endif

@@ -14,6 +14,7 @@ CPPFILES = \
 	Fl_Image.cpp \
 	Fl_Image_Filter.cpp \
 	Fl_Lists.cpp \
+	Fl_Maps.cpp \
 	Fl_Pixmap.cpp \
 	Fl_Renderer.cpp \
 	Fl_String.cpp \
