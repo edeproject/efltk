@@ -17,20 +17,40 @@
 
 #include <efltk/db/Fl_ODBC_Database.h>
 #include <efltk/db/Fl_Query.h>
+#include "fl_odbc.h"
 
-void Fl_ODBC_Database::open(const Fl_String connString) {
-   if (connString != m_connString) {
-      close();
-      m_connString = connString;
-      open_connection();
-   }
+void Fl_ODBC_Database::open_connection() {
 }
 
-void Fl_ODBC_Database::close() {
-   unsigned cnt = m_queryList.count();
-   for (unsigned i = 0; i < cnt; i++) {
-      ((Fl_Query *)m_queryList[i])->close();
-   }
-   close_connection();
-   m_active = false;
+void Fl_ODBC_Database::close_connection() {
+}
+
+void Fl_ODBC_Database::begin_transaction() {
+}
+
+void Fl_ODBC_Database::commit_transaction() {
+}
+
+void Fl_ODBC_Database::rollback_transaction() {
+}
+
+void Fl_ODBC_Database::allocate_query(Fl_Query *query) {
+}
+
+void Fl_ODBC_Database::deallocate_query(Fl_Query *query) {
+}
+
+void Fl_ODBC_Database::prepare_query(Fl_Query *query) {
+}
+
+void Fl_ODBC_Database::open_query(Fl_Query *query) {
+}
+
+void Fl_ODBC_Database::fetch_query(Fl_Query *query) {
+}
+
+void Fl_ODBC_Database::close_query(Fl_Query *query) {
+}
+
+void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
 }
