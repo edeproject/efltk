@@ -761,6 +761,7 @@ void Fl_Table_Base::recalc_dimensions()
         hscrollbar->resize(hor_x, hor_y,
                            wiw - (vscrollbar->visible()?vscrollbar->w():0), hscrollbar->h());
         hscrollbar->value(xposition(), tiw, 0, table_w);
+
     }
 }
 
