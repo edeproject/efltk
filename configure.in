@@ -135,6 +135,7 @@ FLGLLIB="../lib/libefltk_gl${DSOEXT}"
 FLGLUTLIB="../lib/libefltk_glut${DSOEXT}"
 FLFORMSLIB="../lib/libefltk_forms${DSOEXT}"
 FLIMAGESLIB="../lib/libefltk_images${DSOEXT}"
+FLXMLLIB="../lib/libefltk_xml${DSOEXT}"
 CFLAGS="-DFL_SHARED $CFLAGS"
 CXXFLAGS="-DFL_SHARED $CXXFLAGS"
 case $uname in
@@ -144,6 +145,7 @@ case $uname in
 	    FLGLUTLIB="../lib/libefltk_glut.2.dll.a"
 	    FLFORMSLIB="../lib/libefltk_forms.2.dll.a"
 	    FLIMAGESLIB="../lib/libefltk_images.2.dll.a"
+	    FLXMLLIB="../lib/libefltk_xml.2.dll.a"
 	;;
 esac
 
@@ -156,6 +158,7 @@ if test x$enable_static = xyes; then
 	FLGLUTLIB="../lib/libefltk_glut${LIBEXT}"
 	FLFORMSLIB="../lib/libefltk_forms${LIBEXT}"
 	FLIMAGESLIB="../lib/libefltk_images${LIBEXT}"
+	FLXMLLIB="../lib/libefltk_ext${LIBEXT}"
 	CFLAGS="${CFLAGS:=}"
 	CXXFLAGS="${CXXFLAGS:=}"
 fi
@@ -167,6 +170,7 @@ AC_SUBST(FLGLLIB)
 AC_SUBST(FLGLUTLIB)
 AC_SUBST(FLFORMSLIB)
 AC_SUBST(FLIMAGESLIB)
+AC_SUBST(FLXMLLIB)
 AC_SUBST(DSOLIBS)
 AC_SUBST(BUILDTARGETS)
 AC_SUBST(INSTALLTARGETS)
