@@ -57,13 +57,13 @@ Fl_String::Fl_String(const char *s, int maxlen, bool pre_allocated)
 Fl_String::Fl_String(char c, int repeater)
 {
     if (repeater == 1) {
-        str_ = (char*)malloc(1);
+        str_ = (char*)malloc(2);
         str_[0] = c;
     } else {
         str_ = (char*)malloc(repeater + 1);
         memset(str_, c, repeater);
-        str_[repeater] = '\0';
     }
+    str_[repeater] = '\0';
     len_ = strlen(str_);
 }
 
