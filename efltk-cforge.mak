@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x400275
+# %FirstUniqueId:	0x400284
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -30,7 +30,7 @@ IDE_BLIND_LIBS = -L./
 
 MAKEFLAGS = $(MAKEOPTIONS)
 
-MAKEOPTIONS = -j4
+MAKEOPTIONS = -j1
 
 CCLINK = $(CC)
 
@@ -1800,45 +1800,45 @@ test/cube.o : test/cube.cpp
 
 
 # %TargetType:	C++_OBJ
-# %ParentTarget:	0x40026b
-# %SourceTarget:	0x40026c
-lib/Fl_Gl_Choice.o : src/Fl_Gl_Choice.cpp
-	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
-
-
-# %TargetType:	C++_OBJ
-# %ParentTarget:	0x40026b
-# %SourceTarget:	0x40026d
-lib/Fl_Gl_Overlay.o : src/Fl_Gl_Overlay.cpp
-	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
-
-
-# %TargetType:	C++_OBJ
-# %ParentTarget:	0x40026b
-# %SourceTarget:	0x40026e
-lib/Fl_Gl_Window.o : src/Fl_Gl_Window.cpp
-	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
-
-
-# %TargetType:	C++_OBJ
-# %ParentTarget:	0x40026b
-# %SourceTarget:	0x40026f
-lib/gl_draw.o : src/gl_draw.cpp
-	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
-
-
-# %TargetType:	C++_OBJ
-# %ParentTarget:	0x40026b
-# %SourceTarget:	0x400270
-lib/gl_start.o : src/gl_start.cpp
-	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
-
-
-# %TargetType:	C++_OBJ
 # %ParentTarget:	0x400272
 # %SourceTarget:	0x400273
 test/cursor.o : /distr/develop/CVS/efltk/test/cursor.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40026b
+# %SourceTarget:	0x40027f
+lib/Fl_Gl_Choice.o : src/opengl/Fl_Gl_Choice.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40026b
+# %SourceTarget:	0x400280
+lib/Fl_Gl_Overlay.o : src/opengl/Fl_Gl_Overlay.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40026b
+# %SourceTarget:	0x400281
+lib/Fl_Gl_Window.o : src/opengl/Fl_Gl_Window.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40026b
+# %SourceTarget:	0x400282
+lib/gl_draw.o : src/opengl/gl_draw.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40026b
+# %SourceTarget:	0x400283
+lib/gl_start.o : src/opengl/gl_start.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
 
 
 # DO NOT DELETE
@@ -5870,6 +5870,37 @@ test/cube.o :	efltk/gl.h\
 	efltk/Fl_Box.h\
 	efltk/Fl.h\
 	config.h
+test/cursor.o :	efltk/Fl_Box.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/fl_draw.h\
+	efltk/Fl_Choice.h\
+	efltk/Fl_Menu_.h\
+	efltk/Fl_Menu_Item.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Hor_Value_Slider.h\
+	efltk/Fl_Value_Slider.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Window.h\
+	efltk/Fl.h
 lib/Fl_Gl_Choice.o :	src/opengl/Fl_Gl_Choice.h\
 	efltk/gl.h\
 	efltk/Fl_Font.h\
@@ -6008,37 +6039,6 @@ lib/gl_start.o :	efltk/fl_draw.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl.h\
 	config.h
-test/cursor.o :	efltk/Fl_Box.h\
-	efltk/Fl_Widget.h\
-	efltk/Fl_Data_Source.h\
-	efltk/Fl_Data_Fields.h\
-	efltk/Fl_Flags.h\
-	efltk/Fl_Ptr_List.h\
-	efltk/Enumerations.h\
-	efltk/Fl_Export.h\
-	efltk/Fl_Variant.h\
-	efltk/Fl_Date_Time.h\
-	efltk/Fl_String.h\
-	efltk/Fl_Exception.h\
-	efltk/Fl_Style.h\
-	efltk/Fl_Font.h\
-	efltk/Fl_Int_List.h\
-	efltk/Fl_String_List.h\
-	efltk/Fl_Labeltype.h\
-	efltk/Fl_Color.h\
-	efltk/Fl_Boxtype.h\
-	efltk/fl_draw.h\
-	efltk/Fl_Choice.h\
-	efltk/Fl_Menu_.h\
-	efltk/Fl_Menu_Item.h\
-	efltk/Fl_Group.h\
-	efltk/Fl_Widget_List.h\
-	efltk/Fl_Hor_Value_Slider.h\
-	efltk/Fl_Value_Slider.h\
-	efltk/Fl_Slider.h\
-	efltk/Fl_Valuator.h\
-	efltk/Fl_Window.h\
-	efltk/Fl.h
 
 
 # %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x4
@@ -6231,11 +6231,7 @@ test/cursor.o :	efltk/Fl_Box.h\
 # %TargetInfo test/clock.cpp	SourceOrHeader,	UniqueId=0x40025f,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/color_chooser.cpp	SourceOrHeader,	UniqueId=0x400263,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/cube.cpp	SourceOrHeader,	UniqueId=0x400267,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/Fl_Gl_Choice.cpp	SourceOrHeader,	UniqueId=0x40026c,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/Fl_Gl_Overlay.cpp	SourceOrHeader,	UniqueId=0x40026d,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/Fl_Gl_Window.cpp	SourceOrHeader,	UniqueId=0x40026e,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/gl_draw.cpp	SourceOrHeader,	UniqueId=0x40026f,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/gl_start.cpp	SourceOrHeader,	UniqueId=0x400270,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo /distr/develop/CVS/efltk/test/cursor.cpp	SourceOrHeader,	UniqueId=0x400273,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400056,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x4
@@ -6446,8 +6442,12 @@ test/cursor.o :	efltk/Fl_Box.h\
 # %TargetInfo efltk/Fl_Gl_Window.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400269,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Radio_Light_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40026a,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo src/opengl/Fl_Gl_Choice.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400271,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo /distr/develop/CVS/efltk/test/cursor.cpp	SourceOrHeader,	UniqueId=0x400273,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo efltk/Fl_Hor_Value_Slider.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400274,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo src/opengl/Fl_Gl_Choice.cpp	SourceOrHeader,	UniqueId=0x40027f,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/opengl/Fl_Gl_Overlay.cpp	SourceOrHeader,	UniqueId=0x400280,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/opengl/Fl_Gl_Window.cpp	SourceOrHeader,	UniqueId=0x400281,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/opengl/gl_draw.cpp	SourceOrHeader,	UniqueId=0x400282,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/opengl/gl_start.cpp	SourceOrHeader,	UniqueId=0x400283,	TargetType=C++,	IDEFlags=0x4
 
 
 # %UniqueId:	0x400001
