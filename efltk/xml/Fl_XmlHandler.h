@@ -39,7 +39,7 @@ public:
     virtual void cdata(Fl_String &/*cdata*/) { }
 
     // Called when a comment section ended
-    virtual void comment(Fl_String &/*cdata*/) { }
+    virtual void comment(Fl_String &/*comment*/) { }
 };
 
 #endif
