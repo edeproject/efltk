@@ -9129,6 +9129,7 @@ lib/Fl_Button_Group.o :	efltk/db/Fl_Query.h\
 	efltk/Fl_Input.h\
 	efltk/Fl_Group.h\
 	efltk/Fl_Widget_List.h\
+	efltk/Fl_Map.h\
 	efltk/fl_draw.h\
 	efltk/Fl_Device.h\
 	efltk/Fl_Round_Button.h\
