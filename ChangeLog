@@ -1,0 +1,630 @@
+2002-09-13 18:39  laza2000
+
+	* efltk-config.in: Bumped version up to 2.0.3, which matches header
+	file version
+
+2002-09-12 21:37  laza2000
+
+	* src/widgets/: Fl_Input.cpp, Fl_Text_Display.cpp:  - Made Fl_Input
+	draw selection if it has menu up
+	 - Fixed redraw bug in Fl_Text_Display, when scrolling with arrow
+	keys
+
+2002-09-12 21:23  laza2000
+
+	* src/widgets/Fl_ListView_Item.cpp: Removed old unneeded
+	constructor
+
+2002-09-12 21:22  laza2000
+
+	* efltk/Fl_ListView_Item.h: Removed old unneeded contructor
+
+2002-09-12 20:15  cortex
+
+	* fluid/: Fl_Widget_Type.cxx, function_panel.cxx,
+	function_panel.fl, function_panel.h, widget_panel.cxx,
+	widget_panel.fl, widget_panel.h: Replaced Return button with normal
+	one to be able to write more lines in callback input
+
+2002-09-12 17:18  laza2000
+
+	* src/widgets/Fl_Input.cpp: MOUSEWHEEL event fakes up and down
+	arrow clicks :) i.e. possible to scroll text with mousewheel.
+
+2002-09-12 11:09  laza2000
+
+	* src/widgets/: Fl_MDI_Window.cpp, Fl_Text_Display.cpp,
+	Fl_Text_Editor.cpp:  - Fixed Fl_Text_Display redraw bug
+	 - Added menu when right click in Fl_Text_Display
+
+2002-09-12 09:56  laza2000
+
+	* efltk/Fl_MDI_Window.h, efltk/Fl_Main_Window.h,
+	efltk/Fl_Workspace.h, src/core/Fl_Widget.cpp,
+	src/core/Fl_Window.cpp, src/core/Fl_x.cpp,
+	src/widgets/Fl_Choice.cpp, src/widgets/Fl_MDI_Window.cpp,
+	src/widgets/Fl_Main_Window.cpp, src/widgets/Fl_Menu.cpp,
+	src/widgets/Fl_Menu_Bar.cpp, src/widgets/Fl_Pack.cpp,
+	src/widgets/Fl_Text_Editor.cpp, src/widgets/Fl_Tool_Bar.cpp,
+	src/widgets/Fl_Workspace.cpp, test/mdi_test.cpp, test/pack.cpp,
+	themes/essai.cpp:  - Redraw fixes for MDI workspace, works with
+	themes now.
+	 - more redraw fixes... :)
+
+2002-09-11 17:11  laza2000
+
+	* themes/essai.cpp: Blue image for Fl_Pack
+
+2002-09-11 16:36  laza2000
+
+	* efltk/Fl_WM.h, src/core/Fl_WM.cpp: Added some WM functions to
+	Fl_WM module
+
+2002-09-10 17:51  laza2000
+
+	* Makefile, efltk/Fl_Config.h, efltk/Fl_Help_Dialog.h,
+	efltk/Fl_Main_Window.h, efltk/Fl_ProgressBar.h, efltk/Fl_WM.h,
+	efltk/Fl_Window.h, src/core/Fl.cpp, src/core/Fl_Config.cpp,
+	src/core/Fl_WM.cpp, src/core/Fl_Window.cpp, src/core/Fl_win32.cpp,
+	src/core/Fl_x.cpp, src/core/Makefile, src/core/fl_draw.cpp,
+	src/core/fl_font_win32.cpp, src/core/fl_font_x.cpp,
+	src/core/fl_font_xft.cpp, src/core/fl_labeltype.cpp,
+	src/core/fl_vertex.cpp, src/widgets/Fl_Adjuster.cpp,
+	src/widgets/Fl_Button.cpp, src/widgets/Fl_Choice.cpp,
+	src/widgets/Fl_Help_Dialog.cpp, src/widgets/Fl_Input.cpp,
+	src/widgets/Fl_Item.cpp, src/widgets/Fl_Light_Button.cpp,
+	src/widgets/Fl_Main_Window.cpp, src/widgets/Fl_Menu.cpp,
+	src/widgets/Fl_ProgressBar.cpp, src/widgets/Fl_Return_Button.cpp,
+	src/widgets/Fl_Simple_Html.cpp, src/widgets/Fl_Slider.cpp,
+	src/widgets/Fl_Tool_Bar.cpp, src/widgets/Fl_Valuator.cpp,
+	src/widgets/fl_symbols.cpp, test/demo.menu, test/hello.cpp,
+	test/menubar.cpp, test/preferences.cpp, test/preferences.fl,
+	test/progress.cpp, themes/essai.cpp:  - Merged with Bill Spitzak
+	FLTK2 rint() -> floor() code
+	 - Added Fl_WM class for getting information about WM and set
+	window options
+	 - More work with themes
+	 - Fixed menu selection draw, when many submenus open
+	 - Fl_Simple_Html widget supports now variable scrollbar width
+	 - Made Fl_ProgressBar themeable
+
+2002-09-08 02:10  laza2000
+
+	* configh.in, configure.in, efltk/Enumerations.h,
+	efltk/Fl_Config.h, efltk/Fl_Main_Window.h, efltk/Fl_Tool_Bar.h,
+	src/core/Fl.cpp, src/core/Fl_Config.cpp, src/core/Fl_Style.cpp,
+	src/core/fl_theme.cpp, src/widgets/Fl_Main_Window.cpp,
+	src/widgets/Fl_Tool_Bar.cpp, test/Makefile, test/hello.cpp,
+	test/menubar.cpp, test/preferences.cpp, test/preferences.fl,
+	test/preferences.h, themes/essai.cpp: Fl_Config read/write methhods
+	re-written.  This update deletes all old read_*/write_* methods. 
+	Why? Cause they not safe, And they allocated/de-allocated memory
+	all the time, which is not good. So, replacement: read_* ->
+	read(key, ret_value, def_value) write_* -> write(key, value) These
+	functions assumes that current section set by set_section.  Or
+	functions without need for set_section: set(section, key,
+	ret_value, def_value) get(section, key, value)
+	
+	All methods returns error now, so it's possible to do:
+	if(!config.read(...)) { do something }
+	
+	It is also possible to pass non-allocated char pointer to read
+	functions, it needs to be freed by user then. Allocation is
+	possible with pointer-to-reference system.
+	
+	Sorry, about changing this again, but speed and small memory
+	footprint is our trademark! :)
+	
+	----------------
+	
+	Added Fl_Config(vendor, application, mode) This could easily used
+	with apps. mode is either USER or SYSTEM if USER then filename is
+	$(home)/.ede/apps/$(application)/$(application).conf or if SYSTEM
+	it's $(prefix)/share/ede/apps/$(application)/$(application).conf
+	
+	-------------------
+
+2002-09-07 14:35  laza2000
+
+	* themes/: Makefile, bg.xpm, bg2.xpm, bg3.xpm, essai.cpp,
+	makedepend: Added first theme!
+
+2002-09-07 14:32  laza2000
+
+	* efltk/Fl_File_Dialog.h, efltk/Fl_Image.h, efltk/Fl_ListView.h,
+	efltk/Fl_Pack.h, efltk/Fl_Pixmap.h, efltk/Fl_Renderer.h,
+	fluid/fluid.cxx, src/core/Fl_Bitmap.cpp, src/core/Fl_Group.cpp,
+	src/core/Fl_Image.cpp, src/core/Fl_Pixmap.cpp,
+	src/core/Fl_Renderer.cpp, src/core/Fl_Widget.cpp,
+	src/core/Makefile, src/core/fl_clip.cpp,
+	src/core/fl_draw_image_x.cpp, src/core/fl_draw_pixmap.cpp,
+	src/widgets/Fl_Browser.cpp, src/widgets/Fl_File_Dialog.cpp,
+	src/widgets/Fl_Input.cpp, src/widgets/Fl_Input_Browser.cpp,
+	src/widgets/Fl_ListView.cpp, src/widgets/Fl_Menu.cpp,
+	src/widgets/Fl_Menu_Bar.cpp, src/widgets/Fl_Pack.cpp,
+	src/widgets/Fl_Scroll.cpp, src/widgets/Fl_Workspace.cpp,
+	test/demo.cpp, test/image.cpp, test/inactive.cpp, test/menubar.cpp:
+	 - Various fixes for Fl_File_Dialog key handling
+	 - Fixed all named styles
+	 - Some drawing fixes for theming
+	 - Fixed XPM mask rendering
+	 - Changed image tile code.
+	 - Added Fl_Pixmap / fl_draw_pixmap back for compatibility
+	 - Some menu draw changes for theming
+	 - ... :)
+
+2002-09-06 02:55  laza2000
+
+	* test/menubar.cpp: delete multiple menu entries, used when i
+	debuged large menu :)
+
+2002-09-06 02:54  laza2000
+
+	* Makefile, efltk/Fl_Boxtype.h, efltk/Fl_Choice.h,
+	fluid/Fl_Menu_Type.cxx, fluid/Fl_Widget_Type.cxx, fluid/fluid.cxx,
+	fluid/widget_panel.cxx, fluid/widget_panel.fl,
+	fluid/widget_panel.h, src/core/fl_glyph.cpp,
+	src/widgets/Fl_Boxtype.cpp, src/widgets/Fl_Choice.cpp,
+	src/widgets/Fl_Menu.cpp, src/widgets/Fl_Menu_Bar.cpp,
+	src/widgets/fl_diamond_box.cpp, src/widgets/fl_oval_box.cpp,
+	src/widgets/fl_plastic_box.cpp, src/widgets/fl_round_box.cpp,
+	src/widgets/fl_rounded_box.cpp, src/widgets/fl_shadow_box.cpp,
+	test/menubar.cpp:  - Fixed Menu_Bar redraw bug.
+	 - Changed Fl_Choice to work way it works in fltk2
+	 - Fixed many menu related minor bugs
+	 - Fixed all boxtype names
+	 - Added couple of new boxtypes to EFluid
+
+2002-09-05 12:51  laza2000
+
+	* efltk/Fl_File_Dialog.h, src/widgets/Fl_File_Dialog.cpp: Changed
+	Fl_File_Dialog to use FL_PATH_MAX in every filename buffer
+
+2002-09-05 12:47  laza2000
+
+	* test/demo.cpp: Removed #include "tile.xpm"
+
+2002-09-05 11:55  laza2000
+
+	* efltk/Fl_Color_Chooser.h, src/widgets/Fl_Color_Chooser.cpp,
+	src/widgets/Fl_Valuator.cpp, src/widgets/Fl_Value_Input.cpp,
+	test/demo.cpp, test/demo.menu, test/valuators.cpp,
+	test/valuators.fl:  - Fixed infinite loop in Fl_Value_Input
+	 - Use CIRCLE in Fl_Color_Chooser
+	 - Demo program uses MAC style tile bg :)
+
+2002-09-04 18:18  laza2000
+
+	* src/widgets/fl_engraved_label.cpp: Shadow down to text, not up...
+
+2002-09-04 17:55  laza2000
+
+	* efltk/: Fl_Locale.h, Fl_Renderer.h: Added #ifdef HAVE_CONFIG_H
+
+2002-09-04 17:54  laza2000
+
+	* configh.in, configure.in, makeinclude.in: Added --disable-nls and
+	-DHAVE_CONFIG_H for CXXFLAGS
+
+2002-09-04 17:23  laza2000
+
+	* src/core/fl_stretch.cpp: Uses DISABLE_ASM define for disabling
+	ASM
+
+2002-09-04 17:21  laza2000
+
+	* configh.in, configure.in:  - Now builds shared libs as default
+	 - Added --enable-static, --disable-duffs, --disable-asm
+
+2002-09-04 03:10  laza2000
+
+	* src/widgets/fl_engraved_label.cpp: Drop shadow to left side.
+
+2002-09-04 02:57  laza2000
+
+	* src/widgets/: Fl_Valuator.cpp, Fl_Value_Input.cpp: Fixes for
+	Fl_Value_Input, buttons didnt work, when step>linesize
+
+2002-09-04 02:17  laza2000
+
+	* efltk/Fl_Image.h, fluid/Fluid_Image.cxx, src/core/Fl_Bmp.cpp,
+	src/core/Fl_Gif.cpp, src/core/Fl_Image.cpp, src/core/Fl_Xpm.cpp,
+	src/images/Fl_Jpeg.cpp, src/images/Fl_Png.cpp,
+	src/widgets/Fl_File_Dialog.cpp, src/widgets/Fl_Help_Dialog.cpp,
+	src/widgets/Fl_Simple_Html.cpp, src/widgets/Pixmaps.h,
+	test/browser.cpp, test/file_small.xpm, test/folder_small.xpm,
+	test/image.cpp, test/multi_image.cpp, test/porsche.xpm: Added
+	read_xpm() function to Fl_Image for XPM reading. Since it was very
+	type unsafe, when casting char** to void* and back, it caused some
+	problems. So now on, inlined XPM's should be readed with
+	Fl_Image::read_xpm() and all other types with Fl_Image::read().
+	
+	- Fixed tests to follow this change.  - Fixed fluid work with this.
+
+2002-09-04 00:42  laza2000
+
+	* src/core/Fl_Image.cpp: Added check to read function, if passed
+	filename exists and data!=0
+
+2002-09-04 00:22  laza2000
+
+	* efltk/Fl_Menu_.h, efltk/Fl_Menu_Window.h,
+	src/core/fl_labeltype.cpp, src/widgets/Fl_Menu.cpp,
+	src/widgets/Fl_Menu_.cpp, src/widgets/Fl_Menu_Window.cpp,
+	src/widgets/makedepend:  - Added anim_speed function to Fl_Menu_
+	 - Added static default step_divider variable to Fl_Menu_Window
+	 - Menu_Window uses now step_divider... forgot...
+
+2002-09-03 22:26  laza2000
+
+	* src/core/Fl_Config.cpp: DOOH!! Fixed very stupid bug, which made
+	read_bool always make error if value was false...
+
+2002-09-03 22:12  laza2000
+
+	* efltk/Fl_Divider.h: Added Fl_Menu_Divider.
+
+2002-09-03 22:12  laza2000
+
+	* fluid/Fl_Menu_Type.cxx: Uses now Fl_Menu_Divider for menus
+
+2002-09-03 21:45  laza2000
+
+	* fluid/: Fl_Menu_Type.cxx, factory.cxx: Added Fl_Divider to Others
+	menu.
+
+2002-09-03 21:31  laza2000
+
+	* src/widgets/: Fl_Menu.cpp, makedepend: Fixed bug, which caused
+	crash when executing item in submenu.
+
+2002-09-03 20:00  laza2000
+
+	* fluid/Fl_Window_Type.cxx: Removed debug message.
+
+2002-09-03 19:34  laza2000
+
+	* fluid/Fl_Type.cxx, src/core/Fl_Config.cpp, src/core/Fl_Util.cpp,
+	src/widgets/Fl_Menu.cpp, src/widgets/Fl_Menu_Window.cpp,
+	test/Makefile, test/clock.cpp, test/makedepend, test/menubar.cpp: 
+	- Fixed strange Fl_Choice behaviour in fluid, this was cause I used
+	totally different draw method in Fl_Menu and Fluid implement it's
+	own list system for menu and didnt change Fl_Widget when changing
+	item, only one widget label.   - Regenerated some fluid files.	 -
+	Remove makedepend also in test dir
+
+2002-09-03 14:25  laza2000
+
+	* src/core/Makefile, src/images/Makefile, src/opengl/Makefile,
+	src/widgets/Makefile, test/makedepend: added OUT_MAGIC in makefiles
+	:)
+
+2002-09-03 14:16  laza2000
+
+	* src/core/: ARRAY.h, Fl.cpp, Fl_Bitmap.cpp, Fl_Bmp.cpp,
+	Fl_Config.cpp, Fl_Gif.cpp, Fl_Group.cpp, Fl_Image.cpp,
+	Fl_Image_Filter.cpp, Fl_Renderer.cpp, Fl_String.cpp, Fl_Style.cpp,
+	Fl_Style_Set.cpp, Fl_Thread.cpp, Fl_Util.cpp, Fl_Widget.cpp,
+	Fl_Window.cpp, Fl_Window_fullscreen.cpp, Fl_Window_hotspot.cpp,
+	Fl_Window_iconize.cpp, Fl_XColor.h, Fl_Xpm.cpp, Fl_abort.cpp,
+	Fl_add_idle.cpp, Fl_arg.cpp, Fl_compose.cpp, Fl_display.cpp,
+	Fl_get_key.cpp, Fl_get_key_win32.cpp, Fl_key_name.cpp, Fl_lock.cpp,
+	Fl_own_colormap.cpp, Fl_visual.cpp, Fl_win32.cpp, Fl_x.cpp,
+	Makefile, cmap.cpp, filename_absolute.cpp, filename_expand.cpp,
+	filename_ext.cpp, filename_isdir.cpp, filename_list.cpp,
+	filename_match.cpp, filename_setext.cpp, fl_arc.cpp, fl_arci.cpp,
+	fl_blit.cpp, fl_blit_1.cpp, fl_blit_a.cpp, fl_blit_n.cpp,
+	fl_call_main.c, fl_clip.cpp, fl_cmap.h, fl_color.cpp,
+	fl_color_win32.cpp, fl_color_x.cpp, fl_cursor.cpp, fl_curve.cpp,
+	fl_dnd.cpp, fl_dnd_win32.cpp, fl_dnd_x.cpp, fl_draw.cpp,
+	fl_draw_image.cpp, fl_draw_image_win32.cpp,
+	fl_draw_image_win32_2.cpp, fl_draw_image_x.cpp,
+	fl_draw_image_x_2.cpp, fl_errordiff.h, fl_font.cpp,
+	fl_font_win32.cpp, fl_font_x.cpp, fl_font_xft.cpp, fl_glyph.cpp,
+	fl_labeltype.cpp, fl_list_fonts.cpp, fl_list_fonts_win32.cpp,
+	fl_list_fonts_x.cpp, fl_load_plugin.cpp, fl_locale.cpp, fl_map.cpp,
+	fl_overlay.cpp, fl_overlay_visual.cpp, fl_rect.cpp, fl_rgb.cpp,
+	fl_scroll_area.cpp, fl_stretch.cpp, fl_theme.cpp, fl_vertex.cpp,
+	makedepend, numericsort.c, scandir.c, scandir_win32.c, vsnprintf.c:
+	Dooh! For some reason cvs import didnt add core dir at all...
+
+2002-09-03 13:48  laza2000
+
+	* Makefile, README.fltk, build.g++, build.gcc, configh.in,
+	configure.in, efltk-config.in, makeinclude.in,
+	src/opengl/Fl_Gl_Choice.cpp, src/opengl/Fl_Gl_Choice.h,
+	src/opengl/Fl_Gl_Overlay.cpp, src/opengl/Fl_Gl_Window.cpp,
+	src/opengl/Makefile, src/opengl/gl_draw.cpp,
+	src/opengl/gl_start.cpp, src/opengl/makedepend,
+	src/widgets/Fl_Adjuster.cpp, src/widgets/Fl_Align_Group.cpp,
+	src/widgets/Fl_Bar.cpp, src/widgets/Fl_Box.cpp,
+	src/widgets/Fl_Boxtype.cpp, src/widgets/fl_ask.cpp,
+	src/widgets/Fl_Browser.cpp, src/widgets/Fl_Button.cpp,
+	src/widgets/Fl_Check_Button.cpp, src/widgets/Fl_Choice.cpp,
+	src/widgets/Fl_Clock.cpp, src/widgets/Fl_Color_Chooser.cpp,
+	src/widgets/Fl_Dial.cpp, src/widgets/Fl_Double_Window.cpp,
+	src/widgets/Fl_FileBrowser.cpp, src/widgets/Fl_FileInput.cpp,
+	src/widgets/Fl_Float_Input.cpp,
+	src/widgets/Fl_Highlight_Button.cpp, src/widgets/Makefile,
+	src/widgets/fl_diamond_box.cpp, src/widgets/fl_engraved_label.cpp,
+	src/widgets/makedepend, src/widgets/Fl_Input.cpp,
+	src/widgets/Fl_Item.cpp, src/widgets/Fl_Light_Button.cpp,
+	src/widgets/Fl_Menu.cpp, src/widgets/Fl_Menu_.cpp,
+	src/widgets/Fl_Menu_Bar.cpp, src/widgets/Fl_Menu_Button.cpp,
+	src/widgets/Fl_Menu_Item.cpp, src/widgets/Fl_Menu_Window.cpp,
+	src/widgets/Fl_Menu_add.cpp, src/widgets/Fl_Menu_global.cpp,
+	src/widgets/Fl_Multi_Image.cpp, src/widgets/Fl_Numeric_Input.cpp,
+	src/widgets/Fl_Output.cpp, src/widgets/Fl_Overlay_Window.cpp,
+	src/widgets/Fl_Pack.cpp, src/widgets/Fl_ProgressBar.cpp,
+	src/widgets/Fl_Radio_Button.cpp, src/widgets/Fl_Repeat_Button.cpp,
+	src/widgets/Fl_Return_Button.cpp, src/widgets/Fl_Roller.cpp,
+	src/widgets/Fl_Scroll.cpp, src/widgets/Fl_Scrollbar.cpp,
+	src/widgets/Fl_Shaped_Window.cpp, src/widgets/Fl_Single_Window.cpp,
+	src/widgets/Fl_Slider.cpp, src/widgets/fl_oval_box.cpp,
+	src/widgets/fl_plastic_box.cpp, src/widgets/fl_round_box.cpp,
+	src/widgets/fl_rounded_box.cpp, src/widgets/fl_shadow_box.cpp,
+	src/widgets/fl_symbols.cpp, src/widgets/Fl_Tabs.cpp,
+	src/widgets/Fl_Text_Buffer.cpp, src/widgets/Fl_Text_Display.cpp,
+	src/widgets/Fl_Text_Editor.cpp, src/widgets/Fl_Tile.cpp,
+	src/widgets/Fl_Tooltip.cpp, src/widgets/Fl_Valuator.cpp,
+	src/widgets/Fl_Value_Input.cpp, src/widgets/Fl_Value_Slider.cpp,
+	src/widgets/Fl_File_Dialog.cpp, src/widgets/Fl_MDI_Window.cpp,
+	src/widgets/Fl_Main_Window.cpp, src/widgets/Fl_Tool_Bar.cpp,
+	src/widgets/Fl_Workspace.cpp, src/widgets/fastarrow.h,
+	src/widgets/fl_show_colormap.cpp, src/widgets/mediumarrow.h,
+	src/widgets/slowarrow.h, src/widgets/Fl_Input_Browser.cpp,
+	src/widgets/Fl_ListView.cpp, src/widgets/Fl_ListView_Item.cpp,
+	src/widgets/Pixmaps.h, src/images/Fl_Images.cpp,
+	src/images/Fl_Jpeg.cpp, src/images/Fl_Png.cpp, src/images/Makefile,
+	src/images/makedepend, src/widgets/Fl_Help_Dialog.cpp,
+	src/widgets/Fl_Simple_Html.cpp, test/Makefile, test/browser.cpp,
+	test/demo.cpp, test/demo.menu, test/makedepend, test/resizable.cpp,
+	test/resizable.h, test/tabs.fl, test/tabs.h, test/escherknot.xbm,
+	test/glpuzzle.cpp, test/hello.cpp, test/image.cpp,
+	test/porsche.xpm, test/scroll.cpp, test/tabs.cpp, test/black_1.xbm,
+	test/blackking_1.xbm, test/blackking_2.xbm, test/checkers.cpp,
+	test/editor.cpp, test/file_chooser.cpp, test/file_small.xpm,
+	test/folder_small.xpm, test/inactive.cpp, test/inactive.h,
+	test/label.cpp, test/line_style.cpp, test/list_visuals.cpp,
+	test/menubar.cpp, test/progress.cpp, test/threads.cpp,
+	test/black_2.xbm, test/black_3.xbm, test/black_4.xbm,
+	test/blackking_3.xbm, test/blackking_4.xbm, test/boxtype.cpp,
+	test/circle.xbm, test/doublebuffer.cpp, test/ede-small.gif,
+	test/help.cpp, test/inactive.fl, test/index.html, test/layout.cpp,
+	test/mdi_test.cpp, test/multi_image.cpp, test/resizable.fl,
+	test/resize.cpp, test/resize.fl, test/resize.h, test/srs.xbm,
+	test/valuators.cpp, test/valuators.fl, test/valuators.h,
+	test/white_1.xbm, test/white_2.xbm, test/white_3.xbm,
+	test/white_4.xbm, test/whiteking_1.xbm, test/whiteking_2.xbm,
+	test/whiteking_3.xbm, test/whiteking_4.xbm, test/CubeMain.cpp,
+	test/CubeView.cpp, test/CubeView.h, test/CubeViewUI.fl,
+	test/CubeViewUI.h, test/ask.cpp, test/buttons.cpp, test/cube.cpp,
+	test/cursor.cpp, test/curve.cpp, test/fast_slow.cpp,
+	test/fonts.cpp, test/fullscreen.cpp, test/gl_overlay.cpp,
+	test/iconize.cpp, test/input.cpp, test/keyboard.cpp,
+	test/keyboard_ui.cpp, test/keyboard_ui.fl, test/keyboard_ui.h,
+	test/navigation.cpp, test/output.cpp, test/overlay.cpp,
+	test/pack.cpp, test/radio.cpp, test/shape.cpp, test/subwindow.cpp,
+	test/tile.cpp, fluid/Fl_Function_Type.cxx, fluid/Fl_Group_Type.cxx,
+	fluid/Fl_Menu_Type.cxx, fluid/Fl_Type.cxx, fluid/Fl_Type.h,
+	fluid/makedepend, test/CubeViewUI.cpp, test/CubeViewUI.cxx,
+	test/arc.cpp, test/button.cpp, test/clock.cpp,
+	test/color_chooser.cpp, test/fast_slow.fl, test/fast_slow.h,
+	test/radio.fl, test/radio.h, fluid/Fl_Widget_Type.cxx,
+	fluid/Fl_Window_Type.cxx, fluid/Fluid_Image.cxx,
+	fluid/Fluid_Image.h, fluid/Fluid_Plugins.cxx,
+	fluid/Fluid_Plugins.h, fluid/Makefile, fluid/Shortcut_Button.h,
+	fluid/about_panel.cxx, fluid/about_panel.fl, fluid/about_panel.h,
+	fluid/alignment_panel.cxx, fluid/alignment_panel.fl,
+	fluid/alignment_panel.h, fluid/clean.sed, fluid/clean.sh,
+	fluid/code.cxx, fluid/coding_style.cxx, fluid/coding_style.fl,
+	fluid/coding_style.h, fluid/coding_style_func.cxx, fluid/dll.sed,
+	fluid/dll.sh, fluid/factory.cxx, fluid/file.cxx, fluid/fluid.cxx,
+	fluid/function_panel.cxx, fluid/function_panel.fl,
+	fluid/function_panel.h, fluid/image_file_panel.cxx,
+	efltk/Enumerations.h, efltk/Fl.h, efltk/Fl_Adjuster.h,
+	efltk/Fl_Align_Group.h, efltk/Fl_Bar.h, efltk/Fl_Bitmap.h,
+	efltk/Fl_Box.h, efltk/Fl_Boxtype.h, efltk/Fl_Browser.h,
+	efltk/Fl_Button.h, efltk/Fl_Check_Button.h, efltk/Fl_Choice.h,
+	efltk/Fl_Clock.h, efltk/Fl_Color.h, efltk/Fl_Color_Chooser.h,
+	efltk/Fl_Dial.h, efltk/Fl_Divider.h, efltk/Fl_Double_Window.h,
+	efltk/Fl_Export.h, efltk/Fl_FileBrowser.h, efltk/Fl_FileInput.h,
+	efltk/Fl_Flags.h, efltk/Fl_Float_Input.h, efltk/Fl_Font.h,
+	efltk/Fl_Gl_Window.h, efltk/Fl_Group.h,
+	efltk/Fl_Highlight_Button.h, efltk/filename.h, efltk/fl_ask.h,
+	efltk/fl_draw.h, fluid/image_file_panel.fl,
+	fluid/image_file_panel.h, fluid/keyboard_ui.cxx,
+	fluid/keyboard_ui.h, fluid/widget_panel.cxx, fluid/widget_panel.fl,
+	fluid/widget_panel.h, efltk/Fl_Help_Dialog.h, efltk/Fl_Image.h,
+	efltk/Fl_Images.h, efltk/Fl_Input.h, efltk/Fl_Int_Input.h,
+	efltk/Fl_Item.h, efltk/Fl_Item_Group.h, efltk/Fl_Labeltype.h,
+	efltk/Fl_Light_Button.h, efltk/Fl_Line_Dial.h, efltk/Fl_Locale.h,
+	efltk/Fl_Main_Window.h, efltk/Fl_Menu_.h, efltk/Fl_Menu_Bar.h,
+	efltk/Fl_Menu_Button.h, efltk/Fl_Menu_Item.h,
+	efltk/Fl_Menu_Window.h, efltk/Fl_Multi_Browser.h,
+	efltk/Fl_Multi_Image.h, efltk/Fl_Multiline_Input.h,
+	efltk/Fl_Multiline_Output.h, efltk/Fl_Nice_Slider.h,
+	efltk/Fl_Numeric_Input.h, efltk/Fl_Output.h,
+	efltk/Fl_Overlay_Window.h, efltk/Fl_Pack.h, efltk/Fl_ProgressBar.h,
+	efltk/Fl_Radio_Button.h, efltk/Fl_Radio_Item.h,
+	efltk/Fl_Radio_Light_Button.h, efltk/Fl_Radio_Round_Button.h,
+	efltk/Fl_Repeat_Button.h, efltk/Fl_Return_Button.h,
+	efltk/Fl_Roller.h, efltk/Fl_Round_Button.h, efltk/Fl_Round_Clock.h,
+	efltk/Fl_Scroll.h, efltk/Fl_Scrollbar.h, efltk/Fl_Secret_Input.h,
+	efltk/Fl_Select_Browser.h, efltk/Fl_Shaped_Window.h,
+	efltk/Fl_Simple_Counter.h, efltk/Fl_Simple_Html.h,
+	efltk/Fl_Single_Window.h, efltk/Fl_Slider.h, efltk/Fl_Style.h,
+	efltk/Fl_Style_Set.h, efltk/Fl_Tabs.h, efltk/Fl_Text_Buffer.h,
+	efltk/Fl_Text_Display.h, efltk/Fl_Text_Editor.h,
+	efltk/Fl_Threads.h, efltk/Fl_Tool_Bar.h, efltk/fl_load_plugin.h,
+	efltk/fl_message.h, efltk/fl_show_colormap.h, efltk/makedepend,
+	efltk/Fl_Config.h, efltk/Fl_Hor_Fill_Slider.h,
+	efltk/Fl_Hor_Nice_Slider.h, efltk/Fl_Hor_Slider.h,
+	efltk/Fl_Hor_Value_Slider.h, efltk/Fl_Image_Cache.h,
+	efltk/Fl_MDI_Window.h, efltk/Fl_String.h, efltk/Fl_Thread.h,
+	efltk/Fl_Thread_Linux.h, efltk/Fl_Thread_w32.h, efltk/Fl_Tile.h,
+	efltk/Fl_Timer.h, efltk/Fl_Toggle_Button.h, efltk/Fl_Toggle_Item.h,
+	efltk/Fl_Toggle_Light_Button.h, efltk/Fl_Toggle_Round_Button.h,
+	efltk/Fl_Tooltip.h, efltk/Fl_Tree.h, efltk/Fl_Util.h,
+	efltk/Fl_Valuator.h, efltk/Fl_Value_Input.h,
+	efltk/Fl_Value_Output.h, efltk/Fl_Value_Slider.h,
+	efltk/Fl_Widget.h, efltk/Fl_Window.h, efltk/Fl_Wordwrap_Input.h,
+	efltk/Fl_Wordwrap_Output.h, efltk/Fl_Workspace.h, efltk/Makefile,
+	efltk/gl.h, efltk/gl2opengl.h, efltk/gl_draw.h, efltk/math.h,
+	efltk/vsnprintf.h, efltk/win32.h, efltk/x.h,
+	efltk/Fl_File_Dialog.h, efltk/Fl_Image_Filter.h,
+	efltk/Fl_Input_Browser.h, efltk/Fl_ListView.h,
+	efltk/Fl_ListView_Item.h, efltk/Fl_PtrList.h, efltk/Fl_Renderer.h,
+	efltk/Fl_Value_List.h, efltk/Fl_Value_Map.h,
+	efltk/Fl_Value_Stack.h: Initial revision
+
+2002-09-03 13:48  laza2000
+
+	* Makefile, README.fltk, build.g++, build.gcc, configh.in,
+	configure.in, efltk-config.in, makeinclude.in,
+	src/opengl/Fl_Gl_Choice.cpp, src/opengl/Fl_Gl_Choice.h,
+	src/opengl/Fl_Gl_Overlay.cpp, src/opengl/Fl_Gl_Window.cpp,
+	src/opengl/Makefile, src/opengl/gl_draw.cpp,
+	src/opengl/gl_start.cpp, src/opengl/makedepend,
+	src/widgets/Fl_Adjuster.cpp, src/widgets/Fl_Align_Group.cpp,
+	src/widgets/Fl_Bar.cpp, src/widgets/Fl_Box.cpp,
+	src/widgets/Fl_Boxtype.cpp, src/widgets/fl_ask.cpp,
+	src/widgets/Fl_Browser.cpp, src/widgets/Fl_Button.cpp,
+	src/widgets/Fl_Check_Button.cpp, src/widgets/Fl_Choice.cpp,
+	src/widgets/Fl_Clock.cpp, src/widgets/Fl_Color_Chooser.cpp,
+	src/widgets/Fl_Dial.cpp, src/widgets/Fl_Double_Window.cpp,
+	src/widgets/Fl_FileBrowser.cpp, src/widgets/Fl_FileInput.cpp,
+	src/widgets/Fl_Float_Input.cpp,
+	src/widgets/Fl_Highlight_Button.cpp, src/widgets/Makefile,
+	src/widgets/fl_diamond_box.cpp, src/widgets/fl_engraved_label.cpp,
+	src/widgets/makedepend, src/widgets/Fl_Input.cpp,
+	src/widgets/Fl_Item.cpp, src/widgets/Fl_Light_Button.cpp,
+	src/widgets/Fl_Menu.cpp, src/widgets/Fl_Menu_.cpp,
+	src/widgets/Fl_Menu_Bar.cpp, src/widgets/Fl_Menu_Button.cpp,
+	src/widgets/Fl_Menu_Item.cpp, src/widgets/Fl_Menu_Window.cpp,
+	src/widgets/Fl_Menu_add.cpp, src/widgets/Fl_Menu_global.cpp,
+	src/widgets/Fl_Multi_Image.cpp, src/widgets/Fl_Numeric_Input.cpp,
+	src/widgets/Fl_Output.cpp, src/widgets/Fl_Overlay_Window.cpp,
+	src/widgets/Fl_Pack.cpp, src/widgets/Fl_ProgressBar.cpp,
+	src/widgets/Fl_Radio_Button.cpp, src/widgets/Fl_Repeat_Button.cpp,
+	src/widgets/Fl_Return_Button.cpp, src/widgets/Fl_Roller.cpp,
+	src/widgets/Fl_Scroll.cpp, src/widgets/Fl_Scrollbar.cpp,
+	src/widgets/Fl_Shaped_Window.cpp, src/widgets/Fl_Single_Window.cpp,
+	src/widgets/Fl_Slider.cpp, src/widgets/fl_oval_box.cpp,
+	src/widgets/fl_plastic_box.cpp, src/widgets/fl_round_box.cpp,
+	src/widgets/fl_rounded_box.cpp, src/widgets/fl_shadow_box.cpp,
+	src/widgets/fl_symbols.cpp, src/widgets/Fl_Tabs.cpp,
+	src/widgets/Fl_Text_Buffer.cpp, src/widgets/Fl_Text_Display.cpp,
+	src/widgets/Fl_Text_Editor.cpp, src/widgets/Fl_Tile.cpp,
+	src/widgets/Fl_Tooltip.cpp, src/widgets/Fl_Valuator.cpp,
+	src/widgets/Fl_Value_Input.cpp, src/widgets/Fl_Value_Slider.cpp,
+	src/widgets/Fl_File_Dialog.cpp, src/widgets/Fl_MDI_Window.cpp,
+	src/widgets/Fl_Main_Window.cpp, src/widgets/Fl_Tool_Bar.cpp,
+	src/widgets/Fl_Workspace.cpp, src/widgets/fastarrow.h,
+	src/widgets/fl_show_colormap.cpp, src/widgets/mediumarrow.h,
+	src/widgets/slowarrow.h, src/widgets/Fl_Input_Browser.cpp,
+	src/widgets/Fl_ListView.cpp, src/widgets/Fl_ListView_Item.cpp,
+	src/widgets/Pixmaps.h, src/images/Fl_Images.cpp,
+	src/images/Fl_Jpeg.cpp, src/images/Fl_Png.cpp, src/images/Makefile,
+	src/images/makedepend, src/widgets/Fl_Help_Dialog.cpp,
+	src/widgets/Fl_Simple_Html.cpp, test/Makefile, test/browser.cpp,
+	test/demo.cpp, test/demo.menu, test/makedepend, test/resizable.cpp,
+	test/resizable.h, test/tabs.fl, test/tabs.h, test/escherknot.xbm,
+	test/glpuzzle.cpp, test/hello.cpp, test/image.cpp,
+	test/porsche.xpm, test/scroll.cpp, test/tabs.cpp, test/black_1.xbm,
+	test/blackking_1.xbm, test/blackking_2.xbm, test/checkers.cpp,
+	test/editor.cpp, test/file_chooser.cpp, test/file_small.xpm,
+	test/folder_small.xpm, test/inactive.cpp, test/inactive.h,
+	test/label.cpp, test/line_style.cpp, test/list_visuals.cpp,
+	test/menubar.cpp, test/progress.cpp, test/threads.cpp,
+	test/black_2.xbm, test/black_3.xbm, test/black_4.xbm,
+	test/blackking_3.xbm, test/blackking_4.xbm, test/boxtype.cpp,
+	test/circle.xbm, test/doublebuffer.cpp, test/ede-small.gif,
+	test/help.cpp, test/inactive.fl, test/index.html, test/layout.cpp,
+	test/mdi_test.cpp, test/multi_image.cpp, test/resizable.fl,
+	test/resize.cpp, test/resize.fl, test/resize.h, test/srs.xbm,
+	test/valuators.cpp, test/valuators.fl, test/valuators.h,
+	test/white_1.xbm, test/white_2.xbm, test/white_3.xbm,
+	test/white_4.xbm, test/whiteking_1.xbm, test/whiteking_2.xbm,
+	test/whiteking_3.xbm, test/whiteking_4.xbm, test/CubeMain.cpp,
+	test/CubeView.cpp, test/CubeView.h, test/CubeViewUI.fl,
+	test/CubeViewUI.h, test/ask.cpp, test/buttons.cpp, test/cube.cpp,
+	test/cursor.cpp, test/curve.cpp, test/fast_slow.cpp,
+	test/fonts.cpp, test/fullscreen.cpp, test/gl_overlay.cpp,
+	test/iconize.cpp, test/input.cpp, test/keyboard.cpp,
+	test/keyboard_ui.cpp, test/keyboard_ui.fl, test/keyboard_ui.h,
+	test/navigation.cpp, test/output.cpp, test/overlay.cpp,
+	test/pack.cpp, test/radio.cpp, test/shape.cpp, test/subwindow.cpp,
+	test/tile.cpp, fluid/Fl_Function_Type.cxx, fluid/Fl_Group_Type.cxx,
+	fluid/Fl_Menu_Type.cxx, fluid/Fl_Type.cxx, fluid/Fl_Type.h,
+	fluid/makedepend, test/CubeViewUI.cpp, test/CubeViewUI.cxx,
+	test/arc.cpp, test/button.cpp, test/clock.cpp,
+	test/color_chooser.cpp, test/fast_slow.fl, test/fast_slow.h,
+	test/radio.fl, test/radio.h, fluid/Fl_Widget_Type.cxx,
+	fluid/Fl_Window_Type.cxx, fluid/Fluid_Image.cxx,
+	fluid/Fluid_Image.h, fluid/Fluid_Plugins.cxx,
+	fluid/Fluid_Plugins.h, fluid/Makefile, fluid/Shortcut_Button.h,
+	fluid/about_panel.cxx, fluid/about_panel.fl, fluid/about_panel.h,
+	fluid/alignment_panel.cxx, fluid/alignment_panel.fl,
+	fluid/alignment_panel.h, fluid/clean.sed, fluid/clean.sh,
+	fluid/code.cxx, fluid/coding_style.cxx, fluid/coding_style.fl,
+	fluid/coding_style.h, fluid/coding_style_func.cxx, fluid/dll.sed,
+	fluid/dll.sh, fluid/factory.cxx, fluid/file.cxx, fluid/fluid.cxx,
+	fluid/function_panel.cxx, fluid/function_panel.fl,
+	fluid/function_panel.h, fluid/image_file_panel.cxx,
+	efltk/Enumerations.h, efltk/Fl.h, efltk/Fl_Adjuster.h,
+	efltk/Fl_Align_Group.h, efltk/Fl_Bar.h, efltk/Fl_Bitmap.h,
+	efltk/Fl_Box.h, efltk/Fl_Boxtype.h, efltk/Fl_Browser.h,
+	efltk/Fl_Button.h, efltk/Fl_Check_Button.h, efltk/Fl_Choice.h,
+	efltk/Fl_Clock.h, efltk/Fl_Color.h, efltk/Fl_Color_Chooser.h,
+	efltk/Fl_Dial.h, efltk/Fl_Divider.h, efltk/Fl_Double_Window.h,
+	efltk/Fl_Export.h, efltk/Fl_FileBrowser.h, efltk/Fl_FileInput.h,
+	efltk/Fl_Flags.h, efltk/Fl_Float_Input.h, efltk/Fl_Font.h,
+	efltk/Fl_Gl_Window.h, efltk/Fl_Group.h,
+	efltk/Fl_Highlight_Button.h, efltk/filename.h, efltk/fl_ask.h,
+	efltk/fl_draw.h, fluid/image_file_panel.fl,
+	fluid/image_file_panel.h, fluid/keyboard_ui.cxx,
+	fluid/keyboard_ui.h, fluid/widget_panel.cxx, fluid/widget_panel.fl,
+	fluid/widget_panel.h, efltk/Fl_Help_Dialog.h, efltk/Fl_Image.h,
+	efltk/Fl_Images.h, efltk/Fl_Input.h, efltk/Fl_Int_Input.h,
+	efltk/Fl_Item.h, efltk/Fl_Item_Group.h, efltk/Fl_Labeltype.h,
+	efltk/Fl_Light_Button.h, efltk/Fl_Line_Dial.h, efltk/Fl_Locale.h,
+	efltk/Fl_Main_Window.h, efltk/Fl_Menu_.h, efltk/Fl_Menu_Bar.h,
+	efltk/Fl_Menu_Button.h, efltk/Fl_Menu_Item.h,
+	efltk/Fl_Menu_Window.h, efltk/Fl_Multi_Browser.h,
+	efltk/Fl_Multi_Image.h, efltk/Fl_Multiline_Input.h,
+	efltk/Fl_Multiline_Output.h, efltk/Fl_Nice_Slider.h,
+	efltk/Fl_Numeric_Input.h, efltk/Fl_Output.h,
+	efltk/Fl_Overlay_Window.h, efltk/Fl_Pack.h, efltk/Fl_ProgressBar.h,
+	efltk/Fl_Radio_Button.h, efltk/Fl_Radio_Item.h,
+	efltk/Fl_Radio_Light_Button.h, efltk/Fl_Radio_Round_Button.h,
+	efltk/Fl_Repeat_Button.h, efltk/Fl_Return_Button.h,
+	efltk/Fl_Roller.h, efltk/Fl_Round_Button.h, efltk/Fl_Round_Clock.h,
+	efltk/Fl_Scroll.h, efltk/Fl_Scrollbar.h, efltk/Fl_Secret_Input.h,
+	efltk/Fl_Select_Browser.h, efltk/Fl_Shaped_Window.h,
+	efltk/Fl_Simple_Counter.h, efltk/Fl_Simple_Html.h,
+	efltk/Fl_Single_Window.h, efltk/Fl_Slider.h, efltk/Fl_Style.h,
+	efltk/Fl_Style_Set.h, efltk/Fl_Tabs.h, efltk/Fl_Text_Buffer.h,
+	efltk/Fl_Text_Display.h, efltk/Fl_Text_Editor.h,
+	efltk/Fl_Threads.h, efltk/Fl_Tool_Bar.h, efltk/fl_load_plugin.h,
+	efltk/fl_message.h, efltk/fl_show_colormap.h, efltk/makedepend,
+	efltk/Fl_Config.h, efltk/Fl_Hor_Fill_Slider.h,
+	efltk/Fl_Hor_Nice_Slider.h, efltk/Fl_Hor_Slider.h,
+	efltk/Fl_Hor_Value_Slider.h, efltk/Fl_Image_Cache.h,
+	efltk/Fl_MDI_Window.h, efltk/Fl_String.h, efltk/Fl_Thread.h,
+	efltk/Fl_Thread_Linux.h, efltk/Fl_Thread_w32.h, efltk/Fl_Tile.h,
+	efltk/Fl_Timer.h, efltk/Fl_Toggle_Button.h, efltk/Fl_Toggle_Item.h,
+	efltk/Fl_Toggle_Light_Button.h, efltk/Fl_Toggle_Round_Button.h,
+	efltk/Fl_Tooltip.h, efltk/Fl_Tree.h, efltk/Fl_Util.h,
+	efltk/Fl_Valuator.h, efltk/Fl_Value_Input.h,
+	efltk/Fl_Value_Output.h, efltk/Fl_Value_Slider.h,
+	efltk/Fl_Widget.h, efltk/Fl_Window.h, efltk/Fl_Wordwrap_Input.h,
+	efltk/Fl_Wordwrap_Output.h, efltk/Fl_Workspace.h, efltk/Makefile,
+	efltk/gl.h, efltk/gl2opengl.h, efltk/gl_draw.h, efltk/math.h,
+	efltk/vsnprintf.h, efltk/win32.h, efltk/x.h,
+	efltk/Fl_File_Dialog.h, efltk/Fl_Image_Filter.h,
+	efltk/Fl_Input_Browser.h, efltk/Fl_ListView.h,
+	efltk/Fl_ListView_Item.h, efltk/Fl_PtrList.h, efltk/Fl_Renderer.h,
+	efltk/Fl_Value_List.h, efltk/Fl_Value_Map.h,
+	efltk/Fl_Value_Stack.h: Imported EFLTK sources
+
