@@ -27,13 +27,13 @@
 #define _FL_WIN32_H_
 
 #ifdef _WIN32_WCE
-#include <wince.h>
-#include <efltk/Fl_Color.h>
+# include <wince.h>
 #else
-#include <windows.h>
+# include <windows.h>
 #endif
-#include <winuser.h>
 
+#include <winuser.h>
+#include "Fl_Color.h"
 
 // In some of the distributions, the gcc header files are missing some stuff:
 #ifndef LPMINMAXINFO

@@ -25,7 +25,7 @@
    colormaps, this will save a good deal of code (especially for
    fl_draw_image), but fltk will only work on TrueColor visuals.
 */
-#define USE_COLORMAP 0
+#define USE_COLORMAP 1
 
 /* Use the new Xft library to draw fonts. If you have a new XServer
    with the XRender extension and you have FreeType and some Type1
@@ -188,7 +188,7 @@
 #define DISABLE_ASM 0
 
 /* Enables NLS localization support */
-#define ENABLE_NLS 0
+#define ENABLE_NLS 1
 
 /* Enables UTF8 */
 /* THIS IS MUST IN WIN32 */

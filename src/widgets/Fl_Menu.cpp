@@ -884,6 +884,7 @@ int MenuWindow::handle(int event)
         // Allow menus to be "clicked-up".  Without this a single click will
         // pick whatever item the mouse is pointing at in a pop-up menu:
         if(state->state==INITIAL_STATE && Fl::event_is_click()) {			
+			state->state=PUSH_STATE;
             return 1;
         }
 
@@ -898,6 +899,9 @@ int MenuWindow::handle(int event)
         if(widget && state->open_window==this) {
             Fl::remove_timeout(timeout_open_childwin, state);
             open_childwin(state->open_widget, state->open_index);
+		    state->open_widget = 0;
+		    state->open_index = -1;
+			state->open_window = 0;
             return 1;
         }
 

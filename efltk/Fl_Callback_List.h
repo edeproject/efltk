@@ -37,6 +37,7 @@ typedef struct CallbackDataStruct {
 class Fl_Callback_List : public Fl_Ptr_List {
 public:
     Fl_Callback_List() : Fl_Ptr_List() { auto_delete(true); }
+	virtual ~Fl_Callback_List() { clear(); }
 
     void do_callback(Fl_Widget *w);
     void do_callback(Fl_Widget *w, void *arg);
@@ -57,7 +58,7 @@ public:
     CallbackData *operator [](uint ind) const { return (CallbackData*)items[ind]; }
 
 protected:
-    void free_item(CallbackData *item) { delete (CallbackData*)(item); }
+    virtual void free_item(Fl_Ptr_List_Item item) { delete (CallbackData*)(item); }
 };
 
 #endif

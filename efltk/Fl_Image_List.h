@@ -28,6 +28,7 @@
 class Fl_Image_List : public Fl_Ptr_List {
 public:
     Fl_Image_List() : Fl_Ptr_List() { }
+	virtual ~Fl_Image_List() { clear(); }
 
     void append(Fl_Image *item) { Fl_Ptr_List::append((void *)item); }
     void prepend(Fl_Image  *item) { Fl_Ptr_List::prepend((void *)item); }
@@ -43,7 +44,7 @@ public:
     Fl_Image *operator [](uint ind) const { return (Fl_Image *)items[ind]; }
 
 protected:
-    void free_item(Fl_Image *item) { delete (Fl_Image*)(item); }
+    virtual void free_item(Fl_Ptr_List_Item item) { delete (Fl_Image*)(item); }
 };
 
 #endif

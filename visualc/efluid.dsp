@@ -38,12 +38,12 @@ RSC=rc.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "efluid___Win32_Release"
+# PROP Output_Dir "../bin"
 # PROP Intermediate_Dir "efluid___Win32_Release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GX /Os /Oy- /Ob1 /I "../visualc" /I "../.." /I "../" /I "." /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /D "VC_EXTRA_LEAN" /D "WIN32_EXTRA_LEAN" /D "_MSC_DLL" /YX /FD /c
+# ADD CPP /nologo /MD /W1 /GX /Os /Ob1 /I "../visualc" /I "../.." /I "../" /I "." /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "WIN32_LEAN_AND_MEAN" /D "VC_EXTRA_LEAN" /D "WIN32_EXTRA_LEAN" /D "_MSC_DLL" /YX /FD /c
 # SUBTRACT CPP /Ot
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -65,7 +65,7 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "efluid___Win32_Debug"
+# PROP Output_Dir "../bin"
 # PROP Intermediate_Dir "efluid___Win32_Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
@@ -93,75 +93,75 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\fluid\about_panel.cxx
+SOURCE=..\tools\efluid\about_panel.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\fluid\alignment_panel.cxx
+SOURCE=..\tools\efluid\alignment_panel.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\fluid\code.cxx
+SOURCE=..\tools\efluid\code.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\fluid\coding_style.cxx
+SOURCE=..\tools\efluid\coding_style.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\fluid\coding_style_func.cxx
+SOURCE=..\tools\efluid\coding_style_func.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\fluid\factory.cxx
+SOURCE=..\tools\efluid\factory.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\fluid\file.cxx
+SOURCE=..\tools\efluid\file.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\fluid\Fl_Function_Type.cxx
+SOURCE=..\tools\efluid\Fl_Function_Type.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\fluid\Fl_Group_Type.cxx
+SOURCE=..\tools\efluid\Fl_Group_Type.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\fluid\Fl_Menu_Type.cxx
+SOURCE=..\tools\efluid\Fl_Menu_Type.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\fluid\Fl_Type.cxx
+SOURCE=..\tools\efluid\Fl_Type.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\fluid\Fl_Widget_Type.cxx
+SOURCE=..\tools\efluid\Fl_Widget_Type.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\fluid\Fl_Window_Type.cxx
+SOURCE=..\tools\efluid\Fl_Window_Type.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\fluid\fluid.cxx
+SOURCE=..\tools\efluid\fluid.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\fluid\Fluid_Image.cxx
+SOURCE=..\tools\efluid\Fluid_Image.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\fluid\Fluid_Plugins.cxx
+SOURCE=..\tools\efluid\Fluid_Plugins.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\fluid\function_panel.cxx
+SOURCE=..\tools\efluid\function_panel.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\fluid\widget_panel.cxx
+SOURCE=..\tools\efluid\widget_panel.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -169,39 +169,43 @@ SOURCE=..\fluid\widget_panel.cxx
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\fluid\about_panel.h
+SOURCE=..\tools\efluid\about_panel.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\fluid\alignment_panel.h
+SOURCE=..\tools\efluid\alignment_panel.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\fluid\coding_style.h
+SOURCE=..\tools\efluid\coding_style.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\fluid\Fl_Type.h
+SOURCE=..\tools\efluid\Fl_Type.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\fluid\Fluid_Image.h
+SOURCE=..\tools\efluid\Fluid_Image.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\fluid\Fluid_Plugins.h
+SOURCE=..\tools\efluid\Fluid_Plugins.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\fluid\function_panel.h
+SOURCE=..\tools\efluid\function_panel.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\fluid\Shortcut_Button.h
+SOURCE=..\tools\efluid\image_file_panel.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\fluid\widget_panel.h
+SOURCE=..\tools\efluid\Shortcut_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\tools\efluid\widget_panel.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

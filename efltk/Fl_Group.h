@@ -32,22 +32,22 @@ public:
     Fl_Group(int,int,int,int, const char * = 0);
     virtual ~Fl_Group();
 
-    int children() const { return array_.size(); }
-    Fl_Widget* child(int n) const { return array_.item(n); }
-    Fl_Widget_List &array() { return array_; }
+    int children() const { return m_array.size(); }
+    Fl_Widget* child(int n) const { return m_array[n]; }
+    Fl_Widget_List &array() { return m_array; }
 
     void draw_group_box() const;
     virtual void draw();
     virtual void layout();
     virtual int handle(int);
 
-    void begin() { current_ = this; }
-    void end()   { current_ = (Fl_Group*)parent(); }
-    static Fl_Group *current() {return current_;}
-    static void current(Fl_Group *g) {current_ = g;}
+    void begin() { Fl_Group::m_current = this; }
+    void end()   { Fl_Group::m_current = (Fl_Group*)parent(); }
+    static Fl_Group *current() { return Fl_Group::m_current; }
+    static void current(Fl_Group *g) { Fl_Group::m_current = g; }
 
     int find(const Fl_Widget*) const;
-    int find(const Fl_Widget& o) const {return find(&o);}
+    int find(const Fl_Widget& o) const { return find(&o); }
 
     void add(Fl_Widget&);
     void insert(Fl_Widget&, int index);
@@ -55,49 +55,49 @@ public:
     void replace(int index, Fl_Widget&);
     void clear();
 
-    void add(Fl_Widget* o) {add(*o);}
-    void insert(Fl_Widget& o, Fl_Widget* before) {insert(o,find(before));}
-    void remove(Fl_Widget& o) {remove(find(o));}
-    void remove(Fl_Widget* o) {remove(find(*o));}
-    void replace(Fl_Widget& old, Fl_Widget& o) {replace(find(old),o);}
+    void add(Fl_Widget* o) { add(*o); }
+    void insert(Fl_Widget& o, Fl_Widget* before) { insert(o,find(before)); }
+    void remove(Fl_Widget& o) { remove(find(o)); }
+    void remove(Fl_Widget* o) { remove(find(*o)); }
+    void replace(Fl_Widget& old, Fl_Widget& o) { replace(find(old),o); }
 
-    void resizable(Fl_Widget& o) {resizable_ = &o;}
-    void resizable(Fl_Widget* o) {resizable_ = o;}
-    Fl_Widget* resizable() const {return resizable_;}
-    void add_resizable(Fl_Widget& o) {resizable_ = &o; add(o);}
+    void resizable(Fl_Widget& o) { m_resizable = &o; }
+    void resizable(Fl_Widget* o) { m_resizable = o; }
+    Fl_Widget* resizable() const { return m_resizable; }
+    void add_resizable(Fl_Widget& o) { m_resizable = &o; add(o); }
     void init_sizes();
 
-    void focus(int i) {focus_ = i;}
-    void focus(Fl_Widget* w) {focus(find(w));}
-    int focus() const {return focus_;}
+    void focus(int i) { m_focus = i; }
+    void focus(Fl_Widget* w) { focus(find(w)); }
+    int focus() const { return m_focus; }
     static int navigation_key();
 
     // data source support methods
     void data_source(Fl_Data_Source *ds);
-    Fl_Data_Source* data_source() const { return data_source_; }
+    Fl_Data_Source* data_source() const { return m_data_source; }
     virtual bool load_data(Fl_Data_Source *ds);
     virtual bool save_data(Fl_Data_Source *ds) const;
 
-    uchar layout_spacing() { return m_layout_spacing; }
-    void layout_spacing(uchar offset) { m_layout_spacing = offset; }
+    uchar layout_spacing() const { return m_layout_spacing; }
+    void layout_spacing(const uchar offset) { m_layout_spacing = offset; }
 
 protected:
     void draw_child(Fl_Widget&) const;
     void update_child(Fl_Widget&) const;
-    void draw_outside_label(Fl_Widget&) const ;
+    void draw_outside_label(Fl_Widget&) const;
     int* sizes();
 
 private:
     uchar m_layout_spacing;
-    int focus_;
+    int m_focus;
 
-    Fl_Widget_List array_;
-    Fl_Int_List sizes_; // remembered initial sizes of children
+    Fl_Widget_List m_array;
+    Fl_Int_List m_sizes; // remembered initial sizes of children
 
-    Fl_Widget* resizable_;
-    Fl_Data_Source* data_source_;
+    Fl_Widget *m_resizable;
+    Fl_Data_Source *m_data_source;
 
-    static Fl_Group *current_;
+    static Fl_Group *m_current;
 };
 
 // This dummy class can be used in constructors to set the parent

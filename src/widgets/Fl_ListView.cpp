@@ -868,11 +868,14 @@ int Fl_ListView::handle(int event)
         } // FL_KEYBOARD
     case FL_MOUSEWHEEL:
         {
-			if(vscrollbar.visible())
+			/*if(vscrollbar.visible())
 				return vscrollbar.send(event);
 			else if(hscrollbar.visible())
 				return hscrollbar.send(event);
-			break;
+			break;*/
+			if(Fl::event_dy()>0) scroll_up(25);
+			else scroll_down(25);
+			return 1;
         }
 	default:
 		break;
@@ -1074,7 +1077,7 @@ void Fl_ListView::fill(Fl_Data_Source &ds) {
    header()->clear();
    // Final version should replace the existing rows (truncate them,if necessary).
    clear();
-   header()->button_box(FL_VERT_SHADE_UP_BOX);
+   //header()->button_box(FL_VERT_SHADE_UP_BOX);
 
    unsigned columnCount = ds.field_count();
    if (!columnCount) return;
@@ -1096,7 +1099,7 @@ void Fl_ListView::fill(Fl_Data_Source &ds) {
          Fl_Data_Field& df = ds.field(col);
          if (df.type() == VAR_IMAGEPTR)
                item->image(col, *(Fl_Image *)df.as_image());
-         else  item->copy_label(col, ds.field(col).as_string().c_str());
+         else  item->label(col, ds.field(col).as_string());
       }
       ds.next();
    }

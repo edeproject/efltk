@@ -355,12 +355,14 @@ void Fl_Input_Browser::popup()
     if(W > popup_maxw) W = popup_maxw;
     if(H > popup_maxh) H = popup_maxh;
     if(W < popup_minw) W = popup_minw;
+    if(W < width()) W = width();
     if(H < popup_minh) H = popup_minh;
+
     int X = x(); int Y = y()+h();
     for (Fl_Widget *o = parent(); o; o = o->parent()) {
         X += o->x(); Y += o->y();
-        //if (o->is_window()) break;
     }
+    
     int down = Fl::h() - Y;
     int up = Y-h();
     if(H > down) {

@@ -37,12 +37,11 @@ class Fl_ListView;
 class Fl_ListItem_Attr
 {
 public:
-    const char *col_label;
-    bool col_label_copied;
+    Fl_String col_label;
     int16 col_width;
 };
 
-class Fl_ListView_Item {
+class FL_API Fl_ListView_Item {
 public:
     Fl_ListView_Item(const char *label1=0,
                      const char *label2=0,
@@ -78,7 +77,8 @@ public:
     const char *label();
     const char *label(int col);
     void label(int col, const char *text);
-    void copy_label(int col, const char *txt);
+    void label(int col, const Fl_String &text);
+    void copy_label(int col, const char *txt) { label(col, txt); }
 
     void image(Fl_Image *im) { image_ = im; }
     Fl_Image *image() { return image_; }
@@ -131,7 +131,7 @@ public:
     Fl_Labeltype col_label_type;
 };
 
-class Fl_ListView_ItemExt : public Fl_ListView_Item {
+class FL_API Fl_ListView_ItemExt : public Fl_ListView_Item {
 public:
     Fl_ListView_ItemExt(const char *label1=0,
                         const char *label2=0,
@@ -181,6 +181,8 @@ private:
 class Fl_ListItem_List : public Fl_Ptr_List {
 public:
     Fl_ListItem_List() : Fl_Ptr_List() { }
+	virtual ~Fl_ListItem_List() { clear(); }
+
     void append(Fl_ListView_Item *item) { Fl_Ptr_List::append((void *)item); }
     void prepend(Fl_ListView_Item *item) { Fl_Ptr_List::prepend((void *)item); }
     void insert(uint pos, Fl_ListView_Item *item) { Fl_Ptr_List::insert(pos, (void *)item); }

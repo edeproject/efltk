@@ -105,6 +105,24 @@ Package=<4>
 
 ###############################################################################
 
+Project: "etranslate"=.\etranslate.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name efltk
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name efltk_xml
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "exception"=.\exception.dsp - Package Owner=<4>
 
 Package=<5>
@@ -191,6 +209,12 @@ Package=<5>
 
 Package=<4>
 {{{
+    Begin Project Dependency
+    Project_Dep_Name efltk
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name efltk_images
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -210,7 +234,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "listview_ds"=..\test\listview_ds.dsp - Package Owner=<4>
+Project: "listview_ds"=..\tools\test\listview_ds.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

@@ -159,7 +159,6 @@ private:
     Fl_Box *preview_info_;
     Fl_Check_Button *preview_but_;
     bool preview_on;
-    char preview_text[1024], preview_info[256];
 
     Fl_Highlight_Button *up_;
     Fl_Highlight_Button *home_;

@@ -38,11 +38,6 @@ Fl_ListView_Item::Fl_ListView_Item(const char *label1,
 
 Fl_ListView_Item::~Fl_ListView_Item()
 {
-    for(uint n=0; n<attr_list.size(); n++) {
-        Fl_ListItem_Attr *a = (Fl_ListItem_Attr*)attr_list[n];
-        if(a->col_label && a->col_label_copied)
-            free((void *)a->col_label);
-    }
 }
 
 void Fl_ListView_Item::redraw(uchar c) 
@@ -54,8 +49,6 @@ void Fl_ListView_Item::redraw(uchar c)
 Fl_ListItem_Attr *Fl_ListView_Item::create_attr(int col)
 {
    Fl_ListItem_Attr *a = new Fl_ListItem_Attr;
-   a->col_label = 0;
-   a->col_label_copied = false;
    a->col_width = 0;
    return a;
 }
@@ -108,7 +101,6 @@ void Fl_ListView_Item::columns(uint count)
     } else {
         for(uint n=new_size; n<old_size; n++) {
             Fl_ListItem_Attr *a = (Fl_ListItem_Attr*)attr_list[n];
-            if(a->col_label && a->col_label_copied) free((void *)a->col_label);
             delete (Fl_ListItem_Attr*)a;
         }
         attr_list.resize(new_size);
@@ -117,20 +109,6 @@ void Fl_ListView_Item::columns(uint count)
 
 void Fl_ListView_Item::check_columns(uint count) {
     if(count+1>columns()) columns(count+1);
-}
-
-void Fl_ListView_Item::copy_label(int col, const char *txt)
-{
-    check_columns(col);
-    Fl_ListItem_Attr *a = (Fl_ListItem_Attr*)attr_list[col];
-    if(a->col_label_copied) free((void*)a->col_label);
-    if(txt) {
-        a->col_label = strdup(txt);
-        a->col_label_copied = true;
-    } else {
-        a->col_label = 0;
-        a->col_label_copied = false;
-    }
 }
 
 void Fl_ListView_Item::draw_cell(int col, int w, bool sel)
@@ -180,7 +158,7 @@ void Fl_ListView_Item::layout()
     fl_font(parent()->text_font() , parent()->text_size());
     for(uint n=0; n<attr_list.size(); n++) {
         Fl_ListItem_Attr *a = (Fl_ListItem_Attr*)attr_list[n];
-        if(a->col_label) {
+        if(!a->col_label.empty()) {
             int w=300,h=0;
             fl_measure(a->col_label, w, h, FL_ALIGN_LEFT);
             if(h>H) H=h;
@@ -223,8 +201,13 @@ void Fl_ListView_Item::label(int col, const char *text)
 {
     check_columns(col);
     Fl_ListItem_Attr *a = (Fl_ListItem_Attr*)attr_list[col];
-    if(a->col_label && a->col_label_copied) free((void*)a->col_label);
-    a->col_label_copied = false;
+    a->col_label = text;
+}
+
+void Fl_ListView_Item::label(int col, const Fl_String &text)
+{
+    check_columns(col);
+    Fl_ListItem_Attr *a = (Fl_ListItem_Attr*)attr_list[col];
     a->col_label = text;
 }
 
@@ -266,7 +249,6 @@ Fl_ListItem_Attr *Fl_ListView_ItemExt::create_attr(int col)
 {
     Fl_ListItem_AttrExt *a = new Fl_ListItem_AttrExt;
     a->col_label = 0;
-    a->col_label_copied = false;
     a->col_width = 0;
     a->col_image = 0;
     a->col_flags = parent()->column_flags(col);
@@ -435,7 +417,7 @@ void Fl_ListView_ItemExt::layout()
     int H = 0;
     for(uint n=0; n<attr_list.size(); n++) {
         Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr_list[n];
-        if(a->col_label) {
+        if(!a->col_label.empty()) {
             int w=300,h=0;
             fl_font(a->col_font , a->col_font_size);
             fl_measure(a->col_label, w, h, a->col_flags);

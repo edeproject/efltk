@@ -90,6 +90,10 @@ SOURCE=..\src\core\cmap.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\core\filename.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\core\filename_absolute.cpp
 # End Source File
 # Begin Source File
@@ -238,6 +242,10 @@ SOURCE=..\src\core\Fl_Config.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\core\fl_converters.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\core\fl_cursor.cpp
 # End Source File
 # Begin Source File
@@ -347,6 +355,10 @@ SOURCE=..\src\core\fl_glyph.cpp
 # Begin Source File
 
 SOURCE=..\src\core\Fl_Group.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Hashs.cpp
 # End Source File
 # Begin Source File
 
@@ -662,7 +674,11 @@ SOURCE=..\src\widgets\Fl_Tooltip.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\core\fl_utf8.c
+SOURCE=..\src\core\Fl_Translator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_utf8.cpp
 # End Source File
 # Begin Source File
 
@@ -726,11 +742,7 @@ SOURCE=..\src\core\Fl_Xpm.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\core\numericsort.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\core\scandir.c
+SOURCE=..\src\core\scandir.cpp
 # End Source File
 # Begin Source File
 
@@ -802,6 +814,10 @@ SOURCE=..\efltk\Fl_Calendar.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\efltk\Fl_Callback_List.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\efltk\Fl_Check_Button.h
 # End Source File
 # Begin Source File
@@ -830,11 +846,19 @@ SOURCE=..\efltk\Fl_Config.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\efltk\Fl_Data_Fields.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\efltk\Fl_Data_Source.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\efltk\Fl_Date_Time.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Date_Time_Input.h
 # End Source File
 # Begin Source File
 
@@ -1014,6 +1038,14 @@ SOURCE=..\efltk\Fl_Main_Window.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\efltk\Fl_Map.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Masked_Input.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\efltk\Fl_MDI_Bar.h
 # End Source File
 # Begin Source File
@@ -1095,6 +1127,10 @@ SOURCE=..\efltk\Fl_Popup_Window.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_ProgressBar.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Ptr_Hash.h
 # End Source File
 # Begin Source File
 
@@ -1194,7 +1230,15 @@ SOURCE=..\efltk\Fl_String.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\efltk\Fl_String_Hash.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\efltk\Fl_String_List.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_String_Stack.h
 # End Source File
 # Begin Source File
 
@@ -1270,7 +1314,15 @@ SOURCE=..\efltk\Fl_Tooltip.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\efltk\Fl_Translator.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\efltk\Fl_Tree.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\fl_utf8.h
 # End Source File
 # Begin Source File
 
@@ -1379,6 +1431,10 @@ SOURCE=..\efltk\win32.h
 # Begin Source File
 
 SOURCE=..\efltk\x.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Xutf8.h
 # End Source File
 # End Group
 # End Target

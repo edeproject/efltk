@@ -29,6 +29,7 @@
 class Fl_String_List : public Fl_Ptr_List {
 public:
     Fl_String_List() : Fl_Ptr_List() { auto_delete_ = true; }
+	~Fl_String_List() { clear(); }
 
     void sort();
 

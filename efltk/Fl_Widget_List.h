@@ -28,6 +28,7 @@
 class Fl_Widget_List : public Fl_Ptr_List {
 public:
     Fl_Widget_List() : Fl_Ptr_List() { }
+	virtual ~Fl_Widget_List() { clear(); }
 
     void append(Fl_Widget *item) { Fl_Ptr_List::append((void *)item); }
     void prepend(Fl_Widget *item) { Fl_Ptr_List::prepend((void *)item); }
@@ -43,7 +44,7 @@ public:
     Fl_Widget *operator [](uint ind) const { return (Fl_Widget *)items[ind]; }
 
 protected:
-    void free_item(Fl_Widget *item) { delete (Fl_Widget*)(item); }
+    virtual void free_item(Fl_Ptr_List_Item item) { delete (Fl_Widget*)(item); }
 };
 
 #endif

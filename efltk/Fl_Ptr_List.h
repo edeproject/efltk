@@ -35,7 +35,7 @@ class FL_API Fl_Ptr_List {
 public:
     Fl_Ptr_List();
     virtual ~Fl_Ptr_List();
-    void clear();
+    virtual void clear();
     void resize(uint newsize);
 
     void auto_delete(bool val) { auto_delete_ = val; }
@@ -61,10 +61,13 @@ public:
     int index_of(const Fl_Ptr_List_Item p) const;
 
     Fl_Ptr_List_Item item(uint index) const;
-    Fl_Ptr_List_Item& operator [] (uint ind) { return items[ind]; }
-    const Fl_Ptr_List_Item operator [] (uint ind) const { return items[ind]; }
+    Fl_Ptr_List_Item& operator [] (uint ind) const { return items[ind]; }
 
-    Fl_Ptr_List_Item *data() { return items; }
+    Fl_Ptr_List_Item *data() { return items; }	
+
+	// Copy
+	Fl_Ptr_List& operator = (const Fl_Ptr_List &list);
+    Fl_Ptr_List(const Fl_Ptr_List &list);
 
 protected:
     // Free item in list e.g.: delete (SomeClass*)(item);

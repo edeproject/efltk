@@ -43,10 +43,10 @@ public:
     static char *bindtextdomain(const char *domainname, const char *dirname);
     static char *textdomain(const char *domainname);
 
-private:
     Fl_Translator();
     ~Fl_Translator();
 
+private:
     static Fl_CString_List search_paths_;
     static Fl_Ptr_List catalogs_;
     static Fl_Translator translator;

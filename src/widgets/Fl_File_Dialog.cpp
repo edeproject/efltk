@@ -607,11 +607,9 @@ void Fl_File_Dialog::make_group(int w, int h)
         listview_->end();
 
         preview_ = new PreviewBox(0, 0, 0, 0);
-        preview_->label(preview_text);
         preview_->hide();
         preview_->box(FL_THIN_DOWN_BOX);
         preview_info_ = new Fl_Box(0, 0, 0, 0);
-        preview_info_->label(preview_info);
         preview_info_->hide();
         preview_info_->box(FL_FLAT_BOX);
         preview_info_->label_size(10);
@@ -1521,8 +1519,8 @@ void Fl_File_Dialog::preview(bool show)
 	if(!show) {
 		image_cache.clear();
 		preview_->image(0);
-		preview_text[0] = '\0';
-		preview_info[0] = '\0';
+		preview_->label("");
+		preview_info_->label("");
 
 		preview_->hide();
 		preview_info_->hide();
@@ -1560,8 +1558,8 @@ void Fl_File_Dialog::preview(bool show)
 void Fl_File_Dialog::update_preview(const char *filename)
 {
 	preview_->image(0);
-	preview_text[0] = '\0';
-	preview_info[0] = '\0';
+	preview_->label("");
+	preview_info_->label("");
 
 	if(!filename) {
 		preview_->redraw();
@@ -1592,8 +1590,8 @@ void Fl_File_Dialog::update_preview(const char *filename)
                         im = blended;
                     }
 
-                    snprintf(preview_info, sizeof(preview_info)-1,
-                             "%s\n\n%s %d x %d\n%s %s",
+					Fl_String &label = (Fl_String&)preview_info_->label();
+					label.printf("%s\n\n%s %d x %d\n%s %s",
                              ((Fl_ListView_Item *)listview()->item())->label(),
                              _("Size:"),
                              im->width(), im->height(),
@@ -1619,29 +1617,31 @@ void Fl_File_Dialog::update_preview(const char *filename)
 		fp = fl_fopen(filename, "rb");
 		if (fp != NULL) {
 			// Try reading the first 1k of data for a label...
-			bytes = fread(preview_text, 1, sizeof(preview_text) - 1, fp);
-			preview_text[bytes] = '\0';
+			char buf[1024];
+			bytes = fread(buf, 1, sizeof(buf) - 1, fp);
+			buf[bytes] = '\0';
 			fclose(fp);
 			loaded = true;
+			preview_->label(buf);
 		} else {
 			// Assume we can't read any data...
-			preview_text[0] = '\0';
+			preview_->label("");
 		}		
 
 		// Scan the buffer for printable chars...
-		for(ptr = preview_text; *ptr && (isprint(*ptr) || isspace(*ptr)); ptr ++);
+		for(ptr = (char*)preview_->label().c_str(); *ptr && (isprint(*ptr) || isspace(*ptr)); ptr ++);
 
-		if(*ptr || ptr == preview_text) {			
+		if(*ptr || ptr == preview_->label().c_str()) {
 			loaded = false;
 		} else {
-			snprintf(preview_info, sizeof(preview_info)-1, 
-				"%s\n\n%s %s",
-                                 ((Fl_ListView_Item *)listview()->item())->label(),
-                                 _("File Size:"),
+			Fl_String &label = (Fl_String&)preview_info_->label();
+			label.printf("%s\n\n%s %s", 
+				((Fl_ListView_Item *)listview()->item())->label(), 
+				_("File Size:"),
 				((Fl_ListView_Item *)listview()->item())->label(1));
 
 			// remove '\r' from text EOL
-			for(ptr = preview_text; *ptr; ptr++) if(*ptr=='\r') *ptr=' ';
+			for(ptr = (char*)preview_->label().c_str(); *ptr; ptr++) if(*ptr=='\r') *ptr=' ';
 
 			preview_->align(FL_ALIGN_CLIP|FL_ALIGN_INSIDE|FL_ALIGN_LEFT|FL_ALIGN_TOP);
 			preview_->label_font(FL_COURIER);
@@ -1649,8 +1649,7 @@ void Fl_File_Dialog::update_preview(const char *filename)
 	}
 
 	if(!loaded) {
-		preview_text[0] = '?'; 
-		preview_text[1] = '\0';
+		preview_->label("?"); 
 		preview_->align(FL_ALIGN_CLIP);
 		preview_->label_font(FL_TIMES);
 	}
@@ -1754,7 +1753,7 @@ void Fl_File_Dialog::add_netitem(LPNETRESOURCE net)
 #ifdef UNICODE
 	int len = wcslen(net->lpRemoteName);
 	remote_name = (char*)malloc(len*5+1);
-	fl_unicode2utf(net->lpRemoteName, len, remote_name);
+	fl_unicode2utf((unsigned short*)net->lpRemoteName, len, remote_name);
 #else
 	remote_name = net->lpRemoteName;
 #endif

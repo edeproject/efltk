@@ -458,7 +458,7 @@ static const Fl_Pixmap documentPixmap(document_xpm);
 
 # define S_ISLNK(m)      (false)
 # define S_ISEXEC(m)     (((m) & _S_IFMT) == _S_IEXEC)
-#ifndef __GNUC__
+#if !defined(__GNUC__) && !defined(__BORLANDC__)
 # define S_ISREG(m)      (((m) & _S_IFMT) == _S_IFREG)
 # define S_ISDIR(m)      (((m) & _S_IFMT) == _S_IFDIR)
 # define S_ISBLK(m)      (((m) & _S_IFMT) == _S_IFBLK)

@@ -52,12 +52,14 @@ public:
     Fl_String& operator += (const Fl_String& s);
     Fl_String& operator += (const char s);
 
+    bool operator ! () const { return empty(); }
+
     // usefull methods
     Fl_String &append(const char *str, int len);
     Fl_String &prepend(const char *str, int len);
 
-    bool cmp(Fl_String &s);
-    bool casecmp(Fl_String &s);
+    bool cmp(Fl_String &s) const;
+    bool casecmp(Fl_String &s) const;
 
     Fl_String trim_right() const;
     Fl_String trim_left()  const;
@@ -91,21 +93,23 @@ public:
     // Returns reference to this
     Fl_String &printf(const char *str, ...);
 
-    // auto conversion to char* when needed
+    // auto conversion to char* and uchar* when needed
     operator const char *() const { return str_; }
     operator char *() const { return str_; }
+    operator const uchar *() const { return (const uchar*)str_; }
+    operator uchar *() const { return (uchar*)str_; }
 
     // element access
     char& operator [] (const int i) { return str_[i]; }
     char operator [] (const int i) const { return str_[i]; }
-
+    
     static Fl_String IntToString(int val);
 
     static Fl_String from_codeset(int conv_index, const char *str, int str_len);
     static Fl_String from_codeset(Fl_String codeset, const char *str, int str_len);
 
 protected:
-    void assign(const char *str);
+    void assign(const char *str, int len);
 
     char *str_;
     unsigned len_;

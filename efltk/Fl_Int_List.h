@@ -27,6 +27,7 @@
 class Fl_Int_List : public Fl_Ptr_List {
 public:
     Fl_Int_List() : Fl_Ptr_List() { }
+	virtual ~Fl_Int_List() { clear(); }
 
     void sort();
 

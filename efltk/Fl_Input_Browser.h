@@ -44,6 +44,7 @@ public:
 
     void popup();
     void hide_popup();
+    virtual int popup(int x, int y, int w, int h) { Fl_Input_Browser::popup(); return Fl_Menu_::popup(x,y,w,h); }
 
     virtual int handle(int);
 

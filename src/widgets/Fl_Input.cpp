@@ -511,12 +511,12 @@ void Fl_Input::draw(int X, int Y, int W, int H)
         CONTINUE2:
         // draw the cursor:
         if ((this==dnd_target || focused() && selstart == selend) &&
-            cursor_position >= p-value() && cursor_position <= e-value())
+            cursor_position >= p-value() && cursor_position <= e-value() && active_r())
         {
             fl_color(button_color());
             if (readonly()) {
-                fl_line(xpos+curx-3, Y+ypos+height-1, xpos+curx, Y+ypos+height-4);
-                fl_line(xpos+curx, Y+ypos+height-4, xpos+curx+3, Y+ypos+height-1);
+                fl_line(xpos+curx-2, Y+ypos+height-1, xpos+curx, Y+ypos+height-3);
+                fl_line(xpos+curx, Y+ypos+height-3, xpos+curx+2, Y+ypos+height-1);
             } else {
                 fl_rectf(xpos+curx, Y+ypos, 2, height);
             }
