@@ -20,6 +20,7 @@
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 //
 
+#include <efltk/math.h>
 #include <config.h>
 
 #include <efltk/Fl.h>
@@ -31,7 +32,6 @@
 #include <efltk/Fl_Scroll.h>
 #include <efltk/Fl_ListView.h>
 #include <efltk/fl_draw.h>
-#include <efltk/math.h>
 #include <efltk/fl_utf8.h>
 
 #include <string.h>
