@@ -33,7 +33,8 @@ void Fl_Scroll::draw_clip(void* v,int X, int Y, int W, int H)
     fl_push_clip(X,Y,W,H);
 
     if(!(fl_current_dev->capabilities() & Fl_Device::CAN_CLIPOUT)) {
-        fl_color(s->color()); fl_rectf(X,Y,W,H);
+//        fl_color(s->color()); fl_rectf(X,Y,W,H);
+        s->draw_box();
     }
 
     // draw all the children, clipping them out of the region:
@@ -55,7 +56,8 @@ void Fl_Scroll::draw_clip(void* v,int X, int Y, int W, int H)
     }
     // fill the rest of the region with color:
     if(fl_current_dev->capabilities() & Fl_Device::CAN_CLIPOUT) {
-        fl_color(s->color()); fl_rectf(X,Y,W,H);
+//        fl_color(s->color()); fl_rectf(X,Y,W,H);
+        s->draw_box();
     }
     // draw the outside labels:
     for (i = numchildren; i--;)
@@ -82,6 +84,12 @@ void Fl_Scroll::draw()
     int X,Y,W,H; bbox(X,Y,W,H);
     uchar d = damage();
 
+    // an ugly heck:
+    // transparent Fl_Scrolls background should remains fixed
+    // so if Fl_Scroll has no box, we need a full damage
+    if (box() == FL_NO_BOX)
+        d = FL_DAMAGE_ALL;
+        
     if (d & FL_DAMAGE_ALL)
     {
         // draw the scrollbars:
