@@ -326,9 +326,14 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
                 else                      current_item = row_at(yposition()+Fl::event_y()-tiy);
                 if(current_item==-1) return 0;
 
+				if(sel_item == current_item) {
+					if(selected()==1 && selected_row(sel_item))
+						return 1;
+				}
+
                 if(multi())
-                {
-            // CTRL does not unselect others
+                {					
+					// CTRL does not unselect others
                     if(shiftstate!=FL_CTRL)
                     {
                         // Turn off items that are not in selection
@@ -364,7 +369,7 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
 
                     //if(sel_item != current_item || sel_item==0 || sel_item==int(children()-1))
                     {
-                // Mark items selected
+						// Mark items selected
                         select_items(sel_item, current_item);
                         show_row( (cur_row = current_item) );
                     }

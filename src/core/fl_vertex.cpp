@@ -378,7 +378,7 @@ void Fl_Device::points() {
 void Fl_Device::stroke() 
 {
 #ifdef _WIN32
-	fl_setpen();
+	fl_set_geometric_pen();
 	if (circle_w > 0)
 		Arc(fl_gc, circle_x, circle_y, circle_x+circle_w+1, circle_y+circle_h+1,
 			0,0, 0,0);
@@ -415,7 +415,7 @@ void Fl_Device::fill()
 {
 #ifdef _WIN32
 	fl_setbrush();
-	fl_setpen();
+	fl_set_geometric_pen();
 	if (circle_w > 0)
 		Chord(fl_gc, circle_x, circle_y, circle_x+circle_w+1, circle_y+circle_h+1,
 				0,0, 0,0);
@@ -458,28 +458,23 @@ void Fl_Device::fill_stroke(Fl_Color color)
 #ifdef _WIN32
 	fl_setbrush();
 	fl_color(color);
-	fl_setpen();
-  /*COLORREF saved = fl_colorref;
-  fl_colorref = fl_wincolor(color);
-  HPEN newpen = fl_create_pen();
-  fl_colorref = saved;
-  HPEN oldpen = (HPEN)SelectObject(fl_gc, newpen);*/
-  if (circle_w > 0)
-    Chord(fl_gc, circle_x, circle_y, circle_x+circle_w+1, circle_y+circle_h+1,
-	  0,0, 0,0);
+	fl_set_geometric_pen();
+	if (circle_w > 0)
+		Chord(fl_gc, circle_x, circle_y, circle_x+circle_w+1, circle_y+circle_h+1,
+			  0,0, 0,0);
 #ifndef _WIN32_WCE
-  if (loops) {
-    fl_closepath();
-    PolyPolygon(fl_gc, point_, loop, loops);
-  } else 
+	if (loops) {
+		fl_closepath();
+		PolyPolygon(fl_gc, point_, loop, loops);
+	} else 
 #endif
-	  if (points_ > 2) {
-    Polygon(fl_gc, point_, points_);
-  }
-  //SelectObject(fl_gc, oldpen);
-  //DeleteObject(newpen);
-  inline_newpath();
-#else
+	if (points_ > 2) {
+		Polygon(fl_gc, point_, points_);
+	}
+	inline_newpath();
+
+#else /* ifdef _WIN32 */
+
   if (circle_w > 0)
     XFillArc(fl_display, fl_window, fl_gc,
 	     circle_x, circle_y, circle_w, circle_h, 0, 64*360);
@@ -500,7 +495,8 @@ void Fl_Device::fill_stroke(Fl_Color color)
     points_ = saved_points; // throw away the extra points
   }
   Fl_Color saved = fl_color();
-  fl_color(color); fl_stroke();
+  fl_color(color); 
+  fl_stroke();
   fl_color(saved);
 #endif
 }

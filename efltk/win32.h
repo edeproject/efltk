@@ -87,16 +87,14 @@ extern FL_API MSG fl_msg;
 // drawing functions:
 
 extern FL_API HDC	fl_gc;
-inline FL_API HDC	fl_getDC() {return fl_gc ? fl_gc : GetDC(0);}
+inline FL_API HDC	fl_getDC() { return fl_gc ? fl_gc : GetDC(0); }
 extern FL_API HFONT	fl_xfont();
 extern FL_API TEXTMETRIC* fl_textmetric();
 extern FL_API COLORREF	fl_colorref;
 extern FL_API COLORREF	fl_wincolor(Fl_Color i);
 
-extern FL_API HPEN	 fl_pen;
-extern FL_API HPEN	 fl_setpen();
-
-extern FL_API HBRUSH fl_brush;
+extern FL_API HPEN fl_set_geometric_pen();
+extern FL_API HPEN fl_set_cosmetic_pen();
 extern FL_API HBRUSH fl_setbrush();
 
 extern FL_API void	fl_clip_region(Region);
@@ -197,6 +195,7 @@ FL_API Fl_Window* fl_find(Window xid);
 extern FL_API HCURSOR fl_default_cursor;
 
 #endif //_FL_WINDOW_H_
+
 ////////////////////////////////////////////////////////////////
 
 #endif

@@ -24,7 +24,7 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
-#include <config.h>
+#include "fl_internal.h"
 
 #include <efltk/fl_draw.h>
 #include <efltk/x.h>
@@ -34,12 +34,14 @@ void Fl_Device::rect(int x, int y, int w, int h)
     if (w<=0 || h<=0) return;
     fl_transform(x,y);
 #ifdef _WIN32
-	fl_setpen();
-    MoveToEx(fl_gc, x, y, 0L);
-    LineTo(fl_gc, x+w-1, y);
-    LineTo(fl_gc, x+w-1, y+h-1);
-    LineTo(fl_gc, x, y+h-1);
-    LineTo(fl_gc, x, y);
+	fl_set_cosmetic_pen();
+
+	w--; h--;
+	fl_line_drawer.move(x,y);
+	fl_line_drawer.line(x+w, y);
+    fl_line_drawer.line(x+w, y+h);
+    fl_line_drawer.line(x, y+h);
+    fl_line_drawer.line(x, y);
 #else
     XDrawRectangle(fl_display, fl_window, fl_gc, x, y, w-1, h-1);
 #endif
@@ -78,13 +80,10 @@ void Fl_Device::line(int x, int y, int x1, int y1)
 {
     fl_transform(x,y);
     fl_transform(x1,y1);
-#ifdef _WIN32
-	fl_setpen();
-    MoveToEx(fl_gc, x, y, 0L);
-    LineTo(fl_gc, x1, y1);
-    // Draw the last point *again* because the GDI line drawing
-    // functions will not draw the last point ("it's a feature!"...)
-    SetPixel(fl_gc, x1, y1, fl_colorref);
+#ifdef _WIN32	
+	fl_set_cosmetic_pen();
+	fl_line_drawer.move(x, y);
+	fl_line_drawer.line(x1, y1);
 #else
     XDrawLine(fl_display, fl_window, fl_gc, x, y, x1, y1);
 #endif

@@ -45,6 +45,7 @@ void Fl_Dotted_Frame::draw(int x,int y,int w,int h, Fl_Color c, Fl_Flags) const
 {
     if (w <= 1 || h <= 1) return;
     fl_color(c);
+
 #ifndef _WIN32
     // X version uses stipple pattern because there seem to be too many
     // servers with bugs when drawing dotted lines:
@@ -52,9 +53,10 @@ void Fl_Dotted_Frame::draw(int x,int y,int w,int h, Fl_Color c, Fl_Flags) const
     static Pixmap evenstipple, oddstipple;
     if (!evenstipple)
     {
+		// Init stipple bitmaps
         Window root = RootWindow(fl_display, fl_screen);
         evenstipple = XCreateBitmapFromData(fl_display, root, pattern, 8, 8);
-        oddstipple = XCreateBitmapFromData(fl_display, root, pattern+1, 8, 8);
+        oddstipple  = XCreateBitmapFromData(fl_display, root, pattern+1, 8, 8);
     }
     int xx = x; int yy = y; fl_transform(xx,yy);
     XSetStipple(fl_display, fl_gc, (xx+yy-x-y)&1 ? oddstipple : evenstipple);
@@ -66,24 +68,57 @@ void Fl_Dotted_Frame::draw(int x,int y,int w,int h, Fl_Color c, Fl_Flags) const
     XSetFillStyle(fl_display, fl_gc, FillSolid);
     // put line width back to zero:
     //XSetLineAttributes(fl_display, fl_gc, 0, LineSolid, CapButt, JoinMiter);
-#else
-	if(!fl_is_nt4()) {
-		// Windows 95/98/ME do not implement the dotted line style, so draw
-		// every other pixel around the focus area...
-		int i, xx, yy;
-		w--; h--;
 
-		for (xx = 0, i = 1; xx < w; xx ++, i ++)	if (i & 1) fl_point(x + xx, y);
-		for (yy = 0; yy < h; yy ++, i ++)			if (i & 1) fl_point(x + w, y + yy);
-		for (xx = w; xx > 0; xx --, i ++)			if (i & 1) fl_point(x + xx, y + h);
-		for (yy = h; yy > 0; yy --, i ++)			if (i & 1) fl_point(x, y + yy);
+#else /* ifndef _WIN32 */
 
-	} else {
-		// But 2k/XP does..
-		fl_line_style(FL_DOT);
-		fl_rect(x, y, w, h);
-		fl_line_style(0);
+    // WIN32 version uses stipple pattern because WIN9x doesnt implement PS_DOT pen correctly.
+	// Although, we have work-arounded this, but to match dotted box look in every Windows platform,
+	// it's good to use stuppled pattern blit.
+
+	// Create a dotted monochrome bitmap
+	static const WORD pattern[] = { 0xAAAA, 0x5555, 0xAAAA, 0x5555, 0xAAAA, 0x5555, 0xAAAA, 0x5555, 0xAAAA };
+	static HBRUSH evenbrush, oddbrush;
+	if(!evenbrush) 
+	{
+		// Init stipple brushes
+		BITMAP bm;
+		bm.bmType = 0;
+		bm.bmWidth = 8;
+		bm.bmHeight = 8;
+		bm.bmWidthBytes = 2;
+		bm.bmPlanes = 1;
+		bm.bmBitsPixel = 1;
+		bm.bmBits = (LPVOID)pattern;
+		HBITMAP evenstipple = CreateBitmapIndirect(&bm);
+		bm.bmBits = (LPVOID)(pattern+1);
+		HBITMAP oddstipple  = CreateBitmapIndirect(&bm);
+		
+		// Create the brush from the bitmap bits
+		evenbrush = CreatePatternBrush(evenstipple);
+		oddbrush  = CreatePatternBrush(oddstipple);
+		
+		// Delete the useless bitmaps
+		DeleteObject(evenstipple);
+		DeleteObject(oddstipple);
 	}
+
+    int xx = x; int yy = y; fl_transform(xx,yy);
+	HBRUSH brush = (xx+yy-x-y)&1 ? oddbrush : evenbrush;
+
+	// Select the patterned brush into the DC
+	HBRUSH oldBrush = (HBRUSH)SelectObject(fl_gc, brush);
+
+	w--; h--;
+	// Draw an horizontal line
+	PatBlt(fl_gc, xx, yy, w, 1, PATCOPY);
+	PatBlt(fl_gc, xx, yy+h, w, 1, PATCOPY);
+
+	// Invert a vertical line 2 pixels wide
+	PatBlt(fl_gc, xx, yy, 1, h, PATCOPY);
+	PatBlt(fl_gc, xx+w, yy, 1, h, PATCOPY);
+
+	// Clean up
+	SelectObject(fl_gc, oldBrush);	
 #endif
 }
 

@@ -216,4 +216,44 @@ public:
     uint32 buf_offset;
 };
 
+/////////////////////////////////////////////////
+
+#ifdef _WIN32
+
+#include <windows.h>
+#include <efltk/Fl_Point.h>
+#include <efltk/Fl_Int_List.h>
+class Fl_Line_Drawer
+{
+public:
+	Fl_Line_Drawer() { cur_pat = cur_stretch = 0; }
+	~Fl_Line_Drawer() { }
+
+	// Set linestyle pattern 
+	void set_pattern(int size, DWORD *dash_pattern, int dash_count);
+
+	// MoveToEx replacement
+	void move(int x, int y);
+
+	// LineTo replacement
+	void line(int x, int y);
+
+private:
+	void reset();
+	
+	void bresenham_line(int to_x, int to_y);
+	void h_line(int to_x, int direction);
+	void v_line(int to_y, int direction);
+
+	Fl_Int_List patterns;
+
+	int	cur_pat;
+	int	cur_stretch;	
+	POINT cur_pos;
+};
+
+extern FL_API Fl_Line_Drawer fl_line_drawer;
+
+#endif /* _WIN32 */
+
 #endif

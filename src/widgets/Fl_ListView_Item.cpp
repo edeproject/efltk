@@ -175,6 +175,7 @@ void Fl_ListView_Item::draw_cell(unsigned row, unsigned col, int width, int heig
     Fl_Boxtype box = parent()->button_box();
     box->draw(0, 0, W, H, fl_inactive(parent()->button_color(), f), FL_INVISIBLE);
     box->inset(X,Y,W,H);
+	X += 2; W -= 4;
 
     if(col==0 && m_image) {
         m_image->draw(X, H/2-m_image->height()/2, m_image->width(), m_image->height(), f);

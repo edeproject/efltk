@@ -1635,7 +1635,7 @@ void Fl_X::create(Fl_Window* window)
 		if(!window->icon()) window->icon((void *)LoadIcon(NULL, IDI_APPLICATION));
 		wc.hIcon = wc.hIconSm = (HICON)window->icon();			
 		wc.hCursor = fl_default_cursor;
-		//uchar r,g,b; Fl::get_color(FL_GRAY,r,g,b);
+		//uchar r,g,b; fl_get_color(FL_GRAY,r,g,b);
 		//wc.hbrBackground = (HBRUSH)CreateSolidBrush(RGB(r,g,b));
 		wc.hbrBackground = NULL;
 		wc.lpszMenuName = NULL;

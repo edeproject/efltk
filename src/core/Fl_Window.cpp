@@ -45,7 +45,9 @@ Fl_Window *Fl_Widget::window() const
 }
 
 
-void Fl_Window::draw() {Fl_Group::draw();}
+void Fl_Window::draw() {
+	Fl_Group::draw();
+}
 
 void Fl_Window::default_callback(Fl_Window* window, void*)
 {

@@ -488,30 +488,38 @@ public:
         fl_line_style(FL_DOT);
         fl_color(color);
         if (f&FL_ALIGN_TOP) {
+			// Buttons on top
             int cX=x1+CORNER;
             int cY=y1+CORNER;
-            fl_line(x1, y2, x1, cY);
-            fl_line(x1, cY, cX, y1);
-            fl_line(cX, y1, x2, y1);
-            fl_line(x2, y1, x2, y2);
-            fl_line(x2, y2, x1, y2);
+            
+			fl_line(cX, y1, x2, y1);  // Top
+			fl_line(x2, y1, x2, y2);  // Right
+			fl_line(x2-1, y2, x1, y2);// Bottom
+			fl_line(x1, cY, x1, y2);  // Left
+			fl_line(x1, cY, cX, y1);  // Corner           
         }
         else if (f&(FL_ALIGN_BOTTOM|FL_ALIGN_LEFT)) {
+			// Buttons on bottom/left
+			x1++;
             int cX=x1+CORNER;
-            int cY=y2-CORNER+2;
-            fl_line(x1, y1, x1, cY);
-            fl_line(x1, cY, cX, y2);
-            fl_line(cX, y2, x2, y2);
-            fl_line(x2, y2, x2, y1);
-            fl_line(x1, y1, x2, y1);
+            int cY=y2-CORNER+2;            
+
+            fl_line(x1, y1, x2, y1);     // Top
+            fl_line(x2-1, y1, x2-1, y2); // Right
+            fl_line(x2-1, y2, cX-1, y2); // Bottom
+			fl_line(cX, y2, x1, cY);     // Corner
+			fl_line(x1, cY, x1, y1);     // Left
+
         } else {
+			// Buttons on right
             int cX=x2-CORNER;
-            int cY=y2-CORNER;
-            fl_line(x1, y1, x2, y1);
-            fl_line(x2, y1, x2, cY);
-            fl_line(x2, cY, cX, y2);
-            fl_line(cX, y2, x1, y2);
-            fl_line(x1, y2, x1, y1);
+            int cY=y2-CORNER+1;
+            
+			fl_line(x1, y1, x2, y1); // Top
+            fl_line(x2, y1, x2, cY-1); // Right
+            fl_line(x2, cY, cX+1, y2); // Corner
+            fl_line(cX, y2, x1, y2); // Bottom
+            fl_line(x1, y2, x1, y1); // Left
         }
         fl_line_style(0);
     }
