@@ -28,11 +28,13 @@
 
 class Fl_Image;
 
-// This file contains filters for Fl_Image.
-// You can apply modifier filter to image or to new Fl_Image.
-// functions takes value parameters from 0 to 3. Some of modifiers,
-// like DESATURATE doesnt take any values, but then again gamma modifier
-// will take 3, val1 as Red, val2 as Green, val3 as Blue, gamma correction values.
+/**
+ * This file contains filters for Fl_Image.
+ * You can apply modifier filter to image or to new Fl_Image.
+ * functions takes value parameters from 0 to 3. Some of modifiers,
+ * like DESATURATE doesnt take any values, but then again gamma modifier
+ * will take 3, val1 as Red, val2 as Green, val3 as Blue, gamma correction values.
+ */
 
 // apply_to_[new|this](Fl_Image *image, Fl_Rect *rect, Fl_Image_Filter *filter, float val1, float val2, float val3)
 // image - Fl_Image where to apply modifier
@@ -40,6 +42,9 @@ class Fl_Image;
 // filter - modifier filter (see end of this file)
 // float val1-val3 modifier values, defined below
 
+/**
+ * Base Image_Filter class.
+ */
 class Fl_Image_Filter
 {
 public:
