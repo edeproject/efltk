@@ -106,9 +106,9 @@ static char *next_dir_item(char *p,char **result) {
 }
 
 static const Fl_String_List
-month_names("Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Nov|Dec","|");
+    month_names("Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Nov|Dec","|");
 
-static Fl_Data_Fields *parse_file_info_string(Fl_String& file_info) {
+Fl_Data_Fields *parse_file_info_string(Fl_String& file_info) {
     char *ptr = (char *) file_info.c_str();
 
     char *permissions = 0L;
@@ -138,12 +138,8 @@ static Fl_Data_Fields *parse_file_info_string(Fl_String& file_info) {
         int month = atoi(time);
         int day = atoi(time+3);
         int year = atoi(time+6);
-        fl_try {
-            Fl_Date_Time dosDate(year,month,day);
-            dt = dosDate;
-        }
-        fl_catch(exc) {
-        }
+        Fl_Date_Time dosDate(year,month,day);
+        dt = dosDate;
     } else {
         // Unix style
         if (permissions[0] == 'd')
@@ -161,12 +157,8 @@ static Fl_Data_Fields *parse_file_info_string(Fl_String& file_info) {
         if (m >= 0) {
             int d = atoi(day);
             int y = atoi(year);
-            fl_try {
-                Fl_Date_Time unixDate(y,m,d);
-                dt = unixDate;
-            }
-            fl_catch(exc) {
-            }
+            Fl_Date_Time unixDate(y,m,d);
+            dt = unixDate;
         }
     }
 
