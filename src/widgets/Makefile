@@ -77,7 +77,8 @@ CPPFILES = \
 	fl_ask.cpp \
 	fl_engraved_label.cpp \
 	fl_show_colormap.cpp \
-	fl_symbols.cpp
+	fl_symbols.cpp \
+	layout_sizes.cpp
 
 CFILES =
 

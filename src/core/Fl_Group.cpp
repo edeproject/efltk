@@ -34,6 +34,8 @@
 
 #include <stdlib.h>
 
+#include "../widgets/layout_sizes.h"
+
 ////////////////////////////////////////////////////////////////
 
 FL_API Fl_Group* Fl_Group::m_current;
@@ -399,7 +401,7 @@ int *Fl_Group::store_sizes()
 	}    
 	return (int*)m_sizes.data();
 }
-
+/*
 static int max(int a,int b) {
 	if (a>b) return a;
 	return b;
@@ -438,6 +440,33 @@ static void widget_position(Fl_Widget *w,int x,int y,int& wx,int& wy) {
 			if (w->align() & FL_ALIGN_LEFT)
 				wx = x + label_w;
 	}
+}
+
+static void widget_size(Fl_Widget *w,int ow,int oh,int& nw,int& nh) {
+	int label_w = w->label_width();
+	if (label_w < 0) label_w = 0;
+    nw = ow;
+    nh = oh;
+	if (w->align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) {
+		if (!(w->align() & FL_ALIGN_INSIDE))
+			nh -= w->label_height();
+	} else {
+		if (!(w->align() & FL_ALIGN_INSIDE))
+			nw -= label_w;
+	}
+    if (nw < 0) nw = 0;
+    if (nh < 0) nh = 0;
+}
+*/
+
+static void check_label_width(Fl_Widget * w, int & pref_w)
+{
+	int label_w = w->label_width();
+	if (label_w < 0) label_w = 0;
+    if (!(w->align() & FL_ALIGN_INSIDE))
+    	if (w->align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM))
+            if (label_w > pref_w)
+                pref_w = label_w;
 }
 
 void Fl_Group::layout()
@@ -516,11 +545,14 @@ void Fl_Group::layout()
 
 					pref_w = o->w();
 					pref_h = hh;
+                    check_label_width(o, pref_w);
+                    
 					o->preferred_size(pref_w,pref_h);
 
-					total_w = widget_total_width(o,pref_w);
+					total_w = widget_layout_width(o,pref_w);
 
-					widget_position(o,xx,yy,pref_x,pref_y);
+					widget_layout_position(o,xx,yy,pref_x,pref_y);
+                    widget_layout_size(o,pref_w,pref_h,pref_w,pref_h);// If the widgets is shifted because of the label then it's size should be corrected
 
 					o->resize(pref_x,pref_y,pref_w,pref_h);
 					xx += total_w + offset * 2;
@@ -532,12 +564,14 @@ void Fl_Group::layout()
 
 					pref_w = o->w();
 					pref_h = hh;
+                    check_label_width(o, pref_w);
 
 					o->preferred_size(pref_w,pref_h);
 
-					total_w = widget_total_width(o,pref_w);
+					total_w = widget_layout_width(o,pref_w);
 
-					widget_position(o,xx+ww-total_w,yy,pref_x,pref_y);
+					widget_layout_position(o,xx+ww-total_w,yy,pref_x,pref_y);
+                    widget_layout_size(o,pref_w,pref_h,pref_w,pref_h);// If the widgets is shifted because of the label then it's size should be corrected
 
 					o->resize(pref_x,pref_y,pref_w,pref_h);
 
@@ -558,9 +592,9 @@ void Fl_Group::layout()
 
 					o->preferred_size(pref_w,pref_h);
 
-					widget_position(o,xx,yy,pref_x,pref_y);
+					widget_layout_position(o,xx,yy,pref_x,pref_y);
 
-					total_h = widget_total_height(o,pref_h);
+					total_h = widget_layout_height(o,pref_h);
 
 					o->resize(pref_x,pref_y,pref_w,pref_h);
 
@@ -582,10 +616,10 @@ void Fl_Group::layout()
 
 					o->preferred_size(pref_w,pref_h);
 
-					total_h = widget_total_height(o,pref_h);
+					total_h = widget_layout_height(o,pref_h);
                     //total_h = pref_h;
 
-					widget_position(o,xx,yy+hh-total_h,pref_x,pref_y);
+					widget_layout_position(o,xx,yy+hh-total_h,pref_x,pref_y);
 
 					o->resize(pref_x,pref_y,pref_w,pref_h);
 
@@ -617,9 +651,9 @@ void Fl_Group::layout()
 
             // Center the widget in the client area, if it's preferred
             // size is smaller than client area
-			total_h = widget_total_height(client,pref_h);
-			total_w = widget_total_width(client,pref_w);
-			widget_position(client,xx+ww/2-total_w/2,yy+hh/2-total_h/2,pref_x,pref_y);
+			total_h = widget_layout_height(client,pref_h);
+			total_w = widget_layout_width(client,pref_w);
+			widget_layout_position(client,xx+ww/2-total_w/2,yy+hh/2-total_h/2,pref_x,pref_y);
 			client->resize(pref_x,pref_y,pref_w,pref_h);
 		}
 	}

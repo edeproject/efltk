@@ -26,7 +26,7 @@ static int max(int a,int b) {
 	return b;
 }
 
-int widget_layout_width(Fl_Widget *w,int pref_w) 
+int widget_layout_width(const Fl_Widget *w,int pref_w)
 {
 	if (pref_w < 0) pref_w = w->w();
 	if (!(w->align() & FL_ALIGN_INSIDE)) {
@@ -39,7 +39,7 @@ int widget_layout_width(Fl_Widget *w,int pref_w)
 	return pref_w;
 }
 
-int widget_layout_height(Fl_Widget *w,int pref_h) 
+int widget_layout_height(const Fl_Widget *w,int pref_h)
 {
 	if (pref_h < 0) pref_h = w->h();
 	if (!(w->align() & FL_ALIGN_INSIDE)) {
@@ -52,24 +52,42 @@ int widget_layout_height(Fl_Widget *w,int pref_h)
 	return pref_h;
 }
 
-void widget_layout_position(Fl_Widget *w,int x,int y,int& wx,int& wy) {
+void widget_layout_position(const Fl_Widget *w,int x,int y,int& wx,int& wy) {
 	int label_w = w->label_width();
 	if (label_w < 0) label_w = 0;
+    wx = x;
+	wy = y;
 	if (w->align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) {
-		wx = x;
-		wy = y;
 		if (!(w->align() & FL_ALIGN_INSIDE)) {
 			if (w->align() & FL_ALIGN_TOP)
 				wy = y + w->label_height();
 		}
 	} else {
-		wx = x;
-		wy = y;
 		if (!(w->align() & FL_ALIGN_INSIDE)) {
 			if (w->align() & FL_ALIGN_LEFT)
 				wx = x + label_w;
 		}
 	}
+}
+
+// similar to widget_layout_position: finds the width and height in the layout rect
+void widget_layout_size(const Fl_Widget *w,int ow,int oh,int& nw,int& nh) {
+	int label_w = w->label_width();
+	if (label_w < 0) label_w = 0;
+    nw = ow;
+    nh = oh;
+	if (w->align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) {
+		if (!(w->align() & FL_ALIGN_INSIDE))
+            if (w->layout_align() & (FL_ALIGN_LEFT|FL_ALIGN_RIGHT)){
+    			nh -= w->label_height();
+            }
+	} else {
+		if (!(w->align() & FL_ALIGN_INSIDE))
+            if (w->layout_align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM))
+    			nw -= label_w;
+	}
+    if (nw < 0) nw = 0;
+    if (nh < 0) nh = 0;
 }
 
 // Takes widget position (x,y) and layout (w,h) - including label if needed.
