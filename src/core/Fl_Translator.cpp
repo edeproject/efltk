@@ -396,14 +396,15 @@ bool MessageHash::load_etb(FILE *fp)
     int *indexes = (int*)(data+sizeof(etb_header) + (numstrings*2*sizeof(uint32)));
     char *dataptr = (char*)(data+sizeof(etb_header) + (numstrings*2*sizeof(uint32)) + (numstrings*sizeof(uint32)));
 
-    Fl_String orig, *tr;
     int lenpos=0;
     for(uint n=0; n<numstrings; n++)
     {
-        orig = Fl_String(dataptr, SWAP(lengths[lenpos]));
+        Fl_String orig, *tr;
+
+        orig.append(dataptr, SWAP(lengths[lenpos]));
         dataptr += lengths[lenpos++];
 
-        tr   = new Fl_String(dataptr, SWAP(lengths[lenpos]));
+        tr = new Fl_String(dataptr, SWAP(lengths[lenpos]));
         dataptr += lengths[lenpos++];
 
         HashEntry *entry = new HashEntry;
@@ -493,14 +494,14 @@ bool MessageHash::load_mo(FILE *fp)
         }
     }
 
-    Fl_String orig, tr;
     for(uint n=0; n<numstrings; n++) {
+        Fl_String orig, tr;
         if(converter_index>0) {
             orig = Fl_String::from_codeset( converter_index, ((char*)data+SWAP(orig_tab[n].offset)), SWAP(orig_tab[n].length));
             tr   = Fl_String::from_codeset( converter_index, ((char*)data+SWAP(trans_tab[n].offset)), SWAP(trans_tab[n].length));
         } else {
-            orig = Fl_String( ((char*)data+SWAP(orig_tab[n].offset)), SWAP(orig_tab[n].length));
-            tr   = Fl_String( ((char*)data+SWAP(trans_tab[n].offset)), SWAP(trans_tab[n].length));
+            orig.append( ((char*)data+SWAP(orig_tab[n].offset)), SWAP(orig_tab[n].length) );
+            tr.append( ((char*)data+SWAP(trans_tab[n].offset)), SWAP(trans_tab[n].length) );
         }
         if(orig.length()>0 && tr.length()>0)
             insert(orig, tr);
