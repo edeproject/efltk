@@ -29,7 +29,12 @@ class FL_API Fl_Scrollbar : public Fl_Slider {
 
 public:
     static Fl_Named_Style* default_style;
+
+    /** Creates new scroll bar widget using the given position, size, and label string. */
     Fl_Scrollbar(int x,int y,int w,int h, const char *l = 0);
+
+    /** Creates new scroll bar widget using the label, size, alignment, and label width. */
+    Fl_Scrollbar(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
 
     int value() {return int(Fl_Slider::value());}
     int value(int position, int size, int top, int total);

@@ -47,7 +47,7 @@ void Fl_Scroll::draw_clip(void* v,int X, int Y, int W, int H)
         uchar save = 0;
         if (!(s->damage()&FL_DAMAGE_ALL)) {
             if (w.x() < X || w.y() < Y ||
-                w.x()+w.w() > X+W || w.y()+w.h() > Y+H)
+                    w.x()+w.w() > X+W || w.y()+w.h() > Y+H)
                 save = w.damage();
         }
         s->draw_child(w);
@@ -197,8 +197,8 @@ void Fl_Scroll::layout()
 
     const int sw = scrollbar_width();
 
-	int total_w = r-l;
-	int total_h = b-t;
+    int total_w = r-l;
+    int total_h = b-t;
     int xp = xposition_, yp=yposition_;
 
     // See if children would fit if we had no scrollbars...
@@ -257,29 +257,29 @@ void Fl_Scroll::layout()
 
     //Adjust Y pos
     yposition_ = (Y-t);
-	if(layoutdy==0) {
-		if(total_h < H && yp>0) { yp = 0; need_pos = true; } 
-		else if(H > b && total_h>H) { yp = total_h-H; need_pos=true; }
-	}
+    if(layoutdy==0) {
+        if(total_h < H && yp>0) { yp = 0; need_pos = true; } 
+        else if(H > b && total_h>H) { yp = total_h-H; need_pos=true; }
+    }
 
     // Adjust X pos
     xposition_ = (X-l);
-	if(layoutdx==0) {
-		if(total_w < W && xp>0) { xp = 0; need_pos = true; } 
-		else if(W>r && total_w>W) { xp = total_w-W; need_pos=true; }
-	}
+    if(layoutdx==0) {
+        if(total_w < W && xp>0) { xp = 0; need_pos = true; } 
+        else if(W>r && total_w>W) { xp = total_w-W; need_pos=true; }
+    }
 
     scrollbar.resize(scrollbar_align()&FL_ALIGN_LEFT ? X-sw : X+W, Y, sw, H);
     scrollbar.value(yposition_, H, 0, total_h);
     hscrollbar.resize(X, scrollbar_align()&FL_ALIGN_TOP ? Y-sw : Y+H, W, sw);
     hscrollbar.value(xposition_, W, 0, total_w);
 
-    Fl_Widget::layout();		
+    Fl_Widget::layout();        
 
     layoutdx = layoutdy = 0;
     if(need_pos) {
-		position(xp, yp);
-	}
+        position(xp, yp);
+    }
     redraw(FL_DAMAGE_SCROLL);
 }
 
@@ -302,7 +302,6 @@ void Fl_Scroll::hscrollbar_cb(Fl_Widget* o, void*)
     s->position(int(((Fl_Scrollbar*)o)->value()), s->yposition());
 }
 
-
 void Fl_Scroll::scrollbar_cb(Fl_Widget* o, void*)
 {
     Fl_Scroll* s = (Fl_Scroll*)(o->parent());
@@ -311,11 +310,8 @@ void Fl_Scroll::scrollbar_cb(Fl_Widget* o, void*)
 
 #define SLIDER_WIDTH scrollbar_width()
 
-Fl_Scroll::Fl_Scroll(int X,int Y,int W,int H,const char* L)
-: Fl_Group(X,Y,W,H,L), endgroup(0),
-scrollbar(X+W-SLIDER_WIDTH,Y,SLIDER_WIDTH,H-SLIDER_WIDTH),
-hscrollbar(X,Y+H-SLIDER_WIDTH,W-SLIDER_WIDTH,SLIDER_WIDTH)
-{
+// ctor initializer - used in both ctors
+void Fl_Scroll::ctor_init() {
     type(BOTH);
     xposition_ = 0;
     yposition_ = 0;
@@ -335,83 +331,100 @@ hscrollbar(X,Y+H-SLIDER_WIDTH,W-SLIDER_WIDTH,SLIDER_WIDTH)
     Fl_Group::current(this);
 }
 
+// Traditional ctor
+Fl_Scroll::Fl_Scroll(int X,int Y,int W,int H,const char* L)
+: Fl_Group(X,Y,W,H,L), endgroup(0),
+scrollbar(X+W-SLIDER_WIDTH,Y,SLIDER_WIDTH,H-SLIDER_WIDTH),
+hscrollbar(X,Y+H-SLIDER_WIDTH,W-SLIDER_WIDTH,SLIDER_WIDTH)
+{
+    ctor_init();
+}
+
+// New style ctor
+Fl_Scroll::Fl_Scroll(const char* l,int layout_size,Fl_Align layout_al,int label_w)
+: Fl_Group(l,layout_size,layout_al,label_w), endgroup(0),
+scrollbar(0,0,10,10), hscrollbar(0,0,10,10)
+{
+    ctor_init();
+}
+
 int Fl_Scroll::handle(int event)
 {
     switch (event)
     {
 
-    case FL_FOCUS:
-        if (contains(Fl::focus())) {
+        case FL_FOCUS:
+            if (contains(Fl::focus())) {
             // The event indicates that the focus changed to a different child,
             // auto-scroll to show it:
-            Fl_Widget* w = Fl::focus();
-            int x = w->x();
-            int y = w->y();
-            for (Fl_Group* p = w->parent(); p != this; p = p->parent()) {
+                Fl_Widget* w = Fl::focus();
+                int x = w->x();
+                int y = w->y();
+                for (Fl_Group* p = w->parent(); p != this; p = p->parent()) {
                 // if (!p) return 0; // this should never happen
-                x += p->x();
-                y += p->y();
-            }
-            int X,Y,R,B; bbox(X,Y,R,B); R += X; B += Y;
-            int r = x+w->w();
-            int dx = 0;
-            if (x < X) {
-                dx = X-x;
-                if (r+dx > R) {
-                    dx = R-r; if (dx < 0) dx = 0;
+                    x += p->x();
+                    y += p->y();
                 }
-            }
-            else if (r > R) {
-                dx = R-r;
-                if (x+dx < X) {
-                    dx = X-x; if (dx > 0) dx = 0;
+                int X,Y,R,B; bbox(X,Y,R,B); R += X; B += Y;
+                int r = x+w->w();
+                int dx = 0;
+                if (x < X) {
+                    dx = X-x;
+                    if (r+dx > R) {
+                        dx = R-r; if (dx < 0) dx = 0;
+                    }
                 }
-            }
-            int b = y+w->h();
-            int dy = 0;
-            if (y < Y) {
-                dy = Y-y;
-                if (b+dy > B) {
-                    dy = B-b; if (dy < 0) dy = 0;
+                else if (r > R) {
+                    dx = R-r;
+                    if (x+dx < X) {
+                        dx = X-x; if (dx > 0) dx = 0;
+                    }
                 }
-            }
-            else if (b > B) {
-                dy = B-b;
-                if (y+dy < Y) {
-                    dy = Y-y; if (dy > 0) dy = 0;
+                int b = y+w->h();
+                int dy = 0;
+                if (y < Y) {
+                    dy = Y-y;
+                    if (b+dy > B) {
+                        dy = B-b; if (dy < 0) dy = 0;
+                    }
                 }
+                else if (b > B) {
+                    dy = B-b;
+                    if (y+dy < Y) {
+                        dy = Y-y; if (dy > 0) dy = 0;
+                    }
+                }
+                position(xposition_-dx, yposition_-dy);
+                layout();
             }
-            position(xposition_-dx, yposition_-dy);
-            layout();
-        }
-        break;
+            break;
 
-    case FL_PUSH:
-    case FL_ENTER:
-    case FL_MOVE:
-    case FL_DND_ENTER:
-    case FL_DND_DRAG:
+        case FL_PUSH:
+        case FL_ENTER:
+        case FL_MOVE:
+        case FL_DND_ENTER:
+        case FL_DND_DRAG:
         // For all mouse events check to see if we are in the scrollbar
         // areas and send to them:
-        if (scrollbar.visible() &&
-            (scrollbar_align()&FL_ALIGN_LEFT ?
-             (Fl::event_x() < scrollbar.x()+scrollbar.w()) :
-             (Fl::event_x() >= scrollbar.x())))
+            if (scrollbar.visible() &&
+                    (scrollbar_align()&FL_ALIGN_LEFT ?
+                        (Fl::event_x() < scrollbar.x()+scrollbar.w()) :
+                        (Fl::event_x() >= scrollbar.x())))
+                return scrollbar.send(event);
+            if (hscrollbar.visible() &&
+                    (scrollbar_align()&FL_ALIGN_TOP ?
+                        (Fl::event_y() < hscrollbar.y()+hscrollbar.h()) :
+                        (Fl::event_y() >= hscrollbar.y())))
+                return hscrollbar.send(event);
+            break;
+
+        case FL_MOUSEWHEEL:
             return scrollbar.send(event);
-        if (hscrollbar.visible() &&
-            (scrollbar_align()&FL_ALIGN_TOP ?
-             (Fl::event_y() < hscrollbar.y()+hscrollbar.h()) :
-             (Fl::event_y() >= hscrollbar.y())))
-            return hscrollbar.send(event);
-        break;
 
-    case FL_MOUSEWHEEL:
-        return scrollbar.send(event);
-
-    case FL_KEY:
-        if (scrollbar.send(event)) return 1;
-        if (hscrollbar.send(event)) return 1;
-        break;
+        case FL_KEY:
+            if (scrollbar.send(event)) return 1;
+            if (hscrollbar.send(event)) return 1;
+            break;
     }
 
     return Fl_Group::handle(event);

@@ -27,7 +27,12 @@
 /** Fl_Roller */
 class FL_API Fl_Roller : public Fl_Valuator {
 public:
+
+    /** Creates new roller widget using the given position, size, and label string. */
     Fl_Roller(int X,int Y,int W,int H,const char* L=0);
+
+    /** Creates new roller widget using the label, size, alignment, and label width. */
+    Fl_Roller(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
 
     enum { // values for type()
         VERTICAL = 0,

@@ -42,7 +42,7 @@ public:
     /** Creates new input widget using the given position, size, and label string. */
     Fl_Input(int, int, int, int, const char* = 0);
 
-    /** Creates new input widget using the label, size, alignment, and label_width. */
+    /** Creates new input widget using the label, size, alignment, and label width. */
     Fl_Input(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
 
     /** Destructor */
@@ -55,7 +55,7 @@ public:
 
     int text_align() const {return text_align_; }
     void text_align(int v){ text_align_ = v; }
-    
+
     int readonly() const { return (type() & READ_ONLY); }
     void readonly(int b) { if (b) type(type() | READ_ONLY); else type(type() & ~READ_ONLY); }
 

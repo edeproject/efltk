@@ -98,7 +98,7 @@ void Fl_Roller::draw()
             // draw ridges:
             double junk;
             for (double y = -ARC+modf(offset*sin(ARC)/(W/2)/delta,&junk)*delta;;
-                y += delta)
+                    y += delta)
             {
                 int y1 = int((sin(y)/sin(ARC)+1)*W/2);
                 if (y1 <= 0) continue; else if (y1 >= W-1) break;
@@ -140,7 +140,7 @@ void Fl_Roller::draw()
             // draw ridges:
             double junk;
             for (double y = -ARC+modf(offset*sin(ARC)/(H/2)/delta,&junk)*delta;
-                ; y += delta)
+                    ; y += delta)
             {
                 int y1 = int((sin(y)/sin(ARC)+1)*H/2);
                 if (y1 <= 0) continue; else if (y1 >= H-1) break;
@@ -169,13 +169,19 @@ void Fl_Roller::draw()
     }
 }
 
-
-Fl_Roller::Fl_Roller(int X,int Y,int W,int H,const char* L) : Fl_Valuator(X,Y,W,H,L)
+// Traditional ctor
+Fl_Roller::Fl_Roller(int X,int Y,int W,int H,const char* L) 
+: Fl_Valuator(X,Y,W,H,L)
 {
     step(.001);
-    //set_click_to_focus();
 }
 
+// New style ctor
+Fl_Roller::Fl_Roller(const char* l,int layout_size,Fl_Align layout_al,int label_w)
+: Fl_Valuator(l,layout_size,layout_al,label_w)
+{
+    step(.001);
+}
 
 //
 // End of "$Id$".

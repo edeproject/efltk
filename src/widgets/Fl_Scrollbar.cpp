@@ -36,10 +36,10 @@
 
 int Fl_Scrollbar::value(int p, int w, int t, int l)
 {
-    //	p = position, first line displayed
-    //	w = window, number of lines displayed
-    //	t = top, number of first line
-    //	l = length, total number of lines
+    //  p = position, first line displayed
+    //  w = window, number of lines displayed
+    //  t = top, number of first line
+    //  l = length, total number of lines
     if (p+w > t+l) l = p+w-t;
     if (l <= 0) l = 1;
     int b = l-w+t;
@@ -162,7 +162,7 @@ int Fl_Scrollbar::handle(int event)
             // Clicking on the slider or middle or right click on the trough
             // gives us normal slider behavior:
             if (which_part == SLIDER ||
-                Fl::event_button() > 1 && which_part > DOWN_ARROW)
+                    Fl::event_button() > 1 && which_part > DOWN_ARROW)
             {
                 which_pushed = SLIDER;
                 return Fl_Slider::handle(event, X,Y,W,H);
@@ -182,7 +182,7 @@ int Fl_Scrollbar::handle(int event)
             if (!which_pushed && which_part <= DOWN_ARROW) ;
             else if (!which_part && which_pushed <= DOWN_ARROW) ;
             else which_part = which_pushed;
-            J1:
+        J1:
             if (which_part != which_pushed)
             {
                 Fl::remove_timeout(timeout_cb, this);
@@ -286,7 +286,7 @@ void Fl_Scrollbar::draw()
 
 
 static void glyph(const Fl_Widget* widget, int glyph,
-int x,int y,int w,int h, Fl_Flags flags)
+    int x,int y,int w,int h, Fl_Flags flags)
 {
     if (!glyph) flags &= ~FL_VALUE;
     Fl_Widget::default_glyph(widget, glyph, x, y, w, h, flags);
@@ -305,6 +305,7 @@ static void revert(Fl_Style* s)
 static Fl_Named_Style style("Scrollbar", revert, &Fl_Scrollbar::default_style);
 Fl_Named_Style* Fl_Scrollbar::default_style = &::style;
 
+// Traditional ctor
 Fl_Scrollbar::Fl_Scrollbar(int X, int Y, int W, int H, const char* L)
 : Fl_Slider(X, Y, W, H, L)
 {
@@ -314,6 +315,15 @@ Fl_Scrollbar::Fl_Scrollbar(int X, int Y, int W, int H, const char* L)
     linesize(2);
 }
 
+// New stile ctor
+Fl_Scrollbar::Fl_Scrollbar(const char* l,int layout_size,Fl_Align layout_al,int label_w)
+: Fl_Slider(l,layout_size,layout_al,label_w)
+{
+    style(default_style);
+    step(0);
+    pagesize_ = 1;
+    linesize(2);
+}
 
 //
 // End of "$Id$".
