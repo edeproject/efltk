@@ -54,26 +54,24 @@ void clean_up()
     // Call some cleanup handlers!
 }
 
-// This is used on future...
-bool gettext_converts = false;
-
-void Fl::init()
+void fl_private_init()
 {
-#if ENABLE_NLS
-    // Initialize the i18n stuff
-    setlocale(LC_ALL, "");
-    bindtextdomain("efltk", PREFIX"/share/locale");
-#if HAVE_TEXTDOMAIN_CODESET
-    char *charset = bind_textdomain_codeset("efltk", "UTF-8");
-    if(!strcmp(charset, "UTF-8")) {
-        gettext_converts = true;
+    atexit(clean_up);
+    Fl::read_defaults();
+
+#ifdef _WIN32
+    // WIN32 needs sockets to be initialized to get select funtion working...
+    WSADATA wsaData;
+    WORD wVersionRequested = MAKEWORD( 2, 0 );
+    int err = WSAStartup( wVersionRequested, &wsaData );
+    if(err != 0) {
+        Fl::warning("WSAStartup failed!");
     }
 #endif
+}
 
-#endif
-
-    atexit(clean_up);
-
+void Fl::read_defaults()
+{
     char *file = 0;
     file = Fl_Config::find_config_file("efltk.conf", false, Fl_Config::USER);
     if(!file) file = Fl_Config::find_config_file("efltk.conf", false, Fl_Config::SYSTEM);
@@ -118,44 +116,33 @@ void Fl::init()
         Fl_MDI_Window::animate_opaque(b_val);
     } 
 #ifdef _WIN32
-	else {
+    else {
+        // Get system defaults, if efltk configfile NOT found
 
-		// Get system defaults, if efltk configfile NOT found
+        bool menu_anim=false, menu_fade=false, tooltip_anim=false, tooltip_fade=false;
 
-		bool menu_anim=false, menu_fade=false, tooltip_anim=false, tooltip_fade=false;
-	
-		SystemParametersInfo(SPI_GETMENUANIMATION, 0, (PVOID)&menu_anim, 0);		
-		if(menu_anim) {
-			SystemParametersInfo(SPI_GETMENUFADE, 0, (PVOID)&menu_fade, 0);
-		}
-		
-		SystemParametersInfo(SPI_GETTOOLTIPANIMATION, 0, (PVOID)&tooltip_anim, 0);
-		if(tooltip_anim) {
-			SystemParametersInfo(SPI_GETTOOLTIPFADE, 0, (PVOID)&tooltip_fade, 0);
-		}
+        SystemParametersInfo(SPI_GETMENUANIMATION, 0, (PVOID)&menu_anim, 0);
+        if(menu_anim) {
+            SystemParametersInfo(SPI_GETMENUFADE, 0, (PVOID)&menu_fade, 0);
+        }
 
-		Fl_Menu_::effects(menu_anim);
-		if(menu_fade) Fl_Menu_::default_effect_type(FL_EFFECT_FADE);
-		else Fl_Menu_::default_effect_type(FL_EFFECT_ANIM);
+        SystemParametersInfo(SPI_GETTOOLTIPANIMATION, 0, (PVOID)&tooltip_anim, 0);
+        if(tooltip_anim) {
+            SystemParametersInfo(SPI_GETTOOLTIPFADE, 0, (PVOID)&tooltip_fade, 0);
+        }
 
-		Fl_Tooltip::effects(tooltip_anim);
-		if(tooltip_fade) Fl_Tooltip::effect_type(FL_EFFECT_FADE);
-		else Fl_Tooltip::effect_type(FL_EFFECT_ANIM);
+        Fl_Menu_::effects(menu_anim);
+        if(menu_fade) Fl_Menu_::default_effect_type(FL_EFFECT_FADE);
+        else Fl_Menu_::default_effect_type(FL_EFFECT_ANIM);
 
-		DWORD menu_delay;
-		SystemParametersInfo(SPI_GETMENUSHOWDELAY, 0, (PVOID)&menu_delay, 0);		        
-		double del = (double)menu_delay/1000;
-		Fl_Menu_::default_delay(del);
-	}
+        Fl_Tooltip::effects(tooltip_anim);
+        if(tooltip_fade) Fl_Tooltip::effect_type(FL_EFFECT_FADE);
+        else Fl_Tooltip::effect_type(FL_EFFECT_ANIM);
 
-	// WIN32 needs sockets to be initialized to get select funtion working...
-	WSADATA wsaData;	
-	WORD wVersionRequested = MAKEWORD( 2, 0 );
-	int err = WSAStartup( wVersionRequested, &wsaData );
-	if(err != 0) {
-		Fl::warning("WSAStartup failed!");
-	}
-
-
+        DWORD menu_delay;
+        SystemParametersInfo(SPI_GETMENUSHOWDELAY, 0, (PVOID)&menu_delay, 0);
+        double del = (double)menu_delay/1000;
+        Fl_Menu_::default_delay(del);
+    }
 #endif
 }

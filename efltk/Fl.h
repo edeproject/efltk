@@ -80,8 +80,13 @@ public:
 
   static float version();
 
-  // Initializes library, i.e. locale and widget defaults.
-  static void init();
+  // Read widgets default values.
+  static void read_defaults();
+
+  // Initializes locale support for EFLTK
+  static bool init_locale();
+  // Initializes locale support for application
+  static bool init_locale(const char *app_domain, const char *directory);
 
   // Sleep milliseconds.
   static void sleep_ms(int ms);

@@ -69,7 +69,7 @@ inline void XClipBox(Region r, XRectangle* rect) {
 ////////////////////////////////////////////////////////////////
 // constant information about the display:
 
-#define fl_open_display()
+extern FL_API void	fl_open_display();
 extern FL_API HINSTANCE	fl_display;
 extern FL_API HPALETTE	fl_palette; // non-zero only on 8-bit displays!
 

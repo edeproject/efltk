@@ -143,7 +143,6 @@ extern "C"
     }
 }
 
-
 int fl_list_fonts(Fl_Font*& arrayp)
 {
     static Fl_Font* font_array = 0;
@@ -167,28 +166,34 @@ int fl_list_fonts(Fl_Font*& arrayp)
 
         // find all the matching fonts:
         int n = 1;
-        for (; i+n < xlistsize; n++)
-        {
+        for (; i+n < xlistsize; n++) {
             char nextname[128];
             int nextattribute = to_nice(nextname, xlist[i+n]);
-            if (nextattribute != attribute || strcmp(nextname, newname)) break;
+            if (nextattribute != attribute || strcmp(nextname, newname))
+                break;
         }
 
         Fl_Font_* newfont;
         // See if it is one of our built-in fonts:
-        const char* skip_foundry = font_word(xlist[i],2);
+        const char* skip_foundry = font_word(xlist[i], 2);
         int length = font_word(skip_foundry, 6)-skip_foundry;
-        for (int j = 0; ; j++)
-        {
-            if (j >= 16)         // no, create a new font
-            {
+        for (int j = 0; ; j++) {
+            // no, create a new font
+            if (j >= 16) {
                 newfont = new Fl_Font_;
                 newfont->name_ = xlist[i];
                 newfont->bold_ = newfont;
                 newfont->italic_ = newfont;
                 newfont->first = 0;
-                newfont->xlist = xlist+i;
-                newfont->n = -n;
+
+                for(int a=0; a<n; a++) {
+                    // Add all matching fonts to cache list
+                    newfont->xlist_.append(xlist[i+a]);
+                }
+                newfont->xlist_sizes_.append(newfont->xlist_.size());
+                newfont->xlist_offsets_.append(0);
+                newfont->xlist_cached_ = true;
+
                 break;
             }
             // see if it is one of our built-in fonts:
@@ -196,11 +201,13 @@ int fl_list_fonts(Fl_Font*& arrayp)
             if (!strncmp(skip_foundry, fl_fonts[j].name_+2, length))
             {
                 newfont = fl_fonts+j;
-                if (!newfont->xlist)
-                {
-                    newfont->xlist = xlist+i;
-                    newfont->n = -n;
+                for(int a=0; a<n; a++) {
+                    // Add all matching fonts to cache list
+                    newfont->xlist_.append(xlist[i+a]);
                 }
+                newfont->xlist_sizes_.append(newfont->xlist_.size());
+                newfont->xlist_offsets_.append(0);
+                newfont->xlist_cached_ = true;
                 break;
             }
         }
@@ -209,19 +216,18 @@ int fl_list_fonts(Fl_Font*& arrayp)
         {
             switch (attribute)
             {
-                case FL_BOLD: family->bold_ = newfont; break;
-                case FL_ITALIC: family->italic_ = newfont; break;
-                case FL_BOLD|FL_ITALIC:
-                    family->bold_->italic_ = family->italic_->bold_ = newfont;
-                    break;
+            case FL_BOLD: family->bold_ = newfont; break;
+            case FL_ITALIC: family->italic_ = newfont; break;
+            case FL_BOLD|FL_ITALIC:
+                family->bold_->italic_ = family->italic_->bold_ = newfont;
+                break;
             }
-        }
-        else
-        {
+
+        } else {
+
             family = newfont;
             strcpy(family_name, newname);
-            if (num_fonts >= array_size)
-            {
+            if (num_fonts >= array_size) {
                 array_size = 2*array_size+128;
                 font_array = (Fl_Font*)realloc(font_array, array_size*sizeof(Fl_Font));
             }
@@ -240,28 +246,18 @@ int fl_list_fonts(Fl_Font*& arrayp)
 
 int Fl_Font_::encodings(const char**& arrayp) const
 {
-    if (!xlist)
-    {
-        fl_open_display();
-                                 // cast away const
-        Fl_Font_* t = (Fl_Font_*)this;
-        t->xlist = XListFonts(fl_display, name_, 100, &(t->n));
-        if (!t->xlist) return 0;
-    }
-    int listsize = n;
-    if (listsize < 0) listsize = -listsize;
+    if(((Fl_Font_*)this)->cache_xlist()==0) return 0;
+    int listsize = xlist_.size();
     static const char* array[128];
     int count = 0;
-    for (int i = 0; i < listsize; i++)
-    {
-        char *q = xlist[i];
+    for (int i = 0; i < listsize; i++) {
+        const char *q = xlist_[i];
         const char *c = font_word(q,13);
         if (!*c++ || !*c) continue;
         // insert-sort the new encoding into list:
         int n;
         int m;
-        for (n = count; n > 0; n--)
-        {
+        for (n = count; n > 0; n--) {
             int cmp = strcasecmp(array[n-1], c);
             if (cmp < 0) break;
             if (cmp == 0) goto CONTINUE;
@@ -270,41 +266,31 @@ int Fl_Font_::encodings(const char**& arrayp) const
         array[n] = c;
         count++;
         if (count >= 128) break;
-        CONTINUE:;
+    CONTINUE:;
     }
     arrayp = array;
     return count;
 }
-
 
 ////////////////////////////////////////////////////////////////
 
 // Return all the point sizes supported by this font:
 int Fl_Font_::sizes(int*& sizep) const
 {
-    if (!xlist)
-    {
-        fl_open_display();
-                                 // cast away const
-        Fl_Font_* t = (Fl_Font_*)this;
-        t->xlist = XListFonts(fl_display, name_, 100, &(t->n));
-        if (!t->xlist) return 0;
-    }
-    int listsize = n;
-    if (listsize < 0) listsize = -listsize;
+    if(((Fl_Font_*)this)->cache_xlist()==0) return 0;
+
+    int listsize = xlist_.size();
     static int array[128];
     int count = 0;
-    for (int i = 0; i < listsize; i++)
-    {
-        char *q = xlist[i];
+    for (int i = 0; i < listsize; i++) {
+        const char *q = xlist_[i];
         const char* d = font_word(q,7);
         if (!*d++) continue;
         int s = strtol(d,0,10);
         // insert-sort the new size into list:
         int m;
         int n;
-        for (n = count; n > 0; n--)
-        {
+        for (n = count; n > 0; n--) {
             int cmp = array[n-1]-s;
             if (cmp < 0) break;
             if (cmp == 0) goto CONTINUE;
@@ -313,7 +299,7 @@ int Fl_Font_::sizes(int*& sizep) const
         array[n] = s;
         count++;
         if (count >= 128) break;
-        CONTINUE:;
+    CONTINUE:;
     }
     sizep = array;
     return count;

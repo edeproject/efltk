@@ -58,8 +58,7 @@ Fl_Font fl_find_font(const char* name, int attributes )
     }
     Fl_Font font = 0;
     // always try the built-in fonts first, becasue fl_list_fonts is *slow*...
-    int i; for (i = 0; i < 16; i += (i < 12 ? 4 : 1))
-    {
+    int i; for (i = 0; i < 16; i += (i < 12 ? 4 : 1)) {
         font = fl_fonts+i;
         const char* fontname = font->name();
         if (!strncasecmp(name, fontname, length) && !fontname[length]) goto GOTIT;

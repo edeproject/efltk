@@ -4,7 +4,6 @@
 #include <config.h>
 #include <efltk/Fl_Color.h>
 
-
 // Internal define file for EFLTK
 // include ONLY from source files!
 
@@ -154,6 +153,7 @@ extern void fl_allocate_xpixel(Fl_XColor& xmap, uchar r, uchar g, uchar b);
 #include <string.h>
 #include <stdio.h>
 
+// Used in image reader/writers
 class Fl_IO
 {
 public:

@@ -567,8 +567,8 @@ void Fl_Config::remove_sec(const char *section)
 #include "fl_internal.h"
 
 #if ENABLE_NLS
-lconv *locale_conv = 0;
-char decimal = '.';
+static lconv *locale_conv = 0;
+static char decimal = '.';
 #endif
 
 // Converts locale decimal to '.' e.g. "1,5" to "1.5"

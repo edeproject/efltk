@@ -219,7 +219,7 @@ extern "C" bool fltk_theme()
             // font encoding
             static char encoding[128];
             if(!conf.read("font encoding", encoding, 0, sizeof(encoding))) {
-                fl_encoding(encoding);
+                //fl_encoding(encoding);
             }
         }
     }

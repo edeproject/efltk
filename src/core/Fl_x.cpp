@@ -349,7 +349,6 @@ void fl_init_xim()
 }
 #endif
 
-
 void fl_open_display()
 {
     if (fl_display) return;
@@ -360,9 +359,11 @@ void fl_open_display()
     Display *d = XOpenDisplay(0);
     if (!d) Fl::fatal("Can't open display \"%s\"",XDisplayName(0));
 
+    extern void fl_private_init();
+    fl_private_init(); //Fl_init.cpp
+
     fl_open_display(d);
 }
-
 
 void fl_open_display(Display* d)
 {

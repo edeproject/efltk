@@ -83,6 +83,7 @@ void save(Fl_Widget *, void *)
 
 int main(int argc, char **argv)
 {
+    Fl::init_locale();
     fl_init_images_lib();
 
     Fl_Window w(300,300,"FileDialog Test");

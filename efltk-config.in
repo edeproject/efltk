@@ -165,9 +165,9 @@ if test "$build_plugin" = "yes"; then
     LDSTATIC="$LDSTATIC $LD_PLUGIN_FLAGS"
 fi
 
-LDLIBS="$LDLIBS -lefltk_ui -lefltk_core @LDFLAGS@ @LDLIBS@"
-LDSTATIC="$LDSTATIC $prefix/lib/libefltk_ui.a $prefix/lib/libefltk_core.a @LDFLAGS@ @LDLIBS@"
-LIBS="$LIBS $prefix/lib/libefltk_ui.a $prefix/lib/libefltk_core.a"
+LDLIBS="$LDLIBS -lefltk @LDFLAGS@ @LDLIBS@"
+LDSTATIC="$LDSTATIC $prefix/lib/libefltk.a @LDFLAGS@ @LDLIBS@"
+LIBS="$LIBS $prefix/lib/libefltk.a"
 
 if test "$use_threads" = "yes"; then
     LDLIBS="$LDLIBS @THREADSLIBS@"

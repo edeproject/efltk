@@ -269,7 +269,9 @@ char **fl_split(const char *string,
                 const char *delimiter,
                 int         max_tokens)
 {
-    Fl_CString_List string_list;
+    static Fl_CString_List string_list;
+    string_list.clear();
+
     char **str_array, *s;
     unsigned int n = 0;
 
@@ -311,7 +313,6 @@ char **fl_split(const char *string,
     for(n=0; n<string_list.size(); n++)
         *ptr++ = (char*)string_list[n];
 
-    string_list.clear();
     return str_array;
 }
 

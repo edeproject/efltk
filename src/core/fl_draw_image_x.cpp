@@ -161,7 +161,7 @@ void Fl_Renderer::system_init()
 #ifdef _DEBUG
     printf("System Image Format: %d bits per pixel\n", pfv->bits_per_pixel);
     printf("Display Visual: %d bits per pixel\n", fl_visual->depth);
-    printf("System Image byte-order: %s", (s_image.byte_order==LSBFirst)?"Little-endian":"Big-endian");
+    printf("System Image byte-order: %s\n", (s_image.byte_order==LSBFirst)?"Little-endian":"Big-endian");
 #endif
 
     s_image.depth = fl_visual->depth;

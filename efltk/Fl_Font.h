@@ -27,6 +27,8 @@
 #define Fl_Font_h
 
 #include "Enumerations.h" // for FL_API
+#include "Fl_String_List.h"
+#include "Fl_Int_List.h"
 
 class FL_API Fl_FontSize;
 
@@ -36,34 +38,48 @@ typedef const Fl_Font_* Fl_Font;
 
 // This is a struct so I can init a table with constants:
 struct FL_API Fl_Font_ {
-  const char* name_;
-  Fl_Font_* bold_;
-  Fl_Font_* italic_;
-// list of sizes (used by X and Win32 GDI):
-  Fl_FontSize* first;
-// crap needed by X:
-  char **xlist;
-  int n;
-//public:
-  // return the system-specific name, different for each font:
-  const char* system_name() const {return name_;}
-  // return the "nice" name, and the attributes:
-  const char* name(int* = 0) const;
-  // return array of sizes:
-  int sizes(int*&) const;
-  // return array of encodings:
-  int encodings(const char**&) const;
-  Fl_Font_* bold() const { return bold_; }
-  Fl_Font_* italic() const { return italic_; }
-  // "measurement" is considered a drawing function, see fl_draw.h
+// PRIVATE:
+    const char* name_;
+    Fl_Font_* bold_;
+    Fl_Font_* italic_;
 
+    // list of sizes (used by X and Win32 GDI):
+    Fl_FontSize *first;
+
+    // XWindows cache stuff:
+    bool xlist_cached_; //Are all XListFonts cached
+    Fl_CString_List xlist_; //Cached xlist
+    Fl_Int_List xlist_offsets_; // Offsets of different fonts in xlists
+    Fl_Int_List xlist_sizes_;   // Sizes of different font lists in xlists
+
+    uint cache_xlist();
+    Fl_FontSize *load_font(float size);
+
+// PUBLIC:
+
+    // return the system-specific name, different for each fontset:
+    const char *system_name() const { return name_; }
+
+    // return the "nice" name, and the attributes:
+    const char *name(int *attr = 0) const;
+
+    // return array of sizes:
+    int sizes(int*&) const;
+
+    // return array of encodings:
+    int encodings(const char**&) const;
+
+    Fl_Font bold() const { return bold_; }
+    Fl_Font italic() const { return italic_; }
+
+    // "measurement" is considered a drawing function, see fl_draw.h
 };
 
 // values for attributes:
 enum {
-  FL_BOLD = 1,
-  FL_ITALIC = 2,
-  FL_BOLD_ITALIC = 3
+    FL_BOLD = 1,
+    FL_ITALIC = 2,
+    FL_BOLD_ITALIC = 3
 };
 
 // Built-in fonts:
@@ -84,6 +100,9 @@ extern FL_API Fl_Font_ fl_fonts[16];
 #define FL_SCREEN		(fl_fonts+13)
 #define FL_SCREEN_BOLD		(fl_fonts+14)
 #define FL_ZAPF_DINGBATS	(fl_fonts+15)
+
+// Find a font by name + attributes:
+FL_API Fl_Font fl_create_font(const char *system_name);
 
 // Find a font by name + attributes:
 FL_API Fl_Font fl_find_font(const char* name, int attrib = 0);

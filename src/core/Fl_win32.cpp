@@ -93,6 +93,12 @@ void Fl::sleep_ms(int ms) {
     Sleep(ms);
 }
 
+void fl_open_display()
+{
+    if (fl_display) return;
+    extern void fl_private_init();
+    fl_private_init(); //Fl_init.cpp
+}
 
 ////////////////////////////////////////////////////////////////
 // interface to poll/select call:

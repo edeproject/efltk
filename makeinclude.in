@@ -60,7 +60,7 @@ THEMECOMMAND	=@THEMECOMMAND@
 LD		=@LD@
 
 # libraries to link with:
-LDLIBS		=@LDFLAGS@ @FLUILIB@ @FLCORELIB@ @LDLIBS@
+LDLIBS		=@LDFLAGS@ @FLLIB@ @LDLIBS@
 DSOLIBS		=@DSOLIBS@
 THEMELIBS	=@THEMELIBS@
 GLDLIBS		=@FLGLLIB@ @GLLIB@
@@ -71,8 +71,7 @@ THREADSLIBS	=@THREADSLIBS@
 JPEGLIBS	=@LIBJPEG@
 PNGLIBS		=@LIBPNG@
 
-FLCORELIB	=@FLCORELIB@
-FLUILIB		=@FLUILIB@
+FLLIB		=@FLLIB@
 FLGLLIB		=@FLGLLIB@
 FLGLUTLIB	=@FLGLUTLIB@
 FLFORMSLIB	=@FLFORMSLIB@
@@ -92,11 +91,11 @@ INSTALLTARGETS	=@INSTALLTARGETS@
 
 .c.o:
 	@echo Compiling $<...
-	@$(CC) -I.. -I../.. $(CFLAGS) -c $<
+	@$(CC) -I.. -I../.. $(CFLAGS) -c $< -o $@
 
 .cpp.o:
 	@echo Compiling $<...
-	@$(CXX) -I.. -I../.. $(CXXFLAGS) -c $<
+	@$(CXX) -I.. -I../.. $(CXXFLAGS) -c $< -o $@
 
 %.shared.o : %.cpp
 	@echo Compiling $<...

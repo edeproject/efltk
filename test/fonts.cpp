@@ -23,12 +23,15 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
+#include <config.h>
+
 #include <efltk/Fl.h>
 #include <efltk/Fl_Double_Window.h>
 #include <efltk/Fl_Browser.h>
 #include <efltk/Fl_Check_Button.h>
 #include <efltk/fl_draw.h>
 #include <efltk/Fl_Box.h>
+#include <efltk/fl_utf8.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -38,9 +41,11 @@ Fl_Window *form;
 class FontDisplay : public Fl_Widget {
   void draw();
 public:
-  Fl_Font font; unsigned size; const char* encoding;
-  FontDisplay(Fl_Boxtype B, int X, int Y, int W, int H, const char* L = 0) :
-    Fl_Widget(X,Y,W,H,L) {box(B); font = 0; size = 14;}
+    Fl_Font font;
+    unsigned size;
+    const char* encoding;
+    FontDisplay(Fl_Boxtype B, int X, int Y, int W, int H, const char* L = 0) :
+        Fl_Widget(X,Y,W,H,L) {box(B); font = 0; size = 14;}
 };
 
 void FontDisplay::draw() {
@@ -53,9 +58,15 @@ void FontDisplay::draw() {
   fl_font(font, size);
   fl_color(FL_BLACK);
   char buffer[32];
+  char outbuf[64];
   for (int Y = 1; Y < 8; Y++) {
-    for (int X = 0; X < 32; X++) buffer[X] = (32*Y+X);
-    fl_draw(buffer, 32, 3, 3+fl_height()*Y);
+      for (int X = 0; X < 32; X++) buffer[X] = (32*Y+X);
+#if HAVE_XUTF8
+      int len = fl_latin12utf((uint8*)buffer, 32, outbuf);
+      fl_draw(outbuf, len, 3, 3+fl_height()*Y);
+#else
+      fl_draw(buffer, 32, 3, 3+fl_height()*Y);
+#endif
   }
   fl_encoding(saved_encoding);
   fl_pop_clip();
@@ -75,7 +86,7 @@ int pickedsize = 14;
 
 void font_cb(Fl_Widget *, long) {
   int fn = fontobj->value();
-//printf("font: %d    name: %s   bigname: %s\n", fn, fonts[fn]->name(), fonts[fn]->system_name());
+  //printf("font: %d    name: %s   bigname: %s\n", fn, fonts[fn]->name(), fonts[fn]->system_name());
 
   Fl_Font f = fonts[fn];
   if (f->bold() == f) bold_button->deactivate();
@@ -86,52 +97,65 @@ void font_cb(Fl_Widget *, long) {
   if (italic_button->value()) f = f->italic();
   textobj->font = f;
 
-  char saved[30]; strncpy(saved, textobj->encoding, 29);
+  char saved[30];
+  strncpy(saved, textobj->encoding, 29);
   encobj->clear();
-  const char** encodings; int ne = f->encodings(encodings);
+  const char** encodings;
+  int ne = f->encodings(encodings);
   int picked = -1;
   int iso8859 = 0;
   for (int i = 0; i < ne; i++) {
-    encobj->add(encodings[i]);
-    if (!strcmp(encodings[i], saved)) picked = i;
-    if (!strcmp(encodings[i], fl_encoding())) iso8859 = i;
+      encobj->add(encodings[i]);
+      if (!strcmp(encodings[i], saved)) picked = i;
+      if (!strcmp(encodings[i], fl_encoding())) iso8859 = i;
   }
   if (picked < 0) picked = iso8859;
   textobj->encoding = encodings[picked];
   encobj->value(picked);
 
   sizeobj->clear();
-  int *s; int n = f->sizes(s);
-  if (!n) {
-    // no sizes (this only happens on X)
-    fl_font(f, pickedsize);
-    textobj->size = (int)fl_height();
+  int *s;
+  int n = f->sizes(s);
+  if(!n) {
+      // no sizes (this only happens on X)
+      fl_font(f, pickedsize);
+      textobj->size = (int)fl_height();
   } else if (s[0] == 0) {
-    // many sizes;
-    int j = 1;
-    for (int i = 1; i<64 || i<s[n-1]; i++) {
-      char buf[20];
-      if (j < n && i==s[j]) {sprintf(buf,"@b%d",i); j++;}
-      else sprintf(buf,"%d",i);
-      sizeobj->add(buf);
-    }
-    sizeobj->value(pickedsize-1);
-    textobj->size = pickedsize;
+      // many sizes;
+      int j = 1;
+      for (int i = 1; i<64 || i<s[n-1]; i++) {
+          char buf[20];
+          sprintf(buf,"%d",i);
+          Fl_Widget *w = sizeobj->add(buf);
+          if (j < n && i==s[j]) {
+              w->label_font(w->label_font()->bold());
+              w->label_color(FL_RED);
+              j++;
+          }
+      }
+      sizeobj->value(pickedsize-1);
+      textobj->size = pickedsize;
   } else {
-    // some sizes
-    int w = 0;
-    for (int i = 0; i < n; i++) {
-      if (s[i]<=pickedsize) w = i;
-      char buf[20];
-      sprintf(buf,"@b%d",s[i]);
-      sizeobj->add(buf);
-    }
-    sizeobj->value(w);
-    textobj->size = s[w];
+      // some sizes
+      int w = 0;
+      for (int i = 0; i < n; i++) {
+          if (s[i]<=pickedsize) w = i;
+          char buf[20];
+          sprintf(buf,"%d",s[i]);
+          Fl_Widget *w = sizeobj->add(buf);
+          w->label_font(w->label_font()->bold());
+      }
+      sizeobj->value(w);
+      textobj->size = s[w];
   }
+
   encobj->redraw();
   sizeobj->redraw();
   textobj->redraw();
+  encobj->relayout();
+  sizeobj->relayout();
+  textobj->relayout();
+
   id_box->label(textobj->font->system_name());
   id_box->redraw();
   button_group->redraw();
@@ -192,8 +216,11 @@ void create_the_forms() {
 int main(int argc, char **argv) {
   create_the_forms();
   int numfonts = fl_list_fonts(fonts);
-  for (int i = 0; i < numfonts; i++) fontobj->add(fonts[i]->name());
-// CET - FIXME - new browser code has value starting from 0!
+
+  for(int i = 0; i < numfonts; i++) {
+      fontobj->add(fonts[i]->name());
+  }
+
   fontobj->value(0);
   textobj->encoding = fl_encoding();
   font_cb(fontobj,0);

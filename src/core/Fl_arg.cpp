@@ -228,7 +228,6 @@ const char * const Fl::help = helpmsg+13;
 
 void Fl::args(int argc, char **argv)
 {
-    Fl::init();
     int i; if (Fl::args(argc,argv,i) < argc) Fl::error(helpmsg);
 }
 

@@ -241,8 +241,6 @@ void make_listview()
 
 int main()
 {
-    Fl::init();
-
     im = Fl_Image::read_xpm(0, ball_xpm);
 
     make_listview();
