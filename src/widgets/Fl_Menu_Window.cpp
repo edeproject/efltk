@@ -196,7 +196,7 @@ void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
     Fl_PixelFormat window_fmt;	
     window_fmt.copy(Fl_Renderer::system_format());
     window_fmt.map_this(Fl_Renderer::system_format());
-	window_fmt.alpha = 30;        
+    window_fmt.alpha = 30;
     int window_pitch = Fl_Renderer::calc_pitch(window_fmt.bytespp, ow);
 
 #ifdef _WIN32
@@ -210,7 +210,7 @@ void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
 
     int anim_time = 200; //milliseconds
 
-    if(anim_speed()>0) { anim_time = int(floor((anim_time*anim_speed())+.5f)); }
+    if(anim_speed()>0) { anim_time = int(anim_time/anim_speed()); }
     bool error=false;
     int sleep_time=int(anim_time/20);
     int elapsed = 0;
@@ -260,6 +260,7 @@ void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
     fl_delete_offscreen(pm);
 }
 
+bool fl_slow_animate = false; //Used by tooltips
 void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
                              int tx, int ty, int tw, int th)
 {
@@ -299,9 +300,7 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
     int X=fx,Y=fy,W=fw,H=fh;
     int ox=fx,oy=fy,ow=fw,oh=fh;
 
-	int anim_time = 200; //milliseconds
-
-    if(anim_speed()>0) { anim_time = int(floor((anim_time*anim_speed())+.5f)); }
+    int anim_time = 300; //max time in milliseconds
 
     while(anim_time>0 && steps-->0) {
 
@@ -319,8 +318,7 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
         W=(int)rw;
         H=(int)rh;
 
-        if(X!=ox || Y!=oy || W!=ow || H!=oh)
-        {
+        if(X!=ox || Y!=oy || W!=ow || H!=oh) {
             uint32 time1 = Fl::ticks();
             Fl::check();
 
@@ -336,6 +334,8 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
 #endif
             uint32 time2 = Fl::ticks();
             anim_time -= (time2-time1);
+
+            if(fl_slow_animate) Fl::sleep(1);
         }
 
         ox=X;
@@ -343,6 +343,8 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
         ow=W;
         oh=H;
     }
+
+    Fl_Window::resize(tx,ty,tw,th);
 
     fl_delete_offscreen(pm);
     animating=false;
