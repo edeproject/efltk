@@ -58,10 +58,9 @@ public:
         Fl_Item_Group *g = new Fl_Item_Group();
         g->set_flag(FL_VALUE);
 
-		Fl_String label = name;
-        for(uint a=0; a<attrs.size(); a++) {
-            Fl_XmlAttributes::Pair *p = attrs.item(a);
-            label += " " + p->id + "=\"" + p->val + "\"";
+        Fl_String label = name;
+        for(Fl_XmlAttributes::Iterator it(attrs); it.current(); it++) {
+            label += " " + it.id() + "=\"" + it.value() + "\"";
         }
 
         g->label(label);

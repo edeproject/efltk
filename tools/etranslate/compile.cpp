@@ -76,7 +76,7 @@ void Compiler::compile(FILE *fp, uint numstrings, Fl_Int_List &lengths, Fl_Strin
 
     // Generate indexes
     for(n=0; n<strings.size(); n+=2) {
-        indexes.append(Fl_String_Hash::hash(strings[n], size_));
+        indexes.append(Fl_Map::hash_string(strings[n], size_));
     }
 
     if(numstrings != indexes.size()) {

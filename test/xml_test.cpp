@@ -39,14 +39,13 @@ void build_tree(Fl_XmlNode *n)
 	switch(n->type()) 
 	{
 	case Fl_XmlNode::DOM_ELEMENT:
-		label = n->name();
-		if(n->has_attributes()) {
-			for(unsigned a=0; a<attr_map.size(); a++) {
-				Fl_XmlAttributes::Pair *p = attr_map.item(a);
-				label += " " + p->id + "=*" + p->val + "*";
-			}
-		}
-		break;
+            label = n->name();
+            if(n->has_attributes()) {
+                for(Fl_XmlAttributes::Iterator it(attr_map); it.current(); it++) {
+                    label += " " + it.id() + "=*" + it.value() + "*";
+                }
+            }
+            break;
 
 	case Fl_XmlNode::DOM_PI:
 		label = n->name();

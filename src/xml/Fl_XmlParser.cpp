@@ -166,16 +166,16 @@ static int tag_table_size = sizeof(html_tags) / sizeof(html_tags[0]);
 class TagCache
 {
 public:
-	Fl_Ptr_Hash tag_hash;
-	TagCache() : tag_hash(32) {
-		for(int n=0; n<tag_table_size; n++) {
-			struct html_tag *tag = &html_tags[n];
-			tag_hash.insert(tag->tag, tag);
-		}
-	}
-	const struct html_tag *find(const Fl_String &tag) const {
-		return (const struct html_tag *)tag_hash.find(tag);
-	}
+    Fl_String_Ptr_Map tag_hash;
+    TagCache() : tag_hash() {
+        for(int n=0; n<tag_table_size; n++) {
+            struct html_tag *tag = &html_tags[n];
+            tag_hash.insert(tag->tag, tag);
+        }
+    }
+    const struct html_tag *find(const Fl_String &tag) const {
+        return (const struct html_tag *)tag_hash.get_value(tag);
+    }
 };
 static const TagCache cache;
 

@@ -63,36 +63,35 @@ Fl_XmlNode *Fl_XmlDoc::create_PI(const char *target, const char *data)
 
 #define WRITE(text) tmp.clear(); tmp=(text); buffer.append(tmp)
 
-void Fl_XmlDoc::save(Fl_Buffer &buffer)
+void Fl_XmlDoc::save(Fl_Buffer &buffer) const
 {
-	Fl_String tmp;
-	unsigned n;
-	Fl_XmlNode *xml_pi = 0;
+    Fl_String tmp;
+    unsigned n;
+    Fl_XmlNode *xml_pi = 0;
 
-	// Write XML PI
-	for(n=0; n<children(); n++) {
-		if(child(n)->is_pi() && child(n)->name().upper_case()=="XML") {
-			xml_pi = child(n);
-			xml_pi->save(buffer);
-		}
-	}
-	
-    if(!doctype().name().empty()) 
-	{
+    // Write XML PI
+    for(n=0; n<children(); n++) {
+        if(child(n)->is_pi() && child(n)->name().upper_case()=="XML") {
+            xml_pi = child(n);
+            xml_pi->save(buffer);
+        }
+    }
+
+    if(!doctype().name().empty())
+    {
         WRITE("<!DOCTYPE " + doctype().name());
         if(!doctype().system_id().empty()) {
             WRITE(" SYSTEM \"" + doctype().system_id() + "\"");
-						
-			if(!doctype().public_id().empty()) {
-				WRITE(" PUBLIC \"" + doctype().public_id() + "\"");			            
-			}
+
+            if(!doctype().public_id().empty()) {
+                WRITE(" PUBLIC \"" + doctype().public_id() + "\"");
+            }
         }
-        Fl_XmlEntities &entmap = doctype().entities();
-        if(entmap.size() > 0) {
+        if(doctype().entities().size() > 0) {
             WRITE(" [\n");
-            for(unsigned n=0; n<entmap.size(); n++) {
-				Fl_XmlEntities::Pair *p = entmap.item(n);
-                WRITE("<!ENTITY " + p->id + " \"" + p->val + "\">\n");                
+            Fl_XmlEntities::Iterator it(doctype().entities());
+            for(; it.current(); it++) {
+                WRITE("<!ENTITY " + it.id() + " \"" + it.value() + "\">\n");
             }
             WRITE("]");
         }
@@ -102,7 +101,7 @@ void Fl_XmlDoc::save(Fl_Buffer &buffer)
     // call save() method of the first (and hopefully only) node in xmldocument
     for(n=0; n<children(); n++) {
         Fl_XmlNode *nd = child(n);
-		if(nd == xml_pi) continue;
+        if(nd == xml_pi) continue;
         nd->save(buffer, 0);
     }
 }
@@ -136,17 +135,17 @@ int html_ent_size = (int)(sizeof(builtin_ent_html)/sizeof(builtin_ent_html[0]));
 
 class HTML_EntityCache
 {
-	Fl_Ptr_Hash hash;
-public:	
-	HTML_EntityCache() : hash(32) {
-		for(int n=0; n<html_ent_size; n++) {
-			struct entity *ent = &builtin_ent_html[n];
-			hash.insert(ent->name, ent);
-		}
-	}
-	const struct entity *find(const Fl_String &ent) const {
-		return (const struct entity *)hash.find(ent);
-	}
+    Fl_String_Ptr_Map hash;
+public:
+    HTML_EntityCache() : hash(32) {
+        for(int n=0; n<html_ent_size; n++) {
+            struct entity *ent = &builtin_ent_html[n];
+            hash.insert(ent->name, ent);
+        }
+    }
+    const struct entity *find(const Fl_String &ent) const {
+        return (const struct entity *)hash.get_value(ent);
+    }
 };
 static const HTML_EntityCache html_entities;
 
@@ -162,17 +161,17 @@ int xml_ent_size = (int)(sizeof(builtin_ent_xml)/sizeof(builtin_ent_xml[0]));
 
 class XML_EntityCache
 {
-	Fl_Ptr_Hash hash;
-public:	
-	XML_EntityCache() : hash(8) {
-		for(int n=0; n<xml_ent_size; n++) {
-			struct entity *ent = &builtin_ent_xml[n];
-			hash.insert(ent->name, ent);
-		}
-	}
-	const struct entity *find(const Fl_String &ent) const {
-		return (struct entity *)hash.find(ent);
-	}
+    Fl_String_Ptr_Map hash;
+public:
+    XML_EntityCache() : hash(8) {
+        for(int n=0; n<xml_ent_size; n++) {
+            struct entity *ent = &builtin_ent_xml[n];
+            hash.insert(ent->name, ent);
+        }
+    }
+    const struct entity *find(const Fl_String &ent) const {
+        return (struct entity *)hash.get_value(ent);
+    }
 };
 static const XML_EntityCache xml_entities;
 
@@ -236,8 +235,9 @@ bool Fl_XmlDocType::encode_entities(const char *str, Fl_String &ret)
         }
 
         if(!found) {
-            for(uint a=0; a<m_entities.size(); a++) {
-				Fl_XmlEntities::Pair *p = m_entities.item(a);
+            Fl_XmlEntities::Iterator it(m_entities);
+            for(; it.current(); it++) {
+                Fl_XmlEntities::Pair *p = it.current();
                 if(!strncmp(ptr, p->val.c_str(), p->val.length())) {
                     ret += '&';
                     ret += p->id;
@@ -280,41 +280,22 @@ Fl_String Fl_XmlDocType::get_replacement(const char *name) const
 
     // Find in built-ins, see entities.h
     const struct entity *entity;
-    if(m_html) 
-		entity = html_entities.find(name);
+    if(m_html)
+        entity = html_entities.find(name);
     else
-		entity = xml_entities.find(name);
-	if(entity) return Fl_String(entity->replacement, entity->replacement_len);
+        entity = xml_entities.find(name);
+    if(entity) return Fl_String(entity->replacement, entity->replacement_len);
 
     // Find in custom attributes
-	for(uint a=0; a<m_entities.size(); a++) {
-		Fl_XmlEntities::Pair *p = m_entities.item(a);
-		if(p->id == name) return p->val;
-	}
-    
-	return name;
+    if(m_entities.contains(name)) {
+        return m_entities.get_value(name);
+    }
+
+    return name;
 }
 
 bool Fl_XmlDocType::has_entity(const char *name) const
 {
-	Fl_String tmp = get_replacement(name);
-	return (tmp!=name);
-}
-
-void Fl_XmlEntities::set_entity(const char *name, const char *replacement)
-{
-	m_entitymap.set_value(name, replacement);
-}
-
-bool Fl_XmlEntities::remove_entity(const char *name)
-{
-	Fl_XmlEntities::Pair *p = m_entitymap.find_pair(name);
-	if(p) {
-		int pos = m_entitymap.index_of(p);
-		if(pos>-1) {
-			m_entitymap.remove_pair(pos);
-			return true;
-		}
-	}
-	return false;
+    Fl_String tmp = get_replacement(name);
+    return (tmp!=name);
 }

@@ -6,32 +6,11 @@
 
 Fl_XmlAttributes& Fl_XmlAttributes::operator = (const Fl_XmlAttributes& s)
 {
-	for(unsigned n=0; n<s.m_attrmap.size(); n++)
-		m_attrmap.append_pair(s.m_attrmap.item(n));
-	return *this;
-}
-
-bool Fl_XmlAttributes::has_attribute(const char *attr) const
-{	
-    Fl_String *ret = m_attrmap.get_value(attr);
-    return (ret!=0);
-}
-
-Fl_String &Fl_XmlAttributes::get_attribute(const char *attr) const
-{
-	Fl_String *ret = m_attrmap.get_value(attr);
-    if(!ret) return Fl_String::null_object;
-    return *ret;
-}
-
-void Fl_XmlAttributes::set_attribute(const char *attr, const Fl_String &value)
-{
-	m_attrmap.set_value(attr, value);
-}
-
-void Fl_XmlAttributes::set_attribute(const char *attr, const char *value)
-{
-	m_attrmap.set_value(attr, value);
+    Fl_XmlEntities::Iterator it(s);
+    for(; it.current(); it++) {
+        insert(it.id(), it.value());
+    }
+    return *this;
 }
 
 //////////////////
@@ -204,16 +183,13 @@ void Fl_XmlNode::save(Fl_Buffer &buffer, int indent)
         // Output tag name
         WRITE("<" + name());
         // Output attributes
-		const Fl_XmlAttributes &attr_map = attributes();
-        for(unsigned n=0; n<attr_map.length(); n++)
-        {
-			Fl_XmlAttributes::Pair *attr = attr_map.item(n);			
-
-			Fl_String real_id, real_val;
-			if(!document()->doctype().encode_entities(attr->id, real_id))
-				real_id = attr->id;
-			if(!document()->doctype().encode_entities(attr->val, real_val))
-				real_val = attr->val;
+        Fl_XmlAttributes::Iterator it(attributes());
+        for(; it.current(); it++) {
+            Fl_String real_id, real_val;
+            if(!document()->doctype().encode_entities(it.id(), real_id))
+                real_id = it.id();
+            if(!document()->doctype().encode_entities(it.value(), real_val))
+                real_val = it.value();
 
             WRITE(" " + real_id + "=\"" + real_val + "\"");
         }
