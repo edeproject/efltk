@@ -9,7 +9,7 @@ gridy 5
 snap 2
 Function {make_widget_panel()} {open
 } {
-  Fl_Window {} {open selected
+  Fl_Window {} {open
     xywh {741 217 380 405}
     extra_code {\#include <efltk/Fl_WM.h>
 o->window_type(Fl_WM::UTIL);
@@ -17,13 +17,13 @@ o->size_range(o->w(), o->h());} visible
   } {
     Fl_Tabs panel_tabs {
       callback propagate_tabs open
-      xywh {0 3 380 353}
+      xywh {0 3 380 353} color 0xfffffffe
       extra_code {o->parent()->resizable(o);}
     } {
       Fl_Group {} {
         label GUI
         callback propagate_group open
-        xywh {0 20 380 333}
+        xywh {1 24 378 328} hide
         extra_code {o->parent()->resizable(o);}
       } {
         Fl_Input {} {
@@ -31,7 +31,7 @@ o->size_range(o->w(), o->h());} visible
           user_data 4
           callback user_class_cb
           tooltip {This allows you to name a user-defined class that this widget is an instance of, rather than an fltk built-in class. You will need to add a \#include declaration so that the definition of your class is included in the fluid output.}
-          xywh {80 8 176 22} when CHANGED
+          xywh {80 8 176 22} when LOGICAL
         }
         Fl_Choice {} {
           callback subtype_cb
@@ -42,7 +42,7 @@ o->size_range(o->w(), o->h());} visible
           label Label
           callback label_cb
           tooltip {Text displayed on or next to the widget}
-          xywh {80 31 285 22} when CHANGED
+          xywh {80 31 285 22} when LOGICAL
           extra_code {o->take_focus();}
         }
         Fl_Box image_label {
@@ -278,7 +278,7 @@ To get out of shortcut-setting mode:
       Fl_Group {} {
         label Style
         callback propagate_group open
-        xywh {0 20 380 333} hide
+        xywh {1 24 378 328} hide
       } {
         Fl_Choice {} {
           label box
@@ -341,7 +341,7 @@ To get out of shortcut-setting mode:
         Fl_Value_Input {} {
           callback label_size_cb
           tooltip {Size of the font to use for the label}
-          xywh {290 170 60 23} when ENTER_KEY maximum 100 step 1 value 14
+          xywh {290 170 60 23} when LOGICAL maximum 100 step 1 value 14
         }
         Fl_Light_Button {} {
           label {Label Color}
@@ -366,7 +366,7 @@ To get out of shortcut-setting mode:
         Fl_Value_Input {} {
           callback text_size_cb
           tooltip {Size of the font to use for text displayed inside the widget}
-          xywh {290 227 60 23} when ENTER_KEY maximum 100 step 1 value 14
+          xywh {290 227 60 23} when LOGICAL maximum 100 step 1 value 14
         }
         Fl_Light_Button {} {
           label {Text Color}
@@ -396,13 +396,13 @@ To get out of shortcut-setting mode:
       Fl_Group {} {
         label {C++}
         callback propagate_group open
-        xywh {0 20 380 333} hide
+        xywh {1 24 378 328}
       } {
         Fl_Input {} {
           label Name
           callback name_cb
           tooltip {The variable or member name in which to store a pointer to this widget.}
-          xywh {90 8 200 22} when CHANGED
+          xywh {90 8 200 22} when LOGICAL
         }
         Fl_Check_Button {} {
           label public
@@ -423,7 +423,7 @@ o->align(FL_ALIGN_LEFT);}
         }
         Fl_Input {} {
           label Callback
-          callback callback_cb
+          callback callback_cb selected
           tooltip {The name of the callback function, or code body of the callback function}
           xywh {90 151 275 110}
           extra_code {Fl_Text_Buffer *buf = new Fl_Text_Buffer; o->buffer(buf);
@@ -440,7 +440,7 @@ o->align(FL_ALIGN_LEFT);}
           label When
           callback when_cb
           tooltip {What actions cause the callback to be called.}
-          xywh {275 271 90 22} when NEVER
+          xywh {275 271 90 22} when LOGICAL
         } {}
         Fl_Input {} {
           label Type
