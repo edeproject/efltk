@@ -41,7 +41,7 @@
 
 // The "hue box" can be a circle or rectilinear.
 // You get a circle by defining this:
-// #define CIRCLE 1
+#define CIRCLE 1
 // And the "hue box" can auto-update when the value changes
 // you get this by defining this:
 #define UPDATE_HUE_BOX 1
@@ -213,25 +213,28 @@ static void generate_image(void* vv, int X, int Y, int W, uchar* buf) {
   }
 }
 
+#define BUTTON_SIZE 7
+
 void Flcc_HueBox::draw() {
   if (damage()&FL_DAMAGE_ALL) draw_frame();
   int x1 = 0; int y1 = 0; int w1 = w(); int h1 = h();
   box()->inset(x1,y1,w1,h1);
-  if (damage() == FL_DAMAGE_VALUE) fl_push_clip(x1+px,y1+py,6,6);
+  if (damage() == FL_DAMAGE_VALUE) fl_push_clip(x1+px,y1+py,BUTTON_SIZE,BUTTON_SIZE);
   fl_draw_image(generate_image, this, x1, y1, w1, h1);
   if (damage() == FL_DAMAGE_VALUE) fl_pop_clip();
   Fl_Color_Chooser* c = (Fl_Color_Chooser*)parent();
 #ifdef CIRCLE
-  int X = int(.5*(cos(c->h()*(M_PI/3.0))*c->s()+1) * (w1-6));
-  int Y = int(.5*(1-sin(c->h()*(M_PI/3.0))*c->s()) * (h1-6));
+  int X = int(.5*(cos(c->h()*(M_PI/3.0))*c->s()+1) * (w1-BUTTON_SIZE));
+  int Y = int(.5*(1-sin(c->h()*(M_PI/3.0))*c->s()) * (h1-BUTTON_SIZE));
 #else
-  int X = int(c->h()/6.0*(w1-6));
-  int Y = int((1-c->s())*(h1-6));
+  int X = int(c->h()/6.0*(w1-BUTTON_SIZE));
+  int Y = int((1-c->s())*(h1-BUTTON_SIZE));
 #endif
-  if (X < 0) X = 0; else if (X > w1-6) X = w1-6;
-  if (Y < 0) Y = 0; else if (Y > h1-6) Y = h1-6;
+
+  if (X < 0) X = 0; else if (X > w1-BUTTON_SIZE) X = w1-BUTTON_SIZE;
+  if (Y < 0) Y = 0; else if (Y > h1-BUTTON_SIZE) Y = h1-BUTTON_SIZE;
   //  fl_color(c->v()>.75 ? FL_BLACK : FL_WHITE);
-  button_box()->draw(x1+X, y1+Y, 6, 6, color(), 0);
+  button_box()->draw(x1+X, y1+Y, BUTTON_SIZE, BUTTON_SIZE, button_color(), 0);
   px = X; py = Y;
 }
 
@@ -315,6 +318,13 @@ void Fl_Color_Chooser::mode_cb(Fl_Widget* o, void*) {
 
 ////////////////////////////////////////////////////////////////
 
+static void revert(Fl_Style* s) {
+    s->button_box = FL_ROUND_UP_BOX;
+}
+
+static Fl_Named_Style style("Color_Chooser", revert, &Fl_Color_Chooser::default_style);
+Fl_Named_Style* Fl_Color_Chooser::default_style = &::style;
+
 Fl_Color_Chooser::Fl_Color_Chooser(int X, int Y, int W, int H, const char* L)
   : Fl_Group(0,0,180,100,L),
     huebox(0,0,100,100),
@@ -325,6 +335,9 @@ Fl_Color_Chooser::Fl_Color_Chooser(int X, int Y, int W, int H, const char* L)
     gvalue(0,44,60,21),
     bvalue(0,66,60,21)
 {
+  style(Fl_Color_Chooser::default_style);
+  huebox.copy_style(style());
+
   nrgroup.end();
   choice.begin();
   new Fl_Item("rgb");
@@ -341,10 +354,15 @@ Fl_Color_Chooser::Fl_Color_Chooser(int X, int Y, int W, int H, const char* L)
   saturation_ = 0.0;
   value_ = 0.0;
   set_valuators();
+
   rvalue.callback(rgb_cb);
   gvalue.callback(rgb_cb);
   bvalue.callback(rgb_cb);
   choice.callback(mode_cb);
+
+  rvalue.step(0.01);
+  gvalue.step(0.01);
+  bvalue.step(0.01);
 }
 
 Fl_Color Fl_Color_Chooser::value() const {
@@ -446,22 +464,22 @@ static void cancel_cb(Fl_Widget* w, void*) {
 }
 
 static void make_it() {
-  if (window) return;
-  window = new Fl_Window(210,212);
-  chooser = new Fl_Color_Chooser(5, 5, 200, 100);
-  chooser->callback(chooser_cb);
-  new CellBox(5,110,200,52);
-  ok_color = new Fl_Box(5, 165, 95, 21);
-  ok_color->box(FL_ENGRAVED_BOX);
-  ok_button = new Fl_Return_Button(5, 186, 95, 21, fl_ok);
-  ok_button->callback(ok_cb);
-  cancel_color = new Fl_Box(110, 165, 95, 21);
-  cancel_color->box(FL_ENGRAVED_BOX);
-  cancel_button = new Fl_Button(110, 186, 95, 21, fl_cancel);
-  cancel_button->callback(cancel_cb);
-  // window->size_range(210, 240); // minimum usable size?
-  window->resizable(chooser);
-  window->end();
+    if (window) return;
+    window = new Fl_Window(210,212);
+    chooser = new Fl_Color_Chooser(5, 5, 200, 100);
+    chooser->callback(chooser_cb);
+    new CellBox(5,110,200,52);
+    ok_color = new Fl_Box(5, 165, 95, 21);
+    ok_color->box(FL_ENGRAVED_BOX);
+    ok_button = new Fl_Return_Button(5, 186, 95, 21, fl_ok);
+    ok_button->callback(ok_cb);
+    cancel_color = new Fl_Box(110, 165, 95, 21);
+    cancel_color->box(FL_ENGRAVED_BOX);
+    cancel_button = new Fl_Button(110, 186, 95, 21, fl_cancel);
+    cancel_button->callback(cancel_cb);
+    // window->size_range(210, 240); // minimum usable size?
+    window->resizable(chooser);
+    window->end();
 }
 
 static int run_it(const char* name) {

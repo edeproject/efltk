@@ -34,7 +34,7 @@
 @main:Drawing\nTests:@d
 	@d:text labels:label
 	@d:Fl_Image\nlabels:image
-	@d:pixmap\nbrowser:pixmap_browser
+	@d:Fl_Multi_Image:multi_image
 	@d:cursor:cursor
 	@d:fl_arc:arc
 	@d:fl_curve:curve

@@ -90,6 +90,8 @@ public:
   static void hsv2rgb(double, double, double,double&,double&,double&);
   static void rgb2hsv(double, double, double,double&,double&,double&);
   Fl_Color_Chooser(int,int,int,int,const char* = 0);
+
+  static Fl_Named_Style* default_style;
 };
 
 FL_API int fl_color_chooser(const char*name,double& r,double& g,double& b);

@@ -85,12 +85,14 @@ int main (int argc, char **argv) {
       o->color((Fl_Color)10);
       o->selection_color((Fl_Color)1);
       o->label_size(8);
+      o->step(0.1);
       o->callback((Fl_Callback*)callback);
     }
      {Fl_Value_Input* o = new Fl_Value_Input(310, 63, 100, 22, "inside");
       o->color((Fl_Color)10);
       o->selection_color((Fl_Color)1);
       o->label_size(8);
+      o->step(0.1);
       o->callback((Fl_Callback*)callback);
       o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
     }
@@ -113,6 +115,7 @@ int main (int argc, char **argv) {
      {Fl_Value_Input* o = new Fl_Value_Input(360, 93, 180, 32, "larger");
       o->color((Fl_Color)10);
       o->selection_color((Fl_Color)1);
+      o->step(0.1);
       o->callback((Fl_Callback*)callback);
     }
      {Fl_Box* o = new Fl_Box(10, 250, 280, 229, "Fl_Value_Slider");

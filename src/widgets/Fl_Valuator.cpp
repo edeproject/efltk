@@ -38,7 +38,7 @@ Fl_Valuator::Fl_Valuator(int X, int Y, int W, int H, const char* L)
     set_flag(FL_ALIGN_BOTTOM);
     when(FL_WHEN_CHANGED);
     value_ = 0.0;
-    step_ = 0;
+    step_ = 0.1;
     minimum_ = 0;
     maximum_ = 1;
     linesize_ = 0.1;

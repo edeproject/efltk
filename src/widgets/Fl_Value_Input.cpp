@@ -92,7 +92,7 @@ void Fl_Value_Input::increment_cb()
 {
 #undef max
 #define max(a,b) ((a) > (b) ? (a) : (b))
-    double i = max(linesize(), step());
+    double i = step();
     if (Fl::event_state()&(FL_SHIFT|FL_CTRL|FL_ALT)) i *= 10;
     if (which_pushed == 2) i = -i;
     handle_drag(value()+i);
@@ -205,6 +205,9 @@ void Fl_Value_Input::layout()
     // coordinates:
     input.resize(0, 0, w(), h());
     input.layout();
+
+    // I'm not sure why this is here, may be a mistake:
+    value_damage();
 }
 
 
@@ -224,9 +227,6 @@ void Fl_Value_Input::value_damage()
 
     // highlight it all
     input.position(0, input.size());
-
-    // I'm not sure why this is here, may be a mistake:
-    value_damage();
 }
 
 

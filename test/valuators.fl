@@ -16,7 +16,7 @@ Function {} {open
 } {
   Fl_Window {} {
     label {Valuator classes, showing values for the type()} open
-    xywh {459 329 565 490} resizable label_size 10
+    xywh {457 248 565 490} resizable label_size 10
     extra_code {\#include <stdio.h>} visible
   } {
     Fl_Box {} {
@@ -69,13 +69,13 @@ Function {} {open
     }
     Fl_Value_Input {} {
       label {outside label}
-      callback callback selected
-      xywh {360 35 180 22} color 10 selection_color 1 label_size 8
+      callback callback
+      xywh {360 35 180 22} color 10 selection_color 1 label_size 8 step 0.1
     }
     Fl_Value_Input {} {
       label inside
       callback callback
-      xywh {310 63 100 22} align 20 color 10 selection_color 1 label_size 8
+      xywh {310 63 100 22} align 20 color 10 selection_color 1 label_size 8 step 0.1
     }
     Fl_Value_Input {} {
       label x
@@ -90,7 +90,7 @@ Function {} {open
     Fl_Value_Input {} {
       label larger
       callback callback
-      xywh {360 93 180 32} color 10 selection_color 1
+      xywh {360 93 180 32} color 10 selection_color 1 step 0.1
     }
     Fl_Box {} {
       label Fl_Value_Slider
@@ -165,7 +165,7 @@ Function {} {open
     } {
       Fl_Dial {} {
         label NORMAL
-        callback callback
+        callback callback selected
         xywh {22 24 65 65} color 10 selection_color 1 label_size 8 value 0.5
         extra_code {o->angles(0,315);}
       }

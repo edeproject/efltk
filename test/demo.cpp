@@ -23,6 +23,34 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
+/* XPM */
+static char	tile_cmap[3][32] = {
+"O c #F0F0F0",
+"o c #E0E0E0",
+". c #D8D8D8"
+};
+static const char * tile_xpm[] = {
+"16 16 3 1",
+tile_cmap[0],
+tile_cmap[1],
+tile_cmap[2],
+"OOOOOOOOOOOOOOOO",
+"oooooooooooooooo",
+"................",
+"oooooooooooooooo",
+"OOOOOOOOOOOOOOOO",
+"oooooooooooooooo",
+"................",
+"oooooooooooooooo",
+"OOOOOOOOOOOOOOOO",
+"oooooooooooooooo",
+"................",
+"oooooooooooooooo",
+"OOOOOOOOOOOOOOOO",
+"oooooooooooooooo",
+"................",
+"oooooooooooooooo"};
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -33,6 +61,7 @@
 #endif
 #include <efltk/Fl.h>
 #include <efltk/Fl_Window.h>
+#include <efltk/Fl_Image.h>
 #include <efltk/Fl_Box.h>
 #include <efltk/Fl_Button.h>
 #include <efltk/filename.h>
@@ -310,28 +339,35 @@ int load_the_menu(const char fname[])
   return 1;
 }
 
+#include "tile.xpm"
 int main(int argc, char **argv)
 {
     Fl_Button::default_style->box = FL_PLASTIC_BOX;
-    Fl_Window::default_style->box = FL_PLASTIC_BOX;
 
-  create_the_forms();
-  char buf[256];
-  strcpy(buf, argv[0]);
-  fl_file_setext(buf,".menu");
-  const char *fname = buf;
-  int i = 0;
-  if (!Fl::args(argc,argv,i) || i < argc-1)
-    Fl::fatal("Usage: %s <switches> <menufile>\n%s",Fl::help);
-  if (i < argc) fname = argv[i];
-  if (!load_the_menu(fname)) Fl::fatal("Can't open %s",fname);
-  strcpy(buf,fname);
-  const char *c = fl_file_filename(buf);
-  if (c > buf) {buf[c-buf] = 0; chdir(buf);}
-  push_menu("@main");
-  form->show(argc,argv);
-  Fl::run();
-  return 0;
+    create_the_forms();
+
+    // Add tiled image as window background
+    Fl_Image *im = Fl_Image::read_xpm(0, tile_xpm);
+    form->image(im);
+    form->align(FL_ALIGN_TILED);
+
+    char buf[256];
+    strcpy(buf, argv[0]);
+    fl_file_setext(buf,".menu");
+    const char *fname = buf;
+    int i = 0;
+    if (!Fl::args(argc,argv,i) || i < argc-1)
+        Fl::fatal("Usage: %s <switches> <menufile>\n%s",Fl::help);
+    if (i < argc) fname = argv[i];
+    if (!load_the_menu(fname)) Fl::fatal("Can't open %s",fname);
+    strcpy(buf,fname);
+    const char *c = fl_file_filename(buf);
+    if (c > buf) {buf[c-buf] = 0; chdir(buf);}
+    push_menu("@main");
+    form->show(argc,argv);
+    Fl::run();
+
+    return 0;
 }
 
 //
