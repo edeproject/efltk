@@ -46,7 +46,7 @@
 	@u:fast & slow widgets:fast_slow
 	@u:inactive:inactive
 
-@main:Fluid\n(UI design tool):../fluid/efluid valuators.fl
+@main:Fluid\n(UI design tool):../bin/efluid valuators.fl
 
 @main:Cool\nDemos:@e
 	@e:X Color\nBrowser:../forms/colbrowser
