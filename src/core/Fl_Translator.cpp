@@ -9,6 +9,7 @@
 
 #include <ctype.h>
 #include <errno.h>
+#include <stdlib.h>
 
 class MessageHash : public Fl_String_Hash
 {

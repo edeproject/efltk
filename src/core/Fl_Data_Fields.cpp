@@ -17,9 +17,9 @@
 
 #include <efltk/Fl_Data_Fields.h>
 #include <efltk/Fl_Exception.h>
-#include <stdio.h>
 
-const Fl_Variant Fl_Data_Fields::m_fieldNotFound;
+#include <stdio.h>
+#include <stdlib.h>
 
 // convertors
 int Fl_Data_Field::as_int() const {

@@ -8,7 +8,7 @@ Fl_Window* w;
 static void ptimer(void *o)
 {
     Fl_ProgressBar *pbar = (Fl_ProgressBar *)o;
-    if(pbar->position() < 100)
+    if(pbar->value() < 100)
     {
         pbar->step(1);
         Fl::add_timeout(0.1, ptimer, (void *)pbar);

@@ -132,23 +132,23 @@ Fl_Config::Fl_Config(const char *vendor, const char *application, ConfMode mode)
     changed=false;
     _error = 0;
 
-    vendor_ = vendor?strdup(vendor):0;
-    app_    = application?strdup(application):0;
-	filename_ = 0;
+    if(vendor) vendor_ = vendor;
+    if(application) app_ = application;
 
-    if(app_) {
+    if(!app_.empty()) {
         const char *file=0;
         char tmp[FL_PATH_MAX];
 #ifdef _WIN32
-        if(mode==SYSTEM) snprintf(tmp, sizeof(tmp)-1, "%s%c%s.conf", app_, slash, app_);
+        if(mode==SYSTEM)
+            snprintf(tmp, sizeof(tmp)-1, "%s%c%s.conf", app_.c_str(), slash, app_.c_str());
         else
 #endif
-            snprintf(tmp, sizeof(tmp)-1, "apps%c%s%c%s.conf", slash, app_, slash, app_);
+            snprintf(tmp, sizeof(tmp)-1, "apps%c%s%c%s.conf", slash, app_.c_str(), slash, app_.c_str());
         file = find_config_file(tmp, true, mode);
         if(file) {
             bool ret = makePathForFile(file);
             if(ret) {
-                filename_ = strdup(file);
+                filename_ = file;
                 read_file(true);
             } else
                 _error = CONF_ERR_FILE;
@@ -160,16 +160,14 @@ Fl_Config::Fl_Config(const char *vendor, const char *application, ConfMode mode)
 
 Fl_Config::Fl_Config(const char *filename, bool read, bool create)
 {
-    vendor_ = 0;
-    app_    = 0;
+    if(filename) filename_ = filename;
 
     _error = 0;
-    filename_ = filename?strdup(filename):0;
     cur_sec = 0;
     changed=false;
 
-    if(create && filename_) {
-        makePathForFile(filename_);
+    if(create && !filename_.empty()) {
+        makePathForFile(filename_.c_str());
     }
 
     if(read) read_file(create);
@@ -178,6 +176,11 @@ Fl_Config::Fl_Config(const char *filename, bool read, bool create)
 Fl_Config::~Fl_Config()
 {
     flush();
+    clear();
+}
+
+void Fl_Config::clear()
+{
     uint n;
     for(n=0; n<lines.size(); n++) {
         Line *l=(Line *)lines[n];
@@ -187,7 +190,8 @@ Fl_Config::~Fl_Config()
         Section *s=(Section *)sections[n];
         delete s;
     }
-    if(filename_) delete []filename_;
+    lines.clear();
+    sections.clear();
 }
 
 /* get error string associated with error number */
@@ -208,15 +212,18 @@ const char *Fl_Config::strerror(int error)
 bool Fl_Config::read_file(bool create)
 {
     bool error = false;
-    if(filename_) {
-        if(create && !fl_file_exists(filename_)) {
-            FILE *f = fl_fopen(filename_, "w+");
-            if(f) {
-                fputs("\n",f);
-                fclose(f);
-            } else error=true;
-        }
-    } else error=true;
+    if(filename_.empty()) {
+        _error = CONF_ERR_FILE;
+        return false;
+    }
+
+    if(create && !fl_file_exists(filename_.c_str())) {
+        FILE *f = fl_fopen(filename_.c_str(), "w+");
+        if(f) {
+            fputs("\n", f);
+            fclose(f);
+        } else error=true;
+    }
 
     if(error) {
         _error = CONF_ERR_FILE;
@@ -225,25 +232,18 @@ bool Fl_Config::read_file(bool create)
 
     // If somebody calls this function two times, we
     // need to clean earlier section list...
-    uint n;
-    for(n=0; n<lines.size(); n++)
-        delete (Line*)lines[n];
-    for(n=0; n<sections.size(); n++)
-        delete (Section*)sections[n];
-    lines.clear();
-    sections.clear();
+    clear();
 
     /////
-
     struct stat fileStat;
-    stat(filename_, &fileStat);
+    stat(filename_.c_str(), &fileStat);
     unsigned int size = fileStat.st_size;
     if(size == 0) {
         _error = 0;
         return true;
     }
 
-    FILE *fp = fl_fopen(filename_, "r");
+    FILE *fp = fl_fopen(filename_.c_str(), "r");
     if(!fp) {
         //fprintf(stderr, "fp == 0: %s\n", filename_);
         _error = CONF_ERR_FILE;
@@ -251,14 +251,15 @@ bool Fl_Config::read_file(bool create)
     }
 
     char *buffer, *lines, *tmp;
-    if( (buffer = new char[size]) == 0) {
+    buffer = (char*)malloc(size*sizeof(char));
+    if(!buffer) {
         _error = CONF_ERR_MEMORY;
         return false;
     }
 
     unsigned int readed = fread(buffer, 1, size, fp);
     if(readed <= 0) {
-        delete []buffer;
+        free(buffer);
         fclose(fp);
         _error = CONF_ERR_FILE;
         return false;
@@ -297,8 +298,7 @@ bool Fl_Config::read_file(bool create)
         lines = strtok(NULL,"\n");
     }
 
-    if(buffer)
-        delete []buffer;
+    free(buffer);
 
     _error = 0;
     changed=false;
@@ -311,13 +311,13 @@ void Fl_Config::write_section(int indent, FILE *fp, Section *sec)
     uint n;
     for(int a=0; a<indent; a++) fprintf(fp, " ");
 
-    fprintf(fp, "[%s%s]\n", sec->path, sec->name);
+    fprintf(fp, "[%s%s]\n", sec->path.c_str(), sec->name.c_str());
 
     for(n=0; n<sec->lines.size(); n++) {
         Line *l = L(sec->lines[n]);
-        if(l && l->key) {
+        if(l && !l->key.empty()) {
             for(int a=0; a<indent; a++) fprintf(fp, " ");
-            fprintf(fp, "  %s=%s\n", l->key, l->value?l->value:"");
+            fprintf(fp, "  %s=%s\n", l->key.c_str(), l->value.c_str());
         }
     }
 
@@ -333,26 +333,26 @@ bool Fl_Config::flush()
 {
     if(!changed) return true;
 
-    if(!filename_) {
+    if(filename_.empty()) {
         _error = CONF_ERR_FILE;
         return false;
     }
-    FILE *file = fl_fopen(filename_, "w+");
+    FILE *file = fl_fopen(filename_.c_str(), "w+");
     if(!file) {
         _error = CONF_ERR_FILE;
         return false;
     }
 
     fprintf( file, "# EFLTK Configuration - Version %f\n", FL_VERSION);
-    if(vendor_) fprintf( file, "# Vendor: %s\n", vendor_ );
-    if(app_)    fprintf( file, "# Application: %s\n", app_ );
+    if(!vendor_.empty()) fprintf( file, "# Vendor: %s\n", vendor_.c_str());
+    if(!app_.empty())    fprintf( file, "# Application: %s\n", app_.c_str());
     fprintf( file, "\n");
 
     uint n;
     for(n=0; n<lines.size(); n++) {
         Line *l = L(lines[n]);
-        if(l && l->key) {
-            fprintf(file, "%s=%s\n", l->key, l->value?l->value:"");
+        if(l && !l->key.empty()) {
+            fprintf(file, "%s=%s\n", l->key.c_str(), l->value.c_str());
         }
     }
     fprintf(file, "\n");
@@ -375,11 +375,9 @@ Line *Fl_Config::create_string(Section *section, const char * key, const char * 
     if(!key || !*key) return 0;
 
     Line *line = new Line(key, value);
+    line->key = line->key.trim();
+    line->value = line->value.trim();
 
-    line->key = fl_trim(line->key);
-    if(line->value) {
-        line->value = fl_trim(line->value);
-    }
     _error=0;
 
     if(section) section->lines.append(line);
@@ -505,7 +503,7 @@ Section *Fl_Config::find_section(Section *sec, const char *name, bool recursive)
 
     for(uint n=0; n<list->size(); n++) {
         s = S(list->item(n));
-        if(!strcmp(s->name, name)) {
+        if(s->name == name) {
             _error = 0;
             return s;
         }
@@ -524,13 +522,12 @@ Line *Fl_Config::find_string(Section *section, const char *key)
     if(key) {
         for(uint n=0; n<section->lines.size(); n++) {
             Line *line = L(section->lines[n]);
-            if( line->key && !strcmp(line->key, key) ) {
+            if(!line->key.empty() && line->key==key) {
                 _error = 0;
                 return line;
             }
         }
     }
-
     _error = CONF_ERR_KEY;
     return 0;
 }
@@ -619,11 +616,11 @@ int Fl_Config::_read_string(Section *s, const char *key, char *ret, const char *
     }
 
     Line *l = find_string(s, key);
-    if(l&&l->value)
+    if(l && !l->value.empty())
     {
-        char *tmp = strchr(l->value, '#');
+        char *tmp = strchr(l->value.c_str(), '#');
         if(tmp) *tmp = '\0';
-        strncpy(ret, l->value, size);
+        strncpy(ret, l->value.c_str(), size);
         return (_error = CONF_SUCCESS);
     }
 
@@ -640,11 +637,11 @@ int Fl_Config::_read_string(Section *s, const char *key, char *&ret, const char 
     }
 
     Line *l = find_string(s, key);
-    if(l&&l->value)
+    if(l && !l->value.empty())
     {
-        char *tmp = strchr(l->value, '#');
+        char *tmp = strchr(l->value.c_str(), '#');
         if(tmp) *tmp = '\0';
-        ret = strdup(l->value);
+        ret = strdup(l->value.c_str());
         return (_error = CONF_SUCCESS);
     }
 
@@ -744,12 +741,9 @@ int Fl_Config::_write_string(Section *s, const char *key, const char *value)
     if(!key) return (_error = CONF_ERR_KEY);
 
     Line *line;
-    if((line = find_string(s, key)))
-    {
-        if(line->value) delete []line->value;
-        line->value = value?strdup(value):0;
-    }
-    else
+    if((line = find_string(s, key))) {
+        line->value = value ? value : "";
+    } else
         create_string(s, key, value);
 
     changed=true;

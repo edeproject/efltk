@@ -298,7 +298,7 @@ const char* fl_input(const char *fmt, const char *defstr, ...)
 {
     va_list ap;
     va_start(ap, defstr);
-    const char* r = input_innards(fmt, ap, defstr, FL_NORMAL_INPUT);
+    const char* r = input_innards(fmt, ap, defstr, Fl_Input::NORMAL);
     va_end(ap);
     return r;
 }
@@ -308,7 +308,7 @@ const char *fl_password(const char *fmt, const char *defstr, ...)
 {
     va_list ap;
     va_start(ap, defstr);
-    const char* r = input_innards(fmt, ap, defstr, FL_SECRET_INPUT);
+    const char* r = input_innards(fmt, ap, defstr, Fl_Input::SECRET);
     va_end(ap);
     return r;
 }

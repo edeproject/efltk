@@ -3,6 +3,8 @@
 #include <efltk/Fl_Exception.h>
 #include <efltk/Fl.h>
 
+#include <stdlib.h>
+
 /* Code from here to end of file has been adapted from XPaint:   */
 /* +-------------------------------------------------------------------+ */
 /* | Copyright 1990, 1991, 1993 David Koblas.			               | */

@@ -1,30 +1,26 @@
-//
-// "$Id$"
-//
-// Boxes used by FLTK styles.
-//
-// Copyright 1998-1999 by Bill Spitzak and others.
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Library General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Library General Public License for more details.
-//
-// You should have received a copy of the GNU Library General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA.
-//
-// Please report all bugs and problems to "fltk-bugs@easysw.com".
-//
+/*
+ * $Id$
+ *
+ * Extended Fast Light Toolkit (EFLTK)
+ * Copyright (C) 2002-2003 by EDE-Team
+ * WWW: http://www.sourceforge.net/projects/ede
+ *
+ * Fast Light Toolkit (FLTK)
+ * Copyright (C) 1998-2003 by Bill Spitzak and others.
+ * WWW: http://www.fltk.org
+ *
+ * This library is distributed under the GNU LIBRARY GENERAL PUBLIC LICENSE
+ * version 2. See COPYING for details.
+ *
+ * Author : Mikko Lahteenmaki
+ * Email  : mikko@fltk.net
+ *
+ * Please report all bugs and problems to "efltk-bugs@fltk.net"
+ *
+ */
 
-#ifndef Fl_Boxtype_h
-#define Fl_Boxtype_h
+#ifndef _FL_BOXTYPE_H_
+#define _FL_BOXTYPE_H_
 
 #include "Fl_Color.h"
 #include "Fl_Flags.h"
@@ -33,19 +29,23 @@
 class FL_API Fl_Boxtype_
 {
 public:
+    Fl_Boxtype_() : name(0) { }
+    Fl_Boxtype_(const char* n) : name(n), next(first) { first = this; }
+
+    int fills_rectangle() const { return fills_rectangle_; }
+    int dx() const { return dx_; }
+    int dy() const { return dy_; }
+    int dw() const { return dw_; }
+    int dh() const { return dh_; }
+    void inset(int&X,int&Y,int&W,int&H) const { X+=dx_; Y+=dy_; W-=dw_; H-=dh_; }
+
     virtual void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const = 0;
-    int fills_rectangle() const {return fills_rectangle_;}
-    int dx() const {return dx_;}
-    int dy() const {return dy_;}
-    int dw() const {return dw_;}
-    int dh() const {return dh_;}
-    void inset(int&X,int&Y,int&W,int&H) const {X+=dx_; Y+=dy_; W-=dw_; H-=dh_;}
-    const char* name;
-    const Fl_Boxtype_* next;
-    static const Fl_Boxtype_* first;
-    Fl_Boxtype_() : name(0) {}
-    Fl_Boxtype_(const char* n) : name(n), next(first) {first = this;}
-    static const Fl_Boxtype_* find(const char* name);
+
+    const Fl_Boxtype_ *next;
+    static const Fl_Boxtype_ *first;
+    static const Fl_Boxtype_ *find(const char* name);
+
+    const char *name;
 
 protected:
     int dx_, dy_, dw_, dh_;
@@ -59,9 +59,10 @@ typedef const Fl_Boxtype_* Fl_Boxtype;
 class FL_API Fl_Frame_Box : public Fl_Boxtype_
 {
 public:
-    const char* data() const {return data_;}
-    void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
     Fl_Frame_Box(const char* n, const char* c, const Fl_Frame_Box* d=0);
+
+    const char* data() const { return data_; }
+    virtual void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
 
 protected:
     const char* data_;
@@ -94,18 +95,20 @@ extern FL_API const Fl_Frame_Box fl_border_box;
 // no border, tiling pattern is in absolute coordinates:
 class FL_API Fl_Flat_Box : public Fl_Boxtype_ {
 public:
-    void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
     Fl_Flat_Box(const char* n);
+    virtual void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
 };
 extern FL_API const Fl_Flat_Box fl_flat_box;
 #define FL_FLAT_BOX (&fl_flat_box)
 
 // Combination of flat & any other boxtype when highlighted or pressed:
 class FL_API Fl_Highlight_Box : public Fl_Flat_Box {
-    const Fl_Boxtype_* down;
 public:
-    void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
     Fl_Highlight_Box(const char* n, const Fl_Boxtype_* d);
+    virtual void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
+
+private:
+    const Fl_Boxtype_* down;
 };
 extern FL_API const Fl_Highlight_Box fl_highlight_up_box;
 #define FL_HIGHLIGHT_UP_BOX (&fl_highlight_up_box)
@@ -119,8 +122,8 @@ extern FL_API const Fl_Highlight_Box fl_highlight_down_box;
 // Circle with an edge pattern like Fl_Frame_Box:
 class FL_API Fl_Round_Box : public Fl_Frame_Box {
 public:
-    void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
     Fl_Round_Box(const char* n, const char* c, const Fl_Frame_Box* d=0);
+    virtual void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
 };
 
 extern FL_API const Fl_Round_Box fl_round_up_box;
@@ -133,8 +136,8 @@ extern FL_API const Fl_Round_Box fl_round_down_box;
 // Diamond with an edge pattern like Fl_Frame_Box:
 class FL_API Fl_Diamond_Box : public Fl_Frame_Box {
 public:
-    void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
     Fl_Diamond_Box(const char* n, const char* c, const Fl_Frame_Box* d=0);
+    virtual void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
 };
 
 extern FL_API const Fl_Diamond_Box fl_diamond_up_box;
@@ -147,8 +150,8 @@ extern FL_API const Fl_Diamond_Box fl_diamond_down_box;
 // Plastic/Aqua shading:
 class FL_API Fl_Plastic_Box : public Fl_Frame_Box {
 public:
-    void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
     Fl_Plastic_Box(const char* n, const char* c, const Fl_Frame_Box* d=0);
+    virtual void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
 };
 
 extern FL_API const Fl_Plastic_Box fl_plastic_up_box;
@@ -159,11 +162,10 @@ extern FL_API const Fl_Plastic_Box fl_plastic_down_box;
 #define FL_PLASTIC_DOWN_BOX (&fl_plastic_down_box)
 
 // a bunch of "one-of" types:
-
 class FL_API Fl_No_Box : public Fl_Boxtype_ {
 public:
-    void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
     Fl_No_Box(const char* n);
+    virtual void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
 };
 
 extern FL_API const Fl_No_Box fl_no_box;
@@ -171,8 +173,8 @@ extern FL_API const Fl_No_Box fl_no_box;
 
 class FL_API Fl_Shadow_Box : public Fl_Boxtype_ {
 public:
-    void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
     Fl_Shadow_Box(const char* n);
+    virtual void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
 };
 
 extern FL_API const Fl_Shadow_Box fl_shadow_box;
@@ -180,8 +182,8 @@ extern FL_API const Fl_Shadow_Box fl_shadow_box;
 
 class FL_API Fl_Rounded_Box : public Fl_Boxtype_ {
 public:
-    void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
     Fl_Rounded_Box(const char* n);
+    virtual void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
 };
 
 extern FL_API const Fl_Rounded_Box fl_rounded_box;
@@ -189,8 +191,8 @@ extern FL_API const Fl_Rounded_Box fl_rounded_box;
 
 class FL_API Fl_RShadow_Box : public Fl_Boxtype_ {
 public:
-    void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
     Fl_RShadow_Box(const char* n);
+    virtual void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
 };
 
 extern FL_API const Fl_RShadow_Box fl_rshadow_box;
@@ -198,8 +200,8 @@ extern FL_API const Fl_RShadow_Box fl_rshadow_box;
 
 class FL_API Fl_RFlat_Box : public Fl_Boxtype_ {
 public:
-    void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
     Fl_RFlat_Box(const char* n);
+    virtual void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
 };
 
 extern FL_API const Fl_RFlat_Box fl_rflat_box;
@@ -207,8 +209,8 @@ extern FL_API const Fl_RFlat_Box fl_rflat_box;
 
 class FL_API Fl_Oval_Box : public Fl_Boxtype_ {
 public:
-    void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
     Fl_Oval_Box(const char* n);
+    virtual void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
 };
 
 extern FL_API const Fl_Oval_Box fl_oval_box;
@@ -216,16 +218,16 @@ extern FL_API const Fl_Oval_Box fl_oval_box;
 
 class FL_API Fl_Oval_Shadow_Box : public Fl_Boxtype_ {
 public:
-    void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
     Fl_Oval_Shadow_Box(const char* n);
+    virtual void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
 };
 extern FL_API const Fl_Oval_Shadow_Box fl_oval_shadow_box;
 #define FL_OSHADOW_BOX (&fl_oval_shadow_box)
 
 class FL_API Fl_Oval_Flat_Box : public Fl_Boxtype_ {
 public:
-    void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
     Fl_Oval_Flat_Box(const char* n);
+    virtual void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
 };
 
 extern FL_API const Fl_Oval_Flat_Box fl_oval_flat_box;
@@ -233,8 +235,8 @@ extern FL_API const Fl_Oval_Flat_Box fl_oval_flat_box;
 
 class FL_API Fl_Border_Frame : public Fl_Boxtype_ {
 public:
-    void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
     Fl_Border_Frame(const char* n);
+    virtual void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
 };
 
 extern FL_API const Fl_Border_Frame fl_border_frame;
@@ -242,28 +244,27 @@ extern FL_API const Fl_Border_Frame fl_border_frame;
 
 class FL_API Fl_Dotted_Frame : public Fl_Boxtype_ {
 public:
-    void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
     Fl_Dotted_Frame(const char* n);
+    virtual void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const;
 };
 
 extern FL_API const Fl_Dotted_Frame fl_dotted_frame;
 #define FL_DOTTED_FRAME (&fl_dotted_frame)
 
 class Fl_Hor_Shade_Box : public Fl_Flat_Box {
-protected:
-    const Fl_Boxtype_ *up_, *down_;
-
 public:
     Fl_Hor_Shade_Box(const char* n, const Fl_Boxtype_ *up, const Fl_Boxtype_ *down, Fl_Color end=0);
     virtual void draw(int x,int y,int w,int h, Fl_Color color, Fl_Flags f) const;
 
     Fl_Color end_color; //end of shaded color
+protected:
+    const Fl_Boxtype_ *up_, *down_;
 };
 
 class Fl_Vert_Shade_Box : public Fl_Hor_Shade_Box {
 public:
     Fl_Vert_Shade_Box(const char* n, const Fl_Boxtype_ *up, const Fl_Boxtype_ *down, Fl_Color end=0) : Fl_Hor_Shade_Box(n,up,down,end) { }
-    void draw(int x,int y,int w,int h, Fl_Color color, Fl_Flags f) const;
+    virtual void draw(int x,int y,int w,int h, Fl_Color color, Fl_Flags f) const;
 };
 
 extern FL_API const Fl_Vert_Shade_Box vert_up_shade_box;
@@ -281,7 +282,3 @@ extern FL_API const Fl_Frame_Box thick_up_box;
 #define FL_THICK_UP_BOX (&thick_up_box)
 
 #endif
-
-//
-// End of "$Id$".
-//

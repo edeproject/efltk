@@ -137,7 +137,7 @@ void Fl_Tool_Bar::layout()
 
                 Fl_Item *i = new Fl_Item();
                 // Tooltip as a label, if theres one
-                i->copy_label(w->tooltip()?w->tooltip():w->label());
+                i->copy_label(w->tooltip().empty() ? w->label() : w->tooltip());
                 i->image(w->image());
                 i->user_data(w);
                 i->activate(w->active());

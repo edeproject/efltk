@@ -1,85 +1,93 @@
-/***************************************************************************
-                          Fl_Data_Fields.h  -  description
-                             -------------------
-    begin                : Mon Nov 25 2002
-    copyright            : (C) 2002 by Alexey Parshin
-    email                : alexeyp@m7.tts-sf.com
- ***************************************************************************/
+/*
+ * $Id$
+ *
+ * Extended Fast Light Toolkit (EFLTK)
+ * Copyright (C) 2002-2003 by EDE-Team
+ * WWW: http://www.sourceforge.net/projects/ede
+ *
+ * Fast Light Toolkit (FLTK)
+ * Copyright (C) 1998-2003 by Bill Spitzak and others.
+ * WWW: http://www.fltk.org
+ *
+ * This library is distributed under the GNU LIBRARY GENERAL PUBLIC LICENSE
+ * version 2. See COPYING for details.
+ *
+ * Author : Alexey Parshin
+ * Email  : alexey@fltk.net
+ *
+ * Please report all bugs and problems to "efltk-bugs@fltk.net"
+ *
+ */
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+#ifndef _FL_DATA_FIELDS_H_
+#define _FL_DATA_FIELDS_H_
 
-#ifndef __Fl_Data_Fields_h__
-#define __Fl_Data_Fields_h__
-
-#include <efltk/Fl_Variant.h>
-#include <efltk/Fl_Ptr_List.h>
-#include <efltk/Fl_Flags.h>
+#include "Fl_Variant.h"
+#include "Fl_Ptr_List.h"
+#include "Fl_Flags.h"
 
 class Fl_Data_Fields;
 
 class FL_API Fl_Data_Field {
-   friend class Fl_Data_Fields;
-protected:
-   Fl_String   m_name;
+    friend class Fl_Data_Fields;
 public:
-   Fl_Data_Field(const char *name)    { m_name = name; width = -1; align = FL_ALIGN_LEFT; }
-   Fl_Variant  value;
+    Fl_Data_Field(const char *name)    { m_name = name; width = -1; align = FL_ALIGN_LEFT; }
+    Fl_Variant value;
 
-   // attributes
-   int         width;
-   Fl_Align    align;
+    // attributes
+    int      width;
+    Fl_Align align;
 
-   const char *name() const           { return m_name.c_str();   }
-   Fl_Variant_Type type() const       { return value.type();     }
+    const char *name() const           { return m_name.c_str();   }
+    int type() const       { return value.type();     }
 
-   // convertors
-   operator int () const              { return as_int();         }
-   operator double () const           { return as_float();       }
-   operator Fl_String () const        { return as_string();      }
-   operator Fl_Date_Time () const     { return as_date();        }
-   operator const Fl_Image * () const { return as_image();       }
+    // convertors
+    operator int () const              { return as_int();         }
+    operator double () const           { return as_float();       }
+    operator Fl_String () const        { return as_string();      }
+    operator Fl_Date_Time () const     { return as_date();        }
+    operator const Fl_Image * () const { return as_image();       }
 
-   // assignments
-   Fl_Data_Field& operator = (int v)             { value = v; return *this; }
-   Fl_Data_Field& operator = (double v)          { value = v; return *this; }
-   Fl_Data_Field& operator = (Fl_String v)       { value = v; return *this; }
-   Fl_Data_Field& operator = (Fl_Date_Time v)    { value = v; return *this; }
-   Fl_Data_Field& operator = (const char *v)     { value = v; return *this; }
-   Fl_Data_Field& operator = (const Fl_Image *v) { value = v; return *this; }
+    // assignments
+    Fl_Data_Field& operator = (int v)             { value = v; return *this; }
+    Fl_Data_Field& operator = (double v)          { value = v; return *this; }
+    Fl_Data_Field& operator = (Fl_String v)       { value = v; return *this; }
+    Fl_Data_Field& operator = (Fl_Date_Time v)    { value = v; return *this; }
+    Fl_Data_Field& operator = (const char *v)     { value = v; return *this; }
+    Fl_Data_Field& operator = (const Fl_Image *v) { value = v; return *this; }
 
-   int as_int() const;
-   double as_float() const;
-   Fl_String as_string() const;
-   Fl_Date_Time as_date() const;
-   const Fl_Image *as_image() const;
+    int as_int() const;
+    double as_float() const;
+    Fl_String as_string() const;
+    Fl_Date_Time as_date() const;
+    const Fl_Image *as_image() const;
+
+protected:
+    Fl_String m_name;
 };
 
 class FL_API Fl_Data_Fields {
-   Fl_Ptr_List       m_list;
-   static const Fl_Variant m_fieldNotFound;
 public:
-   Fl_Data_Fields() {}
-   ~Fl_Data_Fields() { clear(); }
-   void              clear();
-   int               count() const { return m_list.count(); }
-   int               field_index(const char * fname) const;
+    Fl_Data_Fields() {}
+    ~Fl_Data_Fields() { clear(); }
 
-   Fl_Data_Field&    add(const char *fname);
+    void clear();
+    int  count() const { return m_list.count(); }
+    int  field_index(const char * fname) const;
 
-   const Fl_Data_Field& field(unsigned index) const;
-   Fl_Data_Field&    field(unsigned index);
+    Fl_Data_Field& add(const char *fname);
 
-   Fl_Variant&       operator [] (int index);
-   const Fl_Variant& operator [] (int index) const;
-   Fl_Variant&       operator [] (const char *fname);
-   const Fl_Variant& operator [] (const char *fname) const;
+    const Fl_Data_Field& field(unsigned index) const;
+    Fl_Data_Field&       field(unsigned index);
+
+    Fl_Variant&       operator [] (int index);
+    const Fl_Variant& operator [] (int index) const;
+    Fl_Variant&       operator [] (const char *fname);
+    const Fl_Variant& operator [] (const char *fname) const;
+
+private:
+    Fl_Ptr_List       m_list;
+    static const Fl_Variant m_fieldNotFound;
 };
 
 #endif

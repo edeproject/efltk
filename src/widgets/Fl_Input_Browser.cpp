@@ -139,7 +139,7 @@ void ComboBrowser::browser_cb(Fl_Widget *w, void *data)
     if (item->is_group()) return; // can't select a group!
 
     combo->item(item);
-    combo->value(item->label());
+    combo->value(item->label().c_str());
     combo->redraw(FL_DAMAGE_VALUE);
     combo->hide_popup();
     was_up = false;

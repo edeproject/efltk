@@ -232,20 +232,6 @@ static Fl_Calendar_Type Fl_Calendar_type;
 
 ////////////////////////////////////////////////////////////////
 
-#include <efltk/Fl_Adjuster.h>
-class Fl_Adjuster_Type : public Fl_Widget_Type {
-  int is_valuator() const {return 1;}
-  int is_adjuster() const {return 1;}
-public:
-  virtual const char *type_name() const {return "Fl_Adjuster";}
-  Fl_Widget *widget(int x,int y,int w,int h) {
-    return new Fl_Adjuster(x,y,w,h);}
-  Fl_Widget_Type *_make() {return new Fl_Adjuster_Type();}
-};
-static Fl_Adjuster_Type Fl_Adjuster_type;
-
-////////////////////////////////////////////////////////////////
-
 #include <efltk/Fl_Dial.h>
 static const Enumeration dial_type_menu[] = {
   {"Dot", 	0,	(void*)Fl_Dial::NORMAL},
@@ -491,7 +477,6 @@ Fl_Menu_Item New_Menu[] = {
   {0,0,cb,(void*)&Fl_Value_Input_type},
   {0,0,cb,(void*)&Fl_Value_Output_type},
   {0,0,cb,(void*)&Fl_Scrollbar_type},
-  {0,0,cb,(void*)&Fl_Adjuster_type},
   {0,0,cb,(void*)&Fl_Dial_type},
   {0,0,cb,(void*)&Fl_Roller_type},
 {0},

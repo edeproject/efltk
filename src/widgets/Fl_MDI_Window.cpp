@@ -236,9 +236,9 @@ void Fl_MDI_Titlebar::draw()
 
     fl_font(label_font(), float(label_size()));
 
-    const char *txt = fl_cut_line(label(), w()-X);
+    const char *txt = fl_cut_line(label().c_str(), w()-X);
 
-    const char *saved_label = label();
+    const char *saved_label = label().c_str();
     label(txt);
 
     bool dbuffer=true;

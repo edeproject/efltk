@@ -1,29 +1,26 @@
-//
-// "$Id$"
-//
-// OpenGL header file for the Fast Light Tool Kit (FLTK).
-//
-// Copyright 1998-2000 by Bill Spitzak and others.
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Library General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Library General Public License for more details.
-//
-// You should have received a copy of the GNU Library General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA.
-//
-// Please report all bugs and problems to "fltk-bugs@easysw.com".
-//
-#ifndef Fl_Gl_Window_H
-#define Fl_Gl_Window_H
+/*
+ * $Id$
+ *
+ * Extended Fast Light Toolkit (EFLTK)
+ * Copyright (C) 2002-2003 by EDE-Team
+ * WWW: http://www.sourceforge.net/projects/ede
+ *
+ * Fast Light Toolkit (FLTK)
+ * Copyright (C) 1998-2003 by Bill Spitzak and others.
+ * WWW: http://www.fltk.org
+ *
+ * This library is distributed under the GNU LIBRARY GENERAL PUBLIC LICENSE
+ * version 2. See COPYING for details.
+ *
+ * Author : Mikko Lahteenmaki
+ * Email  : mikko@fltk.net
+ *
+ * Please report all bugs and problems to "efltk-bugs@fltk.net"
+ *
+ */
+
+#ifndef _FL_GL_WINDOW_H_
+#define _FL_GL_WINDOW_H_
 
 #include "Fl_Window.h"
 
@@ -34,63 +31,56 @@ typedef void* GLContext; // actually a GLXContext or HGLDC
 class Fl_Gl_Choice; // structure to hold result of glXChooseVisual
 
 enum {
-  FL_NO_AUTO_SWAP = 1024,
-  FL_NO_ERASE_OVERLAY = 2048
+    FL_NO_AUTO_SWAP = 1024,
+    FL_NO_ERASE_OVERLAY = 2048
 };
 
 class FL_API Fl_Gl_Window : public Fl_Window {
 
 public:
+    Fl_Gl_Window(int W, int H, const char *l=0) : Fl_Window(W,H,l) { init(); }
+    Fl_Gl_Window(int X, int Y, int W, int H, const char *l=0) : Fl_Window(X,Y,W,H,l) { init(); }
+    ~Fl_Gl_Window();
 
-  void create();
-  void flush();
-  void destroy();
-  void layout();
+    virtual void create();
+    virtual void flush();
+    virtual void destroy();
+    virtual void layout();
 
-  char valid() const {return valid_;}
-  void valid(char i) {valid_ = i;}
-  void invalidate();
+    char valid() const {return valid_;}
+    void valid(char i) {valid_ = i;}
+    void invalidate();
 
-  int mode() const {return mode_;}
-  bool mode(int a);
-  static bool can_do(int);
-  bool can_do() {return can_do(mode_);}
+    int mode() const {return mode_;}
+    bool mode(int a);
+    static bool can_do(int);
+    bool can_do() {return can_do(mode_);}
 
-  void* context() const {return context_;}
-  void context(void*, bool destroy_flag = false);
-  void make_current();
-  void swap_buffers();
-  void ortho();
+    void* context() const {return context_;}
+    void context(void*, bool destroy_flag = false);
+    void make_current();
+    void swap_buffers();
+    void ortho();
 
-  bool can_do_overlay();
-  void redraw_overlay();
-  void hide_overlay();
-  void make_overlay_current();
-
-  ~Fl_Gl_Window();
-  Fl_Gl_Window(int W, int H, const char *l=0) : Fl_Window(W,H,l) {init();}
-  Fl_Gl_Window(int X, int Y, int W, int H, const char *l=0)
-    : Fl_Window(X,Y,W,H,l) {init();}
+    bool can_do_overlay();
+    void redraw_overlay();
+    void hide_overlay();
+    void make_overlay_current();
 
 private:
+    int mode_;
+    Fl_Gl_Choice *gl_choice;
+    GLContext context_;
+    char valid_;
+    char damage1_; // damage() of back buffer
+    virtual void draw_overlay();
+    void init();
 
-  int mode_;
-  Fl_Gl_Choice *gl_choice;
-  GLContext context_;
-  char valid_;
-  char damage1_; // damage() of back buffer
-  virtual void draw_overlay();
-  void init();
+    void *overlay;
+    void make_overlay();
+    friend class _Fl_Gl_Overlay;
 
-  void *overlay;
-  void make_overlay();
-  friend class _Fl_Gl_Overlay;
-
-  void draw_swap();
+    void draw_swap();
 };
 
 #endif
-
-//
-// End of "$Id$".
-//

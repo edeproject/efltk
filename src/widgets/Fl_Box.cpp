@@ -32,7 +32,6 @@ static void revert(Fl_Style* s)
     s->box = FL_NO_BOX;
 }
 
-
 // this is unnamed as there is no need for themes to alter this:
 static Fl_Named_Style style(0, revert, &Fl_Box::default_style);
 Fl_Named_Style* Fl_Box::default_style = &::style;
@@ -43,15 +42,6 @@ Fl_Box::Fl_Box(int x, int y, int w, int h, const char *l)
     style(default_style);
 }
 
-
-Fl_Box::Fl_Box(Fl_Boxtype b, int x, int y, int w, int h, const char *l)
-: Fl_Widget(x,y,w,h,l)
-{
-    style(default_style);
-    box(b);
-}
-
-
 extern Fl_Widget* fl_did_clipping;
 
 void Fl_Box::draw()
@@ -60,7 +50,7 @@ void Fl_Box::draw()
     // area because it will break lots of programs that assumme these
     // can overlap any other widgets:
     if (box()==FL_NO_BOX &&
-        (!label() && !image() ||
+        (label().empty() && !image() ||
         align() != FL_ALIGN_CENTER && !(align()&FL_ALIGN_INSIDE)))
     {
         fl_did_clipping = this;

@@ -194,7 +194,7 @@ void Fl_Window::show(int argc, char **argv)
     // make sure name exists and isn't empty...
     // Windows doesn't like empty window class names
     if(name && *name) xclass(name);
-    if (!label()) label(name);
+    if(label().empty()) label(name);
 
     show();
 

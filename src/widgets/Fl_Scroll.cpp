@@ -119,7 +119,9 @@ void Fl_Scroll::draw()
 // Calculates extra size needed for widgets outside label
 void calc_outside_label(Fl_Widget& widget, int &x, int &y, int &w, int &h)
 {
-    if(!widget.visible() || !widget.label() || !*widget.label()) return;
+    if(!widget.visible() || widget.label().empty())
+        return;
+
     // skip any labels that are inside the widget:
     if(!(widget.flags()&15) || (widget.flags() & FL_ALIGN_INSIDE)) return;
     // invent a box that is outside the widget:

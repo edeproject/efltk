@@ -14,8 +14,8 @@ char file_types[] = "All Files, *, C++ Files, *.{cpp|cxx|C}, Header Files, *.{h|
 
 void sel(Fl_Widget *, void *)
 {
-	const char *last_selected=0;
-	if(list->children()) last_selected = list->child(0)->label();
+    const char *last_selected=0;
+    if(list->children()) last_selected = list->child(0)->label();
     char **files = (char **)fl_select_files(last_selected, file_types);
     if(files) {
         list->clear();

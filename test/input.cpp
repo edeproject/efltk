@@ -36,7 +36,7 @@
 #include <efltk/fl_show_colormap.h>
 
 void cb(Fl_Widget *ob) {
-    printf("Callback for %s '%s'\n",ob->label(),((Fl_Input*)ob)->value());
+    printf("Callback for %s '%s'\n", ob->label().c_str(), ((Fl_Input*)ob)->value());
 }
 
 int when = 0;
@@ -49,7 +49,7 @@ void toggle_cb(Fl_Widget *o, long v) {
 
 void test(Fl_Input *i) {
   if (i->changed()) {
-    i->clear_changed(); printf("%s '%s'\n",i->label(),i->value());
+    i->clear_changed(); printf("%s '%s'\n", i->label().c_str(), i->value());
   }
 }
 

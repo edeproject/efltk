@@ -246,12 +246,27 @@ void fl_draw(
   }
 }
 
-void fl_measure(const char* str, int& w, int& h, Fl_Flags flags) {
-  if (!str || !*str) {w = 0; h = int(fl_height()); return;}
-  char tempbuf[MAX_LENGTH_FOR_UNDERSCORE];
-  int index = 0;
-  h = int(split(str, w, h, flags, index, tempbuf)+.5);
-  w = int(max_x+.5);
+void fl_draw(
+             const Fl_String &str,	// the (multi-line) string
+             int X, int Y, int W, int H,	// bounding box
+             Fl_Flags flags
+            )
+{
+    fl_draw(str.c_str(), X,Y,W,H, flags);
+}
+
+void fl_measure(const char* str, int& w, int& h, Fl_Flags flags)
+{
+    if (!str || !*str) {w = 0; h = int(fl_height()); return;}
+    char tempbuf[MAX_LENGTH_FOR_UNDERSCORE];
+    int index = 0;
+    h = int(split(str, w, h, flags, index, tempbuf)+.5);
+    w = int(max_x+.5);
+}
+
+void fl_measure(const Fl_String &str, int& w, int& h, Fl_Flags flags)
+{
+    fl_measure(str.c_str(), w, h, flags);
 }
 
 // back-compatable one:

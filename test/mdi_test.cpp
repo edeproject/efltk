@@ -55,7 +55,7 @@ void cb_tile_v(Fl_Widget* w, void*) {
 }
 
 void tool_cb(Fl_Widget* w, void*) {
-    printf("Toolbar: %s\n", w->label());
+    printf("Toolbar: %s\n", w->label().c_str());
 }
 
 void test_cb(Fl_Widget* w, void*) {
@@ -64,9 +64,9 @@ void test_cb(Fl_Widget* w, void*) {
     if (!m)
         printf("Menu: NULL\n");
     else if (m->shortcut())
-        printf("Menu: %s - %s\n", m->label(), Fl::key_name(m->shortcut()));
+        printf("Menu: %s - %s\n", m->label().c_str(), Fl::key_name(m->shortcut()));
     else
-        printf("Menu: %s\n", m->label());
+        printf("Menu: %s\n", m->label().c_str());
     m->do_callback();
 }
 
@@ -96,7 +96,7 @@ void close_mdi(Fl_Widget *w, void *)
 	Fl_MDI_Window *win = (Fl_MDI_Window *)w;
 	win->hide();
 	char item[64]; 
-	sprintf(item, "Windows/%s", win->label());
+	sprintf(item, "Windows/%s", win->label().c_str());
 	Fl_Widget *i = menu->find(item);
 	if(i) delete i; //Delete item	
 	delete win; //Delete window	

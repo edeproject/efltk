@@ -1,30 +1,26 @@
-//
-// "$Id$"
-//
-// The fltk drawing library
-//
-// Copyright 1998-1999 by Bill Spitzak and others.
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Library General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Library General Public License for more details.
-//
-// You should have received a copy of the GNU Library General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA.
-//
-// Please report all bugs and problems to "fltk-bugs@easysw.com".
-//
+/*
+ * $Id$
+ *
+ * Extended Fast Light Toolkit (EFLTK)
+ * Copyright (C) 2002-2003 by EDE-Team
+ * WWW: http://www.sourceforge.net/projects/ede
+ *
+ * Fast Light Toolkit (FLTK)
+ * Copyright (C) 1998-2003 by Bill Spitzak and others.
+ * WWW: http://www.fltk.org
+ *
+ * This library is distributed under the GNU LIBRARY GENERAL PUBLIC LICENSE
+ * version 2. See COPYING for details.
+ *
+ * Author : Mikko Lahteenmaki
+ * Email  : mikko@fltk.net
+ *
+ * Please report all bugs and problems to "efltk-bugs@fltk.net"
+ *
+ */
 
-#ifndef fl_draw_H
-#define fl_draw_H
+#ifndef _FL_DRAW_H_
+#define _FL_DRAW_H_
 
 #include "Fl_Flags.h" // for alignment values
 #include "Fl_Color.h"
@@ -123,21 +119,28 @@ inline float fl_size() {return fl_size_;}
 FL_API const char *fl_fontname(Fl_Font, int * = 0);
 
 // measure things in the current font:
-FL_API float fl_width(unsigned int ucs); //Without UTF-8, this takes 0-255 value
+FL_API float fl_width(unsigned int ucs); //Unicode char
 FL_API float fl_width(const char*);
+FL_API float fl_width(const Fl_String&);
 FL_API float fl_width(const char*, int n);
+
 FL_API float fl_height();
 FL_API float fl_descent();
 
 // draw using current font:
 FL_API void fl_transformed_draw(const char*, int n, float x, float y);
 FL_API void fl_rtl_draw(const char *str, int n, float x, float y);
+
 FL_API void fl_draw(const char*, float x, float y);
+FL_API void fl_draw(const Fl_String &, float x, float y);
 FL_API void fl_draw(const char*, int n, float x, float y);
 
 // the "fancy" text formatter:
 FL_API void fl_measure(const char*, int& w, int& h, Fl_Flags);
 FL_API void fl_draw(const char*, int,int,int,int, Fl_Flags);
+FL_API void fl_measure(const Fl_String &, int& w, int& h, Fl_Flags);
+FL_API void fl_draw(const Fl_String &, int,int,int,int, Fl_Flags);
+
 extern FL_API const int* fl_column_widths_;
 inline const int* fl_column_widths() {return fl_column_widths_;}
 inline void fl_column_widths(const int* i) {fl_column_widths_ = i;}
@@ -148,7 +151,9 @@ FL_API void fl_draw_image_mono(const uchar*, int,int,int,int, int delta=1, int l
 typedef void (*Fl_Draw_Image_Cb)(void*,int,int,int,uchar*);
 FL_API void fl_draw_image(Fl_Draw_Image_Cb, void*, int,int,int,int, int delta=3);
 FL_API void fl_draw_image_mono(Fl_Draw_Image_Cb, void*, int,int,int,int, int delta=1);
+
 FL_API void fl_rectf(int x, int y, int w, int h, Fl_Color);
+inline void fl_rectf(int x, int y, int w, int h, uchar r, uchar g, uchar b) { fl_rectf(x,y,w,h,fl_rgb(r,g,b)); }
 
 // XPM interpreter (probably should be part of Fl_Pixmap):
 FL_API int fl_draw_pixmap(const char*const* data, int x,int y,Fl_Color=FL_GRAY);
@@ -166,49 +171,4 @@ FL_API void fl_cursor(Fl_Cursor, Fl_Color=FL_BLACK, Fl_Color=FL_WHITE);
 FL_API int fl_draw_symbol(const char* label,int x,int y,int w,int h, Fl_Color);
 FL_API int fl_add_symbol(const char* name, void (*drawit)(Fl_Color), int scalable);
 
-#ifndef FLTK_2	// back compatability only:
-inline void fl_measure(const char* t, int& w, int& h) {
-  fl_measure(t, w, h, w ? FL_ALIGN_WRAP : 0);}
-#define fl_clip(x,y,w,h) fl_push_clip(x,y,w,h)
-#define fl_begin() fl_newpath()
-//void fl_frame(const char* s, int x, int y, int w, int h);
-//void fl_frame2(const char* s, int x, int y, int w, int h);
-#define fl_draw_box(b,x,y,w,h,c) ((b)->draw(x,y,w,h,c))
-#define fl_shortcut_label(l) Fl::key_name(l)
-#define fl_begin_points()
-#define fl_end_points() fl_draw_points()
-#define fl_begin_line()
-#define fl_end_line() fl_stroke()
-#define fl_begin_loop()
-#define fl_end_loop() fl_closepath();fl_stroke()
-#define fl_begin_polygon()
-#define fl_end_polygon() fl_fill()
-#define fl_begin_complex_polygon()
-#define fl_end_complex_polygon() fl_fill()
-#define fl_gap() fl_closepath()
-// defining this messes up the above fl_arc function:
-//#define fl_arc(x,y,w,h,a,b) fl_pie(x,y,w,h,a,b,FL_ARC)
-//#define fl_chord(x,y,w,h,a,b) fl_pie(x,y,w,h,a,b,FL_CHORD)
-inline void fl_rectf(int x, int y, int w, int h, uchar r, uchar g, uchar b) {
-    fl_rectf(x,y,w,h,fl_rgb(r,g,b));
-}
-#if 0 // these have no emulation
-FL_API void fl_line(int,int, int,int, int,int);
-FL_API void fl_loop(int,int, int,int, int,int);
-FL_API void fl_loop(int,int, int,int, int,int, int,int);
-FL_API void fl_polygon(int,int, int,int, int,int);
-FL_API void fl_polygon(int,int, int,int, int,int, int,int);
-FL_API void fl_xyline(int x, int y, int x1);
-FL_API void fl_xyline(int x, int y, int x1, int y2);
-FL_API void fl_xyline(int x, int y, int x1, int y2, int x3);
-FL_API void fl_yxline(int x, int y, int y1);
-FL_API void fl_yxline(int x, int y, int y1, int x2);
-FL_API void fl_yxline(int x, int y, int y1, int x2, int y3);
 #endif
-#endif
-
-#endif
-
-//
-// End of "$Id$".
-//

@@ -1,5 +1,5 @@
-#ifndef FL_THREAD_W32_H_
-#define FL_THREAD_W32_H_
+#ifndef _FL_THREAD_W32_H_
+#define _FL_THREAD_W32_H_
 
 // DO NOT INCLUDE DIRECTLY
 

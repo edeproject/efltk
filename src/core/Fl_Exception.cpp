@@ -18,6 +18,8 @@
 #include <efltk/Fl_Exception.h>
 #include <efltk/Fl.h>
 
+#include <stdlib.h>
+
 #ifndef STD_EXCEPTIONS
 
 static void default_exception_handler(Fl_Exception &e) {
@@ -32,31 +34,31 @@ void (*fl_exception_handler)(Fl_Exception &e) = default_exception_handler;
 #define JUMPSTACK_SIZE 1024
 
 Fl_JmpBuf_Stack::Fl_JmpBuf_Stack() {
-	items = 0;
-	jumpbufs = (jmp_buf*)malloc(sizeof(jmp_buf)*JUMPSTACK_SIZE);
+    items = 0;
+    jumpbufs = (jmp_buf*)malloc(sizeof(jmp_buf)*JUMPSTACK_SIZE);
 }
 
 Fl_JmpBuf_Stack::~Fl_JmpBuf_Stack() {
-	free((jmp_buf*)jumpbufs);
+    free((jmp_buf*)jumpbufs);
 }
 
 jmp_buf &Fl_JmpBuf_Stack::push() {
-	int index = items++;
-	if(index>JUMPSTACK_SIZE) Fl::fatal("EFltk exceptions jumpstack size exceed!\n");
-	if(index<0) index=0;
-	return jumpbufs[index];
+    int index = items++;
+    if(index>JUMPSTACK_SIZE) Fl::fatal("EFltk exceptions jumpstack size exceed!\n");
+    if(index<0) index=0;
+    return jumpbufs[index];
 }
 
 jmp_buf *Fl_JmpBuf_Stack::pop() {
-	int index = --items;
-	if(index<0) { items=0; return 0; }
-	return &jumpbufs[index];
+    int index = --items;
+    if(index<0) { items=0; return 0; }
+    return &jumpbufs[index];
 }
 
 jmp_buf *Fl_JmpBuf_Stack::peek() {
-	int index = items-1;
-	if(index<0) { items=0; return 0; }
-	return &jumpbufs[index];
+    int index = items-1;
+    if(index<0) { items=0; return 0; }
+    return &jumpbufs[index];
 }
 
 /////////////////////////////
@@ -68,9 +70,9 @@ bool fl_exception_was_throwed;
 #endif
 
 Fl_Exception::Fl_Exception(Fl_String text, const char *file, int line) {
-   m_file = file;
-   m_text = text;
-   m_line = line;
+    m_file = file;
+    m_text = text;
+    m_line = line;
 }
 
 Fl_String Fl_Exception::text(bool shortVersion) const {

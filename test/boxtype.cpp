@@ -42,7 +42,8 @@ void bt(const char *name, Fl_Boxtype type, int square=0) {
   N++;
   x = x*W+10;
   y = y*H+10;
-  Fl_Box *b = new Fl_Box(type,x,y,square ? H-20 : W-20,H-20,name);
+  Fl_Box *b = new Fl_Box(x,y,square ? H-20 : W-20,H-20,name);
+  b->box(type);
   b->label_size(11);
   if (square) {
 	  b->clear_flag(FL_ALIGN_MASK);

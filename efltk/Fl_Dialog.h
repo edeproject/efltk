@@ -1,26 +1,30 @@
-/***************************************************************************
-                          Fl_Dialog.h  -  description
-                             -------------------
-    begin                : Tue Nov 12 2002
-    copyright            : (C) 2002 by Alexey Parshin
-    email                : alexeyp@m7.tts-sf.com
- ***************************************************************************/
+/*
+ * $Id$
+ *
+ * Extended Fast Light Toolkit (EFLTK)
+ * Copyright (C) 2002-2003 by EDE-Team
+ * WWW: http://www.sourceforge.net/projects/ede
+ *
+ * Fast Light Toolkit (FLTK)
+ * Copyright (C) 1998-2003 by Bill Spitzak and others.
+ * WWW: http://www.fltk.org
+ *
+ * This library is distributed under the GNU LIBRARY GENERAL PUBLIC LICENSE
+ * version 2. See COPYING for details.
+ *
+ * Author : Alexey Parshin
+ * Email  : alexey@fltk.net
+ *
+ * Please report all bugs and problems to "efltk-bugs@fltk.net"
+ *
+ */
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-#ifndef __Fl_Dialog_H__
-#define __Fl_Dialog_H__
+#ifndef _FL_DIALOG_H_
+#define _FL_DIALOG_H_
 
-#include <efltk/Fl_Window.h>
-#include <efltk/Fl_Double_Window.h>
-#include <efltk/Fl_Widget_List.h>
-#include <efltk/Fl_Variant.h>
+#include "Fl_Window.h"
+#include "Fl_Widget_List.h"
+#include "Fl_Variant.h"
 
 #define FL_DLG_OK       1
 #define FL_DLG_CANCEL   2
@@ -69,44 +73,47 @@ enum FGENTRYFLAGS {
 class Fl_Dialog_Data_Source;
 
 class FL_API Fl_Dialog : public Fl_Window {
-   typedef Fl_Window inherited;
-
-   static void escape_callback(Fl_Widget *,void *);
-   static void buttons_callback(Fl_Widget *,void *);
-   static void help_callback(Fl_Widget *,void *);
-
-   Fl_Button      *m_defaultButton;
-   Fl_Group       *m_buttonPanel;
-   Fl_Multi_Tabs  *m_tabs;
-   Fl_Widget_List  m_buttonList;
-   int             m_buttons;
-   int             m_modalResult;
-   bool            m_externalDataSource;
-
-   Fl_Data_Source *m_dataSource;
-protected:
-   Fl_Widget *find_widget(const char *field_name) const;
 public:
-   Fl_Dialog(int w,int h,Fl_Data_Source *ds=NULL);
-   ~Fl_Dialog();
+    Fl_Dialog(int w,int h,Fl_Data_Source *ds=NULL);
+    ~Fl_Dialog();
 
-   const Fl_Variant& operator [] (const char *field_name) const;
-   Fl_Variant& operator [] (const char *field_name);
+    virtual bool  load_data(Fl_Data_Source *ds=NULL);
+    virtual bool  save_data(Fl_Data_Source *ds=NULL) const;
 
-   virtual bool  load_data(Fl_Data_Source *ds=NULL);
-   virtual bool  save_data(Fl_Data_Source *ds=NULL) const;
+    const Fl_Variant& operator [] (const char *field_name) const;
+    Fl_Variant& operator [] (const char *field_name);
 
-   int   show_modal();
+    int show_modal();
 
-   bool  valid();
-   void  buttons(int buttons_mask,int default_button);
-   void  user_button(Fl_Button *);
-   void  clear_buttons();
+    bool  valid();
+    void  buttons(int buttons_mask,int default_button);
+    void  user_button(Fl_Button *);
+    void  clear_buttons();
 
-   Fl_Group *new_page(const char *label,bool autoColor=false);
+    Fl_Group *new_page(const char *label,bool autoColor=false);
 
-   int   handle(int);
-   void  layout();
+    virtual int handle(int);
+    virtual void layout();
+
+protected:
+    Fl_Widget *find_widget(const char *field_name) const;
+
+private:
+    typedef Fl_Window inherited;
+
+    static void escape_callback(Fl_Widget *,void *);
+    static void buttons_callback(Fl_Widget *,void *);
+    static void help_callback(Fl_Widget *,void *);
+
+    Fl_Button      *m_defaultButton;
+    Fl_Group       *m_buttonPanel;
+    Fl_Multi_Tabs  *m_tabs;
+    Fl_Widget_List  m_buttonList;
+    int             m_buttons;
+    int             m_modalResult;
+    bool            m_externalDataSource;
+
+    Fl_Data_Source *m_dataSource;
 };
 
 #endif

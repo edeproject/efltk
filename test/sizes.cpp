@@ -1,3 +1,4 @@
+#include <efltk/Fl_Image.h>
 #include <efltk/Fl_Widget.h>
 #include <efltk/Fl_Browser.h>
 #include <efltk/Fl_Button.h>
@@ -9,7 +10,6 @@
 #include <efltk/Fl_Menu_Bar.h>
 #include <efltk/Fl_Menu_Button.h>
 #include <efltk/Fl_Choice.h>
-#include <efltk/Fl_Adjuster.h>
 #include <efltk/Fl_Clock.h>
 #include <efltk/Fl_Group.h>
 #include <efltk/Fl_Color_Chooser.h>
@@ -61,7 +61,6 @@ int main() {
   printf("  sizeof(Fl_Roller) = %lu\n", (unsigned long)sizeof(class Fl_Roller));
   printf("  sizeof(Fl_Text_Buffer) = %lu\n", (unsigned long)sizeof(class Fl_Text_Buffer));
   printf("  sizeof(Fl_Valuator) = %lu\n", (unsigned long)sizeof(class Fl_Valuator));
-  printf("    sizeof(Fl_Adjuster) = %lu\n", (unsigned long)sizeof(class Fl_Adjuster));
   printf("    sizeof(Fl_Dial) = %lu\n", (unsigned long)sizeof(class Fl_Dial));
   printf("    sizeof(Fl_Slider) = %lu\n", (unsigned long)sizeof(class Fl_Slider));
   printf("      sizeof(Fl_Scrollbar) = %lu\n", (unsigned long)sizeof(class Fl_Scrollbar));
@@ -69,5 +68,6 @@ int main() {
   printf("    sizeof(Fl_Value_Output) = %lu\n", (unsigned long)sizeof(class Fl_Value_Output));
 
   printf("sizeof(Fl_String) = %lu\n", (unsigned long)sizeof(class Fl_String));
+  printf("sizeof(Fl_Image) = %lu\n", (unsigned long)sizeof(class Fl_Image));
   return 0;
 }

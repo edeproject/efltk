@@ -1,38 +1,28 @@
-//
-// "$Id$"
-//
-// Main header file for the Fast Light Tool Kit (FLTK).
-//
-// Copyright 1998-1999 by Bill Spitzak and others.
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Library General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Library General Public License for more details.
-//
-// You should have received a copy of the GNU Library General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA.
-//
-// Please report all bugs and problems to "fltk-bugs@easysw.com".
-//
+/*
+ * $Id$
+ *
+ * Extended Fast Light Toolkit (EFLTK)
+ * Copyright (C) 2002-2003 by EDE-Team
+ * WWW: http://www.sourceforge.net/projects/ede
+ *
+ * Fast Light Toolkit (FLTK)
+ * Copyright (C) 1998-2003 by Bill Spitzak and others.
+ * WWW: http://www.fltk.org
+ *
+ * This library is distributed under the GNU LIBRARY GENERAL PUBLIC LICENSE
+ * version 2. See COPYING for details.
+ *
+ * Author : Mikko Lahteenmaki
+ * Email  : mikko@fltk.net
+ *
+ * Please report all bugs and problems to "efltk-bugs@fltk.net"
+ *
+ */
 
-#ifndef Fl_H
-#define Fl_H
+#ifndef _Fl_H_
+#define _Fl_H_
 
 #include "Enumerations.h"
-
-#ifndef FLTK_2
-// These header files are only needed for the obsolete functions:
-#include "Fl_Color.h"
-#include "Fl_Boxtype.h"
-#endif
 
 class FL_API Fl_Widget;
 class FL_API Fl_Window;
@@ -48,7 +38,7 @@ struct Fl_Screen_Info {
 typedef void (*Fl_Timeout_Handler)(void*);
 
 class FL_API Fl {
-  Fl() {}; // no constructor!
+  Fl() { }; // no constructor!
 
 public: // should be private!
 
@@ -199,56 +189,10 @@ public:
   static void awake(void* message = 0);
   static void* thread_message();
 
-#ifndef FLTK_2  // back-compatability section:
-  // commented-out functions could not be emulated in fltk 2.0
-  static int x() {return info().x;}
-  static int y() {return info().y;}
-  static int w() {return info().width;}
-  static int h() {return info().height;}
-
-  static void set_color(Fl_Color c,uchar r,uchar g,uchar b) {fl_set_color(c,fl_rgb(r,g,b));}
-  static void set_color(Fl_Color c, Fl_Color v) {fl_set_color(c, v);}
-  static unsigned get_color(Fl_Color c) {return fl_get_color(c);}
-  static void get_color(Fl_Color c,uchar& r,uchar& g,uchar& b) {fl_get_color(c,r,g,b);}
-  static void free_color(Fl_Color c, int = 0) {fl_free_color(c);}
-  static void background(uchar r, uchar g, uchar b) {fl_background(fl_rgb(r,g,b));}
-  //static void foreground(uchar r, uchar g, uchar b)
-
-  //static const char* get_font(Fl_Font);
-  //static const char* get_font_name(Fl_Font, int* attributes = 0);
-  //static int get_font_sizes(Fl_Font, int*& sizep);
-  //static void set_font(Fl_Font, const char*);
-  //static void set_font(Fl_Font, Fl_Font);
-  //static Fl_Font set_fonts(const char* = 0);
-  //static void set_encoding(const char *e, const char *loc);
-
-  //static void set_labeltype(Fl_Labeltype,y,z);
-  //static void set_labeltype(Fl_Labeltype, Fl_Labeltype from);
-  static void enable_symbols();
-
-  //static void set_boxtype(Fl_Boxtype,Fl_Box_Draw_F*,uchar,uchar,uchar,uchar);
-  //static void set_boxtype(Fl_Boxtype, Fl_Boxtype from);
-
-  static int box_dx(Fl_Boxtype b) {return b->dx();}
-  static int box_dy(Fl_Boxtype b) {return b->dy();}
-  static int box_dw(Fl_Boxtype b) {return b->dw();}
-  static int box_dh(Fl_Boxtype b) {return b->dh();}
-
-  static void set_abort(void (*f)(const char*,...)) {fatal = f;}
-  static bool event_shift() {return (e_state&FL_SHIFT)!=0;}
-  static bool event_ctrl() {return (e_state&FL_CTRL)!=0;}
-  static bool event_alt() {return (e_state&FL_ALT)!=0;}
-  static bool event_buttons() {return (e_state&FL_BUTTONS)!=0;}
-  static bool event_button1() {return (e_state&FL_BUTTON1)!=0;}
-  static bool event_button2() {return (e_state&FL_BUTTON2)!=0;}
-  static bool event_button3() {return (e_state&FL_BUTTON3)!=0;}
-
-#endif
-
+  static int x() { return info().x; }
+  static int y() { return info().y; }
+  static int w() { return info().width; }
+  static int h() { return info().height; }
 };
 
 #endif
-
-//
-// End of "$Id$".
-//

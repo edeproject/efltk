@@ -75,7 +75,7 @@ void shape_window::draw() {
   }
   glEnd();
   gl_color(FL_WHITE);
-  gl_font(FL_HELVETICA, FL_NORMAL_SIZE);
+  gl_font(FL_HELVETICA, 12);
   gl_draw("text", .1, .5);
 }
 
@@ -96,7 +96,7 @@ void shape_window::draw_overlay() {
   }
   glEnd();
   glEnd();
-  gl_font(FL_HELVETICA, FL_NORMAL_SIZE);
+  gl_font(FL_HELVETICA, 12);
   gl_draw("overlay text", .1, .6);
 }
 #endif

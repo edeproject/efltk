@@ -129,8 +129,10 @@ Fl_Type *Fl_Widget_Type::make() {
   // Construct the Fl_Widget:
   t->o = widget(X,Y,W,H);
   fluid_style_set->make_current();
-  if (reading_file) t->o->label(0);
-  else if (t->o->label()) t->label(t->o->label()); // allow editing
+  if(reading_file)
+      t->o->label(0);
+  else if(!t->o->label().empty())
+      t->label(t->o->label().c_str()); // allow editing
   t->o->user_data((void*)t);
   // Put it in the parent:
   //  ((Fl_Group *)(p->o))->add(t->o); (done by Fl_Type::add())
@@ -716,20 +718,20 @@ void label_size_cb(Fl_Value_Input* i, void *v) {
 }
 
 void image_cb(Fl_Button *a, void *v) {
-  if (v != LOAD) {
-    Fluid_Image *i = ui_find_image(current_widget->image);
-    if (i == current_widget->image) return; // user hit "Cancel"
-    for_all_selected_widgets() {
-      Fl_Widget_Type* p = (Fl_Widget_Type*)o;
-      p->setimage(i);
+    if (v != LOAD) {
+        Fluid_Image *i = ui_find_image(current_widget->image);
+        if (i == current_widget->image) return; // user hit "Cancel"
+        for_all_selected_widgets() {
+            Fl_Widget_Type* p = (Fl_Widget_Type*)o;
+            p->setimage(i);
+        }
+        image_inlined_cb(include_image_button, LOAD); // update the button state
     }
-    image_inlined_cb(include_image_button, LOAD); // update the button state
-  }
-  const char* s = current_widget->image ? current_widget->image->name() : 0;
-  if (s != a->label()) {a->label(s); a->redraw();}
-  Fl_Color c = FL_BLACK;
-  if (current_widget->image) c = FL_RED;
-  if (image_label->label_color() != c)
+    const char* s = current_widget->image ? current_widget->image->name() : "";
+    if (s != a->label()) {a->label(s); a->redraw();}
+    Fl_Color c = FL_BLACK;
+    if (current_widget->image) c = FL_RED;
+    if (image_label->label_color() != c)
     { image_label->label_color(c); image_label->redraw();}
 }
 
@@ -774,7 +776,7 @@ void color_cb(Fl_Light_Button* i, void *v) {
 //     else i->label("Color");
     i->show();
   } else {
-    if (!fl_color_chooser(i->label(), c)) return;
+    if (!fl_color_chooser(i->label().c_str(), c)) return;
     for_all_selected_widgets() {
       modflag = 1;
       Fl_Widget_Type* q = (Fl_Widget_Type*)o;
@@ -796,7 +798,7 @@ void selection_color_cb(Fl_Light_Button* i, void *v) {
     else i->label("Selection Color");
     i->show();
   } else {
-    if (!fl_color_chooser(i->label(), c)) return;
+    if (!fl_color_chooser(i->label().c_str(), c)) return;
     for_all_selected_widgets() {
       modflag = 1;
       Fl_Widget_Type* q = (Fl_Widget_Type*)o;
@@ -814,7 +816,7 @@ void button_color_cb(Fl_Light_Button* i, void *v) {
   if (v == LOAD) {
     i->show();
   } else {
-    if (!fl_color_chooser(i->label(), c)) return;
+    if (!fl_color_chooser(i->label().c_str(), c)) return;
     for_all_selected_widgets() {
       modflag = 1;
       Fl_Widget_Type* q = (Fl_Widget_Type*)o;
@@ -830,7 +832,7 @@ void button_color_cb(Fl_Light_Button* i, void *v) {
 void label_color_cb(Fl_Light_Button* i, void *v) {
   Fl_Color c = current_widget->o->label_color();
   if (v != LOAD) {
-    if (!fl_color_chooser(i->label(), c)) return;
+    if (!fl_color_chooser(i->label().c_str(), c)) return;
     for_all_selected_widgets() {
       modflag = 1;
       Fl_Widget_Type* q = (Fl_Widget_Type*)o;
@@ -902,7 +904,7 @@ void text_color_cb(Fl_Light_Button* i, void* v) {
     i->show();
   } else {
     c = i->selection_color();
-    if (!fl_color_chooser(i->label(), c)) return;
+    if (!fl_color_chooser(i->label().c_str(), c)) return;
     for_all_selected_widgets() {
       modflag = 1;
       Fl_Widget_Type* q = (Fl_Widget_Type*)o;
@@ -924,7 +926,7 @@ void selected_text_color_cb(Fl_Light_Button* i, void* v) {
     i->show();
   } else {
     c = i->selection_color();
-    if (!fl_color_chooser(i->label(), c)) return;
+    if (!fl_color_chooser(i->label().c_str(), c)) return;
     for_all_selected_widgets() {
       modflag = 1;
       Fl_Widget_Type* q = (Fl_Widget_Type*)o;
@@ -945,7 +947,7 @@ void highlight_color_cb(Fl_Light_Button* i, void *v) {
     i->show();
   } else {
     c = i->selection_color();
-    if (!fl_color_chooser(i->label(), c)) return;
+    if (!fl_color_chooser(i->label().c_str(), c)) return;
     for_all_selected_widgets() {
       modflag = 1;
       Fl_Widget_Type* q = (Fl_Widget_Type*)o;
@@ -966,7 +968,7 @@ void highlight_label_color_cb(Fl_Light_Button* i, void *v) {
     i->show();
   } else {
     c = i->selection_color();
-    if (!fl_color_chooser(i->label(), c)) return;
+    if (!fl_color_chooser(i->label().c_str(), c)) return;
     for_all_selected_widgets() {
       modflag = 1;
       Fl_Widget_Type* q = (Fl_Widget_Type*)o;
@@ -1111,7 +1113,7 @@ void extra_code_input_cb(Fl_Text_Editor* i, void* v) {
   } else {
       const char *c = i->buffer()->text();
       const char *d = c_check(c&&c[0]=='#' ? c+1 : c);
-      if (d) {fl_message("Error in %s: %s",i->label(),d); haderror = 1; return;}
+      if (d) { fl_message("Error in %s: %s", i->label().c_str(), d); haderror = 1; return;}
       for_all_selected_widgets() {
           Fl_Widget_Type *t = (Fl_Widget_Type*)o;
           t->extra_code(c);
@@ -1324,10 +1326,10 @@ void subtype_cb(Fl_Choice* i, void* v) {
 // themselves:
 
 void propagate_group(Fl_Group* g, void* v) {
-  if (v == LOAD) {
-    for (int i=g->children(); i--;) {
-      Fl_Widget* o = g->child(i);
-      o->do_callback(o,LOAD);
+    if (v == LOAD) {
+      for (int i=g->children(); i--;) {
+          Fl_Widget* o = g->child(i);
+          o->do_callback(o,LOAD);
     }
   } else {
     for (int i=g->children(); i--;) {
@@ -1456,7 +1458,7 @@ static void load_panel() {
 
 // This is called when user double-clicks an item, open or update the panel:
 void Fl_Widget_Type::open() {
-  if (!the_panel) {
+    if (!the_panel) {
     the_panel = make_widget_panel();
     Fluid_Plugin *p, **pp;
     for(pp = next_panel(plugins, p); pp-plugins<nbplugins; pp = next_panel(pp+1, p))
@@ -1824,10 +1826,10 @@ void Fl_Widget_Type::write_strings(FILE *fp) {
     Fl_Widget *w=o;
     if(!w) return;
 
-    if (w->label()) {
+    if(!w->label().empty()) {
         const char *s;
         fputs("msgid \"", fp);
-        for (s = w->label(); *s; s ++)
+        for (s = w->label().c_str(); *s; s ++)
             if (*s < 32 || *s > 126 || *s == '\"')
                 fprintf(fp, "\\%03o", *s);
             else
@@ -1837,11 +1839,11 @@ void Fl_Widget_Type::write_strings(FILE *fp) {
         fputs("msgstr \"\"\n\n", fp);
     }
 
-    if (w->tooltip()) {
+    if(!w->tooltip().empty()) {
         const char *s;
 
         fputs("msgid \"", fp);
-        for (s = w->tooltip(); *s; s ++)
+        for (s = w->tooltip().c_str(); *s; s ++)
             if (*s < 32 || *s > 126 || *s == '\"')
                 fprintf(fp, "\\%03o", *s);
             else

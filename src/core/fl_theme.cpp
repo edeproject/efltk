@@ -134,7 +134,7 @@ extern "C" bool fltk_theme()
         for(uint n=0; n<section_list->size(); n++)
         {
             cent = (Section*)section_list->item(n);
-            Fl_Style* style = Fl_Style::find(cent->name);
+            Fl_Style* style = Fl_Style::find(cent->name.c_str());
             if(!style) continue;
 
             conf.set_section(cent);

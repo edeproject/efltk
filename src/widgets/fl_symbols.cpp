@@ -404,16 +404,6 @@ Fl_Color fill, Fl_Flags align) const
 
 const Fl_Symbol_Label fl_symbol_label("symbol");
 
-#include <efltk/Fl.h>
-#include <efltk/Fl_Widget.h>
-
-#ifndef FLTK_2
-void Fl::enable_symbols()
-{
-    Fl_Widget::default_style->label_type = FL_SYMBOL_LABEL;
-}
-#endif
-
 //
 // End of "$Id$".
 //

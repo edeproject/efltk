@@ -1,9 +1,27 @@
-//
-// "$Id$"
-//
-// OpenGL header file for the Fast Light Tool Kit (FLTK).
-//
-// Copyright 1998-1999 by Bill Spitzak and others.
+/*
+ * $Id$
+ *
+ * Extended Fast Light Toolkit (EFLTK)
+ * Copyright (C) 2002-2003 by EDE-Team
+ * WWW: http://www.sourceforge.net/projects/ede
+ *
+ * Fast Light Toolkit (FLTK)
+ * Copyright (C) 1998-2003 by Bill Spitzak and others.
+ * WWW: http://www.fltk.org
+ *
+ * This library is distributed under the GNU LIBRARY GENERAL PUBLIC LICENSE
+ * version 2. See COPYING for details.
+ *
+ * Author : Mikko Lahteenmaki
+ * Email  : mikko@fltk.net
+ *
+ * Please report all bugs and problems to "efltk-bugs@fltk.net"
+ *
+ */
+
+#ifndef _FL_GL_H_
+#define _FL_GL_H_
+
 //
 // You must include this instead of GL/gl.h to get the Microsoft
 // APIENTRY stuff included (from <windows.h>) prior to the OpenGL
@@ -12,26 +30,6 @@
 // This file also provides "missing" OpenGL functions, and
 // gl_start() and gl_finish() to allow OpenGL to be used in any window
 //
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Library General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Library General Public License for more details.
-//
-// You should have received a copy of the GNU Library General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA.
-//
-// Please report all bugs and problems to "fltk-bugs@easysw.com".
-//
-
-#ifndef gl_draw_H
-#define gl_draw_H
 
 #include "Fl_Color.h"
 #include "Fl_Flags.h"
@@ -60,7 +58,7 @@ FL_API void gl_finish();
 FL_API void gl_color(Fl_Color);
 
 FL_API void gl_rect(int x,int y,int w,int h);
-inline void gl_rectf(int x,int y,int w,int h) {glRecti(x,y,x+w,y+h);}
+inline void gl_rectf(int x,int y,int w,int h) {glRecti(x,y,x+w,y+h); }
 
 FL_API void gl_font(Fl_Font f, float size);
 FL_API float gl_height();
@@ -76,7 +74,3 @@ FL_API void gl_draw(const char*, int n, float x, float y, float z = 0);
 FL_API void gl_draw_image(const uchar *, int x,int y,int w,int h, int d=3, int ld=0);
 
 #endif
-
-//
-// End of "$Id$".
-//

@@ -52,7 +52,7 @@ public:
 
 void testwindow::draw() {
 #ifdef DEBUG
-  printf("%s : draw\n",label());
+  printf("%s : draw\n",label().c_str());
 #endif
   Fl_Window::draw();
 }
@@ -61,7 +61,7 @@ class EnterExit : public Fl_Box {
   uchar oldcolor;
   int handle(int);
 public:
-  EnterExit(int x, int y, int w, int h, const char *l) : Fl_Box(FL_BORDER_BOX,x,y,w,h,l) {}
+  EnterExit(int x, int y, int w, int h, const char *l) : Fl_Box(x,y,w,h,l) { box(FL_BORDER_BOX); }
 };
 
 int EnterExit::handle(int e) {
@@ -105,7 +105,7 @@ int testwindow::handle(int e) {
 
     }
 #ifdef DEBUG
-  if (e != FL_MOVE) printf("%s : %s\n",label(),eventnames[e]);
+  if (e != FL_MOVE) printf("%s : %s\n",label().c_str(),eventnames[e]);
 #endif
   if (Fl_Window::handle(e)) return 1;
   //  if (e==FL_PUSH) return popup->handle(e);
@@ -171,7 +171,7 @@ int main(int, char **) {
   subwindow->resizable(subwindow);
   window->resizable(subwindow);
   subwindow->end();
-  (new Fl_Box(FL_NO_BOX,0,0,400,100,
+  (new Fl_Box(0,0,400,100,
 	     "A child Fl_Window with children of it's own may "
 	     "be useful for imbedding controls into a GL or display "
 	     "that needs a different visual.  There are bugs with the "

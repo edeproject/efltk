@@ -2,10 +2,11 @@
 #include <efltk/Fl_ListView.h>
 #include <efltk/fl_draw.h>
 
+#include <stdlib.h>
+
 #define LIST ((Fl_ListView *)parent())
 #define DRAG_DIST 3 //Area to size header
 #define TXT_SPACE 2 //Size between txt and img
-
 
 class Fl_ListHeader_Attr
 {

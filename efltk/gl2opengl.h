@@ -1,15 +1,13 @@
-/*	gl.h
-
-	GL to OpenGL translator.
-	If you include this, you might be able to port old GL programs.
-	There are also much better emulators available on the net.
-
-*/
+/* gl.h
+ * GL to OpenGL translator.
+ * If you include this, you might be able to port old GL programs.
+ * There are also much better emulators available on the net.
+ */
 
 #include "gl.h"
 #include "gl_draw.h"
 
-inline void clear() {glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);}
+inline void clear() { glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT); }
 #define RGBcolor(r,g,b) glColor3ub(r,g,b)
 #define bgnline() glBegin(GL_LINE_STRIP)
 #define bgnpolygon() glBegin(GL_POLYGON)

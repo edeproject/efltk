@@ -754,7 +754,7 @@ void Fl_File_Dialog::filters(Filter **filters)
         }
     }
 
-    filter_->value(filter_->child(0)->label());
+    filter_->value(filter_->child(0)->label().c_str());
     filter_->end();
     filter_->redraw();
 }
@@ -770,7 +770,7 @@ void Fl_File_Dialog::parse_dirs(const char *fp)
         path_->begin();
         //path_->add("My Computer");
         path_->add(_("My Home"));
-        path_->value(path_->child(0)->label());
+        path_->value(path_->child(0)->label().c_str());
         path_->end();
         path_->redraw();
         return;
@@ -798,7 +798,7 @@ void Fl_File_Dialog::parse_dirs(const char *fp)
     path_->add(_("My Home"));
 
     path_->end();
-    path_->value(path_->child(0)->label());
+    path_->value(path_->child(0)->label().c_str());
     path_->redraw();
 }
 

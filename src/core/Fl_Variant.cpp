@@ -25,6 +25,8 @@
 #include <wince.h>
 #endif
 
+Fl_Variant Fl_Variant::null_object;
+
 void Fl_Variant::free_buffers() {
    if (m_type & (VAR_STRING|VAR_BUFFER)) {
       if (m_data.stringData)

@@ -161,7 +161,7 @@ int* returnn                     // return offset into buf here
     {
         int c = *p++ & 255;
         if (c < ' ' || c == 127) {
-            if (c == '\t' && input_type()==FL_MULTILINE_INPUT) n += 8-(n%8);
+            if (c == '\t' && input_type()==MULTILINE) n += 8-(n%8);
             else n += 2;
         } else if (c >= 128) {
 #if HAVE_XUTF8
@@ -293,7 +293,7 @@ void Fl_Input::draw(int X, int Y, int W, int H)
     if (ALL)
     {
         // draw and measure the inside label:
-        if (label() && label()[0] && (!(flags()&15)||(flags()&FL_ALIGN_INSIDE)))
+        if(!label().empty() && (!(flags()&15)||(flags()&FL_ALIGN_INSIDE)))
         {
             fl_font(label_font(), float(label_size()));
             float width = fl_width(label());
@@ -576,7 +576,7 @@ int Fl_Input::line_end(int i) const
         int j = i;
         while (j > 0 && index(j-1) != '\n') j--;
         // now measure lines until we get past i, end of that line is real eol:
-        int wordwrap = w()-Fl::box_dw(box())-6;
+        int wordwrap = w()-box()->dw()-6;
         setfont();
         for (const char* p=value()+j; ;)
         {
@@ -606,7 +606,7 @@ int Fl_Input::line_start(int i) const
     if(wordwrap())
     {
         // now measure lines until we get past i, start of that line is real eol:
-        int wordwrap = w()-Fl::box_dw(box())-6;
+        int wordwrap = w()-box()->dw()-6;
         setfont();
         for (const char* p=value()+j; ;)
         {
@@ -1730,10 +1730,11 @@ int Fl_Input::handle(int event, int X, int Y, int W, int H)
 // loading data from DS
 bool Fl_Input::load_data(Fl_Data_Source *ds)
 {
-    if (!field_name() || !strlen(field_name()))
-        return true;
+    if(field_name().empty())
+        return false;
+
     Fl_Variant fld_value;
-    if (ds->read_field(field_name(),fld_value)) {
+    if (ds->read_field(field_name().c_str(), fld_value)) {
         value(fld_value.get_string());
         return true;
     }
@@ -1743,11 +1744,12 @@ bool Fl_Input::load_data(Fl_Data_Source *ds)
 // saving data to DS
 bool Fl_Input::save_data(Fl_Data_Source *ds) const
 {
-    if (!field_name() || !strlen(field_name()))
-        return true;
+    if(field_name().empty())
+        return false;
+
     Fl_Variant  fld_value;
     fld_value.set_string(value());
-    return ds->write_field(field_name(),fld_value);
+    return ds->write_field(field_name().c_str(), fld_value);
 }
 
 //

@@ -23,8 +23,7 @@ Fl_Image *fileSmall   = Fl_Image::read_xpm(0, file_small);
 void
 cb_test(Fl_Widget* browser, void*) {
   Fl_Widget* w = ((Fl_Browser*)browser)->item();
-  printf("Callback, browser->item() = '%s'",
-	 w && w->label() ? w->label() : "null");
+  printf("Callback, browser->item() = '%s'", w ? w->label().c_str() : "(NULL)");
   if (Fl::event_clicks()) printf(", Double Click");
   printf("\n");
 }

@@ -191,14 +191,14 @@ static void tooltip_timeout(void*)
 // call the fancier enter() below.
 void Fl_Tooltip::enter(Fl_Widget* w) 
 {
-  // find the enclosing group with a tooltip:
-  Fl_Widget* tw = w;
-  for (;;) {
-	  if (!tw) { exit(); return; }
-	  if (tw->tooltip()) break;
-      tw = tw->parent();	
-  }
-  enter(w, 0, 0, w->w(), w->h(), tw->tooltip());
+    // find the enclosing group with a tooltip:
+    Fl_Widget* tw = w;
+    for (;;) {
+        if (!tw) { exit(); return; }
+        if(!tw->tooltip().empty()) break;
+        tw = tw->parent();
+    }
+    enter(w, 0, 0, w->w(), w->h(), tw->tooltip().c_str());
 }
 
 // Acts as though enter(widget) was done but does not pop up a
@@ -207,18 +207,18 @@ void Fl_Tooltip::enter(Fl_Widget* w)
 // when you click the mouse button.
 void Fl_Tooltip::current(Fl_Widget* w) 
 {	
-  exit();
-  // find the enclosing group with a tooltip:
-  Fl_Widget* tw = w;
-  for (;;) {
-    if (!tw) return;
-    if (tw->tooltip()) break;
-    tw = tw->parent();
-  }
-  // act just like enter() except we can remember a zero:
-  widget = w;
-  generator = 0;
-  argument = (void*)tw->tooltip();  
+    exit();
+    // find the enclosing group with a tooltip:
+    Fl_Widget* tw = w;
+    for (;;) {
+        if(!tw) return;
+        if(!tw->tooltip().empty()) break;
+        tw = tw->parent();
+    }
+    // act just like enter() except we can remember a zero:
+    widget = w;
+    generator = 0;
+    argument = (void*)tw->tooltip().c_str();
 }
 
 // Hide any visible tooltip.

@@ -1,17 +1,33 @@
-#ifndef FL_PROGRESSBAR_H_
-#define FL_PROGRESSBAR_H_
+/*
+ * $Id$
+ *
+ * Extended Fast Light Toolkit (EFLTK)
+ * Copyright (C) 2002-2003 by EDE-Team
+ * WWW: http://www.sourceforge.net/projects/ede
+ *
+ * Fast Light Toolkit (FLTK)
+ * Copyright (C) 1998-2003 by Bill Spitzak and others.
+ * WWW: http://www.fltk.org
+ *
+ * This library is distributed under the GNU LIBRARY GENERAL PUBLIC LICENSE
+ * version 2. See COPYING for details.
+ *
+ * Author : Mikko Lahteenmaki
+ * Email  : mikko@fltk.net
+ *
+ * Please report all bugs and problems to "efltk-bugs@fltk.net"
+ *
+ */
 
-#include <efltk/Fl_Widget.h>
-#include <efltk/Fl.h>
-#include <efltk/fl_draw.h>
+#ifndef _FL_PROGRESSBAR_H_
+#define _FL_PROGRESSBAR_H_
+
+#include "Fl_Widget.h"
+#include "Fl.h"
+#include "fl_draw.h"
 
 class FL_API Fl_ProgressBar : public Fl_Widget
 {
-protected:
-    float mMin, mMax;
-    float mPresent, mStep;
-    bool mShowPct;
-
 public:
     static Fl_Named_Style* default_style;
 
@@ -35,10 +51,10 @@ public:
 
     virtual void draw();
 
-    // Out-dated! use value() instead of these!
-    float position()	     { return mPresent; }
-    void position(float pos) { mPresent = pos; redraw(); }
+protected:
+    float mMin, mMax;
+    float mPresent, mStep;
+    bool mShowPct;
 };
 
 #endif
-

@@ -99,7 +99,7 @@ bool Fl_XmlParser::parse_document(Fl_XmlDoc &doc)
     // if successful, put node into nodelist
     if(ctxptr->store_tree()) {
         if(ret==1) {
-            doc.add_child( subnode );
+            doc.add_node( subnode );
         } else {
             delete subnode;
         }
@@ -180,7 +180,7 @@ bool Fl_XmlParser::parse_doctype(Fl_XmlDoc &doc)
                                 delete com_node;
                                 return false;
                             }
-                            doc.add_child(com_node);
+                            doc.add_node(com_node);
                         }
                     }
                 }
@@ -236,7 +236,7 @@ bool Fl_XmlParser::parse_header(Fl_XmlDoc &doc)
                         delete com_node;
                         return false;
                     }
-                    doc.add_child(com_node);
+                    doc.add_node(com_node);
                 }
                 else
                 {

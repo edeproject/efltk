@@ -1,78 +1,87 @@
-/***************************************************************************
-                          Fl_Calendar.h  -  description
-                             -------------------
-    begin                : Sun Aug 18 2002
-    copyright            : (C) 2002 by Alexey Parshin
-    email                : alexeyp@m7.tts-sf.com
- ***************************************************************************/
+/*
+ * $Id$
+ *
+ * Extended Fast Light Toolkit (EFLTK)
+ * Copyright (C) 2002-2003 by EDE-Team
+ * WWW: http://www.sourceforge.net/projects/ede
+ *
+ * Fast Light Toolkit (FLTK)
+ * Copyright (C) 1998-2003 by Bill Spitzak and others.
+ * WWW: http://www.fltk.org
+ *
+ * This library is distributed under the GNU LIBRARY GENERAL PUBLIC LICENSE
+ * version 2. See COPYING for details.
+ *
+ * Author : Alexey Parshin
+ * Email  : alexey@fltk.net
+ *
+ * Please report all bugs and problems to "efltk-bugs@fltk.net"
+ *
+ */
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-#ifndef __Fl_Calendar_H__
-#define __Fl_Calendar_H__
+#ifndef _FL_CALENDAR_H_
+#define _FL_CALENDAR_H_
 
-#include <efltk/Fl_Popup_Window.h>
-#include <efltk/Fl_Date_Time.h>
-#include <efltk/Fl_Box.h>
-#include <efltk/Fl_Button.h>
+#include "Fl_Popup_Window.h"
+#include "Fl_Date_Time.h"
+#include "Fl_Box.h"
+#include "Fl_Button.h"
 
 class Fl_Calendar : public Fl_Group {
-   Fl_Group     *m_headerBox;
-   Fl_Group     *m_buttonBox;
-   Fl_Box       *m_monthNameBox;
-   Fl_Box       *m_dayNameBoxes[7];
-   Fl_Button    *m_dayButtons[31];
-   Fl_Button    *m_switchButtons[4];
-   Fl_Date_Time  m_date;
-   Fl_String     m_headerLabel;
-   int           m_activeButtonIndex;
-
 public:
-   static void cbDayButtonClicked(Fl_Widget *,void *);
-   static void cbSwitchButtonClicked(Fl_Widget *,void *);
+    static Fl_Named_Style* default_style;
 
-   static Fl_Named_Style* default_style;
+    Fl_Calendar(int x,int y,int w,int h,const char *lbl=0L);
 
-   Fl_Calendar(int x,int y,int w,int h,const char *lbl=0L);
-   void layout();
-   void draw();
-   void measure(int& w,int& h) const;
+    virtual void layout();
+    virtual void draw();
+    virtual void measure(int& w,int& h) const;
 
-   void date(Fl_Date_Time dt);
-   Fl_Date_Time date() const;
+    void date(Fl_Date_Time dt);
+    Fl_Date_Time date() const;
 
-   void dayButtonClicked(unsigned day);
-   void switchButtonClicked(int monthChange);
+    void dayButtonClicked(unsigned day);
+    void switchButtonClicked(int monthChange);
+
+private:
+    static void cbDayButtonClicked(Fl_Widget *,void *);
+    static void cbSwitchButtonClicked(Fl_Widget *,void *);
+
+    Fl_Group     *m_headerBox;
+    Fl_Group     *m_buttonBox;
+    Fl_Box       *m_monthNameBox;
+    Fl_Box       *m_dayNameBoxes[7];
+    Fl_Button    *m_dayButtons[31];
+    Fl_Button    *m_switchButtons[4];
+    Fl_Date_Time  m_date;
+    Fl_String     m_headerLabel;
+    int           m_activeButtonIndex;
 };
 
 class Fl_Popup_Calendar : public Fl_Popup_Window {
-   friend class Fl_Calendar;
-   Fl_Calendar *m_calendar;
-   Fl_Widget   *m_dateControl;
 public:
-   static Fl_Named_Style* default_style;
+    static Fl_Named_Style* default_style;
 
-   Fl_Popup_Calendar(Fl_Widget *dateControl=NULL);
+    Fl_Popup_Calendar(Fl_Widget *dateControl=NULL);
 
-   Fl_Calendar *calendar() { return m_calendar; }
+    Fl_Calendar *calendar() { return m_calendar; }
 
-   void  clicked() { set_value(); }
-   void  layout();
-   void  draw();
-   int  handle(int);
+    void clicked() { set_value(); }
+    void layout();
+    void draw();
+    int  handle(int);
 
-   void      date(Fl_Date_Time dt) { m_calendar->date(dt); }
-   Fl_Date_Time date() const       { return m_calendar->date(); }
+    void date(Fl_Date_Time dt) { m_calendar->date(dt); }
+    Fl_Date_Time date() const       { return m_calendar->date(); }
 
-   bool popup();
-   // Popup calendar, relative to widget
-   bool popup(Fl_Widget *dateControl, int X, int Y, int W=0, int H=0);
+    bool popup();
+    // Popup calendar, relative to widget
+    bool popup(Fl_Widget *dateControl, int X, int Y, int W=0, int H=0);
+
+private:
+    friend class Fl_Calendar;
+    Fl_Calendar *m_calendar;
+    Fl_Widget   *m_dateControl;
 };
 
 #endif

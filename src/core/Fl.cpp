@@ -27,9 +27,9 @@
 
 #include <efltk/Fl.h>
 #include <efltk/Fl_Window.h>
-#include <efltk/x.h>
 #include <efltk/Fl_Style.h>
 #include <efltk/Fl_Tooltip.h>
+#include <efltk/x.h>
 
 #include <ctype.h>
 #include <stdlib.h>
@@ -57,7 +57,6 @@ static Fl_Window *xfocus;        // which window X thinks has focus
 static Fl_Window *xmousewin;     // which window X thinks has FL_ENTER
 
 void fl_fix_focus();
-
 
 #ifdef _WIN32
 # ifndef _WIN32_WCE

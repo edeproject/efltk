@@ -1,11 +1,43 @@
-#ifndef FL_THREAD_H_
-#define FL_THREAD_H_
+/*
+ * $Id$
+ *
+ * Extended Fast Light Toolkit (EFLTK)
+ * Copyright (C) 2002-2003 by EDE-Team
+ * WWW: http://www.sourceforge.net/projects/ede
+ *
+ * Fast Light Toolkit (FLTK)
+ * Copyright (C) 1998-2003 by Bill Spitzak and others.
+ * WWW: http://www.fltk.org
+ *
+ * This library is distributed under the GNU LIBRARY GENERAL PUBLIC LICENSE
+ * version 2. See COPYING for details.
+ *
+ * Author : Mikko Lahteenmaki
+ * Email  : mikko@fltk.net
+ *
+ * Please report all bugs and problems to "efltk-bugs@fltk.net"
+ *
+ */
+
+#ifndef _FL_THREAD_H_
+#define _FL_THREAD_H_
 
 #include "Enumerations.h"
 
-// Thread and Mutex classes.
-// These are made inline, so You need only
-// link with thread libs when using these.
+// Inline classes to provide portable support for threads and mutexes.
+//
+// Fltk does not use this (it has an internal mutex implementation
+// that is used if Fl::lock() is called). This header file's only
+// purpose is so we can write portable demo programs. It may be useful
+// or an inspiration to people who want to try writing multithreaded
+// programs themselves.
+//
+// EFltk has no multithreaded support unless the main thread calls Fl::lock().
+// This main thread is the only thread allowed to call Fl::run or Fl::wait.
+// From then on fltk will be locked except when the main thread is actually
+// waiting for events from the user. Other threads must call Fl::lock() and
+// Fl::unlock() to surround calls to fltk (such as to change widgets or
+// redraw them).
 
 #ifdef _WIN32
 
@@ -117,7 +149,3 @@ static inline int fl_create_thread(Fl_Thread& t, int (*f) (void *), void* p) {
 }
 
 #endif /* FL_THREAD_H_ */
-
-
-
-

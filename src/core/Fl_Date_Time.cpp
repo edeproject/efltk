@@ -538,34 +538,6 @@ Fl_Date_Time &Fl_Date_Time::operator --(int) {
 }
 
 //----------------------------------------------------------------
-// Date comparison
-//----------------------------------------------------------------
-
-bool operator <  (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2) {
-    return ( dt1.m_dateTime < dt2.m_dateTime );
-}
-
-bool operator <= (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2) {
-    return ( (dt1.m_dateTime <= dt2.m_dateTime) );
-}
-
-bool operator >  (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2) {
-    return ( dt1.m_dateTime > dt2.m_dateTime );
-}
-
-bool operator >= (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2) {
-    return ( (dt1.m_dateTime >= dt2.m_dateTime) );
-}
-
-bool operator == (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2) {
-    return ( dt1.m_dateTime == dt2.m_dateTime );
-}
-
-bool operator != (const Fl_Date_Time &dt1, const Fl_Date_Time &dt2) {
-    return ( dt1.m_dateTime != dt2.m_dateTime );
-}
-
-//----------------------------------------------------------------
 // Format routine
 //----------------------------------------------------------------
 void Fl_Date_Time::format_date (char *str) const {

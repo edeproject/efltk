@@ -222,7 +222,7 @@ void list_visuals() {
 
 #endif
 
-#ifndef Fl_H
+#ifndef _Fl_H_
 int main(int argc, char **argv) {
   if (argc == 1);
   else if (argc == 2 && argv[1][0]!='-') dname = argv[1];

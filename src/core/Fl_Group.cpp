@@ -679,16 +679,16 @@ bool Fl_Group::load_data(Fl_Data_Source *ds) {
 }
 
 bool Fl_Group::save_data(Fl_Data_Source *ds) const {
-   if (!ds)
-     ds = data_source_;
-   if (!ds)
-	   return false;
-   unsigned cnt = children();
-   for (unsigned i = 0; i < cnt; i++) {
-      Fl_Widget   *widget = child(i);
-      widget->save_data(ds);
-   }
-   return true;
+    if (!ds)
+        ds = data_source_;
+    if (!ds)
+        return false;
+    unsigned cnt = children();
+    for (unsigned i = 0; i < cnt; i++) {
+        Fl_Widget   *widget = child(i);
+        widget->save_data(ds);
+    }
+    return true;
 }
 
 //

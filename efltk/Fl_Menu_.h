@@ -1,35 +1,29 @@
-//
-// "$Id$"
-//
-// Menu base class header file for the Fast Light Tool Kit (FLTK).
-//
-// Copyright 1998-2000 by Bill Spitzak and others.
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Library General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Library General Public License for more details.
-//
-// You should have received a copy of the GNU Library General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA.
-//
-// Please report all bugs and problems to "fltk-bugs@easysw.com".
-//
+/*
+ * $Id$
+ *
+ * Extended Fast Light Toolkit (EFLTK)
+ * Copyright (C) 2002-2003 by EDE-Team
+ * WWW: http://www.sourceforge.net/projects/ede
+ *
+ * Fast Light Toolkit (FLTK)
+ * Copyright (C) 1998-2003 by Bill Spitzak and others.
+ * WWW: http://www.fltk.org
+ *
+ * This library is distributed under the GNU LIBRARY GENERAL PUBLIC LICENSE
+ * version 2. See COPYING for details.
+ *
+ * Author : Mikko Lahteenmaki
+ * Email  : mikko@fltk.net
+ *
+ * Please report all bugs and problems to "efltk-bugs@fltk.net"
+ *
+ */
 
-#ifndef Fl_Menu__H
-#define Fl_Menu__H
+#ifndef _FL_MENU_H_
+#define _FL_MENU_H_
 
 #include "Fl_Group.h"
-#ifndef FLTK_2
 #include "Fl_Menu_Item.h" // for back compatability,should not be necessary,
-#endif
 
 #define MAX_LEVELS 64
 
@@ -103,34 +97,19 @@ public:
 
 #ifndef FLTK_2
     // Commented-out methods cannot be emulated.
-    //const Fl_Menu_Item* test_shortcut();
-    //Fl_Menu_Item* menu() const;
-    void copy(const Fl_Menu_Item* m, void* data = 0) {clear(); m->add_to(this,data);}
-    void menu(const Fl_Menu_Item* m) {copy(m,0);}
+    void copy(const Fl_Menu_Item* m, void* data = 0) { clear(); m->add_to(this,data); }
+    void menu(const Fl_Menu_Item* m) { copy(m,0); }
     void replace(int n, const char* s) { child(n)->label(s); }
     void replace(const char* l, const char* s) { find(l)->label(s); }
     void shortcut(const char* l, int s) { find(l)->shortcut(s); }
     void shortcut(int s) {Fl_Widget::shortcut(s);}
     int shortcut() const {return Fl_Widget::shortcut();}
     void shortcut(int i, int s) { child(i)->shortcut(s); }
-    //int index(Fl_Menu_Item* m) const { return m - menu_; }
-    //int index(const char* label) const;
-    //void replace(Fl_Menu_Item* m, const char* s) { replace(index(m), s); }
-    //void remove(Fl_Menu_Item* m) { remove(index(m)); }
-    //void shortcut(Fl_Menu_Item* m, int s) {shortcut(index(m), s);}
-    //void mode(int i,int x);
-    //void mode(Fl_Menu_Item* m, int x) {mode(index(m), x);}
-    //void mode(const char* l, int x) {mode(index(l), x);}
     unsigned mode(int i) const {return child(i)->flags() >> 8;}
-    //unsigned mode(Fl_Menu_Item* m) const {return mode(index(m));}
     unsigned mode(const char* l) const {return find(l)->flags() >> 8;}
 
-    // in fltk 1.0 these returned/took an Fl_Menu_Item*:
-    Fl_Widget* mvalue() {return item();}
-    //void value(Fl_Widget* o) {set_item(o);}
-
-    const char *text(int i) const {return i >= 0 ? child(i)->label() : 0;}
-    const char *text() const {Fl_Widget* w = item(); return w ? w->label() : 0;}
+    const Fl_String &text(int i) const { return child(i)->label(); }
+    const Fl_String &text() const { Fl_Widget* w = item(); return w ? w->label() : Fl_String::null_object; }
 #endif
 
     // Set/Get default effect type for all menus
@@ -189,7 +168,3 @@ protected:
 };
 
 #endif
-
-//
-// End of "$Id$".
-//

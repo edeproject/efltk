@@ -1,30 +1,26 @@
-//
-// "$Id$"
-//
-// Standard dialog header file for the Fast Light Tool Kit (FLTK).
-//
-// Copyright 1998-1999 by Bill Spitzak and others.
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Library General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Library General Public License for more details.
-//
-// You should have received a copy of the GNU Library General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA.
-//
-// Please report all bugs and problems to "fltk-bugs@easysw.com".
-//
+/*
+ * $Id$
+ *
+ * Extended Fast Light Toolkit (EFLTK)
+ * Copyright (C) 2002-2003 by EDE-Team
+ * WWW: http://www.sourceforge.net/projects/ede
+ *
+ * Fast Light Toolkit (FLTK)
+ * Copyright (C) 1998-2003 by Bill Spitzak and others.
+ * WWW: http://www.fltk.org
+ *
+ * This library is distributed under the GNU LIBRARY GENERAL PUBLIC LICENSE
+ * version 2. See COPYING for details.
+ *
+ * Author : Mikko Lahteenmaki
+ * Email  : mikko@fltk.net
+ *
+ * Please report all bugs and problems to "efltk-bugs@fltk.net"
+ *
+ */
 
-#ifndef fl_ask_H
-#define fl_ask_H
+#ifndef _FL_ASK_H_
+#define _FL_ASK_H_
 
 #include "Enumerations.h"
 #include "Fl_Font.h"
@@ -33,12 +29,12 @@
 class FL_API Fl_Widget;
 
 enum {
-  FL_BEEP_DEFAULT = 0,
-  FL_BEEP_MESSAGE,
-  FL_BEEP_ERROR,
-  FL_BEEP_QUESTION,
-  FL_BEEP_PASSWORD,
-  FL_BEEP_NOTIFICATION
+    FL_BEEP_DEFAULT = 0,
+    FL_BEEP_MESSAGE,
+    FL_BEEP_ERROR,
+    FL_BEEP_QUESTION,
+    FL_BEEP_PASSWORD,
+    FL_BEEP_NOTIFICATION
 };
 
 FL_API void fl_beep(int type = FL_BEEP_DEFAULT);
@@ -51,21 +47,5 @@ FL_API const char *fl_password(const char *label, const char *deflt = 0, ...);
 
 extern FL_API Fl_Named_Style* fl_icon_style;
 extern FL_API Fl_Named_Style* fl_message_style;
-#ifndef FLTK_2
-inline void fl_message_font(Fl_Font f, unsigned s) {
-  fl_message_style->label_font = f;
-  fl_message_style->label_size = s;
-}
-#endif
-
-// pointers you can use to change FLTK to a foreign language:
-extern FL_API const char* fl_no;
-extern FL_API const char* fl_yes;
-extern FL_API const char* fl_ok;
-extern FL_API const char* fl_cancel;
 
 #endif
-
-//
-// End of "$Id$".
-//

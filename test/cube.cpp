@@ -127,8 +127,8 @@ static void exit_cb(Fl_Widget* w, void*) {exit(0);}
 
 void makeform(const char *name) {
   form = new Fl_Window(510+390,390,name);
-  (void) new Fl_Box(FL_DOWN_BOX,20,20,350,350,"");
-  (void) new Fl_Box(FL_DOWN_BOX,510,20,350,350,"");
+  (void) new Fl_Box(20,20,350,350,"");
+  (void) new Fl_Box(510,20,350,350,"");
   speed = new Fl_Slider(390,90,40,220,"Speed");
   size = new Fl_Slider(450,90,40,220,"Size");
   wire = new Fl_Radio_Light_Button(390,20,100,30,"Wire");
@@ -137,7 +137,7 @@ void makeform(const char *name) {
   button->callback(exit_cb);
   cube = new cube_box(23,23,344,344, 0);
   cube2 = new cube_box(513,23,344,344, 0);
-  Fl_Box *b = new Fl_Box(FL_NO_BOX,cube->x(),size->y(),
+  Fl_Box *b = new Fl_Box(cube->x(),size->y(),
 			 cube->w(),size->h(),0);
   form->resizable(b);
   b->hide();

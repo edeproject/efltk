@@ -58,7 +58,7 @@ void Fl_Align_Group::layout()
             Fl_Widget* o = child(i);
             fl_font(o->label_font(), o->label_size());
             int w = this->w()-o->w(),h = this->h()-o->h();
-            fl_measure(o->label(),w,h,o->flags());
+            fl_measure(o->label().c_str() ,w,h,o->flags());
             if (variable_is_y) w = h;
             int which = (variable_is_y == vertical()) ? u : v;
             if (label_space[which] < w) label_space[which] = w;

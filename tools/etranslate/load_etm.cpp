@@ -140,7 +140,7 @@ void ETranslate::load_etm(FILE *fp)
         browser->end();
 
     } fl_catch(exc) {
-        fl_alert(exc.text());
+        fl_alert(exc.text().c_str());
     }
 }
 

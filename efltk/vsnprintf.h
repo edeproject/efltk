@@ -1,6 +1,28 @@
 /*
- * "$Id$"
+ * $Id$
  *
+ * Extended Fast Light Toolkit (EFLTK)
+ * Copyright (C) 2002-2003 by EDE-Team
+ * WWW: http://www.sourceforge.net/projects/ede
+ *
+ * Fast Light Toolkit (FLTK)
+ * Copyright (C) 1998-2003 by Bill Spitzak and others.
+ * WWW: http://www.fltk.org
+ *
+ * This library is distributed under the GNU LIBRARY GENERAL PUBLIC LICENSE
+ * version 2. See COPYING for details.
+ *
+ * Author : Mikko Lahteenmaki
+ * Email  : mikko@fltk.net
+ *
+ * Please report all bugs and problems to "efltk-bugs@fltk.net"
+ *
+ */
+
+#ifndef _FL_VSNPRINTF_H_
+#define _FL_VSNPRINTF_H_
+
+/*
  * vsnprintf() function for the Fast Light Tool Kit (FLTK).
  *
  * Include this file instead of stdio.h to get the snprintf and vsnprintf
@@ -8,7 +30,6 @@
  * systems). PLEASE FIX FOR SYSTEMS THAT HAVE THESE FUNCTIONS!
  *
  * KNOWN BUGS:
- *
  * Field width & Precision is ignored for %%, %c, and %s.
  *
  * A malicious user who manages to create a %-fmt string that prints
@@ -17,35 +38,12 @@
  *
  * Only handles formats that are both documented in the glibc man page
  * for printf and also handled by your system's sprintf().
- *
- * Copyright 1998-1999 by Bill Spitzak and others.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
- * USA.
- *
- * Please report all bugs and problems to "fltk-bugs@easysw.com".
  */
-
-#ifndef fl_vsnprintf_h
-#define fl_vsnprintf_h
 
 #include <stdio.h>
 #include <stdarg.h>
 
 #ifdef _WIN32
-
 # define vsnprintf _vsnprintf
 # define snprintf _snprintf
 
@@ -59,9 +57,11 @@
 /* all other machines need our emulation function: */
 
 # define need_fl_vsnprintf 1 /* make the function compile */
+
 # ifdef __cplusplus
 extern "C" {
 # endif
+
 # include <sys/types.h>
   int fl_vsnprintf(char* str, size_t size, const char* fmt, va_list ap);
   int fl_snprintf(char* str, size_t size, const char* fmt, ...);
@@ -69,13 +69,9 @@ extern "C" {
 # define snprintf fl_snprintf
 
 # ifdef __cplusplus
-}
+};
 # endif
 
 #endif
 
 #endif
-/*
- * End of "$Id$".
- */
-

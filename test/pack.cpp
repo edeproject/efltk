@@ -103,11 +103,11 @@ int main(int argc, char **argv) {
   scroll->end();
 
   {Fl_Light_Button* o = new Fl_Light_Button(10, 325, 175, 25, "HORIZONTAL");
-   o->type(FL_RADIO_BUTTON);
+   o->type(Fl_Button::RADIO);
    o->callback((Fl_Callback*)type_cb, (void*)(Fl_Pack::HORIZONTAL));
   }
   {Fl_Light_Button* o = new Fl_Light_Button(10, 350, 175, 25, "VERTICAL");
-   o->type(FL_RADIO_BUTTON);
+   o->type(Fl_Button::RADIO);
    o->value(1);
    o->callback((Fl_Callback*)type_cb, (void*)(Fl_Pack::VERTICAL));
   }

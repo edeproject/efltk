@@ -27,9 +27,9 @@ void test_box::draw() {
   buf[3] = char(sliders[7]->value());
   buf[4] = 0;
   fl_line_style(
-    (int)(choice[0]->mvalue()->user_data()) +
-    (int)(choice[1]->mvalue()->user_data()) +
-    (int)(choice[2]->mvalue()->user_data()),
+    (int)(choice[0]->item()->user_data()) +
+    (int)(choice[1]->item()->user_data()) +
+    (int)(choice[2]->item()->user_data()),
     (int)(sliders[3]->value()),
     buf);
   fl_rect(10,10,w()-20,h()-20);
@@ -75,11 +75,11 @@ void do_redraw(Fl_Widget*,void*)
 void makeform(const char *) {
   form = new Fl_Window(500,210,"line_style() test");
   sliders[0]= new Fl_Value_Slider(280,10,180,20,"R");
-  sliders[0]->bounds(0,255);
+  sliders[0]->range(0,255);
   sliders[1]= new Fl_Value_Slider(280,30,180,20,"G");
-  sliders[1]->bounds(0,255);
+  sliders[1]->range(0,255);
   sliders[2]= new Fl_Value_Slider(280,50,180,20,"B");
-  sliders[2]->bounds(0,255);
+  sliders[2]->range(0,255);
   choice[0]= new Fl_Choice(280,70,180,20,"Style");
   choice[0]->menu(style_menu);
   choice[1]= new Fl_Choice(280,90,180,20,"Cap");
@@ -87,16 +87,16 @@ void makeform(const char *) {
   choice[2]= new Fl_Choice(280,110,180,20,"Join");
   choice[2]->menu(join_menu);
   sliders[3]= new Fl_Value_Slider(280,130,180,20,"Width");
-  sliders[3]->bounds(0,20);
+  sliders[3]->range(0,20);
   sliders[4] = new Fl_Slider(200,170,70,20,"Dash");
-  sliders[4]->align(FL_ALIGN_TOP_LEFT);
-  sliders[4]->bounds(0,40);
+  sliders[4]->align(FL_ALIGN_TOP | FL_ALIGN_LEFT);
+  sliders[4]->range(0,40);
   sliders[5] = new Fl_Slider(270,170,70,20);
-  sliders[5]->bounds(0,40);
+  sliders[5]->range(0,40);
   sliders[6] = new Fl_Slider(340,170,70,20);
-  sliders[6]->bounds(0,40);
+  sliders[6]->range(0,40);
   sliders[7] = new Fl_Slider(410,170,70,20);
-  sliders[7]->bounds(0,40);
+  sliders[7]->range(0,40);
   int i;
   for (i=0;i<8;i++) {
     sliders[i]->type(1);

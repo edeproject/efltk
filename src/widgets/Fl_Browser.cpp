@@ -670,7 +670,7 @@ void Fl_Browser::layout()
     if (hscrollbar.visible()) H -= sw;
 
     // Measure the height of all items and find widest one
-    width_ = 0;
+    max_width_ = 0;
 
     // count all the items scrolled off the top:
     int arrow_size = text_size()|1;
@@ -681,7 +681,7 @@ void Fl_Browser::layout()
         //if (!indented_ && item_is_parent()) indented_ = true;
         if (at_mark(FOCUS)) set_mark(FOCUS, HERE);
         int w = item()->width()+arrow_size*item_level[HERE];
-        if (w > width_) width_ = w;
+        if (w > max_width_) max_width_ = w;
         if (!next_visible()) {goto_top(); yposition_ = 0; break;}
     }
     set_mark(FIRST_VISIBLE, HERE);
@@ -690,18 +690,18 @@ void Fl_Browser::layout()
     {
         if (at_mark(FOCUS)) set_mark(FOCUS, HERE);
         int w = item()->width()+arrow_size*item_level[HERE];
-        if (w > width_) width_ = w;
+        if (w > max_width_) max_width_ = w;
         //if (!indented_ && item_is_parent()) indented_ = true;
         if (!next_visible()) break;
     }
-    if (indented()) width_ += arrow_size;
-    height_ = item_position[HERE];
+    if (indented()) max_width_ += arrow_size;
+    max_height_ = item_position[HERE];
 
     // turn the scrollbars on and off as necessary:
 
     for (int z = 0; z<2; z++)
     {
-        if (height_ > H || yposition_)
+        if (max_height_ > H || yposition_)
         {
             if (!scrollbar.visible())
             {
@@ -719,7 +719,7 @@ void Fl_Browser::layout()
                 redraw(FL_DAMAGE_ALL);
             }
         }
-        if (width_ > W || xposition_)
+        if (max_width_ > W || xposition_)
         {
             if (!hscrollbar.visible())
             {
@@ -743,11 +743,11 @@ void Fl_Browser::layout()
     if (hscrollbar.visible() && scrollbar_align()&FL_ALIGN_TOP) Y += sw;
 
     scrollbar.resize(scrollbar_align()&FL_ALIGN_LEFT ? X-sw : X+W, Y, sw, H);
-    scrollbar.value(yposition_, H, 0, height_);
+    scrollbar.value(yposition_, H, 0, max_height_);
     scrollbar.linesize(text_size()+leading());
 
     hscrollbar.resize(X, scrollbar_align()&FL_ALIGN_TOP ? Y-sw : Y+H, W, sw);
-    hscrollbar.value(xposition_, W, 0, width_);
+    hscrollbar.value(xposition_, W, 0, max_width_);
     hscrollbar.linesize(scrollbar.linesize());
 
     Fl_Widget::layout();
@@ -854,7 +854,7 @@ bool Fl_Browser::make_item_visible(linepos where)
             break;
     }
     // clip scrolling to the useful range:
-    if (p > height_-H) p = height_-H;
+    if (p > max_height_-H) p = max_height_-H;
     if (p < 0) p = 0;
     // go there:
     yposition(p);
@@ -1292,7 +1292,6 @@ hscrollbar(X,Y+H-SLIDER_WIDTH,W-SLIDER_WIDTH,SLIDER_WIDTH)
     scrollbar.parent(this);
     scrollbar.callback(scrollbar_cb);
     indented_ = 0;
-    format_char_ = '@';
     column_widths_ = 0;
     // set all the marks to the top:
     levels = 0;

@@ -1,5 +1,26 @@
-#ifndef _FL_MDIWINDOW_H
-#define _FL_MDIWINDOW_H
+/*
+ * $Id$
+ *
+ * Extended Fast Light Toolkit (EFLTK)
+ * Copyright (C) 2002-2003 by EDE-Team
+ * WWW: http://www.sourceforge.net/projects/ede
+ *
+ * Fast Light Toolkit (FLTK)
+ * Copyright (C) 1998-2003 by Bill Spitzak and others.
+ * WWW: http://www.fltk.org
+ *
+ * This library is distributed under the GNU LIBRARY GENERAL PUBLIC LICENSE
+ * version 2. See COPYING for details.
+ *
+ * Author : Mikko Lahteenmaki
+ * Email  : mikko@fltk.net
+ *
+ * Please report all bugs and problems to "efltk-bugs@fltk.net"
+ *
+ */
+
+#ifndef _FL_MDI_WINDOW_H_
+#define _FL_MDI_WINDOW_H_
 
 #include "Fl_Workspace.h"
 #include "Fl_Util.h"
@@ -51,11 +72,11 @@ class Fl_MDI_Window : public Fl_Window {
     friend class Fl_Workspace;
     friend class Fl_MDI_Titlebar;
 public:
-	enum {
-		NORMAL = 0,
-		MAXIMIZED,
-		MINIMIZED
-	};
+    enum {
+        NORMAL = 0,
+        MAXIMIZED,
+        MINIMIZED
+    };
 
     static Fl_Named_Style* default_style;
 
@@ -64,7 +85,7 @@ public:
 
     bool active() { return _active; }
     void active(bool a) { _active = a; }
-		
+
     // Set/get view
     Fl_Group *view(Fl_Group *v); //returns old view
     Fl_Group *view() { return prv; }
@@ -75,7 +96,7 @@ public:
 
     // Caption functions
     void caption(const char *cap);
-    const char *caption() { return label(); }
+    const char *caption() { return label().c_str(); }
 
     //void titlebar(Fl_Box *b) { _titlebar = b; }
     Fl_MDI_Titlebar* titlebar() {return &_titlebar;}
@@ -92,10 +113,10 @@ public:
     void setTop() { if(!_toplevel && _owner) _owner->top(this); else show(); }
     bool isTop() { return _toplevel==true ? 0 : (_owner->top()==this); }
 
-	void state(int s);
-	int state() { return state_; }
-	
-	void maximize(bool val) { state(val?MAXIMIZED:NORMAL); }
+    void state(int s);
+    int state() { return state_; }
+
+    void maximize(bool val) { state(val?MAXIMIZED:NORMAL); }
     bool maximized() { return (state_==MAXIMIZED); }
     void minimize(bool val) { state(val?MINIMIZED:NORMAL); }
     bool minimized() { return (state_==MINIMIZED); }
@@ -118,7 +139,7 @@ public:
     virtual void draw();
     virtual void layout();
 
-	static void default_callback(Fl_MDI_Window*, void* v);
+    static void default_callback(Fl_MDI_Window*, void* v);
 
 private:
     void check_move_boundary(int &x, int &y);
@@ -135,12 +156,12 @@ private:
     Fl_MDI_Titlebar _titlebar;
 
     bool _toplevel;
-	bool _active;
+    bool _active;
 
     int _ox, _oy, _oh, _ow;
 
     bool _boundaries;
-	int state_;
+    int state_;
 
     int _resize_where;
 
@@ -168,4 +189,3 @@ private:
 };
 
 #endif
-

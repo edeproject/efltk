@@ -45,16 +45,6 @@ Fl_Valuator::Fl_Valuator(int X, int Y, int W, int H, const char* L)
     linesize_ = 0.1f;
 }
 
-
-#ifndef FLTK_2
-void Fl_Valuator::precision(int p)
-{
-    int B = 1;
-    for (int i=0; i<p; i++) B *= 10;
-    step_ = 1.0f/B;
-}
-#endif
-
 void Fl_Valuator::value_damage()
 {
     redraw(FL_DAMAGE_VALUE);     // default version does partial-redraw

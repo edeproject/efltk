@@ -1,27 +1,23 @@
-//
-// "$Id$"
-//
-// X11 header file for the Fast Light Tool Kit (FLTK).
-//
-// Copyright 1998-1999 by Bill Spitzak and others.
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Library General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Library General Public License for more details.
-//
-// You should have received a copy of the GNU Library General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA.
-//
-// Please report all bugs and problems to "fltk-bugs@easysw.com".
-//
+/*
+ * $Id$
+ *
+ * Extended Fast Light Toolkit (EFLTK)
+ * Copyright (C) 2002-2003 by EDE-Team
+ * WWW: http://www.sourceforge.net/projects/ede
+ *
+ * Fast Light Toolkit (FLTK)
+ * Copyright (C) 1998-2003 by Bill Spitzak and others.
+ * WWW: http://www.fltk.org
+ *
+ * This library is distributed under the GNU LIBRARY GENERAL PUBLIC LICENSE
+ * version 2. See COPYING for details.
+ *
+ * Author : Mikko Lahteenmaki
+ * Email  : mikko@fltk.net
+ *
+ * Please report all bugs and problems to "efltk-bugs@fltk.net"
+ *
+ */
 
 // These are internal fltk symbols that are necessary or useful for
 // calling Xlib.  You should include this file if (and ONLY if) you
@@ -33,18 +29,23 @@
 // for other operating systems (win32.h, mac.h) but the definition of
 // the symbols is different, and usage may be somewhat different.
 
-#ifndef Fl_X_H
-#define Fl_X_H
+#ifndef _Fl_X_H_
+#define _Fl_X_H_
 
 #include "Fl_Color.h"
 
 #ifdef _WIN32_WCE
 #include <wince.h>
 #endif
+
 #ifdef _WIN32
+
 # include "win32.h"
+
 #elif defined(__APPLE__)
+
 # include "mac.h"
+
 #else
 
 ////////////////////////////////////////////////////////////////
@@ -187,7 +188,7 @@ static inline Pixmap fl_create_bitmap(const uchar* data, int w, int h) {
 #define fl_delete_bitmap(id) XFreePixmap(fl_display, id)
 
 ////////////////////////////////////////////////////////////////
-#ifdef Fl_Window_H // only include this if <fltk/Fl_Window.h> was included
+#ifdef _FL_WINDOW_H_ // only include this if <fltk/Fl_Window.h> was included
 
 // When fltk tells X about a window, one of these objects is created.
 // Warning: this object is highly subject to change!  It's definition
@@ -214,12 +215,8 @@ public:
 inline Window fl_xid(const Fl_Window*w) {return Fl_X::i(w)->xid;}
 Fl_Window* fl_find(Window xid);
 
-#endif //Fl_Window_H
+#endif // _FL_WINDOW_H_
 ////////////////////////////////////////////////////////////////
 
 #endif	// not _WIN32
-#endif	//Fl_X_H
-
-//
-// End of "$Id$".
-//
+#endif	// _Fl_X_H_

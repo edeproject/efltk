@@ -151,7 +151,8 @@ int main(int argc, char **argv) {
   Fl_Choice *c = new Fl_Choice(100,250,200,25);
   c->menu(choices);
 
-  text= new Fl_Box(FL_ENGRAVED_BOX,100,75,200,100,input->value());
+  text= new Fl_Box(100,75,200,100,input->value());
+  text->box(FL_ENGRAVED_BOX);
   text->clear_flag(FL_ALIGN_MASK);
   text->set_flag(FL_ALIGN_CENTER);
   window->resizable(text);

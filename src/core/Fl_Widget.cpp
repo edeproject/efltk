@@ -52,7 +52,6 @@ Fl_Widget::Fl_Widget(int X, int Y, int W, int H, const char* L)
     parent_   = 0;
     callback_ = default_callback;
     user_data_    = 0;
-    label_    = L;
     image_    = 0;
     tooltip_  = 0;
     shortcut_ = 0;
@@ -68,6 +67,8 @@ Fl_Widget::Fl_Widget(int X, int Y, int W, int H, const char* L)
     damage_   = FL_DAMAGE_ALL;
     layout_damage_= FL_LAYOUT_DAMAGE;
     when_     = FL_WHEN_RELEASE;
+
+    if(L) label_ = L;
     if (Fl_Group::current()) Fl_Group::current()->add(this);
 }
 
@@ -79,30 +80,8 @@ Fl_Widget::~Fl_Widget()
         // When a widget is destroyed it can destroy unique styles:
         delete (Fl_Style*)style_;// cast away const
     }
-    if (flags_&FL_COPIED_LABEL) free((void*)label_);
-    if (field_name_) free((void *)field_name_);
-}
-
-void Fl_Widget::label(const char* a)
-{
-    if (flags_&FL_COPIED_LABEL)
-    {
-        free((void*)label_);
-        flags_ &= ~FL_COPIED_LABEL;
-    }
-    label_ = a;
-}
-
-void Fl_Widget::copy_label(const char* s)
-{
-    if (flags_&FL_COPIED_LABEL) free((void*)label_);
-    if (s) {
-        label_ = strdup(s);
-        flags_ |= FL_COPIED_LABEL;
-    } else {
-        label_ = 0;
-        flags_ &= ~FL_COPIED_LABEL;
-    }
+    //if (flags_&FL_COPIED_LABEL) free((void*)label_);
+    //if (field_name_) free((void *)field_name_);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -223,7 +202,7 @@ void Fl_Widget::redraw(uchar flags)
 
 void Fl_Widget::redraw_label()
 {
-    if (!label() && !image()) return;
+    if(!image() && label().empty()) return;
     // inside label redraws the widget:
     if (!(flags()&15) || (flags() & FL_ALIGN_INSIDE)) redraw();
     // outside label requires a marker flag and damage to parent:
@@ -533,14 +512,13 @@ bool Fl::test_shortcut(int shortcut)
 
 int Fl_Widget::test_shortcut() const
 {
-
     if (Fl::test_shortcut(shortcut())) return true;
 
     if (flags() & FL_RAW_LABEL) return false;
 
     char c = Fl::event_text()[0];
-    const char* label = this->label();
-    if (!c || !label) return false;
+    if(!c || label().empty()) return false;
+    const char* label = this->label().c_str();
     for (;;)
     {
         if (!*label) return false;
@@ -622,12 +600,6 @@ void Fl_Widget::draw()
 {
     draw_box();
     draw_inside_label();
-}
-
-void Fl_Widget::field_name(const char *fname) {
-    if (field_name_)
-        free((char *)field_name_);
-    field_name_ = strdup(fname);
 }
 
 //

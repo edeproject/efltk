@@ -32,7 +32,7 @@ Fl_XmlNode *Fl_XmlDoc::root_node()
 }
 
 // xmldocument methods
-void Fl_XmlDoc::add_child(Fl_XmlNode *node, bool front)
+void Fl_XmlDoc::add_node(Fl_XmlNode *node, bool front)
 {
     node->parent(this);
 
@@ -53,7 +53,7 @@ void Fl_XmlDoc::add_child(Fl_XmlNode *node, bool front)
     }
 }
 
-Fl_XmlNode *Fl_XmlDoc::add_child(Fl_String name, bool front)
+Fl_XmlNode *Fl_XmlDoc::add_node(Fl_String name, bool front)
 {
     Fl_XmlNode *tmp = new Fl_XmlNode(context(), this, name);
     return tmp;

@@ -1,46 +1,41 @@
-//
-// "$Id$"
-//
-// Widget to draw a divider line in a menu
-//
-// Copyright 1998-2000 by Bill Spitzak and others.
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Library General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Library General Public License for more details.
-//
-// You should have received a copy of the GNU Library General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA.
-//
-// Please report all bugs and problems to "fltk-bugs@easysw.com".
-//
+/*
+ * $Id$
+ *
+ * Extended Fast Light Toolkit (EFLTK)
+ * Copyright (C) 2002-2003 by EDE-Team
+ * WWW: http://www.sourceforge.net/projects/ede
+ *
+ * Fast Light Toolkit (FLTK)
+ * Copyright (C) 1998-2003 by Bill Spitzak and others.
+ * WWW: http://www.fltk.org
+ *
+ * This library is distributed under the GNU LIBRARY GENERAL PUBLIC LICENSE
+ * version 2. See COPYING for details.
+ *
+ * Author : Mikko Lahteenmaki
+ * Email  : mikko@fltk.net
+ *
+ * Please report all bugs and problems to "efltk-bugs@fltk.net"
+ *
+ */
 
-#ifndef Fl_Divider_H
-#define Fl_Divider_H
+#ifndef _FL_DIVIDER_H_
+#define _FL_DIVIDER_H_
 
-#ifndef Fl_Widget_H
 #include "Fl_Widget.h"
-#endif
 
 class FL_API Fl_Divider : public Fl_Widget {
 public:
+    Fl_Divider(int x, int y, int w, int h, const char *l=0);
+    Fl_Divider(int w, int h);
+    Fl_Divider();
+
     enum {
         HORIZONTAL = RESERVED_TYPE+10,
         VERTICAL   = RESERVED_TYPE+11
     };
 
-    Fl_Divider(int x, int y, int w, int h, const char *l=0);
-    Fl_Divider(int w, int h);
-    Fl_Divider();
-    void draw();
+    virtual void draw();
 };
 
 class Fl_VertDivider : public Fl_Divider {

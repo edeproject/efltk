@@ -82,21 +82,15 @@ int flags
 // Comparison that does not care about deleted '&' signs:
 static int compare(const char* a, const char* b)
 {
-    for (;;)
-    {
+    for (;;) {
         int n = *a-*b;
-        if (n)
-        {
+        if (n) {
             if (*a == '&') a++;
             else if (*b == '&') b++;
             else return n;
-        }
-        else if (*a)
-        {
+        } else if (*a) {
             a++; b++;
-        }
-        else
-        {
+        } else {
             return 0;
         }
     }
@@ -161,7 +155,7 @@ int flags
                 break;
             }
             Fl_Widget* w = group->child(--n);
-            if (w->is_group() && w->label() && !compare(w->label(), item))
+            if(w->is_group() && !w->label().empty() && !compare(w->label().c_str(), item))
             {
                 group = (Fl_Group*)w;
                 break;
@@ -175,7 +169,7 @@ int flags
     if (replace_flag | find_flag) for (int n = group->children(); n--;)
     {
         Fl_Widget* w = group->child(n);		
-        if (w->label() && !compare(w->label(), item) )// && !w->is_group()) //Finding groups are also allowed!
+        if(!w->label().empty() && !compare(w->label().c_str(), item) )// && !w->is_group()) //Finding groups are also allowed!
         {
             if (find_flag) return w;
             o = w;

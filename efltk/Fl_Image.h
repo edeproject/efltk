@@ -5,6 +5,10 @@
  * Copyright (C) 2002-2003 by EDE-Team
  * WWW: http://www.sourceforge.net/projects/ede
  *
+ * Fast Light Toolkit (FLTK)
+ * Copyright (C) 1998-2003 by Bill Spitzak and others.
+ * WWW: http://www.fltk.org
+ *
  * This library is distributed under the GNU LIBRARY GENERAL PUBLIC LICENSE
  * version 2. See COPYING for details.
  *
@@ -300,19 +304,23 @@ protected:
     void to_screen(int X, int Y, int W, int H, int cx, int cy);
     void to_screen_tiled(int X, int Y, int W, int H, int cx, int cy);
 
-    int m_width;
-    int m_height;
-    int m_pitch;
+    int m_width;  ///< Width of image in pixels
+    int m_height; ///< Height of image in pixels
+    int m_pitch;  ///< Pitch is word aligment bits per line value.
 
-    uint8 m_threshold;
-    uint8 *m_data;
+    uint8 *m_data; ///< Uncompressed data is stored to this.
 
-    bool m_data_alloc, m_id_alloc, m_mask_alloc;
+    bool m_data_alloc; ///< True, if m_data is allocated by Fl_Image or free permission is granted
+    bool m_id_alloc;   ///< True, 'id' offscreen pixmap is allocated by Fl_Image or permission to free granted
+    bool m_mask_alloc; ///< True, 'mask' offscreen bitmap is allocated by Fl_Image or permission to free granted
 
-    void *id, *mask;
+    void *id;   ///< offsreen id for drawing to screen. type of this is Pixmap. (under w32 HBITMAP)
+    void *mask; ///< mask for offscreen id. type of this is Pixmap. (under w32 HBITMAP)
 
 private:
     bool m_no_screen;
+    uint8 m_threshold;
+
     Fl_PixelFormat m_fmt;
 
     bool m_state_effect;
@@ -321,9 +329,9 @@ private:
     int m_state;
     int m_quality;
 
-    int m_old_drawflags;
+    int m_old_drawflags;  //last drawubg flags passed
     int m_lastw, m_lasth; //last scaled size
-    // Data store for selected, inactive...
+    // Data storage for selected, inactive...
     Fl_Image *m_mod_data;
 };
 

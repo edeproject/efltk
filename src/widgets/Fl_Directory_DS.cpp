@@ -17,12 +17,14 @@
 
 #include <config.h>
 
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <efltk/filename.h>
 #include <efltk/Fl_Directory_DS.h>
 #include <efltk/Fl_Exception.h>
 #include <efltk/Fl_Pixmap.h>
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <stdlib.h>
 
 static const char * exec_xpm[] = {
 "16 16 158 2",

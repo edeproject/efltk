@@ -1,5 +1,26 @@
-#ifndef FL_FILEDIALOG_H_
-#define FL_FILEDIALOG_H_
+/*
+ * $Id$
+ *
+ * Extended Fast Light Toolkit (EFLTK)
+ * Copyright (C) 2002-2003 by EDE-Team
+ * WWW: http://www.sourceforge.net/projects/ede
+ *
+ * Fast Light Toolkit (FLTK)
+ * Copyright (C) 1998-2003 by Bill Spitzak and others.
+ * WWW: http://www.fltk.org
+ *
+ * This library is distributed under the GNU LIBRARY GENERAL PUBLIC LICENSE
+ * version 2. See COPYING for details.
+ *
+ * Author : Mikko Lahteenmaki
+ * Email  : mikko@fltk.net
+ *
+ * Please report all bugs and problems to "efltk-bugs@fltk.net"
+ *
+ */
+
+#ifndef _FL_FILEDIALOG_H_
+#define _FL_FILEDIALOG_H_
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,13 +64,13 @@ public:
         NETWORK
     };
 
-	int compare(Fl_ListView_Item *other, int column, int sort_type);
+    int compare(Fl_ListView_Item *other, int column, int sort_type);
 
     uchar type() const { return type_; }
     void  type(uchar t) { type_ = t; }
     uchar type_;
 
-	Fl_FileAttr *attr;
+    Fl_FileAttr *attr;
     char fname[FL_PATH_MAX];
     char size[32];
 #ifdef _WIN32
@@ -202,4 +223,3 @@ extern char *fl_save_file(const char *path=0, char *filters=0, const char *cap=0
 extern char *fl_select_dir(const char *path=0, const char *cap=0);
 
 #endif
-

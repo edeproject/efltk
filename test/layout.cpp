@@ -55,12 +55,17 @@ void align_cb(Fl_Choice* c,long w) {
 int main(int argc, char ** argv) {
   Fl_Window *window = new Fl_Window(600,400);
 
-  Fl_Align_Group main_group(0,0,600,400,0,2,1,0,5,5);
+  Fl_Align_Group main_group(0,0,600,400,0);
+  main_group.n_to_break(2);
+  main_group.dw(5); main_group.dh(5);
 
-  Fl_Align_Group* o = new Fl_Align_Group(0,0,0,0,0,2,false,FL_ALIGN_TOP | FL_ALIGN_LEFT);
+  Fl_Align_Group* o = new Fl_Align_Group(0,0,0,0,0);
+  o->n_to_break(2);
+  o->vertical(false);
+  o->align(FL_ALIGN_TOP | FL_ALIGN_LEFT);
   {
-    Fl_Align_Group* o = new Fl_Align_Group(0,0,0,0,"Tiled Buttons",
-					   3,false,0,10,10);
+      Fl_Align_Group* o = new Fl_Align_Group(0,0,0,0,"Tiled Buttons");
+      o->n_to_break(3); o->dw(10); o->dh(10);
     o->box(FL_DOWN_BOX);
     char *l,labels[18];
     l=labels;
@@ -72,9 +77,9 @@ int main(int argc, char ** argv) {
     o->end();
   }
   {
-    Fl_Align_Group* o=new Fl_Align_Group(0,0,0,0,"Fl_Align_Group options",
-					 3,true,0,10,10);
-    o->box(FL_DOWN_BOX);
+      Fl_Align_Group* o=new Fl_Align_Group(0,0,0,0,"Fl_Align_Group options");
+      o->n_to_break(3); o->vertical(true); o->dw(10); o->dh(10);
+      o->box(FL_DOWN_BOX);
     static const char* labels[3][3]={{"Vertical","Horizontal",""},
 				     {"Center","Left","Right"},
 				     {"Center","Top","Bottom"}};
@@ -89,7 +94,9 @@ int main(int argc, char ** argv) {
     o->end();
   }
   o->end();
-  o = lower_half = new Fl_Align_Group(0,0,0,0,0,4,true,0,10,10);
+  o = lower_half = new Fl_Align_Group(0,0,0,0,0);
+  o->n_to_break(4); 
+  o->dw(5); o->dh(5);
   o->box(FL_DOWN_BOX);
   static const char* labels[24]={"Although","these","labels","have",
 				 "different","lengths",",","the",

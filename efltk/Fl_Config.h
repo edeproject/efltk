@@ -1,5 +1,23 @@
-// FL_Config.h: interface for the INI_Config class.
-//////////////////////////////////////////////////////////////////////
+/*
+ * $Id$
+ *
+ * Extended Fast Light Toolkit (EFLTK)
+ * Copyright (C) 2002-2003 by EDE-Team
+ * WWW: http://www.sourceforge.net/projects/ede
+ *
+ * Fast Light Toolkit (FLTK)
+ * Copyright (C) 1998-2003 by Bill Spitzak and others.
+ * WWW: http://www.fltk.org
+ *
+ * This library is distributed under the GNU LIBRARY GENERAL PUBLIC LICENSE
+ * version 2. See COPYING for details.
+ *
+ * Author : Mikko Lahteenmaki
+ * Email  : mikko@fltk.net
+ *
+ * Please report all bugs and problems to "efltk-bugs@fltk.net"
+ *
+ */
 
 #ifndef _FL_CONFIG_H_
 #define _FL_CONFIG_H_
@@ -7,14 +25,17 @@
 #include "Enumerations.h"
 #include "Fl_Ptr_List.h"
 #include "Fl_Util.h"
+#include "Fl_String.h"
 #include "Fl_Color.h"
 
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 #ifdef _WIN32_WCE
 #include <wince.h>
 #endif
+
 /* error defines */
 enum {
     CONF_SUCCESS = 0,  /* successful return */
@@ -29,30 +50,22 @@ typedef Fl_Ptr_List SectionList;
 typedef Fl_Ptr_List LineList;
 
 // Classes to iterate throught the config file
-class FL_API Line
-{
+class FL_API Line {
 public:
-    Line(const char *k, const char *v) {
-        if(k&&*k!='\0') key = strdup(k); else key=0;
-        if(v&&*v!='\0') value = strdup(v); else value=0;
-    }
-    ~Line() {
-        if(key) delete []key; if(value) delete []value; }
-    char *key;
-    char *value;
+    Line(Fl_String k, Fl_String v) { key = k; value = v; }
+    Fl_String key, value;
 };
 
 class FL_API Section
 {
 public:
-    Section(const char *_name, const char *_path, Section *par) { if(_name) name = strdup(_name); else name=0; if(_path) path = strdup(_path); else path=0; parent = par;}
+    Section(const char *_name, const char *_path, Section *par) { if(_name) name = _name; if(_path) path = _path; parent = par; }
     ~Section() {
         uint n; for(n=0; n<sections.size(); n++) delete (Section*)sections[n];
         for(n=0; n<lines.size(); n++) delete (Line*)lines[n];
-        if(name) delete []name; if(path) delete []path;
     }
-    char *name, *path;
     Section *parent;
+    Fl_String name, path;
     LineList lines; //Line list
     SectionList sections; //Section list
 };
@@ -65,8 +78,6 @@ public:
     // To access these, use section NULL
     LineList lines;
 
-    /////////////////////////
-    /////////////////////////
     typedef enum {
         USER=1,
         SYSTEM
@@ -88,16 +99,21 @@ public:
     //Straight access for some file in filesystem.
     Fl_Config(const char *filename, bool readfile=true, bool createfile=true);
 
-    ~Fl_Config();
+    virtual ~Fl_Config();
 
-    const char *filename() { return filename_; }
-    void filename(const char *filename) { if(filename_) delete []filename_; if(filename) filename_=strdup(filename); }
+    virtual void clear();
 
-    const char *vendor() { return vendor_; }
-    void vendor(const char *vendor) { if(vendor_) delete []vendor_; if(vendor) vendor_=strdup(vendor); }
+    const Fl_String &filename() const { return filename_; }
+    void filename(const char *filename) { filename_ = filename; }
+    void filename(const Fl_String &filename) { filename_ = filename; }
 
-    const char *application() { return app_; }
-    void application(const char *app) { if(app_) delete []app_; if(app) app_=strdup(app); }
+    const Fl_String &vendor() const { return vendor_; }
+    void vendor(const char *vendor) { vendor_ = vendor; }
+    void vendor(const Fl_String &vendor) { vendor_ = vendor; }
+
+    const Fl_String &application() const { return app_; }
+    void application(const char *app) { app_ = app; }
+    void application(const Fl_String &app) { app_ = app; }
 
     // Finds config file, depending on mode.
     // USER mode finds from ~/.ede/$filename and SYSTEM from $PREFIX/share/ede/$filename
@@ -168,8 +184,9 @@ public:
 
 private:
     int _error;
-    char *filename_;
-    char *vendor_, *app_;
+    Fl_String filename_;
+    Fl_String vendor_, app_;
+
     Section *cur_sec;
     bool changed;
 
@@ -200,5 +217,4 @@ static inline const char* fl_find_config_file(const char *filename, bool create=
     return Fl_Config::find_config_file(filename, create, Fl_Config::USER);
 }
 
-#endif // !defined(AFX_INI_CONFIG_H__A9AF989B_9D44_48ED_B56F_187FCAC49818__INCLUDED_)
-
+#endif

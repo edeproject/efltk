@@ -6,6 +6,7 @@
 #include <efltk/Fl_Exception.h>
 #include <efltk/Fl.h>
 
+#include <stdlib.h>
 #include <setjmp.h>
 extern "C" {
 # include <jpeglib.h>

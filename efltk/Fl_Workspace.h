@@ -1,5 +1,26 @@
-#ifndef _FLE_MDIWORKSPACE_H_
-#define _FLE_MDIWORKSPACE_H_
+/*
+ * $Id$
+ *
+ * Extended Fast Light Toolkit (EFLTK)
+ * Copyright (C) 2002-2003 by EDE-Team
+ * WWW: http://www.sourceforge.net/projects/ede
+ *
+ * Fast Light Toolkit (FLTK)
+ * Copyright (C) 1998-2003 by Bill Spitzak and others.
+ * WWW: http://www.fltk.org
+ *
+ * This library is distributed under the GNU LIBRARY GENERAL PUBLIC LICENSE
+ * version 2. See COPYING for details.
+ *
+ * Author : Mikko Lahteenmaki
+ * Email  : mikko@fltk.net
+ *
+ * Please report all bugs and problems to "efltk-bugs@fltk.net"
+ *
+ */
+
+#ifndef _FL_WORKSPACE_H_
+#define _FL_WORKSPACE_H_
 
 #include "Fl_Window.h"
 #include "Fl_Scrollbar.h"
@@ -8,15 +29,9 @@
 #include "Fl.h"
 #include "x.h"
 
-#ifndef _WIN32
-# include <X11/Xlib.h>
-#else
-# include <windows.h>
-#endif
-
-class Fl_MDI_Bar;
-class Fl_MDI_Window;
-class Fl_Workspace;
+class FL_API Fl_MDI_Bar;
+class FL_API Fl_MDI_Window;
+class FL_API Fl_Workspace;
 
 #define FL_MDI_WINDOW 0x01000000
 

@@ -1,128 +1,140 @@
-//
-// "$Id$"
-//
-// Window header file for the Fast Light Tool Kit (FLTK).
-//
-// Copyright 1998-1999 by Bill Spitzak and others.
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Library General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Library General Public License for more details.
-//
-// You should have received a copy of the GNU Library General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA.
-//
-// Please report all bugs and problems to "fltk-bugs@easysw.com".
-//
+/*
+ * $Id$
+ *
+ * Extended Fast Light Toolkit (EFLTK)
+ * Copyright (C) 2002-2003 by EDE-Team
+ * WWW: http://www.sourceforge.net/projects/ede
+ *
+ * Fast Light Toolkit (FLTK)
+ * Copyright (C) 1998-2003 by Bill Spitzak and others.
+ * WWW: http://www.fltk.org
+ *
+ * This library is distributed under the GNU LIBRARY GENERAL PUBLIC LICENSE
+ * version 2. See COPYING for details.
+ *
+ * Author : Mikko Lahteenmaki
+ * Email  : mikko@fltk.net
+ *
+ * Please report all bugs and problems to "efltk-bugs@fltk.net"
+ *
+ */
 
-#ifndef Fl_Window_H
-#define Fl_Window_H
+#ifndef _FL_WINDOW_H_
+#define _FL_WINDOW_H_
 
 #include "Fl_Group.h"
 
 // value for x,y to indicate window system places window
-#define  FL_USEDEFAULT ((int)0x80000000) // same as Win32 value
+#define FL_USEDEFAULT ((int)0x80000000) // same as Win32 value
 
 class FL_API Fl_Window : public Fl_Group {
 public:
-  static Fl_Named_Style* default_style;
+    static Fl_Named_Style* default_style;
 
-  Fl_Window(int,int,int,int, const char* = 0);
-  Fl_Window(int,int, const char* = 0);
-  virtual ~Fl_Window();
+    Fl_Window(int,int,int,int, const char* = 0);
+    Fl_Window(int,int, const char* = 0);
+    virtual ~Fl_Window();
 
-  // Types from Fl_WM.h
-  // Type is set before first map, straight after creating xid.
-  void window_type(int type) { window_type_ = type; }
-  int window_type() { return window_type_; }
+    // Types from Fl_WM.h
+    // Type is set before first map, straight after creating xid.
+    void window_type(int type) { window_type_ = type; }
+    int window_type() { return window_type_; }
 
-  const char* label() const	{ return Fl_Widget::label(); }
-  const char* iconlabel() const	{ return iconlabel_; }
-  void label(const char*);
-  void iconlabel(const char*);
-  void label(const char* label, const char* iconlabel);
-  void copy_label(const char* c);
+    const Fl_String label() const     { return Fl_Widget::label(); }
+    const Fl_String iconlabel() const { return iconlabel_; }
 
-  const void* icon() const	{return icon_;}
-  void icon(const void * ic)	{icon_ = ic;}
-  static const char* xclass()	{return xclass_;}
-  static void xclass(const char* v) {xclass_ = v;}
+    void copy_label(const char *l) { label(l); }
+    void copy_label(const Fl_String &l) { label(l); }
 
-  void clear_border()	{set_flag(FL_NOBORDER);}
-  bool border() const	{return !(flags() & FL_NOBORDER);}
-  void set_override()	{set_flag(FL_NOBORDER|FL_OVERRIDE);}
-  bool override() const {return (flags()&FL_OVERRIDE)!=0; }
-  const Fl_Window* child_of() const {return child_of_;}
-  void child_of(const Fl_Window* w);
-  void set_modal()	{set_flag(FL_MODAL);} // back compatability only!
-  void set_non_modal()	{set_flag(FL_NON_MODAL);} // back compatability only!
+    void label(const char *l) { label(l, iconlabel_.c_str()); }
+    void label(const Fl_String &l) { label(l, iconlabel_); }
+    void iconlabel(const char *il) { label(label().c_str(), il); }
+    void iconlabel(const Fl_String &il) { label(label(), il); }
 
-  void hotspot(int x, int y, bool offscreen = false);
-  void hotspot(const Fl_Widget*, bool offscreen = false);
-  void hotspot(const Fl_Widget& p, bool offscrn = false) {hotspot(&p,offscrn);}
-  void size_range(int a, int b, int c=0, int d=0, int e=0, int f=0)
+    void label(const char *l, const char *il);
+    void label(const Fl_String &l, const Fl_String &il);
+
+    const void* icon() const	{ return icon_; }
+    void icon(const void * ic)	{ icon_ = ic; }
+
+    static const Fl_String &xclass() { return xclass_; }
+    static void xclass(const char* v) { xclass_ = v; }
+    static void xclass(const Fl_String &v) { xclass_ = v; }
+
+    void clear_border()	{ set_flag(FL_NOBORDER); }
+    bool border() const	{ return !(flags() & FL_NOBORDER); }
+    void set_override()	{ set_flag(FL_NOBORDER|FL_OVERRIDE); }
+    bool override() const { return (flags()&FL_OVERRIDE)!=0; }
+    const Fl_Window* child_of() const { return child_of_; }
+    void child_of(const Fl_Window* w);
+
+     // back compatability only!
+    void set_modal()	 { set_flag(FL_MODAL); }
+    void set_non_modal() { set_flag(FL_NON_MODAL); }
+
+    void hotspot(int x, int y, bool offscreen = false);
+    void hotspot(const Fl_Widget*, bool offscreen = false);
+    void hotspot(const Fl_Widget& p, bool offscrn = false) { hotspot(&p,offscrn); }
+    void size_range(int a, int b, int c=0, int d=0, int e=0, int f=0)
     { minw=a; minh=b; maxw=c; maxh=d; dw=e; dh=f; size_range_(); }
 
-  bool shown() const {return i != 0;}
-  void show();
-  void show(int, char**);
-  void show(const Fl_Window* parent);
-  bool exec(const Fl_Window* parent = 0, bool grab = false);
-  void show_inside(const Fl_Window* parent);
-  void iconize();
-  bool iconic() const;
-  virtual void destroy();
+    bool shown() const { return i != 0; }
 
-  void fullscreen();
-  void fullscreen_off(int,int,int,int);
+    void show();
+    void show(int, char**);
+    void show(const Fl_Window* parent);
+    void show_inside(const Fl_Window* parent);
 
-  static const Fl_Window *current() {return current_;}
-  void make_current() const;
+    bool exec(const Fl_Window* parent = 0, bool grab = false);
 
-  void cursor(Fl_Cursor, Fl_Color=FL_BLACK, Fl_Color=FL_WHITE);
-  static void default_callback(Fl_Window*, void* v);
+    void iconize();
+    bool iconic() const;
+    virtual void destroy();
 
-  virtual int handle(int);
-  virtual void layout();
-  virtual void flush();
-  virtual void draw();
+    void fullscreen();
+    void fullscreen_off(int,int,int,int);
+
+    static const Fl_Window *current() { return current_; }
+    void make_current() const;
+
+    void cursor(Fl_Cursor, Fl_Color=FL_BLACK, Fl_Color=FL_WHITE);
+    static void default_callback(Fl_Window*, void* v);
+
+    virtual int handle(int);
+    virtual void layout();
+    virtual void flush();
+    virtual void draw();
 
 protected:
-  virtual void create();
-  static const Fl_Window *current_;
+    virtual void create();
+    static const Fl_Window *current_;
 
 private:
-  int window_type_;
+    int window_type_;
 
-  friend class Fl_X; Fl_X *i; // points at the system-specific stuff
-  const Fl_Window* child_of_;
-  const char* iconlabel_;
-  const void* icon_;
-  // size_range stuff:
-  short minw, minh, maxw, maxh;
-  unsigned char dw, dh, size_range_set;
-  void size_range_();
-  // values for flags():
-  enum {
-    FL_MODAL		= 0x80000000,
-    FL_NOBORDER 	= 0x40000000,
-    FL_OVERRIDE         = 0x20000000,
-    FL_NON_MODAL	= 0x10000000
-  };
-  static const char* xclass_;
-  void _Fl_Window(); // constructor innards
+    friend class Fl_X;
+    Fl_X *i; // points at the system-specific stuff
+
+    const Fl_Window* child_of_;
+
+    Fl_String iconlabel_;
+    const void* icon_;
+
+    // size_range stuff:
+    short minw, minh, maxw, maxh;
+    unsigned char dw, dh, size_range_set;
+    void size_range_();
+
+    // values for flags():
+    enum {
+        FL_MODAL		= 0x80000000,
+        FL_NOBORDER 	= 0x40000000,
+        FL_OVERRIDE         = 0x20000000,
+        FL_NON_MODAL	= 0x10000000
+    };
+
+    static Fl_String xclass_;
+    void _Fl_Window(); // constructor innards
 };
 
 #endif
-
-//
-// End of "$Id$".
-//

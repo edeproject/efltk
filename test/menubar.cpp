@@ -50,10 +50,10 @@ void test_cb(Fl_Widget* w, void*) {
     if (!m)
         printf("NULL\n");
     else if (m->shortcut())
-        printf("%s - %s\n", m->label(), Fl::key_name(m->shortcut()));
+        printf("%s - %s\n", m->label().c_str(), Fl::key_name(m->shortcut()));
     else
-        printf("%s\n", m->label());
-    if(!strcmp("button", m->label()) || !strcmp("Laza", m->label())) {
+        printf("%s\n", m->label().c_str());
+    if(m->label()=="button" || m->label()=="Laza") {
         Fl_Widget *w=0;
         if( (w=mw->find("button")) ) {
             w->label("Laza");
@@ -63,7 +63,7 @@ void test_cb(Fl_Widget* w, void*) {
         mw->relayout();
         menus[0]->redraw();
     }
-  m->do_callback();
+    m->do_callback();
 }
 
 void quit_cb(Fl_Widget*, void*) {exit(0);}

@@ -17,7 +17,10 @@
 
 #include <efltk/db/Fl_Database.h>
 #include <efltk/db/Fl_Query.h>
+
 #include <ctype.h>
+#include <stdlib.h>
+
 #ifdef _WIN32_WCE
 #include <stdlibx.h>
 #endif

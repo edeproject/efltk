@@ -109,7 +109,7 @@ Fl_Window::Fl_Window(int W, int H, const char *l)
 
 // This is set by Fl::arg to argv[0], or the user can set it.
 // It is used by X to look up stuff in the X resource database:
-const char* Fl_Window::xclass_ = "fltk";
+Fl_String Fl_Window::xclass_("fltk");
 
 extern void fl_fix_focus();
 

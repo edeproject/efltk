@@ -129,7 +129,7 @@ void Fl_Clock_Output::draw(int x, int y, int w, int h)
     fl_push_matrix();
     fl_translate(x+w/2.0f-.5f, y+h/2.0f-.5f);
     fl_scale((w-1)/28.0f, (h-1)/28.0f);
-    if (type() == FL_ROUND_CLOCK)
+    if (type() == ROUND)
     {
         fl_circle(0,0,14);
         fl_color(color()); fl_fill_stroke(FL_BLACK);

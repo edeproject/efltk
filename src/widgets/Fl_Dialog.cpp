@@ -347,7 +347,7 @@ Fl_Widget *Fl_Dialog::find_widget(const char *field_name) const {
       unsigned  n_widgets = page->children();
       for (unsigned j = 0; j < n_widgets; j++) {
          Fl_Widget *widget = page->child(j);
-         if (strcmp(widget->field_name(),field_name) == 0)
+         if(widget->field_name()==field_name)
             return widget;
       }
    }
@@ -417,15 +417,17 @@ void Fl_Dialog::layout() {
    }
 
    for (i = 0; i < cnt; i++) {
-      Fl_Widget *btn = m_buttonList[i];
-      int ww = 0, hh = 0;
-      fl_measure(btn->label(),ww,hh);
-      if (btn->image()) {
-         int ih = btn->image()->height();
-         if (ih > hh) hh = ih;
-      }
-      hh += btn->box()->dh() * 2;
-      if (hh > maxh) maxh = hh;
+       Fl_Widget *btn = m_buttonList[i];
+
+       fl_font(btn->label_font(), btn->label_size());
+       int hh = int(fl_height());
+
+       if (btn->image()) {
+           int ih = btn->image()->height();
+           if (ih > hh) hh = ih;
+       }
+       hh += btn->box()->dh() * 2;
+       if (hh > maxh) maxh = hh;
    }
 
    // resize button panel
@@ -442,8 +444,9 @@ void Fl_Dialog::layout() {
    for (i = 0; i < cnt; i++) {
       Fl_Widget *btn = m_buttonList[i];
 
-      int ww = 0, hh = 0;
-      fl_measure(btn->label(),ww,hh);
+      fl_font(btn->label_font(), btn->label_size());
+      int ww = int(fl_width(btn->label()));
+
       if (btn->image())
          ww += btn->image()->width() + 3;
       ww += btn->box()->dw() * 2 + 4;

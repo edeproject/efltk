@@ -28,13 +28,7 @@
 
 #include <config.h>
 
-#if HAVE_XUTF8
-//# include <efltk/Xutf8.h>
-#endif
-
-#include <efltk/Fl.h>
 #include <efltk/Fl_WM.h>
-#include <efltk/x.h>
 #include <efltk/fl_utf8.h>
 #include <efltk/Fl_Window.h>
 #include <efltk/Fl_Style.h>
@@ -1464,14 +1458,16 @@ int background)
         // Setting this allows the window manager to use the window's class
         // to look up things like border colors and icons in the xrdb database:
         XChangeProperty(fl_display, x->xid, XA_WM_CLASS, XA_STRING, 8, 0,
-            (unsigned char *)window->xclass(), strlen(window->xclass()));
+                        (unsigned char *)window->xclass().c_str(), window->xclass().length());
 
-        // Set the label:
-        //window->label(window->label(), window->iconlabel());
-        const char *name = window->label()?window->label():"";
-        const char *iname = window->iconlabel()?window->iconlabel():fl_file_filename(name);
-        Fl_WM::set_window_title(x->xid, name, strlen(name));
-        Fl_WM::set_window_icontitle(x->xid, iname, strlen(iname));
+        // Set the labels
+        Fl_WM::set_window_title(x->xid, window->label().c_str(), window->label().length());
+        if(!window->iconlabel().empty())
+            Fl_WM::set_window_icontitle(x->xid, window->iconlabel().c_str(), window->iconlabel().length());
+        else {
+            Fl_String iname(fl_file_filename(window->label().c_str()));
+            Fl_WM::set_window_icontitle(x->xid, iname.c_str(), iname.length());
+        }
 
         // Makes the close button produce an event:
         XChangeProperty(fl_display, x->xid, WM_PROTOCOLS,
@@ -1598,33 +1594,32 @@ bool Fl_Window::iconic() const
 
 ////////////////////////////////////////////////////////////////
 
-void Fl_Window::label(const char* label, const char* iconlabel)
+void Fl_Window::label(const char *l, const char *il)
 {
-    this->label(label);
-    this->iconlabel(iconlabel);
+    Fl_String label(l), ilabel(il);
+    this->label(label, ilabel);
 }
 
-void Fl_Window::copy_label(const char* name) {
-    Fl_Widget::copy_label(name);
-    if (i && !parent()) {
-        if (!name) name = "";
-        Fl_WM::set_window_title(i->xid, name, strlen(name));
-    }
-    iconlabel(iconlabel_); //fltk compatibility
-}
-void Fl_Window::label(const char *name) {
-    Fl_Widget::label(name);
-    if (i && !parent()) {
-        if (!name) name = "";
-        Fl_WM::set_window_title(i->xid, name, strlen(name));
-    }
-    iconlabel(iconlabel_); //fltk compatibility
-}
-void Fl_Window::iconlabel(const char *iname) {
-    iconlabel_ = iname;
-    if (i && !parent()) {
-        if (!iname) iname = fl_file_filename(label());
-        Fl_WM::set_window_icontitle(i->xid, iname, strlen(iname));
+void Fl_Window::label(const Fl_String &l, const Fl_String &il)
+{
+    Fl_Widget::label(l);
+    iconlabel_ = il;
+
+    if(i && !parent()) {
+        // Label:
+        if(l.empty()) {
+            Fl_WM::set_window_title(i->xid, "", 0);
+        } else {
+            Fl_WM::set_window_title(i->xid, l.c_str(), l.length());
+        }
+
+        // Icon label:
+        if(iconlabel_.empty()) {
+            Fl_String ilabel = fl_file_filename(l.c_str());
+            Fl_WM::set_window_icontitle(i->xid, ilabel.c_str(), ilabel.length());
+        } else {
+            Fl_WM::set_window_icontitle(i->xid, iconlabel_.c_str(), iconlabel_.length());
+        }
     }
 }
 
@@ -1749,14 +1744,14 @@ static const char* get_default(const char* a)
 
 static inline const char* get_default(const char* a)
 {
-    return XGetDefault(fl_display, Fl_Window::xclass(), a);
+    return XGetDefault(fl_display, Fl_Window::xclass().c_str(), a);
 }
-
 
 static inline const char* get_default(const char* a, const char* b)
 {
     return XGetDefault(fl_display, a, b);
 }
+
 #endif
 
 static Fl_Color to_color(const char* p)

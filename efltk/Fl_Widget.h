@@ -1,41 +1,35 @@
-//
-// "$Id$"
-//
-// Widget header file for the Fast Light Tool Kit (FLTK).
-//
-// Copyright 1998-1999 by Bill Spitzak and others.
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Library General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Library General Public License for more details.
-//
-// You should have received a copy of the GNU Library General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA.
-//
-// Please report all bugs and problems to "fltk-bugs@easysw.com".
-//
+/*
+ * $Id$
+ *
+ * Extended Fast Light Toolkit (EFLTK)
+ * Copyright (C) 2002-2003 by EDE-Team
+ * WWW: http://www.sourceforge.net/projects/ede
+ *
+ * Fast Light Toolkit (FLTK)
+ * Copyright (C) 1998-2003 by Bill Spitzak and others.
+ * WWW: http://www.fltk.org
+ *
+ * This library is distributed under the GNU LIBRARY GENERAL PUBLIC LICENSE
+ * version 2. See COPYING for details.
+ *
+ * Author : Mikko Lahteenmaki
+ * Email  : mikko@fltk.net
+ *
+ * Please report all bugs and problems to "efltk-bugs@fltk.net"
+ *
+ */
 
-#ifndef Fl_Widget_H
-#define Fl_Widget_H
+#ifndef _FL_WIDGET_H_
+#define _FL_WIDGET_H_
 
 #include "Fl_Style.h"
 #include "Fl_Exception.h"
 #include "Fl_Data_Source.h"
 
-class FL_API Fl_Callback_;
 class FL_API Fl_Widget;
 class FL_API Fl_Window;
 class FL_API Fl_Image;
 class FL_API Fl_Group;
-class FL_API Fl_Data_Source;
 
 typedef void (Fl_Callback )(Fl_Widget*, void*);
 typedef Fl_Callback* Fl_Callback_p; // needed for BORLAND
@@ -86,22 +80,26 @@ public:
   void	h(int v)		{h_ = v;}
   int	height();
   bool	resize(int,int,int,int)	;
-  bool	position(int X,int Y)	{return resize(X,Y,w_,h_);}
-  bool	size(int W,int H)	{return resize(x_,y_,W,H);}
+  bool	position(int X,int Y)	{ return resize(X,Y,w_,h_);}
+  bool	size(int W,int H)	{ return resize(x_,y_,W,H);}
 
-  const char* label() const	{return label_;}
-  void	label(const char* a);
-  void	copy_label(const char* a);
+  const Fl_String &label() const  { return label_; }
+  void	label(const Fl_String &l) { label_ = l; }
+  void	label(const char *l)      { label_ = l; }
+  void	copy_label(const char *a) { label(a); }
+  void	copy_label(const Fl_String &a) { label(a); }
 
-  const char* field_name() const { return field_name_; }
-  void  field_name(const char * f);
+  const Fl_String &tooltip() const   { return tooltip_; }
+  void  tooltip(const char *t)       { tooltip_ = t; }
+  void  tooltip(const Fl_String &t)  { tooltip_ = t; }
 
-  Fl_Image* image() const	{return image_;}
-  void	image(Fl_Image* a)	{image_ = a;}
-  void	image(Fl_Image& a)	{image_ = &a;}
+  const Fl_String &field_name() const  { return field_name_; }
+  void  field_name(const char *f)      { field_name_ = f; }
+  void  field_name(const Fl_String &f) { field_name_ = f; }
 
-  const char *tooltip() const	{return tooltip_; }
-  void  tooltip(const char *t)  { tooltip_ = t; }
+  Fl_Image* image() const	{ return image_; }
+  void	image(Fl_Image* a)	{ image_ = a; }
+  void	image(Fl_Image& a)	{ image_ = &a; }
 
   int shortcut() const		{return shortcut_;}
   void shortcut(int s)		{shortcut_ = s;}  
@@ -253,11 +251,11 @@ private:
   uchar			layout_damage_;
   uchar			when_;
 
-  const char*   field_name_; // data source support
-  const char*	tooltip_; // make this into another widget?
-  const char*   label_;
-  Fl_Image*	image_;
-  Fl_Group*	parent_;
+  Fl_String field_name_; // data source support
+  Fl_String tooltip_; // make this into another widget?
+  Fl_String label_;
+  Fl_Image* image_;
+  Fl_Group* parent_;
   const Fl_Style* style_;
 
   Fl_Callback *callback_;
@@ -265,7 +263,3 @@ private:
 };
 
 #endif
-
-//
-// End of "$Id$".
-//

@@ -23,9 +23,9 @@ public:
 
     // Adds child as "root node".
     // If comment type "root node" is not replaced.
-    virtual void add_child(Fl_XmlNode *node, bool prepend=false);
+    virtual void add_node(Fl_XmlNode *node, bool prepend=false);
     // Adds new root node, returns pointer to it
-    virtual Fl_XmlNode *add_child(Fl_String name, bool prepend=false);
+    virtual Fl_XmlNode *add_node(Fl_String name, bool prepend=false);
 
     // Returns a list of processing instruction nodes
     NodeList &pi_list() { return procinstructions_; }

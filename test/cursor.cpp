@@ -113,9 +113,6 @@ int main(int argc, char **argv) {
   slider1.clear_flag(FL_ALIGN_MASK);
   slider1.set_flag(FL_ALIGN_LEFT);
   slider1.step(1);
-#ifndef FLTK_2
-  slider1.precision(0);
-#endif
   slider1.range(0,100);
   slider1.value(0);
   slider1.callback(setcursor);
@@ -125,9 +122,6 @@ int main(int argc, char **argv) {
   slider2.clear_flag(FL_ALIGN_MASK);
   slider2.set_flag(FL_ALIGN_LEFT);
   slider2.step(1);
-#ifndef FLTK_2
-  slider2.precision(0);
-#endif
   slider2.range(0,255);
   slider2.value(0);
   slider2.callback(setfg);
@@ -137,9 +131,6 @@ int main(int argc, char **argv) {
   slider3.clear_flag(FL_ALIGN_MASK);
   slider3.set_flag(FL_ALIGN_LEFT);
   slider3.step(1);
-#ifndef FLTK_2
-  slider3.precision(0);
-#endif
   slider3.range(0,255);
   slider3.value(0);
   slider3.callback(setbg);

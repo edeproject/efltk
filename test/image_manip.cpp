@@ -55,9 +55,9 @@ void button_cb(Fl_Widget *w, void *d)
         current = FILTER_GAMMA;
         break;
     case 4:
-        slider[0]->deactivate();
+/*        slider[0]->deactivate();
         slider[1]->deactivate();
-        slider[2]->deactivate();
+        slider[2]->deactivate();*/
         slider[0]->range(-3, 3);
         slider[0]->value(1); slider[1]->value(1); slider[2]->value(1);
         current = FILTER_DESATURATE;

@@ -1,65 +1,53 @@
-//
-// "$Id$"
-//
-// Fl_FileBrowser definitions for the Fast Light Tool Kit (FLTK).
-//
-// Copyright 1997-1999 by Easy Software Products.
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Library General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Library General Public License for more details.
-//
-// You should have received a copy of the GNU Library General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA.
-//
-// Please report all bugs and problems to "fltk-bugs@easysw.com".
-//
-
-//
-// Include necessary header files...
-//
+/*
+ * $Id$
+ *
+ * Extended Fast Light Toolkit (EFLTK)
+ * Copyright (C) 2002-2003 by EDE-Team
+ * WWW: http://www.sourceforge.net/projects/ede
+ *
+ * Fast Light Toolkit (FLTK)
+ * Copyright (C) 1998-2003 by Bill Spitzak and others.
+ * WWW: http://www.fltk.org
+ *
+ * This library is distributed under the GNU LIBRARY GENERAL PUBLIC LICENSE
+ * version 2. See COPYING for details.
+ *
+ * Author : Mikko Lahteenmaki
+ * Email  : mikko@fltk.net
+ *
+ * Please report all bugs and problems to "efltk-bugs@fltk.net"
+ *
+ */
 
 #ifndef _FL_FILEBROWSER_H_
-#  define _FL_FILEBROWSER_H_
+#define _FL_FILEBROWSER_H_
 
-#  include "Fl_Browser.h"
-
-//
-// Fl_FileBrowser class...
-//
+#include "Fl_Browser.h"
 
 class FL_API Fl_FileBrowser : public Fl_Browser
 {
-  const char	*directory_;
-  uchar		iconsize_;
-  const char	*pattern_;
+    const char	*directory_;
+    uchar	iconsize_;
+    const char	*pattern_;
 
-  int		item_height(void *) const;
-  int		item_width(void *) const;
-  void		item_draw(void *, int, int, int, int) const;
-  int		incr_height() const { return (item_height(0)); }
+    int		item_height(void *) const;
+    int		item_width(void *) const;
+    void       	item_draw(void *, int, int, int, int) const;
+    int		incr_height() const { return (item_height(0)); }
 
 public:
-  Fl_FileBrowser(int, int, int, int, const char * = 0);
+    Fl_FileBrowser(int, int, int, int, const char * = 0);
 
-  uchar		iconsize() const { return (iconsize_); };
-  void		iconsize(uchar s) { iconsize_ = s; redraw(); };
+    uchar		iconsize() const { return (iconsize_); };
+    void		iconsize(uchar s) { iconsize_ = s; redraw(); };
 
-  void		directory(const char *directory) { load(directory); }
-  const char	*directory(void) const { return (directory_); }
+    void		directory(const char *directory) { load(directory); }
+    const char	*directory(void) const { return (directory_); }
 
-  void		filter(const char *pattern);
-  const char	*filter() const { return (pattern_); };
+    void		filter(const char *pattern);
+    const char	*filter() const { return (pattern_); };
 
-  int		load(const char *directory);
+    int		load(const char *directory);
 };
 
 #endif // !_FL_FILEBROWSER_H_

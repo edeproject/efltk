@@ -130,7 +130,7 @@ void Fl_MDI_Bar::layout()
 		if(w->visible()) {
 			int tW=bW, tH=H;
 			fl_measure(w->label(), tW, tH, w->align());
-			if(tW>=bW-6) w->tooltip(w->label());
+                        if(tW>=bW-6) w->tooltip(w->label());
 			else w->tooltip(0);			
 
 			w->resize(bX, Y, bW, H);

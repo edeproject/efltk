@@ -125,7 +125,7 @@ void Fl_Widget::draw_label(int X, int Y, int W, int H, Fl_Flags flags) const
             // If all the flags are off, draw the image and label centered "nicely"
             // by measuring their total size and centering that rectangle:
             if (!(flags & (FL_ALIGN_LEFT|FL_ALIGN_RIGHT|FL_ALIGN_TOP|FL_ALIGN_BOTTOM|
-                           FL_ALIGN_INSIDE)) && label_)
+                           FL_ALIGN_INSIDE)) && !label_.empty())
             {
                 int d = (H-int(h+fl_height()))>>1;
                 if (d >= 0)
@@ -137,7 +137,7 @@ void Fl_Widget::draw_label(int X, int Y, int W, int H, Fl_Flags flags) const
                 {
                     // put image to left
                     int text_w = W; int text_h = H;
-                    fl_measure(label_, text_w, text_h, flags);
+                    fl_measure(label_.c_str(), text_w, text_h, flags);
                     int d = (W-(h+text_w))>>1;
                     if (d > 0) {X += d; W -= d;}
                     flags |= FL_ALIGN_LEFT;
@@ -174,9 +174,10 @@ void Fl_Widget::draw_label(int X, int Y, int W, int H, Fl_Flags flags) const
         }
     }
 
-    if (label_ && *label_)
+    //if (label_ && *label_)
+    if(!label_.empty())
     {
-        label_type()->draw(label_, X, Y, W, H, color, flags);
+        label_type()->draw(label_.c_str(), X, Y, W, H, color, flags);
     }
 
     if (flags & FL_ALIGN_CLIP) fl_pop_clip();
@@ -186,7 +187,7 @@ void Fl_Widget::measure_label(int& w, int& h) const
 {
     fl_font(label_font(), float(label_size()));
     w = h = 300;                 // rather arbitrary choice for maximum wrap width
-    fl_measure(label(), w, h, flags());
+    fl_measure(label().c_str(), w, h, flags());
 }
 
 
