@@ -4,9 +4,7 @@
   <MACROS>
     <VERSION value="BCB.06.00"/>
     <PROJECT value="..\lib\libefltk.lib"/>
-    <OBJFILES value="obj\filename_absolute.obj obj\filename_expand.obj obj\filename_ext.obj 
-      obj\filename_isdir.obj obj\filename_list.obj obj\filename_match.obj 
-      obj\filename_setext.obj obj\Fl.obj obj\Fl_abort.obj obj\Fl_add_idle.obj 
+    <OBJFILES value="obj\cmap.obj obj\Fl.obj obj\Fl_abort.obj obj\Fl_add_idle.obj 
       obj\fl_arc.obj obj\fl_arci.obj obj\Fl_arg.obj obj\Fl_Bitmap.obj 
       obj\fl_blit.obj obj\fl_blit_1.obj obj\fl_blit_a.obj obj\fl_blit_n.obj 
       obj\Fl_Bmp.obj obj\Fl_Boxtype.obj obj\fl_clip.obj obj\fl_color.obj 
@@ -52,8 +50,13 @@
       obj\Fl_Tile.obj obj\Fl_Tool_Bar.obj obj\Fl_Tooltip.obj obj\Fl_Valuator.obj 
       obj\Fl_Value_Input.obj obj\Fl_Value_Slider.obj obj\Fl_Adjuster.obj 
       obj\vsnprintf.obj obj\fl_iconv_converters.obj obj\Fl_Hashs.obj 
-      obj\fl_converters.obj obj\Fl_Exception.obj obj\scandir.obj obj\fl_utf8.obj 
-      obj\Fl_Translator.obj obj\filename.obj"/>
+      obj\fl_converters.obj obj\Fl_Exception.obj obj\fl_utf8.obj obj\scandir.obj 
+      obj\filename_setext.obj obj\filename_list.obj obj\filename_match.obj 
+      obj\filename.obj obj\Fl_ODBC_Database.obj obj\fl_odbc.obj obj\Fl_Query.obj 
+      obj\Fl_Params.obj obj\Fl_Database.obj obj\Fl_Buffer.obj 
+      obj\Fl_PostScript.obj obj\Fl_Printer.obj obj\Fl_Memory_DS.obj 
+      obj\Fl_IMAP_DS.obj obj\Fl_IMAP_Connect.obj obj\Fl_FTP_Connect.obj 
+      obj\Fl_Socket.obj"/>
     <RESFILES value=""/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -62,28 +65,27 @@
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
     <PACKAGES value=""/>
-    <PATHCPP value=".;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core"/>
+    <PATHCPP value=".;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\db\odbc;..\src\db\odbc;..\src\db;..\src\db;..\src\db;..\src\core;..\src\core;..\src\core;..\src\widgets;..\src\net;..\src\net;..\src\net;..\src\core"/>
     <PATHPAS value=".;"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
     <LINKER value="TLib"/>
-    <USERDEFINES value="_DEBUG,_MSC_DLL,WIN32,_WINDOWS,WIN32_LEAN_AND_MEAN,VC_EXTRA_LEAN,WIN32_EXTRA_LEAN_MBCS,_LIB,_WIN32"/>
+    <USERDEFINES value="_DEBUG;_WIN32;WIN32"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT"/>
     <MAINSOURCE value="libefltk.bpf"/>
-    <INCLUDEPATH value="..;..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;\efltk"/>
-    <LIBPATH value="..\src\widgets;..\src\core;$(BCB)\lib\obj;$(BCB)\lib"/>
-    <WARNINGS value="-w-par -wasm"/>
+    <INCLUDEPATH value="..\src\net;..\src\db;..\src\db\odbc;..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;.."/>
+    <LIBPATH value="..\src\net;..\src\db;..\src\db\odbc;..\src\widgets;..\src\core;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <WARNINGS value="-w-par"/>
     <LISTFILE value=""/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I.. -I..\src\widgets -I..\src\core -I$(BCB)\include -I$(BCB)\include\vcl 
-      -I. -I\efltk -src_suffix cpp 
-      -D_DEBUG,_MSC_DLL,WIN32,_WINDOWS,WIN32_LEAN_AND_MEAN,VC_EXTRA_LEAN,WIN32_EXTRA_LEAN_MBCS,_LIB,_WIN32 
-      -boa"/>
-    <CFLAG1 value="-vGc -vGt -vGd -Od -Q -Vx -Ve -xf -x- -X- -r- -a2 -5 -b -d -k -y -v -vi- 
-      -c -tW -tWM"/>
-    <PFLAGS value="-N2.\obj -N0.\obj -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <IDLCFLAGS value="-I..\src\net -I..\src\db -I..\src\db\odbc -I..\src\widgets -I..\src\core 
+      -I$(BCB)\include -I$(BCB)\include\vcl -I. -I.. -src_suffix cpp -D_DEBUG 
+      -D_WIN32 -DWIN32 -boa"/>
+    <CFLAG1 value="-vGc -vGt -vGd -Od -H=obj\efltk.csm -Hc -P -Vx -Ve -X- -r- -a4 -5 -b -d -k 
+      -y -v -vi- -c -tW -tWM"/>
+    <PFLAGS value="-N2..\bcb6\obj -N0..\bcb6\obj -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
     <AFLAGS value="/mx /w2 /zi"/>
     <LFLAGS value="-l..\lib /P256"/>
     <OTHERFILES value=""/>
@@ -95,13 +97,7 @@
   </LINKER>
   <FILELIST>
       <FILE FILENAME="libefltk.bpf" FORMNAME="" UNITNAME="libefltk" CONTAINERID="BPF" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\src\core\filename_absolute.cpp" FORMNAME="" UNITNAME="filename_absolute.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\src\core\filename_expand.cpp" FORMNAME="" UNITNAME="filename_expand.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\src\core\filename_ext.cpp" FORMNAME="" UNITNAME="filename_ext.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\src\core\filename_isdir.cpp" FORMNAME="" UNITNAME="filename_isdir.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\src\core\filename_list.cpp" FORMNAME="" UNITNAME="filename_list.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\src\core\filename_match.cpp" FORMNAME="" UNITNAME="filename_match.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\src\core\filename_setext.cpp" FORMNAME="" UNITNAME="filename_setext.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\cmap.cpp" FORMNAME="" UNITNAME="cmap.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\core\Fl.cpp" FORMNAME="" UNITNAME="Fl.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\core\Fl_abort.cpp" FORMNAME="" UNITNAME="Fl_abort.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\core\Fl_add_idle.cpp" FORMNAME="" UNITNAME="Fl_add_idle.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -256,10 +252,25 @@
       <FILE FILENAME="..\src\core\Fl_Hashs.cpp" FORMNAME="" UNITNAME="Fl_Hashs.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\core\fl_converters.cpp" FORMNAME="" UNITNAME="fl_converters.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\core\Fl_Exception.cpp" FORMNAME="" UNITNAME="Fl_Exception" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\src\core\scandir.cpp" FORMNAME="" UNITNAME="scandir" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\src\core\fl_utf8.cpp" FORMNAME="" UNITNAME="fl_utf8" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\src\core\Fl_Translator.cpp" FORMNAME="" UNITNAME="Fl_Translator" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\src\core\filename.cpp" FORMNAME="" UNITNAME="filename" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_utf8.cpp" FORMNAME="" UNITNAME="fl_utf8.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\scandir.cpp" FORMNAME="" UNITNAME="scandir.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\filename_setext.cpp" FORMNAME="" UNITNAME="filename_setext.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\filename_list.cpp" FORMNAME="" UNITNAME="filename_list.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\filename_match.cpp" FORMNAME="" UNITNAME="filename_match.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\filename.cpp" FORMNAME="" UNITNAME="filename.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\db\odbc\Fl_ODBC_Database.cpp" FORMNAME="" UNITNAME="Fl_ODBC_Database.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\db\odbc\fl_odbc.cpp" FORMNAME="" UNITNAME="fl_odbc.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\db\Fl_Query.cpp" FORMNAME="" UNITNAME="Fl_Query.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\db\Fl_Params.cpp" FORMNAME="" UNITNAME="Fl_Params.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\db\Fl_Database.cpp" FORMNAME="" UNITNAME="Fl_Database.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Buffer.cpp" FORMNAME="" UNITNAME="Fl_Buffer" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_PostScript.cpp" FORMNAME="" UNITNAME="Fl_PostScript" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Printer.cpp" FORMNAME="" UNITNAME="Fl_Printer" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Memory_DS.cpp" FORMNAME="" UNITNAME="Fl_Memory_DS" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\net\Fl_IMAP_DS.cpp" FORMNAME="" UNITNAME="Fl_IMAP_DS.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\net\Fl_IMAP_Connect.cpp" FORMNAME="" UNITNAME="Fl_IMAP_Connect.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\net\Fl_FTP_Connect.cpp" FORMNAME="" UNITNAME="Fl_FTP_Connect.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Socket.cpp" FORMNAME="" UNITNAME="Fl_Socket" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
@@ -299,18 +310,20 @@ ProductVersion=1.0.0.0
 Comments=
 
 [HistoryLists\hlIncludePath]
-Count=6
-Item0=..;..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;\efltk
-Item1=..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;\efltk
-Item2=..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;r:\efltk
-Item3=..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;r:\efltk
-Item4=..\src\core;$(BCB)\include;$(BCB)\include\vcl;.
-Item5=..\src\core;$(BCB)\include;$(BCB)\include\vcl
+Count=7
+Item0=..\src\db\odbc;..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;..
+Item1=..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;..
+Item2=..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;\efltk
+Item3=..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;r:\efltk
+Item4=..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;r:\efltk
+Item5=..\src\core;$(BCB)\include;$(BCB)\include\vcl;.
+Item6=..\src\core;$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
-Count=2
-Item0=..\src\widgets;..\src\core;$(BCB)\lib\obj;$(BCB)\lib
-Item1=..\src\core;$(BCB)\lib\obj;$(BCB)\lib
+Count=3
+Item0=..\src\db\odbc;..\src\widgets;..\src\core;$(BCB)\lib\obj;$(BCB)\lib
+Item1=..\src\widgets;..\src\core;$(BCB)\lib\obj;$(BCB)\lib
+Item2=..\src\core;$(BCB)\lib\obj;$(BCB)\lib
 
 [HistoryLists\hlDebugSourcePath]
 Count=1
@@ -318,13 +331,13 @@ Item0=$(BCB)\source\vcl
 
 [HistoryLists\hlConditionals]
 Count=3
-Item0=_DEBUG,_MSC_DLL,WIN32,_WINDOWS,WIN32_LEAN_AND_MEAN,VC_EXTRA_LEAN,WIN32_EXTRA_LEAN_MBCS,_LIB,_WIN32
+Item0=_DEBUG;_WIN32;WIN32
 Item1=_DEBUG;_WIN32
 Item2=_DEBUG
 
 [HistoryLists\hlIntOutputDir]
 Count=3
-Item0=.\obj
+Item0=..\bcb6\obj
 Item1=\efltk\bcb6\obj
 Item2=R:\efltk\bcb6\obj
 
@@ -336,11 +349,10 @@ Item2=R:\efltk\lib\
 Item3=R:\efltk\lib
 
 [HistoryLists\hIBPIOutputDir]
-Count=4
+Count=3
 Item0=..\lib
-Item1=..\lib\
-Item2=\efltk\lib
-Item3=R:\efltk\lib
+Item1=\efltk\lib
+Item2=R:\efltk\lib
 
 [HistoryLists\hlTlibPageSize]
 Count=3
@@ -364,7 +376,7 @@ RemoteCWD=
 RemoteDebug=0
 
 [Compiler]
-ShowInfoMsgs=1
+ShowInfoMsgs=0
 LinkDebugVcl=0
 LinkCGLIB=1
 

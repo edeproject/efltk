@@ -1946,14 +1946,15 @@ bool fl_get_system_colors()
     Fl_Widget::default_style->selection_color = select_background;
     Fl_Widget::default_style->selection_text_color = select_foreground;
 
-    Fl_Style* style;
+    Fl_Style* style = Fl_Style::find("scrollbar");
 
-    if ((style = Fl_Style::find("scrollbar"))) {
+    if (style) {
         //    style->color = fl_color_average(slider_background, text_background, .5);
         style->color = fl_color_average(background, text_background, .5);
     }
 
-    if ((style = Fl_Style::find("item"))) {
+    style = Fl_Style::find("item");
+    if (style) {
         style->color = menuitem_background;
         style->label_color = menuitem_foreground;
         style->selection_color = select_background;
@@ -1968,13 +1969,14 @@ bool fl_get_system_colors()
         style->selection_text_color = foreground;
       }
     */
-
-    if ((style = Fl_Style::find("menu bar"))) {
+    style = Fl_Style::find("menu bar");
+    if (style) {
 		// enable title highlightig
         style->highlight_color = FL_GRAY;
     }
 
-    if ((style = Fl_Style::find("tooltip"))) {
+    style = Fl_Style::find("tooltip");
+    if (style) {
         style->color = tooltip_background;
         style->label_color = tooltip_foreground;
     }
@@ -2025,7 +2027,8 @@ bool fl_get_system_colors()
     Fl_Widget::default_style->label_size = size;
     Fl_Widget::default_style->text_size = size;
 
-    if ((style = Fl_Style::find("item")))
+    style = Fl_Style::find("item");
+    if (style)
     {
         // get font info for menu items from LOGFONT structure
         font = fl_find_font(font_name(ncm.lfMenuFont.lfFaceName));
@@ -2036,20 +2039,23 @@ bool fl_get_system_colors()
         style->label_font = style->text_font = font;
         style->label_size = style->text_size = size;
 
-        if ((style = Fl_Style::find("menu bar")))
+        style = Fl_Style::find("menu bar");
+        if (style)
         {
             style->label_font = style->text_font = font;
             style->label_size = style->text_size = size;
         }
 
-        if ((style = Fl_Style::find("menu title")))
+        style = Fl_Style::find("menu title");
+        if (style)
         {
             style->label_font = style->text_font = font;
             style->label_size = style->text_size = size;
         }
     }
 
-    if ((style = Fl_Style::find("tooltip")))
+    style = Fl_Style::find("tooltip");
+    if (style)
     {
         // get font info for tooltips from LOGFONT structure
         font = fl_find_font(font_name(ncm.lfStatusFont.lfFaceName));

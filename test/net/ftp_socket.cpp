@@ -12,12 +12,9 @@ int main(int argc, char *argv[]) {
     char            fileName[80];
 
     fl_try {
-        cout << "ftp server: ";
-        cin >> server;
-        cout << "user: ";
-        cin >> userName;
-        cout << "password: ";
-        cin >> password;
+        strcpy(server,"ftp.sunet.se");
+        strcpy(userName,"anonymous");
+        strcpy(password,"alex@alex.net");
         ftp.host(server);
         ftp.user(userName);
         ftp.password(password);

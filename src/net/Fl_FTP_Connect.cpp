@@ -37,15 +37,16 @@ const Fl_String_List& Fl_FTP_Socket::get_response() {
 
     // read the return code
     if (readBuffer[3] == '-') {
-        readBuffer[3] = 0;
+        readBuffer[3] = ' ';
+        readBuffer[4] = 0;
         strcpy(retCode,readBuffer);
         for (;;) {
-            len = read_line(readBuffer,255);
+            read_line(readBuffer,255);
             m_response.append(readBuffer);
-            readBuffer[3] = 0;
+            readBuffer[4] = 0;
             if (strcmp(readBuffer,retCode) == 0)
                 break;
-        } 
+        }
     }
     return m_response;
 }
@@ -143,24 +144,16 @@ void Fl_FTP_Connect::cmd_pwd() {
 }
 
 void Fl_FTP_Connect::get_list(Fl_String cmd,Fl_String_List& list) {
-    Fl_Buffer	buffer(255);
+    Fl_Buffer	buffer(1024);
     open_data_port();
     command(cmd);
     int         len;
     list.clear();
     do {
         len = m_dataSocket.read_line(buffer);
-        char *p = strchr(buffer.data(),'\r');
-        if (p) 
-            *p = 0;
-        else {
-            p = strchr(buffer.data(),'\n');
-            if (p) 
-                *p = 0;
-        }
-        if (len > 1)
+        if (len)
             list.append(buffer.data());
-    } while (len > 1);
+    } while (len);
     m_dataSocket.close();
     m_commandSocket.get_response();
 }
@@ -174,7 +167,7 @@ void Fl_FTP_Connect::cmd_nlst(Fl_String_List& result) {
 }
 
 void Fl_FTP_Connect::cmd_retr(Fl_String fileName) {
-    Fl_Buffer	buffer(2048);
+    char	*buffer = new char[2048];
     FILE *outfile = fopen(fileName.c_str(),"w+b");
     if (!outfile)
         fl_throw("Can't open file <" + fileName + "> for writing");
@@ -182,16 +175,19 @@ void Fl_FTP_Connect::cmd_retr(Fl_String fileName) {
     command("RETR " + fileName);
     int len;
     do {
-        len = m_dataSocket.read(buffer);
+        len = m_dataSocket.read(buffer,2048);
         if (len) {
-            int bytes = fwrite(buffer.data(),1,len,outfile);
-            if (bytes != len)
+            int bytes = fwrite(buffer,1,len,outfile);
+            if (bytes != len) {
+                delete buffer;
                 fl_throw("Can't open file <" + fileName + "> for writing");
+            }
         }
     } while (len);
     m_dataSocket.close();
     fclose(outfile);
     m_commandSocket.get_response();
+    delete buffer;
 }
 
 void Fl_FTP_Connect::cmd_store(Fl_String fileName) {

@@ -28,35 +28,45 @@ void Fl_Socket_Reader::open(int socket) {
    m_readOffset = 0;
 }
 
-int Fl_Socket_Reader::read_available(char *dest,int sz,bool read_line) {
-    char *readPosition = m_buffer+m_readOffset;
-    bool completeLine = false;
-
-    // check if we have enough data read already in buffer
+int Fl_Socket_Reader::buffered_read(char *dest,int sz,bool read_line) {
     int availableBytes = m_bytes - m_readOffset;
     int bytesToRead = sz;
-    if (availableBytes <= bytesToRead) bytesToRead = availableBytes;
-
-    if (!availableBytes) return 0;
+    bool eol = 0;
+    if (!availableBytes) {
+        m_readOffset = 0;
+#ifdef _WIN32
+        m_bytes = recv(m_socket, m_buffer, m_size-2, NULL);
+#else
+        m_bytes = ::read(m_socket, m_buffer, m_size-2);
+#endif
+        availableBytes = m_bytes;
+        m_buffer[m_bytes] = 0;
+        if (!m_bytes)
+            return 0;
+    }
+    char *readPosition = m_buffer+m_readOffset;
+    if (availableBytes < bytesToRead)
+        bytesToRead = availableBytes;
 
     if (read_line) {
         char *cr = (char *)strchr(readPosition,'\n');
         if (cr) {
-            int bytes = cr - readPosition;
-            if (bytes && *(cr-1) == '\r')
-                    *(cr-1) = 0;
-            else    *cr = 0;
-            bytesToRead = bytes+1;
-            completeLine = true;
+            eol = 1;
+            bytesToRead = cr - readPosition + 1;
+            *cr = 0;
+            if (bytesToRead) {
+                cr--;
+                if (*cr == '\r')
+                    *cr = 0;
+            }
         }
     }
 
     // copy data to dest, advance the read offset
     memcpy(dest,readPosition,bytesToRead);
     m_readOffset += bytesToRead;
-
-    if (completeLine)
-        return -(bytesToRead-1);
+    if (eol) // Indicate, that we have a complete string
+        return -bytesToRead;
 
     return bytesToRead;
 }
@@ -64,47 +74,26 @@ int Fl_Socket_Reader::read_available(char *dest,int sz,bool read_line) {
 int Fl_Socket_Reader::read(char *dest,int sz,bool read_line) {
     int total = 0;
     int eol = 0;
-    // Check the existing buffer
-    int bytes = read_available(dest,sz,read_line);
-    if (read_line && bytes < 0) // The complete line found
-        return -bytes;
 
-    dest += bytes;
-    total += bytes;
-
-    int bytesToRead = sz - bytes;
-    if (bytesToRead == 0) return sz;
     if (m_socket <= 0)
         fl_throw("Can't read from closed socket");
-    while (bytesToRead) {
-        m_readOffset = 0;
-#ifdef _WIN32
-        bytes = recv(m_socket, m_buffer, m_size-2, NULL);
-#else
-        bytes = ::read(m_socket, m_buffer, m_size-2);
-#endif
-        m_bytes = bytes;
-        if (read_line) {
-            m_buffer[bytes] = 0;
-            char *cr = (char *)strchr(m_buffer,'\n');
-            if (cr) {
-                bytes = cr - m_buffer + 1;
-                if (bytes && *(cr-1) == '\r')
-                        *(cr-1) = 0;
-                else    *cr = 0;
-                bytesToRead = bytes;
-                eol = 1;
-            }
+
+    while (!eol) {
+        int bytesToRead = sz - total;
+        if (bytesToRead <= 0) return sz;
+
+        int bytes = buffered_read(dest,bytesToRead,read_line);
+
+        if (!bytes) // No more data
+            break;
+
+        if (bytes < 0) { // Received the complete string
+            eol = 1;
+            bytes = -bytes;
         }
-        if (bytes > bytesToRead)
-            bytes = bytesToRead;
-        total += bytesToRead;
-        memcpy(dest,m_buffer,bytes);
-        if (read_line)
-            *(dest + bytes) = 0;
+
+        total += bytes;
         dest += bytes;
-        m_readOffset += bytes;
-        bytesToRead -= bytes;
     }
     return total - eol;
 }
@@ -250,7 +239,7 @@ int Fl_Socket::read(char *buffer,int size) {
 }
 
 int Fl_Socket::read(Fl_Buffer& buffer) {
-    int rc = m_reader.read(buffer.data(),buffer.size(),true);
+    int rc = m_reader.read(buffer.data(),buffer.size(),false);
     buffer.bytes(rc);
     return rc;
 }

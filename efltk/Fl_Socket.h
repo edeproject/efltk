@@ -19,6 +19,7 @@ typedef int SOCKET;
 class Fl_Socket_Reader : protected Fl_Buffer {
    int m_socket;
    int m_readOffset;
+   int buffered_read(char *dest,int sz,bool read_line);
    int read_available(char *dest,int sz,bool read_line);
 public:
    Fl_Socket_Reader(int buffer_size=16384);

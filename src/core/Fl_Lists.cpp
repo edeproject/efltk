@@ -310,7 +310,7 @@ void Fl_String_List::print(FILE *fp) const
 {
 	unsigned cnt = count();
 	for (unsigned i = 0; i < cnt; i++)
-		fputs(item(i)->c_str(),fp);
+		fprintf(fp,"%s\n",item(i)->c_str());
 }
 
 /////////////////////////////////////
