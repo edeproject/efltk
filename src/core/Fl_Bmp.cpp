@@ -1,8 +1,7 @@
 #include "fl_internal.h"
 #include <efltk/Fl_Image.h>
+#include <efltk/Fl_Exception.h>
 #include <efltk/Fl.h>
-
-static Fl_IO bmp_io;
 
 #define BMP_BYTES_TO_CHECK 2
 
@@ -38,22 +37,22 @@ typedef struct tagRGBQUAD2
 }
 RGBQuad;
 
-uint16 ReadLe16()
+uint16 ReadLe16(Fl_IO &bmp_io)
 {
     uint16 tmp;
     bmp_io.read(&tmp, sizeof(uint16));
     return fl_swap_le16(tmp);
 }
 
-uint32 ReadLe32()
+uint32 ReadLe32(Fl_IO &bmp_io)
 {
     uint32 tmp;
     bmp_io.read(&tmp, sizeof(uint32));
     return fl_swap_le32(tmp);
 }
 
-static bool bmp_create(uint8 *&data, Fl_PixelFormat &fmt, int &w, int &h)
-{	
+static bool bmp_create(Fl_IO &bmp_io, uint8 *&data, Fl_PixelFormat &fmt, int &w, int &h)
+{
     char *error_str=0;
     Fl_Colormap *palette=0;
     int bmpPitch;
@@ -70,7 +69,7 @@ static bool bmp_create(uint8 *&data, Fl_PixelFormat &fmt, int &w, int &h)
     uint16 bfReserved1;
     uint16 bfReserved2;
     uint32 bfOffBits;
-	uint pitch;
+    uint pitch;
 
     /* The Win32 BITMAPINFOHEADER struct (40 bytes) */
     uint32 biSize;
@@ -84,31 +83,31 @@ static bool bmp_create(uint8 *&data, Fl_PixelFormat &fmt, int &w, int &h)
     int32 biYPelsPerMeter;
     uint32 biClrUsed;
     uint32 biClrImportant;
-	uint32 file_offset;
+    uint32 file_offset;
 
-	file_offset = bmp_io.tell();
-		
-	bmp_io.read(magic, 2);
+    file_offset = bmp_io.tell();
+
+    bmp_io.read(magic, 2);
     if(strncmp(magic, "BM", 2)) {
-		error_str = "File is not BMP";
+        error_str = "BMP: File is not BMP";
         goto error;
-	}
+    }
 
     // Header
-    bfSize		  = ReadLe32();
-    bfReserved1	= ReadLe16();
-    bfReserved2	= ReadLe16();
-    bfOffBits	  = ReadLe32();		
+    bfSize	= ReadLe32(bmp_io);
+    bfReserved1	= ReadLe16(bmp_io);
+    bfReserved2	= ReadLe16(bmp_io);
+    bfOffBits	= ReadLe32(bmp_io);
 
     /* Read the Win32 BITMAPINFOHEADER */
-    biSize		 = ReadLe32();	
+    biSize	= ReadLe32(bmp_io);
 
     if(biSize == 12) /* BITMAPCOREINFO */
     {
-        biWidth		= (uint32)ReadLe16();
-        biHeight	= (uint32)ReadLe16();
-        biPlanes	= ReadLe16();
-        biBitCount	= ReadLe16();
+        biWidth		= (uint32)ReadLe16(bmp_io);
+        biHeight	= (uint32)ReadLe16(bmp_io);
+        biPlanes	= ReadLe16(bmp_io);
+        biBitCount	= ReadLe16(bmp_io);
         biCompression	= BI_RGB;
         biSizeImage	= 0;
         biXPelsPerMeter	= 0;
@@ -120,16 +119,16 @@ static bool bmp_create(uint8 *&data, Fl_PixelFormat &fmt, int &w, int &h)
     }
     else if(biSize == 40) /* BITMAPINFO */
     {
-        biWidth		= ReadLe32();
-        biHeight	= ReadLe32();
-        biPlanes	= ReadLe16();
-        biBitCount	= ReadLe16();
-        biCompression	= ReadLe32();
-        biSizeImage	= ReadLe32();
-        biXPelsPerMeter	= ReadLe32();
-        biYPelsPerMeter	= ReadLe32();
-        biClrUsed	= ReadLe32();
-        biClrImportant	= ReadLe32();
+        biWidth		= ReadLe32(bmp_io);
+        biHeight	= ReadLe32(bmp_io);
+        biPlanes	= ReadLe16(bmp_io);
+        biBitCount	= ReadLe16(bmp_io);
+        biCompression	= ReadLe32(bmp_io);
+        biSizeImage	= ReadLe32(bmp_io);
+        biXPelsPerMeter	= ReadLe32(bmp_io);
+        biYPelsPerMeter	= ReadLe32(bmp_io);
+        biClrUsed	= ReadLe32(bmp_io);
+        biClrImportant	= ReadLe32(bmp_io);
     }
     else
         goto error;
@@ -184,25 +183,25 @@ static bool bmp_create(uint8 *&data, Fl_PixelFormat &fmt, int &w, int &h)
         case 15:
         case 16:
         case 32:
-            Rmask = ReadLe32();
-            Gmask = ReadLe32();
-            Bmask = ReadLe32();
+            Rmask = ReadLe32(bmp_io);
+            Gmask = ReadLe32(bmp_io);
+            Bmask = ReadLe32(bmp_io);
             break;
         default:
-					break;
+            break;
         }
         break;
     default:
-		error_str = "Compressed BMP files not supported";
+        error_str = "BMP: Compressed BMP files not supported";
         goto error;
     }
 
     /* Create a compatible surface, note that the colors are RGB ordered */
-	w = biWidth;
-	h = biHeight;
-	fmt.realloc(biBitCount, Rmask, Gmask, Bmask, 0);
-	pitch = Fl_Renderer::calc_pitch(fmt.bytespp, w);
-	data = new uint8[h*pitch];
+    w = biWidth;
+    h = biHeight;
+    fmt.realloc(biBitCount, Rmask, Gmask, Bmask, 0);
+    pitch = Fl_Renderer::calc_pitch(fmt.bytespp, w);
+    data = new uint8[h*pitch];
 
     /* Load the palette, if any */
     palette = fmt.palette;
@@ -229,8 +228,8 @@ static bool bmp_create(uint8 *&data, Fl_PixelFormat &fmt, int &w, int &h)
         palette->ncolors = biClrUsed;
     }
 
-	bmp_io.seek(file_offset+bfOffBits);
-	
+    bmp_io.seek(file_offset+bfOffBits);
+
     bits = (uint8 *)data+(h*pitch);
     switch (ExpandBMP) {
     case 1:
@@ -255,7 +254,7 @@ static bool bmp_create(uint8 *&data, Fl_PixelFormat &fmt, int &w, int &h)
             for ( i=0; i<w; ++i ) {
                 if ( i%(8/ExpandBMP) == 0 ) {
                     if ( !bmp_io.read(&pixel, 1) ) {
-                        //printf("Error reading from BMP\n");
+                        error_str = "BMP: Error reading file";
                         goto error;
                     }
                 }
@@ -267,6 +266,7 @@ static bool bmp_create(uint8 *&data, Fl_PixelFormat &fmt, int &w, int &h)
 
         default:
             if(bmp_io.read(bits, pitch) != pitch) {
+                error_str = "BMP: Error reading file";
                 goto error;
             }
             if(Fl_Renderer::big_endian()) {
@@ -303,41 +303,42 @@ static bool bmp_create(uint8 *&data, Fl_PixelFormat &fmt, int &w, int &h)
     return true;
 
 error:
-	Fl::warning("Error reading BMP: %s", error_str?error_str:"Unknown");
     if(data) delete []data;
-	data = 0;
+    data = 0;
+    fl_throw(error_str?error_str:"BMP: Unknown");
     return false;
 }
 
 static bool bmp_read_file(FILE *fp, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h)
 {
-	bmp_io.init_io(fp, 0, 0);
-	return bmp_create(data, format, w, h);
+    Fl_IO bmp_io;
+    bmp_io.init_io(fp, 0, 0);
+    return bmp_create(bmp_io, data, format, w, h);
 }
 
 static bool bmp_read_mem(uint8 *stream, uint32 size, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h)
 {
-	bmp_io.init_io(0, stream, size);
-	return bmp_create(data, format, w, h);
+    Fl_IO bmp_io;
+    bmp_io.init_io(0, stream, size);
+    return bmp_create(bmp_io, data, format, w, h);
 }
 
 Fl_Image_IO bmp_reader =
 {
-	/* GENERAL: */
-	"BMP", //name
-	"bmp", //filename extension
+    /* GENERAL: */
+    "BMP", //name
+    "bmp", //filename extension
 
-	/* VALIDATE FUNCTIONS: */
+    /* VALIDATE FUNCTIONS: */
     bmp_is_valid_file, //bool (*is_valid_file)(const char *filename, FILE *fp);
     bmp_is_valid_mem, //bool (*is_valid_mem)(uint8 *stream, uint32 size);
     NULL, //bool (*is_valid_xpm)(uint8 **stream);
 
-	/* READ FUNCTIONS: */
-	bmp_read_file, //bool (*read_file)(FILE *fp, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h);
+    /* READ FUNCTIONS: */
+    bmp_read_file, //bool (*read_file)(FILE *fp, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h);
     bmp_read_mem, //bool (*read_mem)(uint8 *stream, uint32 size, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h);
 
-	/* WRITE FUNCTIONS: */
-	NULL, //bool (*write_mem)(uint8 *&stream, int &size, int quality, uint8 *data, Fl_PixelFormat &data_format, int w, int h);
-	NULL //bool (*write_file)(FILE *fp, int quality, uint8 *data, Fl_PixelFormat &format, int w, int h);
+    /* WRITE FUNCTIONS: */
+    NULL, //bool (*write_mem)(uint8 *&stream, int &size, int quality, uint8 *data, Fl_PixelFormat &data_format, int w, int h);
+    NULL //bool (*write_file)(FILE *fp, int quality, uint8 *data, Fl_PixelFormat &format, int w, int h);
 };
-

@@ -250,10 +250,12 @@ void Fl_Image::clear()
 {
     invalidate();
     if(_data && _data_alloc) {
-        delete []_data;
+        free(_data); //Allocated by malloc
     }
-	_data = 0;
-	_data_alloc = false;
+    _data = 0;
+    _data_alloc = false;
+    _pitch = 0;
+    w = h = 0;
 }
 
 Fl_Image *Fl_Image::grayscale(Fl_PixelFormat *new_format)
@@ -885,29 +887,29 @@ extern Fl_Image_IO gif_reader;
 static bool xpm_data=false;
 
 Fl_Image* Fl_Image::read_xpm(const char *filename, const char * const *data)
-{	
-	xpm_data=true;
-	Fl_Image *ret = new Fl_Image();	
-	if(ret->read_image(filename, (const uint8 *)data, sizeof(data)))
-		return ret;
-	delete ret;
-	return 0;
+{
+    xpm_data=true;
+    Fl_Image *ret = new Fl_Image();
+    if(ret->read_image(filename, (const uint8 *)data, sizeof(data)))
+        return ret;
+    delete ret;
+    return 0;
 }
 
 Fl_Image* Fl_Image::read(const char *filename, const uint8 *data, uint32 data_size)
-{	
-	xpm_data=false;
-	Fl_Image *ret = new Fl_Image();
-	if(ret->read_image(filename, data, data_size))
-		return ret;
-	delete ret;
-	return 0;
+{
+    xpm_data=false;
+    Fl_Image *ret = new Fl_Image();
+    if(ret->read_image(filename, data, data_size))
+        return ret;
+    delete ret;
+    return 0;
 }
 
 bool Fl_Image::read_image(const char *filename, const char * const *data)
 {
-	xpm_data=true;	
-	return read_image(filename, (const uint8 *)data, sizeof(data));
+    xpm_data=true;
+    return read_image(filename, (const uint8 *)data, sizeof(data));
 }
 
 bool Fl_Image::read_image(const char *filename, const uint8 *data, uint32 data_size)
@@ -986,7 +988,7 @@ bool Fl_Image::write_image(const char *filename, Fl_Image_IO *io)
     return ret;
 }
 
-bool Fl_Image::write_image(uint8 *&data, int &data_size, const char *io_name) 
+bool Fl_Image::write_image(uint8 *&data, int &data_size, const char *io_name)
 {
     return write_image(data, data_size, fl_find_imageio(io_name, 0));
 }
@@ -1001,5 +1003,3 @@ bool Fl_Image::write_image(uint8 *&data, int &data_size, Fl_Image_IO *io)
 
     return io->write_mem(data, data_size, quality_, _data, fmt, w, h);
 }
-
-
