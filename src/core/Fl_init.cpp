@@ -24,7 +24,7 @@
 
 bool im_state_effects = true;
 
-bool menu_anim   = false;
+bool menu_anim   = true;
 float menu_speed = 4.0f;
 
 bool mdi_anim        = true;
