@@ -29,6 +29,12 @@
 #include <efltk/win32.h>
 #include <stdio.h>
 
+#ifdef _WIN32_WINNT
+ #if _WIN32_WINNT >= 0x0500
+  #define _USE_FAST_BRUSH_
+ #endif
+#endif
+
 // The current color:
 Fl_Color    fl_color_;
 COLORREF    fl_colorref;
@@ -104,14 +110,14 @@ void Fl_Device::line_style(int style, int width, char* dashes)
 #endif
 }
 
-#if _WIN32_WINNT >= 0x0500
+#ifdef _USE_FAST_BRUSH_
 static HPEN stockpen = (HPEN)GetStockObject(DC_PEN);
 static HBRUSH stockbrush = (HBRUSH)GetStockObject(DC_BRUSH);
 #endif
 
 HPEN fl_setpen() 
 {
-#if _WIN32_WINNT >= 0x0500
+#ifdef _USE_FAST_BRUSH_
 	if (!lstyle && line_width <= 1) {
 		SelectObject(fl_gc, stockpen);
 		SetDCPenColor(fl_gc, fl_colorref);
@@ -137,12 +143,6 @@ J1:
 
 HBRUSH fl_setbrush()
 {
-#ifdef _WIN32_WINNT
-#if _WIN32_WINNT >= 0x0500
-  #define _USE_FAST_BRUSH_
-#endif
-#endif
-
 #ifdef _USE_FAST_BRUSH_
     SelectObject(fl_gc, stockbrush);
     SetDCBrushColor(fl_gc, fl_colorref);
