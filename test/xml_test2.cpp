@@ -12,22 +12,23 @@
 class ExampleHandler : public Fl_XmlHandler
 {
 public:
+	Fl_XmlLocator my_locator;
     Fl_Window *win;
 
     ExampleHandler() { win=0; }
     virtual ~ExampleHandler() { if(win) delete win; }
 
+	virtual void set_locator(Fl_XmlLocator **locator) { 
+		*locator = &my_locator;
+	}
+
     // Called after header of document parsed
-    virtual void start_document(Fl_String &dtd_type,
-                                Fl_String &dtd_location,
-                                Fl_String &dtd_uri)
+    virtual void start_document()
     {
 		//printf("start_document\n");
 
-        Fl_String label(dtd_type + " " + dtd_location + " " + dtd_uri);
         win = new Fl_Window(300,300);
 		win->resizable(win);
-        win->label(label.trim());
         win->begin();
         
 		Fl_Browser *tree = new Fl_Browser(0,0,300,300);
@@ -46,45 +47,42 @@ public:
     }
 
     // Called when parsing a processing instruction
-    virtual void processing_instruction(Fl_XmlNode &/*pinode*/) {
-        //printf("processing_instruction\n");
-    }
+	virtual void processing_instruction(const Fl_String &target, const Fl_String &data) { 
+		//printf("processing_instruction\n");
+	}
 
     // Called when start parsing a node
-    virtual void start_node(Fl_String &nodename) {
+	virtual void start_node(const Fl_String &name, const Fl_XmlAttributes &attrs) { 
+
         //printf("start_node(%s)\n", nodename.c_str());
         Fl_Item_Group *g = new Fl_Item_Group();
         g->set_flag(FL_VALUE);
-        g->label(nodename);
+
+		Fl_String label = name;
+        for(uint a=0; a<attrs.size(); a++) {
+            Fl_XmlAttributes::Pair *p = attrs.item(a);
+            label += " " + p->id + "=\"" + p->val + "\"";
+        }
+
+        g->label(label);
         g->begin();
     }
 
-    // Called when an attribute list was parsed
-    virtual void parsed_attributes(Fl_String &/*nodename*/, AttrMap &attr_map) {
-		//printf("parsed_attributes\n");
-        Fl_Group *g = Fl_Group::current();
-        Fl_String &label = (Fl_String &)g->label();
-        for(uint a=0; a<attr_map.size(); a++) {
-            AttrMap_Pair *p = attr_map.item(a);
-            label += " " + p->id + "=\"" + p->val + "\"";
-        }
-    }
-
     // Called when parsing of a node was finished
-    virtual void end_node(Fl_String &nodename) {
+    virtual void end_node(const Fl_String &name) {
 		//printf("end_node(%s)\n", nodename.c_str());
         if(Fl_Group::current()) Fl_Group::current()->end();
     }
 
     // Called when a cdata section ended
-    virtual void cdata(Fl_String &cdata) {
+	virtual void cdata(const Fl_String &cdata) { 
 		//printf("cdata(%s)\n", cdata.c_str());
         Fl_Item *i = new Fl_Item();
 		i->label(cdata);		
     }
 
     // Called when a comment section ended
-    virtual void comment(Fl_String &comment) {
+    virtual void comment(const Fl_String &comment) { 
 		//printf("comment(%s)\n", comment.c_str());
         Fl_Item_Group *g = new Fl_Item_Group("COMMENT");
         g->begin();
@@ -106,13 +104,11 @@ int main(int argc, char *argv[])
     if(!fp) return -1;
 
     ExampleHandler h;
-    Fl_XmlDoc d;
-    d.context()->handler(&h, false);
 
     try {
 
         int time1 = Fl::ticks();
-        d.load(fp);
+        Fl_XmlParser::create_sax(h, fp);
         int time2 = Fl::ticks();
 
         Fl_String label;
