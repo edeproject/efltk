@@ -1,0 +1,413 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2005-02-10 00:50+0100\n"
+"Last-Translator: Nemeth Otto <otto_nemeth@freemail.hu>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: Fl_File_Dialog.cpp:540
+msgid "OK"
+msgstr "OK"
+
+#: Fl_File_Dialog.cpp:46
+#: Fl_File_Dialog.cpp:64
+#: Fl_File_Dialog.cpp:158
+msgid "bytes"
+msgstr "bájt"
+
+#: Fl_File_Dialog.cpp:51
+#: Fl_File_Dialog.cpp:68
+msgid "Kb"
+msgstr "Kb"
+
+#: Fl_File_Dialog.cpp:55
+#: Fl_File_Dialog.cpp:72
+msgid "Mb"
+msgstr "Mb"
+
+#: Fl_File_Dialog.cpp:80
+#: Fl_File_Dialog.cpp:99
+msgid "Unknown"
+msgstr "Ismeretlen"
+
+#: Fl_File_Dialog.cpp:82
+#: Fl_File_Dialog.cpp:496
+msgid "File"
+msgstr "Fájl"
+
+#: Fl_File_Dialog.cpp:83
+msgid "Dir"
+msgstr "Könyvtár"
+
+#: Fl_File_Dialog.cpp:84
+msgid "Link"
+msgstr "Link"
+
+#: Fl_File_Dialog.cpp:86
+msgid "CD-Rom"
+msgstr "CD-Rom"
+
+#: Fl_File_Dialog.cpp:87
+msgid "Removable"
+msgstr "Cserélhető"
+
+#: Fl_File_Dialog.cpp:88
+msgid "Local Disk"
+msgstr "Helyi lemez"
+
+#: Fl_File_Dialog.cpp:89
+msgid "Network Disk"
+msgstr "Hálózati"
+
+#: Fl_File_Dialog.cpp:90
+msgid "RAM Disk"
+msgstr "Ramdiszk"
+
+#: Fl_File_Dialog.cpp:270
+msgid "Choose Files:"
+msgstr "Fájlok kiválasztása..."
+
+#: Fl_File_Dialog.cpp:285
+msgid "Choose File:"
+msgstr "Fájl kiválasztása..."
+
+#: Fl_File_Dialog.cpp:300
+msgid "Choose Directory:"
+msgstr "Könyvtár kiválasztása..."
+
+#: Fl_File_Dialog.cpp:309
+msgid "Save File:"
+msgstr "Fájl mentése..."
+
+#: Fl_File_Dialog.cpp:497
+#: Fl_File_Dialog.cpp:843
+msgid "Size"
+msgstr "Méret"
+
+#: Fl_File_Dialog.cpp:498
+#: Fl_File_Dialog.cpp:822
+#: Fl_File_Dialog.cpp:844
+msgid "Type"
+msgstr "Típus"
+
+#: Fl_File_Dialog.cpp:499
+#: Fl_File_Dialog.cpp:845
+msgid "Modified"
+msgstr "Módosítva"
+
+#: Fl_File_Dialog.cpp:523
+msgid "Show Preview"
+msgstr "Előnézet"
+
+#: Fl_File_Dialog.cpp:533
+msgid "Location:"
+msgstr "Név:"
+
+#: Fl_File_Dialog.cpp:549
+msgid "Filter:"
+msgstr "Szűrő:"
+
+#: Fl_File_Dialog.cpp:555
+msgid "&Cancel"
+msgstr "Mégs&em"
+
+#: Fl_File_Dialog.cpp:632
+msgid "All Files (*)"
+msgstr "Minden fájl (*)"
+
+#: Fl_File_Dialog.cpp:664
+#: Fl_File_Dialog.cpp:707
+#: Fl_File_Dialog.cpp:709
+#: Fl_File_Dialog.cpp:711
+#: Fl_File_Dialog.cpp:742
+#: Fl_File_Dialog.cpp:784
+msgid "My Computer"
+msgstr "Számítógép"
+
+#: Fl_File_Dialog.cpp:664
+#: Fl_File_Dialog.cpp:667
+#: Fl_File_Dialog.cpp:693
+#: Fl_File_Dialog.cpp:772
+msgid "My Home"
+msgstr "Saját könyvtár"
+
+#: Fl_File_Dialog.cpp:707
+#: Fl_File_Dialog.cpp:710
+#: Fl_File_Dialog.cpp:743
+#: Fl_File_Dialog.cpp:789
+#: Fl_File_Dialog.cpp:1146
+msgid "My Network"
+msgstr "Hálózat"
+
+#: Fl_File_Dialog.cpp:823
+msgid "Used Space"
+msgstr "Felhasznált terület"
+
+#: Fl_File_Dialog.cpp:824
+msgid "Free Space"
+msgstr "Szabad terület"
+
+#: Fl_File_Dialog.cpp:920
+msgid "New Directory?"
+msgstr "Mi legyen az új könyvtár neve?"
+
+#: Fl_File_Dialog.cpp:943
+msgid "Unable to create directory!"
+msgstr "A könyvtár létrehozása sikertelen!"
+
+#: Fl_File_Dialog.cpp:1434
+msgid "Size:"
+msgstr "Méret:"
+
+#: Fl_File_Dialog.cpp:1434
+#: Fl_File_Dialog.cpp:1476
+msgid "File Size:"
+msgstr "Fájl méret:"
+
+#: Fl_Help_Dialog.cpp:155
+msgid "&File"
+msgstr "&Fájl"
+
+#: Fl_Help_Dialog.cpp:158
+#: Fl_Help_Dialog.cpp:178
+msgid "Open"
+msgstr "Megnyitás"
+
+#: Fl_Help_Dialog.cpp:162
+msgid "Close"
+msgstr "Bezárás"
+
+#: Fl_Help_Dialog.cpp:188
+msgid "Back"
+msgstr "Előző"
+
+#: Fl_Help_Dialog.cpp:198
+msgid "Next"
+msgstr "Következő"
+
+#: Fl_Help_Dialog.cpp:213
+msgid "Html files, *.{html|htm}, All files, *"
+msgstr "Html fájlok, *.{html|htm}, Minden fájl, *"
+
+#: Fl_Help_Dialog.cpp:213
+msgid "Open Help File"
+msgstr "Help fájl megnyitása"
+
+#: Fl_Simple_Html.cpp:2321
+#: Fl_Simple_Html.cpp:2350
+#, c-format
+msgid "<HTML><HEAD><TITLE>%s</TITLE></HEAD><BODY><H1>%s</H1><P>%s \"%s\" - %s.</P></BODY>"
+msgstr "<HTML><HEAD><TITLE>%s</TITLE></HEAD><BODY><H1>%s</H1><P>%s \"%s\" - %s.</P></BODY>"
+
+#: Fl_Simple_Html.cpp:2326
+#: Fl_Simple_Html.cpp:2355
+msgid "Error"
+msgstr "Hiba"
+
+#: Fl_Simple_Html.cpp:2327
+#: Fl_Simple_Html.cpp:2356
+msgid "Unable to follow the link"
+msgstr "Link követése sikertelen"
+
+#: Fl_Simple_Html.cpp:2328
+msgid "no handler exists for this URI scheme"
+msgstr "Nincs kezelője ennek az URI sémának"
+
+#: Fl_Input.cpp:995
+msgid "Cut"
+msgstr "Kivágás"
+
+#: Fl_Input.cpp:996
+msgid "Copy"
+msgstr "Másolás"
+
+#: Fl_Input.cpp:997
+msgid "Paste"
+msgstr "Beillesztés"
+
+#: fl_ask.cpp:166
+msgid "Information"
+msgstr "Információ"
+
+#: fl_ask.cpp:170
+msgid "Warning"
+msgstr "Figyelmeztetés"
+
+#: fl_ask.cpp:174
+msgid "Question"
+msgstr "Kérdés"
+
+#: fl_ask.cpp:254
+#: fl_ask.cpp:263
+#: fl_ask.cpp:292
+msgid "&OK"
+msgstr "&OK"
+
+#: fl_ask.cpp:272
+msgid "&No"
+msgstr "N&em"
+
+#: fl_ask.cpp:272
+msgid "&Yes"
+msgstr "&Igen"
+
+#: Fl_Date_Time.cpp:36
+msgid "Sunday"
+msgstr "Vasárnap"
+
+#: Fl_Date_Time.cpp:36
+msgid "Monday"
+msgstr "Hétfő"
+
+#: Fl_Date_Time.cpp:36
+msgid "Tuesday"
+msgstr "Kedd"
+
+#: Fl_Date_Time.cpp:36
+msgid "Wednesday"
+msgstr "Szerda"
+
+#: Fl_Date_Time.cpp:37
+msgid "Thursday"
+msgstr "Csütörtök"
+
+#: Fl_Date_Time.cpp:37
+msgid "Friday"
+msgstr "Péntek"
+
+#: Fl_Date_Time.cpp:37
+msgid "Saturday"
+msgstr "Szombat"
+
+#: Fl_Date_Time.cpp:41
+msgid "January"
+msgstr "Január"
+
+#: Fl_Date_Time.cpp:41
+msgid "February"
+msgstr "Február"
+
+#: Fl_Date_Time.cpp:41
+msgid "March"
+msgstr "Március"
+
+#: Fl_Date_Time.cpp:41
+msgid "April"
+msgstr "Április"
+
+#: Fl_Date_Time.cpp:41
+msgid "May"
+msgstr "Május"
+
+#: Fl_Date_Time.cpp:41
+msgid "June"
+msgstr "Június"
+
+#: Fl_Date_Time.cpp:42
+msgid "July"
+msgstr "Július"
+
+#: Fl_Date_Time.cpp:42
+msgid "August"
+msgstr "Augusztus"
+
+#: Fl_Date_Time.cpp:42
+msgid "September"
+msgstr "Szeptember"
+
+#: Fl_Date_Time.cpp:42
+msgid "October"
+msgstr "Október"
+
+#: Fl_Date_Time.cpp:42
+msgid "November"
+msgstr "November"
+
+#: Fl_Date_Time.cpp:42
+msgid "December"
+msgstr "December"
+
+#: Fl_Calendar.cpp:25
+msgid "Su"
+msgstr "V"
+
+#: Fl_Calendar.cpp:25
+msgid "Mo"
+msgstr "H"
+
+#: Fl_Calendar.cpp:25
+msgid "Tu"
+msgstr "K"
+
+#: Fl_Calendar.cpp:25
+msgid "We"
+msgstr "Sze"
+
+#: Fl_Calendar.cpp:25
+msgid "Th"
+msgstr "Cs"
+
+#: Fl_Calendar.cpp:25
+msgid "Fr"
+msgstr "P"
+
+#: Fl_Calendar.cpp:25
+msgid "Sa"
+msgstr "Szo"
+
+#: Fl_Dialog.cpp:38
+msgid "Ok"
+msgstr "Ok"
+
+#: Fl_Dialog.cpp:39
+msgid "Cancel"
+msgstr "Mégsem"
+
+#: Fl_Dialog.cpp:40
+msgid "Yes"
+msgstr "Igen"
+
+#: Fl_Dialog.cpp:41
+msgid "No"
+msgstr "Nem"
+
+#: Fl_Dialog.cpp:42
+msgid "Retry"
+msgstr "Újra"
+
+#: Fl_Dialog.cpp:43
+msgid "Refresh"
+msgstr "Frissítés"
+
+#: Fl_Dialog.cpp:44
+msgid "Confirm"
+msgstr "Megerősítés"
+
+#: Fl_Dialog.cpp:45
+msgid "Ignore"
+msgstr "Átugrás"
+
+#: Fl_Dialog.cpp:46
+msgid "Help"
+msgstr "Segítség"
+
+#: Fl_FileBrowser.cpp:410
+msgid "Device"
+msgstr "Eszköz"
+
+#: Fl_FileBrowser.cpp:462
+msgid "Name"
+msgstr "Név"
+
+#: Fl_Directory_DS.cpp:157
+msgid "Directory"
+msgstr "Könyvtár"
+
+#: Fl_Directory_DS.cpp:162
+msgid "Executable"
+msgstr "Futtatható fájl"
+
