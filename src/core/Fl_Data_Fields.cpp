@@ -113,6 +113,11 @@ Fl_Data_Field& Fl_Data_Fields::add(const char *fname) {
    return error;
 }
 
+Fl_Data_Field& Fl_Data_Fields::add(Fl_Data_Field *field) {
+   m_list.append(field);
+   return *field;
+}
+
 int Fl_Data_Fields::field_index(const char *fname) const {
    unsigned cnt = m_list.count();
    for (unsigned i = 0; i < cnt; i++) {

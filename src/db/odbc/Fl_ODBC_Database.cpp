@@ -37,6 +37,21 @@ public:
    Fl_ODBC_Param(const char *paramName) : Fl_Param(paramName) {}
 };
 
+class FL_API Fl_ODBC_Field : public Fl_Data_Field {
+   friend class Fl_Data_Fields;
+protected:
+   short       m_columnNumber;
+   short       m_columnType;
+   short       m_columnLength;
+   short       m_columnScale;
+public:
+   Fl_ODBC_Field(const char *name,short number,short type,short length,short scale) : Fl_Data_Field(name)   {
+      m_columnNumber = number;
+      m_columnType = type;
+      m_columnLength = length;
+      m_columnScale = scale; 
+   }
+};
 
 // Constructor
 Fl_ODBC_Database::Fl_ODBC_Database(const Fl_String connString) 
@@ -149,7 +164,7 @@ void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
       unsigned  pcnt = param->bind_count();
       for (unsigned j = 0; j < pcnt; j++) {
 
-         short paramType, sqlType, scale = 0;
+         short paramType = 0, sqlType = 0, scale = 0;
          void  *buff = param->data();
          long  len = 0;
          short paramNumber = short(param->bind_index(j) + 1);
@@ -329,15 +344,15 @@ void Fl_ODBC_Database::open_query(Fl_Query *query) {
             sprintf(columnName,"column%02i",column);
          if (columnLength > FETCH_BUFFER_SIZE)
             columnLength = FETCH_BUFFER_SIZE;
-/*
-         Fl_Data_Field *field = new Fl_Query_Field(
+
+         Fl_Data_Field *field = new Fl_ODBC_Field(
             columnName,
             column,
             columnType,
-            (int)columnLength,
-            (int)columnScale);
-         m_fields.add(field);
-*/
+            columnLength,
+            columnScale);
+
+         query_fields(query).add(field);
       }
       delete [] columnName;
    }

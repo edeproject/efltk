@@ -22,8 +22,13 @@ void Fl_Database::open(const Fl_String connString) {
    if (connString != m_connString) {
       close();
       m_connString = connString;
+   }
+
+   if (!m_active) {
+      m_inTransaction = false;
       open_connection();
    }
+   m_active = true;
 }
 
 void Fl_Database::close() {
@@ -33,5 +38,6 @@ void Fl_Database::close() {
    }
    close_connection();
    m_active = false;
+   m_inTransaction = false;
 }
 
