@@ -29,23 +29,6 @@ static inline BOOL successful(int ret) {
 }
 
 /**
- * Driver-specific Fl_Param extension. ODBC handles time
- * parameters using TIMESTAMP_STRUCT. Every database may
- * have it's own way to work with time and date.
- * Driver TO DO: define native time structures for parameters here
- * to support conversion from Fl_Date_Time to native date and time.
- * (replace TIMESTAMP_STRUCT)
- */
-class Fl_ODBC_Param : public Fl_Param {
-    friend class Fl_ODBC_Database;
-protected:
-    TIMESTAMP_STRUCT m_timeData;
-    //SQLINTEGER            m_cbValue;
-public:
-    Fl_ODBC_Param(const char *paramName) : Fl_Param(paramName) {}
-};
-
-/**
  * Driver-specific Fl_Data_Field extension. Contains all the information
  * we can get from the database about the field in 'select' query.
  * Driver TO DO: define native field information
@@ -268,15 +251,17 @@ void Fl_ODBC_Database::prepare_query(Fl_Query *query) {
 /**
  * Bind binary query parameters to query handle
  */
+
 void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
-    int rc;
-    //SQLINTEGER  cbLen;
+    int                 rc;
+    //SQLINTEGER        cbLen;
+    TIMESTAMP_STRUCT    timeData;
 
     SQLHSTMT    statement = (SQLHSTMT)query_handle(query);
     Fl_Params&  params = query->params();
     unsigned    cnt = params.count();
     for (unsigned i = 0; i < cnt; i++) {
-        Fl_ODBC_Param *param = (Fl_ODBC_Param *)&params[i];
+        Fl_Param *param = &params[i];
         unsigned  pcnt = param->bind_count();
         for (unsigned j = 0; j < pcnt; j++) {
             short paramType = 0, sqlType = 0, scale = 0;
@@ -284,6 +269,7 @@ void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
             long  len = 0;
             short paramNumber = short(param->bind_index(j) + 1);
             short parameterMode = SQL_PARAM_INPUT;
+            //cbLen = param->size();
             switch (param->type()) {
                 case VAR_INT: 
                     paramType = SQL_C_SLONG;
@@ -316,7 +302,8 @@ void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
                         paramType = SQL_C_TIMESTAMP;
                         sqlType   = SQL_TIMESTAMP;
                         len = sizeof(TIMESTAMP_STRUCT);
-                        TIMESTAMP_STRUCT *t = &param->m_timeData;
+                        //cbLen = len;
+                        TIMESTAMP_STRUCT *t = &timeData;
                         Fl_Date_Time dt = param->get_date();
                         buff = t;
                         if (dt) {
@@ -334,7 +321,7 @@ void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
                         paramType = SQL_C_TIMESTAMP;
                         sqlType   = SQL_TIMESTAMP;
                         len = sizeof(TIMESTAMP_STRUCT);
-                        TIMESTAMP_STRUCT *t = &param->m_timeData;
+                        TIMESTAMP_STRUCT *t = &timeData;
                         Fl_Date_Time dt = param->get_date();
                         short ms;
                         buff = t;
@@ -445,16 +432,16 @@ Fl_Data_Field *testField;
  * Execute query and fetch results, if any
  */
 void Fl_ODBC_Database::open_query(Fl_Query *query) {
-   // Open the database if necessary
+    // Open the database if necessary
     if (!active()) open();
 
-   // Allocate query handle if necessary
+    // Allocate query handle if necessary
     if (active() && !query_handle(query)) allocate_query(query);
 
     if (query->active())
         fl_throw("Query is already opened");
 
-   // Binary binding of parameters
+    // Binary binding of parameters
     bind_parameters(query);
 
     if (!query->prepared()) {
