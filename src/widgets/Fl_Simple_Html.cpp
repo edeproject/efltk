@@ -60,7 +60,7 @@
 #include <efltk/Fl_Simple_Html.h>
 #include <efltk/Fl.h>
 
-#include <efltk/Fl_Image.h>
+#include <efltk/Fl_Pixmap.h>
 #include <efltk/Fl_Color.h>
 #include <efltk/vsnprintf.h>
 #include <efltk/fl_utf8.h>
@@ -137,7 +137,7 @@ static const char *broken_xpm[] =
     NULL
 };
 
-static Fl_Image broken_image = *Fl_Image::read_xpm(0, broken_xpm);
+static Fl_Pixmap broken_image(broken_xpm);
 
 //
 // 'Fl_Simple_Html::add_block()' - Add a text block to the list.

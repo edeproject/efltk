@@ -1758,12 +1758,12 @@ bool Fl_Input::save_data(Fl_Data_Source *ds) const
 
 void Fl_Input::preferred_size(int& w, int& h) const
 {
-	fl_font(text_font(), text_size());
-	h = fl_height() + box()->dh() + 2;
+	fl_font(text_font(), float(text_size()));
+	h = int(fl_height()+fl_descent()) + box()->dh() + 2;
 	if(maximum_size()>0)
-		w = maximum_size()*fl_width((unsigned int)'W');
+		w = maximum_size() * (int)fl_width((unsigned int)'W');
 	else
-		w = 8*fl_height();		
+		w = 8 * (int)fl_height();
 }
 
 //

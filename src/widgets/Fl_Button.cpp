@@ -272,10 +272,10 @@ void Fl_Button::draw()
 }
 
 void Fl_Button::preferred_size(int& w, int& h) const
-{	
-	measure_label(w, h);
-	w += box()->dw();
-	h += box()->dh();
+{
+    measure_label(w, h);
+    w += box()->dw() + 4;
+    h += box()->dh() + 4;
 }
 
 ////////////////////////////////////////////////////////////////
