@@ -166,12 +166,11 @@ case $uname in
           if test "$uversion" -ge 50; then
 	    DSOCOMMAND="\${CXX} -R\${DSONAME} -G $DEBUGFLAG -o"
 	    THEMECOMMAND="\${CXX} -G $DEBUGFLAG -o"
-	    DSOCFLAGS="-KPIC"
     	  else
             DSOCOMMAND="\${CXX} -L\${DSONAME} $DEBUGFLAG -o"
 	    THEMECOMMAND="\${CXX} $DEBUGFLAG -o"
-	    DSOCFLAGS="-PIC"
           fi
+          DSOCFLAGS="-fPIC"
 	  ;;
     HP-UX*)
 	  DSOCOMMAND="ld +b\${DSONAME} $DEBUGFLAG -b -o"
