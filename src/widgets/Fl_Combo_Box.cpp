@@ -340,7 +340,6 @@ int button_to_event(int argument) {
 static void revert(Fl_Style* s)
 {
     s->color = FL_WHITE;
-    s->box = FL_DOWN_BOX;
     s->button_box = FL_THIN_UP_BOX;
 }
 

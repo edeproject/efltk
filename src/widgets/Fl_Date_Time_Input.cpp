@@ -116,7 +116,6 @@ static Fl_Pixmap buttonPixmap(calendar_xpm);
 
 static void date_revert(Fl_Style* s)
 {
-    s->box = FL_DOWN_BOX;
     s->color = FL_WHITE;
 }
 
@@ -220,7 +219,6 @@ Fl_Date_Time Fl_Date_Input::date_value() const {
 
 static void datetime_revert(Fl_Style* s)
 {
-    s->box = FL_DOWN_BOX;
     s->color = FL_WHITE;
 }
 
