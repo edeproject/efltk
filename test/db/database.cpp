@@ -1,3 +1,4 @@
+#include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -19,7 +20,8 @@
 #ifdef MYSQL_DRIVER
 #include <efltk/db/Fl_MySQL_Database.h>
 #define DATABASE Fl_MySQL_Database
-#define CONSTR_TEMPLATE "HOST=hostname;UID=user;PWD=passwd;DB=db_name"
+//#define CONSTR_TEMPLATE "HOST=hostname;UID=user;PWD=passwd;DB=db_name"
+#define CONSTR_TEMPLATE "HOST=127.0.0.1;UID=Laza;PWD=moe;DB=laza"
 #endif
 
 //#define USE_THREADS
@@ -51,51 +53,19 @@ int fetch_function(void* p)
 	sql_input->deactivate();
 	send_btn->deactivate();
 
-    results->clear();
-    results->header()->clear();
-	results->redraw();
-	awake();	
-
 	try {
-		query.sql(sql_input->value());
-		query.open();
-	
-		unsigned columnCount = query.field_count();
-		if (!columnCount) return -1;
-		lock();
-		for (unsigned col = 0; col < columnCount; col++) {
-			results->add_column(query.field(col).name());
-		}
-		unlock();
+		Fl_String sql(sql_input->value());
 
-		results->begin();
-		while (!query.eof()) 
-		{			
-			lock();
-			
-			Fl_ListView_ItemExt *item = new Fl_ListView_ItemExt();
-			item->columns(columnCount);
-			for (unsigned col = 0; col < columnCount; col++) {
-				item->label(col, query.field(col).as_string());
-			}
-			query.fetch();
-
-			unlock();
-			//awake(); //Keeps screen up-to-date
-		}		
-		results->end();
-
-		query.close();
-   
+		query.sql(sql);
+		results->fill(query);
 	} catch(Fl_Exception &e) {
 		Fl::warning("Error occured: %s\n", e.text().c_str());
 	}
 
-	sql_input->position(0, sql_input->size());//value("");
 	sql_input->activate();
 	send_btn->activate();
+	sql_input->position(0, sql_input->size());//value("");
 
-	results->recalc_totalheight();
 	results->redraw();
 	awake(); // Cause redraw ...
 
@@ -108,6 +78,132 @@ void send_cb(Fl_Widget *, void *)
 	thread.create(fetch_function);
 #else
 	fetch_function(0);
+#endif
+}
+
+#include <efltk/Fl_Dialog.h>
+#include <efltk/Fl_Choice.h>
+#include <efltk/Fl_Divider.h>
+#include <efltk/Fl_Date_Time_Input.h>
+#include <efltk/Fl_Int_Input.h>
+#include <efltk/Fl_Float_Input.h>
+
+void results_cb(Fl_Widget *, void *)
+{
+	if(!Fl::event_clicks()) return;
+#if 0 
+	// NOTE: code below is just a test :) Feel free to enlight me, how to really use this stuff :) - Mikko
+	// This shit doesnt work with ODBC.. cause of param mis-match.
+	// Int_Input's and Float_Input's doesnt work correctly.. Why??
+	// It sucks, cause I can't update DB with correct params, build from widgets.
+	try {
+		
+		Fl_Dialog d(300,300,"Change");
+		d.buttons(Fl_Dialog::BTN_OK | Fl_Dialog::BTN_CANCEL, Fl_Dialog::BTN_OK);
+		d.new_page("default");
+		
+		Fl_ListView_Item *item = results->item();
+			
+		Fl_Input table(100, 10, 170, 25, "Table Name:");		
+		Fl_Choice ch(100, 45, 170, 25, "Key Field:");		
+		Fl_Divider dv(10, 75, 280, 2);
+
+		int Y=85;
+		unsigned n;
+		for(n=0; n<results->columns(); n++) {
+			Fl_Widget *widget;
+			Fl_ListView_Column *col = results->column(n);
+			ch.add(col->label());
+			
+			switch(col->type()) {
+			/*case VAR_INT: {
+				Fl_Int_Input *i = new Fl_Int_Input(70, Y, 200, 25, col->label());
+				widget = i;
+						  }
+				break;
+			case VAR_FLOAT: {
+				Fl_Float_Input *i = new Fl_Float_Input(70, Y, 200, 25, col->label());
+				widget = i;
+							}
+				break;*/
+			case VAR_DATE: {
+				Fl_Date_Input *i = new Fl_Date_Input(70, Y, 200, 25, col->label());
+				widget = i;
+						   }
+				break;
+			case VAR_DATETIME: {
+				Fl_Date_Time_Input *i = new Fl_Date_Time_Input(70, Y, 200, 25, col->label());
+				widget = i;
+							   }
+				break;
+			default: {
+				Fl_Input *i = new Fl_Input(70, Y, 200, 25, col->label());
+				widget = i;				
+					 }
+				break;
+			}
+			
+			Y += widget->h()+10;			
+			widget->field_name(col->label());				
+		}
+		
+		for(n=0; n<results->columns(); n++) {
+			Fl_ListView_Column *col = results->column(n);
+			switch(col->type()) {
+			/*case VAR_INT:
+				d[col->label()].set_int(strtol(item->label(n), 0, 10));
+				break;
+			case VAR_FLOAT:
+				d[col->label()].set_float(strtod(item->label(n), 0));
+				break;*/
+			case VAR_DATE:
+				d[col->label()].set_date(Fl_Date_Time(item->label(n)));
+				break;
+			case VAR_DATETIME:				
+				d[col->label()].set_datetime(Fl_Date_Time(item->label(n)));
+				break;
+			default:				
+				d[col->label()].set_string(item->label(n));
+				break;
+			}
+		}
+		
+		if(d.show_modal()==Fl_Dialog::BTN_OK) {
+			
+			Fl_String SQL, key=ch.item()->label();
+			
+			// Build Update query
+			SQL += "UPDATE " + Fl_String(table.value()) + " SET";
+			int cnt=0;
+			for(n=0; n<results->columns(); n++) {
+				Fl_ListView_Column *col = results->column(n);
+				if(col->label() == key)
+					continue;
+				
+				if(cnt>0) SQL += ',';
+				SQL += " " + col->label() + "=:"+col->label();					
+				cnt++;
+			}
+			SQL += " WHERE " + key + "=:key";
+
+			query.sql(SQL);
+
+			// Add params
+			query.param("key") = d[key];
+			for(n=0; n<results->columns(); n++) {
+				Fl_ListView_Column *col = results->column(n);
+				if(col->label() == key)
+					continue;
+
+				query.param(col->label()) = d[col->label()];
+			}
+			
+			// Execute query
+			query.exec();
+		}
+	} catch(Fl_Exception &e) {
+		Fl::warning(e.text().c_str());
+	}
 #endif
 }
 
@@ -149,7 +245,8 @@ void connect_cb(Fl_Widget *, void *)
 { \
 	bar.step(1); \
 \
-	Fl_ListView_Item *i = new Fl_ListView_Item(Fl_String((int)bar.value()), str); \
+	Fl_ListView_Item *i = new Fl_ListView_Item(Fl_String(step), str); \
+	fprintf(stderr, "%d: %s\n", step++, i->label(1));\
 \
 	lv.layout(); \
 	lv.show_item(i); \
@@ -164,6 +261,7 @@ void hide_cb(Fl_Widget *, void *d)
 
 void run_test(Fl_Widget *, void *)
 {
+	int step=1;
 	Fl_Query query(db);
 
 	Fl_Window win(300, 300, "Running test");
@@ -175,7 +273,7 @@ void run_test(Fl_Widget *, void *)
 	lv.end();
 
 	Fl_ProgressBar bar(0,280,300,20);
-	bar.range(0, 20);
+	bar.range(0, 30);
 
 	Fl_Button but(0,280,300,20, "Test completed. Close window.");
 	but.callback(hide_cb, &win);
@@ -206,8 +304,9 @@ void run_test(Fl_Widget *, void *)
 
 		printStepName ("Filling in the temp table");
 
+		//query.sql ("INSERT INTO _test_ (id,name) VALUES (:var_id,:var_name)");		
 		query.sql ("INSERT INTO _test_ (id,name,modified) VALUES (:var_id,:var_name,:var_date)");		
-		query.param ("var_date") = Fl_Date_Time::Now();		
+		query.param("var_date").set_datetime(Fl_Date_Time::Now());
 
 		for(int a=0;a<10;) {
 			query.param ("var_id") = a++;
@@ -249,7 +348,7 @@ void run_test(Fl_Widget *, void *)
             query.fetch ();
             rows++;		
         }
-        printStepName ("\nLooks good? Ok");
+        printStepName ("Looks good? Ok");
 
 		printStepName ("Closing the dataset");
 		query.close ();
@@ -285,13 +384,15 @@ void build_window()
 {
 	results = new Fl_ListView(0,0,100,100);	
 	results->layout_align(FL_ALIGN_CLIENT);
+	results->callback((Fl_Callback*)results_cb);
 	results->end();	
 
 	Fl_Group *g = new Fl_Group(0,0,100,30);
 	g->begin();
 
 		sql_input = new Fl_Input(0,0,60,30);
-		sql_input->value("SELECT * FROM _test_");
+		//sql_input->value("SELECT * FROM _test_");
+		sql_input->value("SELECT * FROM kohde");
 		g->resizable(sql_input);
 	
 		send_btn = new Fl_Button(60,0,40,30,"SEND");
