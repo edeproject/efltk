@@ -67,12 +67,12 @@ void Fl_ListView_Item::add_attr(int col)
 
 int Fl_ListView_Item::compare(Fl_ListView_Item *other, int column, int sort_type)
 {
-	const char *txt = label(column);
-	const char *other_txt = other->label(column);
-	if(!txt) txt="";
-	if(!other_txt) other_txt="";
+    const char *txt = label(column);
+    const char *other_txt = other->label(column);
+    if(!txt) txt="";
+    if(!other_txt) other_txt="";
 
-	switch(sort_type) {
+    switch(sort_type) {
     case Fl_ListView::SORT_ASC:
         return strcmp(txt, other_txt);
         break;
@@ -80,9 +80,9 @@ int Fl_ListView_Item::compare(Fl_ListView_Item *other, int column, int sort_type
         return strcmp(other_txt, txt);
         break;
     default:
-        break;		
-	}
-	return abs_index()-other->abs_index();		
+        break;
+    }
+    return abs_index()-other->abs_index();
 }
 
 bool Fl_ListView_Item::selected()
@@ -139,33 +139,34 @@ void Fl_ListView_Item::draw_cell(int col, int w, bool sel)
 
     Fl_Flags f = parent()->column_flags(col) | (parent()->flags()&FL_INACTIVE);
 
-    fl_push_clip(0, 0, w, h());
-
+    int X=0, Y=0, W=w, H=h();
     // Draw user defined border
     Fl_Boxtype box = parent()->button_box();
-    box->draw(0, 0, w, h(), fl_inactive(parent()->button_color(), f), FL_INVISIBLE);
+    box->draw(0, 0, W, H, fl_inactive(parent()->button_color(), f), FL_INVISIBLE);
+
+    box->inset(X,Y,W,H);
+    fl_push_clip(X, Y, W, H);
+
     Fl_ListItem_Attr *a = (Fl_ListItem_Attr*)attr_list[col];
     const char *txt = a->col_label;
     if(txt) {
-        int x=2;
         int iw=0;
-
-		int y = h()/2;
+        int y = h()/2;
 
         if(col==0 && image_) {
-            image_->draw(x, y-image_->height()/2, image_->width(), image_->height(), f|(sel?FL_SELECTED:0));
+            image_->draw(X, y-image_->height()/2, image_->width(), image_->height(), f|(sel?FL_SELECTED:0));
             iw = image_->width()+2;
-            x+=iw;
+            X+=iw;
         }
 
-		fl_font(parent()->text_font(), parent()->text_size());
-		fl_color(fl_inactive(sel?parent()->selection_text_color():parent()->text_color(), f));
+        fl_font(parent()->text_font(), parent()->text_size());
+        fl_color(fl_inactive(sel?parent()->selection_text_color():parent()->text_color(), f));
 
         //HMM... cutting should be optional
-        if(strchr(txt, '\n')) txt = fl_cut_multiline(txt, w-iw-6);
-        else txt = fl_cut_line(txt, w-iw-6);
-		
-        fl_draw(txt, x, int(y-parent()->leading()-fl_height()/2), w-x, h(), f&FL_ALIGN_MASK);
+        //if(strchr(txt, '\n')) txt = fl_cut_multiline(txt, w-iw-6);
+        //else txt = fl_cut_line(txt, w-iw-6);
+
+        fl_draw(txt, X, int(y-parent()->leading()-fl_height()/2), W-X, H, f&FL_ALIGN_MASK);
     }
     fl_pop_clip();
 }
@@ -186,13 +187,14 @@ void Fl_ListView_Item::layout()
             a->col_width = w;
         }
 
-		if(image_ && n==0) {
-			int w,h;
+        if(image_ && n==0) {
+            int w,h;
             image_->measure(w,h);
             a->col_width += w;
             if(h>H) H=h;
-		}
+        }
     }
+    H += parent()->button_box()->dh();
     h(int(H+parent()->leading()));
 }
 
@@ -391,16 +393,18 @@ void Fl_ListView_ItemExt::draw_cell(int col, int w, bool sel)
 {
     if((uint)col>=attr_list.size()) return;
 
-    fl_push_clip(0, 0, w, h());
-
     Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr_list[col];
 
     Fl_Flags f = parent()->flags();
     Fl_Flags item_f = a->col_flags | (f&FL_INACTIVE) | (sel?FL_SELECTED:0);
 
+    int X=0, Y=0, W=w, H=h();
     // Draw user defined border
     Fl_Boxtype box = parent()->button_box();
-    box->draw(0, 0, w, h(), fl_inactive(parent()->button_color(), f), FL_INVISIBLE);
+    box->draw(0, 0, W, H, fl_inactive(parent()->button_color(), f), FL_INVISIBLE);
+    box->inset(X,Y,W,H);
+
+    fl_push_clip(X, Y, W, H);
 
     const char *txt = a->col_label;
     Fl_Image *im = a->col_image;
@@ -412,16 +416,13 @@ void Fl_ListView_ItemExt::draw_cell(int col, int w, bool sel)
         }
 
         fl_font(a->col_font, a->col_font_size);
-        int x=2;
         //HMM... cutting should be optional
-        if(strchr(txt, '\n')) txt = fl_cut_multiline(txt, w-iw-6);
-        else txt = fl_cut_line(txt, w-iw-6);
+        //if(strchr(txt, '\n')) txt = fl_cut_multiline(txt, w-iw-6);
+        //else txt = fl_cut_line(txt, w-iw-6);
 
-        if(item_f&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT)) {x += 3; w -= 6;}
+        if(item_f&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT)) { X += 3; W -= 6; }
 
-        fl_push_clip(x,0, w, h());
-        draw_label(txt, x, 0, w, h(), item_f, a);
-        fl_pop_clip();
+        draw_label(txt, X, 0, W, H, item_f, a);
     }
     fl_pop_clip();
 }
@@ -448,6 +449,7 @@ void Fl_ListView_ItemExt::layout()
             if(h>H) H=h;
         }
     }
+    H += parent()->button_box()->dh();
     h(int(H+leading_));
 }
 
