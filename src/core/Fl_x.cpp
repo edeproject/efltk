@@ -1527,18 +1527,6 @@ void Fl_X::sendxjunk()
     // it's not a window manager window!
     if (window->parent() || window->override()) return;
 
-    if (!window->has_size_range()) { // default size_range based on resizable():
-        if (window->resizable()) {
-            Fl_Widget *o = window->resizable();
-            int minw = o->w(); if (minw > 100) minw = 100;
-            int minh = o->h(); if (minh > 100) minh = 100;
-            window->size_range(window->w() - o->w() + minw, window->h() - o->h() + minh, 0, 0);
-        } else {
-            window->size_range(window->w(), window->h(), window->w(), window->h());
-        }
-        return; // because this recursively called here
-    }
-
     XSizeHints hints;
     // memset(&hints, 0, sizeof(hints)); jreiser suggestion to fix purify?
     hints.min_width = window->minw();

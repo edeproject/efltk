@@ -143,10 +143,26 @@ int Fl_Window::handle(int event)
                 fl_open_display();
                 layout();
 
-                if (!shown()) {
-                    create();
-                    if(window_type_) Fl_WM::set_window_type(i->xid, window_type_);
+                // back-compatability automatic size_range() based on resizable():
+                if (!parent() && !has_size_range()) {
+                    if (resizable()) {
+                        // find the innermost nested resizable():
+                        Fl_Widget *o = resizable();
+                        while (o->is_group()) {
+                            Fl_Widget* p = ((Fl_Group*)o)->resizable();
+                            if (!p || p == o) break;
+                            o = p;
+                        }
+                        int minw = w(); if (o->w() > 72) minw -= (o->w()-72);
+                        int minh = h(); if (o->h() > 72) minh -= (o->h()-72);
+                        size_range(minw, minh, 0, 0);
+                    } else {
+                        size_range(w(), h(), w(), h());
+                    }
                 }
+
+                create();
+                if(window_type_) Fl_WM::set_window_type(i->xid, window_type_);
             }
 
             // make the child windows map first
