@@ -110,10 +110,10 @@ void Fl_Buffer::read_file(const char *fileName)
     fseek(f,0,SEEK_SET);
     bytes(fileLength);
     char *ptr = m_buffer;
-	unsigned p=0;
-	while(p < fileLength) {
-		p += fread( (ptr+p), 1, 1024, f);
-	}
+    unsigned p=0;
+    while(p < fileLength) {
+        p += fread( (ptr+p), 1, 1024, f);
+    }
     fclose(f);
 }
 
@@ -122,17 +122,17 @@ void Fl_Buffer::save_file(const char *fileName)
     FILE *f = fopen(fileName, "w+b");
     if (!f) {
         fl_throw("Can't open file <" + Fl_String(fileName) + "> for writing");
-		return;
-	}
+        return;
+    }
 
     char *ptr = m_buffer;
-	unsigned p = 0;
-    while(p < m_bytes) 
-	{
+    unsigned p = 0;
+    while(p < m_bytes)
+    {
         int bytes = m_bytes - p;
         if (bytes > 1024)
             bytes = 1024;
-        p += fwrite(ptr,1,bytes,f);
+        p += fwrite( (ptr+p) ,1, bytes, f);
     }
     fclose(f);
 }
