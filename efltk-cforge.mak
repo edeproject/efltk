@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x4003e2
+# %FirstUniqueId:	0x4003e4
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -738,16 +738,6 @@ test/combobox ::	test/combobox.o
 test/labelwidth ::	test/labelwidth.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
-# %UniqueId:	0x4003d4
-# %TargetType:	C++_EXE
-# %IDEFlags:	0x8
-# %ComplexTarget
-# %SrcDir:	test
-# %IncDir:	test
-# %ObjsDir:	test
-test/check_buttons ::	test/check_buttons.o
-	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
-
 # %UniqueId:	0x4003d8
 # %TargetType:	C_EXE
 # %IDEFlags:	0x8
@@ -797,6 +787,16 @@ test/button_groups ::	test/button_groups.o
 # %ObjsDir:	test
 test/listview_sort ::	test/listview_sort.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+# %UniqueId:	0x4003e2
+# %TargetType:	C_EXE
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	test
+# %IncDir:	test
+# %ObjsDir:	test
+test/date_time_widgets ::	test/date_time_widgets.o
+	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %ObjectFilesLinking
 # %TargetType:	C++_OBJ
@@ -2634,13 +2634,6 @@ lib/Fl_Button_Group.o : src/widgets/Fl_Button_Group.cpp
 
 
 # %TargetType:	C++_OBJ
-# %ParentTarget:	0x4003d4
-# %SourceTarget:	0x4003d5
-test/check_buttons.o : test/check_buttons.cpp
-	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
-
-
-# %TargetType:	C++_OBJ
 # %ParentTarget:	0x4003d8
 # %SourceTarget:	0x4003d9
 test/labelwidth2.o : test/labelwidth2.cpp
@@ -2672,6 +2665,13 @@ test/button_groups.o : test/button_groups.cpp
 # %ParentTarget:	0x4003e0
 # %SourceTarget:	0x4003e1
 test/listview_sort.o : test/listview_sort.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x4003e2
+# %SourceTarget:	0x4003e3
+test/date_time_widgets.o : test/date_time_widgets.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
@@ -10368,34 +10368,6 @@ lib/Fl_XmlDoc.o :	src/xml/html_entities.h\
 	efltk/Fl_Map.h\
 	efltk/xml/Fl_Xml.h\
 	efltk/xml/Fl_XmlCtx.h
-test/check_buttons.o :	efltk/Fl_Check_Buttons.h\
-	efltk/Fl_Button_Group.h\
-	efltk/Fl_String_List.h\
-	efltk/Fl_String.h\
-	efltk/Enumerations.h\
-	efltk/Fl_Export.h\
-	efltk/Fl_Ptr_List.h\
-	efltk/Fl_Button.h\
-	efltk/Fl_Widget.h\
-	efltk/Fl_Data_Source.h\
-	efltk/Fl_Data_Fields.h\
-	efltk/Fl_Flags.h\
-	efltk/Fl_Variant.h\
-	efltk/Fl_Date_Time.h\
-	efltk/Fl_Exception.h\
-	efltk/Fl_Style.h\
-	efltk/Fl_Font.h\
-	efltk/Fl_Int_List.h\
-	efltk/Fl_Labeltype.h\
-	efltk/Fl_Color.h\
-	efltk/Fl_Boxtype.h\
-	efltk/Fl_Input.h\
-	efltk/Fl_Box.h\
-	efltk/Fl_Group.h\
-	efltk/Fl_Widget_List.h\
-	efltk/Fl_Window.h\
-	efltk/Fl.h\
-	config.h
 test/labelwidth2.o :	efltk/Fl_Box.h\
 	efltk/Fl_Widget.h\
 	efltk/Fl_Data_Source.h\
@@ -10494,7 +10466,7 @@ test/layout2.o :	efltk/Fl_Window.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h\
-	efltk/Fl_Button.h\
+	efltk/Fl_Box.h\
 	efltk/Fl.h
 test/button_groups.o :	efltk/Fl_Button_Group.h\
 	efltk/Fl_String_List.h\
@@ -10559,6 +10531,30 @@ test/listview_sort.o :	efltk/Fl_Date_Time.h\
 	efltk/Fl.h\
 	efltk/Fl_ListView_Header.h\
 	efltk/Fl_Window.h
+test/date_time_widgets.o :	efltk/Fl_Date_Time_Input.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Window.h\
+	efltk/Fl.h
 
 
 # %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x6
@@ -10692,7 +10688,7 @@ test/listview_sort.o :	efltk/Fl_Date_Time.h\
 # %TargetInfo src/widgets/Fl_Choice.cpp	SourceOrHeader,	UniqueId=0x4002f0,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Clock.cpp	SourceOrHeader,	UniqueId=0x4002f1,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Color_Chooser.cpp	SourceOrHeader,	UniqueId=0x4002f2,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/widgets/Fl_Date_Time_Input.cpp	SourceOrHeader,	UniqueId=0x4002f3,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Date_Time_Input.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4002f3,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Dial.cpp	SourceOrHeader,	UniqueId=0x4002f4,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Dialog.cpp	SourceOrHeader,	UniqueId=0x4002f5,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Directory_DS.cpp	SourceOrHeader,	UniqueId=0x4002f6,	TargetType=C++,	IDEFlags=0x6
@@ -10816,11 +10812,11 @@ test/listview_sort.o :	efltk/Fl_Date_Time.h\
 # %TargetInfo test/combobox.cpp	SourceOrHeader,	UniqueId=0x4003c7,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/labelwidth.cpp	SourceOrHeader,	UniqueId=0x4003c9,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Button_Group.cpp	SourceOrHeader,	UniqueId=0x4003ca,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo test/check_buttons.cpp	SourceOrHeader,	UniqueId=0x4003d5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/labelwidth2.cpp	SourceOrHeader,	UniqueId=0x4003d9,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/layout.cpp	SourceOrHeader,	UniqueId=0x4003db,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/layout2.cpp	SourceOrHeader,	UniqueId=0x4003dd,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/button_groups.cpp	SourceOrHeader,	UniqueId=0x4003df,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/listview_sort.cpp	SourceOrHeader,	UniqueId=0x4003e1,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x6
@@ -10959,7 +10955,7 @@ test/listview_sort.o :	efltk/Fl_Date_Time.h\
 # %TargetInfo efltk/Fl_Numeric_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400156,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400157,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Masked_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400158,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Date_Time_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400159,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Date_Time_Input.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400159,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Dial.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40015a,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Dialog.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40015b,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Scroll.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40015c,	TargetType=INC,	IDEFlags=0xe
@@ -11090,7 +11086,7 @@ test/listview_sort.o :	efltk/Fl_Date_Time.h\
 # %TargetInfo efltk/xml/Fl_XmlCtx.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d1,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Check_Buttons.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d2,	TargetType=INC,	IDEFlags=0xc
 # %TargetInfo efltk/Fl_Radio_Buttons.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d3,	TargetType=INC,	IDEFlags=0xc
-# %TargetInfo test/listview_sort.cpp	SourceOrHeader,	UniqueId=0x4003e1,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/date_time_widgets.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4003e3,	TargetType=C++,	IDEFlags=0x6
 
 
 # %UniqueId:	0x400001
@@ -11139,6 +11135,7 @@ test/listview_sort.o :	efltk/Fl_Date_Time.h\
 #	0x400266
 #	0x400272
 #	0x40034e
+#	0x4003e2
 #	0x400345
 #	0x40037b
 #	0x400352
@@ -11161,7 +11158,6 @@ test/listview_sort.o :	efltk/Fl_Date_Time.h\
 #	0x40038a
 #	0x40033a
 #	0x400388
-#	0x4003d4
 #
 # %UniqueId:	0x40038c
 # %IDEFlags:	0
