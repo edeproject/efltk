@@ -91,6 +91,7 @@ void Fl_Data_Fields::clear() {
    }
 }
 
+static Fl_Data_Field error("");
 Fl_Data_Field& Fl_Data_Fields::add(const char *fname) {
    int index = field_index(fname);
    if (index < 0) {
@@ -98,7 +99,8 @@ Fl_Data_Field& Fl_Data_Fields::add(const char *fname) {
       m_list.append(field);
       return *field;
    }
-   throw Fl_Exception("Attempt to duplicate field name",__FILE__,__LINE__);
+   fl_throw("Attempt to duplicate field name");
+   return error;
 }
 
 int Fl_Data_Fields::field_index(const char *fname) const {
@@ -122,27 +124,27 @@ const Fl_Variant& Fl_Data_Fields::operator [] (int index) const {
 }
 
 Fl_Variant& Fl_Data_Fields::operator [] (const char *fname) {
-   Fl_Data_Field *field;
+   Fl_Data_Field *field=0;
    int index = field_index(fname);
    if (index < 0) {
-      throw Fl_Exception("Field name not found",__FILE__,__LINE__);
-      //field = new Fl_Data_Field(fname);
-      //m_list.append(field);
+       fl_throw("Field name not found");
+       //field = new Fl_Data_Field(fname);
+       //m_list.append(field);
    } else {
-      field = (Fl_Data_Field *)m_list[index];
+       field = (Fl_Data_Field *)m_list[index];
    }
    return field->value;
 }
 
 const Fl_Variant& Fl_Data_Fields::operator [] (const char *fname) const {
-   int index = field_index(fname);
-   if (index < 0) {
-      throw Fl_Exception("Field name not found",__FILE__,__LINE__);
-      //return m_fieldNotFound;
-   } else {
-      Fl_Data_Field *field = (Fl_Data_Field *)m_list[index];
-      return field->value;
-   }
+    int index = field_index(fname);
+    if (index < 0) {
+        fl_throw("Field name not found");
+        //return m_fieldNotFound;
+    }
+
+    Fl_Data_Field *field = (Fl_Data_Field *)m_list[index];
+    return field->value;
 }
 
 const Fl_Data_Field& Fl_Data_Fields::field(unsigned index) const {
