@@ -1136,7 +1136,7 @@ void Fl_ListView::fill(Fl_Data_Source &ds,Fl_String user_data_column_name)
         Fl_Data_Field& df = ds.field(col);
 
         if (!df.visible) continue;
-        if (df.name() == user_data_column_name) {
+        if (!user_data_column_name.empty() && df.name() == user_data_column_name) {
             user_data_column = col;
             continue;
         }
