@@ -110,19 +110,11 @@ int main (int argc, char *argv[])
     }
     fl_catch (exception)
     {
-#ifdef _WIN32
-        fl_alert("Exception! %s\n", exception.text ().c_str ());
-#else
-        fprintf(stderr, "Exception! %s\n", exception.text ().c_str ());
-#endif
+        printf("Exception! %s\n", exception.text ().c_str ());
         return -1;
     }
 
-#ifdef _WIN32
-    fl_message("Test completed.\n");
-#else
     printf("\n\nTest completed.\n");
-#endif
 
     return EXIT_SUCCESS;
 }

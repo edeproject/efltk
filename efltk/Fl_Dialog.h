@@ -36,16 +36,16 @@ public:
     ~Fl_Dialog();
 
     // Button IDs
-    enum {
-        OK      = 1,
-        CANCEL  = 2,
-        YES     = 4,
-        NO      = 8,
-        RETRY   = 16,
-        REFRESH = 32,
-        CONFIRM = 64,
-        IGNORE  = 128,
-        HELP    = 256
+    enum Fl_Dialog_Buttons {
+        DLG_OK      = 1,
+        DLG_CANCEL  = 2,
+        DLG_YES     = 4,
+        DLG_NO      = 8,
+        DLG_RETRY   = 16,
+        DLG_REFRESH = 32,
+        DLG_CONFIRM = 64,
+        DLG_IGNORE  = 128,
+        DLG_HELP    = 256
     };
 
     virtual bool  load_data(Fl_Data_Source *ds=0);

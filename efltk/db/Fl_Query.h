@@ -90,6 +90,7 @@ public: // acting as a Data Source
    virtual Fl_Data_Field&       field (int field_index)                 { return m_fields.field(field_index); }
 
    // Not supported yet:
+	virtual unsigned          record_count() const;
    virtual bool              read_field(const char *,Fl_Variant&)       { return false; }
    virtual bool              write_field(const char *,const Fl_Variant&){ return false; }
    virtual bool              load_data()                                { return false; }

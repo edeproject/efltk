@@ -268,3 +268,9 @@ void Fl_Query::sql(const Fl_String& _sql) {
       free_stmt();
    }
 }
+
+unsigned Fl_Query::record_count() const {
+   fl_throw("Record count is not supported for Fl_Query");
+   return 0; // Just to block warning
+}
+

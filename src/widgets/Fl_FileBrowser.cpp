@@ -349,13 +349,13 @@ Fl_File_Browser::load(const Fl_String &dir) // I - Directory to load
                 if(attr->flags & Fl_File_Attr::DEVICE)
                 {
                     uint type = GetDriveTypeA(filename);
-                    char *typestr=_(types[0]);
+                    const char *typestr=_(types[0]);
 
-                    if(type==DRIVE_CDROM)		{ typestr=_(types[4]); item->image(&cd_pix); }
-                    else if(type==DRIVE_REMOVABLE)	{ typestr=_(types[5]); item->image(&floppy_pix); }
-                    else if(type==DRIVE_FIXED)		typestr=_(types[6]);
-                    else if(type==DRIVE_REMOTE)		typestr=_(types[7]);
-                    else if(type==DRIVE_RAMDISK)	typestr=_(types[8]);
+                    if (type==DRIVE_CDROM)		{ typestr=_(types[4]); item->image(&cd_pix); }
+                    else if (type==DRIVE_REMOVABLE)	{ typestr=_(types[5]); item->image(&floppy_pix); }
+                    else if (type==DRIVE_FIXED)		typestr=_(types[6]);
+                    else if (type==DRIVE_REMOTE)		typestr=_(types[7]);
+                    else if (type==DRIVE_RAMDISK)	typestr=_(types[8]);
 
                     item->label(2, typestr);
 
