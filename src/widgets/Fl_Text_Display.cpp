@@ -283,9 +283,7 @@ void Fl_Text_Display::set_font()
 	fontWidth = fontStruct->tmAveCharWidth;
 	if((fontStruct->tmPitchAndFamily&TMPF_FIXED_PITCH)) {
 		fontWidth = -1;
-	} 
-	
-	{
+	} else {
 		for (i=0; i<mNStyles; i++) 
 		{
 			int size = mStyleTable[i].size;
@@ -305,9 +303,7 @@ void Fl_Text_Display::set_font()
 	fontWidth = fontStruct->max_bounds.width; 
 	if (fontWidth != fontStruct->min_bounds.width) {
 		fontWidth = -1; 
-	} 
-	
-	{ 
+	} else {
 		for (i=0; i<mNStyles; i++)
 		{ 
 			unsigned size = mStyleTable[i].size;
@@ -323,7 +319,7 @@ void Fl_Text_Display::set_font()
 #endif
 	mFixedFontWidth = fontWidth;
 
-	//printf("mFixedFontWidth = %d\n", mFixedFontWidth);
+        //printf("mFixedFontWidth = %d\n", mFixedFontWidth);
 } 
 
 #if 0
@@ -370,11 +366,11 @@ int Fl_Text_Display::longest_vline() {
 */
 void Fl_Text_Display::layout() 
 {
-    if (!buffer() || !visible_r()) {
-        return;
-    }
+  if (!buffer() || !visible_r()) {
+    return;
+  }
 
-	const int oldWidth = mOldWidth;
+  const int oldWidth = mOldWidth;
 
   int X = 0, Y = 0, W = w(), H = h();
   box()->inset(X, Y, W, H);
@@ -472,12 +468,12 @@ void Fl_Text_Display::layout()
 	  you first see a line that is too wide in the window, but then
 	  don't turn it off (ie mix both of your solutions). */
 
-	  if(!mContinuousWrap || (mContinuousWrap && mWrapMargin>0))	  
+          if(!mContinuousWrap || (mContinuousWrap && mWrapMargin>0))
 	  if(scrollbar_align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM) && (mVScrollBar->visible() || longest_vline() > text_area.w))
-	  {			  
+          {
 		  if(!mHScrollBar->visible()) {
 			  mHScrollBar->set_visible();
-			  again--; // loop again to see if we now need vert. & recalc sizes
+			  if(!hscrollbarvisible) again--; // loop again to see if we now need vert. & recalc sizes
 		  }
 	  		  
 		  if (scrollbar_align() & FL_ALIGN_TOP) {
