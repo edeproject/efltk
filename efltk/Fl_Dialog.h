@@ -95,6 +95,10 @@ public:
      * @param ds as external datasource. If ds is NULL, dialog default datasource is used.
      * @see Fl_Widget::save_data(Fl_Data_Source *ds=0)
      * @see Fl_Group::save_data(Fl_Data_Source *ds=0)
+     *
+     * That function is called from 'Ok' button callback.
+     * If return value is true (data saved) the dialog is allowed 
+     * to close.
      */
     virtual bool  save_data(Fl_Data_Source *ds=0) const;
 
@@ -102,6 +106,10 @@ public:
      * Returns Fl_Variant for field_name.
      * If field_name is not found, it's added to datasource.
      * @see test/dialog.cpp
+     *
+     * The function is designed to access the values in widgets
+     * that have field_name() defined, after the 'Ok' button is
+     * pressed and dialog is closed.
      */
     const Fl_Variant& operator [] (const char *field_name) const;
 

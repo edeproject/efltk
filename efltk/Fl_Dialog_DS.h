@@ -29,7 +29,7 @@ class Fl_Dialog_DS : public Fl_Data_Source  {
     friend class Fl_Dialog;
 
 public:
-    Fl_Dialog_DS(Fl_Group *tabs) : Fl_Data_Source(tabs) {}
+    Fl_Dialog_DS(Fl_Group *tabs) : Fl_Data_Source(tabs) { m_widgetScanned = false; }
 
     // access to the field value by name
     virtual const Fl_Variant& operator [] (const char *field_name) const   { return m_fields[field_name]; }
@@ -56,8 +56,11 @@ protected:
     virtual bool              load_data() { return true; }
     virtual bool              save_data() { return true; }
 
+    void scan_widgets(Fl_Group *group=NULL);
+
 private:
     Fl_Data_Fields            m_fields;
+    bool                      m_widgetScanned;
 };
 
 #endif

@@ -299,7 +299,7 @@ int Fl_Group::handle(int event)
             // quit when we reach a widget that claims mouse points at it,
             // so we don't pass the events to widgets "hidden" behind that one.
                 if (event != FL_ENTER && event != FL_MOVE &&
-                        child->contains(Fl::belowmouse())) return false;
+                    child->contains(Fl::belowmouse())) return false;
             }
             return Fl_Widget::handle(event);
 
@@ -397,7 +397,7 @@ int *Fl_Group::store_sizes()
             }
         }
     }    
-	return (int*)m_sizes.data();
+    return (int*)m_sizes.data();
 }
 
 static int max(int a,int b) {
@@ -453,7 +453,7 @@ void Fl_Group::layout()
 
     int* p = 0;
     if (resizable() && children() > 0) {
-        p = store_sizes(); // initialize the size array			
+        p = store_sizes(); // initialize the size array         
     }
 
     if(children() > 0 && layout_damage&(FL_LAYOUT_DAMAGE|FL_LAYOUT_WH))
@@ -836,9 +836,9 @@ void Fl_Group::draw_outside_label(Fl_Widget& w) const
 void Fl_Group::data_source(Fl_Data_Source *ds)
 {
     if (m_data_source)
-        m_data_source->parent_ = NULL;
+        m_data_source->parent(NULL);
     m_data_source = ds; 
-    m_data_source->parent_ = this;
+    m_data_source->parent(this);
 }
 
 bool Fl_Group::load_data(Fl_Data_Source *ds) {

@@ -73,7 +73,7 @@ int main(int argc, char **argv) {
     window->end();
     window->show(argc, argv);
 
-    dlg = new Fl_Dialog(400,300);
+    dlg = new Fl_Dialog(400,300,"Demo dialog");
     dlg->new_page("default");
     Fl_Input *firstNameInput = new Fl_Input(100,20,100,24,"First Name:");
     firstNameInput->field_name("first_name");

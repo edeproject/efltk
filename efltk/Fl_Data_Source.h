@@ -32,8 +32,11 @@ class Fl_Data_Source {
     friend class Fl_Group;
 public:
     // ctor, dtor
-    Fl_Data_Source(Fl_Group *group) { parent_ = group; }
+    Fl_Data_Source(Fl_Group *group) { m_parent = group; }
     virtual ~Fl_Data_Source() {}
+
+    void parent(Fl_Group *p) { m_parent = p; }
+    Fl_Group *parent() { return m_parent; }
 
     // access to the field by name
     virtual const Fl_Variant& operator [] (const char *field_name) const = 0;
@@ -76,7 +79,7 @@ protected:
     // these methods should be implemented in derived class
     virtual bool              load_data() = 0;
     virtual bool              save_data() = 0;
-    Fl_Group* parent_;
+    Fl_Group* m_parent;
 };
 
 #endif

@@ -309,11 +309,23 @@ void Fl_Dialog::escape_callback(Fl_Dialog *dialog, void *) {
 void Fl_Dialog::buttons_callback(Fl_Button *btn, long id)
 {
     // HELP doesn't close window
-    if(id==BTN_HELP) return;
+    if (id==BTN_HELP) return;
+
+    Fl_Dialog *dialog = (Fl_Dialog *)btn->window();
+
+    if (id==BTN_OK || id==BTN_YES) {
+        try {
+            if (!dialog->save_data())
+                return;
+        }
+        catch (Fl_Exception& e) {
+            fl_alert("Can't save data.\n\n" + e.text());
+            return;
+        }
+    }
 
     Fl::exit_modal();
 
-    Fl_Dialog *dialog = (Fl_Dialog *)btn->window();
     dialog->m_modalResult = (int)id;
 }
 
@@ -527,11 +539,11 @@ Fl_Group *Fl_Dialog::new_group(const char *lbl,bool autoColor)
 
 bool Fl_Dialog::load_data(Fl_Data_Source *ds) 
 {
-    if (ds) return m_tabs->load_data(ds);
-    else    return m_tabs->load_data(m_dataSource);
+    if (!ds) ds = m_dataSource;
+    return ds->load();
 }
 
 bool Fl_Dialog::save_data(Fl_Data_Source *ds) const {
-    if (ds) return m_tabs->save_data(ds);
-    else    return m_tabs->save_data(m_dataSource);
+    if (!ds) ds = m_dataSource;
+    return ds->save();
 }

@@ -20,11 +20,17 @@
 #include <efltk/Fl_Group.h>
 
 bool Fl_Data_Source::load() {
-    if (!parent_ || !load_data()) return false;
-    return true;
+    // loading data into DS
+    if (!m_parent || !load_data()) 
+        return false;
+    // loading data from DS to the widgets in the connected group
+    return m_parent->load_data(this);
 }
 
 bool Fl_Data_Source::save() { 
-    if (!parent_ || !save_data()) return false;
-    return true;
+    // storing data from the widgets in the connected group to DS
+    if (!m_parent || !m_parent->save_data(this))
+        return false;
+    // Storing data from DS
+    return save_data();
 }
