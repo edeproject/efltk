@@ -177,6 +177,19 @@ Fl_String Fl_String::operator + (const char * s) const
     return s1;
 }
 
+Fl_String Fl_String::operator + (const char s) const
+{
+    int len = length()+1;
+    char *temp = (char*)malloc(len+1);
+    strncpy(temp, str_, length());
+
+    temp[len-1] = s;
+    temp[len] = '\0';
+
+    Fl_String s1(temp, len, true);
+    return s1;
+}
+
 Fl_String Fl_String::operator + (const Fl_String& s) const
 {
     int len = length() + s.length();
@@ -200,6 +213,15 @@ Fl_String& Fl_String::operator += (const char * s)
         strncpy(str_+oldlen, s, slen);
         str_[len_] = '\0';
     }
+    return *this;
+}
+
+Fl_String& Fl_String::operator += (const char s)
+{
+    len_ += 1;
+    str_ = (char *)realloc(str_, len_+1);
+    str_[len_-1] = s;
+    str_[len_] = '\0';
     return *this;
 }
 
