@@ -50,10 +50,10 @@ int main()
 
     // make connections
     // this is the most interesting part
-    b0.connect(FL_CALLBACK, SLOT(&grp, set_active));
-    b1.connect(FL_CALLBACK, SLOT(&grp, set_visibility));
-    i0.connect(FL_CALLBACK, SLOT(&grp, set_label));
-    win.connect(FL_CALLBACK, STATIC_SLOT(bye_bye));
+    b0.connect(FL_VALUE_CHANGED, SLOT(&grp, slot_active));
+    b1.connect(FL_VALUE_CHANGED, SLOT(&grp, slot_visibility));
+    i0.connect(FL_VALUE_CHANGED, SLOT(&grp, slot_label));
+    win.connect(FL_WINDOW_CLOSE, STATIC_SLOT(bye_bye));
     grp.connect(FL_SHOW, STATIC_SLOT(show_visibility));
     grp.connect(FL_HIDE, STATIC_SLOT(show_visibility));
     // ---

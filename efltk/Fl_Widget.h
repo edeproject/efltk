@@ -162,11 +162,11 @@ public:
     void  when(uchar i)       { when_ = i; }
 
     void do_callback(Fl_Widget *o, void *arg, void * widget_data = 0)
-        { emit_signal(FL_CALLBACK, widget_data); do_callback_(); }
+        { emit_signal(FL_VALUE_CHANGED, widget_data); do_callback_(); }
     void do_callback(Fl_Widget *o, long arg, void * widget_data = 0)
-        { emit_signal(FL_CALLBACK, widget_data); do_callback_(); }
+        { emit_signal(FL_VALUE_CHANGED, widget_data); do_callback_(); }
     void do_callback(void * widget_data = 0)
-        { emit_signal(FL_CALLBACK, widget_data); do_callback_(); }
+        { emit_signal(FL_VALUE_CHANGED, widget_data); do_callback_(); }
 
     void connect(int event, void * obj, Fl_Signal_Callback *cb);
     void connect(int event, Fl_Signal_Callback *cb);
@@ -362,13 +362,13 @@ private:
 
 public:
     // default slots
-    DEFSLOT_O(Fl_Widget, Fl_Widget, set_label, const char *);
-    DEFSLOT_O(Fl_Widget, Fl_Widget, set_active, int);
-    DEFSLOT_O(Fl_Widget, Fl_Widget, set_visibility, int);
+    DEFSLOT_O(Fl_Widget, Fl_Widget, slot_label, const char *);
+    DEFSLOT_O(Fl_Widget, Fl_Widget, slot_active, int);
+    DEFSLOT_O(Fl_Widget, Fl_Widget, slot_visibility, int);
 
-    void set_label(const char * s) { label(s); redraw_label(); redraw(); }
-    void set_active(int value) { if (value) activate(); else deactivate(); }
-    void set_visibility(int value) { if (value) show(); else hide(); }
+    void slot_label(const char * s) { label(s); redraw_label(); redraw(); }
+    void slot_active(int value) { if (value) activate(); else deactivate(); }
+    void slot_visibility(int value) { if (value) show(); else hide(); }
 };
 
 #endif
