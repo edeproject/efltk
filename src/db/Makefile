@@ -1,7 +1,9 @@
 CPPFILES = \
+	Fl_Data_Dialog.cpp \
 	Fl_Database.cpp \
 	Fl_Query.cpp \
-	Fl_Params.cpp 
+	Fl_Params.cpp \
+	Fl_Record_DS.cpp
 
 CFILES =
 
