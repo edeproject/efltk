@@ -23,12 +23,17 @@
 
 static const char
    cantAllocateStmt[] = "Can't allocate ODBC statement";
-//   cantFreeStmt[]     = "Can't free ODBC statement";
 
 static inline BOOL successful(int ret) {
    return ret==SQL_SUCCESS || ret==SQL_SUCCESS_WITH_INFO;
 }
 
+// Driver-specific Fl_Param extension. ODBC handles time
+// parameters using TIMESTAMP_STRUCT. Every database may
+// have it's own way to work with time and date.
+// Driver TO DO: define native time structures for parameters here
+// to support conversion from Fl_Date_Time to native date and time.
+// (replace TIMESTAMP_STRUCT)
 class Fl_ODBC_Param : public Fl_Param {
    friend class Fl_ODBC_Database;
 protected:
@@ -37,6 +42,10 @@ public:
    Fl_ODBC_Param(const char *paramName) : Fl_Param(paramName) {}
 };
 
+// Driver-specific Fl_Data_Field extension. Contains all the information
+// we can get from the database about the field in 'select' query.
+// Driver TO DO: define native field information
+// (replace m_columnType,m_columnLength,m_columnScale)
 class FL_API Fl_ODBC_Field : public Fl_Data_Field {
    friend class Fl_Data_Fields;
    friend class Fl_ODBC_Database;
@@ -50,25 +59,28 @@ public:
    char *check_buffer(unsigned sz);
 };
 
+// Field ctor
+// Driver TO DO: initialize the column information. Depending on native field type,
+// initialize Fl_Data_Field::value to one of the Fl_Variant types
 Fl_ODBC_Field::Fl_ODBC_Field(const char *name,short number,short type,short length,short scale) : Fl_Data_Field(name) {
    m_columnNumber = number;
    m_columnType = type;
    m_columnLength = length;
    m_columnScale = scale;
    switch (m_columnType) {
-   case SQL_C_SLONG:
+      case SQL_C_SLONG:
          value.set_int(0);
          break;
-   case SQL_C_DOUBLE:
+      case SQL_C_DOUBLE:
          value.set_float(0);
          break;
-   case SQL_C_TIMESTAMP:
+      case SQL_C_TIMESTAMP:
          value.set_date(Fl_Date_Time(0.0));
          break;
-   case SQL_C_BINARY:
+      case SQL_C_BINARY:
          value.set_buffer(NULL,0);
          break;
-   default:
+      default:
          value.set_string("");
          value.resize_buffer(256);
          break;
@@ -139,7 +151,7 @@ void Fl_ODBC_Database::rollback_transaction() {
 // Create query handle
 void Fl_ODBC_Database::allocate_query(Fl_Query *query) {
    deallocate_query(query);
-   
+
    void *qhandle;
    if (SQLAllocStmt((SQLHDBC)m_connect->handle(),&qhandle) != SQL_SUCCESS) {
       query_handle(query,SQL_NULL_HSTMT);
@@ -164,7 +176,7 @@ Fl_String Fl_ODBC_Database::query_error(Fl_Query *query) const {
    char  errorState[SQL_MAX_MESSAGE_LENGTH];
 
    SQLINTEGER nativeError = 0;
-   
+
    SWORD  pcnmsg = 0;
    *errorDescription = 0;
    *errorState = 0;
@@ -199,54 +211,54 @@ void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
          short paramNumber = short(param->bind_index(j) + 1);
          short parameterMode = SQL_PARAM_INPUT;
          switch (param->type()) {
-         case VAR_INT:
-            paramType = SQL_C_SLONG;
-            sqlType   = SQL_INTEGER;
-            break;
-         case VAR_FLOAT:
-            paramType = SQL_C_DOUBLE;
-            sqlType   = SQL_DOUBLE;
-            break;
-         case VAR_STRING:
-            buff      = (void *)param->get_string();
-            len       = param->size();
-            paramType = SQL_C_CHAR;
-            sqlType   = SQL_CHAR;
-            break;
-         case VAR_TEXT:
-            buff      = (void *)param->get_string();
-            len       = param->size();
-            paramType = SQL_C_CHAR;
-            sqlType   = SQL_LONGVARCHAR;
-            break;
-         case VAR_BUFFER:
-            buff      = (void *)param->get_string();
-            len       = param->size();
-            paramType = SQL_C_BINARY;
-            sqlType   = SQL_LONGVARBINARY;
-            break;
-         case VAR_DATETIME:
-            {
-               paramType = SQL_C_TIMESTAMP;
-               sqlType   = SQL_TIMESTAMP;
-               len = sizeof(TIMESTAMP_STRUCT);
-               TIMESTAMP_STRUCT *t = &param->m_timeData;
-               Fl_Date_Time dt = param->get_date();
-               short ms;
-               buff = t;
-               if (dt) {
-                  dt.decode_date((short *)&t->year,(short *)&t->month,(short *)&t->day);
-                  dt.decode_time((short *)&t->hour,(short *)&t->minute,(short *)&t->second,&ms);
-                  t->fraction = 0;
-               } else {
-                  paramType = SQL_C_CHAR;
-                  sqlType   = SQL_CHAR;
-                  *(char *)buff = 0;
+            case VAR_INT:
+               paramType = SQL_C_SLONG;
+               sqlType   = SQL_INTEGER;
+               break;
+            case VAR_FLOAT:
+               paramType = SQL_C_DOUBLE;
+               sqlType   = SQL_DOUBLE;
+               break;
+            case VAR_STRING:
+               buff      = (void *)param->get_string();
+               len       = param->size();
+               paramType = SQL_C_CHAR;
+               sqlType   = SQL_CHAR;
+               break;
+            case VAR_TEXT:
+               buff      = (void *)param->get_string();
+               len       = param->size();
+               paramType = SQL_C_CHAR;
+               sqlType   = SQL_LONGVARCHAR;
+               break;
+            case VAR_BUFFER:
+               buff      = (void *)param->get_string();
+               len       = param->size();
+               paramType = SQL_C_BINARY;
+               sqlType   = SQL_LONGVARBINARY;
+               break;
+            case VAR_DATETIME:
+               {
+                  paramType = SQL_C_TIMESTAMP;
+                  sqlType   = SQL_TIMESTAMP;
+                  len = sizeof(TIMESTAMP_STRUCT);
+                  TIMESTAMP_STRUCT *t = &param->m_timeData;
+                  Fl_Date_Time dt = param->get_date();
+                  short ms;
+                  buff = t;
+                  if (dt) {
+                     dt.decode_date((short *)&t->year,(short *)&t->month,(short *)&t->day);
+                     dt.decode_time((short *)&t->hour,(short *)&t->minute,(short *)&t->second,&ms);
+                     t->fraction = 0;
+                  } else {
+                     paramType = SQL_C_CHAR;
+                     sqlType   = SQL_CHAR;
+                     *(char *)buff = 0;
+                  }
                }
-            }
-            break;
-         default:
-            fl_throw("Unknown type of parameter " + Fl_String(paramNumber));
+               break;
+            default:
+               fl_throw("Unknown type of parameter " + Fl_String(paramNumber));
          }
          rc = SQLBindParameter(statement,paramNumber,parameterMode,paramType,sqlType,len,scale,buff,short(len),NULL/*&cbValue*/);
          if (rc != 0)
@@ -289,35 +301,35 @@ void Fl_ODBC_Database::query_col_attributes(Fl_Query *query,short column,short d
 // Conversion of ODBC data type to C data type
 static short ODBCtypeToCType(int odbcType) {
    switch(odbcType) {
-   case SQL_BIGINT:
-   case SQL_TINYINT:
-   case SQL_SMALLINT:
-   case SQL_INTEGER:    return SQL_C_SLONG;
+      case SQL_BIGINT:
+      case SQL_TINYINT:
+      case SQL_SMALLINT:
+      case SQL_INTEGER:    return SQL_C_SLONG;
 
-   case SQL_NUMERIC:
-   case SQL_REAL:
-   case SQL_DECIMAL:
-   case SQL_DOUBLE:
-   case SQL_FLOAT:      return SQL_C_DOUBLE;
+      case SQL_NUMERIC:
+      case SQL_REAL:
+      case SQL_DECIMAL:
+      case SQL_DOUBLE:
+      case SQL_FLOAT:      return SQL_C_DOUBLE;
 
-   case SQL_LONGVARCHAR:
-   case SQL_VARCHAR:
-   case SQL_CHAR:       return SQL_C_CHAR;
+      case SQL_LONGVARCHAR:
+      case SQL_VARCHAR:
+      case SQL_CHAR:       return SQL_C_CHAR;
 
    // ODBC 3.0 only
-   case SQL_TYPE_TIME:
-   case SQL_TYPE_TIMESTAMP:
-   case SQL_TYPE_DATE:  return SQL_C_TIMESTAMP;
+      case SQL_TYPE_TIME:
+      case SQL_TYPE_TIMESTAMP:
+      case SQL_TYPE_DATE:  return SQL_C_TIMESTAMP;
 
-   case SQL_TIME:
-   case SQL_TIMESTAMP:
-   case SQL_DATE:       return SQL_C_TIMESTAMP;
+      case SQL_TIME:
+      case SQL_TIMESTAMP:
+      case SQL_DATE:       return SQL_C_TIMESTAMP;
 
-   case SQL_BINARY:
-   case SQL_LONGVARBINARY:
-   case SQL_VARBINARY:  return SQL_C_BINARY;
+      case SQL_BINARY:
+      case SQL_LONGVARBINARY:
+      case SQL_VARBINARY:  return SQL_C_BINARY;
 
-   case SQL_BIT:        return SQL_C_BIT;
+      case SQL_BIT:        return SQL_C_BIT;
    }
    return VAR_NONE;
 }
@@ -374,11 +386,11 @@ void Fl_ODBC_Database::open_query(Fl_Query *query) {
             columnLength = FETCH_BUFFER_SIZE;
 
          Fl_Data_Field *field = new Fl_ODBC_Field(
-            columnName,
-            column,
-            columnType,
-            columnLength,
-            columnScale);
+               columnName,
+               column,
+               columnType,
+               columnLength,
+               columnScale);
 
          query_fields(query).add(field);
       }
@@ -438,33 +450,33 @@ void Fl_ODBC_Database::fetch_query(Fl_Query *query) {
 
       switch (fieldType) {
 
-      case SQL_C_SLONG:
-      case SQL_C_DOUBLE:
-      case SQL_C_TIMESTAMP:
-         buffer = (char *)field->value.data();
-         rc = SQLGetData(stmt,column,fieldType,buffer,0,&dataLength);
-         break;
+         case SQL_C_SLONG:
+         case SQL_C_DOUBLE:
+         case SQL_C_TIMESTAMP:
+            buffer = (char *)field->value.data();
+            rc = SQLGetData(stmt,column,fieldType,buffer,0,&dataLength);
+            break;
 
-      case SQL_C_BINARY:
-      case SQL_C_CHAR:
-         buffer = (char *)field->value.get_buffer();
-         rc = SQLGetData(stmt,column,fieldType,buffer,readSize,&dataLength);
-         if (dataLength > readSize) { // continue to fetch BLOB data
-            buffer = field->check_buffer(dataLength);
-            char *offset = buffer + readSize - 1;
-            readSize = dataLength - readSize + 1;
-            rc = SQLGetData(stmt,column,fieldType,offset,readSize,NULL);
-         }
-         break;
+         case SQL_C_BINARY:
+         case SQL_C_CHAR:
+            buffer = (char *)field->value.get_buffer();
+            rc = SQLGetData(stmt,column,fieldType,buffer,readSize,&dataLength);
+            if (dataLength > readSize) { // continue to fetch BLOB data
+               buffer = field->check_buffer(dataLength);
+               char *offset = buffer + readSize - 1;
+               readSize = dataLength - readSize + 1;
+               rc = SQLGetData(stmt,column,fieldType,offset,readSize,NULL);
+            }
+            break;
 
-      case SQL_BIT:
-         buffer = (char *)field->value.data();
-         rc = SQLGetData(stmt,column,fieldType,buffer,1,&dataLength);
-         break;
+         case SQL_BIT:
+            buffer = (char *)field->value.data();
+            rc = SQLGetData(stmt,column,fieldType,buffer,1,&dataLength);
+            break;
 
-      default:
-         dataLength = 0;
-         break;
+         default:
+            dataLength = 0;
+            break;
       }
 
       if (fieldType == SQL_C_CHAR && dataLength > 0) {
@@ -491,4 +503,3 @@ void Fl_ODBC_Database::close_query(Fl_Query *query) {
    Fl_Data_Fields& fields = query_fields(query);
    fields.clear();
 }
-
