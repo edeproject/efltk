@@ -44,6 +44,7 @@ static void revert_menubar(Fl_Style* s) {
     s->button_box = FL_HIGHLIGHT_BOX;
 #endif
 }
+
 static Fl_Named_Style style_menubar("Menu_Bar", revert_menubar, &Fl_Menu_Bar::default_style);
 Fl_Named_Style* Fl_Menu_Bar::default_style = &::style_menubar;
 
@@ -197,6 +198,7 @@ int Fl_Menu_Bar::handle(int event)
 {
     static bool menu_up=false;
     switch(event) {
+	case FL_FOCUS: return 1;
 
     case FL_LEAVE:
         if(menu_up) return 0;
@@ -233,41 +235,25 @@ int Fl_Menu_Bar::handle(int event)
         }
         break;
     }
+
+	case FL_KEY:
     case FL_SHORTCUT: {
-        key_event = true;
+		if(!Fl::event_state(FL_ALT)) break;
+		if(!focused()) {
+			take_focus();
+			key_event = true;
+		}
         for(int i = 0; i < children(); i++) {
             Fl_Widget* w = child(i);
-            if(w->is_group() && w->active() && w->test_shortcut()) {
+            if(w->is_group() && w->active() && w->test_shortcut()) {				
                 value(i);
+				menu_up=true;
                 popup(0,0,0,0);
+				menu_up=false;				
                 return 1;
             }
         }
         if(handle_shortcut()) return 1;
-        return 0;
-    }
-    case FL_KEYUP: {
-        // In the future maybe any shortcut() will work, but for now
-        // only the Alt key does. Setting the shortcut to zero will disable
-        // the alt key shortcut.
-        if (shortcut() != FL_Alt_L && shortcut() != FL_Alt_R) break;
-        if (Fl::event_key() != FL_Alt_L && Fl::event_key() != FL_Alt_R) break;
-        // checking for event_clicks insures that the keyup matches the
-        // keydown that preceeded it, so Alt was pressed & released without
-        // any intermediate values.  On X it is false if Alt is held down
-        // for a long time, too:
-        if (!Fl::event_is_click()) break;
-
-        key_event = true;
-        // okay we got the shortcut, find first menu and pop it up:
-        for(int i = 0; i < children(); i++) {
-            Fl_Widget* w = child(i);
-            if(w->active()) {
-                value(i);
-                popup(0,0,0,0);
-                return 1;
-            }
-        }
         break;
     }
 

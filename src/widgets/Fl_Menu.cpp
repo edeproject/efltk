@@ -663,14 +663,6 @@ int MenuWindow::handle(int event)
 
     switch(event)
     {
-	case FL_KEYUP:
-		if(Fl::event_key()==FL_Alt_L) {
-			menu_picked=false;
-            Fl::exit_modal();
-            return 1;
-		}
-		return 0;
-
     case FL_KEY:
     case FL_SHORTCUT: {
         // Redirect key events to children
