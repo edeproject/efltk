@@ -59,8 +59,10 @@ using namespace std;
 // USE_ASYNC_SELECT - define it if you have WSAAsyncSelect()...
 //
 
+//#define USE_ASYNC_SELECT
+
 #ifndef _WIN32_WCE 
-#define USE_ASYNC_SELECT
+ #undef USE_ASYNC_SELECT
 #endif
 //
 // USE_TRACK_MOUSE - define it if you have TrackMouseEvent()...
@@ -163,37 +165,49 @@ static fd_set fdsets[3];
 #define POLLOUT 4
 #define POLLERR 8
 
-static int nfds = 0;
-static int fd_array_size = 0;
-static struct FD
-{
+struct FD {
     int fd;
     short events;
     void (*cb)(int, void*);
-    void* arg;
-} *fd = 0;
+    void *arg;
+#ifdef USE_ASYNC_SELECT
+	HWND window;
+#endif
+};
+
+static Fl_Ptr_List fd;
 
 void Fl::add_fd(int n, int events, void (*cb)(int, void*), void *v)
 {
+#ifdef USE_ASYNC_SELECT
+	if(!Fl::first_window() || !Fl::first_window()->shown()) {
+		Fl::warning("Cannot register fd (%d). No window created yet.", n);	
+		return;
+	}
+#endif
+
     remove_fd(n,events);
-    int i = nfds++;
-    if (i >= fd_array_size)
-    {
-        fd_array_size = 2*fd_array_size+1;
-        fd = (FD*)realloc(fd, fd_array_size*sizeof(FD));
-    }
-    fd[i].fd = n;
-    fd[i].events = events;
-    fd[i].cb = cb;
-    fd[i].arg = v;
+
+	struct FD *f = new struct FD;
+    f->fd = n;
+    f->events = events;
+    f->cb = cb;
+    f->arg = v;
+
+	fd.append(f);
 
 #ifdef USE_ASYNC_SELECT
     int mask = 0;
     if (events & POLLIN) mask |= FD_READ;
     if (events & POLLOUT) mask |= FD_WRITE;
     if (events & POLLERR) mask |= FD_CLOSE;
-                                 /*fl_window*/
-    WSAAsyncSelect(n, 0, WM_FLSELECT, mask);
+	
+	HWND hwdn = fl_xid(Fl::first_window());
+    f->window = hwnd;
+	
+    if(WSAAsyncSelect(n, hwnd, WM_FLSELECT, mask) != 0) {
+		remove_fd(n,events);		
+	}
 #else
     if (events & POLLIN) FD_SET(n, &fdsets[0]);
     if (events & POLLOUT) FD_SET(n, &fdsets[1]);
@@ -207,33 +221,25 @@ void Fl::add_fd(int fd, void (*cb)(int, void*), void* v)
     Fl::add_fd(fd, POLLIN, cb, v);
 }
 
-
 void Fl::remove_fd(int n, int events)
 {
-    int i,j;
-    for (i=j=0; i<nfds; i++)
+    for(unsigned i=0; i<fd.size(); i++)
     {
-        if (fd[i].fd == n)
-        {
-            int e = fd[i].events & ~events;
-            if (!e) continue;    // if no events left, delete this fd
-            fd[i].events = e;
-        }
-        // move it down in the array if necessary:
-        if (j<i)
-        {
-            fd[j]=fd[i];
-        }
-        j++;
-    }
-    nfds = j;
-
+		struct FD *f = (struct FD *)fd[i];
+        if(f->fd == n) {
 #ifdef USE_ASYNC_SELECT
-    WSAAsyncSelect(n, 0, 0, 0);
-#else
-    if (events & POLLIN) FD_CLR(unsigned(n), &fdsets[0]);
-    if (events & POLLOUT) FD_CLR(unsigned(n), &fdsets[1]);
-    if (events & POLLERR) FD_CLR(unsigned(n), &fdsets[2]);
+		    WSAAsyncSelect(n, f->window, 0, 0);
+#endif
+			fd.remove(i);
+			delete f;
+			break;
+        }
+    }
+
+#ifndef USE_ASYNC_SELECT
+    if (events & POLLIN) FD_CLR(n, &fdsets[0]);
+    if (events & POLLOUT) FD_CLR(n, &fdsets[1]);
+    if (events & POLLERR) FD_CLR(n, &fdsets[2]);
 #endif                       // USE_ASYNC_SELECT
 }
 
@@ -267,7 +273,7 @@ static inline int fl_wait(double time_to_wait)
     int timerid;
 
 #ifndef USE_ASYNC_SELECT
-    if (nfds)
+    if (fd.size())
     {
         // For _WIN32 we need to poll for socket input FIRST, since
         // the event queue is not something we can select() on...
@@ -280,25 +286,31 @@ static inline int fl_wait(double time_to_wait)
         fdt[1] = fdsets[1];
         fdt[2] = fdsets[2];
 
-        if (::select(0,&fdt[0],&fdt[1],&fdt[2],&t))
+		int rc = ::select(0, &fdt[0], &fdt[1], &fdt[2], &t);
+        if(rc>0)
         {
             // We got something - do the callback!
-            for (int i = 0; i < nfds; i ++)
+			for (unsigned i = 0; i < fd.size(); i ++)
             {
-                int f = fd[i].fd;
-                short revents = 0;
-                if (FD_ISSET(f,&fdt[0])) revents |= POLLIN;
-                if (FD_ISSET(f,&fdt[1])) revents |= POLLOUT;
-                if (FD_ISSET(f,&fdt[2])) revents |= POLLERR;
-                if (fd[i].events & revents) fd[i].cb(f, fd[i].arg);
+				struct FD *f = (struct FD*)fd[i];
+                int sock = f->fd;
+                
+				short revents = 0;
+                if (FD_ISSET(sock, &fdt[0])) revents |= POLLIN;
+                if (FD_ISSET(sock, &fdt[1])) revents |= POLLOUT;
+                if (FD_ISSET(sock, &fdt[2])) revents |= POLLERR;
+
+                if (f->events & revents) f->cb(sock, f->arg);
             }
             time_to_wait = 0.0;  // just peek for any messages
         }
-        else
-        {
-            // we need to check them periodically, so set a short timeout:
-            if (time_to_wait > .001) time_to_wait = .001;
-        }
+#ifndef __CYGWIN__
+		else {
+			// we need to check them periodically, so set a short timeout (100ms):
+			if (time_to_wait > .1) time_to_wait = .1;
+		}
+#endif
+
     }
 #endif                       // USE_ASYNC_SELECT
 
@@ -331,12 +343,15 @@ static inline int fl_wait(double time_to_wait)
         if (fl_msg.message == WM_FLSELECT)
         {
             // Got notification for socket
-            for (int i = 0; i < nfds; i ++)
-                if (fd[i].fd == (int)fl_msg.wParam)
+			for (unsigned i = 0; i < fd.size(); i ++)
             {
-                (fd[i].cb)(fd[i].fd, fd[i].arg);
-                break;
-            }
+				struct FD *f = (struct FD*)fd[i];
+                if(f->fd == (int)fl_msg.wParam)
+				{
+					(f->cb)(f->fd, f->arg);
+					break;
+				}
+			}
             // looks like it is best to do the dispatch-message anyway:
         }
 #endif
@@ -1499,6 +1514,9 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
             break;
     }
 
+	} catch(Fl_Exception &e) {
+		Fl::warning(e.text());
+		terminate();
 	} catch(...) {
 		// When programming for Windows, it is important to remember that 
 		// exceptions cannot cross the boundary of a "callback." 
