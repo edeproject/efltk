@@ -36,6 +36,9 @@
 #include <limits.h>
 #include <ctype.h>
 
+#if HAVE_XUTF8
+# include <efltk/Xutf8.h>
+#endif
 
 #if USE_XFT
 #include <X11/Xft/Xft.h>
@@ -262,7 +265,7 @@ void Fl_Text_Display::set_font()
 #if !USE_XFT
 
 #if HAVE_XUTF8
-    XUtf8FontStruct *fontStruct = fl_xfont(), *styleFont;
+    XUtf8FontStruct *fontStruct = (XUtf8FontStruct *)fl_xfont(), *styleFont;
     mMaxFontBound = fontStruct->fonts[0]->max_bounds.width;
     mMinFontBound = fontStruct->fonts[0]->min_bounds.width;
     fontWidth = fontStruct->fonts[0]->max_bounds.width;
@@ -274,7 +277,7 @@ void Fl_Text_Display::set_font()
             unsigned size = mStyleTable[i].size;
             if(text_size()!=size) { fontWidth = -1; break; }
             fl_font(mStyleTable[i].font, mStyleTable[i].size);
-            styleFont = fl_xfont();
+            styleFont = (XUtf8FontStruct *)fl_xfont();
             if(styleFont != NULL && (styleFont->fonts[0]->max_bounds.width != fontWidth || styleFont->fonts[0]->max_bounds.width != styleFont->fonts[0]->min_bounds.width)) {
                 fontWidth = -1;
                 break;
@@ -282,7 +285,7 @@ void Fl_Text_Display::set_font()
         }
     }
 #else
-    XFontStruct *fontStruct = fl_xfont(), *styleFont;
+    XFontStruct *fontStruct = (XFontStruct *)fl_xfont(), *styleFont;
     mMaxFontBound = fontStruct->max_bounds.width;
     mMinFontBound = fontStruct->min_bounds.width;
     fontWidth = fontStruct->max_bounds.width;
@@ -294,7 +297,7 @@ void Fl_Text_Display::set_font()
             unsigned size = mStyleTable[i].size;
             if(text_size()!=size) { fontWidth = -1; break; }
             fl_font(mStyleTable[i].font, mStyleTable[i].size);
-            styleFont = fl_xfont();
+            styleFont = (XFontStruct *)fl_xfont();
             if(styleFont != NULL && (styleFont->max_bounds.width != fontWidth || styleFont->max_bounds.width != styleFont->min_bounds.width)) {
                 fontWidth = -1;
                 break;

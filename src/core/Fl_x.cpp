@@ -27,6 +27,11 @@
 #define CONSOLIDATE_MOTION 0     // this was 1 in fltk 1.0
 
 #include <config.h>
+
+#if HAVE_XUTF8
+# include <efltk/Xutf8.h>
+#endif
+
 #include <efltk/Fl.h>
 #include <efltk/x.h>
 #include <efltk/Fl_Window.h>
@@ -38,10 +43,6 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <limits.h>
-
-#if HAVE_XUTF8
-#include "fl_utf8_x.h"
-#endif
 
 void Fl::sleep_ms(int ms) {
     timeval t;
@@ -997,8 +998,8 @@ bool fl_handle()
 		int len = 0;
 	        if (!filtered) {
 	            Status status;
-		    len = XUtf8LookupString(fl_xim_ic, (XKeyPressedEvent *)&fl_xevent.xkey,
-                               buffer, 255, &keysym, &status);
+                    len = XUtf8LookupString(fl_xim_ic, (XKeyPressedEvent *)&fl_xevent.xkey,
+                                            buffer, 255, &keysym, &status);
 		}
 		else {
 	          keysym = XKeycodeToKeysym(fl_display, keycode, 0);

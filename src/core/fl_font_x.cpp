@@ -37,9 +37,8 @@
 #include <string.h>
 
 #if HAVE_XUTF8
-#include "fl_utf8_x.h"
+# include <efltk/Xutf8.h>
 #endif
-
 
 class Fl_FontSize {
 public:
@@ -70,11 +69,7 @@ set_current_fontsize(Fl_FontSize* f) {
 }
 
 #define current_font (fl_fontsize->font)
-#if HAVE_XUTF8
-XUtf8FontStruct* fl_xfont() {return current_font;}
-#else
-XFontStruct* fl_xfont() {return current_font;}
-#endif
+void* fl_xfont() { return (void*)current_font; }
 
 Fl_FontSize::Fl_FontSize(const char* name) {
 #  if HAVE_XUTF8

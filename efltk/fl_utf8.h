@@ -30,6 +30,9 @@
 #include "Fl_Export.h"
 #include <stdio.h>
 
+// Returns true, if UTF-8 support compiled in.
+extern FL_API bool fl_supports_utf8();
+
 extern FL_API int fl_utf2ucs( const unsigned char *buf, int len, unsigned int *ucs);
 extern FL_API int fl_ucs2utf(unsigned int ucs, char *buf);
 extern FL_API int fl_utflen(const unsigned char *buf, int len);

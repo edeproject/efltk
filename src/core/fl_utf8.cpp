@@ -42,9 +42,10 @@
 # include <direct.h>
 # include <windows.h>
 # include <winbase.h>
+
 #else
 
-# include "../xutf/Xutf8.h"
+# include <efltk/Xutf8.h>
 # include <fcntl.h>
 # include <unistd.h>
 
@@ -55,6 +56,11 @@
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
+
+bool fl_supports_utf8()
+{
+    return true;
+}
 
 /*** NOTE : all functions are LIMITED to 24 bits Unicode values !!! ***/
 /***        but only 16 bits are realy used under Linux and win32  ***/
@@ -873,7 +879,12 @@ int fl_utf2ucs( const unsigned char *buf, int len, unsigned int *ucs)
 #define fl_utf_strncasecmp strncasecmp
 #define fl_tolower tolower
 #define fl_toupper toupper
-//#define fl_rtl_draw fl_draw
+
+bool fl_supports_utf8()
+{
+    return false;
+}
+
 
 // todo - rest of compatibility
 
