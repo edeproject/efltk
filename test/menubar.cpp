@@ -186,7 +186,8 @@ Fl_Menu_Item pulldown[] = {
 #define WIDTH 600
 #define HEIGHT 24 //30 // use 25 for better Windoze look
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv) 
+{
   for (int i=0; i<99; i++) {
       char buf[100];
     sprintf(buf,"item %d",i);
@@ -200,8 +201,8 @@ int main(int argc, char **argv) {
 
   window.menu()->menu(menutable);
   Fl_Menu_Bar &menubar = *window.menu();
-
-  menubar.find("&Font/Normal")->label_font(FL_HELVETICA);
+  
+  menubar.find("&Font/Normal")->label_font(FL_HELVETICA);  
   menubar.find("&Font/Bold")->label_font(FL_HELVETICA_BOLD);
   menubar.find("&Font/Italic")->label_font(FL_HELVETICA_ITALIC);
   menubar.find("&Font/BoldItalic")->label_font(FL_HELVETICA_BOLD_ITALIC);
@@ -228,6 +229,21 @@ int main(int argc, char **argv) {
   menubar.callback(test_cb);
   menubar.tooltip("This is a menu bar");
   menus[0] = &menubar;
+
+  /*
+  // Change menu style :)
+  Fl_Style *s = Fl_Style::find("menu");
+  if(s) {
+	s->box = FL_BORDER_BOX;
+	s->color = FL_LIGHT2;
+	s->selection_color = fl_darker(FL_CYAN);
+	s->button_box = FL_BORDER_BOX;
+  }
+  menubar.color(FL_LIGHT2);
+  menubar.button_color(FL_LIGHT2);
+  menubar.selection_color(fl_darker(FL_CYAN));
+  menubar.selection_text_color(FL_WHITE);
+  */
 
   window.view()->begin();
   window.view()->box(FL_DOWN_BOX);
