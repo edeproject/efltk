@@ -1322,7 +1322,7 @@ char *Fl_File_Dialog::get_filename(const char *path, char *buf)
     check='/'; checkp=0;
 #endif
     char tmp[FL_PATH_MAX];
-    if(fl_file_expand(tmp, path)) path = tmp;
+    if(fl_file_expand(tmp, FL_PATH_MAX, path)) path = tmp;
 
     if(path[checkp]==check || !fullpath() 
 #ifdef _WIN32
@@ -1358,7 +1358,7 @@ char *Fl_File_Dialog::get_filepath(const char *path, char *buf)
         path = tmp_path;
     }
     char tmp[FL_PATH_MAX];
-    if(fl_file_expand(tmp, path)) path = tmp;
+    if(fl_file_expand(tmp, FL_PATH_MAX, path)) path = tmp;
 
     char *p = strrchr(path, slash);
     if(p) {

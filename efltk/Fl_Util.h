@@ -36,7 +36,7 @@ FL_API char *fl_file_setext(char *,const char *ext);
 FL_API const char *fl_file_filename(const char *);
 
 // convert $x and ~x
-FL_API bool fl_file_expand(char *buf, const char *from);
+FL_API bool fl_file_expand(char *buf, int buf_len, const char *from);
 
 // prepend getcwd()
 FL_API bool fl_file_absolute(char *buf, const char *from);

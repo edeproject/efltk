@@ -46,6 +46,7 @@
 #if !defined(__GNUC__) || __GNUC__ >= 3
 # include <ole2.h>
 # include <ShellApi.h>
+# include <imm.h>
 # include "aimm.h"
 #endif // !__GNUC__ || __GNUC__ >= 3
 
@@ -717,12 +718,14 @@ class FLDropTarget : public IDropTarget
             while (w->parent()) w = w->window();
             HWND hwnd = fl_xid( (Fl_Window*)w );
 
-            FORMATETC fmt = { 0 };
-            STGMEDIUM medium = { 0 };
+		    FORMATETC fmt;
+			
+            STGMEDIUM medium;
             fmt.tymed = TYMED_HGLOBAL;
             fmt.dwAspect = DVASPECT_CONTENT;
             fmt.lindex = -1;
             fmt.cfFormat = CF_TEXT;
+			fmt.ptd = 0;
             // if it is ASCII text, send an FL_PASTE with that text
             if ( data->GetData( &fmt, &medium )==S_OK )
             {
@@ -830,7 +833,8 @@ WIN_TrackMouseEvent(_TRACKMOUSEEVENT *ptme)
 static _TRACKMOUSEEVENT mouseevent =
 {
     sizeof(_TRACKMOUSEEVENT),
-    TME_LEAVE
+    TME_LEAVE,
+	0, 0
 };
 
 ////////////////////////////////////////////////////////////////
@@ -922,25 +926,21 @@ WPARAM wParam, LPARAM lParam)
 // convert a MSWindows VK_x to an Fltk (X) Keysym:
 // See also the inverse converter in Fl_get_key_win32.C
 // This table is in numeric order by VK:
-static const struct
-{
+static const struct {
     unsigned short vk, fltk, extended;
-}
-
-
-vktab[] =
+} vktab[] =
 {
-    {VK_BACK, FL_BackSpace},
-    {VK_TAB,  FL_Tab},
+    {VK_BACK, FL_BackSpace, 0},
+    {VK_TAB,  FL_Tab, 0},
     {VK_CLEAR,    FL_KP('5'), FL_Clear},
     {VK_RETURN,   FL_Enter,   FL_KP_Enter},
     {VK_SHIFT,    FL_Shift_L, FL_Shift_R},
     {VK_CONTROL,  FL_Control_L,   FL_Control_R},
     {VK_MENU, FL_Alt_L,   FL_Alt_R},
-    {VK_PAUSE,    FL_Pause},
-    {VK_CAPITAL,  FL_Caps_Lock},
-    {VK_ESCAPE,   FL_Escape},
-    {VK_SPACE,    ' '},
+    {VK_PAUSE,    FL_Pause, 0},
+    {VK_CAPITAL,  FL_Caps_Lock, 0},
+    {VK_ESCAPE,   FL_Escape, 0},
+    {VK_SPACE,    ' ', 0},
     {VK_PRIOR,    FL_KP('9'), FL_Page_Up},
     {VK_NEXT, FL_KP('3'), FL_Page_Down},
     {VK_END,  FL_KP('1'), FL_End},
@@ -949,32 +949,30 @@ vktab[] =
     {VK_UP,   FL_KP('8'), FL_Up},
     {VK_RIGHT,    FL_KP('6'), FL_Right},
     {VK_DOWN, FL_KP('2'), FL_Down},
-    {                            // does not work on NT
-        VK_SNAPSHOT, FL_Print
-    },
+    {VK_SNAPSHOT, FL_Print, 0}, // does not work on NT
     {VK_INSERT,   FL_KP('0'), FL_Insert},
     {VK_DELETE,   FL_KP('.'), FL_Delete},
-    {VK_LWIN, FL_Win_L},
-    {VK_RWIN, FL_Win_R},
-    {VK_APPS, FL_Menu},
-    {VK_MULTIPLY, FL_KP('*')},
-    {VK_ADD,  FL_KP('+')},
-    {VK_SUBTRACT, FL_KP('-')},
-    {VK_DECIMAL,  FL_KP('.')},
-    {VK_DIVIDE,   FL_KP('/')},
-    {VK_NUMLOCK,  FL_Num_Lock},
-    {VK_SCROLL,   FL_Scroll_Lock},
-    {0xba,    ';'},
-    {0xbb,    '='},
-    {0xbc,    ','},
-    {0xbd,    '-'},
-    {0xbe,    '.'},
-    {0xbf,    '/'},
-    {0xc0,    '`'},
-    {0xdb,    '['},
-    {0xdc,    '\\'},
-    {0xdd,    ']'},
-    {0xde,    '\''}
+    {VK_LWIN, FL_Win_L, 0},
+    {VK_RWIN, FL_Win_R, 0},
+    {VK_APPS, FL_Menu, 0},
+    {VK_MULTIPLY, FL_KP('*'), 0},
+    {VK_ADD,  FL_KP('+'), 0},
+    {VK_SUBTRACT, FL_KP('-'), 0},
+    {VK_DECIMAL,  FL_KP('.'), 0},
+    {VK_DIVIDE,   FL_KP('/'), 0},
+    {VK_NUMLOCK,  FL_Num_Lock, 0},
+    {VK_SCROLL,   FL_Scroll_Lock, 0},
+    {0xba,    ';', 0},
+    {0xbb,    '=', 0},
+    {0xbc,    ',', 0},
+    {0xbd,    '-', 0},
+    {0xbe,    '.', 0},
+    {0xbf,    '/', 0},
+    {0xc0,    '`', 0},
+    {0xdb,    '[', 0},
+    {0xdc,    '\\', 0},
+    {0xdd,    ']', 0},
+    {0xde,    '\'', 0}
 };
 static int ms2fltk(int vk, int extended)
 {
