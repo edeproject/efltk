@@ -6,6 +6,7 @@
 #include <efltk/filename.h>
 #include <efltk/vsnprintf.h>
 #include <efltk/fl_utf8.h>
+#include <efltk/Fl_Map.h>
 
 #include <ctype.h>
 #include <errno.h>
