@@ -7,7 +7,6 @@
 
 // This call will load userinteface defaults from file.
 // e.g. Does menus animate or not.
-// This also initializes LOCALE support for EFLTK
 
 #include <efltk/Fl.h>
 
@@ -26,7 +25,6 @@
 # include <winsock.h>
 #endif
 
-extern void fl_init_locale_support(const char *, const char *);
 
 void clean_up()
 {
@@ -40,8 +38,6 @@ void clean_up()
 void Fl::init()
 {
     atexit(clean_up);
-
-    fl_init_locale_support("efltk", PREFIX"/share/locale");
 
     char *file = 0;
     file = Fl_Config::find_config_file("efltk.conf", false, Fl_Config::USER);
