@@ -401,6 +401,8 @@ void Fl_Input::draw(int X, int Y, int W, int H)
                     newscroll = len - (W-6);
             }
 
+            if (newscroll < 0)
+                newscroll = 0;
             if (newscroll != xscroll_)
             {
                 xscroll_ = newscroll;
