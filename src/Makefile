@@ -236,6 +236,9 @@ $(DSO).so.2 $(DSO).sl.2: $(OBJECTS:.o=.shared.o)
 	@rm -f $@
 	@echo $(DSOCOMMAND) $(DSONAME) ...
 	@$(DSOCOMMAND) $(DSONAME) $(OBJECTS:.o=.shared.o) $(DSOLIBS)
+ifeq ($(HAVE_STRIP), 1) 
+	@$(STRIP) $(DSONAME)
+endif
 	@mv $(DSONAME) $@
 
 DLLIMPORTNAME = $(LIBNAME).2.dll$(LIBEXT)
