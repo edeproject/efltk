@@ -53,7 +53,7 @@ MAKEDEPEND	=@MAKEDEPEND@
 STRIP           =@STRIP_PATH@
 
 # flags for compiler:
-WALL            = -Wno-import -Wcomment -Wformat -Wimplicit-int -Werror-implicit-function-declaration -Wmain -Wmultichar -Wparentheses -Wreturn-type -Wswitch -Wunused -Wuninitialized -Wunknown-pragmas
+WALL            = -Wcomment -Wformat -Wimplicit-int -Werror-implicit-function-declaration -Wmain -Wmultichar -Wparentheses -Wreturn-type -Wswitch -Wunused -Wuninitialized
 CFLAGS		= -DHAVE_CONFIG_H -I$(EFLTK_BUILDDIR) $(WALL) @CFLAGS@ @DEBUGFLAG@
 CXXFLAGS	= -DHAVE_CONFIG_H -I$(EFLTK_BUILDDIR) $(WALL) @CXXFLAGS@ @DEBUGFLAG@
 
