@@ -143,6 +143,7 @@ void Fl_Text_Display::ctor_init()
     mMaxFontBound = mMinFontBound = 0;
 
     mLongestVline = 0;
+	mFixedFontWidth = -1;
 
 	scrolldx = scrolldy = 0;
 }
