@@ -36,53 +36,54 @@ Fl_Dialog *dlg;
 Fl_Input *input1, *input2;
 
 static void cb_test(Fl_Widget*, void*) {
-   char buffer[128];
-   Fl_Dialog& dialog = *dlg;
+    char buffer[128];
+    Fl_Dialog& dialog = *dlg;
    // define widgets contents
-   dialog["first_name"] = input1->value();
-   dialog["last_name"]  = input2->value();
+    dialog["first_name"] = input1->value();
+    dialog["last_name"]  = input2->value();
    // show modal dialog, and get results after it's closed
-   Fl_String fname, lname;
-   switch (dialog.show_modal()) {
-   case FL_DLG_OK:      fname = dialog["first_name"].get_string();
-                        lname = dialog["last_name"].get_string();
-                        sprintf(buffer,"Ok pressed, %s %s",
-                           fname.c_str(), lname.c_str()
-                        );
-                        fl_alert(buffer);
-                        input1->value(fname);
-                        input2->value(lname);
-                        break;
-   case FL_DLG_CANCEL:  fl_alert("Cancel pressed");
-                        break;
-   }
+    Fl_String fname, lname;
+    switch (dialog.show_modal()) {
+        case FL_DLG_OK:      
+            fname = dialog["first_name"].get_string();
+            lname = dialog["last_name"].get_string();
+            sprintf(buffer,"Ok pressed, %s %s",
+                fname.c_str(), lname.c_str()
+            );
+            fl_alert(buffer);
+            input1->value(fname);
+            input2->value(lname);
+            break;
+        case FL_DLG_CANCEL:  fl_alert("Cancel pressed");
+            break;
+    }
 }
 
 int main(int argc, char **argv) {
-   Fl_Window *window = new Fl_Window(300,180);
+    Fl_Window *window = new Fl_Window(300,180);
 
-   Fl_Button *btn = new Fl_Button(170,70,70,25,"Test dialog");
-   input1 = new Fl_Input(100,10,70,22,"First Name");
-   input2 = new Fl_Input(100,35,70,22,"Last Name");
-   btn->callback(cb_test);
+    Fl_Button *btn = new Fl_Button(170,70,70,25,"Test dialog");
+    input1 = new Fl_Input(100,10,70,22,"First Name");
+    input2 = new Fl_Input(100,35,70,22,"Last Name");
+    btn->callback(cb_test);
 
-   input1->value("Jonh");
-   input2->value("Doe");
+    input1->value("Jonh");
+    input2->value("Doe");
 
-   window->end();
-   window->show(argc, argv);
+    window->end();
+    window->show(argc, argv);
 
-   dlg = new Fl_Dialog(400,300);
-   dlg->new_page("default");
-   Fl_Input *firstNameInput = new Fl_Input(100,20,100,24,"First Name:");
-   firstNameInput->field_name("first_name");
-   Fl_Input *lastNameInput = new Fl_Input(100,50,100,24,"Last Name:");
-   lastNameInput->field_name("last_name");
-   dlg->end();
-   dlg->buttons(FL_DLG_OK|FL_DLG_CANCEL|FL_DLG_HELP,FL_DLG_OK);
-   dlg->relayout();
+    dlg = new Fl_Dialog(400,300);
+    dlg->new_page("default");
+    Fl_Input *firstNameInput = new Fl_Input(100,20,100,24,"First Name:");
+    firstNameInput->field_name("first_name");
+    Fl_Input *lastNameInput = new Fl_Input(100,50,100,24,"Last Name:");
+    lastNameInput->field_name("last_name");
+    dlg->end();
+    dlg->buttons(FL_DLG_OK|FL_DLG_CANCEL|FL_DLG_HELP,FL_DLG_OK);
+    dlg->relayout();
 
-   return Fl::run();
+    return Fl::run();
 }
 
 //
