@@ -27,22 +27,47 @@
 #include <efltk/Fl_Calendar.h>
 #include <efltk/Fl_Button.h>
 #include <efltk/Fl_Dialog.h>
+#include <efltk/Fl_Input.h>
+#include <efltk/fl_ask.h>
 
+Fl_Dialog *dlg;
+
+// I'm still thinking on operator [] implementation :(
+// It's not a problem if we always have Fl_Input.
+// Otherwise, value() should be Fl_Variant and in Fl_Widget.
 static void cb_test(Fl_Widget*, void*) {
-   Fl_Dialog dlg(200,100);
-   dlg.buttons(FL_DLG_OK|FL_DLG_CANCEL|FL_DLG_HELP,FL_DLG_OK);
-   dlg.exec(0, false);
+   Fl_Dialog& dialog = *dlg;
+   Fl_Input *fname = (Fl_Input *)dialog["first_name"];
+   Fl_Input *lname = (Fl_Input *)dialog["last_name"];
+   fname->value("Jonh");
+   lname->value("Doe");
+   switch (dialog.show_modal()) {
+   case FL_DLG_OK:      fl_alert("Ok pressed");
+                        break;
+   case FL_DLG_CANCEL:  fl_alert("Cancel pressed");
+                        break;
+   }
 }
 
 int main(int argc, char **argv) {
-    Fl_Window *window = new Fl_Window(300,180);
+   Fl_Window *window = new Fl_Window(300,180);
 
-    Fl_Button *btn = new Fl_Button(170,70,70,25,"Test dialog");
-    btn->callback(cb_test);
-    window->end();
-    window->show(argc, argv);
+   Fl_Button *btn = new Fl_Button(170,70,70,25,"Test dialog");
+   btn->callback(cb_test);
+   window->end();
+   window->show(argc, argv);
 
-    return Fl::run();
+   dlg = new Fl_Dialog(400,300);
+   dlg->new_page("default");
+   Fl_Input *firstNameInput = new Fl_Input(100,20,100,24,"First Name:");
+   firstNameInput->field_name("first_name");
+   Fl_Input *lastNameInput = new Fl_Input(100,50,100,24,"Last Name:");
+   lastNameInput->field_name("last_name");
+   dlg->end();
+   dlg->buttons(FL_DLG_OK|FL_DLG_CANCEL|FL_DLG_HELP,FL_DLG_OK);
+   dlg->relayout();
+
+   return Fl::run();
 }
 
 //
