@@ -1074,6 +1074,10 @@ int Fl_Text_Display::move_right() {
 int Fl_Text_Display::move_left() {
 #if HAVE_XUTF8
     insert_position( mCursorPos - find_prev_char(insert_position()) );
+#else
+    if ( mCursorPos < 1 )
+        return 0;
+    insert_position( mCursorPos - 1 );
 #endif
     return 1;
 }

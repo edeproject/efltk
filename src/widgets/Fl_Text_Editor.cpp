@@ -26,6 +26,7 @@
 #include <efltk/Fl.h>
 #include <efltk/Fl_Text_Editor.h>
 #include <efltk/Fl_Style.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
@@ -657,7 +658,8 @@ int Fl_Text_Editor::handle_key()
     // the changes that should be made to the text, as a number of
     // bytes to delete and a string to insert:
     int del;
-    if (Fl::compose(del))
+    int key = Fl::event_key();
+    if (Fl::compose(del) && key < FL_BackSpace)
     {
         if (del) buffer()->select(insert_position()-del, insert_position());
         kill_selection(this);
@@ -670,7 +672,11 @@ int Fl_Text_Editor::handle_key()
         return 1;
     }
 
-    int key = Fl::event_key();
+    if (key >= FL_Shift_L && key <= FL_Meta_R) {
+       //puts ("Modifier pressed");
+       return false;
+    }
+
     int state = Fl::event_state() & (FL_SHIFT|FL_CTRL|FL_ALT|FL_WIN);
     Key_Func f = bound_key_function(key, state, global_key_bindings);
     if (!f) f = bound_key_function(key, state, key_bindings);
