@@ -93,10 +93,10 @@ Fl_String::~Fl_String()
 void Fl_String::assign(const char *s)
 {
     if(s) {
-        int len = strlen(s)+1;
-        str_ = (char*)realloc(str_, len*sizeof(char));
-        strncpy(str_, s, len-1);
-        str_[len-1] = '\0';
+        len_ = strlen(s);
+        str_ = (char*)realloc(str_, (len_+1)*sizeof(char));
+        strncpy(str_, s, len_);
+        str_[len_] = '\0';
     } else {
         delete []str_;
         str_ = new char[1];

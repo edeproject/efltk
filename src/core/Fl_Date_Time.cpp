@@ -178,7 +178,7 @@ Fl_Date_Time_Format::Fl_Date_Time_Format() {
    t.tm_min  = 48;
    t.tm_sec  = 59;
 
-   t.tm_wday = 0;		// Sunday
+   t.tm_wday = 0; // Sunday
 
    // Build local data and time
    strftime(timeBuffer,32,"%X",&t);
@@ -688,9 +688,9 @@ Fl_String Fl_Date_Time::month_name() const {
 }
 
 Fl_String Fl_Date_Time::date_string() const {	
-	char  buffer[32];
-	format_date(buffer);
-	return Fl_String(buffer);
+   char  buffer[32];
+   format_date(buffer);
+   return Fl_String(buffer);
 }
 
 Fl_String Fl_Date_Time::time_string() const {

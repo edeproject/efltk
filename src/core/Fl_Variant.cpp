@@ -20,7 +20,7 @@
 #include <stdlib.h>
 
 void Fl_Variant::free_buffers() {
-   if (m_type == STRING || m_type == BUFFER) {
+   if (m_type == VAR_STRING || m_type == VAR_BUFFER) {
       if (m_data.stringData)
          free(m_data.stringData);
    }
@@ -28,7 +28,7 @@ void Fl_Variant::free_buffers() {
 //---------------------------------------------------------------------------
 void Fl_Variant::set_int(int value) {
    free_buffers();
-   m_type = INT;
+   m_type = VAR_INT;
    m_size = sizeof(value);
 
    m_data.intData = value;
@@ -36,13 +36,13 @@ void Fl_Variant::set_int(int value) {
 //---------------------------------------------------------------------------
 void Fl_Variant::set_float(double value) {
    free_buffers();
-   m_type = FLOAT;
+   m_type = VAR_FLOAT;
    m_size = sizeof(value);
    m_data.floatData = value;
 }
 //---------------------------------------------------------------------------
 void Fl_Variant::set_string(const char * value,int maxlen) {
-   if (m_type == STRING && maxlen && m_size == maxlen+1) {
+   if (m_type == VAR_STRING && maxlen && m_size == maxlen+1) {
 
       if (value) strncpy(m_data.stringData,value,m_size);
       else m_data.stringData[0] = 0;
@@ -65,12 +65,12 @@ void Fl_Variant::set_string(const char * value,int maxlen) {
          m_size = 0;
       }
    }
-   m_type = STRING;
+   m_type = VAR_STRING;
 }
 //---------------------------------------------------------------------------
 void Fl_Variant::set_text(const char * value) {
    free_buffers();
-   m_type = TEXT;
+   m_type = VAR_TEXT;
    if (value) {
       m_size = strlen(value);
       m_data.stringData = strdup(value);
@@ -82,7 +82,7 @@ void Fl_Variant::set_text(const char * value) {
 //---------------------------------------------------------------------------
 void Fl_Variant::set_buffer(const void *value, int sz) {
    free_buffers();
-   m_type = BUFFER;
+   m_type = VAR_BUFFER;
    if (value) {
       m_size = sz;
       m_data.stringData = (char *)malloc(sz);
@@ -95,7 +95,7 @@ void Fl_Variant::set_buffer(const void *value, int sz) {
 //---------------------------------------------------------------------------
 void Fl_Variant::set_date(Fl_Date_Time value) {
    free_buffers();
-   m_type = DATETIME;
+   m_type = VAR_DATETIME;
    m_size = sizeof(value);
    m_data.floatData = value;
 }
@@ -122,13 +122,13 @@ Fl_Date_Time Fl_Variant::get_date() const {
 //---------------------------------------------------------------------------
 void Fl_Variant::set_data(const Fl_Variant &C) {
    switch (C.m_type) {
-   case INT:     	set_int(C.get_int());            break;
-   case FLOAT:   	set_float(C.get_float());                break;
-   case STRING:  	set_string(C.get_string());              break;
-   case TEXT:  	    set_buffer(C.get_buffer(),C.size()); break;
-   case BUFFER:  	set_buffer(C.get_buffer(),C.size()); break;
-   case DATETIME:   set_date(C.get_date());          break;
-   case NONE:    	break;
+   case VAR_INT:     	set_int(C.get_int());                break;
+   case VAR_FLOAT:   	set_float(C.get_float());            break;
+   case VAR_STRING:  	set_string(C.get_string());          break;
+   case VAR_TEXT:  	   set_buffer(C.get_buffer(),C.size()); break;
+   case VAR_BUFFER:  	set_buffer(C.get_buffer(),C.size()); break;
+   case VAR_DATETIME:   set_date(C.get_date());              break;
+   case VAR_NONE:    	break;
    }
 }
 //---------------------------------------------------------------------------

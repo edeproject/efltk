@@ -17,6 +17,8 @@
 #ifndef __FL_DATE_TIME_H__
 #define __FL_DATE_TIME_H__
 
+#include <sys/time.h>
+
 #include "Fl_Export.h"
 #include "Fl_String.h"
 
