@@ -406,6 +406,8 @@ char *normalize_path(const char *path, char *buf)
 {
 #ifdef _WIN32
     strncpy(buf, path, FL_PATH_MAX);
+	char *d = buf;
+	for(; *d; d++) if(*d=='/') *d='\\'; //Convert slashes..
 #else
 
     char ch=0;
@@ -789,9 +791,9 @@ void Fl_File_Dialog::read_dir(const char *_path)
         delete []home;
         _path = read_path;
     }
-    parse_dirs(_path);
+    parse_dirs(read_path);
 #else
-    parse_dirs(_path);
+    parse_dirs(read_path);
     bool get_drives = false;
     bool read_net = false; LPNETRESOURCE netres=0;
 	
@@ -805,6 +807,10 @@ void Fl_File_Dialog::read_dir(const char *_path)
         _path=0;
     } else
     if(read_path[0]=='\\' && read_path[1]=='\\') {		
+		
+		// Remove trailing slash...
+		if(read_path[strlen(read_path)-1]=='\\') read_path[strlen(read_path)-1] = '\0'; 
+
         char *p = strchr((char *)(read_path+2), '\\');
         if(!p) {
 		    //Network path, w/o share name. Try to read all shares
@@ -1190,7 +1196,11 @@ char *Fl_File_Dialog::get_filename(const char *path, char *buf)
     char tmp[FL_PATH_MAX];
     if(fl_file_expand(tmp, path)) path = tmp;
 
-    if(path[checkp]==check || !fullpath())
+    if(path[checkp]==check || !fullpath() 
+#ifdef _WIN32
+		|| !strncmp(path, "//", 2) //Check for network path..
+#endif
+		)
         snprintf(buf, FL_PATH_MAX, "%s", path);
     else if(fullpath()[strlen(fullpath())-1]==slash)
         snprintf(buf, FL_PATH_MAX, "%s%s", fullpath(), path);
@@ -1207,11 +1217,15 @@ char *Fl_File_Dialog::get_filepath(const char *path, char *buf)
     check=':'; checkp=1;
 #else
     check='/'; checkp=0;
-#endif
+#endif	
+
     char tmp_path[FL_PATH_MAX];
-    if(path[checkp]!=check && fullpath()) {
-        strncpy(tmp_path, fullpath(), FL_PATH_MAX);
-        if(tmp_path[strlen(tmp_path)-1]!=slash && path[0]!=slash) { strcat(tmp_path, "/"); }
+    if(path && path[checkp]!=check && fullpath())
+	{
+		strncpy(tmp_path, fullpath(), FL_PATH_MAX);
+        if(tmp_path[strlen(tmp_path)-1]!=slash && path[0]!=slash) { 
+			char sl[2] = { slash, '\0' }; strcat(tmp_path, sl); 
+		}
         strcat(tmp_path, path);
         path = tmp_path;
     }
@@ -1229,7 +1243,7 @@ char *Fl_File_Dialog::get_filepath(const char *path, char *buf)
         }
         *bufptr++ = '\0';
 
-        if(fl_is_dir(buf) || (len==2&&buf[1]==':')) {
+        if(fl_is_dir(buf) || (len<=3&&buf[1]==':')) {
             return buf;
         }
     }
@@ -1242,7 +1256,6 @@ char *Fl_File_Dialog::get_filepath(const char *path, char *buf)
     return 0;
 }
 
-static bool _popup_=false;
 void Fl_File_Dialog::cb_location(Fl_Widget *w, void *d)
 {
     Fl_Input_Browser *loc = (Fl_Input_Browser *)w;
@@ -1253,7 +1266,6 @@ void Fl_File_Dialog::cb_location(Fl_Widget *w, void *d)
     if(!strcmp(loc->value(),"")) {
         FD->ok_->deactivate();
         loc->hide_popup();
-        _popup_=false;
         return;
     }
 
@@ -1269,7 +1281,11 @@ void Fl_File_Dialog::cb_location(Fl_Widget *w, void *d)
 
         FD->get_filename(loc->value(), tmp);
 
-        if(fl_is_dir(tmp)) {
+        if(fl_is_dir(tmp)
+#ifdef _WIN32
+			|| !strncmp(tmp, "//", 2) //Check for network path..
+#endif
+			) {
             FD->read_dir(tmp);
         } else if(FD->mode()<=Fl_File_Dialog::SAVE) {
             if(!fl_is_dir(tmp) && (FD->mode()==Fl_File_Dialog::DEFAULT?fl_file_exists(tmp):true)) {
@@ -1285,7 +1301,6 @@ void Fl_File_Dialog::cb_location(Fl_Widget *w, void *d)
         }
 
         loc->hide_popup();
-        _popup_=false;
 
     } else {
 
@@ -1309,8 +1324,9 @@ void Fl_File_Dialog::cb_location(Fl_Widget *w, void *d)
             strcpy(pattern, "*");
         }
 
-        if(dirpath) {
-            loc->clear();
+        loc->clear();
+        if(dirpath) 
+		{
             loc->begin();
 
             bool match = false;
@@ -1345,12 +1361,12 @@ void Fl_File_Dialog::cb_location(Fl_Widget *w, void *d)
             loc->item(0);
             if(match) {
                 loc->popup();
-                _popup_=true;
             } else {
                 loc->hide_popup();
-                _popup_=false;
             }
-        }
+        } else {
+			loc->hide_popup();
+		}
     }
 }
 

@@ -252,8 +252,6 @@ void Fl_MDI_Titlebar::draw()
     }
 
     label(saved_label);
-    delete []txt;
-
     clear_flag(FL_INACTIVE);
 }
 
@@ -569,6 +567,7 @@ void Fl_MDI_Window::_resize(int x, int y, int w, int h)
 
     resize(x,y,w,h);
     layout_damage(FL_LAYOUT_DAMAGE|FL_LAYOUT_XYWH);
+	layout();
 }
 
 void Fl_MDI_Window::_position(int x, int y)

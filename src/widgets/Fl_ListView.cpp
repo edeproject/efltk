@@ -48,8 +48,11 @@ void Fl_ListHeader::draw()
                 coli[a]->measure(iw,ih);
             }
 
+            int X=0,Y=0,W=colw[a],H=h();
+            if(colf[a]&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT)) {X += 3; W -= 6;}
+
             fl_font(label_font(), float(label_size()));
-            char *pbuf = fl_cut_line(txt, colw[a]-iw);
+            char *pbuf = fl_cut_line(txt, colw[a]-iw-X);
 
             //Clear CLIP flag if set, cause we clip anyway =)
             if(align() & FL_ALIGN_CLIP) Fl_Widget::clear_flag(FL_ALIGN_CLIP);
@@ -59,13 +62,10 @@ void Fl_ListHeader::draw()
             label(pbuf);
             Fl_Image *si = Fl_Widget::image();
             Fl_Widget::image(coli[a]);
-            int X=0,Y=0,W=colw[a],H=h();
-            if(colf[a]&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT)) {X += 3; W -= 6;}
             draw_label(X, Y, W, H, colf[a]|(flags()&(FL_SELECTED|FL_INACTIVE)));
             Fl_Widget::image(si);
 
             fl_pop_clip();
-            delete []pbuf;
         }
         fl_translate(colw[a], 0);
         total_w+=colw[a];

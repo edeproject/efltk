@@ -74,9 +74,10 @@ void Fl_ListView_Item::draw_cell(int x, int y, int w, int h, int col)
 
         char *cutted_label=0;
         int textw = int(fl_width(txt));
-        if(textw<list->column_width(col)) {
-            if(strchr(txt, '\n')) cutted_label = fl_cut_multiline(txt, list->column_width(col)-leading()-iw);
-            else cutted_label = fl_cut_line(txt, list->column_width(col)-leading()-iw);
+		int colw = list->column_width(col)-iw-6;
+        if(textw>colw) {
+            if(strchr(txt, '\n')) cutted_label = fl_cut_multiline(txt, colw);
+            else cutted_label = fl_cut_line(txt, colw);
             Fl_Widget::label(cutted_label); 
         } else {
             Fl_Widget::label(txt);
@@ -96,8 +97,7 @@ void Fl_ListView_Item::draw_cell(int x, int y, int w, int h, int col)
         draw_label(x, y, w, h, colflags[col]|(flags()&(FL_SELECTED|FL_INACTIVE)));
         fl_pop_clip();
 
-        Fl_Widget::image(si);
-        if(cutted_label) delete []cutted_label;
+        Fl_Widget::image(si);        
     }
     Fl_Widget::label(saved_label);
 }

@@ -135,15 +135,7 @@ char *fl_get_homedir()
     return 0;
 }
 
-bool fl_file_exists(const char *name)
-{
-#if defined(_WIN32) || defined(__EMX__)
-    if(name[strlen(name)-1] == '\\') {
-        // Windows thinks C:\test\ doesn't exists, but C:\test does?!!
-        char tmp[4096]; strcpy(tmp, name); tmp[strlen(name)-1] = '\0';
-		return (access(tmp, F_OK)==0);
-    }
-#endif // WIN32 || __EMX__
+bool fl_file_exists(const char *name) {
     return (access(name, F_OK)==0);
 }
 
@@ -153,8 +145,8 @@ bool fl_is_dir(const char* name)
 #if defined(_WIN32) || defined(__EMX__)
     char tmp[FL_PATH_MAX];
     if(name[strlen(name)-1] == '\\') {
-        // Windows thinks C:\test\ doesn't exists, but C:\test does?!!
-        strcpy(tmp, name); tmp[strlen(name)-1] = '\0';
+        // Windows thinks C:\test doesn't exists, but C:\test\ does?!!
+        strcpy(tmp, name); tmp[strlen(name)-1] = '\0';//\\';
         file = tmp;
     }
 #endif // WIN32 || __EMX__
@@ -423,52 +415,50 @@ int fl_start_child_process(char *cmd)
 #include <efltk/fl_draw.h>
 
 char *fl_cut_line(const char *str, int maxwidth)
-{
+{	
     int len = strlen(str);
-    char buf[4096];
+	int w=0;
+    static char buf[4096];
 
-    maxwidth-=8; //Just guess...
-    if(maxwidth<0) return strdup("");
+    maxwidth-=5; //Just guess...
+    if(maxwidth<0) {		
+		return "";
+	}
 
-    int w = (int)fl_width(str, len);
-    if(w<maxwidth) return strdup(str);
+    strncpy(buf, str, sizeof(buf));
+    int pos=len+1;
+    while(pos-->0) {
+        w = (int)fl_width(buf, pos);
+        if(w<maxwidth) {			
+			break;
+		}
 
-    strncpy(buf, str, len);
-    int pos=len;
-    char *ptr2 = buf+len;
-    while(pos>0) {
-        w = (int)fl_width(str, pos);
-        if(w<maxwidth) break;
-        pos--;
-        *ptr2-- = '\0';
+		buf[pos] = '\0';
+		buf[pos-1] = '.';
+		buf[pos-2] = '.';
+		buf[pos-3] = '.';
     }
-    int dots=0;
-    while(pos++<len && dots++<3) *ptr2++='.';
-    ptr2[pos] = '\0';
-    return strdup(buf);
+    return buf;
 }
 
 char *fl_cut_multiline(const char *buf, int maxwidth)
 {
-    char *ret = new char[1];
+    static char ret[4096];
     int ret_size=0;
 
-    char *ptr = strdup(buf);
+    char *ptr = (char *)buf;
     char *lines = strtok(ptr,"\n");
     while(lines) {
         char *tmp = fl_cut_line(lines, maxwidth);
-
         int tmp_len = strlen(tmp);
-        ret = (char *)realloc(ret, (ret_size+tmp_len+1)*sizeof(char));
+
         strncpy(ret+ret_size, tmp, tmp_len);
         ret[ret_size+tmp_len] = '\n';
         ret_size+=tmp_len+1;
 
-        delete []tmp;
         lines = strtok(NULL, "\n");
     }
     ret[ret_size-1] = '\0';
-    delete []ptr;
 
     return ret;
 }

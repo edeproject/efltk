@@ -23,11 +23,11 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
-#include <fltk/x.h>
-#include <fltk/Fl_Font.h>
+#include <efltk/x.h>
+#include <efltk/Fl_Font.h>
 #include <ctype.h>
 #include <stdlib.h>
-#include <fltk/math.h>
+#include <efltk/math.h>
 
 class Fl_FontSize {
 public:
