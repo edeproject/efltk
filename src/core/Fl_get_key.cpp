@@ -24,9 +24,9 @@
 //
 
 #ifdef _WIN32
-# include "Fl_get_key_win32.cxx"
+# include "Fl_get_key_win32.cpp"
 #elif defined(__APPLE__)
-# include "Fl_get_key_mac.cxx"
+# include "Fl_get_key_mac.cpp"
 #else
 
 // Return the current state of a key.  This is the X version.  I identify

@@ -37,9 +37,9 @@ public:
     static int ex,ey;
     static int old_rx,old_ry;
 
-    Fl_Button *close() { return &_close; }
-    Fl_Button *min() { return &_min; }
-    Fl_Button *max() { return &_max; }
+    Fl_Button *close_button() { return &_close; }
+    Fl_Button *min_button() { return &_min; }
+    Fl_Button *max_button() { return &_max; }
 
 protected:
     Fl_Button _close, _max, _min;

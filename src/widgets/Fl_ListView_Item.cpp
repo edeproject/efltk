@@ -64,7 +64,7 @@ void Fl_ListView_Item::draw_cell(int x, int y, int w, int h, int col)
     const char *saved_label = Fl_Widget::label();
 
     if(txt) {
-        fl_font(fonts[col], font_sizes[col]);
+        fl_font(fonts[col], float(font_sizes[col]));
         fl_color(colors[col]);
 
         int iw=0,ih=0;
@@ -115,7 +115,7 @@ void Fl_ListView_Item::layout()
         const char *txt = label(a);
         if(txt) {
             int w,h;
-            fl_font(fonts[a] , font_sizes[a]);
+            fl_font(fonts[a] , float(font_sizes[a]));
             fl_measure(txt, w, h, colflags[a]);
             widths[a] = w+leading();
             W+=w;

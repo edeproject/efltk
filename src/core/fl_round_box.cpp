@@ -47,18 +47,18 @@ static void lozenge(int which, int x,int y,int w,int h, Fl_Color color)
     int what = (which==FILL ? FL_PIE : FL_ARC);
     if (which >= CLOSED)
     {
-        fl_pie(x+w-d, y, d, d, w<=h ? 0 : -90, w<=h ? 180 : 90, what);
-        fl_pie(x, y+h-d, d, d, w<=h ? 180 : 90, w<=h ? 360 : 270, what);
+        fl_pie(x+w-d, y, d, d, float(w<=h ? 0 : -90), float(w<=h ? 180 : 90), what);
+        fl_pie(x, y+h-d, d, d, float(w<=h ? 180 : 90), float(w<=h ? 360 : 270), what);
     }
     else if (which == UPPER_LEFT)
     {
-        fl_pie(x+w-d, y, d, d, 45, w<=h ? 180 : 90, what);
-        fl_pie(x, y+h-d, d, d, w<=h ? 180 : 90, 225, what);
+        fl_pie(x+w-d, y, d, d, float(45), float(w<=h ? 180 : 90), what);
+        fl_pie(x, y+h-d, d, d, float(w<=h ? 180 : 90), float(225), what);
     }                            // LOWER_RIGHT
     else
     {
-        fl_pie(x, y+h-d, d, d, 225, w<=h ? 360 : 270, what);
-        fl_pie(x+w-d, y, d, d, w<=h ? 360 : 270, 360+45, what);
+        fl_pie(x, y+h-d, d, d, float(225), float(w<=h ? 360 : 270), what);
+        fl_pie(x+w-d, y, d, d, float(w<=h ? 360 : 270), float(360+45), what);
     }
     if (which == FILL)
     {

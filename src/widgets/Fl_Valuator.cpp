@@ -41,7 +41,7 @@ Fl_Valuator::Fl_Valuator(int X, int Y, int W, int H, const char* L)
     step_ = 0;
     minimum_ = 0;
     maximum_ = 1;
-    linesize_ = 0.1;
+    linesize_ = 0.1f;
 }
 
 

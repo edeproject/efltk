@@ -87,10 +87,10 @@ void fl_translate(float x,float y) {
 
 void fl_translate(int x, int y) {
   if (m.trivial) {
-    m.ix += x; m.x = m.ix;
-    m.iy += y; m.y = m.iy;
+    m.ix += x; m.x = float(m.ix);
+    m.iy += y; m.y = float(m.iy);
   } else {
-    fl_mult_matrix(1,0,0,1,x,y);
+    fl_mult_matrix(1,0,0,1, float(x), float(y));
   }
 }
 

@@ -93,14 +93,14 @@ static void elapse_timeouts()
 #ifdef _WIN32
     unsigned long newclock = GetTickCount();
     static unsigned long prevclock;
-    float elapsed = (newclock-prevclock)/1000.0;
+    float elapsed = (newclock-prevclock)/1000.0f;
     prevclock = newclock;
 #else
     static struct timeval prevclock;
     struct timeval newclock;
     gettimeofday(&newclock, NULL);
     float elapsed = newclock.tv_sec - prevclock.tv_sec +
-        (newclock.tv_usec - prevclock.tv_usec)/1000000.0;
+        (newclock.tv_usec - prevclock.tv_usec)/1000000.0f;
     prevclock.tv_sec = newclock.tv_sec;
     prevclock.tv_usec = newclock.tv_usec;
 #endif

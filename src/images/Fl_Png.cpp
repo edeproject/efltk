@@ -2,7 +2,7 @@
 
 #include <config.h>
 
-#ifdef HAVE_PNG
+#if HAVE_PNG
 
 #include <png.h>
 #include <stdlib.h>

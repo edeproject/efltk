@@ -29,10 +29,9 @@
 #include <efltk/Fl_Boxtype.h>
 #include <efltk/fl_draw.h>
 
-void Fl_Oval_Flat_Box::draw(
-int x, int y, int w, int h, Fl_Color color, Fl_Flags) const
+void Fl_Oval_Flat_Box::draw(int x, int y, int w, int h, Fl_Color color, Fl_Flags) const
 {
-    fl_ellipse(x, y, w-1, h-1);
+    fl_ellipse(float(x), float(y), float(w-1), float(h-1));
     fl_color(color);
     fl_fill();
 }
@@ -47,10 +46,9 @@ Fl_Oval_Flat_Box::Fl_Oval_Flat_Box(const char* n) : Fl_Boxtype_(n)
 
 const Fl_Oval_Flat_Box fl_oval_flat_box("oval flat");
 
-void Fl_Oval_Box::draw(
-int x, int y, int w, int h, Fl_Color color, Fl_Flags f) const
+void Fl_Oval_Box::draw(int x, int y, int w, int h, Fl_Color color, Fl_Flags f) const
 {
-    fl_ellipse(x, y, w-1, h-1);
+    fl_ellipse(float(x), float(y), float(w-1), float(h-1));
     fl_color(color);
     fl_fill_stroke(fl_inactive(FL_BLACK,f));
 }
@@ -65,11 +63,10 @@ Fl_Oval_Box::Fl_Oval_Box(const char* n) : Fl_Boxtype_(n)
 
 const Fl_Oval_Box fl_oval_box("oval");
 
-void Fl_Oval_Shadow_Box::draw(
-int x, int y, int w, int h, Fl_Color color, Fl_Flags f) const
+void Fl_Oval_Shadow_Box::draw(int x, int y, int w, int h, Fl_Color color, Fl_Flags f) const
 {
     w-=3; h-=3;
-    fl_ellipse(x+3, y+3, w, h);
+    fl_ellipse(float(x+3), float(y+3), float(w), float(h));
     fl_color(FL_DARK3);
     fl_fill();
     fl_oval_box.draw(x, y, w, h, color, f);

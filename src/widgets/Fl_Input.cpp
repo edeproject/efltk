@@ -222,7 +222,7 @@ static int dnd_target_position;
 
 void Fl_Input::setfont() const
 {
-    fl_font(text_font(), text_size());
+    fl_font(text_font(), float(text_size()));
 }
 
 
@@ -251,7 +251,7 @@ void Fl_Input::draw(int X, int Y, int W, int H)
         // draw and measure the inside label:
         if (label() && label()[0] && (!(flags()&15)||(flags()&FL_ALIGN_INSIDE)))
         {
-            fl_font(label_font(), label_size());
+            fl_font(label_font(), float(label_size()));
             float width = fl_width(label());
             label_width = int(width+fl_width(":")+2.5f);
             fl_color(color());
@@ -260,7 +260,7 @@ void Fl_Input::draw(int X, int Y, int W, int H)
             if (!active_r()) color = fl_inactive(color);
             fl_color(color);
             float y = Y+((H-height)>>1)+desc;
-            fl_draw(label(), X+2, y);
+            fl_draw(label(), float(X+2), float(y));
             fl_draw(":", X+2+width, y);
             setfont();
         }
@@ -312,7 +312,7 @@ void Fl_Input::draw(int X, int Y, int W, int H)
         if (cursor_position >= p-value() && cursor_position <= e-value())
         {
             curx = int(expandpos(p, value()+cursor_position, buf, 0)+.5);
-            if (focused() && !was_up_down) up_down_pos = curx;
+            if (focused() && !was_up_down) up_down_pos = float(curx);
             cury = lines*height;
             int newscroll = xscroll_;
             if (curx > newscroll+W-20)
@@ -426,17 +426,17 @@ void Fl_Input::draw(int X, int Y, int W, int H)
         {
             const char* pp = value()+selstart;
             // draw unselected text before the selection:
-            float x1 = xpos;
+            float x1 = float(xpos);
             int offset1 = 0;
             if (pp > p)
             {
                 fl_color(textcolor);
                 x1 += expandpos(p, pp, buf, &offset1);
-                fl_draw(buf, offset1, xpos, Y+ypos+desc);
+                fl_draw(buf, offset1, float(xpos), float(Y+ypos+desc));
             }
             // draw selected text for this line:
             pp = value()+selend;
-            float x2 = X+W;
+            float x2 = float(X+W);
             int offset2;
             if (pp <= e) x2 = xpos+expandpos(p, pp, buf, &offset2);
             else offset2 = strlen(buf);
@@ -455,7 +455,7 @@ void Fl_Input::draw(int X, int Y, int W, int H)
         {
             // draw unselected text:
             fl_color(textcolor);
-            fl_draw(buf, xpos, Y+ypos+desc);
+            fl_draw(buf, float(xpos), float(Y+ypos+desc));
         }
 
         if (!(damage()&FL_DAMAGE_ALL)) fl_pop_clip();
@@ -604,12 +604,12 @@ int Fl_Input::mouse_position(int X, int Y, int W, int ) const
 
     // Do a binary search for the character that starts before this position:
     int xpos = X-xscroll_; if (W > 12) xpos += 3;
-    const char *l, *r, *t; float f0 = Fl::event_x()-xpos;
+    const char *l, *r, *t; float f0 = float(Fl::event_x()-xpos);
     for (l = p, r = e; l<r; )
     {
         t = l+(r-l+1)/2;
         int f = xpos+int(expandpos(p, t, buf, 0)+.5);
-        if (f <= Fl::event_x()) {l = t; f0 = Fl::event_x()-f;}
+        if (f <= Fl::event_x()) {l = t; f0 = float(Fl::event_x()-f);}
         else r = t-1;
     }
     // see if closer to character on the right:

@@ -61,7 +61,7 @@ static int X,Y,W,H;
 
 void Fl_TooltipBox::layout()
 {
-    fl_font(label_font(), label_size());
+    fl_font(label_font(), float(label_size()));
     int ww, hh;
     ww = MAX_WIDTH;
     fl_measure(tip, ww, hh, FL_ALIGN_LEFT|FL_ALIGN_WRAP|FL_ALIGN_INSIDE);
@@ -129,7 +129,7 @@ static void tooltip_timeout(void*)
     } else {
         if(!window->shown()) window->create();
 
-        window->step_divider(0.8);
+        window->step_divider(0.8f);
         // Roll from top.
         window->animate(window->x(), window->y(), window->w(), 1,
                         window->x(), window->y(), window->w(), window->h());

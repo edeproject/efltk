@@ -34,7 +34,7 @@
 
 void Fl_Dial::draw()
 {
-    int X = 0; int Y = 0; int W = w(); int H = h();
+	int X = 0, Y = 0, W = w(), H = h();
     if (!(type() == FILL && box() == FL_OVAL_BOX))
     {
         if (damage()&FL_DAMAGE_ALL) draw_box();
@@ -57,9 +57,9 @@ void Fl_Dial::draw()
             fl_pop_clip();
         }
         fl_color(color());
-        fl_pie(X, Y, W-1, H-1, 270-a1, angle > a1 ? 360+270-angle : 270-360-angle);
+        fl_pie(X, Y, W-1, H-1, float(270-a1), float(angle > a1 ? 360+270-angle : 270-360-angle));
         fl_color(fillcolor);
-        fl_pie(X, Y, W-1, H-1, 270-angle, 270-a1);
+        fl_pie(X, Y, W-1, H-1, float(270-angle), float(270-a1));
         if (box() == FL_OVAL_BOX)
         {
             fl_ellipse(X, Y, W-1, H-1);

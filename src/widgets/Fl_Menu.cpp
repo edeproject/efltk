@@ -316,10 +316,10 @@ void MenuWindow::draw()
 
             } else if (widget->shortcut()) {
 
-                fl_font(widget->label_font(), widget->label_size());
+                fl_font(widget->label_font(), float(widget->label_size()));
                 int lx = int(fl_width(widget->label()));
 
-                fl_font(widget->text_font(), widget->text_size());
+                fl_font(widget->text_font(), float(widget->text_size()));
 
                 int W = ow-box()->dw()-3;
                 fl_push_clip(lx+leading(), y, W-lx, itemh);

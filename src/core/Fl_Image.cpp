@@ -507,6 +507,7 @@ Pixmap Fl_Image::create_alpha_mask(Fl_Rect &rect, uint8 *data, int pitch, Fl_Pix
         return 0;
     }
 
+    bool mask_found=false;
     Pixmap maskbitmap;
     begin_mask();
 
@@ -517,7 +518,6 @@ Pixmap Fl_Image::create_alpha_mask(Fl_Rect &rect, uint8 *data, int pitch, Fl_Pix
     // Set color to black...
     fl_color(fl_rgb(0,0,0));
 
-    bool mask_found=false;
     uint8 *ptr;
     for(int y = rect.y(), a=0; y < (rect.y()+rect.h()); y++,a++)
     {
@@ -562,6 +562,7 @@ Pixmap Fl_Image::create_color_mask(Fl_Rect &rect, uint8 *data, int pitch, Fl_Pix
         }
     }
 
+    bool mask_found=false;
     Pixmap maskbitmap;
     begin_mask();
 
@@ -578,7 +579,6 @@ Pixmap Fl_Image::create_color_mask(Fl_Rect &rect, uint8 *data, int pitch, Fl_Pix
     RGBA_FROM_RGBA8888(color, cr, cg, cb, ca);	
 
     bool is_xpm = (color==0xFFFFFFFF);
-    bool mask_found=false;
 
     uint8 *ptr;
     for(int y = rect.y(), a=0; y < (rect.y()+rect.h()); y++,a++)
@@ -624,6 +624,7 @@ Pixmap Fl_Image::create_pixel_mask(Fl_Rect &rect, uint8 *data, int pitch, Fl_Pix
         return 0;
     }
 
+    bool mask_found = false;
     Pixmap maskbitmap;
     begin_mask();
 
@@ -635,7 +636,6 @@ Pixmap Fl_Image::create_pixel_mask(Fl_Rect &rect, uint8 *data, int pitch, Fl_Pix
     fl_color(fl_rgb(0,0,0));
 
     uint8 *ptr;
-    bool mask_found = false;
     for(int y = rect.y(), a=0; y < (rect.y()+rect.h()); y++,a++)
     {
         ptr = (data + (y * pitch) + (rect.x() * format->bytespp));
@@ -778,7 +778,7 @@ void Fl_Image::draw(int dx, int dy, int dw, int dh,
         } else if((F & FL_HIGHLIGHT)==FL_HIGHLIGHT && bitspp()>=16) {
             //printf("HIGHLIGHT\n\n");
 
-            _mod_data = Fl_Image_Filter::apply_to_new(this, 0, FILTER_BRIGHTNESS, 0.2);
+            _mod_data = Fl_Image_Filter::apply_to_new(this, 0, FILTER_BRIGHTNESS, 0.2f);
             if(_mod_data) {
                 draw_data = _mod_data->data();
                 draw_fmt = format();

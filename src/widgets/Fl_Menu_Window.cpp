@@ -161,11 +161,14 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
         rw+=(sw*winc);
         rh+=(sh*hinc);
 
+#ifdef _WIN32
+		SetWindowPos(fl_xid(this), 0, (int)rx, (int)ry, (int)rw, (int)rh, (SWP_NOSENDCHANGING|SWP_NOZORDER|SWP_NOACTIVATE));
+#else
         XMoveResizeWindow(fl_display, fl_xid(this), (int)rx, (int)ry, (int)rw, (int)rh);
         XCopyArea(fl_display, pm, fl_xid(this), fl_gc, 0, 0, (int)rw, (int)rh, 0, 0);
 
-        XFlush(fl_display);
         XSync(fl_display, false);
+#endif
     }
 
     fl_delete_offscreen(pm);

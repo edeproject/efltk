@@ -127,7 +127,7 @@ Fl_FileBrowser::item_width(void *p) const
     int       column;            // Current column
 
     // Set the font and size...
-    fl_font(text_font(), text_size());
+    fl_font(text_font(), float(text_size()));
 
     // Scan for newlines...
     line = (FL_BLINE *)p;
@@ -216,7 +216,7 @@ int  h) const                    // I - Height of item
     // Draw the list item text...
     line = (FL_BLINE *)p;
 
-    fl_font(text_font(), text_size());
+    fl_font(text_font(), float(text_size()));
     if (line->flags & SELECTED)
         c = fl_contrast(text_color(), selection_color());
     else

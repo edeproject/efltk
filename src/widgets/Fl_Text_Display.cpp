@@ -1142,7 +1142,7 @@ void Fl_Text_Display::draw_string( int style, int X, int Y, int toX,
     fl_rectf( X, Y, toX - X, mMaxsize );
     fl_color( foreground );
     fl_font( font, size );
-    fl_draw( string, nChars, X, Y + mMaxsize - fl_descent());
+    fl_draw( string, nChars, float(X), float(Y + mMaxsize - fl_descent()) );
 
     /* Underline if style is UNDERLINE attr is set */
     if(styleRec && styleRec->attr==ATTR_UNDERLINE)

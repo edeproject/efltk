@@ -42,7 +42,7 @@ void Fl_ProgressBar::draw()
         char buffer[30];
         sprintf(buffer, "%d%%", (int) (pct * 100));
         fl_color(text_color());
-        fl_font(text_font(), text_size());
+        fl_font(text_font(), float(text_size()));
         fl_draw(buffer, (w() - fl_width(buffer))/2, fl_height() + (((h() - 2*bdy) - fl_height())/2));
     }
 }

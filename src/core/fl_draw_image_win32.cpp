@@ -1,22 +1,21 @@
 #ifdef _WIN32
 
-#include "Fl_Image.h"
+#include <efltk/Fl_Image.h>
+#include <efltk/x.h>
+#include <efltk/fl_draw.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
 
-#include <efltk/x.h>
-#include <efltk/fl_draw.h>
-
-#include "config.h"
+#include <config.h>
 
 /* helper fn */
 static int SussScreenDepth();
 static bool _system_inited = false;
 
 Fl_PixelFormat sys_fmt;
-Display *sys_display = 0;
+HINSTANCE *sys_display = 0;
 BITMAPINFO *bmi;
 
 Fl_PixelFormat *Fl_Renderer::system_format() { return &sys_fmt; }
@@ -25,7 +24,7 @@ bool Fl_Renderer::system_inited() {
     return _system_inited;
 }
 
-void Fl_Renderer::system_init(Display d, GC gc)
+void Fl_Renderer::system_init()
 {
 	/* Determine the screen depth */
 	int bitspp = SussScreenDepth();
@@ -171,9 +170,9 @@ bool Fl_Renderer::render_to_pixmap(uint8 *src, Fl_Rect *src_rect, Fl_PixelFormat
     if(!Fl_Renderer::system_inited())
         return false;
 
-	if(flags&STRETCH && src_rect->w()==dst_rect->w() && src_rect->h()==dst_rect->h()) {
-		flags = COPY;
-	}	
+    if(flags&FL_ALIGN_SCALE && src_rect->w()==dst_rect->w() && src_rect->h()==dst_rect->h()) {
+        flags = 0;
+    }
 
 	int X = dst_rect->x();
 	int Y = dst_rect->y();
@@ -183,36 +182,16 @@ bool Fl_Renderer::render_to_pixmap(uint8 *src, Fl_Rect *src_rect, Fl_PixelFormat
 	int cy = src_rect->y();
 	bool ret = false;
 
-	if(flags & COPY)
-	{
-		W = src_rect->w();
-		H = src_rect->h();
-		bmi->bmiHeader.biWidth = W;  
-		bmi->bmiHeader.biHeight = -H; //Set to negative, cause in windoze bitmaps are upsidedown...
-		bmi->bmiHeader.biSizeImage = H * src_pitch;
-
-		//printf("%d %d %d %d\n", X, Y, W, H);	
-		uint8 *src_ptr=src;
-		SetDIBitsToDevice(dst_gc, 
-				X, Y, W, H, //dst points - upper-left
-				0, 0, //src points - lower-left
-				0, H, //Scanline start/end
-				(LPSTR)(src_ptr), //array
-				bmi, //bmi
-				(fl_palette ? DIB_PAL_COLORS : DIB_RGB_COLORS)
-				);
-		ret = true;
-	} else
-	if(flags & STRETCH)
+	if(flags & FL_ALIGN_SCALE)
 	{
 		int dst_pitch = Fl_Renderer::calc_pitch(sys_fmt.bytespp, W);
 		bmi->bmiHeader.biWidth = W;  
 		bmi->bmiHeader.biHeight = -H; //Set to negative, cause in windoze bitmaps are upsidedown...
 		bmi->bmiHeader.biSizeImage = H * dst_pitch;
-				
+		
 		uint8 *dst_ptr = new uint8[bmi->bmiHeader.biSizeImage];
 		if(Fl_Renderer::stretch(src, sys_fmt.bytespp, src_pitch, src_rect,
-								dst_ptr, sys_fmt.bytespp, dst_pitch, dst_rect))
+			dst_ptr, sys_fmt.bytespp, dst_pitch, dst_rect))
 		{			
 			SetDIBitsToDevice(dst_gc, 
 				X, Y, W, H, //dst points - upper-left
@@ -225,6 +204,26 @@ bool Fl_Renderer::render_to_pixmap(uint8 *src, Fl_Rect *src_rect, Fl_PixelFormat
 			ret = true;
 		}
 		delete []dst_ptr;
+	} 
+	else
+	{
+		W = src_rect->w();
+		H = src_rect->h();
+		bmi->bmiHeader.biWidth = W;  
+		bmi->bmiHeader.biHeight = -H; //Set to negative, cause in windoze bitmaps are upsidedown...
+		bmi->bmiHeader.biSizeImage = H * src_pitch;
+		
+		//printf("%d %d %d %d\n", X, Y, W, H);	
+		uint8 *src_ptr=src;
+		SetDIBitsToDevice(dst_gc, 
+			X, Y, W, H, //dst points - upper-left
+			0, 0, //src points - lower-left
+			0, H, //Scanline start/end
+			(LPSTR)(src_ptr), //array
+			bmi, //bmi
+			(fl_palette ? DIB_PAL_COLORS : DIB_RGB_COLORS)
+			);
+		ret = true;
 	}
 
 	return ret;
@@ -325,5 +324,37 @@ void Fl_Image::to_screen(int X, int Y, int W, int H, int cx, int cy)
 		
   } // else { no mask or id, probably an error... }
 }
+
+void Fl_Image::to_screen_tiled(int XP, int YP, int WP, int HP, int, int)
+{
+    // Figure out the smallest rectangle enclosing this and the clip region:
+    int X,Y,W,H; fl_clip_box(XP, YP, WP, HP, X, Y, W, H);
+    if (W <= 0 || H <= 0) return;
+    int cx = 0;
+    int cy = 0;
+    cx += X-XP; cy += Y-YP;
+    fl_push_clip(X, Y, W, H);
+
+    {
+        int temp = -cx % w;
+        cx = (temp>0 ? w : 0) - temp;
+        temp = -cy % h;
+        cy = (temp>0 ? h : 0) - temp;
+
+        int ccx=cx;
+        while (-cy < H) {
+            while (-cx < W) {
+                to_screen(X-cx, Y-cy, w, h, 0,0);
+                cx -= w;
+            }
+            cy -= h;
+            cx = ccx;
+        }
+
+    }
+
+    fl_pop_clip();
+}
+
 
 #endif // _WIN32

@@ -15,7 +15,9 @@
 #ifdef _WIN32
 
 # include <io.h>
+# include <direct.h>
 # define access(a,b) _access(a,b)
+# define mkdir(a,b) _mkdir(a)
 # define R_OK 4
 
 #else
@@ -47,11 +49,7 @@ static bool makePath( const char *path ) {
         p[len] = 0;
         makePath( p );
         free( p );
-#if defined(WIN32) && !defined(__CYGWIN__)
-        return ( mkdir( path ) == 0 );
-#else
         return ( mkdir( path, 0777 ) == 0 );
-#endif // WIN32 && !__CYGWIN__
     }
     return true;
 }

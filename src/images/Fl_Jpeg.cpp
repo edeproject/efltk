@@ -1,7 +1,7 @@
 #include <efltk/Fl_Image.h>
 #include <config.h>
 
-#ifdef HAVE_JPEG
+#if HAVE_JPEG
 
 #include <stdlib.h>
 #include <stdio.h>

@@ -65,7 +65,7 @@ void Fl_Widget::draw_inside_label() const
     if (!(flags()&15) || (flags() & FL_ALIGN_INSIDE))
     {
         int X=0; int Y=0; int W=w_; int H=h_; box()->inset(X,Y,W,H);
-        if (W > 11 && flags()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT) && !flags()&(FL_ALIGN_TILED|FL_ALIGN_SCALE)) {X += 3; W -= 6;}
+        if (W > 11 && (flags()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT)) && !(flags()&(FL_ALIGN_TILED|FL_ALIGN_SCALE)) ) {X += 3; W -= 6;}
         draw_label(X, Y, W, H, flags());
     }
 }
@@ -76,7 +76,7 @@ void Fl_Widget::draw_inside_label(int X, int Y, int W, int H, Fl_Flags f) const
 {
     if (!(flags()&15) || (flags() & FL_ALIGN_INSIDE))
     {
-        if (W > 11 && flags()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT) && !flags()&(FL_ALIGN_TILED|FL_ALIGN_SCALE)) {X += 3; W -= 6;}
+        if (W > 11 && (flags()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT)) && !(flags()&(FL_ALIGN_TILED|FL_ALIGN_SCALE)) ) {X += 3; W -= 6;}
         draw_label(X, Y, W, H, f|flags()&FL_ALIGN_MASK);
     }
 }
@@ -85,7 +85,7 @@ void Fl_Widget::draw_inside_label(int X, int Y, int W, int H, Fl_Flags f) const
 // used by Fl_Group and Fl_Tabs to draw outside labels:
 void Fl_Widget::draw_label(int X, int Y, int W, int H, Fl_Flags flags) const
 {
-    fl_font(label_font(), label_size());
+    fl_font(label_font(), float(label_size()));
     if (!active_r()) flags |= FL_INACTIVE;
 
     Fl_Color color;
@@ -184,7 +184,7 @@ void Fl_Widget::draw_label(int X, int Y, int W, int H, Fl_Flags flags) const
 
 void Fl_Widget::measure_label(int& w, int& h) const
 {
-    fl_font(label_font(), label_size());
+    fl_font(label_font(), float(label_size()));
     w = h = 300;                 // rather arbitrary choice for maximum wrap width
     fl_measure(label(), w, h, flags());
 }

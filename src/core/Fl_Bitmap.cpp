@@ -36,7 +36,7 @@ Pixmap fl_create_bitmap(const uchar* bitmap, int w, int h)
     int w1 = (w+7)/8;
     int w2 = ((w+15)/16)*2;
     uchar* newarray = new uchar[w2*h];
-    const uchar* src = data;
+    const uchar* src = bitmap;
     uchar* dest = newarray;
     Pixmap id;
     // Bit reversal lookup table

@@ -1,4 +1,7 @@
 #include <efltk/Fl_WM.h>
+
+#ifndef _WIN32
+
 #include <efltk/Fl.h>
 
 #include <X11/Xproto.h> //For CARD32
@@ -369,3 +372,36 @@ int Fl_WM::action() {
 Window Fl_WM::window() {
     return ::action_window;
 }
+
+#else
+
+bool Fl_WM::set_window_strut(Window xid, int left, int right, int top, int bottom) { return false; }
+
+bool Fl_WM::set_window_type(Window xid, int type) { return false; }
+
+bool Fl_WM::set_workspace_count(int count) { return false; }
+
+bool Fl_WM::set_workspace_names(const char **names, int count) { return false; }
+
+bool Fl_WM::set_current_workspace(int number) { return false; }
+
+bool Fl_WM::get_geometry(int &width, int &height) { return false; }
+
+bool Fl_WM::get_workarea(int &x, int &y, int &width, int &height) { return false; }
+
+int Fl_WM::get_windows_stacking(Window *&windows) { return -1; }
+
+int Fl_WM::get_windows_mapping(Window *&windows) { return -1; }
+
+int Fl_WM::get_workspace_count() { return -1; }
+
+int Fl_WM::get_current_workspace() { return -1; }
+
+int Fl_WM::get_workspace_names(char **&names) { return -1; }
+
+void Fl_WM::callback(Fl_Callback *cb, void *user_data, int mask) { }
+int Fl_WM::action() { return 0; }
+Window Fl_WM::window() { return 0; }
+
+
+#endif /* _WIN32 */

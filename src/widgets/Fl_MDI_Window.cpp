@@ -12,6 +12,8 @@
 
 #else
 
+# include <windows.h>
+# include <winsock.h>
 # define usleep(x) Sleep(x/1000)
 # define XSync(d, b) (void)d; (void)b
 
@@ -19,10 +21,11 @@
 
 static int px,py,pw,ph;
 #ifdef _WIN32
-static int old_f;
+ static int old_f;
 #else
-static GC invertGc=0, saved;
+ static GC invertGc=0, saved;
 #endif
+
 void set_overlay_func() {
 #ifdef _WIN32
     old_f = SetROP2(fl_gc, R2_NOT);
@@ -113,8 +116,8 @@ void draw_max(Fl_Color col)
 {			
 	fl_color(col);
 	
-	vv(-MAX_OF,-MAX_OF+0.2); 
-	vv(MAX_OF,-MAX_OF+0.2); 
+	vv(-MAX_OF,-MAX_OF+0.2f); 
+	vv(MAX_OF,-MAX_OF+0.2f); 
 	fl_stroke();
 	fl_closepath();
 	
@@ -143,8 +146,8 @@ void draw_min(Fl_Color col)
 	fl_stroke();
 	fl_closepath();
 
-	vv(MIN_OF2, MIN_OF-0.1);
-	vv(-MIN_OF2, MIN_OF-0.1);
+	vv(MIN_OF2, MIN_OF-0.1f);
+	vv(-MIN_OF2, MIN_OF-0.1f);
 	fl_stroke();
 	fl_closepath();
 }
@@ -221,7 +224,7 @@ void Fl_MDI_Titlebar::draw()
     if(_max.visible()) X+=_max.w();
     if(image()) { int iw,ih; image()->measure(iw,ih); X+=iw+2; }
 
-    fl_font(label_font(), label_size());
+    fl_font(label_font(), float(label_size()));
 
     char *txt = fl_cut_line(label(), w()-X);
 
@@ -1019,8 +1022,8 @@ void Fl_MDI_Window::animate(int fx, int fy, int fw, int fh,
 {
 # undef max
 # define max(a,b) (a) > (b) ? (a) : (b)
-    float max_steps = max( (tw-fw), (th-fh) );
-    float min_steps = max( (fw-tw), (fh-th) );
+    float max_steps = max( float(tw-fw), float(th-fh) );
+    float min_steps = max( float(fw-tw), float(fh-th) );
     float steps = max(max_steps, min_steps);
     steps/=STEP_DIV;
 
@@ -1033,7 +1036,8 @@ void Fl_MDI_Window::animate(int fx, int fy, int fw, int fh,
     int yinc = fy < ty ? 1 : -1;
     int winc = fw < tw ? 1 : -1;
     int hinc = fh < th ? 1 : -1;
-    float rx=fx,ry=fy,rw=fw,rh=fh;
+    float rx=float(fx), ry=float(fy),
+		rw=float(fw), rh=float(fh);
 
     timeval t;
     while(steps-- > 0) {

@@ -8,10 +8,12 @@
 
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <limits.h>
-#include <stdlib.h>
+
 #include <efltk/Fl.h>
+#include <efltk/vsnprintf.h>
 #include <efltk/filename.h>
 #include <efltk/fl_load_plugin.h>
 #include <efltk/Fl_Color.h>
@@ -21,15 +23,14 @@
 #include <efltk/Fl_Widget.h>
 #include <efltk/fl_draw.h>
 #include <efltk/x.h>
-
 #include <efltk/Fl_Config.h>
 
 #ifndef _WIN32
-#include <unistd.h>
+# include <unistd.h>
 #else
-#include <io.h>
-#define access(a,b) _access(a,b)
-#define R_OK        04
+# include <io.h>
+# define access(a,b) _access(a,b)
+# define R_OK        04
 #endif
 
 #ifndef PATH_MAX
@@ -70,7 +71,7 @@ extern "C" bool fltk_theme()
 
     const char* sfile = fl_find_config_file("schemes/Active.scheme", 0);
     if (!sfile) {
-        fprintf(stderr, "Cannot find default scheme \"%s\"\n", sfile);
+        fprintf(stderr, "Cannot find default scheme\n");
         return false;
     }
 

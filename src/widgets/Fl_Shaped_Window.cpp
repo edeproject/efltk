@@ -105,7 +105,7 @@ static HRGN bitmap2region(Fl_Bitmap* bitmap)
 
                                  // number of bytes per line of pixels
     const int bpl = (bitmap->width()+7)/8;
-    BYTE* p8 = (BYTE*)bitmap->array;
+    BYTE* p8 = (BYTE*)bitmap->data();
     BYTE* p;
     for (int y = 0; y < bitmap->height(); y++)
     {

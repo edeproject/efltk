@@ -151,9 +151,9 @@ bool FilterContrast::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFor
 FilterGamma filter_gamma;
 bool FilterGamma::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFormat *fmt, float val1, float val2, float val3)
 {
-    if(val1 < 0.01) val1 = 0.01;
-    if(val2 < 0.01) val2 = 0.01;
-    if(val3 < 0.01) val3 = 0.01;
+    if(val1 < 0.01) val1 = 0.01f;
+    if(val2 < 0.01) val2 = 0.01f;
+    if(val3 < 0.01) val3 = 0.01f;
 
     Fl_PixelFormat *srcfmt = fmt;
 

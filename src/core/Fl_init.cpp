@@ -34,6 +34,8 @@ bool tt_anim    = true;
 bool tt_enabled = true;
 float tt_delay  = 1.0f;
 
+extern void fl_init_locale_support(const char *, const char *);
+
 void Fl::init()
 {
     fl_init_locale_support("efltk", PREFIX"/share/locale");

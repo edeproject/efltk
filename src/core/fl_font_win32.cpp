@@ -141,7 +141,7 @@ void fl_font(Fl_Font font, float psize) {
 
   // only integers supported right now, I think there is a newer
   // interface that takes arbitrary sizes, though...
-  psize = int(psize+.5);
+  psize = float(int(psize+.5f));
   unsigned size = unsigned(psize);
 
   if (font == fl_font_ && psize == fl_size_ &&
@@ -161,10 +161,10 @@ void fl_font(Fl_Font font, float psize) {
 }
 
 float fl_height() {
-  return (fl_fontsize->metr.tmAscent + fl_fontsize->metr.tmDescent);
+  return float(fl_fontsize->metr.tmAscent + fl_fontsize->metr.tmDescent);
 }
 
-float fl_descent() { return fl_fontsize->metr.tmDescent; }
+float fl_descent() { return float(fl_fontsize->metr.tmDescent); }
   
 float fl_width(const char* c, int n) {
   SIZE size;
@@ -172,7 +172,7 @@ float fl_width(const char* c, int n) {
   SelectObject(dc, current_font);
   // I think win32 has a fractional version of this:
   GetTextExtentPoint(dc, c, n, &size);
-  return size.cx;
+  return float(size.cx);
 }
 
 void fl_transformed_draw(const char *str, int n, float x, float y) {

@@ -56,7 +56,7 @@ void Fl_Align_Group::layout()
         for (i = 0; i < numchildren; i++)
         {
             Fl_Widget* o = child(i);
-            fl_font(o->label_font(),o->label_size());
+            fl_font(o->label_font(), o->label_size());
             int w = this->w()-o->w(),h = this->h()-o->h();
             fl_measure(o->label(),w,h,o->flags());
             if (variable_is_y) w = h;

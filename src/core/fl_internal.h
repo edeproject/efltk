@@ -89,6 +89,12 @@
 ////////////////////////////////////////////
 // ERROR DIFFUSION
 
+#ifdef _WIN32
+
+#define fl_xpixel(x) (x)
+
+#endif /* _WIN32 */
+
 #if defined(NO_ERROR_DIFFUSION) || !USE_COLORMAP
 
 #define ERROR_DIFF_START()
@@ -115,8 +121,6 @@
     b -= bb*255/(FL_NUM_BLUE-1); \
     DST = uchar(FL_COLOR_CUBE+(bb*FL_NUM_RED+rr)*FL_NUM_GREEN+gg); \
 }
-
-#define fl_xpixel(x) (x)
 
 #else
 

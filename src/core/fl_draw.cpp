@@ -164,7 +164,7 @@ static float split(
     if (!*p || *p == '\n') {
       w = W-x;
     } else if (*p == '\t') {
-      if (column && *column) w = *column++;
+      if (column && *column) w = float(*column++);
       else w = ((p-str+8)&-8)*fl_width("2",1);
     } else {
       if (*p == '&' && look_for_underscore) saw_underscore = true;

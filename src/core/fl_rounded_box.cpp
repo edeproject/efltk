@@ -33,8 +33,8 @@ static void rbox(int x, int y, int w, int h, Fl_Color fill, Fl_Color line)
     float d1 = h*(4/5.0f);
     if (d1 < d) d = d1;
     if (d > 30) d = 30;
-    float X = x;
-    float Y = y;
+    float X = float(x);
+    float Y = float(y);
     w--; h--;
     fl_arc(X, Y, d, d, 90, 180);
     fl_arc(X, Y+h-d, d, d, 180, 270);

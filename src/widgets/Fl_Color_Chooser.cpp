@@ -182,9 +182,9 @@ int Flcc_HueBox::handle(int e) {
     Xf = (Fl::event_x()-ix)/float(iw);
     Yf = (Fl::event_y()-iy)/float(ih);
     tohs(Xf, Yf, H, S);
-    if (fabs(H-ih) < 3*6.0f/w()) H = ih;
+    if (fabs(H-ih) < 3*6.0f/w()) H = float(ih);
     if (fabs(S-is) < 3*1.0f/h()) S = is;
-    if (Fl::event_state(FL_CTRL)) H = ih;
+    if (Fl::event_state(FL_CTRL)) H = float(ih);
     if (c->hsv(H, S, c->v())) c->do_callback();
     } return 1;
   default:

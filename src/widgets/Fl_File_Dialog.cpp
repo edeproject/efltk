@@ -752,7 +752,7 @@ void Fl_File_Dialog::parse_dirs(const char *fp)
 		item->copy_label(ptr);  
 	}
 
-	new Fl_ComboDivider();
+	new Fl_Divider(0,10);
 	path_->add(_("My Computer"));
 	path_->add(_("My Network"));
 

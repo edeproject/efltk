@@ -91,7 +91,7 @@ void Fl_Item::layout()
 {
     if (w() && h()) return;      // already at the correct size
     int dx=0; int dy=0; int dw=0; int dh=0; box()->inset(dx,dy,dw,dh);
-    fl_font(label_font(), label_size());
+    fl_font(label_font(), float(label_size()));
     int w = 250, h = 250; fl_measure(label(), w, h, flags());
     if (type()) w += 15;
     if (image())
@@ -133,7 +133,7 @@ void Fl_Item_Group::layout()
 {
     if (w() && h()) return;      // already at the correct size
     int dx=0; int dy=0; int dw=0; int dh=0; box()->inset(dx,dy,dw,dh);
-    fl_font(label_font(), label_size());
+    fl_font(label_font(), float(label_size()));
     int h; int w = 0;
     fl_measure(label(), w, h, flags());
     if (image())
@@ -187,13 +187,13 @@ void Fl_Divider::draw()
     float center=0;
     if(type()==HORIZONTAL)
     {
-        center=h()/2;
+        center=float(h()/2);
         fl_color(FL_DARK3);
         fl_line(0, int(center), w(), int(center));
         fl_color(FL_LIGHT3);
         fl_line(0, int(center)+1, w(), int(center)+1);
     } else {
-        center=w()/2;
+        center=float(w()/2);
         fl_color(FL_DARK3);
         fl_line(int(center), 0, int(center), h());
         fl_color(FL_LIGHT3);

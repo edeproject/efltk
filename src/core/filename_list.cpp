@@ -32,7 +32,7 @@
 #include <efltk/Fl_String.h>
 
 extern "C" {
-#ifndef HAVE_SCANDIR
+#if !HAVE_SCANDIR
     int fl_scandir(const char *dir, dirent ***namelist,
                    int (*select)(dirent *),
                    int (*compar)(dirent **, dirent **));

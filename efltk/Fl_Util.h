@@ -3,7 +3,7 @@
 
 #include "Enumerations.h"
 
-#define FL_DIR	   (1<<1) //Directory
+#define FL_DIR	  (1<<1) //Directory
 #define FL_FILE   (1<<2) //Regular file
 #define FL_LINK   (1<<3) //Sym link (ignored on WIN32)
 #define FL_DEVICE (1<<4) //Logical disk (ignored on Linux)

@@ -63,7 +63,7 @@ bool Fl_FileAttr::parse(const char *filename)
             GetDiskFreeSpaceEx(nbuf, (PULARGE_INTEGER)&ign, (PULARGE_INTEGER)&used, (PULARGE_INTEGER)&free);
         }
 
-        flags |= Fl_DEVICE;
+        flags |= FL_DEVICE;
         return true;
     }
 #endif

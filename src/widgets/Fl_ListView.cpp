@@ -48,7 +48,7 @@ void Fl_ListHeader::draw()
                 coli[a]->measure(iw,ih);
             }
 
-            fl_font(label_font(), label_size());
+            fl_font(label_font(), float(label_size()));
             char *pbuf = fl_cut_line(txt, colw[a]-iw);
 
             //Clear CLIP flag if set, cause we clip anyway =)
@@ -600,12 +600,11 @@ void Fl_ListView::layout_scrollbars()
     int vh = H+(_header->visible() ? _header->h() : 0);
     vscrollbar.resize(vx, vy, vscrollbar.w(), vh);
     vscrollbar.value(yposition_, H, 0, total_height);
-    fl_font(text_font(), text_size()+leading()); vscrollbar.linesize(fl_height());
+	vscrollbar.linesize(fl_height());
 
     int hy = hscrollbar.flags()&FL_ALIGN_TOP ? box()->dy() : Y+H;
     hscrollbar.resize(X, hy, W, hscrollbar.h());
     hscrollbar.value(xposition_, W, 0, max_cols_w/*max_width*/);
-    fl_font(text_font(), text_size());
     hscrollbar.linesize(fl_height());
 }
 
