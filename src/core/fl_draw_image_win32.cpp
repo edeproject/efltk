@@ -230,15 +230,15 @@ bool Fl_Renderer::render_to_pixmap(uint8 *src, Fl_Rect *src_rect, Fl_PixelFormat
 }
 
 //make device context from pixmap and palette
-static HDC make_DC(HBITMAP pixmap, HPALETTE pal) 
+static HDC make_DC(HDC dc, HBITMAP pixmap, HPALETTE pal) 
 {
-  HDC new_gc = CreateCompatibleDC(fl_gc);
+  HDC new_gc = CreateCompatibleDC(dc);
   SetTextAlign(new_gc, TA_BASELINE|TA_LEFT);
   SetBkMode(new_gc, TRANSPARENT);
 
   if(pal) SelectPalette(new_gc, pal, FALSE);
 
-  SelectObject(new_gc, pixmap);
+  SelectObject(new_gc, pixmap);	
   return new_gc;
 }
 
@@ -314,8 +314,8 @@ void Fl_Image::to_screen(int XP, int YP, int WP, int HP, int, int)
 # else
       fl_color(0);
       SetTextColor(fl_gc, 0);
-      HDC new_gc = make_DC((Pixmap)mask, fl_palette);
-	  HDC new_gc2= make_DC((Pixmap)id, fl_palette);
+      HDC new_gc = make_DC(fl_gc, (Pixmap)mask, fl_palette);
+	  HDC new_gc2= make_DC(fl_gc, (Pixmap)id, fl_palette);
 
 	  BitBlt(new_gc2, 0, 0, w, h, new_gc, 0, 0, SRCAND); // This should be done only once for performance
       // secret bitblt code found in old MSWindows reference manual:
@@ -338,7 +338,7 @@ void Fl_Image::to_screen(int XP, int YP, int WP, int HP, int, int)
 	else if (id) {		
 		// pix only, no mask
 		//fl_copy_offscreen(X, Y, W, H, (Pixmap)id, cx, cy);
-		HDC new_gc = make_DC((Pixmap)id, fl_palette);		
+		HDC new_gc = make_DC(fl_gc, (Pixmap)id, fl_palette);		
 		BitBlt(fl_gc, X, Y, W, H, new_gc, cx, cy, SRCCOPY);				
 		DeleteDC(new_gc);
 		
@@ -376,5 +376,122 @@ void Fl_Image::to_screen_tiled(int XP, int YP, int WP, int HP, int, int)
     fl_pop_clip();
 }
 
+uint8 *Fl_Renderer::data_from_pixmap(Pixmap src, Fl_Rect &rect, int &bitspp)
+{
+    int x = rect.x();
+    int y = rect.y();
+    int w = rect.w();
+    int h = rect.h();
+    int	width, height, clipx, clipy;
+    int	src_x, src_y, src_w, src_h;
+	LPBITMAPINFOHEADER dib_hdr;
+	int dib_size;
+
+	dib_size = sizeof(BITMAPINFOHEADER) + 256 * sizeof (RGBQUAD);
+	dib_hdr = (LPBITMAPINFOHEADER)malloc(dib_size);
+	memset(dib_hdr, 0, dib_size);
+	dib_hdr->biSize = sizeof(BITMAPINFOHEADER);	
+	if( !GetDIBits(fl_gc, src, 0, rect.h(), NULL, (LPBITMAPINFO)dib_hdr, DIB_RGB_COLORS) )
+	{
+		free(dib_hdr);
+		//printf("GetDIBits(1) FAILED\n");		
+		return 0;
+	}
+
+	src_w = dib_hdr->biWidth;
+	src_h = dib_hdr->biHeight;
+
+	/* clip to the drawable tree and screen */
+    clipx = clipy = 0;
+    width  = src_w - x;
+    height = src_h - y;
+    
+	if(width > w) width = w;
+    if(height > h) height = h;
+
+    if(x < 0) {
+        clipx = -x;
+        width += x;
+        x = 0;
+    }
+
+    if (y < 0) {
+        clipy = -y;
+        height += y;
+        y = 0;
+    }
+
+    if((width <= 0) || (height <= 0)) {
+        free(dib_hdr);
+        return 0;
+    }
+
+    w = width;
+    h = height;
+	
+	bitspp = dib_hdr->biBitCount;	
+	dib_hdr->biHeight = -h;//DIB images are upside/down...
+	dib_hdr->biWidth = w;
+
+	uint8 *lpvBits = new uint8[dib_hdr->biSizeImage];	
+
+	if( !GetDIBits(fl_gc, src, 0, h, lpvBits, (LPBITMAPINFO)dib_hdr, DIB_RGB_COLORS) ) {
+		free(dib_hdr);
+		delete []lpvBits;
+		//printf("GetDIBits(2) FAILED\n");
+		return 0;
+	}
+
+	if(x>0 || y>0) {
+		//NYI!
+	}
+
+	return lpvBits;
+}
+
+uint8 *Fl_Renderer::data_from_window(Window src, Fl_Rect &rect, int &bitspp)
+{
+	int ww=0, wh=0;
+	int px=rect.x(), py=rect.y(), pw=rect.w(), ph=rect.h();
+
+	RECT R;
+	if(GetClientRect(src, &R)) {
+		ww = R.right;
+		wh = R.bottom;
+	} else
+		return 0;
+	
+	//clip...
+	if( (px+pw) > ww) {
+		pw=ww-(ww-(px+pw));
+	}
+	if( (py+ph) > wh) {
+		ph=wh-(wh-(py+ph));
+	}
+	if(pw<=0 || ph<=0)
+		return 0;
+
+	HDC src_dc = GetDC(src);	
+	HDC dst_dc = CreateCompatibleDC(src_dc);
+
+	HBITMAP pixmap = CreateCompatibleBitmap(src_dc, pw, ph);
+	SelectObject(dst_dc, pixmap);
+	
+	if( !BitBlt(dst_dc, 0,0, pw, ph, src_dc, px, py, SRCCOPY) ) {
+		//printf("BitBlt() FAILED\n");		
+		return 0;
+	}
+
+	HDC saved = fl_gc;
+	fl_gc = dst_dc;
+
+	Fl_Rect r(0, 0, pw, ph);
+	uint8 *data = data_from_pixmap(pixmap, r, bitspp);
+
+	fl_gc = saved;	
+	DeleteDC(dst_dc);
+
+	return data;
+}
 
 #endif // _WIN32

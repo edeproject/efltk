@@ -87,6 +87,11 @@ public:
         oX=X; oY=Y;
     }
 
+	int handle(int e)
+	{		
+		return BBWinType::handle(e);
+	}
+	
     Fl_Image *ball, *back, *backing, *blended;
 };
 
@@ -140,7 +145,15 @@ uchar* make_image()
 }
 
 int main(int argc, char *argv[])
-{
+{	
+	/*
+	Fl_Renderer::system_init();
+	Fl_Rect r(0,0,Fl::w(),Fl::h());
+	int bpp=0;
+	uint8 *d = Fl_Renderer::data_from_window(GetDesktopWindow(), r, bpp); 
+	printf("BPP %d\n", bpp);
+	Fl_Image *i = new Fl_Image(Fl::w(),Fl::h(), Fl_Renderer::system_format(), d);	
+	*/
 #if HAVE_PNG
     // Initialize extension for PNG
     fl_init_images_lib();
