@@ -193,11 +193,10 @@ Fl_MySQL_Database::~Fl_MySQL_Database()
 {
     close();
     close_connection();
-    for (unsigned i = 0; i < m_queryList.count(); i++) {
-        Fl_Query *q = (Fl_Query *)m_queryList[i];
+	while (m_queryList.count()) {
+		Fl_Query *q = (Fl_Query *)m_queryList[0];
         q->database(NULL);
-    }
-    m_queryList.clear();
+    }    
 }
 
 void Fl_MySQL_Database::allocate_query(Fl_Query *query)
@@ -329,14 +328,16 @@ void Fl_MySQL_Database::fetch_query(Fl_Query *query)
  */
 void Fl_MySQL_Database::close_query(Fl_Query *query)
 {
-    query_active(query, false);
-    query_eof(query, true);
+	if(!query_active(query)) return;
 
 	MYSQL_RES *res = (MYSQL_RES *)query_handle(query);
-	if(res) mysql_free_result(res);
+	if(res) mysql_free_result(res);		
+	
+    query_active(query, false);
+    query_eof(query, true);
+	query_handle(query, 0);
 
-    Fl_Data_Fields& fields = query_fields(query);
-    fields.clear();	
+    query_fields(query).clear();    
 }
 
 void Fl_MySQL_Database::bind_parameters(Fl_Query *query)
