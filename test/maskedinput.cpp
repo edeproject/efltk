@@ -29,7 +29,7 @@
 #include <efltk/Fl_Date_Time_Input.h>
 
 int main(int argc, char **argv) {
-    Fl_Window *window = new Fl_Window(350,250);
+    Fl_Window *window = new Fl_Window(350,270);
 
     Fl_Masked_Input *d1 = new Fl_Masked_Input(150,20,150,24,"date (YYYY-MM-DD):");
     d1->mask("2999\\-19\\-39");
@@ -46,7 +46,10 @@ int main(int argc, char **argv) {
     Fl_Masked_Input *n = new Fl_Masked_Input(150,140,150,24,"name (Xxxxxxxxxxxxx):");
     n->mask("Lzzzzzzzzzzz");
 
-    new Fl_Date_Input(150,180,150,24,"Date input:");
+    Fl_Masked_Input *p = new Fl_Masked_Input(150,170,150,24,"phone :");
+    p->mask("\\(999\\)\\-999\\-9999");
+
+    new Fl_Date_Input(150,220,150,24,"Date input:");
 
     window->end();
     window->show(argc, argv);
