@@ -125,7 +125,7 @@ J1:
 		if (lstyle) {
 			LOGBRUSH penbrush = {BS_SOLID, fl_colorref, 0};
 			fl_pen = ExtCreatePen(lstyle|PS_GEOMETRIC, line_width, &penbrush,
-				dash_pattern_size, dash_pattern_size?dash_pattern:0);
+   	 		dash_pattern_size, dash_pattern_size?dash_pattern:0);
 		} else {
 			fl_pen = CreatePen(PS_SOLID, line_width, fl_colorref);
 		}
@@ -135,22 +135,28 @@ J1:
 	return fl_pen;
 }
 
-HBRUSH fl_setbrush() 
+HBRUSH fl_setbrush()
 {
+#ifdef _WIN32_WINNT
 #if _WIN32_WINNT >= 0x0500
-	SelectObject(fl_gc, stockbrush);
-	SetDCBrushColor(fl_gc, fl_colorref);
-#else
-	if (!fl_brush) goto J1;
-	if (brush_for != fl_colorref) {
-		DeleteObject(fl_brush);
-J1:
-		fl_brush = CreateSolidBrush(fl_colorref);
-		brush_for = fl_colorref;
-	}
-	SelectObject(fl_gc, fl_brush);
+  #define _USE_FAST_BRUSH_
 #endif
-	return fl_brush;
+#endif
+
+#ifdef _USE_FAST_BRUSH_
+    SelectObject(fl_gc, stockbrush);
+    SetDCBrushColor(fl_gc, fl_colorref);
+#else
+    if (!fl_brush) goto J1;
+    if (brush_for != fl_colorref) {
+        DeleteObject(fl_brush);
+J1:
+        fl_brush = CreateSolidBrush(fl_colorref);
+        brush_for = fl_colorref;
+    }
+    SelectObject(fl_gc, fl_brush);
+#endif
+    return fl_brush;
 }
 
 void Fl_Device::color(Fl_Color i)
