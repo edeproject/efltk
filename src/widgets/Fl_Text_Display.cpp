@@ -448,6 +448,8 @@ void Fl_Text_Display::layout()
             int old_vlines = mNVisibleLines;
             int new_vlines = (text_area.h + mMaxsize - 1) / mMaxsize;
 
+            if(!new_vlines) new_vlines=1;
+
             /* reallocate and update the line starts array, which may have changed
              size and / or contents.  */
             if(old_vlines != new_vlines)
