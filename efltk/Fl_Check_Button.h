@@ -24,6 +24,12 @@
 
 #include "Fl_Button.h"
 
+/**
+ * Buttons generate callbacks when they are clicked by the user. 
+ * You control exactly when and how by changing the values for type() and when(). 
+ *
+ * The Fl_Check_Button subclass display the "on" state by turning on a light, rather than drawing pushed in. 
+ */
 class FL_API Fl_Check_Button : public Fl_Button {
 public:
     static Fl_Named_Style* default_style;

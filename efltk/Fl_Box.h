@@ -24,11 +24,22 @@
 
 #include "Fl_Widget.h"
 
+/**
+ * This widget is the same as an plain Fl_Widget except if the box is set to FL_NO_BOX it is completely invisible and attemps to draw it do absolutely nothing. 
+ * This can be used as the resizable() of a group or window to get more complex resize effects. 
+ *
+ * You can also set the box to provide decorations, but you can use the plain Fl_Widget for that, too.
+ */ 
 class FL_API Fl_Box : public Fl_Widget {
 public:
     static Fl_Named_Style* default_style;
 
-    Fl_Box(int x, int y, int w, int h, const char *l=0);
+	/**
+	 * The first constructor sets box() to FL_NO_BOX, which means it is invisible. 
+	 * However such widgets are useful as placeholders or Fl_Group::resizable() values. 
+	 * To change the box to something visible, use box(n). 
+	 */
+    Fl_Box(int x, int y, int w, int h, const char *label=0);
 
     virtual void draw();
 };
