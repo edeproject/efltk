@@ -138,6 +138,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "image_loader"=.\image_loader.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "mdi"=.\mdi.dsp - Package Owner=<4>
 
 Package=<5>
@@ -164,6 +176,18 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name efltk
     End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "multitabs2"=.\multitabs2.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
 }}}
 
 ###############################################################################
