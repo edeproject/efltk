@@ -717,6 +717,7 @@ void Fl_Tabs::draw() {
     if (damage() & FL_DAMAGE_ALL) { // redraw the entire thing:
         fl_push_clip(0,0,this->w(),this->h());
         if (v) draw_child(*v);
+
         parent()->draw_group_box();
         switch (m_tabsMode) {
             case FL_ALIGN_BOTTOM:
@@ -1044,15 +1045,22 @@ void Fl_Tabs::layout()
 
     group_w -= m_tabsWidth;
     group_h -= m_tabsHeight;
+	
+	for(int n=0; n<children(); n++) 
+	{
+		Fl_Widget *w = child(n);
+		
+		if((layout_damage() & FL_LAYOUT_XY)) 
+			w->layout_damage(activeWidget->layout_damage()|FL_LAYOUT_XY);
 
-   // Only need to resize visible tab.
-    if(activeWidget) {
-        if((layout_damage() & FL_LAYOUT_XY)) activeWidget->layout_damage(activeWidget->layout_damage()|FL_LAYOUT_XY);       
-        activeWidget->resize(group_x+hoffset, group_y+voffset, group_w, group_h);
-        if(activeWidget->layout_damage()) activeWidget->layout();
-    }
+		w->resize(group_x+hoffset, group_y+voffset, group_w, group_h);
+			
+		if(w->layout_damage()) 
+			w->layout();
+    }	
 
     Fl_Widget::layout();
+	
 }
 
 void Fl_Tabs::extend_tabs() {
