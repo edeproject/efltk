@@ -12,22 +12,18 @@ void datetime_cb(Fl_Widget *w, void *) {
     if (w->event() == FL_DATA_CHANGE) {
         Fl_Date_Interval_Input *dii = dynamic_cast<Fl_Date_Interval_Input *>(w);
         if (dii) {
-            puts(dii->value());
-            puts(dii->value2());
             statusBox->label(dii->value() + Fl_String("..") + dii->value2());
             statusBox->redraw();
             return;
         }
         Fl_Date_Time_Input *dti = dynamic_cast<Fl_Date_Time_Input *>(w);
         if (dti) {
-            puts(dti->value());
             statusBox->label(dti->value());
             statusBox->redraw();
             return;
         }
         Fl_Date_Input *di = dynamic_cast<Fl_Date_Input *>(w);
         if (di) {
-            puts(di->value());
             statusBox->label(di->value());
             statusBox->redraw();
             return;
