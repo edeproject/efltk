@@ -27,13 +27,17 @@ public:
     void step(float step) { mPresent += step; redraw(); };
     float step()	  { return mStep; }
 
-    float position()	     { return mPresent; }
-    void position(float pos) { mPresent = pos; redraw(); }
+    void  value(float v) { mPresent = v; redraw(); }
+    float value() const  { return mPresent; }
 
     void showtext(bool st) { mShowPct = st; }
     bool showtext()	   { return mShowPct; }
 
-    void draw();
+    virtual void draw();
+
+    // Out-dated! use value() instead of these!
+    float position()	     { return mPresent; }
+    void position(float pos) { mPresent = pos; redraw(); }
 };
 
 #endif

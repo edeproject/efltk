@@ -31,7 +31,7 @@
 class FL_API Fl_Value_Output : public Fl_Value_Input {
 public:
   Fl_Value_Output(int x,int y,int w,int h,const char *l = 0)
-    : Fl_Value_Input(x, y, w, h, l) {}
+    : Fl_Value_Input(x, y, w, h, l) { input.set_output(); }
   void soft(uchar x) {} // unimplemented, it acts like true allways
   bool soft() const {return true;}
 };
