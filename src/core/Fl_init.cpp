@@ -60,9 +60,9 @@ void Fl::init()
         cfg.get("Menus", "Subwindow Effect", b_val, true);
         Fl_Menu_::subwindow_effect(b_val);
         cfg.get("Menus", "Effect Type", i_val, 1);
-        Fl_Menu_::effect_type(i_val);
-        cfg.get("Menus", "Speed", f_val, 1.5f);
-        Fl_Menu_Window::default_anim_speed(f_val);
+        Fl_Menu_::default_effect_type(i_val);
+        cfg.get("Menus", "Speed", f_val, 1.0f);
+        Fl_Menu_::default_anim_speed(f_val);
         cfg.get("Menus", "Delay", f_val, 0.2f);
         Fl_Menu_::default_delay(f_val);
 

@@ -52,16 +52,11 @@ public:
     void animate(int fx, int fy, int fw, int fh,
                  int tx, int ty, int tw, int th);
 
-    // Set/Get default animate speed
-    static float default_anim_speed() { return default_anim_speed_; }
-    static void  default_anim_speed(float v) { default_anim_speed_ = v; }
-
     // Set/Get animate speed, ONLY for this window
     float anim_speed() { return anim_speed_; }
     void anim_speed(float v) { anim_speed_ = v; }
 
 protected:
-    static float default_anim_speed_;
     float anim_speed_;
 
     bool animating; //set true, while animating

@@ -103,10 +103,10 @@ private:
     bool add_items;
     bool empty;
 
-
     int ox,oy,ow,oh;
     int Wp, Hp;
 
+    int effect;
     int anim_flags;
 
     MenuWindow *parent;
@@ -135,6 +135,7 @@ Fl_Named_Style* MenuWindow::default_style = &::style_menuwin;
 MenuWindow::MenuWindow(MenuWindow *parent, Fl_Widget *widget, Fl_Menu_ *menu, int *indexes, int level, int Wp, int Hp)
     : Fl_Menu_Window(0,0,0)
 {
+    effect = Fl_Menu_::default_effect_type();
     current_menu = this;
 
     end();
@@ -501,11 +502,13 @@ void MenuWindow::open_childwin(Fl_Widget *widget, int index)
         delete child_win; child_win = 0;
         child_win = new MenuWindow(this, widget, menu_, menu_->indexes, level_+1);
         child_win->menubar = menubar;
+        child_win->effect = effect;
     } else
     if(!child_win) {
 
         child_win = new MenuWindow(this, widget, menu_, menu_->indexes, level_+1);
         child_win->menubar = menubar;
+        child_win->effect = effect;
     }
 
     int nX = x() + w() - 3;
@@ -513,7 +516,8 @@ void MenuWindow::open_childwin(Fl_Widget *widget, int index)
 
     // Force menu on screen
     if(nX+child_win->ow > Fl::w()) {
-        nX = Fl::w()-child_win->ow;
+        // X position to right side of current menu
+        nX = x()-child_win->ow+3;//Fl::w()-child_win->ow;
     }
     if(nY+child_win->oh > Fl::h()) {
         nY = Fl::h()-child_win->oh;
@@ -749,11 +753,11 @@ int MenuWindow::handle(int event)
             return 1;
         }
         if(widget && child_win) {
-			child_win->hide();
-			if(!child_win->animating) {
-				delete child_win;
-				child_win=0;
-			}
+            child_win->hide();
+            if(!child_win->animating) {
+                delete child_win;
+                child_win=0;
+            }
         }
         if (event == FL_PUSH) {
             // redraw checkboxes so they preview the state they will be in:
@@ -780,7 +784,6 @@ int MenuWindow::handle(int event)
         // Allow menus to be "clicked-up".  Without this a single click will
         // pick whatever item the mouse is pointing at in a pop-up menu:
         if(initial_ && Fl::event_is_click()) {
-            printf("initial\n");
             initial_ = false;
             return 1;
         }
@@ -850,7 +853,7 @@ void MenuWindow::show()
         H = th = Fl::h()-ty;
     }
 
-    switch(int(Fl_Menu_::effect_type()))
+    switch(effect)
     {
     case FL_EFFECT_FADE:
         fade(tx,ty,tw,th);
@@ -881,6 +884,7 @@ void MenuWindow::show()
     }
     case FL_EFFECT_NONE:
     default:
+        Fl_Menu_Window::show();
         break;
     }
 
@@ -955,12 +959,15 @@ int Fl_Menu_::popup(int X, int Y, int W, int H)
 
     MenuWindow::default_style->color = color();
 
-    float speed = (anim_speed_==-1)?Fl_Menu_Window::default_anim_speed():anim_speed_;
+    float speed = (anim_speed_==-1)?Fl_Menu_::default_anim_speed():anim_speed_;
+    int effect = (effect_type_==-1)?Fl_Menu_::default_effect_type():effect_type_;
 
     MenuWindow *saved_first = first_menu;
     MenuWindow *saved_current = current_menu;
 
     first_menu = new MenuWindow(0, this, this, indexes, level, W, H);
+    first_menu->child_of(Fl::first_window());
+    first_menu->effect = effect;
     first_menu->anim_flags = anim_flags_;
     first_menu->anim_speed(speed);
     first_menu->widget_ = this;
@@ -982,6 +989,7 @@ int Fl_Menu_::popup(int X, int Y, int W, int H)
         X = Fl::w()-first_menu->ow;
     }
 
+    first_menu->ox = X; first_menu->oy = Y;
     first_menu->position(X, Y);
 
     Fl_Widget* saved_modal = Fl::modal();
@@ -1034,12 +1042,14 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
 
     MenuWindow::default_style->color = color();
 
-    float speed = (anim_speed()==-1)?Fl_Menu_Window::default_anim_speed():anim_speed();
+    float speed = (anim_speed()==-1)?Fl_Menu_::default_anim_speed():anim_speed();
+    int effect = (effect_type()==-1)?Fl_Menu_::default_effect_type():effect_type();
 
     MenuWindow *saved_first = first_menu;
     MenuWindow *saved_current = current_menu;
 
     first_menu = new MenuWindow(0, this, this, 0, -1);
+    first_menu->effect = effect;
     first_menu->anim_flags = anim_flags_;
     first_menu->anim_speed(speed);
     first_menu->menubar = true;
@@ -1126,6 +1136,7 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
                 nX=nY=0;
             }
 
+            first_menu->ox = nX; first_menu->oy = nY;
             first_menu->position(nX, nY);
             first_menu->relayout(tmp_indexes, tmp_level);
 
@@ -1188,18 +1199,23 @@ int Fl_Choice::popup(int X, int Y, int W, int H)
 
     MenuWindow::default_style->color = color();
 
-    float speed = (anim_speed()==-1)?Fl_Menu_Window::default_anim_speed():anim_speed();
+    float speed = (anim_speed()==-1)?Fl_Menu_::default_anim_speed():anim_speed();
+    int effect = (effect_type()==-1)?Fl_Menu_::default_effect_type():effect_type();
 
     MenuWindow *saved_first = first_menu;
     MenuWindow *saved_current = current_menu;
 
     first_menu = new MenuWindow(0, this, this, indexes, level, W, H);
+    first_menu->child_of(Fl::first_window());
+    first_menu->effect = effect;
     first_menu->anim_flags = anim_flags_;
     first_menu->anim_speed(speed);
     first_menu->widget_ = this;
     MenuWindow *win = first_menu;
 
-    win->position(X, Y-win->ypos(indexes[level])+win->ypos(0));
+    int oY = Y-win->ypos(indexes[level])+win->ypos(0);
+    first_menu->ox = X; first_menu->oy = oY;
+    win->position(X, oY);
     win->selected_ = indexes[level];
 
     // create submenus until we locate the one with selected item
@@ -1220,7 +1236,7 @@ int Fl_Choice::popup(int X, int Y, int W, int H)
         indexes[level] = item;
         indexes[level+1] = -1;
 
-        MenuWindow *sub_win = new MenuWindow(0, widget, this, indexes, level);
+        MenuWindow *sub_win = new MenuWindow(win, widget, this, indexes, level);
         sub_win->position(X, Y-sub_win->ypos(indexes[level])+sub_win->ypos(0));
         sub_win->selected_ = indexes[level];
 
@@ -1237,12 +1253,6 @@ int Fl_Choice::popup(int X, int Y, int W, int H)
         win = sub_win;
     }
 
-    // show all the menus:
-    for(MenuWindow *t=first_menu->child_win; t!=0; t=t->child_win) {
-        t->anim_flags=0;
-        t->show();
-    }
-
     Fl_Widget* saved_modal = Fl::modal();
     bool saved_grab = Fl::grab();
 
@@ -1251,7 +1261,16 @@ int Fl_Choice::popup(int X, int Y, int W, int H)
     for(Fl::modal(first_menu, MODAL); !Fl::exit_modal_flag(); Fl::wait())
     {
         //Show window, after entered MODAL loop, so window can events while animating
-        if(!first_menu->shown()) first_menu->show(Fl::first_window());
+        if(!first_menu->shown()) {
+            MenuWindow *t=first_menu;
+            while(t->child_win) {
+                // No effects for already up menus
+                t->effect = FL_EFFECT_NONE;
+                t->show();
+                t = t->child_win;
+            }
+            t->show(Fl::first_window());
+        }
     }
 
     delete first_menu;

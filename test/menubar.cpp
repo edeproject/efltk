@@ -241,6 +241,7 @@ int main(int argc, char **argv) {
 
   Fl_Choice *ch = new Fl_Choice(300,100,90,25,"&choice:");
   ch->menu(pulldown);
+  //ch->menu(menutable);
   ch->callback(test_cb);
   ch->tooltip("This is a choice");
   menus[2] = ch;

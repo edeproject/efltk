@@ -79,20 +79,21 @@ static Fl_List default_list;
 bool Fl_Menu_::key_event = false;
 
 float Fl_Menu_::default_delay_ = 0.2f;
+int Fl_Menu_::default_effect_type_ = FL_EFFECT_ANIM;
+float Fl_Menu_::default_anim_speed_ = 1.0f;
 
 bool Fl_Menu_::effects_ = true;
 bool Fl_Menu_::subwindow_effect_ = true;
 
-int Fl_Menu_::effect_type_ = FL_EFFECT_ANIM;
-
 Fl_Menu_::Fl_Menu_()
     : Fl_Group(0,0,0,0,0), list_(&default_list), item_(0)
 {
-	delay_ = -1;
-	anim_speed_ = -1;
+    delay_ = -1;
+    effect_type_ = -1;
+    anim_speed_ = -1;
 
     anim_flags_ = TOP_TO_BOTTOM|LEFT_TO_RIGHT;
-    
+
     callback(default_callback);
     end();
 }
@@ -100,11 +101,12 @@ Fl_Menu_::Fl_Menu_()
 Fl_Menu_::Fl_Menu_(int x,int y,int w, int h,const char* l)
     : Fl_Group(x,y,w,h,l), list_(&default_list), item_(0)
 {
-	delay_ = -1;
-	anim_speed_ = -1;
+    delay_ = -1;
+    effect_type_ = -1;
+    anim_speed_ = -1;
 
     anim_flags_ = TOP_TO_BOTTOM|LEFT_TO_RIGHT;
-    
+
     callback(default_callback);
     end();
 }

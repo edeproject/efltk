@@ -25,6 +25,7 @@
 
 #include <efltk/Fl.h>
 #include <efltk/Fl_Menu_Window.h>
+#include <efltk/Fl_Menu_.h>
 #include <efltk/math.h>
 #include <efltk/x.h>
 #include <efltk/fl_draw.h>
@@ -46,24 +47,22 @@
         ::select(1,0,0,0,&t); }
 #endif
 
-float Fl_Menu_Window::default_anim_speed_ = 1.5f;
-
-Fl_Menu_Window::Fl_Menu_Window(int W, int H, const char *l) 
-	: Fl_Single_Window(W,H,l) 
-{ 
-	animating=false; 
-	anim_speed_=default_anim_speed_; 
-	slow_down_to_h=0;
-	slow_down_to_w=0;
+Fl_Menu_Window::Fl_Menu_Window(int W, int H, const char *l)
+    : Fl_Single_Window(W,H,l)
+{
+    animating=false;
+    anim_speed_=Fl_Menu_::default_anim_speed();
+    slow_down_to_h=0;
+    slow_down_to_w=0;
 }
 
-Fl_Menu_Window::Fl_Menu_Window(int X, int Y, int W, int H, const char *l) 
-	: Fl_Single_Window(X,Y,W,H,l) 
-{ 
-	animating=false; 
-	anim_speed_=default_anim_speed_; 	
-	slow_down_to_h=0;
-	slow_down_to_w=0;
+Fl_Menu_Window::Fl_Menu_Window(int X, int Y, int W, int H, const char *l)
+: Fl_Single_Window(X,Y,W,H,l)
+{
+    animating=false;
+    anim_speed_=Fl_Menu_::default_anim_speed();
+    slow_down_to_h=0;
+    slow_down_to_w=0;
 }
 
 
@@ -91,20 +90,20 @@ extern uchar fl_overlay;         // changes how fl_color(x) works
 
 void Fl_Menu_Window::create()
 {
-    #if USE_OVERLAY
+#if USE_OVERLAY
     if (overlay() && fl_find_overlay_visual())
     {
         XInstallColormap(fl_display, fl_overlay_colormap);
         Fl_X::create(this, fl_overlay_visual, fl_overlay_colormap, int(fl_transparent_pixel));
     } else
-    #endif
-    Fl_Single_Window::create();
+#endif
+        Fl_Single_Window::create();
 }
 
 
 void Fl_Menu_Window::flush()
 {
-    #if USE_OVERLAY
+#if USE_OVERLAY
     if (!fl_overlay_visual || !overlay()) {Fl_Single_Window::flush(); return;}
     Fl_X *i = Fl_X::i(this);
     fl_window = i->xid;
@@ -123,19 +122,18 @@ void Fl_Menu_Window::flush()
         fl_clip_region(0);
     }
     fl_overlay = 0;
-    #else
+#else
     Fl_Single_Window::flush();
-    #endif
+#endif
 }
-
 
 void Fl_Menu_Window::destroy()
 {
-    #if USE_OVERLAY
+#if USE_OVERLAY
     // Fix the colormap flashing on Maximum Impact Graphics by erasing the
     // menu before unmapping it:
     if (gc && shown()) XClearWindow(fl_display, fl_xid(this));
-    #endif
+#endif
     Fl_Single_Window::destroy();
 }
 

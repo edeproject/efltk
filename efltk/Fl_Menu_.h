@@ -133,25 +133,36 @@ public:
 	const char *text(int i) const {return i >= 0 ? child(i)->label() : 0;}
 	const char *text() const {Fl_Widget* w = item(); return w ? w->label() : 0;}
 #endif
-	
-        // Set/Get default delay of all menus
+
+        // Set/Get default effect type for all menus
+        static int default_effect_type() { return default_effect_type_; }
+        static void default_effect_type(int v) { default_effect_type_ = v; }
+
+        // Effect type, ONLY for this menu
+        int effect_type() { return effect_type_; }
+        void effect_type(int v) { effect_type_ = v; }
+
+        // Set/Get default sub-menu delay of all menus
         static float default_delay() { return default_delay_; }
 	static void  default_delay(float v) { default_delay_ = v; }
 
-	// Set/Get delay ONLY for this menu
-	float delay() { return delay_; }
-	void delay(float v) { delay_ = v; }
+        // sub-menu delay, ONLY for this menu
+        float delay() { return delay_; }
+        void delay(float v) { delay_ = v; }
 
-	// Set/Get animate speed, ONLY for this menu
+        // Set/Get default animate speed of all menua
+        static float default_anim_speed() { return default_anim_speed_; }
+        static void default_anim_speed(float v) { default_anim_speed_ = v; }
+
+        // Set/Get animate speed, ONLY for this menu
 	float anim_speed() { return anim_speed_; }
 	void anim_speed(float v) { anim_speed_ = v; }
 
+        // Are menu effects enabled?
         static bool effects() { return effects_; }
         static void effects(bool v) { effects_ = v; }
 
-        static int effect_type() { return effect_type_; }
-        static void effect_type(int v) { effect_type_ = v; }
-
+        // Does sub-menus animate, like first menuwindow?
         static bool subwindow_effect() { return subwindow_effect_; }
         static void subwindow_effect(bool v) { subwindow_effect_ = v; }
 
@@ -164,8 +175,11 @@ private:
 
     static bool effects_;
     static bool subwindow_effect_;
-    static int effect_type_;
 
+    static int default_effect_type_;
+    int effect_type_;
+
+    static float default_anim_speed_;
     float anim_speed_;
 
 protected:
