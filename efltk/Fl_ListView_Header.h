@@ -35,8 +35,8 @@ public:
     Fl_ListView_Header(int X,int Y,int W,int H,const char*l=0);
     ~Fl_ListView_Header();
 
-    void add_column(const char *name, int w, int column_type=VAR_STRING);
-    void add_column(const Fl_String &name, int w, int column_type=VAR_STRING);
+    void add_column(const char *name, int w, Fl_Variant_Type column_type=VAR_STRING);
+    void add_column(const Fl_String &name, int w, Fl_Variant_Type column_type=VAR_STRING);
 
     virtual void clear();
 
@@ -46,8 +46,8 @@ public:
     int column_width(int col);
     void column_width(int col, int w);
 
-    int column_type(int col);
-    void column_type(int col, int w);
+    Fl_Variant_Type column_type(int col);
+    void column_type(int col, Fl_Variant_Type w);
 
     Fl_Flags column_flags(int col, int f);
     Fl_Flags column_flags(int col);

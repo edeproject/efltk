@@ -79,15 +79,15 @@ public:
     Fl_ListView_Header *header() const { return _header; }
     void header(Fl_ListView_Header *h) { _header = h; }
 
-    void add_column(const char *name, int w=-1,int ctype=VAR_STRING) { _header->add_column(name, w, ctype); if(w<0) find_def=true; }
+    void add_column(const char *name, int w=-1,Fl_Variant_Type ctype=VAR_STRING) { _header->add_column(name, w, ctype); if(w<0) find_def=true; }
     int columns() const { return _header->columns(); }
     void columns(int cnt) { _header->columns(cnt); }
 
     int column_width(int c) const { return _header->column_width(c); }
     void column_width(int c, int w) { _header->column_width(c, w); if(w<0) find_def=true; }
 
-    int column_type(int c) const { return _header->column_type(c); }
-    void column_type(int c, int t) { _header->column_type(c, t); }
+    Fl_Variant_Type column_type(int c) const { return _header->column_type(c); }
+    void column_type(int c, Fl_Variant_Type t) { _header->column_type(c, t); }
 
     const char *column_name(int c) const { return _header->column_label(c); }
     void column_name(int c, const char *name) { _header->column_copy_label(c, name); }

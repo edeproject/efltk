@@ -12,14 +12,14 @@
 class Fl_ListHeader_Attr
 {
 public:
-    Fl_String   label;
+    Fl_String       label;
     int             width;
-    int             ctype;
-    Fl_Flags    flags;
-    Fl_Font     font;
+    Fl_Variant_Type ctype;
+    Fl_Flags        flags;
+    Fl_Font         font;
     int             font_size;
-    Fl_Color    color;
-    Fl_Image  *image;
+    Fl_Color        color;
+    Fl_Image       *image;
 };
 
 static void revert(Fl_Style* s) {
@@ -55,7 +55,7 @@ void Fl_ListView_Header::add_attr(int col)
     attr_list[col] = a;
 }
 
-void Fl_ListView_Header::add_column(const char *name, int w, int t)
+void Fl_ListView_Header::add_column(const char *name, int w, Fl_Variant_Type t)
 {
     columns(columns()+1);
     column_label(columns()-1, name);
@@ -63,7 +63,7 @@ void Fl_ListView_Header::add_column(const char *name, int w, int t)
     column_type(columns()-1, t);
 }
 
-void Fl_ListView_Header::add_column(const Fl_String &name, int w, int t)
+void Fl_ListView_Header::add_column(const Fl_String &name, int w, Fl_Variant_Type t)
 {
     add_column(name.c_str(),w,t);
 }
@@ -106,16 +106,16 @@ int Fl_ListView_Header::column_width(int col)
     return a->width;
 }
 
-void Fl_ListView_Header::column_type(int col, int t)
+void Fl_ListView_Header::column_type(int col, Fl_Variant_Type t)
 {
     if((uint)col>=attr_list.size()) return;
     Fl_ListHeader_Attr *a = (Fl_ListHeader_Attr*)attr_list[col];
     a->ctype = t;
 }
 
-int Fl_ListView_Header::column_type(int col)
+Fl_Variant_Type Fl_ListView_Header::column_type(int col)
 {
-    if((uint)col>=attr_list.size()) return 0;
+    if((uint)col>=attr_list.size()) return VAR_NONE;
     Fl_ListHeader_Attr *a = (Fl_ListHeader_Attr*)attr_list[col];
     return a->ctype;
 }
@@ -282,8 +282,8 @@ void Fl_ListView_Header::draw()
                 const char *pbuf = fl_cut_line(txt, W-iw-6);
                 Fl_Widget::label(pbuf);
             } else {
-		Fl_Widget::label("");
-	    }
+                Fl_Widget::label("");
+            }
 
             //Clear CLIP flag if set, cause we clip anyway =)
             if(align() & FL_ALIGN_CLIP) Fl_Widget::clear_flag(FL_ALIGN_CLIP);

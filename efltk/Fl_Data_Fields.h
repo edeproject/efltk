@@ -41,8 +41,8 @@ public:
     Fl_Flags flags;
     bool     visible;
 
-    const Fl_String &name() const                  { return m_name;         }
-    int type()              const                  { return value.type();   }
+    const Fl_String &name() const                 { return m_name;           }
+    Fl_Variant_Type type() const                  { return value.type();     }
 
     unsigned buffer_size() const                  { return value.size();     }
     unsigned data_size()   const                  { return m_dataSize;       }

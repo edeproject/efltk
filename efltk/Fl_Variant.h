@@ -39,6 +39,8 @@ enum FL_VAR_TYPES {
     VAR_IMAGEPTR = 64
 };
 
+typedef FL_VAR_TYPES Fl_Variant_Type;
+
 /** Fl_Variant */
 class FL_API Fl_Variant {
 public:
@@ -66,7 +68,7 @@ public:
     const Fl_Image *get_image_ptr() const;
     Fl_Date_Time get_date() const;
 
-    int type() const { return m_type; }
+    Fl_Variant_Type type() const { return m_type; }
     int size() const { return m_size; }
     void *data() const { return (void *)(variantData *)&m_data; }
 
@@ -127,7 +129,7 @@ private:
         const Fl_Image *imagePtr;
     } m_data;
     int m_size;
-    int m_type;
+    Fl_Variant_Type m_type;
 };
 
 #endif

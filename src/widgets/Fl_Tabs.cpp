@@ -610,6 +610,8 @@ int Fl_Tabs::handle(int event) {
                     break;
                 case FL_ALIGN_BOTTOM: if (ey < h() - m_tabsHeight) goto DEFAULT;
                     break;
+                default:
+                    break;
             }
 
       //if (Fl::visible_focus()) 
@@ -806,6 +808,9 @@ void Fl_Tabs::draw_tab(Fl_Tab_Info *tab,Fl_Flags flags) {
         case FL_ALIGN_LEFT:
             button_box()->draw(tab->m_x,y1,tab->m_width,tab->m_height,tabColor,flags);
             break;
+
+        default:
+            break;
     }
 
     Fl_Align labelAlign = FL_ALIGN_CENTER;
@@ -849,6 +854,9 @@ void Fl_Tabs::draw_tab(Fl_Tab_Info *tab,Fl_Flags flags) {
             labelLeft = x1 + 4 + box()->dx();
             focus_dw -= box()->dw();
             focus_dh -= box()->dy();
+            break;
+
+        default:
             break;
     }
     Fl_Widget *widget = tab->m_widget;
@@ -939,6 +947,9 @@ void Fl_Tabs::layout()
             if (m_tabsMode == FL_ALIGN_RIGHT)
                 xpos = w() - m_tabsWidth;
             break;
+
+        default:
+            break;
     }
 
     for (i=0; i<children(); i++) {
@@ -983,6 +994,9 @@ void Fl_Tabs::layout()
                 }
                 ypos += ystep;
                 break;
+
+            default:
+                break;
         }
 
         if (!tab) break;
@@ -991,6 +1005,7 @@ void Fl_Tabs::layout()
             activeTab = tab;
             activeWidget = group;
         }
+
     }
     delete old_tabsMatrix;
 
@@ -1023,6 +1038,9 @@ void Fl_Tabs::layout()
         case FL_ALIGN_LEFT:
             hoffset = m_tabsWidth;
             m_tabsMatrix->activate(activeTab,m_tabsMode);
+            break;
+
+        default:
             break;
     }
 

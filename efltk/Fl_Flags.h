@@ -33,39 +33,40 @@
 // as a single word is the easiest way.
 
 typedef int Fl_Flags;
-typedef Fl_Flags Fl_Align; // for back compatability
 
 /** FlagsEnum */
 enum FlagsEnum {
-  FL_NO_FLAGS		= 0,
+    FL_NO_FLAGS     = 0,
 
 // from Fl_Align, values are comptable with fltk 1.0:
 // These control the location and appearance of labels:
-  FL_ALIGN_CENTER	= 0,
-  FL_ALIGN_TOP          = 0x00000001,
-  FL_ALIGN_BOTTOM       = 0x00000002,
-  FL_ALIGN_LEFT         = 0x00000004,
-  FL_ALIGN_RIGHT        = 0x00000008,
-  FL_ALIGN_INSIDE       = 0x00000010,
-  FL_ALIGN_CLIENT       = 0x00000010,
-  FL_ALIGN_CLIP         = 0x00000040,
-  FL_ALIGN_WRAP         = 0x00000080,
-  FL_ALIGN_TILED        = 0x00000100,
-  FL_ALIGN_SCALE        = 0x00000200,
-  FL_ALIGN_MASK		= 0x00000FFF,
+    FL_ALIGN_CENTER       = 0,
+    FL_ALIGN_TOP          = 0x00000001,
+    FL_ALIGN_BOTTOM       = 0x00000002,
+    FL_ALIGN_LEFT         = 0x00000004,
+    FL_ALIGN_RIGHT        = 0x00000008,
+    FL_ALIGN_INSIDE       = 0x00000010,
+    FL_ALIGN_CLIENT       = 0x00000010,
+    FL_ALIGN_CLIP         = 0x00000040,
+    FL_ALIGN_WRAP         = 0x00000080,
+    FL_ALIGN_TILED        = 0x00000100,
+    FL_ALIGN_SCALE        = 0x00000200,
+    FL_ALIGN_MASK         = 0x00000FFF,
 
-  FL_INACTIVE		= 0x00001000, // does not get events, gray it out
-  FL_OUTPUT		= 0x00002000, // does not get events
-  FL_VALUE		= 0x00004000, // indicates true/down/on state
-  FL_SELECTED		= 0x00008000, // draw using selection colors
-  FL_INVISIBLE		= 0x00010000, // does not get events, does not draw
-  FL_HIGHLIGHT		= 0x00020000, // draw highlighted
-  FL_CHANGED		= 0x00040000, // value changed since last callback
-  FL_COPIED_LABEL	= 0x00080000, // copy_label() was called
-  FL_RAW_LABEL		= 0x00100000, // don't interpret & or @ in label
-  FL_PACK_VERTICAL	= 0x00200000, // Fl_Pack puts this widget vertical
-  FL_CLICK_TO_FOCUS     = 0x00400000  // Set true if clicking this widget causes it to take focus
+    FL_INACTIVE           = 0x00001000, // does not get events, gray it out
+    FL_OUTPUT             = 0x00002000, // does not get events
+    FL_VALUE              = 0x00004000, // indicates true/down/on state
+    FL_SELECTED           = 0x00008000, // draw using selection colors
+    FL_INVISIBLE          = 0x00010000, // does not get events, does not draw
+    FL_HIGHLIGHT          = 0x00020000, // draw highlighted
+    FL_CHANGED            = 0x00040000, // value changed since last callback
+    FL_COPIED_LABEL       = 0x00080000, // copy_label() was called
+    FL_RAW_LABEL          = 0x00100000, // don't interpret & or @ in label
+    FL_PACK_VERTICAL      = 0x00200000, // Fl_Pack puts this widget vertical
+    FL_CLICK_TO_FOCUS     = 0x00400000  // Set true if clicking this widget causes it to take focus
 
 };
+
+typedef FlagsEnum Fl_Align;
 
 #endif
