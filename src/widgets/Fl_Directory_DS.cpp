@@ -21,6 +21,7 @@
 #include <sys/stat.h>
 #include <efltk/filename.h>
 #include <efltk/Fl_Directory_DS.h>
+#include <efltk/Fl_Exception.h>
 
 #ifdef _WIN32
 
@@ -57,74 +58,74 @@
 
 #endif /* _WIN32 */
 
-static Fl_Variant    notFound;
-static Fl_Data_Field fieldNotFound("not_found");
+#define checkDSopen(ds) if (!ds) fl_throw("Dataset isn't open") 
 
    // access to the field by name
 const Fl_Variant& Fl_Directory_DS::operator [] (const char *field_name) const {
-   if (m_current)
-         return (*m_current)[field_name];
-   else  return notFound;
+   checkDSopen(m_current);
+   return (*m_current)[field_name];
 }
 
 Fl_Variant& Fl_Directory_DS::operator [] (const char *field_name) {
-   if (m_current)
-         return (*m_current)[field_name];
-   else  return notFound;
+   checkDSopen(m_current);
+   return (*m_current)[field_name];
 }
 
 const Fl_Data_Field& Fl_Directory_DS::field (int field_index) const {
-   if (m_current)
-         return m_current->field(field_index);
-   else  return fieldNotFound;
+   checkDSopen(m_current);
+   return m_current->field(field_index);
 }
 
 Fl_Data_Field& Fl_Directory_DS::field (int field_index) {
-   if (m_current)
-         return m_current->field(field_index);
-   else  return fieldNotFound;
+   checkDSopen(m_current);
+   return m_current->field(field_index);
 }
 
 // how many fields do we have in the current record?
 unsigned Fl_Directory_DS::field_count() const {
-   if (m_current)
-         return m_current->count();
-   else  return 0;
+   checkDSopen(m_current);
+   return m_current->count();
 }
 
 int Fl_Directory_DS::field_index(const char *field_name) const {
-   if (m_current)
-         return m_current->field_index(field_name);
-   else  return -1;
+   checkDSopen(m_current);
+   return m_current->field_index(field_name);
 }
 
 // access to the field by number, 0..field_count()-1
 const Fl_Variant& Fl_Directory_DS::operator [] (int index) const {
-   if (m_current)
-         return (*m_current)[index];
-   else  return notFound;
+   checkDSopen(m_current);
+   return (*m_current)[index];
 }
 
 Fl_Variant& Fl_Directory_DS::operator [] (int index) {
-   if (m_current)
-         return (*m_current)[index];
-   else  return notFound;
+   checkDSopen(m_current);
+   return (*m_current)[index];
 }
 
 // read this field data into external value
 bool Fl_Directory_DS::read_field(const char *fname,Fl_Variant& fvalue) {
-   fvalue = (*this)[fname];
-   return &fvalue != &notFound;
+   fl_try {
+      fvalue = (*this)[fname];
+      return true;
+   }
+   fl_catch(exc) {
+      return false;
+   }
 }
 
 // write this field data from external value
 bool Fl_Directory_DS::write_field(const char *fname,const Fl_Variant& fvalue) {
-   (*this)[fname] = fvalue;
-   return &fvalue != &notFound;
+   fl_try {
+      (*this)[fname] = fvalue;
+      return true;
+   }
+   fl_catch(exc) {
+      return false;
+   }
 }
 
 // dataset navigation
-#include <stdio.h>
 
 // read the directory() and move item into the first entry
 bool Fl_Directory_DS::open() {
