@@ -12,8 +12,8 @@ decl {\#include "globals.h"} {public
 Function {main_window()} {open
 } {
   Fl_Window mainwindow {
-    label ETranslate
-    xywh {3 116 700 455}
+    label ETranslate open
+    xywh {3 23 700 455}
     extra_code {\#include <efltk/Fl_Main_Window.h>
 o->size_range(o->w(), o->h());}
     class Fl_Main_Window visible
@@ -85,20 +85,28 @@ o->spacing(3);}
         tooltip {Save file}
         xywh {95 5 32 32} align 64 label_size 10
       }
+      Fl_Button tb_saveas {
+        label {Save As} selected
+        xywh {135 5 32 32} align 192 label_size 10
+      }
       Fl_Divider {} {
         label label
-        xywh {130 6 10 30} type VERTICAL
+        xywh {170 6 10 30} type VERTICAL
       }
       Fl_Button tb_comp {
         label {Com pile}
         tooltip {Compile to binary format}
-        xywh {145 5 32 32} align 192 label_size 10
+        xywh {185 5 32 32} align 192 label_size 10
+      }
+      Fl_Button tb_extract {
+        label {Ext ract}
+        xywh {225 5 32 32} align 192 label_size 11
       }
     }
     Fl_Group maingroup {open
       xywh {0 64 700 366}
     } {
-      Fl_Group {} {open
+      Fl_Group info_group {open
         xywh {0 0 700 65}
       } {
         Fl_Group {} {open
@@ -214,7 +222,7 @@ Function {modify_window()} {open
 } {
   Fl_Window {} {
     label {Project Information} open
-    xywh {50 29 390 260} visible
+    xywh {50 29 390 260} hide
   } {
     Fl_Tabs {} {open
       xywh {5 5 380 211}
@@ -274,7 +282,7 @@ Function {modify_window()} {open
       xywh {315 230 70 25}
     }
     Fl_Button info_ok {
-      label OK selected
+      label OK
       xywh {235 230 70 25}
     }
   }

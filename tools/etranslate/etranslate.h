@@ -43,6 +43,8 @@ public:
 
     void show_modify_window();
 
+    void activate(bool val);
+
     Fl_XmlContext ctx;
     Fl_Window *win, *modwin;
     TranslateItem *current;

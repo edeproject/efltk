@@ -14,9 +14,15 @@ Fl_Button* tb_load;
 
 Fl_Button* tb_save;
 
+Fl_Button* tb_saveas;
+
 Fl_Button* tb_comp;
 
+Fl_Button* tb_extract;
+
 Fl_Group* maingroup;
+
+Fl_Group* info_group;
 
 Fl_Output* prj_output;
 
@@ -97,19 +103,27 @@ Fl_Main_Window* main_window() {
         o->align(FL_ALIGN_CLIP);
         o->tooltip(_("Save file"));
       }
-       {Fl_Divider* o = new Fl_Divider(130, 6, 10, 30, _("label"));
+       {Fl_Button* o = tb_saveas = new Fl_Button(135, 5, 32, 32, _("Save As"));
+        o->label_size(10);
+        o->align(192);
+      }
+       {Fl_Divider* o = new Fl_Divider(170, 6, 10, 30, _("label"));
         o->type(Fl_Divider::VERTICAL);
       }
-       {Fl_Button* o = tb_comp = new Fl_Button(145, 5, 32, 32, _("Com pile"));
+       {Fl_Button* o = tb_comp = new Fl_Button(185, 5, 32, 32, _("Com pile"));
         o->label_size(10);
         o->align(192);
         o->tooltip(_("Compile to binary format"));
+      }
+       {Fl_Button* o = tb_extract = new Fl_Button(225, 5, 32, 32, _("Ext ract"));
+        o->label_size(11);
+        o->align(192);
       }
       o->spacing(3);
       o->end();
     }
      {Fl_Group* o = maingroup = new Fl_Group(0, 64, 700, 366);
-       {Fl_Group* o = new Fl_Group(0, 0, 700, 65);
+       {Fl_Group* o = info_group = new Fl_Group(0, 0, 700, 65);
          {Fl_Group* o = new Fl_Group(5, 5, 630, 55);
           o->box(FL_BORDER_BOX);
            {Fl_Output* o = prj_output = new Fl_Output(80, 10, 210, 20, _("Project:"));

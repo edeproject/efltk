@@ -76,6 +76,7 @@ void show_help_()
 
 int main(int argc, char *argv[])
 {
+    Fl::init_locale();
     ETranslate app;
 
     int i = 1;
@@ -96,15 +97,6 @@ int main(int argc, char *argv[])
         comp.compile(compile_file, outfile);
         return 1;
     }
-
-    Fl::init_locale();
-    //Fl_Translator::bindtextdomain("efltk", "/usr/local/share/locale/");
-    Fl_Translator::load_translation_file("mydom", "example.etb");
-    printf("TR: %s\n", Fl_Translator::tr("&File"));
-    printf("TR: %s\n", Fl_Translator::tr("Size"));
-    printf("TR: %s\n", Fl_Translator::tr("Size:"));
-    printf("TR: %s\n", Fl_Translator::tr("Type"));
-    printf("TR: %s\n", Fl_Translator::tr("&No"));
 
     if(file) app.load(file);
     return Fl::run();

@@ -36,6 +36,7 @@ ETranslate::ETranslate()
     modwin = 0;
 
     win = main_window();
+    activate(false);
 
     menubar->callback((Fl_Callback*)cb_menu, this);
     browser->callback((Fl_Callback*)cb_listview, this);
@@ -54,6 +55,35 @@ ETranslate::ETranslate()
 ETranslate::~ETranslate()
 {
     delete win;
+    if(modwin) delete modwin;
+}
+
+void ETranslate::activate(bool val)
+{
+    if(!val) {
+        maingroup->deactivate();
+        info_group->deactivate();
+
+        tb_save->deactivate();
+        tb_saveas->deactivate();
+        tb_comp->deactivate();
+        tb_extract->deactivate();
+
+        menubar->find("&File/&Save")->deactivate();
+        menubar->find("&File/Save &As")->deactivate();
+
+    } else {
+        maingroup->activate();
+        info_group->activate();
+
+        tb_save->activate();
+        tb_saveas->activate();
+        tb_comp->activate();
+        tb_extract->activate();
+
+        menubar->find("&File/&Save")->activate();
+        menubar->find("&File/Save &As")->activate();
+    }
 }
 
 void ETranslate::handle_action(int a)
@@ -109,7 +139,11 @@ void ETranslate::load(const char *file)
         sort_strings();
         show_translation((TranslateItem*)browser->child(0));
         update_status();
+        activate(true);
+    } else {
+        activate(false);
     }
+
     fclose(fp);
 }
 

@@ -18,9 +18,12 @@ extern Fl_Tool_Bar* toolbar;
 extern Fl_Button* tb_quit;
 extern Fl_Button* tb_load;
 extern Fl_Button* tb_save;
+extern Fl_Button* tb_saveas;
 extern Fl_Button* tb_comp;
+extern Fl_Button* tb_extract;
 #include <efltk/Fl_Group.h>
 extern Fl_Group* maingroup;
+extern Fl_Group* info_group;
 #include <efltk/Fl_Output.h>
 extern Fl_Output* prj_output;
 extern Fl_Output* lang_output;
