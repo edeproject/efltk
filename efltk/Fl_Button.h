@@ -38,10 +38,10 @@ public:
     RADIO  = RESERVED_TYPE+2,
     HIDDEN = 3
   };
-  int   value() const {return Fl_Widget::value();}
-  int	value(int);
-  int	set();
-  int	clear();
+  bool   value() const {return Fl_Widget::value();}
+  bool	value(bool);
+  bool	set();
+  bool	clear();
   void	setonly();
   virtual int handle(int);
   Fl_Button(int,int,int,int,const char * = 0);

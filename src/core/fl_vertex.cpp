@@ -28,15 +28,16 @@
 #include <efltk/fl_draw.h>
 #include <efltk/x.h>
 #include <efltk/math.h>
+
 #include <stdlib.h>
 
 ////////////////////////////////////////////////////////////////
 // Transformation:
 
 struct Matrix {
-  double a, b, c, d, x, y;
+  float a, b, c, d, x, y;
   int ix, iy; // x & y rounded to nearest integer
-bool trivial; // true if no rotation or scale
+  bool trivial; // true if no rotation or scale
 };
 
 static Matrix m = {1, 0, 0, 1, 0, 0, 0, 0, true};
@@ -47,11 +48,11 @@ void fl_push_matrix() {stack[sptr++] = m;}
 
 void fl_pop_matrix() {m = stack[--sptr];}
 
-void fl_mult_matrix(double a, double b, double c, double d, double x, double y) {
+void fl_mult_matrix(float a, float b, float c, float d, float x, float y) {
   if (m.trivial) {
     m.a = a; m.b = b; m.c = c; m.d = d;
-    m.x += x; m.ix = int(floor(m.x+.5));
-    m.y += y; m.iy = int(floor(m.y+.5));
+    m.x += x; m.ix = int(floorf(m.x+.5f));
+    m.y += y; m.iy = int(floorf(m.y+.5f));
     m.trivial = false;
   } else {
     Matrix o;
@@ -59,25 +60,25 @@ void fl_mult_matrix(double a, double b, double c, double d, double x, double y) 
     o.b = a*m.b + b*m.d;
     o.c = c*m.a + d*m.c;
     o.d = c*m.b + d*m.d;
-    o.x = x*m.a + y*m.c + m.x; o.ix = int(floor(o.x+.5));
-    o.y = x*m.b + y*m.d + m.y; o.iy = int(floor(o.y+.5));
+    o.x = x*m.a + y*m.c + m.x; o.ix = int(floorf(o.x+.5f));
+    o.y = x*m.b + y*m.d + m.y; o.iy = int(floorf(o.y+.5f));
     o.trivial = false;
     m = o;
   }
 }
 
-void fl_scale(double x,double y) {
+void fl_scale(float x,float y) {
   if (x != 1.0 && y != 1.0) fl_mult_matrix(x,0,0,y,0,0);
 }
 
-void fl_scale(double x) {
+void fl_scale(float x) {
   if (x != 1.0) fl_mult_matrix(x,0,0,x,0,0);
 }
 
-void fl_translate(double x,double y) {
+void fl_translate(float x,float y) {
   if (m.trivial) {
-    m.x += x; m.ix = int(floor(m.x+.5));
-    m.y += y; m.iy = int(floor(m.y+.5));
+    m.x += x; m.ix = int(floorf(m.x+.5f));
+    m.y += y; m.iy = int(floorf(m.y+.5f));
     m.trivial = m.ix==m.x && m.iy==m.y;
   } else {
     fl_mult_matrix(1,0,0,1,x,y);
@@ -93,14 +94,14 @@ void fl_translate(int x, int y) {
   }
 }
 
-void fl_rotate(double d) {
+void fl_rotate(float d) {
   if (d) {
-    double s, c;
+    float s, c;
     if (d == 0) {s = 0; c = 1;}
     else if (d == 90) {s = 1; c = 0;}
     else if (d == 180) {s = 0; c = -1;}
     else if (d == 270 || d == -90) {s = -1; c = 0;}
-    else {s = sin(d*M_PI/180); c = cos(d*M_PI/180);}
+    else {s = sinf(d*float(M_PI/180)); c = cosf(d*float(M_PI/180));}
     fl_mult_matrix(c,-s,s,c,0,0);
   }
 }
@@ -115,9 +116,9 @@ void fl_load_identity() {
 ////////////////////////////////////////////////////////////////
 // Return the transformation of points:
 
-void fl_transform(double& x, double& y) {
+void fl_transform(float& x, float& y) {
   if (!m.trivial) {
-    double t = x*m.a + y*m.c + m.x;
+    float t = x*m.a + y*m.c + m.x;
     y = x*m.b + y*m.d + m.y;
     x = t;
   } else {
@@ -126,9 +127,9 @@ void fl_transform(double& x, double& y) {
   }
 }
 
-void fl_transform_distance(double& x, double& y) {
+void fl_transform_distance(float& x, float& y) {
   if (!m.trivial) {
-    double t = x*m.a + y*m.c;
+    float t = x*m.a + y*m.c;
     y = x*m.b + y*m.d;
     x = t;
   }
@@ -136,8 +137,8 @@ void fl_transform_distance(double& x, double& y) {
 
 void fl_transform(int& x, int& y) {
   if (!m.trivial) {
-    int t = int(floor(x*m.a + y*m.c + m.x + .5));
-    y = int(floor(x*m.b + y*m.d + m.y + .5));
+    int t = int(floorf(x*m.a + y*m.c + m.x + .5f));
+    y = int(floorf(x*m.b + y*m.d + m.y + .5f));
     x = t;
   } else {
     x += m.ix;
@@ -170,9 +171,9 @@ static void add_n_points(int n) {
   point = (XPoint*)realloc((void*)point, (point_array_size+1)*sizeof(XPoint));
 }
 
-void fl_vertex(double X, double Y) {
-  COORD_T x = COORD_T(floor(X*m.a + Y*m.c + m.x + .5));
-  COORD_T y = COORD_T(floor(X*m.b + Y*m.d + m.y + .5));
+void fl_vertex(float X, float Y) {
+  COORD_T x = COORD_T(floorf(X*m.a + Y*m.c + m.x + .5f));
+  COORD_T y = COORD_T(floorf(X*m.b + Y*m.d + m.y + .5f));
   if (!points || x != point[points-1].x || y != point[points-1].y) {
     if (points+1 >= point_array_size) add_n_points(1);
     point[points].x = x;
@@ -187,8 +188,8 @@ void fl_vertex(int X, int Y) {
     x = COORD_T(X+m.ix);
     y = COORD_T(Y+m.iy);
   } else {
-    x = COORD_T(floor(X*m.a + Y*m.c + m.x + .5));
-    y = COORD_T(floor(X*m.b + Y*m.d + m.y + .5));
+    x = COORD_T(floorf(X*m.a + Y*m.c + m.x + .5f));
+    y = COORD_T(floorf(X*m.b + Y*m.d + m.y + .5f));
   }
   if (!points || x != point[points-1].x || y != point[points-1].y) {
     if (points+1 >= point_array_size) add_n_points(1);
@@ -205,8 +206,8 @@ void fl_vertices(int n, const float array[][2]) {
   int pn = points;
   if (m.trivial) {
     for (; a < e; a += 2) {
-      COORD_T x = COORD_T(floor(a[0] + m.x + .5));
-      COORD_T y = COORD_T(floor(a[1] + m.y + .5));
+      COORD_T x = COORD_T(floorf(a[0] + m.x + .5f));
+      COORD_T y = COORD_T(floorf(a[1] + m.y + .5f));
       if (!pn || x != point[pn-1].x || y != point[pn-1].y) {
 	point[pn].x = x;
 	point[pn].y = y;
@@ -215,8 +216,8 @@ void fl_vertices(int n, const float array[][2]) {
     }
   } else {
     for (; a < e; a += 2) {
-      COORD_T x = COORD_T(floor(a[0]*m.a + a[1]*m.c + m.x + .5));
-      COORD_T y = COORD_T(floor(a[0]*m.b + a[1]*m.d + m.y + .5));
+      COORD_T x = COORD_T(floorf(a[0]*m.a + a[1]*m.c + m.x + .5f));
+      COORD_T y = COORD_T(floorf(a[0]*m.b + a[1]*m.d + m.y + .5f));
       if (!pn || x != point[pn-1].x || y != point[pn-1].y) {
 	point[pn].x = x;
 	point[pn].y = y;
@@ -244,8 +245,8 @@ void fl_vertices(int n, const int array[][2]) {
     }
   } else {
     for (; a < e; a += 2) {
-      COORD_T x = COORD_T(floor(a[0]*m.a + a[1]*m.c + m.x + .5));
-      COORD_T y = COORD_T(floor(a[0]*m.b + a[1]*m.d + m.y + .5));
+      COORD_T x = COORD_T(floorf(a[0]*m.a + a[1]*m.c + m.x + .5f));
+      COORD_T y = COORD_T(floorf(a[0]*m.b + a[1]*m.d + m.y + .5f));
       if (!pn || x != point[pn-1].x || y != point[pn-1].y) {
 	point[pn].x = x;
 	point[pn].y = y;
@@ -276,12 +277,12 @@ void fl_transformed_vertices(int n, const float array[][2]) {
 void fl_closepath() {
   if (points > loop_start+2) {
     // close the shape by duplicating first point:
-XPoint& q = point[loop_start];
+    XPoint& q = point[loop_start];
     // the array always has one extra point so we don't need to check
-XPoint& p = point[points-1];
+    XPoint& p = point[points-1];
     if (p.x != q.x || p.y != q.y) point[points++] = q;
     // remember the new loop:
-if (loops >= loop_array_size) {
+    if (loops >= loop_array_size) {
       loop_array_size = loop_array_size ? 2*loop_array_size : 16;
       loop = (int*)realloc((void*)loop, loop_array_size*sizeof(int));
     }
@@ -305,35 +306,35 @@ static int circle_x, circle_y, circle_w, circle_h;
 // the transform. Currently only one per path is supported, this uses
 // commands on the server to draw a nicer circle than the path mechanism
 // can make.
-void fl_circle(double x, double y, double r) {
+void fl_circle(float x, float y, float r) {
   fl_transform(x,y);
-  double rt = r * sqrt(fabs(m.a*m.d-m.b*m.c));
+  float rt = r * sqrtf(fabsf(m.a*m.d-m.b*m.c));
   circle_w = circle_h = int(rt*2 + .5);
-  circle_x = int(floor(x - circle_w*.5 + .5));
-  circle_y = int(floor(y - circle_h*.5 + .5));
+  circle_x = int(floorf(x - circle_w*.5f + .5f));
+  circle_y = int(floorf(y - circle_h*.5f + .5f));
 }
 
 // Add an ellipse to the path. On X/Win32 this only works for 90 degree
 // rotations and only one ellipse (or cirlce) per path is supported.
-void fl_ellipse(double x, double y, double w, double h) {
+void fl_ellipse(float x, float y, float w, float h) {
 #if 1
   // Use X/Win32 drawing functions as best we can. Only works for 90
-// degree rotations:
-x += w/2;
+  // degree rotations:
+  x += w/2;
   y += h/2;
   fl_transform(x,y);
-  double d1x,d1y; d1x = w; d1y = 0; fl_transform_distance(d1x, d1y);
-  double d2x,d2y; d2x = 0; d2y = h; fl_transform_distance(d2x, d2y);
-  double rx = sqrt(d1x*d1x+d2x*d2x)/2;
-  double ry = sqrt(d1y*d1y+d2y*d2y)/2;
-  circle_w = int(rx*2 + .5);
-  circle_x = int(floor(x - circle_w*.5 + .5));
-  circle_h = int(ry*2 + .5);
-  circle_y = int(floor(y - circle_h*.5 + .5));
+  float d1x,d1y; d1x = w; d1y = 0; fl_transform_distance(d1x, d1y);
+  float d2x,d2y; d2x = 0; d2y = h; fl_transform_distance(d2x, d2y);
+  float rx = sqrtf(d1x*d1x+d2x*d2x)/2;
+  float ry = sqrtf(d1y*d1y+d2y*d2y)/2;
+  circle_w = int(rx*2 + .5f);
+  circle_x = int(floorf(x - circle_w*.5f + .5f));
+  circle_h = int(ry*2 + .5f);
+  circle_y = int(floorf(y - circle_h*.5f + .5f));
 #else
-// This produces the correct image, but not as nice as using circles
-// produced by the server:
-fl_closepath();
+  // This produces the correct image, but not as nice as using circles
+  // produced by the server:
+  fl_closepath();
   fl_arc(x, y, w, h, 0, 360);
   fl_closepath();
 #endif
@@ -349,17 +350,17 @@ void fl_newpath() {inline_newpath();}
 
 void fl_points() {
 #ifdef _WIN32
-for (int i=0; i<points; i++)
+  for (int i=0; i<points; i++)
     SetPixel(fl_gc, point[i].x, point[i].y, fl_colorref);
 #else
-if (points > 0) XDrawPoints(fl_display, fl_window, fl_gc, point, points, 0);
+  if (points > 0) XDrawPoints(fl_display, fl_window, fl_gc, point, points, 0);
 #endif
-inline_newpath();
+  inline_newpath();
 }
 
 void fl_stroke() {
 #ifdef _WIN32
-if (circle_w > 0)
+  if (circle_w > 0)
     Arc(fl_gc, circle_x, circle_y, circle_x+circle_w+1, circle_y+circle_h+1,
 	0,0, 0,0);
   int loop_start = 0;
@@ -372,7 +373,7 @@ if (circle_w > 0)
   if (loop_size > 1)
     Polyline(fl_gc, point+loop_start, loop_size);
 #else
-if (circle_w > 0)
+  if (circle_w > 0)
     XDrawArc(fl_display, fl_window, fl_gc,
 	     circle_x, circle_y, circle_w, circle_h, 0, 360*64);
   int loop_start = 0;
@@ -385,7 +386,7 @@ if (circle_w > 0)
   if (loop_size > 1)
     XDrawLines(fl_display, fl_window, fl_gc, point+loop_start, loop_size, 0);
 #endif
-inline_newpath();
+  inline_newpath();
 }
 
 // Warning: result is different on X and Win32! Use fl_fill_stroke().
@@ -393,7 +394,7 @@ inline_newpath();
 // the current pen invisible?
 void fl_fill() {
 #ifdef _WIN32
-if (circle_w > 0)
+  if (circle_w > 0)
     Chord(fl_gc, circle_x, circle_y, circle_x+circle_w+1, circle_y+circle_h+1,
 	  0,0, 0,0);
   if (loops) {
@@ -403,15 +404,15 @@ if (circle_w > 0)
     Polygon(fl_gc, point, points);
   }
 #else
-if (circle_w > 0)
+  if (circle_w > 0)
     XFillArc(fl_display, fl_window, fl_gc,
 	     circle_x, circle_y, circle_w, circle_h, 0, 64*360);
   if (loops) fl_closepath();
   if (points > 2) {
     if (loops > 2) {
       // back-trace the lines between each "disconnected" part so they
-// are actually connected:
-if (points+loops-2 >= point_array_size) add_n_points(loops-2);
+      // are actually connected:
+      if (points+loops-2 >= point_array_size) add_n_points(loops-2);
       int n = points-1;
       for (int i = loops; --i > 1;) {
 	n -= loop[i];
@@ -421,7 +422,7 @@ if (points+loops-2 >= point_array_size) add_n_points(loops-2);
     XFillPolygon(fl_display, fl_window, fl_gc, point, points, 0, 0);
   }
 #endif
-inline_newpath();
+  inline_newpath();
 }
 
 // This seems to produce very similar results on X and Win32. Also
@@ -429,7 +430,7 @@ inline_newpath();
 // PostScript/PDF style systems.
 void fl_fill_stroke(Fl_Color color) {
 #ifdef _WIN32
-COLORREF saved = fl_colorref;
+  COLORREF saved = fl_colorref;
   fl_colorref = fl_wincolor(color);
   HPEN newpen = fl_create_pen();
   fl_colorref = saved;
@@ -447,7 +448,7 @@ COLORREF saved = fl_colorref;
   DeleteObject(newpen);
   inline_newpath();
 #else
-if (circle_w > 0)
+  if (circle_w > 0)
     XFillArc(fl_display, fl_window, fl_gc,
 	     circle_x, circle_y, circle_w, circle_h, 0, 64*360);
   fl_closepath();
@@ -455,8 +456,8 @@ if (circle_w > 0)
     int saved_points = points;
     if (loops > 2) {
       // back-trace the lines between each "disconnected" part so they
-// are actually connected:
-if (points+loops-2 >= point_array_size) add_n_points(loops-2);
+      // are actually connected:
+      if (points+loops-2 >= point_array_size) add_n_points(loops-2);
       int n = saved_points-1;
       for (int i = loops; --i > 1;) {
 	n -= loop[i];
@@ -465,7 +466,7 @@ if (points+loops-2 >= point_array_size) add_n_points(loops-2);
     }
     XFillPolygon(fl_display, fl_window, fl_gc, point, points, 0, 0);
     points = saved_points; // throw away the extra points
-}
+  }
   Fl_Color saved = fl_color();
   fl_color(color); fl_stroke();
   fl_color(saved);

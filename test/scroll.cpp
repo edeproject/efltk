@@ -52,9 +52,9 @@ void Drawing::draw() {
   fl_scale(w()/2, h()/2);
   fl_color(FL_BLACK);
   for (int i = 0; i < 20; i++) {
-    for (int j = i+1; j < 20; j++) {
-      fl_vertex(cos(M_PI*i/10+.1), sin(M_PI*i/10+.1));
-      fl_vertex(cos(M_PI*j/10+.1), sin(M_PI*j/10+.1));
+      for (int j = i+1; j < 20; j++) {
+          fl_vertex(cosf(M_PI*i/10+.1), sinf(M_PI*i/10+.1));
+          fl_vertex(cosf(M_PI*j/10+.1), sinf(M_PI*j/10+.1));
       fl_stroke();
     }
   }

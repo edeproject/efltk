@@ -92,7 +92,7 @@ static void minMdiWin(Fl_Widget *, void *d)
 // Min/Max/Close button symbols drawing stuff:
 extern int fl_add_symbol(const char *name, void (*drawit)(Fl_Color), int scalable);
 #define vv(x,y) fl_vertex(x,y)
-#define CL_OF 0.6
+#define CL_OF .6f
 void draw_cl(Fl_Color col)
 {			
 	fl_color(col);
@@ -108,7 +108,7 @@ void draw_cl(Fl_Color col)
 	fl_closepath();	
 }
 
-#define MAX_OF 0.6
+#define MAX_OF .6f
 void draw_max(Fl_Color col)
 {			
 	fl_color(col);
@@ -132,8 +132,8 @@ void draw_max(Fl_Color col)
 	fl_closepath();
 }
 
-#define MIN_OF 0.6
-#define MIN_OF2 0.5
+#define MIN_OF .6f
+#define MIN_OF2 .5f
 void draw_min(Fl_Color col)
 {			
 	fl_color(col);
@@ -1016,21 +1016,21 @@ void Fl_MDI_Window::animate(int fx, int fy, int fw, int fh,
 {
 # undef max
 # define max(a,b) (a) > (b) ? (a) : (b)
-    double max_steps = max( (tw-fw), (th-fh) );
-    double min_steps = max( (fw-tw), (fh-th) );
-    double steps = max(max_steps, min_steps);
+    float max_steps = max( (tw-fw), (th-fh) );
+    float min_steps = max( (fw-tw), (fh-th) );
+    float steps = max(max_steps, min_steps);
     steps/=STEP_DIV;
 
-    double sx = max( ((double)(fx-tx)/steps), ((double)(tx-fx)/steps) );
-    double sy = max( ((double)(fy-ty)/steps), ((double)(ty-fy)/steps) );
-    double sw = max( ((double)(fw-tw)/steps), ((double)(tw-fw)/steps) );
-    double sh = max( ((double)(fh-th)/steps), ((double)(th-fh)/steps) );
+    float sx = max( ((float)(fx-tx)/steps), ((float)(tx-fx)/steps) );
+    float sy = max( ((float)(fy-ty)/steps), ((float)(ty-fy)/steps) );
+    float sw = max( ((float)(fw-tw)/steps), ((float)(tw-fw)/steps) );
+    float sh = max( ((float)(fh-th)/steps), ((float)(th-fh)/steps) );
 
     int xinc = fx < tx ? 1 : -1;
     int yinc = fy < ty ? 1 : -1;
     int winc = fw < tw ? 1 : -1;
     int hinc = fh < th ? 1 : -1;
-    double rx=fx,ry=fy,rw=fw,rh=fh;
+    float rx=fx,ry=fy,rw=fw,rh=fh;
 
     timeval t;
     while(steps-- > 0) {

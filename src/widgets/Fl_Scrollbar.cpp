@@ -77,8 +77,9 @@ void Fl_Scrollbar::increment_cb()
 }
 
 
-#define INITIALREPEAT .5
-#define REPEAT .05
+#define INITIALREPEAT .5f
+#define REPEAT .05f
+
 void Fl_Scrollbar::timeout_cb(void* v)
 {
     Fl_Scrollbar* s = (Fl_Scrollbar*)v;
@@ -201,7 +202,7 @@ int Fl_Scrollbar::handle(int event)
             return 1;
         case FL_MOUSEWHEEL:
             {
-                float n = (vertical() ? Fl::event_dy() : Fl::event_dx())
+                float n = (vertical() ? -Fl::event_dy() : Fl::event_dx())
                     * Fl_Style::wheel_scroll_lines * linesize();
                 if (fabsf(n) > pagesize()) n = (n<0)?-pagesize():pagesize();
                 handle_drag(value()+n);

@@ -805,17 +805,6 @@ int Fl_ListView::handle(int event)
 
     switch(event)
     {
-    case FL_MOUSEWHEEL:
-        {
-            // Is this right way to do it in FLTK2?
-            //int n = Fl::event_dy() * Fl_Style::wheel_scroll_lines;
-            if(Fl::event_dy() < 0)
-                scroll_up();
-            else
-                scroll_down();
-            return 1;
-        }
-
     case FL_FOCUS:
     case FL_UNFOCUS:
         return 1;
@@ -1076,7 +1065,10 @@ int Fl_ListView::handle(int event)
             } // event_key
             break;
         } // FL_KEYBOARD
-
+    case FL_MOUSEWHEEL:
+        {
+            return vscrollbar.send(event);
+        }
     } // event
 
     return 0;

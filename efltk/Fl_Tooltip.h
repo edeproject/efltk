@@ -31,8 +31,8 @@
 
 class FL_API Fl_Tooltip {
 public:
-  static double delay() { return delay_; }
-  static void delay(double f) { delay_ = f; }
+  static float delay() { return delay_; }
+  static void delay(float f) { delay_ = f; }
 
   static bool enabled() { return enabled_; }
   static void enable(bool b = true) { enabled_ = b; }
@@ -64,7 +64,7 @@ public:
   static Fl_Boxtype boxtype()	{ return default_style->box; }
 
 private:
-  static double delay_;
+  static float delay_;
   static bool enabled_, animate_;
 };
 

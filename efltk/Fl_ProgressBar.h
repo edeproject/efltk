@@ -8,37 +8,32 @@
 class FL_API Fl_ProgressBar : public Fl_Widget
 {
 protected:
-    double mMin;
-    double mMax;
-    double mPresent;
-    double mStep;
+    float mMin, mMax;
+    float mPresent, mStep;
     bool mShowPct;
-    Fl_Color mTextColor;
-    void draw();
 
 public:
     static Fl_Named_Style* default_style;
 
     Fl_ProgressBar(int x, int y, int w, int h, const char *lbl = 0);
 
-    void range(double min, double max, double step = 1)  { mMin = min; mMax = max; mStep = step; };
+    void range(float min, float max, float step = 1)  { mMin = min; mMax = max; mStep = step; };
 
-    double minimum()	{ return mMin; }
-    double maximum()	{ return mMax; }
-    void minimum(double nm) { mMin = nm; };
-    void maximum(double nm) { mMax = nm; };
+    float minimum()	{ return mMin; }
+    float maximum()	{ return mMax; }
+    void minimum(float nm) { mMin = nm; };
+    void maximum(float nm) { mMax = nm; };
 
-    void step(double step)		{ mPresent += step; redraw(); };
-    double step()		{ return mStep; }
+    void step(float step) { mPresent += step; redraw(); };
+    float step()	  { return mStep; }
 
-    double position()	{ return mPresent; }
-    void position(double pos) 	{ mPresent = pos; redraw(); }
+    float position()	     { return mPresent; }
+    void position(float pos) { mPresent = pos; redraw(); }
 
-    void showtext(bool st)	{ mShowPct = st; }
-    bool showtext()		{ return mShowPct; }
+    void showtext(bool st) { mShowPct = st; }
+    bool showtext()	   { return mShowPct; }
 
-    void textcolor(Fl_Color col)	{ mTextColor = col; }
-    Fl_Color textcolor() 	{ return mTextColor; }
+    void draw();
 };
 
 #endif

@@ -989,8 +989,8 @@ void Board::draw() {
       fl_push_matrix();
       fl_mult_matrix(x2-x1,y2-y1,y1-y2,x2-x1,x2,y2);
       fl_vertex(0,0);
-      fl_vertex(-.3, .1);
-      fl_vertex(-.3, -.1);
+      fl_vertex(-.3f, .1f);
+      fl_vertex(-.3f, -.1f);
       fl_fill();
       fl_pop_matrix();
     }

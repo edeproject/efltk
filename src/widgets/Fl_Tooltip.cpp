@@ -27,7 +27,7 @@
 #include <efltk/fl_draw.h>
 #include <efltk/Fl_Menu_Window.h>
 
-double      Fl_Tooltip::delay_ = 1.0f;
+float      Fl_Tooltip::delay_ = 1.0f;
 bool        Fl_Tooltip::enabled_ = true;
 bool        Fl_Tooltip::animate_ = true;
 
@@ -217,7 +217,7 @@ Fl_Tooltip::enter_area(Fl_Widget* wid, int x,int y,int w,int h, const char* t)
             if (Fl::event_state() & FL_BUTTONS)
                 recent_tooltip = 0;
             else
-                Fl::add_timeout(.2, recent_timeout);
+                Fl::add_timeout(.2f, recent_timeout);
         }
     }
 }

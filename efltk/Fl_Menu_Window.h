@@ -50,8 +50,8 @@ public:
 
     // Calculated steps needed for animating is divided by this number,
     // So You can control the speed. DEFAULT=4
-    void step_divider(double div) { step_div_ = div; }
-    double step_divider() { return step_div_; }
+    void step_divider(float div) { step_div_ = div; }
+    float step_divider() { return step_div_; }
 
     static bool animate() { return animate_; }
     static void animate(bool v) { animate_ = v; }

@@ -12,7 +12,6 @@ static void revert(Fl_Style *s) {
 static Fl_Named_Style style("ProgressBar", revert, &Fl_ProgressBar::default_style);
 Fl_Named_Style* Fl_ProgressBar::default_style = &::style;
 
-
 Fl_ProgressBar::Fl_ProgressBar(int x, int y, int w, int h, const char *lbl)
     : Fl_Widget(x,y,w,h,lbl)
 {
@@ -25,7 +24,7 @@ Fl_ProgressBar::Fl_ProgressBar(int x, int y, int w, int h, const char *lbl)
 void Fl_ProgressBar::draw()
 {
     int bdx, bdy;
-    double pct;
+    float pct;
     if(damage() & FL_DAMAGE_ALL) draw_box();
 
     bdx = box()->dx();
@@ -37,7 +36,7 @@ void Fl_ProgressBar::draw()
         mPresent = mMin;
     pct = (mPresent - mMin) / mMax;
 
-    button_box()->draw(bdx, bdy, (int)(((double)w() - 2*bdx) * pct), h()-box()->dh(), button_color(), 0);
+    button_box()->draw(bdx, bdy, int(((float)w() - 2*bdx) * pct), h()-box()->dh(), button_color(), 0);
     if(mShowPct)
     {
         char buffer[30];

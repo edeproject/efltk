@@ -96,7 +96,7 @@ private:
   int label_width;
 
   const char* expand(const char*, char*, int) const;
-  double expandpos(const char*, const char*, const char*, int*) const;
+  float expandpos(const char*, const char*, const char*, int*) const;
   void minimal_update(int, int);
   void minimal_update(int p);
   void erase_cursor_at(int p);

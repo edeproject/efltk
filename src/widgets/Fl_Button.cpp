@@ -27,24 +27,23 @@
 #include <efltk/Fl_Button.h>
 #include <efltk/Fl_Group.h>
 
-int Fl_Button::set()
+bool Fl_Button::set()
 {
     clear_changed();
-    if (!value()) {set_value(); redraw(); return 1;}
-    return 0;
+    if (!value()) {set_value(); redraw(); return true;}
+    return false;
 }
 
-int Fl_Button::clear()
+bool Fl_Button::clear()
 {
     clear_changed();
-    if (value()) {clear_value(); redraw(); return 1;}
-    return 0;
+    if (value()) {clear_value(); redraw(); return true;}
+    return false;
 }
 
-int Fl_Button::value(int v)
+bool Fl_Button::value(bool v)
 {
-    v ? set() : clear();
-    return value();
+    return v ? set() : clear();
 }
 
 void Fl_Button::setonly()        // set this radio button on, turn others off
@@ -62,9 +61,10 @@ static Fl_Button* held_down;
 
 int Fl_Button::handle(int event)
 {
-    static int oldval;
+    static bool oldval;
     static bool already_pushed=false;
-    int newval;
+    bool newval;
+
     switch (event)
     {
     case FL_ENTER:
@@ -79,7 +79,7 @@ int Fl_Button::handle(int event)
         if (Fl::event_inside(0,0,w(),h()))
         {
             held_down = this;
-            if (type() == RADIO) newval = 1;
+            if (type() == RADIO) newval = true;
             else newval = !oldval;
         }
         else

@@ -59,11 +59,11 @@ void bad_draw(int w, int h, int n) {
   fl_scale(w/2, h/2);
   for (int i = 0; i < n; i++) {
     for (int j = i+1; j < n; j++) {
-      fl_color((i+j)%(5*8*5)+FL_COLOR_CUBE);
-      fl_vertex(cos(2*M_PI*(j-1)/n+.1), sin(2*M_PI*(j-1)/n+.1));
-      fl_vertex(cos(2*M_PI*i/n+.1), sin(2*M_PI*i/n+.1));
-      fl_vertex(cos(2*M_PI*j/n+.1), sin(2*M_PI*j/n+.1));
-      fl_fill_stroke(FL_WHITE);
+        fl_color((i+j)%(5*8*5)+FL_COLOR_CUBE);
+        fl_vertex(cosf(2*M_PI*(j-1)/n+.1), sinf(2*M_PI*(j-1)/n+.1));
+        fl_vertex(cosf(2*M_PI*i/n+.1), sinf(2*M_PI*i/n+.1));
+        fl_vertex(cosf(2*M_PI*j/n+.1), sinf(2*M_PI*j/n+.1));
+        fl_fill_stroke(FL_WHITE);
     }
   }
   fl_pop_matrix();

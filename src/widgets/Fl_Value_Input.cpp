@@ -104,8 +104,8 @@ void Fl_Value_Input::increment_cb()
 }
 
 
-#define INITIALREPEAT .5
-#define REPEAT .1
+#define INITIALREPEAT .5f
+#define REPEAT .1f
 
 void Fl_Value_Input::repeat_callback(void* v)
 {

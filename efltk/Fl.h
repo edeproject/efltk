@@ -78,7 +78,7 @@ public: // should be private!
 
 public:
 
-  static double version();
+  static float version();
 
   // Initializes library, i.e. locale and widget defaults.
   static void init();
@@ -96,7 +96,7 @@ public:
 
   // execution:
   static int wait();
-  static int wait(double time);
+  static int wait(float time);
   static int check();
   static int ready();
   static int run();
@@ -107,8 +107,8 @@ public:
   static void exit_modal() {exit_modal_ = true;}
   static bool exit_modal_flag() {return exit_modal_;}
 
-  static void add_timeout(double t,Fl_Timeout_Handler,void* v = 0);
-  static void repeat_timeout(double t, Fl_Timeout_Handler,void* = 0);
+  static void add_timeout(float t,Fl_Timeout_Handler,void* v = 0);
+  static void repeat_timeout(float t, Fl_Timeout_Handler,void* = 0);
   static bool has_timeout(Fl_Timeout_Handler, void* = 0);
   static void remove_timeout(Fl_Timeout_Handler, void* = 0);
   static void add_check(Fl_Timeout_Handler, void* = 0);

@@ -304,7 +304,7 @@ void Fl_Slider::draw()
             Fl_Color color = text_color();
             if (!active_r()) color = fl_inactive(color);
             fl_color(color);
-            draw_ticks(ix, iy, iw, ih, slider_size_);
+            draw_ticks(ix, iy, iw, ih, (slider_size_+1)/2);
         }
 
         fl_pop_clip();

@@ -28,7 +28,7 @@
 #include <efltk/Fl_Value_Slider.h>
 #include <efltk/fl_draw.h>
 
-double args[7] = {90, 90, 100, 100, 0, 360, 0};
+float args[7] = {90, 90, 100, 100, 0, 360, 0};
 const char* name[7] = {"X", "Y", "W", "H", "start", "end", "rotate"};
 
 class Drawing : public Fl_Widget {
@@ -38,9 +38,9 @@ class Drawing : public Fl_Widget {
     fl_rectf(0, 0, w(), h());
     fl_push_matrix();
     //    if (args[6]) {
-      fl_translate(w()/2.0, h()/2.0);
+      fl_translate(w()/2.0f, h()/2.0f);
       fl_rotate(args[6]);
-      fl_translate(-w()/2.0, -h()/2.0);
+      fl_translate(-w()/2.0f, -h()/2.0f);
       //}
     fl_arc(args[0],args[1],args[2],args[3],args[4],args[5]);
     fl_closepath();
@@ -75,9 +75,10 @@ int main(int argc, char** argv) {
     if (n<4) {s->minimum(0); s->maximum(300);}
     else if (n==6) {s->minimum(0); s->maximum(360);}
     else {s->minimum(-360); s->maximum(360);}
+    s->type(Fl_Slider::HORIZONTAL | Fl_Slider::TICK_ABOVE);
     s->step(1);
     s->value(args[n]);
-	s->clear_flag(FL_ALIGN_MASK);
+    s->clear_flag(FL_ALIGN_MASK);
     s->set_flag(FL_ALIGN_LEFT);
     s->callback(slider_cb, (void*)n);
   }

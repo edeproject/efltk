@@ -24,8 +24,8 @@ public:
     static void button_glyph(const Fl_Widget* widget, int glyph, int x,int y,int w,int h, Fl_Flags flags);
 
     // Space between items
-    int space() { return space_; }
-    void space(int v) { space_ = v; }
+    int spacing() { return space_; }
+    void spacing(int v) { space_ = v; }
 
 private:
     int space_;

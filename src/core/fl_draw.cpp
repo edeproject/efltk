@@ -51,11 +51,10 @@ const int* fl_column_widths_ = 0;
 // expanded to have a font & size, This will allow
 // much more complex drawing than we currently support, such as imbedded
 // words in different fonts.
-struct Segment
-{
-    const char* start;
-    const char* end;             // points after last character
-    double x,y;
+struct Segment {
+  const char* start;
+  const char* end; // points after last character
+  float x,y;
 };
 
 // The results are put into this array of segments. This may increase
@@ -63,237 +62,197 @@ struct Segment
 static Segment* segments;
 static int num_segments;
 
-static double max_x;
+static float max_x;
 
 // Create a new segment:
-static  void set(int index,      /*inline*/
-const char* start,
-const char* end,
-double width,
-double x, double y, double w,
-Fl_Flags flags
-)
+static /*inline*/ void set(int index,
+		  const char* start,
+		  const char* end,
+		  float width,
+		  float x, float y, float w,
+		  Fl_Flags flags
+		  )
 {
-    // enlarge the array if necessary:
-    if (index >= num_segments)
-    {
-        num_segments = index ? 2*index : 32;
-        Segment* new_array = new Segment[num_segments];
-        memcpy(new_array, segments, index*sizeof(Segment));
-        delete[] segments;
-        segments = new_array;
-    }
-    Segment& s = segments[index];
-    s.start = start;
-    s.end = end;
-    if (x+width > max_x) max_x = x+width;
-    if (flags & FL_ALIGN_RIGHT)
-    {
-        s.x = x+w-width;
-        if (flags & FL_ALIGN_LEFT && s.x > x) s.x = x;
-    }
-    else if (flags & FL_ALIGN_LEFT) s.x = x;
-    else s.x = x+(w-width)/2;
-    s.y = y+fl_height()-fl_descent();
+  // enlarge the array if necessary:
+  if (index >= num_segments) {
+    num_segments = index ? 2*index : 32;
+    Segment* new_array = new Segment[num_segments];
+    memcpy(new_array, segments, index*sizeof(Segment));
+    delete[] segments;
+    segments = new_array;
+  }
+  Segment& s = segments[index];
+  s.start = start;
+  s.end = end;
+  if (x+width > max_x) max_x = x+width;
+  if (flags & FL_ALIGN_RIGHT) {
+    s.x = x+w-width;
+    if (flags & FL_ALIGN_LEFT && s.x > x) s.x = x;
+  }
+  else if (flags & FL_ALIGN_LEFT) s.x = x;
+  else s.x = x+(w-width)/2;
+  s.y = y+fl_height()-fl_descent();
 }
-
 
 // word-wrap a section of text into one segment per line:
 // Returns the y of the last line
-static double wrap(
-const char* start,
-const char* end,
-double x, double y, double w,
-Fl_Flags flags,
-int& index
-)
+static float wrap(
+  const char* start,
+  const char* end,
+  float x, float y, float w,
+  Fl_Flags flags,
+  int& index
+  )
 {
-    double width = 0;
-    if (flags & FL_ALIGN_WRAP)
-    {
-        const char* word_start = start;
-        const char* word_end = start;
-        for (const char* p = start; ; p++)
-        {
-            if (p >= end || *p == ' ')
-            {
-                // test for word-wrap:
-                if (word_start < p)
-                {
-                    double newwidth = width + fl_width(word_end, p-word_end);
-                                 // break before this word
-                    if (word_end > start && newwidth > w)
-                    {
-                        set(index++, start, word_end, width, x, y, w, flags);
-                        y += fl_height();
-                        start = word_end = p = word_start;
-                        width = 0;
-                        continue;
-                    }
-                    else
-                    {
-                        width = newwidth;
-                        word_end = p;
-                    }
-                }
-                word_start = p+1;
-                if (p >= end) break;
-            }
-        }
+  float width = 0;
+  if (flags & FL_ALIGN_WRAP) {
+    const char* word_start = start;
+    const char* word_end = start;
+    for (const char* p = start; ; p++) {
+      if (p >= end || *p == ' ') {
+	// test for word-wrap:
+	if (word_start < p) {
+	  float newwidth = width + fl_width(word_end, p-word_end);
+	  if (word_end > start && newwidth > w) { // break before this word
+	    set(index++, start, word_end, width, x, y, w, flags);
+	    y += fl_height();
+	    start = word_end = p = word_start;
+	    width = 0;
+	    continue;
+	  } else {
+	    width = newwidth;
+	    word_end = p;
+	  }
+	}
+	word_start = p+1;
+	if (p >= end) break;
+      }
     }
-    else
-    {
-        width = fl_width(start, end-start);
-    }
-    if (start < end) set(index++, start, end, width, x, y, w, flags);
-    return y;
+  } else {
+    width = fl_width(start, end-start);
+  }
+  if (start < end) set(index++, start, end, width, x, y, w, flags);
+  return y;
 }
 
-
-bool fl_hide_shortcut;           // set by Fl_Choice
+bool fl_hide_shortcut; // set by Fl_Choice
 
 // Parses and lays out the text into segments. Return value is the
 // y height of the text. The width is stored in max_x. The index is
 // set to be the number of segments.
-static double split(
-const char* str,
-int W, int ,                     /*H*/
-Fl_Flags flags,
-int& index,
-char* tempbuf                    // for the underscore stuff...
-)
+static float split(
+    const char* str,
+    int W, int /*H*/,
+    Fl_Flags flags,
+    int& index,
+    char* tempbuf // for the underscore stuff...
+    )
 {
-    const int* column = fl_column_widths_;
+  const int* column = fl_column_widths_;
 
-    bool look_for_underscore = !(flags & FL_RAW_LABEL);
-    bool saw_underscore = false;
+  bool look_for_underscore = !(flags & FL_RAW_LABEL);
+  bool saw_underscore = false;
 
-    double x = 0;
-    max_x = 0;
-    double y = 0;
-    double max_y = 0;
-    const char* p = str;
-    for (;;)
-    {
-        // find the next newline or tab:
-        double w;                // width to format this segment into
-        if (!*p || *p == '\n')
-        {
-            w = W-x;
-        }
-        else if (*p == '\t')
-        {
-            if (column && *column) w = *column++;
-            else w = ((p-str+8)&-8)*fl_width("2",1);
-        }
-        else
-        {
-            if (*p == '&' && look_for_underscore) saw_underscore = true;
-            p++;
-            continue;
-        }
-        double newy;
-        // Edit out any '&' sign if this is reasonably short label and use
-        // it's position later to underscore a letter. This is done by
-        // copying the text to the tempbuf and then reusing that buffer
-        // as the source for this text:
-        if (saw_underscore && p-str < MAX_LENGTH_FOR_UNDERSCORE)
-        {
-            look_for_underscore = false;
-            char* a = tempbuf;
-            const char* b = str;
-            const char* underscore_at = 0;
-            while (b < p)
-            {
-                if (*b == '&' && b+1 < p)
-                {
-                    b++;
-                    if (*b != '&' && !fl_hide_shortcut && !underscore_at)
-                        underscore_at = a;
-                }
-                *a++ = *b++;
-            }
-            int i = index;       // remember where it starts
-            // create segments for the text:
-            newy = wrap(tempbuf, a, x, y, w, flags, index);
-            // add a segment to print the underscore:
-            if (underscore_at) for (; i < index; i++)
-            {
-                Segment& s = segments[i];
-                if (underscore_at >= s.start && underscore_at < s.end)
-                {
-                    const char* text = "_";
-                    double save_y = s.y;
-                    set(index, text, text+1, 0,
-                        s.x+fl_width(s.start, underscore_at-s.start), y, 0,
-                        FL_ALIGN_LEFT);
-                    segments[index].y = save_y;
-                    index++;
-                    break;
-                }
-            }
-        }
-        else
-        {
-            newy = wrap(str, p, x, y, w, flags, index);
-        }
-        if (newy > max_y) max_y = newy;
-        if (!*p)
-        {
-            return max_y+fl_height();
-        }
-        else if (*p == '\n')
-        {
-            x = 0; y = max_y+fl_height(); max_y = y; column = fl_column_widths_;
-        }                        // tab
-        else
-        {
-            x += w;
-        }
-        str = ++p;
+  float x = 0;
+  max_x = 0;
+  float y = 0;
+  float max_y = 0;
+  const char* p = str;
+  for (;;) {
+    // find the next newline or tab:
+    float w; // width to format this segment into
+    if (!*p || *p == '\n') {
+      w = W-x;
+    } else if (*p == '\t') {
+      if (column && *column) w = *column++;
+      else w = ((p-str+8)&-8)*fl_width("2",1);
+    } else {
+      if (*p == '&' && look_for_underscore) saw_underscore = true;
+      p++;
+      continue;
     }
+    float newy;
+    // Edit out any '&' sign if this is reasonably short label and use
+    // it's position later to underscore a letter. This is done by
+    // copying the text to the tempbuf and then reusing that buffer
+    // as the source for this text:
+    if (saw_underscore && p-str < MAX_LENGTH_FOR_UNDERSCORE) {
+      look_for_underscore = false;
+      char* a = tempbuf;
+      const char* b = str;
+      const char* underscore_at = 0;
+      while (b < p) {
+	if (*b == '&' && b+1 < p) {
+	  b++;
+	  if (*b != '&' && !fl_hide_shortcut && !underscore_at)
+	    underscore_at = a;
+	}
+	*a++ = *b++;
+      }
+      int i = index; // remember where it starts
+      // create segments for the text:
+      newy = wrap(tempbuf, a, x, y, w, flags, index);
+      // add a segment to print the underscore:
+      if (underscore_at) for (; i < index; i++) {
+	Segment& s = segments[i];
+	if (underscore_at >= s.start && underscore_at < s.end) {
+	  const char* text = "_";
+	  float save_y = s.y;
+	  set(index, text, text+1, 0,
+	      s.x+fl_width(s.start, underscore_at-s.start), y, 0,
+	      FL_ALIGN_LEFT);
+	  segments[index].y = save_y;
+	  index++;
+	  break;
+	}
+      }
+    } else {
+      newy = wrap(str, p, x, y, w, flags, index);
+    }
+    if (newy > max_y) max_y = newy;
+    if (!*p) {
+      return max_y+fl_height();
+    } else if (*p == '\n') {
+      x = 0; y = max_y+fl_height(); max_y = y; column = fl_column_widths_;
+    } else { // tab
+      x += w;
+    }
+    str = ++p;
+  }
 }
-
 
 void fl_draw(
-const char* str,                 // the (multi-line) string
-int X, int Y, int W, int H,      // bounding box
-Fl_Flags flags
-)
-{
-    if (!str || !*str) return;
-    char tempbuf[MAX_LENGTH_FOR_UNDERSCORE];
-    int index = 0;
-    int h = int(split(str, W, H, flags, index, tempbuf)+.5);
-    fl_transform(X,Y);
-    int dy;
-    if (flags & FL_ALIGN_BOTTOM)
-    {
-        dy = Y+H-h;
-        if ((flags & FL_ALIGN_TOP) && dy > Y) dy = Y;
-    }
-    else if (flags & FL_ALIGN_TOP)
-    {
-        dy = Y;
-    } else {
-        dy = Y+((H-h)>>1);
-    }
-    for (int i = 0; i < index; i++) {
-        Segment& s = segments[i];
-        fl_transformed_draw(s.start, s.end-s.start, s.x+X, s.y+dy);
-    }
+    const char* str,	// the (multi-line) string
+    int X, int Y, int W, int H,	// bounding box
+    Fl_Flags flags
+) {
+  if (!str || !*str) return;
+  char tempbuf[MAX_LENGTH_FOR_UNDERSCORE];
+  int index = 0;
+  int h = int(split(str, W, H, flags, index, tempbuf)+.5);
+  fl_transform(X,Y);
+  int dy;
+  if (flags & FL_ALIGN_BOTTOM) {
+    dy = Y+H-h;
+    if ((flags & FL_ALIGN_TOP) && dy > Y) dy = Y;
+  } else if (flags & FL_ALIGN_TOP) {
+    dy = Y;
+  } else {
+    dy = Y+((H-h)>>1);
+  }
+  for (int i = 0; i < index; i++) {
+    Segment& s = segments[i];
+    fl_transformed_draw(s.start, s.end-s.start, s.x+X, s.y+dy);
+  }
 }
 
-
-void fl_measure(const char* str, int& w, int& h, Fl_Flags flags)
-{
-    if (!str || !*str) {w = 0; h = int(fl_height()); return;}
-    char tempbuf[MAX_LENGTH_FOR_UNDERSCORE];
-    int index = 0;
-    h = int(split(str, w, h, flags, index, tempbuf)+.5);
-    w = int(max_x+.5);
+void fl_measure(const char* str, int& w, int& h, Fl_Flags flags) {
+  if (!str || !*str) {w = 0; h = int(fl_height()); return;}
+  char tempbuf[MAX_LENGTH_FOR_UNDERSCORE];
+  int index = 0;
+  h = int(split(str, w, h, flags, index, tempbuf)+.5);
+  w = int(max_x+.5);
 }
-
 
 // back-compatable one:
 //  void fl_measure(const char* str, int& w, int& h) {

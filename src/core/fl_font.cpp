@@ -29,9 +29,9 @@
 
 // Static variables containing the currently selected font, size, encoding:
 Fl_Font fl_font_;
-double fl_size_;
+float fl_size_;
 const char *fl_encoding_ = "iso8859-1";
-
+  
 #ifdef _WIN32
 # include "fl_font_win32.cpp"
 #elif defined(__APPLE__)
@@ -45,21 +45,17 @@ const char *fl_encoding_ = "iso8859-1";
 #endif
 
 void
-fl_draw(const char* str, double x, double y)
-{
-    fl_draw(str, strlen(str), x, y);
+fl_draw(const char* str, float x, float y) {
+  fl_draw(str, strlen(str), x, y);
 }
-
 
 void
-fl_draw(const char* str, int n, double x, double y)
-{
-    fl_transform(x,y);
-    fl_transformed_draw(str, n, x, y);
+fl_draw(const char* str, int n, float x, float y) {
+  fl_transform(x,y);
+  fl_transformed_draw(str, n, x, y);
 }
 
-
-double
+float
 fl_width(const char* c) { return fl_width(c, strlen(c)); }
 
 //

@@ -407,7 +407,7 @@ void MenuWindow::set_item(int level, int index)
     // continue scrolling after a timeout:
     Fl::remove_timeout(autoscroll_timeout, this);
     if(autoscroll(index)) {
-        Fl::repeat_timeout(.05, autoscroll_timeout, this);
+        Fl::repeat_timeout(.05f, autoscroll_timeout, this);
     }
 }
 

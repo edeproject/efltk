@@ -126,7 +126,7 @@ void Fl_Value_Slider::draw()
             Fl_Color color = text_color();
             if (!active_r()) color = fl_inactive(color);
             fl_color(color);
-            draw_ticks(sx, sy, sw, sh, slider_size());
+            draw_ticks(sx, sy, sw, sh, (slider_size()+1)/2);
         }
 
         fl_pop_clip();

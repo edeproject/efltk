@@ -74,7 +74,7 @@ int Fl_Numeric_Input::handle(int event)
             }
             break;
         case FL_MOUSEWHEEL:
-            return handle_arrow(-Fl::event_dy());
+            return handle_arrow(Fl::event_dy());
     }
     return Fl_Input::handle(event);
 }

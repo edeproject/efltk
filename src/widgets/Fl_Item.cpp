@@ -184,7 +184,7 @@ void Fl_Divider::draw()
 
     if(w()>2) draw_box();
 
-    double center=0.0;
+    float center=0;
     if(type()==HORIZONTAL)
     {
         center=h()/2;

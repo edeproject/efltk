@@ -62,16 +62,16 @@ FL_GL_API void gl_color(Fl_Color);
 FL_GL_API void gl_rect(int x,int y,int w,int h);
 inline void gl_rectf(int x,int y,int w,int h) {glRecti(x,y,x+w,y+h);}
 
-FL_GL_API void gl_font(Fl_Font f, double size);
-FL_GL_API double gl_height();
-FL_GL_API double gl_descent();
-FL_GL_API double gl_width(const char *);
-FL_GL_API double gl_width(const char *, int n);
+FL_GL_API void gl_font(Fl_Font f, float size);
+FL_GL_API float gl_height();
+FL_GL_API float gl_descent();
+FL_GL_API float gl_width(const char *);
+FL_GL_API float gl_width(const char *, int n);
 
 FL_GL_API void gl_draw(const char*);
 FL_GL_API void gl_draw(const char*, int n);
-FL_GL_API void gl_draw(const char*, double x, double y, double z = 0);
-FL_GL_API void gl_draw(const char*, int n, double x, double y, double z = 0);
+FL_GL_API void gl_draw(const char*, float x, float y, float z = 0);
+FL_GL_API void gl_draw(const char*, int n, float x, float y, float z = 0);
 
 FL_GL_API void gl_draw_image(const uchar *, int x,int y,int w,int h, int d=3, int ld=0);
 

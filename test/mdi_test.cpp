@@ -255,7 +255,7 @@ int main(int argc, char **argv)
     Fl_Tool_Bar::button_w = 40;
     // Add some buttons, add_button(label, tooltip, image, callback)
     Fl_Tool_Bar *toolbar = mainwin.toolbar();
-    toolbar->space(4);
+    toolbar->spacing(4);
     toolbar->add_button("This", "Toolbar button 1", 0, 0);
     toolbar->add_button("Is",   "Toolbar button 2", 0, 0);
     toolbar->add_button("Tool", "Toolbar button 3", 0, 0);

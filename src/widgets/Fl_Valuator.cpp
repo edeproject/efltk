@@ -41,7 +41,7 @@ Fl_Valuator::Fl_Valuator(int X, int Y, int W, int H, const char* L)
     step_ = 0;
     minimum_ = 0;
     maximum_ = 1;
-    linesize_ = 1;
+    linesize_ = 0.1;
 }
 
 
@@ -176,7 +176,7 @@ int Fl_Valuator::handle(int event)
             previous_value_ = value_;
             // For normal valuators, each click is linesize(), wheel_scroll_lines
             // is ignored. However Fl_Scrollbar does use wheel_scroll_lines.
-            handle_drag(value()+(Fl::event_dy()*-1)*linesize());
+            handle_drag(value()+Fl::event_dy()*linesize());
             return 1;
         }
     }

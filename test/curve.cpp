@@ -29,7 +29,7 @@
 #include <efltk/fl_draw.h>
 #include <efltk/Fl_Toggle_Button.h>
 
-double args[9] = {
+float args[9] = {
   20,20, 50,200, 100,20, 200,200, 0};
 const char* name[9] = {
   "X0", "Y0", "X1", "Y1", "X2", "Y2", "X3", "Y3", "rotate"};
@@ -44,9 +44,9 @@ class Drawing : public Fl_Widget {
     fl_push_matrix();
 
     if (args[8]) {
-      fl_translate(w()/2.0, h()/2.0);
+      fl_translate(w()/2.0f, h()/2.0f);
       fl_rotate(args[8]);
-      fl_translate(-w()/2.0, -h()/2.0);
+      fl_translate(-w()/2.0f, -h()/2.0f);
     }
 
     fl_color(FL_BLACK);
@@ -95,9 +95,10 @@ int main(int argc, char** argv) {
     Fl_Slider* s = new Fl_Hor_Value_Slider(50,y,240,25,name[n]); y += 25;
     s->minimum(0); s->maximum(280);
     if (n == 8) s->maximum(360);
+    s->type(Fl_Slider::HORIZONTAL | Fl_Slider::TICK_ABOVE);
     s->step(1);
     s->value(args[n]);
-	s->clear_flag(FL_ALIGN_MASK);
+    s->clear_flag(FL_ALIGN_MASK);
     s->set_flag(FL_ALIGN_LEFT);
     s->callback(slider_cb, (void*)n);
   }

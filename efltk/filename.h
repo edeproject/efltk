@@ -35,6 +35,15 @@
 
 struct dirent {char d_name[1];};
 
+#elif defined(__linux_)
+
+#define __USE_LARGEFILE64
+#define __USE_GNU
+#include <sys/types.h>
+#include <dirent.h>
+#define dirent dirent64
+#define scandir scandir64
+
 #else
 
 #include <sys/types.h>

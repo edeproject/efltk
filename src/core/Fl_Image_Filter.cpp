@@ -12,17 +12,17 @@ bool Fl_Image_Filter::apply_to_this(Fl_Image *image, Fl_Rect *rect, Fl_Image_Fil
     return apply_to_this(image, rect, filter, 1.0, 1.0, 1.0);
 }
 
-bool Fl_Image_Filter::apply_to_this(Fl_Image *image, Fl_Rect *rect, Fl_Image_Filter *filter, double val1)
+bool Fl_Image_Filter::apply_to_this(Fl_Image *image, Fl_Rect *rect, Fl_Image_Filter *filter, float val1)
 {
     return apply_to_this(image, rect, filter, val1, val1, val1);
 }
 
-bool Fl_Image_Filter::apply_to_this(Fl_Image *image, Fl_Rect *rect, Fl_Image_Filter *filter, double val1, double val2)
+bool Fl_Image_Filter::apply_to_this(Fl_Image *image, Fl_Rect *rect, Fl_Image_Filter *filter, float val1, float val2)
 {
     return apply_to_this(image, rect, filter, val1, val2, val1);
 }
 
-bool Fl_Image_Filter::apply_to_this(Fl_Image *image, Fl_Rect *rect, Fl_Image_Filter *filter, double val1, double val2, double val3)
+bool Fl_Image_Filter::apply_to_this(Fl_Image *image, Fl_Rect *rect, Fl_Image_Filter *filter, float val1, float val2, float val3)
 {
     Fl_Rect r(0,0,image->width(),image->height());
     if(!rect) { rect = &r; }
@@ -35,17 +35,17 @@ Fl_Image *Fl_Image_Filter::apply_to_new(Fl_Image *image, Fl_Rect *rect, Fl_Image
     return apply_to_new(image, rect, filter, 1.0, 1.0, 1.0);
 }
 
-Fl_Image *Fl_Image_Filter::apply_to_new(Fl_Image *image, Fl_Rect *rect, Fl_Image_Filter *filter, double val1)
+Fl_Image *Fl_Image_Filter::apply_to_new(Fl_Image *image, Fl_Rect *rect, Fl_Image_Filter *filter, float val1)
 {
     return apply_to_new(image, rect, filter, val1, val1, val1);
 }
 
-Fl_Image *Fl_Image_Filter::apply_to_new(Fl_Image *image, Fl_Rect *rect, Fl_Image_Filter *filter, double val1, double val2)
+Fl_Image *Fl_Image_Filter::apply_to_new(Fl_Image *image, Fl_Rect *rect, Fl_Image_Filter *filter, float val1, float val2)
 {
     return apply_to_new(image, rect, filter, val1, val2, val1);
 }
 
-Fl_Image *Fl_Image_Filter::apply_to_new(Fl_Image *image, Fl_Rect *rect, Fl_Image_Filter *filter, double val1, double val2, double val3)
+Fl_Image *Fl_Image_Filter::apply_to_new(Fl_Image *image, Fl_Rect *rect, Fl_Image_Filter *filter, float val1, float val2, float val3)
 {
     Fl_Rect r(0,0,image->width(),image->height());
     if(!rect) { rect = &r; }
@@ -60,7 +60,7 @@ Fl_Image *Fl_Image_Filter::apply_to_new(Fl_Image *image, Fl_Rect *rect, Fl_Image
 }
 
 FilterBrightness filter_brightness;
-bool FilterBrightness::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFormat *fmt, double val1, double val2, double val3)
+bool FilterBrightness::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFormat *fmt, float val1, float val2, float val3)
 {
     Fl_PixelFormat *srcfmt = fmt;
 
@@ -105,7 +105,7 @@ bool FilterBrightness::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelF
 }
 
 FilterContrast filter_contrast;
-bool FilterContrast::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFormat *fmt, double val1, double val2, double val3)
+bool FilterContrast::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFormat *fmt, float val1, float val2, float val3)
 {
     Fl_PixelFormat *srcfmt = fmt;
 
@@ -149,7 +149,7 @@ bool FilterContrast::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFor
 }
 
 FilterGamma filter_gamma;
-bool FilterGamma::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFormat *fmt, double val1, double val2, double val3)
+bool FilterGamma::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFormat *fmt, float val1, float val2, float val3)
 {
     if(val1 < 0.01) val1 = 0.01;
     if(val2 < 0.01) val2 = 0.01;
@@ -175,13 +175,13 @@ bool FilterGamma::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFormat
                         if(srcbpp==1) DISEMBLE_RGB(ptr, srcbpp, srcfmt, pixel, R, G, B);
                         else DISEMBLE_RGBA(ptr, srcbpp, srcfmt, pixel, R, G, B, A);
 
-                        R = (int)(pow(((double)R / 255), (1 / val1)) * 255);
+                        R = (int)(pow(((float)R / 255), (1 / val1)) * 255);
                         if(R<0) R = 0; if(R>255) R = 255;
 
-                        G = (int)(pow(((double)G / 255), (1 / val2)) * 255);
+                        G = (int)(pow(((float)G / 255), (1 / val2)) * 255);
                         if(G<0) G = 0; if(G>255) G = 255;
 
-                        B = (int)(pow(((double)B / 255), (1 / val3)) * 255);
+                        B = (int)(pow(((float)B / 255), (1 / val3)) * 255);
                         if(B<0) B = 0; if(B>255) B = 255;
 
                         if(SYSTEM_8BIT) { ERROR_DIFF(R,G,B,*ptr); }
@@ -197,7 +197,7 @@ bool FilterGamma::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFormat
 }
 
 FilterDesaturate filter_desaturate;
-bool FilterDesaturate::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFormat *fmt, double val1, double val2, double val3)
+bool FilterDesaturate::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFormat *fmt, float val1, float val2, float val3)
 {	
     Fl_PixelFormat *srcfmt = fmt;
 

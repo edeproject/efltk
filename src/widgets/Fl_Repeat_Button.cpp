@@ -26,8 +26,8 @@
 #include <efltk/Fl.h>
 #include <efltk/Fl_Repeat_Button.h>
 
-#define INITIALREPEAT .5
-#define REPEAT .1
+#define INITIALREPEAT .5f
+#define REPEAT .1f
 
 void Fl_Repeat_Button::repeat_callback(void *v)
 {
@@ -39,13 +39,13 @@ void Fl_Repeat_Button::repeat_callback(void *v)
 
 int Fl_Repeat_Button::handle(int event)
 {
-    int newval;
+    bool newval;
     switch (event)
     {
         case FL_HIDE:
         case FL_DEACTIVATE:
         case FL_RELEASE:
-            newval = 0; goto J1;
+            newval = false; goto J1;
         case FL_PUSH:
         case FL_DRAG:
             newval = Fl::event_inside(0, 0, w(), h());
