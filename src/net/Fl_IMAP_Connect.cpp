@@ -228,7 +228,8 @@ static Fl_Date_Time decode_date(const Fl_String& dt) {
 
 void Fl_IMAP_Connect::parse_message(Fl_Data_Fields& results,bool headers_only) {
 	results.clear();
-	for (unsigned i = 0; required_headers[i]; i++) {
+	unsigned i;
+	for (i = 0; required_headers[i]; i++) {
 		Fl_Data_Field *fld = new Fl_Data_Field(required_headers[i]);
 		switch (i) {
 			case 0: fld->width = 16; break;
@@ -237,7 +238,7 @@ void Fl_IMAP_Connect::parse_message(Fl_Data_Fields& results,bool headers_only) {
 		results.add(fld);
 	}
     // parse headers
-	unsigned i = 1;
+	i = 1;
 	for (; i < m_response.count() - 1; i++) {
 		Fl_String& st = m_response[i];
 		Fl_String header_name, header_value;
