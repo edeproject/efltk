@@ -123,7 +123,7 @@ int Fl_Color_Chooser::rgb(float r, float g, float b)
     float ph = hue_;
     float ps = saturation_;
     float pv = value_;
-    rgb2hsv(r,g,b,hue_,saturation_,value_);
+    rgb2hsv(r,g,b,hue_,saturation_,value_);	
     set_valuators();
     if (value_ != pv) {
 #ifdef UPDATE_HUE_BOX
@@ -147,7 +147,7 @@ int Fl_Color_Chooser::hsv(float h, float s, float v)
     float ph = hue_;
     float ps = saturation_;
     float pv = value_;
-    hue_ = h; saturation_ = s; value_ = v;
+    hue_ = h; saturation_ = s; value_ = v;	
     if (value_ != pv) {
 #ifdef UPDATE_HUE_BOX
         huebox.redraw(FL_DAMAGE_ALL);
@@ -300,14 +300,14 @@ int Flcc_ValueBox::handle(int e)
     Fl_Color_Chooser* c = (Fl_Color_Chooser*)parent();
     switch (e) {
         case FL_PUSH:
-            iv = c->v();
+            iv = c->v();			
         case FL_DRAG: {
                 float Yf;
                 int x1 = 0; int y1 = 0; int w1 = w(); int h1 = h();
                 box()->inset(x1,y1,w1,h1);
                 Yf = 1-(Fl::event_y()-y1)/float(h1);
                 if (fabs(Yf-iv)<(3*1.0f/h())) Yf = iv;
-                if (c->hsv(c->h(),c->saturation(),Yf)) c->do_callback();
+                if (c->hsv(c->hue(),c->saturation(),Yf)) c->do_callback();
             }
             return 1;
         default:
