@@ -327,7 +327,6 @@ void Fl_MySQL_Database::fetch_query(Fl_Query *query)
 void Fl_MySQL_Database::close_query(Fl_Query *query)
 {
 	if(!query_active(query)) return;
-	printf("CLOSE %d\n", query_active(query));
 
 	MYSQL_RES *res = (MYSQL_RES *)query_handle(query);
 	if(res) mysql_free_result(res);		
