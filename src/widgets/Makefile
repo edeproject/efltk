@@ -32,6 +32,7 @@ CPPFILES = \
 	Fl_Browser.cpp \
 	Fl_Box.cpp \
 	Fl_Button.cpp \
+	Fl_Calendar.cpp \
 	Fl_Check_Button.cpp \
 	Fl_Choice.cpp \
 	Fl_Clock.cpp \
