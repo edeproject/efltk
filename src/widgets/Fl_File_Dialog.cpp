@@ -278,7 +278,8 @@ static char *select_file(const char *path_, Filter **filters, const char *cap, i
         strncpy(ret, path, len);
         return ret;
     }
-    return 0;
+
+	return 0;
 }
 
 ////////////////////////
@@ -495,7 +496,8 @@ Filter **Fl_File_Dialog::build_filters(char *ptr)
     if(filter_cnt==0) { delete []filters; filters=0; }
     else filters[filter_cnt] = 0;
 
-    fl_freev(split);
+    fl_freev(split);	
+
     return filters;
 }
 

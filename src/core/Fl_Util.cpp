@@ -300,7 +300,7 @@ char **fl_split(const char *string,
         string_list.append(_s);
     }
 
-    str_array = (char**)malloc(n*(sizeof(char*)+1));
+    str_array = (char**)malloc((n+1)*(sizeof(char*)));
     str_array[n] = 0;
 
     char **ptr = str_array;
@@ -359,9 +359,10 @@ char *fl_trimright(char *string)
 void fl_freev(char **str_array)
 {
     if(str_array) {
-        for(int n=0; str_array[n]!=0; n++)
-            delete []str_array[n];
-        delete []str_array;
+        for(int n=0; str_array[n]!=0; n++) {			
+            delete []str_array[n];			
+		}
+		delete []str_array;
     }
 }
 

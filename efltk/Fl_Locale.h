@@ -15,9 +15,18 @@
 #  define N_(String) (String)
 # endif
 
-extern void FL_API fl_init_locale_support(const char *, const char *);
+#else
+
+# define _(String) (String)
+# ifdef gettext_noop
+#  define N_(String) (String)
+# else
+#  define N_(String) (String)
+# endif
 
 #endif //_WIN32
+
+extern void FL_API fl_init_locale_support(const char *, const char *);
 
 #endif
 
