@@ -37,7 +37,8 @@ enum Fl_Event_Types {
     FL_KEY_SHORTCUT         = FL_KEY_EVENTS + 3,
 
     // (Physical) Focus events
-    FL_FOCUS_SET            = FL_FOCUS_EVENTS + 1, 
+    FL_FOCUS_ASK            = FL_FOCUS_EVENTS + 1, 
+    FL_FOCUS_RECEIVED       = FL_FOCUS_EVENTS + 2,
     FL_FOCUS_LOST           = FL_FOCUS_EVENTS + 2,
 
     // (Physical) Drag-n-Drop events 
@@ -104,7 +105,7 @@ enum Fl_Event_Types {
 #define FL_MOVE         FL_MOUSE_MOVE
 #define FL_MOUSEWHEEL   FL_MOUSE_WHEEL
 
-#define FL_FOCUS        FL_FOCUS_SET
+#define FL_FOCUS        FL_FOCUS_ASK
 #define FL_UNFOCUS      FL_FOCUS_LOST
 
 #define FL_COPY         FL_EDIT_COPY
