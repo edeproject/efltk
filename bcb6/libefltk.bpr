@@ -4,54 +4,54 @@
   <MACROS>
     <VERSION value="BCB.06.00"/>
     <PROJECT value="..\lib\libefltk.lib"/>
-    <OBJFILES value="obj\cmap.obj obj\Fl.obj obj\Fl_abort.obj obj\Fl_add_idle.obj 
-      obj\fl_arc.obj obj\fl_arci.obj obj\Fl_arg.obj obj\Fl_Bitmap.obj 
-      obj\fl_blit.obj obj\fl_blit_1.obj obj\fl_blit_a.obj obj\fl_blit_n.obj 
-      obj\Fl_Bmp.obj obj\Fl_Boxtype.obj obj\fl_clip.obj obj\Fl_compose.obj 
-      obj\Fl_Config.obj obj\fl_cursor.obj obj\fl_curve.obj 
-      obj\Fl_Data_Fields.obj obj\Fl_Data_Source.obj obj\Fl_Date_Time.obj 
-      obj\fl_diamond_box.obj obj\Fl_display.obj obj\fl_dnd.obj obj\fl_draw.obj 
-      obj\fl_draw_image.obj obj\fl_draw_pixmap.obj obj\fl_font.obj 
-      obj\Fl_get_key.obj obj\Fl_Gif.obj obj\fl_glyph.obj obj\Fl_Group.obj 
-      obj\Fl_Image.obj obj\Fl_Image_Filter.obj obj\Fl_init.obj 
-      obj\Fl_key_name.obj obj\fl_labeltype.obj obj\fl_list_fonts.obj 
-      obj\Fl_Lists.obj obj\fl_load_plugin.obj obj\fl_locale.obj obj\fl_color.obj 
-      obj\Fl_lock.obj obj\fl_map.obj obj\fl_oval_box.obj obj\fl_overlay.obj 
-      obj\fl_overlay_visual.obj obj\Fl_own_colormap.obj obj\Fl_Pixmap.obj 
-      obj\fl_plastic_box.obj obj\fl_rect.obj obj\Fl_Renderer.obj obj\fl_rgb.obj 
-      obj\fl_round_box.obj obj\fl_rounded_box.obj obj\fl_scroll_area.obj 
-      obj\fl_shadow_box.obj obj\fl_stretch.obj obj\Fl_String.obj 
-      obj\Fl_Style.obj obj\Fl_Style_Set.obj obj\fl_theme.obj obj\Fl_Thread.obj 
-      obj\Fl_Util.obj obj\Fl_Variant.obj obj\fl_vertex.obj obj\Fl_visual.obj 
-      obj\Fl_Widget.obj obj\Fl_Window.obj obj\Fl_Window_fullscreen.obj 
-      obj\Fl_Window_hotspot.obj obj\Fl_Window_iconize.obj obj\Fl_WM.obj 
-      obj\Fl_Xpm.obj obj\Fl_Workspace.obj obj\Fl_Align_Group.obj obj\fl_ask.obj 
-      obj\Fl_Bar.obj obj\Fl_Box.obj obj\Fl_Browser.obj obj\Fl_Button.obj 
-      obj\Fl_Calendar.obj obj\Fl_Check_Button.obj obj\Fl_Choice.obj 
-      obj\Fl_Clock.obj obj\Fl_Color_Chooser.obj obj\Fl_Date_Time_Input.obj 
-      obj\Fl_Dial.obj obj\Fl_Dialog.obj obj\Fl_Directory_DS.obj 
-      obj\Fl_Double_Window.obj obj\fl_engraved_label.obj obj\Fl_File_Dialog.obj 
-      obj\Fl_FileBrowser.obj obj\Fl_FileInput.obj obj\Fl_Float_Input.obj 
-      obj\Fl_Help_Dialog.obj obj\Fl_Highlight_Button.obj obj\Fl_Input.obj 
-      obj\Fl_Input_Browser.obj obj\Fl_Item.obj obj\Fl_Light_Button.obj 
-      obj\Fl_ListView.obj obj\Fl_ListView_Header.obj obj\Fl_ListView_Item.obj 
-      obj\Fl_Main_Window.obj obj\Fl_Masked_Input.obj obj\Fl_MDI_Bar.obj 
-      obj\Fl_MDI_Window.obj obj\Fl_Menu.obj obj\Fl_Menu_.obj obj\Fl_Menu_add.obj 
-      obj\Fl_Menu_Bar.obj obj\Fl_Menu_Button.obj obj\Fl_Menu_global.obj 
-      obj\Fl_Menu_Item.obj obj\Fl_Menu_Window.obj obj\Fl_Multi_Image.obj 
-      obj\Fl_Numeric_Input.obj obj\Fl_Output.obj obj\Fl_Overlay_Window.obj 
-      obj\Fl_Pack.obj obj\Fl_Popup_Window.obj obj\Fl_ProgressBar.obj 
-      obj\Fl_Radio_Button.obj obj\Fl_Repeat_Button.obj obj\Fl_Return_Button.obj 
-      obj\Fl_Roller.obj obj\Fl_Scroll.obj obj\Fl_Scrollbar.obj 
-      obj\Fl_Shaped_Window.obj obj\fl_show_colormap.obj obj\Fl_Simple_Html.obj 
-      obj\Fl_Single_Window.obj obj\Fl_Slider.obj obj\fl_symbols.obj 
-      obj\Fl_Tabs.obj obj\Fl_Text_Buffer.obj obj\Fl_Text_Display.obj 
-      obj\Fl_Text_Editor.obj obj\Fl_Tile.obj obj\Fl_Tool_Bar.obj 
-      obj\Fl_Tooltip.obj obj\Fl_Valuator.obj obj\Fl_Value_Input.obj 
-      obj\Fl_Value_Slider.obj obj\vsnprintf.obj obj\fl_iconv_converters.obj 
-      obj\fl_converters.obj obj\Fl_Exception.obj obj\fl_utf8.obj obj\scandir.obj 
-      obj\filename_setext.obj obj\filename_list.obj obj\filename_match.obj 
-      obj\filename.obj obj\Fl_ODBC_Database.obj obj\fl_odbc.obj obj\Fl_Query.obj 
+    <OBJFILES value="obj\Fl.obj obj\Fl_abort.obj obj\Fl_add_idle.obj obj\fl_arc.obj 
+      obj\fl_arci.obj obj\Fl_arg.obj obj\Fl_Bitmap.obj obj\fl_blit.obj 
+      obj\fl_blit_1.obj obj\fl_blit_a.obj obj\fl_blit_n.obj obj\Fl_Bmp.obj 
+      obj\Fl_Boxtype.obj obj\fl_clip.obj obj\Fl_compose.obj obj\Fl_Config.obj 
+      obj\fl_cursor.obj obj\fl_curve.obj obj\Fl_Data_Fields.obj 
+      obj\Fl_Data_Source.obj obj\Fl_Date_Time.obj obj\fl_diamond_box.obj 
+      obj\Fl_display.obj obj\fl_dnd.obj obj\fl_draw.obj obj\fl_draw_image.obj 
+      obj\fl_draw_pixmap.obj obj\fl_font.obj obj\Fl_get_key.obj obj\Fl_Gif.obj 
+      obj\fl_glyph.obj obj\Fl_Group.obj obj\Fl_Image.obj obj\Fl_Image_Filter.obj 
+      obj\Fl_init.obj obj\Fl_key_name.obj obj\fl_labeltype.obj 
+      obj\fl_list_fonts.obj obj\Fl_Lists.obj obj\fl_load_plugin.obj 
+      obj\fl_locale.obj obj\fl_color.obj obj\Fl_lock.obj obj\fl_map.obj 
+      obj\fl_oval_box.obj obj\fl_overlay.obj obj\fl_overlay_visual.obj 
+      obj\Fl_own_colormap.obj obj\Fl_Pixmap.obj obj\fl_plastic_box.obj 
+      obj\fl_rect.obj obj\Fl_Renderer.obj obj\fl_rgb.obj obj\fl_round_box.obj 
+      obj\fl_rounded_box.obj obj\fl_scroll_area.obj obj\fl_shadow_box.obj 
+      obj\fl_stretch.obj obj\Fl_String.obj obj\Fl_Style.obj obj\Fl_Style_Set.obj 
+      obj\fl_theme.obj obj\Fl_Thread.obj obj\Fl_Util.obj obj\Fl_Variant.obj 
+      obj\fl_vertex.obj obj\Fl_visual.obj obj\Fl_Widget.obj obj\Fl_Window.obj 
+      obj\Fl_Window_fullscreen.obj obj\Fl_Window_hotspot.obj 
+      obj\Fl_Window_iconize.obj obj\Fl_WM.obj obj\Fl_Xpm.obj 
+      obj\Fl_Workspace.obj obj\Fl_Align_Group.obj obj\fl_ask.obj obj\Fl_Bar.obj 
+      obj\Fl_Box.obj obj\Fl_Browser.obj obj\Fl_Button.obj obj\Fl_Calendar.obj 
+      obj\Fl_Check_Button.obj obj\Fl_Choice.obj obj\Fl_Clock.obj 
+      obj\Fl_Color_Chooser.obj obj\Fl_Date_Time_Input.obj obj\Fl_Dial.obj 
+      obj\Fl_Dialog.obj obj\Fl_Directory_DS.obj obj\Fl_Double_Window.obj 
+      obj\fl_engraved_label.obj obj\Fl_File_Dialog.obj obj\Fl_FileBrowser.obj 
+      obj\Fl_FileInput.obj obj\Fl_Float_Input.obj obj\Fl_Help_Dialog.obj 
+      obj\Fl_Highlight_Button.obj obj\Fl_Input.obj obj\Fl_Input_Browser.obj 
+      obj\Fl_Item.obj obj\Fl_Light_Button.obj obj\Fl_ListView.obj 
+      obj\Fl_ListView_Header.obj obj\Fl_ListView_Item.obj obj\Fl_Main_Window.obj 
+      obj\Fl_Masked_Input.obj obj\Fl_MDI_Bar.obj obj\Fl_MDI_Window.obj 
+      obj\Fl_Menu.obj obj\Fl_Menu_.obj obj\Fl_Menu_add.obj obj\Fl_Menu_Bar.obj 
+      obj\Fl_Menu_Button.obj obj\Fl_Menu_global.obj obj\Fl_Menu_Item.obj 
+      obj\Fl_Menu_Window.obj obj\Fl_Multi_Image.obj obj\Fl_Numeric_Input.obj 
+      obj\Fl_Output.obj obj\Fl_Overlay_Window.obj obj\Fl_Pack.obj 
+      obj\Fl_Popup_Window.obj obj\Fl_ProgressBar.obj obj\Fl_Radio_Button.obj 
+      obj\Fl_Repeat_Button.obj obj\Fl_Return_Button.obj obj\Fl_Roller.obj 
+      obj\Fl_Scroll.obj obj\Fl_Scrollbar.obj obj\Fl_Shaped_Window.obj 
+      obj\fl_show_colormap.obj obj\Fl_Simple_Html.obj obj\Fl_Single_Window.obj 
+      obj\Fl_Slider.obj obj\fl_symbols.obj obj\Fl_Tabs.obj 
+      obj\Fl_Text_Buffer.obj obj\Fl_Text_Display.obj obj\Fl_Text_Editor.obj 
+      obj\Fl_Tile.obj obj\Fl_Tool_Bar.obj obj\Fl_Tooltip.obj obj\Fl_Valuator.obj 
+      obj\Fl_Value_Input.obj obj\Fl_Value_Slider.obj obj\vsnprintf.obj 
+      obj\fl_iconv_converters.obj obj\fl_converters.obj obj\Fl_Exception.obj 
+      obj\fl_utf8.obj obj\scandir.obj obj\filename_setext.obj 
+      obj\filename_list.obj obj\filename_match.obj obj\filename.obj 
+      obj\Fl_ODBC_Database.obj obj\fl_odbc.obj obj\Fl_Query.obj 
       obj\Fl_Params.obj obj\Fl_Database.obj obj\Fl_Buffer.obj 
       obj\Fl_PostScript.obj obj\Fl_Printer.obj obj\Fl_Memory_DS.obj 
       obj\Fl_IMAP_DS.obj obj\Fl_IMAP_Connect.obj obj\Fl_FTP_Connect.obj 
@@ -68,7 +68,7 @@
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
     <PACKAGES value=""/>
-    <PATHCPP value=".;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\db\odbc;..\src\db\odbc;..\src\db;..\src\db;..\src\db;..\src\core;..\src\core;..\src\core;..\src\widgets;..\src\net;..\src\net;..\src\net;..\src\core;..\src\core;..\src\widgets;..\src\db;..\src\db;..\src\widgets;..\src\core;..\src\widgets;..\src\widgets;..\src\core;..\src\core;..\src\widgets;..\src\widgets"/>
+    <PATHCPP value=".;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\db\odbc;..\src\db\odbc;..\src\db;..\src\db;..\src\db;..\src\core;..\src\core;..\src\core;..\src\widgets;..\src\net;..\src\net;..\src\net;..\src\core;..\src\core;..\src\widgets;..\src\db;..\src\db;..\src\widgets;..\src\core;..\src\widgets;..\src\widgets;..\src\core;..\src\core;..\src\widgets;..\src\widgets"/>
     <PATHPAS value=".;"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
@@ -76,18 +76,17 @@
     <USERDEFINES value="_WIN32;WIN32;_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT"/>
     <MAINSOURCE value="libefltk.bpf"/>
-    <INCLUDEPATH value="..\src\net;..\src\db;..\src\db\odbc;..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;.."/>
+    <INCLUDEPATH value="..\src\net;..\src\db;..\src\db\odbc;..\src\widgets;..\src\core;..\bcb6;..;$(BCB)\include;$(BCB)\include\vcl"/>
     <LIBPATH value="..\src\net;..\src\db;..\src\db\odbc;..\src\widgets;..\src\core;$(BCB)\lib\obj;$(BCB)\lib"/>
-    <WARNINGS value="-w-par"/>
+    <WARNINGS value="-w-par -w-aus -wamb"/>
     <LISTFILE value=""/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
     <IDLCFLAGS value="-I..\src\net -I..\src\db -I..\src\db\odbc -I..\src\widgets -I..\src\core 
-      -I$(BCB)\include -I$(BCB)\include\vcl -I. -I.. -src_suffix cpp -D_WIN32 
-      -DWIN32 -D_DEBUG -boa"/>
-    <CFLAG1 value="-Od -H=obj\efltk.csm -Hc -P -Vx -Ve -xf -X- -r- -a4 -5 -b -d -k -y -v -vi- 
-      -c -tW -tWM"/>
+      -I..\bcb6 -I.. -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp 
+      -D_WIN32 -DWIN32 -D_DEBUG -boa"/>
+    <CFLAG1 value="-Od -P -Vx -Ve -xf -X- -r- -a4 -5 -b -d -k -y -v -vi- -c -tW -tWM"/>
     <PFLAGS value="-N2..\bcb6\obj -N0..\bcb6\obj -$Y+ -$W -$O- -$A8 -v -JPHNE -M"/>
     <AFLAGS value="/mx /w2 /zi"/>
     <LFLAGS value="-l..\lib /P256"/>
@@ -100,7 +99,6 @@
   </LINKER>
   <FILELIST>
       <FILE FILENAME="libefltk.bpf" FORMNAME="" UNITNAME="libefltk" CONTAINERID="BPF" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\src\core\cmap.cpp" FORMNAME="" UNITNAME="cmap.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\core\Fl.cpp" FORMNAME="" UNITNAME="Fl.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\core\Fl_abort.cpp" FORMNAME="" UNITNAME="Fl_abort.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\core\Fl_add_idle.cpp" FORMNAME="" UNITNAME="Fl_add_idle.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -321,22 +319,26 @@ ProductVersion=1.0.0.0
 Comments=
 
 [HistoryLists\hlIncludePath]
-Count=8
-Item0=..\src\net;..\src\db;..\src\db\odbc;..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;..
-Item1=..\src\db\odbc;..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;..
-Item2=..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;..
-Item3=..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;\efltk
-Item4=..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;r:\efltk
-Item5=..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;r:\efltk
-Item6=..\src\core;$(BCB)\include;$(BCB)\include\vcl;.
-Item7=..\src\core;$(BCB)\include;$(BCB)\include\vcl
+Count=11
+Item0=..\bcb6;..;$(BCB)\include;$(BCB)\include\vcl;
+Item1=..\src\net;..\src\db;..\src\db\odbc;..\src\widgets;..\src\core;..;$(BCB)\include;$(BCB)\include\vcl
+Item2=..;$(BCB)\include;$(BCB)\include\vcl;
+Item3=..\src\net;..\src\db;..\src\db\odbc;..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;..
+Item4=..\src\db\odbc;..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;..
+Item5=..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;..
+Item6=..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;\efltk
+Item7=..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;r:\efltk
+Item8=..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;r:\efltk
+Item9=..\src\core;$(BCB)\include;$(BCB)\include\vcl;.
+Item10=..\src\core;$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
-Count=4
-Item0=..\src\net;..\src\db;..\src\db\odbc;..\src\widgets;..\src\core;$(BCB)\lib\obj;$(BCB)\lib
-Item1=..\src\db\odbc;..\src\widgets;..\src\core;$(BCB)\lib\obj;$(BCB)\lib
-Item2=..\src\widgets;..\src\core;$(BCB)\lib\obj;$(BCB)\lib
-Item3=..\src\core;$(BCB)\lib\obj;$(BCB)\lib
+Count=5
+Item0=$(BCB)\lib\obj;$(BCB)\lib
+Item1=..\src\net;..\src\db;..\src\db\odbc;..\src\widgets;..\src\core;$(BCB)\lib\obj;$(BCB)\lib
+Item2=..\src\db\odbc;..\src\widgets;..\src\core;$(BCB)\lib\obj;$(BCB)\lib
+Item3=..\src\widgets;..\src\core;$(BCB)\lib\obj;$(BCB)\lib
+Item4=..\src\core;$(BCB)\lib\obj;$(BCB)\lib
 
 [HistoryLists\hlDebugSourcePath]
 Count=1
@@ -357,11 +359,12 @@ Item1=\efltk\bcb6\obj
 Item2=R:\efltk\bcb6\obj
 
 [HistoryLists\hlFinalOutputDir]
-Count=4
-Item0=..\lib\
-Item1=\efltk\lib\
-Item2=R:\efltk\lib\
-Item3=R:\efltk\lib
+Count=5
+Item0=..\lib
+Item1=..\lib\
+Item2=\efltk\lib\
+Item3=R:\efltk\lib\
+Item4=R:\efltk\lib
 
 [HistoryLists\hIBPIOutputDir]
 Count=3
