@@ -149,9 +149,9 @@ public:
     long argument() const    { return (long)user_data_; }
     void argument(long v)    { user_data_ = (void*)v; }
 
-    // New event will remove this!
-    uchar when() const        { return when_; }
-    void  when(uchar i)       { when_ = i; }
+    // This defines event classes widget wants to receive in callback!
+    int when() const        { return when_; }
+    void when(int i)       { when_ = i; }
 
     void do_callback(int event,int event_argument=0, const void *event_data=0) { do_callback(this, user_data_, event, event_argument, event_data);}
     void do_callback(Fl_Widget *o, void *arg, int event, int event_argument=0, const void *event_data=0);
@@ -325,7 +325,7 @@ private:
     uchar           type_, widget_type_;
     uchar           damage_;
     uchar           layout_damage_, layout_flags_;
-    uchar           when_;
+    int             when_;
 
     Fl_String field_name_; // data source support
     Fl_String tooltip_; // make this into another widget?
