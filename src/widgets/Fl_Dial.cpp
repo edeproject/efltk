@@ -23,6 +23,7 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
+#include <config.h>
 #include <efltk/Fl.h>
 #include <efltk/Fl_Dial.h>
 #include <efltk/Fl_Group.h>
