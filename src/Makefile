@@ -123,6 +123,7 @@ CPPFILES = \
 	widgets/Fl_Date_Time_Input.cpp \
 	widgets/Fl_Dial.cpp \
 	widgets/Fl_Dialog.cpp \
+	widgets/Fl_Dialog_Data_Source.cpp \
 	widgets/Fl_Double_Window.cpp \
 	widgets/Fl_FileBrowser.cpp \
 	widgets/Fl_FileInput.cpp \
