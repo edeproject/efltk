@@ -34,7 +34,7 @@ all: $(GENERATED)
 		if test ! -f $$dir/makedepend; then\
 			touch $$dir/makedepend;\
 		fi;\
-		(cd $$dir; $(MAKE) $(MFLAGS)) || break;\
+		(cd $$dir; $(MAKE) $(MFLAGS)) || exit;\
 	done
 
 static: $(GENERATED)
@@ -42,7 +42,7 @@ static: $(GENERATED)
 		if test ! -f $$dir/makedepend; then\
 			touch $$dir/makedepend;\
 		fi;\
-		(cd $$dir; $(MAKE) $(MFLAGS) static) || break;\
+		(cd $$dir; $(MAKE) $(MFLAGS) static) || exit;\
 	done
 
 shared: $(GENERATED)
@@ -50,7 +50,7 @@ shared: $(GENERATED)
 		if test ! -f $$dir/makedepend; then\
 			touch $$dir/makedepend;\
 		fi;\
-		(cd $$dir; $(MAKE) $(MFLAGS) shared) || break;\
+		(cd $$dir; $(MAKE) $(MFLAGS) shared) || exit;\
 	done
 
 install: $(GENERATED)
@@ -58,7 +58,7 @@ install: $(GENERATED)
 		if test ! -f $$dir/makedepend; then\
 			touch $$dir/makedepend;\
 		fi;\
-		(cd $$dir; $(MAKE) $(MFLAGS) install) || break;\
+		(cd $$dir; $(MAKE) $(MFLAGS) install) || exit;\
 	done
 
 install_static: $(GENERATED)
@@ -66,7 +66,7 @@ install_static: $(GENERATED)
 		if test ! -f $$dir/makedepend; then\
 			touch $$dir/makedepend;\
 		fi;\
-		(cd $$dir; $(MAKE) $(MFLAGS) install_static) || break;\
+		(cd $$dir; $(MAKE) $(MFLAGS) install_static) || exit;\
 	done
 
 install_shared: $(GENERATED)
@@ -74,7 +74,7 @@ install_shared: $(GENERATED)
 		if test ! -f $$dir/makedepend; then\
 			touch $$dir/makedepend;\
 		fi;\
-		(cd $$dir; $(MAKE) $(MFLAGS) install_shared) || break;\
+		(cd $$dir; $(MAKE) $(MFLAGS) install_shared) || exit;\
 	done
 
 install_programs: $(GENERATED)
@@ -82,7 +82,7 @@ install_programs: $(GENERATED)
 		if test ! -f $$dir/makedepend; then\
 			touch $$dir/makedepend;\
 		fi;\
-		(cd $$dir; $(MAKE) $(MFLAGS) install_programs) || break;\
+		(cd $$dir; $(MAKE) $(MFLAGS) install_programs) || exit;\
 	done
 
 depend: $(GENERATED)
@@ -90,13 +90,13 @@ depend: $(GENERATED)
 		if test ! -f $$dir/makedepend; then\
 			touch $$dir/makedepend;\
 		fi;\
-		(cd $$dir;$(MAKE) $(MFLAGS) depend) || break;\
+		(cd $$dir;$(MAKE) $(MFLAGS) depend) || exit;\
 	done
 
 clean:
 	-@ rm -f core *~ *.o *.bck
 	@for dir in $(DIRS); do\
-		(cd $$dir;$(MAKE) $(MFLAGS) clean) || break;\
+		(cd $$dir;$(MAKE) $(MFLAGS) clean) || exit;\
 	done
 
 distclean: clean

@@ -56,24 +56,24 @@ static:
 	@rm -f $(LIBRARY)$(LIBEXT)
 	@for dir in $(FLDIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
-        	(cd $$dir;$(MAKE) $(MFLAGS) static) || break;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) static) || exit;\
 	done	
 	$(MAKE) $(LIBRARY)$(LIBEXT)
 	@for dir in $(DIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
-        	(cd $$dir;$(MAKE) $(MFLAGS) static) || break;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) static) || exit;\
 	done	
 
 shared:
 	@rm -f $(LIBRARY)$(DSOEXT)
 	@for dir in $(FLDIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
-        	(cd $$dir;$(MAKE) $(MFLAGS) shared) || break;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) shared) || exit;\
 	done	
 	$(MAKE) $(DSO)$(DSOEXT)
 	@for dir in $(DIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
-        	(cd $$dir;$(MAKE) $(MFLAGS) shared) || break;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) shared) || exit;\
 	done
 
 programs:
@@ -105,14 +105,14 @@ $(DSO).$(FL_API_VERSION).dll:
 clean:
 	@for dir in $(DIRS) $(FLDIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
-        	(cd $$dir;$(MAKE) $(MFLAGS) clean) || break;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) clean) || exit;\
 	done
 	@rm -f *~ $(LIBRARY).*
 
 depend:
 	@for dir in $(DIRS) $(FLDIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
-        	(cd $$dir;$(MAKE) $(MFLAGS) depend) || break;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) depend) || exit;\
 	done
 
 ################################################################
@@ -127,7 +127,7 @@ install_static: static
 	@chmod 644 $(libdir)/$(LIBNAME)$(LIBEXT)
 	@for dir in $(DIRS) $(FLDIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
-        	(cd $$dir;$(MAKE) $(MFLAGS) install_static) || break;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) install_static) || exit;\
 	done
 
 install_shared: shared
@@ -143,7 +143,7 @@ install_shared: shared
 	@if [ -f "$(EFLTK_TOPDIR)/lib/$(DLLIMPORTNAME)" ]; then cp -f $(EFLTK_TOPDIR)/lib/$(DLLIMPORTNAME) $(libdir); fi
 	@for dir in $(DIRS) $(FLDIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
-        	(cd $$dir;$(MAKE) $(MFLAGS) install_shared) || break;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) install_shared) || exit;\
 	done
  
 install_programs:

@@ -54,7 +54,7 @@ static: $(LIBRARY)$(LIBEXT)
 ifneq ($(DIRS), )
 	@for dir in $(DIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
-        	(cd $$dir;$(MAKE) $(MFLAGS) static) || break;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) static) || exit;\
 	done
 endif
 
@@ -62,7 +62,7 @@ shared: $(DSO)$(DSOEXT)
 ifneq ($(DIRS), )
 	@for dir in $(DIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
-        	(cd $$dir;$(MAKE) $(MFLAGS) shared) || break;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) shared) || exit;\
 	done
 endif
 
@@ -93,7 +93,7 @@ clean:
 	@touch makedepend
 ifneq ($(DIRS), )
 	@for dir in $(DIRS); do\
-		(cd $$dir;$(MAKE) $(MFLAGS) clean) || break;\
+		(cd $$dir;$(MAKE) $(MFLAGS) clean) || exit;\
 	done
 endif
 
@@ -108,7 +108,7 @@ install_static: static
 ifneq ($(DIRS), )
 	@for dir in $(DIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
-        	(cd $$dir;$(MAKE) $(MFLAGS) install_static) || break;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) install_static) || exit;\
 	done
 endif
 
@@ -125,7 +125,7 @@ install_shared: shared
 ifneq ($(DIRS), )
 	@for dir in $(DIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
-		(cd $$dir;$(MAKE) $(MFLAGS) install_shared) || break;\
+		(cd $$dir;$(MAKE) $(MFLAGS) install_shared) || exit;\
 	done
 endif
 
@@ -136,7 +136,7 @@ static: $(STATIC_OBJECTS)
 ifneq ($(DIRS), )
 	@for dir in $(DIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
-        	(cd $$dir;$(MAKE) $(MFLAGS) static) || break;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) static) || exit;\
 	done
 endif
 
@@ -144,7 +144,7 @@ shared: $(SHARED_OBJECTS)
 ifneq ($(DIRS), )
 	@for dir in $(DIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
-        	(cd $$dir;$(MAKE) $(MFLAGS) shared) || break;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) shared) || exit;\
 	done
 endif
 
@@ -152,7 +152,7 @@ install_static: static
 ifneq ($(DIRS), )
 	@for dir in $(DIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
-        	(cd $$dir;$(MAKE) $(MFLAGS) install_static) || break;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) install_static) || exit;\
 	done
 endif
 
@@ -160,7 +160,7 @@ install_shared: shared
 ifneq ($(DIRS), )
 	@for dir in $(DIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
-		(cd $$dir;$(MAKE) $(MFLAGS) install_shared) || break;\
+		(cd $$dir;$(MAKE) $(MFLAGS) install_shared) || exit;\
 	done
 endif
 
@@ -169,7 +169,7 @@ clean:
 	@touch makedepend
 ifneq ($(DIRS), )
 	@for dir in $(DIRS); do\
-		(cd $$dir;$(MAKE) $(MFLAGS) clean) || break;\
+		(cd $$dir;$(MAKE) $(MFLAGS) clean) || exit;\
 	done
 endif
 
@@ -189,7 +189,7 @@ ifneq ($(CPPFILES), )
 endif
 ifneq ($(DIRS), )
 	@for dir in $(DIRS); do\
-        	(cd $$dir;$(MAKE) $(MFLAGS) depend) || break;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) depend) || exit;\
 	done
 endif
 
@@ -197,7 +197,7 @@ programs: $(PROGRAM)
 ifneq ($(DIRS), )
 	@for dir in $(DIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
-        	(cd $$dir;$(MAKE) $(MFLAGS) programs) || break;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) programs) || exit;\
 	done
 endif
 
@@ -215,7 +215,7 @@ endif
 ifneq ($(DIRS), )
 	@for dir in $(DIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
-        	(cd $$dir;$(MAKE) $(MFLAGS) install_programs) || break;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) install_programs) || exit;\
 	done
 endif
 
@@ -223,7 +223,7 @@ ifneq ($(PROGRAM), )
 
 $(PROGRAM): $(OBJECTS)
 	@echo Linking $(PROGRAM)...
-	@$(CXX) -o $(EFLTK_BINDIR)/$(PROGRAM) $(OBJECTS) $(PROGRAM_LIBS) $(LDLIBS)
+	$(CXX) -o $(EFLTK_BINDIR)/$(PROGRAM) $(OBJECTS) $(PROGRAM_LIBS) $(LDLIBS)
 ifneq ($(STRIP), ) 
 	@$(STRIP) $(EFLTK_BINDIR)/$(PROGRAM)$(EXEEXT)
 endif
