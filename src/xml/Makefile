@@ -1,5 +1,4 @@
 CPPFILES = \
-	Fl_XmlCtx.cpp \
         Fl_XmlDoc.cpp \
         Fl_XmlNode.cpp \
         Fl_XmlParser.cpp \
