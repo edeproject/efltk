@@ -40,12 +40,13 @@ void Fl_Thread::destroy() { }
 /////////////
 // FL_MUTEX
 
-void Fl_Mutex::init() {
-	pthread_mutex_init(&cs,NULL);
-}
+// Linux supports recursive locks, use them directly, with some cheating:
+#ifdef PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP
 
-void Fl_Mutex::destroy() {
-	pthread_mutex_destroy(&cs);
+extern pthread_mutexattr_t Fl_Mutex_attrib;
+
+void Fl_Mutex::init() {
+	pthread_mutex_init(&cs, &Fl_Mutex_attrib);
 }
 
 void Fl_Mutex::lock() {
@@ -54,6 +55,33 @@ void Fl_Mutex::lock() {
 
 void Fl_Mutex::unlock() {
 	pthread_mutex_unlock(&cs);
+}
+
+#else 
+
+// standard pthread mutexes need a bit of work to be recursive:
+void Fl_Mutex::init() {
+	recursive_counter = 0;
+	pthread_mutex_init(&cs, NULL);
+}
+
+void Fl_Mutex::lock() {
+    if(!recursive_counter || owner_ != pthread_self()) {
+		pthread_mutex_lock(&cs);
+		owner_ = pthread_self();
+    }
+    recursive_counter++;	
+}
+
+void Fl_Mutex::unlock() {
+	if (!--recursive_counter) 
+		pthread_mutex_unlock(&cs);
+}
+
+#endif
+
+void Fl_Mutex::destroy() {
+	pthread_mutex_destroy(&cs);
 }
 
 

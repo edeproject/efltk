@@ -38,6 +38,8 @@ private:
 	inline void destroy();
 #ifndef _WIN32
     pthread_mutex_t cs;
+    pthread_t owner_;
+	int recursive_counter;
 #else
     CRITICAL_SECTION cs;
 #endif
