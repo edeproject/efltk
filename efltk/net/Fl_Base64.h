@@ -30,7 +30,7 @@ public:
 	 * @param bufSource Fl_Buffer Source buffer
 	 * @see encode(Fl_String& strDest, const Fl_Buffer& bufSource)
 	 * @author Dejan Lekic, http://dejan.nu6.org
-	*/
+	 */
 	static void encode(Fl_Buffer& bufDest, const Fl_Buffer& bufSource);
 
 	/**
@@ -41,7 +41,7 @@ public:
 	 * @param bufSource Fl_Buffer* Source buffer	 
 	 * @see encode(Fl_Buffer& bufDest, const Fl_Buffer& bufSource)
 	 * @author Dejan Lekic, http://dejan.nu6.org
-	*/
+	 */
 	static void encode(Fl_String& strDest, const Fl_Buffer& bufSource);
 
 	/** Decodes base64 encoded buffer "string" into buffer "bufDest" */
@@ -49,12 +49,11 @@ public:
 		
 	/** Decodes base64 encoded string "sArg" into buffer "bufDest" */
 	static int decode(Fl_Buffer &bufDest, const Fl_String &strSource);
-
 }; /* class Fl_Base64 */
 
 #endif
 
-/***** $id$
+/***** $Id$
  *     Project: eFLTK
  ***   This source code is released under GNU LGPL License
  *     Copyright (c) EDE Team, 2000-DWYRT  (DWYRT = Date When You Read This)

@@ -103,8 +103,7 @@ void Fl_Base64::encode(Fl_Buffer& bufDest, const Fl_Buffer& bufSource)
  * @see encode(Fl_Buffer* bufDest, Fl_Buffer* bufSource)
  * @author Dejan Lekic, http://dejan.nu6.org
  */
-void 
-Fl_Base64::encode(Fl_String& strDest, const Fl_Buffer& bufSource)
+void Fl_Base64::encode(Fl_String& strDest, const Fl_Buffer& bufSource)
 {
 	Fl_Buffer bufOut;
 	encode(bufOut, bufSource);
@@ -112,6 +111,7 @@ Fl_Base64::encode(Fl_String& strDest, const Fl_Buffer& bufSource)
 	strDest.append(bufOut.data(), bufOut.bytes());
 } /* encode(Fl_String& strDest, const Fl_Buffer& bufSource) */
 /* ------------------------------------------------------------------------- */
+
 /***** $id$
  *     Project: eFLTK
  ***   This source code is released under GNU LGPL License
