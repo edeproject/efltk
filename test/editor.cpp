@@ -63,7 +63,7 @@ Fl_Text_Buffer     *textbuf = 0;
 Fl_Text_Buffer     *stylebuf = 0;
 Fl_Text_Display::Style_Table_Entry
                    styletable[] = {	// Style table
-                       { FL_BLACK, FL_COURIER,        12, Fl_Text_Display::ATTR_UNDERLINE }, // A - Plain
+                       { FL_BLACK, FL_COURIER,        12 }, // A - Plain
                        { FL_DARK3, FL_COURIER_ITALIC, 12 }, // B - Line comments
                        { FL_DARK3, FL_COURIER_ITALIC, 12 }, // C - Block comments
                        { FL_BLUE,  FL_COURIER,        12 }, // D - Strings
