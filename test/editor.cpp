@@ -541,8 +541,6 @@ int check_save(void) {
 int loading = 0;
 void load_file(char *newfile, int ipos)
 {	
-	printf("LOAD\n");
-
     loading = 1;
     int insert = (ipos != -1);
     changed = insert;	
@@ -554,11 +552,8 @@ void load_file(char *newfile, int ipos)
         fl_alert("Error reading from file \'%s\':\n%s.", newfile, strerror(errno));
     else
         if (!insert) strcpy(filename, newfile);
-		printf("L1\n");
     loading = 0;
     textbuf->call_modify_callbacks();	
-
-	printf("LOAD DONE\n");
 }
 
 void save_file(char *newfile) {
@@ -863,7 +858,7 @@ int main(int argc, char **argv)
 
   Fl_Window* window = new_view();
 
-  window->show(argc, argv);
+  window->show(1, argv);
 
   if (argc > 1) load_file(argv[1], -1);
 

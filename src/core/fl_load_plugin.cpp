@@ -35,8 +35,19 @@ void* fl_load_plugin(const char* name, const char* symbol)
         fprintf(stderr, "%s: function %s missing\n", name, symbol);
         return 0;
     }
-    // anybody know where more informative error information is stored?
-    fprintf(stderr, "%s: error loading plugin\n", name);
+
+    char* msgbuf = 0;
+    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
+                  FORMAT_MESSAGE_FROM_SYSTEM |
+                  FORMAT_MESSAGE_IGNORE_INSERTS,
+                  NULL,
+                  GetLastError(),
+                  MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                  (LPTSTR)&msgbuf,
+                  0,
+                  NULL);
+    fprintf(stderr, "%s\n", msgbuf);
+    LocalFree(msgbuf);
     return 0;
 }
 

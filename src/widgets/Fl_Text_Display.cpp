@@ -308,9 +308,9 @@ void Fl_Text_Display::set_font()
 	} 
 	
 	{ 
-		for (i=0; i<textD->nStyles; i++) 
+		for (i=0; i<mNStyles; i++)
 		{ 
-			int size = mStyleTable[i].size;
+			unsigned size = mStyleTable[i].size;
 			if(text_size()!=size) { fontWidth = -1; break; }
 			fl_font(mStyleTable[i].font, mStyleTable[i].size);
 			styleFont = fl_xfont();
@@ -382,7 +382,7 @@ void Fl_Text_Display::layout()
   text_area.y = Y+BOTTOM_MARGIN;
   text_area.w = W-LEFT_MARGIN-RIGHT_MARGIN - mLineNumWidth - mLineNumLeft;
   text_area.h = H-TOP_MARGIN-BOTTOM_MARGIN;
-  int i;
+  //int i;
 
   /* Find the new maximum font height for this text display */
 #if 0
@@ -2311,7 +2311,7 @@ int Fl_Text_Display::measure_vline( int visLineNum )
 		bufpos = 0;
 	  }
 
-	  if( (bufpos+charlen) >= sizeof(buffer)) {
+	  if( unsigned(bufpos+charlen) >= sizeof(buffer)) {
 		if(mStyleBuffer) fl_font( mStyleTable[ style ].font, mStyleTable[ style ].size );
 		else fl_font( text_font(), text_size() );		
         width += int(fl_width( buffer, bufpos ));	  
@@ -3177,7 +3177,7 @@ void Fl_Text_Display::draw_line_numbers(bool clearAll)
 
 	int y, line, visLine, nCols, lineStart; 
 	char lineNumString[12]; 
-	int lineHeight = mMaxsize ? mMaxsize : fl_height()+leading();
+	int lineHeight = mMaxsize ? mMaxsize : int(fl_height()+leading());
 	int charWidth = mMaxFontBound;
     
 	/* Erase the previous contents of the line number area, if requested */ 
@@ -3206,7 +3206,7 @@ void Fl_Text_Display::draw_line_numbers(bool clearAll)
 		} else if(!clearAll) 
 		{ 
 			fl_color(button_color());
-			fl_rectf(X, y, W, fl_height());			
+			fl_rectf(X, y, W, int(fl_height()));
 			if (visLine == 0) 
 				line++; 
 		}

@@ -200,7 +200,7 @@ static char **select_files(const char *path_, Filter **filters, const char *cap,
     char read_path[FL_PATH_MAX]={0};
     if(path_ && fl_is_dir(path_))
         strncpy(read_path, path_, sizeof(read_path));
-    else if(path_) {
+    else if(path_ && *path_ && strchr(path_, slash)) {
         int len=strlen(path_);
         while(len--) if(path_[len]==slash) break;
         if(len>0) {
@@ -245,7 +245,7 @@ static char *select_file(const char *path_, Filter **filters, const char *cap, i
     char read_path[FL_PATH_MAX]={0};
     if(path_ && fl_is_dir(path_))
         strncpy(read_path, path_, sizeof(read_path));
-    else if(path_) {
+    else if(path_ && *path_ && strchr(path_, slash)) {
         int len=strlen(path_);
         while(len--) if(path_[len]==slash) break;
         if(len>0) {
