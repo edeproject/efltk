@@ -109,7 +109,6 @@ CFILES = \
 	scandir.c \
 	numericsort.c \
 	vsnprintf.c \
-	fl_utf8_ucs2fmap.c \
 	fl_utf8_x.c \
 	fl_utf8_x_input.c \
 	fl_utf8_x_utils.c \
