@@ -1,4 +1,4 @@
-CPPFILES = Fl_ODBC_Database.cpp 
+CPPFILES = fl_odbc.cpp Fl_ODBC_Database.cpp
 
 CFILES =
 
