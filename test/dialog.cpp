@@ -30,19 +30,25 @@
 #include <efltk/Fl_Input.h>
 #include <efltk/fl_ask.h>
 
+#include <stdio.h>
+
 Fl_Dialog *dlg;
 
-// I'm still thinking on operator [] implementation :(
-// It's not a problem if we always have Fl_Input.
-// Otherwise, value() should be Fl_Variant and in Fl_Widget.
 static void cb_test(Fl_Widget*, void*) {
+   char buffer[128];
    Fl_Dialog& dialog = *dlg;
-   Fl_Input *fname = (Fl_Input *)dialog["first_name"];
-   Fl_Input *lname = (Fl_Input *)dialog["last_name"];
-   fname->value("Jonh");
-   lname->value("Doe");
+   // define widgets contents
+   dialog["first_name"] = "Jonh";
+   dialog["last_name"]  = "Doe";
+   // show modal dialog, and get results after it's closed
+   Fl_String fname, lname;
    switch (dialog.show_modal()) {
-   case FL_DLG_OK:      fl_alert("Ok pressed");
+   case FL_DLG_OK:      fname = dialog["first_name"].get_string();
+                        lname = dialog["last_name"].get_string();
+                        sprintf(buffer,"Ok pressed, %s %s",
+                           fname.c_str(), lname.c_str()
+                        );
+                        fl_alert(buffer);
                         break;
    case FL_DLG_CANCEL:  fl_alert("Cancel pressed");
                         break;
