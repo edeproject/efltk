@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x400377
+# %FirstUniqueId:	0x400379
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -501,7 +501,8 @@ test/sockets ::	test/socket.o\
 lib/libefltk_net.so ::	lib/Fl_FTP_Connect.o\
 	lib/Fl_IMAP_Connect.o\
 	lib/Fl_IMAP_DS.o\
-	lib/Fl_FTP_DS.o
+	lib/Fl_FTP_DS.o\
+	lib/Fl_Mail_Message.o
 	rm -f $@
 	$(LD) -shared -o $@ $^ $(LDOPTIONS)
 
@@ -2211,6 +2212,13 @@ lib/Fl_FTP_DS.o : src/net/Fl_FTP_DS.cpp
 # %SourceTarget:	0x400375
 test/net/Fl_FTP_DS.o : src/net/Fl_FTP_DS.cpp
 	$(CXX) -c -o $@ $< -Itest/net -Itest/net $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40033c
+# %SourceTarget:	0x400377
+lib/Fl_Mail_Message.o : src/net/Fl_Mail_Message.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
 
 
 # DO NOT DELETE
@@ -7247,6 +7255,7 @@ test/net/ftp_connect.o :	efltk/net/Fl_FTP_DS.h\
 	efltk/Fl_Date_Time.h\
 	efltk/Fl_String_List.h\
 	efltk/Fl_Memory_DS.h
+lib/Fl_Mail_Message.o :	efltk/net/Fl_Mail_Message.h
 
 
 # %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x4
@@ -7467,6 +7476,7 @@ test/net/ftp_connect.o :	efltk/net/Fl_FTP_DS.h\
 # %TargetInfo test/exceptions.cpp	SourceOrHeader,	UniqueId=0x40036c,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/fast_slow.cpp	SourceOrHeader,	UniqueId=0x40036e,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/file_chooser.cpp	SourceOrHeader,	UniqueId=0x400371,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/net/Fl_FTP_DS.cpp	SourceOrHeader,	UniqueId=0x400375,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x4
@@ -7700,8 +7710,9 @@ test/net/ftp_connect.o :	efltk/net/Fl_FTP_DS.h\
 # %TargetInfo efltk/Fl_Images.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400372,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo test/net/file_small.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x400373,	TargetType=XPM,	IDEFlags=0xe
 # %TargetInfo test/net/folder_small.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x400374,	TargetType=XPM,	IDEFlags=0xe
-# %TargetInfo src/net/Fl_FTP_DS.cpp	SourceOrHeader,	UniqueId=0x400375,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo efltk/net/Fl_FTP_DS.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400376,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo src/net/Fl_Mail_Message.cpp	SourceOrHeader,	UniqueId=0x400377,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo efltk/net/Fl_Mail_Message.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400378,	TargetType=INC,	IDEFlags=0xe
 
 
 # %UniqueId:	0x400001
