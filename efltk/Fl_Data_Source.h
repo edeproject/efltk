@@ -19,6 +19,7 @@
 #define __FL_DATA_SOURCE_H__
 
 #include <efltk/Fl_Variant.h>
+#include <efltk/Fl_Data_Fields.h>
 
 class Fl_Group;
 
@@ -40,12 +41,15 @@ public:
    virtual Fl_Variant&       operator [] (const char *field_name) = 0;
 
    // how many fields do we have in the current record?
-   virtual int               field_count() const = 0;
+   virtual unsigned          field_count() const = 0;
    virtual int               field_index(const char *) const { return -1; }
    
    // access to the field by number, 0..field_count()-1
    virtual const Fl_Variant& operator [] (int) const = 0;
    virtual Fl_Variant&       operator [] (int) = 0;
+
+   virtual const Fl_Data_Field& field (int field_index) const = 0;
+   virtual Fl_Data_Field&       field (int field_index) = 0;
 
    virtual bool              read_field(const char *fname,Fl_Variant& value) = 0; 
    virtual bool              write_field(const char *fname,const Fl_Variant& fvalue) = 0; 

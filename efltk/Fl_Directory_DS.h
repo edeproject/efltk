@@ -46,8 +46,11 @@ public:
    virtual const Fl_Variant& operator [] (const char *field_name) const;
    virtual Fl_Variant&       operator [] (const char *field_name);
 
+   virtual const Fl_Data_Field& field (int field_index) const;
+   virtual Fl_Data_Field&       field (int field_index);
+
    // how many fields do we have in the current record?
-   virtual int               field_count() const;
+   virtual unsigned          field_count() const;
    virtual int               field_index(const char *field_name) const;
 
    // access to the field by number, 0..field_count()-1

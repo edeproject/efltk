@@ -913,7 +913,7 @@ void Fl_ListView::sort_selection() {
 }
 
 void Fl_ListView::moveselection_up(int dy)
-{	
+{
     uint n=selection.size();
     while(n--)
     {
@@ -1059,3 +1059,13 @@ void Fl_ListView::find_default_sizes()
     find_def = false;
 }
 
+void Fl_ListView::fill(Fl_Data_Source &ds) {
+   if (!ds.open()) return;
+
+   clear();
+   header()->button_box(FL_VERT_SHADE_UP_BOX);
+
+   for (unsigned col = 0; col < ds.field_count(); col++) {
+      //add_column("First", 100);
+   }
+}

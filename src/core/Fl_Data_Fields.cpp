@@ -68,3 +68,11 @@ const Fl_Variant& Fl_Data_Fields::operator [] (const char *fname) const {
       return field->value;
    }
 }
+
+const Fl_Data_Field& Fl_Data_Fields::field(unsigned index) const {
+   return *(Fl_Data_Field *)m_list[index];
+}
+
+Fl_Data_Field& Fl_Data_Fields::field(unsigned index) {
+   return *(Fl_Data_Field *)m_list[index];
+}

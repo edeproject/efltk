@@ -28,8 +28,9 @@ class FL_API Fl_Data_Field {
 protected:
    Fl_String   m_name;
 public:
-   Fl_Data_Field(const char *name) { m_name = name; }
+   Fl_Data_Field(const char *name) { m_name = name; width = -1; }
    Fl_Variant  value;
+   int         width;
    const char *name() const { return m_name.c_str(); }
 };
 
@@ -46,6 +47,8 @@ public:
    const Fl_Variant& operator [] (int index) const;
    Fl_Variant&       operator [] (const char *fname);
    const Fl_Variant& operator [] (const char *fname) const;
+   const Fl_Data_Field& field(unsigned index) const;
+   Fl_Data_Field&    field(unsigned index);
 };
 
 #endif

@@ -19,14 +19,13 @@ public:
         HORIZONTAL_ALWAYS = 5,
         VERTICAL_ALWAYS = 6,
         BOTH_ALWAYS = 7,
-
         MULTI_SELECTION = 8,
         MOVE_SELECTION  = 16
     };
 
     enum {
         SORT_ABSOLUTE = 0,
-		SORT_ASC,
+        SORT_ASC,
         SORT_DESC,
         SORT_LAST_TYPE //number of last type
     };
@@ -37,8 +36,8 @@ public:
     void begin();
     void end();
 
-	Fl_ListView_Item *find_userdata(void *data, uint start_index=0);
-	Fl_ListView_Item *find_text(const char *text, uint column, uint start_index=0);
+    Fl_ListView_Item *find_userdata(void *data, uint start_index=0);
+    Fl_ListView_Item *find_text(const char *text, uint column, uint start_index=0);
 
     Fl_ListView_Item *child(uint index) { return items.item(index); }
     uint children() { return items.size(); }
@@ -78,7 +77,7 @@ public:
     int	xposition() const {return xposition_;}
     void xposition(int X);
 
-    Fl_ListView_Item* top(); 						// move to top and set first item to current
+    Fl_ListView_Item* top();             // move to top and set first item to current
     Fl_ListView_Item* item_at(int Y);    // Return item at Y
 
     Fl_ListView_Item *item(Fl_ListView_Item *i) { return (item_ = i); }
@@ -110,6 +109,7 @@ public:
     // Virtual functions
     virtual void insert(Fl_ListView_Item &, uint pos);
     virtual void add(Fl_ListView_Item &);
+    virtual void fill(Fl_Data_Source &ds);
     virtual void remove(int index);
     void remove(Fl_ListView_Item& o) { int w = items.index_of(&o);  remove(w);}
     void remove(Fl_ListView_Item* o) { int w = items.index_of(o); remove(w);}

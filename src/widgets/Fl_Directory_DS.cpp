@@ -21,7 +21,8 @@
 #include <efltk/filename.h>
 #include <efltk/Fl_Directory_DS.h>
 
-static Fl_Variant notFound;
+static Fl_Variant    notFound;
+static Fl_Data_Field fieldNotFound("not_found");
 
    // access to the field by name
 const Fl_Variant& Fl_Directory_DS::operator [] (const char *field_name) const {
@@ -36,8 +37,20 @@ Fl_Variant& Fl_Directory_DS::operator [] (const char *field_name) {
    else  return notFound;
 }
 
+const Fl_Data_Field& Fl_Directory_DS::field (int field_index) const {
+   if (m_current)
+         return m_current->field(field_index);
+   else  return fieldNotFound;
+}
+
+Fl_Data_Field& Fl_Directory_DS::field (int field_index) {
+   if (m_current)
+         return m_current->field(field_index);
+   else  return fieldNotFound;
+}
+
 // how many fields do we have in the current record?
-int Fl_Directory_DS::field_count() const {
+unsigned Fl_Directory_DS::field_count() const {
    if (m_current)
          return m_current->count();
    else  return 0;
