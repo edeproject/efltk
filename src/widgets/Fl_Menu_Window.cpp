@@ -29,6 +29,8 @@
 #include <efltk/fl_draw.h>
 #include <config.h>
 
+float Fl_Menu_Window::default_step_div = 4.0;
+
 // This is the window type used by Fl_Menu to make the pop-ups, and for
 // tooltip popups.
 //
@@ -134,7 +136,7 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
     double max_steps = max( (tw-fw), (th-fh) );
     double min_steps = max( (fw-tw), (fh-th) );
     double steps = max(max_steps, min_steps);
-    steps/=12;
+    steps/=step_div_;
 
     double sx = max( ((double)(fx-tx)/steps), ((double)(tx-fx)/steps) );
     double sy = max( ((double)(fy-ty)/steps), ((double)(ty-fy)/steps) );

@@ -28,6 +28,7 @@
 
 #include <efltk/Fl.h>
 #include <efltk/Fl_Menu_.h>
+#include <efltk/Fl_Menu_Window.h>
 #include <efltk/Fl_Item.h>        // for TOGGLE, RADIO
 #define checkmark(item) (item->type()>=Fl_Item::TOGGLE && item->type()<=Fl_Item::RADIO)
 
@@ -80,6 +81,8 @@ Fl_Menu_::Fl_Menu_(int x,int y,int w, int h,const char* l)
     : Fl_Group(x,y,w,h,l), list_(&default_list), item_(0)
 {
     anim_flags_ = TOP_TO_BOTTOM|LEFT_TO_RIGHT;
+    anim_speed_ = Fl_Menu_Window::default_step_div;
+
     callback(default_callback);
     end();
 }

@@ -784,6 +784,7 @@ int Fl_Menu_::popup(int X, int Y, int W, int H)
 
     MenuWindow w(this, this, indexes, level, W, H);
     w.anim_flags = anim_flags_;
+    w.step_divider(anim_speed_);
     w.widget_ = this;
     first_menu = &w;
 
@@ -793,10 +794,8 @@ int Fl_Menu_::popup(int X, int Y, int W, int H)
 
     // Force menu X/Y on screen
     if(Y+w.oh > Fl::h()) {
-        if(w.oh>Fl::h())
-            Y = 0;
-        else
-            Y = Fl::h()-w.oh;
+        if(w.oh>Fl::h()) Y = 0;
+        else Y = Fl::h()-w.oh;
     }
     if(X+w.ow > Fl::w()) {
         X = Fl::w()-w.ow;
@@ -849,6 +848,7 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
 
     MenuWindow w(this, this, 0, -1);
     w.anim_flags = anim_flags_;
+    w.step_divider(anim_speed_);
     w.menubar = true;
     w.child_of(Fl::first_window());
     first_menu = &w;

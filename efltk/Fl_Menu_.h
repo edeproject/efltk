@@ -97,6 +97,10 @@ public:
   void anim_flags(int f) { anim_flags_ = f; }
   int anim_flags() { return anim_flags_; }
 
+  // This set animation speed as a step_divider to menuwindow
+  void anim_speed(float f) { anim_speed_ = f; }
+  float anim_speed() { return anim_speed_; }
+
 #ifndef FLTK_2
   // Commented-out methods cannot be emulated.
 //const Fl_Menu_Item* test_shortcut();
@@ -144,6 +148,7 @@ protected:
     Fl_Widget *executed_;
 
     int anim_flags_;
+    float anim_speed_;
 };
 
 #endif

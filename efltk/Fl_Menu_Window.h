@@ -43,8 +43,10 @@ public:
 
     ~Fl_Menu_Window();
 
-    Fl_Menu_Window(int W, int H, const char *l = 0) : Fl_Single_Window(W,H,l) { animating=false; step_div_=4; }
-    Fl_Menu_Window(int X, int Y, int W, int H, const char *l = 0) : Fl_Single_Window(X,Y,W,H,l) { animating=false; step_div_=4; }
+    Fl_Menu_Window(int W, int H, const char *l = 0) : Fl_Single_Window(W,H,l) { animating=false; step_div_=default_step_div; }
+    Fl_Menu_Window(int X, int Y, int W, int H, const char *l = 0) : Fl_Single_Window(X,Y,W,H,l) { animating=false; step_div_=default_step_div; }
+
+    static float default_step_div;
 
     // Calculated steps needed for animating is divided by this number,
     // So You can control the speed. DEFAULT=4
@@ -58,7 +60,7 @@ protected:
     static bool animate_;
     bool animating; //set true, while animating
 
-    double step_div_;
+    float step_div_;
 };
 
 #endif
