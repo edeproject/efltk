@@ -51,6 +51,8 @@ private:
   int tab_positions(int*, int*);
   int tab_height();
   void draw_tab(int x1, int x2, int W, int H, Fl_Widget* o, int sel=0);
+
+  int tabH;
 };
 
 #endif

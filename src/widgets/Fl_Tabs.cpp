@@ -348,7 +348,6 @@ enum {LEFT, RIGHT, SELECTED};
 
 extern Fl_Widget* fl_did_clipping;
 
-static int H;
 static int p[128];
 void Fl_Tabs::draw()
 {
@@ -357,13 +356,13 @@ void Fl_Tabs::draw()
     int i;
     int w[128];
 
-    H = tab_height();
+    tabH = tab_height();
     if (damage() & FL_DAMAGE_ALL)// redraw the entire thing:
     {
         fl_push_clip(0,0,this->w(),this->h());
         if (v) draw_child(*v);
         parent()->draw_group_box();
-        box()->draw(0, (H>=0?H:0), this->w(), this->h()-(H>=0?H:-H), v ? v->color() : color(), FL_INVISIBLE);
+        box()->draw(0, (tabH>=0?tabH:0), this->w(), this->h()-(tabH>=0?tabH:-tabH)+1, v ? v->color() : color(), FL_INVISIBLE);
         fl_pop_clip();
     }                            // redraw the child
     else
@@ -377,18 +376,18 @@ void Fl_Tabs::draw()
         selected = tab_positions(p,w);        
 
         for(i=0; i<selected; i++)
-            draw_tab(p[i], p[i+1], w[i], H, child(i), LEFT);
+            draw_tab(p[i], p[i+1], w[i], tabH, child(i), LEFT);
         for(i=children()-1; i > selected; i--)
-            draw_tab(p[i], p[i+1], w[i], H, child(i), RIGHT);
+            draw_tab(p[i], p[i+1], w[i], tabH, child(i), RIGHT);
         if(v) {
             i = selected;
-            draw_tab(p[i], p[i+1], w[i], H, child(i), SELECTED);
+            draw_tab(p[i], p[i+1], w[i], tabH, child(i), SELECTED);
         }
     }
 
     if (damage() & FL_DAMAGE_EXPOSE) {
-        fl_clip_out(0, H>=0 ? 0 : h()+H, p[children()]+TABSLOPE, (H>=0?H:-H));
-        fl_clip_out(0, H>0 ? H : 0, this->w(), h()-(H>=0?H:-H-1));
+        fl_clip_out(0, tabH>=0 ? 0 : h()+tabH, p[children()]+TABSLOPE, (tabH>=0?tabH:-tabH));
+        fl_clip_out(0, tabH>0 ? tabH : 0, this->w(), h()-(tabH>=0?tabH:-tabH-1));
         fl_did_clipping = this;
     }
 }
@@ -417,7 +416,7 @@ void Fl_Tabs::draw_tab(int x1, int x2, int W, int H, Fl_Widget* o, int what)
   } else {
       H = -H;
       int adjust = (sel?(box()->dh()-box()->dy()):0);
-      button_box()->draw(x1, h()-H-adjust, W, H+adjust-1, c, f|FL_ALIGN_BOTTOM);
+      button_box()->draw(x1, h()-H-adjust+1, W, H+adjust-2, c, f|FL_ALIGN_BOTTOM);
       o->draw_label(x1, h()-H, W, H-1, FL_ALIGN_CENTER);
       if(focused() && o->visible())
           focus_box()->draw(x1+button_box()->dx(),
@@ -438,28 +437,25 @@ public:
     TabBox() : Fl_Flat_Box(0) { dx_=dy_=2; dw_=dh_=4;}
     void draw(int x,int y,int w,int h, Fl_Color color, Fl_Flags f) const
     {
-        bool sel = (f&FL_SELECTED);
-
-        if(f&FL_ALIGN_TOP) {
-            if(sel) h--;
+        if(f&FL_ALIGN_TOP) {            
             int cX=x+CORNER;
             int cY=y+CORNER;
             C('W');
-            fl_line(x, y+h, x, cY);
+            fl_line(x, y+h-1, x, cY);
             fl_line(x, cY, cX, y);
             fl_line(cX, y, x+w, y);
             C('A');
-            fl_line(x+w, y, x+w, y+h);
+            fl_line(x+w, y, x+w, y+h-1);
 
-            x++; y++; w-=2; h--;
+            x++; y++; w-=2;
             C('T');
-            fl_line(x, y+h, x, cY);
+            fl_line(x, y+h-1, x, cY);
             fl_line(x, cY, cX, y);
             fl_line(cX, y, x+w, y);
             C('M');
-            fl_line(x+w, y, x+w, y+h);
-
-            x++; y++; w--;
+            fl_line(x+w, y, x+w, y+h-1);
+			
+            x++; y++; w--; h--;
             fl_color(color);
             fl_newpath();
             fl_vertex(x, y+h-1);   fl_vertex(x, cY);
@@ -469,9 +465,7 @@ public:
             fl_fill();
 
         } else {
-
-            if(sel) { y++; h--; }
-
+						
             int cX=x+CORNER;
             int cY=y+h-CORNER;
             C('W');
@@ -535,7 +529,8 @@ static void revert(Fl_Style* s)
 {
     s->box = FL_UP_BOX;
     s->button_box = &tabbox;
-    s->focus_box = &tabfocusbox;
+    //s->focus_box = &tabfocusbox;
+	s->focus_box = FL_NO_BOX;
     s->color = FL_GRAY;
     s->selection_color = FL_GRAY;
 }
@@ -549,6 +544,7 @@ Fl_Tabs::Fl_Tabs(int X,int Y,int W, int H, const char *l)
 {
     style(default_style);
     push_ = 0;
+	tabH = 0;
 }
 
 
