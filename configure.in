@@ -32,6 +32,17 @@ fi
 
 AC_INIT(src/core/Fl.cpp)
 
+dnl EFLTK library version
+FL_MAJOR_VERSION=2
+FL_MINOR_VERSION=0
+FL_PATCH_VERSION=3
+FL_API_VERSION=${FL_MAJOR_VERSION}.${FL_MINOR_VERSION}
+
+AC_SUBST(FL_MAJOR_VERSION)
+AC_SUBST(FL_MINOR_VERSION)
+AC_SUBST(FL_PATCH_VERSION)
+AC_SUBST(FL_API_VERSION)
+
 AC_PROG_RANLIB
 
 LIBEXT=".a"
@@ -49,6 +60,12 @@ THEMELIBS=""
 PACKAGE="efltk"
 AC_SUBST(PACKAGE)
 
+EFLTK_BUILD=`date +%G%m%d`
+AC_SUBST(EFLTK_BUILD)
+
+EFLTK_BUILDDIR=`pwd`
+AC_SUBST(EFLTK_BUILDDIR)
+
 dnl# Get the operating system and version number...
 uname=`uname`
 uversion=`uname -r | sed -e 's/-.*$//g;s/\.//g'`
@@ -62,8 +79,9 @@ dnl# it.
 LD="\${CXX}"
 LDLIBS="-lX11 -lXext -lm"
 
-DSOEXT=".so.2"
+DSOEXT=".so.$FL_API_VERSION"
 DSOSHORTEXT=".so"
+
 DEBUGFLAG=""
 SYSTYPE="UNIX"
 DSOCOMMAND=""
@@ -96,7 +114,7 @@ case $uname in
     HP-UX*)
 	  DSOCOMMAND="ld -b -z +h \${DSONAME} $DEBUGFLAG -o"
 	  THEMECOMMAND="ld -b -z $DEBUGFLAG -o"
-	  DSOEXT=".sl.2"
+	  DSOEXT=".sl.$FL_API_VERSION"
 	  DSOSHORTEXT=".sl"
 	  ;;
     CYGWIN* | WIN32)
@@ -108,12 +126,12 @@ case $uname in
           DSOCOMMAND="\${CXX} -Wl,--out-implib,\$@.import -shared $DEBUGFLAG -o"
           THEMECOMMAND="\${CXX} -shared $DEBUGFLAG -o"
 	  DSOLIBS="-lgdi32 -luser32 -lmsvcrt -lwsock32 -lws2_32 -lcomdlg32"
-	  THEMELIBS="-L ../lib -lefltk.2.dll"
+	  THEMELIBS="-L \${EFLTK_BUILDDIR}/lib -lefltk.2.dll"
           DSOLIBimagesNAME="efltk_images"
           DSOLIBformsNAME="efltk_forms"
           DSOLIBglNAME="efltk_gl"
           DSOLIBglutNAME="efltk_glut"
-	  DSOEXT=".2.dll"
+	  DSOEXT=".$FL_API_VERSION.dll"
 	  DSOSHORTEXT=""
 	  ;;
 
@@ -130,22 +148,20 @@ esac
 
 BUILDTARGETS="shared programs"
 INSTALLTARGETS="install_shared install_programs"
-FLLIB="../lib/libefltk${DSOEXT}"
-FLGLLIB="../lib/libefltk_gl${DSOEXT}"
-FLGLUTLIB="../lib/libefltk_glut${DSOEXT}"
-FLFORMSLIB="../lib/libefltk_forms${DSOEXT}"
-FLIMAGESLIB="../lib/libefltk_images${DSOEXT}"
-FLXMLLIB="../lib/libefltk_xml${DSOEXT}"
+
+FLLIB="\${EFLTK_BUILDDIR}/lib/libefltk${DSOEXT}"
+FLGLLIB="\${EFLTK_BUILDDIR}/lib/libefltk_gl${DSOEXT}"
+FLIMAGESLIB="\${EFLTK_BUILDDIR}/lib/libefltk_images${DSOEXT}"
+FLXMLLIB="\${EFLTK_BUILDDIR}/lib/libefltk_xml${DSOEXT}"
+
 CFLAGS="$CFLAGS -DFL_SHARED"
 CXXFLAGS="$CXXFLAGS -DFL_SHARED"
 case $uname in
 	WIN32)
-	    FLLIB="../lib/libefltk.2.dll.a"
-	    FLGLLIB="../lib/libefltk_gl.2.dll.a"
-	    FLGLUTLIB="../lib/libefltk_glut.2.dll.a"
-	    FLFORMSLIB="../lib/libefltk_forms.2.dll.a"
-	    FLIMAGESLIB="../lib/libefltk_images.2.dll.a"
-	    FLXMLLIB="../lib/libefltk_xml.2.dll.a"
+	    FLLIB="\${EFLTK_BUILDDIR}/lib/libefltk.2.dll.a"
+	    FLGLLIB="\${EFLTK_BUILDDIR}/lib/libefltk_gl.2.dll.a"
+	    FLIMAGESLIB="\${EFLTK_BUILDDIR}/lib/libefltk_images.2.dll.a"
+	    FLXMLLIB="\${EFLTK_BUILDDIR}/lib/libefltk_xml.2.dll.a"
 	;;
 esac
 
@@ -153,12 +169,12 @@ AC_ARG_ENABLE(static, [  --enable-static         create static libraries])
 if test x$enable_static = xyes; then
 	BUILDTARGETS="static programs"
 	INSTALLTARGETS="install_static install_programs"
-	FLLIB="../lib/libefltk${LIBEXT}"
-	FLGLLIB="../lib/libefltk_gl${LIBEXT}"
-	FLGLUTLIB="../lib/libefltk_glut${LIBEXT}"
-	FLFORMSLIB="../lib/libefltk_forms${LIBEXT}"
-	FLIMAGESLIB="../lib/libefltk_images${LIBEXT}"
-	FLXMLLIB="../lib/libefltk_ext${LIBEXT}"
+	FLLIB="\${EFLTK_BUILDDIR}/lib/libefltk${LIBEXT}"
+	FLGLLIB="\${EFLTK_BUILDDIR}/lib/libefltk_gl${LIBEXT}"
+	FLGLUTLIB="\${EFLTK_BUILDDIR}/lib/libefltk_glut${LIBEXT}"
+	FLFORMSLIB="\${EFLTK_BUILDDIR}/lib/libefltk_forms${LIBEXT}"
+	FLIMAGESLIB="\${EFLTK_BUILDDIR}/lib/libefltk_images${LIBEXT}"
+	FLXMLLIB="\${EFLTK_BUILDDIR}/lib/libefltk_ext${LIBEXT}"
 	CFLAGS="${CFLAGS:=}"
 	CXXFLAGS="${CXXFLAGS:=}"
 fi
@@ -222,15 +238,6 @@ else
     if test $ac_cv_sizeof_long -eq 8; then
         AC_DEFINE(U64,unsigned long)
     fi
-fi
-
-dnl #shit...
-if test $ac_cv_sizeof_int -eq 8; then
-    AC_DEFINE(UINT16, unsigned char)
-    AC_DEFINE(UINT32, unsigned short)
-else
-    AC_DEFINE(UINT16, unsigned short)
-    AC_DEFINE(UINT32, unsigned int)
 fi
 
 AC_HEADER_DIRENT
@@ -408,11 +415,7 @@ AC_SUBST(THREADSLIBS)
 
 STRIP=strip
 AC_PATH_PROG(STRIP_PATH, ${STRIP},, $PATH)
-if test z${STRIP_PATH} != z; then
-	HAVE_STRIP=1
-        AC_SUBST(HAVE_STRIP)
-        AC_SUBST(STRIP_PATH)
-fi
+AC_SUBST(STRIP_PATH)
 
 MAKEDEPEND="\${CXX} -M"
 
@@ -504,9 +507,6 @@ AC_SUBST(EXCEPTIONFLAG)
 
 AC_DEFINE_UNQUOTED(PREFIX, "${prefix}")
 AC_DEFINE_UNQUOTED(CONFIGDIR, "${prefix}/share/ede")
-
-EFLTK_BUILD=`date +%G%m%d`
-AC_SUBST(EFLTK_BUILD)
 
 AC_SUBST(DSOEXT)
 AC_SUBST(DSOSHORTEXT)

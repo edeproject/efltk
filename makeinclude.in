@@ -26,40 +26,45 @@
 
 PACKAGE		=@PACKAGE@
 
-prefix		=@prefix@
-exec_prefix	=@exec_prefix@
-bindir		=@bindir@
-includedir	=@includedir@
-libdir		=@libdir@
-srcdir		=@srcdir@
-VPATH		=@srcdir@
+EFLTK_BUILDDIR = @EFLTK_BUILDDIR@
+FL_API_VERSION = @FL_API_VERSION@
+SYSTYPE	       = @SYSTYPE@
 
-SYSTYPE		=@SYSTYPE@
+prefix		= @prefix@
+exec_prefix	= @exec_prefix@
+bindir		= @bindir@
+datadir		= @datadir@
+includedir	= @includedir@
+libdir		= @libdir@
+mandir		= @mandir@
+srcdir		= @srcdir@
+VPATH		= @srcdir@
 
 # compiler names:
 CXX		=@CXX@
 CC		=@CC@
 MAKEDEPEND	=@MAKEDEPEND@
 
-HAVE_STRIP      =@HAVE_STRIP@
-STRIP           =@STRIP_PATH@ 
+STRIP           =@STRIP_PATH@
 
 # flags for C++ compiler:
 # WAS: I removed the -I@srcdir@, please use "xyz" rather than <xyz>
 # for files that are in the same directory as the source file.
-CFLAGS		= -DHAVE_CONFIG_H -I.. @CFLAGS@ @DEBUGFLAG@
-CXXFLAGS	= -DHAVE_CONFIG_H -I.. @CXXFLAGS@ @DEBUGFLAG@
-DSOCFLAGS	= @DSOCFLAGS@
+CFLAGS		= -DHAVE_CONFIG_H @CFLAGS@ @DEBUGFLAG@
+CXXFLAGS	= -DHAVE_CONFIG_H @CXXFLAGS@ @DEBUGFLAG@
+DSOCFLAGS	= @DSOCFLAGS@ -DFL_LIBRARY
 
-# program to make the archive:
+# static libs:
 LIBEXT		=@LIBEXT@
 LIBCOMMAND	=@LIBCOMMAND@
 RANLIB		=@RANLIB@
+
+# shared libs:
 DSOEXT		=@DSOEXT@
 DSOSHORTEXT	=@DSOSHORTEXT@
 DSOCOMMAND	=@DSOCOMMAND@
-THEMECOMMAND	=@THEMECOMMAND@
 
+THEMECOMMAND	=@THEMECOMMAND@
 LD		=@LD@
 
 # libraries to link with:
@@ -67,8 +72,6 @@ LDLIBS		=@LDFLAGS@ @FLLIB@ @LDLIBS@
 DSOLIBS		=@DSOLIBS@
 THEMELIBS	=@THEMELIBS@
 GLDLIBS		=@FLGLLIB@ @GLLIB@
-GLUTLIBS	=@FLGLUTLIB@ @FLGLLIB@ @GLLIB@
-FORMSLIBS	=@FLFORMSLIB@
 IMAGELIBS	=@FLIMAGESLIB@
 THREADSLIBS	=@THREADSLIBS@
 JPEGLIBS	=@LIBJPEG@
@@ -90,32 +93,32 @@ INSTALLTARGETS	=@INSTALLTARGETS@
 
 .o$(EXEEXT):
 	@echo Linking $@...
-	@$(CXX) -I.. -I../.. $(CXXFLAGS) $< $(LINKFLTK) $(LDLIBS) -o $@
+	@$(CXX) -I$(EFLTK_BUILDDIR) $(CXXFLAGS) $< $(LINKFLTK) $(LDLIBS) -o $@
 #	$(POSTBUILD) $@ ../FL/mac.r
 
 .c.o:
 	@echo Compiling $<...
-	@$(CC) -I.. -I../.. $(CFLAGS) -c $< -o $@
+	@$(CC) -I$(EFLTK_BUILDDIR) $(CFLAGS) -c $< -o $@
 
 .cpp.o:
 	@echo Compiling $<...
-	@$(CXX) -I.. -I../.. $(CXXFLAGS) -c $< -o $@
+	@$(CXX) -I$(EFLTK_BUILDDIR) $(CXXFLAGS) -c $< -o $@
 
 %.static.o : %.cpp
 	@echo Compiling $<...
-	@$(CXX) -I.. -I../.. $(CXXFLAGS) -c $< -o $@
+	@$(CXX) -I$(EFLTK_BUILDDIR) $(CXXFLAGS) -c $< -o $@
 
 %.static.o : %.c
 	@echo Compiling $<...
-	@$(CC) -I.. -I../.. $(CFLAGS) -c $< -o $@
+	@$(CC) -I$(EFLTK_BUILDDIR) $(CFLAGS) -c $< -o $@
 
 %.shared.o : %.cpp
 	@echo Compiling $<...
-	@$(CXX) -I.. -I../.. $(DSOCFLAGS) $(CXXFLAGS) -c $< -o $@
+	@$(CXX) -I$(EFLTK_BUILDDIR) $(DSOCFLAGS) $(CXXFLAGS) -c $< -o $@
 
 %.shared.o : %.c
 	@echo Compiling $<...
-	@$(CC) -I.. -I../.. $(DSOCFLAGS) $(CFLAGS) -c $< -o $@
+	@$(CC) -I$(EFLTK_BUILDDIR) $(DSOCFLAGS) $(CFLAGS) -c $< -o $@
 
 .man.0 .man.1 .man.3:
 	@echo Formatting $<...
