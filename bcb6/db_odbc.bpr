@@ -18,7 +18,7 @@
       adortl.bpi ibxpress.bpi cds.bpi bdecds.bpi qrpt.bpi teeui.bpi teedb.bpi 
       tee.bpi dss.bpi teeqr.bpi visualclx.bpi visualdbclx.bpi vclie.bpi 
       xmlrtl.bpi inet.bpi inetdbbde.bpi inetdbxpress.bpi inetdb.bpi nmfast.bpi 
-      webdsnap.bpi bcbie.bpi websnap.bpi soaprtl.bpi dbxcds.bpi indy.bpi 
+      bcbie.bpi soaprtl.bpi dbxcds.bpi indy.bpi 
       bcb2kaxserver.bpi"/>
     <PATHCPP value=".;..\test\db"/>
     <PATHPAS value=".;"/>
