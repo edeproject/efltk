@@ -36,7 +36,6 @@
 class Fl_FontSize {
 public:
   Fl_FontSize *next;	// linked list for a single Fl_Font_
-  Fl_FontSize *next_all;// linked list so we can destroy em all
   unsigned size;
   int charset;
   int *width[64];
@@ -47,7 +46,6 @@ public:
 };
 
 static Fl_FontSize* fl_fontsize;
-static Fl_FontSize* all_fonts;
 
 #include <stdio.h>
 
@@ -146,23 +144,13 @@ Fl_FontSize::Fl_FontSize(const char* name, int size, int charset)
   this->font = font;
   this->size = size;
   this->charset = charset;
-  next_all = all_fonts;
-  all_fonts = this;  
+
+  append_font(this);
 }
 
 Fl_FontSize::~Fl_FontSize() {
   if (this == fl_fontsize) fl_fontsize = 0;
   DeleteObject(font);
-}
-
-// Deallocate Win32 fonts on exit. Warning: it will crash if you try
-// to do any fonts after this, because the pointers are not changed!
-void fl_font_rid() {
-  for (Fl_FontSize* fontsize = all_fonts; fontsize;) {
-    Fl_FontSize* next = fontsize->next;
-    delete fontsize;
-    fontsize = next;
-  }
 }
 
 Fl_Font fl_create_font(const char *system_name)

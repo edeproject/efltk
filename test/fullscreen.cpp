@@ -217,7 +217,7 @@ int main(int argc, char **argv) {
     eb.callback(exit_cb);
     y+=30;
 
-    if (initfull) {b3.set(); b3.do_callback(FL_BUTTON_PRESSED);}
+    if (initfull) {b3.set(); b3.do_callback();}
 
     window.end();
     window.show(argc,argv);

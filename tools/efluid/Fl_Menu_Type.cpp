@@ -239,7 +239,7 @@ int Shortcut_Button::handle(int e) {
       v = Fl::event_state()&(FL_WIN|FL_ALT|FL_CTRL|FL_SHIFT) | Fl::event_key();
       if (v == FL_BackSpace && svalue) v = 0;
     }
-    if (v != svalue) {svalue = v; do_callback(e); redraw();}
+    if (v != svalue) {svalue = v; do_callback(); redraw();}
     return 1;
   } else if (e == FL_UNFOCUS) {
     int c = changed(); value(0); if (c) set_changed();

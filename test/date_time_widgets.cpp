@@ -9,25 +9,23 @@
 Fl_Box *statusBox;
 
 void datetime_cb(Fl_Widget *w, void *) {
-    if (Fl::event() == FL_DATA_CHANGE) {
-        Fl_Date_Interval_Input *dii = dynamic_cast<Fl_Date_Interval_Input *>(w);
-        if (dii) {
-            statusBox->label(dii->value() + Fl_String("..") + dii->value2());
-            statusBox->redraw();
-            return;
-        }
-        Fl_Date_Time_Input *dti = dynamic_cast<Fl_Date_Time_Input *>(w);
-        if (dti) {
-            statusBox->label(dti->value());
-            statusBox->redraw();
-            return;
-        }
-        Fl_Date_Input *di = dynamic_cast<Fl_Date_Input *>(w);
-        if (di) {
-            statusBox->label(di->value());
-            statusBox->redraw();
-            return;
-        }
+    Fl_Date_Interval_Input *dii = dynamic_cast<Fl_Date_Interval_Input *>(w);
+    if (dii) {
+        statusBox->label(dii->value() + Fl_String("..") + dii->value2());
+        statusBox->redraw();
+        return;
+    }
+    Fl_Date_Time_Input *dti = dynamic_cast<Fl_Date_Time_Input *>(w);
+    if (dti) {
+        statusBox->label(dti->value());
+        statusBox->redraw();
+        return;
+    }
+    Fl_Date_Input *di = dynamic_cast<Fl_Date_Input *>(w);
+    if (di) {
+        statusBox->label(di->value());
+        statusBox->redraw();
+        return;
     }
 }
 

@@ -63,7 +63,7 @@ void test_cb(Fl_Widget* w, void*) {
         mw->relayout();
         menus[0]->redraw();
     }
-    m->do_callback(FL_MENU_ITEM);
+    m->do_callback();
 }
 
 void quit_cb(Fl_Widget*, void*) {exit(0);}

@@ -49,7 +49,7 @@ void Fl_Value_Input::input_cb(Fl_Widget*, void* v)
         if (t.when())
         {
             t.clear_changed();
-            t.do_callback(FL_NO_EVENT);
+            t.do_callback();
         }
         else
         {

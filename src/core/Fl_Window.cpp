@@ -222,7 +222,7 @@ int Fl_Window::handle(int event)
             case FL_KEY:
             case FL_SHORTCUT:
                 if(Fl::event_clicks()) break; // make repeating key not close everything 
-                if(test_shortcut()) { do_callback(FL_KEYBOARD); return 1; } 
+                if(test_shortcut()) { do_callback(); return 1; } 
                 break; 
         /*case FL_PUSH: 
             THIS MUST BE AN OPTION

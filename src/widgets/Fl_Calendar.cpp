@@ -56,7 +56,7 @@ void Fl_Calendar::dayButtonClicked(unsigned day) {
     if (day < 1 || day > 31) return;
     m_activeButtonIndex = day - 1;
     redraw();
-    do_callback(FL_DATA_CHANGE);
+    do_callback();
 }
 
 void Fl_Calendar::switchButtonClicked(int monthChange) {

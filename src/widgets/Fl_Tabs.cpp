@@ -657,7 +657,7 @@ int Fl_Tabs::handle(int event) {
                 } else {
                     i++; if (i >= children()) i = 0;
                 }
-                value(child(i)); do_callback(event);
+                value(child(i)); do_callback();
                 return 1;
             }
             if (!selected) return 0;

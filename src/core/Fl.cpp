@@ -45,7 +45,7 @@ float Fl::version() {return FL_VERSION;}
 //
 
 Fl_Widget   *Fl::belowmouse_, *Fl::pushed_, *Fl::focus_, *Fl::modal_;
-int          Fl::damage_, Fl::e_type, Fl::e_argument, Fl::e_x, Fl::e_y, Fl::e_dx, Fl::e_dy,
+int          Fl::damage_, Fl::e_type, Fl::e_x, Fl::e_y, Fl::e_dx, Fl::e_dy,
 	     Fl::e_x_root, Fl::e_y_root, Fl::e_state,  Fl::e_clicks,
 	     Fl::e_is_click, Fl::e_keysym;
 	     

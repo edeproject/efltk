@@ -229,7 +229,8 @@ DONE:
     when(save_when);
     if (save_when&(FL_WHEN_CHANGED|FL_WHEN_ENTER_KEY) && changed())
     {
-        clear_changed(); do_callback(FL_KEY);
+        clear_changed();
+        do_callback();
     }
     return 1;
 }

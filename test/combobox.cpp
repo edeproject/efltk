@@ -1,3 +1,6 @@
+#include <stdio.h>
+
+#if 0
 #include <efltk/Fl.h>
 #include <efltk/Fl_Window.h>
 #include <efltk/Fl_Combo_Box.h>
@@ -61,3 +64,13 @@ int main(int argc, char *argv[]) {
     window.show();
     Fl::run();
 }
+
+#else
+
+int main() {
+    puts("BROKEN");
+    return 0;
+}
+
+#endif
+

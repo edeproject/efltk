@@ -1,3 +1,5 @@
+#if 0
+
 #include <efltk/Fl_Window.h>
 #include <efltk/Fl_Button.h>
 #include <efltk/Fl_Popup_Window.h>
@@ -188,8 +190,8 @@ void Fl_Popup_ListView::cb_clicked(Fl_Widget *w, void *d) {
         }
     } else {
         if (Fl::event() == FL_DATA_CHANGE && plw->m_masterWidget) {
-            puts("Combobox data changed");
-            plw->m_masterWidget->do_callback(FL_DATA_CHANGE);
+            //puts("Combobox data changed");
+            plw->m_masterWidget->do_callback();
             return;
         }
     }
@@ -544,3 +546,5 @@ void Fl_Combo_Box::fill(Fl_Data_Source& ds,Fl_String user_data_column)
     Fl_Combo_Box::listview()->fill(ds,user_data_column); 
     current(saveGroup);
 }
+
+#endif

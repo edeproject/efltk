@@ -84,12 +84,9 @@ static void cb_test2(Fl_Widget*, void*) {
 }
 
 void dialog_callback(Fl_Widget *widget,void *data) {
-    // we only need dialog buttons' events here
-    if (Fl::event() == FL_DIALOG_BTN) { 
-        // we only want to process user-defined buttons here
-        if (widget->argument() > Fl_Dialog::BTN_HELP) {
-            fl_alert("User defined button clicked.\nButton id is "+Fl_String((int)widget->argument()));
-        }
+    // we only want to process user-defined buttons here
+    if (widget->argument() > Fl_Dialog::BTN_HELP) {
+        fl_alert("User defined button clicked.\nButton id is "+Fl_String((int)widget->argument()));
     }
 }
 

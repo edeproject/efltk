@@ -97,34 +97,6 @@ enum {  // events
     FL_DND_LEAVE        = 20,
     FL_DND_RELEASE      = 21,
 
-    // This is the end of standard eFLTK events.
-
-    // window events
-    FL_WND_CLOSE        = 30,
-    FL_WND_DESTROY      = 31,
-
-    // dialog events
-    FL_DIALOG_BTN       = 40,
-    FL_DIALOG_OK        = 41,
-    FL_DIALOG_CANCEL    = 42,
-    FL_DIALOG_HELP      = 43,
-
-    // data events
-    FL_DATA_CHANGE      = 50,
-
-    // menu events
-    FL_MENU_DEFAULT     = 60,
-    FL_MENU_ITEM        = 61,
-
-    // button events
-    FL_BUTTON_PRESSED   = 70,
-
-    // user command events
-    FL_UC_INSERT            = 80,
-    FL_UC_DELETE            = 81,
-    FL_UC_EDIT              = 82,
-    FL_UC_REFRESH           = 83,
-
      // back compatability values:
     FL_KEYBOARD         = FL_KEY
 };

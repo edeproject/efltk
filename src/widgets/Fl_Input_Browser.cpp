@@ -141,7 +141,7 @@ void ComboBrowser::browser_cb(Fl_Widget *w, void *data)
     combo->redraw(FL_DAMAGE_VALUE);
     combo->hide_popup();
 
-    combo->do_callback(FL_DATA_CHANGE);
+    combo->do_callback();
 }
 
 //////////////////////////////////////////////
@@ -208,7 +208,7 @@ static Fl_Named_Style style("Input_Browser", 0, &Fl_Input_Browser::default_style
 Fl_Named_Style* Fl_Input_Browser::default_style = &::style;
 
 void Fl_Input_Browser::input_cb(Fl_Input *in, Fl_Input_Browser *data) {
-    data->do_callback(FL_DATA_CHANGE);
+    data->do_callback();
 }
 
 #define popup_minw 100

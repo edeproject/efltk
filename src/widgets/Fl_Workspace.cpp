@@ -110,7 +110,7 @@ void Fl_MDI_Viewport::top(Fl_MDI_Window *win)
         focus(win);
 
         if(_bar) _bar->update_tasks();
-        do_callback(FL_DATA_CHANGE);
+        do_callback();
     }
 }
 
@@ -184,7 +184,7 @@ void Fl_MDI_Viewport::close_all()
         if(((o->flags() & FL_MDI_WINDOW) == FL_MDI_WINDOW))
         {
             Fl_MDI_Window *win = (Fl_MDI_Window *)o;
-            win->do_callback(FL_WND_CLOSE);
+            win->do_callback();
         }
     }
     if(_bar) _bar->update_tasks();

@@ -207,7 +207,7 @@ int Flcc_HueBox::handle(int e)
                 if (fabs(H-ih) < 3*6.0f/w()) H = float(ih);
                 if (fabs(S-is) < 3*1.0f/h()) S = is;
                 if (Fl::event_state(FL_CTRL)) H = float(ih);
-                if (c->hsv(H, S, c->v())) c->do_callback(FL_DATA_CHANGE);
+                if (c->hsv(H, S, c->v())) c->do_callback();
             }
             return 1;
 
@@ -307,7 +307,7 @@ int Flcc_ValueBox::handle(int e)
                 box()->inset(x1,y1,w1,h1);
                 Yf = 1-(Fl::event_y()-y1)/float(h1);
                 if (fabs(Yf-iv)<(3*1.0f/h())) Yf = iv;
-                if (c->hsv(c->h(),c->saturation(),Yf)) c->do_callback(FL_DATA_CHANGE);
+                if (c->hsv(c->h(),c->saturation(),Yf)) c->do_callback();
             }
             return 1;
         default:
@@ -397,7 +397,7 @@ void Fl_Color_Chooser::rgb_cb(Fl_Widget* o, Fl_Color_Chooser *c)
     float g = c->gvalue.value();
     float b = c->bvalue.value();
     if (c->mode() == M_HSV) {
-        if (c->hsv(r,g,b)) c->do_callback(FL_DATA_CHANGE);
+        if (c->hsv(r,g,b)) c->do_callback();
         return;
     }
     if (c->mode() != M_RGB) {
@@ -405,7 +405,7 @@ void Fl_Color_Chooser::rgb_cb(Fl_Widget* o, Fl_Color_Chooser *c)
         g = g/255;
         b = b/255;
     }
-    if (c->rgb(r,g,b)) c->do_callback(FL_DATA_CHANGE);
+    if (c->rgb(r,g,b)) c->do_callback();
 }
 
 void Fl_Color_Chooser::mode_cb(Fl_Widget* o, Fl_Color_Chooser *c)

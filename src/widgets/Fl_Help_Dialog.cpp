@@ -36,7 +36,7 @@ static bool no_prevpush = false;
 
 void Fl_Help_Dialog::cb_close(Fl_Widget*, void *d) 
 {
-    ((Fl_Help_Dialog *)d)->do_callback(FL_WND_CLOSE);
+    ((Fl_Help_Dialog *)d)->do_callback();
 }
 
 void Fl_Help_Dialog::cb_back(Fl_Button*, void *d) 

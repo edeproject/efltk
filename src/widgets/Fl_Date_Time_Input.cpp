@@ -93,7 +93,7 @@ public:
 };
 
 void Fl_Date_Input::input_callback(Fl_Widget *di,void *) {
-    di->parent()->do_callback(FL_DATA_CHANGE);
+    di->parent()->do_callback();
 }
 
 void Fl_Date_Input::button_callback(Fl_Widget *button,void *) {
@@ -107,7 +107,7 @@ void Fl_Date_Input::button_callback(Fl_Widget *button,void *) {
         Fl_Date_Time dt = calendar.date();
         if (inp->value() != dt.date_string()) {
             inp->value(dt.date_string());
-            dateInput->do_callback(FL_DATA_CHANGE);
+            dateInput->do_callback();
         }
     }
 }

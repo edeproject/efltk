@@ -153,9 +153,9 @@ public:
     uchar when() const        { return when_; }
     void  when(uchar i)       { when_ = i; }
 
-    void do_callback(int event) { do_callback(this, user_data_, event);}
-    void do_callback(Fl_Widget *o, void *arg, int event, int event_argument=0);
-    void do_callback(Fl_Widget *o, long arg, int event, int event_argument=0);
+    void do_callback() { do_callback(this, user_data()); }
+    void do_callback(Fl_Widget *o, void *arg);
+    void do_callback(Fl_Widget *o, long arg);
 
     bool contains(const Fl_Widget*) const;
     bool inside(const Fl_Widget* o) const { return o && o->contains(this); }

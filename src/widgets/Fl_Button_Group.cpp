@@ -9,7 +9,7 @@
 #include <string.h>
 
 static void default_button_callback(Fl_Widget *w, Fl_Button_Group *g) {    
-	w->parent()->do_callback(FL_DATA_CHANGE);
+	w->parent()->do_callback();
 }
 
 // Create a button in the group
@@ -257,7 +257,7 @@ void Fl_Button_Group::value(const Fl_String_List &sl)
 		if(type()!=CHECK_BUTTONS) break;
 	}
 
-	do_callback(FL_DATA_CHANGE);
+	do_callback();
 }
 
 void Fl_Button_Group::preferred_size(int& w,int& h) const

@@ -64,7 +64,7 @@ public:
 
 void Fl_Dialog_Button::dialog_button_cb(Fl_Widget *w,void *) {
     Fl_Group *frame = w->parent();
-    frame->do_callback(FL_DIALOG_BTN);
+    frame->do_callback();
 }
 
 Fl_Dialog_Button::Fl_Dialog_Button(const char* l, Fl_Image *i, int id)
@@ -141,7 +141,7 @@ void Fl_Dialog::buttons_callback(Fl_Button *btn, long id)
         dialog->m_modalResult = (int)id;
     } else {
         // this requires event_argument!
-        dialog->do_callback(btn,btn->argument(),FL_DIALOG_BTN);
+        dialog->do_callback(btn, btn->argument());
     }
 }
 
@@ -193,7 +193,7 @@ void Fl_Dialog::submit(int button_id)
     for (unsigned i = 0; i < m_buttonList.size(); i++) {
         Fl_Widget *btn = m_buttonList[i];
         if(button_id == btn->argument()) {
-            btn->do_callback(btn->argument());
+            btn->do_callback();
             return; // Only one allowed
         }
     }
@@ -319,7 +319,7 @@ int Fl_Dialog::handle(int event)
                 return 1;
             case FL_Enter:
                 if (m_defaultButton) {
-                    m_defaultButton->do_callback(FL_DIALOG_BTN);
+                    m_defaultButton->do_callback();
                     return 1;
                 }
         }

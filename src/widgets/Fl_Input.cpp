@@ -949,7 +949,7 @@ bool Fl_Input::replace(int b, int e, const char* text, int ilen)
 
     mark_ = position_ = undoat;
 
-    if (when()&FL_WHEN_CHANGED) do_callback(FL_DATA_CHANGE); else set_changed();
+    if (when()&FL_WHEN_CHANGED) do_callback(); else set_changed();
     return true;
 }
 
@@ -990,7 +990,7 @@ bool Fl_Input::undo()
     position_ = b;
 
     minimal_update(b1);
-    if (when()&FL_WHEN_CHANGED) do_callback(FL_DATA_CHANGE); else set_changed();
+    if (when()&FL_WHEN_CHANGED) do_callback(); else set_changed();
     return true;
 }
 
@@ -1007,7 +1007,7 @@ void Fl_Input::maybe_do_callback()
 {
     if (changed() || (when()&FL_WHEN_NOT_CHANGED))
     {
-        clear_changed(); do_callback(FL_NO_EVENT);
+        clear_changed(); do_callback();
     }
 }
 

@@ -2471,7 +2471,7 @@ void Fl_Simple_Html::topline(int t) // I - Top line number
 
     scrollbar_.value(topline_, h() - 24, 0, size_);  
 
-    do_callback(FL_DATA_CHANGE);
+    do_callback();
     clear_changed();
 
     if(topline_!=t)

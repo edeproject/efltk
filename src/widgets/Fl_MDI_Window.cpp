@@ -74,7 +74,7 @@ void overlay_rect(int x, int y, int w, int h) {
 }
 
 static void closeMdiWin(Fl_Widget *, void *d) {
-    ((Fl_MDI_Window*)d)->do_callback(FL_WND_CLOSE); 
+    ((Fl_MDI_Window*)d)->do_callback();
 }
 
 static void maxMdiWin(Fl_Widget *, void *d)
@@ -313,11 +313,12 @@ int Fl_MDI_Titlebar::handle(int event)
             }
 
         case FL_RELEASE: {
-                if (when()&FL_WHEN_CHANGED || when()&FL_WHEN_RELEASE) do_callback(event);
-                fl_cursor(FL_CURSOR_DEFAULT);
-                moving=false;
-                return 1;
-            }
+            if (when()&FL_WHEN_CHANGED || when()&FL_WHEN_RELEASE)
+                do_callback();
+            fl_cursor(FL_CURSOR_DEFAULT);
+            moving=false;
+            return 1;
+        }
 
         case FL_DRAG: {
                 if(!moving) return 1;
@@ -1174,7 +1175,7 @@ public:
                 win->maximize(false);
                 break;
             case 2: //CLOSE
-                win->do_callback(FL_WND_CLOSE);
+                win->do_callback();
                 break;
             default:
                 break;

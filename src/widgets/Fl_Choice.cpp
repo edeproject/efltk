@@ -191,7 +191,7 @@ int Fl_Choice::handle(int e)
 
                 Fl_Group::focus(new_focus);
                 redraw();
-                if (new_focus!=old_focus) do_callback(FL_DATA_CHANGE);
+                if (new_focus!=old_focus) do_callback();
 
                 return 1;
             }

@@ -40,13 +40,13 @@ CPPFILES = demo.cpp sizes.cpp hello.cpp resizable.cpp scroll.cpp image.cpp file_
 	browser.cpp threads.cpp progress.cpp editor.cpp inactive.cpp checkers.cpp \
 	valuators.cpp glpuzzle.cpp boxtype.cpp multi_image.cpp help.cpp mdi_test.cpp \
 	resize.cpp tabs.cpp line_style.cpp doublebuffer.cpp subwindow.cpp \
-	keyboard.cpp label.cpp layout.cpp arc.cpp ask.cpp button.cpp buttons.cpp \
+	keyboard.cpp label.cpp layout.cpp arc.cpp ask.cpp buttons.cpp \
 	clock.cpp color_chooser.cpp cube.cpp cursor.cpp curve.cpp fast_slow.cpp \
 	fonts.cpp fullscreen.cpp gl_overlay.cpp iconize.cpp input.cpp navigation.cpp \
 	output.cpp overlay.cpp pack.cpp radio.cpp shape.cpp tile.cpp CubeMain.cpp CubeView.cpp \
 	preferences.cpp image_manip.cpp listview.cpp listview_sort.cpp alphablend.cpp \
 	thread_ball.cpp images.cpp image_loader.cpp tabs1.cpp tabs2.cpp \
-	popup_window.cpp symbols.cpp calendar.cpp maskedinput.cpp bitmap.cpp utf8.cpp \
+	popup_window.cpp symbols.cpp calendar.cpp maskedinput.cpp utf8.cpp \
 	dialog.cpp directory.cpp listview_ds.cpp xml_test.cpp xml_test2.cpp \
 	exceptions.cpp layout2.cpp socket.cpp combobox.cpp labelwidth.cpp \
 	labelwidth2.cpp button_groups.cpp date_time_widgets.cpp input_browser.cpp \
@@ -55,12 +55,12 @@ CPPFILES = demo.cpp sizes.cpp hello.cpp resizable.cpp scroll.cpp image.cpp file_
 ALL =   demo sizes hello resizable scroll image file_chooser menubar browser \
 	threads progress editor inactive checkers valuators boxtype \
 	multi_image help mdi_test resize tabs line_style doublebuffer subwindow \
-	keyboard label layout arc ask button buttons clock color_chooser \
+	keyboard label layout arc ask buttons clock color_chooser \
 	cursor curve fast_slow fonts iconize input navigation input_browser \
 	output overlay pack radio tile preferences image_manip labelwidth \
 	labelwidth2 button_groups listview_sort date_time_widgets \
 	listview alphablend thread_ball images image_loader layout2 split \
-	tabs1 tabs2 popup_window symbols calendar maskedinput bitmap utf8 \
+	tabs1 tabs2 popup_window symbols calendar maskedinput utf8 \
 	dialog directory listview_ds xml_test xml_test2 exceptions socket combobox \
 	group_grow main_window \
 	glpuzzle cube fullscreen gl_overlay shape CubeView

@@ -44,7 +44,7 @@ void Fl_Tool_Bar::cb_menu(Fl_Widget *w, void *data)
         Fl_Widget *toolw = (Fl_Widget *)item->user_data();
         if(item->value()) toolw->set_value();
         else toolw->clear_value();
-        toolw->do_callback(FL_MENU_ITEM);
+        toolw->do_callback();
     }
 }
 
@@ -52,7 +52,7 @@ void Fl_Tool_Bar::default_callback(Fl_Widget *button, void *arg)
 {
     Fl_Tool_Bar *b = (Fl_Tool_Bar *)button->parent();
     b->item(button);
-    b->do_callback(FL_RELEASE);
+    b->do_callback();
 }
 
 int Fl_Tool_Bar::m_icon_sizes[2][2] = { { 20, 20 }, { 32, 32 } };

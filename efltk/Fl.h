@@ -48,7 +48,6 @@ public: // should be private!
 
     static int damage_;
     static int e_type;
-    static int e_argument;
     static int e_x;
     static int e_y;
     static int e_dx;
@@ -140,7 +139,6 @@ public:
 
     // event information:
     static int event()      {return e_type;}
-    static int event_argument() { return e_argument; }
     static int event_x()        {return e_x;}
     static int event_y()        {return e_y;}
     static int event_dx()       {return e_dx;}

@@ -179,7 +179,7 @@ void Fl_Menu_::execute(Fl_Widget* widget)
         if (widget->value()) widget->clear_value(); else widget->set_value();
     }
 
-    do_callback(FL_MENU_ITEM);
+    do_callback();
 }
 
 
@@ -187,7 +187,7 @@ void Fl_Menu_::execute(Fl_Widget* widget)
 void Fl_Menu_::default_callback(Fl_Widget* widget, void*)
 {
     Fl_Widget* item = ((Fl_Menu_*)widget)->item();
-    if(item) item->do_callback(FL_MENU_DEFAULT);
+    if(item) item->do_callback();
 }
 
 
