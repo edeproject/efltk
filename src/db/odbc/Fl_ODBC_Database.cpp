@@ -86,7 +86,7 @@ Fl_ODBC_Field::Fl_ODBC_Field(const char *name,short number,short type,short leng
             flags = FL_ALIGN_RIGHT;
             break;
         case SQL_C_TIMESTAMP:
-            value.set_date(Fl_Date_Time(0.0));
+            value.set_datetime(Fl_Date_Time(0.0));
             width = 10;
             flags = FL_ALIGN_RIGHT;
             break;
@@ -440,6 +440,8 @@ static short ODBCtypeToCType(int odbcType) {
     return VAR_NONE;
 }
 
+Fl_Data_Field *testField;
+
 /**
  * Execute query and fetch results, if any
  */
@@ -499,6 +501,9 @@ void Fl_ODBC_Database::open_query(Fl_Query *query) {
                     columnType,
                     columnLength,
                     columnScale);
+
+            if (column == 2)
+                testField = field;
 
             query_fields(query).add(field);
         }
@@ -563,10 +568,17 @@ void Fl_ODBC_Database::fetch_query(Fl_Query *query)
 
             case SQL_C_SLONG:
             case SQL_C_DOUBLE:
-            case SQL_C_TIMESTAMP:
                 buffer = (char *)field->value.data();
                 rc = SQLGetData(stmt,column,fieldType,buffer,0,&dataLength);
                 break;
+
+            case SQL_C_TIMESTAMP: {
+                    TIMESTAMP_STRUCT t;
+                    rc = SQLGetData(stmt,column,fieldType,&t,0,&dataLength);
+                    Fl_Date_Time dt(t.year,t.month,t.day,t.hour,t.minute,t.second);
+                    field->value.set_datetime(dt);
+                    break;
+                }
 
             case SQL_C_BINARY:
             case SQL_C_CHAR:

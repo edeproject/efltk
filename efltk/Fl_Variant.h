@@ -109,7 +109,7 @@ public:
     }
 
     Fl_Variant& operator =(Fl_Date_Time dt) {
-        set_date(dt);
+        set_datetime(dt);
         return *this;
     }
 

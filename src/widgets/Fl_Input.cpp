@@ -1812,7 +1812,7 @@ void Fl_Input::preferred_size(int& w, int& h) const
     fl_font(text_font(), float(text_size()));
     h = int(fl_height()+fl_descent()) + box()->dh() + 2;
     if(maximum_size()>0) {
-        int maxw = maximum_size() * fl_width("W") + 4;
+        int maxw = int(maximum_size() * fl_width("W")) + 4;
         if (maxw < w) w = maxw;
     }
 }
