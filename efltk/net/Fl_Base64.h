@@ -5,7 +5,7 @@
   * The source below is under LGPL license.
   * Copyright (c) EDE Team. More information: http://ede.sf.net .
   * Authors (sorted by time they worked on this source file):
-  * 	Dejan Lekic <dejan§nu6.org>
+  * 	Dejan Lekic, dejan§nu6.org
   * Contributors (ie. people that have sent patches, ideas, suggestions):
   *     Mikko Lahteenmaki, mikko§fltk.net
   ****************************************************************************/
@@ -14,12 +14,13 @@
 #ifndef _FL_BASE64_H_
 #define _FL_BASE64_H_
 
-#include "../Fl_String_List.h" 	/* needed for string operaions 				 */
-#include "../Fl_Buffer.h"		/* needed for buffer operations */
+#include "../Fl_String_List.h" 	/* needed for string operations				 */
+#include "../Fl_Buffer.h"		/* needed for buffer operations 			 */
 
 /**
  * Fl_Base64 class is responsible for base64 encoding/decoding
  * it works with Fl_Buffer, Fl_String and/or Fl_String_List objects.
+ * @see Fl_Buffer, Fl_String, Fl_String_List
  */
 class FL_API Fl_Base64
 {
