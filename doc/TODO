@@ -13,6 +13,9 @@ Before RC1:
   
 * Re-implement menus - totally!
   
+* Remove exceptions - atleast from core and XML.
+  WinCE + ARM is very bad with them :(
+  
 * Complete and test UTF-8 related code for all platforms
 
 * Complete Fl_Translator class for all platforms
