@@ -1,10 +1,13 @@
 
 #include <efltk/db/Fl_MySQL_Database.h>
+#include <efltk/vsnprintf.h>
 
 #include <stdio.h>	
 #include <stdlib.h>	
 
 /////////////////////////////////////
+
+#define is_flag_set(f) ((f&flags)==f)
 
 /**
  * Driver-specific Fl_Data_Field extension. Contains all the information
@@ -14,8 +17,20 @@
  */
 class Fl_MySQL_Field : public Fl_Data_Field {
 public:
-    Fl_MySQL_Field(const char *name, short type);
-    short col_type;
+    Fl_MySQL_Field(MYSQL_FIELD *field);
+    
+	bool multiple_key() const { return is_flag_set(MULTIPLE_KEY_FLAG); }
+	bool unique_key()   const { return is_flag_set(UNIQUE_KEY_FLAG); }
+	bool primary_key()  const { return is_flag_set(PRI_KEY_FLAG); }
+
+	bool not_null()     const { return is_flag_set(NOT_NULL_FLAG); }	
+	bool has_unsigned() const { return is_flag_set(UNSIGNED_FLAG); }
+	bool has_zerofill() const { return is_flag_set(ZEROFILL_FLAG); }
+	bool has_binary()   const { return is_flag_set(BINARY_FLAG);   }
+	bool has_autoincrement() const { return is_flag_set(AUTO_INCREMENT_FLAG); }
+
+	short col_type;
+	unsigned flags;
 };
 
 /**
@@ -23,10 +38,11 @@ public:
  * Driver TO DO: initialize the column information. Depending on native field type,
  * initialize Fl_Data_Field::value to one of the Fl_Variant types
  */
-Fl_MySQL_Field::Fl_MySQL_Field(const char *name, short type) 
-: Fl_Data_Field(name) 
+Fl_MySQL_Field::Fl_MySQL_Field(MYSQL_FIELD *field) 
+: Fl_Data_Field(field->name) 
 {
-    col_type = type;
+	flags = field->flags;
+    col_type = field->type;
     switch (col_type) 
 	{
         case FIELD_TYPE_TINY:
@@ -43,12 +59,15 @@ Fl_MySQL_Field::Fl_MySQL_Field(const char *name, short type)
             value.set_float(0);
             break;
 
-        case FIELD_TYPE_TIMESTAMP:
 		case FIELD_TYPE_DATE:
 		case FIELD_TYPE_TIME:
-		case FIELD_TYPE_DATETIME:
 		case FIELD_TYPE_YEAR:
-            value.set_date(Fl_Date_Time(0.0));
+			value.set_date(Fl_Date_Time(0.0));
+            break;
+
+        case FIELD_TYPE_TIMESTAMP:
+		case FIELD_TYPE_DATETIME:
+            value.set_datetime(Fl_Date_Time(0.0));
             break;
 
         case FIELD_TYPE_BLOB:			
@@ -118,7 +137,7 @@ static Fl_Date_Time str_to_date(const char *date, short col_type)
     int hour=0, min=0, sec=0;
 
     switch(col_type) {
-    case FIELD_TYPE_TIMESTAMP:
+    case FIELD_TYPE_TIMESTAMP:		
         return timestamp_to_date(date);
 
     case FIELD_TYPE_DATETIME:
@@ -151,9 +170,11 @@ static Fl_Date_Time str_to_date(const char *date, short col_type)
     return Fl_Date_Time(encoded_date + encoded_time);
 }
 
+const int S1 = 24 * 60 * 60; // seconds in 1 day
+
 // MySQL retrieves and displays DATETIME values in 'YYYY-MM-DD HH:MM:SS' format.
 // The supported range is '1000-01-01 00:00:00' to '9999-12-31 23:59:59'. 
-Fl_String date_to_string(Fl_Date_Time date)
+Fl_String date_to_string(const Fl_Date_Time &date)
 {
 	short year, mon, day;
 	short hour, min, sec;
@@ -162,8 +183,9 @@ Fl_String date_to_string(Fl_Date_Time date)
 	Fl_Date_Time::decode_date((double)date, year, mon, day);
 	Fl_Date_Time::decode_time((double)date, hour, min, sec, ms);
 
-	char tmp[32];
-	sprintf(tmp, "%04d-%02d-%02d %02d:%02d:%02d", 
+	char tmp[64];
+	snprintf(tmp, sizeof(tmp)-1, 
+		"%04d-%02d-%02d %02d:%02d:%02d", 
 		year, mon, day,
 		hour, min, sec);
 
@@ -226,6 +248,8 @@ void Fl_MySQL_Database::open_query(Fl_Query *query)
 	Fl_String real_sql;
 	parse_parameters(query, real_sql);	
 
+	printf("REAL: (%s)\n", real_sql.c_str());
+
 	if(mysql_real_query(m_connection, real_sql, real_sql.length()) != 0) {        
         fl_throw(mysql_error(m_connection));
     }
@@ -255,7 +279,7 @@ void Fl_MySQL_Database::open_query(Fl_Query *query)
 	MYSQL_FIELD *field;
 	while((field = mysql_fetch_field(res)))
 	{
-		Fl_Data_Field *data_field = new Fl_MySQL_Field(field->name, field->type);
+		Fl_Data_Field *data_field = new Fl_MySQL_Field(field);
 	    query_fields(query).add(data_field);
 	}
 
@@ -302,20 +326,29 @@ void Fl_MySQL_Database::fetch_query(Fl_Query *query)
             value.set_float(strtod((char*)row[column], 0));
             break;
 
+        case VAR_DATE:
         case VAR_DATETIME:
             value.set_date(str_to_date((char*)row[column], field->col_type));
             break;
 
         case VAR_BUFFER:
-            value.set_buffer((char*)row[column], lengths[column]);
-            ((char*)value.data())[lengths[column]] = '\0';
+			if(lengths[column]>0) {
+				value.set_buffer((char*)row[column], lengths[column]+1);
+				//((char*)value.data())[lengths[column]] = '\0';
+				((char*)value.get_buffer())[lengths[column]] = '\0';
+			} else
+				value.set_buffer(0,0);
             break;
 
         case VAR_STRING:
         case VAR_TEXT:
-        default:
-            value.set_string((char*)row[column], lengths[column]);
-            ((char*)value.data())[lengths[column]] = '\0';
+        default:			
+			if(lengths[column]>0) {
+				Fl_String str((const char*)row[column], lengths[column]);
+				value.set_string(str);//(char*)row[column], lengths[column]);
+				//((char*)value.get_string())[lengths[column]] = '\0';
+			} else
+				value.set_string(0, 0);
             break;
         }
     }
@@ -430,6 +463,7 @@ void Fl_MySQL_Database::get_param(const Fl_Params &params, unsigned param_num, F
 	if(!param) {
 		fl_throw("Parameter at index (" + Fl_String(param_num) + ") not found.");
 	}
+
 	switch(param->type()) 
 	{
 	case VAR_INT:
@@ -443,9 +477,10 @@ void Fl_MySQL_Database::get_param(const Fl_Params &params, unsigned param_num, F
 		}
 		break;		
 		
+	case VAR_DATE:
 	case VAR_DATETIME:
 		ret = '\'';
-		ret += date_to_string(param->get_date());
+		ret += date_to_string(param->get_datetime());
 		ret += '\'';
 		break;
 		
@@ -467,7 +502,7 @@ void Fl_MySQL_Database::get_param(const Fl_Params &params, unsigned param_num, F
 		ret = '\'';
 
 		char *to = (char*)malloc((param->size()*2+1) * sizeof(char));
-		unsigned long to_len = mysql_real_escape_string(m_connection, to, param->get_string(), param->size()); 
+		unsigned long to_len = mysql_real_escape_string(m_connection, to, param->get_string(), param->size()-1); 
 		ret.append(to, to_len);
 		free((char*)to);
 
