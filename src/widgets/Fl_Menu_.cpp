@@ -94,8 +94,8 @@ Fl_Menu_::Fl_Menu_(int x,int y,int w, int h,const char* l)
     anim_speed_ = Fl_Menu_Window::default_step_div;
 
     callback(default_callback);
+    end();
 }
-
 
 int Fl_Menu_::children(const int* indexes, int level) const
 {
