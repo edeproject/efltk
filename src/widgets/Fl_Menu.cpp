@@ -403,7 +403,8 @@ void MenuWindow::fix_indexes()
      }*/
 
     win = this;
-    while(win) {
+    while(win) {		
+		if(win->level_<=0) break;
         state->indexes[win->level_-1] = win->widget_index_;
         win = win->parent;
     }
@@ -846,8 +847,7 @@ int MenuWindow::handle(int event)
     case FL_RELEASE: {
         Fl::pushed_ = 0;
 
-    EXECUTE: // execute the item pointed to by w and current item		
-
+    EXECUTE: // execute the item pointed to by w and current item				
         // If clicked check button in menubar...
         if(state->menubar && widget_ && checkmark(widget_)) {			
 			state->state = DONE_STATE;
