@@ -4,8 +4,8 @@
 
 include ../../makeinclude
 
-CPPFILES = ftp_connect.cpp imap_connect.cpp
-ALL = ftp_connect imap_connect
+CPPFILES = ftp_connect.cpp imap_connect.cpp base64.cpp
+ALL = ftp_connect imap_connect base64
 
 all: demos
 
@@ -24,6 +24,9 @@ ftp_connect: ftp_connect.cpp $(FLNETLIB) $(FLLIB)
 imap_connect: imap_connect.cpp  $(FLNETLIB) $(FLLIB)
 	$(CXX) -I../.. $(CXXFLAGS) $<  $(FLNETLIB) $(LDLIBS) -o $@
 
+base64: base64.cpp  $(FLNETLIB) $(FLLIB)
+    $(CXX) -I../.. $(CXXFLAGS) $<  $(FLNETLIB) $(LDLIBS) -o $@
+    
 depend:
 	$(MAKEDEPEND) -I.. $(CXXFLAGS) $(CPPFILES) > makedepend
 
