@@ -301,10 +301,10 @@ const char * Fl_Text_Buffer::text_range( int start, int end )
  */
 char Fl_Text_Buffer::character( int pos )
 {
+   if ( unsigned(pos) < unsigned(mGapStart) )
+      return mBuf[ pos ];
    if ( unsigned(pos) > (unsigned)mLength )
       return '\0';
-   if ( pos < mGapStart )
-      return mBuf[ pos ];
    else
       return mBuf[ pos + mGapEnd - mGapStart ];
 }
@@ -1408,18 +1408,6 @@ int Fl_Text_Buffer::findchars_backward( int startPos, const char *searchChars,
    }
    *foundPos = 0;
    return 0;
-}
-
-
-/*
- ** Substitute fromChar with toChar in string.
- */
-static void subsChars( char *string, int length, char fromChar, char toChar )
-{
-   char * c;
-
-   for ( c = string; c < &string[ length ]; c++ )
-      if ( *c == fromChar ) * c = toChar;
 }
 
 

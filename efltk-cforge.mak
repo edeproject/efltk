@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x400286
+# %FirstUniqueId:	0x400287
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -6291,8 +6291,8 @@ test/editor.o :	efltk/Fl_Date_Time.h\
 # %TargetInfo src/widgets/Fl_Single_Window.cpp	SourceOrHeader,	UniqueId=0x400238,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Slider.cpp	SourceOrHeader,	UniqueId=0x400239,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Tabs.cpp	SourceOrHeader,	UniqueId=0x40023a,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Text_Buffer.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x40023b,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Text_Display.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x40023c,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/widgets/Fl_Text_Buffer.cpp	SourceOrHeader,	UniqueId=0x40023b,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/widgets/Fl_Text_Display.cpp	SourceOrHeader,	UniqueId=0x40023c,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Text_Editor.cpp	SourceOrHeader,	UniqueId=0x40023d,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Tile.cpp	SourceOrHeader,	UniqueId=0x40023e,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Tool_Bar.cpp	SourceOrHeader,	UniqueId=0x40023f,	TargetType=C++,	IDEFlags=0x4
@@ -6316,6 +6316,7 @@ test/editor.o :	efltk/Fl_Date_Time.h\
 # %TargetInfo src/opengl/Fl_Gl_Window.cpp	SourceOrHeader,	UniqueId=0x400281,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/opengl/gl_draw.cpp	SourceOrHeader,	UniqueId=0x400282,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/opengl/gl_start.cpp	SourceOrHeader,	UniqueId=0x400283,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/editor.cpp	SourceOrHeader,	UniqueId=0x400285,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400056,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x4
@@ -6527,7 +6528,6 @@ test/editor.o :	efltk/Fl_Date_Time.h\
 # %TargetInfo efltk/Fl_Radio_Light_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40026a,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo src/opengl/Fl_Gl_Choice.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400271,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Hor_Value_Slider.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400274,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo test/editor.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400285,	TargetType=C++,	IDEFlags=0x4
 
 
 # %UniqueId:	0x400001
@@ -6570,6 +6570,6 @@ test/editor.o :	efltk/Fl_Date_Time.h\
 #	0x40025e
 #	0x400262
 #	0x400266
-#	0x400284
 #	0x400272
+#	0x400284
 #
