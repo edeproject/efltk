@@ -11,6 +11,11 @@ WHAT IS EFLTK?
 CHANGES BETWEEN FLTK2 AND EFLTK
 	See 'CHANGES' file for description of changes.
 
+DOCUMENTATION
+	Sorry, no API documentation yet.
+        Please see header files and/or FLTK2 documentation
+        at http://www.fltk.org/documentation.html
+
 BUILDING AND INSTALLING EFLTK
 	Currently there's only support Unix style machines,
         althrought it should complie in MS Windows(r) also.
