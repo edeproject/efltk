@@ -179,16 +179,29 @@ void Fl_ListView::damage_item(Fl_ListView_Item *item)
 }
 
 void Fl_ListView::draw_row(int x, int y, int w, int h, Fl_ListView_Item *widget, bool selected) const
-{    
+{
     if(selected) {
 
+        int rowW = 0;
+        for(unsigned n=0; n<header()->columns(); n++)
+            rowW += header()->column_width(n);
+
         fl_color(selection_color());
-        fl_rectf(x, y, w, h);
+        fl_rectf(x, y, rowW, h);
+
+        int rightW = w-rowW;
+        if(rightW > 0) {
+            if(draw_stripes_ && widget->index() & 1)
+                fl_color(button_color());
+            else
+                fl_color(color());
+            fl_rectf(x+rowW, y, rightW, h);
+        }
 
     } else if(draw_stripes_) {
 
         Fl_Color c0 = color();
-        Fl_Color c1 = button_color();        
+        Fl_Color c1 = button_color();
         if(widget->index() & 1 && c1 != c0) {
             // draw odd-numbered items with a dark stripe, plus contrast-enhancing
             // pixel rows on top and bottom:
@@ -196,7 +209,7 @@ void Fl_ListView::draw_row(int x, int y, int w, int h, Fl_ListView_Item *widget,
             fl_rectf(x, y, w, h);
             			
             fl_color(fl_lighter(button_color()));
-            fl_line(x, y, w, y);			
+            fl_line(x, y, w, y);
             fl_line(x, y+h-1, w, y+h-1);
         } else {
             fl_color(c0);
@@ -204,7 +217,6 @@ void Fl_ListView::draw_row(int x, int y, int w, int h, Fl_ListView_Item *widget,
         }
 
     } else {
-
         fl_color(color());
         fl_rectf(x, y, w, h);
     }
@@ -908,70 +920,73 @@ void Fl_ListView::sort_selection() {
 
 void Fl_ListView::moveselection_up(int dy)
 {	
-    uint n=selection.size();	
-	Fl_ListView_Item *i;
+    unsigned n=selection.size();
+    Fl_ListView_Item *i;
 
     while(n--)
     {
-		i = selection[n];
-		items.remove(i->index());
-		items.insert(i->index()-dy, i);
+        i = selection[n];
+        if(items.remove(i->index()))
+            items.insert(i->index()-dy, i);
     }
 
-	// Update Y positions and indexes for safe range, after move.
-	// -10 and +10, only to be sure everything is correct
-	int range_start = selection[selection.size()-1]->index()-10;
-	int range_end	= selection[0]->index()+10;
-	int y, idx;
+    // Update Y positions and indexes for safe range, after move.
+    // -10 and +10, only to be sure everything is correct
+    int range_start = selection[selection.size()-1]->index()-10;
+    int range_end   = selection[0]->index()+10;
+    int y, idx;
 
-	if(range_start<0) {
-		range_start=0;
-		y = 0; idx = 0;
-	} else {
-		y = child(range_start)->y();
-		idx = child(range_start)->index();
-	}
-	if((unsigned)range_end>items.size()) range_end=items.size();
-			
-	for(n=range_start; n<(unsigned)range_end; n++) {		
-		child(n)->y(y);
-		child(n)->index(idx);
-		y += child(n)->h();
-		idx++;
-	}
+    if(range_start<=0) {
+        range_start=0;
+        y = 0; idx = 0;
+    } else {
+        y = child(range_start)->y();
+        idx = child(range_start)->index();
+    }
+    if((unsigned)range_end>items.size())
+        range_end=items.size();
+
+    for(n=range_start; n<(unsigned)range_end; n++) {
+        child(n)->y(y);
+        child(n)->index(idx);
+        y += child(n)->h();
+        idx++;
+    }
 }
 
 void Fl_ListView::moveselection_down(int dy)
 {
-	Fl_ListView_Item *i;
-    for(uint n=0; n<selection.size(); n++)
-    {		
-		i = selection[n];
-		items.remove(i->index());
-		items.insert(i->index()+dy, i);
+    unsigned n;
+    Fl_ListView_Item *i;
+    for(n=0; n<selection.size(); n++)
+    {
+        i = selection[n];
+        if(items.remove(i->index()))
+            items.insert(i->index()+dy, i);
     }
 
-	// Update Y positions and indexes for safe range, after move.
-	// -10 and +10, only to be sure everything is correct
-	int range_start = selection[selection.size()-1]->index()-10;
-	int range_end	= selection[0]->index()+10;
-	int y, idx;
+    // Update Y positions and indexes for safe range, after move.
+    // -10 and +10, only to be sure everything is correct
+    int range_start = selection[selection.size()-1]->index()-10;
+    int range_end   = selection[0]->index()+10;
+    int y, idx;
 
-	if(range_start<=0) {
-		range_start=0;
-		y = 0; idx = 0;
-	} else {
-		y = child(range_start)->y();
-		idx = child(range_start)->index();
-	}
-	if((unsigned)range_end>items.size()) range_end=items.size();
-		
-	for(n=range_start; n<(unsigned)range_end; n++) {		
-		child(n)->y(y);
-		child(n)->index(idx);
-		y += child(n)->h();
-		idx++;
-	}
+    if(range_start<=0) {
+        range_start=0;
+        y = 0; idx = 0;
+    } else {
+        y = child(range_start)->y();
+        idx = child(range_start)->index();
+    }
+    if((unsigned)range_end>items.size())
+        range_end=items.size();
+
+    for(n=range_start; n<(unsigned)range_end; n++) {
+        child(n)->y(y);
+        child(n)->index(idx);
+        y += child(n)->h();
+        idx++;
+    }
 }
 
 void Fl_ListView::remove_selection()
