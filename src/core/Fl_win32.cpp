@@ -92,12 +92,16 @@
 void Fl::sleep_ms(int ms) {
     Sleep(ms);
 }
-
+#include <stdio.h>
 void fl_open_display()
 {
-    if (fl_display) return;
-    extern void fl_private_init();
+	static bool been_here=false;
+	if(been_here) return;
+    
+	extern void fl_private_init();
     fl_private_init(); //Fl_init.cpp
+	
+	been_here=true;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -1248,7 +1252,10 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         case WM_DISPLAYCHANGE:
         case WM_SETTINGCHANGE:
             reload_info = true;
-        case WM_SYSCOLORCHANGE:
+			Fl::read_defaults();
+			// Need to reload also system image format information
+			// And invalidate all images..
+        case WM_SYSCOLORCHANGE:			
             Fl_Style::reload_theme();
             break;
 

@@ -152,7 +152,7 @@ void Fl_Menu_Window::layout()
 
 // Fade effect, blend to opacity (thats NYI)
 void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
-{
+{	
     Fl_Renderer::system_init();
 
     int ow=w, oh=h; // original W&H
