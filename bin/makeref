@@ -1,0 +1,23 @@
+#!/bin/sh
+#
+# This simple shell script makes our reference documentation
+DIR_MAKEREF=`pwd`
+if [ -d doc/reference ]; then
+	doxygen efltk.doxygen
+	cd doc/reference/latex
+	gmake all
+	gmake pdf
+else
+	mkdir doc/reference
+	cd doc/reference
+	mkdir examples gfx html latex man rtf tagfiles
+	cd $DIR_MAKEREF
+	doxygen efltk.doxygen
+        cd doc/reference/latex
+        gmake all
+        gmake pdf
+fi
+
+#
+# $Id$
+#
