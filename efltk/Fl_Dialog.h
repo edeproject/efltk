@@ -176,13 +176,13 @@ public:
      * @param label for tab
      * @param autoColor sets tab color from autocolor table
      */
-    Fl_Scroll	*new_scroll(const char *label, bool autoColor=false);
+    Fl_Scroll   *new_scroll(const char *label, bool autoColor=false);
 
     /**
      * Same as new_scroll(const char *label, bool autoColor=false)
      * @see new_scroll(const char *label, bool autoColor=false)
      */
-    Fl_Group	*new_page(const char *label,bool autoColor=false) { return (Fl_Group*)new_scroll(label, autoColor); }
+    Fl_Group    *new_page(const char *label,bool autoColor=false) { return (Fl_Group*)new_scroll(label, autoColor); }
 
     /**
      * Add new NON-scrollable page to dialog.
@@ -191,7 +191,7 @@ public:
      * @param label for tab
      * @param autoColor sets tab color from autocolor table
      */
-    Fl_Group	*new_group(const char *label, bool autoColor=false);
+    Fl_Group    *new_group(const char *label, bool autoColor=false);
 
     /**
      * Internal handle.
@@ -206,12 +206,12 @@ protected:
      */
     Fl_Widget *find_widget(const char *field_name) const;
 
+    Fl_Tabs        *m_tabs;
+
 private:
     typedef Fl_Window inherited;
 
     static void escape_callback(Fl_Dialog *dialog, void *);
-
-    Fl_Tabs        *m_tabs;
 
     Fl_Button      *m_defaultButton;
     Fl_Group       *m_buttonPanel;
