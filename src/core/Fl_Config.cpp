@@ -564,6 +564,67 @@ void Fl_Config::remove_sec(const char *section)
     _error = CONF_ERR_SECTION;
 }
 
+#include "fl_internal.h"
+
+#if ENABLE_NLS
+lconv *locale_conv = 0;
+char decimal = '.';
+#endif
+
+// Converts locale decimal to '.' e.g. "1,5" to "1.5"
+char *double_to_str(double v)
+{
+    static char ret[128];
+    snprintf(ret, sizeof(ret)-1, "%g", v);
+#if ENABLE_NLS
+    if(!locale_conv) {
+        locale_conv = localeconv();
+        decimal = locale_conv->decimal_point[0];
+    }
+#endif
+    if(decimal=='.') return ret;
+
+    char *ptr = ret;
+    while(*ptr++) if(*ptr==decimal) *ptr = '.';
+    return ret;
+}
+
+// Reads double with '.' as decimal pointer
+double str_to_double(const char *v)
+{
+#if ENABLE_NLS
+    if(!locale_conv) {
+        locale_conv = localeconv();
+        decimal = locale_conv->decimal_point[0];
+    }
+#endif
+    if(decimal=='.') return atof(v);
+
+    static char ret[128];
+    double value=0;
+    const char *ptr = v;
+    char *ret_ptr = ret;
+
+    while(*ptr) {
+        char c = *ptr++;
+        if(c=='.') {
+            break;
+        }
+        *ret_ptr++ = c;
+    }
+    *ret_ptr = '\0';
+    value=double(atoi(ret));
+
+    ret_ptr = ret;
+    while(*ptr) {
+        char c = *ptr++;
+        *ret_ptr++ = c;
+    }
+    *ret_ptr = '\0';
+
+    return value+double(atoi(ret))/10;
+}
+
 /*
  *  Read functions
  */
@@ -634,7 +695,7 @@ int Fl_Config::_read_float (Section *s, const char *key, float &ret, float def_v
 {
     char tmp[128];
     if(!_read_string(s, key, tmp, 0, sizeof(tmp)-1)) {
-        ret = (float)(*tmp?atof(tmp):def_value);
+        ret = (float)str_to_double(tmp);
     } else
         ret = def_value;
     return _error;
@@ -644,7 +705,7 @@ int Fl_Config::_read_double(Section *s, const char *key, double &ret, double def
 {
     char tmp[128];
     if(!_read_string(s, key, tmp, 0, sizeof(tmp)-1)) {
-        ret = (double)(*tmp?atof(tmp):def_value);
+        ret = str_to_double(tmp);
     } else
         ret = def_value;
     return _error;
@@ -731,16 +792,12 @@ int Fl_Config::_write_int(Section *s, const char *key, const int value)
 
 int Fl_Config::_write_float(Section *s, const char *key, const float value)
 {
-    char tmp[128];
-    snprintf(tmp, sizeof(tmp)-1, "%g", value);
-    return _write_string(s, key, tmp);
+    return _write_string(s, key, double_to_str(value));
 }
 
 int Fl_Config::_write_double(Section *s, const char *key, const double value)
 {
-    char tmp[128];
-    snprintf(tmp, sizeof(tmp)-1, "%g", value);
-    return _write_string(s, key, tmp);
+    return _write_string(s, key, double_to_str(value));
 }
 
 int Fl_Config::_write_bool(Section *s, const char *key, const bool value)

@@ -85,7 +85,6 @@ void Fl::init()
         cfg.get("Menus", "Delay", f_val, 0.3f);
         Fl_Menu_::default_delay(f_val);
 
-
         // Read Fl_Tooltip defaults:
         cfg.get("Tooltips", "Effects", b_val, true);
         Fl_Tooltip::effects(b_val);
