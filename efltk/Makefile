@@ -6,7 +6,7 @@ else
  include $(EFLTK_TOPDIR)/makeinclude
 endif
 
-DIRS = xml db
+DIRS = xml db net
 
 all:
 
