@@ -990,6 +990,8 @@ void Fl_ListView::remove(int index)
 
     w->parent(0);
     items.remove(index);
+	
+	row_count(items.size());
 
     // Relayout
     m_needsetup = true;
