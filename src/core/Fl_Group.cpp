@@ -239,8 +239,7 @@ int Fl_Group::handle(int event)
         if (!key) break;		
 
         int previous = m_focus;		
-        if (previous < 0 || previous >= numchildren) previous = 0;
-		printf("PREV: %d\n", previous);
+        if (previous < 0 || previous >= numchildren) previous = 0;		
         for (i = previous;;)
         {
 	        if (key == FL_Left || key == FL_Up) {
