@@ -7,12 +7,14 @@ class Fl_Ptr_Stack {
 public:
     // Max size, 0=unlimited
     Fl_Ptr_Stack(int max_size=0) { max_size_ = max_size; }
-    virtual ~Fl_Ptr_Stack() { }
+    virtual ~Fl_Ptr_Stack() { clear(); }
 
-    virtual void push(void *data);
-    virtual void *pop();
-    virtual void clear();
+    void clear();
+
+    void push(void *data);
+    void *pop();
     void *peek();
+
     bool empty() { return (items.size()==0); }
     uint size() { return items.size(); }
 
