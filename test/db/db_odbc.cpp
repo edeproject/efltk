@@ -55,34 +55,31 @@ int main (int argc, char *argv[])
         printf ("Ok");
 
         printStepName ("Creating the temp table");
-        Fl_Query query (&db, "CREATE TEMP TABLE _test_ (id int,name char(40),age int,position char(40),comment text)");
+        Fl_Query query (&db, "CREATE TEMP TABLE _test_ (id int,name char(40),age int,position char(40))");
         query.exec ();
         printf ("Ok");
 
         printStepName ("Filling in the temp table");
 
-        query.sql ("INSERT INTO _test_ (id,name,age,position,comment) VALUES (:var_id,:var_name,:var_age,:var_pos,:var_comment)");
+        query.sql ("INSERT INTO _test_ (id,name,age,position) VALUES (:var_id,:var_name,:var_age,:var_pos)");
         Fl_String comments = "Comments are vital";
 
         query.param ("var_id") = 1;
         query.param ("var_name") = "Alex";
         query.param ("var_age") = 38;
         query.param ("var_pos") = "EFLTK developer";
-        query.param ("var_comment").set_buffer(comments.c_str(),comments.length()+1);
         query.exec ();
 
         query.param ("var_id") = 2;
         query.param ("var_name") = "Dejan";
         query.param ("var_age") = 32;
         query.param ("var_pos") = "EFLTK developer";
-        query.param ("var_comment").set_buffer(comments.c_str(),comments.length()+1);
         query.exec ();
 
         query.param ("var_id") = 3;
         query.param ("var_name") = "Mikko";
         query.param ("var_age") = 28;
         query.param ("var_pos") = "EFLTK developer";
-        query.param ("var_comment").set_buffer(comments.c_str(),comments.length()+1);
         query.exec ();
 
         printf ("Ok");
