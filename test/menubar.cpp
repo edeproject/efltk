@@ -26,6 +26,7 @@
 #include <efltk/Fl.h>
 #include <efltk/Fl_Output.h>
 #include <efltk/Fl_Box.h>
+#include <efltk/Fl_Item_Group.h>
 #include <efltk/Fl_Window.h>
 #include <efltk/Fl_Main_Window.h>
 #include <efltk/Fl_Menu_Bar.h>
@@ -165,6 +166,7 @@ Fl_Menu_Item menutable[] = {
     {"A very long menu item"},
     {0},
   {"&Huge", 0, 0, (void*)hugemenu, FL_SUBMENU_POINTER},
+  {"Button",0, 0, 0, FL_MENU_TOGGLE},
   {"Help",0, 0, 0, FL_MENU_RIGHTLAYOUT|FL_SUBMENU},
     {0},
   {0}
@@ -184,9 +186,27 @@ Fl_Menu_Item pulldown[] = {
 #define WIDTH 600
 #define HEIGHT 24 //30 // use 25 for better Windoze look
 
+class I : public Fl_Item_Group
+{
+public:
+    I(const char *n) : Fl_Item_Group(n) { }
+
+    int handle(int e)
+    {
+        printf("E %d\n", e);
+
+        if(e==FL_RELEASE)
+        {
+            menus[3]->popup(Fl::event_x(), Fl::event_y());
+            return 1;
+        }
+        return Fl_Item_Group::handle(e);
+    }
+};
+
 int main(int argc, char **argv) {
   for (int i=0; i<99; i++) {
-    char buf[100];
+      char buf[100];
     sprintf(buf,"item %d",i);
     hugemenu[i].text = strdup(buf);
   }
@@ -248,6 +268,11 @@ int main(int argc, char **argv) {
   mb.type(Fl_Menu_Button::POPUP3);
   mb.menu(menutable);
   mb.callback(test_cb);
+
+  I *i = new I("test");
+  new I("test2");
+
+  mb.add(i);
   menus[3] = &mb;
 
   window.view()->end();

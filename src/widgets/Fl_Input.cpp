@@ -37,10 +37,9 @@
 
 #define MAXBUF 1024
 
-#include <efltk/Fl_Menu_.h>
+#include <efltk/Fl_Menu_Button.h>
 
-static Fl_Menu_ menu_;
-static bool menu_inited=false;
+static Fl_Menu_Button *menu_=0;
 static Fl_Input *menu_widget=0;
 
 #define CUT   1
@@ -880,11 +879,14 @@ Fl_Named_Style* Fl_Input::default_style = &::style;
 Fl_Input::Fl_Input(int x, int y, int w, int h, const char* l)
     : Fl_Widget(x, y, w, h, l)
 {
-    if(!menu_inited) {
-        menu_.add("Cut", 0, cb_menu, (void *)CUT);
-        menu_.add("Copy", 0, cb_menu, (void *)COPY);
-        menu_.add("Paste", 0, cb_menu, (void *)PASTE);
-        menu_inited = true;
+    if(!menu_) {
+        menu_ = new Fl_Menu_Button(0,0,0,0,0);
+        menu_->parent(0);
+        menu_->type(Fl_Menu_Button::POPUP3);
+
+        menu_->add("Cut", 0, cb_menu, (void *)CUT);
+        menu_->add("Copy", 0, cb_menu, (void *)COPY);
+        menu_->add("Paste", 0, cb_menu, (void *)PASTE);
     }
 
     clear_flag(FL_ALIGN_MASK);
@@ -1366,11 +1368,11 @@ int Fl_Input::handle(int event, int X, int Y, int W, int H)
 
     case FL_PUSH:
         if(Fl::event_button()==3) {
-            if(position()==mark()) menu_.find("Cut")->deactivate();
-            else menu_.find("Cut")->activate();
+            if(position()==mark()) menu_->find("Cut")->deactivate();
+            else menu_->find("Cut")->activate();
             ((Fl_Group *)&menu_)->focus(-1);
             menu_widget = this;
-            menu_.popup(Fl::event_x(), Fl::event_y());
+            menu_->popup();
             menu_widget = 0;
             return 1;
         }

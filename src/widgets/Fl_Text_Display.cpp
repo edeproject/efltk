@@ -26,7 +26,7 @@
 #include <efltk/Fl_Text_Buffer.h>
 #include <efltk/Fl_Text_Display.h>
 #include <efltk/Fl_Style.h>
-#include <efltk/Fl_Menu_.h>
+#include <efltk/Fl_Menu_Button.h>
 #include <efltk/x.h>
 
 #include <stdio.h>
@@ -64,8 +64,7 @@ static int max( int i1, int i2 );
 static int min( int i1, int i2 );
 static int countlines( const char *string );
 
-static Fl_Menu_ menu_;
-static bool menu_inited=false;
+static Fl_Menu_Button *menu_=0;
 static Fl_Text_Display *menu_widget=0;
 
 #define CUT   1
@@ -113,11 +112,14 @@ Fl_Text_Display::Fl_Text_Display(int X, int Y, int W, int H,  const char* l)
 {
     int i;
 
-    if(!menu_inited) {
-        menu_.add("Cut", 0, cb_menu, (void *)CUT);
-        menu_.add("Copy", 0, cb_menu, (void *)COPY);
-        menu_.add("Paste", 0, cb_menu, (void *)PASTE);
-        menu_inited = true;
+    if(!menu_) {
+        menu_ = new Fl_Menu_Button(0,0,0,0,0);
+        menu_->parent(0);
+        menu_->type(Fl_Menu_Button::POPUP3);
+
+        menu_->add("Cut", 0, cb_menu, (void *)CUT);
+        menu_->add("Copy", 0, cb_menu, (void *)COPY);
+        menu_->add("Paste", 0, cb_menu, (void *)PASTE);
     }
 
     set_click_to_focus();
@@ -3120,11 +3122,11 @@ int Fl_Text_Display::handle(int event) {
         }
 
         if(Fl::event_button()==3) {
-            if(!buffer()->selected()) menu_.find("Cut")->deactivate();
-            else menu_.find("Cut")->activate();
+            if(!buffer()->selected()) menu_->find("Cut")->deactivate();
+            else menu_->find("Cut")->activate();
             ((Fl_Group *)&menu_)->focus(-1);
             menu_widget = this;
-            menu_.popup(Fl::event_x(), Fl::event_y());
+            menu_->popup();
             menu_widget = 0;
             return 1;
         }

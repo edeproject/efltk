@@ -194,10 +194,10 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
 
     while(steps-- > 0) {
 
-        Fl::check();
-        if(!visible() || !animating) {
+        if(!animating || !shown() || !visible()) {
             break;
         }
+
         rx+=(sx*xinc);
         ry+=(sy*yinc);
         rw+=(sw*winc);
@@ -227,6 +227,7 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
             //XCopyArea(fl_display, pm, fl_xid(this), fl_gc, 0, 0, W, H, 0, 0);
             XFlush(fl_display);
 #endif
+            Fl::check();
         }
 
         ox=X;

@@ -200,13 +200,12 @@ int Fl_Menu_Bar::handle(int event)
         value(-1);
         key_event = false;
         Fl_Widget *w = (highlight_>=0) ? child(highlight_) : 0;
-        if(w && w->type()==Fl_Widget::GROUP_TYPE) {
+        if(w) {
             menu_up=true;
             popup(0,0,0,0);
             menu_up=false;
             return 1;
         }
-
         break;
     }
     case FL_ENTER:

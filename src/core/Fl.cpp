@@ -523,10 +523,12 @@ void Fl::modal(Fl_Widget* widget, bool grab)
         // if (event() == FL_PUSH) repost_the_push_event(); NYI
 #else
         XUngrabKeyboard(fl_display, fl_event_time);
+        XUngrabPointer(fl_display, fl_event_time);
+
         Fl::event_is_click(0);   // avoid double click
         XAllowEvents(fl_display, event()==FL_PUSH ? ReplayPointer : AsyncPointer, CurrentTime);
         // Qt did not do this...
-        XUngrabPointer(fl_display, fl_event_time);
+        
         XFlush(fl_display);      // make sure we are out of danger before continuing...
 #endif
         // because we "pushed back" the FL_PUSH, make it think no buttons are down:
@@ -540,8 +542,8 @@ void Fl::modal(Fl_Widget* widget, bool grab)
     // grab is running. I just grab fltk's first window:
     if (grab && widget)
     {
-#ifdef _WIN32
         Fl_Window* window = first_window();
+#ifdef _WIN32
         if (window)
         {
             SetActiveWindow(fl_xid(window));
@@ -549,16 +551,7 @@ void Fl::modal(Fl_Widget* widget, bool grab)
             grab_ = true;
         }
 #else
-        Fl_Window* window = first_window();
-        if (window &&
-            XGrabKeyboard(fl_display,
-                          fl_xid(window),
-                          true,                // owner_events
-                          GrabModeAsync,       // pointer_mode
-                          GrabModeAsync,       // keyboard_mode
-                          fl_event_time) == GrabSuccess)
-        {
-            //XAllowEvents(fl_display, SyncKeyboard, CurrentTime);
+        if(window) {
             if (XGrabPointer(fl_display,
                              fl_xid(window),
                              true,            // owner_events
@@ -570,18 +563,33 @@ void Fl::modal(Fl_Widget* widget, bool grab)
                              None,            // cursor
                              fl_event_time) == GrabSuccess)
             {
-                grab_ = true;
-                XAllowEvents(fl_display, SyncPointer, CurrentTime);
-            }
-            else
-            {
+                //Pointer grab OK
+                //printf("XGrabPointer OK\n");
+
+                if(XGrabKeyboard(fl_display,
+                                 fl_xid(window),
+                                 true,                // owner_events
+                                 GrabModeAsync,       // pointer_mode
+                                 GrabModeAsync,       // keyboard_mode
+                                 fl_event_time) == GrabSuccess)
+                {
+                    //printf("XGrabKeyboard OK\n");
+                    grab_ = true;
+                    XAllowEvents(fl_display, SyncPointer, CurrentTime);
+                    //Keyboard OK
+                } else {
+                    //Keyboard failed
+                    //printf("XGrabKeyboard failed\n");
+                    XUngrabPointer(fl_display, fl_event_time);
+                }
+            } else {
+                //Pointer failed
                 //printf("XGrabPointer failed\n");
-                XUngrabKeyboard(fl_display, fl_event_time);
             }
         }
         else
         {
-            //printf("XGrabKeyboard failed\n");
+            //printf("No Fl::first_window!n");
         }
 #endif
     }

@@ -76,7 +76,6 @@ void Fl_List::flags_changed(const Fl_Menu_*, Fl_Widget*) {}
 
 static Fl_List default_list;
 
-MenuWindow *Fl_Menu_::first_menu = 0;
 bool Fl_Menu_::key_event = false;
 
 float Fl_Menu_::default_delay_ = 0.2f;

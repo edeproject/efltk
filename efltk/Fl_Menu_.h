@@ -154,27 +154,26 @@ public:
 
 private:
     friend class MenuWindow;
-    Fl_List* list_;	
+    Fl_List* list_;
 
-	static float default_delay_;
-	float delay_;
+    static float default_delay_;
+    float delay_;
 
-	static bool animate_;
-	static bool subwindow_animate_;
+    static bool animate_;
+    static bool subwindow_animate_;
 
     float anim_speed_;
 
 protected:
 		
-	static bool key_event;
-    static MenuWindow *first_menu;
+    static bool key_event;
 
     int indexes[MAX_LEVELS];
     int level;
-	
+
     Fl_Widget *item_;
     Fl_Widget *executed_;
-	
+
     int anim_flags_;
 };
 

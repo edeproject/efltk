@@ -252,7 +252,7 @@ void Fl_Window::child_of(const Fl_Window* w)
 
 bool Fl_Window::exec(const Fl_Window* w, bool grab)
 {
-	Fl_Window *parent_win = (Fl_Window *)(w?w:Fl::first_window());
+    Fl_Window *parent_win = (Fl_Window *)(w?w:Fl::first_window());
 
     clear_value();
     child_of(parent_win);
@@ -263,8 +263,8 @@ bool Fl_Window::exec(const Fl_Window* w, bool grab)
     hide();
     Fl::modal(saved_modal, saved_grab);
 
-	// WIN32 doesnt raise "parent_win", when exiting modal
-	parent_win->show();
+    // WIN32 doesnt raise "parent_win", when exiting modal
+    parent_win->show();
 
     return value();
 }

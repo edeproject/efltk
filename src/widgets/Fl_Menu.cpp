@@ -79,7 +79,7 @@ public:
         return menu_->child(indexes_, level);
     }
 
-	void open_childwin(Fl_Widget *widget, int index);
+    void open_childwin(Fl_Widget *widget, int index);
 
     void show();
     void show(Fl_Window *w);
@@ -104,7 +104,7 @@ private:
     bool empty;
 
 
-    int ow,oh;
+    int ox,oy,ow,oh;
     int Wp, Hp;
 
     int anim_flags;
@@ -112,11 +112,16 @@ private:
     MenuWindow *parent;
 
     static bool key_event;
-    static MenuWindow *current;
 };
 
 bool MenuWindow::key_event = false;
-MenuWindow *MenuWindow::current = 0;
+
+static MenuWindow *first_menu = 0; //First popped up menuwindow
+static MenuWindow *current_menu = 0; //Current subwindow
+
+static MenuWindow *the_window=0;
+static Fl_Widget *the_widget=0;
+static int the_index=0;
 
 static void revert_menuwin(Fl_Style *s) {
     s->color = FL_GRAY;
@@ -130,7 +135,7 @@ Fl_Named_Style* MenuWindow::default_style = &::style_menuwin;
 MenuWindow::MenuWindow(MenuWindow *parent, Fl_Widget *widget, Fl_Menu_ *menu, int *indexes, int level, int Wp, int Hp)
     : Fl_Menu_Window(0,0,0)
 {
-    current = this;
+    current_menu = this;
 
     end();
     style(default_style);
@@ -139,6 +144,8 @@ MenuWindow::MenuWindow(MenuWindow *parent, Fl_Widget *widget, Fl_Menu_ *menu, in
     menubar = false;
     
     anim_flags = 0;
+
+    ox=oy=ow=oh=-1;
 
     child_win = 0;
     add_items = false;
@@ -156,8 +163,17 @@ MenuWindow::MenuWindow(MenuWindow *parent, Fl_Widget *widget, Fl_Menu_ *menu, in
 
 MenuWindow::~MenuWindow()
 {
+    animating = false;
+
     if(child_win) delete child_win;
-    current = parent;
+
+    if(the_window==this) {
+        the_widget = 0;
+        the_index = -1;
+        the_window = 0;
+    }
+
+    current_menu = parent;
 }
 
 void MenuWindow::relayout(int *indexes, int level)
@@ -170,6 +186,7 @@ void MenuWindow::relayout(int *indexes, int level)
 
     animating = false;
 
+    empty = true;
     add_items = true;
 
     layout();
@@ -223,7 +240,6 @@ void MenuWindow::layout()
                 slow_down_to_w = 15;
             }
         }
-
     }
 
     if(!indexes_ || empty) {
@@ -477,7 +493,7 @@ int MenuWindow::forward(int menu)
 void MenuWindow::open_childwin(Fl_Widget *widget, int index)
 {
     if(child_win && child_win->widget_!=widget) {
-        child_win->hide();
+        child_win->destroy();//hide();
         if(child_win->animating) return;
         delete child_win;
         child_win = new MenuWindow(this, widget, menu_, menu_->indexes, level_+1);
@@ -501,19 +517,19 @@ void MenuWindow::open_childwin(Fl_Widget *widget, int index)
         if(nY<0) nY=0;
     }
 
+    child_win->ox = nX;
+    child_win->oy = nY;
+
     if(!child_win->visible()) {
         child_win->position(nX, nY);
-        child_win->show(menu_->first_menu);
+        child_win->show(first_menu);
 
         //If key event, select first item
         if(key_event) child_win->forward(level_+1);
     }
 }
 
-static MenuWindow *the_window=0;
-static Fl_Widget *the_widget=0;
-static int the_index=0;
-void timeout_open_childwin(void *) {
+void timeout_open_childwin(void *arg) {
     if(the_window && the_widget && the_index>=0)
         the_window->open_childwin(the_widget, the_index);
 }
@@ -525,22 +541,22 @@ void timeout_initial(void *) {
 
 int MenuWindow::handle(int event)
 {
-	Fl_Rect rect;
+    Fl_Rect rect;
 
-	if(animating && (event==FL_MOVE||event==FL_DRAG)) {
-		// Stop animating if moving or dragging...
+    if(animating && (event==FL_MOVE||event==FL_DRAG||event==FL_KEY)) {
+        // Stop animating if moving or dragging...
         rect.set(x(), y(), w(), h());
-		animating = false;			
-		return 0;
-	}
+        animating = false;
+        return 0;
+    }
 
     // Redirect mouse events to child_win if needed
-    if(indexes_ && child_win &&
-       ( (event==FL_PUSH || event==FL_DRAG || event==FL_MOVE || event==FL_RELEASE) )
+    if(first_menu == this && indexes_ && child_win
+       && ( (event==FL_PUSH || event==FL_DRAG || event==FL_MOVE || event==FL_RELEASE) )
       ) {
 
         // Check if mouse pointer is pointing to any of parent menus
-        MenuWindow *win=current->parent;
+        MenuWindow *win=current_menu?current_menu->parent:0;
         while(win) {
             rect.set(win->x(), win->y(), win->w(), win->h());
             if(rect.posInRect(Fl::event_x_root(), Fl::event_y_root())) {
@@ -549,10 +565,10 @@ int MenuWindow::handle(int event)
             win=win->parent;
         }
         // If not in parent menus, send all events to current sub-menu
-        if(!win) win = current;
+        if(!win) win = current_menu;
 
         // Redirect events:
-        if(win!=this) {
+        if(win && win!=this) {
             int sx = Fl::e_x; int sy = Fl::e_y;
             Fl::e_x = Fl::event_x_root()-win->x();
             Fl::e_y = Fl::event_y_root()-win->y();
@@ -561,25 +577,6 @@ int MenuWindow::handle(int event)
             Fl::e_y = sy;
             return 1;
         }
-
-        /*
-        MenuWindow *win=child_win;
-        while(win) {
-            Fl_Rect r(win->x(), win->y(), win->w(), win->h());
-            if(r.posInRect(Fl::event_x_root(), Fl::event_y_root())) {
-                break;
-            }
-            win=win->child_win;
-        }
-        if(win) {
-            int sx = Fl::e_x; int sy = Fl::e_y;
-            Fl::e_x = Fl::event_x_root()-win->x();
-            Fl::e_y = Fl::event_y_root()-win->y();
-            win->handle(event);
-            Fl::e_x = sx;
-            Fl::e_y = sy;
-            return 1;
-        }*/
     }
 
     int index=0;
@@ -655,6 +652,8 @@ int MenuWindow::handle(int event)
         }
     }
 
+    //case FL_ENTER:
+    //case FL_LEAVE:
     case FL_DRAG:
     case FL_MOVE:
     case FL_PUSH:
@@ -735,7 +734,7 @@ int MenuWindow::handle(int event)
                 the_widget = widget;
                 the_index = index;
                 the_window = this;
-                Fl::add_timeout(delay, timeout_open_childwin, 0);
+                Fl::add_timeout(delay, timeout_open_childwin, the_window);
             } else if(delay<=0) {
                 the_widget = 0;
                 the_index = -1;
@@ -761,14 +760,22 @@ int MenuWindow::handle(int event)
     case FL_RELEASE: {
         Fl::pushed_ = 0;
 
+    EXECUTE: // execute the item pointed to by w and current item
+
+        // If clicked check button in menubar...
+        if(menubar && widget_ && checkmark(widget_)) {
+            menu_->level=0;
+            menu_->executed_ = widget_;
+            Fl::exit_modal();
+            return 1;
+        }
+
         // Allow menus to be "clicked-up".  Without this a single click will
         // pick whatever item the mouse is pointing at in a pop-up menu:
         if(initial_ && Fl::event_is_click()) {
             initial_ = false;
             return 1;
         }
-
-    EXECUTE: // execute the item pointed to by w and current item
 
         Fl_Widget *widget = 0;
         if(!key_event) {
@@ -814,12 +821,18 @@ int MenuWindow::handle(int event)
 void MenuWindow::show()
 {
     if(!indexes_ || empty) {
+#ifdef _WIN32
         hide();
+#else
+        resize(-1,-1,1,1);
+        Fl_Menu_Window::layout();
+        Fl_Menu_Window::show();
+#endif
         return;
     }
 
     if(!Fl_Menu_::animate()) {
-        Fl_Window::show();
+        Fl_Menu_Window::show();
         return;
     }
 
@@ -830,8 +843,8 @@ void MenuWindow::show()
     int ty=y(), tx=x();
     int tw=ow , th=oh;
     if(ty+th > Fl::h()) {
-		H = th = Fl::h()-ty;
-	}
+        H = th = Fl::h()-ty;
+    }
 
     if(anim_flags&Fl_Menu_::TOP_TO_BOTTOM) {
         Y=y();
@@ -857,7 +870,7 @@ void MenuWindow::show()
         Fl_Menu_Window::show();
 
     resize(tx, ty, ow, oh);
-    layout();
+    Fl_Menu_Window::layout();
 }
 
 void MenuWindow::show(Fl_Window *w)
@@ -868,34 +881,33 @@ void MenuWindow::show(Fl_Window *w)
 
 void Fl_Menu_::relayout_current_menu()
 {
-    if(!MenuWindow::current) return;
+    if(!current_menu) return;
 
-    MenuWindow *current = MenuWindow::current;
-
-    current->add_items = true;
-    current->layout();
+    current_menu->add_items = true;
+    current_menu->layout();
 
     // Force menu on screen
     bool need_layout=false;
-    int nX=current->x(), nY=current->y();
-    if(nX+current->ow > Fl::w()) {
-        nX = Fl::w()-current->ow;
+
+    int nX=current_menu->ox, nY=current_menu->oy;
+    if(nX+current_menu->ow > Fl::w()) {
+        nX = Fl::w()-current_menu->ow;
         need_layout=true;
     }
-    if(nY+current->oh > Fl::h()) {
-        nY = Fl::h()-current->oh;
+    if(nY+current_menu->oh > Fl::h()) {
+        nY = Fl::h()-current_menu->oh;
         if(nY<0) nY=0;
         need_layout=true;
     }
 
-    if(need_layout) {
-        current->position(nX, nY);
-        current->layout();
-    }
-    current->show();
+    current_menu->position(nX, nY);
+
+    current_menu->Fl_Menu_Window::layout();
+    current_menu->show();
 }
 
-//#define DEBUG
+#define DEBUG
+
 #ifdef DEBUG
 # define MODAL false
 #else
@@ -930,50 +942,52 @@ int Fl_Menu_::popup(int X, int Y, int W, int H)
 
     float speed = (anim_speed_==-1)?Fl_Menu_Window::default_anim_speed():anim_speed_;
 
-    MenuWindow w(0, this, this, indexes, level, W, H);
-    w.anim_flags = anim_flags_;
-    w.anim_speed(speed);		
-    w.widget_ = this;
-    MenuWindow *saved_first = Fl_Menu_::first_menu;
-    Fl_Menu_::first_menu = &w;
+    MenuWindow *saved_first = first_menu;
+    MenuWindow *saved_current = current_menu;
 
-    w.relayout(indexes, level);
+    first_menu = new MenuWindow(0, this, this, indexes, level, W, H);
+    first_menu->anim_flags = anim_flags_;
+    first_menu->anim_speed(speed);
+    first_menu->widget_ = this;
+
+    first_menu->relayout(indexes, level);
 
     if(type()&7) {
-        if(w.ow>w.oh) w.slow_down_to_w = 10;
-        else w.slow_down_to_h = 10;
+        if(first_menu->ow>first_menu->oh) first_menu->slow_down_to_w = 15;
+        else first_menu->slow_down_to_h = 15;
     } else
-        w.slow_down_to_h = 20;
+        first_menu->slow_down_to_h = 20;
 
     // Force menu X/Y on screen
-    if(Y+w.oh > Fl::h()) {
-        if(w.oh>Fl::h()) Y = 0;
-        else Y = Fl::h()-w.oh;
+    if(Y+first_menu->oh > Fl::h()) {
+        if(first_menu->oh>Fl::h()) Y = 0;
+        else Y = Fl::h()-first_menu->oh;
     }
-    if(X+w.ow > Fl::w()) {
-        X = Fl::w()-w.ow;
+    if(X+first_menu->ow > Fl::w()) {
+        X = Fl::w()-first_menu->ow;
     }
-    
-    w.position(X, Y);
+
+    first_menu->position(X, Y);
 
     Fl_Widget* saved_modal = Fl::modal();
     bool saved_grab = Fl::grab();
-    w.show(Fl::first_window());
+    first_menu->show(Fl::first_window());
 
     Fl::add_timeout(0.5f, timeout_initial);
 
-    Fl::modal(&w, MODAL);
-    while(Fl::modal() && !Fl::exit_modal_flag()) Fl::wait();
+    for(Fl::modal(first_menu, MODAL); !Fl::exit_modal_flag(); Fl::wait());
+
+    delete first_menu;
 
     Fl::modal(saved_modal, saved_grab);
 
-    Fl_Menu_::first_menu = saved_first;
+    first_menu = saved_first;
+    current_menu = saved_current;
 
-    if(w.child_win) {
-        delete w.child_win;
-        w.child_win=0;
-    }
-    w.hide();
+    // reset sub-window delay stuff...
+    the_widget = 0;
+    the_index = -1;
+    the_window = 0;
 
     if(!executed_) return 0;
 
@@ -1004,22 +1018,23 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
 
     float speed = (anim_speed()==-1)?Fl_Menu_Window::default_anim_speed():anim_speed();
 
-    MenuWindow w(0, this, this, 0, -1);
-    w.anim_flags = anim_flags_;
-    w.anim_speed(speed);		
-    w.menubar = true;
-    w.slow_down_to_h = 20;
-    w.child_of(Fl::first_window());
-    MenuWindow *saved_first = Fl_Menu_::first_menu;
-    Fl_Menu_::first_menu = &w;
-    
+    MenuWindow *saved_first = first_menu;
+    MenuWindow *saved_current = current_menu;
+
+    first_menu = new MenuWindow(0, this, this, 0, -1);
+    first_menu->anim_flags = anim_flags_;
+    first_menu->anim_speed(speed);
+    first_menu->menubar = true;
+    first_menu->slow_down_to_h = 20;
+    first_menu->child_of(Fl::first_window());
+
     Fl_Widget* saved_modal = Fl::modal();
     bool saved_grab = Fl::grab();
     int cur_index = -1;
 
     Fl::add_timeout(0.5f, timeout_initial);
 
-    for(Fl::modal(&w, MODAL); !Fl::exit_modal_flag(); Fl::wait())
+    for(Fl::modal(first_menu, MODAL); !Fl::exit_modal_flag(); Fl::wait())
     {
         Fl_Widget *inside=0;
         int index = -1;
@@ -1027,7 +1042,7 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
         if(!key_event) {
             bool changed = true;
 
-            MenuWindow *win = &w;
+            MenuWindow *win = first_menu;
             while(win) {
                 Fl_Rect r(win->x(), win->y(), win->w(), win->h());
                 if(r.posInRect(Fl::event_x_root(), Fl::event_y_root())) {
@@ -1055,27 +1070,8 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
             inside = child(index);
         }
 
-        if(inside && checkmark(inside)) {
-            if(index!=highlight_) redraw(FL_DAMAGE_CHILD);
-            // Buttons in menubar:
-            if( (key_event && Fl::event_key()!=FL_Enter)
-               || (!key_event && Fl::event_state(FL_BUTTON1))
-              ) {
-                executed_ = inside;
-                highlight_ = selected_ = index;
-                level = 0;
-                value(index);
-                indexes[0] = value();
-                indexes[1] = 0;
-            } else {
-                if(!key_event) level = 0;
-                Fl::exit_modal();
-                break;
-            }
-        }
-
         if(index>=0 && index!=cur_index)
-        {			
+        {
             if(index!=last_selected_) {
                 highlight_ = selected_ = index;
                 redraw(FL_DAMAGE_HIGHLIGHT);
@@ -1085,10 +1081,10 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
             indexes[0] = value();
             indexes[1] = 0;
 
-            w.widget_ = inside;
-            if(w.child_win) {
-                delete w.child_win;
-                w.child_win=0;
+            first_menu->widget_ = inside;
+            if(first_menu->child_win) {
+                delete first_menu->child_win;
+                first_menu->child_win=0;
             }
 
             int nX = inside->x()+WX;
@@ -1100,8 +1096,8 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
             if(inside->takesevents() && inside->active() && child(indexes, level))
             {
                 // Force menu X on screen
-                if(nX+w.ow > Fl::w()) {
-                    nX = Fl::w()-w.ow;
+                if(nX+first_menu->ow > Fl::w()) {
+                    nX = Fl::w()-first_menu->ow;
                 }
 
                 indexes[1] = -1;
@@ -1112,23 +1108,26 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
                 nX=nY=0;
             }
 
-            w.position(nX, nY);
-            w.relayout(tmp_indexes, tmp_level);
+            first_menu->position(nX, nY);
+            first_menu->relayout(tmp_indexes, tmp_level);
 
             cur_index = index;
-            if(!w.shown()) w.show();
+            //if(!first_menu->shown())
+            first_menu->show();
         }
     }
 
+    delete first_menu;
+
     Fl::modal(saved_modal, saved_grab);
 
-    Fl_Menu_::first_menu = saved_first;
+    first_menu = saved_first;
+    current_menu = saved_current;
 
-    if(w.child_win) {
-        delete w.child_win;
-        w.child_win=0;
-    }
-    w.hide();
+    // reset sub-window delay stuff...
+    the_widget = 0;
+    the_index = -1;
+    the_window = 0;
 
     selected_ = -1;
     if(level) highlight_ = -1;
@@ -1142,6 +1141,9 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
 
     return 1;
 }
+
+//////////////////////////////
+// FL_CHOICE
 
 int Fl_Choice::popup(int X, int Y, int W, int H)
 {
@@ -1170,13 +1172,14 @@ int Fl_Choice::popup(int X, int Y, int W, int H)
 
     float speed = (anim_speed()==-1)?Fl_Menu_Window::default_anim_speed():anim_speed();
 
-    MenuWindow w(0, this, this, indexes, level, W, H);
-    w.anim_flags = anim_flags_;
-    w.anim_speed(speed);
-    w.widget_ = this;
-    MenuWindow *saved_first = Fl_Menu_::first_menu;
-    Fl_Menu_::first_menu = &w;
-    MenuWindow *win = &w;
+    MenuWindow *saved_first = first_menu;
+    MenuWindow *saved_current = current_menu;
+
+    first_menu = new MenuWindow(0, this, this, indexes, level, W, H);
+    first_menu->anim_flags = anim_flags_;
+    first_menu->anim_speed(speed);
+    first_menu->widget_ = this;
+    MenuWindow *win = first_menu;
 
     win->position(X, Y-win->ypos(indexes[level])+win->ypos(0));
     win->selected_ = indexes[level];
@@ -1224,22 +1227,23 @@ int Fl_Choice::popup(int X, int Y, int W, int H)
 
     Fl_Widget* saved_modal = Fl::modal();
     bool saved_grab = Fl::grab();
-    w.show(Fl::first_window());
-    Fl::modal(&w, MODAL);
+    first_menu->show(Fl::first_window());
 
     Fl::add_timeout(0.5f, timeout_initial);
 
-    while(Fl::modal() && !Fl::exit_modal_flag()) Fl::wait();
+    for(Fl::modal(first_menu, MODAL); !Fl::exit_modal_flag(); Fl::wait());
+
+    delete first_menu;
 
     Fl::modal(saved_modal, saved_grab);
 
-    Fl_Menu_::first_menu = saved_first;
+    first_menu = saved_first;
+    current_menu = saved_current;
 
-    if(w.child_win) {
-        delete w.child_win;
-        w.child_win=0;
-    }
-    w.hide();
+    // reset sub-window delay stuff...
+    the_widget = 0;
+    the_index = -1;
+    the_window = 0;
 
     if(!executed_) return 0;
 
