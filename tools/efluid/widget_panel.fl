@@ -1,0 +1,487 @@
+# data file for the FLTK User Interface Designer (FLUID)
+version 2,0003 
+images_dir ./ 
+i18n 
+header_name {.h} 
+code_name {.cpp} 
+gridx 5 
+gridy 5 
+snap 2
+Function {make_widget_panel()} {open
+} {
+  Fl_Window {} {open selected
+    xywh {741 217 380 405}
+    extra_code {\#include <efltk/Fl_WM.h>
+o->window_type(Fl_WM::UTIL);
+o->size_range(o->w(), o->h());} visible
+  } {
+    Fl_Tabs panel_tabs {
+      callback propagate_tabs open
+      xywh {0 3 380 353}
+      extra_code {o->parent()->resizable(o);}
+    } {
+      Fl_Group {} {
+        label GUI
+        callback propagate_group open
+        xywh {0 20 380 333}
+        extra_code {o->parent()->resizable(o);}
+      } {
+        Fl_Input {} {
+          label Class
+          user_data 4
+          callback user_class_cb
+          tooltip {This allows you to name a user-defined class that this widget is an instance of, rather than an fltk built-in class. You will need to add a \#include declaration so that the definition of your class is included in the fluid output.}
+          xywh {80 8 176 22} when CHANGED
+        }
+        Fl_Choice {} {
+          callback subtype_cb
+          tooltip {Selects a value for type() for this widget}
+          xywh {256 8 109 22}
+        } {}
+        Fl_Input {} {
+          label Label
+          callback label_cb
+          tooltip {Text displayed on or next to the widget}
+          xywh {80 31 285 22} when CHANGED
+          extra_code {o->take_focus();}
+        }
+        Fl_Box image_label {
+          label Image
+          xywh {9 55 71 22} align 24
+        }
+        Fl_Button {} {
+          label {Image name}
+          callback image_cb
+          tooltip {Select an image to label the widget}
+          xywh {80 54 215 22} align 84 box DOWN_BOX color 7
+        }
+        Fl_Check_Button include_image_button {
+          label inline
+          callback image_inlined_cb
+          tooltip {The image data is inserted as inline data into the output C++ code, rather than generating code to read the image file.}
+          xywh {300 54 72 22} align 84 label_size 10
+        }
+        Fl_Box {} {
+          label Alignment
+          xywh {10 77 70 22} align 24
+        }
+        Fl_Button {} {
+          label {@-1<-}
+          user_data FL_ALIGN_LEFT
+          callback align_cb
+          tooltip {Places label on the left of the widget}
+          xywh {80 79 20 20} type TOGGLE label_type SYMBOL_LABEL
+        }
+        Fl_Button {} {
+          label {@-1->}
+          user_data FL_ALIGN_RIGHT
+          callback align_cb
+          tooltip {Places label on the right of the widget}
+          xywh {100 79 21 20} type TOGGLE label_type SYMBOL_LABEL
+        }
+        Fl_Button {} {
+          label {@-18}
+          user_data FL_ALIGN_TOP
+          callback align_cb
+          tooltip {Places label on the top of the widget}
+          xywh {121 79 21 20} type TOGGLE label_type SYMBOL_LABEL
+        }
+        Fl_Button {} {
+          label {@-12}
+          user_data FL_ALIGN_BOTTOM
+          callback align_cb
+          tooltip {Places label on the bottom of the widget}
+          xywh {142 79 20 20} type TOGGLE label_type SYMBOL_LABEL
+        }
+        Fl_Button {} {
+          label inside
+          user_data FL_ALIGN_INSIDE
+          callback align_cb
+          tooltip {Places label inside the widget}
+          xywh {170 79 60 20} type TOGGLE label_type SYMBOL_LABEL
+        }
+        Fl_Button {} {
+          label clip
+          user_data FL_ALIGN_CLIP
+          callback align_cb
+          tooltip {Turn on clipping to the widget's area when drawing label.  This is slower so it should be left off if label will fit}
+          xywh {235 79 60 20} type TOGGLE
+        }
+        Fl_Button {} {
+          label wrap
+          user_data FL_ALIGN_WRAP
+          callback align_cb
+          tooltip {Word-wrap the label}
+          xywh {300 79 60 20} type TOGGLE
+        }
+        Fl_Value_Input widget_x {
+          label x
+          callback x_cb
+          tooltip {The x coordinate of the widget.}
+          xywh {80 125 57 22} align 20 label_size 10 maximum 2000 step 1 value 10
+        }
+        Fl_Value_Input widget_y {
+          label y
+          callback y_cb
+          tooltip {The y coordinate of the widget.}
+          xywh {137 125 57 22} align 20 label_size 10 maximum 2000 step 1 value 10
+        }
+        Fl_Value_Input widget_width {
+          label w
+          callback width_cb
+          tooltip {The width of the widget.}
+          xywh {194 125 57 22} align 20 label_size 10 maximum 2000 step 1 value 10
+        }
+        Fl_Value_Input widget_height {
+          label h
+          callback height_cb
+          tooltip {The height of the widget.}
+          xywh {251 125 57 22} align 20 label_size 10 maximum 2000 step 1 value 10
+        }
+        Fl_Check_Button {} {
+          label Border
+          callback border_cb
+          tooltip {Enable the window manager border}
+          xywh {80 150 100 22}
+        }
+        Fl_Check_Button set_xy {
+          label {Set xy}
+          callback set_xy_cb
+          tooltip {Window will use this x,y rather than being positioned by the operating system.}
+          xywh {180 150 100 22}
+        }
+        Fl_Check_Button {} {
+          label Modal
+          callback modal_cb
+          tooltip {This window will stay on top of others in the application and will block events from going to other windows until it is hidden or closed.}
+          xywh {80 175 100 22}
+        }
+        Fl_Check_Button {} {
+          label Child
+          callback non_modal_cb
+          tooltip {This window will stay on top of others in the application.}
+          xywh {180 175 100 22}
+        }
+        Fl_Value_Input {} {
+          label value
+          callback value_cb
+          tooltip {The initial value of this widget}
+          xywh {80 150 90 22} align 20 label_size 10
+        }
+        Fl_Value_Input {} {
+          label min
+          callback min_cb
+          tooltip {The minimum value for this valuator}
+          xywh {175 150 90 22} align 20 label_size 10
+        }
+        Fl_Value_Input {} {
+          label max
+          callback max_cb
+          tooltip {The maximum value for this valuator}
+          xywh {270 150 100 22} align 20 label_size 10 value 1
+        }
+        Fl_Value_Input {} {
+          label step
+          callback step_cb
+          tooltip {step:
+Round all movements to multiples of this.
+}
+          xywh {80 175 90 22} align 20 label_size 10
+        }
+        Fl_Value_Input {} {
+          label line
+          callback line_cb
+          tooltip {linesize:
+Increment/decrement for arrow keys.}
+          xywh {175 175 90 22} align 20 label_size 10 minimum 1 step 1
+        }
+        Fl_Value_Input {} {
+          label size
+          callback slider_size_cb
+          tooltip {The size of the scroller}
+          xywh {270 175 100 22} align 20 label_size 10
+          extra_code {o->step(0.01);}
+        }
+        Fl_Group {} {
+          label Attributes
+          callback propagate_group open
+          xywh {75 202 300 40} align 4
+        } {
+          Fl_Check_Button {} {
+            label Resizable
+            callback resizable_cb
+            tooltip {If on, this widget and all it's parents are resizable.  When the parent resizes it moves/resizes all it's children so that this widget's edges remain the same distance from all four sides of the parent.  If this is off this widget will not resize, unless it overlaps a resizable sibling.}
+            xywh {0 0 145 20} align 84
+          }
+          Fl_Check_Button {} {
+            label Hotspot
+            callback hotspot_cb
+            tooltip {Positions the window so this widget is under the mouse.  This is done when show() is called.}
+            xywh {170 0 120 20} align 84
+          }
+          Fl_Check_Button {} {
+            label Visible
+            callback visible_cb
+            tooltip {If unchecked the widget is initially invisible.}
+            xywh {0 20 150 20} align 84
+          }
+          Fl_Check_Button {} {
+            label Active
+            callback active_cb
+            tooltip {If unchecked the widget is initially inactive (disabled, grayed out).}
+            xywh {170 20 120 20} align 84
+          }
+        }
+        Fl_Button {} {
+          label Shortcut
+          callback shortcut_in_cb
+          tooltip {To set a shortcut:
+   Click here, then type the key combination you want.
+To delete the shortcut:
+   Click here, then type backspace.
+To get out of shortcut-setting mode:
+   Click the mouse on this again, or on some other field.}
+          xywh {75 245 300 22} align 4 box DOWN_BOX color 7
+          extra_code {\#include "Shortcut_Button.h"}
+          class Shortcut_Button
+        }
+        Fl_Input {} {
+          label Tooltip
+          callback tooltip_cb
+          tooltip {The pop up tooltip which should be used for the widget.}
+          xywh {75 272 300 55} type Wordwrap color 0xffffe100
+        }
+        Fl_Box {} {
+          label resizable
+          xywh {5 272 370 55} hide deactivate
+          extra_code {o->parent()->resizable(o);}
+        }
+        Fl_Box {} {
+          label Dimensions
+          xywh {10 125 70 22} align 24
+        }
+        Fl_Button {} {
+          label tile
+          user_data FL_ALIGN_TILED
+          callback align_cb
+          tooltip {Tile image}
+          xywh {170 102 60 20} type TOGGLE
+        }
+        Fl_Button {} {
+          label scale
+          user_data FL_ALIGN_SCALE
+          callback align_cb
+          tooltip {Scale image}
+          xywh {235 102 60 20} type TOGGLE
+        }
+      }
+      Fl_Group {} {
+        label Style
+        callback propagate_group open
+        xywh {0 20 380 333} hide
+      } {
+        Fl_Choice {} {
+          label box
+          callback box_cb open
+          tooltip {Type of box to draw around the widget.}
+          xywh {100 10 250 23}
+        } {}
+        Fl_Light_Button {} {
+          label Color
+          callback color_cb
+          tooltip {Color of the widget.}
+          xywh {100 33 125 23} label_size 10
+          extra_code {o->type(0);}
+        }
+        Fl_Light_Button {} {
+          label {Highlight Color}
+          callback highlight_color_cb
+          tooltip {Color to use to draw the widget highlighted.  Use color zero (the black top-left chip in the color chooser) to disable highlighting.}
+          xywh {225 33 125 23} label_size 10
+          extra_code {o->type(0);}
+        }
+        Fl_Choice {} {
+          label {Button box}
+          callback button_box_cb open
+          tooltip {Type of box to draw around buttons that are in the widget.}
+          xywh {100 63 250 23}
+        } {}
+        Fl_Light_Button {} {
+          label {Button Color}
+          callback button_color_cb
+          tooltip {Color to draw buttons inside the widget.}
+          xywh {100 86 125 23} label_size 10
+          extra_code {o->type(0);}
+        }
+        Fl_Light_Button {} {
+          label {Selection Color}
+          callback selection_color_cb
+          tooltip {Color to draw behind selected text, or to color in buttons that are turned on.}
+          xywh {225 86 125 23} label_size 10
+          extra_code {o->type(0);}
+        }
+        Fl_Choice {} {
+          label {Focus box}
+          callback focus_box_cb open
+          tooltip {Type of box to draw around widget that are focused}
+          xywh {100 117 250 22}
+        } {}
+        Fl_Choice {} {
+          label {Label Type}
+          callback label_type_cb open
+          tooltip {How to draw the label}
+          xywh {100 147 250 23}
+        } {}
+        Fl_Choice {} {
+          label {Label Font}
+          callback label_font_cb open
+          tooltip {Font to use for the label}
+          xywh {100 170 190 23}
+        } {}
+        Fl_Value_Input {} {
+          callback label_size_cb
+          tooltip {Size of the font to use for the label}
+          xywh {290 170 60 23} when ENTER_KEY maximum 100 step 1 value 14
+        }
+        Fl_Light_Button {} {
+          label {Label Color}
+          callback label_color_cb
+          tooltip {Color to draw the label}
+          xywh {100 193 125 23} label_size 10
+          extra_code {o->type(0);}
+        }
+        Fl_Light_Button {} {
+          label {Highlight Label Color}
+          callback highlight_label_color_cb
+          tooltip {Color to draw the label when the widget is highlighted.  Use color zero (the black top-left chip in the color chooser) to leave the label colors unchanged.}
+          xywh {225 193 125 23} label_size 10
+          extra_code {o->type(0);}
+        }
+        Fl_Choice {} {
+          label {Text Font}
+          callback text_font_cb open
+          tooltip {Font to use for text displayed inside the widget}
+          xywh {100 227 190 23}
+        } {}
+        Fl_Value_Input {} {
+          callback text_size_cb
+          tooltip {Size of the font to use for text displayed inside the widget}
+          xywh {290 227 60 23} when ENTER_KEY maximum 100 step 1 value 14
+        }
+        Fl_Light_Button {} {
+          label {Text Color}
+          callback text_color_cb
+          tooltip {Color to draw text displayed inside the widget}
+          xywh {100 250 125 23} label_size 10
+          extra_code {o->type(0);}
+        }
+        Fl_Light_Button {} {
+          label {Selected Text Color}
+          callback selected_text_color_cb
+          tooltip {Color to draw selected text inside the widget}
+          xywh {225 250 125 23} label_size 10
+          extra_code {o->type(0);}
+        }
+        Fl_Button {} {
+          label {Reset to default}
+          callback default_cb
+          tooltip {Reset all the above items to the default values for this widget class.}
+          xywh {5 304 124 23}
+        }
+        Fl_Box {} {
+          xywh {135 277 215 25} hide
+          extra_code {o->parent()->resizable(o);}
+        }
+      }
+      Fl_Group {} {
+        label {C++}
+        callback propagate_group open
+        xywh {0 20 380 333} hide
+      } {
+        Fl_Input {} {
+          label Name
+          callback name_cb
+          tooltip {The variable or member name in which to store a pointer to this widget.}
+          xywh {90 8 200 22} when CHANGED
+        }
+        Fl_Check_Button {} {
+          label public
+          callback name_public_cb
+          tooltip {Make the variable public}
+          xywh {295 8 70 22} label_size 10
+        }
+        Fl_Input extra_code_input {
+          label {Extra Code}
+          user_data 0
+          callback extra_code_input_cb
+          tooltip {Extra code to be exectuted after the widget is created. The variable "o" points at the widget.}
+          xywh {90 35 275 110}
+          extra_code {\#include <efltk/Fl_Text_Editor.h>
+Fl_Text_Buffer *buf = new Fl_Text_Buffer; o->buffer(buf);
+o->align(FL_ALIGN_LEFT);}
+          class Fl_Text_Editor
+        }
+        Fl_Input {} {
+          label Callback
+          callback callback_cb
+          tooltip {The name of the callback function, or code body of the callback function}
+          xywh {90 151 275 110}
+          extra_code {Fl_Text_Buffer *buf = new Fl_Text_Buffer; o->buffer(buf);
+o->align(FL_ALIGN_LEFT);}
+          class Fl_Text_Editor
+        }
+        Fl_Input {} {
+          label {User Data}
+          callback user_data_cb
+          tooltip {Value passed as the second argument to the callback.  This must be of the type given below.}
+          xywh {90 271 135 22}
+        }
+        Fl_Choice {} {
+          label When
+          callback when_cb
+          tooltip {What actions cause the callback to be called.}
+          xywh {275 271 90 22} when NEVER
+        } {}
+        Fl_Input {} {
+          label Type
+          callback user_data_type_cb
+          tooltip {Type of User Data. This must be "long" or a pointer.}
+          xywh {90 296 135 22}
+        }
+        Fl_Box {} {
+          label resizable
+          xywh {50 107 165 80} hide deactivate
+          extra_code {o->parent()->resizable(o);}
+        }
+      }
+    }
+    Fl_Group {} {open
+      xywh {0 373 380 32}
+    } {
+      Fl_Check_Button overlaybutton {
+        label {&Overlays}
+        callback overlay_cb
+        tooltip {Turns the overlays (red outlines) off so you can see the edges better.}
+        xywh {5 5 230 22}
+        extra_code {extern int overlays_invisible;
+o->value(!overlays_invisible);
+o->parent()->resizable(o);}
+      }
+      Fl_Button {} {
+        label {&Cancel}
+        callback cancel_cb
+        xywh {310 5 65 22}
+      }
+      Fl_Button {} {
+        label {&OK}
+        callback ok_cb
+        tooltip {Closes this attribute window}
+        xywh {240 5 65 22}
+      }
+    }
+    Fl_Divider {} {
+      label label
+      xywh {0 356 380 20}
+    }
+  }
+} 

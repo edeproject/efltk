@@ -537,7 +537,7 @@ void make_main_window() {
 
     // this is removed because the new ctrl+bindings mess up emacs in
     // the text fields:
-    //    menubar->global();
+    menubar->global();
     main_window->end();
   }
 }

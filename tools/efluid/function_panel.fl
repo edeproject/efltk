@@ -1,0 +1,189 @@
+# data file for the FLTK User Interface Designer (FLUID)
+version 2,0030 
+images_dir ./ 
+i18n 
+header_name {.h} 
+code_name {.cpp} 
+gridx 5 
+gridy 5 
+snap 3
+Function {make_function_panel()} {open
+} {
+  Fl_Window function_panel {
+    label {function/method} open
+    xywh {24 95 320 208} modal visible
+  } {
+    Fl_Check_Button f_public_button {
+      label public
+      xywh {0 3 110 22} when NEVER
+    }
+    Fl_Check_Button f_c_button {
+      label {C declaration}
+      xywh {110 3 205 22}
+    }
+    Fl_Input f_name_input {
+      label {Name(args): (blank for main())}
+      xywh {5 48 310 22} align 5 when NEVER
+    }
+    Fl_Input f_attributes_input {
+      label {Attributes (virtual, static, __declspec, ...)}
+      xywh {5 93 310 22} align 5 when NEVER
+    }
+    Fl_Input f_return_type_input {
+      label {Return Type: (blank to return outermost widget)}
+      xywh {5 138 310 22} align 5 when NEVER
+    }
+    Fl_Return_Button f_panel_ok {
+      label OK
+      xywh {150 183 80 22} hotspot shortcut 0xff0d
+    }
+    Fl_Button f_panel_cancel {
+      label Cancel
+      xywh {235 183 80 22} shortcut 0xff1b
+    }
+  }
+} 
+
+Function {make_code_panel()} {open
+} {
+  Fl_Window code_panel {
+    label code open
+    xywh {619 436 380 281} resizable modal visible
+  } {
+    Fl_Input code_input {
+      tooltip {Write your code here.}
+      xywh {0 0 380 245} align 0 when NEVER resizable
+      extra_code {\#include <efltk/Fl_Text_Editor.h>
+Fl_Text_Buffer *textbuf = new Fl_Text_Buffer;
+o->buffer(textbuf);}
+      class Fl_Text_Editor
+    }
+    Fl_Group {} {open
+      xywh {0 244 380 36}
+    } {
+      Fl_Button code_panel_cancel {
+        label {&Cancel}
+        xywh {295 8 80 23} shortcut 0xff1b
+      }
+      Fl_Button code_panel_ok {
+        label {&OK}
+        xywh {210 8 80 23}
+      }
+      Fl_Box {} {selected
+        xywh {5 11 195 15}
+        extra_code {o->parent()->resizable(o);}
+      }
+    }
+  }
+} 
+
+Function {make_codeblock_panel()} {open
+} {
+  Fl_Window codeblock_panel {
+    label codeblock open
+    xywh {333 553 290 131} modal visible
+  } {
+    Fl_Input code_before_input {
+      xywh {5 11 280 22} align 5 when NEVER
+    }
+    Fl_Box {} {
+      label {"{...child code...}" is inserted here}
+      xywh {5 33 280 33} align 20
+    }
+    Fl_Input code_after_input {
+      xywh {5 65 280 23} align 5 when NEVER
+    }
+    Fl_Return_Button codeblock_panel_ok {
+      label OK
+      xywh {120 103 80 22} hotspot shortcut 0xff0d
+    }
+    Fl_Button codeblock_panel_cancel {
+      label Cancel
+      xywh {205 103 80 22} shortcut 0xff1b
+    }
+  }
+} 
+
+Function {make_declblock_panel()} {open
+} {
+  Fl_Window declblock_panel {
+    label {declaration block} open
+    xywh {37 553 290 131} modal visible
+  } {
+    Fl_Input decl_before_input {
+      xywh {5 11 280 22} align 5 when NEVER
+    }
+    Fl_Box {} {
+      label {"\\n...child code...\\n" is inserted here}
+      xywh {5 33 280 33} align 16
+    }
+    Fl_Input decl_after_input {
+      xywh {5 66 280 22} align 5 when NEVER
+    }
+    Fl_Return_Button declblock_panel_ok {
+      label OK
+      xywh {120 103 80 22} hotspot shortcut 0xff0d
+    }
+    Fl_Button declblock_panel_cancel {
+      label Cancel
+      xywh {205 103 80 22} shortcut 0xff1b
+    }
+  }
+} 
+
+Function {make_decl_panel()} {open
+} {
+  Fl_Window decl_panel {
+    label declaration open
+    xywh {38 348 290 170} visible
+  } {
+    Fl_Check_Button decl_public_button {
+      label public
+      xywh {5 3 280 27} when NEVER
+    }
+    Fl_Input decl_input {
+      label {can be any declartion, like "int x;",
+an external symbol like "extern int foo();",
+a \#directive like "\#include <foo.h>",
+or a comment like "//foo" or "/*foo*/"}
+      xywh {5 33 280 22} align 6 when NEVER label_size 10
+    }
+    Fl_Return_Button decl_panel_ok {
+      label OK
+      xywh {120 143 80 22} hotspot shortcut 0xff0d
+    }
+    Fl_Button decl_panel_cancel {
+      label Cancel
+      xywh {205 143 80 22} shortcut 0xff1b
+    }
+  }
+} 
+
+Function {make_class_panel()} {open
+} {
+  Fl_Window class_panel {
+    label class open
+    xywh {682 173 280 164} modal visible
+  } {
+    Fl_Check_Button c_public_button {
+      label public
+      xywh {5 3 270 22} when NEVER
+    }
+    Fl_Input c_name_input {
+      label {name:}
+      xywh {5 44 270 22} align 5 when NEVER
+    }
+    Fl_Input c_subclass_input {
+      label {subclass of (text between : and \{)}
+      xywh {5 89 270 21} align 5 when NEVER
+    }
+    Fl_Button c_panel_cancel {
+      label Cancel
+      xywh {195 138 80 22} shortcut 0xff1b
+    }
+    Fl_Button c_panel_ok {
+      label OK
+      xywh {110 138 80 22} shortcut 0xff1b
+    }
+  }
+} 

@@ -1,0 +1,62 @@
+# data file for the FLTK User Interface Designer (FLUID)
+version 2,0003 
+images_dir ./ 
+i18n 
+header_name {.h} 
+code_name {.cpp} 
+gridx 5 
+gridy 5 
+snap 3
+Function {make_about_panel(const char *copyright)} {open
+} {
+  Fl_Window about_panel {
+    label {about fluid} open
+    xywh {740 111 330 300} type Double resizable hotspot color 97 selection_color 47
+    extra_code {o->size_range(o->w(), o->h());} non_modal visible
+  } {
+    Fl_Group display_group {open
+      xywh {0 0 330 300} resizable
+      extra_code {o->resizable(o);}
+    } {
+      Fl_Group {} {open
+        xywh {5 145 150 150} align 16 box ROUND_UP_BOX label_font 1 label_type SHADOW_LABEL color 14 label_color 6 selection_color 47 label_size 40
+        extra_code {o->resizable(o);}
+      } {
+        Fl_Box {} {
+          label eFluid
+          xywh {10 10 130 130} align 80 box ROUND_DOWN_BOX label_font 1 label_type EMBOSSED_LABEL color 12 label_size 34
+          extra_code {o->parent()->resizable(o);}
+        }
+      }
+      Fl_Group {} {open
+        xywh {175 5 150 150} box ROUND_UP_BOX label_font 1 color 14 label_color 7 selection_color 47 label_size 18
+        extra_code {o->resizable(o);}
+      } {
+        Fl_Box {} {
+          label {EFLTK User
+Interface
+Designer
+Version 2.0.3}
+          xywh {10 10 130 130} box ROUND_DOWN_BOX label_font 1 label_type SHADOW_LABEL color 12 label_color 7 selection_color 47 label_size 16
+          extra_code {o->parent()->resizable(o);}
+        }
+      }
+      Fl_Button {} {
+        label {©2002-2003
+Click here for more information}
+        callback {display_group->hide();
+copyright_box->show();} selected
+        xywh {10 10 135 105} align 128 box BORDER_BOX label_font 1 color 136 label_color 6 highlight_color 0xcc00 highlight_label_color 6
+      }
+    }
+    Fl_Box copyright_box {
+      xywh {0 0 330 300} align 213 hide label_color 6 label_size 10
+      extra_code {o->label(copyright);}
+    }
+    Fl_Return_Button {} {
+      label OK
+      callback {o->window()->hide();}
+      xywh {250 265 70 25} label_size 10 shortcut 0xff0d
+    }
+  }
+} 

@@ -1,0 +1,99 @@
+# data file for the FLTK User Interface Designer (FLUID)
+version 2,0003 
+images_dir ./ 
+i18n 
+header_name {.h} 
+code_name {.cpp} 
+gridx 5 
+gridy 5 
+snap 3
+Function {make_alignment_window()} {open
+} {
+  Fl_Window alignment_window {
+    label {fluid Preferences} open
+    xywh {772 385 300 275} non_modal visible
+  } {
+    Fl_Button {} {
+      label Close
+      callback {alignment_window->hide();}
+      xywh {210 248 85 22}
+    }
+    Fl_Tabs {} {open
+      xywh {0 0 300 235}
+    } {
+      Fl_Group {} {
+        label Alignment selected
+        xywh {0 20 300 215} align 5
+      } {
+        Fl_Value_Input horizontal_input {
+          label {Horizontal:}
+          user_data 1 user_data_type long
+          callback alignment_cb
+          xywh {90 42 100 23} maximum 10 step 1
+        }
+        Fl_Value_Input vertical_input {
+          label {Vertical:}
+          user_data 2 user_data_type long
+          callback alignment_cb
+          xywh {90 72 100 23} maximum 10 step 1
+        }
+        Fl_Value_Input snap_input {
+          label {Snap:}
+          user_data 3 user_data_type long
+          callback alignment_cb
+          xywh {90 102 100 23} maximum 10 step 1
+        }
+        Fl_Box {} {
+          label {Grid size and snapping.}
+          xywh {5 5 290 30} align 21 label_size 10
+        }
+      }
+      Fl_Group {} {
+        label {Output File Names}
+        xywh {0 20 300 215} align 5 hide
+      } {
+        Fl_Box {} {
+          label {Use "name.ext" to set name or just ".ext" to set only extension.}
+          xywh {10 10 280 30} align 148 label_size 10
+        }
+        Fl_Input header_file_input {
+          label {Header File:}
+          user_data 1 user_data_type {void*}
+          callback header_input_cb
+          xywh {100 45 90 23} when CHANGED
+        }
+        Fl_Input code_file_input {
+          label {Code File:}
+          user_data 1 user_data_type {void*}
+          callback code_input_cb
+          xywh {100 72 90 23} when CHANGED
+        }
+        Fl_Check_Button include_H_from_C_button {
+          label {\#include "header" in code}
+          callback include_H_from_C_button_cb
+          xywh {10 106 190 22} value 1
+        }
+      }
+      Fl_Group {} {
+        label i18n open
+        xywh {0 20 300 215} hide
+      } {
+        Fl_Box {} {
+          label {Use i18n. You can use GNU gettext .mo files or EFLTK .etb translation files. Using .etb is recommended.}
+          xywh {10 10 280 40} align 149 label_size 10
+        }
+        Fl_Check_Button locale {
+          label {Use i18n}
+          callback {extern bool i18n;
+i18n = (locale->value()>0);}
+          xywh {10 55 220 20}
+          extra_code {o->value(i18n);}
+        }
+      }
+    }
+    Fl_Divider {} {
+      label label
+      xywh {5 235 290 10}
+    }
+  }
+} 

@@ -33,10 +33,9 @@ extern void width_cb(Fl_Value_Input*, void*);
 extern Fl_Value_Input* widget_width;
 extern void height_cb(Fl_Value_Input*, void*);
 extern Fl_Value_Input* widget_height;
+extern void border_cb(Fl_Check_Button*, void*);
 extern void set_xy_cb(Fl_Check_Button*, void*);
 extern Fl_Check_Button* set_xy;
-extern void slider_size_cb(Fl_Value_Input*, void*);
-extern void border_cb(Fl_Check_Button*, void*);
 extern void modal_cb(Fl_Check_Button*, void*);
 extern void non_modal_cb(Fl_Check_Button*, void*);
 extern void value_cb(Fl_Value_Input*, void*);
@@ -44,10 +43,11 @@ extern void min_cb(Fl_Value_Input*, void*);
 extern void max_cb(Fl_Value_Input*, void*);
 extern void step_cb(Fl_Value_Input*, void*);
 extern void line_cb(Fl_Value_Input*, void*);
-extern void visible_cb(Fl_Check_Button*, void*);
-extern void active_cb(Fl_Check_Button*, void*);
+extern void slider_size_cb(Fl_Value_Input*, void*);
 extern void resizable_cb(Fl_Check_Button*, void*);
 extern void hotspot_cb(Fl_Check_Button*, void*);
+extern void visible_cb(Fl_Check_Button*, void*);
+extern void active_cb(Fl_Check_Button*, void*);
 #include "Shortcut_Button.h"
 extern void shortcut_in_cb(Shortcut_Button*, void*);
 #include <efltk/Fl_Wordwrap_Input.h>
@@ -84,5 +84,6 @@ extern void overlay_cb(Fl_Check_Button*, void*);
 extern Fl_Check_Button* overlaybutton;
 extern void cancel_cb(Fl_Button*, void*);
 extern void ok_cb(Fl_Button*, void*);
+#include <efltk/Fl_Divider.h>
 Fl_Window* make_widget_panel();
 #endif
