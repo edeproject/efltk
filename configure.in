@@ -536,6 +536,10 @@ COMPILE_XUTF=0
 if test "$enable_utf8" = yes; then
 	COMPILE_XUTF=1
 fi
+
+EFLTK_BUILD=`date +%G%m%d`
+AC_SUBST(EFLTK_BUILD)
+
 AC_SUBST(COMPILE_XUTF)
 AC_SUBST(DSOEXT)
 AC_SUBST(DSOSHORTEXT)
@@ -547,7 +551,7 @@ AC_SUBST(LIBCOMMAND)
 AC_SUBST(MAKEDEPEND)
 AC_SUBST(SYSTYPE)
 AC_CONFIG_HEADER(config.h:configh.in)
-AC_OUTPUT(makeinclude efltk-config)
+AC_OUTPUT(makeinclude efltk-config efltk.spec)
 
 chmod +x efltk-config
 
