@@ -1089,6 +1089,7 @@ Fl_Scroll* Fl_Tabs::create_new_scroll(const char *label)
 {
     begin();
     Fl_Scroll *scroll = new Fl_Scroll(0,0,w(),h(),label);
+	scroll->color(color());
     end();
     return scroll;
 }
@@ -1097,6 +1098,7 @@ Fl_Group* Fl_Tabs::create_new_group(const char *label)
 {
     begin();
     Fl_Group *group = new Fl_Group(0,0,w(),h(),label);
+	group->color(color());
     end();
     return group;
 }
