@@ -241,9 +241,8 @@ bool Fl_XmlParser::parse_header(Fl_XmlDoc &doc)
                 else
                 {
                     /* transform to upper */
-                    Fl_String doctypestr = token3.upper_case();
-
-                    if(doctypestr == "DOCTYPE") {
+                    Fl_String doctypestr = token3;
+                    if(!strcasecmp(token3.c_str(), "DOCTYPE")) {
                         if(!parse_doctype(doc))
                             return false;
                     } else {
