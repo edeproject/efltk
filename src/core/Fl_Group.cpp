@@ -634,7 +634,6 @@ void Fl_Group::update_child(Fl_Widget& w) const
     }
 }
 
-
 // Parents normally call this to draw outside labels:
 void Fl_Group::draw_outside_label(Fl_Widget& w) const
 {
@@ -647,6 +646,7 @@ void Fl_Group::draw_outside_label(Fl_Widget& w) const
     int Y = w.y();
     int W = w.w();
     int H = w.h();
+
     if (align & FL_ALIGN_TOP)
     {
         align ^= (FL_ALIGN_BOTTOM|FL_ALIGN_TOP);
@@ -671,6 +671,7 @@ void Fl_Group::draw_outside_label(Fl_Widget& w) const
         X = X+W+3;
         W = this->w()-X;
     }
+
     w.draw_label(X,Y,W,H,(Fl_Flags)align);
 }
 

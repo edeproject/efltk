@@ -237,7 +237,9 @@ int Fl_Text_Display::longest_vline() {
 ** Change the size of the displayed text area
 */
 void Fl_Text_Display::layout() {
-  if (!buffer() || !visible_r()) return;
+    if (!buffer() || !visible_r()) {
+        return;
+    }
   int X = 0, Y = 0, W = w(), H = h();
   box()->inset(X, Y, W, H);
   text_area.x = X+LEFT_MARGIN;
@@ -380,7 +382,10 @@ void Fl_Text_Display::layout() {
 ** the text drawing window
 */
 void Fl_Text_Display::draw_text( int left, int top, int width, int height ) {
-  int fontHeight, firstLine, lastLine, line;
+
+    if(width<1 || height<1) return;
+
+    int fontHeight, firstLine, lastLine, line;
 
   /* find the line number range of the display */
   fontHeight = mMaxsize;
@@ -1683,6 +1688,7 @@ static int min( int i1, int i2 ) {
 ** Count the number of newlines in a null-terminated text string;
 */
 static int countlines( const char *string ) {
+    if(!string) return 0;
   const char * c;
   int lineCount = 0;
 
@@ -1933,11 +1939,20 @@ int Fl_Text_Display::handle(int event) {
 
     switch (event) {
 
+    case FL_SHOW:
+        relayout();
+        redraw();
+        break;
+    case FL_HIDE:
+        if (when() & FL_WHEN_RELEASE) do_callback();
+        return 1;
+
     case FL_FOCUS:
         show_cursor(mCursorOn); // redraws the cursor
         return 1;
 
     case FL_UNFOCUS:
+        if (when() & FL_WHEN_RELEASE) do_callback();
         show_cursor(mCursorOn); // redraws the cursor
         return 1;
 
