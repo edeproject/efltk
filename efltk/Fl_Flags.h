@@ -103,7 +103,9 @@ public:
     Fl_Align align() const { return Fl_Align(m_flags&FL_ALIGN_MASK); }
     void align(int a) { m_flags = (m_flags & (~FL_ALIGN_MASK)) | a; }
 
-    int &flags() { return m_flags; }
+    int flags() { return m_flags; }
+    int flags() const { return m_flags; }
+
     operator int& () { return m_flags; }
 };
 

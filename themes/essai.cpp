@@ -91,7 +91,7 @@ void Fl_Image_Box::draw(int x, int y, int w, int h,
     if(!img) img = normal_img;
     if(!box) box = normal_b;
 
-    box->draw(x,y,w,h,color,(flags|FL_INVISIBLE)&(~mask));
+    box->draw(x,y,w,h,color, (flags|FL_INVISIBLE)&(~mask.flags()));
 
     if(flags&FL_INVISIBLE) return;
 
