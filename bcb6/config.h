@@ -216,6 +216,8 @@
 # define sqrtf(a)   float(sqrt(float(a)))
 #endif
 
+#undef _WIN32_WINNT
+
 // For Windows 95/98/ME:
 #define _WIN32_WINNT 0x0400
 #undef UNICODE
