@@ -22,9 +22,15 @@
 #ifndef _FL_EXPORT_H_
 #define _FL_EXPORT_H_
 
-/*
- The following is only used when building DLLs under _WIN32
-*/
+/**
+ * @file Fl_Export.h
+ *
+ * The FL_API directive is only used when building DLLs under WIN32
+ *
+ * @note When compiling library as DLL, you must define FL_SHARED and FL_LIBRARY.
+ * @note When compiling application that uses DLL, you must define ONLY FL_SHARED, not FL_LIBRARY !
+ *
+ */
 
 #if defined(_WIN32) && defined(FL_SHARED) && (defined(_MSC_VER) || defined(__MWERKS__) || defined(__BORLANDC__) || __GNUC__ >= 3)
 # ifdef FL_LIBRARY
