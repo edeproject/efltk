@@ -37,7 +37,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #include <efltk/Fl_Boxtype.h>
 #include <efltk/Fl_Image.h>

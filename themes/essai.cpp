@@ -249,9 +249,9 @@ extern "C" bool fltk_theme()
 		s->button_box = &up;
 		s->box = FL_THIN_DOWN_BOX;
 	}
-    if ((s = Fl_Style::find("listheader"))) {
+    /*if ((s = Fl_Style::find("listview header"))) {
         s->button_box = &up;
-    }
+    }*/
     if ((s = Fl_Style::find("listview"))) {
 		s->box = &down_lt;
 		s->color = FL_GRAY;
