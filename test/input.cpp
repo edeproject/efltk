@@ -35,16 +35,18 @@
 #include <efltk/Fl_Toggle_Button.h>
 #include <efltk/fl_show_colormap.h>
 
+#define INPUTS  7
+
 void cb(Fl_Widget *ob) {
     printf("Callback for %s '%s'\n", ob->label().c_str(), ((Fl_Input*)ob)->value());
 }
 
 int when = 0;
-Fl_Input *input[6];
+Fl_Input *input[INPUTS];
 
 void toggle_cb(Fl_Widget *o, long v) {
   if (((Fl_Toggle_Button*)o)->value()) when |= v; else when &= ~v;
-  for (int i=0; i<5; i++) input[i]->when(when);
+  for (int i=0; i<INPUTS; i++) input[i]->when(when);
 }
 
 void test(Fl_Input *i) {
@@ -54,7 +56,7 @@ void test(Fl_Input *i) {
 }
 
 void button_cb(Fl_Widget *,void *) {
-  for (int i=0; i<6; i++) test(input[i]);
+  for (int i=0; i<INPUTS; i++) test(input[i]);
 }
 
 void color_cb(Fl_Widget* button, void* v) {
@@ -84,7 +86,7 @@ void color_cb(Fl_Widget* button, void* v) {
 
 int main(int argc, char **argv) {
 
-  Fl_Window *window = new Fl_Window(400,350);
+  Fl_Window *window = new Fl_Window(400,400);
 
   int y = 10;
   input[0] = new Fl_Input(70,y,300,23,"Normal:"); y += 27;
@@ -102,10 +104,13 @@ int main(int argc, char **argv) {
   input[4] = new Fl_Wordwrap_Input(70,y,300,70,"Wordwrap:"); y += 75;
   input[4]->tooltip("Input field for short text with newlines");
   input[5] = new Fl_Input(70,y,300,23,"Right al."); y += 30;
-  input[5]->type(32);
-  input[5]->tooltip("Eg.: monetary input");
+  input[5]->text_align(FL_ALIGN_RIGHT);
+  input[5]->tooltip("Input field with text aligned to right");
+  input[6] = new Fl_Input(70,y,300,23,"Center"); y += 30;
+  input[6]->text_align(FL_ALIGN_CENTER);
+  input[6]->tooltip("Input field with text aligned to center");
 
-  for (int i = 0; i < 6; i++) {
+  for (int i = 0; i < INPUTS; i++) {
     input[i]->when(0); input[i]->callback(cb);
   }
   int y1 = y;
