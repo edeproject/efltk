@@ -38,11 +38,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#ifndef _WIN32
-#  include <X11/Xlocale.h>  
-#  include <X11/Xlib.h>  
-#endif
-
 #if HAVE_XUTF8
 
 class My_Input : public Fl_Input
@@ -68,8 +63,9 @@ int main(int argc, char** argv)
 {
   Fl_Font myfont = fl_create_font(
 #ifdef _WIN32
-	  "Arial Unicode MS"
-	//" MS Gothic"	
+	"Arial Unicode MS"
+	//"MS Gothic"	
+	//"MS Mincho"	
 #else
 	"-*-courier-medium-r-normal--*,"
 	"-*-fixed-medium-*-*--*-*-*-*-*-*-iso8859-15,"
@@ -107,7 +103,7 @@ int main(int argc, char** argv)
 	//"-*-fixed-*-*-*--*-*-*-*-*-*-gost19768.74-*,"
 	"-*-unifont-*-*-*--*-*-*-*-*-*-iso10646-1"
 #endif	
-  );
+  );  
 
   Fl::init_locale();
 
@@ -147,9 +143,12 @@ int main(int argc, char** argv)
     buf[o] = '\0';
     sprintf(bu, "0x%04X", y * 16);
 #ifdef SCROLL
-    Fl_Input* b = new Fl_Input(0,(y-off)*25,60,25);
-    b->value(bu);
-    b = new Fl_Input(60,(y-off)*25,300,25);
+    Fl_Box* box = new Fl_Box(0,(y-off)*25,60,25);
+	box->copy_label(bu);
+	box->color(FL_WHITE); box->box(FL_DOWN_BOX);    
+
+    Fl_Input *b = new Fl_Input(60,(y-off)*25,300,25);
+	b->text_size(14);
     b->text_font(myfont);
     b->value(buf);
 #else

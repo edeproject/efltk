@@ -191,7 +191,9 @@
 #define ENABLE_NLS 0
 
 /* Enables UTF8 */
+/* THESE ARE MUST IN WIN32 */
 #define HAVE_XUTF8 1
+#define UNICODE 1
 
 /*
  * End of "$Id$".

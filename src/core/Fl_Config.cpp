@@ -76,10 +76,10 @@ char *get_sys_dir() {
 #else
 	static char path[FL_PATH_MAX];
     HKEY hKey;
-    if(RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\Microsoft\\Windows\\CurrentVersion",0,KEY_READ,&hKey)==ERROR_SUCCESS)
+    if(RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"Software\\Microsoft\\Windows\\CurrentVersion", 0, KEY_READ, &hKey)==ERROR_SUCCESS)
     {
         DWORD size=4096;
-        LONG result=RegQueryValueEx(hKey, "CommonFilesDir", NULL, NULL, (LPBYTE)path, &size);
+        LONG result=RegQueryValueExW(hKey, L"CommonFilesDir", NULL, NULL, (LPBYTE)path, &size);		
         RegCloseKey(hKey);
         return path;
     }

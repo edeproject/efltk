@@ -28,13 +28,10 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <efltk/math.h>
+#include <efltk/fl_utf8.h>
+
 #ifdef _WIN32_WCE
 #include <wince.h>
-#endif
-
-
-#if HAVE_XUTF8
-# include <efltk/fl_utf8.h>
 #endif
 
 class Fl_FontSize {
@@ -43,11 +40,7 @@ public:
   Fl_FontSize *next_all;// linked list so we can destroy em all
   unsigned size;
   int charset;
-#if HAVE_XUTF8
   int *width[64];
-#else
-  int width[255];
-#endif
   HFONT font;
   TEXTMETRIC metr;
   Fl_FontSize(const char* fontname, int size, int charset);
@@ -104,60 +97,43 @@ Fl_FontSize::Fl_FontSize(const char* name, int size, int charset)
   case 'B': weight = FW_BOLD; break;
   case ' ': break;
   default: name--;
-  }
+  }  
 
-#ifndef _WIN32_WCE  
-  HFONT font = CreateFont(
-    -size,	    // use "char size"
-    0,		    // logical average character width
-    0,		    // angle of escapement
-    0,		    // base-line orientation angle
-    weight,
-    italic,
-    FALSE,		// underline attribute flag
-    FALSE,		// strikeout attribute flag
-    charset,		// character set identifier
-    OUT_DEFAULT_PRECIS, // output precision
-    CLIP_DEFAULT_PRECIS,// clipping precision
-    DEFAULT_QUALITY,	// output quality
-    DEFAULT_PITCH,	// pitch and family
-    name		// pointer to typeface name string
-  );
+  static unsigned short ucsbuf[LF_FACESIZE*2];
+  ucsbuf[fl_utf2unicode((uchar *)name, LF_FACESIZE, ucsbuf)] = '\0';
+  unsigned short *unicode_name = ucsbuf;	
+
+  HFONT font;
+  LOGFONTW lFont;
+
+  lFont.lfHeight         = -size; // use "char size"
+  lFont.lfWidth          = 0L;
+  lFont.lfEscapement     = 0L;
+  lFont.lfOrientation    = 0L;
+  lFont.lfWeight         = weight;
+  lFont.lfItalic         = italic;
+  lFont.lfUnderline      = FALSE;
+  lFont.lfStrikeOut      = FALSE;
+  lFont.lfCharSet        = charset;
+  lFont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
+  lFont.lfPitchAndFamily = DEFAULT_PITCH & FF_DONTCARE;
+
+#ifdef _WIN32_WCE
+  lFont.lfOutPrecision   = OUT_DEFAULT_PRECIS;
+  lFont.lfQuality        = DEFAULT_QUALITY;
 #else
-    HFONT font;
-    LOGFONT lFont;
-
-    lFont.lfHeight         = -size;
-    lFont.lfWidth          = 0L;
-    lFont.lfEscapement     = 0L;
-    lFont.lfOrientation    = 0L;
-    lFont.lfWeight         = weight;
-    lFont.lfItalic         = italic;
-    lFont.lfUnderline      = FALSE;
-    lFont.lfStrikeOut      = FALSE;
-    lFont.lfCharSet        = charset;       // Non-alphatic on Compaq Aero
-    lFont.lfCharSet        = ANSI_CHARSET;
-//    lFont.lfCharSet        = OEM_CHARSET;           // CE doesn'tunderstand
-    lFont.lfOutPrecision   = OUT_DEFAULT_PRECIS;
-//    lFont.lfOutPrecision   = OUT_DEVICE_PRECIS;   // CE doesn't understand
-    lFont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
-    lFont.lfQuality        = DEFAULT_QUALITY;
-//    lFont.lfQuality        = PROOF_QUALITY;       // CE doesn't understand
-    lFont.lfPitchAndFamily = DEFAULT_PITCH & FF_DONTCARE;
-	wchar_t wname[255];
-	fl_utf2unicode((const unsigned char*)name,strlen(name),wname);
-	wcscpy(lFont.lfFaceName,wname);
-    // WinCE doesn't support CreateFont
-    font = ::CreateFontIndirect( &lFont );
+  lFont.lfOutPrecision   = OUT_DEVICE_PRECIS;   // CE doesn't understand
+  lFont.lfQuality        = PROOF_QUALITY;       // CE doesn't understand
 #endif
+
+  ::wcscpy(lFont.lfFaceName, unicode_name);
+
+  font = ::CreateFontIndirectW( &lFont );
 
   HDC dc = fl_getDC();
   SelectObject(dc, font);
-#ifdef HAVE_XUTF8
+
   for(int i = 0; i < 64; i++) width[i] = 0;
-#else
-  GetCharWidth(dc, 0, 255, width);
-#endif
   GetTextMetrics(dc, &fl_fontsize->metr);
   
   this->font = font;
@@ -198,15 +174,15 @@ Fl_Font fl_create_font(const char *system_name)
 // Public interface:
 
 #define current_font (fl_fontsize->font)
-HFONT fl_xfont() {return current_font;}
-TEXTMETRIC* fl_textmetric() {return &(fl_fontsize->metr);}
+HFONT fl_xfont() { return current_font; }
+TEXTMETRIC *fl_textmetric() { return &(fl_fontsize->metr); }
 
 // we need to decode the encoding somehow!
 static int fl_charset = DEFAULT_CHARSET;
 
 void fl_font(Fl_Font font, float psize) 
 {
-    fl_charset = str_to_charset(fl_encoding_);
+  fl_charset = str_to_charset(fl_encoding_);
 
   // only integers supported right now, I think there is a newer
   // interface that takes arbitrary sizes, though...
@@ -247,7 +223,6 @@ if(len > wstr_len) { \
 
 float fl_width(const char* c, int n) 
 {
-#if HAVE_XUTF8
   int i = 0;
   float w = 0;
   unsigned int ucs;
@@ -260,18 +235,10 @@ float fl_width(const char* c, int n)
     }
   }
   return  w;
-#else  		
-	SIZE size;
-	HDC dc = fl_getDC();
-	SelectObject(dc, current_font);
-	// I think win32 has a fractional version of this:
-	GetTextExtentPoint(dc, c, n, &size);	
-	return float(size.cx);
-#endif
 }
 
-#if HAVE_XUTF8
-float fl_width(unsigned int ucs) {
+float fl_width(unsigned int ucs) 
+{
 	unsigned int r = (ucs & 0xFC00)>>10;
 	if(!fl_fontsize->width[r]) {
 		SIZE s;
@@ -287,86 +254,63 @@ float fl_width(unsigned int ucs) {
 	}
 	return float(fl_fontsize->width[r][ucs&0x03FF]);
 }
-#else
-float fl_width(unsigned int c) {
-	if(c>255) c=255;
-    return float(fl_fontsize->width[c]);
-}
-#endif
 
 void fl_transformed_draw(const char *str, int n, float x, float y) 
 {
 	SetTextColor(fl_gc, fl_colorref);
 	SelectObject(fl_gc, current_font);
 	
-#if HAVE_XUTF8	
-	int wn = 0;
-	int i = 0;
-	int lx = 0;
+	int wn = 0, i = 0, lx = 0;
+	unsigned int u;
+	WCHAR ucs;	
+
 	while (i < n) {
-		unsigned int u;
-		WCHAR ucs;
-		const WCHAR *skod;
 		int l = fl_utf2ucs((const unsigned char*)str + i, n - i, &u);
-		if (fl_nonspacing(u)) {
-			x -= lx;
-		} else {
-	        lx = (int) fl_width(u);
+		if (fl_nonspacing(u)) { 
+			x -= lx; 
+		} else { 
+			lx = int(fl_width(u));
 		}
-		ucs = u; 
+		ucs = u;
 		if (l < 1) l = 1;
 		i += l;
-		skod = (const WCHAR*)&ucs;
 #ifndef _WIN32_WCE
-		TextOutW(fl_gc, int(floorf(x+.5f)), int(floorf(y+.5f)), skod, 1);
+		TextOutW(fl_gc, int(floorf(x+.5f)), int(floorf(y+.5f)), &ucs, 1);
 #else
+		const WCHAR *skod = (const WCHAR*)&ucs;
 		RECT rect = {int(floorf(x+.5f)), int(floorf(y+.5f)), 0,0};
-		DrawText(fl_gc,skod,wcslen(skod),&rect,DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP);
+		DrawText(fl_gc, skod, 1, &rect, DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP);
 #endif
 		x += lx;
 	}
-#else
-	TextOut(fl_gc, int(floorf(x+.5f)), int(floorf(y+.5f)), str, n);  
-#endif
 }
 
 void fl_rtl_draw(const char *str, int n, float x, float y)
 {
+	SetTextColor(fl_gc, fl_colorref);
+	SelectObject(fl_gc, current_font);
+
 	int i = 0;
 	int lx = 0;
 	const WCHAR *skod;
-#if HAVE_XUTF8
 	resize_buffer(n);
 	int wn = fl_utf2unicode((const unsigned char *)str, n, wstr);
-	SetTextColor(fl_gc, fl_colorref);
-	SelectObject(fl_gc, current_font);
+
 	while (i < wn) {
 	    lx = int(fl_width(wstr[i]));
 		x -= lx;
 		skod = (const WCHAR*)wstr + i;
 #ifndef _WIN32_WCE
-		TextOutW(fl_gc, int(floorf(x+.5f)), int(floorf(y+.5f)),
-				skod, 1);
+		TextOutW(fl_gc, int(floorf(x+.5f)), int(floorf(y+.5f)), skod, 1);
 #else
 		RECT rect = {int(floorf(x+.5f)),int(floorf(y+.5f)), 0,0};
-		DrawText(fl_gc,skod,wcslen(skod),&rect,DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP);	
+		DrawText(fl_gc, skod, 1, &rect, DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP);	
 #endif
 		if (fl_nonspacing(wstr[i])) {
 			x += lx;
 		}
 		i++;
 	}	
-#else
-	SetTextColor(fl_gc, fl_colorref);
-	SelectObject(fl_gc, current_font);
-	while(i < n) {
-	    lx = int(fl_width(str[i]));
-		x -= lx;
-		TextOut(fl_gc, int(floorf(x+.5f)), int(floorf(y+.5f)), 
-				str + i, 1);
-		i++;
-	}
-#endif
 }
 
 // Change the encoding to use for the next font selection.

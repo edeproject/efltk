@@ -773,14 +773,21 @@ class FLDropTarget : public IDropTarget
                 for ( i=0; i<nf; i++ ) nn += DragQueryFile( hdrop, i, 0, 0 );
                 nn += nf;
                 Fl::e_length = nn-1;
-                char *dst = Fl::e_text = (char*)malloc(nn+1);
+                unsigned short *dst = (unsigned short*)malloc((nn+1)*sizeof(unsigned short));
                 for ( i=0; i<nf; i++ )
-                {
-                    n = DragQueryFile( hdrop, i, dst, nn );
+                {					
+                    n = DragQueryFileW( hdrop, i, dst, nn );
                     dst += n;
-                    if ( i<nf-1 ) *dst++ = '\n';
+                    if ( i<nf-1 ) {
+						uchar tmp[2] = { '\n', '\0' };
+						fl_utf2ucs(tmp, 1, (unsigned int*)dst);
+						dst++;
+					}
                 }
                 *dst = 0;
+				Fl::e_text = (char*)malloc((nn+1)*4);
+				Fl::e_text[fl_unicode2utf(dst, nn, Fl::e_text)] = '\0';
+				
                 target->handle(FL_PASTE);
                 free( Fl::e_text );
                 ReleaseStgMedium( &medium );
