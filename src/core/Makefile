@@ -30,6 +30,7 @@ CPPFILES = \
 	Fl_Bitmap.cpp \
 	Fl_Bmp.cpp \
 	Fl_Boxtype.cpp \
+        Fl_Callback.cpp \
         Fl_Config.cpp \
 	Fl_Gif.cpp \
 	Fl_Group.cpp \
