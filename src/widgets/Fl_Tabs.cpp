@@ -404,7 +404,7 @@ void Fl_Tabs::draw_tab(int x1, int x2, int W, int H, Fl_Widget* o, int what)
 
   if (H >= 0) {
       H--;
-      int adjust = (sel?box()->dy():0);
+      int adjust = (sel?box()->dy()+1:0);
       button_box()->draw(x1, 0, W, H+adjust, c, f|FL_ALIGN_TOP);
       o->draw_label(x1, button_box()->dy(), W, H, FL_ALIGN_CENTER);
       if (focused() && o->visible())
