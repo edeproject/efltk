@@ -88,11 +88,11 @@ void Fl::read_defaults()
         Fl_Image::state_effect_all(b_val);
 
         // Read Fl_Menu_Window defaults:
-        cfg.get("Menus", "Effects", b_val, true);
+        cfg.get("Menus", "Effects", b_val, false);
         Fl_Menu_::effects(b_val);
-        cfg.get("Menus", "Subwindow Effect", b_val, true);
+        cfg.get("Menus", "Subwindow Effect", b_val, false);
         Fl_Menu_::subwindow_effect(b_val);
-        cfg.get("Menus", "Effect Type", i_val, 1);
+        cfg.get("Menus", "Effect Type", i_val, FL_EFFECT_NONE);
         Fl_Menu_::default_effect_type(i_val);
         cfg.get("Menus", "Speed", f_val, 1.5f);
         Fl_Menu_::default_anim_speed(f_val);
@@ -100,9 +100,9 @@ void Fl::read_defaults()
         Fl_Menu_::default_delay(f_val);
 
         // Read Fl_Tooltip defaults:
-        cfg.get("Tooltips", "Effects", b_val, true);
+        cfg.get("Tooltips", "Effects", b_val, false);
         Fl_Tooltip::effects(b_val);
-        cfg.get("Tooltips", "Effect Type", i_val, 2);
+        cfg.get("Tooltips", "Effect Type", i_val, FL_EFFECT_NONE);
         Fl_Tooltip::effect_type(i_val);
         cfg.get("Tooltips", "Enabled", b_val, true);
         Fl_Tooltip::enable(b_val);

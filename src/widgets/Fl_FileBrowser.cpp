@@ -86,7 +86,7 @@ Fl_FileBrowser::item_height(void *p) const
     int       textheight;        // Height of text
 
     // Figure out the standard text height...
-    textheight = textsize()+leading();
+    textheight = text_size()+leading();
 
     // We always have at least 1 line...
     height = textheight;

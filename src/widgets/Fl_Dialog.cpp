@@ -400,7 +400,7 @@ void Fl_Dialog::layout() {
    int maxh = 15;
    if (cnt) {
       Fl_Widget *btn = m_buttonList[0];
-      fl_font(btn->textfont(),btn->textsize());
+      fl_font(btn->text_font(), btn->text_size());
    }
 
    for (i = 0; i < cnt; i++) {

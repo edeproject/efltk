@@ -23,7 +23,7 @@
 # Please report all bugs and problems to "fltk-bugs@easysw.com".
 #
 
-CPPFILES = demo.cpp hello.cpp resizable.cpp scroll.cpp image.cpp file_chooser.cpp menubar.cpp \
+CPPFILES = demo.cpp sizes.cpp hello.cpp resizable.cpp scroll.cpp image.cpp file_chooser.cpp menubar.cpp \
 	   browser.cpp threads.cpp progress.cpp editor.cpp inactive.cpp checkers.cpp \
            valuators.cpp glpuzzle.cpp boxtype.cpp multi_image.cpp help.cpp mdi_test.cpp \
            resize.cpp tabs.cpp line_style.cpp doublebuffer.cpp subwindow.cpp \
@@ -36,7 +36,7 @@ CPPFILES = demo.cpp hello.cpp resizable.cpp scroll.cpp image.cpp file_chooser.cp
 	   popup_window.cpp symbols.cpp calendar.cpp maskedinput.cpp bitmap.cpp utf8.cpp \
            dialog.cpp
 
-ALL =   demo hello resizable scroll image file_chooser menubar browser \
+ALL =   demo sizes hello resizable scroll image file_chooser menubar browser \
 	threads progress editor inactive checkers valuators glpuzzle boxtype \
         multi_image help mdi_test resize tabs line_style doublebuffer subwindow \
         keyboard label layout arc ask button buttons clock color_chooser cube \

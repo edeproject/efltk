@@ -34,8 +34,8 @@ class Fl_Calendar : public Fl_Group {
    int           m_activeButtonIndex;
 
 public:
-   void cbDayButtonClicked(Fl_Widget *,void *);
-   void cbSwitchButtonClicked(Fl_Widget *,void *);
+   static void cbDayButtonClicked(Fl_Widget *,void *);
+   static void cbSwitchButtonClicked(Fl_Widget *,void *);
 
    static Fl_Named_Style* default_style;
 

@@ -54,8 +54,6 @@ Fl_Menu_Bar::Fl_Menu_Bar(int x,int y,int w,int h,const char *l)
     shortcut(FL_Alt_L);
     lines=1;
 
-    level=0;
-
     highlight_ = last_highlight_ = -1;
     selected_ = last_selected_ = -1;
 

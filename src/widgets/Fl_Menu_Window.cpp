@@ -36,6 +36,12 @@
 #include <config.h>
 #include <stdio.h>
 
+#ifdef _WIN32
+# define Flush() GdiFlush()
+#else
+# define Flush() XFlush(fl_display)
+#endif
+
 Fl_Menu_Window::Fl_Menu_Window(int W, int H, const char *l)
     : Fl_Single_Window(W,H,l)
 {
@@ -147,7 +153,7 @@ void Fl_Menu_Window::layout()
 // Fade effect, blend to opacity (thats NYI)
 void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
 {
-	Fl_Renderer::system_init();
+    Fl_Renderer::system_init();
 
     int ow=w, oh=h; // original W&H
     int cx=0, cy=0; // copy points from offscreen pixmap
@@ -210,6 +216,8 @@ void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
     int alpha=50; //start from alpha value 50...
     bool error=false;
     opacity = 150;
+    if(step<0) step=8;
+
     while(!error && alpha<opacity)
     {
         Fl::check();
@@ -220,6 +228,7 @@ void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
 
         fmt.alpha = alpha;
         alpha+=step;
+        if(alpha>255) alpha=255;
 
         if(Fl_Renderer::alpha_blit(window_data, &src_rect, &fmt, window_pitch,
                                    screen_data, &dst_rect, Fl_Renderer::system_format(), screen_pitch, 0))
@@ -245,6 +254,7 @@ void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
 #else
         XCopyArea(fl_display, pm, fl_xid(this), fl_gc, 0, 0, w, h, 0, 0);
 #endif
+        Flush();
     }
 
     animating=false;
@@ -319,15 +329,12 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
             make_current();
             SetWindowPos(fl_xid(this), HWND_TOPMOST, X, Y, W, H, (SWP_NOSENDCHANGING | SWP_NOACTIVATE));
             fl_copy_offscreen(0, 0, W, H, pm, tw-W, th-H);
-
-            // Flush the GDI
-            GdiFlush();
 #else
             XMoveResizeWindow(fl_display, fl_xid(this), X, Y, W, H);
             fl_copy_offscreen(0, 0, W, H, pm, tw-W, th-H);
             //XCopyArea(fl_display, pm, fl_xid(this), fl_gc, 0, 0, W, H, tw-W, th-H); //This is a bit too fast :)) If we use this we dont need to call make_current()
-            XFlush(fl_display);
 #endif
+            Flush();
             Fl::check();
         }
 

@@ -254,48 +254,6 @@ public:
   void text_size(unsigned a)	;
   void leading(unsigned a)	;
 
-#ifndef FLTK_2  // back-compatability section:
-
-  Fl_Boxtype	down_box()		const {return box();}
-  Fl_Boxtype	slider()		const {return button_box();}
-  Fl_Boxtype	box2()			const {return box();}
-  Fl_Boxtype	fly_box()		const {return box();}
-  Fl_Color	color2()		const {return selection_color();}
-  Fl_Color	color3()		const {return button_color();}
-  Fl_Labeltype	labeltype()		const {return label_type();}
-  Fl_Color	labelcolor()		const {return label_color();}
-  Fl_Color	down_labelcolor()	const {return selection_text_color();}
-  Fl_Font	labelfont()		const {return label_font();}
-  unsigned	labelsize()		const {return label_size();}
-  Fl_Color	fly_color()		const {return highlight_color();}
-  Fl_Font	textfont()		const {return text_font();}
-  unsigned	textsize()		const {return text_size();}
-  Fl_Color	textcolor()		const {return text_color();}
-  Fl_Color	selected_textcolor()	const {return selection_text_color();}
-  Fl_Color	cursor_color()		const {return selection_color();}
-
-  void down_box(Fl_Boxtype a)           {box(a);}
-  void slider(Fl_Boxtype a)             {button_box(a);}
-  void fly_box(Fl_Boxtype)              {}
-  void color(Fl_Color a, Fl_Color b)    {color(a); selection_color(b);}
-  void color2(Fl_Color a)               {selection_color(a);}
-  void color3(Fl_Color a)               {button_color(a);}
-  void labeltype(Fl_Labeltype a)        {label_type(a);}
-  void labelcolor(Fl_Color a)           {label_color(a);}
-  void down_labelcolor(Fl_Color a)      {selection_text_color(a);}
-  void labelfont(Fl_Font a)             {label_font(a);}
-  void labelfont(unsigned a)            {label_font(fl_fonts+a);}
-  void labelsize(unsigned a)            {label_size(a);}
-  void fly_color(Fl_Color a)            {highlight_color(a);}
-  void textfont(Fl_Font a)              {text_font(a);}
-  void textfont(unsigned a)             {text_font(fl_fonts+a);}
-  void textsize(unsigned a)             {text_size(a);}
-  void textcolor(Fl_Color a)            {text_color(a);}
-  void selected_textcolor(Fl_Color a)   {selection_text_color(a);}
-  void cursor_color(Fl_Color a)         {selection_color(a);}
-
-#endif
-
 protected:
   Fl_Widget(int,int,int,int,const char* =0);
 

@@ -60,15 +60,6 @@ public:
   const char	*filter() const { return (pattern_); };
 
   int		load(const char *directory);
-
-#ifdef FLTK_2
-  unsigned	textsize() const { return (Fl_Browser::text_size()); };
-  void		textsize(unsigned s) { Fl_Browser::text_size(s); };
-#else
-  uchar		textsize() const { return (Fl_Browser::textsize()); };
-  void		textsize(uchar s) { Fl_Browser::textsize(s); };
-#endif  
-
 };
 
 #endif // !_FL_FILEBROWSER_H_

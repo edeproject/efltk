@@ -33,8 +33,8 @@
 float Fl_Tooltip::delay_ = 1.0f;
 bool  Fl_Tooltip::enabled_ = true;
 
-bool Fl_Tooltip::effects_ = true;
-int  Fl_Tooltip::effect_type_ = FL_EFFECT_FADE;
+bool Fl_Tooltip::effects_ = false;
+int  Fl_Tooltip::effect_type_ = FL_EFFECT_NONE;
 
 static Fl_Tooltip::Generator generator;
 static void* argument;

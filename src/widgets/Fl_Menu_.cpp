@@ -79,11 +79,11 @@ static Fl_List default_list;
 bool Fl_Menu_::key_event = false;
 
 float Fl_Menu_::default_delay_ = 0.3f;
-int Fl_Menu_::default_effect_type_ = FL_EFFECT_ANIM;
+int Fl_Menu_::default_effect_type_ = FL_EFFECT_NONE;
 float Fl_Menu_::default_anim_speed_ = 1.5f;
 
-bool Fl_Menu_::effects_ = true;
-bool Fl_Menu_::subwindow_effect_ = true;
+bool Fl_Menu_::effects_ = false;
+bool Fl_Menu_::subwindow_effect_ = false;
 
 Fl_Menu_::Fl_Menu_()
     : Fl_Group(0,0,0,0,0), list_(&default_list), item_(0)

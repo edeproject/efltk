@@ -183,15 +183,9 @@ private:
     float anim_speed_;
 
 protected:
-
     static bool key_event;
 
-    int indexes[MAX_LEVELS];
-    int level;
-
     Fl_Widget *item_;
-    Fl_Widget *executed_;
-
     int anim_flags_;
 };
 

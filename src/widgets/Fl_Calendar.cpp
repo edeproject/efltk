@@ -39,12 +39,14 @@ static const int monthChanges[4] = {
 
 // Callback function for day buttons
 void Fl_Calendar::cbDayButtonClicked(Fl_Widget *button, void *param) {
-    dayButtonClicked((unsigned)param);
+    Fl_Calendar *c = (Fl_Calendar *)button->parent()->parent();
+    c->dayButtonClicked((unsigned)param);
 }
 
 // Callback function for switch buttons
 void Fl_Calendar::cbSwitchButtonClicked(Fl_Widget *button, void *param) {
-    switchButtonClicked((int)param);
+    Fl_Calendar *c = (Fl_Calendar *)button->parent();
+    c->switchButtonClicked((int)param);
 }
 
 void Fl_Calendar::dayButtonClicked(unsigned day) {
@@ -102,14 +104,14 @@ Fl_Calendar::Fl_Calendar(int x,int y,int w,int h,const char *lbl)
    for (i = 0; i < 31; i++) {
        Fl_Button *btn = new Fl_Button(0,0,16,16,monthDayLabels[i]);
        m_dayButtons[i] = btn;
-       btn->connect(this, &Fl_Calendar::cbDayButtonClicked, (void *)(i+1));
+       btn->callback(Fl_Calendar::cbDayButtonClicked, (void *)(i+1));
    }
    m_buttonBox->end();
 
    // Switch buttons, correct positions are set by resize()
    for (i = 0; i < 4; i++) {
       m_switchButtons[i] = new Fl_Button(x,y,16,16,switchLabels[i]);
-      m_switchButtons[i]->connect(this, &Fl_Calendar::cbSwitchButtonClicked, (void *)monthChanges[i]);
+      m_switchButtons[i]->callback(Fl_Calendar::cbSwitchButtonClicked, (void *)monthChanges[i]);
       m_switchButtons[i]->label_type(FL_SYMBOL_LABEL);
    }
 
