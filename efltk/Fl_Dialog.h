@@ -76,7 +76,7 @@ public:
 
     /**
      * Save dialog widget values to datasource.
-	 *
+     *
      * This function is called from 'Ok' button callback.
      * If return value is true (data saved) the dialog will be closed. 
      *
@@ -90,7 +90,7 @@ public:
      * This function is designed to access the values in widgets
      * that have field_name() defined, after the save_data() is
      * successfully called and dialog is closed.
-	 *
+     *
      * @return Fl_Variant for field_name.
      * @see test/dialog.cpp
      */
@@ -100,7 +100,7 @@ public:
      * This function is designed to access the values in widgets
      * that have field_name() defined, after the save_data() is
      * successfully called and dialog is closed.
-	 *
+     *
      * @return Fl_Variant for field_name.
      * @see test/dialog.cpp
      */
@@ -112,13 +112,13 @@ public:
      */
     int show_modal();
 
-	/**
-	 * This function emulates user button click. 
-	 * It is 100% same to click CANCEL button in dialog or call submit(Fl_Dialog::BTN_CANCEL);
-	 *
-	 * @param button_id for button to submit e.g. Fl_Dialog::BTN_OK
-	 */
-	void submit(int button_id);
+    /**
+     * This function emulates user button click. 
+     * It is 100% same to click CANCEL button in dialog or call submit(Fl_Dialog::BTN_CANCEL);
+     *
+     * @param button_id for button to submit e.g. Fl_Dialog::BTN_OK
+     */
+    void submit(int button_id);
 
     /**
      * Set buttons to dialog, For OK and CANCEL it is:
@@ -131,11 +131,11 @@ public:
     void buttons(int buttons_mask, int default_button);
 
     /**
-	 * Enable or disable buttons in dialog. 
-	 * @note If button is disabled, user cannot click it!
+     * Enable or disable buttons in dialog. 
+     * @note If button is disabled, user cannot click it!
      *
      * @param button_id for button to enable/disable e.g. Fl_Dialog::BTN_OK
-	 * @param enable whether button should be activated or de-activated
+     * @param enable whether button should be activated or de-activated
      */
     void enable_button(int button_id, bool enable=true);
 
@@ -184,7 +184,8 @@ protected:
     /** Internal callback for default dialog buttons */ 
     static void buttons_callback(Fl_Button *btn, long id);
 
-    Fl_Tabs *m_tabs;
+    Fl_Tabs        *m_tabs;
+    Fl_Data_Source *m_dataSource;
 
 private:
     typedef Fl_Window inherited;
@@ -197,8 +198,6 @@ private:
     int             m_buttons;
     int             m_modalResult;
     bool            m_externalDataSource;
-
-    Fl_Data_Source *m_dataSource;
 };
 
 // Backward compatible defines
