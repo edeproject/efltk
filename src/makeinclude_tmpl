@@ -1,7 +1,17 @@
 #
 # Template for all Makefiles in efltk src.
-# If LIBNAME is empty, only files will be compiled
-# Otherwise library called LIBNAME is built to EFLTK_TOPDIR/lib
+#
+# These variables are MUST:
+#  - EFLTK_TOPDIR: Path to efltk root
+#  - CFILES / CPPFILES: Files to build
+#
+# Possible variables to set:
+#  - DIRS: Defines all sub-dirs, separated by whitespace
+#  - LIBNAME: If this is set, files will be built to separate library.
+#             If it's empty, only files are compiled
+#  - PROGRAM: If this is set, application will be built.
+#  - PROGRAM_LIBS: This must be set, if program needs to link with some external lib. 
+#                  e.g. for images: PROGRAM_LIBS=$(IMAGESLIB)
 #
 
 include $(EFLTK_TOPDIR)/makeinclude
@@ -11,10 +21,17 @@ OUT_MAGIC := $(shell mkdir $(EFLTK_TOPDIR)/lib > /dev/null 2>&1 || :)
 ################################################################
 
 all: $(BUILDTARGETS)
+install: $(INSTALLTARGETS)
 
 OBJECTS = $(CPPFILES:.cpp=.o) $(CFILES:.c=.o)
-STATIC_OBJECTS = $(OBJECTS:.o=.static.o)
-SHARED_OBJECTS = $(OBJECTS:.o=.shared.o)
+ifeq ($(PROGRAM), )
+ ifeq ($(STATIC_OBJECTS), )
+  STATIC_OBJECTS = $(OBJECTS:.o=.static.o)
+ endif
+ ifeq ($(SHARED_OBJECTS), )
+  SHARED_OBJECTS = $(OBJECTS:.o=.shared.o)
+ endif
+endif
 
 # If LIBNAME is not empty, we are building separate library
 # E.g. xml, gl
@@ -35,12 +52,6 @@ shared: $(DSO)$(DSOEXT)
 	@for dir in $(DIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
         	(cd $$dir;$(MAKE) $(MFLAGS) shared) || break;\
-	done
-
-programs:
-	@for dir in $(DIRS); do\
-        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
-        	(cd $$dir;$(MAKE) $(MFLAGS) programs) || break;\
 	done
 
 $(LIBRARY).a: $(STATIC_OBJECTS)
@@ -74,8 +85,6 @@ clean:
 
 ################################################################
 
-install: $(INSTALLTARGETS)
-
 install_static: static
 	@echo "Installing static libraries..."
 	@mkdir -p $(libdir)
@@ -101,20 +110,8 @@ install_shared: shared
 		(cd $$dir;$(MAKE) $(MFLAGS) install_shared) || break;\
 	done
 
-install_programs:
-	@for dir in $(DIRS); do\
-        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
-        	(cd $$dir;$(MAKE) $(MFLAGS) install_programs) || break;\
-	done
-
 else
 # LIBNAME was empty, compile only files
-
-all: $(BUILDTARGETS)
-	@for dir in $(DIRS); do\
-        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
-        	(cd $$dir;$(MAKE) $(MFLAGS)) || break;\
-	done
 
 static: $(STATIC_OBJECTS)
 	@for dir in $(DIRS); do\
@@ -128,14 +125,6 @@ shared: $(SHARED_OBJECTS)
         	(cd $$dir;$(MAKE) $(MFLAGS) shared) || break;\
 	done
 
-programs:
-	@for dir in $(DIRS); do\
-        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
-        	(cd $$dir;$(MAKE) $(MFLAGS) programs) || break;\
-	done
-
-install: $(INSTALLTARGETS)
-
 install_static: static
 	@for dir in $(DIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
@@ -148,12 +137,6 @@ install_shared: shared
 		(cd $$dir;$(MAKE) $(MFLAGS) install_shared) || break;\
 	done
 
-install_programs:
-	@for dir in $(DIRS); do\
-        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
-        	(cd $$dir;$(MAKE) $(MFLAGS) install_programs) || break;\
-	done
-
 clean:
 	@rm -f *~ *.o *.bak makedepend
 	@touch makedepend
@@ -163,10 +146,51 @@ clean:
 
 endif
 
-# depend is same for all
-depend:
-	$(MAKEDEPEND) -I$(EFLTK_TOPDIR) $(CXXFLAGS) $(CPPFILES) $(CFILES) > makedepend
-	sed -e "s'\.o'\.shared\.o'" makedepend > foo
-	cat foo >> makedepend
-	rm foo
+#
+# Same for all
+#
 
+depend:
+ifneq ($(CPPFILES), )
+	@echo Resolving depencies..
+	@$(MAKEDEPEND) -I$(EFLTK_TOPDIR) $(CXXFLAGS) $(CPPFILES) $(CFILES) > makedepend
+	@sed -e "s'\.o'\.shared\.o'" makedepend > foo
+	@cat foo >> makedepend
+	@rm foo
+endif
+	@for dir in $(DIRS); do\
+        	(cd $$dir;$(MAKE) $(MFLAGS) depend) || break;\
+	done
+
+programs: $(PROGRAM)
+	@for dir in $(DIRS); do\
+        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) programs) || break;\
+	done
+
+install_programs: $(PROGRAM)
+ifneq ($(PROGRAM), )
+	@echo Installing $(PROGRAM)..
+	@mkdir -p $(bindir)
+	@if [ ! "$(OSTYPE)" = "cygwin32" ]; then \
+		cp $(EFLTK_BINDIR)/$(PROGRAM) $(bindir)/; \
+		chmod 755 $(bindir)/$(PROGRAM); \
+	else \
+		cp $(EFLTK_BINDIR)/$(PROGRAM).exe $(bindir)/; \
+	fi
+endif
+	@for dir in $(DIRS); do\
+        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) install_programs) || break;\
+	done
+
+ifneq ($(PROGRAM), )
+
+$(PROGRAM): $(OBJECTS)
+	@echo Linking $(PROGRAM)...
+	@$(CXX) -o $(EFLTK_BINDIR)/$(PROGRAM) $(OBJECTS) $(PROGRAM_LIBS) $(LDLIBS)
+ifneq ($(STRIP), ) 
+	@$(STRIP) $(EFLTK_BINDIR)/$(PROGRAM)
+endif
+
+endif

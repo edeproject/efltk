@@ -1,0 +1,281 @@
+# data file for the FLTK User Interface Designer (FLUID)
+version 2,0003 
+i18n 
+header_name {.h} 
+code_name {.cpp} 
+gridx 5 
+gridy 5 
+snap 3
+decl {\#include "globals.h"} {public
+} 
+
+Function {main_window()} {open
+} {
+  Fl_Window mainwindow {
+    label ETranslate
+    xywh {3 116 700 455}
+    extra_code {\#include <efltk/Fl_Main_Window.h>
+o->size_range(o->w(), o->h());}
+    class Fl_Main_Window visible
+  } {
+    Fl_Menu_Bar menubar {open
+      xywh {0 0 700 25}
+    } {
+      Fl_Item_Group {} {
+        label {&File} open
+        } {
+        Fl_Item {} {
+          label {&Load}
+          user_data LOAD
+          shortcut 0x4006c
+        }
+        Fl_Item {} {
+          label {&Save}
+          user_data SAVE
+          shortcut 0x40073
+        }
+        Fl_Item {} {
+          label {Save &As}
+          user_data SAVEAS
+          shortcut 0x40061
+        }
+        Fl_Divider {} {
+          xywh {0 0 0 2}
+          extra_code {\#include <efltk/Fl_Divider.h>}
+        }
+        Fl_Item {} {
+          label {&Quit}
+          user_data QUIT
+          shortcut 0x40071
+        }
+      }
+      Fl_Item_Group {} {
+        label {&Help} open
+        
+        extra_code {menubar->right_layout(o);}
+      } {
+        Fl_Item {} {
+          label {&About}
+          user_data ABOUT
+          }
+      }
+    }
+    Fl_Group toolbar {open
+      xywh {0 25 700 40}
+      extra_code {\#include <efltk/Fl_Tool_Bar.h>
+o->spacing(3);}
+      class Fl_Tool_Bar
+    } {
+      Fl_Button tb_quit {
+        label Quit
+        tooltip {Quit etranslate.}
+        xywh {5 5 32 32} label_size 10
+      }
+      Fl_Divider {} {
+        label label
+        xywh {40 6 10 30} type VERTICAL
+      }
+      Fl_Button tb_load {
+        label Load
+        tooltip {Load existing file}
+        xywh {55 5 32 32} align 64 label_size 10
+      }
+      Fl_Button tb_save {
+        label Save
+        tooltip {Save file}
+        xywh {95 5 32 32} align 64 label_size 10
+      }
+      Fl_Divider {} {
+        label label
+        xywh {130 6 10 30} type VERTICAL
+      }
+      Fl_Button tb_comp {
+        label {Com pile}
+        tooltip {Compile to binary format}
+        xywh {145 5 32 32} align 192 label_size 10
+      }
+    }
+    Fl_Group maingroup {open
+      xywh {0 64 700 366}
+    } {
+      Fl_Group {} {open
+        xywh {0 0 700 65}
+      } {
+        Fl_Group {} {open
+          xywh {5 5 630 55} box BORDER_BOX
+          extra_code {o->parent()->resizable(o);}
+        } {
+          Fl_Output prj_output {
+            label {Project:}
+            xywh {80 10 210 20} box NO_BOX
+            extra_code {o->text_font(o->text_font()->bold());}
+          }
+          Fl_Output lang_output {
+            label {Language:}
+            xywh {80 30 210 20} box NO_BOX
+            extra_code {o->text_font(o->text_font()->bold());}
+          }
+          Fl_Output trans_output {
+            label {Translator:}
+            xywh {385 10 240 20} box NO_BOX
+            extra_code {o->text_font(o->text_font()->bold());}
+          }
+          Fl_Output email_output {
+            label {Email:}
+            xywh {385 30 240 20} box NO_BOX
+            extra_code {o->text_font(o->text_font()->bold());}
+          }
+          Fl_Box {} {
+            xywh {290 5 155 45}
+            extra_code {o->parent()->resizable(o);}
+          }
+        }
+        Fl_Button modify_button {
+          label Modify
+          tooltip {Modify project information}
+          xywh {640 5 55 55}
+        }
+      }
+      Fl_Browser browser {open
+        xywh {0 65 254 300} button_box BORDER_BOX button_color 0xe7e7e700
+        extra_code {\#include <efltk/Fl_ListView.h>
+o->add_column("Original",125);
+o->add_column("Translation",125);
+o->draw_stripes(true);}
+        class Fl_ListView
+      } {}
+      Fl_Group {} {open
+        xywh {255 65 445 301}
+        extra_code {o->parent()->resizable(o);}
+      } {
+        Fl_Group {} {open
+          xywh {0 1 445 30}
+        } {
+          Fl_Output comment_output {
+            label Comment
+            xywh {0 0 445 25} align 20
+            extra_code {o->parent()->resizable(o);}
+          }
+        }
+        Fl_Group {} {open
+          xywh {0 30 445 241}
+          extra_code {o->parent()->resizable(o);}
+        } {
+          Fl_Input trans_input {
+            label Translation
+            xywh {0 136 445 105} type Multiline align 5
+            extra_code {o->wordwrap(1);}
+          }
+          Fl_Input orig_input {
+            label Original
+            xywh {0 15 445 105} type Multiline align 5
+            extra_code {o->readonly(true);
+o->wordwrap(1);}
+          }
+          Fl_Box {} {
+            xywh {225 16 20 225}
+            extra_code {o->parent()->resizable(o);}
+          }
+        }
+        Fl_Group {} {open
+          xywh {0 271 445 30}
+        } {
+          Fl_Button save_button {
+            label {Save/Next (CTRL+N)}
+            xywh {280 2 160 25} shortcut 0x4006e
+          }
+          Fl_Check_Button fin_button {
+            label {&Finished (CTRL+F)}
+            tooltip {Mark translation as finished.
+Only finished translations are compiled to binary.}
+            xywh {5 2 270 25} shortcut 0x40066
+            extra_code {o->parent()->resizable(o);}
+          }
+        }
+      }
+    }
+    Fl_Group statusgroup {open
+      xywh {0 430 700 25}
+    } {
+      Fl_Box statusbar {
+        label {No file loaded..}
+        xywh {0 2 700 21} align 84 box BORDER_BOX
+        extra_code {o->parent()->resizable(o);}
+      }
+    }
+  }
+  code {mainwindow->menu(menubar);
+mainwindow->toolbar(toolbar);
+mainwindow->view(maingroup);
+mainwindow->status(statusgroup);} {}
+} 
+
+Function {modify_window()} {open
+} {
+  Fl_Window {} {
+    label {Project Information} open
+    xywh {50 29 390 260} visible
+  } {
+    Fl_Tabs {} {open
+      xywh {5 5 380 211}
+    } {
+      Fl_Group {} {
+        label Information open
+        xywh {0 22 380 189}
+      } {
+        Fl_Input info_comment {
+          label {Comment:}
+          xywh {110 3 265 55} type Multiline
+          extra_code {o->wordwrap(1);}
+        }
+        Fl_Input info_prjname {
+          label {Project Name:}
+          xywh {110 63 265 25}
+        }
+        Fl_Input info_prjversion {
+          label {Project Version:}
+          xywh {110 93 265 25}
+        }
+        Fl_Output info_startdate {
+          label {Start Date:}
+          xywh {110 123 265 25}
+          extra_code {o->color(fl_lighter(o->parent()->color()));}
+        }
+        Fl_Output info_moddate {
+          label {Last Modified:}
+          xywh {110 153 265 25}
+          extra_code {o->color(fl_lighter(o->parent()->color()));}
+        }
+      }
+      Fl_Group {} {
+        label Translator open
+        xywh {0 20 380 190} hide
+      } {
+        Fl_Input info_trans {
+          label {Translator:}
+          xywh {110 10 265 25}
+        }
+        Fl_Input info_email {
+          label {E-Mail:}
+          xywh {110 45 265 25}
+        }
+        Fl_Input info_lang {
+          label {Language:}
+          xywh {110 80 265 25}
+        }
+      }
+    }
+    Fl_Divider {} {
+      label label
+      xywh {5 215 380 15}
+    }
+    Fl_Button info_cancel {
+      label Cancel
+      xywh {315 230 70 25}
+    }
+    Fl_Button info_ok {
+      label OK selected
+      xywh {235 230 70 25}
+    }
+  }
+} 

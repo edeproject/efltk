@@ -1,5 +1,7 @@
 include ../makeinclude
 
+DIRS = xml db
+
 all:
 
 static:
@@ -21,16 +23,17 @@ install: install_headers install_fltk_config
 
 install_headers:
 	@echo "Installing include files..."
-	@mkdir -p $(includedir)
 	@rm -rf $(includedir)/efltk
+	@mkdir -p $(includedir)
 	@mkdir -p $(includedir)/efltk
-	@mkdir -p $(includedir)/efltk/xml
+
 	@cp *.h  $(includedir)/efltk
-	@cp xml/*.h  $(includedir)/efltk/xml
 	@chmod 644 $(includedir)/efltk/*
-	@chmod 644 $(includedir)/efltk/xml/*
 	@chmod 755 $(includedir)/efltk
-	@chmod 755 $(includedir)/efltk/xml
+
+	@for dir in $(DIRS); do\
+        	(cd $$dir;$(MAKE) $(MFLAGS) install_headers) || break;\
+	done
 
 install_fltk_config:
 	@echo "Installing efltk-config..."

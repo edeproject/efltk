@@ -102,7 +102,7 @@ AC_ARG_ENABLE(cmap, [  --enable-cmap           enable support for 8bit displays]
 fi])
 
 AC_ARG_ENABLE(debug, [  --enable-debug          compile with debug rather than optimized],[if eval "test x$enable_debug = xyes"; then
-	DEBUGFLAG="-Wall -g3 -D_DEBUG"
+	DEBUGFLAG="-g3 -D_DEBUG"
 fi])
 
 case $uname in
@@ -349,7 +349,8 @@ dnl See if we need a .exe extension on executables...
 AC_EXEEXT
 
 dnl# Do we have libiconv installed
-AC_CHECK_LIB(iconv, iconv_open, AC_DEFINE(HAVE_ICONV) LDLIBS="$LDLIBS -liconv",)
+iconv_found=no
+AC_CHECK_LIB(iconv, iconv_open, AC_DEFINE(HAVE_ICONV) LDLIBS="$LDLIBS -liconv" iconv_found=yes,)
 
 AC_MSG_CHECKING([for math emulation])
 AC_TRY_LINK([#include <math.h>],[ floorf(1.0f); fabsf(1.0f); ],
@@ -535,6 +536,30 @@ AC_CONFIG_HEADER(config.h:configh.in)
 AC_OUTPUT(makeinclude efltk-config efltk.spec)
 
 chmod +x efltk-config
+
+echo
+echo "Build information:"
+echo "-------------------------"
+echo "Prefix: $prefix"
+echo "Bin directory: $prefix/bin"
+echo "Lib directory: $prefix/lib"
+echo "Include directory: $prefix/include"
+echo
+echo "Thread libs: $THREADSLIBS"
+echo "Png libs: $LIBPNG"
+echo "Jpeg libs: $LIBJPEG"
+echo
+echo "Iconv found: $iconv_found"
+if test "$iconv_found" = no; then
+echo "    WARNING:"
+echo "    Iconv library not found!"
+echo "    Only most common codeset converters"
+echo "    available. It's recommended to install iconv"
+fi
+echo "-------------------------"
+echo "EFLTK is ready for build."
+echo "To start building, type: gmake"
+echo
 
 dnl#
 dnl# End of "$Id$".

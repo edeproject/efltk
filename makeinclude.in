@@ -26,8 +26,13 @@
 
 PACKAGE		=@PACKAGE@
 
-EFLTK_BUILDDIR = @EFLTK_BUILDDIR@
 FL_API_VERSION = @FL_API_VERSION@
+
+# directories
+EFLTK_BUILDDIR = @EFLTK_BUILDDIR@
+EFLTK_BINDIR   = $(EFLTK_BUILDDIR)/bin
+EFLTK_LIBDIR   = $(EFLTK_BUILDDIR)/lib
+
 SYSTYPE	       = @SYSTYPE@
 
 prefix		= @prefix@
@@ -47,12 +52,10 @@ MAKEDEPEND	=@MAKEDEPEND@
 
 STRIP           =@STRIP_PATH@
 
-# flags for C++ compiler:
-# WAS: I removed the -I@srcdir@, please use "xyz" rather than <xyz>
-# for files that are in the same directory as the source file.
-CFLAGS		= -DHAVE_CONFIG_H @CFLAGS@ @DEBUGFLAG@
-CXXFLAGS	= -DHAVE_CONFIG_H @CXXFLAGS@ @DEBUGFLAG@
-DSOCFLAGS	= @DSOCFLAGS@ -DFL_LIBRARY
+# flags for compiler:
+WALL            = -Wno-import -Wcomment -Wformat -Wimplicit-int -Werror-implicit-function-declaration -Wmain -Wmultichar -Wparentheses -Wreturn-type -Wswitch -Wunused -Wuninitialized -Wunknown-pragmas
+CFLAGS		= -DHAVE_CONFIG_H -I$(EFLTK_BUILDDIR) $(WALL) @CFLAGS@ @DEBUGFLAG@
+CXXFLAGS	= -DHAVE_CONFIG_H -I$(EFLTK_BUILDDIR) $(WALL) @CXXFLAGS@ @DEBUGFLAG@
 
 # static libs:
 LIBEXT		=@LIBEXT@
@@ -63,26 +66,29 @@ RANLIB		=@RANLIB@
 DSOEXT		=@DSOEXT@
 DSOSHORTEXT	=@DSOSHORTEXT@
 DSOCOMMAND	=@DSOCOMMAND@
+DSOCFLAGS	=@DSOCFLAGS@ -DFL_LIBRARY
 
 THEMECOMMAND	=@THEMECOMMAND@
 LD		=@LD@
 
-# libraries to link with:
-LDLIBS		=@LDFLAGS@ @FLLIB@ @LDLIBS@
-DSOLIBS		=@DSOLIBS@
-THEMELIBS	=@THEMELIBS@
-GLDLIBS		=@FLGLLIB@ @GLLIB@
-IMAGELIBS	=@FLIMAGESLIB@
+# efltk libs
+FLLIB		=@FLLIB@
+FLGLLIB		=@FLGLLIB@
+FLIMAGESLIB	=@FLIMAGESLIB@
+FLXMLLIB	=@FLXMLLIB@
+
+# external libs
 THREADSLIBS	=@THREADSLIBS@
 JPEGLIBS	=@LIBJPEG@
 PNGLIBS		=@LIBPNG@
 
-FLLIB		=@FLLIB@
-FLGLLIB		=@FLGLLIB@
-FLGLUTLIB	=@FLGLUTLIB@
-FLFORMSLIB	=@FLFORMSLIB@
-FLIMAGESLIB	=@FLIMAGESLIB@
-FLXMLLIB	=@FLXMLLIB@
+# libraries to link with:
+LDLIBS		=@LDFLAGS@ $(FLLIB) @LDLIBS@
+DSOLIBS		=@DSOLIBS@
+THEMELIBS	=@THEMELIBS@
+GLDLIBS		=$(FLGLLIB) @GLLIB@
+IMAGELIBS	=$(FLIMAGESLIB) $(JPEGLIBS) $(PNGLIBS)
+XMLLIBS		=$(FLXMLLIB)
 
 EXEEXT		=@EXEEXT@
 BUILDTARGETS	=@BUILDTARGETS@
@@ -93,32 +99,32 @@ INSTALLTARGETS	=@INSTALLTARGETS@
 
 .o$(EXEEXT):
 	@echo Linking $@...
-	@$(CXX) -I$(EFLTK_BUILDDIR) $(CXXFLAGS) $< $(LINKFLTK) $(LDLIBS) -o $@
+	@$(CXX) $(CXXFLAGS) $< $(LINKFLTK) $(LDLIBS) -o $@
 #	$(POSTBUILD) $@ ../FL/mac.r
 
 .c.o:
 	@echo Compiling $<...
-	@$(CC) -I$(EFLTK_BUILDDIR) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 .cpp.o:
 	@echo Compiling $<...
-	@$(CXX) -I$(EFLTK_BUILDDIR) $(CXXFLAGS) -c $< -o $@
+	@$(CXX) $(CXXFLAGS) -c $< -o $@
 
 %.static.o : %.cpp
 	@echo Compiling $<...
-	@$(CXX) -I$(EFLTK_BUILDDIR) $(CXXFLAGS) -c $< -o $@
+	@$(CXX) $(CXXFLAGS) -c $< -o $@
 
 %.static.o : %.c
 	@echo Compiling $<...
-	@$(CC) -I$(EFLTK_BUILDDIR) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 %.shared.o : %.cpp
 	@echo Compiling $<...
-	@$(CXX) -I$(EFLTK_BUILDDIR) $(DSOCFLAGS) $(CXXFLAGS) -c $< -o $@
+	@$(CXX) $(DSOCFLAGS) $(CXXFLAGS) -c $< -o $@
 
 %.shared.o : %.c
 	@echo Compiling $<...
-	@$(CC) -I$(EFLTK_BUILDDIR) $(DSOCFLAGS) $(CFLAGS) -c $< -o $@
+	@$(CC) $(DSOCFLAGS) $(CFLAGS) -c $< -o $@
 
 .man.0 .man.1 .man.3:
 	@echo Formatting $<...

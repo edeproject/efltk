@@ -368,7 +368,7 @@ const int fl_encoding_number(const char *enc)
 
     /* Create new */
     iconv = iconv_open(enc, "UCS-4");
-    if(iconv!=NULL && iconv!=(iconv_t*)-1) {
+    if(iconv!=NULL && iconv!=(iconv_t)-1) {
         //printf("iconv: %s\n", enc);
         return ucs_cache.add((conv_t)iconv, enc);
     }
@@ -451,7 +451,7 @@ int fl_find_converter(const char *from_codeset)
 
     /* Create new */
     iconv = iconv_open("UTF-8", from_codeset);
-    if(iconv!=NULL && iconv!=(iconv_t*)-1) {
+    if(iconv!=NULL && iconv!=(iconv_t)-1) {
         return utf8_cache.add((conv_t)iconv, from_codeset);
     }
 #endif /* HAVE_ICONV */

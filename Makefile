@@ -24,7 +24,7 @@
 
 SHELL=/bin/sh
 
-DIRS = src fluid themes efltk locale fluid/locale test
+DIRS = src tools themes efltk locale test
 
 GENERATED = makeinclude efltk-config
 

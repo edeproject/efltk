@@ -138,8 +138,11 @@ public:
     }
     ~Iconv_Cache() {
         for(int n=0; n<CACHE_SIZE; n++) {
-            for(int n2=0; n2<cache[n].cnt; n2++)
-                free(cache[n].convs[n2].name);
+            for(int n2=0; n2<cache[n].cnt; n2++) {
+                Converter *c = &cache[n].convs[n2];
+                iconv_close((iconv_t)c->conv);
+                free(c->name);
+            }
         }
     }
 
@@ -208,10 +211,9 @@ public:
             size_t *inbytesleft = (size_t *)&inlen;
             size_t outbytesleft = outlen+1; // + 1, for null len == 1
             char *obuf = outbuf;
-            size_t err = cached->conv->lfuncs.loop_convert(cached->conv,
-                                                           (const char **)&inbuf, inbytesleft,
-                                                           (char **)&obuf,
-                                                           &outbytesleft);
+            size_t err = iconv((iconv_t)cached->conv,
+                               (char**)&inbuf, inbytesleft,
+                               (char **)&obuf, &outbytesleft);
             if(err == (size_t)-1) {
                 return -1;
             }
