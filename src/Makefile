@@ -51,6 +51,7 @@ static:
 	$(MAKE) -C images static
 	$(MAKE) -C opengl static
 	$(MAKE) -C xml static
+	$(MAKE) -C db static
 
 shared:
 	rm -f $(LIBRARY)$(DSOEXT)
@@ -61,12 +62,13 @@ shared:
 	$(MAKE) -C images shared
 	$(MAKE) -C opengl shared
 	$(MAKE) -C xml shared
+	$(MAKE) -C db shared
 
 programs:
 
 $(LIBRARY).a:
 	@echo $(LIBCOMMAND) $@ ...
-	@$(LIBCOMMAND) $@ core/*.static.o widgets/*.static.o xutf/*.static.o
+	@$(LIBCOMMAND) $@ core/*.static.o widgets/*.static.o xutf/*.static.o 
 	@$(RANLIB) $@
 
 $(DSO).so.2 $(DSO).sl.2: $(OBJECTS:.o=.shared.o)
@@ -92,6 +94,7 @@ clean:
 	$(MAKE) -C images clean
 	$(MAKE) -C opengl clean
 	$(MAKE) -C xml clean
+	$(MAKE) -C db clean
 	@rm -f *~ $(LIBRARY).*
 
 depend:
@@ -101,6 +104,7 @@ depend:
 	$(MAKE) -C images depend
 	$(MAKE) -C opengl depend
 	$(MAKE) -C xml depend
+	$(MAKE) -C db depend
 
 ################################################################
 
@@ -116,6 +120,7 @@ install_static: static
 	$(MAKE) -C images install_static
 	$(MAKE) -C opengl install_static
 	$(MAKE) -C xml install_static
+	$(MAKE) -C db install_static
 
 install_shared: shared
 	@echo "Installing shared libraries..."
@@ -131,6 +136,7 @@ install_shared: shared
 	$(MAKE) -C images install_shared
 	$(MAKE) -C opengl install_shared
 	$(MAKE) -C xml install_shared
+	$(MAKE) -C db install_shared
 
 install_programs:
 

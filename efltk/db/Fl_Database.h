@@ -1,7 +1,7 @@
 /***************************************************************************
                           Fl_Database.h  -  description
                              -------------------
-    begin                : Sat Dec 27 2002
+    begin                : Sat Dec 28 2002
     copyright            : (C) 2002 by Alexey Parshin
     email                : alexeyp@m7.tts-sf.com
  ***************************************************************************/
@@ -18,9 +18,9 @@
 #ifndef __Fl_Database_H__
 #define __Fl_Database_H__
 
-#include <Fl_String.h>
-#include <Fl_Ptr_List.h>
-#include <Fl_Exception.h>
+#include <efltk/Fl_String.h>
+#include <efltk/Fl_Ptr_List.h>
+#include <efltk/Fl_Exception.h>
 
 enum Fl_Database_Capabilities {
    FL_DB_UNKNOWN = 0, 
@@ -46,7 +46,6 @@ protected:
    virtual void allocate_query(Fl_Query *) = 0;
    virtual void deallocate_query(Fl_Query *) = 0;
    virtual void prepare_query(Fl_Query *) = 0;
-   virtual void execute_query(Fl_Query *) = 0;
    virtual void open_query(Fl_Query *)  = 0;
    virtual void fetch_query(Fl_Query *) = 0;
    virtual void close_query(Fl_Query *) = 0;
@@ -55,12 +54,12 @@ protected:
 protected:
    // These methods should be implemented in actual database class
    virtual void open_connection() = 0;
-   virtual void close_connection() = 0;
+   virtual void close_connection()                 { fl_throw("Method not implemented"); }
 
 public:
    Fl_Database(const Fl_String connString)         { m_inTransaction = m_active = false; }
    virtual ~Fl_Database()                          { close(); close_connection(); }
-   void open(const Fl_String connString);
+   void open(const Fl_String connString="");
    void close();
    Fl_String connect_string() const                { return m_connString; }
 

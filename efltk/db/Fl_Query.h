@@ -1,8 +1,8 @@
 /***************************************************************************
                           Fl_Query.h  -  description
                              -------------------
-    begin                : Wed Dec 15 1999
-    copyright            : (C) 1999 by Alexey Parshin
+    begin                : Sat Dec 28 2002
+    copyright            : (C) 2002 by Alexey Parshin
     email                : alexeyp@m7.tts-sf.com
  ***************************************************************************/
 
@@ -18,50 +18,43 @@
 #ifndef __Fl_Query_H__
 #define __Fl_Query_H__
 
-#include <Fl_Params.h>
-#include <Fl_Data_Fields.h>
+#include <efltk/db/Fl_Params.h>
+#include <efltk/Fl_Data_Source.h>
 
 class Fl_Database;
 
-class Fl_Query {
+class Fl_Query : public Fl_Data_Source {
 private:
    bool              m_prepared;
    bool              m_active;
    bool              m_eof;
-   Fl_ParamList      m_params;
-   Fl_Data_Fields    m_fields;
+   Fl_Params         m_params;
+
+   void checkDatabaseState();
 protected:
-   Fl_Database *     m_database;
-   void *            m_handle;
-   long              m_NativeError;
+   Fl_Database *     m_database;    // Parent database
+   void *            m_stmt;        // statement handle
 protected:
    Fl_String         m_sql;
 
    void alloc_stmt();
    void free_stmt();
-   void colAttributes(short column,short descType,long& value);
-   void colAttributes(short column,short descType,char *buff,int len);
 
    // Copy constructor isn't supported
-   Fl_Query(const Fl_Query& ) {};
+   Fl_Query(const Fl_Query& ) : Fl_Data_Source(0L) {};
 
 public:
    Fl_Query(Fl_Database *db,Fl_String sql = "");
    ~Fl_Query() { close(); free_stmt(); }
 public:
    void prepare();
-   void open();
+   bool open();
    void exec();
    void fetch();
-   void close();
+   bool close();
    Fl_String sql() { return m_sql; }
 public:
-   Fl_Data_Field&   operator [] (int fieldIndex) const { return m_fields[fieldIndex]; }
-   Fl_Data_Field&   operator [] (const char *fieldName) const { return m_fields[fieldName]; }
-   Fl_Data_Field&   operator [] (const Fl_String& fieldName) const { return m_fields[fieldName.c_str()]; }
-   Fl_Data_Fields&  fields ()           { return m_fields; }
    bool             eof() const         { return m_eof; }
-   unsigned         field_count() const { return m_fields.count(); }
    unsigned         param_count() const { return m_params.count(); }
    Fl_Param&        param(const char *paramName) const;
    Fl_Param&        param(const Fl_String& paramName) const;
@@ -70,11 +63,9 @@ public:
    Fl_String        sql() const         { return m_sql; }
    void             sql(Fl_String _sql);
 
-   Fl_Database     *database() const    { return m_db; }
+   Fl_Database     *database() const    { return m_database; }
 
    bool             active() const      { return m_active; }
 };
-
-#define FETCH_BUFFER_SIZE 1024
 
 #endif

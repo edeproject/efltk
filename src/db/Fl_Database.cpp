@@ -1,7 +1,7 @@
 /***************************************************************************
                           Fl_Database.cpp  -  description
                              -------------------
-    begin                : Sat Dec 27 2002
+    begin                : Sat Dec 28 2002
     copyright            : (C) 2002 by Alexey Parshin
     email                : alexeyp@m7.tts-sf.com
  ***************************************************************************/
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <db/Fl_Database.h>
-#include <db/Fl_Query.h>
+#include <efltk/db/Fl_Database.h>
+#include <efltk/db/Fl_Query.h>
 
 void Fl_Database::open(const Fl_String connString) {
    if (connString != m_connString) {
@@ -29,7 +29,7 @@ void Fl_Database::open(const Fl_String connString) {
 void Fl_Database::close() {
    unsigned cnt = m_queryList.count();
    for (unsigned i = 0; i < cnt; i++) {
-      ((CQuery *)m_queryList[i])->close();
+      ((Fl_Query *)m_queryList[i])->close();
    }
    close_connection();
    m_active = false;
