@@ -41,7 +41,7 @@ CPPFILES = \
 	core/Fl_Group.cpp \
 	core/Fl_Image.cpp \
 	core/Fl_Image_Filter.cpp \
-        core/Fl_Lists.cpp \
+	core/Fl_Lists.cpp \
 	core/Fl_Pixmap.cpp \
 	core/Fl_Renderer.cpp \
 	core/Fl_String.cpp \
@@ -125,6 +125,7 @@ CPPFILES = \
 	widgets/Fl_Dial.cpp \
 	widgets/Fl_Dialog.cpp \
 	widgets/Fl_Dialog_Data_Source.cpp \
+	widgets/Fl_Directory_DS.cpp \
 	widgets/Fl_Double_Window.cpp \
 	widgets/Fl_FileBrowser.cpp \
 	widgets/Fl_FileInput.cpp \

@@ -24,8 +24,8 @@
 #
 
 CPPFILES = demo.cpp sizes.cpp hello.cpp resizable.cpp scroll.cpp image.cpp file_chooser.cpp menubar.cpp \
-	   browser.cpp threads.cpp progress.cpp editor.cpp inactive.cpp checkers.cpp \
-           valuators.cpp glpuzzle.cpp boxtype.cpp multi_image.cpp help.cpp mdi_test.cpp \
+	browser.cpp threads.cpp progress.cpp editor.cpp inactive.cpp checkers.cpp \
+	valuators.cpp glpuzzle.cpp boxtype.cpp multi_image.cpp help.cpp mdi_test.cpp \
            resize.cpp tabs.cpp line_style.cpp doublebuffer.cpp subwindow.cpp \
            keyboard.cpp label.cpp layout.cpp arc.cpp ask.cpp button.cpp buttons.cpp \
            clock.cpp color_chooser.cpp cube.cpp cursor.cpp curve.cpp fast_slow.cpp \
@@ -34,7 +34,7 @@ CPPFILES = demo.cpp sizes.cpp hello.cpp resizable.cpp scroll.cpp image.cpp file_
            preferences.cpp image_manip.cpp listview.cpp alphablend.cpp callback.cpp \
            thread_ball.cpp images.cpp image_loader.cpp multitabs1.cpp multitabs2.cpp \
 	   popup_window.cpp symbols.cpp calendar.cpp maskedinput.cpp bitmap.cpp utf8.cpp \
-           dialog.cpp
+           dialog.cpp directory.cpp
 
 ALL =   demo sizes hello resizable scroll image file_chooser menubar browser \
 	threads progress editor inactive checkers valuators glpuzzle boxtype \
@@ -44,7 +44,7 @@ ALL =   demo sizes hello resizable scroll image file_chooser menubar browser \
         output overlay pack radio shape tile CubeView preferences image_manip \
         listview alphablend callback thread_ball images image_loader \
 	multitabs1 multitabs2 popup_window symbols calendar maskedinput bitmap utf8 \
-        dialog
+        dialog directory
 
 all: demos
 
