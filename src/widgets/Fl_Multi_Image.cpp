@@ -5,7 +5,9 @@ void Fl_Multi_Image::measure(int& w, int& h)
     images[0]->measure(w,h);
 }
 
-void Fl_Multi_Image::draw(int x, int y, int w, int h, Fl_Flags f)
+void Fl_Multi_Image::draw(int dx, int dy, int dw, int dh,
+                          int sx, int sy, int sw, int sh,
+                          Fl_Flags f)
 {
     int which = 0;
     for (int i = 1; i < MAXIMAGES; i++) {
@@ -15,5 +17,5 @@ void Fl_Multi_Image::draw(int x, int y, int w, int h, Fl_Flags f)
             which = i;
         }
     }
-    images[which]->draw(x,y,w,h,0);
+    images[which]->draw(dx,dy,dw,dh,sx,sy,sw,sh,0);
 }
