@@ -28,12 +28,48 @@ class Fl_Param : public Fl_Variant {
 public:
    Fl_Param(const char *name);
    ~Fl_Param();
-   Fl_Param& operator = (const Fl_Param& param);
    Fl_String  name() const { return m_name; }
    void       bind_clear() { m_bindParamIndexes.clear(); }
    void       bind_add(unsigned bindIndex);
    unsigned   bind_count() { return m_bindParamIndexes.count(); }
    unsigned   bind_index(unsigned ind) { return (unsigned)m_bindParamIndexes[ind]; }
+
+   // ASSIGNMENT OPERATORS
+   Fl_Variant& operator =(const Fl_Variant &C) {
+       if (this == &C) return *this;
+       set_data(C);
+       return *this;
+   }
+
+   Fl_Variant& operator =(const char *s) {
+       set_string(s);
+       return *this;
+   }
+
+   Fl_Variant& operator =(const Fl_String &s) {
+       set_string(s.c_str(), s.length());
+       return *this;
+   }
+
+   Fl_Variant& operator =(int v) {
+       set_int(v);
+       return *this;
+   }
+
+   Fl_Variant& operator =(double v) {
+       set_float(v);
+       return *this;
+   }
+
+   Fl_Variant& operator =(Fl_Date_Time dt) {
+       set_date(dt);
+       return *this;
+   }
+
+   Fl_Variant& operator =(const Fl_Image *pm) {
+       set_image_ptr(pm);
+       return *this;
+   }
 };
 
 class Fl_Params {
