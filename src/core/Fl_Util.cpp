@@ -12,7 +12,20 @@
 #include <sys/stat.h>
 #include <time.h>
 
-#ifndef _WIN32
+#ifdef _WIN32
+
+# include <windows.h>
+# include <io.h>
+# include <direct.h>
+
+# define S_ISLNK(m)      (false)
+#ifndef __GNUC__
+# define S_ISREG(m)      (((m) & _S_IFMT) == _S_IFREG)
+# define S_ISDIR(m)      (((m) & _S_IFMT) == _S_IFDIR)
+# define S_ISBLK(m)      (((m) & _S_IFMT) == _S_IFBLK)
+#endif /* __GNUC__ */
+
+#else
 
 # include <sys/types.h>
 # include <dirent.h>
@@ -21,17 +34,6 @@
 # include <unistd.h>
 # include <errno.h>
 # include <fcntl.h>
-
-#else
-
-# include <windows.h>
-# include <io.h>
-# include <direct.h>
-
-# define S_ISLNK(m)      (false)
-# define S_ISREG(m)      (((m) & _S_IFMT) == _S_IFREG)
-# define S_ISDIR(m)      (((m) & _S_IFMT) == _S_IFDIR)
-# define S_ISBLK(m)      (((m) & _S_IFMT) == _S_IFBLK)
 
 #endif
 

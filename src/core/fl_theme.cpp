@@ -30,7 +30,9 @@
 #else
 # include <io.h>
 # define access(a,b) _access(a,b)
-# define R_OK        04
+#ifndef R_OK
+# define R_OK 04
+#endif /* R_OK */
 #endif
 
 #ifndef PATH_MAX

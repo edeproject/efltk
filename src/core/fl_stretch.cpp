@@ -24,17 +24,20 @@ void copy_row3(uint8 *src, int src_w, uint8 *dst, int dst_w)
 	}
 }
 
-//#define DISABLE_ASM 1
+#if defined(_WIN32) && defined(__GNUC__)
+// For some reason ASM code doesnt work under GCC / WIN32
+# define DISABLE_ASM 1
+#endif
 
-#if (defined(_WIN32) && !defined(_M_ALPHA) && !defined(_WIN32_WCE) && \
+#if ((defined(_WIN32) && !defined(_M_ALPHA) && !defined(_WIN32_WCE) && \
     !defined(__WATCOMC__) && !defined(__LCC__) && !defined(__FREEBCC__)) || \
-    (defined(i386) && defined(__GNUC__) && !DISABLE_ASM)
+    (defined(i386) && defined(__GNUC__))) && !DISABLE_ASM
 # define USE_ASM_STRETCH
 #endif
 
 #ifdef USE_ASM_STRETCH
 
-#if defined(WIN32) || defined(i386)
+#if defined(_WIN32) || defined(i386)
 #define PREFIX16	0x66
 #define STORE_BYTE	0xAA
 #define STORE_WORD	0xAB
@@ -206,7 +209,7 @@ bool Fl_Renderer::stretch(uint8 *src, int src_bpp, int src_pitch, Fl_Rect *srcre
             : "0" (dstp), "1" (srcp)
             : "memory" );
 #else
-#ifdef WIN32
+#ifdef _WIN32
             { void *code = &copy_row;
                 __asm {
                     push edi

@@ -49,40 +49,30 @@
 				 FL_MINOR_VERSION * 0.01f + \
 				 FL_PATCH_VERSION * 0.0001f)
 
-#ifndef _WIN32
-
-# undef slash
-# define slash '/'
-
-typedef signed long long   int64;
-typedef unsigned long long uint64;
-typedef signed int     	   int32;
-typedef unsigned int   	   uint32;
-typedef signed short   	   int16;
-typedef unsigned short 	   uint16;
-typedef signed char    	   int8;
-typedef unsigned char  	   uint8;
-typedef uint32		   uint;
-
-#else
-
-# undef slash
-# define slash '\\'
-
+#if defined(_WIN32) && !defined(__GNUC__)
 typedef __int64           int64;
 typedef unsigned __int64  uint64;
-typedef signed int     	  int32;
-typedef unsigned int   	  uint32;
-typedef signed short   	  int16;
-typedef unsigned short 	  uint16;
-typedef signed char    	  int8;
-typedef unsigned char  	  uint8;
-typedef uint32		  uint;
-
+#else
+typedef signed long long   int64;
+typedef unsigned long long uint64;
+#endif
+#ifdef _WIN32
+# undef slash
+# define slash '\\'
+#else
+# undef slash
+# define slash '/'
 #endif
 
 typedef unsigned char uchar;
 typedef unsigned long ulong;
+typedef signed int    int32;
+typedef unsigned int  uint32;
+typedef signed short  int16;
+typedef unsigned short uint16;
+typedef signed char   int8;
+typedef unsigned char uint8;
+typedef uint32		  uint;
 
 enum {	// events
   FL_NO_EVENT		= 0,

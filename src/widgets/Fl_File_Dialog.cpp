@@ -1547,7 +1547,7 @@ bool Fl_File_Dialog::enum_netresources(Fl_Callback *cb, LPNETRESOURCE lpnr, DWOR
 	DWORD dwResult, dwResultEnum;
 	HANDLE hEnum;
 	DWORD cbBuffer = 16384;	// 16K is a good size
-	DWORD cEntries = -1;	// enumerate all possible entries
+	DWORD cEntries = (DWORD)-1;	// enumerate all possible entries
 	LPNETRESOURCE lpnrLocal;// pointer to enumerated structures
 	DWORD i;
   
