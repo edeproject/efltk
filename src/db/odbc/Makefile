@@ -1,8 +1,15 @@
+# Include makeinclude for UNIXODBCLIB
+include ../../../makeinclude
+
+ifeq ($(UNIXODBCLIB), )
+CPPFILES =
+LIBNAME =
+else
 CPPFILES = fl_odbc.cpp Fl_ODBC_Database.cpp
+LIBNAME = libefltk_odbc
+endif
 
 CFILES =
-
-LIBNAME = libefltk_odbc
 
 # This MUST be included after FILES
 DIRS=

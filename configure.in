@@ -414,51 +414,15 @@ if test "$have_pthread" = yes; then
 fi
 AC_SUBST(THREADSLIBS)
 
-
 dnl ####
 dnl # Let's look for unixODBC...
-dnl # --with-unixODBC will probably be removed from here...
 dnl ####
-unixODBC="/usr/local"
-AC_ARG_WITH( unixODBC,
-	AC_HELP_STRING([--without-unixODBC], [Do not add unixODBC support]),
-	[ unixODBC="$withval"])
-
-if test x$withval = xno
-then
-	AC_MSG_WARN(skipping unixODBC search)
-else
-	odbcdir=""
-	AC_MSG_CHECKING(for unixODBC files)
-	for d in $unixODBC /usr /usr/local
-	do
-		if test -f $d/lib/libodbc.so && test -f $d/lib/libodbcinst.so
-		then
-			AC_MSG_RESULT(found unixODBC in $d)
-			odbcdir=$d
-			AC_DEFINE(HAVE_UNIXODBC)
-			break
-		fi
-	done 
- 
-	if test x$odbcdir = x
-	then
-		AC_MSG_ERROR( unixODBC not found )
-	fi
-dnl # Now set unixODBC variables
-dnl # Dejan.note = I have called variables UNIX* because later maybe we will try iODBC as well
-dnl #   or something else...
-	UNIXODBCIDIR=${odbcdir}/include
-	UNIXODBCLDIR=${odbcdir}/lib
-	UNIXODBCLIB=-lodbc
-	UNIXODBCINSTLIB=-lodbcinst
-	LD_UNIXODBCINSTLIB="-L$UNIXODBCLDIR -lodbcinst"
-
-	AC_SUBST(UNIXODBCIDIR)
-	AC_SUBST(UNIXODBCLDIR)
-	AC_SUBST(UNIXODBCLIB)
-	AC_SUBST(UNIXODBCINSTLIB)
-	AC_SUBST(LD_UNIXODBCINSTLIB)
+AC_ARG_ENABLE(unixODBC, [  --disable-unixODBC      don't add unixODBC support],,enable_unixODBC=yes)
+have_unixODBC=no
+if test "$enable_unixODBC" = yes; then
+  AC_CHECK_HEADER(sql.h, \
+  	AC_CHECK_LIB(odbc, SQLAllocConnect, UNIXODBCLIB="-lodbc",,) \
+  )
 fi
 
 STRIP=strip
@@ -558,6 +522,8 @@ AC_SUBST(EXCEPTIONFLAG)
 AC_DEFINE_UNQUOTED(PREFIX, "${prefix}")
 AC_DEFINE_UNQUOTED(CONFIGDIR, "${prefix}/share/ede")
 
+AC_SUBST(UNIXODBCLIB)
+
 AC_SUBST(DSOEXT)
 AC_SUBST(DSOSHORTEXT)
 AC_SUBST(DSOCOMMAND)
@@ -594,9 +560,12 @@ echo "Bin directory: $prefix/bin"
 echo "Lib directory: $prefix/lib"
 echo "Include directory: $prefix/include"
 echo
+echo "Debug/Optim flags: $DEBUGFLAG"
+echo
 echo "Thread libs: $THREADSLIBS"
 echo "Png libs: $LIBPNG"
 echo "Jpeg libs: $LIBJPEG"
+echo "ODBC libs: $UNIXODBCLIB"
 echo
 echo "Iconv found: $iconv_found"
 if test "$iconv_found" = no; then

@@ -226,9 +226,6 @@
 # define sqrtf(a)	float(sqrt(float(a)))
 #endif
 
-/* Do we have unixODBC installed ? */
-#define HAVE_UNIXODBC 0
-
 #endif /*EFLTK_CONFIG_FILE_INCLUDED*/
 
 /*

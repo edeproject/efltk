@@ -62,6 +62,7 @@ Options:
 options telling what we are doing :
 	[--use-gl]        use GL
 	[--use-xml]       use XML extension library
+	[--use-odbc]      use ODBC database driver
 	[--use-images]    use extra image formats (PNG, Jpeg)
         [--multithread]   build a multithreaded program
 	[--build-plugin]  build a plugin
@@ -119,6 +120,9 @@ do
     --use-xml)
       use_xml=yes
       ;;
+    --use-odbc)
+      use_odbc=yes
+      ;;
     --multithread)
       use_threads=yes
       ;;
@@ -168,6 +172,12 @@ if test "$use_xml" = "yes"; then
     LDLIBS="$LDLIBS -lefltk_xml"
     LDSTATIC="$LDSTATIC $prefix/lib/libefltk_xml.a"
     LIBS="$LIBS $prefix/lib/libefltk_xml.a"
+fi
+
+if test "$use_odbc" = "yes"; then
+    LDLIBS="$LDLIBS -lefltk_odbc @UNIXODBCLIB@"
+    LDSTATIC="$LDSTATIC $prefix/lib/libefltk_odbc.a"
+    LIBS="$LIBS $prefix/lib/libefltk_odbc.a"
 fi
 
 if test "$build_plugin" = "yes"; then
