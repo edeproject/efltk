@@ -17,6 +17,7 @@ Fl_Ptr_List::Fl_Ptr_List()
     blocksize_ = 0;
     items = 0;
     capacity_ = 0;
+	size_ = 0;
     resize(0);
 }
 
