@@ -149,6 +149,11 @@ Fl_FontSize::Fl_FontSize(const char* name)
     font = fontopen(name, true);
 }
 
+XftFont* fl_xftfont()
+{
+    return current_font;
+}
+
 // This call is used by opengl to get a bitmapped font. Xft actually does
 // a pretty good job of selecting X fonts...
 XFontStruct* fl_xfont()
@@ -182,6 +187,10 @@ float fl_width(const char *str, int n)
     XGlyphInfo i;
     XftTextExtents8(fl_display, current_font, (XftChar8 *)str, n, &i);
     return i.xOff;
+}
+
+float fl_width(uchar c) {
+    return fl_width((const char *)(&c), 1);
 }
 
 ////////////////////////////////////////////////////////////////

@@ -35,6 +35,12 @@
 #include <limits.h>
 #include <ctype.h>
 
+#include <config.h>
+
+#if USE_XFT
+#include <X11/Xft/Xft.h>
+#endif
+
 #undef min
 #undef max
 
@@ -242,6 +248,7 @@ void Fl_Text_Display::buffer( Fl_Text_Buffer *buf )
 **
 ** Style buffers, tables and their associated memory are managed by the caller.
 */
+
 void Fl_Text_Display::highlight_data(Fl_Text_Buffer *styleBuffer,
                                 Style_Table_Entry *styleTable,
                                 int nStyles, char unfinishedStyle,
@@ -304,6 +311,8 @@ void Fl_Text_Display::set_font()
         }
     }
 #else
+
+#if !USE_XFT
     XFontStruct *fontStruct = fl_xfont(), *styleFont;
     mMaxFontBound = fontStruct->max_bounds.width;
     mMinFontBound = fontStruct->min_bounds.width;
@@ -323,6 +332,27 @@ void Fl_Text_Display::set_font()
             }
         }
     }
+#else
+    extern XftFont* fl_xftfont();
+    XftFont *fontStruct = fl_xftfont(), *styleFont;
+    mMaxFontBound = fontStruct->max_advance_width;
+    mMinFontBound = fontStruct->max_advance_width;
+    fontWidth = fontStruct->max_advance_width;
+
+    for (i=0; i<mNStyles; i++)
+    {
+        unsigned size = mStyleTable[i].size;
+        if(text_size()!=size) { fontWidth = -1; break; }
+        set_fl_font(mStyleTable[i].font, mStyleTable[i].size);
+        styleFont = fl_xftfont();
+        if(styleFont != NULL && styleFont->max_advance_width != fontWidth) {
+            fontWidth = -1;
+            break;
+        }
+    }
+    if(fontWidth==0) fontWidth=-1;
+#endif /* !USE_XFT */
+
 #endif
     mFixedFontWidth = fontWidth;
 }
@@ -1433,7 +1463,12 @@ void Fl_Text_Display::buffer_modified_cb( int pos, int nInserted, int nDeleted,
        be affected (the insertion or removal of a line break always
        results in at least two lines being redrawn). */
 
-      //textD->draw_line_numbers(false);
+      textD->make_current();
+#if USE_XFT
+      textD->draw_line_numbers(true); //This is lame!! :)
+#else
+      textD->draw_line_numbers(false);
+#endif
   }
 
   /* If there is a style buffer, check if the modification caused additional
@@ -3005,7 +3040,7 @@ void Fl_Text_Display::draw()
                  RIGHT_MARGIN, mMaxsize, color());
         fl_pop_clip();
 
-        draw_line_numbers(false);
+        //draw_line_numbers(false);
 
     }
 
@@ -3236,7 +3271,7 @@ int Fl_Text_Display::handle(int event) {
 ** stray marks outside of the character cell area, which might have been 
 ** left from before a resize or font change. 
 */ 
-void Fl_Text_Display::draw_line_numbers(bool clearAll) 
+void Fl_Text_Display::draw_line_numbers(bool clearAll)
 {
     /* Don't draw if mLineNumWidth == 0 (line numbers are hidden), or widget is not yet realized */
     if(mLineNumWidth == 0 || !visible_r())
@@ -3252,7 +3287,7 @@ void Fl_Text_Display::draw_line_numbers(bool clearAll)
     int y, line, visLine, nCols, lineStart;
     char lineNumString[12];
     int lineHeight = mMaxsize ? mMaxsize : int(fl_height()+leading());
-    int charWidth = mMaxFontBound;
+    float charWidth = mMaxFontBound+.5;
 
     /* Erase the previous contents of the line number area, if requested */
     if (clearAll) {
@@ -3265,7 +3300,7 @@ void Fl_Text_Display::draw_line_numbers(bool clearAll)
     Y-=box()->dy();
 
     /* Draw the line numbers, aligned to the text */
-    nCols = min(11, mLineNumWidth / charWidth);
+    nCols = min(12, int(mLineNumWidth / charWidth) );
     y = Y+lineHeight;
     line = get_absolute_top_line_number();
     for (visLine=0; visLine <= mNVisibleLines; visLine++)
