@@ -8,13 +8,13 @@
   * 	Dejan Lekic <dejan§nu6.org>
   * Contributors (ie. people that have sent patches, ideas, suggestions):
   *     Mikko Lahteenmaki, mikko§fltk.net
-  **/
+  ****************************************************************************/
 
 
 #ifndef _FL_BASE64_H_
 #define _FL_BASE64_H_
 
-#include "../Fl_String_List.h" 	/* needed for string operaions */
+#include "../Fl_String_List.h" 	/* needed for string operaions 				 */
 #include "../Fl_Buffer.h"		/* needed for buffer operations */
 
 /**

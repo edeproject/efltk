@@ -5,9 +5,10 @@
   * Copyright (c) EDE Team. More information: http://ede.sf.net .
   * Authors (sorted by time they worked on this source file):
   *     Dejan Lekic <dejan§nu6.org>
+  *     Mikko Lahteenmaki, mikko§fltk.net
   * Contributors (ie. people that have sent patches, ideas, suggestions):
   *     None
-  **/
+  ****************************************************************************/
 
 #include <efltk/net/Fl_Base64.h>
 
@@ -41,15 +42,6 @@ static char B64Chars[64] = {
 /* ENCODE INTERFACE															 */
 /* ------------------------------------------------------------------------- */
 
-/**
-  * encode() method encodes (base64) given buffer bufSource
-  * to given destination buffer bufDest.
-  *
-  * @param bufDest Fl_Buffer Destination buffer
-  * @param bufSource Fl_Buffer Source buffer
-  * @see encode(Fl_Buffer bufSource)
-  * @author Dejan Lekic, http://dejan.nu6.org
-  */
 void Fl_Base64::encode(Fl_Buffer& bufDest, const Fl_Buffer& bufSource)
 {
     char c;
@@ -102,15 +94,6 @@ void Fl_Base64::encode(Fl_Buffer& bufDest, const Fl_Buffer& bufSource)
 
 /* ------------------------------------------------------------------------- */
 
-/**
- * This encode() method encodes (base64) given buffer bufSource
- * and returns Fl_String object.
- *
- * @param bufSource Fl_Buffer* Source buffer
- * @returns Fl_String
- * @see encode(Fl_Buffer* bufDest, Fl_Buffer* bufSource)
- * @author Dejan Lekic, http://dejan.nu6.org
- */
 void Fl_Base64::encode(Fl_String& strDest, const Fl_Buffer& bufSource)
 {
     Fl_Buffer bufOut;
@@ -119,7 +102,6 @@ void Fl_Base64::encode(Fl_String& strDest, const Fl_Buffer& bufSource)
 	if(!strDest.empty()) strDest.clear();
     strDest.append(bufOut.data(), bufOut.bytes());
 } /* encode(Fl_String& strDest, const Fl_Buffer& bufSource) */
-
 
 
 /* ------------------------------------------------------------------------- */
@@ -184,8 +166,9 @@ static int internal_decode(Fl_Buffer &bufDest, const uchar *src, unsigned src_le
         } /* switch */
     } /* for */
     return j;
-} /* decode(Fl_Buffer &bufDest, const Fl_Buffer &bufSource) */
+} /* internal_decode(Fl_Buffer &bufDest, const uchar *src, unsigned src_len) */
 
+/* ------------------------------------------------------------------------- */
 
 int Fl_Base64::decode(Fl_Buffer &bufDest, const Fl_Buffer& bufSource)
 {
