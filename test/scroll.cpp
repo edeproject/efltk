@@ -23,6 +23,7 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
+#include <config.h>
 #include <efltk/Fl.h>
 #include <efltk/Fl_Double_Window.h>
 #include <efltk/Fl_Scroll.h>
