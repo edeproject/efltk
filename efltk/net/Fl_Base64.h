@@ -10,26 +10,47 @@
   **/
 
 
-#ifndef _FL_BASE64_H
-#define _FL_BASE64_H 1
+#ifndef _FL_BASE64_H_
+#define _FL_BASE64_H_
 
-#include <efltk/Fl_String_List.h> 	/* needed for string operaions */
-#include <efltk/Fl_Buffer.h>		/* needed for buffer operations */
+#include "../Fl_String_List.h" 	/* needed for string operaions */
+#include "../Fl_Buffer.h"		/* needed for buffer operations */
 
 class FL_API Fl_Base64
 {
-	public:
-		Fl_Base64(); 			/** Default constructor */
-		virtual ~Fl_Base64(); 	/** Default destructor */
-		static void encode(Fl_Buffer& bufDest, Fl_Buffer& bufSource);
-//		void encode(Fl_Buffer* bufDest, Fl_Buffer* bufSource);
-		void encode(Fl_String& strDest, const Fl_Buffer& bufSource);
-		/** Decodes base64 encoded buffer "string" into buffer "bufDest" */
-		int decode(Fl_Buffer* bufDest, Fl_Buffer* bufSource);
-		/** Decodes base64 encoded string "sArg" into buffer "bufDest" */
-		int decode(Fl_Buffer* bufDest, Fl_String_List* sArg);
-}; /* class Fl_Base64 */
+public:
+	Fl_Base64() { } 	/** Default constructor */
+	~Fl_Base64() { } 	/** Default destructor */
 
+	/**
+	 * encode() method encodes (base64) given buffer bufSource
+	 * to given destination buffer bufDest.
+	 *
+	 * @param bufDest Fl_Buffer Destination buffer
+	 * @param bufSource Fl_Buffer Source buffer
+	 * @see encode(Fl_String& strDest, const Fl_Buffer& bufSource)
+	 * @author Dejan Lekic, http://dejan.nu6.org
+	*/
+	static void encode(Fl_Buffer& bufDest, const Fl_Buffer& bufSource);
+
+	/**
+	 * This encode() method encodes (base64) given buffer bufSource
+	 * and returns Fl_String object.
+	 *
+	 * @param strDest Fl_String Destination string
+	 * @param bufSource Fl_Buffer* Source buffer	 
+	 * @see encode(Fl_Buffer& bufDest, const Fl_Buffer& bufSource)
+	 * @author Dejan Lekic, http://dejan.nu6.org
+	*/
+	static void encode(Fl_String& strDest, const Fl_Buffer& bufSource);
+
+	/** Decodes base64 encoded buffer "string" into buffer "bufDest" */
+	static int decode(Fl_Buffer &bufDest, const Fl_Buffer &bufSource);
+		
+	/** Decodes base64 encoded string "sArg" into buffer "bufDest" */
+	static int decode(Fl_Buffer &bufDest, const Fl_String &strSource);
+
+}; /* class Fl_Base64 */
 
 #endif
 
