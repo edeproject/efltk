@@ -27,71 +27,71 @@
 Fl_Check_Button *check;
 
 void throw_func2()
-{	
-	fl_try 
-	{
-		fl_try {
-			//fl_throw("test throw");
-		} fl_catch(exc) {			
-			//fl_rethrow; //re-throw
-		} 		
-		
-	} fl_catch(exc) {
-		//...
-	}  	
+{
+    fl_try
+    {
+        fl_try {
+            //fl_throw("test throw");
+        } fl_catch(exc) {
+            //fl_rethrow; //re-throw
+        }
+
+    } fl_catch(exc) {
+        //...
+    }
 }
 
 void throw_func(bool t)
 {
-	fl_try {
-		fl_try {
-			if(t) {
-				fl_throw("Error happened");
-			}
-		} fl_catch(exc) {
-			fl_alert("INNER TRY STATEMENT:\n%s", exc.text().c_str());
-			fl_rethrow; //Remember re-throw
-		} 
+    fl_try {
+        fl_try {
+            if(t) {
+                fl_throw("Error happened");
+            }
+        } fl_catch(exc) {
+            fl_alert("INNER TRY STATEMENT:\n%s", exc.text().c_str());
+            fl_rethrow; //Remember re-throw
+        }
 
-		fl_message("NOT THROWED:\nInside try statement, after inner try/catch...");
+        fl_message("NOT THROWED:\nInside try statement, after inner try/catch...");
 
-	} fl_catch(exc) {
-		fl_alert("OUTER TRY STATEMENT:\n%s", exc.text().c_str());		
-		fl_rethrow; //Remember re-throw
-	}     	
+    } fl_catch(exc) {
+        fl_alert("OUTER TRY STATEMENT:\n%s", exc.text().c_str());
+        fl_rethrow; //Remember re-throw
+    }
 }
 
-void cb(Fl_Widget *,void *) 
-{	
-	fl_try {
-		throw_func(check->value());	   
-	}
-	fl_catch(exc) {
-		fl_alert("MAIN TRY STATEMENT:\n%s", exc.text().c_str());		
-	}     
-}
-
-int main (int argc,char *argv[]) 
+void cb(Fl_Widget *,void *)
 {
-/*
-	int t1 = Fl::ticks();
-	for(int n=0; n<100000; n++)
-		throw_func2();
-	int t2 = Fl::ticks();
-	fl_message("Time spend: %d ms", t2-t1);
-*/
-
-	Fl_Window window(170,100);
-	
-	Fl_Button button(10, 10, 150, 30, "Create exception");
-	button.callback(cb);
-	
-	Fl_Check_Button cbutton(10, 50, 150, 30, "THROW");
-	cbutton.value(1);
-	check = &cbutton;
-	
-	window.end();
-	window.show();
- 
-	return Fl::run();
+    fl_try {
+        throw_func(check->value());
+    }
+    fl_catch(exc) {
+        fl_alert("MAIN TRY STATEMENT:\n%s", exc.text().c_str());
+    }
 }
+
+int main (int argc,char *argv[])
+{
+    /*
+    int t1 = Fl::ticks();
+    for(int n=0; n<100000; n++)
+        throw_func2();
+    int t2 = Fl::ticks();
+    fl_message("Time spend: %d ms", t2-t1);
+    */
+    Fl_Window window(170,100);
+
+    Fl_Button button(10, 10, 150, 30, "Create exception");
+    button.callback(cb);
+
+    Fl_Check_Button cbutton(10, 50, 150, 30, "THROW");
+    cbutton.value(1);
+    check = &cbutton;
+
+    window.end();
+    window.show();
+
+    return Fl::run();
+}
+
