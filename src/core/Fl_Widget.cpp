@@ -59,7 +59,6 @@ Fl_Widget::Fl_Widget(int X, int Y, int W, int H, const char* L)
     image_    = 0;
     tooltip_  = 0;
     shortcut_ = 0;
-    field_name_ = 0L;
 #if CLICK_MOVES_FOCUS
     flags_    = FL_CLICK_TO_FOCUS;
 #else

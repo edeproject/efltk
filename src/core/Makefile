@@ -43,13 +43,9 @@ CPPFILES = \
 	Fl_own_colormap.cpp \
 	Fl_visual.cpp \
         KStoUCS.cpp \
-	filename_absolute.cpp \
-	filename_expand.cpp \
-	filename_ext.cpp \
-	filename_isdir.cpp \
+	filename.cpp \
 	filename_list.cpp \
 	filename_match.cpp \
-	filename_setext.cpp \
 	fl_arc.cpp \
 	fl_arci.cpp \
 	fl_oval_box.cpp \
@@ -85,12 +81,11 @@ CPPFILES = \
 	fl_scroll_area.cpp \
 	fl_stretch.cpp \
 	fl_vertex.cpp \
-	fl_theme.cpp
+	fl_utf8.cpp \
+	fl_theme.cpp \
+	scandir.cpp
 
 CFILES = \
-	fl_utf8.c \
-	scandir.c \
-	numericsort.c \
 	vsnprintf.c
 
 LIBNAME =

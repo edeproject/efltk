@@ -128,20 +128,16 @@ void Fl::read_defaults()
         bool menu_anim=false, menu_fade=false, tooltip_anim=false, tooltip_fade=false;
 
         SystemParametersInfo(SPI_GETMENUANIMATION, 0, (PVOID)&menu_anim, 0);
-        if(menu_anim) {
-            SystemParametersInfo(SPI_GETMENUFADE, 0, (PVOID)&menu_fade, 0);
-        }
-
-        SystemParametersInfo(SPI_GETTOOLTIPANIMATION, 0, (PVOID)&tooltip_anim, 0);
-        if(tooltip_anim) {
-            SystemParametersInfo(SPI_GETTOOLTIPFADE, 0, (PVOID)&tooltip_fade, 0);
-        }
-
-        Fl_Menu_::effects(menu_anim);
-        if(menu_fade) Fl_Menu_::default_effect_type(FL_EFFECT_FADE);
+		Fl_Menu_::effects(menu_anim);
+        
+		if(menu_anim) SystemParametersInfo(SPI_GETMENUFADE, 0, (PVOID)&menu_fade, 0);			
+        if(menu_fade) Fl_Menu_::default_effect_type(FL_EFFECT_FADE);			
         else Fl_Menu_::default_effect_type(FL_EFFECT_ANIM);
 
-        Fl_Tooltip::effects(tooltip_anim);
+        SystemParametersInfo(SPI_GETTOOLTIPANIMATION, 0, (PVOID)&tooltip_anim, 0);
+		Fl_Tooltip::effects(tooltip_anim);
+        
+		if(tooltip_anim) SystemParametersInfo(SPI_GETTOOLTIPFADE, 0, (PVOID)&tooltip_fade, 0);        
         if(tooltip_fade) Fl_Tooltip::effect_type(FL_EFFECT_FADE);
         else Fl_Tooltip::effect_type(FL_EFFECT_ANIM);
 

@@ -35,43 +35,47 @@
 #include <efltk/filename.h>
 #include <efltk/Fl_String.h>
 
-extern "C" {
-#if !HAVE_SCANDIR
-    int fl_scandir(const char *dir, dirent ***namelist,
-                   int (*select)(dirent *),
-                   int (*compar)(dirent **, dirent **));
-# define scandir fl_scandir
+#if defined(__linux_)
+
+# define __USE_LARGEFILE64
+# define __USE_GNU
+# include <sys/types.h>
+# include <dirent.h>
+# define dirent dirent64
+# define scandir scandir64
+
 #endif
-}
 
-int fl_alphasort(struct dirent **a, struct dirent **b) {
-    return strcmp((*a)->d_name, (*b)->d_name);
-}
 
-int fl_casealphasort(struct dirent **a, struct dirent **b) {
-    return strcasecmp((*a)->d_name, (*b)->d_name);
-}
+#if !HAVE_SCANDIR
+  extern int fl_scandir(const char *dir, dirent ***namelist,
+						int (*select)(dirent *),
+						int (*compar)(dirent **, dirent **));
+#endif
 
-int fl_filename_list(const char *d, dirent ***list,
-                     Fl_File_Sort_F *sort) {
+int fl_alphasort(struct dirent **a, struct dirent **b) { return strcmp((*a)->d_name, (*b)->d_name); }
+int fl_casealphasort(struct dirent **a, struct dirent **b) { return strcasecmp((*a)->d_name, (*b)->d_name); }
+
+int fl_filename_list(const char *dir, dirent ***list, Fl_File_Sort_F *sort) 
+{
 #if defined(__hpux)
     // HP-UX defines the comparison function like this:
-    return scandir(d, list, 0, (int(*)(const dirent **, const dirent **))sort);
+    return scandir(dir, list, 0, (int(*)(const dirent **, const dirent **))sort);
 #elif defined(__osf__)
     // OSF, DU 4.0x
-    return scandir(d, list, 0, (int(*)(dirent **, dirent **))sort);
+    return scandir(dir, list, 0, (int(*)(dirent **, dirent **))sort);
 #elif defined(_AIX)
     // AIX is almost standard...
-    return scandir(d, list, 0, (int(*)(void*, void*))sort);
+    return scandir(dir, list, 0, (int(*)(void*, void*))sort);
 #elif HAVE_SCANDIR && !defined(__sgi)
     // The vast majority of Unix systems want the sort function to have this
     // prototype, most likely so that it can be passed to qsort without any
     // changes:
-    return scandir(d, list, 0, (int(*)(const void*,const void*))sort);
+    return scandir(dir, list, 0, (int(*)(const void*,const void*))sort);
 #else
     // This version is when we define our own scandir (WIN32 and perhaps
     // some Unix systems) and apparently on Irix:
-    return scandir(d, list, 0, sort);
+    return fl_scandir(dir, list, 0, sort);
 #endif
 }
 

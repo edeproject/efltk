@@ -34,14 +34,20 @@ static void set_locale()
 #endif
 }
 
+extern char *get_sys_dir();
 bool Fl::init_locale()
 {
     set_locale();
 #if ENABLE_NLS
-
     static bool inited=false;
     if(!inited) {
+#ifdef _WIN32
+		Fl_String path(get_sys_dir());
+		path += "/locale";
+		Fl_Translator::bindtextdomain("efltk", path);
+#else
         Fl_Translator::bindtextdomain("efltk", PREFIX"/share/locale");
+#endif
         inited=true;
     }
     return true;

@@ -9,6 +9,12 @@
 
 ////////////////////////////////////////
 
+#ifdef _MSC_VER
+// quiet warnings about truncation..
+#pragma warning(disable: 4305)   
+#pragma warning(disable: 4309)
+#endif
+
 #include "fl_iconv_converters.cpp"
 
 #include "headers/iso8859_1.h"

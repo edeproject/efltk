@@ -26,7 +26,8 @@ Fl_Ptr_List::Fl_Ptr_List()
 
 Fl_Ptr_List::~Fl_Ptr_List()
 {
-    clear();
+ 
+	clear();
 }
 
 void Fl_Ptr_List::clear()
@@ -46,12 +47,11 @@ void Fl_Ptr_List::resize(uint newsize)
     if(blocksize_<=0) newcap = (newsize * 9 / 64 + 1) * 8;
     else newcap = (newsize/blocksize_+1)*blocksize_;
 
+    // Delete items, if needed. (see Fl_String_List)
+    if(newsize<size_ && auto_delete_) for (uint i = newsize+1; i < size_; i++) free_item(items[i]);
+
     if(newcap!=capacity_) {
-
-        // Delete items, if needed. (see Fl_String_List)
-        if(newsize<size_ && auto_delete_) for (uint i = newsize+1; i < size_; i++) free_item(items[i]);
-
-        capacity_ = newcap;
+	    capacity_ = newcap;
         // Realloc list capacity
         if(items) items = (Fl_Ptr_List_Item *)realloc(items, capacity_ * sizeof(Fl_Ptr_List_Item));
         else items = (Fl_Ptr_List_Item *)malloc(capacity_ * sizeof(Fl_Ptr_List_Item));
@@ -138,6 +138,35 @@ Fl_Ptr_List_Item Fl_Ptr_List::item(uint index) const
 void Fl_Ptr_List::free_item(Fl_Ptr_List_Item item)
 {
     free(item);
+}
+
+Fl_Ptr_List& Fl_Ptr_List::operator = (const Fl_Ptr_List &list) 
+{
+	items = 0;
+    capacity_ = 0;
+	size_ = 0;
+    auto_delete_ = list.auto_delete_;
+	blocksize_ = list.blocksize_;
+
+	resize(list.size());
+	for(uint n=0; n<list.size(); n++) {
+		items[n] = list[n];
+	}
+	return *this;
+}
+
+Fl_Ptr_List::Fl_Ptr_List(const Fl_Ptr_List &list)
+{
+    items = 0;
+    capacity_ = 0;
+	size_ = 0;
+    auto_delete_ = list.auto_delete_;
+	blocksize_ = list.blocksize_;
+
+	resize(list.size());
+	for(uint n=0; n<list.size(); n++) {
+		items[n] = list[n];
+	}	
 }
 
 ////////////////////////////////////

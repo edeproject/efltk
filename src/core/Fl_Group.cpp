@@ -36,15 +36,14 @@
 
 ////////////////////////////////////////////////////////////////
 
-FL_API Fl_Group* Fl_Group::current_;
+FL_API Fl_Group* Fl_Group::m_current;
 
 static void revert(Fl_Style* s)
 {
     s->color = FL_GRAY;
     s->box = FL_NO_BOX;
 }
-
-
+           
 // This style is unnamed since there is no reason for themes to change it:
 extern Fl_Named_Style* group_style;
 static Fl_Named_Style the_style(0, revert, &group_style);
@@ -53,9 +52,8 @@ Fl_Named_Style* group_style = &the_style;
 Fl_Group::Fl_Group(int X,int Y,int W,int H,const char *l)
 : Fl_Widget(X,Y,W,H,l),
     m_layout_spacing(1),
-    focus_(-1),
-    resizable_(0),                   // fltk 1.0 used (this)
-    data_source_(0L)
+    m_focus(-1),
+    m_resizable(0)
 {
     widget_type(GROUP_TYPE);
     style(::group_style);
@@ -70,18 +68,18 @@ void Fl_Group::clear()
 {
     init_sizes();
     if(children()) {
-        Fl_Widget*const* a = array_.data();
+        Fl_Widget*const* a = array().data();
         Fl_Widget*const* e = a+children();
         // clear everything now, in case fl_fix_focus recursively calls us:
-        focus_ = -1;
-        if (resizable_) resizable_ = this;
+        m_focus = -1;
+        if(resizable()) resizable(this);
         // okay, now it is safe to destroy the children:
         while (e > a) {
             Fl_Widget* o = *--e;
             o->parent(0);        // stops it from calling remove()
             delete o;
         }
-        array_.clear();
+        array().clear();
     }
 }
 
@@ -104,9 +102,9 @@ void Fl_Group::insert(Fl_Widget &o, int index)
     o.parent(this);
     if(children() == 0) {
         // allocate for 1 child
-        array_.append(&o);
+        array().append(&o);
     } else {
-        array_.insert(index, &o);
+        array().insert(index, &o);
     }
     init_sizes();
 }
@@ -120,9 +118,9 @@ void Fl_Group::add(Fl_Widget &o) {
 void Fl_Group::remove(int index)
 {
     if(index >= children()) return;
-    Fl_Widget* o = array_[index];
+    Fl_Widget* o = child(index);
     o->parent(0);
-    array_.remove(index);
+    array().remove(index);
     init_sizes();
 }
 
@@ -133,8 +131,8 @@ void Fl_Group::replace(int index, Fl_Widget& o)
         return;
     }
     o.parent(this);
-    array_[index]->parent(0);
-    array_.replace(index, &o);
+    array()[index]->parent(0);
+    array().replace(index, &o);
     init_sizes();
 }
 
@@ -145,12 +143,11 @@ int Fl_Group::find(const Fl_Widget* o) const
         if(o->parent() == this) break;
         o = o->parent();
     }
-	//return o->index();
 
     // Search backwards so if children are deleted in backwards order
     // they are found quickly:
     for (int index = children(); index--;)
-        if(array_.item(index) == o)
+        if(child(index) == o)
             return index;
 
     return children();
@@ -190,7 +187,7 @@ int Fl_Group::handle(int event)
         if (contains(Fl::focus()))
         {
             // The focus is being changed to some widget inside this.
-            focus_ = find(Fl::focus());
+            m_focus = find(Fl::focus());
             return true;
         }
         // otherwise it indicates an attempt to give this widget focus:
@@ -199,8 +196,8 @@ int Fl_Group::handle(int event)
         default:
             {
                 // try to give it to whatever child had focus last:
-                if (focus_ >= 0 && focus_ < numchildren)
-                    if (child(focus_)->take_focus()) return true;
+                if (m_focus >= 0 && m_focus < numchildren)
+                    if (child(m_focus)->take_focus()) return true;
                 // otherwise search for the widget that needs the focus, but
                 // prefer a widget that returns 2:
                 Fl_Widget* f1 = 0; int ret = 0;
@@ -240,7 +237,7 @@ int Fl_Group::handle(int event)
         int key = navigation_key();
         if (!key) break;
 
-        int previous = focus_;
+        int previous = m_focus;
         if (previous < 0 || previous >= numchildren) previous = 0;
         for (i = previous;;)
         {
@@ -302,7 +299,7 @@ int Fl_Group::handle(int event)
     default: {
         // Try to give all other events to every child, starting at focus:
         if (!numchildren) break;
-        int previous = focus_;
+        int previous = m_focus;
         if (previous < 0 || previous >= numchildren) previous = 0;
         for (i = previous;;) {
             if (child(i)->send(event)) return true;
@@ -353,47 +350,47 @@ int Fl_Group::handle(int event)
 
 void Fl_Group::init_sizes()
 {
-    sizes_.clear();
+    m_sizes.clear();
     relayout();
 }
 
 
 int* Fl_Group::sizes()
 {
-    if(sizes_.size()<=0) {
+    if(m_sizes.size()<=0) {
         // first thing in sizes array is the group's size:
-        sizes_.append(x());
-        sizes_.append(w());
-        sizes_.append(y());
-        sizes_.append(h());
+        m_sizes.append(x());
+        m_sizes.append(w());
+        m_sizes.append(y());
+        m_sizes.append(h());
         // next is the resizable's size:
-        sizes_.append(0);                // init to the group's size
-        sizes_.append(w());
-        sizes_.append(0);
-        sizes_.append(h());
+        m_sizes.append(0);                // init to the group's size
+        m_sizes.append(w());
+        m_sizes.append(0);
+        m_sizes.append(h());
 
         Fl_Widget* r = resizable();
         if (r && r != this)      // then clip the resizable to it
         {
             int t;
-            t = r->x(); if (t > 0) sizes_[4] = t;
-            t +=r->w(); if (t < sizes_[1]) sizes_[5] = t;
-            t = r->y(); if (t > 0) sizes_[6] = t;
-            t +=r->h(); if (t < sizes_[3]) sizes_[7] = t;
+            t = r->x(); if (t > 0) m_sizes[4] = t;
+            t +=r->w(); if (t < m_sizes[1]) m_sizes[5] = t;
+            t = r->y(); if (t > 0) m_sizes[6] = t;
+            t +=r->h(); if (t < m_sizes[3]) m_sizes[7] = t;
         }
         // next is all the children's sizes:
 
-        for(uint n=0; n<array_.size(); n++) {
-            Fl_Widget *widget = array_[n];
+        for(uint n=0; n<array().size(); n++) {
+            Fl_Widget *widget = array()[n];
             if(!widget->layout_align()) {
-                sizes_.append(widget->x());
-                sizes_.append(widget->x()+widget->w());
-                sizes_.append(widget->y());
-                sizes_.append(widget->y()+widget->h());
+                m_sizes.append(widget->x());
+                m_sizes.append(widget->x()+widget->w());
+                m_sizes.append(widget->y());
+                m_sizes.append(widget->y()+widget->h());
             }
         }
     }
-    return (int*)sizes_.data();
+    return (int*)m_sizes.data();
 }
 
 void Fl_Group::layout()
@@ -428,7 +425,7 @@ void Fl_Group::layout()
         xx+=offset; yy+=offset;
         ww-=offset*2; hh-=offset*2;
 
-        Fl_Widget*const* a = array_.data();
+        Fl_Widget*const* a = array().data();
         Fl_Widget*const* e = a+children();
         while (a < e)
         {
@@ -483,7 +480,7 @@ void Fl_Group::layout()
         if(client) client->resize(xx,yy,ww,hh);
     }
 
-    Fl_Widget*const* a = array_.data();
+    Fl_Widget*const* a = array().data();
     Fl_Widget*const* e = a+children();
     if ((layout_damage & FL_LAYOUT_XY) && !is_window())
     {
@@ -690,16 +687,17 @@ void Fl_Group::draw_outside_label(Fl_Widget& w) const
 }
 
 // data source support methods
-void Fl_Group::data_source(Fl_Data_Source *ds) { 
-   if (data_source_)
-      data_source_->parent_ = NULL;
-   data_source_ = ds; 
-   data_source_->parent_ = this;
+void Fl_Group::data_source(Fl_Data_Source *ds)
+{
+   if (m_data_source)
+      m_data_source->parent_ = NULL;
+   m_data_source = ds; 
+   m_data_source->parent_ = this;
 }
 
 bool Fl_Group::load_data(Fl_Data_Source *ds) {
    if (!ds)
-     ds = data_source_;
+     ds = m_data_source;
    if (!ds)
 	   return false;
 
@@ -713,7 +711,7 @@ bool Fl_Group::load_data(Fl_Data_Source *ds) {
 
 bool Fl_Group::save_data(Fl_Data_Source *ds) const {
     if (!ds)
-        ds = data_source_;
+        ds = m_data_source;
     if (!ds)
         return false;
     unsigned cnt = children();

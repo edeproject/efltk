@@ -473,9 +473,13 @@ char *fl_locale2utf8(const char *s, UINT codepage = 0)
 int fl_atol(TCHAR *buf)
 {
 #ifdef UNICODE
-	CHAR strTmp[128];
-	wcstombs(strTmp, (const wchar_t *)buf, sizeof(strTmp)); 
-	return atoi(strTmp); 
+	CHAR strTmp[256];
+    int len = wcslen(buf);
+    if(len>sizeof(strTmp)) len=sizeof(strTmp);
+	len = wcstombs(strTmp, (const wchar_t *)buf, len);
+    if(len < 0) return 0;
+    strTmp[len] = '\0';
+	return strtol(strTmp, NULL, 10);
 #else
 	return atoi(buf);
 #endif
@@ -519,6 +523,7 @@ void Fl::copy(const char *stuff, int len, bool clipboard)
 // Call this when a "paste" operation happens:
 void Fl::paste(Fl_Widget &receiver, bool clipboard) 
 {
+	static char *selection_buffer=0;
 	if (!clipboard || fl_i_own_selection[clipboard]) {
 		// We already have it, do it quickly without window server.
 		// Notice that the text is clobbered if set_selection is
@@ -546,8 +551,10 @@ void Fl::paste(Fl_Widget &receiver, bool clipboard)
 			}	
 			if (fl_is_nt4()) {
 				int l = wcslen((wchar_t*)g);
-				Fl::e_text = (char*) malloc(l * 5 + 1);
-				Fl::e_text[fl_unicode2utf((unsigned short *)g, l, Fl::e_text)] = 0;
+				if(selection_buffer) free((char*)selection_buffer);
+				selection_buffer = (char*) malloc(l * 5 + 1);
+				selection_buffer[fl_unicode2utf((unsigned short *)g, l, selection_buffer)] = 0;
+				Fl::e_text = selection_buffer;
 			} else {	  
 				Fl::e_text = fl_locale2utf8((char *)g, fl_get_lcid_codepage(id));
 			}
@@ -561,9 +568,6 @@ void Fl::paste(Fl_Widget &receiver, bool clipboard)
 			Fl::e_length = b - Fl::e_text;
 			receiver.handle(FL_PASTE);
 			GlobalUnlock(h);
-			if(fl_is_nt4()) {
-				free(Fl::e_text);
-			}
 		}
 		CloseClipboard();
 	}
@@ -1576,7 +1580,7 @@ void Fl_X::create(Fl_Window* window)
         registered = true;
 
 #ifdef UNICODE
-		len = fl_utf2unicode((const uchar*)Fl_Window::xclass(), strlen(Fl_Window::xclass()), (unsigned short*)class_name);		
+		len = fl_utf2unicode((const uchar*)Fl_Window::xclass().c_str(), Fl_Window::xclass().length(), (unsigned short*)class_name);
 #else
 		len = strlen(Fl_Window::xclass());
 		strncpy(class_name, Fl_Window::xclass(), len);
@@ -1684,10 +1688,10 @@ void Fl_X::create(Fl_Window* window)
 	*/{
 		TCHAR *label = NULL;
 #ifdef UNICODE
-		if(window->label()) {
-			len = fl_utf_nb_char((unsigned char*)window->label(), strlen(window->label()));
+		if(!window->label().empty()) {
+			len = fl_utf_nb_char((unsigned char*)window->label().c_str(), window->label().length());
 			label = (TCHAR*)malloc((len + 1) * sizeof(TCHAR));
-			fl_utf2unicode((unsigned char*)window->label(), len, (unsigned short*)label);
+			fl_utf2unicode((unsigned char*)window->label().c_str(), len, (unsigned short*)label);
 			label[len] = 0;			
 		}
 #else
@@ -1784,34 +1788,33 @@ const char *fl_file_filename(const char *name)
     return q;
 }
 
-void set_label(Fl_Window *win, const char *name, const char *iname)
+void Fl_Window::label(const char *l, const char *il)
 {
-    if(win->shown() && !win->parent()) {
-        if (!name) name = "";
+    Fl_String label(l), ilabel(il);
+    this->label(label, ilabel);
+}
+
+void Fl_Window::label(const Fl_String &l, const Fl_String &il)
+{
+    Fl_Widget::label(l);
+    iconlabel_ = il;
+
+	if(i && !parent()) {
 		TCHAR *text;
 #ifdef UNICODE
-        int len = fl_utf_nb_char((unsigned char*)name, strlen(name));
+        int len = fl_utf_nb_char((unsigned char*)l.c_str(), l.length());
         text = (TCHAR*)malloc((len + 1) * sizeof(TCHAR));
-        fl_utf2unicode((unsigned char*)name, len, (unsigned short*)text);
+        fl_utf2unicode((unsigned char*)l.c_str(), len, (unsigned short*)text);
 		text[len] = 0;
 #else
-		text = fl_utf82locale(name);
+		text = fl_utf82locale(l.c_str());
 #endif
-        SetWindowText(fl_xid(win), text);
+        SetWindowText(i->xid, text);
 #ifdef UNICODE
         free(text);
 #endif
     }
 }
-
-// The implementation of label() is very different for win32 from X
-// Please, verify it
-void Fl_Window::label(const char* label, const char* iconlabel)
-{
-    Fl_Widget::label(label);
-    iconlabel_ = iconlabel;
-}
-
 ////////////////////////////////////////////////////////////////
 // Drawing context
 

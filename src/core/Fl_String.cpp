@@ -100,12 +100,12 @@ Fl_String::~Fl_String()
 //------------------------------------------------------------------------------
 // assignments
 //------------------------------------------------------------------------------
-void Fl_String::assign(const char *s)
+void Fl_String::assign(const char *s, int len)
 {
-    if(s) {
-        len_ = strlen(s);
+    if(s && len>0) {
+        len_ = len;
         str_ = (char*)realloc(str_, (len_+1)*sizeof(char));
-        strncpy(str_, s, len_);
+        memcpy(str_, s, len_);
         str_[len_] = '\0';
     } else {
         free((char*)str_);
@@ -118,14 +118,14 @@ void Fl_String::assign(const char *s)
 Fl_String& Fl_String::operator = (const char *s)
 {
     if(str_==s) return *this;
-    assign(s);
+    assign(s, s?strlen(s):0);
     return *this;
 }
 
 Fl_String& Fl_String::operator = (const Fl_String& s)
 {
     if(this==&s) return *this;
-    assign(s.str_);
+    assign(s.str_, s.len_);
     return *this;
 }
 
@@ -133,11 +133,11 @@ Fl_String& Fl_String::operator = (const Fl_String& s)
 // comparisions
 //------------------------------------------------------------------------------
 
-bool Fl_String::cmp(Fl_String &s) {
+bool Fl_String::cmp(Fl_String &s) const {
     return strcmp(str_, s.str_) != 0;
 }
 
-bool Fl_String::casecmp(Fl_String &s) {
+bool Fl_String::casecmp(Fl_String &s) const {
     return fl_utf_strcasecmp(str_, s.str_) != 0;
 }
 
@@ -478,7 +478,7 @@ void Fl_String::sub_replace(const char *s_str,const char *r_str)
         pstart = strstr(ptext,s_str);
     }
     s += ptext;
-    assign(s.str_);
+    assign(s.str_, s.len_);
 }
 
 void Fl_String::set_length(int new_len)
@@ -520,5 +520,3 @@ Fl_String Fl_String::from_codeset(int conv_index, const char *str, int str_len)
 Fl_String Fl_String::from_codeset(Fl_String codeset, const char *str, int str_len) {
     return Fl_String::from_codeset(fl_find_converter(codeset.c_str()), str, str_len);
 }
-
-

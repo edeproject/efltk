@@ -19,21 +19,21 @@ public:
     bool load_mo(FILE *fp);
 };
 
-typedef struct {
+struct locale {
     Fl_String fullstring; //fi_FI@euro
     Fl_String lang;       //fi
     Fl_String territory;  //_FI
     Fl_String codeset;    //.8859
     Fl_String modifier;   //@euro
     Fl_String norm_codeset; //.iso8859
-} locale;
+};
 
-typedef struct {
+struct catalog {
     Fl_String domain;
     Fl_String path;
     MessageHash hash;
-    locale *loc;
-} catalog;
+    struct locale *loc;
+};
 
 ////////////////////////////
 ////////////////////////////
@@ -55,8 +55,8 @@ Fl_Translator::Fl_Translator()
 Fl_Translator::~Fl_Translator()
 {
     for(uint n=0; n<catalogs_.size(); n++) {
-        catalog *cat = (catalog*)catalogs_[n];
-        delete cat->loc;
+        struct catalog *cat = (struct catalog*)catalogs_[n];
+        if(cat->loc) delete cat->loc;
         delete cat;
     }
 }
@@ -65,7 +65,7 @@ char *Fl_Translator::tr(const char *string)
 {
     Fl_String *ret;
     for(uint n=0; n<catalogs_.size(); n++) {
-        catalog *cat = (catalog*)catalogs_[n];
+        struct catalog *cat = (struct catalog*)catalogs_[n];
         ret = cat->hash.find(string);
         if(ret) return (char*)ret->c_str();
     }
@@ -76,7 +76,7 @@ char *Fl_Translator::dtr(const char *domain, const char *string)
 {
     Fl_String *ret;
     for(uint n=0; n<catalogs_.size(); n++) {
-        catalog *cat = (catalog*)catalogs_[n];
+        struct catalog *cat = (struct catalog*)catalogs_[n];
         if(cat->domain==domain) {
             ret = cat->hash.find(string);
             if(ret) return (char*)ret->c_str();
@@ -110,19 +110,19 @@ enum {
     LOAD_MO
 };
 
-catalog *load_binary_file(const char *domain, const char *full_path, locale *loc)
+struct catalog *load_binary_file(const char *domain, const char *full_path, struct locale *loc)
 {
     int load=LOAD_NONE;
     if(strstr(full_path, ".etb")) load=LOAD_ETB;
     else if(strstr(full_path, ".mo")) load=LOAD_MO;
 
-    if(load==LOAD_NONE || !fl_file_exists(full_path)) {
+    if(load==LOAD_NONE || !fl_file_exists(full_path)) {		
         return 0;
-    }
+    }	
 
-    catalog *cat = new catalog;
+    struct catalog *cat = new struct catalog;
 
-    FILE *fp = fopen(full_path, "r");
+    FILE *fp = fopen(full_path, "rb");
     if(!fp) {
         delete cat;
         return 0;
@@ -150,7 +150,7 @@ catalog *load_binary_file(const char *domain, const char *full_path, locale *loc
 ////////////////////////////
 ////////////////////////////
 
-static Fl_String get_filename(const char *domainname, const char *dirname, const char *ext, locale &l, bool is_mo)
+static Fl_String get_filename(const char *domainname, const char *dirname, const char *ext, struct locale &l, bool is_mo)
 {
     //language[_territory[.codeset]][@modifier]
     char file[FL_PATH_MAX];
@@ -227,9 +227,9 @@ static Fl_String normalize_codeset(Fl_String codeset)
  * Locale can consist of up to four recognized parts for the XPG syntax:
  * language[_territory[.codeset]][@modifier]
  */
-static void parse_locale(const char *locale, locale &loc)
+static void parse_locale(const char *locale, struct locale &loc)
 {
-    char *start=0, *pos=0;
+    const char *start=0, *pos=0;
     loc.fullstring = locale;
 
     //territory
@@ -265,7 +265,7 @@ char *Fl_Translator::textdomain(const char *domainname)
 {
     static char *domain = 0;
     for(uint n=0; n<catalogs_.size(); n++) {
-        catalog *cat = (catalog*)catalogs_[n];
+        struct catalog *cat = (struct catalog*)catalogs_[n];
         if(cat->domain==domainname) {
             domain = (char*)cat->domain.c_str();
             catalogs_.remove(n);
@@ -280,14 +280,14 @@ char *Fl_Translator::bindtextdomain(const char *domainname, const char *dirname)
 {
     extern char *last_locale;
     if(!last_locale) return 0;
-    locale *loc = new locale;
+    struct locale *loc = new struct locale;
     parse_locale(last_locale, *loc);
 
     Fl_String file;
     file = get_filename(domainname, dirname, "etb", *loc, true);
     if(file.length()==0) file = get_filename(domainname, dirname, "mo", *loc, true);
 
-    catalog *cat=0;
+    struct catalog *cat=0;
     if(file.length()>0) {
         cat = load_binary_file(domainname, file.c_str(), loc);
     } 
@@ -303,11 +303,11 @@ const char *Fl_Translator::load_translation(const char *domainname)
 {
     extern char *last_locale;
     if(!last_locale) return 0;
-    locale *loc = new locale;
+    struct locale *loc = new struct locale;
     parse_locale(last_locale, *loc);
 
     Fl_String file;
-    catalog *cat=0;
+    struct catalog *cat=0;
 
     for(uint n=0; n<search_paths_.size(); n++) {
         const char *dirname = search_paths_[n];
@@ -328,15 +328,9 @@ const char *Fl_Translator::load_translation(const char *domainname)
 
 const char *Fl_Translator::load_translation_file(const char *desired_domain, const char *path)
 {
-    extern char *last_locale;
-    if(!last_locale) return 0;
-    locale *loc = new locale;
-    parse_locale(last_locale, *loc);
-
-    catalog *cat=0;
-    cat = load_binary_file(desired_domain, path, loc);
+    struct catalog *cat=0;
+    cat = load_binary_file(desired_domain, path, 0);
     if(!cat) {
-        delete loc;
         return 0;
     }
     catalogs_.prepend(cat);
@@ -362,14 +356,14 @@ static const uint32 etb_version    = 0x10000001;
 
 bool MessageHash::load_etb(FILE *fp)
 {
-    clear();
+    clear();	
 
     long size;
     if(fseek(fp, 0, SEEK_END)!=0) { fl_throw(strerror(errno)); return false; }
     if( (size = ftell(fp)) == -1) { fl_throw(strerror(errno)); return false; }
-    if(fseek(fp, 0, SEEK_SET)!=0) { fl_throw(strerror(errno)); return false; }
+    if(fseek(fp, 0, SEEK_SET)!=0) { fl_throw(strerror(errno)); return false; }	
 
-    char *data = (char *) malloc(size);
+    char *data = (char *)malloc(size);
     if(fread(data, size, 1, fp)==0 && errno!=0) {
         free(data);
         fl_throw(strerror(errno));
