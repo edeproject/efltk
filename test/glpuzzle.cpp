@@ -31,7 +31,7 @@
 #include <sys/types.h>
 #include <time.h>
 
-#include <efltk/math.h>
+#include <efltk/fl_math.h>
 #include <efltk/Fl.h>
 #include <efltk/fl_ask.h>
 

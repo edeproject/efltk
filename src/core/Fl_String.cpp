@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <efltk/math.h>
+#include <efltk/fl_math.h>
 #include <config.h>
 
 #include <efltk/fl_utf8.h>

@@ -27,7 +27,7 @@
 // subclass and replacing the replace(...) function, to make a version
 // that rejects changes you don't want to allow.
 
-#include <efltk/math.h>
+#include <efltk/fl_math.h>
 #include <config.h>
 
 #include <efltk/Fl.h>

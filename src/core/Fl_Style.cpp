@@ -23,7 +23,7 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
-#include <efltk/math.h>
+#include <efltk/fl_math.h>
 #include <config.h>
 
 #include <efltk/Fl.h>
@@ -313,7 +313,7 @@ Fl_Theme Fl_Style::load_theme(const char* name)
 
 ///////////////////////////////////////////////////////////////
 
-#include <efltk/math.h>
+#include <efltk/fl_math.h>
 
 // FL_GRAY is replaced with the passed color. For intermediate colors
 // the gray ramp is replaced with a gamma curve that passes through that

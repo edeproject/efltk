@@ -77,7 +77,7 @@ void callback(Fl_ListView *l, void *)
         if(Fl::event_clicks()) printf("Double ");
         printf("Clicked: ");
         for(int a=0; a<l->columns(); a++)
-            printf("'%s' ", i->label(a));
+            printf("'%s' ", i->label(a).c_str());
         printf("\n");
     }
 }

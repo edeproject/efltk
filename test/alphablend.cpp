@@ -3,7 +3,7 @@
 #include <efltk/Fl_Image.h>
 #include <efltk/Fl_Window.h>
 #include <efltk/Fl_Double_Window.h>
-#include <efltk/math.h>
+#include <efltk/fl_math.h>
 
 #include <stdio.h>
 

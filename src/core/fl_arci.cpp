@@ -34,7 +34,7 @@
 // table easier.
 
 #ifdef _WIN32
-#include <efltk/math.h>
+#include <efltk/fl_math.h>
 #endif
 
 #include <config.h>

@@ -23,7 +23,7 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
-#include <efltk/math.h>
+#include <efltk/fl_math.h>
 #include <efltk/Fl.h>
 #include <efltk/Fl_Color_Chooser.h>
 #include <efltk/fl_draw.h>

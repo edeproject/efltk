@@ -1,4 +1,4 @@
-#include <efltk/math.h>
+#include <efltk/fl_math.h>
 #include <efltk/Fl_Tool_Bar.h>
 #include <efltk/Fl_Divider.h>
 #include <efltk/fl_draw.h>
