@@ -9,10 +9,7 @@
 
 /***************************************************************************
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
+ *   under LGPL
  *                                                                         *
  ***************************************************************************/
 
@@ -530,7 +527,7 @@ static void revert(Fl_Style* s)
     s->selection_color = FL_GRAY;
 }
 
-static Fl_Named_Style style("Multi_Tabs", revert, &Fl_Tabs::default_style);
+static Fl_Named_Style style("Tabs", revert, &Fl_Tabs::default_style);
 Fl_Named_Style* Fl_Tabs::default_style = &::style;
 
 Fl_Tabs::Fl_Tabs(int X,int Y,int W, int H,const char *l)
