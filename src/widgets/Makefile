@@ -63,6 +63,7 @@ CPPFILES = \
 	Fl_Single_Window.cpp \
 	Fl_Slider.cpp \
 	Fl_Split.cpp \
+        Fl_Stock_Images.cpp \
 	Fl_Text_Buffer.cpp \
 	Fl_Text_Display.cpp \
 	Fl_Text_Editor.cpp \
