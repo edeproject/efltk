@@ -308,12 +308,9 @@ void Fl_Dialog::escape_callback(Fl_Dialog *dialog, void *) {
 
 void Fl_Dialog::buttons_callback(Fl_Button *btn, long id)
 {
-    // HELP doesn't close window
-    if (id==BTN_HELP) return;
-
     Fl_Dialog *dialog = (Fl_Dialog *)btn->window();
 
-    if (id==BTN_OK || id==BTN_YES) {
+    if (id & (BTN_OK|BTN_YES)) {
         try {
             if (!dialog->save_data())
                 return;
@@ -324,9 +321,13 @@ void Fl_Dialog::buttons_callback(Fl_Button *btn, long id)
         }
     }
 
-    Fl::exit_modal();
-
-    dialog->m_modalResult = (int)id;
+    if (id & (BTN_OK|BTN_CANCEL|BTN_YES|BTN_NO|BTN_RETRY|BTN_CONFIRM|BTN_IGNORE)) {
+        Fl::exit_modal();
+        dialog->m_modalResult = (int)id;
+    } else {
+        // this requires event_argument!
+        do_callback(FL_DIALOG_BTN);
+    }
 }
 
 Fl_Dialog::Fl_Dialog(int ww, int hh, const char *label, Fl_Data_Source *ds) 
@@ -365,10 +366,10 @@ void Fl_Dialog::enable_button(int button_mask,bool enabled)
     for(unsigned i = 0; i < m_buttonList.size(); i++) {
         Fl_Button *btn = (Fl_Button*)m_buttonList[i];
         if(button_mask & btn->argument()) {
-	    if (enabled)
-	       btn->activate();
+            if (enabled)
+                btn->activate();
             btn->deactivate();
-	}
+        }
     }
 }
 
