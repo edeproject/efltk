@@ -54,6 +54,7 @@ public:
             return false;
         return Fl_Button::handle(event);
     }
+
     Fl_Input *input() { return m_input; }
     void input(Fl_Input *inp) { m_input = inp; }
 };
@@ -129,13 +130,11 @@ void Fl_Date_Input::ctor_init() {
     align(FL_ALIGN_LEFT);
 
     m_input = new Fl_Calendar_Input();
-    m_input->box(FL_FLAT_BOX);
     m_input->callback(Fl_Date_Input::input_callback);
     m_input->mask(Fl_Date_Time::dateInputFormat);
     m_input->layout_align(FL_ALIGN_LEFT);
 
-    m_button = new Fl_Calendar_Button(m_input);
-    m_button->box(FL_UP_BOX);
+    m_button = new Fl_Calendar_Button(m_input);    
     m_button->callback(Fl_Date_Input::button_callback);
     m_button->image(&buttonPixmap);
     m_button->layout_align(FL_ALIGN_RIGHT);
@@ -192,8 +191,8 @@ void Fl_Date_Input::draw()
 {
     //Set style. NOTE:  this part MUST be in draw()
     m_input->copy_style(style());
-    m_input->box(FL_FLAT_BOX);
-    m_input->button_color(FL_BLACK);
+    m_input->box(FL_NO_BOX); // Draw bg using parent parent()->draw_group_box() 
+    m_input->button_color(FL_BLACK); //Black cursor
 
     m_button->color(button_color());
     m_button->box(button_box());
@@ -283,8 +282,8 @@ void Fl_Date_Time_Input::draw()
 {
     // Set style
     m_timeInput->copy_style(style());
-    m_timeInput->box(FL_FLAT_BOX);
-    m_timeInput->button_color(FL_BLACK);
+    m_timeInput->box(FL_NO_BOX); // Draw bg using parent parent()->draw_group_box() 
+    m_timeInput->button_color(FL_BLACK); //Black cursor
 
     Fl_Date_Input::draw();
 }
@@ -402,8 +401,8 @@ void Fl_Date_Interval_Input::draw()
 {
     // Set style
     m_input2->copy_style(style());
-    m_input2->box(FL_FLAT_BOX);
-    m_input2->button_color(FL_BLACK);
+    m_input2->box(FL_NO_BOX); // Draw bg using parent parent()->draw_group_box() 
+    m_input2->button_color(FL_BLACK); // Black cursor
 
     Fl_Date_Input::draw();
 }
