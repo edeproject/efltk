@@ -26,13 +26,13 @@ const Fl_String_List& Fl_FTP_Socket::login(Fl_String user,Fl_String password) {
 }
 
 const Fl_String_List& Fl_FTP_Socket::get_response() {
-    char	readBuffer[255];
+    char    readBuffer[255];
     char retCode[5];
 
     m_response.clear();
 
     // read the first line of response
-    int len = read_line(readBuffer,255);
+    read_line(readBuffer,255);
     m_response.append(readBuffer);
 
     // read the return code
@@ -119,8 +119,8 @@ void Fl_FTP_Connect::open_data_port() {
     }
     // Current implementation supports only passive mode, sorry
     //if (m_passive) {
-        m_dataSocket.open_addr(sin.in);
-        setsockopt(m_dataSocket.handle(),SOL_SOCKET,SO_LINGER,(char *)&lng,sizeof(lng));
+    m_dataSocket.open_addr(sin.in);
+    setsockopt(m_dataSocket.handle(),SOL_SOCKET,SO_LINGER,(char *)&lng,sizeof(lng));
     //}
 }
 
@@ -144,7 +144,7 @@ void Fl_FTP_Connect::cmd_pwd() {
 }
 
 void Fl_FTP_Connect::get_list(Fl_String cmd,Fl_String_List& list) {
-    Fl_Buffer	buffer(1024);
+    Fl_Buffer   buffer(1024);
     open_data_port();
     command(cmd);
     int         len;
@@ -167,7 +167,7 @@ void Fl_FTP_Connect::cmd_nlst(Fl_String_List& result) {
 }
 
 void Fl_FTP_Connect::cmd_retr(Fl_String fileName) {
-    char	*buffer = new char[2048];
+    char    *buffer = new char[2048];
     FILE *outfile = fopen(fileName.c_str(),"w+b");
     if (!outfile)
         fl_throw("Can't open file <" + fileName + "> for writing");
@@ -191,7 +191,7 @@ void Fl_FTP_Connect::cmd_retr(Fl_String fileName) {
 }
 
 void Fl_FTP_Connect::cmd_store(Fl_String fileName) {
-    Fl_Buffer	buffer(8192);
+    Fl_Buffer   buffer(8192);
     FILE *infile = fopen(fileName.c_str(),"rb");
     if (!infile)
         fl_throw("Can't open file <" + fileName + "> for reading");
