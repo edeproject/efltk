@@ -1,5 +1,4 @@
 #include <efltk/Fl_Map.h>
-#include <stdio.h>
 
 Fl_Map_Iterator::Fl_Map_Iterator(const Fl_Map &map)
 {

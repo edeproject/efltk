@@ -11,7 +11,6 @@ CPPFILES = \
 	Fl_Exception.cpp \
 	Fl_Gif.cpp \
 	Fl_Group.cpp \
-	Fl_Hashs.cpp \
 	Fl_Image.cpp \
 	Fl_Image_Filter.cpp \
 	Fl_Lists.cpp \
