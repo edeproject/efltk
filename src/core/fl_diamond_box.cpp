@@ -65,7 +65,8 @@ Fl_Color c, Fl_Flags f) const
         // draw upper-left line:
         fl_color(*s++ + (FL_GRAY_RAMP-'A'));
         fl_line(x1, y, x, y1);
-        s += 2;
+        if (*s)
+           s += 2;
         // draw lower-left line:
         fl_color(*t++ + (FL_GRAY_RAMP-'A'));
         fl_line(x, y1, x1, y+h);
