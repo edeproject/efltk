@@ -260,13 +260,7 @@ static void draw3Dshape(int pointsCount, int points[][2], Fl_Color fillColor) {
     int i;
 
     fl_color(fillColor);
-	fl_vertices(pointsCount, points);
-    /*fl_newpath();
-    for (i = 0; i < pointsCount; i++) {
-        fl_vertex(p->x, p->y);
-        p++;
-    }
-    fl_closepath();*/
+    fl_vertices(pointsCount, points);
     fl_fill();
 
     int border = 2;
@@ -283,7 +277,7 @@ static void draw3Dshape(int pointsCount, int points[][2], Fl_Color fillColor) {
 	downColor2 = fl_darker(fillColor);
         
     int lastx = 0, lasty = 0;
-    for (i = 0; i < pointsCount; i++) {
+    for (i = 0; i < pointsCount-1; i++) {
 	    int *p1 = (int*)points[i];
 		int *p2 = (int*)points[i+1];
         int dx = p2[0] - p1[0];
