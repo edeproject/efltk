@@ -22,7 +22,30 @@
 #include <efltk/Fl_Calendar.h>
 #include <efltk/fl_draw.h>
 
-#include "calendar.xpm"
+static char * calendar_xpm[] = {
+"15 15 7 1",
+" 	c None",
+".	c #000000",
+"+	c #FFFFFF",
+"@	c #C0C0C0",
+"#	c #008080",
+"$	c #0000FF",
+"%	c #800000",
+" ..........    ",
+" .$$$$$$$$.    ",
+" ..............",
+" .+@+.$$$$$$$$.",
+" .@%%..........",
+" .+%+.+@+@+@+@.",
+" .@%%.@%%%%%@+.",
+" .+%+.+@+@%%+@.",
+" .@%%.@+@%%+@+.",
+" .+@+.+@%%+@+@.",
+" .@$$.@+%%@+@+.",
+" .+@+.+@+@+@+@.",
+" .....@$$$$$$$.",
+"     .+@+@+@+@.",
+"     .........."};
 
 void Fl_Date_Input::input_callback(Fl_Widget *di,void *) {
    Fl_Group *parent = (Fl_Group *) di->parent();

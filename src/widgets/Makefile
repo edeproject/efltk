@@ -37,6 +37,7 @@ CPPFILES = \
 	Fl_Choice.cpp \
 	Fl_Clock.cpp \
 	Fl_Color_Chooser.cpp \
+	Fl_Date_Time_Input.cpp \
 	Fl_Dial.cpp \
 	Fl_Double_Window.cpp \
 	Fl_FileBrowser.cpp \
