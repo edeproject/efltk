@@ -26,6 +26,11 @@
 
 typedef void* Fl_Ptr_List_Item;
 
+/**
+ * Fl_Ptr_List is implementation of eFLTK generic pointer-list...
+ *
+ * (More information about this class is comming soon :)
+ */
 class FL_API Fl_Ptr_List {
 public:
     Fl_Ptr_List();
