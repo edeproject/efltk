@@ -119,23 +119,27 @@ bool Fl_IMAP_DS::open() {
     int total_messages;
     m_imap.cmd_select(m_folder,total_messages);
 
-    if (m_callback)
-        m_callback(total_messages,0);
-    for (int msg_id = 1; msg_id <= total_messages; msg_id++) {
-        Fl_Data_Fields   *df = new Fl_Data_Fields;
+    if (total_messages) {
+       if (m_callback)
+           m_callback(total_messages,0);
+       for (int msg_id = 1; msg_id <= total_messages; msg_id++) {
+           Fl_Data_Fields   *df = new Fl_Data_Fields;
 
-        if (m_fetchbody)
-            m_imap.cmd_fetch_message(msg_id,*df);
-        else    m_imap.cmd_fetch_headers(msg_id,*df);
+           if (m_fetchbody)
+               m_imap.cmd_fetch_message(msg_id,*df);
+           else    m_imap.cmd_fetch_headers(msg_id,*df);
 
-        m_list.append(df);
+           m_list.append(df);
 
-        if (m_callback)
-            m_callback(total_messages,msg_id);
+           if (m_callback)
+               m_callback(total_messages,msg_id);
+       }
+       if (m_callback)
+           m_callback(total_messages,total_messages);
+    } else {
+       if (m_callback)
+           m_callback(100,100);
     }
-
-    if (m_callback)
-        m_callback(total_messages,total_messages);
 
     first();
 

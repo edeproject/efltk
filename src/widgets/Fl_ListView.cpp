@@ -1078,14 +1078,15 @@ void Fl_ListView::find_default_sizes()
 
 void Fl_ListView::fill(Fl_Data_Source &ds) 
 {
+    // Final version should replace the existing rows (truncate them,if necessary).
+    clear();
+
     if (!ds.open()) return;
 
-   // First version is very primitive.
-   // Final version should replace the existing columns, if necessary.
+    // First version is very primitive.
+    // Final version should replace the existing columns, if necessary.
     header()->clear();
-   // Final version should replace the existing rows (truncate them,if necessary).
-    clear();
-   //header()->button_box(FL_VERT_SHADE_UP_BOX);
+    //header()->button_box(FL_VERT_SHADE_UP_BOX);
 
     unsigned columnCount = ds.field_count();
     if (!columnCount) return;

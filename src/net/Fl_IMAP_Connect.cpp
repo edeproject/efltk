@@ -20,34 +20,34 @@ bool Fl_IMAP_Connect::get_response(Fl_String ident) {
 
    for (;;) {
       int len = read_line(readBuffer,RSP_BLOCK_SIZE);
-		Fl_String longLine = readBuffer;
-		if (len == RSP_BLOCK_SIZE && readBuffer[RSP_BLOCK_SIZE]!='\n') {
-			do {
-				len = read_line(readBuffer,RSP_BLOCK_SIZE);
-				longLine += readBuffer;
-			} while(len == RSP_BLOCK_SIZE);
-		}
-		m_response.append(longLine);
-		if (ident[0] == 0) return true;
+        Fl_String longLine = readBuffer;
+        if (len == RSP_BLOCK_SIZE && readBuffer[RSP_BLOCK_SIZE]!='\n') {
+            do {
+                len = read_line(readBuffer,RSP_BLOCK_SIZE);
+                longLine += readBuffer;
+            } while(len == RSP_BLOCK_SIZE);
+        }
+        m_response.append(longLine);
+        if (ident[0] == 0) return true;
 
-		if (longLine[0] == '*')
-			continue;
-		if (longLine[0] == '+')
-			return true;
-		if (longLine.pos(ident)==0) {
-			int p = ident.length();
-			while (longLine[p] == ' ') p++;
-			switch (longLine[p]) {
-				case 'O': // OK
-					return true;
-				case 'N': // NO
-					return false;
-				case 'B': // BAD
-					return false;
-			}
-		}
-	}
-	return false;
+        if (longLine[0] == '*')
+            continue;
+        if (longLine[0] == '+')
+            return true;
+        if (longLine.pos(ident)==0) {
+            int p = ident.length();
+            while (longLine[p] == ' ') p++;
+            switch (longLine[p]) {
+                case 'O': // OK
+                    return true;
+                case 'N': // NO
+                    return false;
+                case 'B': // BAD
+                    return false;
+            }
+        }
+    }
+    return false;
 }
 
 const Fl_String Fl_IMAP_Connect::empty_quotes;
@@ -79,11 +79,11 @@ void Fl_IMAP_Connect::command(Fl_String cmd,const Fl_String& arg1,const Fl_Strin
 }
 
 void Fl_IMAP_Connect::cmd_login(Fl_String user,Fl_String password) {
-	close();
-	open();
-	m_response.clear();
-	get_response("");
-	command("login "+user+" "+password);
+    close();
+    open();
+    m_response.clear();
+    get_response("");
+    command("login "+user+" "+password);
 }
 /*
 void Fl_IMAP_Connect::cmd_append(Fl_String mail_box,const Fl_String_List& message) {
@@ -284,10 +284,10 @@ void Fl_IMAP_Connect::parse_folder_list() {
 		Fl_String& st = m_response[i];
 		if (st.pos(prefix) == 0) {
 			// passing the attribute(s)
-			const char *p = strchr(st.c_str() + prefix.length(),' ');
+			const char *p = strstr(st.c_str() + prefix.length(),") ");
 			if (!p) continue;
 			// passing the reference
-			p = strchr(p + 1,' ');
+			p = strchr(p + 2,' ');
 			if (!p) continue;
             p++;
 			// Ok, we found the path

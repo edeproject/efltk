@@ -85,6 +85,7 @@ int Fl_Socket_Reader::read(char *dest,int sz,bool read_line) {
 #endif
         m_bytes = bytes;
         if (read_line) {
+            m_buffer[bytes] = 0;
             char *cr = (char *)strchr(m_buffer,'\n');
             if (cr) {
                 bytes = cr - m_buffer + 1;
