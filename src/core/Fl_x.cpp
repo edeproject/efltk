@@ -670,18 +670,21 @@ bool fl_handle()
 
 #if HAVE_XUTF8
     int filtered = 0;
-    if(fl_xevent.type == DestroyNotify) {
+    /*
+	// According to Martin's report, this slows down window destroying..
+	// And it seems that no other toolkit does this.. Is this necessary??
+	if(fl_xevent.type == DestroyNotify) {
         XIM xim_im;
         xim_im = XOpenIM(fl_display, NULL, NULL, NULL);
         if (!xim_im) {
-            /*  XIM server has crashed */
+            //  XIM server has crashed
             XSetLocaleModifiers("@im=");
             fl_xim_im = NULL;
             fl_init_xim();
         } else {
             XCloseIM(xim_im);
         }
-    }
+    }*/
 
     filtered = XFilterEvent((XEvent *)&fl_xevent, fl_xevent.xany.window);
     if (fl_xim_ic  && fl_ping_xim && (fl_xevent.type == KeyPress ||
