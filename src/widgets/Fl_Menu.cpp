@@ -37,6 +37,7 @@
 #include <efltk/Fl_Item.h> // for TOGGLE, RADIO
 #include <efltk/Fl_Tooltip.h>
 #include <efltk/Fl_Image.h>
+#include <efltk/math.h>
 
 #define checkmark(item) (item->type()>=Fl_Item::TOGGLE && item->type()<=Fl_Item::RADIO)
 
@@ -567,7 +568,8 @@ void MenuWindow::open_childwin(Fl_Widget *widget, int index)
         child_win = new MenuWindow(this, widget, index, menu_, menu_->indexes, level_+1);
         child_win->menubar = menubar;
         child_win->effect = effect;
-    }	
+    } else
+        return;
 
     int nX = x() + w() - 3;
     int nY = y() + ypos(index) - ypos(0);
@@ -576,6 +578,7 @@ void MenuWindow::open_childwin(Fl_Widget *widget, int index)
     if(nX+child_win->ow > Fl::w()) {
         // X position to right side of current menu
         nX = x()-child_win->ow+3;//Fl::w()-child_win->ow;
+        child_win->anim_flags = Fl_Menu_::RIGHT_TO_LEFT;
     }
     if(nY+child_win->oh > Fl::h()) {
         nY = Fl::h()-child_win->oh;
@@ -584,7 +587,7 @@ void MenuWindow::open_childwin(Fl_Widget *widget, int index)
 
     child_win->ox = nX;
     child_win->oy = nY;
-	child_win->position(nX, nY);
+    child_win->position(nX, nY);
 
     if(!child_win->visible()) {        
         child_win->show(first_menu);
@@ -727,8 +730,8 @@ int MenuWindow::handle(int event)
     case FL_DRAG:
     case FL_MOVE:
     case FL_PUSH:
-        {			
-		fix_indexes();
+        {
+        fix_indexes();
         Fl_Menu_::key_event = false;
         key_event = false;
 
@@ -743,9 +746,9 @@ int MenuWindow::handle(int event)
             }
             return 1;
         }
-		
+
         index=-1;
-        widget = find_widget(Fl::event_x(), Fl::event_y(), &index);		
+        widget = find_widget(Fl::event_x(), Fl::event_y(), &index);
         if( (widget!=selected_ && index!=-1) || (is_parent(index)&&widget!=selected_) ) {
             tooltip(0);
             Fl_Tooltip::exit();
@@ -754,7 +757,7 @@ int MenuWindow::handle(int event)
         }
 
         if(widget) {
-			
+
             tooltip(widget->tooltip());
             Fl_Tooltip::enter(this);
 
@@ -763,39 +766,38 @@ int MenuWindow::handle(int event)
             if(widget->takesevents())
                 if(widget->send(event))
                     return 1;
-        }		
+        }
     JUMP_OPEN:
-		if(widget) set_item(level_, index);
+        if(widget) set_item(level_, index);
 
         if(widget!=the_widget && the_window==this) {
             // Remove timeout, if sub-menu widget we are pointing changes
             Fl::remove_timeout(timeout_open_childwin, this);
-			Fl::remove_timeout(timeout_close_childwin, this);
-            the_window = 0;
-            the_widget = 0;
-            the_index = -1;
+            Fl::remove_timeout(timeout_close_childwin, this);
         } else if(the_window && the_window!=this) {
-            Fl::remove_timeout(timeout_open_childwin, ::the_window);				
+            Fl::remove_timeout(timeout_open_childwin, ::the_window);
         }
-		
-		Fl::remove_timeout(timeout_close_childwin, ::close_window);	
-		::close_window = 0;
-		::the_widget = 0;
+
+        Fl::remove_timeout(timeout_close_childwin, ::close_window);
+        ::close_window = 0;
+        ::the_widget = 0;
         ::the_index = -1;
         ::the_window = 0;
-		
-		float delay = (menu_->delay()==-1)?Fl_Menu_::default_delay():menu_->delay();
 
-		//if(indexes_ && is_parent(index)) {
-        if(indexes_ && widget && widget->is_group() ) {				
+        float delay = (menu_->delay()==-1)?Fl_Menu_::default_delay():menu_->delay();
+
+        //if(indexes_ && is_parent(index)) {
+        if(indexes_ && widget && widget->is_group() ) {
+
+            if(child_win && child_win->widget_==widget) return 1;
 
             if(widget && !widget->takesevents() && !widget->active()) {
                 // inactive item...
-				goto CLOSE_JUMP;  
+                goto CLOSE_JUMP;
             }
 
             if(delay>0 && (widget!=::the_widget && ::the_window!=this) ) {
-                // Add only, if not already added to this widget timeout				
+                // Add only, if not already added to this widget timeout
                 ::the_widget = widget;
                 ::the_index = index;
                 ::the_window = this;
@@ -806,16 +808,16 @@ int MenuWindow::handle(int event)
             }
             return 1;
         }
-CLOSE_JUMP:        			        
+    CLOSE_JUMP:
 
         if(widget && child_win) {			
-			if(delay>0) {
-				::close_window = this;
-				Fl::add_timeout(delay, timeout_close_childwin, this);
-			} else {
-				close_childwin();
-			}
-        }		
+            if(delay>0) {
+                ::close_window = this;
+                Fl::add_timeout(delay, timeout_close_childwin, this);
+            } else {
+                close_childwin();
+            }
+        }
         if (event == FL_PUSH) {
             // redraw checkboxes so they preview the state they will be in:
             Fl_Widget* widget = get_widget(index);
@@ -823,9 +825,9 @@ CLOSE_JUMP:
         }
 
         return 1;
-    }
+        }
 
-    case FL_RELEASE: {		
+    case FL_RELEASE: {
         Fl::pushed_ = 0;
 
     EXECUTE: // execute the item pointed to by w and current item
@@ -852,12 +854,12 @@ CLOSE_JUMP:
             widget = current_widget();
         }
 
-		// Open child window on RELEASE, if we are still waiting timeout
-		if(widget && the_widget==widget && (!child_win || child_win->widget_!=widget) ) {
+        // Open child window on RELEASE, if we are still waiting timeout
+        if(widget && the_widget==widget && the_index>-1 && (!child_win || child_win->widget_!=widget) ) {
             Fl::remove_timeout(timeout_open_childwin, this);
-			open_childwin(the_widget, the_index);
-			return 1;
-		}
+            open_childwin(the_widget, the_index);
+            return 1;
+        }
 
         if(!widget && menubar) {
             // Check for button in menubar
@@ -923,7 +925,7 @@ void MenuWindow::show()
         fade(tx,ty,tw,th);
         break;
     case FL_EFFECT_ANIM:
-    {
+        {
         if(anim_flags&Fl_Menu_::TOP_TO_BOTTOM) {
             Y=y();
             H=1;
@@ -1027,8 +1029,8 @@ int Fl_Menu_::popup(int X, int Y, int W, int H)
 
     //MenuWindow::default_style->color = color();
 
-    float speed = (anim_speed_==-1)?Fl_Menu_::default_anim_speed():anim_speed_;
-    int effect = (effect_type_==-1)?Fl_Menu_::default_effect_type():effect_type_;
+    float speed = (anim_speed()==-1||isnan(anim_speed()))?Fl_Menu_::default_anim_speed():anim_speed();
+    int effect = (effect_type()==-1)?Fl_Menu_::default_effect_type():effect_type();
 
     MenuWindow *saved_first = first_menu;
     MenuWindow *saved_current = current_menu;
@@ -1110,7 +1112,7 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
 
     //MenuWindow::default_style->color = color();
 
-    float speed = (anim_speed()==-1)?Fl_Menu_::default_anim_speed():anim_speed();
+    float speed = (anim_speed()==-1||isnan(anim_speed()))?Fl_Menu_::default_anim_speed():anim_speed();
     int effect = (effect_type()==-1)?Fl_Menu_::default_effect_type():effect_type();
 
     MenuWindow *saved_first = first_menu;
@@ -1268,8 +1270,9 @@ int Fl_Choice::popup(int X, int Y, int W, int H)
 
     //MenuWindow::default_style->color = color();
 
-    float speed = (anim_speed()==-1)?Fl_Menu_::default_anim_speed():anim_speed();
+    float speed = (anim_speed()==-1||isnan(anim_speed()))?Fl_Menu_::default_anim_speed():anim_speed();
     int effect = (effect_type()==-1)?Fl_Menu_::default_effect_type():effect_type();
+    if(effect==FL_EFFECT_ANIM) effect = FL_EFFECT_NONE;
 
     MenuWindow *saved_first = first_menu;
     MenuWindow *saved_current = current_menu;

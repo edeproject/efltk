@@ -338,7 +338,6 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
     }
 
     fl_delete_offscreen(pm);
-
     animating=false;
 }
 
