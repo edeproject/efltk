@@ -43,7 +43,7 @@ typedef enum {
 	FL_QUALITY_NORMAL, // Default quality type.
 	FL_QUALITY_GOOD,
 	FL_QUALITY_BEST	
-};
+} Fl_Quality_Type;
 
 /*!
  IMAGE

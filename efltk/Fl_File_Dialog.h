@@ -69,9 +69,9 @@ class Fl_File_Dialog : public FileDialogType
 {
 public:
     enum {
-        DEFAULT = 0,
-        SAVE,
-        DIRECTORY
+        _DEFAULT = 0,
+        _SAVE,
+        _DIRECTORY
     };
 
     static int initial_w, initial_h;

@@ -26,9 +26,11 @@
 
 # define S_ISLNK(m)      (false)
 #ifndef __GNUC__
+#ifndef __BORLANDC__
 # define S_ISREG(m)      (((m) & _S_IFMT) == _S_IFREG)
 # define S_ISDIR(m)      (((m) & _S_IFMT) == _S_IFDIR)
 # define S_ISBLK(m)      (((m) & _S_IFMT) == _S_IFBLK)
+#endif
 #endif /* __GNUC__ */
 
 #define lstat stat
@@ -63,7 +65,7 @@ bool Fl_FileAttr::parse(const char *filename)
 {
 #ifdef _WIN32
 	capacity=0;
-	free=0;					
+	free=0;
 #ifdef _WIN32_WCE
 #else
 	if(strlen(filename) < 4 && filename[1]==':') {
@@ -139,7 +141,7 @@ char *fl_get_homedir()
 			int len = wcslen(w32path);			
 			fl_unicode2utf(w32path, len, path);
 #else
-			strncpy(path, w32path, 4095);			
+			strncpy(path, w32path, 4095);
 #endif
 			return path;
 		}		
@@ -298,7 +300,8 @@ char **fl_split(const char *string,
     static Fl_CString_List string_list;
     string_list.clear();
 
-    char **str_array, *s;
+    char **str_array;
+    const char *s;
     unsigned int n = 0;
 
     if(string == NULL || delimiter == NULL )

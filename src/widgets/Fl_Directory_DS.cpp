@@ -281,7 +281,7 @@ bool Fl_Directory_DS::find(Fl_Variant position) {
                   name = position.get_string();
                   for (i = 0; i < cnt; i++) {
                      Fl_Data_Fields& entry = *(Fl_Data_Fields *)m_list[i];
-                     if (entry["name"] == name) {
+                     if (entry["name"] == name.c_str()) {
                         m_currentIndex = i;
                         m_current = (Fl_Data_Fields *)m_list[m_currentIndex];
                         return true;

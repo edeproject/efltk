@@ -27,7 +27,7 @@ typedef enum {
     MASK_ALPHA = FL_MASK_ALPHA,
     MASK_COLORKEY = FL_MASK_COLORKEY,
     MASK_PIXELKEY = FL_MASK_PIXELKEY
-};
+} Fl_Mask_Type;
 
 //Internally used only
 typedef struct {

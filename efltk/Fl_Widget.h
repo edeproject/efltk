@@ -105,7 +105,7 @@ public:
   int shortcut() const		{return shortcut_;}
   void shortcut(int s)		{shortcut_ = s;}  
   
-  Fl_Callback *callback() const { return callback_; }
+  Fl_Callback_p callback() const { return callback_; }
   void	callback(Fl_Callback* c, void* p) {	callback_=c; user_data_=p; }
   void	callback(Fl_Callback* c) { callback_=c; }
   void	callback(Fl_Callback0*c) { callback_=(Fl_Callback*)c; }

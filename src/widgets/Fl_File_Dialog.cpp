@@ -374,7 +374,7 @@ char *fl_select_file(const char *path_, char *filters, const char *cap)
 
     Filter **f = Fl_File_Dialog::build_filters(filters);
 
-    char *file = select_file(path_, f, caption, Fl_File_Dialog::DEFAULT);
+    char *file = select_file(path_, f, caption, Fl_File_Dialog::_DEFAULT);
     if(f) {
         for(int n=0; f[n]; n++) delete f[n];
         delete []f;
@@ -387,7 +387,7 @@ char *fl_select_dir(const char *path_, const char *cap)
     const char *caption = cap;
     if(!caption) caption=_("Choose Directory:");
 
-    char *dir = select_file(path_, 0, caption, Fl_File_Dialog::DIRECTORY);
+    char *dir = select_file(path_, 0, caption, Fl_File_Dialog::_DIRECTORY);
     return dir;
 }
 
@@ -398,7 +398,7 @@ char *fl_save_file(const char *path_, char *filters, const char *cap)
 
     Filter **f = Fl_File_Dialog::build_filters(filters);
 
-    char *file = select_file(path_, f, caption, Fl_File_Dialog::SAVE);
+    char *file = select_file(path_, f, caption, Fl_File_Dialog::_SAVE);
     if(f) {
         for(int n=0; f[n]; n++) delete f[n];
         delete []f;
@@ -921,7 +921,7 @@ void Fl_File_Dialog::read_dir(const char *_path)
 
         }
     }
-    if(mode_!=Fl_File_Dialog::DIRECTORY || (mode_==Fl_File_Dialog::DIRECTORY && !fullpath_))
+    if(mode_!=Fl_File_Dialog::_DIRECTORY || (mode_==Fl_File_Dialog::_DIRECTORY && !fullpath_))
         ok_->deactivate();	
 #endif
     fullpath(_path);
@@ -998,7 +998,7 @@ void Fl_File_Dialog::read_dir(const char *_path)
 
             for(n=0; n<count; n++)
             {
-                if(files[n] && (strcmp(files[n]->d_name, ".") && strcmp(files[n]->d_name, "..") != 0) && mode() != Fl_File_Dialog::DIRECTORY)
+                if(files[n] && (strcmp(files[n]->d_name, ".") && strcmp(files[n]->d_name, "..") != 0) && mode() != Fl_File_Dialog::_DIRECTORY)
                 {
                     bool sel = false;
                     snprintf(filename, sizeof(filename)-1, "%s%c%s", fullpath(), slash, files[n]->d_name);
@@ -1212,7 +1212,7 @@ void Fl_File_Dialog::cb_ok(Fl_Widget *, void *d)
     Fl_FileItem *i = (Fl_FileItem *)FD->listview()->item();
     char file[FL_PATH_MAX];
 
-    if(FD->mode()==SAVE) {
+    if(FD->mode()==_SAVE) {
         if(strlen(FD->location())>0) {
             FD->close(CLOSE_OK);
             return;
@@ -1244,11 +1244,11 @@ void Fl_File_Dialog::cb_ok(Fl_Widget *, void *d)
 
         } else {
 
-            if(FD->mode()==SAVE) {
+            if(FD->mode()==_SAVE) {
                 FD->close(CLOSE_OK);
                 return;
             }
-            else if(FD->mode()==DEFAULT && fl_file_exists(file)) {
+            else if(FD->mode()==_DEFAULT && fl_file_exists(file)) {
                 FD->close(CLOSE_OK);
                 return;
             }
@@ -1372,7 +1372,7 @@ char *Fl_File_Dialog::get_filepath(const char *path, char *buf)
     char tmp[FL_PATH_MAX];
     if(fl_file_expand(tmp, FL_PATH_MAX, path)) path = tmp;
 
-    char *p = strrchr(path, slash);
+    const char *p = strrchr(path, slash);
     if(p) {
         const char *ptr = path;
         char *bufptr = buf;
@@ -1409,7 +1409,7 @@ void Fl_File_Dialog::cb_location(Fl_Widget *w, void *d)
         return;
     }
 
-    if(FD->mode()==SAVE)
+    if(FD->mode()==_SAVE)
         FD->ok_->activate();
 
 	int key = Fl::event_key();
@@ -1429,8 +1429,8 @@ void Fl_File_Dialog::cb_location(Fl_Widget *w, void *d)
 #endif
 			) {
             FD->read_dir(tmp);
-        } else if(FD->mode()<=Fl_File_Dialog::SAVE) {
-            if(!fl_is_dir(tmp) && (FD->mode()==Fl_File_Dialog::DEFAULT?fl_file_exists(tmp):true)) {
+        } else if(FD->mode()<=Fl_File_Dialog::_SAVE) {
+            if(!fl_is_dir(tmp) && (FD->mode()==Fl_File_Dialog::_DEFAULT?fl_file_exists(tmp):true)) {
                 FD->ok_->activate();
 				FD->close(false);
                 //FD->location_->hide_popup();
@@ -1450,7 +1450,7 @@ void Fl_File_Dialog::cb_location(Fl_Widget *w, void *d)
         char *dirpath = FD->get_filepath(loc->value(), tmp2);
         int dirpath_len = dirpath?strlen(dirpath):0;
 
-        if(FD->mode()!=Fl_File_Dialog::SAVE) {
+        if(FD->mode()!=Fl_File_Dialog::_SAVE) {
             if(fl_file_exists(tmp)) FD->ok_->activate();
             else FD->ok_->deactivate();
         }
@@ -1488,7 +1488,7 @@ void Fl_File_Dialog::cb_location(Fl_Widget *w, void *d)
                     else
                         snprintf(filen, sizeof(filen)-1, "%s%c%s", dirpath, slash, file);
 
-                    if(FD->mode()==Fl_File_Dialog::DIRECTORY && !fl_is_dir(filen)) {
+                    if(FD->mode()==Fl_File_Dialog::_DIRECTORY && !fl_is_dir(filen)) {
                         continue;
                     }
                     Fl_Widget *w = new Fl_Item(filen);

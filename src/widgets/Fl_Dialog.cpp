@@ -27,7 +27,7 @@
 #include <efltk/Fl_Dialog_Data_Source.h>
 
 /* XPM */
-static char * cancel_xpm[] = {
+static const char * cancel_xpm[] = {
 "20 20 67 1",
 " 	c None",
 ".	c #F90D04",
@@ -117,7 +117,7 @@ static char * cancel_xpm[] = {
 "    ,^|             ",
 "                    "};
 /* XPM */
-static char * help_xpm[] = {
+static const char * help_xpm[] = {
 "20 20 5 1",
 " 	c None",
 ".	c #BEB8ED",
@@ -145,7 +145,7 @@ static char * help_xpm[] = {
 "         ##         ",
 "                    "};
 /* XPM */
-static char * no_xpm[] = {
+static const char * no_xpm[] = {
 "20 20 5 1",
 " 	c None",
 ".	c #FF0000",
@@ -173,7 +173,7 @@ static char * no_xpm[] = {
 "                    ",
 "                    "};
 /* XPM */
-static char * ok_xpm[] = {
+static const char * ok_xpm[] = {
 "20 20 7 1",
 " 	c None",
 ".	c #ADF4AD",
@@ -203,7 +203,7 @@ static char * ok_xpm[] = {
 "                    ",
 "                    "};
 /* XPM */
-static char * refresh_xpm[] = {
+static const char * refresh_xpm[] = {
 "20 20 10 1",
 " 	c None",
 ".	c #262615",
@@ -236,7 +236,7 @@ static char * refresh_xpm[] = {
 "                    ",
 "                    "};
 /* XPM */
-static char * retry_xpm[] = {
+static const char * retry_xpm[] = {
 "20 20 10 1",
 " 	c None",
 ".	c #262615",

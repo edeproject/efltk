@@ -726,7 +726,7 @@ void Fl_Simple_Html::draw()
         					if (l < 1) l = 1;
 				                s += l;
 #endif						
-						char *ptr_n = strchr(ptr, ';');
+						const char *ptr_n = strchr(ptr, ';');
 						if (ptr_n)
 						{
 						    *s++ = qch;
@@ -1387,7 +1387,7 @@ void Fl_Simple_Html::format()
 		                s += l;
 #endif						
 			
-				char *ptr_n = strchr(ptr, ';');
+				const char *ptr_n = strchr(ptr, ';');
 				if (ptr_n)
 				{
 				    *s++ = qch;
@@ -1813,7 +1813,7 @@ void Fl_Simple_Html::format_table(int *table_width,	// O - Total table width
     					if (l < 1) l = 1;
 			                s += l;
 #endif						
-					char *ptr_n = strchr(ptr, ';');
+					const char *ptr_n = strchr(ptr, ';');
 					if (ptr_n)
 					{
 					    *s++ = qch;

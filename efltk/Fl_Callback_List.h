@@ -4,6 +4,8 @@
 #include "Fl_Ptr_List.h"
 #include "Fl_Widget.h"
 
+typedef Fl_Callback * Fl_Callback_p; // for Borland CBuilder
+
 typedef struct CallbackDataStruct {
     CallbackDataStruct(Fl_Callback *c, void *a) { cb=c; arg=a; }
     Fl_Callback *cb;
@@ -25,7 +27,7 @@ public:
     bool remove(Fl_Callback *cb, void *arg);
     int index_of(Fl_Callback *cb, const void *arg) const;
 
-    Fl_Callback *callback(uint index) const { return (Fl_Callback*)((CallbackData*)Fl_Ptr_List::item(index))->cb; }
+    Fl_Callback_p callback(uint index) const { return (Fl_Callback_p)((CallbackData*)Fl_Ptr_List::item(index))->cb; }
     void *arg(uint index) const { return (void*)((CallbackData*)Fl_Ptr_List::item(index))->arg; }
     CallbackData *item(uint index) const { return (CallbackData*)Fl_Ptr_List::item(index); }
 

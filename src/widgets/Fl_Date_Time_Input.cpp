@@ -22,7 +22,7 @@
 #include <efltk/Fl_Calendar.h>
 #include <efltk/fl_draw.h>
 
-static char * calendar_xpm[] = {
+static const char * calendar_xpm[] = {
 "15 15 7 1",
 " 	c None",
 ".	c #000000",
