@@ -4,12 +4,11 @@
 #ifndef _WIN32
 # include <sys/types.h>
 # include <sys/socket.h>
-# include <stdio.h>
 # include <sys/un.h>
-# include <sys/unistd.h>
+# include <unistd.h>
 typedef int SOCKET;
 # define INVALID_SOCKET -1
-#else
+#else 
 # include <winsock2.h>
 #endif
 

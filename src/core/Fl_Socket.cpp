@@ -1,13 +1,16 @@
 #include <efltk/Fl_Socket.h>
 #include <efltk/Fl_Exception.h>
+
+#include <stdio.h>
 #include <stdlib.h>
 
 #ifndef _WIN32
-#include <unistd.h>
 #include <fcntl.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <sys/time.h>
+#else
+typedef int socklen_t;
 #endif
 
 int 	Fl_Socket::m_socketCount;
@@ -107,13 +110,15 @@ void Fl_Socket::open(Fl_String hostName,int portNumber) {
 
    FD_SET(m_sockfd, &inputs);
    FD_SET(m_sockfd, &outputs);
+
 #ifdef _WIN32
    bool optval = true;
    setsockopt(m_sockfd, IPPROTO_TCP, TCP_NODELAY, (char *) &optval, sizeof(bool));
 #endif
-   int len = sizeof(int);
+
+   socklen_t len = sizeof(socklen_t);
    getsockopt(m_sockfd, SOL_SOCKET, SO_RCVLOWAT, (char *) &m_receiveLowWaterMark, &len);
-   printf("Default receive low watermark is %i\n", m_receiveLowWaterMark);
+   //printf("Default receive low watermark is %i\n", m_receiveLowWaterMark);
 }
 
 void Fl_Socket::close() {
@@ -205,11 +210,11 @@ bool Fl_Socket::ready_to_write() {
 #endif
 
 int Fl_Socket::set_option(int level,int option,int  value) {
-   int len = sizeof(int);
+   socklen_t len = sizeof(socklen_t);
    return setsockopt(m_sockfd, level, option, VALUE_TYPE(&value), len);
 }
 
 int Fl_Socket::get_option(int level,int option,int& value) {
-   int len = sizeof(int);
+   socklen_t len = sizeof(socklen_t);
    return getsockopt(m_sockfd, level, option, VALUE_TYPE(&value), &len);
 }
