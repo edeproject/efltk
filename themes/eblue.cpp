@@ -107,6 +107,7 @@ extern "C" bool fltk_theme()
     if ((s = Fl_Style::find("group"))) {
         s->box = FL_NO_BOX;
         s->color = bc;
+        s->button_color = bc;
     }
     if ((s = Fl_Style::find("menu"))) {
         s->selection_text_color = fl_darker(FL_BLUE);
@@ -184,7 +185,9 @@ extern "C" bool fltk_theme()
         s->box = vertup;
     }
     if ((s = Fl_Style::find("tabs"))) {
-        s->box = vertup;
+        s->box = FL_THIN_UP_BOX;
+        s->color = fl_rgb(180,200,215);
+        s->button_color = fl_rgb(180,200,215);
     }
     if ((s = Fl_Style::find("pack"))) {
         s->box = horflat;
@@ -202,6 +205,11 @@ extern "C" bool fltk_theme()
     }
     if ((s = Fl_Style::find("light button"))) {
         s->selection_color = fl_lighter(FL_BLUE);
+    }
+    if ((s = Fl_Style::find("calendar"))) {
+        s->box = FL_NO_BOX;
+        s->button_box = vertup;
+        s->button_color = fl_rgb(60,120,200);
     }
 
     return true;
