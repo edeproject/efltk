@@ -33,8 +33,9 @@ class Fl_Multi_Image : public Fl_Image
   Fl_Flags flags[MAXIMAGES];
 public:
   void measure(int&,int&);
-  void draw(int, int, int, int, Fl_Flags = 0);
-  void draw(int x, int y, Fl_Flags f = 0) {draw(x,y,w,h,f);}
+  void draw(int dx, int dy, int dw, int dh,
+            int sx, int sy, int sw, int sh,
+            Fl_Flags f);
   Fl_Multi_Image(Fl_Image& image0,
                  Fl_Flags flags1, Fl_Image& image1) {
       images[0] = &image0;
