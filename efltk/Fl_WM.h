@@ -24,6 +24,10 @@ public:
         DESKTOP
     };
     static bool set_window_type(Window xid, int type);
+    static bool set_window_icon(Window xid, Fl_Image *icon);
+    static bool set_window_title(Window xid, char *title, int title_len);
+    static bool set_window_icontitle(Window xid, char *title, int title_len);
+
     static bool set_workspace_count(int count);
     static bool set_workspace_names(const char **names, int count);
     static bool set_current_workspace(int number);
@@ -31,6 +35,10 @@ public:
 
     ////////////////
     // Get functions:
+
+    static bool get_window_icon(Window xid, Fl_Image *&icon, int w, int h);
+    static bool get_window_title(Window xid, char *&title);
+    static bool get_window_icontitle(Window xid, char *&title);
 
     static bool get_geometry(int &width, int &height);
     static bool get_workarea(int &x, int &y, int &width, int &height);

@@ -3,6 +3,8 @@
 #ifndef _WIN32
 
 #include <efltk/Fl.h>
+#include <efltk/Fl_Util.h>
+#include <efltk/Fl_Image.h>
 
 #include <X11/Xproto.h> //For CARD32
 
@@ -23,6 +25,7 @@ Atom _XA_NET_CLIENT_LIST;
 Atom _XA_NET_CLIENT_LIST_STACKING;
 Atom _XA_NET_ACTIVE_WINDOW;
 Atom _XA_NET_WM_NAME;
+Atom _XA_NET_WM_ICON_NAME;
 Atom _XA_NET_WM_VISIBLE_NAME;
 Atom _XA_NET_WM_DESKTOP;
 
@@ -39,6 +42,8 @@ Atom _XA_NET_WM_WINDOW_TYPE_DIALOG;
 Atom _XA_NET_WM_WINDOW_TYPE_NORMAL;
 
 Atom _XA_NET_WM_STRUT;
+
+extern Atom fl_XaUtf8String;
 
 uchar* getProperty(Window w, Atom a, Atom type, unsigned long *np=0, int *ret=0)
 {
@@ -111,6 +116,7 @@ static void init_atoms()
         { &_XA_NET_CLIENT_LIST_STACKING, "_NET_CLIENT_LIST_STACKING" },
         { &_XA_NET_ACTIVE_WINDOW,   "_NET_ACTIVE_WINDOW" },
         { &_XA_NET_WM_NAME,         "_NET_WM_NAME" },
+        { &_XA_NET_WM_ICON_NAME,    "_NET_WM_ICON_NAME" },
         { &_XA_NET_WM_VISIBLE_NAME, "_NET_WM_VISIBLE_NAME" },
         { &_XA_NET_WM_DESKTOP,      "_NET_WM_DESKTOP" },
 
@@ -183,6 +189,36 @@ bool Fl_WM::set_window_type(Window xid, int type)
     return (status==Success);
 }
 
+bool Fl_WM::set_window_icon(Window xid, Fl_Image *icon)
+{
+    if(!icon->get_offscreen()) {
+        bool oldval = icon->no_screen();
+        icon->no_screen(true);
+        icon->draw(0,0);
+        icon->no_screen(oldval);
+    }
+
+    XWMHints hints;
+    hints.icon_pixmap = (Pixmap)icon->get_offscreen();
+    hints.flags       |= IconPixmapHint;
+    XSetWMHints(fl_display, xid, &hints);
+    return true;
+}
+
+bool Fl_WM::set_window_title(Window xid, char *title, int title_len)
+{
+    XChangeProperty(fl_display, xid, XA_WM_NAME,
+                    fl_XaUtf8String, 8, 0, (uchar*)title, title_len);
+    return true;
+}
+
+bool Fl_WM::set_window_icontitle(Window xid, char *title, int title_len)
+{
+    XChangeProperty(fl_display, xid, XA_WM_ICON_NAME,
+                    fl_XaUtf8String, 8, 0, (uchar*)title, title_len);
+    return true;
+}
+
 bool Fl_WM::set_workspace_count(int count)
 {
     init_atoms();
@@ -218,6 +254,136 @@ bool Fl_WM::set_active_window(Window xid)
 
 
 /////////////////////////////////////////////
+
+static uint8 *cvt1to32(XImage *xim, int ow, int oh) {
+    int pixel;
+    uint8 *data = new uint8[ow*oh*4];
+    uint32 *ptr;
+    int x,y;
+    for(y = 0; y < oh; y++)
+    {
+        ptr = (uint32*)data + (y * ow);
+        for(x = 0; x < ow; x++)
+        {
+            pixel = XGetPixel(xim, x, y);
+            if(pixel) *ptr++ = 0x00000000;
+            else *ptr++ = 0xFFFFFFFF;
+        }
+    }
+    return data;
+}
+
+extern uint8 *ximage_to_data(XImage *im, Fl_PixelFormat *desired);
+bool Fl_WM::get_window_icon(Window xid, Fl_Image *&icon, int w, int h)
+{
+    XWMHints *wm_hints = XGetWMHints(fl_display, xid);
+
+    if(!wm_hints) return false;
+
+    // Max size 128x128
+    Fl_Rect r(0, 0, 128, 128);
+    XImage *xim;
+
+    Fl_Image *image=0;
+    Pixmap mask_bitmap = 0;
+
+    // ICON
+    if(wm_hints && wm_hints->flags & IconPixmapHint && wm_hints->icon_pixmap)
+    {
+        xim = Fl_Renderer::ximage_from_pixmap(wm_hints->icon_pixmap, r);
+        if(xim)
+        {
+            Fl_PixelFormat fmt;
+            uint8 *data=0;
+            if(xim->depth==1) {
+                data = cvt1to32(xim, xim->width, xim->height);
+                fmt.realloc(32,0,0,0,0);
+            } else {
+                data = ximage_to_data(xim, Fl_Renderer::system_format());
+                fmt.copy(Fl_Renderer::system_format());
+            }
+            // Create Fl_Image, masks are calculated automaticly
+            image = new Fl_Image(xim->width, xim->height, &fmt, data);
+            image->mask_type(FL_MASK_NONE);
+            XDestroyImage(xim);
+        }
+    }
+
+    if(!image) {
+        return false;
+    }
+
+    // MASK
+    if(wm_hints && wm_hints->flags & IconMaskHint && wm_hints->icon_mask)
+    {
+        Fl_Image *mask=0;
+        xim = Fl_Renderer::ximage_from_pixmap(wm_hints->icon_mask, r);
+        if(xim) {
+            uint8 *data = cvt1to32(xim, xim->width, xim->height);
+            mask = new Fl_Image(xim->width, xim->height, 32, data, 0,0,0,0);
+            mask->no_screen(true);
+            XDestroyImage(xim);
+        }
+        if(mask) {
+            Fl_Image *smask  = mask->scale(w, h);
+            smask->mask_type(MASK_COLORKEY);
+            smask->colorkey(0xFFFFFFFF);
+            mask_bitmap = smask->create_mask(w, h);
+            delete smask;
+        }
+    }
+
+    icon = image->scale(w,h);
+    if(mask_bitmap) icon->set_mask(mask_bitmap, true);
+
+    return true;
+}
+
+bool Fl_WM::get_window_title(Window xid, char *&title)
+{
+    XTextProperty xtp;
+    title = 0;
+    int ret=0;
+
+    title = (char*)getProperty(xid, _XA_NET_WM_NAME, fl_XaUtf8String, 0, &ret);
+    if(!title && XGetWMName(fl_display, xid, &xtp))
+    {
+        if(xtp.encoding == XA_STRING) {
+            title = strdup((const char*)xtp.value);
+        } else {
+            int items; char **list=0; Status s;
+            s = Xutf8TextPropertyToTextList(fl_display, &xtp, &list, &items);
+            if((s == Success) && (items > 0)) title = strdup((const char *)*list);
+            else title = strdup((const char *)xtp.value);
+            if(list) XFreeStringList(list);
+        }
+        XFree(xtp.value);
+    }
+    return (title!=0);
+}
+
+bool Fl_WM::get_window_icontitle(Window xid, char *&title)
+{
+    XTextProperty xtp;
+    title = 0;
+    int ret=0;
+
+    title = (char*)getProperty(xid, _XA_NET_WM_ICON_NAME, fl_XaUtf8String, 0, &ret);
+    if(!title && XGetWMIconName(fl_display, xid, &xtp))
+    {
+        if(xtp.encoding == XA_STRING) {
+            title = strdup((const char*)xtp.value);
+        } else {
+            int items; char **list=0; Status s;
+            s = Xutf8TextPropertyToTextList(fl_display, &xtp, &list, &items);
+            if((s == Success) && (items > 0)) title = strdup((const char *)*list);
+            else title = strdup((const char *)xtp.value);
+            if(list) XFreeStringList(list);
+        }
+        XFree(xtp.value);
+    }
+    return (title!=0);
+}
 
 bool Fl_WM::get_geometry(int &width, int &height)
 {
