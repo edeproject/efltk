@@ -65,10 +65,10 @@ Fl_Text_Display::Style_Table_Entry
         { FL_BLACK, FL_COURIER,        12 }, // B - Plain
         { FL_DARK3, FL_COURIER_ITALIC, 12 }, // C - Line comments
         { FL_DARK3, FL_COURIER_ITALIC, 12 }, // D - Block comments
-        { fl_color_average(FL_BLACK, FL_YELLOW, 0.5),  FL_COURIER,        12 }, // E - Strings
-        { fl_color_average(FL_BLACK, FL_GREEN, 0.5),   FL_COURIER_BOLD,        12 }, // F - Directives
-        { FL_RED,   FL_COURIER_BOLD,   12 }, // G - Types
-        { FL_BLUE,  FL_COURIER_BOLD,   12 }  // H - Keywords
+        { fl_color_average(FL_BLACK, FL_YELLOW, 0.5), FL_COURIER,        12 }, // E - Strings
+        { fl_color_average(FL_BLACK, FL_GREEN, 0.5),  FL_COURIER,        12 }, // F - Directives
+        { fl_color_average(FL_BLACK, FL_RED, 0.5),    FL_COURIER,   12 }, // G - Types
+        { fl_color_average(FL_BLACK, FL_BLUE, 0.5),   FL_COURIER,   12 }  // H - Keywords
     };
 
 const char *code_keywords[] = {	// List of known C/C++ keywords...
@@ -173,10 +173,12 @@ void style_parse(const char *text,
     char buf[255];
     char *bufptr;
     const char *temp;
+    int pos=0;
 
     for(current = *style, col = 0, last = 0; length > 0; length --, text ++)
     {
-        if(current == PLAIN || current == UNFINISHED) {
+        if(current == PLAIN || current == UNFINISHED || col==0)
+        {
             // Check for directives, comments, strings, and keywords...
             if (col == 0 && *text == '#') {
                 // Set style to directive
@@ -192,10 +194,11 @@ void style_parse(const char *text,
                 text ++;
                 length --;
                 col += 2;
+                pos+=2;
                 continue;
             } else if (*text == '\"') {
                 current = 'E';
-            } else if (!last && islower(*text)) {
+            } else if (!last && islower(*text) && current!='D' && current!='E') {
                 // Might be a keyword...
                 for (temp = text, bufptr = buf;
                      islower(*temp) && bufptr < (buf + sizeof(buf) - 1);
@@ -203,7 +206,6 @@ void style_parse(const char *text,
 
                 if (!islower(*temp)) {
                     *bufptr = '\0';
-
                     bufptr = buf;
 
                     if (bsearch(&bufptr, code_types,
@@ -214,11 +216,13 @@ void style_parse(const char *text,
                             text ++;
                             length --;
                             col ++;
+                            pos++;
                         }
 
                         text --;
                         length ++;
                         last = 1;
+                        current=PLAIN;
                         continue;
                     } else if (bsearch(&bufptr, code_keywords,
                                        sizeof(code_keywords) / sizeof(code_keywords[0]),
@@ -228,24 +232,54 @@ void style_parse(const char *text,
                             text ++;
                             length --;
                             col ++;
+                            pos++;
                         }
 
                         text --;
                         length ++;
                         last = 1;
+                        current=PLAIN;
                         continue;
+                    } else
+                        current=PLAIN;
+                }
+            } else if(*text=='(') {
+
+		// Might be a function name...
+                bufptr = (char*)text-1;
+                char *sptr = style;
+                int tmp=col, len=0;;
+                while(tmp-->=0) {
+                    if(*bufptr==' '||*bufptr=='\n'||*bufptr=='\t'||
+                       *bufptr=='.'||*bufptr=='>'||*bufptr==':'||
+                       *bufptr=='('||*bufptr==')'||*bufptr=='?'||
+                       *bufptr=='='||*bufptr=='!') break;
+                    bufptr--;
+                    len++;
+                }
+                bufptr++;
+                strncpy(buf, bufptr, len);                
+                buf[len] = '\0';
+                bufptr = buf;
+
+                if(!bsearch(&bufptr, code_types,
+                            sizeof(code_types) / sizeof(code_types[0]),
+                            sizeof(code_types[0]), compare_keywords)
+                   &&
+                   !bsearch(&bufptr, code_keywords,
+                            sizeof(code_keywords) / sizeof(code_keywords[0]),
+                            sizeof(code_keywords[0]), compare_keywords)
+                  ) {
+		    //It's not keyword or keycode
+		    //So it has to then function
+                    while(len-->=0) {
+                        *sptr-- = 'F';
                     }
                 }
             }
-        } else if (current == 'D' && strncmp(text, "*/", 2) == 0) {
-            // Close a C comment...
-            *style++ = current;
-            *style++ = current;
-            text ++;
-            length --;
-            current = PLAIN;
-            col += 2;
-            continue;
+            else
+                if(current!='E' && current!='D') current=PLAIN;
+
         } else if (current == 'E') {
             // Continuing in string...
             if (strncmp(text, "\\\"", 2) == 0) {
@@ -255,21 +289,36 @@ void style_parse(const char *text,
                 text ++;
                 length --;
                 col += 2;
+                pos+=2;
                 continue;
             } else if (*text == '\"') {
                 // End quote...
                 *style++ = current;
                 col ++;
+                pos++;
                 current = PLAIN;
                 continue;
             }
         }
 
+        if (current == 'D' && strncmp(text, "*/", 2) == 0) {
+            // Close a C comment...
+            *style++ = current;
+            *style++ = current;
+            text ++;
+            length --;
+            current = PLAIN;
+            col += 2;
+            pos+=2;
+            continue;
+        }
+
         // Copy style info...
-        if (current == PLAIN && (*text == '{' || *text == '}')) *style++ = 'H';
+        if ((current == PLAIN||current == UNFINISHED) && (*text == '{' || *text == '}')) *style++ = 'H';
         else *style++ = current;
 
         col++;
+        pos++;
 
         last = isalnum(*text) || *text == '.';
 
@@ -309,6 +358,29 @@ void style_init(void) {
 void style_unfinished_cb(Fl_Text_Display *, int, void *) {
 }
 
+//
+// 'find_safe_pos()' - Finds safe re-parse point
+//
+int find_safe_pos(Fl_Text_Buffer *buf, int pos, int inc) {
+    int p = pos;
+    char *buffer = buf->static_buffer();
+    char *ptr=0;
+    while(p+=inc) {
+        if(p<0) break;
+        if(p>buf->length()) break;
+        ptr = buffer+p;
+        if(!strncmp(ptr, "/*", 2) ||
+           !strncmp(ptr, "*/", 2) ||
+           !strncmp(ptr, "#include", 8) ||
+           !strncmp(ptr, "#if", 3) ||
+           *ptr=='{' || *ptr=='}'
+          ) {
+            p+=inc;
+            break;
+        }
+    }
+    return p;
+}
 
 //
 // 'style_update()' - Update the style buffer...
@@ -358,29 +430,19 @@ style_update(int        pos,		// I - Position of update
     // comment character...
 
     // Try to find last SAFE parsing point.
-    int p = pos;
-    char *buffer = textbuf->static_buffer();
-    while(p--) {
-        char *ptr = buffer+p;
-        if(!strncmp(ptr, "/*", 2) ||
-           !strncmp(ptr, "*/", 2) ||
-           !strncmp(ptr, "#include", 8) ||
-           !strncmp(ptr, "//", 2)
-          ) {
-            p-=5;
-            break;
-        }
-        if(!strncmp(ptr, "\"", 1) &&
-           strncmp(ptr, "\\\"", 2)
-          ) {
-            p-=5;
-            break;
-        }
+    int p=0;
+    if (nDeleted > 0 && nInserted==0) {
+        p = find_safe_pos(textbuf, pos, 1);
+        p=p<textbuf->length()?p:textbuf->length();
+        start = textbuf->line_start(pos);
+        end   = textbuf->line_end(p + nDeleted);
+    } else {
+        p = find_safe_pos(textbuf, pos, -1);
+        p=p>=0?p:0;
+        start = textbuf->line_start(p);
+        end   = textbuf->line_end(pos + nInserted - nDeleted);
     }
 
-    p=p>=0?p:0;
-    start = textbuf->line_start(p);
-    end   = textbuf->line_end(pos + nInserted - nDeleted);
     text  = (char *)textbuf->text_range(start, end);
     style = (char *)stylebuf->text_range(start, end);
     last  = style[end - start - 1];
@@ -779,6 +841,7 @@ Fl_Window* new_view() {
 
 int main(int argc, char **argv) {
   textbuf = new Fl_Text_Buffer;
+  textbuf->tab_distance(4);
   style_init();
 
   Fl_Window* window = new_view();
