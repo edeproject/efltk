@@ -200,7 +200,12 @@ void Fl_Widget::measure_label(int& w, int& h) const
         flags |= FL_ALIGN_WRAP;
         h = 0;                     // define wrap width
     }
-    fl_measure(label().c_str(), w, h, flags);
+    if (label().length()) 
+        fl_measure(label().c_str(), w, h, flags);
+    else {
+        w = 0;
+        h = 0;
+    }
 }
 
 int Fl_Widget::label_height() const {

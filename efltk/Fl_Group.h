@@ -78,9 +78,9 @@ public:
      * to draw the area of it's parent that is visible behind it.
      */
     void draw_group_box() const;
-    
-	virtual void preferred_size(int &w, int &h) const { }
-	virtual void draw();
+
+    virtual void preferred_size(int &w, int &h) const { }
+    virtual void draw();
     virtual void layout();
     virtual int handle(int);
 
@@ -115,17 +115,17 @@ public:
     /** Searches the children for w, returns the index of w or of a parent of w that is a child of this. Returns children() if the widget is NULL or not found.  */
     int find(const Fl_Widget &w) const { return find(&w); }
 
-	virtual void clear();
+    virtual void clear();
 
-	void insert(Fl_Widget& o, Fl_Widget* before) { insert(o,find(before)); }
+    void insert(Fl_Widget& o, Fl_Widget* before) { insert(o,find(before)); }
     void insert(Fl_Widget&, int index);
 
-	void remove(Fl_Widget& o) { remove(find(o)); }
+    void remove(Fl_Widget& o) { remove(find(o)); }
     void remove(Fl_Widget* o) { remove(find(*o)); }
     void remove(int index);
 
     void replace(int index, Fl_Widget&);
-	void replace(Fl_Widget& old, Fl_Widget& o) { replace(find(old),o); };    
+    void replace(Fl_Widget& old, Fl_Widget& o) { replace(find(old),o); };    
 
     void add(Fl_Widget& o) { insert(o, children()); }
     void add(Fl_Widget* o) { add(*o); }    
@@ -150,8 +150,6 @@ public:
     uchar layout_spacing() const { return m_layout_spacing; }
     void layout_spacing(const uchar offset) { m_layout_spacing = offset; }
 
-    void layout_settings(bool use_preffered_sizes=true,bool use_label_widths=true) { m_use_preffered_sizes=use_preffered_sizes; m_use_label_widths=use_label_widths; }
-
 protected:
     void draw_child(Fl_Widget&) const;
     void update_child(Fl_Widget&) const;
@@ -160,8 +158,6 @@ protected:
 
 private:
     uchar m_layout_spacing;
-    bool m_use_preffered_sizes;
-    bool m_use_label_widths;
     int m_focus;
 
     Fl_Widget_List m_array;

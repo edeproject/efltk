@@ -136,6 +136,12 @@ static Fl_Pixmap   delete_pixmap(delete_small_xpm);
 static Fl_Pixmap   edit_pixmap(edit_small_xpm);
 static Fl_Pixmap   refresh_pixmap(refresh_small_xpm);
 
+class Fl_Combo_Box_Button : public Fl_Button {
+public:
+    Fl_Combo_Box_Button() : Fl_Button (0,0,10,10) {}
+    void preferred_size(int& w,int& h) const { w = h - 2; }
+};
+
 class Fl_Popup_ListView : public Fl_Popup_Window {
     Fl_ListView *m_listView;
     Fl_Widget   *m_editControl;
@@ -333,7 +339,7 @@ Fl_Combo_Box::Fl_Combo_Box(int x,int y,int w,int h,const char *label)
     begin();
 
     for (int i = 0; i < 5; i++) {
-        Fl_Button *b = new Fl_Button(10,10,20,16,"");
+        Fl_Button *b = new Fl_Combo_Box_Button();
         m_buttons[i] = b;
         b->layout_align(FL_ALIGN_RIGHT);
         b->callback(cb_button);
