@@ -99,16 +99,37 @@
 
 #define WM_FLSELECT (WM_USER+0x0400)
 
-/*void Fl::sleep_ms(int ms) {
+static DWORD start;
+#define TIME_WRAP_VALUE	(~(DWORD)0)
+
+void fl_start_ticks() {
+    /* Set first ticks value */
+    start = GetTickCount();
+}
+
+uint32 Fl::ticks()
+{
+    DWORD now, ticks;
+    now = GetTickCount();
+    if ( now < start ) ticks = (TIME_WRAP_VALUE-start) + now;
+    else ticks = (now - start);
+    return ticks;
+}
+
+void Fl::sleep(int ms) {
     Sleep(ms);
 }
-*/
+
+
+
 #include <stdio.h>
 void fl_open_display()
 {
 	static bool been_here=false;
 	if(been_here) return;
     
+	fl_start_ticks();
+	    
 	extern void fl_private_init();
     fl_private_init(); //Fl_init.cpp
 	
@@ -836,7 +857,7 @@ WIN_TrackMouseEvent(_TRACKMOUSEEVENT *ptme)
 static _TRACKMOUSEEVENT mouseevent =
 {
     sizeof(_TRACKMOUSEEVENT),
-    TME_LEAVE
+    TME_LEAVE,0,0
 };
 
 ////////////////////////////////////////////////////////////////
@@ -936,17 +957,17 @@ static const struct
 
 vktab[] =
 {
-    {VK_BACK, FL_BackSpace},
-    {VK_TAB,  FL_Tab},
+    {VK_BACK, FL_BackSpace,0},
+    {VK_TAB,  FL_Tab,0},
     {VK_CLEAR,    FL_KP('5'), FL_Clear},
     {VK_RETURN,   FL_Enter,   FL_KP_Enter},
     {VK_SHIFT,    FL_Shift_L, FL_Shift_R},
     {VK_CONTROL,  FL_Control_L,   FL_Control_R},
     {VK_MENU, FL_Alt_L,   FL_Alt_R},
-    {VK_PAUSE,    FL_Pause},
-    {VK_CAPITAL,  FL_Caps_Lock},
-    {VK_ESCAPE,   FL_Escape},
-    {VK_SPACE,    ' '},
+    {VK_PAUSE,    FL_Pause,0},
+    {VK_CAPITAL,  FL_Caps_Lock,0},
+    {VK_ESCAPE,   FL_Escape,0},
+    {VK_SPACE,    ' ',0},
     {VK_PRIOR,    FL_KP('9'), FL_Page_Up},
     {VK_NEXT, FL_KP('3'), FL_Page_Down},
     {VK_END,  FL_KP('1'), FL_End},
@@ -955,32 +976,30 @@ vktab[] =
     {VK_UP,   FL_KP('8'), FL_Up},
     {VK_RIGHT,    FL_KP('6'), FL_Right},
     {VK_DOWN, FL_KP('2'), FL_Down},
-    {                            // does not work on NT
-        VK_SNAPSHOT, FL_Print
-    },
+    {VK_SNAPSHOT, FL_Print,0}, // does not work on NT
     {VK_INSERT,   FL_KP('0'), FL_Insert},
     {VK_DELETE,   FL_KP('.'), FL_Delete},
-    {VK_LWIN, FL_Win_L},
-    {VK_RWIN, FL_Win_R},
-    {VK_APPS, FL_Menu},
-    {VK_MULTIPLY, FL_KP('*')},
-    {VK_ADD,  FL_KP('+')},
-    {VK_SUBTRACT, FL_KP('-')},
-    {VK_DECIMAL,  FL_KP('.')},
-    {VK_DIVIDE,   FL_KP('/')},
-    {VK_NUMLOCK,  FL_Num_Lock},
-    {VK_SCROLL,   FL_Scroll_Lock},
-    {0xba,    ';'},
-    {0xbb,    '='},
-    {0xbc,    ','},
-    {0xbd,    '-'},
-    {0xbe,    '.'},
-    {0xbf,    '/'},
-    {0xc0,    '`'},
-    {0xdb,    '['},
-    {0xdc,    '\\'},
-    {0xdd,    ']'},
-    {0xde,    '\''}
+    {VK_LWIN, FL_Win_L,0},
+    {VK_RWIN, FL_Win_R,0},
+    {VK_APPS, FL_Menu,0},
+    {VK_MULTIPLY, FL_KP('*'),0},
+    {VK_ADD,  FL_KP('+'),0},
+    {VK_SUBTRACT, FL_KP('-'),0},
+    {VK_DECIMAL,  FL_KP('.'),0},
+    {VK_DIVIDE,   FL_KP('/'),0},
+    {VK_NUMLOCK,  FL_Num_Lock,0},
+    {VK_SCROLL,   FL_Scroll_Lock,0},
+    {0xba,    ';',0},
+    {0xbb,    '=',0},
+    {0xbc,    ',',0},
+    {0xbd,    '-',0},
+    {0xbe,    '.',0},
+    {0xbf,    '/',0},
+    {0xc0,    '`',0},
+    {0xdb,    '[',0},
+    {0xdc,    '\\',0},
+    {0xdd,    ']',0},
+    {0xde,    '\'',0}
 };
 static int ms2fltk(int vk, int extended)
 {
@@ -1026,6 +1045,16 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     //fl_msg.time = ???
     //fl_msg.pt = ???
     //fl_msg.lPrivate = ???
+	if( uMsg == WM_LBUTTONDOWN )
+		printf("WM_LBUTTONDOWN\r\n");
+	else if( uMsg == WM_LBUTTONDOWN )
+		printf("WM_RBUTTONDOWN:\r\n");
+	else if( uMsg == WM_MOUSEMOVE)
+		printf("WM_MOUSEMOVE:\r\n");
+
+
+//	Fl::get_mouse(Fl::e_x_root,Fl::e_y_root);
+//	printf("x=%d,y=%d\r\n",Fl::e_x_root,Fl::e_y_root);
 
 	static unsigned short wbuf[200];
 	static long wlen = 0;
@@ -1382,13 +1411,19 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
             break;
 
         case WM_SETCURSOR:
-            if (window && LOWORD(lParam) == HTCLIENT)
+		//Fl::get_mouse(Fl::e_x_root,Fl::e_y_root);
+        //PostMessage(hWnd,WM_MOUSEMOVE,Fl::e_x_root,Fl::e_y_root);
+		/*    if (window && LOWORD(lParam) == HTCLIENT)
             {
                 while (window->parent()) window = window->window();
-                SetCursor(Fl_X::i(window)->cursor);
+                if(!SetCursor(Fl_X::i(window)->cursor))
+					printf("Cursor does not exist\r\n");
                 return 0;
-            }
-            break;
+            }*/
+       		//SetCursor(LoadCursor(fl_display, IDC_ARROW));
+			//return 0;
+
+			break;
 
         #if USE_COLORMAP
         case WM_QUERYNEWPALETTE :
@@ -1528,56 +1563,36 @@ void Fl_Window::layout()
 // set by show_inside()
 const Fl_Window* fl_mdi_window = 0;
 HCURSOR fl_default_cursor;
+	unsigned short class_namew[1024] = {0};
+    bool registered = false;
+	wchar_t xclass[FL_PATH_MAX];
 
 void Fl_X::create(Fl_Window* window)
 {
-	static unsigned short class_namew[1024] = {0};
-    static bool registered = false;
-	static wchar_t xclass[FL_PATH_MAX];
+
 
 	fl_utf2unicode((const unsigned char*)Fl_Window::xclass(),strlen(Fl_Window::xclass()) * sizeof(wchar_t),xclass);
 
     if (!registered)
     {
         registered = true;
-		if (!fl_default_cursor) fl_default_cursor = LoadCursor(NULL, IDC_ARROW);
-		/*if(fl_is_nt4()) {
-			fl_utf2unicode((const uchar*)Fl_Window::xclass(), strlen(Fl_Window::xclass()), class_namew);
+		if (!fl_default_cursor) fl_default_cursor = LoadCursor(fl_display, IDC_ARROW);
 
-			static WNDCLASSEXW wcw;
-			wcw.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS;
-			wcw.lpfnWndProc = (WNDPROC)WndProc;
-			wcw.cbClsExtra = wcw.cbWndExtra = 0;
-			wcw.hInstance = fl_display;
-			if(!window->icon()) window->icon((void *)LoadIcon(NULL, IDI_APPLICATION));
-			wcw.hIcon = wcw.hIconSm = (HICON)window->icon();
-			wcw.hCursor = fl_default_cursor;			
-			//uchar r,g,b; Fl::get_color(FL_GRAY,r,g,b);
-			//wc.hbrBackground = (HBRUSH)CreateSolidBrush(RGB(r,g,b));
-			wcw.hbrBackground = NULL;
-			wcw.lpszMenuName = NULL;
-			wcw.lpszClassName = class_namew;
-			wcw.cbSize = sizeof(WNDCLASSEXW);
-			RegisterClassExW(&wcw);		
-		} else 		{
-		*/
+
 			static WNDCLASS wc;
 			wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
 			wc.lpfnWndProc = (WNDPROC)WndProc;
 			wc.cbClsExtra = wc.cbWndExtra = 0;
 			wc.hInstance = fl_display;
-			//if(!window->icon()) window->icon((void *)LoadIcon(NULL, IDI_APPLICATION));
-			wc.hIcon = (HICON)LoadIcon(fl_display, MAKEINTRESOURCE(IDI_TEST2));
-			//wc.hCursor = fl_default_cursor;
-			wc.hCursor = 0;
+			if(!window->icon()) window->icon((void*)LoadIcon(fl_display, MAKEINTRESOURCE(IDI_TEST2) ));
+			wc.hIcon = (HICON)window->icon();
+			wc.hCursor = fl_default_cursor;
 			//uchar r,g,b; Fl::get_color(FL_GRAY,r,g,b);
 			//wc.hbrBackground = (HBRUSH)CreateSolidBrush(RGB(r,g,b));
 			wc.hbrBackground = (HBRUSH) GetStockObject(WHITE_BRUSH);
-			wc.hbrBackground = NULL;
 			wc.lpszMenuName = NULL;
 			wc.lpszClassName = xclass;
 			RegisterClass(&wc);
-		//}	
 	}
 
     HWND parent;
@@ -1640,38 +1655,27 @@ void Fl_X::create(Fl_Window* window)
     x->region = 0;
     x->cursor = fl_default_cursor;
     if (!fl_codepage) fl_get_codepage();
-	
-	//if (fl_is_nt4()) {		
-		WCHAR *lab = NULL;
-		if(window->label()) {
-			int l = fl_utf_nb_char((unsigned char*)window->label(), strlen(window->label()));
-			lab = (WCHAR*)malloc((l + 1) * sizeof(WCHAR));
-			fl_utf2unicode((unsigned char*)window->label(), l, (unsigned short*)lab);
-			lab[l] = 0;			
-		}
-		x->xid = CreateWindowEx(
-			styleEx,xclass, lab, style,
-			xp, yp, window->w()+dw, window->h()+dh,
-			parent,
-			NULL, // menu
-			fl_display,
-			NULL // creation parameters
-		);
-		if (lab) free(lab);
-	/*} else 
-	{
-		char *lab = fl_utf82locale(window->label());
-		x->xid = CreateWindowEx(
-			styleEx,
-			xclass, lab, style,
-			xp, yp, window->w()+dw, window->h()+dh,
-			parent,
-			NULL, // menu
-			fl_display,
-			NULL // creation parameters
-		);
-	}	*/
-	
+	TCHAR *label = NULL;
+	int len=0;
+
+	if(!window->label().empty()) {
+		len = fl_utf_nb_char((unsigned char*)window->label().c_str(), window->label().length());
+		label = (TCHAR*)malloc((len + 1) * sizeof(TCHAR));
+		fl_utf2unicode((unsigned char*)window->label().c_str(), len, (unsigned short*)label);
+		label[len] = 0;			
+	}
+
+	x->xid = CreateWindow(
+		xclass, label, style,
+		xp, yp, window->w()+dw, window->h()+dh,
+		parent,
+		NULL, // menu
+		fl_display,
+		NULL // creation parameters
+	);
+
+	if(label) free(label);
+
     x->dc = GetDC(x->xid);
     SetTextAlign(x->dc, TA_BASELINE|TA_LEFT);
     SetBkMode(x->dc, TRANSPARENT);
@@ -1699,6 +1703,7 @@ void Fl_X::create(Fl_Window* window)
     RegisterDragDrop(x->xid, &flDropTarget);
 #endif
 #endif //0
+
 }
 
 
@@ -1708,7 +1713,7 @@ HINSTANCE fl_display = GetModuleHandle(NULL);
 
 void Fl_Window::size_range_()
 {
-    size_range_set = 1;
+    m_size_range = true;
 }
 
 
@@ -1716,17 +1721,17 @@ void Fl_X::set_minmax(LPMINMAXINFO minmax)
 {
     int dx, dy, dw, dh; borders(window, dx, dy, dw, dh);
 
-    minmax->ptMinTrackSize.x = window->minw + dw;
-    minmax->ptMinTrackSize.y = window->minh + dh;
-    if (window->maxw)
+    minmax->ptMinTrackSize.x = window->m_minw + dw;
+    minmax->ptMinTrackSize.y = window->m_minh + dh;
+    if (window->m_maxw)
     {
-        minmax->ptMaxTrackSize.x = window->maxw + dw;
-        minmax->ptMaxSize.x = window->maxw + dw;
+        minmax->ptMaxTrackSize.x = window->m_maxw + dw;
+        minmax->ptMaxSize.x = window->m_maxw + dw;
     }
-    if (window->maxh)
+    if (window->m_maxh)
     {
-        minmax->ptMaxTrackSize.y = window->maxh + dw;
-        minmax->ptMaxSize.y = window->maxh + dw;
+        minmax->ptMaxTrackSize.y = window->m_maxh + dw;
+        minmax->ptMaxSize.y = window->m_maxh + dw;
     }
 }
 
@@ -1774,18 +1779,6 @@ void Fl_Window::label(const char* label, const char* iconlabel)
 {
     this->label(label);
     this->iconlabel(iconlabel);
-}
-void Fl_Window::copy_label(const char* name) {
-    Fl_Widget::copy_label(name);
-    set_label(this, name, iconlabel_);
-}
-void Fl_Window::label(const char *name) {
-    Fl_Widget::label(name);
-    set_label(this, name, iconlabel_);
-}
-void Fl_Window::iconlabel(const char *iname) {
-    iconlabel_ = iname;
-    set_label(this, label(), iname);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -2029,11 +2022,11 @@ bool fl_get_system_colors()
     }
 */
     // grab mousewheel stuff from Windows
-    UINT delta;
+/*    UINT delta;
     SystemParametersInfo(SPI_GETWHEELSCROLLLINES, 0, (PVOID)&delta, 0);
     if (delta == WHEEL_PAGESCROLL) Fl_Style::wheel_scroll_lines = 10000;
     else Fl_Style::wheel_scroll_lines = (int)delta;
-
+*/
     // CET - FIXME - do encoding stuff
     return true;
 }
