@@ -26,6 +26,7 @@
 // Set the default visual according to passed switches:
 
 #include <config.h>
+
 #include <efltk/Fl.h>
 #include <efltk/x.h>
 

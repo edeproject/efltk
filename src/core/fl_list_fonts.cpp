@@ -22,6 +22,7 @@
 //
 
 #include <config.h>
+
 #include <efltk/fl_draw.h>
 #include <string.h>
 #ifdef _WIN32_WCE

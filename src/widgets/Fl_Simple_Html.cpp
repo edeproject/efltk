@@ -51,12 +51,11 @@
 //
 // Include necessary header files...
 //
+#include <config.h>
 
 #ifdef _WIN32_WCE
 #include <wince.h>
 #endif
-
-#include <config.h>
 
 #include <efltk/Fl_Simple_Html.h>
 #include <efltk/Fl.h>

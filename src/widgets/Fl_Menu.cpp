@@ -26,6 +26,7 @@
 //
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
+#include <config.h>
 
 #include <efltk/Fl_Menu_.h>
 #include <efltk/Fl_Menu_Bar.h>

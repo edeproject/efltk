@@ -24,8 +24,8 @@
    functions so you can create your own threads and mutexes.
 */
 
-#include <efltk/Fl.h>
 #include <config.h>
+#include <efltk/Fl.h>
 
 ////////////////////////////////////////////////////////////////
 #if defined(_WIN32)

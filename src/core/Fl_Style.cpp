@@ -23,6 +23,8 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
+#include <config.h>
+
 #include <efltk/Fl.h>
 #include <efltk/filename.h>
 #include <efltk/Fl_Widget.h>

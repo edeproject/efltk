@@ -28,9 +28,11 @@
 
 // Based on code donated by Jim Wilson
 
-#include <efltk/math.h>
 #include <config.h>
+
+#include <efltk/math.h>
 #include <efltk/fl_draw.h>
+
 #ifdef _WIN32_WCE
 #include <wince.h>
 #endif

@@ -28,6 +28,8 @@
 // crap you need to do to communicate with X is in Fl_x.C, the
 // equivalent (but totally different) crap for MSWindows is in Fl_win32.C
 
+#include <config.h>
+
 #include <efltk/Fl.h>
 #include <efltk/Fl_Window.h>
 #include <efltk/x.h>

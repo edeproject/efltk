@@ -35,6 +35,8 @@
 // Include necessary header files...
 //
 
+#include <config.h>
+
 #include <efltk/Fl_FileBrowser.h>
 #include <efltk/fl_draw.h>
 #include <efltk/filename.h>

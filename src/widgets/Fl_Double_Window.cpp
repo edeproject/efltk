@@ -24,6 +24,7 @@
 //
 
 #include <config.h>
+
 #include <efltk/Fl.h>
 #include <efltk/Fl_Double_Window.h>
 #include <efltk/x.h>

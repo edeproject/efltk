@@ -27,6 +27,8 @@
 // a "callback" which is called to draw rectangular areas that are moved
 // into the drawing area.
 
+#include <config.h>
+
 #include <efltk/x.h>
 #include <efltk/fl_draw.h>
 

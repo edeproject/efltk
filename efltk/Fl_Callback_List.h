@@ -23,7 +23,7 @@ public:
     void replace(uint pos,Fl_Callback *cb, void *arg) { Fl_Ptr_List::replace(pos, (void *)new CallbackData(cb, arg)); }
     void remove(uint pos) { Fl_Ptr_List::remove(pos); }
     bool remove(Fl_Callback *cb, void *arg);
-    int index_of(const Fl_Callback *cb, const void *arg) const;
+    int index_of(Fl_Callback *cb, const void *arg) const;
 
     Fl_Callback *callback(uint index) const { return (Fl_Callback*)((CallbackData*)Fl_Ptr_List::item(index))->cb; }
     void *arg(uint index) const { return (void*)((CallbackData*)Fl_Ptr_List::item(index))->arg; }

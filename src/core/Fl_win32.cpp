@@ -28,7 +28,6 @@
 // in.	Search other files for "_WIN32" or filenames ending in _win32.C
 // for other system-specific code.
 
-#include <config.h>
 #include <efltk/Fl.h>
 #include <efltk/Fl_Window.h>
 #include <efltk/Fl_Style.h>
@@ -1918,6 +1917,18 @@ static int win_fontsize(int winsize)
     return winsize*3/4;          // cellsize: convert to charsize
 }
 
+const char *font_name(TCHAR *name)
+{	
+#ifdef UNICODE
+	static char text[1024*2];
+	int len = wcslen(name);
+	if(len>1024) len = 1024;	
+	text[fl_unicode2utf((unsigned short*)name, len, text)] = 0;
+	return text;
+#else
+	return fl_locale2utf8(name);
+#endif
+}
 
 bool fl_get_system_colors()
 {
@@ -1945,14 +1956,12 @@ bool fl_get_system_colors()
 
     Fl_Style* style;
 
-    if ((style = Fl_Style::find("scrollbar")))
-    {
+    if ((style = Fl_Style::find("scrollbar"))) {
         //    style->color = fl_color_average(slider_background, text_background, .5);
         style->color = fl_color_average(background, text_background, .5);
     }
 
-    if ((style = Fl_Style::find("item")))
-    {
+    if ((style = Fl_Style::find("item"))) {
         style->color = menuitem_background;
         style->label_color = menuitem_foreground;
         style->selection_color = select_background;
@@ -1968,14 +1977,12 @@ bool fl_get_system_colors()
       }
     */
 
-    if ((style = Fl_Style::find("menu bar")))
-    {
-                                 // enable title highlightig
+    if ((style = Fl_Style::find("menu bar"))) {
+		// enable title highlightig
         style->highlight_color = FL_GRAY;
     }
 
-    if ((style = Fl_Style::find("tooltip")))
-    {
+    if ((style = Fl_Style::find("tooltip"))) {
         style->color = tooltip_background;
         style->label_color = tooltip_foreground;
     }
@@ -2008,10 +2015,12 @@ bool fl_get_system_colors()
     ncm.cbSize = sncm;
     SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sncm, &ncm, SPIF_SENDCHANGE);
 
-    Fl_Font font=0; int size=0;
+    Fl_Font font=0; 
+	int size=0;
     // get font info for regular widgets from LOGFONT structure
-    //  font = fl_font((const char*)ncm.lfMessageFont.lfFaceName);
-    font = fl_find_font((const char*)ncm.lfMessageFont.lfFaceName);
+
+
+    font = fl_find_font(font_name(ncm.lfMessageFont.lfFaceName));
 
 	if(!font) font = FL_HELVETICA; //Just to be sure!
 
@@ -2027,8 +2036,7 @@ bool fl_get_system_colors()
     if ((style = Fl_Style::find("item")))
     {
         // get font info for menu items from LOGFONT structure
-        //font = fl_font((const char*)ncm.lfMenuFont.lfFaceName);
-        font = fl_find_font((const char*)ncm.lfMenuFont.lfFaceName);
+        font = fl_find_font(font_name(ncm.lfMenuFont.lfFaceName));
         if (ncm.lfMenuFont.lfWeight >= FW_SEMIBOLD) font = font->bold();
         if (ncm.lfMenuFont.lfItalic) font = font->italic();
         size = win_fontsize(ncm.lfMenuFont.lfHeight);
@@ -2052,8 +2060,7 @@ bool fl_get_system_colors()
     if ((style = Fl_Style::find("tooltip")))
     {
         // get font info for tooltips from LOGFONT structure
-        //font = fl_font((const char*)ncm.lfStatusFont.lfFaceName);
-        font = fl_find_font((const char*)ncm.lfStatusFont.lfFaceName);
+        font = fl_find_font(font_name(ncm.lfStatusFont.lfFaceName));
         if (ncm.lfStatusFont.lfWeight >= FW_SEMIBOLD) font = font->bold();
         if (ncm.lfStatusFont.lfItalic) font = font->italic();
         size = win_fontsize(ncm.lfStatusFont.lfHeight);

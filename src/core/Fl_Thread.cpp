@@ -1,3 +1,5 @@
+#include <config.h>
+
 #include <efltk/Fl_Thread.h>
 
 #ifndef _WIN32

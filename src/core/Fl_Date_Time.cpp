@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <config.h>
+
 #include <efltk/Fl_Date_Time.h>
 #include <efltk/Fl_Util.h>
 

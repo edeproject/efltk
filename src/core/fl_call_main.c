@@ -45,6 +45,8 @@
  * Microsoft(r) Windows(r) that allows for it.
  */
 
+#include <config.h>
+
 #if defined(_WIN32) && !defined(FL_LIBRARY) && !defined (__GNUC__) 
 
 #include <windows.h>

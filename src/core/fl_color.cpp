@@ -23,10 +23,10 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
+#include <config.h>
+
 #include <efltk/Fl_Color.h>
 #include <efltk/fl_draw.h>
-
-#include <config.h>
 
 // The fltk "colormap". In fltk 1.0 this allowed the gui colors to be
 // stored in 8-bit locations. In fltk 2.0 this is preserved for back

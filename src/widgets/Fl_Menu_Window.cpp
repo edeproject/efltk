@@ -22,6 +22,7 @@
 //
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
+#include <config.h>
 
 #include <efltk/Fl.h>
 #include <efltk/Fl_Menu_Window.h>
@@ -33,7 +34,6 @@
 #include <efltk/Fl_Image.h>
 #include <efltk/Fl_Renderer.h>
 
-#include <config.h>
 #include <stdio.h>
 
 #ifdef _WIN32

@@ -1,3 +1,5 @@
+#include <config.h>
+
 #include <efltk/Fl_File_Dialog.h>
 #include <efltk/Fl_Divider.h>
 #include <efltk/Fl_Item.h>

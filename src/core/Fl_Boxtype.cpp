@@ -26,6 +26,8 @@
 // These are the most common, square box types, which are always
 // linked in because the default styles use them.
 
+#include <config.h>
+
 #include <efltk/Fl_Boxtype.h>
 #include <efltk/Fl_Style.h>
 #include <efltk/Fl_Widget.h>

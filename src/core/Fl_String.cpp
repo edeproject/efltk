@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <config.h>
+
 #include <efltk/math.h>
 #include <config.h>
 #include <string.h>

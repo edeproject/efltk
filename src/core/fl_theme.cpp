@@ -6,6 +6,7 @@
    they will override this and cause fltk to call the plugin instead.
 */
 
+#include <config.h>
 
 #include <stdio.h>
 #include <stdlib.h>

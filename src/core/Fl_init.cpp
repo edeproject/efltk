@@ -8,6 +8,8 @@
 // This call will load userinteface defaults from file.
 // e.g. Does menus animate or not.
 
+#include <config.h>
+
 #include <efltk/Fl.h>
 
 #include <efltk/Fl_Image.h>

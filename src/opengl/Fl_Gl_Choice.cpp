@@ -24,6 +24,7 @@
 //
 
 #include <config.h>
+
 #if HAVE_GL
 
 #include <efltk/Fl.h>

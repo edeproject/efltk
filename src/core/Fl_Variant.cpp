@@ -15,9 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <config.h>
+
 #include <efltk/Fl_Variant.h>
 #include <string.h>
 #include <stdlib.h>
+
 #ifdef _WIN32_WCE
 #include <wince.h>
 #endif

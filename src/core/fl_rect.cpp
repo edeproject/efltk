@@ -24,6 +24,8 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
+#include <config.h>
+
 #include <efltk/fl_draw.h>
 #include <efltk/x.h>
 

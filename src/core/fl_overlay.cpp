@@ -28,6 +28,8 @@
 // to erase the overlay before drawing anything that might intersect
 // it.
 
+#include <config.h>
+
 #include <efltk/x.h>
 #include <efltk/fl_draw.h>
 

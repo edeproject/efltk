@@ -1,5 +1,6 @@
-#include <efltk/Fl_WM.h>
 #include <config.h>
+
+#include <efltk/Fl_WM.h>
 
 #ifndef _WIN32
 

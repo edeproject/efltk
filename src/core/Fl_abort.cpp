@@ -27,6 +27,8 @@
 // do not need to be included in Fl.C:
 // You can also override this by redefining all of these.
 
+#include <config.h>
+
 #include <efltk/Fl.h>
 
 #include <efltk/vsnprintf.h>

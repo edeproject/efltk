@@ -29,6 +29,8 @@
 // This avoids a field in the Fl_Window, and I suspect is more
 // portable to other systems.
 
+#include <config.h>
+
 #include <efltk/Fl.h>
 #include <efltk/Fl_Window.h>
 #include <efltk/x.h>

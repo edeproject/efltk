@@ -2,6 +2,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
+#include <config.h>
+
 #include <efltk/vsnprintf.h>
 #include <efltk/Fl_Config.h>
 #include <efltk/filename.h>

@@ -26,6 +26,8 @@
 // OPTIONAL initialization code for a program using fltk.
 // You do not need to call this!  Feel free to make up your own switches.
 
+#include <config.h>
+
 #include <efltk/Fl.h>
 #include <efltk/Fl_Window.h>
 #include <efltk/filename.h>

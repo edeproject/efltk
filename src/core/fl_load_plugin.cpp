@@ -15,9 +15,10 @@
  *
  */
 
+#include <config.h>
+
 #include <efltk/fl_load_plugin.h>
 #include <stdio.h>
-#include <config.h>
 #include <efltk/filename.h>
 #include <efltk/fl_utf8.h>
 

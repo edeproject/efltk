@@ -33,6 +33,8 @@
 // This is merged into a single function to make writing a dispatch
 // table easier.
 
+#include <config.h>
+
 #include <efltk/fl_draw.h>
 #include <efltk/x.h>
 #ifdef _WIN32

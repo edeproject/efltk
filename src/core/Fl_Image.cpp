@@ -1,3 +1,6 @@
+
+#include <config.h>
+
 #include <efltk/Fl_Image.h>
 #include <efltk/Fl_Image_Filter.h>
 #include <efltk/Fl_PtrList.h>

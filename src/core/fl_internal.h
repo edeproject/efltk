@@ -2,6 +2,7 @@
 #define FL_INTERNAL_H_
 
 #include <config.h>
+
 #include <efltk/Fl_Color.h>
 
 // Internal define file for EFLTK

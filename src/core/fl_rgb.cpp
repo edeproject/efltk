@@ -21,6 +21,8 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
+#include <config.h>
+
 #include <efltk/x.h>
 #include <efltk/Fl_Color.h>
 #include <stdio.h>

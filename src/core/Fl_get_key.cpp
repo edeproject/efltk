@@ -23,6 +23,8 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
+#include <config.h>
+
 #ifdef _WIN32
 # include "Fl_get_key_win32.cpp"
 #elif defined(__APPLE__)

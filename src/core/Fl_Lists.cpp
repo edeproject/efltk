@@ -1,3 +1,6 @@
+
+#include <config.h>
+
 #include <string.h>
 #include <stdlib.h>
 #include <efltk/vsnprintf.h>
@@ -394,7 +397,7 @@ bool Fl_Callback_List::remove(Fl_Callback *cb, void *arg)
     return false;
 }
 
-int Fl_Callback_List::index_of(const Fl_Callback *cb, const void *arg) const
+int Fl_Callback_List::index_of(Fl_Callback *cb, const void *arg) const
 {
     for(uint n=0; n<size(); n++) {
         CallbackData *d = (CallbackData *)Fl_Ptr_List::item(n);

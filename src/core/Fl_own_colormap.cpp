@@ -32,6 +32,7 @@
 // get huge color changes when switching windows.
 
 #include <config.h>
+
 #include <efltk/Fl.h>
 #include <efltk/x.h>
 

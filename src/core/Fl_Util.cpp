@@ -1,3 +1,5 @@
+#include <config.h>
+
 #include <efltk/Fl_Util.h>
 #include <efltk/Fl_String_List.h>
 #include <efltk/filename.h>

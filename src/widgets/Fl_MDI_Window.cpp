@@ -1,3 +1,5 @@
+#include <config.h>
+
 #include <efltk/Fl_MDI_Window.h>
 #include <efltk/Fl_MDI_Bar.h>
 #include <efltk/Fl_Image.h>

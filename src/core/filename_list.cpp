@@ -27,6 +27,7 @@
 // Wrapper for scandir with const-correct function prototypes.
 
 #include <config.h>
+
 #ifdef _WIN32_WCE
 #include <wince.h>
 #endif

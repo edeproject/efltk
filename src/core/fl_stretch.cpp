@@ -1,3 +1,5 @@
+#include <config.h>
+
 #include <efltk/Fl_Renderer.h>
 #include <efltk/Fl.h>
 

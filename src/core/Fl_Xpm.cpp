@@ -1,3 +1,5 @@
+#include <config.h>
+
 /* This is an XPM image file loading framework */
 #include <efltk/Fl_Image.h>
 #include <efltk/Fl.h>

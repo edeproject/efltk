@@ -23,11 +23,14 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
+#include <config.h>
+
 #include <efltk/Fl.h>
 #include <efltk/Fl_Widget.h>
 #include <efltk/fl_draw.h>
 #include <ctype.h>
 #include <string.h>
+
 #ifndef _WIN32
 #include <efltk/x.h>
 #endif
