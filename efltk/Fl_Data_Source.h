@@ -29,6 +29,7 @@ class Fl_Group;
 
 /** Fl_Data_Source */
 class Fl_Data_Source {
+    friend class Fl_Group;
 public:
     // ctor, dtor
     Fl_Data_Source(Fl_Group *group) { parent_ = group; }
@@ -75,9 +76,6 @@ protected:
     // these methods should be implemented in derived class
     virtual bool              load_data() = 0;
     virtual bool              save_data() = 0;
-
-private:
-    friend class Fl_Group;
     Fl_Group* parent_;
 };
 
