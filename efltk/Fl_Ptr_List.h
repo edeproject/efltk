@@ -64,7 +64,7 @@ public:
     Fl_Ptr_List_Item item(uint index) const;
     Fl_Ptr_List_Item& operator [] (uint ind) const { return items[ind]; }
 
-    Fl_Ptr_List_Item *data() { return items; }	
+    Fl_Ptr_List_Item *data() const { return items; }	
 
     // Copy
     Fl_Ptr_List& operator = (const Fl_Ptr_List &list);

@@ -47,10 +47,10 @@ public:
 
     int index_of(const Fl_MapPair *w) const { return items.index_of((void*)w); }
 
-    Fl_MapPair **data() { return (Fl_MapPair**)items.data(); }
+    Fl_MapPair **data() const { return (Fl_MapPair**)items.data(); }
     Fl_MapPair *item(uint index) const { return (Fl_MapPair*)items.item(index); }
 
-    uint size() { return items.size(); }
+    unsigned size() const { return items.size(); }
 
 protected:
     virtual void free_pair(Fl_MapPair *item) { delete (Fl_MapPair*)(item); }
@@ -59,47 +59,55 @@ protected:
 
 ////////////////////////////////////////
 
-struct Fl_String2String_MapPair : public Fl_MapPair {
+struct Fl_String_String_Pair : public Fl_MapPair {
     Fl_String id;
     Fl_String val;
 };
 
-class Fl_String2String_Map : public Fl_Map {
+class Fl_String_String_Map : public Fl_Map {
 public:
-    static Fl_String2String_MapPair *pair(const Fl_String id, Fl_String val);
+	typedef Fl_String_String_Pair Pair;
+    
+	static Pair *pair(const char *id, const char *val);
+	static Pair *pair(const char *id, const Fl_String &val);
 
-    Fl_String2String_Map() : Fl_Map() { }
-    virtual ~Fl_String2String_Map() { clear(); }
+    Fl_String_String_Map() : Fl_Map() { }
+    virtual ~Fl_String_String_Map() { clear(); }
 
-    Fl_String2String_MapPair *find_pair(Fl_String id);
+    Fl_String_String_Pair *find_pair(const char *id) const;
 
-    void set_value(const Fl_String id, Fl_String val);
-    Fl_String *get_value(const Fl_String id);
+    void set_value(const char *id, const char *val);
+    void set_value(const char *id, const Fl_String &val);
+    Fl_String *get_value(const char *id) const;
 
-    Fl_String2String_MapPair *item(uint index) const { return (Fl_String2String_MapPair*)Fl_Map::item(index); }
-    Fl_String &operator [](Fl_String id);
+    Pair *item(unsigned index) const { return (Pair*)Fl_Map::item(index); }
+    Fl_String &operator [](const char *id);
 };
 
 ////////////////////////////////////////
 
-struct Fl_Int2String_MapPair : public Fl_MapPair {
+struct Fl_Int_String_Pair : public Fl_MapPair {
     int id;
     Fl_String val;
 };
 
-class Fl_Int2String_Map : public Fl_Map {
+class Fl_Int_String_Map : public Fl_Map {
 public:
-    static Fl_Int2String_MapPair *pair(const int id, Fl_String val);
+	typedef Fl_Int_String_Pair Pair;
+    
+	static Fl_Int_String_Pair *pair(const int id, const char *val);
+	static Fl_Int_String_Pair *pair(const int id, const Fl_String &val);
 
-    Fl_Int2String_Map() : Fl_Map() { }
-    virtual ~Fl_Int2String_Map() { }
+    Fl_Int_String_Map() : Fl_Map() { }
+    virtual ~Fl_Int_String_Map() { }
 
-    Fl_Int2String_MapPair *find_pair(int id);
+    Pair *find_pair(int id) const;
 
-    void set_value(const int id, Fl_String val);
-    Fl_String *get_value(const int id);
+    void set_value(const int id, const Fl_String &val);
+    void set_value(const int id, const char *val);
+    Fl_String *get_value(const int id) const;
 
-    Fl_Int2String_MapPair *item(uint index) const { return (Fl_Int2String_MapPair *)Fl_Map::item(index); }
+    Fl_Int_String_Pair *item(uint index) const { return (Fl_Int_String_Pair *)Fl_Map::item(index); }
     Fl_String &operator [](const int id);
 };
 

@@ -45,82 +45,112 @@ bool Fl_Map::remove_pair(Fl_MapPair *item) {
 
 //////////////////////////
 
-void Fl_String2String_Map::set_value(const Fl_String id, Fl_String val)
+void Fl_String_String_Map::set_value(const char *id, const Fl_String &val)
 {
-    Fl_String2String_MapPair *pair = find_pair(id);
-    if(!pair) pair = (Fl_String2String_MapPair *)append_pair(Fl_String2String_Map::pair(id, val));
+    Pair *pair = find_pair(id);
+    if(!pair) pair = (Pair *)append_pair(Fl_String_String_Map::pair(id, val));
     pair->val = val;
 }
 
-Fl_String *Fl_String2String_Map::get_value(const Fl_String id)
+void Fl_String_String_Map::set_value(const char *id, const char *val)
 {
-    Fl_String2String_MapPair *pair = find_pair(id);
+    Pair *pair = find_pair(id);
+    if(!pair) pair = (Pair *)append_pair(Fl_String_String_Map::pair(id, val));
+    pair->val = val;
+}
+
+Fl_String *Fl_String_String_Map::get_value(const char *id) const
+{
+    Pair *pair = find_pair(id);
     if(pair) return &pair->val;
     return 0;
 }
 
-Fl_String2String_MapPair *Fl_String2String_Map::pair(const Fl_String id, Fl_String val)
+Fl_String_String_Pair *Fl_String_String_Map::pair(const char *id, const char *val)
 {
-    Fl_String2String_MapPair *pair = new Fl_String2String_MapPair;
+    Pair *pair = new Pair;
     pair->id = id;
     pair->val = val;
     return pair;
 }
 
-Fl_String2String_MapPair *Fl_String2String_Map::find_pair(Fl_String id)
+Fl_String_String_Pair *Fl_String_String_Map::pair(const char *id, const Fl_String &val)
+{
+    Pair *pair = new Pair;
+    pair->id = id;
+    pair->val = val;
+    return pair;
+}
+
+Fl_String_String_Pair *Fl_String_String_Map::find_pair(const char *id) const
 {
     for(uint n=0; n < size(); n++) {
-        Fl_String2String_MapPair *pair = item(n);
+        Pair *pair = item(n);
         if(pair->id == id)
             return pair;
     }
     return 0;
 }
 
-Fl_String &Fl_String2String_Map::operator [](Fl_String id)
+Fl_String &Fl_String_String_Map::operator [](const char *id)
 {
-    Fl_String2String_MapPair *pair = find_pair(id);
-    if(!pair) pair = (Fl_String2String_MapPair *)append_pair(Fl_String2String_Map::pair(id, ""));
+    Pair *pair = find_pair(id);
+    if(!pair) pair = (Pair *)append_pair(Fl_String_String_Map::pair(id, ""));
     return pair->val;
 }
 
 //////////////////////////////////////////////////////////////
 
-void Fl_Int2String_Map::set_value(const int id, Fl_String val)
+void Fl_Int_String_Map::set_value(const int id, const Fl_String &val)
 {
-    Fl_Int2String_MapPair *pair = find_pair(id);
-    if(!pair) pair = (Fl_Int2String_MapPair *)append_pair(Fl_Int2String_Map::pair(id, val));
+    Pair *pair = find_pair(id);
+    if(!pair) pair = (Pair *)append_pair(Fl_Int_String_Map::pair(id, val));
     pair->val = val;
 }
 
-Fl_String *Fl_Int2String_Map::get_value(const int id)
+void Fl_Int_String_Map::set_value(const int id, const char *val)
 {
-    Fl_Int2String_MapPair *pair = find_pair(id);
+    Pair *pair = find_pair(id);
+    if(!pair) pair = (Pair *)append_pair(Fl_Int_String_Map::pair(id, val));
+    pair->val = val;
+}
+
+Fl_String *Fl_Int_String_Map::get_value(const int id) const
+{
+    Pair *pair = find_pair(id);
     if(pair) return &pair->val;
     return 0;
 }
 
-Fl_Int2String_MapPair *Fl_Int2String_Map::pair(const int id, Fl_String val)
+Fl_Int_String_Pair *Fl_Int_String_Map::pair(const int id, const Fl_String &val)
 {
-    Fl_Int2String_MapPair *pair = new Fl_Int2String_MapPair;
+    Fl_Int_String_Pair *pair = new Fl_Int_String_Pair;
     pair->id = id;
     pair->val = val;
     return pair;
 }
 
-Fl_Int2String_MapPair *Fl_Int2String_Map::find_pair(int id)
+Fl_Int_String_Pair *Fl_Int_String_Map::pair(const int id, const char *val)
+{
+    Fl_Int_String_Pair *pair = new Fl_Int_String_Pair;
+    pair->id = id;
+    pair->val = val;
+    return pair;
+}
+
+Fl_Int_String_Pair *Fl_Int_String_Map::find_pair(int id) const
 {
     for(uint n=0; n < size(); n++) {
-        Fl_Int2String_MapPair *pair = item(n);
+        Pair *pair = item(n);
         if(pair->id == id)
             return pair;
     }
     return 0;
 }
 
-Fl_String &Fl_Int2String_Map::operator [](const int id)
+Fl_String &Fl_Int_String_Map::operator [](const int id)
 {
-    Fl_Int2String_MapPair *pair = find_pair(id);
-    if(!pair) pair = (Fl_Int2String_MapPair *)append_pair(Fl_Int2String_Map::pair(id, ""));
+    Pair *pair = find_pair(id);
+    if(!pair) pair = (Pair *)append_pair(Fl_Int_String_Map::pair(id, ""));
     return pair->val;
 }
