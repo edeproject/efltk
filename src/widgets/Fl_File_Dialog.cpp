@@ -109,11 +109,11 @@ static char **select_files(const char *m_path_input, const char *filters, const 
 {
     Fl_Dialog w(fc_initial_w, fc_initial_h, cap);
     w.size_range(320, 300);
-    w.buttons(Fl_Dialog::DLG_OK|Fl_Dialog::DLG_CANCEL, Fl_Dialog::DLG_OK);
+    w.buttons(Fl_Dialog::BTN_OK|Fl_Dialog::BTN_CANCEL, Fl_Dialog::BTN_OK);
     w.resizable(w);
 
     Fl_File_Chooser *chooser = new Fl_File_Chooser(0,0, 100,100, 0, mode);
-    chooser->ok_button(w.button(Fl_Dialog::DLG_OK));
+    chooser->ok_button(w.button(Fl_Dialog::BTN_OK));
 
     w.end();
 
@@ -144,7 +144,7 @@ static char **select_files(const char *m_path_input, const char *filters, const 
 
     switch(w.show_modal())
     {
-    case Fl_Dialog::DLG_OK:
+    case Fl_Dialog::BTN_OK:
         break;
     default:
         return 0;
@@ -168,11 +168,11 @@ static char *select_file(const char *m_path_input, const char *filters, const ch
 {
     Fl_Dialog w(fc_initial_w, fc_initial_h, cap);
     w.size_range(320, 300);
-    w.buttons(Fl_Dialog::DLG_OK|Fl_Dialog::DLG_CANCEL,Fl_Dialog::DLG_OK);
+    w.buttons(Fl_Dialog::BTN_OK|Fl_Dialog::BTN_CANCEL,Fl_Dialog::BTN_OK);
     w.resizable(w);
 
     Fl_File_Chooser *chooser = new Fl_File_Chooser(0,0, 100,100, 0, mode);
-    chooser->ok_button(w.button(Fl_Dialog::DLG_OK));
+    chooser->ok_button(w.button(Fl_Dialog::BTN_OK));
 
     w.end();
 
@@ -202,7 +202,7 @@ static char *select_file(const char *m_path_input, const char *filters, const ch
 
     switch(w.show_modal())
     {
-    case Fl_Dialog::DLG_OK:
+    case Fl_Dialog::BTN_OK:
         break;
     default:
         return 0;
@@ -475,16 +475,16 @@ bool Fl_File_Chooser::show_dialog(const char *caption)
 
 	Fl_Dialog w(this->h()+40, this->w()+20, caption);
 	if(has_size_range()) w.size_range(minw(), minh());
-	w.buttons(Fl_Dialog::DLG_OK|Fl_Dialog::DLG_CANCEL, Fl_Dialog::DLG_OK);
+	w.buttons(Fl_Dialog::BTN_OK|Fl_Dialog::BTN_CANCEL, Fl_Dialog::BTN_OK);
 	w.resizable(w);
 
 	Fl_Group::current()->add(this);
-	ok_button(w.button(Fl_Dialog::DLG_OK));
+	ok_button(w.button(Fl_Dialog::BTN_OK));
 
 	w.end();
 
 	refresh();
-	bool ret = (w.show_modal()==Fl_Dialog::DLG_OK);
+	bool ret = (w.show_modal()==Fl_Dialog::BTN_OK);
 
 	parent()->remove(this);
 

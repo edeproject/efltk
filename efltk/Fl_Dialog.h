@@ -37,15 +37,15 @@ public:
 
     // Button IDs
     enum Fl_Dialog_Buttons {
-        DLG_OK      = 1,
-        DLG_CANCEL  = 2,
-        DLG_YES     = 4,
-        DLG_NO      = 8,
-        DLG_RETRY   = 16,
-        DLG_REFRESH = 32,
-        DLG_CONFIRM = 64,
-        DLG_IGNORE  = 128,
-        DLG_HELP    = 256
+        BTN_OK      = 1,
+        BTN_CANCEL  = 2,
+        BTN_YES     = 4,
+        BTN_NO      = 8,
+        BTN_RETRY   = 16,
+        BTN_REFRESH = 32,
+        BTN_CONFIRM = 64,
+        BTN_IGNORE  = 128,
+        BTN_HELP    = 256
     };
 
     virtual bool  load_data(Fl_Data_Source *ds=0);
@@ -96,14 +96,14 @@ private:
 };
 
 // Backward compatible defines
-#define FL_DLG_OK       Fl_Dialog::OK
-#define FL_DLG_CANCEL   Fl_Dialog::CANCEL
-#define FL_DLG_YES      Fl_Dialog::YES
-#define FL_DLG_NO       Fl_Dialog::NO
-#define FL_DLG_RETRY    Fl_Dialog::RETRY
-#define FL_DLG_REFRESH  Fl_Dialog::REFRESH
-#define FL_DLG_CONFIRM  Fl_Dialog::CONFIRM
-#define FL_DLG_IGNORE   Fl_Dialog::IGNORE
-#define FL_DLG_HELP     Fl_Dialog::HELP
+#define FL_DLG_OK       Fl_Dialog::BTN_OK
+#define FL_DLG_CANCEL   Fl_Dialog::BTN_CANCEL
+#define FL_DLG_YES      Fl_Dialog::BTN_YES
+#define FL_DLG_NO       Fl_Dialog::BTN_NO
+#define FL_DLG_RETRY    Fl_Dialog::BTN_RETRY
+#define FL_DLG_REFRESH  Fl_Dialog::BTN_REFRESH
+#define FL_DLG_CONFIRM  Fl_Dialog::BTN_CONFIRM
+#define FL_DLG_IGNORE   Fl_Dialog::BTN_IGNORE
+#define FL_DLG_HELP     Fl_Dialog::BTN_HELP
 
 #endif
