@@ -167,15 +167,17 @@ Fl_FileItem::Fl_FileItem(const char *filename, Fl_FileAttr *a)
 #endif
     } else {
 
-        if(a->flags & FL_LINK) {
-            this->type(DIR);
-            typestr=_(types[3]);
-        } else if(a->flags & FL_DIR) {
+        if(a->flags & FL_DIR) {
             this->type(DIR);
             typestr=_(types[2]);
         } else if(a->flags & FL_FILE) {
             this->type(FILE);
             typestr=_(types[1]);
+        }
+
+        if(a->flags & FL_LINK) {
+            this->type(DIR);
+            typestr=_(types[3]);
         }
 
         double s = get_file_size(a->size, &prefix);
@@ -965,12 +967,13 @@ void Fl_File_Dialog::read_dir(const char *_path)
 
 #ifndef _WIN32
                     if(attr->flags & FL_LINK) {
-                        char tmp[FL_PATH_MAX] = {0};
-                        if(readlink(filename, tmp, sizeof(tmp)))
+                        char tmp[FL_PATH_MAX]; int len=0;
+                        if((len=readlink(filename, tmp, sizeof(tmp)))) {
+                            tmp[len] = '\0';
                             if(fl_is_dir(tmp)) attr->flags |= FL_DIR;
+                        }
                     }
 #endif
-
                     if(attr->flags & FL_DIR) {
                         Fl_FileItem *it = new Fl_FileItem(files[n]->d_name, attr);
                         it->image(&fold_pix);
@@ -988,21 +991,20 @@ void Fl_File_Dialog::read_dir(const char *_path)
                     bool sel = false;
                     snprintf(filename, sizeof(filename)-1, "%s%c%s", fullpath(), slash, files[n]->d_name);
                     Fl_FileAttr *attr = fl_file_attr(filename);
-                    if(!(attr->flags & FL_DIR)) {
-                        Fl_FileItem *item=0;
-                        if(default_filename_) sel = !strcmp(default_filename_, files[n]->d_name);
-                        if(_cur_filter) {
-                            if(fl_file_match(filename, _cur_filter->pattern))
-                                item = new Fl_FileItem(files[n]->d_name, attr);
-                        } else {
+                    if(attr->flags & FL_LINK) attr->flags|=FL_FILE;
+                    Fl_FileItem *item=0;
+                    if(default_filename_) sel = !strcmp(default_filename_, files[n]->d_name);
+                    if(_cur_filter) {
+                        if(fl_file_match(filename, _cur_filter->pattern))
                             item = new Fl_FileItem(files[n]->d_name, attr);
-                        }
-                        if(item) {
-                            item->image(&file_pix);
-                            item->type(Fl_FileItem::FILE);
-                            if(sel) {
-                                selected = item;
-                            }
+                    } else {
+                        item = new Fl_FileItem(files[n]->d_name, attr);
+                    }
+                    if(item) {
+                        item->image(&file_pix);
+                        item->type(Fl_FileItem::FILE);
+                        if(sel) {
+                            selected = item;
                         }
                     } else
                         delete attr;
