@@ -104,6 +104,9 @@ public:
   void anim_speed(float f) { anim_speed_ = f; }
   float anim_speed() { return anim_speed_; }
 
+  // Relayouts current menuwindow, useful when adding items after show
+  static void relayout_current_menu();
+
 #ifndef FLTK_2
   // Commented-out methods cannot be emulated.
 //const Fl_Menu_Item* test_shortcut();
@@ -143,7 +146,7 @@ private:
 protected:
     static bool key_event;
 
-    MenuWindow *first_menu;
+    static MenuWindow *first_menu;
     int indexes[MAX_LEVELS];
     int level;
 

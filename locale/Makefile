@@ -4,7 +4,7 @@ PROG = $(PACKAGE)
 CWD = locale
 MSGFMT = msgfmt
 SUB_DIRS = 
-FILES_PO:=fi.po
+FILES_PO:=$(wildcard *.po)
 FILES_MO:=$(FILES_PO:.po=.mo)
 
 LOCALEDIR = $(prefix)/share/locale

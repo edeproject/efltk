@@ -76,6 +76,7 @@ void Fl_List::flags_changed(const Fl_Menu_*, Fl_Widget*) {}
 
 static Fl_List default_list;
 bool Fl_Menu_::key_event = false;
+MenuWindow *Fl_Menu_::first_menu = 0;
 
 Fl_Menu_::Fl_Menu_()
     : Fl_Group(0,0,0,0,0), list_(&default_list), item_(0)

@@ -101,7 +101,8 @@ private:
     int *indexes_;
     int level_;
     bool add_items;
-    bool close_flag;
+    bool empty;
+
 
     int ow,oh;
     int Wp, Hp;
@@ -135,8 +136,7 @@ MenuWindow::MenuWindow(Fl_Widget *widget, Fl_Menu_ *menu, int *indexes, int leve
     add_items = false;
     widget_ = widget;
     menu_ = menu;
-
-    close_flag = false;
+    empty = true;
 
     this->Wp=Wp;
     this->Hp=Hp;
@@ -169,16 +169,7 @@ void MenuWindow::layout()
 {
     int W=0,H=0;
 
-    if(!indexes_) {
-        //shows littlebox empty box on empty menus
-        //W=widget_->width();
-        //H=box()->dh();
-        ow = W; oh = H;
-        size(W,H);
-        add_items = false;
-    }
-
-    if(add_items) {
+    if(indexes_ && add_items) {
 
         int hotKeysW = 0;
 
@@ -201,6 +192,7 @@ void MenuWindow::layout()
             }
 
             widget->set_damage(FL_DAMAGE_ALL);
+            empty = false;
         }
 
         W += hotKeysW + box()->dw();
@@ -209,10 +201,18 @@ void MenuWindow::layout()
         if(Wp>W) W=Wp;
 
         size(W,H);
-        add_items = false;
 
         ow = W;
         oh = H;
+        add_items = false;
+    }
+
+    if(!indexes_ || empty) {
+        //shows littlebox empty box on empty menus
+        //W=widget_->width();
+        //H=box()->dh();
+        ow = W; oh = H;
+        size(W,H);
     }
 
 #ifdef _WIN32
@@ -249,7 +249,7 @@ int MenuWindow::is_parent(int index)
 
 void MenuWindow::draw()
 {
-    if(!indexes_) {
+    if(!indexes_ || empty) {
         //box()->draw(0, 0, w(), h(), color(), 0); //Comment out, if little empty box is showed on empty menus
         return;
     }
@@ -468,12 +468,6 @@ void timeout_initial(void *) {
 
 int MenuWindow::handle(int event)
 {
-    if(child_win && child_win->close_flag) {
-        delete child_win;
-        child_win = 0;
-        return 1;
-    }
-
     // Redirect mouse events to child_win if needed
     if(indexes_ && child_win &&
        ( (event==FL_PUSH || event==FL_DRAG || event==FL_MOVE || event==FL_RELEASE) )
@@ -585,7 +579,16 @@ int MenuWindow::handle(int event)
             selected_=index;
             redraw(FL_DAMAGE_CHILD);
         }
-        if(widget) set_item(level_, index);
+
+        if(widget) {
+            set_item(level_, index);
+
+            // Send events widgets, so sub-classed items can get them.
+            // FIXME: Fl::e_x and Fl::e_y is WRONG!
+            if(widget->takesevents())
+                if(widget->send(event))
+                    return 1;
+        }
     JUMP_OPEN:
 
         if(indexes_ && is_parent(index)) {
@@ -696,6 +699,12 @@ int MenuWindow::handle(int event)
         if(!widget) { Fl::exit_modal(); return 1; }
         if(!widget->takesevents()) return 1;
 
+        if(widget && widget->takesevents()) {
+            // Send FL_RELEASE to item
+            if(widget->send(event))
+                return 1;
+        }
+
         menu_->executed_ = widget;
         Fl::exit_modal();
 
@@ -710,7 +719,12 @@ int MenuWindow::handle(int event)
 
 void MenuWindow::show()
 {
-    if(!Fl_Menu_Window::animate() || !indexes_) {
+    if(!indexes_ || empty) {
+        hide();
+        return;
+    }
+
+    if(!Fl_Menu_Window::animate()) {
         Fl_Window::show();
         return;
     }
@@ -756,6 +770,42 @@ void MenuWindow::show(Fl_Window *w)
     show();
 }
 
+void Fl_Menu_::relayout_current_menu()
+{
+    if(!Fl_Menu_::first_menu) return;
+
+    MenuWindow *current=0;
+    for(MenuWindow *w = Fl_Menu_::first_menu; w; w=w->child_win)
+    {
+        current=w;
+    }
+    if(current) {
+        current->add_items = true;
+        current->layout();
+
+        bool need_layout=false;
+        int nX=current->x(), nY=current->y();
+        // Force menu on screen
+        if(nX+current->ow > Fl::w()) {
+            nX = Fl::w()-current->ow;
+            need_layout=true;
+        }
+        if(nY+current->oh > Fl::h()) {
+            nY = Fl::h()-current->oh;
+            if(nY<0) nY=0;
+            need_layout=true;
+        }
+
+        if(need_layout) {
+            current->position(nX, nY);
+            current->layout();
+        }
+        current->show();
+    }
+}
+
+
+
 //#define DEBUG
 #ifdef DEBUG
 # define MODAL false
@@ -793,7 +843,8 @@ int Fl_Menu_::popup(int X, int Y, int W, int H)
     w.anim_flags = anim_flags_;
     w.step_divider(anim_speed_);
     w.widget_ = this;
-    first_menu = &w;
+    MenuWindow *saved_first = Fl_Menu_::first_menu;
+    Fl_Menu_::first_menu = &w;
 
     w.relayout(indexes, level);
 
@@ -806,7 +857,7 @@ int Fl_Menu_::popup(int X, int Y, int W, int H)
         X = Fl::w()-w.ow;
     }
     
-	w.position(X, Y);
+    w.position(X, Y);
 
     Fl_Widget* saved_modal = Fl::modal();
     bool saved_grab = Fl::grab();
@@ -818,6 +869,8 @@ int Fl_Menu_::popup(int X, int Y, int W, int H)
     while(Fl::modal() && !Fl::exit_modal_flag()) Fl::wait();
 
     Fl::modal(saved_modal, saved_grab);
+
+    Fl_Menu_::first_menu = saved_first;
 
     if(w.child_win) {
         delete w.child_win;
@@ -858,7 +911,8 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
     w.step_divider(anim_speed_);
     w.menubar = true;
     w.child_of(Fl::first_window());
-    first_menu = &w;
+    MenuWindow *saved_first = Fl_Menu_::first_menu;
+    Fl_Menu_::first_menu = &w;
 
     Fl_Widget* saved_modal = Fl::modal();
     bool saved_grab = Fl::grab();
@@ -950,6 +1004,8 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
 
     Fl::modal(saved_modal, saved_grab);
 
+    Fl_Menu_::first_menu = saved_first;
+
     if(w.child_win) {
         delete w.child_win;
         w.child_win=0;
@@ -998,7 +1054,8 @@ int Fl_Choice::popup(int X, int Y, int W, int H)
     w.anim_flags = anim_flags_;
     w.step_divider(anim_speed_);
     w.widget_ = this;
-    first_menu = &w;
+    MenuWindow *saved_first = Fl_Menu_::first_menu;
+    Fl_Menu_::first_menu = &w;
     MenuWindow *win = &w;
 
     win->position(X, Y-win->ypos(indexes[level])+win->ypos(0));
@@ -1055,6 +1112,8 @@ int Fl_Choice::popup(int X, int Y, int W, int H)
     while(Fl::modal() && !Fl::exit_modal_flag()) Fl::wait();
 
     Fl::modal(saved_modal, saved_grab);
+
+    Fl_Menu_::first_menu = saved_first;
 
     if(w.child_win) {
         delete w.child_win;
