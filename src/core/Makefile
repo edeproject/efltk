@@ -41,7 +41,7 @@ CPPFILES = \
         Fl_String.cpp \
 	Fl_Style.cpp \
 	Fl_Style_Set.cpp \
-	Fl_Thread.cpp \
+	Fl_Thread.cpp \	
         Fl_Util.cpp \
         Fl_WM.cpp \
 	Fl_Widget.cpp \
@@ -100,7 +100,13 @@ CPPFILES = \
 	fl_rect.cpp \
 	fl_rgb.cpp \
 	fl_scroll_area.cpp \
-        fl_stretch.cpp \
+      fl_stretch.cpp \
+	fl_utf8.cpp
+	fl_utf8_ucs2fmap.c
+	fl_utf8_x.c
+	fl_utf8_x_input.c
+	fl_utf8_x_utils.c
+	fl_utf_keysym2ucs.c
 	fl_vertex.cpp \
 	fl_theme.cpp
 
