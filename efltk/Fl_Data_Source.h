@@ -4,7 +4,7 @@
 
 class Fl_Data_Source {
 public:
-   Fl_Data_Source();
+   Fl_Data_Source() {};
 };
 
 #endif
