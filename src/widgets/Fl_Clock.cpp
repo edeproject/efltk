@@ -185,22 +185,19 @@ void Fl_Clock_Output::value(ulong v)
 
 ////////////////////////////////////////////////////////////////
 
-Fl_Clock::Fl_Clock(int x, int y, int w, int h, const char *l)
-: Fl_Clock_Output(x, y, w, h, l) {}
-
 static void tick(void *v)
 {
-    #ifdef _WIN32
+#ifdef _WIN32
     ((Fl_Clock*)v)->value(time(0));
     Fl::add_timeout(1.0, (Fl_Timeout_Handler)tick, v);
-    #else
+#else
     struct timeval t;
     gettimeofday(&t, 0);
     ((Fl_Clock*)v)->value(t.tv_sec);
     float delay = 1.0-t.tv_usec*.000001;
     if (delay < .1 || delay > .9) delay = 1.0;
     Fl::add_timeout(delay, (Fl_Timeout_Handler)tick, v);
-    #endif
+#endif
 }
 
 
@@ -236,8 +233,8 @@ static void revert(Fl_Style* s)
 static Fl_Named_Style style("Clock", revert, &Fl_Clock::default_style);
 Fl_Named_Style* Fl_Clock::default_style = &::style;
 
-Fl_Clock_Output::Fl_Clock_Output(int x, int y, int w, int h, const char *l)
-: Fl_Widget(x, y, w, h, l)
+// ctor initializer - used in both ctors
+void Fl_Clock_Output::ctor_init()
 {
     style(Fl_Clock::default_style);
     clear_flag(FL_ALIGN_MASK);
@@ -248,6 +245,19 @@ Fl_Clock_Output::Fl_Clock_Output(int x, int y, int w, int h, const char *l)
     value_ = 0;
 }
 
+// Traditional ctor
+Fl_Clock_Output::Fl_Clock_Output(int x, int y, int w, int h, const char *l)
+: Fl_Widget(x, y, w, h, l)
+{
+    ctor_init();
+}
+
+// New style ctor
+Fl_Clock_Output::Fl_Clock_Output(const char* l,int layout_size,Fl_Align layout_al,int label_w)
+: Fl_Widget(l,layout_size,layout_al,label_w)
+{
+    ctor_init();
+}
 
 //
 // End of "$Id$".
