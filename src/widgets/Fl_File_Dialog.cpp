@@ -628,7 +628,7 @@ void Fl_File_Dialog::make_group(int w, int h)
         preview_but_ = new Fl_Check_Button(5, 45+H, W, 18, _("Show Preview"));
         preview_but_->text_size(10);
         preview_but_->value(Fl_File_Dialog::initial_preview);
-        if(mode()==DIRECTORY) preview_but_->deactivate();
+        if(mode()==Fl_File_Dialog::_DIRECTORY) preview_but_->deactivate();
     }
 
     {
@@ -1039,7 +1039,7 @@ void Fl_File_Dialog::read_dir(const char *_path)
         listview_->relayout();
     }
 
-    if(mode()!=DIRECTORY) {		
+    if(mode()!=_DIRECTORY) {
         ok_->deactivate();
         if(selected) {
             listview_->select_only(selected);
@@ -1219,7 +1219,7 @@ void Fl_File_Dialog::cb_ok(Fl_Widget *, void *d)
         }
     }
 
-    if(FD->mode()==DIRECTORY) {
+    if(FD->mode()==_DIRECTORY) {
         // Complete dirpath with selected item
         /*if(i && i->type()==Fl_FileItem::DIR) {
             if(FD->get_filename(i->label(), file))

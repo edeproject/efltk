@@ -421,13 +421,13 @@ void Fl_Text_Display::layout()
     if(new_vlines<0) new_vlines=1;
 
 	if(mContinuousWrap && !mWrapMargin/* && W!=oldWidth*/) {
-		int oldFirstChar = mFirstChar;
-        mNBufferLines = count_lines(0, buffer()->length(), true);
-        //mFirstChar = line_start(mFirstChar);
-        mTopLineNum = count_lines(0, mFirstChar, true)+1;
-		offset_line_starts(mTopLineNum);
-        //absolute_top_line_number(oldFirstChar);
-    }	
+            int oldFirstChar = mFirstChar;
+            mNBufferLines = count_lines(0, buffer()->length(), true);
+            mFirstChar = line_start(mFirstChar);
+            mTopLineNum = count_lines(0, mFirstChar, true)+1;
+            offset_line_starts(mTopLineNum);
+            absolute_top_line_number(oldFirstChar);
+        }
 
 	if(new_vlines <= mNBufferLines)
 	{

@@ -22,11 +22,7 @@
 #include <efltk/filename.h>
 #include <efltk/Fl_Directory_DS.h>
 
-#ifndef _WIN32
-
-# include <dirent.h>
-
-#else
+#ifdef _WIN32
 
 # include <windows.h>
 # include <io.h>
@@ -42,21 +38,24 @@
 
 # define lstat stat
 
-#endif
+#else /* _WIN32 */
 
-#if defined(__linux) && defined(__GNUC__)
+# include <dirent.h>
+
+#ifndef S_ISEXEC
 # define S_ISEXEC(m)	  (((m) & S_IFMT) == S_IEXEC)
-# define S_ISREG(m) 	 (((m) & S_IFMT) == S_IFREG) 
-# define S_ISDIR(m) 	 (((m) & S_IFMT) == S_IFDIR) 
+#endif
+#ifndef S_ISREG
+# define S_ISREG(m) 	 (((m) & S_IFMT) == S_IFREG)
+#endif
+#ifndef S_ISDIR
+# define S_ISDIR(m) 	 (((m) & S_IFMT) == S_IFDIR)
+#endif
+#ifndef S_ISBLK
 # define S_ISBLK(m) 	 (((m) & S_IFMT) == S_IFBLK)
 #endif
 
-#ifdef __sun  
-# define S_ISEXEC(m)	  (((m) & S_IFMT) == S_IEXEC)
-//# define S_ISREG(m) 	 (((m) & S_IFMT) == S_IFREG) 
-//# define S_ISDIR(m) 	 (((m) & S_IFMT) == S_IFDIR) 
-//# define S_ISBLK(m) 	 (((m) & S_IFMT) == S_IFBLK)
-#endif
+#endif /* _WIN32 */
 
 static Fl_Variant    notFound;
 static Fl_Data_Field fieldNotFound("not_found");
