@@ -32,7 +32,8 @@
 
 #include <stdio.h>
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
     Fl_Window *window = new Fl_Window(300,180);
 
     //Set type to DIALOG

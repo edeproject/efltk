@@ -59,7 +59,6 @@
 #include <efltk/Fl_Color.h>
 #include <efltk/vsnprintf.h>
 
-#include <efltk/Fl_Locale.h>
 #include "../core/fl_internal.h"
 
 #include <stdio.h>

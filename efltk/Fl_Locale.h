@@ -3,13 +3,9 @@
 
 #ifndef _WIN32
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <locale.h>
-
 #include "Fl_Export.h"
 
+#include <locale.h>
 #include <libintl.h>
 
 # define _(String) gettext (String)

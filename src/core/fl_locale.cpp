@@ -1,7 +1,7 @@
 #ifndef _WIN32
 
-#include <efltk/Fl_Locale.h>
 #include <config.h>
+#include "fl_internal.h"
 
 void fl_init_locale_support(const char *package, const char *locale_prefix)
 {

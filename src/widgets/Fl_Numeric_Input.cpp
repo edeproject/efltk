@@ -80,9 +80,16 @@ int Fl_Numeric_Input::handle(int event)
 }
 
 
+#include "../core/fl_internal.h"
 // Handle and up or down arrow key:
 int Fl_Numeric_Input::handle_arrow(int dir)
 {
+    char decimal = '.';
+#if ENABLE_NLS
+    lconv *locale = localeconv();
+    decimal = locale->decimal_point[0];
+#endif
+
     // locate the character to change:
     int p; char c;
     int q = position();
@@ -91,7 +98,7 @@ int Fl_Numeric_Input::handle_arrow(int dir)
     const char* v = value();
 
     // make insertion after decimal point work:
-    if (v[q] == '.') q++;
+    if (v[q] == decimal) q++;
 
     int save_when = when(); when(0);
 
@@ -101,13 +108,13 @@ int Fl_Numeric_Input::handle_arrow(int dir)
         for (int g = q-1;;g--)
         {
             // search to see if decimal point is already there:
-            if (g >= 0 && v[g] == '.') break;
+            if (g >= 0 && v[g] == decimal) break;
             if (g < 0 || v[g] < '0' || v[g] > '9')
             {
                 // if no digits before cursor, assumme we are not pointing at a number:
                 if (g >= q-1) goto DONE;
                 // if it does not like period edit the last digit instead:
-                if (!replace(q,q,'.')) {q--; goto INT;}
+                if (!replace(q, q, decimal)) {q--; goto INT;}
                 q++;
                 break;
             }
@@ -121,7 +128,7 @@ int Fl_Numeric_Input::handle_arrow(int dir)
     {
         c = v[p];
         if (c == '-') {dir = -dir; break;}
-        if (c != '.' && (c < '0' || c > '9')) break;
+        if (c != decimal && (c < '0' || c > '9')) break;
     }
 
     if (dir > 0)
@@ -131,7 +138,7 @@ int Fl_Numeric_Input::handle_arrow(int dir)
         for (p = q; p >= 0; p--)
         {
             c = v[p];
-            if (c == '.') continue;
+            if (c == decimal) continue;
             if (c < '0' || c > '9') break;
             if (c < '9')
             {
@@ -150,7 +157,7 @@ int Fl_Numeric_Input::handle_arrow(int dir)
         // first check if all the digits are zero, if so we reverse the sign:
         for (p = q; ; p--)
         {
-            if (p < 0 || (v[p] < '0' || v[p] > '9') && v[p] != '.')
+            if (p < 0 || (v[p] < '0' || v[p] > '9') && v[p] != decimal)
             {
                 if (p >= 0 && v[p] == '-')
                 {
@@ -164,20 +171,20 @@ int Fl_Numeric_Input::handle_arrow(int dir)
                 }
                 goto UP_CASE;
             }
-            if (v[p] != '.' && v[p] != '0') break;
+            if (v[p] != decimal && v[p] != '0') break;
         }
 
         for (p = q; p >= 0; p--)
         {
             c = v[p];
-            if (c == '.') continue;
+            if (c == decimal) continue;
             if (c < '0' || c > '9') break;
             if (c == '1')
             {
                 // delete leading zeros:
                 int g = p;
                 while (g > 0 && v[g-1]=='0') g--;
-                if (!(g > 0 && (v[g-1]>='0' && v[g-1]<='9' || v[g-1]=='.')))
+                if (!(g > 0 && (v[g-1]>='0' && v[g-1]<='9' || v[g-1]==decimal)))
                 {
                     if (p < q)
                     {

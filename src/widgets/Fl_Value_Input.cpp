@@ -32,6 +32,8 @@
 #include <efltk/Fl.h>
 #include <efltk/Fl_Value_Input.h>
 #include <efltk/Fl_Group.h>
+#include <efltk/math.h>
+
 #include <stdlib.h>
 
 void Fl_Value_Input::input_cb(Fl_Widget*, void* v)
@@ -64,7 +66,10 @@ static char which_pushed = 0;
 void Fl_Value_Input::draw()
 {
     int X=0; int Y=0; int W=w(); int H=h(); box()->inset(X,Y,W,H);
-    const int bw = H/2; W -= bw;
+
+    const int bw = int(floor((H/1.8)+.5)); W -= bw;
+    const int bh = H/2;
+
     if (damage() & FL_DAMAGE_ALL)
     {
         draw_frame();
@@ -77,8 +82,8 @@ void Fl_Value_Input::draw()
             f[which_highlight-1] = FL_HIGHLIGHT;
         if (which_pushed && this==Fl::pushed())
             f[which_pushed-1] = FL_VALUE | FL_HIGHLIGHT;
-        draw_glyph(FL_GLYPH_UP_BUTTON, X+W, Y, bw, bw, f[0]);
-        draw_glyph(FL_GLYPH_DOWN_BUTTON, X+W, Y+bw, bw, H-bw, f[1]);
+        draw_glyph(FL_GLYPH_UP_BUTTON, X+W, Y, bw, bh, f[0]);
+        draw_glyph(FL_GLYPH_DOWN_BUTTON, X+W, Y+bh, bw, H-bh, f[1]);
     }
 
     input.label(label());
@@ -233,11 +238,12 @@ void Fl_Value_Input::value_damage()
 Fl_Value_Input::Fl_Value_Input(int x, int y, int w, int h, const char* l)
 : Fl_Valuator(x, y, w, h, l), input(x, y, w, h, 0)
 {
+    step(.01);
     //soft_ = 0;
     if (input.parent())          // defeat automatic-add
         input.parent()->remove(input);
-                                 // kludge!
-    input.parent((Fl_Group*)this);
+
+    input.parent((Fl_Group*)this); // kludge!
     input.callback(input_cb, this);
     clear_flag(FL_ALIGN_MASK);
     set_flag(FL_ALIGN_LEFT);

@@ -17,7 +17,6 @@
 #include <efltk/Fl_MDI_Window.h>
 
 #include <efltk/Fl_Config.h>
-#include <efltk/Fl_Locale.h>
 #include "fl_internal.h"
 
 void Fl::init()

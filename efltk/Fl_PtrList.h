@@ -1,8 +1,9 @@
 #ifndef FL_LIST_H_
 #define FL_LIST_H_
 
-// Backward compatible defines
-//#define Fl_List  Fl_PtrList
+/*
+ * Simple double-linked template list.
+ */
 
 template <class T> class Fl_PtrList
 {
@@ -19,32 +20,18 @@ private:
     int items;
     Item *First, *Last, *Current;
 
-    void copy(const Fl_PtrList<T> &list) {
-        clear();
-        First = 0;
-        if(list.First) {
-            items = 1;
-            First = new Item(list.First->stor);
-            Item *oldI = list.First;
-            Item *newI = First;
-            while(oldI = oldI->next) {
-                items++;
-                newI->next = new Item(oldI->stor);
-                newI = newI->next;
-            }
-        }
-    }
-
 public:
     Fl_PtrList() : items(0), First(0), Last(0), Current(0) { autodel_=false; }
-    Fl_PtrList(const Fl_PtrList<T> &list) { autodel_=false; copy(list); }
+    Fl_PtrList(const Fl_PtrList<T> &list) : items(0), First(0), Last(0), Current(0) { autodel_=false; copy(list); }
     ~Fl_PtrList() { clear(); }
 
     void begin() { Current = 0; }
     void end()	 { Current = 0; }
     T *first() 	 { Current = First; return First ? First->stor : 0; }
     T *last() 	 { Current = Last;  return Last ? Last->stor : 0; 	}
+
     T *current() { return Current ? Current->stor : 0; }
+    void current(T *it) { Current = item(it); }
 
     //////////////////////
     // Operators
@@ -68,79 +55,103 @@ public:
 
     //////////////////
 
+    void copy(const Fl_PtrList<T> &list) {
+        clear();
+        First = Last = Current = 0;
+        if(!list.First) return;
+
+        Item *iter = list.First;
+        do {
+            if(!First) {
+                First = Current = new Item(iter->stor);
+            } else {
+                Current->next = new Item(iter->stor);
+                Current = Current->next;
+            }
+            items++;
+        } while(iter = iter->next);
+        Last=Current;
+        Current=0;
+    }
+
+    // This function sets 'Current' pointer!
     inline T *item(int index) {
-        if(index < 0 || index >= items)
-            return 0;
+        if(index < 0 || index >= items) return 0;
         Item *it = First;
-        if(index != 0)
-            for(int a = 0; a < index; a++)
-                it = it->next;
+        for(int a = 0; a < index; a++)
+            it = it->next;
         Current = it;
         return it ? it->stor : 0;
     }
 
+    // Returns item 'it', if it's found in list.
+    // This function sets 'Current' pointer!
     inline T *item(T *it) {
         if(items<=0 || !First || !it) return;
-        if(First && it == First->stor) {
-            Current = First;
-            return Current->stor;
-        } else if(Last && it == Last->stor) {
-            Current = Last;
+        if(Current && it == Current->stor) {
             return Current->stor;
         }
-        Current = First;
-        while(Current = Current->next) {
-            if(Current->stor == it) {
+        Item *iter=Fisrt;
+        do {
+            if(iter->stor == it) {
+                Current = iter;
                 break;
             }
-        }
-        return Current->stor;
+        } while(iter = iter->next);
+        return iter?iter->stor:0;
     }
 
+    // Remove item 'it' from list,
+    // DOES NOT set 'Current' pointer, this allows removing
+    // while iterating throught the list.
     inline void remove(T *it) {
         if(items<=0 || !First || !it) return;
-        if(First && it == First->stor) {
+
+        Item *remove = 0;
+        Item *iter = First;
+
+        // Check if removed item is Current pointer
+        if(Current && it == Current->stor) {
             --items;
-            Item *save_next = First->next;
-            delete First;
-            First = save_next;
-            if(save_next&&items>0) First->prev=0;
-            else First = Last = 0;
-            Current = 0;
-            return;
-        } else if(Last && it == Last->stor) {
-            --items;
-            Item *save_prev = Last->prev;
-            delete Last;
-            Last = save_prev;
-            if(save_prev&&items>0) Last->next = 0;
-            else First = Last = 0;
-            Current = 0;
-            return;
+            remove = Current;
+            Item *prev = remove->prev;
+            Item *next = remove->next;
+            if(prev) prev->next = next;
+            if(next) next->prev = prev;
+            Current = prev;
         }
 
-        Item *r = 0;
-        Current = First;
-        First = Last = Current;
-        while(Current = Current->next) {
-            if(Current->stor != it) {
-                Last->next = Current;
-                Current->prev = Last;
-                Last = Current;
-            } else {
-                --items;
-                r = Current;
-            }
+        // It's not on list, so we have to go throught whole list,
+        // until we got item to remove.
+        if(!remove) {
+            do {
+                if(iter->stor == it) {
+                    --items;
+                    Item *prev = iter->prev;
+                    Item *next = iter->next;
+                    if(prev) prev->next = next;
+                    if(next) next->prev = prev;
+                    remove = iter;
+                }
+            } while(iter = iter->next);
         }
-        if(r) delete r;
-        Current = 0;
+
+        // Assing new 'Current' pointer, if needed.
+        if(remove && remove==Current) Current=remove->prev;
+        if(remove && remove==First) First=remove->prev;
+        if(remove && remove==Last) Last=remove->prev;
+
+        if(remove) {
+            if(autodel_ && remove->stor) delete remove->stor;
+            delete remove; remove=0;
+        }
     }
 
     inline void remove(int index) {
         remove(item(index));
     }
 
-    T *next() {
+    inline T *next() {
         if(Current) {
             Current = Current->next;
             if(!Current) return 0;
@@ -149,7 +160,7 @@ public:
         return Current ? Current->stor : 0;
     }
 
-    T *prev() {
+    inline T *prev() {
         if(Current) {
             Current = Current->prev;
             if(!Current) return 0;
@@ -160,45 +171,35 @@ public:
 
     inline void prepend(T *item) {
         Item *temp = new Item(item);
-        items++;
-
-        if(!First) {
-            temp->prev = 0;
-            temp->next = 0;
-            First = Last = temp;
-            return;
-        }
-        First->prev = temp;
+        if(First) First->prev = temp;
+        if(!First) First=temp;
         temp->next = First;
         temp->prev = 0;
         First = temp;
+        items++;
     }
 
     inline void append(T *item) {
         Item *temp = new Item(item);
-        items++;
-
-        if(!First) {
-            temp->prev = 0;
-            temp->next = 0;
-            First = Last = temp;
-            return;
-        }
-        Last->next = temp;
+        if(Last) Last->next = temp;
+        if(!First) First=temp;
         temp->prev = Last;
         temp->next = 0;
         Last = temp;
+        items++;
     }
 
     inline void clear() {
         items = 0;
-        Item *temp;
-        while(First) {
-            temp = First->next;
-            if(autodel_ && First->stor) delete First->stor;
-            delete First;
-            First = temp;
-        }
+        if(!First) return;
+        Item *iter, *next=First;
+        do {
+            iter=next;
+            if(autodel_ && iter->stor) delete iter->stor;
+            next = iter->next;
+            delete iter;
+        } while(next);
+        First=Last=Current=0;
     }
 
     inline const int  count() { return items; }

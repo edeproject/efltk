@@ -31,7 +31,6 @@
 
 void Fl_Value_Slider::draw()
 {
-
     // figure out the inner size of the box:
     Fl_Boxtype box = this->box();
     int ix = 0, iy = 0, iw = w(), ih = h();
@@ -41,17 +40,14 @@ void Fl_Value_Slider::draw()
     int sx = ix, sy = iy, sw = iw, sh = ih;
     if (tick_size() && (type()&TICK_BOTH))
     {
-        if (horizontal())
-        {
+        if (horizontal()) {
             sh -= tick_size();
             switch (type()&TICK_BOTH)
             {
                 case TICK_BOTH: sy += tick_size()/2; break;
                 case TICK_ABOVE: sy += tick_size(); break;
             }
-        }
-        else
-        {
+        } else {
             sw -= tick_size();
             switch (type()&TICK_BOTH)
             {

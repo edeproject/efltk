@@ -1113,8 +1113,17 @@ void Fl_Text_Display::draw_string( int style, int X, int Y, int toX,
     font = styleRec->font;
     size = styleRec->size;
     foreground = styleRec->color;
-    background = style & PRIMARY_MASK ? selection_color() :
-                 style & HIGHLIGHT_MASK ? highlight_color() : color();
+
+    if(style & PRIMARY_MASK)
+        background = fl_color_average(selection_color(), fl_invert(styleRec->color), 0.4);
+    else if(style & HIGHLIGHT_MASK)
+        background = fl_color_average(highlight_color(), fl_invert(styleRec->color), 0.4);
+    else
+        background = color();
+
+    //background = style & PRIMARY_MASK ? selection_color() :
+    //style & HIGHLIGHT_MASK ? highlight_color() : color();
+
     if ( foreground == background )   /* B&W kludge */
       foreground = color();
   } else if ( style & HIGHLIGHT_MASK ) {
@@ -1133,6 +1142,9 @@ void Fl_Text_Display::draw_string( int style, int X, int Y, int toX,
   fl_color( foreground );
   fl_font( font, size );
   fl_draw( string, nChars, X, Y + mMaxsize - fl_descent());
+
+  if(styleRec->attr==ATTR_UNDERLINE)
+      fl_line(X, mMaxsize, toX - X, mMaxsize);
 
   // CET - FIXME
   /* If any space around the character remains unfilled (due to use of
@@ -1943,16 +1955,12 @@ int Fl_Text_Display::handle(int event) {
         relayout();
         redraw();
         break;
-    case FL_HIDE:
-        if (when() & FL_WHEN_RELEASE) do_callback();
-        return 1;
 
     case FL_FOCUS:
         show_cursor(mCursorOn); // redraws the cursor
         return 1;
 
     case FL_UNFOCUS:
-        if (when() & FL_WHEN_RELEASE) do_callback();
         show_cursor(mCursorOn); // redraws the cursor
         return 1;
 

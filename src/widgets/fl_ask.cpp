@@ -39,7 +39,6 @@
 #include <efltk/Fl_Secret_Input.h>
 #include <efltk/vsnprintf.h>
 
-#include <efltk/Fl_Locale.h>
 #include "../core/fl_internal.h"
 
 #include <string.h>

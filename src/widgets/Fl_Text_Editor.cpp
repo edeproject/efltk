@@ -68,8 +68,8 @@ default_key_bindings[] =
     { FL_Enter,     FL_TEXT_EDITOR_ANY_STATE, Fl_Text_Editor::kf_enter      },
     { FL_KP_Enter,  FL_TEXT_EDITOR_ANY_STATE, Fl_Text_Editor::kf_enter      },
     { FL_BackSpace, FL_TEXT_EDITOR_ANY_STATE, Fl_Text_Editor::kf_backspace  },
-    { FL_Insert,    FL_TEXT_EDITOR_ANY_STATE, Fl_Text_Editor::kf_insert     },
-    { FL_Delete,    FL_TEXT_EDITOR_ANY_STATE, Fl_Text_Editor::kf_delete     },
+    { FL_Insert,    FL_CTRL|FL_ALT|FL_WIN, Fl_Text_Editor::kf_insert     },
+    { FL_Delete,    FL_CTRL|FL_ALT|FL_WIN, Fl_Text_Editor::kf_delete     },
     { FL_Home,      0,                        Fl_Text_Editor::kf_move       },
     { FL_End,       0,                        Fl_Text_Editor::kf_move       },
     { FL_Left,      0,                        Fl_Text_Editor::kf_move       },
@@ -104,6 +104,8 @@ default_key_bindings[] =
     { FL_Page_Down, FL_CTRL|FL_SHIFT,         Fl_Text_Editor::kf_c_s_move   },
     { 'a',          FL_CTRL,                  ctrl_a                        },
     //{ 'z',          FL_CTRL,                  Fl_Text_Editor::undo	  },
+    { FL_Insert,    FL_SHIFT,                 Fl_Text_Editor::kf_paste      },
+    { FL_Delete,    FL_SHIFT,                 Fl_Text_Editor::kf_cut        },
     { 'x',          FL_CTRL,                  Fl_Text_Editor::kf_cut        },
     { 'c',          FL_CTRL,                  Fl_Text_Editor::kf_copy       },
     { 'v',          FL_CTRL,                  Fl_Text_Editor::kf_paste      },
@@ -284,6 +286,10 @@ int Fl_Text_Editor::kf_backspace(int, Fl_Text_Editor* e)
 
 int Fl_Text_Editor::kf_enter(int, Fl_Text_Editor* e)
 {
+    if (e->when() & FL_WHEN_ENTER_KEY) {
+        e->maybe_do_callback();
+    }
+
     kill_selection(e);
     e->insert("\n");
     e->show_insert_position();
@@ -504,10 +510,16 @@ int Fl_Text_Editor::kf_select_all(int, Fl_Text_Editor* e)
     return 1;
 }
 
+void Fl_Text_Editor::maybe_do_callback()
+{
+    if (changed() || (when()&FL_WHEN_NOT_CHANGED))
+    {
+        clear_changed(); do_callback();
+    }
+}
 
 int Fl_Text_Editor::handle_key()
 {
-
     // Call fltk's rules to try to turn this into a printing character.
     // This uses the right-hand ctrl key as a "compose prefix" and returns
     // the changes that should be made to the text, as a number of
@@ -519,6 +531,8 @@ int Fl_Text_Editor::handle_key()
         kill_selection(this);
         if (Fl::event_length())
         {
+            if(when()&FL_WHEN_CHANGED) do_callback(); else set_changed();
+
             if (insert_mode()) insert(Fl::event_text());
             else overstrike(Fl::event_text());
         }
@@ -555,6 +569,10 @@ int Fl_Text_Editor::handle(int event)
         case FL_FOCUS:
             return 3;        // indicate that this widget should get initial focus
 
+        case FL_UNFOCUS:
+            if (when() & FL_WHEN_RELEASE) maybe_do_callback();
+            return 1;
+
         default:
             return 1;
         }
@@ -563,12 +581,17 @@ int Fl_Text_Editor::handle(int event)
     {
         switch (event)
         {
+        case FL_HIDE:
+            if (when() & FL_WHEN_RELEASE) maybe_do_callback();
+            return 1;
 
         case FL_KEY:
             return handle_key();
 
         case FL_PASTE:
             if(!Fl::event_length() || !Fl::event_text()) return 0;
+
+            if(when()&FL_WHEN_CHANGED) do_callback(); else set_changed();
 
             buffer()->remove_selection();
             if (insert_mode()) insert(Fl::event_text());

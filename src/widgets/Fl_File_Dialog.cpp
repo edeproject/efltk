@@ -5,7 +5,6 @@
 #include <efltk/filename.h>
 
 // For NLS stuff
-#include <efltk/Fl_Locale.h>
 #include "../core/fl_internal.h"
 
 #include <errno.h>
@@ -859,50 +858,48 @@ void Fl_File_Dialog::read_dir(const char *_path)
         listview_->column_name(2, _("Type"));
         listview_->column_name(3, _("Modified"));
         char filename[FL_PATH_MAX];
-        char **files = fl_get_files((char *)fullpath());
-
+        struct dirent **files;
+        int count = fl_filename_list(fullpath(), &files);
         int n = 0;
-        if(files)
+
+        if(count>0)
         {
-            while(files[n] != 0)
+            for(n=0; n<count; n++)
             {
-                if(strcmp(files[n], ".") != 0 && strcmp(files[n], "..") != 0)
+                if(strcmp(files[n]->d_name, ".") != 0 && strcmp(files[n]->d_name, "..") != 0)
                 {
-                    snprintf(filename, sizeof(filename)-1, "%s%c%s", fullpath(), slash, files[n]);
+                    snprintf(filename, sizeof(filename)-1, "%s%c%s", fullpath(), slash, files[n]->d_name);
                     Fl_FileAttr *attr = fl_file_attr(filename);
                     if(attr->flags & FL_DIR) {
-                        Fl_FileItem *it = new Fl_FileItem(files[n], attr);
+                        Fl_FileItem *it = new Fl_FileItem(files[n]->d_name, attr);
                         it->image(0, fold_pix);
                     } else
                         delete attr;
                 }
-                n++;
             }
 
-            n = 0;
-            while(files[n] != 0)
+            for(n=0; n<count; n++)
             {
-                if((strcmp(files[n], ".") && strcmp(files[n], "..") != 0) && mode() != Fl_File_Dialog::DIRECTORY)
+                if((strcmp(files[n]->d_name, ".") && strcmp(files[n]->d_name, "..") != 0) && mode() != Fl_File_Dialog::DIRECTORY)
                 {
-                    snprintf(filename, sizeof(filename)-1, "%s%c%s", fullpath(), slash, files[n]);
+                    snprintf(filename, sizeof(filename)-1, "%s%c%s", fullpath(), slash, files[n]->d_name);
                     Fl_FileAttr *attr = fl_file_attr(filename);
                     if(!(attr->flags & FL_DIR)) {
                         if(_cur_filter) {
                             if(fl_file_match(filename, _cur_filter->pattern)) {
-                                Fl_FileItem *it = new Fl_FileItem(files[n], attr);
+                                Fl_FileItem *it = new Fl_FileItem(files[n]->d_name, attr);
                                 it->image(0, file_pix);
                             }
                         } else {
-                            Fl_FileItem *it = new Fl_FileItem(files[n], attr);
+                            Fl_FileItem *it = new Fl_FileItem(files[n]->d_name, attr);
                             it->image(0, file_pix);
                         }
                     } else
                         delete attr;
                 }
-                delete files[n];
-                n++;
+                free(files[n]);
             }
-            delete []files;
+            free(files);
         }
     }
 
@@ -1245,6 +1242,7 @@ char *Fl_File_Dialog::get_filepath(const char *path, char *buf)
     return 0;
 }
 
+static bool _popup_=false;
 void Fl_File_Dialog::cb_location(Fl_Widget *w, void *d)
 {
     Fl_Input_Browser *loc = (Fl_Input_Browser *)w;
@@ -1255,6 +1253,7 @@ void Fl_File_Dialog::cb_location(Fl_Widget *w, void *d)
     if(!strcmp(loc->value(),"")) {
         FD->ok_->deactivate();
         loc->hide_popup();
+        _popup_=false;
         return;
     }
 
@@ -1286,6 +1285,7 @@ void Fl_File_Dialog::cb_location(Fl_Widget *w, void *d)
         }
 
         loc->hide_popup();
+        _popup_=false;
 
     } else {
 
@@ -1315,40 +1315,40 @@ void Fl_File_Dialog::cb_location(Fl_Widget *w, void *d)
 
             bool match = false;
 
-            char **filesptr = fl_get_files(dirpath);
-            char **files = filesptr;
-            char *f=files[0];
-            while((f=*files++)) {
-                char *file = f;
+            struct dirent **files;
+            int count = fl_filename_list(dirpath, &files);
+            char filen[FL_PATH_MAX];
+            for(int n=0; n<count; n++) {
+                char *file = files[n]->d_name;
+
                 if(strcmp(file, ".") && strcmp(file, "..") && fl_file_match(file, pattern)) {
-                    int len = strlen(file)+strlen(dirpath)+5;
-                    char *filen = new char[len];
 
                     if(file[0]==slash)
-                        snprintf(filen, len-1, "%s", file);
+                        snprintf(filen, sizeof(filen)-1, "%s", file);
                     else if(dirpath[dirpath_len-1]==slash)
-                        snprintf(filen, len-1, "%s%s", dirpath, file);
+                        snprintf(filen, sizeof(filen)-1, "%s%s", dirpath, file);
                     else
-                        snprintf(filen, len-1, "%s%c%s", dirpath, slash, file);
+                        snprintf(filen, sizeof(filen)-1, "%s%c%s", dirpath, slash, file);
 
                     if(FD->mode()==Fl_File_Dialog::DIRECTORY && !fl_is_dir(filen)) {
-                        delete []filen;
                         continue;
                     }
                     Fl_Widget *w = new Fl_Item(filen);
-                    w->set_flag(FL_COPIED_LABEL);
+                    w->copy_label(filen);
                     match = true;
                 }
-                delete []f;
+                free(files[n]);
             }
-            delete []filesptr;
+            if(files) free(files);
 
             loc->end();
             loc->item(0);
             if(match) {
                 loc->popup();
+                _popup_=true;
             } else {
                 loc->hide_popup();
+                _popup_=false;
             }
         }
     }
@@ -1509,9 +1509,17 @@ void Fl_File_Dialog::update_preview(const char *filename)
 
 int Fl_File_Dialog::handle(int e)
 {
+    static bool clicked_once=false;
     if(e==FL_KEYUP && Fl::event_key()==FL_BackSpace) {
-        cb_up(0, this);
-        return 1;
+        if(( Fl::focus()==location_->input() && !strcmp(location_->input()->value(),"")) ||
+           Fl::focus()!=location_->input()) {
+            if(clicked_once) {
+                cb_up(0, this);
+                return 1;
+            }
+            clicked_once=true;
+        } else
+            clicked_once = false;
     }
     return Fl_Window::handle(e);
 }

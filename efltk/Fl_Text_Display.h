@@ -54,10 +54,18 @@ class FL_API Fl_Text_Display: public Fl_Group {
 
     typedef void (*Unfinished_Style_Cb)();
 
+    // style attributes
+    enum {
+      ATTR_NONE = 0,
+      ATTR_UNDERLINE = 1,
+      ATTR_HIDDEN = 2 //Not implement
+    };
+
     struct FL_API Style_Table_Entry {
-      Fl_Color color;
-      Fl_Font  font;
-      int      size;
+      Fl_Color	color;
+      Fl_Font	font;
+      int	size;
+      unsigned	attr;
     };
 
     Fl_Text_Display(int X, int Y, int W, int H, const char *l = 0);

@@ -26,8 +26,6 @@ Fl_ListView_Item::Fl_ListView_Item(const char *label1,
     if(label3) labels[2]=label3;
     if(label4) labels[3]=label4;
     if(label5) labels[4]=label5;
-
-    label_color(FL_BLACK);
 }
 
 Fl_ListView_Item::~Fl_ListView_Item()
@@ -63,6 +61,8 @@ void Fl_ListView_Item::draw()
 void Fl_ListView_Item::draw_cell(int x, int y, int w, int h, int col)
 {
     const char *txt = labels[col];
+    const char *saved_label = Fl_Widget::label();
+
     if(txt) {
         fl_font(fonts[col], font_sizes[col]);
         fl_color(colors[col]);
@@ -72,26 +72,34 @@ void Fl_ListView_Item::draw_cell(int x, int y, int w, int h, int col)
             images[col]->measure(iw,ih);
         }
 
-        // TODO: optimize this, not always use get_multiline
-        char *pbuf = fl_cut_multiline(txt, list->column_width(col)-leading()-iw);
+        char *cutted_label=0;
+        int textw = int(fl_width(txt));
+        if(textw<list->column_width(col)) {
+            if(strchr(txt, '\n')) cutted_label = fl_cut_multiline(txt, list->column_width(col)-leading()-iw);
+            else cutted_label = fl_cut_line(txt, list->column_width(col)-leading()-iw);
+            Fl_Widget::label(cutted_label); 
+        } else {
+            Fl_Widget::label(txt);
+        }
 
         //Clear CLIP flag if set, cause we clip anyway =)
         if(align() & FL_ALIGN_CLIP) Fl_Widget::clear_flag(FL_ALIGN_CLIP);
 
-        fl_push_clip(x,y,w,h);
-
-        Fl_Widget::label(pbuf); label_color(colors[col]);
+        label_color(colors[col]);
         label_size(font_sizes[col]); label_font(fonts[col]);
         Fl_Image *si = Fl_Widget::image();
         Fl_Widget::image(images[col]);
 
         if(colflags[col]&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT)) {x += 3; w -= 6;}
-        draw_label(x, y, w, h, colflags[col]|(flags()&(FL_SELECTED|FL_INACTIVE)));
-        Fl_Widget::image(si);
 
+        fl_push_clip(x,y,w,h);
+        draw_label(x, y, w, h, colflags[col]|(flags()&(FL_SELECTED|FL_INACTIVE)));
         fl_pop_clip();
-        delete []pbuf;
+
+        Fl_Widget::image(si);
+        if(cutted_label) delete []cutted_label;
     }
+    Fl_Widget::label(saved_label);
 }
 
 // Measure the space the draw() will take:

@@ -77,6 +77,7 @@ FL_API Fl_Color fl_color_average(Fl_Color, Fl_Color, double weight);
 FL_API Fl_Color fl_inactive(Fl_Color);
 FL_API Fl_Color fl_inactive(Fl_Color, Fl_Flags f);
 FL_API Fl_Color fl_contrast(Fl_Color fg, Fl_Color bg);
+FL_API Fl_Color fl_invert(Fl_Color);
 #ifndef FLTK_2
 #define contrast(a,b) fl_contrast(a,b)
 #define inactive(a) fl_inactive(a)

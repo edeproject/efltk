@@ -65,17 +65,18 @@ public:
 
 int ComboBrowser::handle(int event)
 {
+    // Work-around...
+    if(Fl::event_key()==FL_Down && (!item() || children()==1)) {
+        item(child(0));
+        Fl_Group::focus(item());
+    }
+
     if((event==FL_SHORTCUT||event==FL_KEY) && !(combo->type()&Fl_Input_Browser::NONEDITABLE)) {
         if( (Fl::event_key()!=FL_Escape) &&
            (Fl::event_key()!=FL_Up) &&
            (Fl::event_key()!=FL_Down) &&
            !(Fl::event_key()==FL_Enter && item()) )
             return combo->input_->handle(FL_KEY);
-    }
-
-    // Work-around...
-    if(Fl::event_key()==FL_Down && children()==1) {
-        item(child(0));
     }
 
     static bool was_wheel=false;

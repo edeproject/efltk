@@ -23,6 +23,11 @@
 # define _(String) (String)
 # define N_(String) (String)
 
+#else
+
+// only include if ENABLE_NLS=1
+#include <efltk/Fl_Locale.h>
+
 #endif
 
 

@@ -96,6 +96,14 @@ Fl_Color fl_inactive(Fl_Color c, Fl_Flags f)
     return c;
 }
 
+Fl_Color fl_invert(Fl_Color c)
+{
+    uchar r,g,b;
+    fl_get_color(c, r,g,b);
+    r=255-r; g=255-g; b=255-b;
+    return fl_rgb(r,g,b);
+}
+
 Fl_Color fl_contrast(Fl_Color fg, Fl_Color bg)
 {
     Fl_Color c1 = fl_get_color(fg);

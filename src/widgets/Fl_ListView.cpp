@@ -295,13 +295,12 @@ void Fl_ListView::damage_item(Fl_Widget *item)
 
 void Fl_ListView::draw_row(int x, int y, int w, int h, Fl_Widget *widget)
 {
-	bool selected = SEL(widget);
+    bool selected = SEL(widget);
     if(bg_image()) {
 
         if(!scaled) return;
 
         if(selected) {
-
 #if 0
             // Draws alpheblended selection box,
             // This should optional, since its not usable in big multiselection
@@ -903,7 +902,7 @@ int Fl_ListView::handle(int event)
                 {
                     if(sel_item) {
                         // If not movable, then dragging selects
-                        drag_type = !SEL(i);
+                        //drag_type = !SEL(i);
                         //select(i, drag_type);
                         select_items(ITEM(sel_item)->num, ITEM(i)->num);
                         item(i);

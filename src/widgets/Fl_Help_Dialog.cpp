@@ -1,6 +1,5 @@
 #include <efltk/Fl_Help_Dialog.h>
 
-#include <efltk/Fl_Locale.h>
 #include "../core/fl_internal.h"
 
 static const char *datas_open[] = {

@@ -201,7 +201,7 @@ bool Fl_Config::read_file(bool create)
     sections.clear();
 
     /////
-    FILE *fp = fopen(filename_, "rw+");
+    FILE *fp = fopen(filename_, "r");
     if(!fp) {
         //fprintf(stderr, "fp == 0: %s\n", filename_);
         _error = CONF_ERR_FILE;
@@ -698,7 +698,7 @@ int Fl_Config::_write_int(Section *s, const char *key, const int value)
 int Fl_Config::_write_float(Section *s, const char *key, const float value)
 {
     char tmp[128];
-    snprintf(tmp, sizeof(tmp)-1, "%f", value);
+    snprintf(tmp, sizeof(tmp)-1, "%g", value);
     return _write_string(s, key, tmp);
 }
 

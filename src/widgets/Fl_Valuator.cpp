@@ -38,10 +38,10 @@ Fl_Valuator::Fl_Valuator(int X, int Y, int W, int H, const char* L)
     set_flag(FL_ALIGN_BOTTOM);
     when(FL_WHEN_CHANGED);
     value_ = 0.0;
-    step_ = 0.1;
+    step_ = 0;
     minimum_ = 0;
     maximum_ = 1;
-    linesize_ = 0.1;
+    linesize_ = 1;
 }
 
 
@@ -76,12 +76,10 @@ double Fl_Valuator::previous_value_;
 void Fl_Valuator::handle_drag(double v)
 {
     // round to nearest multiple of step:
-    if (step_ >= 1)
-    {
+    if (step_ >= 1) {
         v = rint(v/step_)*step_;
     }
-    else if (step_ > 0)
-    {
+    else if (step_ > 0) {
         // Try to detect fractions like .1 which are actually stored as
         // .9999999 and thus would round to unexpected values. This is done
         // by seeing if 1/N is close to an integer:
@@ -97,11 +95,12 @@ void Fl_Valuator::handle_drag(double v)
     else if (v > B && previous_value_ <= B) v = B;
     // store the value, redraw the widget, and do callback:
 
-    if (v != value_)
-    {
+    if (v != value_) {
         value_ = v;
         value_damage();
-        if (when() & FL_WHEN_CHANGED || !Fl::pushed()) do_callback();
+        if (when() & FL_WHEN_CHANGED || !Fl::pushed()) {
+            do_callback();
+        }
         else set_changed();
     }
 }
