@@ -1567,6 +1567,17 @@ int Fl_Input::handle(int event, int X, int Y, int W, int H)
             return replace(position(), mark(), t, n);
         }
 
+        case FL_MOUSEWHEEL:
+        {
+            // Fake Up and Down arrow clicks :)
+            Fl::e_length = 0;
+            if(Fl::event_dy()>0) {
+                Fl::e_keysym = FL_Down;
+            } else {
+                Fl::e_keysym = FL_Up;
+            }
+            return handle_key();
+        }
         default:
             return 0;
     }
