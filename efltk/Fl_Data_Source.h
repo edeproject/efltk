@@ -19,6 +19,7 @@
 #define __FL_DATA_SOURCE_H__
 
 class Fl_Group;
+class Fl_Variant;
 
 class Fl_Data_Source {
    friend class Fl_Group;
@@ -28,13 +29,14 @@ protected:
    // these methods should be implemented in derived class
    virtual bool         load_data() = 0;
    virtual bool         save_data() = 0;
-   virtual const char * read_field(const char *fname) = 0; 
-   virtual const char * write_field(const char *fname) = 0; 
 public:
    // ctor, dtor
    Fl_Data_Source(Fl_Group *group) { parent_ = group; }
    virtual ~Fl_Data_Source() {}
-   
+
+   virtual bool         read_field(const char *fname,Fl_Variant& value) = 0; 
+   virtual bool         write_field(const char *fname,const Fl_Variant& fvalue) = 0; 
+
    // load data into widgets
    bool load();
    // unload data from widgets

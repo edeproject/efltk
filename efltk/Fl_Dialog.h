@@ -66,6 +66,8 @@ enum FGENTRYFLAGS {
 
 #define SINGLE_EDIT_ENTRY_HEIGHT 23
 
+class Fl_Dialog_Data_Source;
+
 class FL_API Fl_Dialog : public Fl_Window {
    typedef Fl_Window inherited;
 
@@ -79,12 +81,17 @@ class FL_API Fl_Dialog : public Fl_Window {
    int             m_buttons;
    int             m_modalResult;
 
+   Fl_Dialog_Data_Source *m_dataSource;
+protected:
    Fl_Widget *find_widget(const char *field_name) const;
+   void loadFromDataSource(Fl_Group *grp);
+   void saveToDataSource(Fl_Group *grp);
 public:
    Fl_Dialog(int w,int h);
+   ~Fl_Dialog();
 
-   const Fl_Widget *operator [] (const char *field_name) const;
-   Fl_Widget * operator [] (const char *field_name);
+   const Fl_Variant& operator [] (const char *field_name) const;
+   Fl_Variant& operator [] (const char *field_name);
 
    int   show_modal();
 
