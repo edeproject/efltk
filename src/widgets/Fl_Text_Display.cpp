@@ -407,22 +407,22 @@ void Fl_Text_Display::layout()
         mLongestVline = 0;
 	
     old_vlines = mNVisibleLines;
-    new_vlines = (text_area.h + mMaxsize - 1) / mMaxsize;
+    new_vlines = ((text_area.h + mMaxsize - 1) / mMaxsize);
     if(new_vlines<0) new_vlines=1;
-
-	// Always?
-	mNBufferLines = count_lines(0, buffer()->length(), true);
-
-    if( (layout_damage() & FL_LAYOUT_W) && mContinuousWrap && !mWrapMargin) 
+	
+    if( /*(layout_damage() & FL_LAYOUT_W) && */mContinuousWrap && !mWrapMargin) 
 	{
         int oldFirstChar = mFirstChar;		
-        mFirstChar = line_start(mFirstChar);
-        mTopLineNum = count_lines(0, mFirstChar, true) + 1;
+		mNBufferLines	= count_lines(0, buffer()->length(), true)+1;
+        mFirstChar		= line_start(mFirstChar);
+        mTopLineNum		= count_lines(0, mFirstChar, true) + 1;
         offset_line_starts(mTopLineNum);
         absolute_top_line_number(oldFirstChar);
     }
 
-    if(new_vlines < mNBufferLines && !mVScrollBar->visible())
+	//printf("Lines: %d %d\n", new_vlines, mNBufferLines);
+
+    if(new_vlines <= mNBufferLines && !mVScrollBar->visible())
     {
         mVScrollBar->set_visible();
         
@@ -475,22 +475,22 @@ void Fl_Text_Display::layout()
         if(!mContinuousWrap || (mContinuousWrap && mWrapMargin>0))
             mLongestVline = longest_vline();
 
-    } else if(mContinuousWrap && !mWrapMargin && (layout_damage()&FL_LAYOUT_W)) {
+    } else if(mContinuousWrap && !mWrapMargin /*&& (layout_damage()&FL_LAYOUT_W)*/) {
 
         calc_line_starts(0, mNVisibleLines);
         calc_last_char();
-
     }
 
-   // everything will fit in the viewport
+	// everything will fit in the viewport
     if (mNBufferLines < mNVisibleLines && mTopLineNum!=1) {
         mTopLineNum = 1;
         redraw();
     }
     else if(mLineStarts[mNVisibleLines-1] == -1) {
        // if empty lines become visible, there may be an opportunity to display more text by scrolling down
-        int newTop = mTopLineNum-1;
-        if(newTop>0) offset_line_starts(newTop);
+        //int newTop = mTopLineNum-1;
+        //if(newTop>0) offset_line_starts(newTop);
+		do_scroll(mTopLineNum-1, mHorizOffset);
     }
 
    // in case horizontal offset is now greater than longest line
@@ -504,8 +504,10 @@ void Fl_Text_Display::layout()
         redraw();
     }
 
-    update_v_scrollbar();
-    update_h_scrollbar();
+	if(layout_damage() & FL_LAYOUT_WH) {
+	    update_v_scrollbar();	
+		update_h_scrollbar();
+	}
 
 	// clear the layout flag
     Fl_Widget::layout();
@@ -1539,7 +1541,7 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip, in
 		clear_rect(0, leftClip, Y, rightClip, fontHeight);
 		return;
 	}
-	printf("DRAW %d, %d\n", visLineNum, Y);
+	//printf("DRAW %d, %d\n", visLineNum, Y);
 
     /* Get the text, length, and  buffer position of the line to display */
     lineStartPos = mLineStarts[ visLineNum ];
@@ -2303,6 +2305,14 @@ void Fl_Text_Display::calc_last_char()
 
 void Fl_Text_Display::scroll(int topLineNum, int horizOffset)
 {
+	do_scroll(topLineNum, horizOffset);
+
+    update_v_scrollbar();
+    update_h_scrollbar();
+}
+
+void Fl_Text_Display::do_scroll(int topLineNum, int horizOffset)
+{
     /* Limit the requested scroll position to allowable values */
     if (topLineNum > mNBufferLines + 3 - mNVisibleLines)
         topLineNum = mNBufferLines + 3 - mNVisibleLines;
@@ -2334,7 +2344,7 @@ void Fl_Text_Display::scroll(int topLineNum, int horizOffset)
       */
     /* Just setting mHorizOffset is enough information for redisplay */
     mHorizOffset = horizOffset;
-
+	
     // redraw all text
     relayout();
     redraw();
@@ -2366,12 +2376,12 @@ void Fl_Text_Display::update_h_scrollbar() {
 */
 void Fl_Text_Display::v_scrollbar_cb(Fl_Scrollbar* b, Fl_Text_Display* textD) { 
     if (b->value() == textD->mTopLineNum) return;
-    textD->scroll(b->value(), textD->mHorizOffset);
+    textD->do_scroll(b->value(), textD->mHorizOffset);
 }
 
 void Fl_Text_Display::h_scrollbar_cb(Fl_Scrollbar* b, Fl_Text_Display* textD) {
     if (b->value() == textD->mHorizOffset) return;
-    textD->scroll(textD->mTopLineNum, b->value());
+    textD->do_scroll(textD->mTopLineNum, b->value());
 }
 
 static int max( int i1, int i2 ) {

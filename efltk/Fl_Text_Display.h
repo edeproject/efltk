@@ -143,6 +143,8 @@ public:
     void cursor_color(Fl_Color c) { mCursor_color = c; }
 
 protected:
+	void do_scroll(int topLineNum, int horizOffset);
+
     // Most (all?) of this stuff should only be called from layout() or
     // draw().
     // Anything with "vline" indicates thats it deals with currently
