@@ -32,7 +32,7 @@ public:
 
 #define fl_try try
 #define fl_catch(exception_variable) catch(Fl_Exception& exception_variable)
-#define fl_throw(a) throw a
+#define fl_throw(a) throw Fl_Exception(a,__FILE__,__LINE__)
 
 #else
 
