@@ -370,15 +370,16 @@ int Fl_Text_Display::longest_vline() {
     return longest;
 }
 
-/*
-** Change the size of the displayed text area
-*/
+/**
+ * Change the size of the displayed text area
+ */
 void Fl_Text_Display::layout() 
 {
     if(!visible_r() || !layout_damage() || !buffer() ) {
         return;
     }
 
+	int old_vlines, new_vlines;
     int X = 0, Y = 0, W = w(), H = h();
     box()->inset(X, Y, W, H);
 
@@ -404,39 +405,45 @@ void Fl_Text_Display::layout()
         mLongestVline = longest_vline();
     else
         mLongestVline = 0;
-
-    int old_vlines = mNVisibleLines;
-    int new_vlines = (text_area.h + mMaxsize - 1) / mMaxsize;
+	
+    old_vlines = mNVisibleLines;
+    new_vlines = (text_area.h + mMaxsize - 1) / mMaxsize;
     if(new_vlines<0) new_vlines=1;
 
-    if( (layout_damage() & FL_LAYOUT_W) && mContinuousWrap && !mWrapMargin) {
-        int oldFirstChar = mFirstChar;
-        mNBufferLines = count_lines(0, buffer()->length(), true);
+	// Always?
+	mNBufferLines = count_lines(0, buffer()->length(), true);
+
+    if( (layout_damage() & FL_LAYOUT_W) && mContinuousWrap && !mWrapMargin) 
+	{
+        int oldFirstChar = mFirstChar;		
         mFirstChar = line_start(mFirstChar);
         mTopLineNum = count_lines(0, mFirstChar, true) + 1;
         offset_line_starts(mTopLineNum);
         absolute_top_line_number(oldFirstChar);
     }
 
-    if(new_vlines <= mNBufferLines)
+    if(new_vlines < mNBufferLines && !mVScrollBar->visible())
     {
         mVScrollBar->set_visible();
-        if (scrollbar_align() & FL_ALIGN_LEFT) {
+        
+		if (scrollbar_align() & FL_ALIGN_LEFT) {
             text_area.x = X+scrollbar_width()+LEFT_MARGIN + mLineNumLeft + mLineNumWidth;
             text_area.w = W-scrollbar_width()-LEFT_MARGIN-RIGHT_MARGIN - mLineNumWidth - mLineNumLeft;
             mVScrollBar->resize(X, text_area.y-TOP_MARGIN, scrollbar_width(), text_area.h+TOP_MARGIN+BOTTOM_MARGIN);
         } else {
             text_area.x = X+LEFT_MARGIN + mLineNumLeft + mLineNumWidth;
             text_area.w = W-scrollbar_width()-LEFT_MARGIN-RIGHT_MARGIN - mLineNumWidth - mLineNumLeft;
-            mVScrollBar->resize(X+W-scrollbar_width(), text_area.y-TOP_MARGIN,
-                scrollbar_width(), text_area.h+TOP_MARGIN+BOTTOM_MARGIN);
-        }
+            mVScrollBar->resize(X+W-scrollbar_width(), text_area.y-TOP_MARGIN, scrollbar_width(), text_area.h+TOP_MARGIN+BOTTOM_MARGIN);
+        }		
     }
 
-    if(!mContinuousWrap || (mContinuousWrap && mWrapMargin>0)) {
-        if( scrollbar_align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM) && (mVScrollBar->visible() || mLongestVline > text_area.w))
+    if(!mContinuousWrap || (mContinuousWrap && mWrapMargin>0)) 
+	{
+        if( scrollbar_align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM) && 
+			(mVScrollBar->visible() || mLongestVline > text_area.w))
         {
             mHScrollBar->set_visible();
+
             if (scrollbar_align() & FL_ALIGN_TOP) {
                 text_area.y = Y + scrollbar_width()+TOP_MARGIN;
                 text_area.h = H - scrollbar_width()-TOP_MARGIN-BOTTOM_MARGIN;
@@ -448,11 +455,12 @@ void Fl_Text_Display::layout()
                 mHScrollBar->resize(text_area.x-LEFT_MARGIN, Y+H-scrollbar_width(), text_area.w+LEFT_MARGIN+RIGHT_MARGIN, scrollbar_width());
                 mVScrollBar->resize(X+W-scrollbar_width(), text_area.y-TOP_MARGIN, scrollbar_width(), text_area.h+TOP_MARGIN+BOTTOM_MARGIN);
             }
-            new_vlines = (text_area.h + mMaxsize - 1) / mMaxsize;
+            new_vlines = (text_area.h + mMaxsize - 1) / mMaxsize;			
         }
     }
+	new_vlines--;
 
-   // Re-check vertical scrollbar!
+	// Re-check vertical scrollbar!
     if(new_vlines < mNBufferLines && !mVScrollBar->visible()) {
         mVScrollBar->set_visible();
     }
@@ -499,14 +507,14 @@ void Fl_Text_Display::layout()
     update_v_scrollbar();
     update_h_scrollbar();
 
-   // clear the layout flag
+	// clear the layout flag
     Fl_Widget::layout();
 }
 
-/*
-** Refresh a rectangle of the text display.  left and top are in coordinates of
-** the text drawing window
-*/
+/**
+ * Refresh a rectangle of the text display.  left and top are in coordinates of
+ * the text drawing window
+ */
 void Fl_Text_Display::draw_text( int left, int top, int width, int height ) 
 {
     if(width<1 || height<1) return;
@@ -518,6 +526,7 @@ void Fl_Text_Display::draw_text( int left, int top, int width, int height )
     firstLine = ( top - text_area.y - fontHeight + 1 ) / fontHeight;
     lastLine = ( top + height - text_area.y ) / fontHeight;
     lastLine++;
+
     fl_push_clip( left, top, width, height );
 
     /* draw the lines */
@@ -1006,7 +1015,7 @@ int Fl_Text_Display::find_next_char(int pos)
     do {
         again = false;
         while(true) {
-            if(pos <= 0) return 0;
+            if(pos < 0) return 0;
             c = buffer()->character( pos++ );
             if(!((c & 0x80) && !(c & 0x40))) break;
         }
@@ -1047,9 +1056,9 @@ int Fl_Text_Display::find_prev_char(int pos)
     return len;
 }
 
-/*
-** Cursor movement functions
-*/
+/**
+ * Cursor movement functions
+ */
 int Fl_Text_Display::move_right() {
 #if HAVE_XUTF8
     insert_position( mCursorPos + find_next_char(insert_position()) );
@@ -1317,12 +1326,16 @@ void Fl_Text_Display::buffer_predelete_cb(int pos, int nDeleted, void *cbArg)
 } 
 
 
-/*
-** Callback attached to the text buffer to receive modification information
-*/
+/**
+ * Callback attached to the text buffer to receive modification information
+ */
 void Fl_Text_Display::buffer_modified_cb(int pos, int nInserted, int nDeleted,
     int nRestyled, const char *deletedText, void *cbArg )
 {
+	//////////////////////////////////
+	// TODO: OPTIMIZE THIS FUNCTION //
+	//////////////////////////////////
+
     int linesInserted, linesDeleted, startDispPos, endDispPos;
     Fl_Text_Display *textD = ( Fl_Text_Display * ) cbArg;
     Fl_Text_Buffer *buf = textD->mBuffer;
@@ -1500,15 +1513,14 @@ int Fl_Text_Display::position_to_line( int pos, int *lineNum )
     return 0;   /* probably never be reached */
 }
 
-/*
-** Draw the text on a single line represented by "visLineNum" (the
-** number of lines down from the top of the display), limited by
-** "leftClip" and "rightClip" window coordinates and "leftCharIndex" and
-** "rightCharIndex" character positions (not including the character at
-** position "rightCharIndex").
-*/
-void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
-    int leftCharIndex, int rightCharIndex) 
+/**
+ * Draw the text on a single line represented by "visLineNum" (the
+ * number of lines down from the top of the display), limited by
+ * "leftClip" and "rightClip" window coordinates and "leftCharIndex" and
+ * "rightCharIndex" character positions (not including the character at
+ * position "rightCharIndex").
+ */
+void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip, int leftCharIndex, int rightCharIndex) 
 {
     Fl_Text_Buffer * buf = mBuffer;
     int i, X, Y, startX, charIndex, lineStartPos, lineLen, fontHeight;
@@ -1516,15 +1528,18 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
     int charLen, outStartIndex, outIndex; //hasCursor=0, cursorX=0;
     int dispIndexOffset;//, cursorPos = mCursorPos;
     char expandedChar[ FL_TEXT_MAX_EXP_CHAR_LEN ], outStr[ MAX_DISP_LINE_LEN ];
-    char    *outPtr;
-
-    /* If line is not displayed, skip it */
-    if ( visLineNum < 0 || visLineNum > mNVisibleLines )
-        return;
+    char *outPtr;
 
     /* Calculate Y coordinate of the string to draw */
     fontHeight = mMaxsize;
     Y = text_area.y + visLineNum * fontHeight;
+
+    /* If line is not displayed, skip it */
+    if ( visLineNum < 0 || visLineNum >= mNVisibleLines ) {		
+		clear_rect(0, leftClip, Y, rightClip, fontHeight);
+		return;
+	}
+	printf("DRAW %d, %d\n", visLineNum, Y);
 
     /* Get the text, length, and  buffer position of the line to display */
     lineStartPos = mLineStarts[ visLineNum ];
@@ -1751,8 +1766,8 @@ void Fl_Text_Display::draw_string( int style, int X, int Y, int toX,
         background = color();
     }
 
-    fl_color(background);
-    fl_rectf( X, Y, toX - X , mMaxsize );
+	fl_color(background);
+	fl_rectf( X, Y, toX - X , mMaxsize );
 
     if(styleRec && styleRec->attr==ATTR_IMAGE && styleRec->image) {
         int iX = X;
@@ -1772,12 +1787,12 @@ void Fl_Text_Display::draw_string( int style, int X, int Y, int toX,
 
 }
 
-/*
-** Clear a rectangle with the appropriate background color for "style"
-*/
-void Fl_Text_Display::clear_rect( int style, int X, int Y,
-int width, int height ) {
-  /* A width of zero means "clear to end of window" to XClearArea */
+/**
+ * Clear a rectangle with the appropriate background color for "style"
+ */
+void Fl_Text_Display::clear_rect(int style, int X, int Y, int width, int height) 
+{
+	/* A width of zero means "clear to end of window" to XClearArea */
     if ( width == 0 )
         return;
 
@@ -1793,17 +1808,14 @@ int width, int height ) {
     }
 }
 
-
-
-/*
-** Draw a cursor with top center at X, y.
-*/
-void Fl_Text_Display::draw_cursor( int X, int Y ) 
+/**
+ * Draw a cursor with top center at X, y.
+ */
+void Fl_Text_Display::draw_cursor(int X, int Y) 
 {
     typedef struct {
         int x1, y1, x2, y2;
-    }
-    Segment;
+    } Segment;
 
     Segment segs[ 5 ];
     int left, right, cursorWidth, midY;  
@@ -1825,35 +1837,54 @@ void Fl_Text_Display::draw_cursor( int X, int Y )
   /* Create segments and draw cursor */
     if ( mCursorStyle == CARET_CURSOR ) {
         midY = bot - fontHeight / 5;
-        segs[ 0 ].x1 = left; segs[ 0 ].y1 = bot; segs[ 0 ].x2 = X; segs[ 0 ].y2 = midY;
-        segs[ 1 ].x1 = X; segs[ 1 ].y1 = midY; segs[ 1 ].x2 = right; segs[ 1 ].y2 = bot;
-        segs[ 2 ].x1 = left; segs[ 2 ].y1 = bot; segs[ 2 ].x2 = X; segs[ 2 ].y2 = midY - 1;
-        segs[ 3 ].x1 = X; segs[ 3 ].y1 = midY - 1; segs[ 3 ].x2 = right; segs[ 3 ].y2 = bot;
+        segs[ 0 ].x1 = left;	segs[ 0 ].y1 = bot; 
+		segs[ 0 ].x2 = X;		segs[ 0 ].y2 = midY;
+        segs[ 1 ].x1 = X;		segs[ 1 ].y1 = midY; 
+		segs[ 1 ].x2 = right;	segs[ 1 ].y2 = bot;
+        segs[ 2 ].x1 = left;	segs[ 2 ].y1 = bot; 
+		segs[ 2 ].x2 = X;		segs[ 2 ].y2 = midY - 1;
+        segs[ 3 ].x1 = X;		segs[ 3 ].y1 = midY - 1; 
+		segs[ 3 ].x2 = right;	segs[ 3 ].y2 = bot;
         nSegs = 4;
     } else if ( mCursorStyle == NORMAL_CURSOR ) {
-        segs[ 0 ].x1 = left; segs[ 0 ].y1 = Y; segs[ 0 ].x2 = right; segs[ 0 ].y2 = Y;
-        segs[ 1 ].x1 = X; segs[ 1 ].y1 = Y; segs[ 1 ].x2 = X; segs[ 1 ].y2 = bot;
-        segs[ 2 ].x1 = left; segs[ 2 ].y1 = bot; segs[ 2 ].x2 = right; segs[ 2 ].y2 = bot;
+        segs[ 0 ].x1 = left;	segs[ 0 ].y1 = Y; 
+		segs[ 0 ].x2 = right;	segs[ 0 ].y2 = Y;
+        segs[ 1 ].x1 = X;		segs[ 1 ].y1 = Y; 
+		segs[ 1 ].x2 = X;		segs[ 1 ].y2 = bot;
+        segs[ 2 ].x1 = left;	segs[ 2 ].y1 = bot; 
+		segs[ 2 ].x2 = right;	segs[ 2 ].y2 = bot;
         nSegs = 3;
     } else if ( mCursorStyle == HEAVY_CURSOR ) {
-        segs[ 0 ].x1 = X - 1; segs[ 0 ].y1 = Y; segs[ 0 ].x2 = X - 1; segs[ 0 ].y2 = bot;
-        segs[ 1 ].x1 = X; segs[ 1 ].y1 = Y; segs[ 1 ].x2 = X; segs[ 1 ].y2 = bot;
-        segs[ 2 ].x1 = X + 1; segs[ 2 ].y1 = Y; segs[ 2 ].x2 = X + 1; segs[ 2 ].y2 = bot;
-        segs[ 3 ].x1 = left; segs[ 3 ].y1 = Y; segs[ 3 ].x2 = right; segs[ 3 ].y2 = Y;
-        segs[ 4 ].x1 = left; segs[ 4 ].y1 = bot; segs[ 4 ].x2 = right; segs[ 4 ].y2 = bot;
+        segs[ 0 ].x1 = X - 1;	segs[ 0 ].y1 = Y; 
+		segs[ 0 ].x2 = X - 1;	segs[ 0 ].y2 = bot;
+        segs[ 1 ].x1 = X;		segs[ 1 ].y1 = Y; 
+		segs[ 1 ].x2 = X;		segs[ 1 ].y2 = bot;
+        segs[ 2 ].x1 = X + 1;	segs[ 2 ].y1 = Y; 
+		segs[ 2 ].x2 = X + 1;	segs[ 2 ].y2 = bot;
+        segs[ 3 ].x1 = left;	segs[ 3 ].y1 = Y; 
+		segs[ 3 ].x2 = right;	segs[ 3 ].y2 = Y;
+        segs[ 4 ].x1 = left;	segs[ 4 ].y1 = bot; 
+		segs[ 4 ].x2 = right;	segs[ 4 ].y2 = bot;
         nSegs = 5;
     } else if ( mCursorStyle == DIM_CURSOR ) {
         midY = Y + fontHeight / 2;
-        segs[ 0 ].x1 = X; segs[ 0 ].y1 = Y; segs[ 0 ].x2 = X; segs[ 0 ].y2 = Y;
-        segs[ 1 ].x1 = X; segs[ 1 ].y1 = midY; segs[ 1 ].x2 = X; segs[ 1 ].y2 = midY;
-        segs[ 2 ].x1 = X; segs[ 2 ].y1 = bot; segs[ 2 ].x2 = X; segs[ 2 ].y2 = bot;
+        segs[ 0 ].x1 = X;		segs[ 0 ].y1 = Y; 
+		segs[ 0 ].x2 = X;		segs[ 0 ].y2 = Y;
+        segs[ 1 ].x1 = X;		segs[ 1 ].y1 = midY; 
+		segs[ 1 ].x2 = X;		segs[ 1 ].y2 = midY;
+        segs[ 2 ].x1 = X;		segs[ 2 ].y1 = bot; 
+		segs[ 2 ].x2 = X;		segs[ 2 ].y2 = bot;
         nSegs = 3;
     } else if ( mCursorStyle == BLOCK_CURSOR ) {
         right = X + fontWidth;
-        segs[ 0 ].x1 = X; segs[ 0 ].y1 = Y; segs[ 0 ].x2 = right; segs[ 0 ].y2 = Y;
-        segs[ 1 ].x1 = right; segs[ 1 ].y1 = Y; segs[ 1 ].x2 = right; segs[ 1 ].y2 = bot;
-        segs[ 2 ].x1 = right; segs[ 2 ].y1 = bot; segs[ 2 ].x2 = X; segs[ 2 ].y2 = bot;
-        segs[ 3 ].x1 = X; segs[ 3 ].y1 = bot; segs[ 3 ].x2 = X; segs[ 3 ].y2 = Y;
+        segs[ 0 ].x1 = X;		segs[ 0 ].y1 = Y; 
+		segs[ 0 ].x2 = right;	segs[ 0 ].y2 = Y;
+        segs[ 1 ].x1 = right;	segs[ 1 ].y1 = Y; 
+		segs[ 1 ].x2 = right;	segs[ 1 ].y2 = bot;
+        segs[ 2 ].x1 = right;	segs[ 2 ].y1 = bot; 
+		segs[ 2 ].x2 = X;		segs[ 2 ].y2 = bot;
+        segs[ 3 ].x1 = X;		segs[ 3 ].y1 = bot; 
+		segs[ 3 ].x2 = X;		segs[ 3 ].y2 = Y;
         nSegs = 4;
     }
     fl_color( mCursor_color );
@@ -1863,24 +1894,23 @@ void Fl_Text_Display::draw_cursor( int X, int Y )
     }
 }
 
-/*
-** Determine the drawing method to use to draw a specific character from "buf".
-** "lineStartPos" gives the character index where the line begins, "lineIndex",
-** the number of characters past the beginning of the line, and "dispIndex",
-** the number of displayed characters past the beginning of the line.  Passing
-** lineStartPos of -1 returns the drawing style for "no text".
-**
-** Why not just: position_style(pos)?  Because style applies to blank areas
-** of the window beyond the text boundaries, and because this routine must also
-** decide whether a position is inside of a rectangular Fl_Text_Selection, and do
-** so efficiently, without re-counting character positions from the start of the
-** line.
-**
-** Note that style is a somewhat incorrect name, drawing method would
-** be more appropriate.
-*/
-int Fl_Text_Display::position_style( int lineStartPos,
-    int lineLen, int lineIndex, int dispIndex ) 
+/**
+ * Determine the drawing method to use to draw a specific character from "buf".
+ * "lineStartPos" gives the character index where the line begins, "lineIndex",
+ * the number of characters past the beginning of the line, and "dispIndex",
+ * the number of displayed characters past the beginning of the line.  Passing
+ * lineStartPos of -1 returns the drawing style for "no text".
+ *
+ * Why not just: position_style(pos)?  Because style applies to blank areas
+ * of the window beyond the text boundaries, and because this routine must also
+ * decide whether a position is inside of a rectangular Fl_Text_Selection, and do
+ * so efficiently, without re-counting character positions from the start of the
+ * line.
+ *
+ * Note that style is a somewhat incorrect name, drawing method would
+ * be more appropriate.
+ */
+int Fl_Text_Display::position_style(int lineStartPos, int lineLen, int lineIndex, int dispIndex) 
 {
     Fl_Text_Buffer * buf = mBuffer;
     Fl_Text_Buffer *styleBuf = mStyleBuffer;
@@ -1915,52 +1945,44 @@ int Fl_Text_Display::position_style( int lineStartPos,
 */
 int Fl_Text_Display::string_width( const char *string, int length, int style ) 
 {
-   //static int last_style = -1;
+    int mask = style & STYLE_LOOKUP_MASK;	    
+    if (mask) 
+	{
+		int si = mask - 'A';
+        
+		if(si < 0)				si = 0;
+        else if(si >= mNStyles) si = mNStyles - 1;
 
-    int mask = style & STYLE_LOOKUP_MASK;
+        Style_Table_Entry *style_entry = mStyleTable + si;
 
-    if (mask) {
-        int si = mask - 'A';
-        if ( si < mNStyles) {
-            if (si < 0) si = 0;
-            else if (si >= mNStyles) si = mNStyles - 1;
+        if(style_entry->attr == ATTR_IMAGE && style_entry->image) {
+			int iW=0;
+            for(int n=0; n<length; n++) {
+				iW += style_entry->image->width();
+			}
+            return iW;
+		}
 
-            Style_Table_Entry *style_entry = mStyleTable + si;
-
-            if(style_entry->attr == ATTR_IMAGE && style_entry->image) {
-                int iW=0;
-                for(int n=0; n<length; n++) {
-                    iW += style_entry->image->width();
-                }
-                return iW;
-            }
-
-         //if (style != last_style)
-            fl_font(style_entry->font, style_entry->size);
-        }
+		fl_font(style_entry->font, style_entry->size);
     } else {
-      //if (style != last_style)
         fl_font(text_font(), text_size());
     }
 
-   //last_style = style;
-
-    return (int)fl_width( string, length );
+    return (int)fl_width(string, length);
 }
 
-/*
-** Translate window coordinates to the nearest (insert cursor or character
-** cell) text position.  The parameter posType specifies how to interpret the
-** position: CURSOR_POS means translate the coordinates to the nearest cursor
-** position, and CHARACTER_POS means return the position of the character
-** closest to (X, Y).
-*/
-int Fl_Text_Display::xy_to_position( int X, int Y, int posType ) 
+/**
+ * Translate window coordinates to the nearest (insert cursor or character
+ * cell) text position.  The parameter posType specifies how to interpret the
+ * position: CURSOR_POS means translate the coordinates to the nearest cursor
+ * position, and CHARACTER_POS means return the position of the character
+ * closest to (X, Y).
+ */
+int Fl_Text_Display::xy_to_position(int X, int Y, int posType) 
 {
     int charIndex, lineStart, lineLen, fontHeight;
     int charWidth, charLen, charStyle, visLineNum, xStep, outIndex;
-    char expandedChar[ FL_TEXT_MAX_EXP_CHAR_LEN ];
-    const char *lineStr;
+    char expandedChar[ FL_TEXT_MAX_EXP_CHAR_LEN ];    
 
     /* Find the visible line number corresponding to the Y coordinate */
     fontHeight = mMaxsize;
@@ -1979,7 +2001,7 @@ int Fl_Text_Display::xy_to_position( int X, int Y, int posType )
 
     /* Get the line text and its length */
     lineLen = vline_length( visLineNum );
-    lineStr = mBuffer->text_range( lineStart, lineStart + lineLen );
+	mBuffer->text_range(m_lineBuffer, lineStart, lineStart + lineLen);
 
     /* Step through character positions from the beginning of the line
      to find the character position corresponding to the X coordinate */
@@ -1987,23 +2009,21 @@ int Fl_Text_Display::xy_to_position( int X, int Y, int posType )
     outIndex = 0;
     for ( charIndex = 0; charIndex < lineLen; charIndex++ )
     {
-        charLen = Fl_Text_Buffer::expand_character( lineStr[ charIndex ], outIndex, expandedChar,
-                mBuffer->tab_distance() );
+        charLen = Fl_Text_Buffer::expand_character(m_lineBuffer[ charIndex ], outIndex, expandedChar, mBuffer->tab_distance());
 #if HAVE_XUTF8
-        if (charLen > 1 && (lineStr[ charIndex ] & 0x80)) {
+        if (charLen > 1 && (m_lineBuffer[ charIndex ] & 0x80)) {
             int i, ii = 0;;
-            i = fl_utf_charlen(lineStr[ charIndex ]);
+            i = fl_utf_charlen(m_lineBuffer[ charIndex ]);
             while (i > 1) {
                 i--;
                 ii++;
-                expandedChar[ii] = lineStr[ charIndex + ii];
+                expandedChar[ii] = m_lineBuffer[ charIndex + ii];
             }
         }
 #endif
         charStyle = position_style( lineStart, lineLen, charIndex, outIndex );
         charWidth = string_width( expandedChar, charLen, charStyle );
         if ( X < xStep + ( posType == CURSOR_POS ? charWidth / 2 : charWidth ) ) {
-            delete [] (char *)lineStr;
             return lineStart + charIndex;
         }
         xStep += charWidth;
@@ -2011,21 +2031,20 @@ int Fl_Text_Display::xy_to_position( int X, int Y, int posType )
     }
 
     /* If the X position was beyond the end of the line, return the position
-     of the newline at the end of the line */
-    delete [] (char *)lineStr;
+       of the newline at the end of the line */
     return lineStart + lineLen;
 }
 
-/*
-** Translate window coordinates to the nearest row and column number for
-** positioning the cursor.  This, of course, makes no sense when the font is
-** proportional, since there are no absolute columns.  The parameter posType
-** specifies how to interpret the position: CURSOR_POS means translate the
-** coordinates to the nearest position between characters, and CHARACTER_POS
-** means translate the position to the nearest character cell.
-*/
-void Fl_Text_Display::xy_to_rowcol( int X, int Y, int *row,
-int *column, int posType ) {
+/**
+ * Translate window coordinates to the nearest row and column number for
+ * positioning the cursor.  This, of course, makes no sense when the font is
+ * proportional, since there are no absolute columns.  The parameter posType
+ * specifies how to interpret the position: CURSOR_POS means translate the
+ * coordinates to the nearest position between characters, and CHARACTER_POS
+ * means translate the position to the nearest character cell.
+ */
+void Fl_Text_Display::xy_to_rowcol( int X, int Y, int *row, int *column, int posType ) 
+{
     int fontHeight = mMaxsize;
     int fontWidth = mMaxFontBound;//TMPFONTWIDTH; //mFontStruct->max_bounds.width;
 
@@ -3046,8 +3065,7 @@ void Fl_Text_Display::draw() {
             fl_color(parent()?parent()->color():color());
             fl_rectf(mVScrollBar->x(), mHScrollBar->y(),
                 mVScrollBar->w(), mHScrollBar->h());
-        }
-
+        }		
         draw_line_numbers(true);
 
         // blank the previous cursor protrusions
@@ -3082,12 +3100,13 @@ void Fl_Text_Display::draw() {
         //printf("drawing all text\n");
         int X, Y, W, H;
         if (fl_clip_box(text_area.x, text_area.y, text_area.w, text_area.h,
-                    X, Y, W, H)) {
+						X, Y, W, H)) 
+		{
             // Draw text using the intersected clipping box...
             // (this sets the clipping internally)
             draw_text(X, Y, W, H);
         } else {
-            // Draw the whole area...
+            // Draw the whole area...			
             draw_text(text_area.x, text_area.y, text_area.w, text_area.h);
         }
     }
@@ -3323,7 +3342,7 @@ void Fl_Text_Display::draw_line_numbers(bool clearAll)
     y = Y+lineHeight;
     line = get_absolute_top_line_number();
 
-    for (visLine=0; visLine < mNVisibleLines-1; visLine++)
+    for (visLine=0; visLine < mNVisibleLines; visLine++)
     {
         lineStart = mLineStarts[visLine];
         if(lineStart != -1 && (lineStart==0 || buffer()->character(lineStart-1)=='\n'))
