@@ -173,6 +173,7 @@ public:
     inline void prepend(T *item) {
         Item *temp = new Item(item);
         if(First) First->prev = temp;
+        if(!Last) Last=temp;
         temp->next = First;
         temp->prev = 0;
         First = temp;
