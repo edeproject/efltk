@@ -47,14 +47,6 @@ public:
 
     virtual int handle(int);
 
-    void maxw(int i) { maxw_ = i; }
-    void maxh(int i) { maxh_ = i; }
-    int maxw() { return maxw_; }
-    int maxh() { return maxh_; }
-
-    int minw() { return minw_; }
-    int minh() { return minh_; }
-
     void clear() { Fl_Menu_::clear(); item(0); }
 
     void value(const char *v) { input_->value(v); }
@@ -72,8 +64,7 @@ protected:
     ComboBrowser *list;
 
     Fl_Input *input_;
-    int minw_, minh_, maxw_, maxh_;
-    int over_now, over_last;
+    bool over_now, over_last;
 
     static void input_cb(Fl_Input *in, void *d);
 };

@@ -206,6 +206,11 @@ void Fl_Input_Browser::input_cb(Fl_Input *in, void *data) {
     ((Fl_Input_Browser *)data)->do_callback();
 }
 
+#define popup_minw 100
+#define popup_minh 30
+#define popup_maxw 600
+#define popup_maxh 400
+
 Fl_Input_Browser::Fl_Input_Browser(int x, int y, int w, int h, const char *l)
 : Fl_Menu_(x, y, w, h, l)
 {
@@ -219,9 +224,6 @@ Fl_Input_Browser::Fl_Input_Browser(int x, int y, int w, int h, const char *l)
     input_->when(FL_WHEN_CHANGED | FL_WHEN_ENTER_KEY_ALWAYS);
     input_->callback((Fl_Callback *)input_cb, this);
 
-    minh_ = 10;
-    maxw_ = 600;
-    maxh_ = 400;
     over_now = 0; over_last = 1;
 
     win = 0; list = 0;
@@ -281,7 +283,7 @@ void Fl_Input_Browser::draw()
 {
     Fl_Flags f = flags();
     if (!active_r()) f |= FL_INACTIVE;
-    minw_ = w();
+    //minw_ = w();
     if (damage()&FL_DAMAGE_ALL) draw_frame();
     int X = 0, Y = 0, W = w(), H = h(); box()->inset(X, Y, W, H);
     int W1 = H*4/5;
@@ -348,12 +350,12 @@ void Fl_Input_Browser::popup()
         resize_only = true;
 
     list->layout();
-    int W = list->width() + list->scrollbar.w() + list->box()->dw();
-    int H = list->height() + box()->dh() + SIZE_GRIP;
-    if(W > maxw_) W = maxw_;
-    if(H > maxh_) H = maxh_;
-    if(W < minw_) W = minw_;
-    if(H < minh_) H = minh_;
+    int W = list->max_width() + list->scrollbar.w() + list->box()->dw();
+    int H = list->max_height() + box()->dh() + SIZE_GRIP;
+    if(W > popup_maxw) W = popup_maxw;
+    if(H > popup_maxh) H = popup_maxh;
+    if(W < popup_minw) W = popup_minw;
+    if(H < popup_minh) H = popup_minh;
     int X = x(); int Y = y()+h();
     for (Fl_Widget *o = parent(); o; o = o->parent()) {
         X += o->x(); Y += o->y();

@@ -634,7 +634,6 @@ void Fl_File_Dialog::make_group(int w, int h)
 
         //location_ = new Fl_FileInput(55, 0, w-120, 25, "Location:");
         location_ = new Fl_Input_Browser(60, 0, w-130, 23, _("Location:"));
-        location_->maxh(200);
         location_->callback(cb_location, this);
         location_->when(FL_WHEN_CHANGED | FL_WHEN_ENTER_KEY_ALWAYS);
         location_->end();
