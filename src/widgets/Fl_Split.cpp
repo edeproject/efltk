@@ -2,28 +2,36 @@
 #include <efltk/fl_draw.h>
 #include <efltk/Fl.h>
 
+/////////////////
+// Someonr please tell me
+// why this needs to be derived from Fl_Box?!?
+// I tried Fl_Widget, which is 99% same as Fl_Box.. 
+// - Mikko
+/////////////////
+
 static void revert(Fl_Style* s)
 {
     s->color = FL_DARK1;
-    s->box = FL_THIN_UP_BOX;
+    s->box = FL_UP_BOX;
 }
 
 static Fl_Named_Style style("Split", revert, &Fl_Split::default_style);
 Fl_Named_Style* Fl_Split::default_style = &::style;
 
-Fl_Split::Fl_Split(int x,int y,int w,int h)
-    :Fl_Box(x,y,w,h),ref_(NULL)
+Fl_Split::Fl_Split(int x,int y,int w,int h,const char *l)
+    : Fl_Box(x,y,w,h,l), ref_(NULL)
 {
 	style(default_style);    
     dir_=(w<h);
 }
 
 Fl_Split::Fl_Split(Fl_Widget * _ref_,int layout_size)
-    :Fl_Box("",layout_size,(FlagsEnum)_ref_->layout_align()),ref_(_ref_)
+    : Fl_Box("",layout_size,(FlagsEnum)_ref_->layout_align()), ref_(_ref_)
 {
     style(default_style);
     // dir_ is set to 1 when the splitter is vertical and is set to 0 when horizontal
     dir_=(layout_align()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT));
+	//align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE); //Fl_Box does this
 }
     
 int Fl_Split::handle(int ev)
@@ -35,6 +43,7 @@ int Fl_Split::handle(int ev)
     int ny=Fl::event_y(); // current y
     int dx,dy;
     Fl_Widget * client=NULL;
+
     switch (ev){
         //// When the mouse enters, change the cursor, so the user sees what he can do
         case FL_ENTER:
@@ -113,7 +122,7 @@ int Fl_Split::handle(int ev)
 							default: break;
                         }
                     }
-                    // na dnow finally resize the widget
+                    // and now finally resize the widget
                     if (dir_){ // vertical
                         if (layout_align()&FL_ALIGN_LEFT){
                             nw+=dx;
@@ -184,5 +193,5 @@ int Fl_Split::handle(int ev)
             }
             return 1;
     }
-    return Fl_Box::handle(ev);
+    return Fl_Widget::handle(ev);
 }

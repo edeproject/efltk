@@ -1,3 +1,24 @@
+/*
+ * $Id$
+ *
+ * Extended Fast Light Toolkit (EFLTK)
+ * Copyright (C) 2002-2003 by EDE-Team
+ * WWW: http://www.sourceforge.net/projects/ede
+ *
+ * Fast Light Toolkit (FLTK)
+ * Copyright (C) 1998-2003 by Bill Spitzak and others.
+ * WWW: http://www.fltk.org
+ *
+ * This library is distributed under the GNU LIBRARY GENERAL PUBLIC LICENSE
+ * version 2. See COPYING for details.
+ *
+ * Author : Szasz Pal
+ * Email  : space2@atlastelecom.ro
+ *
+ * Please report all bugs and problems to "efltk-bugs@fltk.net"
+ *
+ */
+
 #ifndef _FL_SPLIT_H_
 #define _FL_SPLIT_H_
 
@@ -35,7 +56,7 @@ public:
 	static Fl_Named_Style* default_style;
 
 	/// This constructor should be used, when you use the old style widget positioning
-    Fl_Split(int x,int y,int w,int h);
+    Fl_Split(int x, int y, int w, int h, const char *l=0);
 
     /**
      * This constructor should be use with the new layout design
@@ -44,7 +65,7 @@ public:
      * \note The layout_align of the splitter will be identicall
      * with the layout_align of _ref_
      */
-     Fl_Split(Fl_Widget * _ref_,int layout_size=5);
+     Fl_Split(Fl_Widget * _ref_, int layout_size=5);
      
 	 virtual int handle(int ev);
 };
