@@ -299,12 +299,6 @@ static const Fl_Dialog_Button_Template buttonTemplates[] = {
     { 0,             "",       &pixmap_help }
 };
 
-Fl_Variant& Fl_Dialog_Data_Source::operator [] (const char *field_name) {
-    int fieldIndex = field_index(field_name);
-    if (fieldIndex < 0) m_fields.add(field_name);
-    return m_fields[field_name];
-}
-
 void Fl_Dialog::escape_callback(Fl_Dialog *dialog, void *) {
     if (dialog->m_buttons & Fl_Dialog::BTN_CANCEL) {
         Fl::exit_modal();
@@ -343,7 +337,7 @@ Fl_Dialog::Fl_Dialog(int ww, int hh, const char *label, Fl_Data_Source *ds)
     m_externalDataSource = (ds != NULL);
 
     if (ds) m_dataSource = ds;
-    else    m_dataSource = new Fl_Dialog_Data_Source(m_tabs);
+    else    m_dataSource = new Fl_Dialog_DS(m_tabs);
 
     callback((Fl_Callback*)escape_callback);
 }
