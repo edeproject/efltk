@@ -10,6 +10,11 @@
 #include "Fl_XmlTokenizer.h"
 
 /**
+ * \defgroup XML eFLTK XML module
+ */
+/*@{*/
+
+/**
  * EFLTK xml extension throws Fl_XmlException type exceptions.
  * You should catch always atleast these type of exceptions,
  * when processing XML.
@@ -85,5 +90,6 @@ private:
 #define FL_XML_EQUAL_EXPECTED			Fl_XmlException::EQUAL_EXPECTED
 #define FL_XML_VALUE_EXPECTED			Fl_XmlException::VALUE_EXPECTED
 
-#endif
+/*@}*/
 
+#endif

@@ -30,59 +30,156 @@
 class Fl_Button;
 class Fl_Tabs;
 
-/** Fl_Dialog */
+/**
+ * The Fl_Dialog is standard dialog window for eFLTK.
+ * Idea is to provide standard look and feel for all dialogs in application.
+ */
 class FL_API Fl_Dialog : public Fl_Window {
 public:
+    /**
+     * Constructs empty dialog with give size.
+     * @param label caption of dialog window
+     * @param ds pointer to external datasource, if NULL default is used.
+     */
     Fl_Dialog(int w, int h, const char *label=0, Fl_Data_Source *ds=0);
+
+    /**
+     * Destroys dialog, frees resources.
+     */
     ~Fl_Dialog();
 
-    // Button IDs
-    enum Fl_Dialog_Buttons {
-        BTN_OK      = 1,
-        BTN_CANCEL  = 2,
-        BTN_YES     = 4,
-        BTN_NO      = 8,
-        BTN_RETRY   = 16,
-        BTN_REFRESH = 32,
-        BTN_CONFIRM = 64,
-        BTN_IGNORE  = 128,
-        BTN_HELP    = 256
+    /**
+     * Button ID's for Fl_Dialog
+     */
+    enum ButtonTypes {
+        BTN_OK      = 1,   /**< Ok button */
+        BTN_CANCEL  = 2,   /**< Cancel button */
+        BTN_YES     = 4,   /**< Yes button */
+        BTN_NO      = 8,   /**< No button */
+        BTN_RETRY   = 16,  /**< Retry button */
+        BTN_REFRESH = 32,  /**< Refresh button */
+        BTN_CONFIRM = 64,  /**< Confirm button */
+        BTN_IGNORE  = 128, /**< Ignore button */
+        BTN_HELP    = 256  /**< Help button */
     };
 
+    /**
+     * Default callback for buttons.
+     * You can override button callback with:
+     * <PRE>
+     Fl_Button *ok_button = button(Fl_Dialog::BTN_HELP);
+     ok_button->callback(my_help_cb);
+     </PRE>
+     * <b>NOTE:</b> It's highly recommended to call Fl_Dialog::buttons_callback(btn, id)
+     * from your own callback. If you don't dialog won't close, if you override e.g. BTN_OK callback.
+     *
+     * @param btn button which made callback
+     * @param id button ID, e.g. Fl_Dialog::BTN_HELP
+     */
+    static void buttons_callback(Fl_Button *btn, long id);
+
+    /**
+     * Load dialog widget values from datasource.
+     *
+     * @param ds as external datasource. If ds is NULL, dialog default datasource is used.
+     * @see Fl_Widget::load_data(Fl_Data_Source *ds=0)
+     * @see Fl_Group::load_data(Fl_Data_Source *ds=0)
+     */
     virtual bool  load_data(Fl_Data_Source *ds=0);
+
+    /**
+     * Save dialog widget values to datasource.
+     *
+     * @param ds as external datasource. If ds is NULL, dialog default datasource is used.
+     * @see Fl_Widget::save_data(Fl_Data_Source *ds=0)
+     * @see Fl_Group::save_data(Fl_Data_Source *ds=0)
+     */
     virtual bool  save_data(Fl_Data_Source *ds=0) const;
 
+    /**
+     * Returns Fl_Variant for field_name.
+     * If field_name is not found, it's added to datasource.
+     * @see test/dialog.cpp
+     */
     const Fl_Variant& operator [] (const char *field_name) const;
+
+    /**
+     * Returns Fl_Variant for field_name.
+     * If field_name is not found, it's added to datasource.
+     * @see test/dialog.cpp
+     */
     Fl_Variant& operator [] (const char *field_name);
 
-    // Show dialog as application modal window.
-    // Returns ID of button pressed
+    /**
+     * Show dialog as application modal window.
+     * Returns ID of button pressed
+     */
     int show_modal();
 
-    bool  valid();
-
+    /**
+     * Set buttons to dialog, For OK and CANCEL it is:
+     * buttons(Fl_Dialog::BTN_OK | Fl_Dialog::BTN_CANCEL, Fl_Dialog::BTN_OK);<BR>
+     * Default button has double border.
+     *
+     * @param buttons_mask bitmask for buttons
+     * @param default_button for dialog
+     */
     void  buttons(int buttons_mask, int default_button);
-    Fl_Button *button(int button_mask) const;
-    void  clear_buttons();
 
-    // Add new scrollable page
+    /**
+     * Returns button for given ID,
+     * if dialog doesn't have such button, it return NULL.
+     *
+     * @param button_id for button, e.g. button(Fl_Dialog::BTN_HELP)
+     */
+    Fl_Button *button(int button_id) const;
+
+    /**
+     * Removes all buttons from dialog button group.
+     */
+    void clear_buttons();
+
+    /**
+     * Add new scrollable page to dialog.
+     * Returns new scroll group.
+     *
+     * @param label for tab
+     * @param autoColor sets tab color from autocolor table
+     */
     Fl_Scroll	*new_scroll(const char *label, bool autoColor=false);
+
+    /**
+     * Same as new_scroll(const char *label, bool autoColor=false)
+     * @see new_scroll(const char *label, bool autoColor=false)
+     */
     Fl_Group	*new_page(const char *label,bool autoColor=false) { return (Fl_Group*)new_scroll(label, autoColor); }
 
-    // Add non-scrolable page
+    /**
+     * Add new NON-scrollable page to dialog.
+     * Returns new group.
+     *
+     * @param label for tab
+     * @param autoColor sets tab color from autocolor table
+     */
     Fl_Group	*new_group(const char *label, bool autoColor=false);
 
-    virtual int handle(int);
+    /**
+     * Internal handle.
+     * @see Fl_Widget::handle(int event)
+     */
+    virtual int handle(int event);
 
 protected:
+
+    /**
+     * Returns widget for given field_name, returns NULL if not found.
+     */
     Fl_Widget *find_widget(const char *field_name) const;
 
 private:
     typedef Fl_Window inherited;
 
-    static void escape_callback(Fl_Widget *,void *);
-    static void buttons_callback(Fl_Widget *,void *);
-    static void help_callback(Fl_Widget *,void *);
+    static void escape_callback(Fl_Dialog *dialog, void *);
 
     Fl_Tabs        *m_tabs;
 

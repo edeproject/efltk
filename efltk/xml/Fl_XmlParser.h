@@ -9,6 +9,11 @@ class Fl_XmlNode;
 class Fl_XmlDoc;
 
 /**
+ * \defgroup XML eFLTK XML module
+ */
+/*@{*/
+
+/**
  * The XML parser class.
  * The parser is non-validating parser. It cannot handle external DTD's at all.
  * Internal DTD's are partially handled, i.e. custom entities are parsed, though
@@ -138,5 +143,7 @@ private:
 	Fl_String last_block;
 	Fl_String parent_name;
 };
+
+/*@}*/
 
 #endif

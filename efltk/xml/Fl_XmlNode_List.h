@@ -6,6 +6,11 @@
 class Fl_XmlNode;
 
 /**
+ * \defgroup XML eFLTK XML module
+ */
+/*@{*/
+
+/**
  * The Fl_XmlNode_List interface provides the an ordered collection of nodes, 
  * The items in the NodeList are accessible via an integral index, starting from 0.
  */
@@ -29,5 +34,7 @@ public:
 protected:
     void free_item(Fl_XmlNode *item);
 };
+
+/*@}*/
 
 #endif

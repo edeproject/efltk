@@ -6,6 +6,11 @@
 
 #include "../Fl_Buffer.h"
 
+/**
+ * \defgroup XML eFLTK XML module
+ */
+/*@{*/
+
 /** 
  * Maps an entity string to a presentation string.
  */
@@ -273,6 +278,8 @@ private:
 	Fl_XmlDocType m_doctype;
 	static int m_indent_spaces;
 };
+
+/*@}*/
 
 #endif
 

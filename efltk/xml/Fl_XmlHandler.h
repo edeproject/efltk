@@ -5,6 +5,11 @@
 #include "../Fl_String.h"
 
 /**
+ * \defgroup XML eFLTK XML module
+ */
+/*@{*/
+
+/**
  * XML parser event handler (SAX).
  * re-implement this class and set to
  * context event handler before loading file
@@ -80,5 +85,7 @@ public:
 private:
 	Fl_XmlDocType m_doctype;
 };
+
+/*@}*/
 
 #endif

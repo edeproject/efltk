@@ -9,6 +9,11 @@ class Fl_XmlDoc;
 class Fl_XmlNode;
 
 /**
+ * \defgroup XML eFLTK XML module
+ */
+/*@{*/
+
+/**
  * The Fl_XmlAttributes class is map for node attributes.
  */
 class Fl_XmlAttributes {
@@ -375,5 +380,7 @@ private:
 #define FL_XML_TYPE_TEXT			Fl_XmlNode::DOM_TEXT
 #define FL_XML_TYPE_CDATA_SECTION	Fl_XmlNode::DOM_CDATA_SECTION
 #define FL_XML_TYPE_COMMENT			Fl_XmlNode::DOM_COMMENT
+
+/*@}*/
 
 #endif

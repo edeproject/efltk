@@ -10,6 +10,11 @@
 #define BUF_SIZE 4096
 
 /**
+ * \defgroup XML eFLTK XML module
+ */
+/*@{*/
+
+/**
  * Fl_XmlLocator class provides the XML handler with information about 
  * the position in a file. 
  */
@@ -193,5 +198,7 @@ inline bool is_literal(const Fl_String &str, bool cdata=false) {
 }
 
 inline char literal(const Fl_String &str) { return str[0]; }
+
+/*@}*/
 
 #endif
