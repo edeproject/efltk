@@ -70,9 +70,16 @@ COPYRIGHT
 	Carl Thompson <cet@carlthompson.net>
 
 	EFLTK is copyright (C) 2002 by the following individuals:
-
+	
 	Mikko Lahteenmaki <Laza@Flashmail.com>
 
+        Bo Henriksen
+        Alexey Parshin
+        Dejan Lekic
+        
+        UTF-8:
+        Jean-Marc Lienher
+	Martin Pekar
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Library General Public License

@@ -1,6 +1,6 @@
+#include <efltk/math.h>
 #include <efltk/Fl_Image_Filter.h>
 #include <efltk/Fl_Image.h>
-#include <efltk/math.h>
 
 #include "fl_internal.h"
 
