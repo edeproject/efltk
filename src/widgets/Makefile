@@ -11,6 +11,7 @@ CPPFILES = \
 	Fl_Clock.cpp \
 	Fl_Color_Chooser.cpp \
 	Fl_Combo_Box.cpp \
+	Fl_Config_Dialog_DS.cpp \
 	Fl_Date_Time_Input.cpp \
 	Fl_Dial.cpp \
 	Fl_Dialog.cpp \
@@ -27,10 +28,10 @@ CPPFILES = \
 	Fl_Input_Browser.cpp \
 	Fl_Item.cpp \
 	Fl_Light_Button.cpp \
-        Fl_ListView.cpp \
-        Fl_ListView_Item.cpp \
-        Fl_ListView_ItemExt.cpp \
-        Fl_ListView_Header.cpp \
+	Fl_ListView.cpp \
+	Fl_ListView_Item.cpp \
+	Fl_ListView_ItemExt.cpp \
+	Fl_ListView_Header.cpp \
 	Fl_MDI_Window.cpp \
 	Fl_Main_Window.cpp \
 	Fl_Masked_Input.cpp \
