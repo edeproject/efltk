@@ -386,9 +386,9 @@ bool MessageHash::load_etb(FILE *fp)
 
     bool swap = (magic!=etb_magic);
 
-    size_ = SWAP(head->hashsize);
-    if(lists_) delete []lists_;
-    lists_ = new Fl_Ptr_List[size_];
+    m_size = SWAP(head->hashsize);
+    if(m_lists) delete []m_lists;
+    m_lists = new Fl_Ptr_List[m_size];
 
     uint numstrings = SWAP(head->numstrings);
 
@@ -410,7 +410,7 @@ bool MessageHash::load_etb(FILE *fp)
         HashEntry *entry = new HashEntry;
         entry->key = orig;
         entry->val = tr;
-        lists_[SWAP(indexes[n])].append(entry);
+        m_lists[SWAP(indexes[n])].append(entry);
     }
 
     free(data);
@@ -472,10 +472,10 @@ bool MessageHash::load_mo(FILE *fp)
     struct string_desc *trans_tab = (struct string_desc *)((char *) data + SWAP(data->trans_tab_offset));
 
     uint numstrings = SWAP(data->nstrings);
-    size_ = numstrings;
-    if(size_<100) size_=100;
-    if(lists_) delete []lists_;
-    lists_ = new Fl_Ptr_List[size_];
+    m_size = numstrings;
+    if(m_size<100) m_size=100;
+    if(m_lists) delete []m_lists;
+    m_lists = new Fl_Ptr_List[m_size];
 
     // Get charset information
     int info_pos = SWAP(orig_tab[numstrings-1].offset) + SWAP(orig_tab[numstrings-1].length) + 1;
