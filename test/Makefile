@@ -144,6 +144,8 @@ ifeq (makedepend, $(wildcard makedepend))
 include makedepend
 endif
 
+uninstall:
+
 #
 # End of "$Id$".
 #
