@@ -525,7 +525,7 @@ void Fl_Group::layout()
                     pref_w = ww;
                     pref_h = o->h();
 
-                    printf("Wants size w,h = %i,%i\n",pref_w,pref_h);
+                    //printf("Wants size w,h = %i,%i\n",pref_w,pref_h);
 
                     if (!(o->align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM))) {
                         label_w = o->label_width();
@@ -535,7 +535,7 @@ void Fl_Group::layout()
 
                     o->preferred_size(pref_w,pref_h);
 
-                    printf("Preferred size w,h = %ix%i\n",pref_w,pref_h);
+                    //printf("Preferred size w,h = %ix%i\n",pref_w,pref_h);
 
                     widget_position(o,xx,yy,pref_x,pref_y);
 
