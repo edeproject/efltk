@@ -62,93 +62,93 @@ Fl_MySQL_Field::Fl_MySQL_Field(const char *name, short type)
     }
 }
 
-Fl_Date_Time timestamp_to_date(const char *date)
+static Fl_Date_Time timestamp_to_date(const char *date)
 {
-	short year=0, mon=0, day=0;
-	short hour=0, min=0, sec=0;
+    int year=0, mon=0, day=0;
+    int hour=0, min=0, sec=0;
 
-	int len = strlen(date);
+    int len = strlen(date);
 
-	switch(len) {
-		case 14:
-			if(sscanf(date, "%04d%02d%02d%02d%02d%02d", &year, &mon, &day, &hour, &min, &sec) != 6) 
-				return Fl_Date_Time();
-			break;
-		case 12:
-			if(sscanf(date, "%02d%02d%02d%02d%02d%02d", &year, &mon, &day, &hour, &min, &sec) != 6) 
-				return Fl_Date_Time();
-			break;
-		case 10:
-			if(sscanf(date, "%02d%02d%02d%02d%02d", &year, &mon, &day, &hour, &min) != 5) 
-				return Fl_Date_Time();
-			break;
-		case 8:
-			if(sscanf(date, "%02d%02d%02d%02d", &year, &mon, &day, &hour) != 4) 
-				return Fl_Date_Time();
-			break;
-		case 6:
-			if(sscanf(date, "%02d%02d%02d", &year, &mon, &day) != 3) 
-				return Fl_Date_Time();
-			break;
-		case 4:
-			if(sscanf(date, "%02d%02d", &year, &mon) != 2) 
-				return Fl_Date_Time();
-			break;
-		case 2:
-			if(sscanf(date, "%02d", &year) != 1) 
-				return Fl_Date_Time();
-			break;
-	}
+    switch(len) {
+    case 14:
+        if(sscanf(date, "%04d%02d%02d%02d%02d%02d", &year, &mon, &day, &hour, &min, &sec) != 6)
+            return Fl_Date_Time();
+        break;
+    case 12:
+        if(sscanf(date, "%02d%02d%02d%02d%02d%02d", &year, &mon, &day, &hour, &min, &sec) != 6)
+            return Fl_Date_Time();
+        break;
+    case 10:
+        if(sscanf(date, "%02d%02d%02d%02d%02d", &year, &mon, &day, &hour, &min) != 5)
+            return Fl_Date_Time();
+        break;
+    case 8:
+        if(sscanf(date, "%02d%02d%02d%02d", &year, &mon, &day, &hour) != 4)
+            return Fl_Date_Time();
+        break;
+    case 6:
+        if(sscanf(date, "%02d%02d%02d", &year, &mon, &day) != 3)
+            return Fl_Date_Time();
+        break;
+    case 4:
+        if(sscanf(date, "%02d%02d", &year, &mon) != 2)
+            return Fl_Date_Time();
+        break;
+    case 2:
+        if(sscanf(date, "%02d", &year) != 1)
+            return Fl_Date_Time();
+        break;
+    }
 
-	if(year < 100) {
-		if(year<40)		year += 2000;
-		else			year += 1900;
-	}
-	
-	double encoded_date, encoded_time;
-	Fl_Date_Time::encode_date(encoded_date, year, mon, day);
-	Fl_Date_Time::encode_time(encoded_time, hour, min, sec);
+    if(year < 100) {
+        if(year<40)		year += 2000;
+        else			year += 1900;
+    }
 
-	return Fl_Date_Time(encoded_date + encoded_time);
+    double encoded_date, encoded_time;
+    Fl_Date_Time::encode_date(encoded_date, year, mon, day);
+    Fl_Date_Time::encode_time(encoded_time, hour, min, sec);
+
+    return Fl_Date_Time(encoded_date + encoded_time);
 }
 
-Fl_Date_Time str_to_date(const char *date, short col_type)
+static Fl_Date_Time str_to_date(const char *date, short col_type)
 {
-	short year=0, mon=0, day=0;
-	short hour=0, min=0, sec=0;
+    int year=0, mon=0, day=0;
+    int hour=0, min=0, sec=0;
 
-	switch(col_type) {
-	    case FIELD_TYPE_TIMESTAMP:
-			return timestamp_to_date(date);
+    switch(col_type) {
+    case FIELD_TYPE_TIMESTAMP:
+        return timestamp_to_date(date);
 
-		case FIELD_TYPE_DATETIME:
-			if(sscanf(date, "%04d-%02d-%02d %02d:%02d:%02d", &year, &mon, &day, &hour, &min, &sec) != 6) 
-				return Fl_Date_Time();
-			break;
+    case FIELD_TYPE_DATETIME:
+        if(sscanf(date, "%04d-%02d-%02d %02d:%02d:%02d", &year, &mon, &day, &hour, &min, &sec) != 6)
+            return Fl_Date_Time();
+        break;
 
-		case FIELD_TYPE_DATE:
-			if(sscanf(date, "%04d-%02d-%02d", &year, &mon, &day) != 3) 
-				return Fl_Date_Time();
-			break;
+    case FIELD_TYPE_DATE:
+        if(sscanf(date, "%04d-%02d-%02d", &year, &mon, &day) != 3)
+            return Fl_Date_Time();
+        break;
 
-		case FIELD_TYPE_TIME:
-			if(sscanf(date, "%02d:%02d:%02d", &hour, &min, &sec) != 3) 
-				return Fl_Date_Time();
-			break;
+    case FIELD_TYPE_TIME:
+        if(sscanf(date, "%02d:%02d:%02d", &hour, &min, &sec) != 3)
+            return Fl_Date_Time();
+        break;
 
-		case FIELD_TYPE_YEAR:
-			year = strtol(date, 0, 10);
-			break;
+    case FIELD_TYPE_YEAR:
+        year = strtol(date, 0, 10);
+        break;
 
-		default:
-			return Fl_Date_Time();
-	}
-	
-	double encoded_date, encoded_time;
-	Fl_Date_Time::encode_date(encoded_date, year, mon, day);
-	Fl_Date_Time::encode_time(encoded_time, hour, min, sec);
+    default:
+        return Fl_Date_Time();
+    }
 
-	return Fl_Date_Time(encoded_date + encoded_time);
+    double encoded_date, encoded_time;
+    Fl_Date_Time::encode_date(encoded_date, year, mon, day);
+    Fl_Date_Time::encode_time(encoded_time, hour, min, sec);
+
+    return Fl_Date_Time(encoded_date + encoded_time);
 }
 
 // MySQL retrieves and displays DATETIME values in 'YYYY-MM-DD HH:MM:SS' format.
@@ -265,60 +265,60 @@ void Fl_MySQL_Database::open_query(Fl_Query *query)
 
 void Fl_MySQL_Database::fetch_query(Fl_Query *query)
 {
-	if (!query->active())
+    if (!query->active())
         fl_throw("Dataset isn't open");
 
-    Fl_Data_Fields& fields = query_fields(query); 
+    Fl_Data_Fields& fields = query_fields(query);
     unsigned fieldCount = fields.count();
     if(!fieldCount) {
-		return;
-	}
+        return;
+    }
 
     MYSQL_RES *res = (MYSQL_RES *)query_handle(query);
 
-	MYSQL_ROW row = mysql_fetch_row(res);
-	if(!row) {
-		if(!mysql_error(m_connection)[0]) {
-			query_eof(query, true);
-            return;		
+    MYSQL_ROW row = mysql_fetch_row(res);
+    if(!row) {
+        if(!mysql_error(m_connection)[0]) {
+            query_eof(query, true);
+            return;
         } else {
-			fl_throw(mysql_error(m_connection));
+            fl_throw(mysql_error(m_connection));
         }
-	}
-	unsigned long *lengths = mysql_fetch_lengths(res);
+    }
+    unsigned long *lengths = mysql_fetch_lengths(res);
 
-    for (unsigned column = 0; column < fieldCount; column++) 
-	{
+    for (unsigned column = 0; column < fieldCount; column++)
+    {
         Fl_MySQL_Field *field = (Fl_MySQL_Field *)&fields[column];
-		Fl_Variant &value = field->value;
+        Fl_Variant &value = field->value;
 
         switch(value.type()) 
-		{
-		case VAR_INT:
-			value.set_int(strtol(row[column], 0, 10));
-			break;
+        {
+        case VAR_INT:
+            value.set_int(strtol((char*)row[column], 0, 10));
+            break;
 
-		case VAR_FLOAT:
-			value.set_int(strtod(row[column], 0));
-			break;
-		
-		case VAR_DATETIME:
-			value.set_date(str_to_date(row[column], field->col_type));
-			break;
-		
-		case VAR_BUFFER:
-			value.set_buffer(row[column], lengths[column]);
-			((char*)value.data())[lengths[column]] = '\0';
-			break;
+        case VAR_FLOAT:
+            value.set_float(strtod((char*)row[column], 0));
+            break;
 
-		case VAR_STRING:			
-		case VAR_TEXT:
-		default:
-			value.set_string(row[column], lengths[column]);
-			((char*)value.data())[lengths[column]] = '\0';
-			break;
+        case VAR_DATETIME:
+            value.set_date(str_to_date((char*)row[column], field->col_type));
+            break;
+
+        case VAR_BUFFER:
+            value.set_buffer((char*)row[column], lengths[column]);
+            ((char*)value.data())[lengths[column]] = '\0';
+            break;
+
+        case VAR_STRING:
+        case VAR_TEXT:
+        default:
+            value.set_string((char*)row[column], lengths[column]);
+            ((char*)value.data())[lengths[column]] = '\0';
+            break;
         }
-	}
+    }
 }
 
 /**
@@ -336,11 +336,6 @@ void Fl_MySQL_Database::close_query(Fl_Query *query)
 	query_handle(query, 0);
 
     query_fields(query).clear();    
-}
-
-void Fl_MySQL_Database::bind_parameters(Fl_Query *query)
-{
-
 }
 
 Fl_String get_value(const char *key, const Fl_String &buf)
@@ -419,15 +414,14 @@ void Fl_MySQL_Database::parse_parameters(Fl_Query *query, Fl_String &real_sql)
 
 static Fl_Param *find_param(const Fl_Params &params, unsigned param_num)
 {
-	Fl_Param *param = 0;
     for(unsigned i = 0; i < params.count(); i++) {
         Fl_Param *param = &params[i];
         for (unsigned j = 0; j < param->bind_count(); j++) {
-			if(param->bind_index(j) == param_num)
-				return param;
-		}
-	}
-	return 0;
+            if(param->bind_index(j) == param_num)
+                return param;
+        }
+    }
+    return 0;
 }
 
 void Fl_MySQL_Database::get_param(const Fl_Params &params, unsigned param_num, Fl_String &ret)

@@ -31,19 +31,20 @@ Fl_Database::~Fl_Database() {
         delete m_mutex;
 }
 
-void Fl_Database::open(const Fl_String connString) {
-   if (connString.length() && connString != m_connString) {
-      close();
-      m_connString = connString;
-   }
+void Fl_Database::open(const char *connString)
+{
+    if(connString && *connString && connString != m_connString) {
+        close();
+        m_connString = connString;
+    }
 
-   if (!m_active) {
-      m_inTransaction = false;
-      lock();
-      open_connection();
-      unlock();
-   }
-   m_active = true;
+    if (!m_active) {
+        m_inTransaction = false;
+        lock();
+        open_connection();
+        unlock();
+    }
+    m_active = true;
 }
 
 void Fl_Database::close() {

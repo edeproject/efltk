@@ -8,7 +8,7 @@ CFILES =
 LIBNAME =
 
 # This MUST be included after FILES
-DIRS=odbc
+DIRS=odbc mysql
 EFLTK_TOPDIR = ../..
 include ../makeinclude_tmpl
 

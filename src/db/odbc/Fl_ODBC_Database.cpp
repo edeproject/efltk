@@ -258,7 +258,6 @@ void Fl_ODBC_Database::prepare_query(Fl_Query *query) {
  * Bind binary query parameters to query handle
  */
 void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
-    static SQLINTEGER cbLen;
     int rc;
 
     SQLHSTMT    statement = (SQLHSTMT)query_handle(query);
