@@ -21,11 +21,6 @@
 
 #include "layout_sizes.h"
 
-static int max(int a,int b) {
-	if (a>b) return a;
-	return b;
-}
-
 int widget_layout_width(const Fl_Widget *w,int pref_w)
 {
 	if (pref_w < 0) pref_w = w->w();
