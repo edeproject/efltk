@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x400363
+# %FirstUniqueId:	0x400367
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -497,7 +497,8 @@ test/sockets ::	test/socket.o\
 # %SrcDir:	src
 # %IncDir:	efltk
 # %ObjsDir:	lib
-lib/libefltk_net.so ::	lib/Fl_FTP_Socket.o
+lib/libefltk_net.so ::	lib/Fl_FTP_Connect.o\
+	lib/Fl_IMAP_Connect.o
 	rm -f $@
 	$(LD) -shared -o $@ $^ $(LDOPTIONS)
 
@@ -509,9 +510,7 @@ lib/libefltk_net.so ::	lib/Fl_FTP_Socket.o
 # %IncDir:	test/net
 # %ObjsDir:	test/net
 test/net/ftp_socket ::	test/net/ftp_socket.o\
-	test/net/Fl_FTP_Socket.o\
 	test/net/Fl_Socket.o\
-	test/net/Fl_Buffer.o\
 	test/net/Fl_FTP_Connect.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
@@ -583,6 +582,18 @@ test/multitabs2 ::	test/multitabs2.o
 # %IncDir:	test
 # %ObjsDir:	test
 test/multitabs1 ::	test/multitabs1.o
+	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+# %UniqueId:	0x400364
+# %TargetType:	C++_EXE
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	test
+# %IncDir:	test
+# %ObjsDir:	test
+test/imap_connect ::	test/imap_connect.o\
+	test/Fl_Socket.o\
+	test/Fl_IMAP_Connect.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %ObjectFilesLinking
@@ -1987,23 +1998,9 @@ test/Fl_Socket.o : src/core/Fl_Socket.cpp
 
 
 # %TargetType:	C++_OBJ
-# %ParentTarget:	0x40033c
-# %SourceTarget:	0x400341
-lib/Fl_FTP_Socket.o : src/net/Fl_FTP_Socket.cpp
-	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
-
-
-# %TargetType:	C++_OBJ
 # %ParentTarget:	0x40033f
 # %SourceTarget:	0x400340
 test/net/ftp_socket.o : test/net/ftp_socket.cpp
-	$(CXX) -c -o $@ $< -Itest/net -Itest/net $(CXXFLAGS)
-
-
-# %TargetType:	C++_OBJ
-# %ParentTarget:	0x40033f
-# %SourceTarget:	0x400341
-test/net/Fl_FTP_Socket.o : src/net/Fl_FTP_Socket.cpp
 	$(CXX) -c -o $@ $< -Itest/net -Itest/net $(CXXFLAGS)
 
 
@@ -2026,13 +2023,6 @@ test/Fl_Buffer.o : src/core/Fl_Buffer.cpp
 # %SourceTarget:	0x400346
 test/db/db_odbc.o : test/db/db_odbc.cpp
 	$(CXX) -c -o $@ $< -Itest/db -Itest/db $(CXXFLAGS)
-
-
-# %TargetType:	C++_OBJ
-# %ParentTarget:	0x40033f
-# %SourceTarget:	0x400343
-test/net/Fl_Buffer.o : src/core/Fl_Buffer.cpp
-	$(CXX) -c -o $@ $< -Itest/net -Itest/net $(CXXFLAGS)
 
 
 # %TargetType:	C++_OBJ
@@ -2102,6 +2092,34 @@ test/multitabs2.o : test/multitabs2.cpp
 # %ParentTarget:	0x400361
 # %SourceTarget:	0x400362
 test/multitabs1.o : test/multitabs1.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40033c
+# %SourceTarget:	0x400356
+lib/Fl_FTP_Connect.o : src/net/Fl_FTP_Connect.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40033c
+# %SourceTarget:	0x400363
+lib/Fl_IMAP_Connect.o : src/net/Fl_IMAP_Connect.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x400364
+# %SourceTarget:	0x400365
+test/imap_connect.o : test/net/imap_connect.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x400364
+# %SourceTarget:	0x400363
+test/Fl_IMAP_Connect.o : src/net/Fl_IMAP_Connect.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
@@ -6436,15 +6454,7 @@ test/Fl_Socket.o :	efltk/Fl_Exception.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Socket.h\
 	efltk/Fl_Buffer.h
-lib/Fl_FTP_Socket.o :	efltk/net/Fl_FTP_Socket.h\
-	efltk/Fl_Socket.h\
-	efltk/Fl_Buffer.h\
-	efltk/Fl_String.h\
-	efltk/Enumerations.h\
-	efltk/Fl_Export.h\
-	efltk/Fl_Exception.h
 test/net/ftp_socket.o :	efltk/net/Fl_FTP_Connect.h\
-	efltk/net/Fl_FTP_Socket.h\
 	efltk/Fl_Socket.h\
 	efltk/Fl_Buffer.h\
 	efltk/Fl_String.h\
@@ -6457,13 +6467,6 @@ test/net/ftp_socket.o :	efltk/net/Fl_FTP_Connect.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h
-test/net/Fl_FTP_Socket.o :	efltk/net/Fl_FTP_Socket.h\
-	efltk/Fl_Socket.h\
-	efltk/Fl_Buffer.h\
-	efltk/Fl_String.h\
-	efltk/Enumerations.h\
-	efltk/Fl_Export.h\
-	efltk/Fl_Exception.h
 test/net/Fl_Socket.o :	efltk/Fl_Exception.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_String.h\
@@ -6732,16 +6735,19 @@ test/doublebuffer.o :	efltk/Fl_Slider.h\
 	config.h\
 	efltk/fl_math.h
 test/net/Fl_FTP_Connect.o :	efltk/net/Fl_FTP_Connect.h\
+	efltk/Fl_Socket.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Exception.h\
 	efltk/Fl_Data_Source.h\
 	efltk/Fl_Data_Fields.h\
 	efltk/Fl_Flags.h\
 	efltk/Fl_Ptr_List.h\
-	efltk/Enumerations.h\
-	efltk/Fl_Export.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
-	efltk/Fl_String.h\
-	efltk/Fl_Buffer.h
+	efltk/Fl_String_List.h
 test/multitabs2.o :	test/multitabs_glyph3.xpm\
 	test/multitabs_glyph2.xpm\
 	test/multitabs_glyph1.xpm\
@@ -6813,6 +6819,45 @@ test/multitabs1.o :	efltk/Fl_Multi_Tabs.h\
 	efltk/Fl_Tabs.h\
 	efltk/Fl_Window.h\
 	efltk/Fl.h
+lib/Fl_FTP_Connect.o :	efltk/net/Fl_FTP_Connect.h\
+	efltk/Fl_Socket.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String_List.h
+test/imap_connect.o :	efltk/net/Fl_IMAP_Connect.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Socket.h\
+	efltk/Fl_Exception.h
+test/Fl_IMAP_Connect.o :	efltk/net/Fl_IMAP_Connect.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Fl_Socket.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_Exception.h
+lib/Fl_IMAP_Connect.o :	efltk/net/Fl_IMAP_Connect.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Fl_Socket.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_Exception.h
 
 
 # %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x4
@@ -7012,9 +7057,8 @@ test/multitabs1.o :	efltk/Fl_Multi_Tabs.h\
 # %TargetInfo src/db/Fl_Database.cpp	SourceOrHeader,	UniqueId=0x400332,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/db/Fl_Params.cpp	SourceOrHeader,	UniqueId=0x400333,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/db/Fl_Query.cpp	SourceOrHeader,	UniqueId=0x400334,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Socket.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400342,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/core/Fl_Socket.cpp	SourceOrHeader,	UniqueId=0x400342,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/socket.cpp	SourceOrHeader,	UniqueId=0x40033b,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/net/Fl_FTP_Socket.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400341,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/net/ftp_socket.cpp	SourceOrHeader,	UniqueId=0x400340,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/db/db_odbc.cpp	SourceOrHeader,	UniqueId=0x400346,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_Gdi.cpp	SourceOrHeader,	UniqueId=0x400347,	TargetType=C++,	IDEFlags=0x4
@@ -7025,6 +7069,8 @@ test/multitabs1.o :	efltk/Fl_Multi_Tabs.h\
 # %TargetInfo test/directory.cpp	SourceOrHeader,	UniqueId=0x400353,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/doublebuffer.cpp	SourceOrHeader,	UniqueId=0x400355,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/net/Fl_FTP_Connect.cpp	SourceOrHeader,	UniqueId=0x400356,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/multitabs2.cpp	SourceOrHeader,	UniqueId=0x40035b,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/multitabs1.cpp	SourceOrHeader,	UniqueId=0x400362,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x4
@@ -7239,21 +7285,21 @@ test/multitabs1.o :	efltk/Fl_Multi_Tabs.h\
 # %TargetInfo efltk/db/Fl_Query.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400335,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/db/Fl_Params.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400336,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/db/Fl_Database.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400337,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Socket.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400339,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/net/Fl_FTP_Socket.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40033e,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Socket.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400339,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/db/Fl_ODBC_Database.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400344,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Printer.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400348,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Gdi.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400349,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Device.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40034a,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_PostScript.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40034c,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/net/Fl_FTP_Connect.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400357,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo test/multitabs2.cpp	SourceOrHeader,	UniqueId=0x40035b,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/multitabs_glyph3.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x40035c,	TargetType=XPM,	IDEFlags=0xe
 # %TargetInfo test/multitabs_glyph2.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x40035d,	TargetType=XPM,	IDEFlags=0xe
 # %TargetInfo test/multitabs_glyph1.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x40035e,	TargetType=XPM,	IDEFlags=0xe
 # %TargetInfo test/tabs.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40035f,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Wordwrap_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400360,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo test/multitabs1.cpp	SourceOrHeader,	UniqueId=0x400362,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/net/Fl_IMAP_Connect.cpp	SourceOrHeader,	UniqueId=0x400363,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/net/imap_connect.cpp	SourceOrHeader,	UniqueId=0x400365,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo efltk/net/Fl_IMAP_Connect.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400366,	TargetType=INC,	IDEFlags=0xe
 
 
 # %UniqueId:	0x400001
@@ -7308,4 +7354,5 @@ test/multitabs1.o :	efltk/Fl_Multi_Tabs.h\
 #	0x400345
 #	0x400361
 #	0x40035a
+#	0x400364
 #

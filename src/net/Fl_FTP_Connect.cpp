@@ -1,6 +1,61 @@
 #include <efltk/net/Fl_FTP_Connect.h>
 #include <stdio.h>
 
+Fl_FTP_Socket::Fl_FTP_Socket()
+: Fl_Socket(), m_buffer(16384) {
+    m_port = 21;
+    m_type = SOCK_STREAM;
+    m_protocol = IPPROTO_TCP;
+}
+
+Fl_FTP_Socket::~Fl_FTP_Socket() {
+    if (active())
+        write("QUIT\n",6);
+}
+
+void Fl_FTP_Socket::open(Fl_String hostName, int port) {
+    Fl_Socket::open(hostName,port);
+    get_response();
+    int on = 1;
+    setsockopt(m_sockfd, SOL_SOCKET, SO_REUSEADDR, (char *) &on, sizeof(on));
+}
+
+const Fl_Buffer& Fl_FTP_Socket::login(Fl_String user,Fl_String password) {
+    command("USER " + user);
+    return command("PASS " + password);
+}
+
+const Fl_Buffer& Fl_FTP_Socket::get_response() {
+    char	readBuffer[255];
+    char retCode[5];
+
+    m_buffer.bytes(0);
+
+    // read the first line of response
+    int len = read_line(readBuffer,255);
+    m_buffer.append(readBuffer,len);
+
+    // read the return code
+    if (readBuffer[3] == '-') {
+        readBuffer[3] = 0;
+        strcpy(retCode,readBuffer);
+        for (;;) {
+            len = read_line(readBuffer,255);
+            m_buffer.append(readBuffer,len);
+            readBuffer[3] = 0;
+            if (strcmp(readBuffer,retCode) == 0)
+                break;
+        } 
+    }
+    m_buffer.data()[m_buffer.bytes()] = 0;
+    return m_buffer;
+}
+
+const Fl_Buffer& Fl_FTP_Socket::command(Fl_String cmd) {
+    write((cmd + "\n").c_str(),cmd.length()+1);
+    return get_response();
+}
+
 Fl_FTP_Connect::Fl_FTP_Connect() 
 : m_commandSocket(), m_dataSocket(), m_response(m_commandSocket.response()) {
     m_passive = true;

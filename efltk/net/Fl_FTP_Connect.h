@@ -3,7 +3,22 @@
 #include <efltk/Fl_Buffer.h>
 #include <efltk/Fl_Data_Source.h>
 #include <efltk/Fl_Socket.h>
-#include <efltk/net/Fl_FTP_Socket.h>
+
+class Fl_FTP_Socket : public Fl_Socket {
+    Fl_Buffer	m_buffer;
+public:
+    Fl_FTP_Socket();
+    ~Fl_FTP_Socket();
+
+   // Connect & disconnect
+    virtual void open(Fl_String hostName="", int port=0);
+
+    const Fl_Buffer& response() { return m_buffer; }
+    const Fl_Buffer& login(Fl_String user,Fl_String password);
+    const Fl_Buffer& command(Fl_String cmd);
+
+    const Fl_Buffer& get_response();
+};
 
 class FL_API Fl_FTP_Connect {
 protected:
