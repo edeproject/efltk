@@ -372,6 +372,10 @@ int fl_start_child_process(char *cmd)
     int pid, status;
     int nulldev;
     extern char **environ;
+    char *c;
+
+    if( (c=strrchr(cmd,'&')) )
+        *c = '\0';
 
     if (cmd == NULL)
         return (1);
@@ -400,8 +404,9 @@ int fl_start_child_process(char *cmd)
             perror ("/bin/sh");
         _exit (127);
     }
-    do
-    {
+    // don't need this at the moment
+    /*    do
+   {
         if (waitpid (pid, &status, 0) == -1)
         {
             if (errno != EINTR)
@@ -411,8 +416,9 @@ int fl_start_child_process(char *cmd)
             return status;
     }
     while (1);
+    */
 #endif
-    return -1;
+    return 0;
 }
 
 #include <efltk/fl_draw.h>
