@@ -1283,12 +1283,11 @@ int Fl_Text_Display::position_style( int lineStartPos,
     style = FILL_MASK;
   else if ( styleBuf != NULL ) {
     style = ( unsigned char ) styleBuf->character( pos );
-    /*!!!       if (style == mUnfinishedStyle) {
-                    // encountered "unfinished" style, trigger parsing
-                    (mUnfinishedHighlightCB)( pos, mHighlightCBArg);
-                    style = (unsigned char) styleBuf->character( pos);
-                }
-          */
+    if (style == mUnfinishedStyle) {
+        // encountered "unfinished" style, trigger parsing
+        (mUnfinishedHighlightCB)(this, pos, mHighlightCBArg);
+        style = (unsigned char) styleBuf->character( pos);
+    }
   }
   if (buf->primary_selection()->includes(pos, lineStartPos, dispIndex))
     style |= PRIMARY_MASK;

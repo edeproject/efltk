@@ -70,6 +70,8 @@ class FL_API Fl_Text_Buffer {
     Fl_Text_Buffer(int requestedSize = 0);
     ~Fl_Text_Buffer();
 
+    char * Fl_Text_Buffer::static_buffer();
+
     int length() { return mLength; }
     const char* text();
     void text(const char* text);

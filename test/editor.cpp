@@ -35,11 +35,8 @@
 #include <ctype.h>
 #include <errno.h>
 
-#ifdef __MWERKS__
-# define FL_DLL
-#endif
-
 #include <efltk/Fl.h>
+#include <efltk/Fl_Color.h>
 #include <efltk/Fl_Group.h>
 #include <efltk/Fl_Pack.h>
 #include <efltk/Fl_Double_Window.h>
@@ -52,26 +49,29 @@
 #include <efltk/Fl_Text_Buffer.h>
 #include <efltk/Fl_Text_Editor.h>
 
+#define UNFINISHED 'A'
+#define PLAIN 'B'
 
 int                changed = 0;
 char               filename[256] = "";
 char               title[256];
 Fl_Text_Buffer     *textbuf = 0;
 
-
 // Syntax highlighting stuff...
 Fl_Text_Buffer     *stylebuf = 0;
 Fl_Text_Display::Style_Table_Entry
-                   styletable[] = {	// Style table
-                       { FL_BLACK, FL_COURIER,        12 }, // A - Plain
-                       { FL_DARK3, FL_COURIER_ITALIC, 12 }, // B - Line comments
-                       { FL_DARK3, FL_COURIER_ITALIC, 12 }, // C - Block comments
-                       { FL_BLUE,  FL_COURIER,        12 }, // D - Strings
-                       { fl_color_average(FL_RED, FL_BLACK, 0.5),   FL_COURIER,        12 }, // E - Directives
-                       { FL_RED,   FL_COURIER_BOLD,   12 , Fl_Text_Display::ATTR_UNDERLINE}, // F - Types
-                       { FL_BLUE,  FL_COURIER_BOLD,   12 , Fl_Text_Display::ATTR_UNDERLINE}  // G - Keywords
-                   };
-const char         *code_keywords[] = {	// List of known C/C++ keywords...
+    styletable[] = {	// Style table
+        { FL_BLACK, FL_COURIER,        12 }, // A - Unfinished
+        { FL_BLACK, FL_COURIER,        12 }, // B - Plain
+        { FL_DARK3, FL_COURIER_ITALIC, 12 }, // C - Line comments
+        { FL_DARK3, FL_COURIER_ITALIC, 12 }, // D - Block comments
+        { fl_color_average(FL_BLACK, FL_YELLOW, 0.5),  FL_COURIER,        12 }, // E - Strings
+        { fl_color_average(FL_BLACK, FL_GREEN, 0.5),   FL_COURIER_BOLD,        12 }, // F - Directives
+        { FL_RED,   FL_COURIER_BOLD,   12 }, // G - Types
+        { FL_BLUE,  FL_COURIER_BOLD,   12 }  // H - Keywords
+    };
+
+const char *code_keywords[] = {	// List of known C/C++ keywords...
     "and",
     "and_eq",
     "asm",
@@ -107,7 +107,8 @@ const char         *code_keywords[] = {	// List of known C/C++ keywords...
     "xor",
     "xor_eq"
 };
-const char         *code_types[] = {	// List of known C/C++ types...
+
+const char *code_types[] = {	// List of known C/C++ types...
     "auto",
     "bool",
     "char",
@@ -154,7 +155,7 @@ const char         *code_types[] = {	// List of known C/C++ types...
 int
 compare_keywords(const void *a,
                  const void *b) {
-  return (strcmp(*((const char **)a), *((const char **)b)));
+    return (strcmp(*((const char **)a), *((const char **)b)));
 }
 
 
@@ -162,120 +163,122 @@ compare_keywords(const void *a,
 // 'style_parse()' - Parse text and produce style data.
 //
 
-void
-style_parse(const char *text,
-            char       *style,
-	    int        length) {
-  char	     current;
-  int	     col;
-  int	     last;
-  char	     buf[255],
-             *bufptr;
-  const char *temp;
+void style_parse(const char *text,
+                 char *style,
+                 int length)
+{
+    char current;
+    int  col;
+    int  last;
+    char buf[255];
+    char *bufptr;
+    const char *temp;
 
-  for (current = *style, col = 0, last = 0; length > 0; length --, text ++) {
-    if (current == 'A') {
-      // Check for directives, comments, strings, and keywords...
-      if (col == 0 && *text == '#') {
-        // Set style to directive
-        current = 'E';
-      } else if (strncmp(text, "//", 2) == 0) {
-        current = 'B';
-      } else if (strncmp(text, "/*", 2) == 0) {
-        current = 'C';
-      } else if (strncmp(text, "\\\"", 2) == 0) {
-        // Quoted quote...
-	*style++ = current;
-	*style++ = current;
-	text ++;
-	length --;
-	col += 2;
-	continue;
-      } else if (*text == '\"') {
-        current = 'D';
-      } else if (!last && islower(*text)) {
-        // Might be a keyword...
-	for (temp = text, bufptr = buf;
-	     islower(*temp) && bufptr < (buf + sizeof(buf) - 1);
-	     *bufptr++ = *temp++);
+    for(current = *style, col = 0, last = 0; length > 0; length --, text ++)
+    {
+        if(current == PLAIN || current == UNFINISHED) {
+            // Check for directives, comments, strings, and keywords...
+            if (col == 0 && *text == '#') {
+                // Set style to directive
+                current = 'F';
+            } else if (strncmp(text, "//", 2) == 0) {
+                current = 'C';
+            } else if (strncmp(text, "/*", 2) == 0) {
+                current = 'D';
+            } else if (strncmp(text, "\\\"", 2) == 0) {
+                // Quoted quote...
+                *style++ = current;
+                *style++ = current;
+                text ++;
+                length --;
+                col += 2;
+                continue;
+            } else if (*text == '\"') {
+                current = 'E';
+            } else if (!last && islower(*text)) {
+                // Might be a keyword...
+                for (temp = text, bufptr = buf;
+                     islower(*temp) && bufptr < (buf + sizeof(buf) - 1);
+                     *bufptr++ = *temp++);
 
-        if (!islower(*temp)) {
-	  *bufptr = '\0';
+                if (!islower(*temp)) {
+                    *bufptr = '\0';
 
-          bufptr = buf;
+                    bufptr = buf;
 
-	  if (bsearch(&bufptr, code_types,
-	              sizeof(code_types) / sizeof(code_types[0]),
-		      sizeof(code_types[0]), compare_keywords)) {
-	    while (text < temp) {
-	      *style++ = 'F';
-	      text ++;
-	      length --;
-	      col ++;
-	    }
+                    if (bsearch(&bufptr, code_types,
+                                sizeof(code_types) / sizeof(code_types[0]),
+                                sizeof(code_types[0]), compare_keywords)) {
+                        while (text < temp) {
+                            *style++ = 'G';
+                            text ++;
+                            length --;
+                            col ++;
+                        }
 
-	    text --;
-	    length ++;
-	    last = 1;
-	    continue;
-	  } else if (bsearch(&bufptr, code_keywords,
-	                     sizeof(code_keywords) / sizeof(code_keywords[0]),
-		             sizeof(code_keywords[0]), compare_keywords)) {
-	    while (text < temp) {
-	      *style++ = 'G';
-	      text ++;
-	      length --;
-	      col ++;
-	    }
+                        text --;
+                        length ++;
+                        last = 1;
+                        continue;
+                    } else if (bsearch(&bufptr, code_keywords,
+                                       sizeof(code_keywords) / sizeof(code_keywords[0]),
+                                       sizeof(code_keywords[0]), compare_keywords)) {
+                        while (text < temp) {
+                            *style++ = 'H';
+                            text ++;
+                            length --;
+                            col ++;
+                        }
 
-	    text --;
-	    length ++;
-	    last = 1;
-	    continue;
-	  }
-	}
-      }
-    } else if (current == 'C' && strncmp(text, "*/", 2) == 0) {
-      // Close a C comment...
-      *style++ = current;
-      *style++ = current;
-      text ++;
-      length --;
-      current = 'A';
-      col += 2;
-      continue;
-    } else if (current == 'D') {
-      // Continuing in string...
-      if (strncmp(text, "\\\"", 2) == 0) {
-        // Quoted end quote...
-	*style++ = current;
-	*style++ = current;
-	text ++;
-	length --;
-	col += 2;
-	continue;
-      } else if (*text == '\"') {
-        // End quote...
-	*style++ = current;
-	col ++;
-	current = 'A';
-	continue;
-      }
+                        text --;
+                        length ++;
+                        last = 1;
+                        continue;
+                    }
+                }
+            }
+        } else if (current == 'D' && strncmp(text, "*/", 2) == 0) {
+            // Close a C comment...
+            *style++ = current;
+            *style++ = current;
+            text ++;
+            length --;
+            current = PLAIN;
+            col += 2;
+            continue;
+        } else if (current == 'E') {
+            // Continuing in string...
+            if (strncmp(text, "\\\"", 2) == 0) {
+                // Quoted end quote...
+                *style++ = current;
+                *style++ = current;
+                text ++;
+                length --;
+                col += 2;
+                continue;
+            } else if (*text == '\"') {
+                // End quote...
+                *style++ = current;
+                col ++;
+                current = PLAIN;
+                continue;
+            }
+        }
+
+        // Copy style info...
+        if (current == PLAIN && (*text == '{' || *text == '}')) *style++ = 'H';
+        else *style++ = current;
+
+        col++;
+
+        last = isalnum(*text) || *text == '.';
+
+        if (*text == '\n') {
+            // Reset column and possibly reset the style
+            col = 0;
+            if (current == 'C' || current == 'F') current = PLAIN;
+        }
     }
-
-    // Copy style info...
-    if (current == 'A' && (*text == '{' || *text == '}')) *style++ = 'G';
-    else *style++ = current;
-    col ++;
-
-    last = isalnum(*text) || *text == '.';
-
-    if (*text == '\n') {
-      // Reset column and possibly reset the style
-      col = 0;
-      if (current == 'B' || current == 'E') current = 'A';
-    }
-  }
 }
 
 
@@ -283,111 +286,128 @@ style_parse(const char *text,
 // 'style_init()' - Initialize the style buffer...
 //
 
-void
-style_init(void) {
-  char *style = new char[textbuf->length() + 1];
-  char *text = (char *)textbuf->text();
-  
+void style_init(void) {
+    char *style = new char[textbuf->length() + 1];
+    char *text = (char *)textbuf->text();
 
-  memset(style, 'A', textbuf->length());
-  style[textbuf->length()] = '\0';
+    memset(style, UNFINISHED, textbuf->length());
+    style[textbuf->length()] = '\0';
 
-  if (!stylebuf) stylebuf = new Fl_Text_Buffer(textbuf->length());
+    if(!stylebuf) stylebuf = new Fl_Text_Buffer(textbuf->length());
 
-  style_parse(text, style, textbuf->length());
+    style_parse(text, style, textbuf->length());
 
-  stylebuf->text(style);
-  delete[] style;
-  free(text);
+    stylebuf->text(style);
+    delete[] style;
+    free(text);
 }
 
 
 //
 // 'style_unfinished_cb()' - Update unfinished styles.
 //
-
-void
-style_unfinished_cb() {
+void style_unfinished_cb(Fl_Text_Display *, int, void *) {
 }
 
 
 //
 // 'style_update()' - Update the style buffer...
 //
-
 void
 style_update(int        pos,		// I - Position of update
              int        nInserted,	// I - Number of inserted chars
-	     int        nDeleted,	// I - Number of deleted chars
+             int        nDeleted,	// I - Number of deleted chars
              int        /*nRestyled*/,	// I - Number of restyled chars
-	     const char * /*deletedText*/,	// I - Text that was deleted
+             const char * /*deletedText*/,	// I - Text that was deleted
              void       *cbArg) {	// I - Callback data
 
     int	start,				// Start of text
-	end;				// End of text
-  char	last,				// Last style on line
-	*style,				// Style data
-	*text;				// Text data
+    end;				// End of text
+    char last,				// Last style on line
+        *style,				// Style data
+        *text;				// Text data
 
+    // If this is just a selection change, just unselect the style buffer...
+    if (nInserted == 0 && nDeleted == 0) {
+        stylebuf->unselect();
+        return;
+    }
 
-  // If this is just a selection change, just unselect the style buffer...
-  if (nInserted == 0 && nDeleted == 0) {
-    stylebuf->unselect();
-    return;
-  }
+    // Track changes in the text buffer...
+    if (nInserted > 0) {
+        // Insert characters into the style buffer...
+        style = new char[nInserted + 1];
+        memset(style, UNFINISHED, nInserted);
+        style[nInserted] = '\0';
 
-  // Track changes in the text buffer...
-  if (nInserted > 0) {
-    // Insert characters into the style buffer...
-    style = new char[nInserted + 1];
-    memset(style, 'A', nInserted);
-    style[nInserted] = '\0';
+        stylebuf->replace(pos, pos + nDeleted, style);
+        delete[] style;
+    } else {
+        // Just delete characters in the style buffer...
+        stylebuf->remove(pos, pos + nDeleted);
+    }
 
-    stylebuf->replace(pos, pos + nDeleted, style);
-    delete[] style;
-  } else {
-    // Just delete characters in the style buffer...
-    stylebuf->remove(pos, pos + nDeleted);
-  }
+    // Select the area that was just updated to avoid unnecessary
+    // callbacks...
+    stylebuf->select(pos, pos + nInserted - nDeleted);
 
-  // Select the area that was just updated to avoid unnecessary
-  // callbacks...
-  stylebuf->select(pos, pos + nInserted - nDeleted);
+    // Re-parse the changed region; we do this by parsing from the
+    // beginning of the line of the changed region to the end of
+    // the line of the changed region...  Then we check the last
+    // style character and keep updating if we have a multi-line
+    // comment character...
 
-  // Re-parse the changed region; we do this by parsing from the
-  // beginning of the line of the changed region to the end of
-  // the line of the changed region...  Then we check the last
-  // style character and keep updating if we have a multi-line
-  // comment character...
-  start = textbuf->line_start(pos);
-  end   = textbuf->line_end(pos + nInserted - nDeleted);
-  text  = (char *)textbuf->text_range(start, end);
-  style = (char *)stylebuf->text_range(start, end);
-  last  = style[end - start - 1];
+    // Try to find last SAFE parsing point.
+    int p = pos;
+    char *buffer = textbuf->static_buffer();
+    while(p--) {
+        char *ptr = buffer+p;
+        if(!strncmp(ptr, "/*", 2) ||
+           !strncmp(ptr, "*/", 2) ||
+           !strncmp(ptr, "#include", 8) ||
+           !strncmp(ptr, "//", 2)
+          ) {
+            p-=5;
+            break;
+        }
+        if(!strncmp(ptr, "\"", 1) &&
+           strncmp(ptr, "\\\"", 2)
+          ) {
+            p-=5;
+            break;
+        }
+    }
 
-  style_parse(text, style, end - start);
-
-  stylebuf->replace(start, end, style);
-  ((Fl_Text_Editor *)cbArg)->redisplay_range(start, end);
-
-  if (last != style[end - start - 1]) {
-    // The last character on the line changed styles, so reparse the
-    // remainder of the buffer...
-    free(text);
-    free(style);
-
-    end   = textbuf->length();
+    p=p>=0?p:0;
+    start = textbuf->line_start(p);
+    end   = textbuf->line_end(pos + nInserted - nDeleted);
     text  = (char *)textbuf->text_range(start, end);
     style = (char *)stylebuf->text_range(start, end);
+    last  = style[end - start - 1];
 
     style_parse(text, style, end - start);
 
     stylebuf->replace(start, end, style);
     ((Fl_Text_Editor *)cbArg)->redisplay_range(start, end);
-  }
 
-  free(text);
-  free(style);
+    if (last != style[end - start - 1])
+    {
+        // The last character on the line changed styles, so reparse the
+        // remainder of the buffer...
+        free(text);
+        free(style);
+
+        end   = textbuf->length();
+        text  = (char *)textbuf->text_range(start, end);
+        style = (char *)stylebuf->text_range(start, end);
+
+        style_parse(text, style, end - start);
+
+        stylebuf->replace(start, end, style);
+        ((Fl_Text_Editor *)cbArg)->redisplay_range(start, end);
+    }
+    free(text);
+    free(style);
 }
 
 

@@ -41,7 +41,6 @@ main(int argc, char **argv) {
     return Fl::run();
 }
 
-
 //
 // End of "$Id$".
 //

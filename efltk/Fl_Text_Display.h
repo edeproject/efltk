@@ -52,7 +52,7 @@ class FL_API Fl_Text_Display: public Fl_Group {
     };
     friend void fl_text_drag_me(int pos, Fl_Text_Display* d);
 
-    typedef void (*Unfinished_Style_Cb)();
+    typedef void (*Unfinished_Style_Cb)(Fl_Text_Display *disp, int pos, void *arg);
 
     // style attributes
     enum {

@@ -114,6 +114,9 @@ Fl_Text_Buffer::~Fl_Text_Buffer()
     }
 }
 
+char * Fl_Text_Buffer::static_buffer() {
+    return mBuf;
+}
 
 /*
  ** Get the entire contents of a text buffer.  Memory is allocated to contain
