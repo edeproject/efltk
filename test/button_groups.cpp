@@ -27,7 +27,8 @@ void group_cb(Fl_Button_Group *b,void *)
 
 int main(int argc, char *argv[]) 
 {
-    Fl_Window w(400, 400, "Button Groups");	
+    Fl_Window w(400, 450, "Button Groups");	
+    w.layout_spacing(4);
 
     Fl_Button_Group  *cbl1	= new Fl_Button_Group(10,20,390,100,"Fl_Button_Group:");
     Fl_Check_Buttons *cbl2	= new Fl_Check_Buttons(10,20,390,100,"Fl_Check_Buttons:");
@@ -38,29 +39,28 @@ int main(int argc, char *argv[])
 	cbl2->callback((Fl_Callback*)group_cb); cbl2->buttons(buttons); cbl2->layout_align(FL_ALIGN_TOP);
 	cbl3->callback((Fl_Callback*)group_cb); cbl3->buttons(buttons); cbl3->layout_align(FL_ALIGN_TOP);	
 
-	int W,H; 
-	cbl1->preferred_size(W,H); cbl1->h(H);
-	cbl2->preferred_size(W,H); cbl2->h(H);
-	cbl3->preferred_size(W,H); cbl3->h(H);
+	//int W,H; 
+	//cbl1->preferred_size(W,H); cbl1->h(H);
+	//cbl2->preferred_size(W,H); cbl2->h(H);
+	//cbl3->preferred_size(W,H); cbl3->h(H);
 
-    cb = cbl3;
+        cb = cbl3;
 
-	Fl_Group main_group(10, 10, 100, 100);		
-	main_group.layout_align(FL_ALIGN_CLIENT);
+	//Fl_Group main_group(10, 10, 100, 100);		
+	//main_group.layout_align(FL_ALIGN_CLIENT);
 
-		Fl_Box empty1(0,0,0,20); empty1.layout_align(FL_ALIGN_CLIENT);
-		main_group.add(cbl1);
+	//Fl_Box empty1(0,0,0,20); empty1.layout_align(FL_ALIGN_CLIENT);
+	//main_group.add(cbl1);
 
-		Fl_Box empty2(0,0,0,20); empty2.layout_align(FL_ALIGN_TOP);
-		main_group.add(cbl2);
+	//Fl_Box empty2(0,0,0,20); empty2.layout_align(FL_ALIGN_TOP);
+	//main_group.add(cbl2);
 
-		Fl_Box empty3(0,0,0,20); empty3.layout_align(FL_ALIGN_TOP);
-		main_group.add(cbl3);
+	//Fl_Box empty3(0,0,0,20); empty3.layout_align(FL_ALIGN_TOP);
+	//main_group.add(cbl3);
 	
-	main_group.end();
+	//main_group.end();
 
 	Fl_Group g(0, 250, 400, 50);
-	g.layout_settings(false, false);
 	g.layout_align(FL_ALIGN_BOTTOM);
 		
 		Fl_Input input(100,120,200,24,"Test");		

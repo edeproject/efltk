@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x4003de
+# %FirstUniqueId:	0x4003e0
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -748,16 +748,6 @@ test/labelwidth ::	test/labelwidth.o
 test/check_buttons ::	test/check_buttons.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
-# %UniqueId:	0x4003d6
-# %TargetType:	C++_EXE
-# %IDEFlags:	0x8
-# %ComplexTarget
-# %SrcDir:	test
-# %IncDir:	test
-# %ObjsDir:	test
-test/radio_buttons ::	test/radio_buttons.o
-	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
-
 # %UniqueId:	0x4003d8
 # %TargetType:	C_EXE
 # %IDEFlags:	0x8
@@ -787,6 +777,16 @@ test/layout ::	test/layout.o
 # %ObjsDir:	test
 test/layout2 ::	test/layout2.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+# %UniqueId:	0x4003de
+# %TargetType:	C++_EXE
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	test
+# %IncDir:	test
+# %ObjsDir:	test
+test/button_groups ::	test/button_groups.o
+	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %ObjectFilesLinking
 # %TargetType:	C++_OBJ
@@ -2631,13 +2631,6 @@ test/check_buttons.o : test/check_buttons.cpp
 
 
 # %TargetType:	C++_OBJ
-# %ParentTarget:	0x4003d6
-# %SourceTarget:	0x4003d7
-test/radio_buttons.o : test/radio_buttons.cpp
-	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
-
-
-# %TargetType:	C++_OBJ
 # %ParentTarget:	0x4003d8
 # %SourceTarget:	0x4003d9
 test/labelwidth2.o : test/labelwidth2.cpp
@@ -2655,6 +2648,13 @@ test/layout.o : test/layout.cpp
 # %ParentTarget:	0x4003dc
 # %SourceTarget:	0x4003dd
 test/layout2.o : test/layout2.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x4003de
+# %SourceTarget:	0x4003df
+test/button_groups.o : test/button_groups.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
@@ -10379,34 +10379,6 @@ test/check_buttons.o :	efltk/Fl_Check_Buttons.h\
 	efltk/Fl_Window.h\
 	efltk/Fl.h\
 	config.h
-test/radio_buttons.o :	efltk/Fl_Radio_Buttons.h\
-	efltk/Fl_Button_Group.h\
-	efltk/Fl_String_List.h\
-	efltk/Fl_String.h\
-	efltk/Enumerations.h\
-	efltk/Fl_Export.h\
-	efltk/Fl_Ptr_List.h\
-	efltk/Fl_Button.h\
-	efltk/Fl_Widget.h\
-	efltk/Fl_Data_Source.h\
-	efltk/Fl_Data_Fields.h\
-	efltk/Fl_Flags.h\
-	efltk/Fl_Variant.h\
-	efltk/Fl_Date_Time.h\
-	efltk/Fl_Exception.h\
-	efltk/Fl_Style.h\
-	efltk/Fl_Font.h\
-	efltk/Fl_Int_List.h\
-	efltk/Fl_Labeltype.h\
-	efltk/Fl_Color.h\
-	efltk/Fl_Boxtype.h\
-	efltk/Fl_Input.h\
-	efltk/Fl_Box.h\
-	efltk/Fl_Group.h\
-	efltk/Fl_Widget_List.h\
-	efltk/Fl_Window.h\
-	efltk/Fl.h\
-	config.h
 test/labelwidth2.o :	efltk/Fl_Box.h\
 	efltk/Fl_Widget.h\
 	efltk/Fl_Data_Source.h\
@@ -10506,6 +10478,32 @@ test/layout2.o :	efltk/Fl_Window.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl_Button.h\
+	efltk/Fl.h
+test/button_groups.o :	efltk/Fl_Button_Group.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Window.h\
 	efltk/Fl.h
 
 
@@ -10765,8 +10763,9 @@ test/layout2.o :	efltk/Fl_Window.h\
 # %TargetInfo test/labelwidth.cpp	SourceOrHeader,	UniqueId=0x4003c9,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Button_Group.cpp	SourceOrHeader,	UniqueId=0x4003ca,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/check_buttons.cpp	SourceOrHeader,	UniqueId=0x4003d5,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/radio_buttons.cpp	SourceOrHeader,	UniqueId=0x4003d7,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/labelwidth2.cpp	SourceOrHeader,	UniqueId=0x4003d9,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/layout.cpp	SourceOrHeader,	UniqueId=0x4003db,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/layout2.cpp	SourceOrHeader,	UniqueId=0x4003dd,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x6
@@ -11036,8 +11035,7 @@ test/layout2.o :	efltk/Fl_Window.h\
 # %TargetInfo efltk/xml/Fl_XmlCtx.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d1,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Check_Buttons.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d2,	TargetType=INC,	IDEFlags=0xc
 # %TargetInfo efltk/Fl_Radio_Buttons.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d3,	TargetType=INC,	IDEFlags=0xc
-# %TargetInfo test/layout.cpp	SourceOrHeader,	UniqueId=0x4003db,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo test/layout2.cpp	SourceOrHeader,	UniqueId=0x4003dd,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/button_groups.cpp	SourceOrHeader,	UniqueId=0x4003df,	TargetType=C++,	IDEFlags=0x6
 
 
 # %UniqueId:	0x400001
@@ -11076,6 +11074,7 @@ test/layout2.o :	efltk/Fl_Window.h\
 #	0x40018c
 #	0x40018e
 #	0x400192
+#	0x4003de
 #	0x400195
 #	0x400249
 #	0x40024b
@@ -11106,7 +11105,6 @@ test/layout2.o :	efltk/Fl_Window.h\
 #	0x40038a
 #	0x40033a
 #	0x400388
-#	0x4003d6
 #	0x4003d4
 #
 # %UniqueId:	0x40038c
