@@ -196,8 +196,12 @@ void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
     Fl_PixelFormat fmt;
     fmt.copy(Fl_Renderer::system_format());
 
+#ifdef _WIN32
+	SetWindowPos(fl_xid(this), HWND_TOPMOST, x, y, w, h, (SWP_NOSENDCHANGING | SWP_NOACTIVATE));
+#else
     XMoveResizeWindow(fl_display, fl_xid(this), x, y, w, h);
-
+#endif
+	
     int step = 10;
     if(anim_speed()>0) { step=int(floor((step*anim_speed())+.5f)); }
     int alpha=10;
@@ -218,7 +222,7 @@ void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
         {
             make_current();
             if(!Fl_Renderer::render_to_pixmap(data, &rect2, Fl_Renderer::system_format(), pitch,
-                                              fl_xid(this), &rect2, fl_gc, 0))
+                                              (Pixmap)fl_xid(this), &rect2, fl_gc, 0))
                 error=true;
         } else
             error=true;
@@ -308,7 +312,7 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
             make_current();
 #ifdef _WIN32
             make_current();
-            SetWindowPos(fl_xid(this), HWND_TOPMOST, X, Y, W, H, (SWP_NOSENDCHANGING | SWP_NOZORDER | SWP_NOACTIVATE));
+            SetWindowPos(fl_xid(this), HWND_TOPMOST, X, Y, W, H, (SWP_NOSENDCHANGING | SWP_NOACTIVATE));
             fl_copy_offscreen(0, 0, W, H, pm, tw-W, th-H);
 
             // Flush the GDI
