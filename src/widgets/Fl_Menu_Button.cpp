@@ -42,7 +42,7 @@ void Fl_Menu_Button::draw()
     // We need to erase the focus rectangle on FL_DAMAGE_HIGHTLIGHT for
     // FL_NO_BOX buttons such as checkmarks:
     if (damage()&FL_DAMAGE_EXPOSE && !box->fills_rectangle()
-        || box == FL_NO_BOX && damage()&FL_DAMAGE_HIGHLIGHT && !focused())
+            || box == FL_NO_BOX && damage()&FL_DAMAGE_HIGHLIGHT && !focused())
     {
         fl_push_clip(0, 0, this->w(), this->h());
         parent()->draw_group_box();
@@ -140,7 +140,7 @@ int Fl_Menu_Button::handle(int e)
             {
                 if (click_to_focus()) take_focus();
             }
-            EXECUTE:
+        EXECUTE:
             //if (!(type()&7)) value(-1); // make it pull down below the button...
             popup();
             return 1;
@@ -169,13 +169,21 @@ static void revert(Fl_Style* s)
 static Fl_Named_Style style("Menu_Button", revert, &Fl_Menu_Button::default_style);
 Fl_Named_Style* Fl_Menu_Button::default_style = &::style;
 
+// Traditonal ctor
 Fl_Menu_Button::Fl_Menu_Button(int X,int Y,int W,int H,const char *l)
 : Fl_Menu_(X,Y,W,H,l)
 {
     style(default_style);
     align(FL_ALIGN_CENTER);
-    //set_click_to_focus();
+    anim_flags_ = TOP_TO_BOTTOM;
+}
 
+// New style ctor
+Fl_Menu_Button::Fl_Menu_Button(const char* l,int layout_size,Fl_Align layout_al,int label_w)
+: Fl_Menu_(l,layout_size,layout_al,label_w)
+{
+    style(default_style);
+    align(FL_ALIGN_CENTER);
     anim_flags_ = TOP_TO_BOTTOM;
 }
 

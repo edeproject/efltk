@@ -42,29 +42,30 @@ class FL_API Fl_Pack : public Fl_Group {
 public:
     static Fl_Named_Style* default_style;
 
-	/**
-	 * Creates a new empty Fl_Pack. 
-	 */
+    /** Creates new pack widget using the given position, size, and label string. */
     Fl_Pack(int x,int y,int w ,int h,const char *label=0);
 
-	/** values for type(int) */
+    /** Creates new pack widget using the label, size, alignment, and label_width. */
+    Fl_Pack(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
+
+    /** values for type(int) */
     enum Types {
-        NORMAL	    = GROUP_TYPE,   /**< Pack widgets vertically */
-        VERTICAL    = NORMAL,		/**< For back compatability */
+        NORMAL      = GROUP_TYPE,   /**< Pack widgets vertically */
+        VERTICAL    = NORMAL,       /**< For back compatability */
         HORIZONTAL  = GROUP_TYPE+1  /**< Pack widgets horizontally */
     };
 
     virtual void layout();
 
-	/** 
-	 * Get the number of extra pixels of blank space that are added between each child widgets.
-	 */
+    /** 
+     * Get the number of extra pixels of blank space that are added between each child widgets.
+     */
     int spacing() const { return layout_spacing(); }
-	
-	/**
-	 * Set the number of extra pixels of blank space that are added between each child widgets.
-	 * @param i pixels
-	 */
+
+    /**
+     * Set the number of extra pixels of blank space that are added between each child widgets.
+     * @param i pixels
+     */
     void spacing(int i) { layout_spacing(i); }
 };
 

@@ -29,7 +29,13 @@
 /** Fl_Multiline_Input */
 class Fl_Multiline_Input : public Fl_Input {
 public:
-    Fl_Multiline_Input(int x,int y,int w,int h,const char *l = 0) : Fl_Input(x,y,w,h,l) { input_type(MULTILINE); }
+    /** Creates new multiline input widget using the given position, size, and label string. */
+    Fl_Multiline_Input(int x,int y,int w,int h,const char *l = 0) 
+    : Fl_Input(x,y,w,h,l) { input_type(MULTILINE); }
+
+    /** Creates new multiline input widget using the label, size, alignment, and label_width. */
+    Fl_Multiline_Input(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100)
+    : Fl_Input(l,layout_size,layout_al,label_w) { input_type(MULTILINE); }
 };
 
 #endif

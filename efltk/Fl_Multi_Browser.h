@@ -29,7 +29,15 @@
 /** Fl_Multi_Browser */
 class Fl_Multi_Browser : public Fl_Browser {
 public:
-    Fl_Multi_Browser(int x,int y,int w,int h,const char *l=0) : Fl_Browser(x,y,w,h,l) { type(MULTI); }
+
+    /** Creates new multi browser widget using the given position, size, and label. */
+    Fl_Multi_Browser(int x,int y,int w,int h,const char *l=0) 
+    : Fl_Browser(x,y,w,h,l) { type(MULTI); }
+
+    /** Creates new multi browser widget using the label, size, alignment, and label_width. */
+    Fl_Multi_Browser(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100)
+    : Fl_Browser(l,layout_size,layout_al,label_w) { type(MULTI); }
+
 };
 
 #endif

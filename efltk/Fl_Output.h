@@ -28,7 +28,12 @@
 class FL_API Fl_Output : public Fl_Input {
 public:
     static Fl_Named_Style* default_style;
+
+    /** Creates new output widget using the given position, size, and label string. */
     Fl_Output(int x, int y, int w, int h, const char *l = 0);
+
+    /** Creates new output widget using the label, size, alignment, and label_width. */
+    Fl_Output(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
 };
 
 #endif 

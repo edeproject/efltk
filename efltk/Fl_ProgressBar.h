@@ -32,23 +32,27 @@ class FL_API Fl_ProgressBar : public Fl_Widget
 public:
     static Fl_Named_Style* default_style;
 
+    /** Creates new progress bar widget using the given position, size, and label. */
     Fl_ProgressBar(int x, int y, int w, int h, const char *lbl = 0);
+
+    /** Creates new progress bar widget using the label, size, alignment, and label_width. */
+    Fl_ProgressBar(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
 
     void range(float min, float max, float step = 1)  { mMin = min; mMax = max; mStep = step; };
 
-    float minimum()	{ return mMin; }
-    float maximum()	{ return mMax; }
+    float minimum() { return mMin; }
+    float maximum() { return mMax; }
     void minimum(float nm) { mMin = nm; };
     void maximum(float nm) { mMax = nm; };
 
     void step(float step) { mPresent += step; redraw(); };
-    float step()	  { return mStep; }
+    float step()      { return mStep; }
 
     void  value(float v) { mPresent = v; redraw(); }
     float value() const  { return mPresent; }
 
     void showtext(bool st) { mShowPct = st; }
-    bool showtext()	   { return mShowPct; }
+    bool showtext()    { return mShowPct; }
 
     virtual void draw();
 

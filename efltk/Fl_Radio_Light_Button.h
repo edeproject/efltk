@@ -27,7 +27,13 @@
 /** Fl_Radio_Light_Button */
 class Fl_Radio_Light_Button : public Fl_Light_Button {
 public:
-    Fl_Radio_Light_Button(int x,int y,int w,int h,const char *l=0) : Fl_Light_Button(x,y,w,h,l) { type(RADIO); }
+    /** Creates new radio light button widget using the given position, size, and label string. */
+    Fl_Radio_Light_Button(int x,int y,int w,int h,const char *l=0)
+    : Fl_Light_Button(x,y,w,h,l) { type(RADIO); }
+
+    /** Creates new radio light button widget using the label, size, and alignment. */
+    Fl_Radio_Light_Button(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP)
+    : Fl_Light_Button(l,layout_size,layout_al) { type(RADIO); }
 };
 
 #endif

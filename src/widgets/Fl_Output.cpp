@@ -38,13 +38,21 @@ static void revert(Fl_Style *s) {
 static Fl_Named_Style style("Output", revert, &Fl_Output::default_style);
 Fl_Named_Style* Fl_Output::default_style = &::style;
 
+// Traditional ctor
 Fl_Output::Fl_Output(int x, int y, int w, int h, const char *l)
-    : Fl_Input(x, y, w, h, l)
+: Fl_Input(x, y, w, h, l)
 {
     style(default_style);
     readonly(1);
 }
 
+// New style ctor
+Fl_Output::Fl_Output(const char* l,int layout_size,Fl_Align layout_al,int label_w)
+: Fl_Input(l,layout_size,layout_al,label_w)
+{
+    style(default_style);
+    readonly(1);
+}
 
 //
 // End of "$Id$".

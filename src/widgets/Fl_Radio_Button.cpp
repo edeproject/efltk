@@ -29,7 +29,7 @@
 #include <efltk/Fl_Group.h>
 
 static void default_glyph(const Fl_Widget* widget, int glyph,
-int x,int y,int w,int h, Fl_Flags flags)
+    int x,int y,int w,int h, Fl_Flags flags)
 {
     // h = (h+1)&(~1); // even only
     Fl_Boxtype box = widget->button_box();
@@ -60,8 +60,17 @@ static void revert(Fl_Style* s)
 static Fl_Named_Style style("Radio_Button", revert, &Fl_Radio_Button::default_style);
 Fl_Named_Style* Fl_Radio_Button::default_style = &::style;
 
+// Traditional ctor
 Fl_Radio_Button::Fl_Radio_Button(int x, int y, int w, int h, const char *l)
 : Fl_Check_Button(x, y, w, h, l)
+{
+    style(default_style);
+    type(RADIO);
+}
+
+// New style ctor
+Fl_Radio_Button::Fl_Radio_Button(const char* l,int layout_size,Fl_Align layout_al)
+: Fl_Check_Button(l,layout_size,layout_al)
 {
     style(default_style);
     type(RADIO);

@@ -29,7 +29,11 @@ class FL_API Fl_Menu_Button : public Fl_Menu_ {
 public:
     static Fl_Named_Style* default_style;
 
+    /** Creates new menu button widget using the given position, size, and label string. */
     Fl_Menu_Button(int,int,int,int,const char * =0);
+
+    /** Creates new menu button widget using the label, size, alignment, and label_width. */
+    Fl_Menu_Button(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
 
     // values for type:
     enum {

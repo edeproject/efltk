@@ -51,11 +51,21 @@ static void revert(Fl_Style *s) {
 static Fl_Named_Style style("Pack", revert, &Fl_Pack::default_style);
 Fl_Named_Style* Fl_Pack::default_style = &::style;
 
+// Traditional ctor
 Fl_Pack::Fl_Pack(int x,int y,int w ,int h,const char *l)
 : Fl_Group(x, y, w, h, l)
 {
     style(default_style);
-	layout_spacing(0);    
+    layout_spacing(0);    
+    type(VERTICAL);    
+}
+
+// New style ctor
+Fl_Pack::Fl_Pack(const char* l,int layout_size,Fl_Align layout_al,int label_w)
+: Fl_Group(l,layout_size,layout_al,label_w)
+{
+    style(default_style);
+    layout_spacing(0);    
     type(VERTICAL);    
 }
 
@@ -63,87 +73,87 @@ Fl_Pack::Fl_Pack(int x,int y,int w ,int h,const char *l)
 void Fl_Pack::layout()
 {
         // we only need to do something special if the group is resized:
-        if (!(layout_damage() & (FL_LAYOUT_WH|FL_LAYOUT_DAMAGE)) || !children())
-        {
-            Fl_Group::layout();
-            if (!(layout_damage() & FL_LAYOUT_DAMAGE)) 
-				return;
-        }
+    if (!(layout_damage() & (FL_LAYOUT_WH|FL_LAYOUT_DAMAGE)) || !children())
+    {
+        Fl_Group::layout();
+        if (!(layout_damage() & FL_LAYOUT_DAMAGE)) 
+            return;
+    }
 
         // clear the layout flags, so any resizes of children will set them again:
-        Fl_Widget::layout();
+    Fl_Widget::layout();
 
         // This is the rectangle to lay out the remaining widgets in:
-        int x = 0;
-        int y = 0;
-        int r = this->w();
-        int b = this->h();
-        box()->inset(x,y,r,b);
+    int x = 0;
+    int y = 0;
+    int r = this->w();
+    int b = this->h();
+    box()->inset(x,y,r,b);
 
-        bool saw_horizontal = false;
-        bool saw_vertical = false;
+    bool saw_horizontal = false;
+    bool saw_vertical = false;
 
         // layout all the top & left widgets (the ones before the resizable):
-        int i; for (i = 0; i < children(); i++)
+    int i; for (i = 0; i < children(); i++)
+    {
+        Fl_Widget* widget = child(i);
+        if (widget->contains(resizable())) break;
+        if (!widget->visible()) continue;
+        if (is_vertical(widget))
         {
-            Fl_Widget* widget = child(i);
-            if (widget->contains(resizable())) break;
-            if (!widget->visible()) continue;
-            if (is_vertical(widget))
-            {
-                widget->resize(x, y, widget->w(), b-y);
-                widget->layout();
-                x = widget->x() + widget->w() + layout_spacing();
-                saw_vertical = true;
-            }                    // put along top edge:
-            else
-            {
-                widget->resize(x, y, r-x, widget->h());
-                widget->layout();
-                y = widget->y() + widget->h() + layout_spacing();
-                saw_horizontal = true;
-            }
+            widget->resize(x, y, widget->w(), b-y);
+            widget->layout();
+            x = widget->x() + widget->w() + layout_spacing();
+            saw_vertical = true;
+        }                    // put along top edge:
+        else
+        {
+            widget->resize(x, y, r-x, widget->h());
+            widget->layout();
+            y = widget->y() + widget->h() + layout_spacing();
+            saw_horizontal = true;
         }
+    }
 
-        int resizable_index = i;
+    int resizable_index = i;
 
         // layout all the bottom & right widgets by going backwards:
-        for (i = children()-1; i > resizable_index; i--)
+    for (i = children()-1; i > resizable_index; i--)
+    {
+        Fl_Widget* widget = child(i);
+        if (!widget->visible()) continue;
+        if (is_vertical(widget))
         {
-            Fl_Widget* widget = child(i);
-            if (!widget->visible()) continue;
-            if (is_vertical(widget))
-            {
-                int W = widget->w();
-                widget->resize(r-W, y, W, b-y);
-                widget->layout();
-                r = widget->x() - layout_spacing();
-                saw_vertical = true;
-            }                    // put along top edge:
-            else
-            {
-                int H = widget->h();
-                widget->resize(x, b-H, r-x, H);
-                widget->layout();
-                b = widget->y() - layout_spacing();
-                saw_horizontal = true;
-            }
+            int W = widget->w();
+            widget->resize(r-W, y, W, b-y);
+            widget->layout();
+            r = widget->x() - layout_spacing();
+            saw_vertical = true;
+        }                    // put along top edge:
+        else
+        {
+            int H = widget->h();
+            widget->resize(x, b-H, r-x, H);
+            widget->layout();
+            b = widget->y() - layout_spacing();
+            saw_horizontal = true;
         }
+    }
 
         // Lay out the resizable widget to fill the remaining space:
-        if (resizable_index < children())
-        {
-            Fl_Widget* widget = child(resizable_index);
-            widget->resize(x, y, r-x, b-y);
-            widget->layout();
-        }
+    if (resizable_index < children())
+    {
+        Fl_Widget* widget = child(resizable_index);
+        widget->resize(x, y, r-x, b-y);
+        widget->layout();
+    }
 
         // A non-resizable widget will become the size of it's items:
-        int W = w();
-        if (r < x || !resizable() && !saw_horizontal) W -= (r-x);
-        int H = h();
-        if (b < y || !resizable() && !saw_vertical) H -= (b-y);
-        size(W,H);
+    int W = w();
+    if (r < x || !resizable() && !saw_horizontal) W -= (r-x);
+    int H = h();
+    if (b < y || !resizable() && !saw_vertical) H -= (b-y);
+    size(W,H);
 }
 
 
