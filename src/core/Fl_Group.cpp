@@ -52,13 +52,14 @@ Fl_Named_Style* group_style = &the_style;
 
 Fl_Group::Fl_Group(int X,int Y,int W,int H,const char *l)
 : Fl_Widget(X,Y,W,H,l),
-children_(0),
 focus_(-1),
-array_(0),
 resizable_(0),                   // fltk 1.0 used (this)
 sizes_(0),
 data_source_(0L)
 {
+    // Block size to 8, so don't allocate so much unnecessary space.
+    array_.blocksize(8);
+
     type(GROUP_TYPE);
     style(::group_style);
     align(FL_ALIGN_TOP);
@@ -68,105 +69,88 @@ data_source_(0L)
     begin();
 }
 
-
 void Fl_Group::clear()
 {
     init_sizes();
-    if (children_)
-    {
-        Fl_Widget*const* a = array_;
-        Fl_Widget*const* e = a+children_;
+    if(children()) {
+        Fl_Widget*const* a = array_.data();
+        Fl_Widget*const* e = a+children();
         // clear everything now, in case fl_fix_focus recursively calls us:
-        children_ = 0;
         focus_ = -1;
         if (resizable_) resizable_ = this;
         // okay, now it is safe to destroy the children:
-        while (e > a)
-        {
+        while (e > a) {
             Fl_Widget* o = *--e;
-            o->parent(0);        // stops it from calling remove()			
-			delete o;
+            o->parent(0);        // stops it from calling remove()
+            delete o;
         }
-        free((void*)a);		
+        array_.clear();
     }
 }
 
-
-Fl_Group::~Fl_Group() {clear();}
+Fl_Group::~Fl_Group() { clear(); }
 
 void Fl_Group::insert(Fl_Widget &o, int index)
 {
-    if (o.parent())
-    {
+    if (o.parent()) {
         int n = o.parent()->find(o);
-        if (o.parent() == this)
-        {
+        if (o.parent() == this) {
             if (index > n) index--;
             if (index == n) return;
         }
         o.parent()->remove(n);
     }
     o.parent(this);
-    if (children_ == 0)
-    {
+    if(children() == 0) {
         // allocate for 1 child
-        array_ = (Fl_Widget**)malloc(sizeof(Fl_Widget*));
-        array_[0] = &o;
+        array_.append(&o);
+    } else {
+        array_.insert(index, &o);
     }
-    else
-    {
-                                 // double number of children
-        if (!(children_ & (children_-1)))
-            array_ = (Fl_Widget**)realloc((void*)array_,
-                2*children_*sizeof(Fl_Widget*));
-        for (int j = children_; j > index; --j) array_[j] = array_[j-1];
-        array_[index] = &o;
-    }
-    ++children_;
     init_sizes();
 }
 
 
-void Fl_Group::add(Fl_Widget &o)
-{
-    insert(o, children_);
+void Fl_Group::add(Fl_Widget &o) {
+    insert(o, children());
 }
 
 
 void Fl_Group::remove(int index)
 {
-    if (index >= children_) return;
+    if(index >= children()) return;
     Fl_Widget* o = array_[index];
     o->parent(0);
-    children_--;
-    for (int i=index; i < children_; ++i) array_[i] = array_[i+1];
+    array_.remove(index);
     init_sizes();
 }
-
 
 void Fl_Group::replace(int index, Fl_Widget& o)
 {
-    if (index >= children_) {add(o); return;}
+    if(index >= children()) {
+        add(o);
+        return;
+    }
     o.parent(this);
     array_[index]->parent(0);
-    array_[index] = &o;
+    array_.replace(index, &o);
     init_sizes();
 }
 
-
 int Fl_Group::find(const Fl_Widget* o) const
 {
-    for (;;)
-    {
-        if (!o) return children_;
-        if (o->parent() == this) break;
+    for (;;) {
+        if (!o) return children();
+        if(o->parent() == this) break;
         o = o->parent();
     }
     // Search backwards so if children are deleted in backwards order
     // they are found quickly:
-    for (int index = children_; index--;)
-        if (array_[index] == o) return index;
-    return children_;
+    for (int index = children(); index--;)
+        if(array_.item(index) == o)
+            return index;
+
+    return children();
 }
 
 
@@ -375,7 +359,7 @@ int* Fl_Group::sizes()
 {
     if (!sizes_)
     {
-        int* p = sizes_ = new int[4*(children_+2)];
+        int* p = sizes_ = new int[4*(children()+2)];
         // first thing in sizes array is the group's size:
         p[0] = x();
         p[1] = w();
@@ -397,8 +381,8 @@ int* Fl_Group::sizes()
         }
         // next is all the children's sizes:
         p += 8;
-        Fl_Widget*const* a = array_;
-        Fl_Widget*const* e = a+children_;
+        Fl_Widget*const* a = array_.data();
+        Fl_Widget*const* e = a+children();
         while (a < e)
         {
             Fl_Widget* o = *a++;
@@ -414,13 +398,12 @@ int* Fl_Group::sizes()
 
 void Fl_Group::layout()
 {
-
     // Save the layout damage and then clear it. This is so layout() of a
     // child can turn it back on and subclasses like Fl_Pack can detect that:
     int layout_damage = this->layout_damage();
     Fl_Widget::layout();
 
-    if (resizable() && children_)
+    if (resizable() && children())
     {
         int* p = sizes();        // initialize the size array
 
@@ -440,8 +423,8 @@ void Fl_Group::layout()
             int IY = *p++;
             int IB = *p++;
 
-            Fl_Widget*const* a = array_;
-            Fl_Widget*const* e = a+children_;
+            Fl_Widget*const* a = array_.data();
+            Fl_Widget*const* e = a+children();
             while (a < e)
             {
                 Fl_Widget* o = *a++;
@@ -464,8 +447,8 @@ void Fl_Group::layout()
         }
     }
 
-    Fl_Widget*const* a = array_;
-    Fl_Widget*const* e = a+children_;
+    Fl_Widget*const* a = array_.data();
+    Fl_Widget*const* e = a+children();
     if ((layout_damage & FL_LAYOUT_XY) && !is_window())
     {
         // If this is not an Fl_Window and the xy position is changed, we must
@@ -491,7 +474,6 @@ void Fl_Group::layout()
 
     if (layout_damage & FL_LAYOUT_WH) redraw();
 }
-
 
 ////////////////////////////////////////////////////////////////
 // Draw
@@ -554,7 +536,7 @@ void Fl_Group::draw_group_box() const
     // So that this may be called from any child's draw context, I need to
     // figure out the correct origin:
     fl_push_matrix();
-    #if 1
+#if 1
     fl_load_identity();
     int x = 0;
     int y = 0;
@@ -566,18 +548,15 @@ void Fl_Group::draw_group_box() const
         group = group->parent();
     }
     fl_translate(x,y);
-    #else
+#else
     // this does not work because it resets the clip region:
     make_current();
-    #endif
+#endif
     if (!box()->fills_rectangle())
     {
-        if (parent())
-        {
+        if (parent()) {
             parent()->draw_group_box();
-        }
-        else
-        {
+        } else {
             fl_color(color());
             fl_rectf(0, 0, w(), h());
         }

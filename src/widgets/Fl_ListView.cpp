@@ -1,6 +1,5 @@
 #include <efltk/Fl_ListView.h>
 #include <efltk/Fl_ListView_Item.h>
-//#include "FLE_MdiWindow.h"
 
 #define DRAG_DIST 3 //Area to size header
 #define TXT_SPACE 2 //Size between txt and img
@@ -27,6 +26,8 @@ Fl_ListHeader::Fl_ListHeader(int X,int Y,int W,int H,const char*l)
     : Fl_Widget(X,Y,W,H,l)
 {
     style(default_style);
+    sort_type = Fl_ListView::SORT_UNKNOWN;
+    sort_col = 0;
 
     cols=0;
     for(int a=0;a<MAX_COLUMNS;a++) { colw[a]=0; colf[a]=FL_ALIGN_LEFT; coli[a]=0; coln[a]=0; }
@@ -34,29 +35,31 @@ Fl_ListHeader::Fl_ListHeader(int X,int Y,int W,int H,const char*l)
 
 Fl_ListHeader::~Fl_ListHeader()
 {
-	clear();
+    clear();
 }
 
 void Fl_ListHeader::clear()
 {
-	for(int n=0; n<MAX_COLUMNS; n++) {
-		if(coln[n]) delete []coln[n];
-		coln[n] = 0;
-	}
-	cols=0;	
+    for(int n=0; n<MAX_COLUMNS; n++) {
+        if(coln[n]) delete []coln[n];
+        coln[n] = 0;
+    }
+    cols=0;
 }
 
 void Fl_ListHeader::columns(int count)
 {
-	if(count>MAX_COLUMNS) count=MAX_COLUMNS;
-	if(count<cols) {
-		for(int n=count+1; n<cols; n++) {
-			if(coln[n]) delete []coln[n];
-			coln[n] = 0;
-		}
-	}
-	cols=count;
+    if(count>MAX_COLUMNS) count=MAX_COLUMNS;
+    if(count<cols) {
+        for(int n=count+1; n<cols; n++) {
+            if(coln[n]) delete []coln[n];
+            coln[n] = 0;
+        }
+    }
+    cols=count;
 }
+
+#define SORT_ARROW 8
 
 void Fl_ListHeader::draw()
 {
@@ -65,7 +68,9 @@ void Fl_ListHeader::draw()
 
     for(int a=0; a<cols; a++)
     {
-        button_box()->draw(0, 0, colw[a], h(),button_color(), colf[a]);
+        Fl_Flags f = colf[a];
+        Fl_Color c = button_color();
+        button_box()->draw(0, 0, colw[a], h(), c, f);
 
         char *txt = coln[a];
         if(txt) {
@@ -75,10 +80,13 @@ void Fl_ListHeader::draw()
             }
 
             int X=0,Y=0,W=colw[a],H=h();
-            if(colf[a]&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT)) {X += 3; W -= 6;}
+            if(f&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT)) {X += 3; W -= 6;}
+
+            if(sort_col==a && sort_type>=0 && sort_type<Fl_ListView::SORT_UNKNOWN)
+                W-=(SORT_ARROW+2);
 
             fl_font(label_font(), float(label_size()));
-            char *pbuf = fl_cut_line(txt, colw[a]-iw-X);
+            char *pbuf = fl_cut_line(txt, W-iw);
 
             //Clear CLIP flag if set, cause we clip anyway =)
             if(align() & FL_ALIGN_CLIP) Fl_Widget::clear_flag(FL_ALIGN_CLIP);
@@ -88,9 +96,21 @@ void Fl_ListHeader::draw()
             label(pbuf);
             Fl_Image *si = Fl_Widget::image();
             Fl_Widget::image(coli[a]);
-            draw_label(X, Y, W, H, colf[a]|(flags()&(FL_SELECTED|FL_INACTIVE)));
+            draw_label(X, Y, W, H, f|(flags()&(FL_SELECTED|FL_INACTIVE)));
             Fl_Widget::image(si);
 
+            if(sort_col==a) {
+                switch(sort_type) {
+                case Fl_ListView::SORT_ASC:
+                    draw_glyph(FL_GLYPH_UP, colw[a]-DRAG_DIST-SORT_ARROW, h()/2-SORT_ARROW/2, SORT_ARROW, SORT_ARROW, f|(flags()&(FL_SELECTED|FL_INACTIVE)));
+                    break;
+                case Fl_ListView::SORT_DESC:
+                    draw_glyph(FL_GLYPH_DOWN, colw[a]-DRAG_DIST-SORT_ARROW, h()/2-SORT_ARROW/2, SORT_ARROW, SORT_ARROW, f|(flags()&(FL_SELECTED|FL_INACTIVE)));
+                    break;
+                default:
+                    break;
+                }
+            }
             fl_pop_clip();
         }
         fl_translate(colw[a], 0);
@@ -152,7 +172,9 @@ int Fl_ListHeader::handle(int ev)
             colf[inside] &= ~FL_VALUE;
             redraw(FL_DAMAGE_ALL);
             LIST->redraw(FL_DAMAGE_CHILD);
-            //Do some callback for sorting!?
+
+            sort_col = inside;
+            sort_type = LIST->sort(inside);
         }
         dragging=false;
         col_start=0;
@@ -222,6 +244,7 @@ Fl_ListView::Fl_ListView(int X,int Y,int W,int H,const char* L)
     first_vis  = -1;
     yposition_ = xposition_ = 0;
     scrolldy = scrolldx = 0;
+    sort_type_ = SORT_UNKNOWN;
 
     hscrollbar.type(Fl_Scrollbar::HORIZONTAL);
     hscrollbar.callback(hscrollbar_cb);
@@ -236,13 +259,45 @@ Fl_ListView::Fl_ListView(int X,int Y,int W,int H,const char* L)
     head.parent(this);
     hscrollbar.parent(this);
     vscrollbar.parent(this);
-
-    image_ = scaled = 0;
 }
 
-Fl_ListView::~Fl_ListView()
+Fl_ListView::~Fl_ListView() {
+}
+
+static int scol;
+static int col_sort_asc(const void *w1, const void *w2) {
+    Fl_ListView_Item *i1 = ITEM(*(Fl_ListView_Item **)w1);
+    Fl_ListView_Item *i2 = ITEM(*(Fl_ListView_Item **)w2);
+    return strcmp(i1->label(scol), i2->label(scol));
+}
+static int col_sort_desc(const void *w1, const void *w2) {
+    Fl_ListView_Item *i1 = ITEM(*(Fl_ListView_Item **)w1);
+    Fl_ListView_Item *i2 = ITEM(*(Fl_ListView_Item **)w2);
+    return strcmp(i2->label(scol), i1->label(scol));
+}
+
+// Returns sort mode: ASC,DESC,UNKNOWN
+int Fl_ListView::sort(int column)
 {
-    if(scaled) delete scaled;
+    scol = column;
+    sort_type_++;
+    if(sort_type_>SORT_UNKNOWN)
+        sort_type_=SORT_ASC;
+
+    switch(sort_type_) {
+    case SORT_ASC:
+        array().sort(col_sort_asc);
+        break;
+    case SORT_DESC:
+        array().sort(col_sort_desc);
+        break;
+    default:
+        break;
+    }
+
+    relayout();
+    redraw();
+    return sort_type_;
 }
 
 Fl_Widget* Fl_ListView::top()
@@ -322,93 +377,36 @@ void Fl_ListView::damage_item(Fl_Widget *item)
 void Fl_ListView::draw_row(int x, int y, int w, int h, Fl_Widget *widget)
 {
     bool selected = SEL(widget);
-    if(bg_image()) {
+    if(selected) {
 
-        if(!scaled) return;
+        fl_color(selection_color());
+        fl_rectf(x, y, w, h);
 
-        if(selected) {
-#if 0
-            // Draws alpheblended selection box,
-            // This should optional, since its not usable in big multiselection
-            // list, cause its too slow. IMHO those lists should not even use image as a bg
-            // BUGGY!!
+    } else if(draw_stripes_) {
 
-            FLE_Image sel(w, h);
-
-            uint8 *dst = sel.data();
-            FLE_Rect dst_r(0,0,w,h);
-
-            uint8 *src = scaled->data();
-            FLE_Rect src_r(0, y-HH, w, h);
-
-            FLE_Renderer::blit(src, &src_r, scaled->format(), scaled->pitch(),
-                               dst, &dst_r, sel.format(), sel.pitch(), 0);
-
-            sel.alpha(128);
-
-            FLE_Image *blended = sel.fore_blend(selection_color());
-            blended->draw(x,y,w,h);
-            delete blended;
-#else
-
-            fl_color(selection_color());
+        Fl_Color c0 = color();
+        Fl_Color c1 = button_color();
+        int XX=1;
+        int widget_n = Fl_Group::find(widget);
+        for (int j=0; j<=widget_n; j++) XX ^= widget_n+1;
+        if (XX & 1 && c1 != c0) {
+            // draw odd-numbered items with a dark stripe, plus contrast-enhancing
+            // pixel rows on top and bottom:
+            fl_color(c1);
             fl_rectf(x, y, w, h);
-
-#endif
-
+            fl_color(c0 <= FL_LIGHT1 ? c1 : Fl_Color(FL_LIGHT1));
+            //fl_color(fl_color_average(c1, c0, 1.9));
+            fl_line(x, y, w, y);
+            fl_line(x, h-1, w, h-1);
         } else {
-
-            if(!scaled->get_offscreen()) scaled->draw(0,0,scaled->width(), scaled->height());
-
-            int y1=y;
-            fl_transform(x,y);
-            int y2=y-y1;
-            y-=y2;
-
-            if(y+h-HH > scaled->height() ) {
-                h = scaled->height() - y + HH;
-            }
-
-            if(h>0) {
-                int Y=y-HH;
-                if(Y<0) { Y=0; h-=(HH-y); y+=(HH-y); }
-                fl_copy_offscreen(x, y+y2, w, h, scaled->get_offscreen(), 0, Y);
-            }
+            fl_color(c0);
+            fl_rectf(x, y, w, h);
         }
 
     } else {
 
-        if(selected) {
-
-            fl_color(selection_color());
-            fl_rectf(x, y, w, h);
-
-        } else if(draw_stripes_) {
-
-            Fl_Color c0 = color();
-            Fl_Color c1 = button_color();
-            int XX=1;
-            int widget_n = Fl_Group::find(widget);
-            for (int j=0; j<=widget_n; j++) XX ^= widget_n+1;
-            if (XX & 1 && c1 != c0) {
-                // draw odd-numbered items with a dark stripe, plus contrast-enhancing
-                // pixel rows on top and bottom:
-                fl_color(c1);
-                fl_rectf(x, y, w, h);
-                fl_color(c0 <= FL_LIGHT1 ? c1 : Fl_Color(FL_LIGHT1));
-                //fl_color(fl_color_average(c1, c0, 1.9));
-                fl_line(x, y, w, y);
-                fl_line(x, h-1, w, h-1);
-            } else {
-                fl_color(c0);
-                fl_rectf(x, y, w, h);
-            }
-
-        } else {
-
-            fl_color(color());
-            fl_rectf(x, y, w, h);
-        }
+        fl_color(color());
+        fl_rectf(x, y, w, h);
     }
 }
 
@@ -520,7 +518,7 @@ void Fl_ListView::draw()
     draw_header();
 
     // redraw contents
-    if((damage() & (FL_DAMAGE_ALL|FL_DAMAGE_CONTENTS)) || bg_image() ) {
+    if((damage() & (FL_DAMAGE_ALL|FL_DAMAGE_CONTENTS))) {
 
         //printf("contents %d %d %d %d\n", X,Y,W,H);
         draw_frame();
@@ -666,15 +664,6 @@ void Fl_ListView::layout()
             Y += hscrollbar.h();
             HY+= hscrollbar.h();
         }
-    }
-
-    if(bg_image()) {
-        if(!scaled) scaled = bg_image()->scale(W, H+box()->dy());
-        if(scaled && (scaled->width()!=W || scaled->height()!=H+box()->dy()) ) {
-            delete scaled;
-            scaled = bg_image()->scale(W, H+box()->dy());
-        }
-        scaled->no_screen(true);
     }
 
     //if(!children())  return;
@@ -869,7 +858,7 @@ int Fl_ListView::handle(int event)
                 {
                     if(sel_item)
                     {
-                        if(selection.count() == 1) //Move one
+                        if(selection.size() == 1) //Move one
                         {
                             int place = ITEM(i)->num;
                             if(my < sel_item->y()-2) { //Up
@@ -891,12 +880,12 @@ int Fl_ListView::handle(int event)
                             }
                             show_item(sel_item);
 
-                        } else if(selection.count() > 1) //Move many
+                        } else if(selection.size() > 1) //Move many
                         {
                             if(my < sel_item->y()-2) //UP
                             {
                                 int cnt = ITEM(sel_item)->num - ITEM(i)->num;
-                                if(ITEM(selection.first())->num-cnt >= 0) {
+                                if(ITEM(selection.item(selection.size()-1))->num-cnt >= 0) {
                                     moveselection_up(cnt);
                                     //show_item(selection.first());
                                     show_item(sel_item);
@@ -905,7 +894,7 @@ int Fl_ListView::handle(int event)
                             else if(my > sel_item->y()+sel_item->h()+2) //DOWN
                             {
                                 int cnt = ITEM(i)->num - ITEM(sel_item)->num;
-                                if(ITEM(selection.last())->num+cnt < children()) {
+                                if(ITEM(selection.item(0))->num+cnt < children()) {
                                     moveselection_down(cnt);
                                     //show_item(selection.last());
                                     show_item(sel_item);
@@ -1137,33 +1126,19 @@ void Fl_ListView::scroll_up(int pixels)
     }
 }
 
-static int cmp(const void *w1, const void *w2)
-{
+static int cmp(const void *w1, const void *w2) {
     return ITEM(*(Fl_ListView_Item **)w2)->num - ITEM(*(Fl_ListView_Item **)w1)->num;
 }
 
-void Fl_ListView::sort_selection()
-{
-    Fl_Widget *item;
-    Fl_ListView_Item **l = (Fl_ListView_Item **)malloc(sizeof(Fl_ListView_Item *)*selection.count());
-    int a=0;
-    for(item = selection.first(); item != 0; item = selection.next()) {
-        l[a] = (Fl_ListView_Item *)item;
-        a++;
-    }
-    qsort(l, selection.count(), sizeof(Fl_ListView_Item *), cmp);
-    selection.clear();
-    while(a--) {
-        selection.append(l[a]);
-    }
-    free(l);
+void Fl_ListView::sort_selection() {
+    selection.sort(cmp);
 }
 
 void Fl_ListView::moveselection_up(int dy)
 {
-    Fl_Widget *item;
-    for(item = selection.first(); item != 0; item = selection.next()) {
-
+    uint n=selection.size();
+    while(n--) {
+        Fl_Widget *item = selection.item(n);
         insert(*item, ITEM(item)->num-dy);
         ITEM(item)->num -= dy;
     }
@@ -1172,34 +1147,21 @@ void Fl_ListView::moveselection_up(int dy)
 
 void Fl_ListView::moveselection_down(int dy)
 {
-    Fl_Widget *item;
-    for(item = selection.last(); item != 0; item = selection.prev()) {
+    for(uint n=0; n<selection.size(); n++) {
+        Fl_Widget *item = selection.item(n);
         insert(*item, ITEM(item)->num+dy+1);
         ITEM(item)->num += dy+1;
     }
     redraw(FL_DAMAGE_CONTENTS);
 }
 
-bool Fl_ListView::on_selection(int Y)
-{
-    Fl_Widget *item = item_at(Y);
-    if(!item) return false;
-    int it_pos = find(item);
-    int f_pos  = find(selection.first());
-    int l_pos  = find(selection.last());
-    if(it_pos < l_pos && it_pos > f_pos)
-        return true;
-
-    return false;
-}
-
 void Fl_ListView::remove_selection()
 {
     int a = 0;
-    for(Fl_Widget *item = selection.first(); item != 0; item = selection.next())
-    {
-        a = find(item);
-        remove(item);
+    for(uint n=0; n<selection.size(); n++) {
+        Fl_Widget *item = selection.item(n);
+        if(!a) a = find(item);
+        delete item;
     }
     selection.clear();
     select_only(child(a));
@@ -1245,7 +1207,7 @@ void Fl_ListView::select_items(int from, int to)
         }
     }
 
-    if(selection.count()>0 && move()) {
+    if(selection.size()>0 && move()) {
         sort_selection();
     }
 }
@@ -1273,8 +1235,7 @@ void Fl_ListView::find_def_sizes()
 {
     int max_col_w[MAX_COLUMNS] = {0};
 
-    for(int a=0; a<children(); a++)
-    {
+    for(int a=0; a<children(); a++) {
         Fl_Widget *widget = child(a);
 
         SKIP_WIDGET(widget);

@@ -1,40 +1,9 @@
-/***************************************************************************
-                          Fl_String.h  -  description
-                             -------------------
-    begin                : Tue Dec 14 1999
-    copyright            : (C) 1999 by Alexey Parshin
-    email                : sparx@olma.co.ru
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
- /*  modified by Martin Pekar 01/04/2002 */
-#ifndef __Fl_STRING_H__
-#define __Fl_STRING_H__
+#ifndef _Fl_STRING_H__
+#define _Fl_STRING_H__
 
 #include "Enumerations.h"
 #include <string.h>
 #include <stdlib.h>
-
-#ifdef _WIN32
-
-# ifndef strcasecmp
-#  define strcasecmp(a,b) stricmp(a,b)
-# endif
-# ifndef strncasecmp
-#  define strncasecmp(a,b,c) strnicmp(a,b,c)
-# endif
-# ifndef strtok_r
-#  define strtok_r(a,b,c) strtok(a,b)
-# endif
-
-#endif
 
 class Fl_String;
 
@@ -56,19 +25,18 @@ extern FL_API bool operator != (const Fl_String &s1, const char *s2);
 class FL_API Fl_String {
     friend FL_API Fl_String operator +(const char*, const Fl_String& rhs);
 protected:
-    Fl_String(char *s, bool, bool) { str = s; } //2 booleans are only to make this constructor to not shadow with real ones.
-    char *str;
-    void assign(const char *st);
+    char *str_;
+    ulong len_;
+    void assign(const char *str);
 
 public:
     // constructors & destructors
     Fl_String(char c,int repeater = 1);
     Fl_String(int number);
     Fl_String(unsigned number);
-    Fl_String(const char *s="") { if(!s) s=""; str = strdup(s); }
-    Fl_String(const char *s, int maxlen);
-    Fl_String(const Fl_String& s) { str = strdup(s.str); }
-    ~Fl_String() { delete []str; }
+    Fl_String(const char *s="", int maxlen=0, bool pre_allocated=false);
+    Fl_String(const Fl_String &s);
+    ~Fl_String();
 
     // assignments
     Fl_String& operator = (const char *s);
@@ -101,46 +69,42 @@ public:
 
     // usefull methods
     void clear();
-    Fl_String  trimRight() const;
-    Fl_String  trimLeft()  const;
-    Fl_String  trim()      const;
-    Fl_String  remove(const char *pattern) const;
-    Fl_String  replace(const char *pattern,const char *replacement) const;
-    Fl_String  lowerCase() const;
-    Fl_String  upperCase() const;
-    Fl_String  subString(int start,int count) const;
-    void     subDelete(int start,int count=1);
-    void     subDelete(const char *s) { subReplace(s,NULL); }
-    void     subInsert(int start,const char *str);
-    void     subInsert(int start,char ch);
-    void     subReplace(const char *s_str,const char *r_str);
-    Fl_String  wordAt(long position) const;
-    Fl_String& wrapAt(long limit, Fl_String *remainder=NULL);
-    Fl_String& chopAt(long limit, Fl_String *remainder=NULL);
-    int      length() const;
-    int      pos(const char *substr, int index=0) const;
-    int      pos(int c, int index=0) const;
-    int      rpos(int c, int index=0) const;
-    int      toInt(int defvalue=0) const;
-    float    toFloat(float defvalue=0) const;
-    double   toDouble(double defvalue=0) const;
-    bool     isEmpty() const;
-    void     setLength(int newLength);
-    Fl_String  substituteSpecialChars(char prefix) const;
-    const char *c_str() const { return str; }
+    Fl_String trimRight() const;
+    Fl_String trimLeft()  const;
+    Fl_String trim()      const;
+    Fl_String remove(const char *pattern) const;
+    Fl_String replace(const char *pattern,const char *replacement) const;
+    Fl_String lower_case() const;
+    Fl_String upper_case() const;
+    Fl_String sub_str(int start, int count) const;
+    void sub_delete(int start, int count=1);
+    void sub_delete(const char *s) { sub_replace(s, 0); }
+    void sub_insert(int start, const char *str);
+    void sub_insert(int start, char ch);
+    void sub_replace(const char *s_str, const char *r_str);
+    Fl_String word_at(long position) const;
+    int length() const;
+    int pos(const char *substr, int index=0) const;
+    int pos(int c, int index=0) const;
+    int rpos(int c, int index=0) const;
+    int to_int(int defvalue=0) const;
+    float to_float(float defvalue=0) const;
+    double to_double(double defvalue=0) const;
+    bool empty() const;
+    void set_length(int newLength);
+
+    const char *c_str() const { return str_; }
+    const char *str() const { return str_; }
 
     void printf(const char *str, ...);
 
     // auto conversion to char* when needed
-    operator const char *() { return str; }
-    operator char *() { return str; }
+    operator const char *() { return str_; }
+    operator char *() { return str_; }
 
     // element access
-    char& operator [] (const int i) { return str[i]; }
-    char  operator [] (const int i) const { return str[i]; }
-
-    // extra functionality to support CEditor
-    char& lastCharacter() const { return str[strlen(str)-1]; };
+    char& operator [] (const int i) { return str_[i]; }
+    char  operator [] (const int i) const { return str_[i]; }
 
     static Fl_String IntToString(int val);
 };

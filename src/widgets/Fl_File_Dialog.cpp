@@ -602,8 +602,8 @@ char **Fl_File_Dialog::get_selected()
 
     int sel = 0;
     Fl_FileItem *w=0;
-    for(w = (Fl_FileItem *)listview_->get_selection().first(); w!=0; w = (Fl_FileItem *)listview_->get_selection().next())
-    {
+    for(uint n=0; n<listview_->get_selection().size(); n++) {
+        w = (Fl_FileItem *)listview_->get_selection()[n];
         if(w->type()==Fl_FileItem::DEVICE) continue;
 
         tmp = (char **)realloc(tmp, (sel+1)*sizeof(char *)+sizeof(char *));
@@ -1011,8 +1011,8 @@ void Fl_File_Dialog::file_clicked(Fl_FileItem *i)
         files[0] = '\0';
         int tot=0;
         int items=0;
-        for(item = (Fl_ListView_Item *)listview_->get_selection().first(); item!=0; item = (Fl_ListView_Item *)listview_->get_selection().next())
-        {
+        for(uint n=0; n<listview_->get_selection().size(); n++) {
+            item = (Fl_ListView_Item*)listview_->get_selection()[n];
             if(items > 5) {
                 strcat(files, "....");
                 break;

@@ -16,12 +16,11 @@
 ////////////////////////////////////
 // EFLTK IMAGE IO METHODS
 
-static Fl_PtrList<Fl_Image_IO> imageio_list;
+static Fl_Ptr_List imageio_list;
 
 Fl_Image_IO *fl_find_imageio(Fl_Image_IO *io) {
-    for(Fl_Image_IO *item=imageio_list.first(); item!=0; item=imageio_list.next())
-        if(io==item) return item;
-    return 0;
+    int index = imageio_list.index_of(io);
+    return (Fl_Image_IO *)(index!=-1?imageio_list[index]:0);
 }
 
 void fl_unregister_imageio(Fl_Image_IO *io) {
@@ -31,12 +30,14 @@ void fl_unregister_imageio(Fl_Image_IO *io) {
 }
 
 void fl_register_imageio(Fl_Image_IO *io) {
-    if(fl_find_imageio(io)) return;	
+    if(fl_find_imageio(io)) return;
     imageio_list.append(io);
 }
 
 Fl_Image_IO *fl_find_imageio(const char *name, const char *extension) {
-    for(Fl_Image_IO *item=imageio_list.first(); item!=0; item=imageio_list.next()) {
+
+    for(uint n=0; n<imageio_list.size(); n++) {
+        Fl_Image_IO *item = (Fl_Image_IO *)imageio_list[n];
         if(name) if(!strcasecmp(item->name, name)) return item;
         if(extension) if(strstr(item->extensions, extension)) return item;
     }
@@ -44,15 +45,15 @@ Fl_Image_IO *fl_find_imageio(const char *name, const char *extension) {
 }
 
 Fl_Image_IO *fl_find_imageio(int index) {
-	return imageio_list.item(index);
+    return (Fl_Image_IO *)imageio_list.item(index);
 }
 
 uint fl_count_imageio() {
-	return imageio_list.count();
+    return imageio_list.size();
 }
 
-Fl_PtrList<Fl_Image_IO> &fl_list_imageio() {
-	return imageio_list;
+Fl_Ptr_List &fl_list_imageio() {
+    return imageio_list;
 }
 
 //////////////////////////////////////
@@ -920,14 +921,14 @@ bool Fl_Image::read_image(const char *filename, const char * const *data)
 
 bool Fl_Image::read_image(const char *filename, const uint8 *data, uint32 data_size)
 {
-	fl_register_imageio(&xpm_reader);
-	fl_register_imageio(&bmp_reader);
-	fl_register_imageio(&gif_reader);
+    fl_register_imageio(&xpm_reader);
+    fl_register_imageio(&bmp_reader);
+    fl_register_imageio(&gif_reader);
 
-	clear();
-	
+    clear();
+
     bool ret = false;
-	FILE *fp = 0;
+    FILE *fp = 0;
 
     if(filename && fl_file_exists(filename)) {
         fp = fopen(filename, "rb");
@@ -936,37 +937,38 @@ bool Fl_Image::read_image(const char *filename, const uint8 *data, uint32 data_s
         return ret;
     }
 
-	if(xpm_data && !fp) {
+    if(xpm_data && !fp) {
 
-		// ONLY XPM DATA READ:
-		Fl_Image_IO *r = &xpm_reader;
-		if(r->is_valid_xpm && r->read_mem && r->is_valid_xpm((const uint8**)data))
-			ret = r->read_mem((uint8*)data, data_size, quality_, _data, fmt, w, h);			
+        // ONLY XPM DATA READ:
+        Fl_Image_IO *r = &xpm_reader;
+        if(r->is_valid_xpm && r->read_mem && r->is_valid_xpm((const uint8**)data))
+            ret = r->read_mem((uint8*)data, data_size, quality_, _data, fmt, w, h);
 
-	} else {
+    } else {
 
-		for(Fl_Image_IO *r=imageio_list.first(); r!=0; r=imageio_list.next()) {
-			if(fp) {
-				if(r->is_valid_file && r->read_file && r->is_valid_file(filename, fp))
-					ret = r->read_file(fp, 0, _data, fmt, w, h);									
-			} else {
-				if(r->is_valid_mem && r->is_valid_mem(data, data_size))
-					ret = r->read_mem((uint8*)data, data_size, quality_, _data, fmt, w, h);				
-			}
-		}
-	}
+        for(uint n=0; n<imageio_list.size(); n++) {
+            Fl_Image_IO *r = (Fl_Image_IO *)imageio_list[n];
+            if(fp) {
+                if(r->is_valid_file && r->read_file && r->is_valid_file(filename, fp))
+                    ret = r->read_file(fp, 0, _data, fmt, w, h);
+            } else {
+                if(r->is_valid_mem && r->is_valid_mem(data, data_size))
+                    ret = r->read_mem((uint8*)data, data_size, quality_, _data, fmt, w, h);
+            }
+        }
+    }
 
     if(ret && format()->Amask) {
         // Default mask for images with alpha mask
         mask_type(FL_MASK_ALPHA);
-    }    
-	
-	if(ret && _data) {
-		_data_alloc = true;
-		_pitch = Fl_Renderer::calc_pitch(bytespp(), width());		
-	}
-	
-	xpm_data=false;
+    }
+
+    if(ret && _data) {
+        _data_alloc = true;
+        _pitch = Fl_Renderer::calc_pitch(bytespp(), width());
+    }
+
+    xpm_data=false;
     if(fp) fclose(fp);
     return ret;
 }

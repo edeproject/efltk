@@ -7,8 +7,6 @@ Fl_ListView_Item::Fl_ListView_Item(const char *label1,
                                    const char *label5)
 : Fl_Widget(0,0,0,0,0)
 {
-    list = (Fl_ListView *)parent();
-
     Fl_Widget::set_flag(FL_LISTVIEW_ITEM);
 
     for(int a=0; a<MAX_COLUMNS; a++) {
@@ -52,9 +50,9 @@ void Fl_ListView_Item::copy_label(int col, const char *txt)
 void Fl_ListView_Item::draw()
 {
     int X=2;
-    for(int a=0; a<list->columns(); a++) {
-        draw_cell(X,y(),list->column_width(a), h(),a);
-        X+=list->column_width(a);
+    for(int a=0; a<listview()->columns(); a++) {
+        draw_cell(X,y(), listview()->column_width(a), h(),a);
+        X+=listview()->column_width(a);
     }
 }
 
@@ -74,11 +72,11 @@ void Fl_ListView_Item::draw_cell(int x, int y, int w, int h, int col)
 
         char *cutted_label=0;
         int textw = int(fl_width(txt));
-		int colw = list->column_width(col)-iw-6;
+        int colw = listview()->column_width(col)-iw-6;
         if(textw>colw) {
             if(strchr(txt, '\n')) cutted_label = fl_cut_multiline(txt, colw);
             else cutted_label = fl_cut_line(txt, colw);
-            Fl_Widget::label(cutted_label); 
+            Fl_Widget::label(cutted_label);
         } else {
             Fl_Widget::label(txt);
         }
@@ -110,7 +108,7 @@ void Fl_ListView_Item::layout()
     int H = 0;
     int W = 0;
 
-    for(int a=0; a<list->columns(); a++)
+    for(int a=0; a<listview()->columns(); a++)
     {
         const char *txt = label(a);
         if(txt) {

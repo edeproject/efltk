@@ -130,8 +130,9 @@ extern "C" bool fltk_theme()
 
     section_list = conf.section_list("widgets");
     if(section_list) {
-        for(cent = section_list->first(); cent; cent=section_list->next())
+        for(uint n=0; n<section_list->size(); n++)
         {
+            cent = (Section*)section_list->item(n);
             Fl_Style* style = Fl_Style::find(cent->name);
             if(!style) continue;
 

@@ -117,6 +117,9 @@ char *Fl_Config::find_config_file(const char *filename, bool create, ConfMode mo
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
+#define L(item) ((Line*)item)
+#define S(item) ((Section*)item)
+
 Fl_Config::Fl_Config(const char *vendor, const char *application, ConfMode mode)
 {
     cur_sec = 0;
@@ -170,9 +173,8 @@ Fl_Config::~Fl_Config()
 {
     flush();
 
-    Section *s;
-    for(s = sections.first(); s != 0; s = sections.next() )
-        if(s) delete s;
+    for(uint n=0; n<sections.size(); n++)
+        free(sections[n]);
 
     if(filename_) delete []filename_;
 }
@@ -214,10 +216,8 @@ bool Fl_Config::read_file(bool create)
 
     // If somebody calls this function two times, we
     // need to clean earlier section list...
-    Section *s;
-    for(s = sections.first(); s != 0; s = sections.next() )
-        delete s;
-
+    for(uint n=0; n<sections.size(); n++)
+        free(sections[n]);
     sections.clear();
 
     /////
@@ -296,19 +296,23 @@ bool Fl_Config::read_file(bool create)
 void Fl_Config::write_section(int indent, FILE *fp, Section *sec)
 {
     Section *child;
+    uint n;
     for(int a=0; a<indent; a++) fprintf(fp, " ");
 
     fprintf(fp, "[%s%s]\n", sec->path, sec->name);
 
-    for(Line *l = sec->lines.first(); l!=0; l = sec->lines.next() )
+    for(n=0; n<sec->lines.size(); n++) {
+        Line *l = L(sec->lines[n]);
         if(l && l->key) {
             for(int a=0; a<indent; a++) fprintf(fp, " ");
             fprintf(fp, "  %s=%s\n", l->key, l->value?l->value:"");
         }
+    }
 
     fprintf(fp, "\n");
 
-    for(child = sec->sections.first(); child!=0; child=sec->sections.next()) {
+    for(n=0; n<sec->sections.size(); n++) {
+        child = S(sec->sections[n]);
         write_section(indent+2, fp, child);
     }
 }
@@ -332,11 +336,10 @@ bool Fl_Config::flush()
     if(app_)    fprintf( file, "# Application: %s\n", app_ );
     fprintf( file, "\n");
 
-    Section *s;
-    for(s = sections.first(); s != 0; s = sections.next() )
-        if(s) {
-            write_section(0, file, s);
-        }
+    for(uint n=0; n<sections.size(); n++) {
+        Section *s = S(sections[n]);
+        write_section(0, file, s);
+    }
 
     fclose(file);
     _error = 0;
@@ -389,7 +392,7 @@ Section *Fl_Config::create_section(const char *name)
     if(!gotname) strncpy(secname, name, sizeof(secname)-1);
     if(gotname) strncpy(secpath, name, namebegin+1);
 
-    Fl_PtrList <Section> *list;
+    SectionList *list;
 
     if(*secpath) {
         parent = find_section(secpath, false);
@@ -475,20 +478,20 @@ Section *Fl_Config::find_section(const char *path, bool perfect_match)
 
 Section *Fl_Config::find_section(Section *sec, const char *name, bool recursive)
 {
-    Fl_PtrList<Section> *list = sec?&sec->sections:&sections;
+    SectionList *list = sec?&sec->sections:&sections;
     Section *s;
-    for(s = list->first(); s != 0; s = list->next() )
-        if(s)
-        {
-            if(!strcmp(s->name, name)) {
-                _error = 0;
-                return s;
-            }
-            if(recursive) {
-                s = find_section(s, name, recursive);
-                if(s) return s;
-            }
+
+    for(uint n=0; n<list->size(); n++) {
+        s = S(list->item(n));
+        if(!strcmp(s->name, name)) {
+            _error = 0;
+            return s;
         }
+        if(recursive) {
+            s = find_section(s, name, recursive);
+            if(s) return s;
+        }
+    }
 
     _error = CONF_ERR_SECTION;
     return 0;
@@ -497,13 +500,11 @@ Section *Fl_Config::find_section(Section *sec, const char *name, bool recursive)
 Line *Fl_Config::find_string(Section *section, const char *key)
 {
     if(key) {
-        Line *line;
-        for(line = section->lines.first(); line != 0; line = section->lines.next() ) {
-            if(line) {
-                if( line->key && !strcmp(line->key, key) ) {
-                    _error = 0;
-                    return line;
-                }
+        for(uint n=0; n<section->lines.size(); n++) {
+            Line *line = L(section->lines[n]);
+            if( line->key && !strcmp(line->key, key) ) {
+                _error = 0;
+                return line;
             }
         }
     }

@@ -22,7 +22,7 @@ public:
                  const char *label5=0);
     ~Fl_ListView_Item();
 
-    Fl_ListView *listview() { return list; }
+    Fl_ListView *listview() { return (Fl_ListView *)parent(); }
     void draw();
     void draw_cell(int x, int y, int w, int h, int col);
     void layout();
@@ -52,10 +52,7 @@ public:
     static char *get_multiline(const char *buf, int maxwidth);
 
     int num;
-
 private:
-    Fl_ListView *list;
-
     const char *labels[MAX_COLUMNS];
     int widths[MAX_COLUMNS];
     Fl_Font fonts[MAX_COLUMNS];

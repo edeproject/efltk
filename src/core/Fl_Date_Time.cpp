@@ -398,7 +398,7 @@ Fl_Date_Time::Fl_Date_Time (const char * dat) {
    }
    int      p = s1.pos(" ");
    if (p >= 0) {
-      s2 = s1.subString(p+1,20).trim();
+      s2 = s1.sub_str(p+1,20).trim();
       s1[p] = 0;
    }
    if ( strchr(s1.c_str(),dateSeparator) ) {

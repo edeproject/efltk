@@ -2,7 +2,7 @@
 #define FL_IMAGE_CACHE_H_
 
 #include "Fl_Image.h"
-#include "Fl_PtrList.h"
+#include "Fl_Ptr_List.h"
 
 class Fl_Image_Cache
 {
@@ -11,8 +11,8 @@ class Fl_Image_Cache
         char *identify;
     } CachedImage;
 
-    Fl_PtrList<CachedImage> images;
-    int size_;
+    Fl_Ptr_List images;
+    uint size_;
     bool autodelete_;
 
 public:
@@ -22,7 +22,8 @@ public:
 
     // Clears cache, deletes images if auto delete is set true
     void clear() {
-        for(CachedImage *i=images.first(); i!=0; i=images.next()) {
+        for(uint n=0; n<images.size(); n++) {
+            CachedImage *i = (CachedImage *)images[n];
             if(i->identify) delete []i->identify;
             if(i->image && autodelete_) delete i->image;
             delete i;
@@ -30,7 +31,8 @@ public:
         images.clear();
     }
     Fl_Image *get(const char *identify) {
-        for(CachedImage *i=images.first(); i!=0; i=images.next()) {
+        for(uint n=0; n<images.size(); n++) {
+            CachedImage *i = (CachedImage *)images[n];
             if(!strcmp(identify, i->identify)) return i->image;
         }
         return 0;
@@ -38,7 +40,8 @@ public:
 
     // Removes image from cache, returns removed image
     Fl_Image *remove(const char *identify) {
-        for(CachedImage *i=images.first(); i!=0; i=images.next()) {
+        for(uint n=0; n<images.size(); n++) {
+            CachedImage *i = (CachedImage *)images[n];
             if(!strcmp(identify, i->identify)) {
                 images.remove(i);
                 if(i->identify) delete []i->identify;
@@ -56,7 +59,8 @@ public:
 
         CachedImage *c;
         // Remove previously cached with same identify
-        for(c=images.first(); c!=0; c=images.next()) {
+        for(uint n=0; n<images.size(); n++) {
+            c = (CachedImage *)images[n];
             if(!strcmp(identify, c->identify)) {
                 if(c->identify) delete []c->identify;
                 c->identify = strdup(identify);
@@ -79,7 +83,7 @@ public:
     // Check cache size and removes images first, if needed
     void check_size() {
         if(size_>0 && images.count() > size_) {
-            CachedImage *i = images.first();
+            CachedImage *i = (CachedImage *)images[0];
             images.remove(i);
             if(i->identify) delete []i->identify;
             if(i->image && autodelete_) delete i->image;

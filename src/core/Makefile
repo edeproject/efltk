@@ -38,6 +38,7 @@ CPPFILES = \
 	Fl_Group.cpp \
 	Fl_Image.cpp \
 	Fl_Image_Filter.cpp \
+        Fl_Lists.cpp \
 	Fl_Pixmap.cpp \
 	Fl_Renderer.cpp \
 	Fl_String.cpp \

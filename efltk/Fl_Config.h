@@ -5,12 +5,13 @@
 #define _FL_CONFIG_H_
 
 #include "Enumerations.h"
-#include "Fl_PtrList.h"
+#include "Fl_Ptr_List.h"
 #include "Fl_Util.h"
 #include "Fl_Color.h"
 
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 /* error defines */
 enum {
@@ -21,6 +22,9 @@ enum {
     CONF_ERR_MEMORY,    /* memory allocation error */
     CONF_ERR_NOVALUE,   /* key found, but invalid value associated with it */
 };
+
+typedef Fl_Ptr_List SectionList;
+typedef Fl_Ptr_List LineList;
 
 // Classes to iterate throught the config file
 class FL_API Line
@@ -40,23 +44,20 @@ class FL_API Section
 public:
     Section(const char *_name, const char *_path, Section *par) { if(_name) name = strdup(_name); else name=0; if(_path) path = strdup(_path); else path=0; parent = par;}
     ~Section() {
-        Section *s; for(s = sections.first(); s != 0; s = sections.next() ) if(s) delete s;
-        Line *l; for(l = lines.first(); l != 0; l = lines.next() ) if(l) delete l;
+        uint n; for(n=0; n<sections.size(); n++) free(sections[n]);
+        for(n=0; n<lines.size(); n++) free(lines[n]);
         if(name) delete []name; if(path) delete []path;
     }
     char *name, *path;
     Section *parent;
-    Fl_PtrList<Line> lines;
-    Fl_PtrList<Section> sections;
+    LineList lines; //Line list
+    SectionList sections; //Section list
 };
-
-typedef Fl_PtrList<Section> SectionList;
-typedef Fl_PtrList<Line> LineList;
 
 class FL_API Fl_Config {
 public:
     // List of sections
-    Fl_PtrList<Section> sections;
+    SectionList sections;
 
     /////////////////////////
     /////////////////////////

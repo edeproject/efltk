@@ -7,7 +7,7 @@
 
 #include "Fl.h"
 #include "Fl_Group.h"
-#include "Fl_PtrList.h"
+#include "Fl_Widget_List.h"
 #include "Fl_Image.h"
 #include "Fl_Slider.h"
 #include "Fl_Scrollbar.h"
@@ -22,9 +22,9 @@ public:
     static Fl_Named_Style* default_style;
 
     Fl_ListHeader(int X,int Y,int W,int H,const char*l=0);
-	~Fl_ListHeader();
+    ~Fl_ListHeader();
 
-	void clear();
+    void clear();
 
     void add_column(const char *name, int w) {
         ++cols;
@@ -32,7 +32,7 @@ public:
         coln[cols-1] = strdup(name);
     }
 
-	void columns(int count);
+    void columns(int count);
     int columns() { return cols; }
 
     int column_width(int c) { return colw[c]; }
@@ -57,10 +57,35 @@ private:
     int colf[MAX_COLUMNS]; //drawing flags
     char *coln[MAX_COLUMNS]; //labels
     Fl_Image *coli[MAX_COLUMNS]; //images
+
+protected:
+    int sort_type;
+    int sort_col;
 };
 
 class Fl_ListView : public Fl_Group {
 public:
+    static Fl_Named_Style* default_style;
+
+    enum { // values for type()
+        HORIZONTAL = 1,
+        VERTICAL = 2,
+        BOTH = 3,
+        ALWAYS_ON = 4,
+        HORIZONTAL_ALWAYS = 5,
+        VERTICAL_ALWAYS = 6,
+        BOTH_ALWAYS = 7,
+
+        MULTI_SELECTION = 8,
+        MOVE_SELECTION  = 16
+    };
+
+    enum {
+        SORT_ASC = 0,
+        SORT_DESC,
+        SORT_UNKNOWN
+    };
+
     Fl_ListView(int X,int Y,int W,int H,const char*l=0);
     ~Fl_ListView();
 
@@ -131,19 +156,6 @@ public:
     int unselect_all();
     int selected() { return selection.count(); }
 
-    enum { // values for type()
-        HORIZONTAL = 1,
-        VERTICAL = 2,
-        BOTH = 3,
-        ALWAYS_ON = 4,
-        HORIZONTAL_ALWAYS = 5,
-        VERTICAL_ALWAYS = 6,
-        BOTH_ALWAYS = 7,
-
-        MULTI_SELECTION = 8,
-        MOVE_SELECTION  = 16
-    };
-
     // Virtual functions
     virtual int handle(int ev);
     virtual void layout();
@@ -153,24 +165,18 @@ public:
     virtual void draw_header();
     virtual void draw_row(int x, int y, int w, int h, Fl_Widget *widget);
 
-    Fl_Image *bg_image() { return image_; }
-    void bg_image(Fl_Image *i) { image_ = i; }
+    // Returns sort mode: ASC,DESC,UNKNOWN
+    virtual int sort(int column);
+    int sort_type() { return sort_type_; }
 
-    Fl_PtrList<Fl_Widget> &get_selection() { return selection; }
+    Fl_Widget_List &get_selection() { return selection; }
 
     Fl_Scrollbar vscrollbar;
     Fl_Scrollbar hscrollbar;
 
-    static Fl_Named_Style* default_style;
-
-private:
+protected:
     static void hscrollbar_cb(Fl_Widget*, void*);
     static void vscrollbar_cb(Fl_Widget*, void*);
-
-    Fl_Image *image_, *scaled;
-    bool draw_stripes_;
-    bool find_def; // Set when needs to find default colmn sizes (called by layout)
-    void find_def_sizes();
 
     Fl_ListHeader head; //Default header
     Fl_ListHeader *_header; //Pointer to current header
@@ -185,14 +191,19 @@ private:
     void draw_clip(int,int,int,int);
     static void draw_clip_cb(void*,int,int,int,int);
 
-    Fl_PtrList<Fl_Widget> selection;
-    bool on_selection(int Y);
+    Fl_Widget_List selection;
 
     // number of first visible item
     int first_vis;
 
     int X,Y,W,H; //box
     int HX,HY,HW,HH; //header box
+
+    bool draw_stripes_;
+    bool find_def; // Set when needs to find default colmn sizes (called by layout)
+    void find_def_sizes();
+
+    int sort_type_;
 };
 
 #endif

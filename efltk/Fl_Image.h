@@ -339,7 +339,7 @@ extern Fl_Image_IO *fl_find_imageio(const char *name, const char *extension);
 
 extern Fl_Image_IO *fl_find_imageio(int index);
 extern uint fl_count_imageio();
-Fl_PtrList<Fl_Image_IO> &fl_list_imageio();
+Fl_Ptr_List &fl_list_imageio();
 
 #endif
 

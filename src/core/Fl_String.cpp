@@ -14,8 +14,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /*  modified by Martin Pekar 01/04/2002 */
-#include <math.h>
+
+#include <config.h>
+
 #include <string.h>
 #include <stdarg.h>
 #include <ctype.h>
@@ -23,50 +24,67 @@
 #include <errno.h>
 
 #include <efltk/vsnprintf.h>
+#include <efltk/math.h>
 #include <efltk/Fl_String.h>
 #include <efltk/Fl_Util.h>
 
 //------------------------------------------------------------------------------
 // constructors & destructors
 //------------------------------------------------------------------------------
-Fl_String::Fl_String(char c,int repeater)
+
+Fl_String::Fl_String(const char *s, int maxlen, bool pre_allocated)
+{
+    if(maxlen>0) {
+        if(pre_allocated) str_ = (char*)s;
+        else {
+            str_ = new char[maxlen + 1];
+            strncpy(str_, s, maxlen);
+            str_[maxlen] = '\0';
+        }
+        len_ = maxlen;
+    } else {
+        if(pre_allocated) str_ = (char*)s;
+        else str_ = strdup(s);
+        len_ = strlen(str_);
+    }
+}
+
+Fl_String::Fl_String(char c, int repeater)
 {
     if (repeater == 1) {
-        str = new char[1];
-        str[0] = c;
+        str_ = new char[1];
+        str_[0] = c;
     } else {
-        str = (char *)malloc(repeater + 1);
-        memset(str,c,repeater);
-        str[repeater] = '\0';
+        str_ = new char[repeater + 1];
+        memset(str_, c, repeater);
+        str_[repeater] = '\0';
     }
+    len_ = strlen(str_);
 }
 
 Fl_String::Fl_String(int number)
 {
-    str = new char[33];
-    snprintf(str, 32, "%i", number);
+    str_ = new char[33];
+    snprintf(str_, 32, "%i", number);
+    len_ = strlen(str_);
 }
 
 Fl_String::Fl_String(unsigned number)
 {
-    str = new char[33];
-    snprintf(str, 32, "%i", number);
+    str_ = new char[33];
+    snprintf(str_, 32, "%i", number);
+    len_ = strlen(str_);
 }
 
-Fl_String::Fl_String(const char *s,int maxlen)
+Fl_String::Fl_String(const Fl_String &s)
 {
-    if (maxlen>=0) {
-        str = new char[maxlen + 1];
-        strncpy(str, s, maxlen);
-        str[maxlen] = '\0';
-    } else {
-        if(s) {
-            str = strdup(s);
-        } else {
-            str = new char[1];
-            str[0] = '\0';
-        }
-    }
+    str_ = strdup(s.str_);
+    len_ = s.len_;
+}
+
+Fl_String::~Fl_String()
+{
+    delete []str_;
 }
 
 //------------------------------------------------------------------------------
@@ -76,12 +94,14 @@ void Fl_String::assign(const char *s)
 {
     if(s) {
         int len = strlen(s)+1;
-        str = (char*)realloc(str, len*sizeof(char));
-        strncpy(str, s, len-1);
-        str[len-1] = '\0';
+        str_ = (char*)realloc(str_, len*sizeof(char));
+        strncpy(str_, s, len-1);
+        str_[len-1] = '\0';
     } else {
-        str = (char*)realloc(str, sizeof(char));
-        str[0] = '\0';
+        delete []str_;
+        str_ = new char[1];
+        str_[0] = '\0';
+        len_ = 0;
     }
 }
 
@@ -93,7 +113,7 @@ Fl_String& Fl_String::operator = (const char *s)
 
 Fl_String& Fl_String::operator = (const Fl_String& s)
 {
-    assign(s.str);
+    assign(s.str_);
     return *this;
 }
 
@@ -101,35 +121,35 @@ Fl_String& Fl_String::operator = (const Fl_String& s)
 // comparisions
 //------------------------------------------------------------------------------
 bool operator <  (const Fl_String &s1, const Fl_String &s2) {
-    return strcmp(s1.str,s2.str) < 0;
+    return strcmp(s1.str_,s2.str_) < 0;
 }
 
 bool operator <= (const Fl_String &s1, const Fl_String &s2) {
-    return strcmp(s1.str,s2.str) <= 0;
+    return strcmp(s1.str_,s2.str_) <= 0;
 }
 
 bool operator >  (const Fl_String &s1, const Fl_String &s2) {
-    return strcmp(s1.str,s2.str) > 0;
+    return strcmp(s1.str_,s2.str_) > 0;
 }
 
 bool operator >= (const Fl_String &s1, const Fl_String &s2) {
-    return strcmp(s1.str,s2.str) >= 0;
+    return strcmp(s1.str_,s2.str_) >= 0;
 }
 
 bool operator == (const Fl_String &s1, const Fl_String &s2) {
-    return strcmp(s1.str,s2.str) == 0;
+    return strcmp(s1.str_,s2.str_) == 0;
 }
 
 bool operator != (const Fl_String &s1, const Fl_String &s2) {
-    return strcmp(s1.str,s2.str) != 0;
+    return strcmp(s1.str_,s2.str_) != 0;
 }
 
 bool Fl_String::cmp(Fl_String &s) {
-    return strcmp(str, s.str) != 0;
+    return strcmp(str_, s.str_) != 0;
 }
 
 bool Fl_String::casecmp(Fl_String &s) {
-    return strcasecmp(str, s.str) != 0;
+    return strcasecmp(str_, s.str_) != 0;
 }
 
 //------------------------------------------------------------------------------
@@ -138,38 +158,44 @@ bool Fl_String::casecmp(Fl_String &s) {
 Fl_String Fl_String::operator + (const char * s) const
 {
     char *temp;
-    if(s) temp = new char[length() + strlen(s) + 1];
-    else temp = new char[length() + 1];
-    strcpy(temp,str);
+    int len = 0;
+    if(s) len = length() + strlen(s) + 1;
+    else len = length() + 1;
+
+    temp = new char[len];
+    strcpy(temp, str_);
     if(s) strcat(temp, s);
 
-    Fl_String s1(temp, true, true);
+    Fl_String s1(temp, len, true);
     return s1;
 }
 
 Fl_String Fl_String::operator + (const Fl_String& s) const
 {
-    char *temp = new char[length() + s.length() + 1];
-    strcpy(temp,str);
+    int len = length() + s.length() + 1;
+    char *temp = new char[len];
+    strcpy(temp, str_);
     if(s.length()) strcat(temp, s.c_str());
 
-    Fl_String s1(temp, true, true);
+    Fl_String s1(temp, len, true);
     return s1;
 }
 
 Fl_String& Fl_String::operator += (const char * s)
 {
     if(s) {
-        str = (char *)realloc(str, length() + strlen(s) + 1);
-        strcat(str, s);
+        len_ += strlen(s);
+        str_ = (char *)realloc(str_, len_ + 1);
+        strcat(str_, s);
     }
     return *this;
 }
 
 Fl_String& Fl_String::operator += (const Fl_String& s)
 {
-    str = (char *) realloc(str, length() + s.length() + 1);
-    if(s.length()) strcat(str,s.str);
+    len_ += s.length();
+    str_ = (char *) realloc(str_, len_ + 1);
+    if(s.length()) strcat(str_, s.str_);
     return *this;
 }
 //------------------------------------------------------------------------------
@@ -177,36 +203,36 @@ Fl_String& Fl_String::operator += (const Fl_String& s)
 //------------------------------------------------------------------------------
 void Fl_String::clear()
 {
-    str = (char *) realloc(str, sizeof(char));
-    str[0] = '\0';
+    str_ = (char *) realloc(str_, sizeof(char));
+    str_[0] = '\0';
 }
 
 Fl_String Fl_String::trimRight() const
 {
-    Fl_String ret(str);
-    char *s = ret.str;
+    Fl_String ret(str_);
+    char *s = ret.str_;
     s = fl_trimright(s);
     return ret;
 }
 
 Fl_String Fl_String::trimLeft() const
 {
-    char *s = str;
+    char *s = str_;
     s = fl_trimleft(s);
     return s;
 }
 
-Fl_String Fl_String::lowerCase() const
+Fl_String Fl_String::lower_case() const
 {
-    Fl_String  s = str;
-    fl_tolower(s.str);
+    Fl_String  s = str_;
+    fl_tolower(s.str_);
     return s;
 }
 
-Fl_String Fl_String::upperCase() const
+Fl_String Fl_String::upper_case() const
 {
-    Fl_String  s = str;
-    fl_toupper(s.str);
+    Fl_String  s = str_;
+    fl_toupper(s.str_);
     return s;
 }
 
@@ -214,33 +240,33 @@ extern int fl_va_len(char *format, va_list ap); //Fl_Util.cpp
 void Fl_String::printf(const char *string, ...)
 {
     char *s;
-    int len = 0;
+    int valen = 0;
 
     if(!string || !strcmp(string, ""))
         return;
 
     va_list ap;
     va_start(ap, string);
-    len = fl_va_len((char *)string, ap);
+    valen = fl_va_len((char *)string, ap);
     va_end(ap);
 
-    len += strlen(string);
-    s = new char[len];
-
+    s = new char[valen];
     va_start(ap, string);
     vsprintf(s, string, ap);
     va_end(ap);
+    s[valen] = '\0';
 
-    assign(s);
+    str_ = s;
+    len_ = valen;
 }
 
 Fl_String Fl_String::remove(const char *pattern) const
 {
-    if(!pattern) return str;
+    if(!pattern) return str_;
     Fl_String result;
     int patternLength = strlen(pattern);
-    if (!patternLength) return str;
-    char *temp = strdup(str);
+    if (!patternLength) return str_;
+    char *temp = strdup(str_);
     char *head = temp;
     char *tail = strstr(head, pattern);
     while (tail) {
@@ -256,11 +282,11 @@ Fl_String Fl_String::remove(const char *pattern) const
 
 Fl_String Fl_String::replace(const char *pattern,const char *replacement) const
 {
-    if(pattern) return str;
+    if(pattern) return str_;
     Fl_String result;
     int patternLength = strlen(pattern);
-    if (!patternLength) return str;
-    char *temp = strdup(str);
+    if (!patternLength) return str_;
+    char *temp = strdup(str_);
     char *head = temp;
     char *tail = strstr(head,pattern);
     while (tail) {
@@ -282,43 +308,44 @@ Fl_String Fl_String::trim() const
 }
 
 int Fl_String::length() const {
-    return strlen(str);
+    if(len_<=0) ((Fl_String*)this)->len_ = strlen(str_);
+    return len_;
 }
 
-bool Fl_String::isEmpty() const {
-    return str[0] == '\0';
+bool Fl_String::empty() const {
+    return (len_==0);
 }
 
 int Fl_String::pos(const char *substr, int index) const
 {
-    char *ptr = (str+index);
+    char *ptr = (str_+index);
     char *p = strstr( ptr, substr );
     if(!p) return -1;
-    return int(p - str);
+    return int(p - str_);
 }
 
 int Fl_String::pos(int c, int index) const
 {
-    char *ptr = (str+index);
+    char *ptr = (str_+index);
     char *p = strchr( ptr, c );
     if (!p) return -1;
-    return int(p - str);
+    return int(p - str_);
 }
 
 int Fl_String::rpos(int c, int index) const
 {
-    char *ptr = (str+index);
+    char *ptr = (str_+index);
     char *p = strrchr( ptr, c );
     if (!p) return -1;
-    return int(p - str);
+    return int(p - str_);
 }
 
-Fl_String Fl_String::subString(int start,int count) const
+Fl_String Fl_String::sub_str(int start,int count) const
 {
-    return Fl_String(str+start, count);
+    return Fl_String(str_+start, count);
 }
 
-int Fl_String::toInt(int defvalue) const
+int Fl_String::to_int(int defvalue) const
 {
     Fl_String t = trim();
     if (!t.length()) return defvalue;
@@ -328,7 +355,7 @@ int Fl_String::toInt(int defvalue) const
     return value;
 }
 
-float Fl_String::toFloat(float defvalue) const
+float Fl_String::to_float(float defvalue) const
 {
     Fl_String t = trim();
     if (!t.length()) return defvalue;
@@ -337,7 +364,7 @@ float Fl_String::toFloat(float defvalue) const
     return value;
 }
 
-double Fl_String::toDouble(double defvalue) const
+double Fl_String::to_double(double defvalue) const
 {
     Fl_String t = trim();
     if (!t.length()) return defvalue;
@@ -346,36 +373,36 @@ double Fl_String::toDouble(double defvalue) const
     return value;
 }
 
-void Fl_String::subInsert(int start,const char *insStr)
+void Fl_String::sub_insert(int start,const char *insStr)
 {
     int l = length();
     if (l < start) start = l;
-    Fl_String ending(str + start);
-    str[start] = 0;
+    Fl_String ending(str_ + start);
+    str_[start] = 0;
     *this += insStr + ending;
 }
 
-void Fl_String::subInsert(int start,char ch)
+void Fl_String::sub_insert(int start,char ch)
 {
     char st[2] = { ch, '\0' };
-    subInsert(start,st);
+    sub_insert(start, st);
 }
 
-void Fl_String::subDelete(int start,int count)
+void Fl_String::sub_delete(int start, int count)
 {
-    if (count) {
-        int l = strlen(str)+1;
-        if (count > l) count = l;
-        memmove(str+start, str+start+count, l-count);
+    if(count) {
+        int l = len_+1;
+        if(count > l) count = l;
+        memmove(str_+start, str_+start+count, l-count);
     }
 }
 
-void Fl_String::subReplace(const char *s_str,const char *r_str)
+void Fl_String::sub_replace(const char *s_str,const char *r_str)
 {
     Fl_String  s;
     int   l = strlen(s_str);
-    char *ptext = str;
-    char *pstart = strstr(str,s_str);
+    char *ptext = str_;
+    char *pstart = strstr(str_,s_str);
     while (pstart) {
         *pstart = 0;
         s += ptext;
@@ -385,122 +412,52 @@ void Fl_String::subReplace(const char *s_str,const char *r_str)
         pstart = strstr(ptext,s_str);
     }
     s += ptext;
-    assign(s.str);
+    assign(s.str_);
 }
 
-void Fl_String::setLength(int newLength)
+void Fl_String::set_length(int newLength)
 {
-    str = (char *)realloc(str,newLength+1);
-    str[newLength] = 0;
+    str_ = (char *)realloc(str_, newLength+1);
+    str_[newLength] = 0;
+    len_ = newLength+1;
 }
 
-Fl_String Fl_String::wordAt(long position) const
+Fl_String Fl_String::word_at(long position) const
 {
     char *temp;
 
-    Fl_String s("", strlen(str));
-
     // rewind to start of current word
-    while(!isspace(str[position-1]) && !ispunct(str[position-1]))
-        if(position)
-            position--;
-        else
-            break;
+    while(!isspace(str_[position-1]) && !ispunct(str_[position-1]))
+        if(position) position--;
+        else break;
+
     // skip leading punctuation
     int len = length();
-    while(ispunct(str[position]))
-        if(position < len)
-            position++;
-        else
-            break;
-    temp = s.str;
-    while(str[position] && !(isspace(str[position])))
+    while(ispunct(str_[position]))
+        if(position < len) position++;
+        else break;
+
+    char word[4096];
+    temp = word;
+    int l=0;
+    while(str_[position] && !(isspace(str_[position])))
     {
-        if(ispunct(str[position]))
-            if(str[position] != '\'')
+        if(ispunct(str_[position]))
+            if(str_[position] != '\'')
                 break;
-        *temp++ = str[position++];
+        *temp++ = str_[position++];
+        l++;
     }
     *temp = '\0';
-    return s;
+    return Fl_String(word, l);
 }
 
-Fl_String& Fl_String::chopAt(long  limit, Fl_String *remainder)
-{
-    int l = length();
-    if (limit > l) limit = l;
-    if ( limit < 0) limit = 0;
-    if (remainder)
-        remainder->assign(str+limit);
-    str[limit] = '\0';
-    return(*this);
-}
-
-Fl_String& Fl_String::wrapAt(long limit, Fl_String *remainder)
-{
-    if (remainder)
-        *remainder = "";
-
-    int l = length();
-    if (limit > l) limit = l;
-    if ( limit < 0) limit = 0;
-
-    if (isspace(str[limit]) || (str[limit] == '\0'))
-        chopAt(limit,remainder);
-    else
-    {
-        while(limit && !isspace(str[limit]))
-            limit--;
-        if(limit)
-            chopAt(++limit,remainder);  // skip past space, clip rest of line
-    }
-
-    return *this;
-}
-
-Fl_String Fl_String::substituteSpecialChars(char prefix) const
-{
-    Fl_String  newstr;
-    char *tempStr = strdup(str);
-    char *start = tempStr;
-    char cc[] = " ";
-
-    for (;;) {
-        char *end = strchr(start,prefix);
-        if (!end) {
-            newstr += start;
-            break;
-        }
-        bool doublePrefix = false;
-        if (*(end+1) == prefix) {
-            // Duplicated prefix - leave one of them
-            end++;
-            doublePrefix = true;
-        }
-        *end = 0;
-
-        newstr += start;
-        start = end + 1;
-
-        if (!doublePrefix) {
-            char *nextItem;
-            int charCode = (int)strtol(start,&nextItem,0);
-            if (nextItem != start) {
-                cc[0] = charCode;
-                newstr += cc;
-                start = nextItem;
-            }
-        }
-    }
-    free(tempStr);
-    return newstr;
-}
 //------------------------------------------------------------------------------
 Fl_String Fl_String::IntToString(int val)
 {
-    Fl_String str("", 33);
-    snprintf((char*)str.c_str(), 32, "%i", val);
-    return str;
+    Fl_String s("", 33);
+    snprintf((char*)s.c_str(), 32, "%i", val);
+    return s;
 }
 //------------------------------------------------------------------------------
 Fl_String operator +(const char*s, const Fl_String& rhs)
@@ -510,27 +467,27 @@ Fl_String operator +(const char*s, const Fl_String& rhs)
 
 //------------------------------------------------------------------------------
 bool operator <  (const Fl_String &s1, const char *s2) {
-    return strcmp(s1.str,s2) < 0;
+    return strcmp(s1.str_,s2) < 0;
 }
 
 bool operator <= (const Fl_String &s1, const char *s2) {
-    return strcmp(s1.str,s2) <= 0;
+    return strcmp(s1.str_,s2) <= 0;
 }
 
 bool operator >  (const Fl_String &s1, const char *s2) {
-    return strcmp(s1.str,s2) > 0;
+    return strcmp(s1.str_,s2) > 0;
 }
 
 bool operator >= (const Fl_String &s1, const char *s2) {
-    return strcmp(s1.str,s2) >= 0;
+    return strcmp(s1.str_,s2) >= 0;
 }
 
 bool operator == (const Fl_String &s1, const char *s2) {
-    return strcmp(s1.str,s2) == 0;
+    return strcmp(s1.str_,s2) == 0;
 }
 
 bool operator != (const Fl_String &s1, const char *s2) {
-    return strcmp(s1.str,s2) != 0;
+    return strcmp(s1.str_,s2) != 0;
 }
 //------------------------------------------------------------------------------
 

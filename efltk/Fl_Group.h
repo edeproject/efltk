@@ -31,12 +31,14 @@
 #endif
 
 #include "Fl_Data_Source.h"
+#include "Fl_Widget_List.h"
 
 class FL_API Fl_Group : public Fl_Widget {
 public:
 
-  int children() const {return children_;}
-  Fl_Widget* child(int n) const {return array_[n];}
+  int children() const { return array_.size(); }
+  Fl_Widget* child(int n) const { return array_[n]; }
+  Fl_Widget_List &array() { return array_; }
 
   void draw();
   void draw_group_box() const;
@@ -90,17 +92,15 @@ protected:
 
 private:
 
-  int children_;
-  int focus_;
-  Fl_Widget** array_;
+    Fl_Widget_List array_;
+    int focus_;
 
-  Fl_Widget* resizable_;
-  int *sizes_; // remembered initial sizes of children
+    Fl_Widget* resizable_;
+    int *sizes_; // remembered initial sizes of children
 
-  Fl_Data_Source* data_source_;
+    Fl_Data_Source* data_source_;
 
-  static Fl_Group *current_;
-
+    static Fl_Group *current_;
 };
 
 // This dummy class can be used in constructors to set the parent

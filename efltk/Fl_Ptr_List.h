@@ -1,0 +1,57 @@
+#ifndef _FL_PTR_LIST_H_
+#define _FL_PTR_LIST_H_
+
+#include "Enumerations.h"
+
+typedef void* Fl_Ptr_List_Item;
+
+class FL_API Fl_Ptr_List {
+public:
+    Fl_Ptr_List();
+    ~Fl_Ptr_List();
+    void clear();
+    void resize(uint newsize);
+
+    void auto_delete(bool val) { auto_delete_ = val; }
+    bool auto_delete() { return auto_delete_; }
+
+    //Default is 32
+    void blocksize(int s) { blocksize_ = s; }
+    int blocksize() { return blocksize_; }
+
+    uint count() const { return size_; }
+    uint size() const { return size_; }
+
+    void append(void *item);
+    void prepend(void *item);
+
+    void insert(uint pos, Fl_Ptr_List_Item item);
+    void replace(uint pos, Fl_Ptr_List_Item item);
+
+    void remove(uint pos);
+    bool remove(Fl_Ptr_List_Item ptr);
+
+    void sort(int (*fcmp)(const void *, const void *));
+    int index_of(const Fl_Ptr_List_Item p) const;
+
+    Fl_Ptr_List_Item item(uint index) const;
+    Fl_Ptr_List_Item& operator [] (uint ind) { return items[ind]; }
+    const Fl_Ptr_List_Item operator [] (uint ind) const { return items[ind]; }
+
+    Fl_Ptr_List_Item *data() { return items; }
+
+protected:
+    Fl_Ptr_List_Item *items;
+    bool auto_delete_;
+
+private:
+    uint blocksize_;
+    uint capacity_;
+    uint size_;
+};
+
+// backeard compatibility
+// #define Fl_PtrList Fl_Ptr_list
+
+#endif
+

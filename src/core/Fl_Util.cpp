@@ -1,5 +1,5 @@
 #include <efltk/Fl_Util.h>
-#include <efltk/Fl_PtrList.h>
+#include <efltk/Fl_String_List.h>
 #include <efltk/filename.h>
 
 #include <stdio.h>
@@ -206,7 +206,12 @@ int fl_va_len(char *format, va_list ap)
             char fmt[64] = {0};
             char *fmtptr = fmt;
             *fmtptr++ = '%';
-            while(isdigit(ch)) { ch=*ptr++; *fmtptr++ = ch; if(ch=='.') { ch=*ptr++; *fmtptr++ = ch; } }
+            while(isdigit(ch)) {
+                ch=*ptr++;
+                *fmtptr++ = ch;
+                if(ch=='.') { ch=*ptr++; *fmtptr++ = ch; }
+            }
+            *fmtptr++ = ch;
             switch(tolower(ch)) {
             case 's':
                 type_s = va_arg(ap, char *);
@@ -233,7 +238,7 @@ int fl_va_len(char *format, va_list ap)
             }
         }
     }
-    return len;
+    return len+strlen(format);
 }
 
 char *fl_strdup_printf(char *string, ...)
@@ -259,11 +264,10 @@ char *fl_strdup_printf(char *string, ...)
 }
 
 char **fl_split(const char *string,
-                 const char *delimiter,
-                 int         max_tokens)
+                const char *delimiter,
+                int         max_tokens)
 {
-    Fl_PtrList<char> string_list;
-    char *str;
+    Fl_CString_List string_list;
     char **str_array, *s;
     unsigned int n = 0;
 
@@ -276,9 +280,7 @@ char **fl_split(const char *string,
     s = strstr (string, delimiter);
     if(s) {
         unsigned int delimiter_len = strlen (delimiter);
-
-        do
-        {
+        do {
             uint len;
             char *new_string;
 
@@ -304,11 +306,10 @@ char **fl_split(const char *string,
     str_array[n] = 0;
 
     char **ptr = str_array;
-    for(str = string_list.first(); str!=0; str = string_list.next())
-        *ptr++ = str;
+    for(n=0; n<string_list.size(); n++)
+        *ptr++ = (char*)string_list[n];
 
     string_list.clear();
-
     return str_array;
 }
 
