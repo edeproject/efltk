@@ -27,6 +27,7 @@
 #include <efltk/fl_ask.h>
 #include <efltk/Fl_Widget.h>
 #include <efltk/Fl_Float_Input.h>
+#include <efltk/Fl_Int_Input.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -52,7 +53,7 @@ bool Fl_Float_Input::save_data(Fl_Data_Source *ds)
         return false;
 
     Fl_Variant  fld_value;
-    fld_value.set_float(atof(value()));
+    fld_value.set_float(strtod(value(), 0));
     return ds->write_field(field_name().c_str(), fld_value);
 }
 
@@ -78,6 +79,34 @@ bool Fl_Float_Input::replace(int b, int e, const char* text, int ilen)
     else ret=Fl_Input::replace(b,e,text,ilen);
 
     return ret;
+}
+
+////////////////////////////////////////
+
+// Data source support
+// loading data from DS
+bool Fl_Int_Input::load_data(Fl_Data_Source *ds)
+{
+    if (field_name().empty())
+        return false;
+
+    Fl_Variant fld_value;
+    if (ds->read_field(field_name().c_str(), fld_value)) {
+        value(fld_value.get_int());
+        return true;
+    }
+    return false;
+}
+
+// saving data to DS
+bool Fl_Int_Input::save_data(Fl_Data_Source *ds)
+{
+    if(field_name().empty())
+        return false;
+
+    Fl_Variant  fld_value;
+    fld_value.set_int(strtol(value(), 0, 10));
+    return ds->write_field(field_name().c_str(), fld_value);
 }
 
 
