@@ -72,6 +72,7 @@ Fl_Date_Input::Fl_Date_Input(int xx,int yy,int ww,int hh,const char *lbl)
    m_button = new Fl_Button(0,0,10,10);
    m_button->callback(Fl_Date_Input::button_callback);
    m_button->image(&buttonPixmap);
+   end();
 }
 
 void Fl_Date_Input::layout() {
