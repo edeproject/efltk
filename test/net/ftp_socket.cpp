@@ -22,18 +22,22 @@ int main(int argc, char *argv[]) {
         ftp.user(userName);
         ftp.password(password);
         ftp.open();
-        cout << ftp.response().data();
+        const Fl_String_List& response = ftp.response();
+        for (unsigned i = 0; i < response.count(); i++)
+            cout << response[i].c_str() << endl;
 
         ftp.cmd_pwd();
-        cout << ftp.response().data();
+        for (unsigned i = 0; i < response.count(); i++)
+            cout << response[i].c_str() << endl;
 
         cout << endl << "File list in short format:" << endl;
-        Fl_String_List files = ftp.cmd_nlst();
+        Fl_String_List files;
+        ftp.cmd_nlst(files);
         for (unsigned i = 0; i < files.count(); i++)
             cout << files[i].c_str() << endl;
 
         cout << endl << "File list in long format:" << endl;
-        files = ftp.cmd_list();
+        ftp.cmd_list(files);
         for (unsigned j = 0; j < files.count(); j++)
             cout << files[j].c_str() << endl;
 
@@ -42,14 +46,20 @@ int main(int argc, char *argv[]) {
         Fl_String fname(fileName);
         fname = fname.trim();
         if (fname.length()) {
-            cout << ftp.cmd_type('I').c_str() << endl;
-            cout << ftp.cmd_retr(fname).c_str() << endl;
+            ftp.cmd_type('I');
+            for (unsigned i = 0; i < response.count(); i++)
+                cout << response[i].c_str() << endl;
+            ftp.cmd_retr(fname);
+            for (unsigned i = 0; i < response.count(); i++)
+                cout << response[i].c_str() << endl;
         }
 
-        cout << ftp.cmd_quit().c_str() << endl;
+        ftp.cmd_quit();
+        for (unsigned i = 0; i < response.count(); i++)
+            cout << response[i].c_str() << endl;
     }
-    fl_catch(exception) {
-        cout << exception.text().c_str();
-    }
-    return 0;
+fl_catch(exception) {
+    cout << exception.text().c_str();
+}
+return 0;
 }

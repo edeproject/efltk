@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 Fl_FTP_Socket::Fl_FTP_Socket()
-: Fl_Socket(), m_buffer(16384) {
+: Fl_Socket() {
     m_port = 21;
     m_type = SOCK_STREAM;
     m_protocol = IPPROTO_TCP;
@@ -20,20 +20,20 @@ void Fl_FTP_Socket::open(Fl_String hostName, int port) {
     setsockopt(m_sockfd, SOL_SOCKET, SO_REUSEADDR, (char *) &on, sizeof(on));
 }
 
-const Fl_Buffer& Fl_FTP_Socket::login(Fl_String user,Fl_String password) {
+const Fl_String_List& Fl_FTP_Socket::login(Fl_String user,Fl_String password) {
     command("USER " + user);
     return command("PASS " + password);
 }
 
-const Fl_Buffer& Fl_FTP_Socket::get_response() {
+const Fl_String_List& Fl_FTP_Socket::get_response() {
     char	readBuffer[255];
     char retCode[5];
 
-    m_buffer.bytes(0);
+    m_response.clear();
 
     // read the first line of response
     int len = read_line(readBuffer,255);
-    m_buffer.append(readBuffer,len);
+    m_response.append(readBuffer);
 
     // read the return code
     if (readBuffer[3] == '-') {
@@ -41,23 +41,22 @@ const Fl_Buffer& Fl_FTP_Socket::get_response() {
         strcpy(retCode,readBuffer);
         for (;;) {
             len = read_line(readBuffer,255);
-            m_buffer.append(readBuffer,len);
+            m_response.append(readBuffer);
             readBuffer[3] = 0;
             if (strcmp(readBuffer,retCode) == 0)
                 break;
         } 
     }
-    m_buffer.data()[m_buffer.bytes()] = 0;
-    return m_buffer;
+    return m_response;
 }
 
-const Fl_Buffer& Fl_FTP_Socket::command(Fl_String cmd) {
+const Fl_String_List& Fl_FTP_Socket::command(Fl_String cmd) {
     write((cmd + "\n").c_str(),cmd.length()+1);
     return get_response();
 }
 
 Fl_FTP_Connect::Fl_FTP_Connect() 
-: m_commandSocket(), m_dataSocket(), m_response(m_commandSocket.response()) {
+: m_commandSocket(), m_dataSocket() {
     m_passive = true;
 }
 
@@ -99,14 +98,15 @@ void Fl_FTP_Connect::open_data_port() {
 
     if (m_passive) {
         command("PASV");
-        if (m_response.data()[0] != '2')
-            fl_throw(m_response.data());
+        const Fl_String& resp = response()[0];
+        if (resp[0] != '2')
+            fl_throw(resp);
 
         memset(&sin, 0, l);
         sin.in.sin_family = AF_INET;
-        char *cp = strchr(m_response.data(),'(');
+        char *cp = strchr(resp.c_str(),'(');
         if (cp == NULL)
-            fl_throw(m_response.data());
+            fl_throw(resp);
         cp++;
         sscanf(cp,"%u,%u,%u,%u,%u,%u",&v[2],&v[3],&v[4],&v[5],&v[0],&v[1]);
         sin.sa.sa_data[2] = v[2];
@@ -122,27 +122,23 @@ void Fl_FTP_Connect::open_data_port() {
     }
 }
 
-Fl_String Fl_FTP_Connect::cmd_quit() {
+void Fl_FTP_Connect::cmd_quit() {
     command("QUIT");
     close();
-    return m_commandSocket.response().data();
 }
 
-Fl_String Fl_FTP_Connect::cmd_type(char type) {
+void Fl_FTP_Connect::cmd_type(char type) {
     Fl_String mode("TYPE I");
     mode[5] = type;
     command(mode);
-    return m_commandSocket.response().data();
 }
 
-Fl_String Fl_FTP_Connect::cmd_cd(Fl_String dir) {
+void Fl_FTP_Connect::cmd_cd(Fl_String dir) {
     command("CWD "+dir);
-    return m_commandSocket.response().data();
 }
 
-Fl_String Fl_FTP_Connect::cmd_pwd() {
+void Fl_FTP_Connect::cmd_pwd() {
     command("PWD ");
-    return m_commandSocket.response().data();
 }
 
 void Fl_FTP_Connect::get_list(Fl_String cmd,Fl_String_List& list) {
@@ -168,19 +164,15 @@ void Fl_FTP_Connect::get_list(Fl_String cmd,Fl_String_List& list) {
     m_commandSocket.get_response();
 }
 
-Fl_String_List Fl_FTP_Connect::Fl_FTP_Connect::cmd_list() {
-    Fl_String_List	result;
+void Fl_FTP_Connect::Fl_FTP_Connect::cmd_list(Fl_String_List& result) {
     get_list("LIST",result);
-    return result;
 }
 
-Fl_String_List Fl_FTP_Connect::cmd_nlst() {
-    Fl_String_List	result;
+void Fl_FTP_Connect::cmd_nlst(Fl_String_List& result) {
     get_list("NLST",result);
-    return result;
 }
 
-Fl_String Fl_FTP_Connect::cmd_retr(Fl_String fileName) {
+void Fl_FTP_Connect::cmd_retr(Fl_String fileName) {
     Fl_Buffer	buffer(2048);
     FILE *outfile = fopen(fileName.c_str(),"w+b");
     if (!outfile)
@@ -201,7 +193,7 @@ Fl_String Fl_FTP_Connect::cmd_retr(Fl_String fileName) {
     m_commandSocket.get_response();
 }
 
-Fl_String Fl_FTP_Connect::cmd_store(Fl_String fileName) {
+void Fl_FTP_Connect::cmd_store(Fl_String fileName) {
     Fl_Buffer	buffer(8192);
     FILE *infile = fopen(fileName.c_str(),"rb");
     if (!infile)

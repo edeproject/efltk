@@ -1,11 +1,10 @@
 #include <efltk/Fl_String.h>
 #include <efltk/Fl_String_List.h>
-#include <efltk/Fl_Buffer.h>
 #include <efltk/Fl_Data_Source.h>
 #include <efltk/Fl_Socket.h>
 
 class Fl_FTP_Socket : public Fl_Socket {
-    Fl_Buffer	m_buffer;
+    Fl_String_List	m_response;
 public:
     Fl_FTP_Socket();
     ~Fl_FTP_Socket();
@@ -13,11 +12,11 @@ public:
    // Connect & disconnect
     virtual void open(Fl_String hostName="", int port=0);
 
-    const Fl_Buffer& response() { return m_buffer; }
-    const Fl_Buffer& login(Fl_String user,Fl_String password);
-    const Fl_Buffer& command(Fl_String cmd);
+    const Fl_String_List& response() const { return m_response; }
+    const Fl_String_List& login(Fl_String user,Fl_String password);
+    const Fl_String_List& command(Fl_String cmd);
 
-    const Fl_Buffer& get_response();
+    const Fl_String_List& get_response();
 };
 
 class FL_API Fl_FTP_Connect {
@@ -28,7 +27,6 @@ protected:
     Fl_String			m_password;
     Fl_String			m_host;
     int					m_port;
-    const Fl_Buffer&	m_response;
     bool					m_passive;
 protected:
     void open_data_port();
@@ -52,19 +50,19 @@ public:
     void open();
     void close();
 
-    const Fl_Buffer& response() const { return m_response; }
+    const Fl_String_List& response() const { return m_commandSocket.response(); }
 
     bool active() const { return m_commandSocket.active(); }
 
     // FTP commands
-    Fl_String cmd_quit();
-    Fl_String cmd_type(char type);
-    Fl_String cmd_cd(Fl_String dir);
-    Fl_String cmd_pwd();
+    void cmd_quit();
+    void cmd_type(char type);
+    void cmd_cd(Fl_String dir);
+    void cmd_pwd();
 
-    Fl_String_List cmd_list();
-    Fl_String_List cmd_nlst();
+    void cmd_list(Fl_String_List& result);
+    void cmd_nlst(Fl_String_List& result);
 
-    Fl_String cmd_retr(Fl_String fileName);
-    Fl_String cmd_store(Fl_String fileName);
+    void cmd_retr(Fl_String fileName);
+    void cmd_store(Fl_String fileName);
 };

@@ -15,12 +15,11 @@ Fl_IMAP_Connect::~Fl_IMAP_Connect() {
 
 void Fl_IMAP_Connect::get_response(Fl_String ident) {
     char	readBuffer[255];
-    char retCode[5];
 
     m_response.clear();
 
     for (;;) {
-        int len = read_line(readBuffer,255);
+        read_line(readBuffer,255);
         m_response.append(readBuffer);
 
         if (readBuffer[0] == '*')
@@ -38,7 +37,7 @@ void Fl_IMAP_Connect::command(Fl_String cmd) {
         fl_throw("Socket isn't open");
     write((cmd + "\n").c_str(),cmd.length()+1);
     get_response(ident);
-    for (int i = 0; i < m_response.count(); i++)
+    for (unsigned i = 0; i < m_response.count(); i++)
         printf(m_response[i].c_str());
 }
 
