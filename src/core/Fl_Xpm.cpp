@@ -2,8 +2,10 @@
 
 /* This is an XPM image file loading framework */
 
-#include <stdlib.h>
+#include <config.h>
+
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
@@ -177,11 +179,11 @@ static void free_colorhash(struct color_hash *hash)
  */
 static int color_to_rgb(char *spec, uint32 *rgb)
 {
-#ifndef _WIN32
-    if(!strcasecmp("none", spec)) {
+	if(!strcasecmp("none", spec) || !strcasecmp("#background", spec)) {
         *rgb = 0xffffffff;
         return 1;
     }
+#ifndef _WIN32    
     XColor x;
     fl_open_display();
     if(!XParseColor(fl_display, fl_colormap, spec, &x)) {
@@ -194,6 +196,7 @@ static int color_to_rgb(char *spec, uint32 *rgb)
     /* poor man's rgb.txt */
     static struct { char *name; uint32 rgb; } known[] = {
         {"none",  0xffffffff},
+        {"background",  0xffffffff},
         {"black", 0x00000000},
         {"white", 0x00ffffff},
         {"red",   0x00ff0000},

@@ -798,9 +798,11 @@ void Fl_Image::draw(int dx, int dy, int dw, int dh,
 
             // Stretching with mask! This very NOT EFFICIENT!
             // This should be should used only when it's absolutely necessary!
+			// THIS IS DISABLED! IF SOME APP WANTS TO DO THIS, ITHAS TO IT BY IT SELF!
             if(mask && _mask_alloc) fl_delete_offscreen((Pixmap)mask);
-            mask = (void *)create_mask(dw, dh);
-            _mask_alloc = (mask!=0);
+            //mask = (void *)create_mask(dw, dh);
+            _mask_alloc = false;//(mask!=0);
+			mask=0;
 
         } else {
 

@@ -113,7 +113,7 @@ char *fl_get_homedir()
     if(RegOpenKeyEx(HKEY_CURRENT_USER,"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders",0,KEY_READ,&hKey)==ERROR_SUCCESS)
     {
         DWORD size=4096;
-        LONG result=RegQueryValueEx(hKey, "Personal", NULL, NULL, (LPBYTE)path, &size);  // Change "Personal" to "Desktop" if you want...
+        LONG result=RegQueryValueEx(hKey, "Local AppData", NULL, NULL, (LPBYTE)path, &size);  // Change "Personal" to "Desktop" if you want...
         RegCloseKey(hKey);
         return path;
     }

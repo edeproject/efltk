@@ -243,14 +243,34 @@ static HDC make_DC(HBITMAP pixmap, HPALETTE pal)
 }
 
 
-void Fl_Image::to_screen(int X, int Y, int W, int H, int cx, int cy)
+void Fl_Image::to_screen(int XP, int YP, int WP, int HP, int, int)
 {	
-  if(mask) {			
-    if(id) {		
-      // both color and mask:
-#if 0
+    int X,Y,W,H;
+    fl_clip_box(XP, YP, WP, HP, X, Y, W, H);
 
-      HDC new_gc = make_DC((Pixmap)id, fl_palette);
+    int cx = X-XP;
+    int cy = Y-YP;
+
+    if(cx+W > WP)
+        W = WP-cx;
+
+    if(W <= 0)
+        return;
+
+    if(cy+H > HP)
+        H = HP-cy;
+
+    if(H <= 0)
+        return;
+
+    // convert to Xlib coordinates:
+    fl_transform(X,Y);
+
+	if(mask) {			
+		if(id) {		
+			// both color and mask:
+#if 0
+	      HDC new_gc = make_DC((Pixmap)id, fl_palette);
       
 			if(_masktype == ALPHA)
 			{

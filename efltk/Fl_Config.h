@@ -65,9 +65,15 @@ public:
         SYSTEM
     } ConfMode;
 
-    // Creates/reads app specific config file.
+    // Creates/reads/writes app specific config file.
+	//
+	// LINUX:
     // File is created in ($home)/.ede/apps/($application)/($application).conf
     // Or ($prefix)/share/ede/apps/($application)/($application).conf
+	// WIN32:
+	// ($home)\Local Settings\.ede\apps\($application)/($application).conf
+	// Or ($common files)\($application)\($application).conf
+	//
     // depending ConfMode, USER or SYSTEM
     // Vendor is only used to write it down to file.
     Fl_Config(const char *vendor, const char *application, ConfMode mode=USER);

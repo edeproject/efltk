@@ -14,8 +14,8 @@
 
 # include <windows.h>
 # include <winsock.h>
-# define usleep(x) Sleep(x/1000)
-# define XSync(d, b) (void)d; (void)b
+// DOOH! Is this lame or what? :) Trying to avoid windows draw too fast...
+# define XFlush(a) Sleep(1)
 
 #endif
 
@@ -28,7 +28,7 @@ static int px,py,pw,ph;
 
 void set_overlay_func() {
 #ifdef _WIN32
-    old_f = SetROP2(fl_gc, R2_NOT);
+	old_f = SetROP2(fl_gc, R2_NOT);
 #else
     if(!invertGc) {
         XGCValues v;
@@ -1016,10 +1016,11 @@ void Fl_MDI_Window::attach(Fl_MDI_Viewport *ws)
     setTop();
 }
 
+#include <stdio.h>
 #define STEP_DIV 15
 void Fl_MDI_Window::animate(int fx, int fy, int fw, int fh,
                             int tx, int ty, int tw, int th)
-{
+{	
 # undef max
 # define max(a,b) (a) > (b) ? (a) : (b)
     float max_steps = max( float(tw-fw), float(th-fh) );
@@ -1037,7 +1038,12 @@ void Fl_MDI_Window::animate(int fx, int fy, int fw, int fh,
     int winc = fw < tw ? 1 : -1;
     int hinc = fh < th ? 1 : -1;
     float rx=float(fx), ry=float(fy),
-		rw=float(fw), rh=float(fh);
+		rw=float(fw), rh=float(fh);	
+
+#ifdef _WIN32
+	HDC saved = fl_gc, new_gc;
+	fl_gc = new_gc = GetDCEx(fl_xid(_owner), NULL, DCX_LOCKWINDOWUPDATE); //Draws top of child windows...
+#endif
 
     timeval t;
     while(steps-- > 0) {
@@ -1051,16 +1057,22 @@ void Fl_MDI_Window::animate(int fx, int fy, int fw, int fh,
             resize((int)rx, (int)ry, (int)rw, (int)rh);
             layout();
         } else {
+#ifdef _WIN32
             _owner->make_current();
-            overlay_rect((int)rx, (int)ry, (int)rw, (int)rh);
-            t.tv_sec = 0;
-            t.tv_usec = 1000;
-            ::select(0+1,0,0,0, &t);
+#else
+			fl_gc = new_gc;
+#endif
+            overlay_rect((int)rx, (int)ry, (int)rw, (int)rh);			
         }
 
-        XSync(fl_display, false);
+        XFlush(fl_display);
         Fl::check();
     }
+#ifdef _WIN32
+	ReleaseDC(fl_xid(_owner), new_gc);
+	fl_gc = saved;
+#endif
+
     if(!anim_opaque_) overlay_clear();
     resize(tx,ty,tw,th);
 }
@@ -1075,6 +1087,7 @@ void Fl_MDI_Window::minmax()
             animate(x(), y(), w(), h(), 0, 0, _W, _H);
         else
             resize(0, 0, _W, _H);
+
         _owner->maximum(this);
         old_title_h = _titlebar.h();
         old_title_fh = _titlebar.label_size();
@@ -1082,22 +1095,23 @@ void Fl_MDI_Window::minmax()
         _titlebar.label_size(10);
 
     } else {
-        if(_owner->maximum() == this)
-            _owner->maximum(0);
-
-        _titlebar.h(old_title_h);
-        _titlebar.label_size(old_title_fh);
-        _titlebar.show();
 
         check_size_boundary(_ow, _oh);
         if(_ox+_ow > _owner->w())
             _ox=_ox-((_ox+_ow)-_owner->w());
         if(_oy+_oh > _owner->h())
             _oy=_oy-((_oy+_oh)-_owner->h());
-        if(animate()) {
+
+        if(_owner->maximum() == this) _owner->_max = (0);
+
+		if(animate())
             animate(x(), y(), w(), h(), _ox, _oy, _ow, _oh);
-        } else
+        else
             resize(_ox, _oy, _ow, _oh);
+
+        _titlebar.h(old_title_h);
+        _titlebar.label_size(old_title_fh);
+        _titlebar.show();
     }
 
     layout();

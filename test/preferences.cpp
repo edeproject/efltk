@@ -147,7 +147,7 @@ void readPrefs() {
   double doubleValue;
   
   Fl_Config app( "efltk", "pref_test", Fl_Config::USER );
-  
+
       app.set_section( "Bed" );
       app.read("alarm", buffer, "8:00", sizeof(buffer) );
       wAlarm->value( buffer );

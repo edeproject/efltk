@@ -816,7 +816,7 @@ void Fl_File_Dialog::read_dir(const char *_path)
         }
     }
     if(mode_!=Fl_File_Dialog::DIRECTORY || (mode_==Fl_File_Dialog::DIRECTORY && !fullpath_))
-        ok_->deactivate();
+        ok_->deactivate();	
 #endif
     fullpath(_path);
 

@@ -173,13 +173,13 @@ void Fl::remove_fd(int n, int events)
     }
     nfds = j;
 
-    #ifdef USE_ASYNC_SELECT
+#ifdef USE_ASYNC_SELECT
     WSAAsyncSelect(n, 0, 0, 0);
-    #else
+#else
     if (events & POLLIN) FD_CLR(unsigned(n), &fdsets[0]);
     if (events & POLLOUT) FD_CLR(unsigned(n), &fdsets[1]);
     if (events & POLLERR) FD_CLR(unsigned(n), &fdsets[2]);
-    #endif                       // USE_ASYNC_SELECT
+#endif                       // USE_ASYNC_SELECT
 }
 
 
@@ -211,7 +211,7 @@ static inline int fl_wait(double time_to_wait)
     int have_message = 0;
     int timerid;
 
-    #ifndef USE_ASYNC_SELECT
+#ifndef USE_ASYNC_SELECT
     if (nfds)
     {
         // For _WIN32 we need to poll for socket input FIRST, since
@@ -245,7 +245,7 @@ static inline int fl_wait(double time_to_wait)
             if (time_to_wait > .001) time_to_wait = .001;
         }
     }
-    #endif                       // USE_ASYNC_SELECT
+#endif                       // USE_ASYNC_SELECT
 
     fl_unlock_function();
     if (time_to_wait < 2147483.648)
@@ -272,7 +272,7 @@ static inline int fl_wait(double time_to_wait)
     // Execute the message we got, and all other pending messages:
     while (have_message)
     {
-        #ifdef USE_ASYNC_SELECT
+#ifdef USE_ASYNC_SELECT
         if (fl_msg.message == WM_FLSELECT)
         {
             // Got notification for socket
@@ -284,7 +284,7 @@ static inline int fl_wait(double time_to_wait)
             }
             // looks like it is best to do the dispatch-message anyway:
         }
-        #endif
+#endif
         if (fl_msg.message == WM_USER)
         {
             // This is used by Fl::awake() and by WndProc() in an attempt
@@ -310,9 +310,9 @@ static inline int fl_wait(double time_to_wait)
 static inline int fl_ready()
 {
     if (PeekMessage(&fl_msg, NULL, 0, 0, PM_NOREMOVE)) return 1;
-    #ifdef USE_ASYNC_SELECT
+#ifdef USE_ASYNC_SELECT
     return 0;
-    #else
+#else
     timeval t;
     t.tv_sec = 0;
     t.tv_usec = 0;
@@ -321,7 +321,7 @@ static inline int fl_ready()
     fdt[1] = fdsets[1];
     fdt[2] = fdsets[2];
     return ::select(0,&fdt[0],&fdt[1],&fdt[2],&t);
-    #endif                       // USE_ASYNC_SELECT
+#endif                       // USE_ASYNC_SELECT
 }
 
 

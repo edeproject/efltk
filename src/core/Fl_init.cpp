@@ -19,6 +19,10 @@
 #include <efltk/Fl_Config.h>
 #include "fl_internal.h"
 
+#ifdef _WIN32
+# include <winsock.h>
+#endif
+
 // This allows static lib builds...
 // widgets lib will use these as external variables.
 
@@ -36,8 +40,15 @@ float tt_delay  = 1.0f;
 
 extern void fl_init_locale_support(const char *, const char *);
 
+void clean_up()
+{
+	printf("CLEAN!\n");
+}
+
 void Fl::init()
 {
+	atexit(clean_up);
+
     fl_init_locale_support("efltk", PREFIX"/share/locale");
 
     char *file = 0;
@@ -63,4 +74,14 @@ void Fl::init()
         cfg.get("MDI", "Animate", mdi_anim, true);
         cfg.get("MDI", "Opaque", mdi_anim_opaque, false);
     }
+
+#ifdef _WIN32
+	// WIN32 needs sockets to be initialized to get select funtion working...
+	WSADATA wsaData;	
+	WORD wVersionRequested = MAKEWORD( 2, 0 );
+	int err = WSAStartup( wVersionRequested, &wsaData );
+	if(err != 0) {
+		Fl::warning("WSAStartup failed!");
+	}
+#endif
 }

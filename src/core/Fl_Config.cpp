@@ -16,6 +16,7 @@
 
 # include <io.h>
 # include <direct.h>
+# include <windows.h>
 # define access(a,b) _access(a,b)
 # define mkdir(a,b) _mkdir(a)
 # define R_OK 4
@@ -41,7 +42,7 @@ static int is_path_rooted(const char *fn)
 // recursively create a path in the file system
 static bool makePath( const char *path ) {
     if(access(path, 0)) {
-        const char *s = strrchr( path, '/' );
+        const char *s = strrchr( path, slash );
         if ( !s ) return 0;
         int len = s-path;
         char *p = (char*)malloc( len+1 );
@@ -57,7 +58,7 @@ static bool makePath( const char *path ) {
 // strip the filename and create a path
 static bool makePathForFile( const char *path )
 {
-    const char *s = strrchr( path, '/' );
+    const char *s = strrchr( path, slash );
     if ( !s ) return false;
     int len = s-path;
     char *p = (char*)malloc( len+1 );
@@ -66,6 +67,23 @@ static bool makePathForFile( const char *path )
     bool ret=makePath( p );
     free( p );
     return ret;
+}
+
+char *get_sys_dir() {
+#ifndef _WIN32
+	return CONFIGDIR;
+#else
+	static char path[FL_PATH_MAX];
+    HKEY hKey;
+    if(RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\Microsoft\\Windows\\CurrentVersion",0,KEY_READ,&hKey)==ERROR_SUCCESS)
+    {
+        DWORD size=4096;
+        LONG result=RegQueryValueEx(hKey, "CommonFilesDir", NULL, NULL, (LPBYTE)path, &size);
+        RegCloseKey(hKey);
+        return path;
+    }
+	return "C:\\EFLTK\\";
+#endif
 }
 
 char *Fl_Config::find_config_file(const char *filename, bool create, ConfMode mode)
@@ -80,21 +98,19 @@ char *Fl_Config::find_config_file(const char *filename, bool create, ConfMode mo
         char *cptr = fl_get_homedir();
         char *ret=0;
         if(cptr) {
-            snprintf(path, sizeof(path)-1, "%s%s%s", cptr, "/.ede/", filename);
+            snprintf(path, sizeof(path)-1, "%s%c%s%c%s", cptr, slash, ".ede", slash, filename);
             if(create || !access(path, R_OK)) {
                 ret = path;
             }
             delete []cptr;
             return ret;
         }
+		return 0;
     } else {
-        snprintf(path, sizeof(path)-1, CONFIGDIR"/%s", filename);
+        snprintf(path, sizeof(path)-1, "%s%c%s", get_sys_dir(), slash, filename);
         return (create || !access(path, R_OK)) ? path : 0;
     }
-
-    snprintf(path, sizeof(path)-1, CONFIGDIR "/%s", filename);
-    return (create || !access(path, R_OK)) ? path : 0;
-
+	return 0;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -109,11 +125,16 @@ Fl_Config::Fl_Config(const char *vendor, const char *application, ConfMode mode)
 
     vendor_ = vendor?strdup(vendor):0;
     app_    = application?strdup(application):0;
+	filename_ = 0;
 
     if(app_) {
         const char *file=0;
         char tmp[FL_PATH_MAX];
-        snprintf(tmp, sizeof(tmp)-1, "apps/%s/%s.conf", app_, app_);
+#ifdef _WIN32
+		if(mode==SYSTEM) snprintf(tmp, sizeof(tmp)-1, "%s%c%s.conf", app_, slash, app_);
+		else
+#endif
+        snprintf(tmp, sizeof(tmp)-1, "apps%c%s%c%s.conf", slash, app_, slash, app_);
         file = find_config_file(tmp, true, mode);
         if(file) {
             bool ret = makePathForFile(file);

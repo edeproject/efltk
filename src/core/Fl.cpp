@@ -303,7 +303,7 @@ int Fl::wait(float time_to_wait)
         reset_clock = 1;         // remember that elapse_timeouts was not called
     }
     // run the system-specific part that waits for sockets & events:
-    if (time_to_wait <= 0) time_to_wait = 0.0;
+    if (time_to_wait <= 0) time_to_wait = 0;
     else flush();
     if (fl_wait(time_to_wait)) ret = 1;
     if (!time_to_wait) flush();
@@ -313,7 +313,7 @@ int Fl::wait(float time_to_wait)
 
 int Fl::check()
 {
-    return wait(0.0);
+    return wait(0);
 }
 
 

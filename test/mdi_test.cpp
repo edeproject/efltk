@@ -306,8 +306,6 @@ int main(int argc, char **argv)
     //Read defaults, init locale and show the window
     mainwin.show(argc, argv);
 
-    s.redraw_all();
-
     return Fl::run();
 }
 
