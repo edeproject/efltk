@@ -201,7 +201,7 @@ void Fl_XmlNode::save(Fl_String &str, int indent)
 
     case FL_XML_TYPE_FIXED_CDATA: {
         // output all subnodes
-        WRITE("<[CDATA[" + cdata_ + "]]>\n");
+        WRITE("<![CDATA[" + cdata_ + "]]>\n");
     }
     break;
 
