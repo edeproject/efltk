@@ -38,8 +38,6 @@ LIBRARY = ../lib/$(LIBNAME)
 DSO = ../lib/$(LIBNAME)
 DSONAME = $(LIBNAME)$(DSOEXT)
 
-OBJECTS = $(CPPFILES:.cpp=.o) $(CFILES:.c=.o)
-
 all: $(BUILDTARGETS)
 
 static:
@@ -47,64 +45,67 @@ static:
 	$(MAKE) -C core static
 	$(MAKE) -C widgets static
 	$(MAKE) -C xutf static
+	$(MAKE) -C db static
 	$(MAKE) $(LIBRARY)$(LIBEXT)
 	$(MAKE) -C images static
 	$(MAKE) -C opengl static
 	$(MAKE) -C xml static
-	$(MAKE) -C db static
 
 shared:
 	rm -f $(LIBRARY)$(DSOEXT)
 	$(MAKE) -C core shared
 	$(MAKE) -C widgets shared
 	$(MAKE) -C xutf shared
+	$(MAKE) -C db shared
 	$(MAKE) $(DSO)$(DSOEXT)
 	$(MAKE) -C images shared
 	$(MAKE) -C opengl shared
 	$(MAKE) -C xml shared
-	$(MAKE) -C db shared
 
 programs:
 
+STATIC_OBJECTS = core/*.static.o widgets/*.static.o xutf/*.static.o db/*.static.o
+SHARED_OBJECTS = core/*.shared.o widgets/*.shared.o xutf/*.shared.o db/*.shared.o
+
 $(LIBRARY).a:
 	@echo $(LIBCOMMAND) $@ ...
-	@$(LIBCOMMAND) $@ core/*.static.o widgets/*.static.o xutf/*.static.o 
+	@$(LIBCOMMAND) $@ $(STATIC_OBJECTS)
 	@$(RANLIB) $@
 
-$(DSO).so.2 $(DSO).sl.2: $(OBJECTS:.o=.shared.o)
+$(DSO).so.2 $(DSO).sl.2:
 	@rm -f $@
 	@echo $(DSOCOMMAND) $(DSONAME) ...
-	@$(DSOCOMMAND) $(DSONAME) core/*.shared.o widgets/*.shared.o xutf/*.shared.o $(DSOLIBS)
+	@$(DSOCOMMAND) $(DSONAME) $(SHARED_OBJECTS) $(DSOLIBS)
 ifeq ($(HAVE_STRIP), 1) 
 	@$(STRIP) $(DSONAME)
 endif
 	@mv $(DSONAME) $@
 
 DLLIMPORTNAME = $(LIBNAME).2.dll$(LIBEXT)
-$(DSO).2.dll: $(OBJECTS:.o=.shared.o)
+$(DSO).2.dll:
 	@-rm -f $@
 	@echo $(DSOCOMMAND) $@ ...
-	@$(DSOCOMMAND) $@ core/*.shared.o widgets/*.shared.o xutf/*.shared.o $(DSOLIBS)
+	@$(DSOCOMMAND) $@ $(SHARED_OBJECTS) $(DSOLIBS)
 	-mv $@.import ../lib/$(DLLIMPORTNAME)
 
 clean:
 	$(MAKE) -C core clean
 	$(MAKE) -C widgets clean
 	$(MAKE) -C xutf clean
+	$(MAKE) -C db clean
 	$(MAKE) -C images clean
 	$(MAKE) -C opengl clean
 	$(MAKE) -C xml clean
-	$(MAKE) -C db clean
 	@rm -f *~ $(LIBRARY).*
 
 depend:
 	$(MAKE) -C core depend
 	$(MAKE) -C widgets depend
 	$(MAKE) -C xutf depend
+	$(MAKE) -C db depend
 	$(MAKE) -C images depend
 	$(MAKE) -C opengl depend
 	$(MAKE) -C xml depend
-	$(MAKE) -C db depend
 
 ################################################################
 
