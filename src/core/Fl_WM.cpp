@@ -258,6 +258,7 @@ bool Fl_WM::set_window_type(Window xid, int type)
 
 bool Fl_WM::set_window_icon(Window xid, Fl_Image *icon)
 {
+    init_atoms();
     if(!icon->get_offscreen()) {
         bool oldval = icon->no_screen();
         icon->no_screen(true);
@@ -374,6 +375,7 @@ static uint8 *cvt1to32(XImage *xim, int ow, int oh)
 extern uint8 *ximage_to_data(XImage *im, Fl_PixelFormat *desired);
 bool Fl_WM::get_window_icon(Window xid, Fl_Image *&icon, int w, int h)
 {
+    init_atoms();
     XWMHints *wm_hints = XGetWMHints(fl_display, xid);
 
     if(!wm_hints) return false;
@@ -451,6 +453,8 @@ bool Fl_WM::get_window_icon(Window xid, Fl_Image *&icon, int w, int h)
 
 bool Fl_WM::get_window_title(Window xid, char *&title)
 {
+    init_atoms();
+
     XTextProperty xtp;
     title = 0;
     int ret=0;
@@ -478,6 +482,8 @@ bool Fl_WM::get_window_title(Window xid, char *&title)
 
 bool Fl_WM::get_window_icontitle(Window xid, char *&title)
 {
+    init_atoms();
+
     XTextProperty xtp;
     title = 0;
     int ret=0;
