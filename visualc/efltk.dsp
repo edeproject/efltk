@@ -114,10 +114,6 @@ SOURCE=..\src\core\Fl_add_idle.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\widgets\Fl_Adjuster.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\widgets\Fl_Align_Group.cpp
 # End Source File
 # Begin Source File
@@ -254,6 +250,10 @@ SOURCE=..\src\core\Fl_Data_Source.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\db\Fl_Database.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\core\Fl_Date_Time.cpp
 # End Source File
 # Begin Source File
@@ -343,10 +343,6 @@ SOURCE=..\src\core\fl_glyph.cpp
 # Begin Source File
 
 SOURCE=..\src\core\Fl_Group.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\core\Fl_Hashs.cpp
 # End Source File
 # Begin Source File
 
@@ -526,6 +522,10 @@ SOURCE=..\src\widgets\Fl_Pack.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\db\Fl_Params.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\core\Fl_Pixmap.cpp
 # End Source File
 # Begin Source File
@@ -547,6 +547,10 @@ SOURCE=..\src\core\Fl_Printer.cpp
 # Begin Source File
 
 SOURCE=..\src\widgets\Fl_ProgressBar.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\db\Fl_Query.cpp
 # End Source File
 # Begin Source File
 
@@ -874,6 +878,10 @@ SOURCE=..\efltk\Fl_Data_Source.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\efltk\db\Fl_Database.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\efltk\Fl_Date_Time.h
 # End Source File
 # Begin Source File
@@ -1142,6 +1150,10 @@ SOURCE=..\efltk\Fl_Pack.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\efltk\db\Fl_Params.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\efltk\Fl_Pixmap.h
 # End Source File
 # Begin Source File
@@ -1162,10 +1174,6 @@ SOURCE=..\efltk\Fl_ProgressBar.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\efltk\Fl_Ptr_Hash.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\efltk\Fl_Ptr_List.h
 # End Source File
 # Begin Source File
@@ -1175,6 +1183,10 @@ SOURCE=..\efltk\Fl_Ptr_Stack.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_PtrList.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\db\Fl_Query.h
 # End Source File
 # Begin Source File
 
@@ -1263,10 +1275,6 @@ SOURCE=..\efltk\Fl_Socket.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_String.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\efltk\Fl_String_Hash.h
 # End Source File
 # Begin Source File
 
