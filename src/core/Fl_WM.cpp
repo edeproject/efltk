@@ -1,4 +1,5 @@
 #include <efltk/Fl_WM.h>
+#include <config.h>
 
 #ifndef _WIN32
 
@@ -351,11 +352,15 @@ bool Fl_WM::get_window_title(Window xid, char *&title)
         if(xtp.encoding == XA_STRING) {
             title = strdup((const char*)xtp.value);
         } else {
+#if HAVE_X11_UTF_TEXT_PROP
             int items; char **list=0; Status s;
             s = Xutf8TextPropertyToTextList(fl_display, &xtp, &list, &items);
             if((s == Success) && (items > 0)) title = strdup((const char *)*list);
             else title = strdup((const char *)xtp.value);
             if(list) XFreeStringList(list);
+#else
+            title = strdup((const char*)xtp.value);
+#endif
         }
         XFree(xtp.value);
     }
@@ -374,11 +379,15 @@ bool Fl_WM::get_window_icontitle(Window xid, char *&title)
         if(xtp.encoding == XA_STRING) {
             title = strdup((const char*)xtp.value);
         } else {
+#if HAVE_X11_UTF_TEXT_PROP
             int items; char **list=0; Status s;
             s = Xutf8TextPropertyToTextList(fl_display, &xtp, &list, &items);
             if((s == Success) && (items > 0)) title = strdup((const char *)*list);
             else title = strdup((const char *)xtp.value);
             if(list) XFreeStringList(list);
+#else
+            title = strdup((const char*)xtp.value);
+#endif
         }
         XFree(xtp.value);
     }
