@@ -3,8 +3,8 @@
 #include <efltk/Fl_Data_Source.h>
 #include <efltk/Fl_Socket.h>
 
-class Fl_FTP_Socket : public Fl_Socket {
-    Fl_String_List	m_response;
+class FL_API Fl_FTP_Socket : public Fl_Socket {
+    Fl_String_List  m_response;
 public:
     Fl_FTP_Socket();
     ~Fl_FTP_Socket();
@@ -21,13 +21,13 @@ public:
 
 class FL_API Fl_FTP_Connect {
 protected:
-    Fl_FTP_Socket		m_commandSocket;
-    Fl_FTP_Socket		m_dataSocket;
-    Fl_String			m_user;
-    Fl_String			m_password;
-    Fl_String			m_host;
-    int					m_port;
-    bool					m_passive;
+    Fl_FTP_Socket       m_commandSocket;
+    Fl_FTP_Socket       m_dataSocket;
+    Fl_String           m_user;
+    Fl_String           m_password;
+    Fl_String           m_host;
+    int                 m_port;
+    bool                    m_passive;
 protected:
     void open_data_port();
     void command(Fl_String cmd);

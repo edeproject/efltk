@@ -91,8 +91,12 @@ public: // acting as a Data Source
    virtual const Fl_Data_Field& field (int field_index) const           { return m_fields.field(field_index); }
    virtual Fl_Data_Field&       field (int field_index)                 { return m_fields.field(field_index); }
 
+   // access to the field by field name
+   virtual const Fl_Data_Field& field (const char *field_name) const    { return m_fields.field(field_name); }
+   virtual Fl_Data_Field&       field (const char *field_name)          { return m_fields.field(field_name); }
+
    // Not supported yet:
-	virtual unsigned          record_count() const;
+   virtual unsigned          record_count() const;
    virtual bool              read_field(const char *,Fl_Variant&)       { return false; }
    virtual bool              write_field(const char *,const Fl_Variant&){ return false; }
    virtual bool              load_data()                                { return false; }

@@ -25,6 +25,7 @@
 #include "Enumerations.h"
 
 typedef void* Fl_Ptr_List_Item;
+typedef int (*Fl_Foreach_Function)(void *item,void *arg);
 
 /**
  * Fl_Ptr_List is implementation of eFLTK generic pointer-list...
@@ -65,9 +66,15 @@ public:
 
     Fl_Ptr_List_Item *data() { return items; }	
 
-	// Copy
-	Fl_Ptr_List& operator = (const Fl_Ptr_List &list);
+    // Copy
+    Fl_Ptr_List& operator = (const Fl_Ptr_List &list);
     Fl_Ptr_List(const Fl_Ptr_List &list);
+
+    // Call 'todo' for every item til 'todo' returns 'true',
+    // then return item index or (-1) if 'todo' never return 'true'.
+    int for_each(Fl_Foreach_Function todo,void * arg);
+    int for_each(Fl_Foreach_Function todo,void * arg) const;
+
 
 protected:
     // Free item in list e.g.: delete (SomeClass*)(item);

@@ -45,6 +45,22 @@ int Fl_Data_Field::as_int() const {
    return 0;
 }
 
+bool Fl_Data_Field::as_bool() const {
+   char ch;
+   switch (value.type()) {
+   case VAR_INT:        return value.get_int();              break;
+   case VAR_FLOAT:      return (int)value.get_float();       break;
+   case VAR_STRING:
+   case VAR_TEXT:
+   case VAR_BUFFER:     ch = value.get_string()[0];
+                        return strchr("YyTt",ch);            break;
+   case VAR_DATETIME:   return int(value.get_date());        break;
+   case VAR_IMAGEPTR:
+   case VAR_NONE:       break;
+   }
+   return 0;
+}
+
 double Fl_Data_Field::as_float() const {
    switch (value.type()) {
    case VAR_INT:        return value.get_int();              break;
@@ -173,6 +189,28 @@ const Fl_Data_Field& Fl_Data_Fields::field(unsigned index) const {
 }
 
 Fl_Data_Field& Fl_Data_Fields::field(unsigned index) {
+   return *(Fl_Data_Field *)m_list[index];
+}
+
+const Fl_Data_Field& Fl_Data_Fields::field(int index) const {
+   return *(Fl_Data_Field *)m_list[index];
+}
+
+Fl_Data_Field& Fl_Data_Fields::field(int index) {
+   return *(Fl_Data_Field *)m_list[index];
+}
+
+const Fl_Data_Field& Fl_Data_Fields::field(const char *field_name) const {
+   int index = field_index(field_name);
+   if (index < 0) 
+      fl_throw("Invalid field name: "+Fl_String(field_name));
+   return *(Fl_Data_Field *)m_list[index];
+}
+
+Fl_Data_Field& Fl_Data_Fields::field(const char *field_name) {
+   int index = field_index(field_name);
+   if (index < 0) 
+      fl_throw("Invalid field name: "+Fl_String(field_name));
    return *(Fl_Data_Field *)m_list[index];
 }
 

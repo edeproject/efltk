@@ -169,6 +169,22 @@ Fl_Ptr_List::Fl_Ptr_List(const Fl_Ptr_List &list)
 	}	
 }
 
+int Fl_Ptr_List::for_each(Fl_Foreach_Function todo,void * arg) {
+   unsigned cnt = size();
+   for (unsigned pos = 0; pos < cnt; pos++)
+   if (todo(items[pos],arg))
+      return pos;
+   return -1;
+}
+
+int Fl_Ptr_List::for_each(Fl_Foreach_Function todo,void * arg) const {
+   unsigned cnt = size();
+   for (unsigned pos = 0; pos < cnt; pos++)
+   if (todo(items[pos],arg))
+      return pos;
+   return -1;
+}
+
 ////////////////////////////////////
 // FL_STRING_LIST IMPLEMENTATION: //
 ////////////////////////////////////
@@ -524,3 +540,4 @@ void Fl_String_Stack::check_size()
 		items.resize(max_size_);
 	}
 }
+

@@ -67,6 +67,7 @@ public:
     int as_int() const;
     double as_float() const;
     Fl_String as_string() const;
+    bool as_bool() const;
     Fl_Date_Time as_date() const;
     const Fl_Image *as_image() const;
 
@@ -89,6 +90,12 @@ public:
 
     const Fl_Data_Field& field(unsigned index) const;
     Fl_Data_Field&       field(unsigned index);
+
+    const Fl_Data_Field& field(int index) const;
+    Fl_Data_Field&       field(int index);
+
+    const Fl_Data_Field& field(const char *fname) const;
+    Fl_Data_Field&       field(const char *fname);
 
     Fl_Variant&       operator [] (int index);
     const Fl_Variant& operator [] (int index) const;
