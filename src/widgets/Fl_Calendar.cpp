@@ -70,8 +70,7 @@ void Fl_Calendar::switchButtonClicked(int monthChange) {
    date(newDate);
 }
 
-static void revert(Fl_Style* s)
-{
+static void revert(Fl_Style* s) {
     s->color = FL_GRAY;
     s->button_color = FL_GRAY;
     s->box = FL_FLAT_BOX;
@@ -83,8 +82,7 @@ static Fl_Named_Style style("Calendar", revert, &Fl_Calendar::default_style);
 Fl_Named_Style* Fl_Calendar::default_style = &::style;
 
 Fl_Calendar::Fl_Calendar(int x,int y,int w,int h,const char *lbl)
-    : Fl_Group(x,y,w,h,lbl)
-{
+    : Fl_Group(x,y,w,h,lbl) {
    style(default_style);
 
    // Header box
@@ -295,16 +293,14 @@ void Fl_Popup_Calendar::draw()
     Fl_Popup_Window::draw();
 }
 
-void Fl_Popup_Calendar::layout()
-{
-    m_calendar->resize(0,0,w(),h());
+void Fl_Popup_Calendar::layout() {
+    m_calendar->resize(box()->dx(),box()->dy(),w()-box()->dw(),h()-box()->dh());
     m_calendar->layout();
     Fl_Popup_Window::layout();
 }
 
 bool Fl_Popup_Calendar::popup() {
-   if(m_dateControl)
-   {
+   if (m_dateControl) {
       int width = m_dateControl->w();
       if (width < 175) width = 175;
       int X=0, Y=0;
@@ -312,15 +308,17 @@ bool Fl_Popup_Calendar::popup() {
           X += w->x();
           Y += w->y();
       }
-      resize(X, Y+m_dateControl->h()-1, width, 160);
+      int height = 160;
+      m_calendar->size(width,height);
+      m_calendar->measure(width,height);
+      
+      resize(X, Y+m_dateControl->h()-1, width+box()->dw(), height+box()->dh());
    }
    return Fl_Popup_Window::show_popup();
 }
 
-bool Fl_Popup_Calendar::popup(Fl_Widget *dateControl, int X, int Y, int W, int H)
-{
-   if(dateControl)
-   {
+bool Fl_Popup_Calendar::popup(Fl_Widget *dateControl, int X, int Y, int W, int H) {
+   if(dateControl) {
        int width = (W>0) ? W : dateControl->w();
        if (width < 175) width = 175;
        int height = (H>0) ? H : 175;
