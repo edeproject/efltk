@@ -16,15 +16,12 @@ Fl_Check_Button* overlaybutton;
 Fl_Window* make_widget_panel() {
   Fl_Window* w;
    {Fl_Window* o = new Fl_Window(380, 405);
-o->layout_spacing(1);
     w = o;
     o->shortcut(0xff1b);
      {Fl_Tabs* o = panel_tabs = new Fl_Tabs(0, 3, 380, 353);
-o->layout_spacing(1);
       o->color((Fl_Color)0xfffffffe);
       o->callback((Fl_Callback*)propagate_tabs);
        {Fl_Group* o = new Fl_Group(1, 24, 378, 328, _("GUI"));
-o->layout_spacing(1);
         o->callback((Fl_Callback*)propagate_group);
          {Fl_Input* o = new Fl_Input(80, 8, 176, 22, _("Class"));
           o->callback((Fl_Callback*)user_class_cb, (void*)(4));
@@ -34,7 +31,6 @@ of, rather than an fltk built-in class. You will need to add a #include declar\
 ation so that the definition of your class is included in the fluid output."));
         }
          {Fl_Choice* o = new Fl_Choice(256, 8, 109, 22); o->begin();
-o->layout_spacing(1);
           o->callback((Fl_Callback*)subtype_cb);
           o->tooltip(_("Selects a value for type() for this widget"));
           o->end();
@@ -200,7 +196,6 @@ ts from going to other windows until it is hidden or closed."));
           o->step(0.01);
         }
          {Fl_Group* o = new Fl_Group(75, 202, 300, 40, _("Attributes"));
-o->layout_spacing(1);
           o->callback((Fl_Callback*)propagate_group);
           o->align(FL_ALIGN_LEFT);
            {Fl_Check_Button* o = new Fl_Check_Button(0, 0, 145, 20, _("Resizable"));
@@ -259,7 +254,6 @@ rtcut-setting mode:\n   Click the mouse on this again, or on some other field.")
           o->tooltip(_("Scale image"));
         }
          {Fl_Choice* o = new Fl_Choice(80, 101, 175, 22, _("Layout")); o->begin();
-o->layout_spacing(1);
           o->callback((Fl_Callback*)layoutalign_cb);
           o->tooltip(_("Change the layout align"));
           o->end();
@@ -274,11 +268,9 @@ o->layout_spacing(1);
         o->end();
       }
        {Fl_Group* o = new Fl_Group(1, 24, 378, 328, _("Style"));
-o->layout_spacing(1);
         o->callback((Fl_Callback*)propagate_group);
         o->hide();
          {Fl_Choice* o = new Fl_Choice(100, 10, 250, 23, _("box")); o->begin();
-o->layout_spacing(1);
           o->callback((Fl_Callback*)box_cb);
           o->tooltip(_("Type of box to draw around the widget."));
           o->end();
@@ -297,7 +289,6 @@ eft chip in the color chooser) to disable highlighting."));
           o->type(0);
         }
          {Fl_Choice* o = new Fl_Choice(100, 63, 250, 23, _("Button box")); o->begin();
-o->layout_spacing(1);
           o->callback((Fl_Callback*)button_box_cb);
           o->tooltip(_("Type of box to draw around buttons that are in the widget."));
           o->end();
@@ -316,19 +307,16 @@ o->layout_spacing(1);
           o->type(0);
         }
          {Fl_Choice* o = new Fl_Choice(100, 117, 250, 22, _("Focus box")); o->begin();
-o->layout_spacing(1);
           o->callback((Fl_Callback*)focus_box_cb);
           o->tooltip(_("Type of box to draw around widget that are focused"));
           o->end();
         }
          {Fl_Choice* o = new Fl_Choice(100, 147, 250, 23, _("Label Type")); o->begin();
-o->layout_spacing(1);
           o->callback((Fl_Callback*)label_type_cb);
           o->tooltip(_("How to draw the label"));
           o->end();
         }
          {Fl_Choice* o = new Fl_Choice(100, 170, 190, 23, _("Label Font")); o->begin();
-o->layout_spacing(1);
           o->callback((Fl_Callback*)label_font_cb);
           o->tooltip(_("Font to use for the label"));
           o->end();
@@ -355,7 +343,6 @@ black top-left chip in the color chooser) to leave the label colors unchanged.")
           o->type(0);
         }
          {Fl_Choice* o = new Fl_Choice(100, 227, 190, 23, _("Text Font")); o->begin();
-o->layout_spacing(1);
           o->callback((Fl_Callback*)text_font_cb);
           o->tooltip(_("Font to use for text displayed inside the widget"));
           o->end();
@@ -391,7 +378,6 @@ o->layout_spacing(1);
         o->end();
       }
        {Fl_Group* o = new Fl_Group(1, 24, 378, 328, _("C++"));
-o->layout_spacing(1);
         o->callback((Fl_Callback*)propagate_group);
         o->hide();
          {Fl_Input* o = new Fl_Input(90, 8, 200, 22, _("Name"));
@@ -423,7 +409,6 @@ ints at the widget."));
 e given below."));
         }
          {Fl_Choice* o = new Fl_Choice(275, 271, 90, 22, _("When")); o->begin();
-o->layout_spacing(1);
           o->callback((Fl_Callback*)when_cb);
           o->when(FL_WHEN_NEVER);
           o->tooltip(_("What actions cause the callback to be called."));
@@ -444,7 +429,6 @@ o->layout_spacing(1);
       o->end();
     }
      {Fl_Group* o = new Fl_Group(0, 373, 380, 32);
-o->layout_spacing(1);
        {Fl_Check_Button* o = overlaybutton = new Fl_Check_Button(5, 5, 230, 22, _("&Overlays"));
         o->callback((Fl_Callback*)overlay_cb);
         o->tooltip(_("Turns the overlays (red outlines) off so you can see the edges better."));
@@ -466,6 +450,7 @@ o->layout_spacing(1);
     o->window_type(Fl_WM::UTIL);
     o->size_range(o->w(), o->h());
     o->end();
+    o->resizable(o);
   }
   return w;
 }

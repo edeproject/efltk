@@ -1918,9 +1918,9 @@ void Fl_Widget_Type::write_code1()
     
 	if (o->layout_align())
         write_c("o->layout_align(%s);\n", number_to_text(o->layout_align(), layoutalignmenu));
-
+	
 	Fl_Group *g = o->is_group() ? (Fl_Group*)o : 0;
-	if(g && g->layout_spacing())
+	if(g && g->layout_spacing()!=1)
         write_c("o->layout_spacing(%d);\n", g->layout_spacing());
     
 	if (this == last_group) write_c("%sw = o;\n",indent());
@@ -2173,7 +2173,7 @@ void Fl_Widget_Type::write_properties()
         write_string("layout_align %s", number_to_text(o->layout_align(), layoutalignmenu));
 
 	Fl_Group *g = o->is_group() ? (Fl_Group*)o : 0;
-    if(g && g->layout_spacing())
+    if(g && g->layout_spacing()!=1)
         write_string("layout_spacing %d", g->layout_spacing());
 		
     if (o->when() != tplate->when())
