@@ -253,8 +253,9 @@ void Fl_ODBC_Database::prepare_query(Fl_Query *query) {
  */
 
 void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
-    int                 rc;
-    //SQLINTEGER        cbLen;
+    int               rc;
+    SQLINTEGER        cbNullData = SQL_NULL_DATA;
+    SQLINTEGER       *pcbLen;
 
     SQLHSTMT    statement = (SQLHSTMT)query_handle(query);
     Fl_Params&  params = query->params();
@@ -268,7 +269,7 @@ void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
             long  len = 0;
             short paramNumber = short(param->bind_index(j) + 1);
             short parameterMode = SQL_PARAM_INPUT;
-            //cbLen = param->size();
+            pcbLen = NULL;
             switch (param->type()) {
                 case VAR_INT: 
                     paramType = SQL_C_SLONG;
@@ -308,9 +309,7 @@ void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
                         if (dt) {
                             dt.decode_date((short *)&t->year,(short *)&t->month,(short *)&t->day);
                         } else {
-                            paramType = SQL_C_CHAR;
-                            sqlType   = SQL_CHAR;
-                            *(char *)buff = 0;
+                            pcbLen = &cbNullData;
                         }
                     }
                     break;
@@ -328,22 +327,19 @@ void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
                             dt.decode_time((short *)&t->hour,(short *)&t->minute,(short *)&t->second,&ms);
                             t->fraction = 0;
                         } else {
-                            paramType = SQL_C_CHAR;
-                            sqlType   = SQL_CHAR;
-                            *(char *)buff = 0;
+                            pcbLen = &cbNullData;
                         }
                     }
                     break;
                 default:
                     fl_throw("Unknown type of parameter " + Fl_String(paramNumber));
             }
-            //param->m_cbValue = len;
-            //SQLINTEGER cbLen = len;
-            if (!buff) {
+            if (param->is_null()) {
+                pcbLen = &cbNullData;
                 len = 0;
                 scale = 0;
             }
-            rc = SQLBindParameter(statement,paramNumber,parameterMode,paramType,sqlType,len,scale,buff,short(len),NULL);
+            rc = SQLBindParameter(statement,paramNumber,parameterMode,paramType,sqlType,len,scale,buff,short(len),pcbLen);
             if (rc != 0)
                 fl_throw("Can't bind parameter " + Fl_String(paramNumber) + ": " + query_error(query));
         }
