@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x4003e6
+# %FirstUniqueId:	0x4003e9
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -805,6 +805,16 @@ test/date_time_widgets ::	test/date_time_widgets.o
 # %IncDir:	test
 # %ObjsDir:	test
 test/masked_input ::	test/maskedinput.o
+	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+# %UniqueId:	0x4003e6
+# %TargetType:	C_EXE
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	test
+# %IncDir:	test
+# %ObjsDir:	test
+test/input ::	test/input.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %ObjectFilesLinking
@@ -2681,6 +2691,13 @@ test/date_time_widgets.o : test/date_time_widgets.cpp
 # %ParentTarget:	0x4003e4
 # %SourceTarget:	0x4003e5
 test/maskedinput.o : test/maskedinput.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x4003e6
+# %SourceTarget:	0x4003e7
+test/input.o : test/input.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
@@ -10588,6 +10605,37 @@ test/maskedinput.o :	efltk/Fl_Date_Time_Input.h\
 	efltk/Fl_Input.h\
 	efltk/Fl_Window.h\
 	efltk/Fl.h
+test/input.o :	efltk/fl_show_colormap.h\
+	efltk/Fl_Toggle_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Wordwrap_Input.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Secret_Input.h\
+	efltk/Fl_Int_Input.h\
+	efltk/Fl_Float_Input.h\
+	efltk/Fl_Numeric_Input.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl.h
 
 
 # %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x6
@@ -10985,8 +11033,8 @@ test/maskedinput.o :	efltk/Fl_Date_Time_Input.h\
 # %TargetInfo efltk/Fl_Item.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400152,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Color_Chooser.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400153,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Value_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400154,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Float_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400155,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Numeric_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400156,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Float_Input.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400155,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Numeric_Input.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400156,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Input.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400157,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Masked_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400158,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Date_Time_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400159,	TargetType=INC,	IDEFlags=0xe
@@ -11120,6 +11168,8 @@ test/maskedinput.o :	efltk/Fl_Date_Time_Input.h\
 # %TargetInfo efltk/xml/Fl_XmlCtx.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d1,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Check_Buttons.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d2,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Radio_Buttons.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4003d3,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo test/input.cpp	SourceOrHeader,	UniqueId=0x4003e7,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo efltk/Fl_Int_Input.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4003e8,	TargetType=INC,	IDEFlags=0xe
 
 
 # %UniqueId:	0x400001
@@ -11179,6 +11229,7 @@ test/maskedinput.o :	efltk/Fl_Date_Time_Input.h\
 #	0x400370
 #	0x400384
 #	0x400382
+#	0x4003e6
 #	0x4003da
 #	0x4003dc
 #	0x400380
