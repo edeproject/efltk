@@ -19,7 +19,7 @@ public:
     Fl_Image **data() { return (Fl_Image**)items; }
 
     Fl_Image *item(uint index) const { return (Fl_Image*)Fl_Ptr_List::item(index); }
-    Fl_Image &operator [](uint ind) const { return *((Fl_Image *)items[ind]); }
+    Fl_Image *operator [](uint ind) const { return (Fl_Image *)items[ind]; }
 
 protected:
     void free_item(Fl_Image *item) { delete (Fl_Image*)(item); }
