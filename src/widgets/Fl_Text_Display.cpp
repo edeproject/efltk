@@ -2300,6 +2300,9 @@ int Fl_Text_Display::measure_vline( int visLineNum )
 
     int last_style = -1, style = -1;
 
+    Fl_Font font = text_font();
+    int size = text_size();
+
     for(i = 0; i < lineLen; i++ )
     {
         charlen = mBuffer->expand_character( lineStartPos + i,
@@ -2308,20 +2311,18 @@ int Fl_Text_Display::measure_vline( int visLineNum )
         if(mStyleBuffer) {
             style = ( unsigned char ) mStyleBuffer->character(lineStartPos + i) - 'A';
             if(last_style==-1) last_style=style;
+            font = mStyleTable[ style ].font;
+            size = mStyleTable[ style ].size;
         }
 
-        Fl_Font font = mStyleTable[ style ].font;
-        int size = mStyleTable[ style ].size;
-
-        if(style!=last_style && (font!=fl_font() || size!=int(fl_size())) ) {
+        if(mStyleBuffer && style!=last_style && (font!=fl_font() || size!=int(fl_size())) ) {
             fl_font(font, size);
             width += int(fl_width( buffer, bufpos ));
             bufpos = 0;
         }
 
         if( unsigned(bufpos+charlen) >= sizeof(buffer)) {
-            if(mStyleBuffer) fl_font( mStyleTable[ style ].font, mStyleTable[ style ].size );
-            else fl_font( text_font(), text_size() );
+            fl_font(font, size);
             width += int(fl_width( buffer, bufpos ));
             bufpos = 0;
         }
@@ -2336,8 +2337,7 @@ int Fl_Text_Display::measure_vline( int visLineNum )
     }
 
     if(bufpos) {
-        if(mStyleBuffer) fl_font( mStyleTable[ style ].font, mStyleTable[ style ].size );
-        else fl_font( text_font(), text_size() );
+        fl_font(font, size);
         width += int(fl_width( buffer, bufpos ));
     }
     return width;
