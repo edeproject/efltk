@@ -62,7 +62,13 @@ void Fl_Buffer::set(const Fl_Buffer& buffer) {
 }
 
 void Fl_Buffer::set(const Fl_String& str) {
-    set(str.c_str(),str.length() + 1);
+    set(str.c_str(), str.length());
+}
+
+void Fl_Buffer::append(char ch) {
+    check_size(m_bytes + 1);
+    m_buffer[m_bytes] = ch;
+    m_bytes++;
 }
 
 void Fl_Buffer::append(const char *data,unsigned sz) {
@@ -79,11 +85,11 @@ void Fl_Buffer::append(const Fl_Buffer& buffer) {
 }
 
 void Fl_Buffer::append(const Fl_String& str) {
-    append(str.c_str(),str.length() + 1);
+    append(str.c_str(), str.length());
 }
 
 void Fl_Buffer::fill(char c) {
-    memset(m_buffer,c,m_size);
+    memset(m_buffer, c,m_size);
 }
 
 void Fl_Buffer::reset() {
@@ -92,31 +98,41 @@ void Fl_Buffer::reset() {
     m_bytes = 0;
 }
 
-void Fl_Buffer::read_file(Fl_String fileName) {
-    FILE *f = fopen(fileName.c_str(),"rb");
-    if (!f)
-        fl_throw("Can't open file <" + fileName + "> for reading");
+void Fl_Buffer::read_file(const char *fileName) 
+{
+    FILE *f = fopen(fileName, "rb");
+    if (!f) {
+        fl_throw("Can't open file <" + Fl_String(fileName) + "> for reading");
+		return;
+	}
     fseek(f,0,SEEK_END);
-    int fileLength = ftell(f);
+    unsigned fileLength = ftell(f);
     fseek(f,0,SEEK_SET);
     bytes(fileLength);
     char *ptr = m_buffer;
-    for (int p = 0; p < fileLength; p += 1024) {
-        fread(ptr,1,1024,f);
-    }
+	unsigned p=0;
+	while(p < fileLength) {
+		p += fread( (ptr+p), 1, 1024, f);
+	}
     fclose(f);
 }
 
-void Fl_Buffer::save_file(Fl_String fileName) {
-    FILE *f = fopen(fileName.c_str(),"w+b");
-    if (!f)
-        fl_throw("Can't open file <" + fileName + "> for writing");
+void Fl_Buffer::save_file(const char *fileName) 
+{
+    FILE *f = fopen(fileName, "w+b");
+    if (!f) {
+        fl_throw("Can't open file <" + Fl_String(fileName) + "> for writing");
+		return;
+	}
+
     char *ptr = m_buffer;
-    for (unsigned p = 0; p < m_bytes; p += 1024) {
+	unsigned p = 0;
+    while(p < m_bytes) 
+	{
         int bytes = m_bytes - p;
         if (bytes > 1024)
             bytes = 1024;
-        fwrite(ptr,1,bytes,f);
+        p += fwrite(ptr,1,bytes,f);
     }
     fclose(f);
 }
