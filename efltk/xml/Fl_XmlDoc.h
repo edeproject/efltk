@@ -40,7 +40,7 @@ public:
     void dtd_location(Fl_String s) { dtds[1] = s; }
 
     // URI where dtd file is found
-    Fl_String &doc_uri() { return dtds[2]; }
+    Fl_String &dtd_uri() { return dtds[2]; }
     void dtd_uri(Fl_String s) { dtds[2] = s; }
 
     // Returns pointer to root node
