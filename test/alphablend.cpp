@@ -209,6 +209,8 @@ Fl_Image *make_bg(int w, int h)
     Fl_Image *ret = new Fl_Image(w,h,24);
 #endif
 
+    printf("BG Format:\n Rmask: 0x%08x\n Gmask: 0x%08x\n Bmask: 0x%08x\n", ret->format()->Rmask, ret->format()->Gmask, ret->format()->Bmask);
+
     // pitch = WORD alignment bits per line
     int pitch=Fl_Renderer::calc_pitch(ret->format()->bytespp, w);
     int skip = pitch - w * ret->format()->bytespp;
