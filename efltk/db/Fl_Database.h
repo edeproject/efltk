@@ -53,7 +53,7 @@ protected:
 protected:
    // These methods should be implemented in actual database class
    virtual void open_connection() = 0;
-   virtual void close_connection()                 { fl_throw("Method not implemented"); }
+   virtual void close_connection() 								 { fl_throw("close_connection() not implemented!"); }
 
 protected:
    // These methods provide access to protected data of Fl_Query
@@ -62,7 +62,6 @@ protected:
 
 public:
    Fl_Database(const Fl_String connString)         { m_inTransaction = m_active = false; }
-   virtual ~Fl_Database()                          { close(); close_connection(); }
    void open(const Fl_String connString="");
    void close();
    Fl_String connect_string() const                { return m_connString; }
