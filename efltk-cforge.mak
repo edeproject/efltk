@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x400375
+# %FirstUniqueId:	0x400377
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -499,7 +499,9 @@ test/sockets ::	test/socket.o\
 # %IncDir:	efltk
 # %ObjsDir:	lib
 lib/libefltk_net.so ::	lib/Fl_FTP_Connect.o\
-	lib/Fl_IMAP_Connect.o
+	lib/Fl_IMAP_Connect.o\
+	lib/Fl_IMAP_DS.o\
+	lib/Fl_FTP_DS.o
 	rm -f $@
 	$(LD) -shared -o $@ $^ $(LDOPTIONS)
 
@@ -510,9 +512,10 @@ lib/libefltk_net.so ::	lib/Fl_FTP_Connect.o\
 # %SrcDir:	test/net
 # %IncDir:	test/net
 # %ObjsDir:	test/net
-test/net/ftp_socket ::	test/net/ftp_socket.o\
+test/net/ftp_connect ::	test/net/ftp_connect.o\
 	test/net/Fl_Socket.o\
-	test/net/Fl_FTP_Connect.o
+	test/net/Fl_FTP_Connect.o\
+	test/net/Fl_FTP_DS.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x400345
@@ -2031,7 +2034,7 @@ test/Fl_Socket.o : src/core/Fl_Socket.cpp
 # %TargetType:	C++_OBJ
 # %ParentTarget:	0x40033f
 # %SourceTarget:	0x400340
-test/net/ftp_socket.o : test/net/ftp_socket.cpp
+test/net/ftp_connect.o : test/net/ftp_connect.cpp
 	$(CXX) -c -o $@ $< -Itest/net -Itest/net $(CXXFLAGS)
 
 
@@ -2187,6 +2190,27 @@ test/fast_slow.o : test/fast_slow.cpp
 # %SourceTarget:	0x400371
 test/file_chooser.o : test/file_chooser.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40033c
+# %SourceTarget:	0x400369
+lib/Fl_IMAP_DS.o : src/net/Fl_IMAP_DS.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40033c
+# %SourceTarget:	0x400375
+lib/Fl_FTP_DS.o : src/net/Fl_FTP_DS.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40033f
+# %SourceTarget:	0x400375
+test/net/Fl_FTP_DS.o : src/net/Fl_FTP_DS.cpp
+	$(CXX) -c -o $@ $< -Itest/net -Itest/net $(CXXFLAGS)
 
 
 # DO NOT DELETE
@@ -7012,6 +7036,16 @@ test/Fl_IMAP_DS.o :	efltk/Fl_Pixmap.h\
 	efltk/filename.h\
 	efltk/Fl_String.h\
 	efltk/Fl_Exception.h\
+	efltk/net/Fl_IMAP_DS.h\
+	efltk/net/Fl_IMAP_Connect.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Socket.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_Memory_DS.h\
+	efltk/Fl_Data_Source.h\
 	config.h
 test/exceptions.o :	efltk/Fl_Exception.h\
 	efltk/Fl_Export.h\
@@ -7119,6 +7153,100 @@ test/file_chooser.o :	efltk/Fl_FileBrowser.h\
 	efltk/Fl_Images.h\
 	efltk/Fl_Browser.h\
 	efltk/Fl_Menu_Button.h
+lib/Fl_IMAP_DS.o :	efltk/Fl_Pixmap.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/net/Fl_IMAP_DS.h\
+	efltk/net/Fl_IMAP_Connect.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Socket.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_Memory_DS.h\
+	efltk/Fl_Data_Source.h\
+	config.h
+lib/Fl_FTP_DS.o :	efltk/Fl_Pixmap.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/net/Fl_FTP_DS.h\
+	efltk/net/Fl_FTP_Connect.h\
+	efltk/Fl_Socket.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Memory_DS.h\
+	config.h
+test/net/Fl_FTP_DS.o :	efltk/Fl_Pixmap.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/net/Fl_FTP_DS.h\
+	efltk/net/Fl_FTP_Connect.h\
+	efltk/Fl_Socket.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Memory_DS.h\
+	config.h
+test/net/ftp_connect.o :	efltk/net/Fl_FTP_DS.h\
+	efltk/net/Fl_FTP_Connect.h\
+	efltk/Fl_Socket.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Memory_DS.h
 
 
 # %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x4
@@ -7320,7 +7448,7 @@ test/file_chooser.o :	efltk/Fl_FileBrowser.h\
 # %TargetInfo src/db/Fl_Query.cpp	SourceOrHeader,	UniqueId=0x400334,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_Socket.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400342,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/socket.cpp	SourceOrHeader,	UniqueId=0x40033b,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/net/ftp_socket.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400340,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/net/ftp_connect.cpp	SourceOrHeader,	UniqueId=0x400340,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/db/db_odbc.cpp	SourceOrHeader,	UniqueId=0x400346,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_Gdi.cpp	SourceOrHeader,	UniqueId=0x400347,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_PostScript.cpp	SourceOrHeader,	UniqueId=0x40034b,	TargetType=C++,	IDEFlags=0x4
@@ -7329,7 +7457,7 @@ test/file_chooser.o :	efltk/Fl_FileBrowser.h\
 # %TargetInfo test/dialog.cpp	SourceOrHeader,	UniqueId=0x400351,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/directory.cpp	SourceOrHeader,	UniqueId=0x400353,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/doublebuffer.cpp	SourceOrHeader,	UniqueId=0x400355,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/net/Fl_FTP_Connect.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400356,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/net/Fl_FTP_Connect.cpp	SourceOrHeader,	UniqueId=0x400356,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/multitabs2.cpp	SourceOrHeader,	UniqueId=0x40035b,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/multitabs1.cpp	SourceOrHeader,	UniqueId=0x400362,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/net/Fl_IMAP_Connect.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400363,	TargetType=C++,	IDEFlags=0x4
@@ -7572,6 +7700,8 @@ test/file_chooser.o :	efltk/Fl_FileBrowser.h\
 # %TargetInfo efltk/Fl_Images.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400372,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo test/net/file_small.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x400373,	TargetType=XPM,	IDEFlags=0xe
 # %TargetInfo test/net/folder_small.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x400374,	TargetType=XPM,	IDEFlags=0xe
+# %TargetInfo src/net/Fl_FTP_DS.cpp	SourceOrHeader,	UniqueId=0x400375,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo efltk/net/Fl_FTP_DS.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400376,	TargetType=INC,	IDEFlags=0xe
 
 
 # %UniqueId:	0x400001
