@@ -38,11 +38,13 @@ static bool xpm_is_valid_xpm(const uint8 **stream)
     return true;
 }
 
-static char *xpm_gets(Fl_IO &xpm_io, char *string, int maxlen)
+static char *xpm_gets(Fl_IO *xpm_io, char *string, int maxlen)
 {
+    if(!xpm_io) return 0;
+
     int i;
     for ( i=0; i<(maxlen-1); ++i ) {
-        if(xpm_io.read(&string[i], 1) <= 0 )
+        if(xpm_io->read(&string[i], 1) <= 0 )
         {
             /* EOF or error */
             if(i == 0) {
@@ -80,14 +82,9 @@ struct color_hash {
     int maxnum;
 };
 
-static int hash_key(const char *key, int cpp, int size)
-{
-    int hash;
-
-    hash = 0;
-    while ( cpp-- > 0 ) {
-        hash = hash * 33 + *key++;
-    }
+static int hash_key(const char *key, int cpp, int size) {
+    int hash = 0;
+    while ( cpp-- > 0 ) hash = hash * 33 + *key++;
     return hash & (size - 1);
 }
 
@@ -132,13 +129,11 @@ static int add_colorhash(struct color_hash *hash,
     return 1;
 }
 
-/* fast lookup that works if cpp == 1 */
-/* Or maybe not... */
-#define QUICK_COLORHASH(hash, key) ((hash)->table[*(uint8 *)(key)]->color)
-
 static uint32 get_colorhash(struct color_hash *hash, const char *key, int cpp)
 {
-    struct hash_entry *entry = hash->table[hash_key(key, cpp, hash->size)];
+    struct hash_entry *entry;
+    if(cpp==1) entry = hash->table[*(uint8 *)(key)];
+    else entry = hash->table[hash_key(key, cpp, hash->size)];
     while(entry) {
         if(memcmp(key, entry->key, cpp) == 0)
             return entry->color;
@@ -183,13 +178,13 @@ static int color_to_rgb(char *spec, uint32 *rgb)
 #else
     /* poor man's rgb.txt */
     static struct { char *name; uint32 rgb; } known[] = {
-        {"none",  0xffffffff},
-        {"background",  0xffffffff},
-        {"black", 0x00000000},
-        {"white", 0x00ffffff},
-        {"red",   0x00ff0000},
-        {"green", 0x0000ff00},
-        {"blue",  0x000000ff}
+        { "none",  0xffffffff },
+        { "background",  0xffffffff },
+        { "black", 0x00000000 },
+        { "white", 0x00ffffff },
+        { "red",   0x00ff0000 },
+        { "green", 0x0000ff00 },
+        { "blue",  0x000000ff }
     };
 
     if(spec[0] == '#') {
@@ -217,8 +212,7 @@ static int color_to_rgb(char *spec, uint32 *rgb)
         *rgb = strtol(buf, NULL, 16);
         return 1;
     } else {
-        int i;
-        for(i = 0; i < ARRAYSIZE(known); i++)
+        for(int i = 0; i < ARRAYSIZE(known); i++)
             if(strcmp(known[i].name, spec)) {
                 *rgb = known[i].rgb;
                 return 1;
@@ -228,17 +222,13 @@ static int color_to_rgb(char *spec, uint32 *rgb)
 #endif
 }
 
-static char *skipspace(char *p)
-{
-    while(isspace((unsigned char)*p))
-        ++p;
+static char *skipspace(char *p) {
+    while(isspace((unsigned char)*p)) ++p;
     return p;
 }
 
-static char *skipnonspace(char *p)
-{
-    while(!isspace((unsigned char)*p) && *p)
-        ++p;
+static char *skipnonspace(char *p) {
+    while(!isspace((unsigned char)*p) && *p) ++p;
     return p;
 }
 
@@ -246,53 +236,11 @@ static char *skipnonspace(char *p)
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #endif
 
-#define BUILD_BLOCK_SIZE 256
-
-// This is somewhat STUPID :)) but i do this anyway,
-// Convert static xpm array to char buffer what looks like a file :)
-static char *build_xpm(char **stream, uint32 &size)
-{
-    // <width> <height> <ncolors> <cpp> [ <hotspot_x> <hotspot_y> ]
-    char *check = (char *)stream[0];
-    int w, h, ncol, cpp;
-    if(sscanf(check, "%d %d %d %d", &w, &h, &ncol, &cpp) != 4) {
-        return 0;
-    }
-    int lines=ncol+h;
-
-    char head[] = "{\n";
-    size=2;
-    uint bufsize = BUILD_BLOCK_SIZE;
-    char *buf = (char*)malloc(bufsize*sizeof(char));
-    memcpy(buf, head, size);
-
-    int curline=0;
-    char *line=0;
-    while(curline++<=lines) {
-        line=*stream++;
-        int pos=size;
-        int linesize = strlen(line);
-        size+=linesize+4;
-        if(size>bufsize) {
-            bufsize += BUILD_BLOCK_SIZE;
-            buf=(char *)realloc(buf, bufsize*sizeof(char));
-        }
-        char *ptr = buf+pos;
-        *ptr++ = '\"';
-        int c=0;
-        while((c=*line++)) {
-            *ptr++ = c;
-        }
-        strncpy(ptr, "\",\n", 3);
-    }
-    strncpy(buf+size-2, "\n}\0", 3);
-    return buf;
-}
-
 /* Load a XPM type image from stream */
-static bool xpm_create(Fl_IO &xpm_io, uint8 *&data, Fl_PixelFormat &fmt, int &w, int &h)
+static bool xpm_create(Fl_IO *xpm_io, uint8 *&data, Fl_PixelFormat &fmt, int &w, int &h, const char **stream)
 {
-    char line[1024];
+    bool mem = (stream!=0);
+    char line[4096];
     char *here;
     int index;
     int x, y;
@@ -307,14 +255,18 @@ static bool xpm_create(Fl_IO &xpm_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
     char *error = NULL;
 
     /* Skip to the first string, which describes the image */
-    do {
-        here = xpm_gets(xpm_io, line, sizeof(line));
-        if ( !here ) {
-            fl_throw("XPM: Premature end of data 1");
-            return 0; //just in case..
-        }
-        here = skipspace(here);
-    } while(*here != '"');
+    if(mem) {
+        here = (char *)stream[0];
+    } else {
+        do {
+            here = xpm_gets(xpm_io, line, sizeof(line));
+            if ( !here ) {
+                fl_throw("XPM: Premature end of data 1");
+                return 0; //just in case..
+            }
+            here = skipspace(here);
+        } while(*here != '"');
+    }
     /*
      * The header string of an XPMv3 image has the format
      *
@@ -324,7 +276,8 @@ static bool xpm_create(Fl_IO &xpm_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
      * Right now we don't use the hotspots but it should be handled
      * one day.
      */
-    if(sscanf(here + 1, "%d %d %d %d", &w, &h, &ncolors, &cpp) != 4
+    int offset = mem ? 0 : 1;
+    if(sscanf(here + offset, "%d %d %d %d", &w, &h, &ncolors, &cpp) != 4
        || w <= 0 || h <= 0 || ncolors <= 0 || cpp <= 0) {
         fl_throw("XPM: Invalid format description");
         return 0; //just in case..
@@ -354,24 +307,30 @@ static bool xpm_create(Fl_IO &xpm_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
 
     /* Read the colors */
     colors = create_colorhash(ncolors);
-    if ( !colors ) {
+    if(!colors) {
         error = "XPM: Out of memory";
         goto done;
     }
-    for(index = 0; index < ncolors; ++index ) {
+
+    for(index = 0; index < ncolors; ++index )
+    {
         char *key;
         int len;
 
-        do {
-            here = xpm_gets(xpm_io, line, sizeof(line));
-            if(!here) {
-                error = "XPM: Premature end of data 2";
-                goto done;
-            }
-            here = skipspace(here);
-        } while(*here != '"');
-
-        ++here;
+        if(mem) {
+            strncpy(line, stream[index+1], sizeof(line));
+            here = line;
+        } else {
+            do {
+                here = xpm_gets(xpm_io, line, sizeof(line));
+                if(!here) {
+                    error = "XPM: Premature end of data 2";
+                    goto done;
+                }
+                here = skipspace(here);
+            } while(*here != '"');
+            ++here;
+        }
         len = strlen(here);
         if(len < cpp + 7)
             continue;	/* cannot be a valid line */
@@ -392,13 +351,18 @@ static bool xpm_create(Fl_IO &xpm_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
             here = skipnonspace(here);
             here = skipspace(here);
             colname = here;
-            while(*here && !isspace((unsigned char)*here)
-                  && *here != '"')
-                here++;
-            if(!*here) {
-                error = "XPM: Color parse error";
-                goto done;
+            if(mem) {
+                while(*here && !isspace((unsigned char)*here))
+                    here++;
+            } else {
+                while(*here && !isspace((unsigned char)*here) && *here != '"')
+                    here++;
+                if(!*here) {
+                    error = "XPM: Color parse error";
+                    goto done;
+                }
             }
+
             if(nametype == 's')
                 continue;      /* skip symbolic colour names */
 
@@ -432,56 +396,55 @@ static bool xpm_create(Fl_IO &xpm_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
     }
 
     /* Read the pixels */
-    pixels_len = w * cpp;
-    pixels = (char *)malloc(MAX(pixels_len + 5, 20));
-    if(!pixels) {
-        error = "XPM: Out of memory";
-        goto done;
+    if(!mem) {
+        pixels_len = w * cpp;
+        pixels = (char *)malloc(MAX(pixels_len + 5, 20));
+        if(!pixels) {
+            error = "XPM: Out of memory";
+            goto done;
+        }
     }
+
     dst = data;
     for (y = 0; y < h; ) {
         char *s;
-        char c;
-        do {
-            if(xpm_io.read(&c, 1) <= 0)
-            {
-                error = "XPM: Premature end of data 3";
-                goto done;
-            }
-        } while(c == ' ');
-        if(c != '"') {
-            /* comment or empty line, skip it */
-            while(c != '\n' && c != '\r') {
-                if(xpm_io.read(&c, 1) <= 0) {
-                    error = "XPM: Premature end of data 4";
+        if(!mem) {
+
+            // Read line of pixels
+            char c;
+            do {
+                if(xpm_io->read(&c, 1) <= 0) {
+                    error = "XPM: Premature end of data 3";
                     goto done;
                 }
+            } while(c == ' ');
+            if(c != '"') {
+                /* comment or empty line, skip it */
+                while(c != '\n' && c != '\r') {
+                    if(xpm_io->read(&c, 1) <= 0) {
+                        error = "XPM: Premature end of data 4";
+                        goto done;
+                    }
+                }
+                continue;
             }
-            continue;
+            if(xpm_io->read(pixels, pixels_len + 3) <= 0) {
+                error = "XPM: Premature end of data 5";
+                goto done;
+            }
+
+        } else {
+            // From static table.
+            pixels = (char*)stream[y+ncolors+1];
         }
-        if(xpm_io.read(pixels, pixels_len + 3) <= 0) {
-            error = "XPM: Premature end of data 5";
-            goto done;
-        }
+
         s = pixels;
         if(indexed) {
-#if 0
-            /* optimization for some common cases - DOESNT WORK */
-            if(cpp == 1)
-                for(x = 0; x < w; x++)
-                    dst[x] = QUICK_COLORHASH(colors,
-                                             s + x);
-            else
-#endif
-                for(x = 0; x < w; x++)
-                    dst[x] = get_colorhash(colors,
-                                           s + x * cpp,
-                                           cpp);
+            for(x = 0; x < w; x++)
+                dst[x] = get_colorhash(colors, s + x * cpp, cpp);
         } else {
             for (x = 0; x < w; x++)
-                ((uint32*)dst)[x] = get_colorhash(colors,
-                                                  s + x * cpp,
-                                                  cpp);
+                ((uint32*)dst)[x] = get_colorhash(colors, s + x * cpp, cpp);
         }
         dst += pitch;
         y++;
@@ -493,7 +456,7 @@ done:
         data = 0;
         fl_throw(error);
     }
-    free(pixels);
+    if(!mem) free(pixels);
     free(keystrings);
     free_colorhash(colors);
 
@@ -504,21 +467,12 @@ static bool xpm_read_file(FILE *fp, int quality, uint8 *&data, Fl_PixelFormat &f
 {
     Fl_IO xpm_io;
     xpm_io.init_io(fp, 0, 0);
-    return xpm_create(xpm_io, data, format, w, h);
+    return xpm_create(&xpm_io, data, format, w, h, 0);
 }
 
 static bool xpm_read_mem(uint8 *stream, uint32 size, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h)
 {
-    char *file_buffer=0;
-    file_buffer = build_xpm((char **)stream, size);
-    if(!file_buffer) return false;
-
-    Fl_IO xpm_io;
-    xpm_io.init_io(0, (uint8*)file_buffer, size);
-    bool ret = xpm_create(xpm_io, data, format, w, h);
-
-    free((char*)file_buffer);
-    return ret;
+    return xpm_create(0, data, format, w, h, (const char**)stream);
 }
 
 Fl_Image_IO xpm_reader =

@@ -1,4 +1,5 @@
 #include <efltk/Fl_Help_Dialog.h>
+#include <efltk/Fl_Pixmap.h>
 
 #include "../core/fl_internal.h"
 
@@ -28,6 +29,8 @@ static const char *datas_open[] = {
   "++$##@#@#@@@@+  ",
   "+$##@#@#@@@@+   ",
   "+++++++++++++   "};
+
+static Fl_Pixmap open_pix(datas_open);
 
 static bool no_prevpush = false;
 
@@ -174,7 +177,7 @@ void Fl_Help_Dialog::make_group(int w, int h)
         Fl_Button *b;
 
         b = new Fl_Highlight_Button(5, 2, 30, 25);
-        b->image(Fl_Image::read_xpm(0, datas_open));
+        b->image(&open_pix);
         //b->box(FL_HIGHLIGHT_UP_BOX);
         b->callback((Fl_Callback*)cb_open, this);
         b->tooltip(_("Open"));

@@ -23,7 +23,25 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
-// OBSOLETE FILE!
+#include <efltk/Fl_Pixmap.h>
+#include <efltk/fl_draw.h>
+
+void Fl_Pixmap::measure(int &w, int &h)
+{
+    if(!fl_measure_pixmap(data, w, h)) {
+        w = h = 0;
+    }
+}
+
+void Fl_Pixmap::draw(int dx, int dy, int dw, int dh,
+                     int sx, int sy, int sw, int sh,
+                     Fl_Flags f)
+{
+    if(!id) {
+        read_image(0, data);
+    }
+    Fl_Image::draw(dx, dy, dw, dh, sx, sy, sw, sh, f);
+}
 
 //
 // End of "$Id$".

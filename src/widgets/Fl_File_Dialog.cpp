@@ -2,6 +2,7 @@
 
 #include <efltk/Fl_File_Dialog.h>
 #include <efltk/Fl_Divider.h>
+#include <efltk/Fl_Pixmap.h>
 #include <efltk/Fl_Item.h>
 #include <efltk/vsnprintf.h>
 #include <efltk/fl_ask.h>
@@ -34,17 +35,17 @@
 
 #include "Pixmaps.h"
 
-static Fl_Image home_pix(datas_home);
-static Fl_Image new_pix(datas_new);
-static Fl_Image up_pix(datas_up);
-static Fl_Image refresh_pix(datas_refresh);
+static Fl_Pixmap home_pix(datas_home);
+static Fl_Pixmap new_pix(datas_new);
+static Fl_Pixmap up_pix(datas_up);
+static Fl_Pixmap refresh_pix(datas_refresh);
 
-static Fl_Image file_pix(datas_file);
-static Fl_Image fold_pix(datas_filefolder);
+static Fl_Pixmap file_pix(datas_file);
+static Fl_Pixmap fold_pix(datas_filefolder);
 #ifdef _WIN32
-static Fl_Image cd_pix(datas_cd);
-static Fl_Image flop_pix(datas_floppy);
-static Fl_Image hd_pix(datas_harddisk);
+static Fl_Pixmap cd_pix(datas_cd);
+static Fl_Pixmap flop_pix(datas_floppy);
+static Fl_Pixmap hd_pix(datas_harddisk);
 #endif
 
 ////////////////////////////

@@ -37,7 +37,7 @@
 #include <efltk/Fl_Window.h>
 #include <efltk/Fl_Input.h>
 #include <efltk/Fl_Secret_Input.h>
-#include <efltk/Fl_Image.h>
+#include <efltk/Fl_Pixmap.h>
 #include <efltk/vsnprintf.h>
 
 #include "../core/fl_internal.h"
@@ -123,8 +123,8 @@ static const char* const warning_xpm[]={
 "....bbbbbbbbbbbbbbbbbbbbbbbbbbb.",
 ".....bbbbbbbbbbbbbbbbbbbbbbbbb.."};
 
-static Fl_Image information_pix = *Fl_Image::read_xpm(0, (const char **)information_xpm);
-static Fl_Image warning_pix = *Fl_Image::read_xpm(0, (const char **)warning_xpm);
+static Fl_Pixmap information_pix((const char **)information_xpm);
+static Fl_Pixmap warning_pix((const char **)warning_xpm);
 
 static void m_revert(Fl_Style* s)
 {
