@@ -225,7 +225,7 @@ void make_listview()
     w->begin();
 
     Fl_ListView *l = new Fl_ListView(10,20,280,240, "LV: Normal items (FL_WHEN_RELEASE)");
-    l->when(FL_WHEN_RELEASE);
+    l->when(FL_WHEN_CHANGED|FL_WHEN_RELEASE);
     //l->color(FL_GRAY);
     //l->header()->hide();
     //l->header()->h(30);
