@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x400358
+# %FirstUniqueId:	0x400363
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -563,6 +563,26 @@ test/directory ::	test/directory.o
 # %IncDir:	test
 # %ObjsDir:	test
 test/doublebuffer ::	test/doublebuffer.o
+	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+# %UniqueId:	0x40035a
+# %TargetType:	C++_EXE
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	test
+# %IncDir:	test
+# %ObjsDir:	test
+test/multitabs2 ::	test/multitabs2.o
+	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+# %UniqueId:	0x400361
+# %TargetType:	C++_EXE
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	test
+# %IncDir:	test
+# %ObjsDir:	test
+test/multitabs1 ::	test/multitabs1.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %ObjectFilesLinking
@@ -2069,6 +2089,20 @@ test/doublebuffer.o : test/doublebuffer.cpp
 # %SourceTarget:	0x400356
 test/net/Fl_FTP_Connect.o : src/net/Fl_FTP_Connect.cpp
 	$(CXX) -c -o $@ $< -Itest/net -Itest/net $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40035a
+# %SourceTarget:	0x40035b
+test/multitabs2.o : test/multitabs2.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x400361
+# %SourceTarget:	0x400362
+test/multitabs1.o : test/multitabs1.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
 # DO NOT DELETE
@@ -5498,6 +5532,9 @@ lib/Fl_Multi_Tabs.o :	efltk/Fl_Image.h\
 	efltk/Fl_Group.h\
 	efltk/Fl_Widget_List.h\
 	efltk/fl_draw.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Bitmap.h\
+	efltk/Fl_Pixmap.h\
 	efltk/Fl_Multi_Tabs.h\
 	efltk/Fl.h\
 	efltk/fl_math.h
@@ -6705,6 +6742,77 @@ test/net/Fl_FTP_Connect.o :	efltk/net/Fl_FTP_Connect.h\
 	efltk/Fl_Date_Time.h\
 	efltk/Fl_String.h\
 	efltk/Fl_Buffer.h
+test/multitabs2.o :	test/multitabs_glyph3.xpm\
+	test/multitabs_glyph2.xpm\
+	test/multitabs_glyph1.xpm\
+	efltk/Fl_Pixmap.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Multi_Tabs.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Boxtype.h\
+	test/tabs.h\
+	efltk/Fl_Return_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Clock.h\
+	efltk/Fl_Wordwrap_Input.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Tabs.h\
+	efltk/Fl_Window.h\
+	efltk/Fl.h
+test/multitabs1.o :	efltk/Fl_Multi_Tabs.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	test/tabs.h\
+	efltk/Fl_Return_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Clock.h\
+	efltk/Fl_Wordwrap_Input.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Tabs.h\
+	efltk/Fl_Window.h\
+	efltk/Fl.h
 
 
 # %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x4
@@ -6869,7 +6977,7 @@ test/net/Fl_FTP_Connect.o :	efltk/net/Fl_FTP_Connect.h\
 # %TargetInfo src/widgets/Fl_Menu_add.cpp	SourceOrHeader,	UniqueId=0x40030f,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Menu_global.cpp	SourceOrHeader,	UniqueId=0x400310,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Multi_Image.cpp	SourceOrHeader,	UniqueId=0x400311,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Multi_Tabs.cpp	SourceOrHeader,	UniqueId=0x400312,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/widgets/Fl_Multi_Tabs.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400312,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Numeric_Input.cpp	SourceOrHeader,	UniqueId=0x400313,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Output.cpp	SourceOrHeader,	UniqueId=0x400314,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Overlay_Window.cpp	SourceOrHeader,	UniqueId=0x400315,	TargetType=C++,	IDEFlags=0x4
@@ -7139,6 +7247,13 @@ test/net/Fl_FTP_Connect.o :	efltk/net/Fl_FTP_Connect.h\
 # %TargetInfo efltk/Fl_Device.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40034a,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_PostScript.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40034c,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/net/Fl_FTP_Connect.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400357,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo test/multitabs2.cpp	SourceOrHeader,	UniqueId=0x40035b,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/multitabs_glyph3.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x40035c,	TargetType=XPM,	IDEFlags=0xe
+# %TargetInfo test/multitabs_glyph2.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x40035d,	TargetType=XPM,	IDEFlags=0xe
+# %TargetInfo test/multitabs_glyph1.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x40035e,	TargetType=XPM,	IDEFlags=0xe
+# %TargetInfo test/tabs.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40035f,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Wordwrap_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400360,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo test/multitabs1.cpp	SourceOrHeader,	UniqueId=0x400362,	TargetType=C++,	IDEFlags=0x4
 
 
 # %UniqueId:	0x400001
@@ -7191,4 +7306,6 @@ test/net/Fl_FTP_Connect.o :	efltk/net/Fl_FTP_Connect.h\
 #	0x400352
 #	0x40033f
 #	0x400345
+#	0x400361
+#	0x40035a
 #

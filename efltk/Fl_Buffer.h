@@ -66,6 +66,9 @@ public:
     unsigned size()  const { return m_size; }
     unsigned bytes() const { return m_bytes; }
     void bytes(unsigned b) { set(0L,b); }
+
+    void save_file(Fl_String fileName);
+    void read_file(Fl_String fileName);
 };
 
 class FL_API Fl_String_Buffer : public Fl_Buffer {

@@ -1,3 +1,4 @@
+#include <efltk/Fl_String_List.h>
 #include <efltk/net/Fl_FTP_Connect.h>
 #include <stdio.h>
 #include <iostream>
@@ -8,36 +9,47 @@ int main(int argc, char *argv[]) {
     char            server[80];
     char            userName[80];
     char            password[80];
-
-    strcpy(server,"ftp");
-    strcpy(userName,"tmr04");
-    strcpy(password,"tmr04");
+    char            fileName[80];
 
     fl_try {
         cout << "ftp server: ";
-       //cin >> server;
+        cin >> server;
         cout << "user: ";
-       //cin >> userName;
+        cin >> userName;
         cout << "password: ";
-       //cin >> password;
+        cin >> password;
         ftp.host(server);
         ftp.user(userName);
         ftp.password(password);
         ftp.open();
         cout << ftp.response().data();
 
-        ftp.command("pwd");
+        ftp.cmd_pwd();
         cout << ftp.response().data();
 
-        ftp.command("nlst");
-        cout << ftp.response().data();
+        cout << endl << "File list in short format:" << endl;
+        Fl_String_List files = ftp.cmd_nlst();
+        for (unsigned i = 0; i < files.count(); i++)
+            cout << files[i].c_str() << endl;
 
-        ftp.command("quit");
-        cout << ftp.response().data();
-        ftp.close();
+        cout << endl << "File list in long format:" << endl;
+        files = ftp.cmd_list();
+        for (unsigned j = 0; j < files.count(); j++)
+            cout << files[j].c_str() << endl;
+
+        cout << endl << "File to retrieve:";
+        cin >> fileName;
+        Fl_String fname(fileName);
+        fname = fname.trim();
+        if (fname.length()) {
+            cout << ftp.cmd_type('I').c_str() << endl;
+            cout << ftp.cmd_retr(fname).c_str() << endl;
+        }
+
+        cout << ftp.cmd_quit().c_str() << endl;
     }
-fl_catch(exception) {
-    cout << exception.text().c_str();
-}
-return 0;
+    fl_catch(exception) {
+        cout << exception.text().c_str();
+    }
+    return 0;
 }

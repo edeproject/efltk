@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <efltk/Fl_Buffer.h>
 #include <efltk/Fl_Exception.h>
@@ -88,4 +89,33 @@ void Fl_Buffer::reset() {
     unsigned m_size = 16;
     m_buffer = (char *)realloc(m_buffer,m_size);
     m_bytes = 0;
+}
+
+void Fl_Buffer::read_file(Fl_String fileName) {
+    FILE *f = fopen(fileName.c_str(),"rb");
+    if (!f)
+        fl_throw("Can't open file <" + fileName + "> for reading");
+    fseek(f,0,SEEK_END);
+    int fileLength = ftell(f);
+    fseek(f,0,SEEK_SET);
+    bytes(fileLength);
+    char *ptr = m_buffer;
+    for (int p = 0; p < fileLength; p += 1024) {
+        fread(ptr,1,1024,f);
+    }
+    fclose(f);
+}
+
+void Fl_Buffer::save_file(Fl_String fileName) {
+    FILE *f = fopen(fileName.c_str(),"w+b");
+    if (!f)
+        fl_throw("Can't open file <" + fileName + "> for writing");
+    char *ptr = m_buffer;
+    for (unsigned p = 0; p < m_bytes; p += 1024) {
+        int bytes = m_bytes - p;
+        if (bytes > 1024)
+            bytes = 1024;
+        fwrite(ptr,1,bytes,f);
+    }
+    fclose(f);
 }
