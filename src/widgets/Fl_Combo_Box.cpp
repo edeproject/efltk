@@ -471,7 +471,7 @@ bool Fl_Combo_Box::load_data(Fl_Data_Source *ds)
 }
 
 // saving data to DS
-bool Fl_Combo_Box::save_data(Fl_Data_Source *ds) const
+bool Fl_Combo_Box::save_data(Fl_Data_Source *ds)
 {
     if (field_name().empty())
         return false;

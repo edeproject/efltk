@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x4003fb
+# %FirstUniqueId:	0x400419
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -42,7 +42,7 @@ LDFLAGS = -L. -L./lib -L/usr/X11R6/lib -lXext -liconv -lodbc -lpng -ljpeg -lstdc
 
 IDE_BLIND_LDOPTIONS = -L./
 
-IDE_PROJECT_TOOLS = MAKE CCLINK G++ IDE_C_PARSER GCC TAGS IDE_CXX_PARSER
+IDE_PROJECT_TOOLS = MAKE CCLINK G++ IDE_C_PARSER GCC TAGS IDE_CXX_PARSER WEB_BROWSER
 
 IDE_RCS_TYPE = cvs
 
@@ -99,6 +99,10 @@ IDE_CXX_PARSER =
 IDE_CXX_PARSER_FLAGS = $(IDE_CXX_PARSER_OPTIONS)
 
 IDE_CXX_PARSER_OPTIONS = -I/usr/local/lib/gcc-lib/sparc-sun-solaris2.8/2.95.3/../../../../include/g++-3 -I/usr/local/include -I/usr/local/lib/gcc-lib/sparc-sun-solaris2.8/2.95.3/../../../../sparc-sun-solaris2.8/include -I/usr/local/lib/gcc-lib/sparc-sun-solaris2.8/2.95.3/include -I/usr/include -D__EXCEPTIONS='1' -D__GCC_NEW_VARARGS__='1' -D__sparc='1' -D__cplusplus='1' -D__svr4__='1' -D__GNUC_MINOR__='95' -D__sun='1' -Dsparc='1' -D__sun__='1' -D__unix='1' -D__unix__='1' -D__SVR4='1' -Dsun='1' -D__GNUC__='2' -D__sparc__='1' -D__GNUG__='2' -Dunix='1'
+
+WEB_BROWSER = $(BROWSER)
+
+WEB_BROWSER_FLAGS = 
 
 # %UniqueId:	0x400002
 # %TargetType:	DLL
@@ -840,6 +844,22 @@ test/input_browser  :: 	test/input_browser.o
 # %ObjsDir:	test
 test/split  :: 	test/split.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+# %UniqueId:	0x400418
+# %TargetType:	HTML
+# %IDEFlags:	0xe
+# %ComplexTarget
+# %SrcDir:	
+# %IncDir:	
+# %ObjsDir:	
+/distr/develop/CVS/efltk/doc/EventsProposal.html  :: 
+	case $@ in \
+	/*) full_name=$@ ;;\
+	*) full_name=`pwd`/$@ ;;\
+	esac; \
+	$(WEB_BROWSER) $$full_name
+
+.PRECIOUS  : 	/distr/develop/CVS/efltk/doc/EventsProposal.html
 
 # %ObjectFilesLinking
 # %TargetType:	C++_OBJ
@@ -10769,7 +10789,7 @@ lib/Fl_String_List.o :	efltk/Fl_String_Stack.h\
 	efltk/Fl_Ptr_List.h
 
 
-# %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/db/odbc/fl_odbc.cpp	SourceOrHeader,	UniqueId=0x4000ce,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/xml/Fl_XmlDoc.cpp	SourceOrHeader,	UniqueId=0x4000fa,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/xml/Fl_XmlNode.cpp	SourceOrHeader,	UniqueId=0x4000fb,	TargetType=C++,	IDEFlags=0x6
@@ -11318,6 +11338,7 @@ lib/Fl_String_List.o :	efltk/Fl_String_Stack.h\
 # %IDEFlags:	0
 # %Folder
 # "all" : 
+#	0x400417
 #	0x4000ec
 #	0x40038c
 #	0x400183
@@ -11387,4 +11408,10 @@ lib/Fl_String_List.o :	efltk/Fl_String_Stack.h\
 # "tools" : 
 #	0x40038d
 #	0x4003ae
+#
+# %UniqueId:	0x400417
+# %IDEFlags:	0
+# %Folder
+# "docs" : 
+#	0x400418
 #

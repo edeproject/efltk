@@ -46,7 +46,7 @@ bool Fl_Float_Input::load_data(Fl_Data_Source *ds)
 }
 
 // saving data to DS
-bool Fl_Float_Input::save_data(Fl_Data_Source *ds) const
+bool Fl_Float_Input::save_data(Fl_Data_Source *ds)
 {
     if(field_name().empty())
         return false;

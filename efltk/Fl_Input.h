@@ -86,7 +86,7 @@ public:
 
     // Data source support
     virtual bool load_data(Fl_Data_Source *ds);
-    virtual bool save_data(Fl_Data_Source *ds) const;
+    virtual bool save_data(Fl_Data_Source *ds);
 
     int position() const {return position_;}
     int mark() const {return mark_;}

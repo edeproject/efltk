@@ -51,7 +51,7 @@ public:
 
     // Data source support
     virtual bool load_data(Fl_Data_Source *ds);
-    virtual bool save_data(Fl_Data_Source *ds) const;
+    virtual bool save_data(Fl_Data_Source *ds);
 
 protected:
     static void input_callback(Fl_Widget *,void *);
@@ -85,7 +85,7 @@ public:
 
     /** Data source support */
     virtual bool load_data(Fl_Data_Source *ds);
-    virtual bool save_data(Fl_Data_Source *ds) const;
+    virtual bool save_data(Fl_Data_Source *ds);
 
 protected:
     Fl_Masked_Input  *m_timeInput;
@@ -119,7 +119,7 @@ public:
 
     // Data source support
     virtual bool load_data(Fl_Data_Source *ds);
-    virtual bool save_data(Fl_Data_Source *ds) const;
+    virtual bool save_data(Fl_Data_Source *ds);
 
 protected:
 

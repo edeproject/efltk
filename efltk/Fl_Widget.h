@@ -255,7 +255,7 @@ public:
 
     // Data source support
     virtual bool load_data(Fl_Data_Source *ds) { return true; }
-    virtual bool save_data(Fl_Data_Source *ds) const { return true; }
+    virtual bool save_data(Fl_Data_Source *ds) { return true; }
 
     // Dialog support
     virtual void reset() {}

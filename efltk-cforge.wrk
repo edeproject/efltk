@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x4003fb
+# %FirstUniqueId:	0x40041a
 PROJECT_DIR = /develop/CVS/efltk/
 
 IDE_WORKING_DIR = /develop/CVS/efltk/
@@ -42,7 +42,7 @@ LDFLAGS = -L. -L./lib -L/usr/X11R6/lib -lXext -liconv -lodbc -lpng -ljpeg -lstdc
 
 IDE_BLIND_LDOPTIONS = -L./
 
-IDE_PROJECT_TOOLS = MAKE CCLINK G++ IDE_C_PARSER GCC TAGS IDE_CXX_PARSER
+IDE_PROJECT_TOOLS = MAKE CCLINK G++ IDE_C_PARSER GCC TAGS IDE_CXX_PARSER WEB_BROWSER
 
 IDE_RCS_TYPE = cvs
 
@@ -99,6 +99,10 @@ IDE_CXX_PARSER =
 IDE_CXX_PARSER_FLAGS = $(IDE_CXX_PARSER_OPTIONS)
 
 IDE_CXX_PARSER_OPTIONS = -I/usr/local/lib/gcc-lib/sparc-sun-solaris2.8/2.95.3/../../../../include/g++-3 -I/usr/local/include -I/usr/local/lib/gcc-lib/sparc-sun-solaris2.8/2.95.3/../../../../sparc-sun-solaris2.8/include -I/usr/local/lib/gcc-lib/sparc-sun-solaris2.8/2.95.3/include -I/usr/include -D__EXCEPTIONS='1' -D__GCC_NEW_VARARGS__='1' -D__sparc='1' -D__cplusplus='1' -D__svr4__='1' -D__GNUC_MINOR__='95' -D__sun='1' -Dsparc='1' -D__sun__='1' -D__unix='1' -D__unix__='1' -D__SVR4='1' -Dsun='1' -D__GNUC__='2' -D__sparc__='1' -D__GNUG__='2' -Dunix='1'
+
+WEB_BROWSER = $(BROWSER)
+
+WEB_BROWSER_FLAGS = 
 
 lib/libefltk.so  :: 	lib/Fl.o\
 	lib/Fl_Align_Group.o\
@@ -483,6 +487,13 @@ test/input_browser  :: 	test/input_browser.o
 
 test/split  :: 	test/split.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+/distr/develop/CVS/efltk/doc/EventsProposal.html  :: 
+	case $@ in \
+	/*) full_name=$@ ;;\
+	*) full_name=`pwd`/$@ ;;\
+	esac; \
+	$(WEB_BROWSER) $$full_name
 
 # %ObjectFilesLinking
 lib/Fl_ODBC_Database.o : src/db/odbc/Fl_ODBC_Database.cpp
@@ -4824,14 +4835,14 @@ lib/Fl_File_Dialog.o :	src/widgets/Pixmaps.h\
 	efltk/Fl_Image_Cache.h
 lib/Fl_Float_Input.o :	efltk/Fl_Float_Input.h\
 	efltk/Fl_Numeric_Input.h\
+	efltk/Fl_Flags.h\
 	efltk/Fl_Input.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
 	efltk/Fl_Widget.h\
 	efltk/Fl_Data_Source.h\
 	efltk/Fl_Data_Fields.h\
-	efltk/Fl_Flags.h\
 	efltk/Fl_Ptr_List.h\
-	efltk/Enumerations.h\
-	efltk/Fl_Export.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
 	efltk/Fl_String.h\
@@ -4958,6 +4969,7 @@ lib/Fl_Input.o :	efltk/Fl_Menu_Button.h\
 	efltk/Fl_Widget_List.h\
 	src/core/fl_internal.h\
 	efltk/Fl_Translator.h\
+	config.h\
 	efltk/fl_utf8.h\
 	efltk/fl_ask.h\
 	efltk/fl_draw.h\

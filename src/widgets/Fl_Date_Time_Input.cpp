@@ -178,7 +178,7 @@ bool Fl_Date_Input::load_data(Fl_Data_Source *ds)
 }
 
 // saving data to DS
-bool Fl_Date_Input::save_data(Fl_Data_Source *ds) const
+bool Fl_Date_Input::save_data(Fl_Data_Source *ds) 
 {
     if(field_name().empty())
         return false;
@@ -269,7 +269,7 @@ bool Fl_Date_Time_Input::load_data(Fl_Data_Source *ds)
 }
 
 // saving data to DS
-bool Fl_Date_Time_Input::save_data(Fl_Data_Source *ds) const
+bool Fl_Date_Time_Input::save_data(Fl_Data_Source *ds) 
 {
     if(field_name().empty())
         return false;
@@ -378,7 +378,7 @@ bool Fl_Date_Interval_Input::load_data(Fl_Data_Source *ds)
 }
 
 // saving data to DS
-bool Fl_Date_Interval_Input::save_data(Fl_Data_Source *ds) const
+bool Fl_Date_Interval_Input::save_data(Fl_Data_Source *ds)
 {
     Fl_Variant fld_value;
 

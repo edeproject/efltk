@@ -152,7 +152,7 @@ public:
     void data_source(Fl_Data_Source *ds);
     Fl_Data_Source* data_source() const { return m_data_source; }
     virtual bool load_data(Fl_Data_Source *ds);
-    virtual bool save_data(Fl_Data_Source *ds) const;
+    virtual bool save_data(Fl_Data_Source *ds);
 
     uchar layout_spacing() const { return m_layout_spacing; }
     void layout_spacing(const uchar offset) { m_layout_spacing = offset; }

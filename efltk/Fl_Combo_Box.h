@@ -42,7 +42,7 @@ public:
 
     /** Data source support */
     virtual bool load_data(Fl_Data_Source *ds);
-    virtual bool save_data(Fl_Data_Source *ds) const;
+    virtual bool save_data(Fl_Data_Source *ds);
     void fill(Fl_Data_Source& ds,Fl_String user_data_column="");
 
     // Get the active item user_data, or set item by user_data

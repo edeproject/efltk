@@ -863,7 +863,7 @@ bool Fl_Group::load_data(Fl_Data_Source *ds) {
     return true;
 }
 
-bool Fl_Group::save_data(Fl_Data_Source *ds) const {
+bool Fl_Group::save_data(Fl_Data_Source *ds) {
     if (!ds)
         ds = m_data_source;
     if (!ds)
