@@ -97,46 +97,59 @@ int sendClientMessage(Window w, Atom a, long x)
     return ret;
 }
 
-static void init_atom(Atom *atom)
+static struct {
+    Atom *atom;
+    const char *name;
+} atom_info[] = {
+    { &_XA_NET_SUPPORTED,       "_NET_SUPPORTED" },
+    { &_XA_NET_SUPPORTING_WM_CHECK,"_NET_SUPPORTING_WM_CHECK" },
+
+    // DESKTOP actions:
+    { &_XA_NET_NUM_DESKTOPS,    "_NET_NUMBER_OF_DESKTOPS" },
+    { &_XA_NET_DESKTOP_NAMES,   "_NET_DESKTOP_NAMES" },
+    { &_XA_NET_CURRENT_DESKTOP, "_NET_CURRENT_DESKTOP" },
+    { &_XA_NET_WORKAREA,        "_NET_WORKAREA" },
+    { &_XA_NET_DESKTOP_GEOMETRY,"_NET_DESKTOP_GEOMETRY" },
+
+    // WINDOW actions:
+    { &_XA_NET_CLIENT_LIST,     "_NET_CLIENT_LIST" },
+    { &_XA_NET_CLIENT_LIST_STACKING, "_NET_CLIENT_LIST_STACKING" },
+    { &_XA_NET_ACTIVE_WINDOW,   "_NET_ACTIVE_WINDOW" },
+    { &_XA_NET_WM_NAME,         "_NET_WM_NAME" },
+    { &_XA_NET_WM_ICON_NAME,    "_NET_WM_ICON_NAME" },
+    { &_XA_NET_WM_VISIBLE_NAME, "_NET_WM_VISIBLE_NAME" },
+    { &_XA_NET_WM_DESKTOP,      "_NET_WM_DESKTOP" },
+
+    { &_XA_NET_WM_WINDOW_TYPE,  "_NET_WM_WINDOW_TYPE" },
+    { &_XA_NET_WM_WINDOW_TYPE_DESKTOP, "_NET_WM_WINDOW_TYPE_DESKTOP" },
+    { &_XA_NET_WM_WINDOW_TYPE_DOCK,    "_NET_WM_WINDOW_TYPE_DOCK" },
+    { &_XA_NET_WM_WINDOW_TYPE_TOOLBAR, "_NET_WM_WINDOW_TYPE_TOOLBAR" },
+    { &_XA_NET_WM_WINDOW_TYPE_MENU,    "_NET_WM_WINDOW_TYPE_MENU" },
+    { &_XA_NET_WM_WINDOW_TYPE_UTIL,    "_NET_WM_WINDOW_TYPE_UTILITY" },
+    { &_XA_NET_WM_WINDOW_TYPE_SPLASH,  "_NET_WM_WINDOW_TYPE_SPLASH" },
+    { &_XA_NET_WM_WINDOW_TYPE_DIALOG,  "_NET_WM_WINDOW_TYPE_DIALOG" },
+    { &_XA_NET_WM_WINDOW_TYPE_NORMAL,  "_NET_WM_WINDOW_TYPE_NORMAL" },
+    { &_XA_NET_WM_STRUT,       "_NET_WM_STRUT" }
+};
+
+#define CNT(x) (sizeof(x)/sizeof(x[0]))
+static bool all_inited = false;
+
+static void init_atoms()
 {
     fl_open_display();
 
-    static struct {
-        Atom *atom;
-        const char *name;
-    } atom_info[] = {
-        { &_XA_NET_SUPPORTED,       "_NET_SUPPORTED" },
-        { &_XA_NET_SUPPORTING_WM_CHECK,"_NET_SUPPORTING_WM_CHECK" },
+    for(uint i = 0; i < CNT(atom_info); i++) {
+        if(*(atom_info[i].atom)==0) *(atom_info[i].atom) = XInternAtom(fl_display, atom_info[i].name, False);
+    }
+    all_inited = true;
+}
 
-        // DESKTOP actions:
-        { &_XA_NET_NUM_DESKTOPS,    "_NET_NUMBER_OF_DESKTOPS" },
-        { &_XA_NET_DESKTOP_NAMES,   "_NET_DESKTOP_NAMES" },
-        { &_XA_NET_CURRENT_DESKTOP, "_NET_CURRENT_DESKTOP" },
-        { &_XA_NET_WORKAREA,        "_NET_WORKAREA" },
-        { &_XA_NET_DESKTOP_GEOMETRY,"_NET_DESKTOP_GEOMETRY" },
+static void init_atom(Atom *atom)
+{
+    if(all_inited) return;
+    fl_open_display();
 
-        // WINDOW actions:
-        { &_XA_NET_CLIENT_LIST,     "_NET_CLIENT_LIST" },
-        { &_XA_NET_CLIENT_LIST_STACKING, "_NET_CLIENT_LIST_STACKING" },
-        { &_XA_NET_ACTIVE_WINDOW,   "_NET_ACTIVE_WINDOW" },
-        { &_XA_NET_WM_NAME,         "_NET_WM_NAME" },
-        { &_XA_NET_WM_ICON_NAME,    "_NET_WM_ICON_NAME" },
-        { &_XA_NET_WM_VISIBLE_NAME, "_NET_WM_VISIBLE_NAME" },
-        { &_XA_NET_WM_DESKTOP,      "_NET_WM_DESKTOP" },
-
-        { &_XA_NET_WM_WINDOW_TYPE,  "_NET_WM_WINDOW_TYPE" },
-        { &_XA_NET_WM_WINDOW_TYPE_DESKTOP, "_NET_WM_WINDOW_TYPE_DESKTOP" },
-        { &_XA_NET_WM_WINDOW_TYPE_DOCK,    "_NET_WM_WINDOW_TYPE_DOCK" },
-        { &_XA_NET_WM_WINDOW_TYPE_TOOLBAR, "_NET_WM_WINDOW_TYPE_TOOLBAR" },
-        { &_XA_NET_WM_WINDOW_TYPE_MENU,    "_NET_WM_WINDOW_TYPE_MENU" },
-        { &_XA_NET_WM_WINDOW_TYPE_UTIL,    "_NET_WM_WINDOW_TYPE_UTILITY" },
-        { &_XA_NET_WM_WINDOW_TYPE_SPLASH,  "_NET_WM_WINDOW_TYPE_SPLASH" },
-        { &_XA_NET_WM_WINDOW_TYPE_DIALOG,  "_NET_WM_WINDOW_TYPE_DIALOG" },
-        { &_XA_NET_WM_WINDOW_TYPE_NORMAL,  "_NET_WM_WINDOW_TYPE_NORMAL" },
-        { &_XA_NET_WM_STRUT,       "_NET_WM_STRUT" }
-    };
-
-#define CNT(x) (sizeof(x)/sizeof(x[0]))
     for(uint i = 0; i < CNT(atom_info); i++) {
         if(atom_info[i].atom == atom) {
             if(*(atom_info[i].atom)==0) *(atom_info[i].atom) = XInternAtom(fl_display, atom_info[i].name, False);
@@ -700,6 +713,7 @@ static int wm_event_handler(int e)
 
 void Fl_WM::add_callback(Fl_Callback *cb, void *user_data, int mask)
 {
+    init_atoms();
     static bool inited=false;
     if(!inited) {
         XSelectInput(fl_display, RootWindow(fl_display, fl_screen), PropertyChangeMask | StructureNotifyMask);
