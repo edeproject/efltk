@@ -1942,23 +1942,26 @@ int Fl_Text_Display::string_width( const char *string, int length, int style )
 {
     Fl_Font font;
     int size;
+    int mask = style & STYLE_LOOKUP_MASK;
 
-    if ( style & STYLE_LOOKUP_MASK && ( style & STYLE_LOOKUP_MASK ) - 'A' < mNStyles) {
-        int si = (style & STYLE_LOOKUP_MASK) - 'A';
-        if (si < 0) si = 0;
-        else if (si >= mNStyles) si = mNStyles - 1;
+    if (mask) {
+      int si = mask - 'A';
+      if ( si < mNStyles) {
+         if (si < 0) si = 0;
+         else if (si >= mNStyles) si = mNStyles - 1;
 
-        font  = mStyleTable[si].font;
-        size = mStyleTable[si].size;
+         Style_Table_Entry *style = mStyleTable + si;
+         font  = style->font;
+         size = style->size;
 
-		if(mStyleTable[si].attr == ATTR_IMAGE && mStyleTable[si].image) {
-			int iW=0;
-			for(int n=0; n<length; n++) {				
-				iW += mStyleTable[si].image->width();
-			}
-			return iW;
-		}
-
+         if(style->attr == ATTR_IMAGE && style->image) {
+            int iW=0;
+            for(int n=0; n<length; n++) {
+               iW += style->image->width();
+            }
+            return iW;
+         }
+      }
     } else {
         font = text_font();
         size = text_size();
