@@ -280,10 +280,10 @@ int Fl_Simple_Html::do_align(Fl_Help_Block *block,  // I - Block to add to
     switch (a)
     {
         case RIGHT :    // Right align
-                offset = block->w - xx;
+            offset = block->w - xx;
             break;
         case CENTER :   // Center
-                offset = (block->w - xx) / 2;
+            offset = (block->w - xx) / 2;
             break;
         default :       // Left align
             offset = 0;
@@ -314,10 +314,10 @@ void Fl_Simple_Html::draw()
     int i;      // Looping var
     const Fl_Help_Block *block;     // Pointer to current block
     const char  *ptr,       // Pointer to text in block
-    *attrs;     // Pointer to start of element attributes
+        *attrs;     // Pointer to start of element attributes
     char    *s,     // Pointer into buffer
-    buf[1024],  // Text buffer
-    attr[1024]; // Attribute buffer
+        buf[1024],  // Text buffer
+        attr[1024]; // Attribute buffer
     int xx, yy, ww, hh; // Current positions and sizes
     int line;       // Current line
 
@@ -325,7 +325,7 @@ void Fl_Simple_Html::draw()
     Fl_Font font;
 
     int head, pre,  // Flags for text
-    needspace;  // Do we need whitespace?
+        needspace;  // Do we need whitespace?
 
     Fl_Boxtype b = box()!=FL_NO_BOX ? box() : FL_DOWN_BOX; // Box to draw...
 
@@ -501,20 +501,20 @@ void Fl_Simple_Html::draw()
                         hh = 0;
                     }
                     else if (strcasecmp(buf, "CENTER") == 0 ||
-                            strcasecmp(buf, "P") == 0 ||
-                            strcasecmp(buf, "H1") == 0 ||
-                            strcasecmp(buf, "H2") == 0 ||
-                            strcasecmp(buf, "H3") == 0 ||
-                            strcasecmp(buf, "H4") == 0 ||
-                            strcasecmp(buf, "H5") == 0 ||
-                            strcasecmp(buf, "H6") == 0 ||
-                            strcasecmp(buf, "UL") == 0 ||
-                            strcasecmp(buf, "OL") == 0 ||
-                            strcasecmp(buf, "DL") == 0 ||
-                            strcasecmp(buf, "LI") == 0 ||
-                            strcasecmp(buf, "DD") == 0 ||
-                            strcasecmp(buf, "DT") == 0 ||
-                            strcasecmp(buf, "PRE") == 0)
+                        strcasecmp(buf, "P") == 0 ||
+                        strcasecmp(buf, "H1") == 0 ||
+                        strcasecmp(buf, "H2") == 0 ||
+                        strcasecmp(buf, "H3") == 0 ||
+                        strcasecmp(buf, "H4") == 0 ||
+                        strcasecmp(buf, "H5") == 0 ||
+                        strcasecmp(buf, "H6") == 0 ||
+                        strcasecmp(buf, "UL") == 0 ||
+                        strcasecmp(buf, "OL") == 0 ||
+                        strcasecmp(buf, "DL") == 0 ||
+                        strcasecmp(buf, "LI") == 0 ||
+                        strcasecmp(buf, "DD") == 0 ||
+                        strcasecmp(buf, "DT") == 0 ||
+                        strcasecmp(buf, "PRE") == 0)
                     {
                         if (tolower(buf[0]) == 'h')
                         {
@@ -607,18 +607,18 @@ void Fl_Simple_Html::draw()
                     else if (strcasecmp(buf, "/HEAD") == 0)
                         head = 0;
                     else if (strcasecmp(buf, "/H1") == 0 ||
-                            strcasecmp(buf, "/H2") == 0 ||
-                            strcasecmp(buf, "/H3") == 0 ||
-                            strcasecmp(buf, "/H4") == 0 ||
-                            strcasecmp(buf, "/H5") == 0 ||
-                            strcasecmp(buf, "/H6") == 0 ||
-                            strcasecmp(buf, "/B") == 0 ||
-                            strcasecmp(buf, "/STRONG") == 0 ||
-                            strcasecmp(buf, "/I") == 0 ||
-                            strcasecmp(buf, "/EM") == 0 ||
-                            strcasecmp(buf, "/CODE") == 0 ||
-                            strcasecmp(buf, "/KBD") == 0 ||
-                            strcasecmp(buf, "/VAR") == 0)
+                        strcasecmp(buf, "/H2") == 0 ||
+                        strcasecmp(buf, "/H3") == 0 ||
+                        strcasecmp(buf, "/H4") == 0 ||
+                        strcasecmp(buf, "/H5") == 0 ||
+                        strcasecmp(buf, "/H6") == 0 ||
+                        strcasecmp(buf, "/B") == 0 ||
+                        strcasecmp(buf, "/STRONG") == 0 ||
+                        strcasecmp(buf, "/I") == 0 ||
+                        strcasecmp(buf, "/EM") == 0 ||
+                        strcasecmp(buf, "/CODE") == 0 ||
+                        strcasecmp(buf, "/KBD") == 0 ||
+                        strcasecmp(buf, "/VAR") == 0)
                         popfont(font, size);
                     else if (strcasecmp(buf, "/PRE") == 0)
                     {
@@ -784,16 +784,16 @@ void Fl_Simple_Html::format()
     Fl_Help_Block   *block,     // Current block
     *cell;      // Current table cell
     int cells[MAX_COLUMNS],   // Cells in the current row...
-    row;            // Current table row (block number)
+        row;            // Current table row (block number)
     const char *ptr,        // Pointer into block
-    *start,     // Pointer to start of element
-    *attrs;     // Pointer to start of element attributes
+        *start,     // Pointer to start of element
+        *attrs;     // Pointer to start of element attributes
     char    *s,     // Pointer into buffer
-    buf[1024],  // Text buffer
-    attr[1024], // Attribute buffer
-    wattr[1024],    // Width attribute buffer
-    hattr[1024],    // Height attribute buffer
-    link[1024]; // Link destination
+        buf[1024],  // Text buffer
+        attr[1024], // Attribute buffer
+        wattr[1024],    // Width attribute buffer
+        hattr[1024],    // Height attribute buffer
+        link[1024]; // Link destination
     int xx, yy, ww, hh; // Size of current text fragment
     int line;       // Current line in block
     int links;      // Links for current line
@@ -801,14 +801,14 @@ void Fl_Simple_Html::format()
     Fl_Font font;
     unsigned char   border;     // Draw border?
     int align,      // Current alignment
-    newalign,   // New alignment
-    head,       // In the <HEAD> section?
-    pre,        // <PRE> text?
-    needspace;  // Do we need whitespace?
+        newalign,   // New alignment
+        head,       // In the <HEAD> section?
+        pre,        // <PRE> text?
+        needspace;  // Do we need whitespace?
 
     int table_width;    // Width of table
     int column,     // Current table column number
-    columns[MAX_COLUMNS];
+        columns[MAX_COLUMNS];
                 // Column widths
     Fl_Color tc, rc, c; // Table/row/cell background color
 
@@ -1001,22 +1001,22 @@ void Fl_Simple_Html::format()
                     hh   = size;
                 }
                 else if (strcasecmp(buf, "CENTER") == 0 ||
-                        strcasecmp(buf, "P") == 0 ||
-                        strcasecmp(buf, "H1") == 0 ||
-                        strcasecmp(buf, "H2") == 0 ||
-                        strcasecmp(buf, "H3") == 0 ||
-                        strcasecmp(buf, "H4") == 0 ||
-                        strcasecmp(buf, "H5") == 0 ||
-                        strcasecmp(buf, "H6") == 0 ||
-                        strcasecmp(buf, "UL") == 0 ||
-                        strcasecmp(buf, "OL") == 0 ||
-                        strcasecmp(buf, "DL") == 0 ||
-                        strcasecmp(buf, "LI") == 0 ||
-                        strcasecmp(buf, "DD") == 0 ||
-                        strcasecmp(buf, "DT") == 0 ||
-                        strcasecmp(buf, "HR") == 0 ||
-                        strcasecmp(buf, "PRE") == 0 ||
-                        strcasecmp(buf, "TABLE") == 0)
+                    strcasecmp(buf, "P") == 0 ||
+                    strcasecmp(buf, "H1") == 0 ||
+                    strcasecmp(buf, "H2") == 0 ||
+                    strcasecmp(buf, "H3") == 0 ||
+                    strcasecmp(buf, "H4") == 0 ||
+                    strcasecmp(buf, "H5") == 0 ||
+                    strcasecmp(buf, "H6") == 0 ||
+                    strcasecmp(buf, "UL") == 0 ||
+                    strcasecmp(buf, "OL") == 0 ||
+                    strcasecmp(buf, "DL") == 0 ||
+                    strcasecmp(buf, "LI") == 0 ||
+                    strcasecmp(buf, "DD") == 0 ||
+                    strcasecmp(buf, "DT") == 0 ||
+                    strcasecmp(buf, "HR") == 0 ||
+                    strcasecmp(buf, "PRE") == 0 ||
+                    strcasecmp(buf, "TABLE") == 0)
                 {
                     block->end = start;
                     line = do_align(block, line, xx, newalign, links);
@@ -1024,8 +1024,8 @@ void Fl_Simple_Html::format()
                     block->h   += hh;
 
                     if (strcasecmp(buf, "UL") == 0 ||
-                            strcasecmp(buf, "OL") == 0 ||
-                            strcasecmp(buf, "DL") == 0)
+                        strcasecmp(buf, "OL") == 0 ||
+                        strcasecmp(buf, "DL") == 0)
                     {
                         block->h += size + 2;                           
                         xx       += 4 * size;
@@ -1080,9 +1080,9 @@ void Fl_Simple_Html::format()
                     hh = 0;
 
                     if ((tolower(buf[0]) == 'h' && isdigit(buf[1])) ||
-                            strcasecmp(buf, "DD") == 0 ||
-                            strcasecmp(buf, "DT") == 0 ||
-                            strcasecmp(buf, "P") == 0)
+                        strcasecmp(buf, "DD") == 0 ||
+                        strcasecmp(buf, "DT") == 0 ||
+                        strcasecmp(buf, "P") == 0)
                         yy += size + 2;
                     else if (strcasecmp(buf, "HR") == 0)
                     {
@@ -1104,26 +1104,26 @@ void Fl_Simple_Html::format()
                         newalign = get_align(attrs, align);
                 }
                 else if (strcasecmp(buf, "/CENTER") == 0 ||
-                        strcasecmp(buf, "/P") == 0 ||
-                        strcasecmp(buf, "/H1") == 0 ||
-                        strcasecmp(buf, "/H2") == 0 ||
-                        strcasecmp(buf, "/H3") == 0 ||
-                        strcasecmp(buf, "/H4") == 0 ||
-                        strcasecmp(buf, "/H5") == 0 ||
-                        strcasecmp(buf, "/H6") == 0 ||
-                        strcasecmp(buf, "/PRE") == 0 ||
-                        strcasecmp(buf, "/UL") == 0 ||
-                        strcasecmp(buf, "/OL") == 0 ||
-                        strcasecmp(buf, "/DL") == 0 ||
-                        strcasecmp(buf, "/TABLE") == 0)
+                    strcasecmp(buf, "/P") == 0 ||
+                    strcasecmp(buf, "/H1") == 0 ||
+                    strcasecmp(buf, "/H2") == 0 ||
+                    strcasecmp(buf, "/H3") == 0 ||
+                    strcasecmp(buf, "/H4") == 0 ||
+                    strcasecmp(buf, "/H5") == 0 ||
+                    strcasecmp(buf, "/H6") == 0 ||
+                    strcasecmp(buf, "/PRE") == 0 ||
+                    strcasecmp(buf, "/UL") == 0 ||
+                    strcasecmp(buf, "/OL") == 0 ||
+                    strcasecmp(buf, "/DL") == 0 ||
+                    strcasecmp(buf, "/TABLE") == 0)
                 {
                     line = do_align(block, line, xx, newalign, links);
                     xx = block->x;
                     block->end = ptr;
 
                     if (strcasecmp(buf, "/UL") == 0 ||
-                            strcasecmp(buf, "/OL") == 0 ||
-                            strcasecmp(buf, "/DL") == 0)
+                        strcasecmp(buf, "/OL") == 0 ||
+                        strcasecmp(buf, "/DL") == 0)
                     {
                         xx -= 4 * size;
                         block->h += size + 2;
@@ -1230,7 +1230,7 @@ void Fl_Simple_Html::format()
                     line      = 0;
                 }
                 else if ((strcasecmp(buf, "TD") == 0 ||
-                            strcasecmp(buf, "TH") == 0) && row)
+                        strcasecmp(buf, "TH") == 0) && row)
                 {
                     int colspan;        // COLSPAN attribute
                     line       = do_align(block, line, xx, newalign, links);
@@ -1278,15 +1278,15 @@ void Fl_Simple_Html::format()
                     block->bgcolor = get_color(get_attr(attrs, "BGCOLOR", attr, sizeof(attr)), rc);
                 }
                 else if ((strcasecmp(buf, "/TD") == 0 ||
-                            strcasecmp(buf, "/TH") == 0) && row)
+                        strcasecmp(buf, "/TH") == 0) && row)
                 {
                     popfont(font, size);                        
                 }
                 else if (strcasecmp(buf, "B") == 0 ||
-                        strcasecmp(buf, "STRONG") == 0)
+                    strcasecmp(buf, "STRONG") == 0)
                     pushfont(font->bold(), size);
                 else if (strcasecmp(buf, "I") == 0 ||
-                        strcasecmp(buf, "EM") == 0)
+                    strcasecmp(buf, "EM") == 0)
                     pushfont(font->italic(), size);
                 else if (strcasecmp(buf, "CODE") == 0)
                     pushfont(font = FL_COURIER, size);
@@ -1295,12 +1295,12 @@ void Fl_Simple_Html::format()
                 else if (strcasecmp(buf, "VAR") == 0)
                     pushfont(font = FL_COURIER_ITALIC, size);
                 else if (strcasecmp(buf, "/B") == 0 ||
-                        strcasecmp(buf, "/STRONG") == 0 ||
-                        strcasecmp(buf, "/I") == 0 ||
-                        strcasecmp(buf, "/EM") == 0 ||
-                        strcasecmp(buf, "/CODE") == 0 ||
-                        strcasecmp(buf, "/KBD") == 0 ||
-                        strcasecmp(buf, "/VAR") == 0)
+                    strcasecmp(buf, "/STRONG") == 0 ||
+                    strcasecmp(buf, "/I") == 0 ||
+                    strcasecmp(buf, "/EM") == 0 ||
+                    strcasecmp(buf, "/CODE") == 0 ||
+                    strcasecmp(buf, "/KBD") == 0 ||
+                    strcasecmp(buf, "/VAR") == 0)
                     popfont(font, size);
                 else if (strcasecmp(buf, "IMG") == 0)
                 {
@@ -1489,24 +1489,24 @@ void Fl_Simple_Html::format_table(int *table_width, // O - Total table width
     const char *table)// I - Pointer to start of table
 {
     int column,                 // Current column
-    num_columns,                // Number of columns
-    colspan,                // COLSPAN attribute
-    width,                  // Current width
-    temp_width,             // Temporary width
-    max_width,              // Maximum width
-    incell,                 // In a table cell?
-    pre,                    // <PRE> text?
-    needspace;              // Need whitespace?
+        num_columns,                // Number of columns
+        colspan,                // COLSPAN attribute
+        width,                  // Current width
+        temp_width,             // Temporary width
+        max_width,              // Maximum width
+        incell,                 // In a table cell?
+        pre,                    // <PRE> text?
+        needspace;              // Need whitespace?
 
     char *s,                    // Pointer into buffer
-    buf[1024],              // Text buffer
-    attr[1024],             // Other attribute
-    wattr[1024],                // WIDTH attribute
-    hattr[1024];                // HEIGHT attribute
+        buf[1024],              // Text buffer
+        attr[1024],             // Other attribute
+        wattr[1024],                // WIDTH attribute
+        hattr[1024];                // HEIGHT attribute
 
     const char  *ptr,                   // Pointer into table
-    *attrs,                 // Pointer to attributes
-    *start;                 // Start of element
+        *attrs,                 // Pointer to attributes
+        *start;                 // Start of element
 
     int minwidths[MAX_COLUMNS];         // Minimum widths for each column
     unsigned char   size;               // Current font and size
@@ -1574,7 +1574,7 @@ void Fl_Simple_Html::format_table(int *table_width, // O - Total table width
                 ptr ++;
 
             if (strcasecmp(buf, "BR") == 0 ||
-                    strcasecmp(buf, "HR") == 0)
+                strcasecmp(buf, "HR") == 0)
             {
                 width     = 0;
                 needspace = 0;                  
@@ -1582,20 +1582,20 @@ void Fl_Simple_Html::format_table(int *table_width, // O - Total table width
             else if (strcasecmp(buf, "TABLE") == 0 && start > table)
                 break;
             else if (strcasecmp(buf, "CENTER") == 0 ||
-                    strcasecmp(buf, "P") == 0 ||
-                    strcasecmp(buf, "H1") == 0 ||
-                    strcasecmp(buf, "H2") == 0 ||
-                    strcasecmp(buf, "H3") == 0 ||
-                    strcasecmp(buf, "H4") == 0 ||
-                    strcasecmp(buf, "H5") == 0 ||
-                    strcasecmp(buf, "H6") == 0 ||
-                    strcasecmp(buf, "UL") == 0 ||
-                    strcasecmp(buf, "OL") == 0 ||
-                    strcasecmp(buf, "DL") == 0 ||
-                    strcasecmp(buf, "LI") == 0 ||
-                    strcasecmp(buf, "DD") == 0 ||
-                    strcasecmp(buf, "DT") == 0 ||
-                    strcasecmp(buf, "PRE") == 0)
+                strcasecmp(buf, "P") == 0 ||
+                strcasecmp(buf, "H1") == 0 ||
+                strcasecmp(buf, "H2") == 0 ||
+                strcasecmp(buf, "H3") == 0 ||
+                strcasecmp(buf, "H4") == 0 ||
+                strcasecmp(buf, "H5") == 0 ||
+                strcasecmp(buf, "H6") == 0 ||
+                strcasecmp(buf, "UL") == 0 ||
+                strcasecmp(buf, "OL") == 0 ||
+                strcasecmp(buf, "DL") == 0 ||
+                strcasecmp(buf, "LI") == 0 ||
+                strcasecmp(buf, "DD") == 0 ||
+                strcasecmp(buf, "DT") == 0 ||
+                strcasecmp(buf, "PRE") == 0)
             {
                 width     = 0;
                 needspace = 0;
@@ -1631,17 +1631,17 @@ void Fl_Simple_Html::format_table(int *table_width, // O - Total table width
                 pushfont(font, size);
             }
             else if (strcasecmp(buf, "/CENTER") == 0 ||
-                    strcasecmp(buf, "/P") == 0 ||
-                    strcasecmp(buf, "/H1") == 0 ||
-                    strcasecmp(buf, "/H2") == 0 ||
-                    strcasecmp(buf, "/H3") == 0 ||
-                    strcasecmp(buf, "/H4") == 0 ||
-                    strcasecmp(buf, "/H5") == 0 ||
-                    strcasecmp(buf, "/H6") == 0 ||
-                    strcasecmp(buf, "/PRE") == 0 ||
-                    strcasecmp(buf, "/UL") == 0 ||
-                    strcasecmp(buf, "/OL") == 0 ||
-                    strcasecmp(buf, "/DL") == 0)
+                strcasecmp(buf, "/P") == 0 ||
+                strcasecmp(buf, "/H1") == 0 ||
+                strcasecmp(buf, "/H2") == 0 ||
+                strcasecmp(buf, "/H3") == 0 ||
+                strcasecmp(buf, "/H4") == 0 ||
+                strcasecmp(buf, "/H5") == 0 ||
+                strcasecmp(buf, "/H6") == 0 ||
+                strcasecmp(buf, "/PRE") == 0 ||
+                strcasecmp(buf, "/UL") == 0 ||
+                strcasecmp(buf, "/OL") == 0 ||
+                strcasecmp(buf, "/DL") == 0)
             {
                 width     = 0;
                 needspace = 0;
@@ -1649,7 +1649,7 @@ void Fl_Simple_Html::format_table(int *table_width, // O - Total table width
                 popfont(font, size);
             }
             else if (strcasecmp(buf, "TR") == 0 || strcasecmp(buf, "/TR") == 0 ||
-                    strcasecmp(buf, "/TABLE") == 0)
+                strcasecmp(buf, "/TABLE") == 0)
             {
                     //printf("%s column = %d, colspan = %d, num_columns = %d\n",
                     //buf, column, colspan, num_columns);
@@ -1679,7 +1679,7 @@ void Fl_Simple_Html::format_table(int *table_width, // O - Total table width
                 incell    = 0;
             }
             else if (strcasecmp(buf, "TD") == 0 ||
-                    strcasecmp(buf, "TH") == 0)
+                strcasecmp(buf, "TH") == 0)
             {
                     //printf("BEFORE column = %d, colspan = %d, num_columns = %d\n",
                     //column, colspan, num_columns);
@@ -1733,16 +1733,16 @@ void Fl_Simple_Html::format_table(int *table_width, // O - Total table width
                     //printf("max_width = %d\n", max_width);
             }
             else if (strcasecmp(buf, "/TD") == 0 ||
-                    strcasecmp(buf, "/TH") == 0)
+                strcasecmp(buf, "/TH") == 0)
             {
                 incell = 0;
                 popfont(font, size);
             }
             else if (strcasecmp(buf, "B") == 0 ||
-                    strcasecmp(buf, "STRONG") == 0)
+                strcasecmp(buf, "STRONG") == 0)
                 pushfont(font->bold(), size);
             else if (strcasecmp(buf, "I") == 0 ||
-                    strcasecmp(buf, "EM") == 0)
+                strcasecmp(buf, "EM") == 0)
                 pushfont(font->italic(), size);
             else if (strcasecmp(buf, "CODE") == 0)
                 pushfont(font = FL_COURIER, size);
@@ -1751,12 +1751,12 @@ void Fl_Simple_Html::format_table(int *table_width, // O - Total table width
             else if (strcasecmp(buf, "VAR") == 0)
                 pushfont(font = FL_COURIER_ITALIC, size);
             else if (strcasecmp(buf, "/B") == 0 ||
-                    strcasecmp(buf, "/STRONG") == 0 ||
-                    strcasecmp(buf, "/I") == 0 ||
-                    strcasecmp(buf, "/EM") == 0 ||
-                    strcasecmp(buf, "/CODE") == 0 ||
-                    strcasecmp(buf, "/KBD") == 0 ||
-                    strcasecmp(buf, "/VAR") == 0)
+                strcasecmp(buf, "/STRONG") == 0 ||
+                strcasecmp(buf, "/I") == 0 ||
+                strcasecmp(buf, "/EM") == 0 ||
+                strcasecmp(buf, "/CODE") == 0 ||
+                strcasecmp(buf, "/KBD") == 0 ||
+                strcasecmp(buf, "/VAR") == 0)
                 popfont(font, size);
             else if (strcasecmp(buf, "IMG") == 0 && incell)
             {
@@ -1921,8 +1921,8 @@ const char *Fl_Simple_Html::get_attr(const char *p,     // I - Pointer to start 
     int        bufsize) // I - Size of buffer
 {
     char    name[255],              // Name from string
-    *ptr,                   // Pointer into name or value
-    quote;                  // Quote
+        *ptr,                   // Pointer into name or value
+        quote;                  // Quote
 
 
     buf[0] = '\0';
@@ -2053,7 +2053,7 @@ Fl_Image *Fl_Simple_Html::get_image(const char *name, int W, int H)
     const char  *localname;     // Local filename
     char        dir[1024];      // Current directory
     char        temp[1024],     // Temporary filename
-    *tempptr;       // Pointer into temporary name
+        *tempptr;       // Pointer into temporary name
     Fl_Image *ip;           // Image pointer...
 
   // See if the image can be found...
@@ -2184,7 +2184,7 @@ int Fl_Simple_Html::handle(int event)   // I - Event to handle
         {
             char dir[1024]; // Current directory
             char temp[1024],    // Temporary filename
-            *tempptr;   // Pointer into temporary filename
+                *tempptr;   // Pointer into temporary filename
 
             if (strchr(directory_, ':') != NULL && strchr(link->filename, ':') == NULL)
             {
@@ -2227,19 +2227,7 @@ int Fl_Simple_Html::handle(int event)   // I - Event to handle
     return 1;
 }
 
-
-//
-// 'Fl_Simple_Html::Fl_Simple_Html()' - Build a Fl_Simple_Html widget.
-//
-Fl_Simple_Html::Fl_Simple_Html(int        xx,   // I - Left position
-    int        yy,  // I - Top position
-    int        ww,  // I - Width in pixels
-    int        hh,  // I - Height in pixels
-    const char *l)
-: Fl_Group(xx, yy, ww, hh, l),
-scrollbar_(ww - SLIDER_WIDTH, yy, SLIDER_WIDTH, hh - SLIDER_WIDTH),
-hscrollbar_(xx, hh - SLIDER_WIDTH, ww - SLIDER_WIDTH, SLIDER_WIDTH)
-{
+void Fl_Simple_Html::ctor_init(int ww,int hh) {
     box(FL_DOWN_BOX);
 
     link_        = (Fl_Help_Func *)0;
@@ -2291,11 +2279,25 @@ hscrollbar_(xx, hh - SLIDER_WIDTH, ww - SLIDER_WIDTH, SLIDER_WIDTH)
     end();
 }
 
+// Traditional ctor
+Fl_Simple_Html::Fl_Simple_Html(int xx,int yy,int ww,int hh,const char *l)
+: Fl_Group(xx, yy, ww, hh, l),
+scrollbar_(ww - SLIDER_WIDTH, yy, SLIDER_WIDTH, hh - SLIDER_WIDTH),
+hscrollbar_(xx, hh - SLIDER_WIDTH, ww - SLIDER_WIDTH, SLIDER_WIDTH)
+{
+    ctor_init(w(),h());
+}
 
-//
-// 'Fl_Simple_Html::~Fl_Simple_Html()' - Destroy a Fl_Simple_Html widget.
-//
+// New style ctor
+Fl_Simple_Html::Fl_Simple_Html(const char* l,int layout_size,Fl_Align layout_al,int label_w) 
+: Fl_Group(l,layout_size,layout_al,label_w),
+scrollbar_(w() - SLIDER_WIDTH, y(), SLIDER_WIDTH, h() - SLIDER_WIDTH),
+hscrollbar_(x(), h() - SLIDER_WIDTH, w() - SLIDER_WIDTH, SLIDER_WIDTH)
+{
+    ctor_init(w(),h());
+}
 
+// Dtor
 Fl_Simple_Html::~Fl_Simple_Html()
 {
     if (nblocks_)
@@ -2354,11 +2356,11 @@ int Fl_Simple_Html::load(const char *f)// I - Filename to load (may also have ta
     }
 
     if (strncmp(localname, "ftp:", 4) == 0 ||
-            strncmp(localname, "http:", 5) == 0 ||
-            strncmp(localname, "https:", 6) == 0 ||
-            strncmp(localname, "ipp:", 4) == 0 ||
-            strncmp(localname, "mailto:", 7) == 0 ||
-            strncmp(localname, "news:", 5) == 0)
+        strncmp(localname, "http:", 5) == 0 ||
+        strncmp(localname, "https:", 6) == 0 ||
+        strncmp(localname, "ipp:", 4) == 0 ||
+        strncmp(localname, "mailto:", 7) == 0 ||
+        strncmp(localname, "news:", 5) == 0)
     {
     // Remote link wasn't resolved...
         snprintf(error, sizeof(error),
