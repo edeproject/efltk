@@ -145,7 +145,7 @@ int main(int argc, char** argv)
 	i++;
     }
     buf[o] = '\0';
-    sprintf(bu, "0x%04X", y * 16, (y+1) * 16);
+    sprintf(bu, "0x%04X", y * 16);
 #ifdef SCROLL
     Fl_Input* b = new Fl_Input(0,(y-off)*25,60,25);
     b->value(bu);
