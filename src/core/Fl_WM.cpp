@@ -1,5 +1,8 @@
 #include <config.h>
 
+#include <efltk/Fl_Window.h>
+#include <efltk/x.h>
+
 #include <efltk/Fl_WM.h>
 
 #ifndef _WIN32
@@ -29,6 +32,7 @@ Atom _XA_NET_ACTIVE_WINDOW = 0;
 Atom _XA_NET_WM_NAME = 0;
 Atom _XA_NET_WM_ICON_NAME = 0;
 Atom _XA_NET_WM_VISIBLE_NAME = 0;
+Atom _XA_NET_WM_VISIBLE_ICON_NAME = 0;
 Atom _XA_NET_WM_DESKTOP = 0;
 
 Atom _XA_NET_DESKTOP_GEOMETRY = 0;
@@ -118,6 +122,7 @@ static struct {
     { &_XA_NET_WM_NAME,         "_NET_WM_NAME" },
     { &_XA_NET_WM_ICON_NAME,    "_NET_WM_ICON_NAME" },
     { &_XA_NET_WM_VISIBLE_NAME, "_NET_WM_VISIBLE_NAME" },
+    { &_XA_NET_WM_VISIBLE_ICON_NAME, "_NET_WM_VISIBLE_ICON_NAME" },
     { &_XA_NET_WM_DESKTOP,      "_NET_WM_DESKTOP" },
 
     { &_XA_NET_WM_WINDOW_TYPE,  "_NET_WM_WINDOW_TYPE" },
@@ -657,8 +662,31 @@ int Fl_WM::get_workspace_names(char **&names)
 static Window action_window=0;
 static int action=0;
 
+static Fl_Int_List handled;
 static Fl_Int_List action_masks;
 static Fl_Callback_List callbacks;
+
+void Fl_WM::clear_handled() {
+    handled.clear();
+}
+
+bool Fl_WM::is_handled(Window w) {
+    return (handled.index_of(w)>-1);
+}
+
+void Fl_WM::unhandle_window(Window w) {
+    handled.remove(w);
+}
+
+void Fl_WM::handle_window(Window w) {
+    if(handled.index_of(w)>-1)
+        return;
+
+    if ( !fl_find( w ) )
+        XSelectInput( fl_display, w, PropertyChangeMask | StructureNotifyMask );
+
+    handled.append(w);
+}
 
 static void do_callback(int mask)
 {
@@ -692,22 +720,38 @@ static int wm_event_handler(int e)
             action = Fl_WM::WINDOW_LIST_STACKING;
         else if(fl_xevent.xproperty.atom==_XA_NET_CLIENT_LIST)
             action = Fl_WM::WINDOW_LIST;
-        else if(fl_xevent.xproperty.atom==_XA_NET_ACTIVE_WINDOW)
+
+        // Active window changed
+        else if(fl_xevent.xproperty.atom==_XA_NET_ACTIVE_WINDOW) {
             action = Fl_WM::WINDOW_ACTIVE;
-        else if(fl_xevent.xproperty.atom==_XA_NET_WM_NAME) {
-            action = Fl_WM::WINDOW_NAME;
         }
+
+        // Window name
+        else if(fl_xevent.xproperty.atom==_XA_NET_WM_NAME || fl_xevent.xproperty.atom==XA_WM_NAME)
+            action = Fl_WM::WINDOW_NAME;
         else if(fl_xevent.xproperty.atom==_XA_NET_WM_VISIBLE_NAME)
-            action = Fl_WM::WINDOW_NAME_VISIBLE;
+            action = Fl_WM::WINDOW_NAME_VIS;
+
+        // Icon name
+        else if(fl_xevent.xproperty.atom==_XA_NET_WM_ICON_NAME || fl_xevent.xproperty.atom==XA_WM_ICON_NAME)
+            action = Fl_WM::WINDOW_ICONNAME;
+        else if(fl_xevent.xproperty.atom==_XA_NET_WM_VISIBLE_ICON_NAME)
+            action = Fl_WM::WINDOW_ICONNAME_VIS;
+
         else if(fl_xevent.xproperty.atom==_XA_NET_WM_DESKTOP)
             action = Fl_WM::WINDOW_DESKTOP;
 
-        do_callback(action);
-
-        // Reset after callback
+        if(action>0) {
+            do_callback(action);
+            // Reset after callback
+            action=0;
+            action_window=0;
+            return 1;
+        }
         action=0;
         action_window=0;
     }
+
     return 0;
 }
 
@@ -716,7 +760,7 @@ void Fl_WM::add_callback(Fl_Callback *cb, void *user_data, int mask)
     init_atoms();
     static bool inited=false;
     if(!inited) {
-        XSelectInput(fl_display, RootWindow(fl_display, fl_screen), PropertyChangeMask | StructureNotifyMask);
+        XSelectInput( fl_display, RootWindow(fl_display, fl_screen), PropertyChangeMask | StructureNotifyMask );
         Fl::add_handler(wm_event_handler);
         inited=true;
     }

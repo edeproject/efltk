@@ -79,19 +79,26 @@ public:
 
     //Actions:
     enum {
-        NONE=0,
-        DESKTOP_COUNT    = 0x0000001,
-        DESKTOP_NAMES    = 0x0000002,
-        DESKTOP_CHANGED  = 0x0000004,
-        DESKTOP_WORKAREA = 0x0000008,
+        NONE = 0,
+        DESKTOP_COUNT    = 1<<0,
+        DESKTOP_NAMES    = 1<<1,
+        DESKTOP_CHANGED  = 1<<2,
+        DESKTOP_WORKAREA = 1<<3,
 
-        WINDOW_LIST          = 0x0001000,
-        WINDOW_LIST_STACKING = 0x0002000,
-        WINDOW_ACTIVE        = 0x0004000,
-        WINDOW_NAME          = 0x0008000,
-        WINDOW_NAME_VISIBLE  = 0x0010000,
-        WINDOW_DESKTOP       = 0x0020000
+        WINDOW_LIST          = 1<<10,
+        WINDOW_LIST_STACKING = 1<<11,
+        WINDOW_ACTIVE        = 1<<12,
+        WINDOW_NAME          = 1<<13,
+        WINDOW_NAME_VIS      = 1<<14,
+        WINDOW_ICONNAME      = 1<<15,
+        WINDOW_ICONNAME_VIS  = 1<<16,
+        WINDOW_DESKTOP       = 1<<17
     };
+
+    static void clear_handled();
+    static bool is_handled(Window w);
+    static void handle_window(Window w);
+    static void unhandle_window(Window w);
 
     // Set callback and action mask, callback is only done, when receiving action defined in mask.
     static void add_callback(Fl_Callback *cb, void *user_data, int action_mask);
