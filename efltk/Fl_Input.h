@@ -51,7 +51,7 @@ public:
     int wordwrap() const { return (type() & WORDWRAP); }
     void wordwrap(int b) { if (b) type(type() | WORDWRAP); else type(type() & ~WORDWRAP); }
 
-	virtual void preferred_size(int& w, int& h) const;
+    virtual void preferred_size(int& w, int& h) const;
 
     virtual void draw();
     virtual void draw(int x, int y, int w, int h);

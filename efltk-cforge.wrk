@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x4003d8
+# %FirstUniqueId:	0x4003da
 PROJECT_DIR = /develop/CVS/efltk/
 
 IDE_WORKING_DIR = /develop/CVS/efltk/
@@ -114,7 +114,6 @@ lib/libefltk.so ::	lib/Fl.o\
 	lib/Fl_Button_Group.o\
 	lib/Fl_Calendar.o\
 	lib/Fl_Check_Button.o\
-	lib/Fl_Check_Buttons.o\
 	lib/Fl_Choice.o\
 	lib/Fl_Clock.o\
 	lib/Fl_Color_Chooser.o\
@@ -177,7 +176,6 @@ lib/libefltk.so ::	lib/Fl.o\
 	lib/Fl_ProgressBar.o\
 	lib/Fl_Query.o\
 	lib/Fl_Radio_Button.o\
-	lib/Fl_Radio_Buttons.o\
 	lib/Fl_Renderer.o\
 	lib/Fl_Repeat_Button.o\
 	lib/Fl_Return_Button.o\
@@ -458,6 +456,9 @@ test/check_buttons ::	test/check_buttons.o
 
 test/radio_buttons ::	test/radio_buttons.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+test/labelwidth2 ::	test/labelwidth2.o
+	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %ObjectFilesLinking
 lib/Fl_ODBC_Database.o : src/db/odbc/Fl_ODBC_Database.cpp
@@ -1508,19 +1509,15 @@ lib/Fl_Button_Group.o : src/widgets/Fl_Button_Group.cpp
 	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
 
 
-lib/Fl_Check_Buttons.o : src/widgets/Fl_Check_Buttons.cpp
-	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
-
-
-lib/Fl_Radio_Buttons.o : src/widgets/Fl_Radio_Buttons.cpp
-	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
-
-
 test/check_buttons.o : test/check_buttons.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
 test/radio_buttons.o : test/radio_buttons.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+test/labelwidth2.o : test/labelwidth2.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
@@ -9217,68 +9214,6 @@ lib/Fl_XmlDoc.o :	src/xml/html_entities.h\
 	efltk/Fl_Map.h\
 	efltk/xml/Fl_Xml.h\
 	efltk/xml/Fl_XmlCtx.h
-lib/Fl_Check_Buttons.o :	efltk/Fl_Check_Buttons.h\
-	efltk/Fl_Button_Group.h\
-	efltk/Fl_String_List.h\
-	efltk/Fl_String.h\
-	efltk/Enumerations.h\
-	efltk/Fl_Export.h\
-	efltk/Fl_Ptr_List.h\
-	efltk/Fl_Button.h\
-	efltk/Fl_Widget.h\
-	efltk/Fl_Data_Source.h\
-	efltk/Fl_Data_Fields.h\
-	efltk/Fl_Flags.h\
-	efltk/Fl_Variant.h\
-	efltk/Fl_Date_Time.h\
-	efltk/Fl_Exception.h\
-	efltk/Fl_Style.h\
-	efltk/Fl_Font.h\
-	efltk/Fl_Int_List.h\
-	efltk/Fl_Labeltype.h\
-	efltk/Fl_Color.h\
-	efltk/Fl_Boxtype.h\
-	efltk/Fl_Input.h\
-	efltk/Fl_Box.h\
-	efltk/Fl_Group.h\
-	efltk/Fl_Widget_List.h\
-	efltk/fl_draw.h\
-	efltk/Fl_Device.h\
-	efltk/Fl_Check_Button.h\
-	efltk/Fl_Round_Button.h\
-	efltk/Fl_Radio_Button.h\
-	efltk/Fl.h
-lib/Fl_Radio_Buttons.o :	efltk/Fl_Radio_Buttons.h\
-	efltk/Fl_Button_Group.h\
-	efltk/Fl_String_List.h\
-	efltk/Fl_String.h\
-	efltk/Enumerations.h\
-	efltk/Fl_Export.h\
-	efltk/Fl_Ptr_List.h\
-	efltk/Fl_Button.h\
-	efltk/Fl_Widget.h\
-	efltk/Fl_Data_Source.h\
-	efltk/Fl_Data_Fields.h\
-	efltk/Fl_Flags.h\
-	efltk/Fl_Variant.h\
-	efltk/Fl_Date_Time.h\
-	efltk/Fl_Exception.h\
-	efltk/Fl_Style.h\
-	efltk/Fl_Font.h\
-	efltk/Fl_Int_List.h\
-	efltk/Fl_Labeltype.h\
-	efltk/Fl_Color.h\
-	efltk/Fl_Boxtype.h\
-	efltk/Fl_Input.h\
-	efltk/Fl_Box.h\
-	efltk/Fl_Group.h\
-	efltk/Fl_Widget_List.h\
-	efltk/fl_draw.h\
-	efltk/Fl_Device.h\
-	efltk/Fl_Check_Button.h\
-	efltk/Fl_Round_Button.h\
-	efltk/Fl_Radio_Button.h\
-	efltk/Fl.h
 test/check_buttons.o :	efltk/Fl_Check_Buttons.h\
 	efltk/Fl_Button_Group.h\
 	efltk/Fl_String_List.h\
@@ -9335,3 +9270,27 @@ test/radio_buttons.o :	efltk/Fl_Radio_Buttons.h\
 	efltk/Fl_Window.h\
 	efltk/Fl.h\
 	config.h
+test/labelwidth2.o :	efltk/Fl_Box.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl.h

@@ -203,6 +203,12 @@ void Fl_Widget::measure_label(int& w, int& h) const
     fl_measure(label().c_str(), w, h, flags);
 }
 
+int Fl_Widget::label_height() const {
+    int w, h;
+    measure_label(w,h);
+    return h;
+}
+
 
 const Fl_Labeltype_* Fl_Labeltype_::find(const char* name)
 {

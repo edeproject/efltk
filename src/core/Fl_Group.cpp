@@ -397,6 +397,7 @@ void Fl_Group::layout()
     // child can turn it back on and subclasses like Fl_Pack can detect that:
     int layout_damage = this->layout_damage();
     int pref_w, pref_h;
+    int label_w, label_h;
     Fl_Widget::layout();
 
     int* p = 0;
@@ -463,9 +464,15 @@ void Fl_Group::layout()
                     if (m_use_preffered_sizes) 
                         o->preferred_size(pref_w,pref_h);
 
-                    o->resize(xx,yy,pref_w,pref_h);
-                    xx += o->w()+offset*2;
-                    ww -= o->w()+offset*2;
+                    label_w = 0;
+                    if (m_use_label_widths) {
+                        label_w = o->label_width();
+                        if (label_w < 0) label_w = 0;
+                    }
+
+                    o->resize(xx+label_w,yy,pref_w,pref_h);
+                    xx += o->w()+label_w+offset*2;
+                    ww -= o->w()+label_w+offset*2;
                     break;
 
                 case FL_ALIGN_RIGHT:
@@ -476,33 +483,59 @@ void Fl_Group::layout()
                     if (m_use_preffered_sizes) 
                         o->preferred_size(pref_w,pref_h);
 
+                    label_w = 0;
+                    if (m_use_label_widths) {
+                        label_w = o->label_width();
+                        if (label_w < 0) label_w = 0;
+                    }
+
                     o->resize(xx+ww-pref_w,yy,pref_w,pref_h);
-                    ww -= o->w()+offset*2;
+                    ww -= o->w()+label_w+offset*2;
                     break;
 
                 case FL_ALIGN_TOP:
                     if(!o->visible()) break;
 
-                    pref_w = ww;
+                    label_w = 0;
+                    if (m_use_label_widths) {
+                        label_w = o->label_width();
+                        if (label_w < 0) label_w = 0;
+                    }
+
+                    pref_w = ww - label_w;
                     pref_h = o->h();
                     if (m_use_preffered_sizes) 
                         o->preferred_size(pref_w,pref_h);
 
-                    o->resize(xx,yy,pref_w,pref_h);
-                    yy += o->h()+offset*2;
-                    hh -= o->h()+offset*2;
+                    label_h = o->label_height();
+                    if (label_h < o->h())
+                        label_h = o->h();
+
+                    o->resize(xx+label_w,yy,pref_w,pref_h);
+                    yy += label_h+offset*2;
+                    hh -= label_h+offset*2;
                     break;
 
                 case FL_ALIGN_BOTTOM:
                     if(!o->visible()) break;
 
-                    pref_w = ww;
+                    label_w = 0;
+                    if (m_use_label_widths) {
+                        label_w = o->label_width();
+                        if (label_w < 0) label_w = 0;
+                    }
+
+                    pref_w = ww - label_w;
                     pref_h = o->h();
                     if (m_use_preffered_sizes) 
                         o->preferred_size(pref_w,pref_h);
 
-                    o->resize(xx,yy+hh-pref_h,pref_w,pref_h);
-                    hh -= o->h()+offset*2;
+                    label_h = o->label_height();
+                    if (label_h < o->h())
+                        label_h = o->h();
+
+                    o->resize(xx+label_w,yy+hh-label_h,pref_w,pref_h);
+                    hh -= label_h+offset*2;
                     break;
 
                 case FL_ALIGN_CLIENT:
