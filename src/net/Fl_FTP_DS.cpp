@@ -122,25 +122,42 @@ Fl_Data_Fields *parse_file_info_string(Fl_String& file_info) {
     bool  is_executable = false;
 
     Fl_Date_Time dt;
-    const Fl_Image *pixmapPtr = &documentPixmap;
-
-    ptr = next_dir_item(ptr,&permissions);
+    const Fl_Image *pixmapPtr = &documentPixmap;    
 
     if (isdigit(*ptr)) {
         // MS Dos style
         date = ptr;
-        ptr = next_dir_item(ptr,&time);
+		char *dtime = 0L;
+
+        ptr = next_dir_item(ptr,&time);		
+		ptr = next_dir_item(ptr, &dtime);
+		
         ptr = next_dir_item(ptr,&size);
+
         if (strstr(size,"DIR"))
             is_directory = true;
         time[2] = 0;
         time[5] = 0;
-        int month = atoi(time);
-        int day = atoi(time+3);
-        int year = atoi(time+6);
-        Fl_Date_Time dosDate(year,month,day);
+
+        int month	= strtol(time, NULL, 10);
+        int day		= strtol(time+3, NULL, 10);
+        int year	= strtol(time+6, NULL, 10);
+
+		bool pm = false;
+		if(strstr(dtime, "PM")) pm = true;
+		dtime[2] = 0;
+		dtime[5] = 0;
+		int hour	= strtol(dtime, NULL, 10);
+		int min		= strtol(dtime+3, NULL, 10);		
+		if(pm) hour+=12;
+
+		if(year<50) year+=2000;
+		else year+=1900;
+
+        Fl_Date_Time dosDate(year, month, day, hour, min);
         dt = dosDate;
     } else {
+		ptr = next_dir_item(ptr,&permissions);	
         // Unix style
         if (permissions[0] == 'd')
             is_directory = true;
