@@ -38,8 +38,8 @@
   <OPTIONS>
     <IDLCFLAGS value="-I..\test -I$(BCB)\include -I$(BCB)\include\vcl -I\efltk -src_suffix cpp 
       -D_DEBUG -D_WIN32 -boa"/>
-    <CFLAG1 value="-vGc -vGt -vGd -Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a4 -5 -b 
-      -k -y -v -vi- -tWC -tWM- -c"/>
+    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a4 -5 -b -k -y -v -vi- 
+      -tWC -tWM- -c"/>
     <PFLAGS value="-N2\efltk\bcb6\obj -N0\efltk\bcb6\obj -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
@@ -49,7 +49,7 @@
   <LINKER>
     <ALLOBJ value="c0x32.obj $(PACKAGES) $(OBJFILES)"/>
     <ALLRES value="$(RESFILES)"/>
-    <ALLLIB value="cg32.lib $(LIBFILES) $(LIBRARIES) import32.lib cw32i.lib"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cw32i.lib"/>
     <OTHERFILES value=""/>
   </LINKER>
   <FILELIST>
@@ -141,7 +141,7 @@ RemoteDebug=0
 [Compiler]
 ShowInfoMsgs=0
 LinkDebugVcl=0
-LinkCGLIB=1
+LinkCGLIB=0
 
 [CORBA]
 AddServerUnit=1

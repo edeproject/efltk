@@ -85,8 +85,8 @@
     <IDLCFLAGS value="-I..\src\net -I..\src\db -I..\src\db\odbc -I..\src\widgets -I..\src\core 
       -I$(BCB)\include -I$(BCB)\include\vcl -I. -I.. -src_suffix cpp -D_WIN32 
       -DWIN32 -D_DEBUG -boa"/>
-    <CFLAG1 value="-vGc -vGt -vGd -Od -H=obj\efltk.csm -Hc -P -Vx -Ve -xf -X- -r- -a4 -5 -b 
-      -d -k -y -v -vi- -c -tW -tWM"/>
+    <CFLAG1 value="-Od -H=obj\efltk.csm -Hc -P -Vx -Ve -xf -X- -r- -a4 -5 -b -d -k -y -v -vi- 
+      -c -tW -tWM"/>
     <PFLAGS value="-N2..\bcb6\obj -N0..\bcb6\obj -$Y+ -$W -$O- -$A8 -v -JPHNE -M"/>
     <AFLAGS value="/mx /w2 /zi"/>
     <LFLAGS value="-l..\lib /P256"/>
@@ -389,7 +389,7 @@ RemoteDebug=0
 [Compiler]
 ShowInfoMsgs=0
 LinkDebugVcl=0
-LinkCGLIB=1
+LinkCGLIB=0
 
 [CORBA]
 AddServerUnit=1

@@ -9,9 +9,9 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = libefltk.lib arc.exe ask.exe bitmap.exe boxtype.exe button.exe \
-  browser.exe button.exe buttons.exe calendar.exe checkers.exe clock.exe \
-  listview.exe db_odbc.exe script_reader.exe europe_store.exe
+PROJECTS = libefltk.lib arc.exe ask.exe bitmap.exe boxtype.exe browser.exe \
+  button.exe buttons.exe calendar.exe checkers.exe clock.exe listview.exe \
+  db_odbc.exe
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -48,10 +48,6 @@ browser.exe: browser.bpr
   $(ROOT)\bin\bpr2mak $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-button.exe: button.bpr
-  $(ROOT)\bin\bpr2mak $**
-  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
-
 buttons.exe: buttons.bpr
   $(ROOT)\bin\bpr2mak $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
@@ -73,14 +69,6 @@ listview.exe: listview.bpr
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
 db_odbc.exe: db_odbc.bpr
-  $(ROOT)\bin\bpr2mak $**
-  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
-
-script_reader.exe: ..\..\develop\scriptreader\script_reader.bpr
-  $(ROOT)\bin\bpr2mak $**
-  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
-
-europe_store.exe: ..\..\develop\europe_store\bcb\europe_store.bpr
   $(ROOT)\bin\bpr2mak $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 

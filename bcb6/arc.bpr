@@ -38,8 +38,8 @@
   <OPTIONS>
     <IDLCFLAGS value="-I..\test -I$(BCB)\include -I$(BCB)\include\vcl -I\efltk -src_suffix cpp 
       -D_DEBUG -D_WIN32 -boa"/>
-    <CFLAG1 value="-vGc -vGt -vGd -Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a4 -5 -b 
-      -k -y -v -vi- -tWC -tWM- -c"/>
+    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a4 -5 -b -k -y -v -vi- 
+      -tWC -tWM- -c"/>
     <PFLAGS value="-N2..\bcb6\obj -N0..\bcb6\obj -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
@@ -49,7 +49,7 @@
   <LINKER>
     <ALLOBJ value="c0x32.obj $(PACKAGES) $(OBJFILES)"/>
     <ALLRES value="$(RESFILES)"/>
-    <ALLLIB value="cg32.lib $(LIBFILES) $(LIBRARIES) import32.lib cw32i.lib"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cw32i.lib"/>
     <OTHERFILES value=""/>
   </LINKER>
   <FILELIST>
@@ -89,9 +89,6 @@ ProductName=
 ProductVersion=1.0.0.0
 Comments=
 
-[Excluded Packages]
-c:\bcb6\Bin\dclite60.bpl=Borland Integrated Translation Environment
-
 [HistoryLists\hlIncludePath]
 Count=5
 Item0=..\test;$(BCB)\include;$(BCB)\include\vcl;\efltk
@@ -123,10 +120,11 @@ Item1=\efltk\bcb6\obj
 Item2=R:\efltk\bcb6\obj
 
 [HistoryLists\hlFinalOutputDir]
-Count=3
-Item0=..
-Item1=\efltk\
-Item2=R:\efltk\
+Count=4
+Item0=..\
+Item1=..
+Item2=\efltk\
+Item3=R:\efltk\
 
 [Debugging]
 DebugSourceDirs=$(BCB)\source\vcl
@@ -146,7 +144,7 @@ RemoteDebug=0
 [Compiler]
 ShowInfoMsgs=0
 LinkDebugVcl=0
-LinkCGLIB=1
+LinkCGLIB=0
 
 [CORBA]
 AddServerUnit=1
