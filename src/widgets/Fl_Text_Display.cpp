@@ -1090,7 +1090,7 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
 */
 void Fl_Text_Display::draw_string( int style, int X, int Y, int toX,
                                    const char *string, int nChars ) {
-  Style_Table_Entry * styleRec;
+    Style_Table_Entry * styleRec=0;
 
   /* Draw blank area rather than text, if that was the request */
   if ( style & FILL_MASK ) {
@@ -1143,7 +1143,7 @@ void Fl_Text_Display::draw_string( int style, int X, int Y, int toX,
   fl_font( font, size );
   fl_draw( string, nChars, X, Y + mMaxsize - fl_descent());
 
-  if(styleRec->attr==ATTR_UNDERLINE)
+  if(styleRec && styleRec->attr==ATTR_UNDERLINE)
       fl_line(X, mMaxsize, toX - X, mMaxsize);
 
   // CET - FIXME
