@@ -179,8 +179,10 @@
    very good way to speed up all image operations, but it make
    binary ~80Kb bigger.
 */
-#define USE_DUFFS_LOOP 1
+#define USE_DUFFS_LOOP 0
 
+/* Disables all assembly code inside Efltk library. */
+#define DISABLE_ASM 0
 
 /*
  * End of "$Id$".

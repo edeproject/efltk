@@ -58,19 +58,10 @@ dnl# it.
 
 LD="\${CXX}"
 LDLIBS="-lX11 -lXext -lm"
-FLCORELIB="../lib/libefltk_core${LIBEXT}"
-FLUILIB="../lib/libefltk_ui${LIBEXT}"
-FLGLLIB="../lib/libefltk_gl${LIBEXT}"
-FLGLUTLIB="../lib/libefltk_glut${LIBEXT}"
-FLFORMSLIB="../lib/libefltk_forms${LIBEXT}"
-FLIMAGESLIB="../lib/libefltk_images${LIBEXT}"
+
 DSOEXT=".so.2"
 DSOSHORTEXT=".so"
-BUILDTARGETS="static programs"
-INSTALLTARGETS="install_static install_programs"
 DEBUGFLAG=""
-CFLAGS="${CFLAGS:=}"
-CXXFLAGS="${CXXFLAGS:=}"
 SYSTYPE="UNIX"
 DSOCOMMAND=""
 THEMECOMMAND=""
@@ -84,12 +75,12 @@ AC_ARG_ENABLE(xft, [  --enable-xft            enable XWindow XFT extension],[if 
 	AC_DEFINE(USE_XFT)
 fi])
 
-AC_ARG_ENABLE(cmap, [  --enable-cmap            enable support for 8bit displays],[if eval "test x$enable_cmap = xyes"; then
+AC_ARG_ENABLE(cmap, [  --enable-cmap           enable support for 8bit displays],[if eval "test x$enable_cmap = xyes"; then
 	AC_DEFINE(USE_COLORMAP)
 fi])
 
 AC_ARG_ENABLE(debug, [  --enable-debug          compile with debug rather than optimized],[if eval "test x$enable_debug = xyes"; then
-    DEBUGFLAG="-g3 "
+	DEBUGFLAG="-g3 "
 fi])
 
 case $uname in
@@ -133,19 +124,17 @@ case $uname in
 	  ;;
 esac
 
-AC_ARG_ENABLE(shared, [  --enable-shared         created shared libraries])
-if test x$enable_shared = xyes; then
-    BUILDTARGETS="shared programs"
-    INSTALLTARGETS="install_shared install_programs"
-    FLCORELIB="../lib/libefltk_core${DSOEXT}"
-    FLUILIB="../lib/libefltk_ui${DSOEXT}"
-    FLGLLIB="../lib/libefltk_gl${DSOEXT}"
-    FLGLUTLIB="../lib/libefltk_glut${DSOEXT}"
-    FLFORMSLIB="../lib/libefltk_forms${DSOEXT}"
-    FLIMAGESLIB="../lib/libefltk_images${DSOEXT}"
-    CFLAGS="-DFL_SHARED $CFLAGS"
-    CXXFLAGS="-DFL_SHARED $CXXFLAGS"
-    case $uname in
+BUILDTARGETS="shared programs"
+INSTALLTARGETS="install_shared install_programs"
+FLCORELIB="../lib/libefltk_core${DSOEXT}"
+FLUILIB="../lib/libefltk_ui${DSOEXT}"
+FLGLLIB="../lib/libefltk_gl${DSOEXT}"
+FLGLUTLIB="../lib/libefltk_glut${DSOEXT}"
+FLFORMSLIB="../lib/libefltk_forms${DSOEXT}"
+FLIMAGESLIB="../lib/libefltk_images${DSOEXT}"
+CFLAGS="-DFL_SHARED $CFLAGS"
+CXXFLAGS="-DFL_SHARED $CXXFLAGS"
+case $uname in
 	WIN32)
 	    FLCORELIB="../lib/libefltk_core.2.dll.a"
 	    FLUILIB="../lib/libefltk_ui.2.dll.a"
@@ -153,11 +142,22 @@ if test x$enable_shared = xyes; then
 	    FLGLUTLIB="../lib/libefltk_glut.2.dll.a"
 	    FLFORMSLIB="../lib/libefltk_forms.2.dll.a"
 	    FLIMAGESLIB="../lib/libefltk_images.2.dll.a"
-	    ;;
-    esac
-fi
+	;;
+esac
 
-AC_ARG_ENABLE(opengl, [  --enable-opengl        turn on OpenGL support [default=yes]])
+AC_ARG_ENABLE(static, [  --enable-static         create static libraries])
+if test x$enable_static = xyes; then
+	BUILDTARGETS="static programs"
+	INSTALLTARGETS="install_static install_programs"
+	FLCORELIB="../lib/libefltk_core${LIBEXT}"
+	FLUILIB="../lib/libefltk_ui${LIBEXT}"
+	FLGLLIB="../lib/libefltk_gl${LIBEXT}"
+	FLGLUTLIB="../lib/libefltk_glut${LIBEXT}"
+	FLFORMSLIB="../lib/libefltk_forms${LIBEXT}"
+	FLIMAGESLIB="../lib/libefltk_images${LIBEXT}"
+	CFLAGS="${CFLAGS:=}"
+	CXXFLAGS="${CXXFLAGS:=}"
+fi
 
 AC_SUBST(LD)
 AC_SUBST(LDLIBS)
@@ -257,6 +257,7 @@ CFLAGS="$CFLAGS$X_CFLAGS"
 CXXFLAGS="$CXXFLAGS$X_CFLAGS"
 
 dnl# Test for libGL or libMesaGL
+AC_ARG_ENABLE(opengl, [  --enable-opengl         turn on OpenGL support [default=yes]])
 GLLIB=
 if test x$enable_opengl != xno; then
     if test "$uname" = "WIN32"
@@ -304,11 +305,34 @@ if test "$ac_cv_have_overlay" = yes; then
     AC_DEFINE(HAVE_OVERLAY)
 fi
 
-AC_ARG_ENABLE(threads, [  --disable-threads       dont require mt libraries],,enable_threads=yes)
-
 dnl See if we need a .exe extension on executables...
 AC_EXEEXT
 
+AC_ARG_ENABLE(plugins, [  --enable-plugins        enable FLTK plug-in support])
+have_dlopen=no
+if test x$enable_plugins != xno; then
+  AC_CHECK_LIB(c, dlopen, \
+     have_dlopen=yes,
+     AC_CHECK_LIB(dl, dlopen, \
+      LDLIBS="$LDLIBS -ldl" GLDLIBS="$GLDLIBS -ldl" have_dlopen=yes,,),
+  )
+fi
+
+if test x$have_dlopen = xyes; then
+    AC_DEFINE(HAVE_DLOPEN)
+fi
+
+AC_ARG_ENABLE(asm, [  --disable-asm           disable all ASM code inside efltk lib],,enable_asm=yes)
+if test "$enable_asm" != yes; then
+        AC_DEFINE(DISABLE_ASM)
+fi
+
+AC_ARG_ENABLE(duffs, [  --disable-duffs         disable duffs looping optimization, make lib ~80kb smaller],,enable_duffs=yes)
+if test "$enable_duffs" = yes; then
+	AC_DEFINE(USE_DUFFS_LOOP)
+fi
+
+AC_ARG_ENABLE(threads, [  --disable-threads       dont require mt libraries],,enable_threads=yes)
 have_pthread=no
 if test "$enable_threads" = yes; then
   AC_CHECK_LIB(c, pthread_create, \
@@ -325,20 +349,6 @@ if test "$have_pthread" = yes; then
 fi
 AC_SUBST(THREADSLIBS)
 
-AC_ARG_ENABLE(plugins, [  --enable-plugins       enable FLTK plug-in support])
-
-have_dlopen=no
-if test x$enable_plugins != xno; then
-  AC_CHECK_LIB(c, dlopen, \
-     have_dlopen=yes,
-     AC_CHECK_LIB(dl, dlopen, \
-      LDLIBS="$LDLIBS -ldl" GLDLIBS="$GLDLIBS -ldl" have_dlopen=yes,,),
-  )
-fi
-
-if test x$have_dlopen = xyes; then
-    AC_DEFINE(HAVE_DLOPEN)
-fi
 
 MAKEDEPEND="\${CXX} -M"
 
