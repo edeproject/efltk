@@ -315,8 +315,8 @@ int write_code(const char *s, const char *t)
 		define_name += '_';
 		while (*a) { define_name += isalnum(*a) ? toupper(*a) : '_'; a++; }
 		define_name += '_';
-		fprintf(header_file, "#ifndef %s\n", define_name);
-		fprintf(header_file, "#define %s\n\n", define_name);
+		fprintf(header_file, "#ifndef %s\n", define_name.c_str());
+		fprintf(header_file, "#define %s\n\n", define_name.c_str());
 	}  
 
 	write_declare("#include <efltk/Fl.h>");

@@ -437,7 +437,7 @@ REUSE_C:
 		{
 			Fl_Type *t = Fl_Type_make(c);
 			if (!t) {
-				read_error("Unknown word \"%s\"", c);
+				read_error("Unknown word \"%s\"", c.c_str());
 				continue;
 			}
 			t->name(read_word());

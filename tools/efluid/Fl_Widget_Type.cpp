@@ -1146,7 +1146,7 @@ void align_cb(Fl_Button* i, void *v)
 
 void layoutspacing_cb(Fl_Value_Input* i, void *v) 
 {
-	int b = (int)i->value();
+	//int b = (int)i->value();
 
 	Fl_Group *g=0;
 
@@ -1906,7 +1906,7 @@ void Fl_Widget_Type::write_code1()
     }
     write_c(indent());
     if (varused) write_c("%s%s* o = ", get_opening_brace(0), subclass);
-    if (!name().empty()) write_c("%s = ", name());
+    if (!name().empty()) write_c("%s = ", name().c_str());
     if (is_window()) {
         if (set_xy && strcmp(subclass,"Fl_Group")!=0)
             write_c("new %s(%d, %d", subclass, o->w(), o->h());
@@ -2045,7 +2045,7 @@ void Fl_Widget_Type::write_widget_code()
 
     if(!callback().empty()) {
         write_c("%so->callback((Fl_Callback*)%s", indent(), callback_name());
-        if(!ud.empty())	write_c(", (void*)(%s));\n", ud);
+        if(!ud.empty())	write_c(", (void*)(%s));\n", ud.c_str());
         else			write_c(");\n");
     } else if(!ud.empty()) {
         write_c("%so->user_data((void*)(%s));\n", indent(), ud.c_str());
@@ -2124,7 +2124,7 @@ void Fl_Widget_Type::write_strings(FILE *fp)
 
     if(!w->label().empty()) 
 	{
-        char s;
+        //char s;
         fputs("msgid \"", fp);
 		put_string(w->label(), fp);
         fputs("\"\n", fp);
@@ -2391,7 +2391,7 @@ void Fl_Widget_Type::read_property(const Fl_String &c)
 		// back compatability with 1.0 and Vincent's original graphical patch
         if(c=="image" || c=="image_file") { 
             Fluid_Image *i = Fluid_Image::find(label());
-            if (!i) read_error("Image file '%s' not found", label());
+            if (!i) read_error("Image file '%s' not found", label().c_str());
             setimage(i); 
 			label("");
             if(c=="image_file") {
@@ -2414,7 +2414,7 @@ void Fl_Widget_Type::read_property(const Fl_String &c)
         }
         Fluid_Image *i = Fluid_Image::find(c);
         if(!inlined) i->inlined = 0;
-        if (!i) read_error("Image file '%s' not found", c);
+        if (!i) read_error("Image file '%s' not found", c.c_str());
         setimage(i);
     } 
 	else if(c=="color" || c=="text_background" || c=="off_color" || c=="window_color") {

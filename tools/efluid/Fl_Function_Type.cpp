@@ -561,7 +561,7 @@ void Fl_CodeBlock_Type::write_code()
 	for (Fl_Type* q = first_child; q; q = q->next_brother) q->write_code();
 	indentation -= 2;
 
-	if(!after.empty())	write_c("%s} %s\n", indent(), after);
+	if(!after.empty())	write_c("%s} %s\n", indent(), after.c_str());
 	else				write_c("%s}\n", indent());
 }
 

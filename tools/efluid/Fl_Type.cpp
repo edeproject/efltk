@@ -632,7 +632,7 @@ void Fl_Type::read_property(const Fl_String &c) {
   else if (!strcmp(c,"selected"))
     select(this,1);
   else
-    read_error("Unknown property \"%s\"", c);
+    read_error("Unknown property \"%s\"", c.c_str());
 }
 
 //
