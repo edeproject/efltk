@@ -38,6 +38,9 @@ Fl_ListView_Item::Fl_ListView_Item(const char *label1,
 
 Fl_ListView_Item::~Fl_ListView_Item()
 {
+	for(uint n=0; n<attr_list.size(); n++) {
+		delete (Fl_ListItem_Attr *)attr_list[n];
+    }
 }
 
 void Fl_ListView_Item::redraw(uchar c) 

@@ -15,6 +15,14 @@
 #include <wince.h>
 #endif
 
+#ifndef _WIN32
+# include <sys/types.h>
+# include <sys/wait.h>
+# include <unistd.h>
+# include <errno.h>
+# include <fcntl.h>
+#endif
+
 #define append_num(ftype, fmt, type) \
     ftype = va_arg(ap, type); \
     sprintf(tmpnum, fmt, ftype); \
