@@ -30,8 +30,15 @@
 #include <string.h>
 #include <sys/types.h>
 #include <time.h>
-#include <math.h>
+
+#include <efltk/math.h>
 #include <efltk/Fl.h>
+#include <efltk/fl_ask.h>
+
+#include <config.h>
+
+#if HAVE_GL
+
 #include <efltk/Fl_Gl_Window.h>
 #include <efltk/gl.h>
 #include <GL/glu.h>
@@ -1695,6 +1702,16 @@ main(int argc, char **argv)
   menu_table->add_to(menu);
   return Fl::run();
 }
+
+#else
+
+int main(int argc, char **argv)
+{
+    fl_alert("This demo needs OpenGL support!");
+    return Fl::run();
+}
+
+#endif
 
 //
 // End of "$Id$".
