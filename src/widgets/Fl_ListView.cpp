@@ -91,10 +91,28 @@ Fl_ListView_Item *Fl_ListView::find_text(const char *text, uint column, uint sta
 
 static int scol=-1;
 static int stype=-1;
-static int fl_listview_sort(const void *w1, const void *w2) {
+static int fl_listview_sort_strings(const void *w1, const void *w2) {
     Fl_ListView_Item *i1 = *(Fl_ListView_Item **)w1;
     Fl_ListView_Item *i2 = *(Fl_ListView_Item **)w2;
-    return i1->compare(i2, scol, stype);    
+    return i1->compare_strings(i2, scol, stype);    
+}
+
+static int fl_listview_sort_integers(const void *w1, const void *w2) {
+    Fl_ListView_Item *i1 = *(Fl_ListView_Item **)w1;
+    Fl_ListView_Item *i2 = *(Fl_ListView_Item **)w2;
+    return i1->compare_integers(i2, scol, stype);    
+}
+
+static int fl_listview_sort_floats(const void *w1, const void *w2) {
+    Fl_ListView_Item *i1 = *(Fl_ListView_Item **)w1;
+    Fl_ListView_Item *i2 = *(Fl_ListView_Item **)w2;
+    return i1->compare_floats(i2, scol, stype);    
+}
+
+static int fl_listview_sort_dates(const void *w1, const void *w2) {
+    Fl_ListView_Item *i1 = *(Fl_ListView_Item **)w1;
+    Fl_ListView_Item *i2 = *(Fl_ListView_Item **)w2;
+    return i1->compare_dates(i2, scol, stype);    
 }
 
 // Returns sort type: ASC, DESC, ABSOLUTE
@@ -108,7 +126,20 @@ int Fl_ListView::sort(int column)
 
     scol = column;
     stype = sort_type_;
-    items.sort(fl_listview_sort);
+    switch (column_type(column)) {
+        case VAR_INT:
+            items.sort(fl_listview_sort_integers);
+            break;
+        case VAR_FLOAT:
+            items.sort(fl_listview_sort_floats);
+            break;
+        case VAR_DATETIME:
+            items.sort(fl_listview_sort_dates);
+            break;
+        default:
+            items.sort(fl_listview_sort_strings);
+            break;
+    }
 
     calc_total_h = true;
     relayout();

@@ -7,10 +7,10 @@
 #include <stdlib.h>
 
 Fl_ListView_Item::Fl_ListView_Item(const char *label1,
-                                   const char *label2,
-                                   const char *label3,
-                                   const char *label4,
-                                   const char *label5)
+    const char *label2,
+    const char *label3,
+    const char *label4,
+    const char *label5)
 {
     user_data_ = 0;
     image_  = 0;
@@ -38,41 +38,89 @@ Fl_ListView_Item::Fl_ListView_Item(const char *label1,
 
 Fl_ListView_Item::~Fl_ListView_Item()
 {
-	for(uint n=0; n<attr_list.size(); n++) {
-		delete (Fl_ListItem_Attr *)attr_list[n];
+    for(uint n=0; n<attr_list.size(); n++) {
+        delete (Fl_ListItem_Attr *)attr_list[n];
     }
 }
 
 void Fl_ListView_Item::redraw(uchar c) 
 { 
-   damage_ = c;
-   if(parent()) parent()->redraw(FL_DAMAGE_CHILD);
+    damage_ = c;
+    if(parent()) parent()->redraw(FL_DAMAGE_CHILD);
 }
 
 Fl_ListItem_Attr *Fl_ListView_Item::create_attr(int col)
 {
-   Fl_ListItem_Attr *a = new Fl_ListItem_Attr;
-   a->col_width = 0;
-   return a;
+    Fl_ListItem_Attr *a = new Fl_ListItem_Attr;
+    a->col_width = 0;
+    return a;
 }
 
 void Fl_ListView_Item::add_attr(int col)
 {
-   attr_list[col] = create_attr(col);
+    attr_list[col] = create_attr(col);
 }
 
-int Fl_ListView_Item::compare(Fl_ListView_Item *other, int column, int sort_type)
+int Fl_ListView_Item::compare_strings(Fl_ListView_Item *other, int column, int sort_type)
 {
     const Fl_String &txt = label(column);
     const Fl_String &other_txt = other->label(column);
 
     switch(sort_type) {
-    case Fl_ListView::SORT_ASC:
-		return strcmp(txt.c_str(), other_txt.c_str());
-    case Fl_ListView::SORT_DESC:
-        return strcmp(other_txt.c_str(), txt.c_str());
-    default:
-        break;
+        case Fl_ListView::SORT_ASC:
+            return strcmp(txt.c_str(), other_txt.c_str());
+        case Fl_ListView::SORT_DESC:
+            return strcmp(other_txt.c_str(), txt.c_str());
+        default:
+            break;
+    }
+    return index()-other->index();
+}
+
+int Fl_ListView_Item::compare_integers(Fl_ListView_Item *other, int column, int sort_type)
+{
+    const Fl_String &txt = label(column);
+    const Fl_String &other_txt = other->label(column);
+
+    switch(sort_type) {
+        case Fl_ListView::SORT_ASC:
+            return atoi(txt.c_str()) > atoi(other_txt.c_str());
+        case Fl_ListView::SORT_DESC:
+            return atoi(txt.c_str()) < atoi(other_txt.c_str());
+        default:
+            break;
+    }
+    return index()-other->index();
+}
+
+int Fl_ListView_Item::compare_floats(Fl_ListView_Item *other, int column, int sort_type)
+{
+    const Fl_String &txt = label(column);
+    const Fl_String &other_txt = other->label(column);
+
+    switch(sort_type) {
+        case Fl_ListView::SORT_ASC:
+            return atof(txt.c_str()) > atof(other_txt.c_str());
+        case Fl_ListView::SORT_DESC:
+            return atof(txt.c_str()) < atof(other_txt.c_str());
+        default:
+            break;
+    }
+    return index()-other->index();
+}
+
+int Fl_ListView_Item::compare_dates(Fl_ListView_Item *other, int column, int sort_type)
+{
+    const Fl_String &txt = label(column);
+    const Fl_String &other_txt = other->label(column);
+
+    switch(sort_type) {
+        case Fl_ListView::SORT_ASC:
+            return Fl_Date_Time(txt.c_str()) > Fl_Date_Time(other_txt.c_str());
+        case Fl_ListView::SORT_DESC:
+            return Fl_Date_Time(txt.c_str()) < Fl_Date_Time(other_txt.c_str());
+        default:
+            break;
     }
     return index()-other->index();
 }
@@ -143,7 +191,7 @@ void Fl_ListView_Item::draw_cell(int col, int w, bool sel)
         //if(strchr(txt, '\n')) txt = fl_cut_multiline(txt, w-iw-6);
         //else txt = fl_cut_line(txt, w-iw-6);
 
-		fl_draw(txt, X, 0, W-X, H, (f & FL_ALIGN_MASK) );
+        fl_draw(txt, X, 0, W-X, H, (f & FL_ALIGN_MASK) );
     }
     fl_pop_clip();
 }
@@ -214,16 +262,16 @@ void Fl_ListView_Item::label(int col, const Fl_String &text)
 ///////////////////////////////////////////
 
 Fl_ListView_ItemExt::Fl_ListView_ItemExt(const char *label1,
-                                         const char *label2,
-                                         const char *label3,
-                                         const char *label4,
-                                         const char *label5)
+    const char *label2,
+    const char *label3,
+    const char *label4,
+    const char *label5)
 : Fl_ListView_Item(0,0,0,0,0)
 {
-	if(parent())
-		leading_ = parent()->leading();
-	else
-		leading_ = 1;
+    if(parent())
+        leading_ = parent()->leading();
+    else
+        leading_ = 1;
 
     int cols = 0;
     if(label5) cols=5;
@@ -251,11 +299,11 @@ Fl_ListItem_Attr *Fl_ListView_ItemExt::create_attr(int col)
     a->col_label = 0;
     a->col_width = 0;
     a->col_image = 0;
-    a->col_flags		= parent() ? parent()->column_flags(col)	: FL_ALIGN_LEFT;
-    a->col_font			= parent() ? parent()->text_font()			: Fl_Widget::default_style->text_font;
-    a->col_font_size	= parent() ? parent()->text_size()			: Fl_Widget::default_style->text_size;
-    a->col_color		= parent() ? parent()->text_color()			: Fl_Widget::default_style->text_color;
-    a->col_label_type	= parent() ? parent()->label_type()			: Fl_Widget::default_style->label_type;
+    a->col_flags        = parent() ? parent()->column_flags(col)    : FL_ALIGN_LEFT;
+    a->col_font         = parent() ? parent()->text_font()          : Fl_Widget::default_style->text_font;
+    a->col_font_size    = parent() ? parent()->text_size()          : Fl_Widget::default_style->text_size;
+    a->col_color        = parent() ? parent()->text_color()         : Fl_Widget::default_style->text_color;
+    a->col_label_type   = parent() ? parent()->label_type()         : Fl_Widget::default_style->label_type;
     return a;
 }
 
@@ -452,7 +500,7 @@ void Fl_ListView_ItemExt::draw_label(const char *label, int X, int Y, int W, int
     if (flags&FL_SELECTED)
         color = parent()->selection_text_color();
     else if (flags&FL_HIGHLIGHT && (color = parent()->highlight_label_color()))
-        ;
+    ;
     else
         color = a->col_color;
 
@@ -469,7 +517,7 @@ void Fl_ListView_ItemExt::draw_label(const char *label, int X, int Y, int W, int
             // If all the flags are off, draw the image and label centered "nicely"
             // by measuring their total size and centering that rectangle:
             if (!(flags & (FL_ALIGN_LEFT|FL_ALIGN_RIGHT|FL_ALIGN_TOP|FL_ALIGN_BOTTOM|
-                           FL_ALIGN_INSIDE)) && label)
+                            FL_ALIGN_INSIDE)) && label)
             {
                 int d = (H-int(h+fl_height()))>>1;
                 if (d >= 0)

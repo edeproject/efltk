@@ -97,7 +97,10 @@ public:
     void index(int i) { index_ = i; }
     int index() const { return index_; }
 
-    virtual int compare(Fl_ListView_Item *other, int column, int sort_type);
+    virtual int compare_strings(Fl_ListView_Item *other, int column, int sort_type);
+    virtual int compare_integers(Fl_ListView_Item *other, int column, int sort_type);
+    virtual int compare_floats(Fl_ListView_Item *other, int column, int sort_type);
+    virtual int compare_dates(Fl_ListView_Item *other, int column, int sort_type);
 
 protected:
     Fl_Ptr_List attr_list;
