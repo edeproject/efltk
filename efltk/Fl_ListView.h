@@ -164,8 +164,8 @@ public:
     void remove_column(unsigned index);
     void clear_columns();
 
-    Fl_ListView_Column *column(unsigned c) { return m_columns[c]; }
-    const Fl_ListView_Column *column(unsigned c) const { return m_columns[c]; }
+    Fl_ListView_Column *column(unsigned c) { return m_columns.item(c); }
+    const Fl_ListView_Column *column(unsigned c) const { return m_columns.item(c); }
     unsigned columns() const { return m_columns.size(); }
     void columns(unsigned count);
 

@@ -997,10 +997,10 @@ void Fl_ListView::columns(unsigned count)
         for(uint n=new_size; n<old_size; n++) {
             delete m_columns[n];
         }
-        m_columns.resize(new_size);
-        col_count(new_size);
+        m_columns.resize(new_size);        
     }
 
+	col_count(new_size);
     // Relayout
     m_needsetup = true;
     relayout();
