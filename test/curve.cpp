@@ -29,85 +29,108 @@
 #include <efltk/fl_draw.h>
 #include <efltk/Fl_Toggle_Button.h>
 
-float args[9] = {
-  20,20, 50,200, 100,20, 200,200, 0};
-const char* name[9] = {
-  "X0", "Y0", "X1", "Y1", "X2", "Y2", "X3", "Y3", "rotate"};
+float args[10] = {
+  20,20, 50,200, 100,20, 200,200, 0, 1
+};
 
-int points;
+const char* name[10] = {
+  "X0", "Y0", "X1", "Y1", "X2", "Y2", "X3", "Y3", "rotate", "scale"
+};
+
+bool points = false;
 
 class Drawing : public Fl_Widget {
-  void draw() {
-    fl_push_clip(0,0,w(),h());
-    fl_color(FL_DARK3);
-    fl_rectf(0,0,w(),h());
-    fl_push_matrix();
+	void draw() 
+	{
+		int X=0, Y=0, W=w(), H=h();
+    
+		fl_push_clip(X,Y,W,H);
+		fl_color(FL_DARK3);
+		fl_rectf(X,Y,W,H);
+		fl_push_matrix();
 
-    if (args[8]) {
-      fl_translate(w()/2.0f, h()/2.0f);
-      fl_rotate(args[8]);
-      fl_translate(-w()/2.0f, -h()/2.0f);
-    }
+		if(args[9]!=1.0) {
+			// Scale
+			fl_scale(args[9]);
+		}
 
-    fl_color(FL_BLACK);
-    fl_vertex(args[0],args[1]);
-    fl_vertex(args[2],args[3]);
-    fl_vertex(args[4],args[5]);
-    fl_vertex(args[6],args[7]);
-    fl_stroke();
+		if (args[8]) {
+			// Rotate
+			H = W = 280;
+			fl_translate(H/2.0f, H/2.0f); //Translate to center
+			fl_rotate(args[8]);
+			fl_translate(-W/2.0f, -H/2.0f); // And back to corner
+		}
 
-    fl_curve(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7]);
-    if (points) {
-      fl_color(FL_WHITE);
-      fl_points();
-    } else {
-      fl_color(FL_WHITE);
-      fl_fill_stroke(FL_RED);
-    }
+		fl_color(FL_BLACK);
+		fl_vertex(args[0],args[1]);
+		fl_vertex(args[2],args[3]);
+		fl_vertex(args[4],args[5]);
+		fl_vertex(args[6],args[7]);
+		fl_stroke();
 
-    fl_pop_matrix();
-    fl_pop_clip();
-  }
+		fl_curve(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7]);
+		
+		fl_color(FL_WHITE);
+		if(points)	fl_points();
+		else		fl_fill_stroke(FL_RED);
+	    
+		fl_pop_matrix();
+		fl_pop_clip();
+	}
 public:
-  Drawing(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H) {}
+	Drawing(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H) { }
 };
 
 Drawing *d;
 
-void points_cb(Fl_Widget* o, void*) {
-  points = ((Fl_Toggle_Button*)o)->value();
-  d->redraw();
+void points_cb(Fl_Button *o, void*) 
+{
+	points = o->value();
+	d->redraw();
 }
 
-void slider_cb(Fl_Widget* o, void* v) {
-  Fl_Slider* s = (Fl_Slider*)o;
-  args[long(v)] = s->value();
-  d->redraw();
+void slider_cb(Fl_Slider *s, long v) 
+{
+	args[v] = s->value();
+	d->redraw();
 }
 
-int main(int argc, char** argv) {
-  Fl_Double_Window window(300,555);
-  Drawing drawing(10,10,280,280);
-  d = &drawing;
+int main(int argc, char** argv) 
+{
+	//Fl_Double_Window window(300,555, "Curve test");
+	Fl_Window window(300,600, "Curve test");
+	
+	Drawing drawing(10,10,280,280);
+	d = &drawing;
 
-  int y = 300;
-  for (int n = 0; n<9; n++) {
-    Fl_Slider* s = new Fl_Hor_Value_Slider(50,y,240,25,name[n]); y += 25;
-    s->minimum(0); s->maximum(280);
-    if (n == 8) s->maximum(360);
-    s->type(Fl_Slider::HORIZONTAL | Fl_Slider::TICK_ABOVE);
-    s->step(1);
-    s->value(args[n]);
-    s->clear_flag(FL_ALIGN_MASK);
-    s->set_flag(FL_ALIGN_LEFT);
-    s->callback(slider_cb, (void*)n);
-  }
-  Fl_Toggle_Button but(50,y,50,25,"points");
-  but.callback(points_cb);
+	Fl_Group g(0, 300, 300, 300);
+	g.layout_spacing(2);
 
-  window.end();
-  window.show(argc,argv);
-  return Fl::run();
+	for (int n = 0; n<10; n++) {
+		Fl_Slider* s = new Fl_Value_Slider(name[n], 22, FL_ALIGN_TOP, 50);
+		s->align(FL_ALIGN_LEFT);
+		s->type(Fl_Slider::HORIZONTAL | Fl_Slider::TICK_ABOVE);
+		s->step(1);
+		s->value(args[n]);
+		s->callback((Fl_Callback1*)slider_cb, n);
+		s->minimum(0); s->maximum(280);
+
+		if (n == 8) {
+			s->maximum(360);
+		} else if (n == 9) {
+			s->maximum(2);
+			s->step(0.01);
+		}
+	}
+	Fl_Toggle_Button but("points");
+	but.callback((Fl_Callback*)points_cb);
+
+	window.end();
+	window.resizable(d);
+	window.show(argc,argv);
+  
+	return Fl::run();
 }
 
 //
