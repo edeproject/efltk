@@ -107,7 +107,6 @@ CPPFILES = \
 	core/fl_rgb.cpp \
 	core/fl_scroll_area.cpp \
 	core/fl_stretch.cpp \
-	core/fl_utf8.cpp \
 	core/fl_vertex.cpp \
 	core/fl_theme.cpp \
 	widgets/Fl_Adjuster.cpp \
@@ -185,13 +184,10 @@ CPPFILES = \
 
 
 CFILES = \
+	core/fl_utf8.c \
 	core/scandir.c \
 	core/numericsort.c \
 	core/vsnprintf.c
-#	core/fl_utf8_x.c \
-#	core/fl_utf8_x_input.c \
-#	core/fl_utf8_x_utils.c \
-#	core/fl_utf_keysym2ucs.c 
 
 ifeq ($(COMPILE_XUTF), 1)
 
