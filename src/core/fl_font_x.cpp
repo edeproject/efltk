@@ -100,7 +100,18 @@ float fl_height() {
 float fl_descent() { return current_font->descent; }
 
 float fl_width(const char *c, int n) {
-  return XTextWidth(current_font, c, n);
+    XCharStruct* p = current_font->per_char;
+    if (!p) return n*current_font->min_bounds.width;
+    int a = current_font->min_char_or_byte2;
+    int b = current_font->max_char_or_byte2 - a;
+    int w = 0;
+    while (n--) {
+        int x = *(uchar*)c++ - a;
+        if (x >= 0 && x <= b) w += p[x].width;
+        else w += current_font->min_bounds.width;
+    }
+    return w;
+    //return XTextWidth(current_font, c, n);
 }
 
 ////////////////////////////////////////////////////////////////
