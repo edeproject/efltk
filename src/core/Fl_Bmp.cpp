@@ -54,7 +54,7 @@ uint32 ReadLe32()
 
 static bool bmp_create(uint8 *&data, Fl_PixelFormat &fmt, int &w, int &h)
 {	
-	char *error_str=0;
+    char *error_str=0;
     Fl_Colormap *palette=0;
     int bmpPitch;
     int i, pad;
@@ -161,12 +161,12 @@ static bool bmp_create(uint8 *&data, Fl_PixelFormat &fmt, int &w, int &h)
                 Bmask = 0x001F;
                 break;
             case 24:
-#if WORDS_BIGENDIAN
-                Rmask = 0x000000FF;
-                Gmask = 0x0000FF00;
-                Bmask = 0x00FF0000;
-                break;
-#endif
+                if(Fl_Renderer::big_endian()) {
+                    Rmask = 0x000000FF;
+                    Gmask = 0x0000FF00;
+                    Bmask = 0x00FF0000;
+                    break;
+                }
             case 32:
                 Rmask = 0x00FF0000;
                 Gmask = 0x0000FF00;
@@ -269,26 +269,26 @@ static bool bmp_create(uint8 *&data, Fl_PixelFormat &fmt, int &w, int &h)
             if(bmp_io.read(bits, pitch) != pitch) {
                 goto error;
             }
-#if WORDS_BIGENDIAN
-            /* Byte-swap the pixels if needed. Note that the 24bpp
-             case has already been taken care of above. */
-            switch(biBitCount) {
-            case 15:
-            case 16: {
-                uint16 *pix = (uint16 *)bits;
-                for(i = 0; i < w; i++)
-                    pix[i] = fl_swap_16(pix[i]);
-                break;
-            }
+            if(Fl_Renderer::big_endian()) {
+                /* Byte-swap the pixels if needed. Note that the 24bpp
+                 case has already been taken care of above. */
+                switch(biBitCount) {
+                case 15:
+                case 16: {
+                    uint16 *pix = (uint16 *)bits;
+                    for(i = 0; i < w; i++)
+                        pix[i] = fl_swap_16(pix[i]);
+                    break;
+                }
 
-            case 32: {
-                uint32 *pix = (uint32 *)bits;
-                for(i = 0; i < w; i++)
-                    pix[i] = fl_swap_32(pix[i]);
-                break;
+                case 32: {
+                    uint32 *pix = (uint32 *)bits;
+                    for(i = 0; i < w; i++)
+                        pix[i] = fl_swap_32(pix[i]);
+                    break;
+                }
+                }
             }
-            }
-#endif
             break;
         }
         /* Skip padding bytes, ugh */

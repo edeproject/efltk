@@ -317,11 +317,10 @@ static void Blit16to16SurfaceAlpha128(BlitInfo *info, uint16 mask)
                 uint32 sw, dw, s;
                 sw = *(uint32 *)srcp;
                 dw = *(uint32 *)dstp;
-#if WORDS_BIGENDIAN
-                    s = (prev_sw << 16) + (sw >> 16);
-#else
+                if(Fl_Renderer::lil_endian())
                     s = (prev_sw >> 16) + (sw << 16);
-#endif
+                else
+                    s = (prev_sw << 16) + (sw >> 16);
                 prev_sw = sw;
                 *(uint32 *)dstp = BLEND2x16_50(dw, s, mask);
                 dstp += 2;
@@ -332,11 +331,10 @@ static void Blit16to16SurfaceAlpha128(BlitInfo *info, uint16 mask)
             /* final pixel if any */
             if(w) {
                 uint16 d = *dstp, s;
-#if WORDS_BIGENDIAN
-                    s = prev_sw;
-#else
+                if(Fl_Renderer::lil_endian())
                     s = prev_sw >> 16;
-#endif
+                else
+                    s = prev_sw;
                 *dstp = BLEND16_50(d, s, mask);
                 srcp++;
                 dstp++;

@@ -153,7 +153,7 @@ public:
 
      <i>x, y, w, h</i> are destination coordinates in widget to draw.
      */
-    virtual void draw(int x, int y, int w=0, int h=0, Fl_Flags f=0) { if(!w) w=width(); if(!h) h=height(); draw(x,y,w,h,0,0,0,0,f); }
+    void draw(int x, int y, int w=0, int h=0, Fl_Flags f=0) { if(!w) w=width(); if(!h) h=height(); draw(x,y,w,h,0,0,0,0,f); }
 
     // Mask handling
     int mask_type() { return fmt.masktype; }

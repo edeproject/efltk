@@ -114,38 +114,47 @@ void Fl_Image::to_screen_tiled(int XP, int YP, int WP, int HP, int, int)
 }
 
 static XImage s_image;	// static image used to pass info to X
-
 static bool _system_inited = false;
 static int  _scanline_add  = 0;
 static int  _scanline_mask = 0;
-
 Fl_PixelFormat sys_fmt;
 
-Fl_PixelFormat *Fl_Renderer::system_format() { return &sys_fmt; }
-
-bool Fl_Renderer::system_inited()
-{
+Fl_PixelFormat *Fl_Renderer::system_format() {
+    Fl_Renderer::system_init();
+    return &sys_fmt;
+}
+bool Fl_Renderer::system_inited() {
     return (_system_inited && fl_display);
+}
+bool Fl_Renderer::big_endian() {
+    Fl_Renderer::system_init();
+    return (s_image.byte_order==MSBFirst);
+}
+bool Fl_Renderer::lil_endian() {
+    Fl_Renderer::system_init();
+    return (s_image.byte_order==LSBFirst);
 }
 
 ////////////////////////////////////////////////////////////////
+static XPixmapFormatValues *pfvlist=0;
+static int num_pfv=0;
+XPixmapFormatValues *pfv=0;
+
 void Fl_Renderer::system_init()
 {
+    if(_system_inited) return;
+
     fl_open_display();
     fl_xpixel(FL_BLACK); // make sure figure_out_visual in fl_color.cxx is called
-
-
-    static XPixmapFormatValues *pfvlist;
-    static int num_pfv;
+    fl_xpixel(FL_WHITE); // also make sure white is allocated
 
     if(!pfvlist) pfvlist = XListPixmapFormats(fl_display, &num_pfv);
-    XPixmapFormatValues *pfv;
     for(pfv = pfvlist; pfv < pfvlist+num_pfv; pfv++) {
         if(pfv->depth == fl_visual->depth)
             break;
     }
 
-    //printf("System Image Format: %d bits per pixel / Display Visual %d bits per pixel\n", pfv->bits_per_pixel, v->depth);
+    printf("System Image Format: %d bits per pixel / Display Visual %d bits per pixel\n", pfv->bits_per_pixel, fl_visual->depth);
 
     s_image.format = ZPixmap;
     s_image.byte_order = ImageByteOrder(fl_display);
@@ -185,8 +194,8 @@ void Fl_Renderer::system_init()
 bool Fl_Renderer::render_to_pixmap(uint8 *src, Fl_Rect *src_rect, Fl_PixelFormat *src_fmt, int src_pitch,
                                    Pixmap dst, Fl_Rect *dst_rect, GC dst_gc, int flags)
 {
-    if(!Fl_Renderer::system_inited())
-        return false;
+    // Init renderer
+    Fl_Renderer::system_init();
 
     if(flags&FL_ALIGN_SCALE && src_rect->w()==dst_rect->w() && src_rect->h()==dst_rect->h()) {
         flags = 0;
@@ -243,103 +252,111 @@ static void Tmp_HandleXError(Display * d, XErrorEvent * ev)
 
 uint8 *Fl_Renderer::data_from_window(Window src, Fl_Rect &rect, int &bitspp)
 {
-	int x = rect.x();
-	int y = rect.y();
-	int w = rect.w();
-	int h = rect.h();
-	int width, height, clipx, clipy;
-	int src_x, src_y, src_w, src_h;
-	XErrorHandler prev_erh = 0;
-	XWindowAttributes   xatt, ratt;
-	
-	prev_erh = XSetErrorHandler((XErrorHandler) Tmp_HandleXError);
-	
-	XGetWindowAttributes(fl_display, src, &xatt);
-	
-	Window dw;
-	XGetWindowAttributes(fl_display, xatt.root, &ratt);
-	XTranslateCoordinates(fl_display, src, xatt.root, 0, 0, &src_x, &src_y, &dw);
-	src_w = xatt.width;
-	src_h = xatt.height;
-	if((xatt.map_state != IsViewable) && (xatt.backing_store == NotUseful)) {
-		XSetErrorHandler((XErrorHandler) prev_erh);
-		return 0;
-	}
-	
-	/* clip to the drawable tree and screen */
-	clipx = clipy = 0;
-	width = src_w - x;
-	height = src_h - y;
-	if(width > w)
-		width = w;
-	if(height > h)
-		height = h;
-	
-	if((src_x + x + width) > ratt.width)
-		width = ratt.width - (src_x + x);
-	if((src_y + y + height) > ratt.height)
-		height = ratt.height - (src_y + y);
-	
-	if(x < 0) {
-		clipx = -x;
-		width += x;
-		x = 0;
-	}
-	
-	if (y < 0) {
-		clipy = -y;
-		height += y;
-		y = 0;
-	}
-	
-	if((src_x + x) < 0) {
-		clipx -= (src_x + x);
-		width += (src_x + x);
-		x = -src_x;
-	}
-	
-	if((src_y + y) < 0) {
-		clipy -= (src_y + y);
-		height += (src_y + y);
-		y = -src_y;
-	}
-	
-	if((width <= 0) || (height <= 0)) {
-		XSetErrorHandler((XErrorHandler) prev_erh);
-		return 0;
-	}
-	
-	w = width;
-	h = height;
-	
-	//printf("%d %d %d %d\n", x, y, w, h);
-	XImage *im = XGetImage(fl_display, src, x, y, w, h, AllPlanes, ZPixmap);
-	XSetErrorHandler((XErrorHandler) prev_erh);
-	if(!im)
-		return 0;
-	
-	uint8 *im_pixels = new uint8[im->height*im->bytes_per_line];
-	memcpy(im_pixels, im->data, im->height*im->bytes_per_line);
-	XDestroyImage(im);
-	bitspp = im->bits_per_pixel;
-	return im_pixels;
+    // Init renderer
+    Fl_Renderer::system_init();
+
+    int x = rect.x();
+    int y = rect.y();
+    int w = rect.w();
+    int h = rect.h();
+    int width, height, clipx, clipy;
+    int src_x, src_y, src_w, src_h;
+    XErrorHandler prev_erh = 0;
+    XWindowAttributes   xatt, ratt;
+
+    prev_erh = XSetErrorHandler((XErrorHandler) Tmp_HandleXError);
+
+    XGetWindowAttributes(fl_display, src, &xatt);
+
+    Window dw;
+    XGetWindowAttributes(fl_display, xatt.root, &ratt);
+    XTranslateCoordinates(fl_display, src, xatt.root, 0, 0, &src_x, &src_y, &dw);
+    src_w = xatt.width;
+    src_h = xatt.height;
+    if((xatt.map_state != IsViewable) && (xatt.backing_store == NotUseful)) {
+        XSetErrorHandler((XErrorHandler) prev_erh);
+        return 0;
+    }
+
+    /* clip to the drawable tree and screen */
+    clipx = clipy = 0;
+    width = src_w - x;
+    height = src_h - y;
+    if(width > w)
+        width = w;
+    if(height > h)
+        height = h;
+
+    if((src_x + x + width) > ratt.width)
+        width = ratt.width - (src_x + x);
+    if((src_y + y + height) > ratt.height)
+        height = ratt.height - (src_y + y);
+
+    if(x < 0) {
+        clipx = -x;
+        width += x;
+        x = 0;
+    }
+
+    if (y < 0) {
+        clipy = -y;
+        height += y;
+        y = 0;
+    }
+
+    if((src_x + x) < 0) {
+        clipx -= (src_x + x);
+        width += (src_x + x);
+        x = -src_x;
+    }
+
+    if((src_y + y) < 0) {
+        clipy -= (src_y + y);
+        height += (src_y + y);
+        y = -src_y;
+    }
+
+    if((width <= 0) || (height <= 0)) {
+        XSetErrorHandler((XErrorHandler) prev_erh);
+        return 0;
+    }
+
+    w = width;
+    h = height;
+
+    //printf("%d %d %d %d\n", x, y, w, h);
+    XImage *im = XGetImage(fl_display, src, x, y, w, h, AllPlanes, ZPixmap);
+    XSetErrorHandler((XErrorHandler) prev_erh);
+    if(!im)
+        return 0;
+
+    uint8 *im_pixels = new uint8[im->height*im->bytes_per_line];
+    memcpy(im_pixels, im->data, im->height*im->bytes_per_line);
+    XDestroyImage(im);
+    bitspp = im->bits_per_pixel;
+    return im_pixels;
 }
 
-#include <stdio.h>
 uint8 *Fl_Renderer::data_from_pixmap(Pixmap src, Fl_Rect &rect, int &bitspp)
 {
+    // Init renderer
+    Fl_Renderer::system_init();
+
     XImage *im = ximage_from_pixmap(src, rect);
     if(!im) return 0;
 
     uint8 *im_pixels = new uint8[im->height*im->bytes_per_line];
     memcpy(im_pixels, im->data, im->height*im->bytes_per_line);
     XDestroyImage(im);
-	bitspp = im->bits_per_pixel;
+    bitspp = im->bits_per_pixel;
     return im_pixels;
 }
 
 XImage *Fl_Renderer::ximage_from_pixmap(Pixmap src, Fl_Rect &rect)
 {
+    // Init renderer
+    Fl_Renderer::system_init();
+
     int x = rect.x();
     int y = rect.y();
     int w = rect.w();
@@ -364,7 +381,7 @@ XImage *Fl_Renderer::ximage_from_pixmap(Pixmap src, Fl_Rect &rect)
         XGetGeometry(fl_display, src, &dw, &src_x, &src_y,
                      (unsigned int *)&src_w, (unsigned int *)&src_h,
                      (unsigned int *)&src_x, (unsigned int *)&xatt.depth);
-		src_x = 0;
+        src_x = 0;
         src_y = 0;
     } else {
         XSetErrorHandler((XErrorHandler) prev_erh);
@@ -409,6 +426,7 @@ XImage *Fl_Renderer::ximage_from_pixmap(Pixmap src, Fl_Rect &rect)
 }
 
 Window Fl_Renderer::root_window() {
+    fl_open_display();
     return RootWindow(fl_display, fl_screen);
 }
 

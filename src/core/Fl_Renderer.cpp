@@ -7,7 +7,7 @@
 #include <string.h>
 
 Fl_Colormap::Fl_Colormap(int cols) {
-	colors=0;
+    colors=0;
     realloc(cols);
 }
 
@@ -201,10 +201,8 @@ void Fl_PixelFormat::init(int bits_pp, uint32 R_mask, uint32 G_mask, uint32 B_ma
 
 uint8 *Fl_Renderer::system_convert(Fl_PixelFormat *src_fmt, Fl_Size *src_size, uint8 *src, int flags)
 {
-    if(!Fl_Renderer::system_inited()) {
-        // Init renderer before first convert
-        Fl_Renderer::system_init();
-    }
+    // Init renderer before first convert
+    Fl_Renderer::system_init();
 
     int sbpp = src_fmt->bytespp;
     int dbpp = Fl_Renderer::system_format()->bytespp;
@@ -269,11 +267,10 @@ void fl_retrieve_rgb_pixel(uint8 *buf, int bpp, uint32 &pixel)
 
     case 3: {
         uint8 *B = (uint8 *)buf;
-#if !WORDS_BIGENDIAN
-        pixel = B[0] + (B[1] << 8) + (B[2] << 16);
-#else
-        pixel = (B[0] << 16) + (B[1] << 8) + B[2];
-#endif
+        if(Fl_Renderer::lil_endian())
+            pixel = B[0] + (B[1] << 8) + (B[2] << 16);
+        else
+            pixel = (B[0] << 16) + (B[1] << 8) + B[2];
     }
     break;
 
@@ -304,11 +301,10 @@ void fl_disemble_rgb(uint8 *buf, int bpp, Fl_PixelFormat *fmt, uint32 &pixel, ui
 
     case 3: {
         uint8 *BUF = (uint8 *)buf;
-#if !WORDS_BIGENDIAN
-        pixel = BUF[0] + (BUF[1] << 8) + (BUF[2] << 16);
-#else
-        pixel = (BUF[0] << 16) + (BUF[1] << 8) + BUF[2];
-#endif
+        if(Fl_Renderer::lil_endian())
+            pixel = BUF[0] + (BUF[1] << 8) + (BUF[2] << 16);
+        else
+            pixel = (BUF[0] << 16) + (BUF[1] << 8) + BUF[2];
         fl_rgb_from_pixel(pixel, fmt, R, G, B);
     }
     break;
@@ -358,15 +354,15 @@ void fl_assemble_rgb(uint8 *buf, int bpp, Fl_PixelFormat *fmt, uint8 r, uint8 g,
     break;
 
     case 3: {
-#if !WORDS_BIGENDIAN
-        *((buf)+fmt->Rshift/8) = r;
-        *((buf)+fmt->Gshift/8) = g;
-        *((buf)+fmt->Bshift/8) = b;
-#else
-        *((buf)+2-fmt->Rshift/8) = r;
-        *((buf)+2-fmt->Gshift/8) = g;
-        *((buf)+2-fmt->Bshift/8) = b;
-#endif
+        if(Fl_Renderer::lil_endian()) {
+            *((buf)+fmt->Rshift/8) = r;
+            *((buf)+fmt->Gshift/8) = g;
+            *((buf)+fmt->Bshift/8) = b;
+        } else {
+            *((buf)+2-fmt->Rshift/8) = r;
+            *((buf)+2-fmt->Gshift/8) = g;
+            *((buf)+2-fmt->Bshift/8) = b;
+        }
     }
     break;
 
@@ -395,15 +391,15 @@ void fl_assemble_rgb_amask(uint8 *buf, int bpp, Fl_PixelFormat *fmt, uint8 r, ui
     break;
 
     case 3: {
-#if !WORDS_BIGENDIAN
-        *((buf)+fmt->Rshift/8) = r;
-        *((buf)+fmt->Gshift/8) = g;
-        *((buf)+fmt->Bshift/8) = b;
-#else
-        *((buf)+2-fmt->Rshift/8) = r;
-        *((buf)+2-fmt->Gshift/8) = g;
-        *((buf)+2-fmt->Bshift/8) = b;
-#endif
+        if(Fl_Renderer::lil_endian()) {
+            *((buf)+fmt->Rshift/8) = r;
+            *((buf)+fmt->Gshift/8) = g;
+            *((buf)+fmt->Bshift/8) = b;
+        } else {
+            *((buf)+2-fmt->Rshift/8) = r;
+            *((buf)+2-fmt->Gshift/8) = g;
+            *((buf)+2-fmt->Bshift/8) = b;
+        }
     }
     break;
 
@@ -472,11 +468,10 @@ void fl_disemble_rgba(uint8 *buf, int bpp, Fl_PixelFormat *fmt, uint32 &pixel, u
     case 3:	{
         /* FIXME: broken code (no alpha) */
         uint8 *b = (uint8 *)buf;
-#if !WORDS_BIGENDIAN
-        pixel = b[0] + (b[1] << 8) + (b[2] << 16);
-#else
-        pixel = (b[0] << 16) + (b[1] << 8) + b[2];
-#endif
+        if(Fl_Renderer::lil_endian())
+            pixel = b[0] + (b[1] << 8) + (b[2] << 16);
+        else
+            pixel = (b[0] << 16) + (b[1] << 8) + b[2];
     }
     break;
 
@@ -513,15 +508,15 @@ void fl_assemble_rgba(uint8 *buf, int bpp, Fl_PixelFormat *fmt, uint8 r, uint8 g
     break;
 
     case 3: { /* FIXME: broken code (no alpha) */
-#if !WORDS_BIGENDIAN
-        *((buf)+fmt->Rshift/8) = r;
-        *((buf)+fmt->Gshift/8) = g;
-        *((buf)+fmt->Bshift/8) = b;
-#else
-        *((buf)+2-fmt->Rshift/8) = r;
-        *((buf)+2-fmt->Gshift/8) = g;
-        *((buf)+2-fmt->Bshift/8) = b;
-#endif
+        if(Fl_Renderer::lil_endian()) {
+            *((buf)+fmt->Rshift/8) = r;
+            *((buf)+fmt->Gshift/8) = g;
+            *((buf)+fmt->Bshift/8) = b;
+        } else {
+            *((buf)+2-fmt->Rshift/8) = r;
+            *((buf)+2-fmt->Gshift/8) = g;
+            *((buf)+2-fmt->Bshift/8) = b;
+        }
     }
     break;
 
@@ -564,31 +559,16 @@ uint32 fl_swap_32(uint32 d) {
 #endif
 }
 
-#if WORDS_BIGENDIAN
 uint16 fl_swap_le16(uint16 d) {
-    return fl_swap_32(d);
+    return Fl_Renderer::lil_endian() ? d : fl_swap_16(d);
 }
 uint32 fl_swap_le32(uint32 d) {
-    return fl_swap_16(d);
+    return Fl_Renderer::lil_endian() ? d : fl_swap_32(d);
 }
 uint16 fl_swap_be16(uint16 d) {
-    return d;
+    return Fl_Renderer::lil_endian() ? fl_swap_16(d) : d;
 }
 uint32 fl_swap_be32(uint32 d) {
-    return d;
+    return Fl_Renderer::lil_endian() ? fl_swap_32(d) : d;
 }
-#else
-uint16 fl_swap_le16(uint16 d) {
-    return d;
-}
-uint32 fl_swap_le32(uint32 d) {
-    return d;
-}
-uint16 fl_swap_be16(uint16 d) {
-    return fl_swap_16(d);
-}
-uint32 fl_swap_be32(uint32 d) {
-    return fl_swap_32(d);
-}
-#endif
 

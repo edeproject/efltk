@@ -81,13 +81,10 @@ static void figure_out_visual()
     i = fl_redshift;
     if (fl_greenshift < i) i = fl_greenshift;
     if (fl_blueshift < i) i = fl_blueshift;
-    if (i < 0)
-    {
+    if (i < 0) {
         fl_extrashift = -i;
         fl_redshift -= i; fl_greenshift -= i; fl_blueshift -= i;
-    }
-    else
-    {
+    } else {
         fl_extrashift = 0;
     }
 }

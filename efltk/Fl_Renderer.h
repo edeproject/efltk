@@ -136,16 +136,18 @@ public:
         return (pitch + 3) & ~3;	/* word aligning */
     }
 
-    // All Functions starting with "system_" needs system TO BE INITIALIZED
-    // If not, all of these will fail...
-    static bool system_inited();
     // Init renderer
     static void system_init();
+    static bool system_inited();
 
     // Converts to system format, if flags is set to HW_SURFACE, then system
     // colormap is used if needed
     static uint8 *system_convert(Fl_PixelFormat *src_fmt, Fl_Size *src_size, uint8 *src, int flags=FL_BLIT_HW_PALETTE);
     static Fl_PixelFormat *system_format();
+
+    // Image byte order
+    static bool big_endian();
+    static bool lil_endian();
 };
 
 typedef struct _blit_info BlitInfo;

@@ -45,7 +45,10 @@
 
 ////////////////////////////////////////////////////////////////
 
-static int bytes_per_pixel;
+static XImage fl_xi;	// template used to pass info to X
+static int fl_bytes_per_pixel;
+static int fl_scanline_add;
+static int fl_scanline_mask;
 
 static void (*converter)(const uchar *from, uchar *to, int w, int delta);
 static void (*mono_converter)(const uchar *from, uchar *to, int w, int delta);
@@ -337,35 +340,52 @@ mono32_converter(const uchar *from,uchar *to,int w, int delta) {
 
 static void figure_out_visual()
 {
-    if(!Fl_Renderer::system_inited())
-        Fl_Renderer::system_init();
+    Fl_Renderer::system_init();
 
-    bytes_per_pixel = sys_fmt.bytespp;
-#if USE_COLORMAP
+    fl_xi.format = ZPixmap;
+    fl_xi.byte_order = ImageByteOrder(fl_display);
+    //i.bitmap_unit = 8;
+    //i.bitmap_bit_order = MSBFirst;
+    //i.bitmap_pad = 8;
+    fl_xi.depth = fl_visual->depth;
+    fl_xi.bits_per_pixel = pfv->bits_per_pixel;
+
+    if (fl_xi.bits_per_pixel & 7) fl_bytes_per_pixel = 0; // produce fatal error
+    else fl_bytes_per_pixel = fl_xi.bits_per_pixel/8;
+
+    unsigned int n = pfv->scanline_pad/8;
+    if (pfv->scanline_pad & 7 || (n&(n-1)))
+        Fl::fatal("Can't do scanline_pad of %d",pfv->scanline_pad);
+    if (n < sizeof(STORETYPE)) n = sizeof(STORETYPE);
+    fl_scanline_add = n-1;
+    fl_scanline_mask = -n;
+
+#  if USE_COLORMAP
     if (bytes_per_pixel == 1) {
         converter = color8_converter;
         mono_converter = mono8_converter;
         return;
     }
     if (!fl_visual->red_mask)
-        Fl::fatal("Can't do %d bits_per_pixel colormap",i.bits_per_pixel);
-#endif
+        Fl::fatal("Can't do %d bits_per_pixel colormap",fl_xi.bits_per_pixel);
+#  endif
 
     // otherwise it is a TrueColor visual:
-    int rs = sys_fmt.Rshift;
-    int gs = sys_fmt.Gshift;
-    int bs = sys_fmt.Bshift;
 
-    switch (bytes_per_pixel) {
+    int rs = fl_redshift;
+    int gs = fl_greenshift;
+    int bs = fl_blueshift;
+
+    switch (fl_bytes_per_pixel) {
 
     case 2:
         // All 16-bit TrueColor visuals are supported on any machine with
         // 24 or more bits per integer.
-#ifdef U16
-        //::i.byte_order = WORDS_BIGENDIAN;
-#else
-        //::i.byte_order = 1;
-#endif
+#  ifdef U16
+        fl_xi.byte_order = WORDS_BIGENDIAN;
+#  else
+        fl_xi.byte_order = 1;
+#  endif
         if (rs == 11 && gs == 6 && bs == 0 && fl_extrashift == 3) {
             converter = c565_converter;
             mono_converter = m565_converter;
@@ -376,7 +396,7 @@ static void figure_out_visual()
         break;
 
     case 3:
-        if(s_image.byte_order) {rs = 16-rs; gs = 16-gs; bs = 16-bs;}
+        if (fl_xi.byte_order) {rs = 16-rs; gs = 16-gs; bs = 16-bs;}
         if (rs == 0 && gs == 8 && bs == 16) {
             converter = rgb_converter;
             mono_converter = rrr_converter;
@@ -389,7 +409,7 @@ static void figure_out_visual()
         break;
 
     case 4:
-        if ((s_image.byte_order!=0) != WORDS_BIGENDIAN)
+        if ((fl_xi.byte_order!=0) != WORDS_BIGENDIAN)
         {rs = 24-rs; gs = 24-gs; bs = 24-bs;}
         if (rs == 0 && gs == 8 && bs == 16) {
             converter = xbgr_converter;
@@ -404,16 +424,15 @@ static void figure_out_visual()
             converter = xrgb_converter;
             mono_converter = xrrr_converter;
         } else {
-            //::i.byte_order = WORDS_BIGENDIAN;
+            fl_xi.byte_order = WORDS_BIGENDIAN;
             converter = color32_converter;
             mono_converter = mono32_converter;
         }
         break;
 
     default:
-        Fl::fatal("Can't do %d bits_per_pixel", s_image.bits_per_pixel);
+        Fl::fatal("Can't do %d bits_per_pixel",fl_xi.bits_per_pixel);
     }
-
 }
 
 #define MAXBUFFER 0x40000 // 256k
@@ -430,7 +449,7 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
   dx -= X; dy -= Y;
   fl_transform(X,Y);
 
-  if (!bytes_per_pixel) figure_out_visual();
+  if (!fl_bytes_per_pixel) figure_out_visual();
   s_image.width = w;
   s_image.height = h;
 
@@ -454,12 +473,12 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
       ||
 #endif
       conv == rgb_converter && delta==3
-      ) && !(linedelta&_scanline_add)) {
+      ) && !(linedelta&fl_scanline_add)) {
     s_image.data = (char *)(buf+delta*dx+linedelta*dy);
     s_image.bytes_per_line = linedelta;
 
   } else {
-    int linesize = ((w*bytes_per_pixel+_scanline_add)&_scanline_mask)/sizeof(STORETYPE);
+    int linesize = ((w*fl_bytes_per_pixel+fl_scanline_add)&fl_scanline_mask)/sizeof(STORETYPE);
     int blocking = h;
     static STORETYPE *buffer=0;	// our storage, always word aligned
     static long buffer_size=0;

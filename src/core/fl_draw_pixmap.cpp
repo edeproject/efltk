@@ -67,11 +67,10 @@ static void cb1(void*v, int x, int y, int w, uchar* buf) {
   const uchar* p = d.data[y]+x;
   U64* q = (U64*)buf;
   for (int X=(w+1)/2; X--; p += 2) {
-#if WORDS_BIGENDIAN
-    *q++ = (d.colors[p[0]]<<32) | d.colors[p[1]];
-#else
-    *q++ = (d.colors[p[1]]<<32) | d.colors[p[0]];
-#endif
+      if(Fl_Renderer::big_endian())
+          *q++ = (d.colors[p[0]]<<32) | d.colors[p[1]];
+      else
+          *q++ = (d.colors[p[1]]<<32) | d.colors[p[0]];
   }
 }
 
@@ -85,11 +84,10 @@ static void cb2(void*v, int x, int y, int w, uchar* buf) {
     int index = *p++;
     U64* colors1 = d.byte1[*p++];
     int index1 = *p++;
-#if WORDS_BIGENDIAN
-    *q++ = (colors[index]<<32) | colors1[index1];
-#else
-    *q++ = (colors1[index1]<<32) | colors[index];
-#endif
+    if(Fl_Renderer::big_endian())
+        *q++ = (colors[index]<<32) | colors1[index1];
+    else
+        *q++ = (colors1[index1]<<32) | colors[index];
   }
 }
 
@@ -149,9 +147,7 @@ int fl_draw_pixmap(const char*const* di, int x, int y, Fl_Color bg) {
       uchar* c = (uchar*)&d.colors[' '];
 #ifdef U64
       *(U64*)c = 0;
-#if WORDS_BIGENDIAN
-      c += 4;
-#endif
+      if(Fl_Renderer::big_endian()) c += 4;
 #endif
       transparent_index = ' ';
       bg = fl_get_color(bg);
@@ -167,9 +163,7 @@ int fl_draw_pixmap(const char*const* di, int x, int y, Fl_Color bg) {
       uchar* c = (uchar*)&d.colors[*p++];
 #ifdef U64
       *(U64*)c = 0;
-#if WORDS_BIGENDIAN
-      c += 4;
-#endif
+      if(Fl_Renderer::big_endian()) c += 4;
 #endif
       *c++ = *p++;
       *c++ = *p++;
@@ -209,9 +203,7 @@ int fl_draw_pixmap(const char*const* di, int x, int y, Fl_Color bg) {
       }
 #ifdef U64
       *(U64*)c = 0;
-#if WORDS_BIGENDIAN
-      c += 4;
-#endif
+      if(Fl_Renderer::big_endian()) c += 4;
 #endif
       Fl_Color C = fl_rgb((const char*)p);
       if (C) {

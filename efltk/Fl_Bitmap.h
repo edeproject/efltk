@@ -33,8 +33,10 @@ public:
     Fl_Bitmap(const uint8 *bits, int W, int H) : Fl_Image(W, H, 1, (uint8*)bits) { }
     Fl_Bitmap(const char  *bits, int W, int H) : Fl_Image(W, H, 1, (uint8*)bits) { }
 
-    void draw(int x, int y, int, int, Fl_Flags flags);
-    void draw(int x, int y) { draw(x,y,w,h,0); }
+    virtual void draw(int dx, int dy, int dw, int dh,
+                      int sx, int sy, int sw, int sh,
+                      Fl_Flags f);
+    void draw(int x, int y) { draw(x,y,w,h,0,0,0,0,0); }
 };
 
 #endif

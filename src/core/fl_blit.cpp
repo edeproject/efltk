@@ -25,8 +25,11 @@ static void BlitCopy(BlitInfo *info)
 }
 
 bool Fl_Renderer::blit(uint8 *src, Fl_Rect *src_rect, Fl_PixelFormat *src_fmt, int src_pitch,
-                        uint8 *dst, Fl_Rect *dst_rect, Fl_PixelFormat *dst_fmt, int dst_pitch, int flags)
+                       uint8 *dst, Fl_Rect *dst_rect, Fl_PixelFormat *dst_fmt, int dst_pitch, int flags)
 {
+    // Init renderer
+    Fl_Renderer::system_init();
+
     BlitInfo info;
 
     info.s_pixels 	= (uint8 *)src + (uint16)src_rect->y() * src_pitch + (uint16)src_rect->x() * src_fmt->bytespp;
@@ -86,6 +89,9 @@ bool Fl_Renderer::blit(uint8 *src, Fl_Rect *src_rect, Fl_PixelFormat *src_fmt, i
 bool Fl_Renderer::alpha_blit(uint8 *src, Fl_Rect *src_rect, Fl_PixelFormat *src_fmt, int src_pitch,
                               uint8 *dst, Fl_Rect *dst_rect, Fl_PixelFormat *dst_fmt, int dst_pitch, int flags)
 {
+    // Init renderer
+    Fl_Renderer::system_init();
+
     BlitInfo info;
 
     info.s_pixels 	= (uint8 *)src + (uint16)src_rect->y() * src_pitch + (uint16)src_rect->x() * src_fmt->bytespp;

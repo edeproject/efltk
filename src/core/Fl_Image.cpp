@@ -199,8 +199,7 @@ bool Fl_Image::check_map(Fl_PixelFormat *cur_fmt, Fl_PixelFormat *new_fmt)
 
 void Fl_Image::system_convert()
 {
-    if(!Fl_Renderer::system_inited())
-        Fl_Renderer::system_init();
+    Fl_Renderer::system_init();
 
     Fl_PixelFormat *format = Fl_Renderer::system_format();
 
@@ -737,10 +736,8 @@ void Fl_Image::draw(int dx, int dy, int dw, int dh,
     if(!_data || w < 1 || h < 1 || dw<1 || dh<1)
         return;
 
-    if(!Fl_Renderer::system_inited()) {
-        // Init renderer before first draw!!!
-        Fl_Renderer::system_init();
-    }
+    // Init renderer before first draw!!!
+    Fl_Renderer::system_init();
 
     if(sw<=0) sw=w;
     if(sh<=0) sh=h;
