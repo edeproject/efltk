@@ -200,8 +200,11 @@ Fl_MDI_Window *add_win(Fl_MDI_Viewport *s, bool doublebuf, const char *n)
 
     Fl_Input *in = new Fl_Input(10,150, 130, 60);
     in->tooltip("Click right mouse button!");
-    in->type(Fl_Input::WORDWRAP);
+    in->type(Fl_Input::MULTILINE);
+	in->wordwrap(1);
     in = new Fl_Input(10,220, 130, 20);
+	in->value("This is readonly");
+	in->readonly(1);
 
     w->view()->end();
 
