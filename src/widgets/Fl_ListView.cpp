@@ -16,7 +16,8 @@ Fl_ListView *Fl_ListView::current=0;
 void Fl_ListView::ctor_init()
 {
     accept_focus(true);
-    when(FL_WHEN_NOT_CHANGED|FL_DATA_CHANGE);
+    when(FL_WHEN_CHANGED);
+    //FL_WHEN_NOT_CHANGED|FL_DATA_CHANGE);
     style(default_style);
 
     m_header = new Fl_ListView_Header(this);
@@ -352,7 +353,7 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
                 } else { // end multi
 
                     if(!selected_row(current_item) || selected()>1) {
-                        select_only_row(current_item);
+                        select_only_row(current_item, true);
                     }                    
                     show_row( (cur_row = current_item) );
                 }
@@ -398,7 +399,7 @@ int Fl_ListView::handle_key()
                 m_search_str.clear();
                 yposition(0);
                 item(child(0));
-                select_only_row(0);
+                select_only_row(0, true);
                 return 1;
             }
 
@@ -406,7 +407,7 @@ int Fl_ListView::handle_key()
                 m_search_str.clear();
                 yposition(table_h - tih);
                 item(child(children()-1));
-                select_only_row(children()-1);
+                select_only_row(children()-1, true);
                 return 1;
             }
 
@@ -419,13 +420,9 @@ int Fl_ListView::handle_key()
                     if(Fl::event_state(FL_SHIFT|FL_CTRL) && multi())
                         select_row(index, 1);
                     else
-                        select_only_row(index);
+                        select_only_row(index, true);
                     show_row(index);
                     cur_row = index;
-                }
-                if ((when()&FL_WHEN_RELEASE) && (changed() || (when()&FL_WHEN_NOT_CHANGED))) {
-                    clear_changed();
-                    do_callback(FL_DATA_CHANGE);
                 }
                 return 1;
             }
@@ -439,13 +436,9 @@ int Fl_ListView::handle_key()
                     if(Fl::event_state(FL_SHIFT|FL_CTRL) && multi())
                         select_row(index, 1);
                     else
-                        select_only_row(index);
+                        select_only_row(index, true);
                     show_row(index);
                     cur_row = index;
-                }
-                if ((when()&FL_WHEN_RELEASE) && (changed() || (when()&FL_WHEN_NOT_CHANGED))) {
-                    clear_changed();
-                    do_callback(FL_DATA_CHANGE);
                 }
                 return 1;
             }
@@ -464,9 +457,9 @@ int Fl_ListView::handle_key()
                 if(ret)
                 {
                     if(Fl::event_key()==FL_Page_Up)
-                        select_only_row( row_at(yposition()) );
+                        select_only_row( row_at(yposition()), true );
                     else if(Fl::event_key()==FL_Page_Down)
-                        select_only_row( row_at(yposition()+tih) );
+                        select_only_row( row_at(yposition()+tih), true );
 
                     show_row(cur_row);
                     return 1;
@@ -512,7 +505,7 @@ int Fl_ListView::handle_key()
                             m_search_str = search_str;
                             if(type_in_mode()==TYPE_IN_SELECT) {
 
-                                select_only_row(index);
+                                select_only_row(index, true);
                                 show_row(index);
 
                             } else if(type_in_mode()==TYPE_IN_HIDE) {
@@ -847,16 +840,17 @@ bool Fl_ListView::select_row(unsigned row, int value)
     return false;
 }
 
-bool Fl_ListView::select_only_row(unsigned row)
+bool Fl_ListView::select_only_row(unsigned row, bool do_callback)
 {   
     unselect_all();
     if (set_select_flag(row, 1)) {
         selection.append(row);
         items[row]->redraw();
         cur_row = row;
-        if (when() & (FL_WHEN_CHANGED|FL_DATA_CHANGE)) 
-            do_callback(FL_DATA_CHANGE);
-        else set_changed();
+        if(do_callback) {
+            if(when()&(FL_WHEN_CHANGED)) Fl_Widget::do_callback(FL_DATA_CHANGE);
+            else set_changed();
+        }
     }
     cur_row = row;
     return true;

@@ -1060,7 +1060,12 @@ int Fl_Browser::handle(int event)
                 execute(item());
                 return 1;
             }
-            goto RELEASE;
+            if ((when()&FL_WHEN_RELEASE) && (changed() || (when()&FL_WHEN_NOT_CHANGED)))
+            {
+                clear_changed();
+                execute(item());
+            }
+            return 1;
 
         case FL_KEY:
             Fl::event_clicks(0); // make program not think it is a double-click
@@ -1090,18 +1095,14 @@ int Fl_Browser::handle(int event)
                     {
                         select_only_this(FL_WHEN_CHANGED);
                     }
-                    goto RELEASE;
+                    //goto RELEASE;
+                    return 1;
+
                 case ' ':
                     if (!multi() || !goto_visible_focus()) break;
                     set_item_selected(!item()->selected(), FL_WHEN_CHANGED);
-                RELEASE:
-                    if ((when()&FL_WHEN_RELEASE) &&
-                            (changed() || (when()&FL_WHEN_NOT_CHANGED)))
-                    {
-                        clear_changed();
-                        execute(item());
-                    }
                     return 1;
+
                 case FL_Enter:
                     if (!(when() & FL_WHEN_ENTER_KEY)) break;
                     if (!goto_visible_focus()) break;

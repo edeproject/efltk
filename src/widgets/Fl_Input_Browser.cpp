@@ -45,7 +45,7 @@ class ComboBrowser : public Fl_Browser {
 public:
     ComboBrowser(int x, int y, int w, int h) : Fl_Browser(x, y, w, h, 0) {
         combo=0;
-        when(FL_WHEN_RELEASE);
+        when(FL_WHEN_ENTER_KEY_ALWAYS | FL_WHEN_RELEASE);
     }
 
     int handle(int);
@@ -106,11 +106,12 @@ int ComboBrowser::handle(int event)
         case FL_MOVE:
             event = FL_DRAG;
 
-        case FL_RELEASE:
-        case FL_DRAG:
-        // this causes a drag-in to the widget to work:
-            if (Fl::event_inside(0, 0, w(), h()))
+    case FL_RELEASE:
+    case FL_DRAG:
+            // this causes a drag-in to the widget to work:
+            if (Fl::event_inside(0, 0, w(), h())) {
                 Fl::pushed(this);
+            }
             else {
                 Fl::pushed(0);
                 return 0;
@@ -126,8 +127,8 @@ int ComboBrowser::handle(int event)
 void ComboBrowser::browser_cb(Fl_Widget *w, void *data)
 {
     // we get callbacks for all keys?
-    if(Fl::event_key() != FL_Enter && Fl::event_key() != ' ')
-        return;
+    //if(Fl::event_key() != FL_Enter && Fl::event_key() != ' ')
+    //return;
 
     ComboBrowser *br = (ComboBrowser *)w;
     Fl_Input_Browser *combo = (Fl_Input_Browser *)data;
@@ -357,7 +358,6 @@ void Fl_Input_Browser::popup()
             list = new ComboBrowser(0,0,0,0);
             list->box(FL_FLAT_BOX);
             list->callback(ComboBrowser::browser_cb, this);
-            list->when(FL_WHEN_CHANGED | FL_WHEN_RELEASE_ALWAYS | FL_WHEN_ENTER_KEY_ALWAYS);        
             list->end();
 
             win->end();

@@ -109,8 +109,8 @@ public:
     bool select_row(unsigned row, int value=1);
     bool select(Fl_ListView_Item *w, int value=1) { return select_row(find(w), value); }
 
-    bool select_only_row(unsigned row);
-    bool select_only(Fl_ListView_Item *w) { return select_only_row(find(w)); }
+    bool select_only_row(unsigned row, bool do_callback=false);
+    bool select_only(Fl_ListView_Item *w, bool do_callback=false) { return select_only_row(find(w), do_callback); }
 
     void select_items(unsigned from, unsigned to);
 
