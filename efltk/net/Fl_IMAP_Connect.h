@@ -8,8 +8,9 @@
 
 class Fl_IMAP_Connect : public Fl_Socket {
     Fl_String_List  m_response;
-    int                 m_ident;
-    static const Fl_String  empty_quotes; 
+    int             m_ident;
+    static const Fl_String  empty_quotes;
+    FILE                    *m_sockf;
 protected:
     Fl_String send_command(Fl_String cmd);
     bool get_response(Fl_String ident);

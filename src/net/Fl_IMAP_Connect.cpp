@@ -1,5 +1,6 @@
 #include <efltk/net/Fl_IMAP_Connect.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 // Implementation is based on
 // http://www.course.molina.com.br/RFC/Orig/rfc2060.txt
@@ -7,9 +8,12 @@
 Fl_IMAP_Connect::Fl_IMAP_Connect() {
     m_port = 143;
     m_ident = 1;
+    m_sockf = NULL;
 }
 
 Fl_IMAP_Connect::~Fl_IMAP_Connect() {
+    if (m_sockf)
+        fclose(m_sockf);
     close();
 }
 
@@ -18,11 +22,13 @@ bool Fl_IMAP_Connect::get_response(Fl_String ident) {
     char    readBuffer[RSP_BLOCK_SIZE+1];
 
     for (;;) {
-        int len = read_line(readBuffer,RSP_BLOCK_SIZE);
+        char *p = fgets(readBuffer,RSP_BLOCK_SIZE,m_sockf);
+        int len = strlen(readBuffer);
         Fl_String longLine = readBuffer;
         if (len == RSP_BLOCK_SIZE && readBuffer[RSP_BLOCK_SIZE]!='\n') {
             do {
-                len = read_line(readBuffer,RSP_BLOCK_SIZE);
+                p = fgets(readBuffer,RSP_BLOCK_SIZE,m_sockf);
+                len = strlen(readBuffer);
                 longLine += readBuffer;
             } while(len == RSP_BLOCK_SIZE);
         }
@@ -78,8 +84,11 @@ void Fl_IMAP_Connect::command(Fl_String cmd,const Fl_String& arg1,const Fl_Strin
 }
 
 void Fl_IMAP_Connect::cmd_login(Fl_String user,Fl_String password) {
+    if (m_sockf)
+        fclose(m_sockf);
     close();
     open();
+    m_sockf = fdopen(handle(),"r+b");
     m_response.clear();
     get_response("");
     command("login "+user+" "+password);
@@ -163,10 +172,82 @@ static void parse_header(const Fl_String& header,Fl_String& header_name,Fl_Strin
     }
 }
 
+static Fl_Date_Time decode_date(const Fl_String& dt) {
+    char    temp[40];
+    strcpy(temp,dt.c_str()+5);
+    // 1. get the day of the month
+    char *p1 = temp;
+    char *p2 = strchr(p1,' ');
+    if (!p2) return Fl_Date_Time(0.0);
+    *p2 = 0;
+    int mday = atoi(p1);
+    // 2. get the month
+    p1 = p2 + 1;
+    int month = 1;
+    switch (*p1) {
+        case 'A':
+            if (*(p1+1) == 'p') {
+                month = 4; // Apr
+                break;
+            }
+            month = 8; // Aug
+            break;
+        case 'D':
+            month = 12; // Dec
+            break;
+        case 'F':
+            month = 2; // Feb
+            break;
+        case 'J':   
+            if (*(p1+1) == 'a') {
+                month = 1; // Jan
+                break;
+            } 
+            if (*(p1+2) == 'n') {
+                month = 6; // Jun
+                break;
+            }
+            month = 7; // Jul
+            break;
+        case 'M':
+            if (*(p1+2) == 'r') {
+                month = 3; // Mar
+                break;
+            }
+            month = 5; // May
+            break;
+        case 'N':
+            month = 11; // Oct
+            break;
+        case 'O':
+            month = 10; // Oct
+            break;
+        case 'S':
+            month = 9; // Sep
+            break;
+    }
+    // 2. get the year
+    p1 += 4;
+    p2 = p1 + 4;
+    *p2 = 0;
+    int year = atoi(p1);
+    p1 = p2 + 1;
+    p2 = strchr(p1,' ');
+    if (p2) *p2 = 0;
+    Fl_Date_Time    time(p1);
+    Fl_Date_Time    date(year,month,mday);
+    return double(date) + double(time);
+}
+
 void Fl_IMAP_Connect::parse_message(Fl_Data_Fields& results,bool headers_only) {
     results.clear();
     for (unsigned i = 0; required_headers[i]; i++) {
-        results.add(new Fl_Data_Field(required_headers[i]));
+        Fl_Data_Field *fld = new Fl_Data_Field(required_headers[i]);
+        switch (i) {
+            case 0: fld->width = 16; break;
+            default: fld->width = 32; break;
+        }
+        results.add(fld);
     }
     // parse headers
     unsigned i = 1;
@@ -178,8 +259,12 @@ void Fl_IMAP_Connect::parse_message(Fl_Data_Fields& results,bool headers_only) {
         parse_header(st,header_name,header_value);
         if (header_name.length()) {
             int field_index = results.field_index(header_name.c_str());
-            if (field_index >= 0)
-                results[field_index].set_string(header_value);
+            if (field_index >= 0) {
+                if (header_name == "Date")
+                    results[field_index].set_date(decode_date(header_value));
+                else    
+                    results[field_index].set_string(header_value);
+            }
         }
     }
     if (headers_only) return;
