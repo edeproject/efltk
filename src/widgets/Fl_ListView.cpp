@@ -845,10 +845,12 @@ int Fl_ListView::handle(int event)
                 ret = vscrollbar.send(event);
                 if(!ret) ret = hscrollbar.send(event);
                 if(ret) {
-					printf("SET ITEM!\n");
-                    //Set item to first visible
-                    //layout();
-                    //item(child(first_vis));
+                    if(Fl::event_key()==FL_Page_Up)
+                        select_only(item_at(yposition_+10));
+                    else if(Fl::event_key()==FL_Page_Down)
+                        select_only(item_at(yposition_+H-10));
+                    show_item(item());
+                    redraw(FL_DAMAGE_CONTENTS);
                     return 1;
                 }
                 break;

@@ -75,6 +75,7 @@ static void set_fl_font(Fl_Font font, unsigned size) {
     }
 }
 
+#if HAVE_XUTF8
 static int utf_len(char c)
 {
   if (!(c & 0x80)) return 1;
@@ -95,7 +96,7 @@ static int utf_len(char c)
   }
   return 0;
 }
-
+#endif
 Fl_Text_Display::Fl_Text_Display(int X, int Y, int W, int H,  const char* l)
 	: Fl_Group(X, Y, W, H, l)
 {
@@ -807,8 +808,8 @@ void Fl_Text_Display::wrap_mode(int wrap, int wrapMargin) {
 */
 void Fl_Text_Display::insert(const char* text) {
   int pos = mCursorPos;
-
-  mCursorToHint = pos + strlen( text );
+  int len = strlen( text );
+  mCursorToHint = pos + len;
   mBuffer->insert( pos, text );
   mCursorToHint = NO_HINT;
 }
@@ -1451,7 +1452,7 @@ void Fl_Text_Display::buffer_predelete_cb(int pos, int nDeleted, void *cbArg)
 ** Callback attached to the text buffer to receive modification information
 */
 void Fl_Text_Display::buffer_modified_cb( int pos, int nInserted, int nDeleted,
-										int nRestyled, const char *deletedText, void *cbArg ) 
+                                         int nRestyled, const char *deletedText, void *cbArg )
 {
   int linesInserted, linesDeleted, startDispPos, endDispPos;
   Fl_Text_Display *textD = ( Fl_Text_Display * ) cbArg;
@@ -1639,7 +1640,7 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
     int dispIndexOffset;//, cursorPos = mCursorPos;
     char expandedChar[ FL_TEXT_MAX_EXP_CHAR_LEN ], outStr[ MAX_DISP_LINE_LEN ];
     char *outPtr;
-    const char *lineStr;
+    char *lineStr;
 
     /* If line is not displayed, skip it */
     if ( visLineNum < 0 || visLineNum > mNVisibleLines )
@@ -1653,11 +1654,12 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
     lineStartPos = mLineStarts[ visLineNum ];
     if ( lineStartPos == -1 ) {		
         lineLen = 0;
-        lineStr = NULL;
+        lineStr = 0;
     } else {
+        //printf("RANGE %d - %d\n", lineStartPos, lineStartPos + lineLen);
         lineLen = vline_length( visLineNum );
-        lineStr = buf->text_range( lineStartPos, lineStartPos + lineLen );		
-    }	
+        lineStr = (char*)buf->text_range( lineStartPos, lineStartPos + lineLen );
+    }
 
     /* Space beyond the end of the line is still counted in units of characters
      of a standardized character width (this is done mostly because style
@@ -1667,7 +1669,7 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
     stdCharWidth = mMaxFontBound;//TMPFONTWIDTH; //mFontStruct->max_bounds.width;
     if ( stdCharWidth <= 0 ) {
         fprintf( stderr, "Internal Error, bad font measurement\n" );
-        delete [] (char *)lineStr;
+        if(lineStr) delete []lineStr;
         return;
     }
 
@@ -1814,8 +1816,8 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
       }
   }
   */
-    if ( lineStr != NULL )
-        delete [] (char *)lineStr;
+    if(lineStr)
+        delete []lineStr;
 }
 
 /*
@@ -3162,7 +3164,7 @@ void Fl_Text_Display::draw()
 
         // draw that little box in the corner of the scrollbars
         if (mVScrollBar->visible() && mHScrollBar->visible()) {
-            fl_color(button_color());
+            fl_color(parent()?parent()->color():color());
             fl_rectf(mVScrollBar->x(), mHScrollBar->y(),
                      mVScrollBar->w(), mHScrollBar->h());
         }
@@ -3186,7 +3188,6 @@ void Fl_Text_Display::draw()
         fl_pop_clip();
 
         //draw_line_numbers(false);
-
     }
 
     // draw the scrollbars
@@ -3346,14 +3347,14 @@ int Fl_Text_Display::handle(int event) {
             if (Fl::event_is_click()) return 1;
             dragType = 0;
             // drag:
-            const char* copy = buffer()->selection_text();
-            if (*copy) {
+            char* copy = (char*)buffer()->selection_text();
+            if(*copy) {
                 Fl::copy(copy, strlen(copy), false);
-                free((void*)copy);
+                delete []copy;
                 Fl::dnd();
                 return 1;
             }
-            free((void*)copy);
+            delete []copy;
         }
         int X = Fl::event_x(), Y = Fl::event_y(), pos;
         if (Y < text_area.y) {
@@ -3401,9 +3402,9 @@ int Fl_Text_Display::handle(int event) {
             dragPos = buffer()->primary_selection()->end();
         dragType = DRAG_CHAR;
 
-        const char* copy = buffer()->selection_text();
-        if (*copy) Fl::copy(copy, strlen(copy), false);
-        free((void*)copy);
+        char* copy = (char*)buffer()->selection_text();
+        if(*copy) Fl::copy(copy, strlen(copy), false);
+        delete []copy;
         return 1;
       }
 

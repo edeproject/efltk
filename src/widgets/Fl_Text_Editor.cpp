@@ -43,22 +43,22 @@ static Fl_Menu_ *menu_ = &menu;
 static void cb_menu(Fl_Widget *w, void *d)
 {
     if(!menu_widget) return;
-    const char *selection = 0;
+    char *selection = 0;
     switch((int)d) {
     case COPY:
-        selection = menu_widget->buffer()->selection_text();
+        selection = (char *)menu_widget->buffer()->selection_text();
         if(*selection) {
             Fl::copy(selection, strlen(selection), true);
-            free((void*)selection);
         }
+        delete []selection;
         break;
     case CUT:
-        selection = menu_widget->buffer()->selection_text();
+        selection = (char *)menu_widget->buffer()->selection_text();
         if(*selection) {
             Fl::copy(selection, strlen(selection), true);
-            free((void*)selection);
             menu_widget->buffer()->remove_selection();
         }
+        delete []selection;
         break;
     case PASTE:
         Fl::paste(*menu_widget, true);
@@ -84,6 +84,7 @@ Fl_Text_Editor::Fl_Text_Editor(int X, int Y, int W, int H,  const char* l)
 {
     static bool menuinit=false;
     if(!menuinit) {
+        if(menu_->parent()) menu_->parent()->remove(menu_);
         menu_->type(Fl_Menu_Button::POPUP3); //HACK! :)
         menu_->add("Cut", 0, cb_menu, (void *)CUT);
         menu_->add("Copy", 0, cb_menu, (void *)COPY);
@@ -115,7 +116,6 @@ static struct
     int state;
     Fl_Text_Editor::Key_Func func;
 }
-
 
 default_key_bindings[] =
 {
@@ -161,6 +161,7 @@ default_key_bindings[] =
     //{ 'z',          FL_CTRL,                  Fl_Text_Editor::undo	  },
     { FL_Insert,    FL_SHIFT,                 Fl_Text_Editor::kf_paste      },
     { FL_Delete,    FL_SHIFT,                 Fl_Text_Editor::kf_cut        },
+    { 'z',          FL_CTRL,                  Fl_Text_Editor::kf_undo        },
     { 'x',          FL_CTRL,                  Fl_Text_Editor::kf_cut        },
     { 'c',          FL_CTRL,                  Fl_Text_Editor::kf_copy       },
 	{ FL_Insert,    FL_CTRL,                  Fl_Text_Editor::kf_copy       },
@@ -202,12 +203,38 @@ void Fl_Text_Editor::add_default_key_bindings(Key_Binding** list)
     }
 }
 
+void Fl_Text_Editor::insert(const char* text)
+{
+    int textLen = strlen( text );
+    int startPos = insert_position();
+    buffer()->add_undo(text, startPos, textLen, true, false);
+
+    Fl_Text_Display::insert(text);
+}
+
+void Fl_Text_Editor::overstrike(const char* text)
+{
+    int textLen = strlen( text );
+    int startPos = insert_position();
+    char *txt = (char*)buffer()->text_range(startPos, startPos+textLen);
+    buffer()->add_undo(txt, startPos, textLen, false, true);
+    delete []txt;
+
+    Fl_Text_Display::overstrike(text);
+}
 
 static void kill_selection(Fl_Text_Editor* e)
 {
     if (e->buffer()->selected())
     {
         e->insert_position(e->buffer()->primary_selection()->start());
+
+        char *text = (char*)e->buffer()->selection_text();
+        int textLen = strlen( text );
+        int startPos = e->insert_position();
+        e->buffer()->add_undo(text, startPos, textLen, false, false);
+        delete []text;
+
         e->buffer()->remove_selection();
     }
 }
@@ -580,9 +607,9 @@ int Fl_Text_Editor::kf_delete(int, Fl_Text_Editor* e)
 int Fl_Text_Editor::kf_copy(int, Fl_Text_Editor* e)
 {
     if (!e->buffer()->selected()) return 1;
-    const char *copy = e->buffer()->selection_text();
+    char *copy = (char *)e->buffer()->selection_text();
     if (*copy) Fl::copy(copy, strlen(copy), true);
-    free((void*)copy);
+    delete []copy;
     e->show_insert_position();
     return 1;
 }
@@ -595,6 +622,16 @@ int Fl_Text_Editor::kf_cut(int c, Fl_Text_Editor* e)
     return 1;
 }
 
+int Fl_Text_Editor::kf_undo(int c, Fl_Text_Editor* e)
+{
+    int pos = e->buffer()->undo();
+    if(pos>-1) {
+        e->insert_position(pos);
+        e->show_insert_position();
+        if(e->when()&FL_WHEN_CHANGED) e->do_callback(); else e->set_changed();
+    }
+    return 1;
+}
 
 int Fl_Text_Editor::kf_paste(int, Fl_Text_Editor* e)
 {
@@ -657,7 +694,7 @@ int Fl_Text_Editor::handle(int event)
                 dragType = -1;
                 Fl::paste(*this,false);
             } else if(Fl::event_button()==3) {
-                const char *selection = buffer()->selection_text();
+                char *selection = (char *)buffer()->selection_text();
                 if(!*selection) {
                     menu_->find("Cut")->deactivate();
                     menu_->find("Copy")->deactivate();
@@ -665,7 +702,7 @@ int Fl_Text_Editor::handle(int event)
                     menu_->find("Cut")->activate();
                     menu_->find("Copy")->activate();
                 }
-                free((void*)selection);
+                delete []selection;
                 menu_widget = this;
                 menu_->popup(Fl::event_x(), Fl::event_y());
                 menu_widget = 0;
