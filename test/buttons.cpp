@@ -38,7 +38,7 @@
 
 void rb_cb(Fl_Widget*, void*) {
 //  Fl::theme("essai");
-  Fl_Style::revert();
+  //Fl_Style::revert();
 }
 
 int main(int argc, char ** argv) {
