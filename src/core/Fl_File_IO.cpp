@@ -17,6 +17,7 @@
 #else
 
 #include <sys/types.h>
+#include <sys/file.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -158,7 +159,10 @@ bool Fl_File_IO::open()
 	if(i_handle < 0)
 		m_handle = INVALID_HANDLE_VALUE;
 	else if(mode() & IO_LOCKED)
-		flock(m_handle, LOCK_EX|LOCK_NB);
+		if (flock(i_handle, LOCK_EX|LOCK_NB) == -1){
+		    close();
+		    return false;
+		}
 
 #endif
 
@@ -185,7 +189,7 @@ bool Fl_File_IO::close()
 		unlink(m_filename.c_str());
 	// Unlock file
 	if(mode() & IO_LOCKED)
-		flock(m_handle, LOCK_UN);
+		flock(i_handle, LOCK_UN);
 #endif
 	m_handle = INVALID_HANDLE_VALUE;
 	
