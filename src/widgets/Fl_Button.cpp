@@ -105,9 +105,9 @@ int Fl_Button::handle(int event)
         }
         if (when() & FL_WHEN_RELEASE) do_callback(); else set_changed();
         return 1;
-    case FL_FOCUS:
-    case FL_UNFOCUS:
-		already_pushed = false;
+    
+    case FL_UNFOCUS:		
+	case FL_FOCUS:
         redraw(FL_DAMAGE_HIGHLIGHT);
         // grab initial focus if we are an Fl_Return_Button:
         return shortcut()=='\r' ? 2 : 1;

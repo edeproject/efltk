@@ -568,8 +568,7 @@ int Fl_Text_Editor::kf_select_all(int, Fl_Text_Editor* e)
 
 void Fl_Text_Editor::maybe_do_callback()
 {
-    if (changed() || (when()&FL_WHEN_NOT_CHANGED))
-    {
+    if (changed() || (when()&FL_WHEN_NOT_CHANGED)) {
         clear_changed(); do_callback();
     }
 }
