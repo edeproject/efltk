@@ -36,6 +36,8 @@
 #include <limits.h>
 #include <ctype.h>
 
+#ifndef _WIN32
+
 #if HAVE_XUTF8
 # include <efltk/Xutf8.h>
 #endif
@@ -43,6 +45,8 @@
 #if USE_XFT
 #include <X11/Xft/Xft.h>
 #endif
+
+#endif /* _WIN32 */
 
 #undef min
 #undef max
