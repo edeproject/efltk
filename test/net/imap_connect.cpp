@@ -39,7 +39,7 @@ void quit_cb(Fl_Widget *,void *) {
 
 void accounts_cb(Fl_Widget *,void *) {
     Fl_Mail_Accounts    mailAccounts;
-    mailAccounts.show_modal();
+    mailAccounts.exec();
 }
 
 Fl_Menu_Item menutable[] = {
