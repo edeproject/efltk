@@ -69,40 +69,40 @@ static void fl_init_stock_images()
     if(been_here) return;
     been_here = true;
 
-    fl_stock_images[Fl_Stock_Images::OK].set_default(&ok_pixmap);
-    fl_stock_images[Fl_Stock_Images::CANCEL].set_default(&cancel_pixmap);
-    fl_stock_images[Fl_Stock_Images::NO].set_default(&no_pixmap);
-    fl_stock_images[Fl_Stock_Images::OPEN].set_default(&open_pixmap);
-    fl_stock_images[Fl_Stock_Images::SAVE].set_default(&save_pixmap);
-    fl_stock_images[Fl_Stock_Images::BROWSE].set_default(&help_pixmap);
-    fl_stock_images[Fl_Stock_Images::HELP].set_default(&help_pixmap);
-    fl_stock_images[Fl_Stock_Images::NEXT].set_default(&right_pixmap);
-    fl_stock_images[Fl_Stock_Images::PREV].set_default(&left_pixmap);
-    fl_stock_images[Fl_Stock_Images::LEFT].set_default(&left_pixmap);
-    fl_stock_images[Fl_Stock_Images::RIGHT].set_default(&right_pixmap);
-    fl_stock_images[Fl_Stock_Images::ADD].set_default(&insert_pixmap);
-    fl_stock_images[Fl_Stock_Images::DELETE].set_default(&delete_pixmap);
-    fl_stock_images[Fl_Stock_Images::EDIT].set_default(&edit_pixmap);
-    fl_stock_images[Fl_Stock_Images::REFRESH].set_default(&new_pixmap);
-    fl_stock_images[Fl_Stock_Images::CALENDAR].set_default(&new_pixmap);
-    fl_stock_images[Fl_Stock_Images::PRINT].set_default(&print_pixmap);
-    fl_stock_images[Fl_Stock_Images::PRINTER].set_default(&printer_pixmap);
-    fl_stock_images[Fl_Stock_Images::INSERT].set_default(&insert_pixmap);
-    fl_stock_images[Fl_Stock_Images::NEW].set_default(&new_pixmap);
-    fl_stock_images[Fl_Stock_Images::SEARCH].set_default(&new_pixmap);
-    fl_stock_images[Fl_Stock_Images::SEND].set_default(&new_pixmap);
-    fl_stock_images[Fl_Stock_Images::STEPLEFT].set_default(&left_pixmap);
-    fl_stock_images[Fl_Stock_Images::STEPRIGHT].set_default(&right_pixmap);
-    fl_stock_images[Fl_Stock_Images::VIEW].set_default(&new_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_OK].set_default(&ok_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_CANCEL].set_default(&cancel_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_NO].set_default(&no_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_OPEN].set_default(&open_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_SAVE].set_default(&save_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_BROWSE].set_default(&help_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_HELP].set_default(&help_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_NEXT].set_default(&right_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_PREV].set_default(&left_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_LEFT].set_default(&left_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_RIGHT].set_default(&right_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_ADD].set_default(&insert_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_DELETE].set_default(&delete_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_EDIT].set_default(&edit_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_REFRESH].set_default(&new_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_CALENDAR].set_default(&new_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_PRINT].set_default(&print_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_PRINTER].set_default(&printer_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_INSERT].set_default(&insert_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_NEW].set_default(&new_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_SEARCH].set_default(&new_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_SEND].set_default(&new_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_STEPLEFT].set_default(&left_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_STEPRIGHT].set_default(&right_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_VIEW].set_default(&new_pixmap);
 }
 
-Fl_Image *Fl_Stock_Images::get_image(Type type)
+Fl_Image *Fl_Stock_Images::get_image(SI_Type type)
 {
     fl_init_stock_images();
     return fl_stock_images[type].image();
 }
 
-void Fl_Stock_Images::set_image(Type type, Fl_Image *image)
+void Fl_Stock_Images::set_image(SI_Type type, Fl_Image *image)
 {
     fl_stock_images[type].set_other(image);
 }

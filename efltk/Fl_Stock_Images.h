@@ -20,76 +20,76 @@ public:
     /**
      * Types for predefined stock images.
      */
-    enum Type {
-        OK,
-        CANCEL,
-        NO,
-        OPEN,
-        SAVE,
-        BROWSE,
-        HELP,
-        NEXT,
-        PREV,
-        LEFT,
-        RIGHT,
-        ADD,
-        DELETE,
-        EDIT,
-        REFRESH,
-        CALENDAR,
-        PRINT,
-        PRINTER,
-        INSERT,
-        NEW,
-        SEARCH,
-        SEND,
-        STEPLEFT,
-        STEPRIGHT,
-        VIEW,
+    enum SI_Type {
+        SI_OK,
+        SI_CANCEL,
+        SI_NO,
+        SI_OPEN,
+        SI_SAVE,
+        SI_BROWSE,
+        SI_HELP,
+        SI_NEXT,
+        SI_PREV,
+        SI_LEFT,
+        SI_RIGHT,
+        SI_ADD,
+        SI_DELETE,
+        SI_EDIT,
+        SI_REFRESH,
+        SI_CALENDAR,
+        SI_PRINT,
+        SI_PRINTER,
+        SI_INSERT,
+        SI_NEW,
+        SI_SEARCH,
+        SI_SEND,
+        SI_STEPLEFT,
+        SI_STEPRIGHT,
+        SI_VIEW,
         LAST_STOCK_TYPE,
 
         // Same
-        PRIOR = PREV
+        SI_PRIOR = SI_PREV
     };
 
     /**
      * Returns image of given type.
      */
-    static Fl_Image *get_image(Type type);
+    static Fl_Image *get_image(SI_Type type);
 
     /**
      * Set new image for type. You can set default image back by calling this
      * with image parameter as NULL pointer.
      */
-    static void set_image(Type type, Fl_Image *image);
+    static void set_image(SI_Type type, Fl_Image *image);
 };
 
 // Defines :)
-#define FL_IMAGE_OK        Fl_Stock_Images::OK
-#define FL_IMAGE_CANCEL    Fl_Stock_Images::CANCEL
-#define FL_IMAGE_NO        Fl_Stock_Images::NO
-#define FL_IMAGE_OPEN      Fl_Stock_Images::OPEN
-#define FL_IMAGE_SAVE      Fl_Stock_Images::SAVE
-#define FL_IMAGE_BROWSE    Fl_Stock_Images::BROWSE
-#define FL_IMAGE_HELP      Fl_Stock_Images::HELP
-#define FL_IMAGE_NEXT      Fl_Stock_Images::NEXT
-#define FL_IMAGE_PREV      Fl_Stock_Images::PREV
-#define FL_IMAGE_PRIOR     Fl_Stock_Images::PRIOR
-#define FL_IMAGE_LEFT      Fl_Stock_Images::LEFT
-#define FL_IMAGE_RIGHT     Fl_Stock_Images::RIGHT
-#define FL_IMAGE_ADD       Fl_Stock_Images::ADD
-#define FL_IMAGE_DELETE    Fl_Stock_Images::DELETE
-#define FL_IMAGE_EDIT      Fl_Stock_Images::EDIT
-#define FL_IMAGE_REFRESH   Fl_Stock_Images::REFRESH
-#define FL_IMAGE_CALENDAR  Fl_Stock_Images::CALENDAR
-#define FL_IMAGE_PRINT     Fl_Stock_Images::PRINT
-#define FL_IMAGE_PRINTER   Fl_Stock_Images::PRINTER
-#define FL_IMAGE_INSERT    Fl_Stock_Images::INSERT
-#define FL_IMAGE_NEW       Fl_Stock_Images::NEW
-#define FL_IMAGE_SEARCH    Fl_Stock_Images::SEARCH
-#define FL_IMAGE_SEND      Fl_Stock_Images::SEND
-#define FL_IMAGE_STEPLEFT  Fl_Stock_Images::STEPLEFT
-#define FL_IMAGE_STEPRIGHT Fl_Stock_Images::STEPRIGHT
-#define FL_IMAGE_VIEW      Fl_Stock_Images::VIEW
+#define FL_IMAGE_OK        Fl_Stock_Images::SI_OK
+#define FL_IMAGE_CANCEL    Fl_Stock_Images::SI_CANCEL
+#define FL_IMAGE_NO        Fl_Stock_Images::SI_NO
+#define FL_IMAGE_OPEN      Fl_Stock_Images::SI_OPEN
+#define FL_IMAGE_SAVE      Fl_Stock_Images::SI_SAVE
+#define FL_IMAGE_BROWSE    Fl_Stock_Images::SI_BROWSE
+#define FL_IMAGE_HELP      Fl_Stock_Images::SI_HELP
+#define FL_IMAGE_NEXT      Fl_Stock_Images::SI_NEXT
+#define FL_IMAGE_PREV      Fl_Stock_Images::SI_PREV
+#define FL_IMAGE_PRIOR     Fl_Stock_Images::SI_PRIOR
+#define FL_IMAGE_LEFT      Fl_Stock_Images::SI_LEFT
+#define FL_IMAGE_RIGHT     Fl_Stock_Images::SI_RIGHT
+#define FL_IMAGE_ADD       Fl_Stock_Images::SI_ADD
+#define FL_IMAGE_DELETE    Fl_Stock_Images::SI_DELETE
+#define FL_IMAGE_EDIT      Fl_Stock_Images::SI_EDIT
+#define FL_IMAGE_REFRESH   Fl_Stock_Images::SI_REFRESH
+#define FL_IMAGE_CALENDAR  Fl_Stock_Images::SI_CALENDAR
+#define FL_IMAGE_PRINT     Fl_Stock_Images::SI_PRINT
+#define FL_IMAGE_PRINTER   Fl_Stock_Images::SI_PRINTER
+#define FL_IMAGE_INSERT    Fl_Stock_Images::SI_INSERT
+#define FL_IMAGE_NEW       Fl_Stock_Images::SI_NEW
+#define FL_IMAGE_SEARCH    Fl_Stock_Images::SI_SEARCH
+#define FL_IMAGE_SEND      Fl_Stock_Images::SI_SEND
+#define FL_IMAGE_STEPLEFT  Fl_Stock_Images::SI_STEPLEFT
+#define FL_IMAGE_STEPRIGHT Fl_Stock_Images::SI_STEPRIGHT
+#define FL_IMAGE_VIEW      Fl_Stock_Images::SI_VIEW
 
 #endif

@@ -31,20 +31,20 @@
 struct Fl_Dialog_Button_Template {
     int         id;
     const char *label;
-    Fl_Stock_Images::Type type;
+    Fl_Stock_Images::SI_Type type;
 };
 
 static const Fl_Dialog_Button_Template buttonTemplates[] = {
-    { Fl_Dialog::BTN_OK,     N_("Ok"),      Fl_Stock_Images::OK },
-    { Fl_Dialog::BTN_CANCEL, N_("Cancel"),  Fl_Stock_Images::CANCEL },
-    { Fl_Dialog::BTN_YES,    N_("Yes"),     Fl_Stock_Images::OK },
-    { Fl_Dialog::BTN_NO,     N_("No"),      Fl_Stock_Images::NO },
-    { Fl_Dialog::BTN_RETRY,  N_("Retry"),   Fl_Stock_Images::REFRESH },
-    { Fl_Dialog::BTN_REFRESH,N_("Refresh"), Fl_Stock_Images::REFRESH },
-    { Fl_Dialog::BTN_CONFIRM,N_("Confirm"), Fl_Stock_Images::OK },
-    { Fl_Dialog::BTN_IGNORE, N_("Ignore"),  Fl_Stock_Images::NO },
-    { Fl_Dialog::BTN_HELP,   N_("Help"),    Fl_Stock_Images::HELP },
-    { 0,             "",       Fl_Stock_Images::HELP }
+    { Fl_Dialog::BTN_OK,     N_("Ok"),      Fl_Stock_Images::SI_OK },
+    { Fl_Dialog::BTN_CANCEL, N_("Cancel"),  Fl_Stock_Images::SI_CANCEL },
+    { Fl_Dialog::BTN_YES,    N_("Yes"),     Fl_Stock_Images::SI_OK },
+    { Fl_Dialog::BTN_NO,     N_("No"),      Fl_Stock_Images::SI_NO },
+    { Fl_Dialog::BTN_RETRY,  N_("Retry"),   Fl_Stock_Images::SI_REFRESH },
+    { Fl_Dialog::BTN_REFRESH,N_("Refresh"), Fl_Stock_Images::SI_REFRESH },
+    { Fl_Dialog::BTN_CONFIRM,N_("Confirm"), Fl_Stock_Images::SI_OK },
+    { Fl_Dialog::BTN_IGNORE, N_("Ignore"),  Fl_Stock_Images::SI_NO },
+    { Fl_Dialog::BTN_HELP,   N_("Help"),    Fl_Stock_Images::SI_HELP },
+    { 0,             "",       Fl_Stock_Images::SI_HELP }
 };
 
 class Fl_Dialog_Button : public Fl_Group {
