@@ -23,42 +23,38 @@
 # Please report all bugs and problems to "fltk-bugs@easysw.com".
 #
 
-OUT_MAGIC := $(shell mkdir ../lib > /dev/null 2>&1 || :)
-
+EFLTK_TOPDIR=..
 include ../makeinclude
+
+OUT_MAGIC := $(shell mkdir $(EFLTK_TOPDIR)/lib > /dev/null 2>&1 || :)
 
 ################################################################
 
-DSOCFLAGS += -DFL_LIBRARY
-DSOCXXFLAGS += -DFL_LIBRARY
+DIRS = core widgets db xml images opengl
 
 LIBNAME = libefltk
 DSOLIBNAME = $(LIBNAME)
-LIBRARY = ../lib/$(LIBNAME)
-DSO = ../lib/$(LIBNAME)
+LIBRARY = $(EFLTK_TOPDIR)/lib/$(LIBNAME)
+DSO = $(EFLTK_TOPDIR)/lib/$(LIBNAME)
 DSONAME = $(LIBNAME)$(DSOEXT)
 
 all: $(BUILDTARGETS)
 
 static:
 	@rm -f $(LIBRARY)$(LIBEXT)
-	$(MAKE) -C core static
-	$(MAKE) -C widgets static
-	$(MAKE) -C db static
-	$(MAKE) -C xml static
+	@for dir in $(DIRS); do\
+        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) static) || break;\
+	done
 	$(MAKE) $(LIBRARY)$(LIBEXT)
-	$(MAKE) -C images static
-	$(MAKE) -C opengl static
 
 shared:
-	rm -f $(LIBRARY)$(DSOEXT)
-	$(MAKE) -C core shared
-	$(MAKE) -C widgets shared
-	$(MAKE) -C db shared
-	$(MAKE) -C xml shared
+	@rm -f $(LIBRARY)$(DSOEXT)
+	@for dir in $(DIRS); do\
+        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) shared) || break;\
+	done
 	$(MAKE) $(DSO)$(DSOEXT)
-	$(MAKE) -C images shared
-	$(MAKE) -C opengl shared
 
 programs:
 
@@ -70,38 +66,34 @@ $(LIBRARY).a:
 	@$(LIBCOMMAND) $@ $(STATIC_OBJECTS)
 	@$(RANLIB) $@
 
-$(DSO).so.2 $(DSO).sl.2:
+$(DSO).so.$(FL_API_VERSION) $(DSO).sl.2:
 	@rm -f $@
 	@echo $(DSOCOMMAND) $(DSONAME) ...
 	@$(DSOCOMMAND) $(DSONAME) $(SHARED_OBJECTS) $(DSOLIBS)
-ifeq ($(HAVE_STRIP), 1) 
+ifneq ($(STRIP), ) 
 	@$(STRIP) $(DSONAME)
 endif
 	@mv $(DSONAME) $@
 
 DLLIMPORTNAME = $(LIBNAME).2.dll$(LIBEXT)
-$(DSO).2.dll:
+$(DSO).$(FL_API_VERSION).dll:
 	@-rm -f $@
 	@echo $(DSOCOMMAND) $@ ...
 	@$(DSOCOMMAND) $@ $(SHARED_OBJECTS) $(DSOLIBS)
-	-mv $@.import ../lib/$(DLLIMPORTNAME)
+	@mv $@.import $(EFLTK_TOPDIR)/lib/$(DLLIMPORTNAME)
 
 clean:
-	$(MAKE) -C core clean
-	$(MAKE) -C widgets clean
-	$(MAKE) -C db clean
-	$(MAKE) -C xml clean
-	$(MAKE) -C images clean
-	$(MAKE) -C opengl clean
+	@for dir in $(DIRS); do\
+        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) clean) || break;\
+	done
 	@rm -f *~ $(LIBRARY).*
 
 depend:
-	$(MAKE) -C core depend
-	$(MAKE) -C widgets depend
-	$(MAKE) -C db depend
-	$(MAKE) -C xml depend
-	$(MAKE) -C images depend
-	$(MAKE) -C opengl depend
+	@for dir in $(DIRS); do\
+        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) depend) || break;\
+	done
 
 ################################################################
 
@@ -112,26 +104,27 @@ install_static: static
 	@mkdir -p $(libdir)
 	@rm -f $(libdir)/$(LIBNAME)$(LIBEXT)
 	@cp -f $(LIBRARY)$(LIBEXT) $(libdir)
-	@-chmod 644 $(libdir)/$(LIBNAME)$(LIBEXT)
-
-	$(MAKE) -C xml install_static
-	$(MAKE) -C images install_static
-	$(MAKE) -C opengl install_static
+	@chmod 644 $(libdir)/$(LIBNAME)$(LIBEXT)
+	@for dir in $(DIRS); do\
+        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) install_static) || break;\
+	done
 
 install_shared: shared
 	@echo "Installing shared libraries..."
 	@rm -f $(libdir)/$(DLLIMPORTNAME)
 	@rm -f $(libdir)/$(DSOLIBNAME)$(DSOEXT)
-	@if [ "$(DSOSHORTEXT)" ]; then rm -f $(libdir)/$(DSOLIBNAME)$(DSOSHORTEXT); fi
-	@cp -f $(DSO)$(DSOEXT) $(libdir)
-	@-chmod 755 $(libdir)/$(DSOLIBNAME)$(DSOEXT)
-	@if [ "$(DSOSHORTEXT)" ]; then \
-		ln -s $(DSOLIBNAME)$(DSOEXT) $(libdir)/$(DSOLIBNAME)$(DSOSHORTEXT); fi
-	@if [ -f "../lib/$(DLLIMPORTNAME)" ]; then cp ../lib/$(DLLIMPORTNAME) $(libdir); fi
+	@rm -f $(libdir)/$(DSOLIBNAME)$(DSOSHORTEXT)
 
-	$(MAKE) -C xml install_shared
-	$(MAKE) -C images install_shared
-	$(MAKE) -C opengl install_shared
+	@cp -f $(DSO)$(DSOEXT) $(libdir)
+	@chmod 755 $(libdir)/$(DSOLIBNAME)$(DSOEXT)
+
+	@if [ "$(DSOSHORTEXT)" ]; then ln -s $(DSOLIBNAME)$(DSOEXT) $(libdir)/$(DSOLIBNAME)$(DSOSHORTEXT); fi
+	@if [ -f "$(EFLTK_TOPDIR)/lib/$(DLLIMPORTNAME)" ]; then cp -f $(EFLTK_TOPDIR)/lib/$(DLLIMPORTNAME) $(libdir); fi
+	@for dir in $(DIRS); do\
+        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) install_shared) || break;\
+	done
  
 install_programs:
 

@@ -1,5 +1,3 @@
-include ../../makeinclude
-
 CPPFILES = \
 	Fl.cpp \
 	Fl_Bitmap.cpp \
@@ -95,47 +93,14 @@ CFILES = \
 	numericsort.c \
 	vsnprintf.c
 
-################################################################
+LIBNAME =
 
-DSOCFLAGS += -DFL_LIBRARY
-DSOCXXFLAGS += -DFL_LIBRARY
-
-LIBNAME = libefltk
-DSOLIBNAME = $(LIBNAME)
-LIBRARY = ../lib/$(LIBNAME)
-DSO = ../lib/$(LIBNAME)
-DSONAME = $(LIBNAME)$(DSOEXT)
-
-OBJECTS = $(CPPFILES:.cpp=.o) $(CFILES:.c=.o)
-STATIC_OBJECTS = $(OBJECTS:.o=.static.o)
-SHARED_OBJECTS = $(OBJECTS:.o=.shared.o)
-
-all: $(BUILDTARGETS)
-
-static: $(LIBRARY)$(LIBEXT)
-
-shared: $(DSO)$(DSOEXT)
-
-programs:
-
-$(LIBRARY).a: $(STATIC_OBJECTS)
-
-$(DSO).so.2 $(DSO).sl.2: $(SHARED_OBJECTS)
-
-$(DSO).2.dll: $(SHARED_OBJECTS)
-
-clean:
-	@rm -f *.o *~ makedepend cmap
-	@touch makedepend
-
-depend:
-	$(MAKEDEPEND) -I../.. $(CXXFLAGS) $(CPPFILES) $(CFILES) > makedepend
-	sed -e "s'\.o'\.shared\.o'" makedepend > foo
-	cat foo >> makedepend
-	rm foo
+# This MUST be included after FILES
+DIRS=
+EFLTK_TOPDIR = ../..
+include ../makeinclude_tmpl
 
 # include dependency files if it exist
 ifeq (makedepend, $(wildcard makedepend))
 include makedepend
 endif
-

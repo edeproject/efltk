@@ -1,0 +1,172 @@
+#
+# Template for all Makefiles in efltk src.
+# If LIBNAME is empty, only files will be compiled
+# Otherwise library called LIBNAME is built to EFLTK_TOPDIR/lib
+#
+
+include $(EFLTK_TOPDIR)/makeinclude
+
+OUT_MAGIC := $(shell mkdir $(EFLTK_TOPDIR)/lib > /dev/null 2>&1 || :)
+
+################################################################
+
+all: $(BUILDTARGETS)
+
+OBJECTS = $(CPPFILES:.cpp=.o) $(CFILES:.c=.o)
+STATIC_OBJECTS = $(OBJECTS:.o=.static.o)
+SHARED_OBJECTS = $(OBJECTS:.o=.shared.o)
+
+# If LIBNAME is not empty, we are building separate library
+# E.g. xml, gl
+ifneq ($(LIBNAME), )
+
+DSOLIBNAME = $(LIBNAME)
+LIBRARY = $(EFLTK_TOPDIR)/lib/$(LIBNAME)
+DSO = $(EFLTK_TOPDIR)/lib/$(LIBNAME)
+DSONAME = $(LIBNAME)$(DSOEXT)
+
+static: $(LIBRARY)$(LIBEXT)
+	@for dir in $(DIRS); do\
+        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) static) || break;\
+	done
+
+shared: $(DSO)$(DSOEXT)
+	@for dir in $(DIRS); do\
+        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) shared) || break;\
+	done
+
+programs:
+	@for dir in $(DIRS); do\
+        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) programs) || break;\
+	done
+
+$(LIBRARY).a: $(STATIC_OBJECTS)
+	@rm -f $@
+	@echo $(LIBCOMMAND) $@ ...
+	@$(LIBCOMMAND) $@ $(STATIC_OBJECTS)
+	@$(RANLIB) $@
+
+$(DSO).so.$(FL_API_VERSION) $(DSO).sl.$(FL_API_VERSION): $(SHARED_OBJECTS)
+	@rm -f $@
+	@echo $(DSOCOMMAND) $(DSONAME) ...
+	@$(DSOCOMMAND) $(DSONAME) $(SHARED_OBJECTS) $(DSOLIBS)
+ifneq ($(STRIP), ) 
+	@$(STRIP) $(DSONAME)
+endif
+	@mv $(DSONAME) $@
+
+DLLIMPORTNAME = $(LIBNAME).2.dll$(LIBEXT)
+$(DSO).$(FL_API_VERSION).dll: $(SHARED_OBJECTS)
+	@rm -f $@
+	@echo $(DSOCOMMAND) $@ ...
+	@$(DSOCOMMAND) $@ $(SHARED_OBJECTS) $(DSOLIBS)
+	@mv $@.import $(EFLTK_TOPDIR)/lib/$(DLLIMPORTNAME)
+
+clean:
+	@rm -f *~ *.o *.bak $(LIBRARY).* makedepend
+	@touch makedepend
+	@for dir in $(DIRS); do\
+		(cd $$dir;$(MAKE) $(MFLAGS) clean) || break;\
+	done
+
+################################################################
+
+install: $(INSTALLTARGETS)
+
+install_static: static
+	@echo "Installing static libraries..."
+	@mkdir -p $(libdir)
+	@rm -f $(libdir)/$(LIBNAME)$(LIBEXT)
+	@cp -f $(LIBRARY)$(LIBEXT) $(libdir)
+	@chmod 644 $(libdir)/$(LIBNAME)$(LIBEXT)
+	@for dir in $(DIRS); do\
+        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) install_static) || break;\
+	done
+
+install_shared: shared
+	@echo "Installing shared libraries..."
+	@rm -f $(libdir)/$(DLLIMPORTNAME)
+	@rm -f $(libdir)/$(DSOLIBNAME)$(DSOEXT)
+	@if [ "$(DSOSHORTEXT)" ]; then rm -f $(libdir)/$(DSOLIBNAME)$(DSOSHORTEXT); fi
+	@cp -f $(DSO)$(DSOEXT) $(libdir)
+	@chmod 755 $(libdir)/$(DSOLIBNAME)$(DSOEXT)
+	@if [ "$(DSOSHORTEXT)" ]; then ln -s $(DSOLIBNAME)$(DSOEXT) $(libdir)/$(DSOLIBNAME)$(DSOSHORTEXT); fi
+	@if [ -f "$(EFLTK_TOPDIR)/lib/$(DLLIMPORTNAME)" ]; then cp $(EFLTK_TOPDIR)/lib/$(DLLIMPORTNAME) $(libdir); fi
+	@for dir in $(DIRS); do\
+        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
+		(cd $$dir;$(MAKE) $(MFLAGS) install_shared) || break;\
+	done
+
+install_programs:
+	@for dir in $(DIRS); do\
+        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) install_programs) || break;\
+	done
+
+else
+# LIBNAME was empty, compile only files
+
+all: $(BUILDTARGETS)
+	@for dir in $(DIRS); do\
+        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
+        	(cd $$dir;$(MAKE) $(MFLAGS)) || break;\
+	done
+
+static: $(STATIC_OBJECTS)
+	@for dir in $(DIRS); do\
+        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) static) || break;\
+	done
+
+shared: $(SHARED_OBJECTS)
+	@for dir in $(DIRS); do\
+        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) shared) || break;\
+	done
+
+programs:
+	@for dir in $(DIRS); do\
+        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) programs) || break;\
+	done
+
+install: $(INSTALLTARGETS)
+
+install_static: static
+	@for dir in $(DIRS); do\
+        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) install_static) || break;\
+	done
+
+install_shared: shared
+	@for dir in $(DIRS); do\
+        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
+		(cd $$dir;$(MAKE) $(MFLAGS) install_shared) || break;\
+	done
+
+install_programs:
+	@for dir in $(DIRS); do\
+        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) install_programs) || break;\
+	done
+
+clean:
+	@rm -f *~ *.o *.bak makedepend
+	@touch makedepend
+	@for dir in $(DIRS); do\
+		(cd $$dir;$(MAKE) $(MFLAGS) clean) || break;\
+	done
+
+endif
+
+# depend is same for all
+depend:
+	$(MAKEDEPEND) -I$(EFLTK_TOPDIR) $(CXXFLAGS) $(CPPFILES) $(CFILES) > makedepend
+	sed -e "s'\.o'\.shared\.o'" makedepend > foo
+	cat foo >> makedepend
+	rm foo
+
