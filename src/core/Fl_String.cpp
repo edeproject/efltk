@@ -411,7 +411,9 @@ void Fl_String::sub_delete(int start, int count)
     if(count) {
         int l = len_+1;
         if(count > l) count = l;
-        memmove(str_+start, str_+start+count, l-count);
+        memmove(str_+start, str_+start+count, l-count-start);
+        len_ -= count;
+        str_[len_] = '\0';
     }
 }
 

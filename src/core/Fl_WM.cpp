@@ -683,8 +683,10 @@ static int wm_event_handler(int e)
             action = Fl_WM::WINDOW_LIST;
         else if(fl_xevent.xproperty.atom==_XA_NET_ACTIVE_WINDOW)
             action = Fl_WM::WINDOW_ACTIVE;
-        else if(fl_xevent.xproperty.atom==_XA_NET_WM_NAME)
+        else if(fl_xevent.xproperty.atom==_XA_NET_WM_NAME) {
+            printf("NAME\n");
             action = Fl_WM::WINDOW_NAME;
+        }
         else if(fl_xevent.xproperty.atom==_XA_NET_WM_VISIBLE_NAME)
             action = Fl_WM::WINDOW_NAME_VISIBLE;
         else if(fl_xevent.xproperty.atom==_XA_NET_WM_DESKTOP)
@@ -704,7 +706,7 @@ void Fl_WM::add_callback(Fl_Callback *cb, void *user_data, int mask)
     static bool inited=false;
     if(!inited) {
         init_atoms();
-        XSelectInput(fl_display, RootWindow(fl_display, fl_screen), PropertyChangeMask);
+        XSelectInput(fl_display, RootWindow(fl_display, fl_screen), PropertyChangeMask | StructureNotifyMask);
         Fl::add_handler(wm_event_handler);
         inited=true;
     }
