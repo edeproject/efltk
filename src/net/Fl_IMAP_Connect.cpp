@@ -304,8 +304,17 @@ void Fl_IMAP_Connect::parse_folder_list() {
 			// passing the reference
 			p = strchr(p + 1,' ');
 			if (!p) continue;
+            p++;
+            char *r = strchr(p,'\r');
+            if (r) {
+                *r = 0;
+            } else {
+                r = strchr(p,'\n');
+                if (r)
+                    *r = 0;
+            }
 			// Ok, we found the path
-			folder_names.append(strip_framing_quotes(p+1));
+			folder_names.append(strip_framing_quotes(p));
 		}
 	}
 	m_response = folder_names;
