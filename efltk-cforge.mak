@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x400262
+# %FirstUniqueId:	0x400272
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -30,7 +30,7 @@ IDE_BLIND_LIBS = -L./
 
 MAKEFLAGS = $(MAKEOPTIONS)
 
-MAKEOPTIONS = -j1
+MAKEOPTIONS = -j4
 
 CCLINK = $(CC)
 
@@ -52,7 +52,7 @@ CXX = g++
 
 CXXFLAGS = $(INCLUDES) $(CXXWARNFLAGS) $(CXXDEBUGFLAGS) $(CXXOPTIMIZEFLAGS) $(CXXCODEFLAGS) $(CXXLANGFLAGS) $(CXXSPECIFICFLAGS)
 
-INCLUDES = -I. -Isrc/core -Isrc/xml -Isrc/db/odbc -DFL_SHARED -DHAVE_CONFIG_H
+INCLUDES = -I./ -DFL_SHARED -DHAVE_CONFIG_H
 
 CXXWARNFLAGS = -Wall
 
@@ -320,6 +320,7 @@ lib/libefltk_odbc.so ::	lib/Fl_ODBC_Database.o\
 	lib/fl_odbc.o
 	rm -f $@
 	$(LD) -shared -o $@ $^ $(LDOPTIONS)
+	cp $@ /usr/local/lib
 
 # %UniqueId:	0x400184
 # %TargetType:	C++_EXE
@@ -420,6 +421,42 @@ test/checkers ::	test/checkers.o
 # %ObjsDir:	test
 test/clock ::	test/clock.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+# %UniqueId:	0x400262
+# %TargetType:	C_EXE
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	test
+# %IncDir:	test
+# %ObjsDir:	test
+test/color_chooser ::	test/color_chooser.o
+	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+# %UniqueId:	0x400266
+# %TargetType:	C_EXE
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	test
+# %IncDir:	test
+# %ObjsDir:	test
+test/cube ::	test/cube.o
+	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+# %UniqueId:	0x40026b
+# %TargetType:	DLL
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	src
+# %IncDir:	efltk
+# %ObjsDir:	lib
+lib/libefltk_gl.so ::	lib/Fl_Gl_Choice.o\
+	lib/Fl_Gl_Overlay.o\
+	lib/Fl_Gl_Window.o\
+	lib/gl_draw.o\
+	lib/gl_start.o
+	rm -f $@
+	$(LD) -shared -o $@ $^ $(LDOPTIONS)
+	cp $@ /usr/local/lib
 
 # %ObjectFilesLinking
 # %TargetType:	C++_OBJ
@@ -1738,6 +1775,55 @@ test/clock.o : test/clock.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x400262
+# %SourceTarget:	0x400263
+test/color_chooser.o : test/color_chooser.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x400266
+# %SourceTarget:	0x400267
+test/cube.o : test/cube.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40026b
+# %SourceTarget:	0x40026c
+lib/Fl_Gl_Choice.o : src/Fl_Gl_Choice.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40026b
+# %SourceTarget:	0x40026d
+lib/Fl_Gl_Overlay.o : src/Fl_Gl_Overlay.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40026b
+# %SourceTarget:	0x40026e
+lib/Fl_Gl_Window.o : src/Fl_Gl_Window.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40026b
+# %SourceTarget:	0x40026f
+lib/gl_draw.o : src/gl_draw.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40026b
+# %SourceTarget:	0x400270
+lib/gl_start.o : src/gl_start.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
 # DO NOT DELETE
 
 lib/Fl_ODBC_Database.o :	src/db/odbc/fl_odbc.h\
@@ -1745,16 +1831,12 @@ lib/Fl_ODBC_Database.o :	src/db/odbc/fl_odbc.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_String.h\
 	efltk/Enumerations.h\
-	efltk/db/Fl_Query.h\
 	efltk/Fl_Data_Source.h\
 	efltk/Fl_Data_Fields.h\
 	efltk/Fl_Flags.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
-	efltk/db/Fl_Params.h\
-	efltk/db/Fl_ODBC_Database.h\
-	efltk/db/Fl_Database.h\
 	efltk/Fl_Thread.h\
 	efltk/Fl_Thread_Linux.h\
 	efltk/Fl_Thread_w32.h
@@ -3392,8 +3474,7 @@ lib/scandir.o :	src/core/scandir_win32.cpp\
 	config.h
 lib/vsnprintf.o :	efltk/vsnprintf.h\
 	config.h
-lib/Fl_Database.o :	efltk/db/Fl_Query.h\
-	efltk/Fl_Data_Source.h\
+lib/Fl_Database.o :	efltk/Fl_Data_Source.h\
 	efltk/Fl_Data_Fields.h\
 	efltk/Fl_Flags.h\
 	efltk/Fl_Ptr_List.h\
@@ -3402,8 +3483,6 @@ lib/Fl_Database.o :	efltk/db/Fl_Query.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
 	efltk/Fl_String.h\
-	efltk/db/Fl_Params.h\
-	efltk/db/Fl_Database.h\
 	efltk/Fl_Thread.h\
 	efltk/Fl_Thread_Linux.h\
 	efltk/Fl_Thread_w32.h\
@@ -3412,12 +3491,10 @@ lib/Fl_Params.o :	efltk/Fl_Exception.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_String.h\
 	efltk/Enumerations.h\
-	efltk/db/Fl_Params.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h
-lib/Fl_Query.o :	efltk/db/Fl_Query.h\
-	efltk/Fl_Data_Source.h\
+lib/Fl_Query.o :	efltk/Fl_Data_Source.h\
 	efltk/Fl_Data_Fields.h\
 	efltk/Fl_Flags.h\
 	efltk/Fl_Ptr_List.h\
@@ -3426,8 +3503,6 @@ lib/Fl_Query.o :	efltk/db/Fl_Query.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
 	efltk/Fl_String.h\
-	efltk/db/Fl_Params.h\
-	efltk/db/Fl_Database.h\
 	efltk/Fl_Thread.h\
 	efltk/Fl_Thread_Linux.h\
 	efltk/Fl_Thread_w32.h\
@@ -5699,6 +5774,223 @@ test/clock.o :	test/circle.xbm\
 	efltk/Fl_Double_Window.h\
 	efltk/Fl_Window.h\
 	efltk/Fl.h
+test/color_chooser.o :	test/list_visuals.cpp\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Flags.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	config.h\
+	efltk/fl_message.h\
+	efltk/fl_ask.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl.h\
+	efltk/fl_draw.h\
+	efltk/Fl_Color_Chooser.h\
+	efltk/Fl_Value_Input.h\
+	efltk/Fl_Float_Input.h\
+	efltk/Fl_Numeric_Input.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Choice.h\
+	efltk/Fl_Menu_.h\
+	efltk/Fl_Menu_Item.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Return_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Box.h\
+	efltk/fl_show_colormap.h\
+	efltk/Fl_Renderer.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Window.h
+test/cube.o :	efltk/gl.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Gl_Window.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Radio_Light_Button.h\
+	efltk/Fl_Light_Button.h\
+	efltk/Fl_Check_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Box.h\
+	efltk/Fl.h\
+	config.h
+lib/Fl_Gl_Choice.o :	src/opengl/Fl_Gl_Choice.h\
+	efltk/gl.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Color.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl.h\
+	config.h
+lib/Fl_Gl_Overlay.o :	efltk/Fl_Gl_Window.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	src/opengl/Fl_Gl_Choice.h\
+	efltk/gl.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl.h\
+	config.h
+lib/Fl_Gl_Window.o :	efltk/Fl_Gl_Window.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	src/opengl/Fl_Gl_Choice.h\
+	efltk/gl.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl.h\
+	config.h
+lib/gl_draw.o :	src/opengl/Fl_Gl_Choice.h\
+	efltk/gl.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Color.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Boxtype.h\
+	efltk/fl_draw.h\
+	config.h
+lib/gl_start.o :	efltk/fl_draw.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Flags.h\
+	src/opengl/Fl_Gl_Choice.h\
+	efltk/gl.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl.h\
+	config.h
 
 
 # %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x4
@@ -5809,7 +6101,7 @@ test/clock.o :	test/circle.xbm\
 # %TargetInfo src/core/fl_vertex.cpp	SourceOrHeader,	UniqueId=0x4001f8,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/scandir.cpp	SourceOrHeader,	UniqueId=0x4001f9,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/vsnprintf.c	SourceOrHeader,	UniqueId=0x4001fa,	TargetType=C,	IDEFlags=0x4
-# %TargetInfo src/db/Fl_Database.cpp	SourceOrHeader,	UniqueId=0x4001fc,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/db/Fl_Database.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4001fc,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/db/Fl_Params.cpp	SourceOrHeader,	UniqueId=0x4001fd,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/db/Fl_Query.cpp	SourceOrHeader,	UniqueId=0x4001fe,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Adjuster.cpp	SourceOrHeader,	UniqueId=0x4001ff,	TargetType=C++,	IDEFlags=0x4
@@ -5886,6 +6178,9 @@ test/clock.o :	test/circle.xbm\
 # %TargetInfo src/widgets/fl_engraved_label.cpp	SourceOrHeader,	UniqueId=0x400246,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/fl_show_colormap.cpp	SourceOrHeader,	UniqueId=0x400247,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/fl_symbols.cpp	SourceOrHeader,	UniqueId=0x400248,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/calendar.cpp	SourceOrHeader,	UniqueId=0x40024a,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/checkers.cpp	SourceOrHeader,	UniqueId=0x40024c,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/clock.cpp	SourceOrHeader,	UniqueId=0x40025f,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400056,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x4
@@ -5993,11 +6288,7 @@ test/clock.o :	test/circle.xbm\
 # %TargetInfo src/core/headers/iso8859_1.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000c4,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo src/core/headers/case.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000c5,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo src/core/headers/spacing.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000c6,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Query.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000ca,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Params.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000cb,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Database.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000cc,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo src/db/odbc/fl_odbc.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000cf,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_ODBC_Database.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000d0,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo src/xml/html_entities.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000d9,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_XmlCtx.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000da,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_XmlHandler.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000db,	TargetType=INC,	IDEFlags=0xe
@@ -6074,13 +6365,7 @@ test/clock.o :	test/circle.xbm\
 # %TargetInfo test/file_small.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x400190,	TargetType=XPM,	IDEFlags=0xe
 # %TargetInfo test/folder_small.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x400191,	TargetType=XPM,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Buffer.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400198,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/db/Fl_Query.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400199,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/db/Fl_Params.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40019a,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/db/Fl_ODBC_Database.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40019b,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/db/Fl_Database.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40019c,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/fl_math.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4001fb,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo test/calendar.cpp	SourceOrHeader,	UniqueId=0x40024a,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/checkers.cpp	SourceOrHeader,	UniqueId=0x40024c,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo efltk/Fl_Value_Output.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40024d,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo test/whiteking_4.xbm	SourceOrHeader,	IncludeFile,	UniqueId=0x40024e,	TargetType=XBM,	IDEFlags=0xe
 # %TargetInfo test/whiteking_3.xbm	SourceOrHeader,	IncludeFile,	UniqueId=0x40024f,	TargetType=XBM,	IDEFlags=0xe
@@ -6098,9 +6383,21 @@ test/clock.o :	test/circle.xbm\
 # %TargetInfo test/black_3.xbm	SourceOrHeader,	IncludeFile,	UniqueId=0x40025b,	TargetType=XBM,	IDEFlags=0xe
 # %TargetInfo test/black_2.xbm	SourceOrHeader,	IncludeFile,	UniqueId=0x40025c,	TargetType=XBM,	IDEFlags=0xe
 # %TargetInfo test/black_1.xbm	SourceOrHeader,	IncludeFile,	UniqueId=0x40025d,	TargetType=XBM,	IDEFlags=0xe
-# %TargetInfo test/clock.cpp	SourceOrHeader,	UniqueId=0x40025f,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/circle.xbm	SourceOrHeader,	IncludeFile,	UniqueId=0x400260,	TargetType=XBM,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Round_Clock.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400261,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo test/color_chooser.cpp	SourceOrHeader,	UniqueId=0x400263,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/list_visuals.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400264,	TargetType=C++,	IDEFlags=0xe
+# %TargetInfo efltk/fl_message.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400265,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo test/cube.cpp	SourceOrHeader,	UniqueId=0x400267,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo efltk/gl.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400268,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Gl_Window.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400269,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Radio_Light_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40026a,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo src/Fl_Gl_Choice.cpp	SourceOrHeader,	UniqueId=0x40026c,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/Fl_Gl_Overlay.cpp	SourceOrHeader,	UniqueId=0x40026d,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/Fl_Gl_Window.cpp	SourceOrHeader,	UniqueId=0x40026e,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/gl_draw.cpp	SourceOrHeader,	UniqueId=0x40026f,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/gl_start.cpp	SourceOrHeader,	UniqueId=0x400270,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/opengl/Fl_Gl_Choice.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400271,	TargetType=INC,	IDEFlags=0xe
 
 
 # %UniqueId:	0x400001
@@ -6124,6 +6421,7 @@ test/clock.o :	test/circle.xbm\
 #	0x400002
 #	0x4000ed
 #	0x4000f2
+#	0x40026b
 #	0x4000f8
 #
 # %UniqueId:	0x400183
@@ -6140,4 +6438,6 @@ test/clock.o :	test/circle.xbm\
 #	0x400249
 #	0x40024b
 #	0x40025e
+#	0x400262
+#	0x400266
 #
