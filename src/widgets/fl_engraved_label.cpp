@@ -48,7 +48,7 @@ Fl_Color fill, Fl_Flags flags) const
 static const int shadow_data[2][3] =
 {
     {
-        -2,-2,FL_DARK3
+        -2,2,FL_DARK3
     }
     ,
     {
