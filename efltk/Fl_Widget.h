@@ -153,9 +153,9 @@ public:
     int when() const        { return when_; }
     void when(int i)       { when_ = i; }
 
-    void do_callback(int event,int event_argument=0, const void *event_data=0) { do_callback(this, user_data_, event, event_argument, event_data);}
-    void do_callback(Fl_Widget *o, void *arg, int event, int event_argument=0, const void *event_data=0);
-    void do_callback(Fl_Widget *o, long arg, int event, int event_argument=0, const void *event_data=0);
+    void do_callback(Fl_Event_Type event,int event_argument=0, const void *event_data=0) { do_callback(this, user_data_, event, event_argument, event_data);}
+    void do_callback(Fl_Widget *o, void *arg, Fl_Event_Type event, int event_argument=0, const void *event_data=0);
+    void do_callback(Fl_Widget *o, long arg, Fl_Event_Type event, int event_argument=0, const void *event_data=0);
 
     bool contains(const Fl_Widget*) const;
     bool inside(const Fl_Widget* o) const { return o && o->contains(this); }

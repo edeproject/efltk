@@ -359,15 +359,8 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
                 on_drag = false;
                 ret = 1;
             }
-
-            if (context==CONTEXT_CELL) {
-                if (Fl::event_clicks()) {
-                    do_callback(event);
-                    Fl::event_clicks(0);
-                    return 1;
-                }
-                do_callback(event);
-            }
+            if (context==CONTEXT_CELL) 
+                do_callback(FL_LIST_ITEM_EXEC);
             break;
 
         case FL_KEY:

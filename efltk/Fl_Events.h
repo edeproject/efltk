@@ -20,7 +20,7 @@ enum Fl_Event_Group {
 #define FL_LOGICAL_EVENTS   FL_MENU_EVENTS|FL_EDIT_EVENTS|FL_BUTTON_EVENTS|FL_LIST_EVENTS|FL_WIDGET_EVENTS|FL_DATA_EVENTS|FL_WINDOW_EVENTS|FL_DIALOG_EVENTS
 #define FL_EVENTS_MASK      FL_PHYSICAL_EVENTS|FL_LOGICAL_EVENTS
 
-enum Fl_Event_Types {
+enum Fl_Event_Type {
     FL_NO_EVENT             = 0,
 
     // (Physical) Mouse events 
@@ -84,6 +84,7 @@ enum Fl_Event_Types {
     FL_LIST_ITEM_DELETED    = FL_LIST_EVENTS + 2,
     FL_LIST_ITEM_UPDATED    = FL_LIST_EVENTS + 3,
     FL_LIST_ITEM_SELECTED   = FL_LIST_EVENTS + 4,
+    FL_LIST_ITEM_EXEC       = FL_LIST_EVENTS + 4,
     FL_LIST_PROGRESS        = FL_LIST_EVENTS + 5,
 
     // (Logical) Window events 
