@@ -75,8 +75,9 @@ void callback(Fl_ListView *l, void *)
     Fl_ListView_Item *i = (Fl_ListView_Item *)l->item();
     if(i) {
         if (Fl::event() == FL_DATA_CHANGE)
-            printf("Changed: ");
-        if(Fl::event_clicks()) printf("Double ");
+            printf("Changed ");
+        if(Fl::event_clicks())
+            printf("Double ");
         printf("Clicked: ");
         for(unsigned a=0; a<l->columns(); a++)
             printf("'%s' ", i->label(a));
@@ -123,7 +124,7 @@ void make_listview_ext()
     Fl_Window *w = new Fl_Window(300, 300, "ListView Test");
     w->begin();
 
-    Fl_ListView *l = new Fl_ListView(10,20,280,240, "LIST VIEW: Extended items");
+    Fl_ListView *l = new Fl_ListView(10,20,280,240, "LV Extended items (FL_WHEN_CHNAGED)");
     //l->header()->hide();
     l->callback((Fl_Callback*)callback);
 
@@ -223,7 +224,8 @@ void make_listview()
     Fl_Window *w = new Fl_Window(300, 300, "ListView Test");
     w->begin();
 
-    Fl_ListView *l = new Fl_ListView(10,20,280,240, "LIST VIEW: Normal items");
+    Fl_ListView *l = new Fl_ListView(10,20,280,240, "LV: Normal items (FL_WHEN_RELEASE)");
+    l->when(FL_WHEN_RELEASE);
     //l->color(FL_GRAY);
     //l->header()->hide();
     //l->header()->h(30);
