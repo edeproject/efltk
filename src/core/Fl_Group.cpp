@@ -675,13 +675,20 @@ void Fl_Group::draw_outside_label(Fl_Widget& w) const
 }
 
 // data source support methods
-int Fl_Group::load() {
+void Fl_Group::data_source(Fl_Data_Source *ds) { 
+   if (data_source_)
+      data_source_->parent_ = NULL;
+   data_source_ = ds; 
+   data_source_->parent_ = this;
+}
+
+bool Fl_Group::load() {
    if (!data_source_)
 	   return false;
    return data_source_->load();
 }
 
-int Fl_Group::save() {
+bool Fl_Group::save() {
    if (!data_source_)
 	   return false;
    return data_source_->save();

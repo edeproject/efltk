@@ -32,6 +32,7 @@ CPPFILES = \
 	Fl_Boxtype.cpp \
 	Fl_Callback.cpp \
 	Fl_Config.cpp \
+	Fl_Data_Source.cpp \
 	Fl_Gif.cpp \
 	Fl_Group.cpp \
 	Fl_Image.cpp \

@@ -95,10 +95,10 @@ Fl_Widget::~Fl_Widget()
         delete (Fl_Style*)style_;// cast away const
     }
     if (flags_&FL_COPIED_LABEL) free((void*)label_);
-	if(signal_) delete signal_;
-	signal_=0;
+	 if(signal_) delete signal_;
+	 signal_=0;
     if (field_name_)
-	free(field_name_);
+	     free((char *)field_name_);
 }
 
 void Fl_Widget::label(const char* a)
@@ -644,7 +644,7 @@ void Fl_Widget::draw()
 
 void Fl_Widget::field_name(const char *fname) {
     if (field_name_)
-	free(field_name_);
+        free((char *)field_name_);
     field_name_ = strdup(fname);
 }
 

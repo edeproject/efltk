@@ -76,10 +76,10 @@ public:
   static int navigation_key();
 
   // data source support methods
-  void data_source(Fl_Data_Source *ds) { data_source_ = ds; }
+  void data_source(Fl_Data_Source *ds);
   Fl_Data_Source* data_source() const { return data_source_; }
-  int load();
-  int save();
+  bool load();
+  bool save();
 
 protected:
 
