@@ -527,10 +527,10 @@ bool Fl_Config::read_bool(Section *s, const char *key)
         ret = true;
 
     } else
-    if( !strcasecmp(k, "TRUE") ||
-       !strcasecmp(k, "YES") ||
-       !strcasecmp(k, "ON") ||
-       !strcasecmp(k, "1") ) {
+    if( !strcasecmp(k, "FALSE") ||
+       !strcasecmp(k, "NO") ||
+       !strcasecmp(k, "OFF") ||
+       !strcasecmp(k, "0") ) {
 
         ret = false;
 
