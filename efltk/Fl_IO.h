@@ -34,8 +34,6 @@ public:
 
 	/** Return AccessFlags for IO device. */
 	Fl_Flags flags() const { return m_flags; }
-	/** Set access flags. */
-	void flags(Fl_Flags f) { m_flags = f; }
 
 	/** Return true if device has read permission */
 	bool can_read()	 const { return m_flags.is_set(CAN_READ); }
@@ -54,9 +52,16 @@ public:
 	virtual long tell()								{ return -1; }
 	/** Is end-of-stream. Return -1 on error */
 	virtual bool eos()								{ return true; }
+	/** Flushes the buffer. Return -1 on error */
+	virtual int flush() { return 0; }
+	/** Flushes all buffers. Returns ? (maybe the number of buffers flushed ?) */
+	static int flush_all() { return 0;/* TODO */}
 
 protected:
 	Fl_IO() { }
+
+	/** Set access flags. */
+	void flags(Fl_Flags f) { m_flags = f; }
 
 	Fl_Flags m_flags; ///< AccessFlags must be set by child class.
 };

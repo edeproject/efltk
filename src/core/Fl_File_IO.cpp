@@ -2,6 +2,13 @@
 //
 //////////////////////////////////////////////////////////////////////
 
+/*
+  Notes for the linux port:
+  - The following mode flags are ignored:
+    IO_RANDOM, IO_SEQ, IO_BINARY, IO_LOCKED
+  - IO_TEMP not yet implemented
+*/
+
 #include <efltk/Fl_File_IO.h>
 #include <stdlib.h> //free
 
@@ -12,6 +19,20 @@
 
 #ifndef INVALID_SET_FILE_POINTER
 # define INVALID_SET_FILE_POINTER 0xFFFFFFFF
+#endif
+
+#else
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+#define INVALID_HANDLE_VALUE ((void*)-1)
+#define i_handle ((int)m_handle)
+#define _get_osfhandle(x) x
+#define DWORD int
+#define TRUE true
 #endif
 
 Fl_File_IO::Fl_File_IO()
@@ -78,6 +99,7 @@ bool Fl_File_IO::open()
 	const char *file = m_filename.c_str();
 #endif
 	
+#ifdef _WIN32
 	DWORD access_rights = 0;
 	DWORD disposition   = OPEN_EXISTING;
 	DWORD attributes	= FILE_ATTRIBUTE_NORMAL;
@@ -126,6 +148,24 @@ bool Fl_File_IO::open()
 	if(mode() & IO_APPEND)
 		seek(0, END);
 
+#else
+// for *nix
+        int open_flags = 0;
+	if(mode() & IO_READ){
+                if (mode() & IO_WRITE) open_flags |= O_RDWR;
+                        else open_flags |= O_RDONLY;
+        } else
+        if (mode() & IO_WRITE) open_flags |= O_WRONLY;
+	if(mode() & IO_CREATE)  open_flags |= O_CREAT;
+	if(mode() & IO_TRUNCATE) open_flags |= O_TRUNC;
+	if(mode() & IO_APPEND) open_flags |= O_APPEND;
+	if(mode() & IO_SYNC) open_flags |= O_SYNC;
+
+        m_handle = (void*)::open(file, open_flags, 0664);
+        if (m_handle < 0)
+                m_handle = INVALID_HANDLE_VALUE;
+#endif
+
 #ifdef UNICODE
 	// Free unicode converted string
 	free(file);
@@ -140,7 +180,11 @@ bool Fl_File_IO::close()
 	if(m_flags.is_set(IO_EXTERN_HANDLE)) return false;	
 	if(m_handle==INVALID_HANDLE_VALUE) return false;
 
+#ifdef _WIN32
 	BOOL ret = CloseHandle((HANDLE)m_handle);
+#else
+        bool ret = ::close(i_handle) == 0;
+#endif
 	m_handle = INVALID_HANDLE_VALUE;
 	
 	return (ret==TRUE);
@@ -157,12 +201,19 @@ int Fl_File_IO::read(void *buffer, int buffer_len)
 	if(m_handle==INVALID_HANDLE_VALUE) return -1;
 	DWORD read_bytes = 0;
 
+#ifdef _WIN32
 	if(ReadFile(m_handle, buffer, buffer_len, &read_bytes, NULL)) {
+#else
+        read_bytes = ::read(i_handle, buffer, buffer_len);
+        if (read_bytes >= 0){
+#endif
 		m_eos = (read_bytes == 0);
 		return read_bytes;
 	}
 
+#ifdef _WIN32
 	printf("ERR %d\n", GetLastError());
+#endif
 
 	m_eos = true;//(GetLastError()==ERROR_HANDLE_EOF);
 	return -1;
@@ -174,13 +225,28 @@ int Fl_File_IO::write(void *buffer, int buffer_len)
 	if(m_handle==INVALID_HANDLE_VALUE) return -1;
 	DWORD written_bytes = 0;
 
+#ifdef _WIN32
 	if(WriteFile(m_handle, buffer, buffer_len, &written_bytes, NULL)) {
+#else
+        m_eos = false; // how can be EOS while writing ?
+        written_bytes = ::write(i_handle, buffer, buffer_len);
+        if (written_bytes >= 0) {
+#endif
 		return written_bytes;
 	}
 
+#ifdef _WIN32
 	m_eos = (GetLastError()==ERROR_HANDLE_EOF);
+#endif
 	return -1;
 }
+
+#ifndef _WIN32
+// I know, it's ugly ;-)
+#  define FILE_END        SEEK_END
+#  define FILE_CURRENT    SEEK_CUR
+#  define FILE_BEGIN      SEEK_SET
+#endif
 
 long Fl_File_IO::seek(long pos, Fl_IO::SeekMethod method)
 {
@@ -193,11 +259,19 @@ long Fl_File_IO::seek(long pos, Fl_IO::SeekMethod method)
 	default: break;
 	};
 
+#ifdef _WIN32
 	DWORD ret = SetFilePointer(m_handle, pos, NULL, W32method);	
 	if(ret == INVALID_SET_FILE_POINTER) {
 		m_eos = (GetLastError()==ERROR_HANDLE_EOF);
 		return -1;
 	}
+#else
+        int ret = lseek(i_handle, pos, W32method);
+        if (ret == pos-1){
+                m_eos = true; // lets say, when can't seek, it's end of stream
+                return -1;
+        }
+#endif
 	return (long)ret;
 }
 
@@ -205,12 +279,28 @@ long Fl_File_IO::tell()
 {
 	if(m_handle==INVALID_HANDLE_VALUE) return -1;
 
+#ifdef _WIN32
 	DWORD ret = SetFilePointer(m_handle, 0, NULL, FILE_CURRENT);	
 	if(ret == INVALID_SET_FILE_POINTER) {
 		m_eos = (GetLastError()==ERROR_HANDLE_EOF);
 		return -1;
 	}
+#else
+        int ret = lseek(i_handle, 0, SEEK_CUR);
+        if (ret == -1)
+                m_eos = true;
+#endif
 	return (long)ret;
 }
 
-#endif /* _WIN32 */ 
+
+int Fl_File_IO::flush()
+{
+	if(m_handle==INVALID_HANDLE_VALUE) return -1;
+#ifdef _WIN32
+        FlushFileBuffers(m_handle);
+#else
+	if (fsync(i_handle) != 0) return -1;
+#endif
+	return 0;
+}

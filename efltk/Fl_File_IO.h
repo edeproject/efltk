@@ -135,6 +135,12 @@ public:
 	 *  @li Under *nix this is 'int' (fd?) created by open(?).
 	 */
 	void *handle() { return m_handle; }
+	
+	/**
+	 * Flushes the buffers
+	 * Returns 0 on succes, -1 on error
+	 */
+	int flush();
 
 private:
 	Fl_String m_filename;
