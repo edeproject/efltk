@@ -216,7 +216,7 @@ void Fl_Config::write_section(int indent, FILE *fp, Section *sec)
     fprintf(fp, "[%s%s]\n", sec->path, sec->name);
 
     for(Line *l = sec->lines.first(); l!=0; l = sec->lines.next() )
-        if(l) {
+        if(l && l->key) {
             for(int a=0; a<indent; a++) fprintf(fp, " ");
             fprintf(fp, "  %s=%s\n", l->key, l->value?l->value:"");
         }

@@ -99,7 +99,8 @@ depend:
 include makedepend
 
 clean:
-	-@ rm -f $(ALL) *.exe jpeg_image *.o core *~
+	-@ rm -f $(ALL) *.exe jpeg_image *.o core *~ makedepend
+	@touch makedepend
 
 install:
 

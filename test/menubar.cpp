@@ -231,10 +231,15 @@ int main(int argc, char **argv) {
   mb1.callback(test_cb);
   mb1.tooltip("This is a menu button");
   menus[1] = &mb1;
-  Fl_Choice ch(300,100,90,25,"&choice:"); ch.menu(pulldown);
-  ch.callback(test_cb);
-  ch.tooltip("This is a choice");
-  menus[2] = &ch;
+  mb1.end();
+
+  Fl_Choice *ch = new Fl_Choice(300,100,90,25,"&choice:");
+  ch->menu(pulldown);
+  ch->callback(test_cb);
+  ch->tooltip("This is a choice");
+  menus[2] = ch;
+  ch->end();
+
   Fl_Menu_Button mb(0,25,WIDTH,400-HEIGHT/*,"&popup"*/);
   mb.type(Fl_Menu_Button::POPUP3);
   mb.menu(menutable);

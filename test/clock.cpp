@@ -55,9 +55,9 @@ int ClockWindow::handle(int e) {
 }
 
 Fl_Item *about_item, *exit_item;
-void callback(Fl_Widget*, void* d) {
-  if (d == (void*)exit_item) exit(0);
-  fl_message("FLTK-- Copyright 2000 Bill Spitzak and others");
+void callback(Fl_Widget *w, long) {
+    if(w->argument()==2) exit(0);
+    fl_message("FLTK-- Copyright 2000 Bill Spitzak and others");
 }
 
 int main(int argc, char **argv) {
@@ -71,9 +71,11 @@ int main(int argc, char **argv) {
   popup.type(Fl_Menu_Button::POPUP3);
   popup.begin();
   about_item = new Fl_Item("About clock");
+  about_item->callback(callback, 1);
   exit_item = new Fl_Item("Exit clock");
+  exit_item->callback(callback, 2);
   popup.end();
-  popup.callback(callback);
+  //popup.callback(callback);
   // window.resizable(popup); - Not today, maybe never!
   window.end();
   window.xclass("Fl_Clock");

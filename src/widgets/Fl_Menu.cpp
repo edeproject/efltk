@@ -96,7 +96,10 @@ private:
     MenuWindow *child_win;
     Fl_Menu_ *menu_;
 
-    Fl_Widget *widget_, *selected_;
+    Fl_Widget *widget_;
+
+    int selected_, last_selected_;
+
     int *indexes_;
     int level_;
     bool initial_;
@@ -153,7 +156,7 @@ void MenuWindow::relayout(int *indexes, int level)
     indexes_ = indexes;
     level_ = level;
 
-    selected_ = 0;
+    selected_ = -1;
     child_win = 0;
 
     animating = false;
@@ -254,8 +257,9 @@ void MenuWindow::draw()
         return;
     }
 
-    if( damage() != FL_DAMAGE_CHILD )
+    if( damage() != FL_DAMAGE_CHILD ) {
         box()->draw(0, 0, w(), h(), color(), 0);
+    }
 
     int x=0; int y=0;
     int w=this->w(); int h=0;
@@ -268,12 +272,13 @@ void MenuWindow::draw()
 
         int itemh = widget->height()+leading();
 
-        if(widget->damage()==FL_DAMAGE_ALL || damage()&FL_DAMAGE_EXPOSE) {
-
+        // Minimal update if FL_DAMAGE_CHILD is set on
+        if (damage() != FL_DAMAGE_CHILD || i==selected_ || i==last_selected_)
+        {
             Fl_Flags flags = widget->flags();
 
-            if(selected_==widget  && !(flags & (FL_OUTPUT|FL_INACTIVE)) ) {
-
+            if(selected_==i && !(flags & (FL_OUTPUT|FL_INACTIVE)) )
+            {
                 flags |= FL_SELECTED;
                 if (Fl::event_state(FL_BUTTONS) && widget->takesevents())
                     Fl::pushed_ = widget;
@@ -281,6 +286,7 @@ void MenuWindow::draw()
                 fl_rectf(x,y,w,itemh);
 
             } else {
+
                 flags &= ~FL_SELECTED;
                 if (damage() == FL_DAMAGE_CHILD) {
                     fl_push_clip(x,y,w,itemh);
@@ -324,12 +330,11 @@ void MenuWindow::draw()
                                            flags|FL_ALIGN_RIGHT);
                 fl_pop_clip();
             }
-
-            if(!animating) widget->set_damage(0);
         }
         y += itemh;
-        if(y>this->h()) break;
     }
+
+    last_selected_ = selected_;
 }
 
 Fl_Widget *MenuWindow::find_widget(int x, int y, int *index)
@@ -342,7 +347,10 @@ Fl_Widget *MenuWindow::find_widget(int x, int y, int *index)
     int i=0;
     for(; ; i++) {
         widget = get_widget(i);
-        if (!widget) break;
+        if(!widget) {
+            if(index) *index=-1;
+            return 0;
+        }
         if (!widget->visible()) continue;
 
         int itemh = widget->height()+leading();
@@ -388,7 +396,11 @@ void MenuWindow::set_item(int level, int index)
 
     if(menu_->indexes[level] == index) return;
 
+    indexes_[level] = index;
+    indexes_[level+1] = -1;
+
     menu_->level = level;
+
     menu_->indexes[level] = index;
     menu_->indexes[level+1] = -1;
 
@@ -422,11 +434,10 @@ int MenuWindow::backward(int menu)
         if(!widget) return 0;
         if(widget->takesevents()) {
             set_item(menu, item);
-
-            if(selected_) selected_->set_damage(FL_DAMAGE_ALL);
-            widget->set_damage(FL_DAMAGE_ALL);
-            selected_ = widget;
-            redraw(FL_DAMAGE_CHILD);
+            if(selected_!=item) {
+                selected_=item;
+                redraw(FL_DAMAGE_CHILD);
+            }
             return 1;
         }
     }
@@ -441,11 +452,10 @@ int MenuWindow::forward(int menu)
         if (!widget) return 0;
         if (widget->takesevents()) {
             set_item(menu, item);
-
-            if(selected_) selected_->set_damage(FL_DAMAGE_ALL);
-            widget->set_damage(FL_DAMAGE_ALL);
-            selected_ = widget;
-            redraw(FL_DAMAGE_CHILD);
+            if(selected_!=item) {
+                selected_=item;
+                redraw(FL_DAMAGE_CHILD);
+            }
             return 1;
         }
     }
@@ -565,12 +575,10 @@ int MenuWindow::handle(int event)
         key_event = false;
         initial_ = false;
 
-        index=0;
+        index=-1;
         widget = find_widget(Fl::event_x(), Fl::event_y(), &index);
-        if(selected_!=widget) {
-            if(selected_) selected_->set_damage(FL_DAMAGE_ALL);
-            if(widget)    widget->set_damage(FL_DAMAGE_ALL);
-            selected_=widget;
+        if(index!=selected_) {
+            selected_=index;
             redraw(FL_DAMAGE_CHILD);
         }
         if(widget) set_item(level_, index);
@@ -803,9 +811,11 @@ int Fl_Menu_::popup(int X, int Y, int W, int H)
     while(Fl::modal() && !Fl::exit_modal_flag()) Fl::wait();
     w.hide();
 
-    Fl::modal(saved_modal, saved_grab);
+    if(w.child_win) {
+        delete w.child_win;
+    }
 
-    w.hide();
+    Fl::modal(saved_modal, saved_grab);
 
     // Execute whatever item the user picked:
     focus(indexes, level);
@@ -928,11 +938,14 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
         }
     }
 
-    Fl::modal(saved_modal, saved_grab);
-
     w.hide();
+    if(w.child_win) {
+        delete w.child_win;
+    }
     selected_ = -1;
     redraw(FL_DAMAGE_HIGHLIGHT);
+
+    Fl::modal(saved_modal, saved_grab);
 
     // Execute whatever item the user picked:
     item(executed_);

@@ -131,14 +131,20 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
     Fl_Window::layout();
     Fl::check();
 
-    double steps = max( (tw-fw), (th-fh) ); steps/=step_div_;
+    double max_steps = max( (tw-fw), (th-fh) );
+    double min_steps = max( (fw-tw), (fh-th) );
+    double steps = max(max_steps, min_steps);
+    steps/=12;
+
     double sx = max( ((double)(fx-tx)/steps), ((double)(tx-fx)/steps) );
     double sy = max( ((double)(fy-ty)/steps), ((double)(ty-fy)/steps) );
-    double sw = (double)(tw-fw)/steps;
-    double sh = (double)(th-fh)/steps;
+    double sw = max( ((double)(fw-tw)/steps), ((double)(tw-fw)/steps) );
+    double sh = max( ((double)(fh-th)/steps), ((double)(th-fh)/steps) );
 
     int xinc = fx < tx ? 1 : -1;
     int yinc = fy < ty ? 1 : -1;
+    int winc = fw < tw ? 1 : -1;
+    int hinc = fh < th ? 1 : -1;
     double rx=fx,ry=fy,rw=fw,rh=fh;
 
     while(steps-- > 0) {
@@ -148,8 +154,8 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
         }
         rx+=(sx*xinc);
         ry+=(sy*yinc);
-        rw+=sw;
-        rh+=sh;
+        rw+=(sw*winc);
+        rh+=(sh*hinc);
 
         XMoveResizeWindow(fl_display, fl_xid(this), (int)rx, (int)ry, (int)rw, (int)rh);
         XCopyArea(fl_display, pm, fl_xid(this), fl_gc, 0, 0, (int)rw, (int)rh, 0, 0);

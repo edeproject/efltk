@@ -427,6 +427,7 @@ char *fl_cut_line(const char *str, int maxwidth)
     int len = strlen(str);
     char buf[4096];
 
+    maxwidth-=8; //Just guess...
     if(maxwidth<0) return strdup("");
 
     int w = (int)fl_width(str, len);
