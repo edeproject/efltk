@@ -65,6 +65,7 @@ enum Fl_Event_Types {
     FL_DATA_SENT            = FL_DATA_EVENTS + 6,
     FL_DATA_RECEIVED        = FL_DATA_EVENTS + 7,
     FL_DATA_AVAILABLE       = FL_DATA_EVENTS + 8,
+    FL_DATA_COMMAND         = FL_DATA_EVENTS + 9,
 
     // (Logical) Widget events 
     FL_WIDGET_ACTIVATE      = FL_WIDGET_EVENTS + 1,
