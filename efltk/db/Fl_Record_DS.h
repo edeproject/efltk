@@ -20,6 +20,7 @@ protected:
     Fl_Query           *m_insertQuery;
     Fl_Query           *m_saveQuery;
     int                 m_recordCount;
+    bool                        m_forceInsert;
 
     virtual bool build_queries();
 
@@ -49,6 +50,11 @@ public:
     /// Actual database operations
     virtual bool load_data();
     virtual bool save_data();
+
+    /// Makes the recordset to insert a new record instead of
+    /// updating the existing record. The flag is reset to false
+    /// after every successful save_data()
+    void force_insert(bool fi=true) { m_forceInsert = fi; }
 };
 
 #endif

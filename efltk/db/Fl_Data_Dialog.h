@@ -11,6 +11,7 @@ class Fl_Database;
   * record in the database table.
   */
 class Fl_Data_Dialog : public Fl_Dialog  {
+protected:    
     Fl_Database   *m_database;
     Fl_Record_DS  *m_record_DS;
 public:

@@ -14,6 +14,7 @@ Fl_Record_DS::Fl_Record_DS(Fl_Database *db,Fl_String tableName,Fl_String keyFiel
     m_recordCount = 0;
     m_tableName = tableName;
     m_keyField = keyField;
+    m_forceInsert = false;
 }
 
 // Destructor
@@ -95,6 +96,9 @@ bool Fl_Record_DS::save_data() {
     if (!build_queries())
         return false;
 
+    if (m_forceInsert) 
+        m_saveQuery = m_insertQuery;
+
     for (unsigned i = 0; i < field_count(); i++) {
         Fl_Data_Field& src = m_fields.field(i);
         m_saveQuery->param(src.name()) = src.value;
@@ -103,6 +107,7 @@ bool Fl_Record_DS::save_data() {
     m_updateQuery->param("key") = m_keyValue;
     m_saveQuery->exec();
 
+    m_forceInsert = false;
     return true;
 }
 
