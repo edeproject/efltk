@@ -449,12 +449,18 @@ void Fl_File_Chooser::cb_ok_button(Fl_Button *btn, Fl_File_Chooser *ch)
         return;
     }
 
+    Fl_String file;
+    if(ch->filebrowser()->item()) {
+        file = ch->filebrowser()->item()->label(1);
+    } else {
+        file = ch->file_input();
+    }
+
     Fl_String path;
-    ch->get_filename(ch->filebrowser()->item()->label(1), path);
+    ch->get_filename(file, path);
     if(!path.empty() && fl_is_dir(path)) {
 
-        Fl::event_clicks(1);
-        ch->folder_clicked(ch->filebrowser()->item());
+        ch->directory(path);
 
     } else {
 
