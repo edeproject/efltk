@@ -868,7 +868,7 @@ bool Fl_XmlParser::parse_comment(Fl_XmlNode *node)
 
         tokenizer++;		
 
-        if(comment[comment.length()-1]=='-' && comment[comment.length()-2]=='-') {
+        if(comment.length()>2 && comment[comment.length()-1]=='-' && comment[comment.length()-2]=='-') {
             if(*tokenizer == '>')
                 break;
         }
