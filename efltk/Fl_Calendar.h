@@ -33,11 +33,15 @@ class Fl_Calendar : public Fl_Group {
    Fl_String     m_headerLabel;
    int           m_activeButtonIndex;
 
-   static void cbDayButtonClicked(Fl_Widget *,void *);
-   static void cbSwitchButtonClicked(Fl_Widget *,void *);
 public:
+   void cbDayButtonClicked(Fl_Widget *,void *);
+   void cbSwitchButtonClicked(Fl_Widget *,void *);
+
+   static Fl_Named_Style* default_style;
+
    Fl_Calendar(int x,int y,int w,int h,const char *lbl=0L);
    void layout();
+   void draw();
    void measure(int& w,int& h) const;
 
    void date(Fl_Date_Time dt);
@@ -51,18 +55,24 @@ class Fl_Popup_Calendar : public Fl_Popup_Window {
    friend class Fl_Calendar;
    Fl_Calendar *m_calendar;
    Fl_Widget   *m_dateControl;
-protected:
-   int  handle(int);
 public:
+   static Fl_Named_Style* default_style;
+
    Fl_Popup_Calendar(Fl_Widget *dateControl=NULL);
 
-   void      layout();
-   void      clicked() { set_value(); }
+   Fl_Calendar *calendar() { return m_calendar; }
+
+   void  clicked() { set_value(); }
+   void  layout();
+   void  draw();
+   int  handle(int);
 
    void      date(Fl_Date_Time dt) { m_calendar->date(dt); }
    Fl_Date_Time date() const       { return m_calendar->date(); }
 
-   bool      popup();
+   bool popup();
+   // Popup calendar, relative to widget
+   bool popup(Fl_Widget *dateControl, int X, int Y, int W=0, int H=0);
 };
 
 #endif
