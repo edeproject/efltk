@@ -327,7 +327,7 @@ uint8 *Fl_Renderer::data_from_window(Window src, Fl_Rect &rect, int &bitspp)
 
 uint8 *Fl_Renderer::data_from_pixmap(Pixmap src, Fl_Rect &rect, int &bitspp)
 {
-    XImage *im = ximage_from_pixmap(fl_display, src, rect);
+    XImage *im = ximage_from_pixmap(src, rect);
     if(!im) return 0;
 
     uint8 *im_pixels = new uint8[im->height*im->bytes_per_line];
