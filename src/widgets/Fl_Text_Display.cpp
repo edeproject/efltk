@@ -401,54 +401,66 @@ void Fl_Text_Display::layout()
 
   for (int again = 0; again<2; again++) 
   {
- 	  /* In continuous wrap mode, a change in width affects the total number of 
-	  lines in the buffer, and can leave the top line number incorrect, and 
-	  the top character no longer pointing at a valid line start */ 
-	  if(mContinuousWrap && !mWrapMargin && W!=oldWidth) { 
-		  int oldFirstChar = mFirstChar; 
-		  mNBufferLines = count_lines(0, buffer()->length(), true); 
-		  mFirstChar = line_start(mFirstChar); 
-		  mTopLineNum = count_lines(0, mFirstChar, true)+1; 
-		  absolute_top_line_number(oldFirstChar); 
-	  } else
-		  again++;
+      /* In continuous wrap mode, a change in width affects the total number of
+       lines in the buffer, and can leave the top line number incorrect, and
+       the top character no longer pointing at a valid line start */
+      if(mContinuousWrap && !mWrapMargin && W!=oldWidth) {
+          int oldFirstChar = mFirstChar;
+          mNBufferLines = count_lines(0, buffer()->length(), true);
+          mFirstChar = line_start(mFirstChar);
+          mTopLineNum = count_lines(0, mFirstChar, true)+1;
+          absolute_top_line_number(oldFirstChar);
+      } else
+          again++;
 
-	  int old_vlines = mNVisibleLines;
-	  int new_vlines = (text_area.h + mMaxsize - 1) / mMaxsize;
-	  
-	  /* reallocate and update the line starts array, which may have changed
-	  size and / or contents.  */
-	  if(old_vlines < new_vlines) {
-		  delete[] mLineStarts;
-		  mLineStarts = new int [new_vlines];
-	  }
- 	  mNVisibleLines = new_vlines;
-	  calc_line_starts(0, mNVisibleLines);
-	  calc_last_char();
+      // figure the scrollbars
 
-	  // figure the scrollbars
+      /* Decide if the vertical scroll bar needs to be visible */
+      if (scrollbar_align() & (FL_ALIGN_LEFT|FL_ALIGN_RIGHT) && mNBufferLines >= mNVisibleLines - 1)
+      {
+          mVScrollBar->set_visible();
+          if (scrollbar_align() & FL_ALIGN_LEFT) {
+              text_area.x = X+scrollbar_width()+LEFT_MARGIN + mLineNumLeft + mLineNumWidth;
+              text_area.w = W-scrollbar_width()-LEFT_MARGIN-RIGHT_MARGIN - mLineNumWidth - mLineNumLeft;
+              mVScrollBar->resize(X, text_area.y-TOP_MARGIN, scrollbar_width(), text_area.h+TOP_MARGIN+BOTTOM_MARGIN);
 
-	  /* Decide if the vertical scroll bar needs to be visible */
-	  if (scrollbar_align() & (FL_ALIGN_LEFT|FL_ALIGN_RIGHT) && mNBufferLines >= mNVisibleLines - 1)
-	  {
-		  mVScrollBar->set_visible();
-		  if (scrollbar_align() & FL_ALIGN_LEFT) {
-			  text_area.x = X+scrollbar_width()+LEFT_MARGIN + mLineNumLeft + mLineNumWidth;
-			  text_area.w = W-scrollbar_width()-LEFT_MARGIN-RIGHT_MARGIN - mLineNumWidth - mLineNumLeft;
-			  mVScrollBar->resize(X, text_area.y-TOP_MARGIN, scrollbar_width(), text_area.h+TOP_MARGIN+BOTTOM_MARGIN);
-		  
-		  } else {
+          } else {
 
-			  text_area.x = X+LEFT_MARGIN + mLineNumLeft + mLineNumWidth;
-			  text_area.w = W-scrollbar_width()-LEFT_MARGIN-RIGHT_MARGIN - mLineNumWidth - mLineNumLeft;
-			  mVScrollBar->resize(X+W-scrollbar_width(), text_area.y-TOP_MARGIN,
-									scrollbar_width(), text_area.h+TOP_MARGIN+BOTTOM_MARGIN);
-		  }
-	  }
-	  
-	  /*
+              text_area.x = X+LEFT_MARGIN + mLineNumLeft + mLineNumWidth;
+              text_area.w = W-scrollbar_width()-LEFT_MARGIN-RIGHT_MARGIN - mLineNumWidth - mLineNumLeft;
+              mVScrollBar->resize(X+W-scrollbar_width(), text_area.y-TOP_MARGIN,
+                                  scrollbar_width(), text_area.h+TOP_MARGIN+BOTTOM_MARGIN);
+          }
+      }
+
+      if(!mContinuousWrap || (mContinuousWrap && mWrapMargin>0))
+      if(hscrollbarvisible && scrollbar_align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM) && (mVScrollBar->visible() || longest_vline() > text_area.w)) {
+          // Pre-check, if we need hscrollbar and it's already visible.
+          // i.e. We don't need to re-calc lines.
+          again++;
+      }
+
+      int old_vlines = mNVisibleLines;
+      int new_vlines = (text_area.h + mMaxsize - 1) / mMaxsize;
+
+      /* reallocate and update the line starts array, which may have changed
+       size and / or contents.  */
+      if(old_vlines != new_vlines)
+      {
+          delete[] mLineStarts;
+          mLineStarts = new int [new_vlines];
+          mNVisibleLines = new_vlines;
+          calc_line_starts(0, mNVisibleLines);
+          calc_last_char();
+      } else if(mContinuousWrap && !mWrapMargin) {
+          // need to do this...
+          calc_line_starts(0, mNVisibleLines);
+          calc_last_char();
+      }
+
+      /*
 	  Decide if the horizontal scroll bar needs to be visible.  If there
-	  is a vertical scrollbar, a horizontal is always created too.  This
+          is a vertical scrollbar, a horizontal is always created too.  This
 	  is because the alternatives are unatractive:
 	  * Dynamically creating a horizontal scrollbar based on the currently
 	  visible lines is what the original nedit does, but it always wastes
@@ -463,7 +475,7 @@ void Fl_Text_Display::layout()
 	  the nedit code and this could involve a lengthy calculation for
 	  large buffers.  If an efficient and non-costly way of doing this
 	  can be found, this might be a way to go.
-	  */
+          */
 	  /* WAS: Suggestion: Try turning the horizontal scrollbar on when
 	  you first see a line that is too wide in the window, but then
 	  don't turn it off (ie mix both of your solutions). */
@@ -471,26 +483,27 @@ void Fl_Text_Display::layout()
           if(!mContinuousWrap || (mContinuousWrap && mWrapMargin>0))
 	  if(scrollbar_align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM) && (mVScrollBar->visible() || longest_vline() > text_area.w))
           {
-		  if(!mHScrollBar->visible()) {
-			  mHScrollBar->set_visible();
-			  if(!hscrollbarvisible) again--; // loop again to see if we now need vert. & recalc sizes
-		  }
-	  		  
-		  if (scrollbar_align() & FL_ALIGN_TOP) {
-			text_area.y = Y + scrollbar_width()+TOP_MARGIN;
-			text_area.h = H - scrollbar_width()-TOP_MARGIN-BOTTOM_MARGIN;
-			mHScrollBar->resize(text_area.x-LEFT_MARGIN, Y,
-			text_area.w+LEFT_MARGIN+RIGHT_MARGIN, scrollbar_width());
-		  
-		  } else {
-		
-			text_area.y = Y+TOP_MARGIN;
-			text_area.h = H - TOP_MARGIN-BOTTOM_MARGIN-scrollbar_width();
-			mHScrollBar->resize(text_area.x-LEFT_MARGIN, Y+H-scrollbar_width(),
-			text_area.w+LEFT_MARGIN+RIGHT_MARGIN, scrollbar_width());
-		  }
-		  
-	  }	  
+              if(!mHScrollBar->visible()) {
+                  mHScrollBar->set_visible();
+                  //if(!hscrollbarvisible)
+                  again--; // loop again to see if we now need vert. & recalc sizes
+              }
+
+              if (scrollbar_align() & FL_ALIGN_TOP) {
+                  text_area.y = Y + scrollbar_width()+TOP_MARGIN;
+                  text_area.h = H - scrollbar_width()-TOP_MARGIN-BOTTOM_MARGIN;
+                  mHScrollBar->resize(text_area.x-LEFT_MARGIN, Y,
+                                      text_area.w+LEFT_MARGIN+RIGHT_MARGIN, scrollbar_width());
+
+              } else {
+
+                  text_area.y = Y+TOP_MARGIN;
+                  text_area.h = H - TOP_MARGIN-BOTTOM_MARGIN-scrollbar_width();
+                  mHScrollBar->resize(text_area.x-LEFT_MARGIN, Y+H-scrollbar_width(),
+                                      text_area.w+LEFT_MARGIN+RIGHT_MARGIN, scrollbar_width());
+              }
+          }
+      mOldWidth = W;
   }
 
   // user request to change viewport
@@ -525,8 +538,6 @@ void Fl_Text_Display::layout()
 
   update_v_scrollbar();
   update_h_scrollbar();
-
-  mOldWidth = W;
 
   // clear the layout flag
   Fl_Widget::layout();
@@ -2883,7 +2894,8 @@ void Fl_Text_Display::draw()
 
   // draw the non-text, non-scrollbar areas.
   if (damage() & FL_DAMAGE_ALL) {
-    //printf("drawing all\n");
+      //printf("drawing all\n");
+
     // draw the box()
     draw_frame();	
 
