@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x400379
+# %FirstUniqueId:	0x40037e
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -502,7 +502,8 @@ lib/libefltk_net.so ::	lib/Fl_FTP_Connect.o\
 	lib/Fl_IMAP_Connect.o\
 	lib/Fl_IMAP_DS.o\
 	lib/Fl_FTP_DS.o\
-	lib/Fl_Mail_Message.o
+	lib/Fl_Mail_Message.o\
+	lib/Fl_Base64.o
 	rm -f $@
 	$(LD) -shared -o $@ $^ $(LDOPTIONS)
 
@@ -598,7 +599,8 @@ test/multitabs1 ::	test/multitabs1.o
 # %ObjsDir:	test
 test/imap_connect ::	test/imap_connect.o\
 	test/Fl_IMAP_Connect.o\
-	test/Fl_IMAP_DS.o
+	test/Fl_IMAP_DS.o\
+	test/mail_accounts.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x40036b
@@ -630,6 +632,16 @@ test/fast_slow ::	test/fast_slow.o
 # %ObjsDir:	test
 test/file_chooser ::	test/file_chooser.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk -lefltk_images -ljpeg -lpng
+
+# %UniqueId:	0x40037b
+# %TargetType:	C_EXE
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	test
+# %IncDir:	test
+# %ObjsDir:	test
+test/dialog ::	test/dialog.o
+	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %ObjectFilesLinking
 # %TargetType:	C++_OBJ
@@ -2089,7 +2101,7 @@ test/curve.o : test/curve.cpp
 
 
 # %TargetType:	C++_OBJ
-# %ParentTarget:	0x400350
+# %ParentTarget:	0x40037b
 # %SourceTarget:	0x400351
 test/dialog.o : test/dialog.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
@@ -2218,6 +2230,20 @@ test/net/Fl_FTP_DS.o : src/net/Fl_FTP_DS.cpp
 # %ParentTarget:	0x40033c
 # %SourceTarget:	0x400377
 lib/Fl_Mail_Message.o : src/net/Fl_Mail_Message.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x400364
+# %SourceTarget:	0x400379
+test/mail_accounts.o : test/net/mail_accounts.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40033c
+# %SourceTarget:	0x40037c
+lib/Fl_Base64.o : src/net/Fl_Base64.cpp
 	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
 
 
@@ -6932,21 +6958,19 @@ lib/Fl_FTP_Connect.o :	efltk/net/Fl_FTP_Connect.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
 	efltk/Fl_String_List.h
-test/imap_connect.o :	test/net/file_small.xpm\
-	test/net/folder_small.xpm\
-	efltk/Fl_Item_Group.h\
-	efltk/Fl_Menu_.h\
-	efltk/Fl_Menu_Item.h\
+test/imap_connect.o :	test/net/mail_accounts.h\
+	efltk/Fl_Dialog.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Widget_List.h\
 	efltk/Fl_Widget.h\
 	efltk/Fl_Data_Source.h\
 	efltk/Fl_Data_Fields.h\
 	efltk/Fl_Flags.h\
 	efltk/Fl_Ptr_List.h\
-	efltk/Enumerations.h\
-	efltk/Fl_Export.h\
-	efltk/Fl_Variant.h\
-	efltk/Fl_Date_Time.h\
-	efltk/Fl_String.h\
 	efltk/Fl_Exception.h\
 	efltk/Fl_Style.h\
 	efltk/Fl_Font.h\
@@ -6955,18 +6979,26 @@ test/imap_connect.o :	test/net/file_small.xpm\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h\
-	efltk/Fl_Group.h\
-	efltk/Fl_Widget_List.h\
-	efltk/Fl_Item.h\
-	efltk/Fl_Browser.h\
+	efltk/Fl_Scroll.h\
 	efltk/Fl_Scrollbar.h\
 	efltk/Fl_Slider.h\
 	efltk/Fl_Valuator.h\
-	efltk/Fl_Choice.h\
-	efltk/Fl_Config.h\
-	efltk/Fl_Util.h\
-	efltk/filename.h\
-	efltk/Fl_ProgressBar.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Window.h\
+	test/net/file_small.xpm\
+	test/net/folder_small.xpm\
+	efltk/Fl_Menu_Bar.h\
+	efltk/Fl_Menu_Window.h\
+	efltk/Fl_Single_Window.h\
+	efltk/Fl_Menu_.h\
+	efltk/Fl_Menu_Item.h\
+	efltk/Fl_Item_Group.h\
+	efltk/Fl_Item.h\
+	efltk/Fl_Text_Editor.h\
+	efltk/Fl_Text_Display.h\
+	efltk/Fl_Text_Buffer.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_Ptr_Stack.h\
 	efltk/fl_draw.h\
 	efltk/Fl_Device.h\
 	efltk/Fl_Bitmap.h\
@@ -6975,7 +7007,13 @@ test/imap_connect.o :	test/net/file_small.xpm\
 	efltk/Fl_Renderer.h\
 	efltk/x.h\
 	efltk/win32.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
 	efltk/Fl_Pixmap.h\
+	efltk/Fl_Browser.h\
+	efltk/Fl_Choice.h\
+	efltk/Fl_Config.h\
+	efltk/Fl_ProgressBar.h\
 	efltk/Fl.h\
 	efltk/Fl_Button.h\
 	efltk/Fl_Secret_Input.h\
@@ -6985,11 +7023,9 @@ test/imap_connect.o :	test/net/file_small.xpm\
 	efltk/Fl_ListView_Item.h\
 	efltk/Fl_Image_List.h\
 	efltk/Fl_ListView_Header.h\
-	efltk/Fl_Window.h\
 	efltk/net/Fl_IMAP_DS.h\
 	efltk/net/Fl_IMAP_Connect.h\
 	efltk/Fl_Socket.h\
-	efltk/Fl_Buffer.h\
 	efltk/Fl_Memory_DS.h
 test/Fl_IMAP_Connect.o :	efltk/net/Fl_IMAP_Connect.h\
 	efltk/Fl_Data_Fields.h\
@@ -7256,6 +7292,52 @@ test/net/ftp_connect.o :	efltk/net/Fl_FTP_DS.h\
 	efltk/Fl_String_List.h\
 	efltk/Fl_Memory_DS.h
 lib/Fl_Mail_Message.o :	efltk/net/Fl_Mail_Message.h
+test/mail_accounts.o :	test/net/mail_accounts.h\
+	efltk/Fl_ListView.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_ListView_Item.h\
+	efltk/Fl_Image_List.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl.h\
+	efltk/Fl_ListView_Header.h\
+	efltk/Fl_Dialog.h\
+	efltk/Fl_Scroll.h\
+	efltk/Fl_Window.h
+lib/Fl_Base64.o :	efltk/net/Fl_Base64.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Ptr_List.h
 
 
 # %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x4
@@ -7477,6 +7559,8 @@ lib/Fl_Mail_Message.o :	efltk/net/Fl_Mail_Message.h
 # %TargetInfo test/fast_slow.cpp	SourceOrHeader,	UniqueId=0x40036e,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/file_chooser.cpp	SourceOrHeader,	UniqueId=0x400371,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/net/Fl_FTP_DS.cpp	SourceOrHeader,	UniqueId=0x400375,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/net/Fl_Mail_Message.cpp	SourceOrHeader,	UniqueId=0x400377,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/net/mail_accounts.cpp	SourceOrHeader,	UniqueId=0x400379,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x4
@@ -7711,8 +7795,10 @@ lib/Fl_Mail_Message.o :	efltk/net/Fl_Mail_Message.h
 # %TargetInfo test/net/file_small.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x400373,	TargetType=XPM,	IDEFlags=0xe
 # %TargetInfo test/net/folder_small.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x400374,	TargetType=XPM,	IDEFlags=0xe
 # %TargetInfo efltk/net/Fl_FTP_DS.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400376,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo src/net/Fl_Mail_Message.cpp	SourceOrHeader,	UniqueId=0x400377,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo efltk/net/Fl_Mail_Message.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400378,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo test/net/mail_accounts.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40037a,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo src/net/Fl_Base64.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x40037c,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo efltk/net/Fl_Base64.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40037d,	TargetType=INC,	IDEFlags=0xe
 
 
 # %UniqueId:	0x400001
@@ -7767,6 +7853,7 @@ lib/Fl_Mail_Message.o :	efltk/net/Fl_Mail_Message.h
 #	0x40036d
 #	0x400370
 #	0x40033f
+#	0x40037b
 #	0x400364
 #	0x400361
 #	0x40035a

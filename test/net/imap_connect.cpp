@@ -16,9 +16,12 @@
 #include <efltk/Fl_Text_Editor.h>
 #include <efltk/Fl_Item.h>
 #include <efltk/Fl_Item_Group.h>
+#include <efltk/Fl_Menu_Item.h>
+#include <efltk/Fl_Menu_Bar.h>
 
 #include "folder_small.xpm"
 #include "file_small.xpm"
+#include "mail_accounts.h"
 
 Fl_Image *folderSmall = Fl_Image::read_xpm(0, folder_small);
 Fl_Image *fileSmall   = Fl_Image::read_xpm(0, file_small);
@@ -29,6 +32,25 @@ Fl_ProgressBar *progress;
 Fl_Config *config;
 Fl_Browser *browser;
 Fl_Text_Buffer *messageBuffer;
+
+void quit_cb(Fl_Widget *,void *) {
+    exit(0);
+}
+
+void accounts_cb(Fl_Widget *,void *) {
+    Fl_Mail_Accounts    mailAccounts;
+    mailAccounts.show_modal();
+}
+
+Fl_Menu_Item menutable[] = {
+    {"&File",0,0,0,FL_SUBMENU},
+    {"&Quit",   FL_ALT+'q', quit_cb},
+    {0},
+    {"&Settings",0,0,0,FL_SUBMENU},
+    {"&Accounts",FL_SHIFT+'a',accounts_cb},
+    {0},
+    {0}
+};
 
 class Fl_Tree_Item {
     Fl_Ptr_List m_list;
@@ -216,6 +238,10 @@ int main(int argc,char *argv[]) {
     if (!sect)
         sect = config->create_section("Connection");
     config->set_section(sect);
+
+    Fl_Menu_Bar menubar(0,0,20,20);
+    menubar.menu(menutable);
+    menubar.layout_align(FL_ALIGN_TOP);
 
     Fl_Group    centerGroup(10,10,150,10);
 
