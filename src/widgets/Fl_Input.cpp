@@ -949,7 +949,7 @@ bool Fl_Input::replace(int b, int e, const char* text, int ilen)
 
     mark_ = position_ = undoat;
 
-    if (when()&FL_WHEN_CHANGED) do_callback(FL_DATA_CHANGE); else set_changed();
+    do_callback(FL_DATA_CHANGE);
     return true;
 }
 
@@ -990,7 +990,7 @@ bool Fl_Input::undo()
     position_ = b;
 
     minimal_update(b1);
-    if (when()&FL_WHEN_CHANGED) do_callback(FL_DATA_CHANGE); else set_changed();
+    do_callback(FL_DATA_CHANGE); 
     return true;
 }
 
@@ -1005,9 +1005,10 @@ bool Fl_Input::yank()
 
 void Fl_Input::maybe_do_callback()
 {
-    if (changed() || (when()&FL_WHEN_NOT_CHANGED))
+    if (changed())
     {
-        clear_changed(); do_callback(FL_NO_EVENT);
+        clear_changed(); 
+        do_callback(FL_DATA_CHANGE);
     }
 }
 
@@ -1335,13 +1336,14 @@ bool Fl_Input::handle_key()
 
             // Add new line, if MULTILINE input and Shift is hold down
             if(!readonly() && input_type()==MULTILINE && shift) return replace(position(), mark(), '\n');
-
+            /*
             if (when() & FL_WHEN_ENTER_KEY)
             {
                 position(size(), 0);
                 maybe_do_callback();
                 return true;
             }
+                */
             if(input_type() != MULTILINE || ctrl || shift) return false;
 
             if(!readonly()) return replace(position(), mark(), "\n", 1);
@@ -1528,7 +1530,7 @@ int Fl_Input::handle(int event, int X, int Y, int W, int H)
         // else make the cursor disappear:
             else erase_cursor_at(position_);
         case FL_HIDE:
-            if (when() & FL_WHEN_RELEASE) maybe_do_callback();
+            maybe_do_callback();
             return 1;
 
         case FL_SHORTCUT:

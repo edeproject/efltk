@@ -280,7 +280,7 @@ int Fl_Text_Editor::kf_default(int c, Fl_Text_Editor* e)
         case 'p': key = FL_Up; goto MOVE;
         case 'n': key = FL_Down; goto MOVE;
         case 'e': key = FL_End; goto MOVE;
-        MOVE:
+MOVE:
             if (Fl::event_state(FL_ALT))
             {
                 if (Fl::event_state(FL_SHIFT))
@@ -418,9 +418,11 @@ int Fl_Text_Editor::kf_backspace(int, Fl_Text_Editor* e)
 
 int Fl_Text_Editor::kf_enter(int, Fl_Text_Editor* e)
 {
+    /*
     if (e->when() & FL_WHEN_ENTER_KEY) {
         e->do_callback(FL_ENTER);   
     }
+     */
 
     kill_selection(e);
     e->insert("\n");
@@ -643,9 +645,7 @@ int Fl_Text_Editor::kf_undo(int c, Fl_Text_Editor* e)
     if (pos>-1) {
         e->insert_position(pos);
         e->show_insert_position();
-        if (e->when()&FL_WHEN_CHANGED) 
-            e->do_callback(FL_DATA_CHANGE); 
-        else e->set_changed();
+        e->do_callback(FL_DATA_CHANGE); 
     }
     return 1;
 }
@@ -667,9 +667,7 @@ int Fl_Text_Editor::kf_select_all(int, Fl_Text_Editor* e)
 
 int Fl_Text_Editor::handle_key()
 {
-    if (when()&FL_WHEN_CHANGED) 
-        do_callback(FL_DATA_CHANGE); 
-    else set_changed();
+    do_callback(FL_DATA_CHANGE); 
 
     // Call fltk's rules to try to turn this into a printing character.
     // This uses the right-hand ctrl key as a "compose prefix" and returns
@@ -736,11 +734,6 @@ int Fl_Text_Editor::handle(int event)
             case FL_FOCUS:
                 return 3;        // indicate that this widget should get initial focus
 
-            case FL_UNFOCUS:
-                if (when() & FL_WHEN_RELEASE) 
-                    do_callback(event);
-                return 1;
-
             default:
                 return 1;
         }
@@ -749,11 +742,6 @@ int Fl_Text_Editor::handle(int event)
     {
         switch (event)
         {
-            case FL_HIDE:
-                if (when() & FL_WHEN_RELEASE) 
-                    do_callback(event);
-                return 1;
-
             case FL_KEY:
                 return handle_key();
 
@@ -761,9 +749,7 @@ int Fl_Text_Editor::handle(int event)
                 if(!Fl::event_length() || !Fl::event_text()) 
                     return 0;
 
-                if(when()&FL_WHEN_CHANGED) 
-                    do_callback(FL_DATA_CHANGE); 
-                else set_changed();
+                do_callback(FL_DATA_CHANGE); 
 
                 buffer()->remove_selection();
                 if (insert_mode()) insert(Fl::event_text());

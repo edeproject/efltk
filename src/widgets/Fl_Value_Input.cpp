@@ -43,18 +43,11 @@ void Fl_Value_Input::input_cb(Fl_Widget*, void* v)
     double nv;
     if (t.step()>=1.0) nv = strtol(t.input.value(), 0, 0);
     else nv = strtod(t.input.value(), 0);
-    if (nv != t.value() || t.when() & FL_WHEN_NOT_CHANGED)
+    if (nv != t.value())
     {
         t.set_value(nv);
-        if (t.when())
-        {
-            t.clear_changed();
-            t.do_callback(FL_NO_EVENT);
-        }
-        else
-        {
-            t.set_changed();
-        }
+        t.clear_changed();
+        t.do_callback(FL_DATA_CHANGE);
     }
 }
 

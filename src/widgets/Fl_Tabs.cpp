@@ -488,34 +488,34 @@ public:
         fl_line_style(FL_DOT);
         fl_color(color);
         if (f&FL_ALIGN_TOP) {
-			// Buttons on top
+            // Buttons on top
             int cX=x1+CORNER;
             int cY=y1+CORNER;
-            
-			fl_line(cX, y1, x2, y1);  // Top
-			fl_line(x2, y1, x2, y2);  // Right
-			fl_line(x2-1, y2, x1, y2);// Bottom
-			fl_line(x1, cY, x1, y2);  // Left
-			fl_line(x1, cY, cX, y1);  // Corner           
+
+            fl_line(cX, y1, x2, y1);  // Top
+            fl_line(x2, y1, x2, y2);  // Right
+            fl_line(x2-1, y2, x1, y2);// Bottom
+            fl_line(x1, cY, x1, y2);  // Left
+            fl_line(x1, cY, cX, y1);  // Corner           
         }
         else if (f&(FL_ALIGN_BOTTOM|FL_ALIGN_LEFT)) {
-			// Buttons on bottom/left
-			x1++;
+            // Buttons on bottom/left
+            x1++;
             int cX=x1+CORNER;
             int cY=y2-CORNER+2;            
 
             fl_line(x1, y1, x2, y1);     // Top
             fl_line(x2-1, y1, x2-1, y2); // Right
             fl_line(x2-1, y2, cX-1, y2); // Bottom
-			fl_line(cX, y2, x1, cY);     // Corner
-			fl_line(x1, cY, x1, y1);     // Left
+            fl_line(cX, y2, x1, cY);     // Corner
+            fl_line(x1, cY, x1, y1);     // Left
 
         } else {
-			// Buttons on right
+            // Buttons on right
             int cX=x2-CORNER;
             int cY=y2-CORNER+1;
-            
-			fl_line(x1, y1, x2, y1); // Top
+
+            fl_line(x1, y1, x2, y1); // Top
             fl_line(x2, y1, x2, cY-1); // Right
             fl_line(x2, cY, cX+1, y2); // Corner
             fl_line(cX, y2, x1, y2); // Bottom
@@ -657,7 +657,8 @@ int Fl_Tabs::handle(int event) {
                 } else {
                     i++; if (i >= children()) i = 0;
                 }
-                value(child(i)); do_callback(event);
+                value(child(i)); 
+                do_callback(FL_SHORTCUT);
                 return 1;
             }
             if (!selected) return 0;
@@ -676,7 +677,7 @@ int Fl_Tabs::handle(int event) {
                     return 0;
             }
         default:
-        DEFAULT:
+DEFAULT:
             return Fl_Group::handle(event);
     }
 }
@@ -1053,22 +1054,22 @@ void Fl_Tabs::layout()
 
     group_w -= m_tabsWidth;
     group_h -= m_tabsHeight;
-	
-	for(int n=0; n<children(); n++) 
-	{
-		Fl_Widget *w = child(n);
-		
-		if((layout_damage() & FL_LAYOUT_XY)) 
-			w->layout_damage(activeWidget->layout_damage()|FL_LAYOUT_XY);
 
-		w->resize(group_x+hoffset, group_y+voffset, group_w, group_h);
-			
-		if(w->layout_damage()) 
-			w->layout();
-    }	
+    for(int n=0; n<children(); n++) 
+    {
+        Fl_Widget *w = child(n);
+
+        if((layout_damage() & FL_LAYOUT_XY)) 
+            w->layout_damage(activeWidget->layout_damage()|FL_LAYOUT_XY);
+
+        w->resize(group_x+hoffset, group_y+voffset, group_w, group_h);
+
+        if(w->layout_damage()) 
+            w->layout();
+    }   
 
     Fl_Widget::layout();
-	
+
 }
 
 void Fl_Tabs::extend_tabs() {
@@ -1102,7 +1103,7 @@ Fl_Scroll* Fl_Tabs::create_new_scroll(const char *label)
 {
     begin();
     Fl_Scroll *scroll = new Fl_Scroll(0,0,w(),h(),label);
-	scroll->color(color());
+    scroll->color(color());
     end();
     return scroll;
 }
@@ -1111,7 +1112,7 @@ Fl_Group* Fl_Tabs::create_new_group(const char *label)
 {
     begin();
     Fl_Group *group = new Fl_Group(0,0,w(),h(),label);
-	group->color(color());
+    group->color(color());
     end();
     return group;
 }

@@ -45,7 +45,6 @@ class ComboBrowser : public Fl_Browser {
 public:
     ComboBrowser(int x, int y, int w, int h) : Fl_Browser(x, y, w, h, 0) {
         combo=0;
-        when(FL_WHEN_ENTER_KEY_ALWAYS | FL_WHEN_RELEASE);
     }
 
     int handle(int);
@@ -64,9 +63,9 @@ int ComboBrowser::handle(int event)
 
     if((event==FL_SHORTCUT||event==FL_KEY) && !(combo->type()&Fl_Input_Browser::NONEDITABLE)) {
         if( (Fl::event_key()!=FL_Escape) &&
-                (Fl::event_key()!=FL_Up) &&
-                (Fl::event_key()!=FL_Down) &&
-                !(Fl::event_key()==FL_Enter && item()) )
+            (Fl::event_key()!=FL_Up) &&
+            (Fl::event_key()!=FL_Down) &&
+            !(Fl::event_key()==FL_Enter && item()) )
             return combo->input()->handle(FL_KEY);
     }
 
@@ -95,7 +94,7 @@ int ComboBrowser::handle(int event)
                 if(size_grip.posInRect(Fl::event_x(), Fl::event_y())) return 1;
 
                 if(Fl::event_x() > w() || Fl::event_x() < x() ||
-                        Fl::event_y() > h() || Fl::event_y() < y() ) {
+                    Fl::event_y() > h() || Fl::event_y() < y() ) {
                     combo->hide_popup();
                     if(Fl::event_y() < y()-combo->h()) combo->send(FL_PUSH);
                     return 1;
@@ -106,8 +105,8 @@ int ComboBrowser::handle(int event)
         case FL_MOVE:
             event = FL_DRAG;
 
-    case FL_RELEASE:
-    case FL_DRAG:
+        case FL_RELEASE:
+        case FL_DRAG:
             // this causes a drag-in to the widget to work:
             if (Fl::event_inside(0, 0, w(), h())) {
                 Fl::pushed(this);
@@ -225,7 +224,6 @@ void Fl_Input_Browser::ctor_init() {
 
     if (input()->parent()) input()->parent()->remove(input());
     input()->parent(this);
-    input()->when(FL_WHEN_CHANGED | FL_WHEN_ENTER_KEY_ALWAYS);
     input()->callback((Fl_Callback *)input_cb, this);
 
     over_now = 0; over_last = 1;
@@ -328,7 +326,7 @@ void Fl_Input_Browser::draw()
         if(over_now) f.set(FL_HIGHLIGHT);
         X += W-W1;
         W = W1;
-	button_box(FL_DIV_UP_BOX);
+        button_box(FL_DIV_UP_BOX);
         // draw the little mark at the right:
         draw_glyph(FL_GLYPH_DOWN_BUTTON, X, Y, W, H, f);
         over_last = over_now;

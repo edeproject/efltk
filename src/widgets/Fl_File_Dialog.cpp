@@ -109,7 +109,7 @@ static char **select_files(const char *m_path_input, const char *filters, const 
     Fl_String def_file;
     Fl_String read_path(m_path_input);
 
-	if(!read_path.empty() && !fl_is_dir(read_path)) {
+    if(!read_path.empty() && !fl_is_dir(read_path)) {
         int pos = read_path.rpos('/');
         if(pos==-1) pos = read_path.rpos('\\');
 
@@ -119,12 +119,12 @@ static char **select_files(const char *m_path_input, const char *filters, const 
             read_path.sub_delete(pos, read_path.length()-pos);
         }
     }
-		
-	if(!fl_is_dir(read_path)) {    
+
+    if(!fl_is_dir(read_path)) {    
         char tmp[FL_PATH_MAX];
         fl_getcwd(tmp, sizeof(tmp)-1);
         read_path = tmp;
-		def_file="";
+        def_file="";
     }
 
     chooser.multi_selection(true);
@@ -132,7 +132,7 @@ static char **select_files(const char *m_path_input, const char *filters, const 
     chooser.filters(filters);
     chooser.directory(read_path);
 
-	if(chooser.show_modal()==Fl_Dialog::BTN_OK) {
+    if(chooser.show_modal()==Fl_Dialog::BTN_OK) {
         char **tmp = chooser.get_selected();
         if(!tmp) {
             tmp = new char*[2];
@@ -157,7 +157,7 @@ static char *select_file(const char *m_path_input, const char *filters, const ch
     Fl_String def_file;
     Fl_String read_path(m_path_input);
 
-	if(!read_path.empty() && !fl_is_dir(read_path)) {
+    if(!read_path.empty() && !fl_is_dir(read_path)) {
         int pos = read_path.rpos('/');
         if(pos==-1) pos = read_path.rpos('\\');
 
@@ -167,19 +167,19 @@ static char *select_file(const char *m_path_input, const char *filters, const ch
             read_path.sub_delete(pos, read_path.length()-pos);
         }
     }
-		
-	if(!fl_is_dir(read_path)) {    
+
+    if(!fl_is_dir(read_path)) {    
         char tmp[FL_PATH_MAX];
         fl_getcwd(tmp, sizeof(tmp)-1);
         read_path = tmp;
-		def_file="";
+        def_file="";
     }
 
     chooser.default_filename(def_file);
     chooser.filters(filters);
     chooser.directory(read_path);
 
-	if(chooser.show_modal()==Fl_Dialog::BTN_OK) {
+    if(chooser.show_modal()==Fl_Dialog::BTN_OK) {
         Fl_String path;
         chooser.get_filename(chooser.file_input(), path);
         if(!path.empty()) {
@@ -431,7 +431,7 @@ void normalize_path(Fl_String &path)
 Fl_File_Chooser::Fl_File_Chooser(int x, int y, int w, int h, const char *label, int mode)
 : Fl_Dialog(x, y, w, h, label)
 {
-	size_range(300, 300);
+    size_range(300, 300);
     buttons(Fl_Dialog::BTN_OK|Fl_Dialog::BTN_CANCEL, Fl_Dialog::BTN_OK);
     resizable(this);
 
@@ -479,15 +479,15 @@ bool Fl_File_Chooser::save_data(Fl_Data_Source *ds)
     if(!path.empty() && fl_is_dir(path)) {
 
         directory(path);
-		return false;
+        return false;
     }
 
-	return Fl_Dialog::save_data(ds);
+    return Fl_Dialog::save_data(ds);
 }    
 
 void Fl_File_Chooser::make_group()
 {
-	new_group("")->begin();
+    new_group("")->begin();
     {
         Fl_Group* o = new Fl_Group(0, 5, 100, 31);
         o->layout_align(FL_ALIGN_TOP);
@@ -531,7 +531,6 @@ void Fl_File_Chooser::make_group()
         o->layout_spacing(2);
 
         m_filebrowser = new Fl_File_Browser(0, 0, 100, 100);
-        m_filebrowser->when(FL_WHEN_CHANGED);
         m_filebrowser->callback((Fl_Callback*)cb_list, this);
         m_filebrowser->add_up_item(false);
         m_filebrowser->end();
@@ -561,7 +560,6 @@ void Fl_File_Chooser::make_group()
         m_file_input = new Fl_Input_Browser(60, 0, 100, 0, _("Location:"));
         m_file_input->h(m_file_input->text_size()+12);
         m_file_input->callback((Fl_Callback*)cb_location, this);
-        m_file_input->when(FL_WHEN_CHANGED | FL_WHEN_ENTER_KEY_ALWAYS);
         m_file_input->end();
         m_file_input->layout_align(FL_ALIGN_TOP);
 
@@ -716,7 +714,7 @@ void Fl_File_Chooser::directory(const Fl_String &path)
     parse_dirs(directory());
 
     if(mode()!=_DIRECTORY) {
-		enable_button(Fl_Dialog::BTN_OK, false);        
+        enable_button(Fl_Dialog::BTN_OK, false);        
         if(!m_default_filename.empty()) {
             Fl_ListView_Item *selected=0;
             for(unsigned n=0; n<filebrowser()->children(); n++) {
@@ -728,14 +726,14 @@ void Fl_File_Chooser::directory(const Fl_String &path)
             if(selected) {
                 filebrowser()->layout();
                 file_input(m_default_filename);
-				enable_button(Fl_Dialog::BTN_OK);
+                enable_button(Fl_Dialog::BTN_OK);
                 filebrowser()->select_only(selected);
                 filebrowser()->show_item(selected);
-				filebrowser()->layout();
+                filebrowser()->layout();
             }
         }
     } else {
-        enable_button(Fl_Dialog::BTN_OK);		
+        enable_button(Fl_Dialog::BTN_OK);       
     }
 
     if(directory().empty()) m_up->deactivate();
@@ -782,320 +780,320 @@ Fl_String Fl_File_Chooser::new_dir()
     }
 
     void Fl_File_Chooser::up() 
-{
-    filebrowser()->up();
-    if(directory().empty()) m_up->deactivate();
-    else m_up->activate();
-    parse_dirs(directory());
-}
-
-void Fl_File_Chooser::file_clicked(Fl_ListView_Item *i)
-{
-	enable_button(Fl_Dialog::BTN_OK);    
-    Fl_ListView_Item *item=0;
-
-    if(m_filebrowser->multi())
     {
-        if(m_filebrowser->get_selection().size() == 1) {
-            item = (Fl_ListView_ItemExt *)m_filebrowser->item();
-            if(item) m_file_input->value(item->label(1));
-        } else if(m_filebrowser->get_selection().size() > 1) {
-            Fl_String files;
-            int items=0;
-            for(uint n=0; n<m_filebrowser->get_selection().size(); n++) 
-            {
-                item = m_filebrowser->get_selection()[n];
+        filebrowser()->up();
+        if(directory().empty()) m_up->deactivate();
+        else m_up->activate();
+        parse_dirs(directory());
+    }
 
-                Fl_String full(directory() + item->label(1));
-                struct stat s;
-                if(stat(full, &s)<0 || S_ISDIR(s.st_mode)) continue;
+    void Fl_File_Chooser::file_clicked(Fl_ListView_Item *i)
+    {
+        enable_button(Fl_Dialog::BTN_OK);    
+        Fl_ListView_Item *item=0;
 
-                if(items > 4) {
-                    files += "....";
-                    break;
+        if(m_filebrowser->multi())
+        {
+            if(m_filebrowser->get_selection().size() == 1) {
+                item = (Fl_ListView_ItemExt *)m_filebrowser->item();
+                if(item) m_file_input->value(item->label(1));
+            } else if(m_filebrowser->get_selection().size() > 1) {
+                Fl_String files;
+                int items=0;
+                for(uint n=0; n<m_filebrowser->get_selection().size(); n++) 
+                {
+                    item = m_filebrowser->get_selection()[n];
+
+                    Fl_String full(directory() + item->label(1));
+                    struct stat s;
+                    if(stat(full, &s)<0 || S_ISDIR(s.st_mode)) continue;
+
+                    if(items > 4) {
+                        files += "....";
+                        break;
+                    }
+                    if(*item->label(1)) {
+                        files += item->label(1);
+                        files += " ";
+                        items++;
+                    }
                 }
-                if(*item->label(1)) {
-                    files += item->label(1);
-                    files += " ";
-                    items++;
-                }
+                m_file_input->value(files);
             }
-            m_file_input->value(files);
         }
-    }
-    else
-    {
+        else
+        {
         //D->fullpath((const char *)((Fl_File_ChooserItem *)w)->fullpath());
-        m_file_input->value(i->label(1));
-    }
+            m_file_input->value(i->label(1));
+        }
 
-    if(Fl::event_clicks() || Fl::event_key()==FL_Enter) {
-		submit(Fl_Dialog::BTN_OK);		
-    } else {
-        item = (Fl_ListView_ItemExt *)m_filebrowser->item();
-        if(item && preview()) {
-            Fl_String path(directory()+item->label(1));
-            m_preview_box->update_preview(path);
+        if(Fl::event_clicks() || Fl::event_key()==FL_Enter) {
+            submit(Fl_Dialog::BTN_OK);      
+        } else {
+            item = (Fl_ListView_ItemExt *)m_filebrowser->item();
+            if(item && preview()) {
+                Fl_String path(directory()+item->label(1));
+                m_preview_box->update_preview(path);
+            }
         }
     }
-}
 
-void Fl_File_Chooser::folder_clicked(Fl_ListView_Item *i)
-{
-	enable_button(Fl_Dialog::BTN_OK);    
-    m_file_input->value("");
+    void Fl_File_Chooser::folder_clicked(Fl_ListView_Item *i)
+    {
+        enable_button(Fl_Dialog::BTN_OK);    
+        m_file_input->value("");
 
-    if(Fl::event_clicks() || Fl::event_key()==FL_Enter) {
-        Fl_String path(directory()+i->label(1));
+        if(Fl::event_clicks() || Fl::event_key()==FL_Enter) {
+            Fl_String path(directory()+i->label(1));
 #if 0//def _WIN32
-        if(i->type()==Fl_FileItem::NETWORK)
-            sprintf(tmp, "\\\\%s", i->label());
+            if(i->type()==Fl_FileItem::NETWORK)
+                sprintf(tmp, "\\\\%s", i->label());
 #endif
-        directory(path);
+            directory(path);
+        }
     }
-}
 
 //CALLBACKS!!
-void Fl_File_Chooser::cb_list(Fl_File_Browser *w, Fl_File_Chooser *d)
-{
-    Fl_ListView_Item *item = w->item();
+    void Fl_File_Chooser::cb_list(Fl_File_Browser *w, Fl_File_Chooser *d)
+    {
+        Fl_ListView_Item *item = w->item();
 
 #ifdef _WIN32
     // Lame way to prevent device status, if not clickking it..
-    if(item->label(1)[1] == ':' && (!Fl::event_clicks() && Fl::event_key()!=FL_Enter))
-        return;
+        if(item->label(1)[1] == ':' && (!Fl::event_clicks() && Fl::event_key()!=FL_Enter))
+            return;
 #endif
 
-    if(item == w->up_item()) {
-        if(Fl::event_clicks() || Fl::event_key()==FL_Enter) d->up();
-    } else if(item) {
-        Fl_String path(d->directory()+item->label(1));
+        if(item == w->up_item()) {
+            if(Fl::event_clicks() || Fl::event_key()==FL_Enter) d->up();
+        } else if(item) {
+            Fl_String path(d->directory()+item->label(1));
 
-        if(access(path, 04)!=0) return;
+            if(access(path, 04)!=0) return;
 
-        if(fl_is_dir(path)) d->folder_clicked(item);
-        else d->file_clicked(item);
+            if(fl_is_dir(path)) d->folder_clicked(item);
+            else d->file_clicked(item);
+        }
     }
-}
 
-void Fl_File_Chooser::get_filename(Fl_String path, Fl_String &buf)
-{
-    char check; int checkp;
+    void Fl_File_Chooser::get_filename(Fl_String path, Fl_String &buf)
+    {
+        char check; int checkp;
 #ifdef _WIN32
-    check=':'; checkp=1;
+        check=':'; checkp=1;
 #else
-    check='/'; checkp=0;
+        check='/'; checkp=0;
 #endif
 
-    buf = fl_file_expand(path);
+        buf = fl_file_expand(path);
 
-    if(buf[checkp]!=check && !directory().empty()
+        if(buf[checkp]!=check && !directory().empty()
 #if 0//ef _WIN32
             && strncmp(buf.c_str(), "\\\\", 2) //Check for network path..
 #endif
-        ) 
-    {
-        buf = directory();
-        buf += path;
+            ) 
+        {
+            buf = directory();
+            buf += path;
+        }
     }
-}
 
-void Fl_File_Chooser::get_filepath(Fl_String path, Fl_String &buf)
-{   
-    char check; int checkp;
+    void Fl_File_Chooser::get_filepath(Fl_String path, Fl_String &buf)
+    {   
+        char check; int checkp;
 #ifdef _WIN32
-    check=':'; checkp=1;
+        check=':'; checkp=1;
 #else
-    check='/'; checkp=0;
+        check='/'; checkp=0;
 #endif  
 
-    buf = fl_file_expand(path);
+        buf = fl_file_expand(path);
 
-    if(buf[checkp]!=check && !directory().empty())
+        if(buf[checkp]!=check && !directory().empty())
+        {
+            buf = directory();
+            buf += path;
+        }
+
+        int pos = buf.rpos(slash);
+        if(pos>0) {
+            pos++;
+            buf.sub_delete(pos, buf.length()-pos);
+        }
+
+        if(fl_is_dir(buf)) {
+            if(buf[buf.length()-1] != slash) buf += slash;
+        }
+        else if(fl_is_dir(path)) {
+            buf = path;
+            if(buf[buf.length()-1] != slash) buf += slash;
+        } else
+            buf.clear();
+    }
+
+    void Fl_File_Chooser::cb_location(Fl_Input_Browser *w, Fl_File_Chooser *d)
     {
-        buf = directory();
-        buf += path;
-    }
+        Fl_String filename;
+        static Fl_String dirpath;
 
-    int pos = buf.rpos(slash);
-    if(pos>0) {
-        pos++;
-        buf.sub_delete(pos, buf.length()-pos);
-    }
-
-    if(fl_is_dir(buf)) {
-        if(buf[buf.length()-1] != slash) buf += slash;
-    }
-    else if(fl_is_dir(path)) {
-        buf = path;
-        if(buf[buf.length()-1] != slash) buf += slash;
-    } else
-        buf.clear();
-}
-
-void Fl_File_Chooser::cb_location(Fl_Input_Browser *w, Fl_File_Chooser *d)
-{
-    Fl_String filename;
-    static Fl_String dirpath;
-
-    if(!strcmp(w->value(),"")) {
-		d->enable_button(Fl_Dialog::BTN_OK, false);        
-        w->hide_popup();
-        return;
-    }
-
-    if(d->mode()==_SAVE)
-		d->enable_button(Fl_Dialog::BTN_OK);        
-
-    int key = Fl::event_key();
-
-    if(key == FL_Enter) {
-
-        if(!strcmp(w->value(), "..")) {
-            d->cb_up(w, d);
-            w->value("");
+        if(!strcmp(w->value(),"")) {
+            d->enable_button(Fl_Dialog::BTN_OK, false);        
+            w->hide_popup();
             return;
         }
 
-        filename = dirpath;
-        filename += w->value();
+        if(d->mode()==_SAVE)
+            d->enable_button(Fl_Dialog::BTN_OK);        
 
-        if(fl_is_dir(filename)
+        int key = Fl::event_key();
+
+        if(key == FL_Enter) {
+
+            if(!strcmp(w->value(), "..")) {
+                d->cb_up(w, d);
+                w->value("");
+                return;
+            }
+
+            filename = dirpath;
+            filename += w->value();
+
+            if(fl_is_dir(filename)
 #if 0//def _WIN32
                 || !strncmp(filename, "\\\\", 2) //Check for network path..
 #endif
-            ) {
-            d->directory(filename);
-            w->value("");
-        }
-        else if(d->mode()<=Fl_File_Chooser::_SAVE)  
-        {
-            if(!fl_is_dir(filename) && (d->mode()==Fl_File_Chooser::_DEFAULT ? fl_file_exists(filename) : true)) {
-
-                if(Fl::modal()==d->window()) {
-					d->submit(Fl_Dialog::BTN_OK);		                    
-                }
-                else
-                    d->directory(dirpath);
-
-            } else {
-				d->enable_button(Fl_Dialog::BTN_OK, false);                
-                d->clear_value();
+                ) {
+                d->directory(filename);
+                w->value("");
             }
-        }
+            else if(d->mode()<=Fl_File_Chooser::_SAVE)  
+            {
+                if(!fl_is_dir(filename) && (d->mode()==Fl_File_Chooser::_DEFAULT ? fl_file_exists(filename) : true)) {
 
-        w->hide_popup();
-
-    } else {
-
-        d->get_filename(w->value(), filename);
-        d->get_filepath(w->value(), dirpath);
-
-        normalize_path(filename);
-        normalize_path(dirpath);
-
-        if(d->mode()!=Fl_File_Chooser::_SAVE) {
-            if(fl_file_exists(filename)) 
-				d->enable_button(Fl_Dialog::BTN_OK);
-            else 
-				d->enable_button(Fl_Dialog::BTN_OK, false);
-        }
-
-        Fl_String pattern(w->value());
-        int pos = pattern.rpos('/');
-        if(pos==-1) pos = pattern.rpos('\\');
-        if(pos>=0) {
-            pos++;
-            pattern = pattern.sub_str(pos, pattern.length()-pos);
-        }
-        pattern += '*';
-
-        w->clear();
-
-        if(!dirpath.empty()) 
-        {
-            w->begin();
-
-            bool match = false;
-
-            struct dirent **files=0;
-            int count = fl_filename_list(dirpath, &files);
-            for(int n=0; n<count; n++) {
-                char *file = files[n]->d_name;
-
-                if(strcmp(file, ".") && strcmp(file, "..") && fl_file_match(file, pattern)) {
-
-                    Fl_String filen(dirpath + file);
-                    if(d->mode()==Fl_File_Chooser::_DIRECTORY && !fl_is_dir(filen)) {
-                        continue;
+                    if(Fl::modal()==d->window()) {
+                        d->submit(Fl_Dialog::BTN_OK);                           
                     }
-                    Fl_Widget *w = new Fl_Item();
-                    w->label(file);
-                    match = true;
-                }
-                free(files[n]);
-            }
-            if(count>0 && files) free(files);
+                    else
+                        d->directory(dirpath);
 
-            w->end();
-            w->item(0);
-            if(match) {
-                w->popup();
+                } else {
+                    d->enable_button(Fl_Dialog::BTN_OK, false);                
+                    d->clear_value();
+                }
+            }
+
+            w->hide_popup();
+
+        } else {
+
+            d->get_filename(w->value(), filename);
+            d->get_filepath(w->value(), dirpath);
+
+            normalize_path(filename);
+            normalize_path(dirpath);
+
+            if(d->mode()!=Fl_File_Chooser::_SAVE) {
+                if(fl_file_exists(filename)) 
+                    d->enable_button(Fl_Dialog::BTN_OK);
+                else 
+                    d->enable_button(Fl_Dialog::BTN_OK, false);
+            }
+
+            Fl_String pattern(w->value());
+            int pos = pattern.rpos('/');
+            if(pos==-1) pos = pattern.rpos('\\');
+            if(pos>=0) {
+                pos++;
+                pattern = pattern.sub_str(pos, pattern.length()-pos);
+            }
+            pattern += '*';
+
+            w->clear();
+
+            if(!dirpath.empty()) 
+            {
+                w->begin();
+
+                bool match = false;
+
+                struct dirent **files=0;
+                int count = fl_filename_list(dirpath, &files);
+                for(int n=0; n<count; n++) {
+                    char *file = files[n]->d_name;
+
+                    if(strcmp(file, ".") && strcmp(file, "..") && fl_file_match(file, pattern)) {
+
+                        Fl_String filen(dirpath + file);
+                        if(d->mode()==Fl_File_Chooser::_DIRECTORY && !fl_is_dir(filen)) {
+                            continue;
+                        }
+                        Fl_Widget *w = new Fl_Item();
+                        w->label(file);
+                        match = true;
+                    }
+                    free(files[n]);
+                }
+                if(count>0 && files) free(files);
+
+                w->end();
+                w->item(0);
+                if(match) {
+                    w->popup();
+                } else {
+                    w->hide_popup();
+                }
             } else {
                 w->hide_popup();
             }
-        } else {
-            w->hide_popup();
         }
     }
-}
 
 //////////////////////////////
 // PREVIEW
 
-void Fl_File_Chooser::preview(bool show)
-{
-    m_preview->value(show);
+    void Fl_File_Chooser::preview(bool show)
+    {
+        m_preview->value(show);
 
-    if(!show) {
-        m_preview_box->image_cache.clear();
-        m_preview_box->update_preview("");
+        if(!show) {
+            m_preview_box->image_cache.clear();
+            m_preview_box->update_preview("");
 
-        m_preview_box->hide();
+            m_preview_box->hide();
 
-    } else {
+        } else {
 
-        m_preview_box->show();
+            m_preview_box->show();
 
-        Fl_ListView_Item *item = filebrowser()->item();
-        if(item && !directory().empty()) {
-            Fl_String path(directory()+item->label(1));
-            m_preview_box->update_preview(path);
+            Fl_ListView_Item *item = filebrowser()->item();
+            if(item && !directory().empty()) {
+                Fl_String path(directory()+item->label(1));
+                m_preview_box->update_preview(path);
+            }
         }
+
+        filebrowser()->parent()->relayout(FL_LAYOUT_WH);
+        redraw();
     }
 
-    filebrowser()->parent()->relayout(FL_LAYOUT_WH);
-    redraw();
-}
-
-void Fl_File_Chooser::update_preview(const Fl_String filename) 
-{
-    m_preview_box->update_preview(filename);
-}
-
-int Fl_File_Chooser::handle(int event)
-{
-    return Fl_Dialog::handle(event);
-}
-
-void Fl_File_Chooser::layout()
-{
-    if(preview()) {
-        int W = int(w()*0.30f);
-        m_preview_box->w(W);
+    void Fl_File_Chooser::update_preview(const Fl_String filename) 
+    {
+        m_preview_box->update_preview(filename);
     }
-    Fl_Group::layout();
-}
+
+    int Fl_File_Chooser::handle(int event)
+    {
+        return Fl_Dialog::handle(event);
+    }
+
+    void Fl_File_Chooser::layout()
+    {
+        if(preview()) {
+            int W = int(w()*0.30f);
+            m_preview_box->w(W);
+        }
+        Fl_Group::layout();
+    }
 
 ////////////////////////////
 // WIN32 NETWORK
@@ -1105,73 +1103,73 @@ void Fl_File_Chooser::layout()
 #if 0//def _WIN32
 
 // This sucks... I hate pure windoze programming...
-bool Fl_File_Chooser::enum_netresources(Fl_Callback *cb, LPNETRESOURCE lpnr, DWORD scope)
-{ 
-    DWORD dwResult, dwResultEnum;
-    HANDLE hEnum;
-    DWORD cbBuffer = 16384; // 16K is a good size
-    DWORD cEntries = (DWORD)-1; // enumerate all possible entries
-    LPNETRESOURCE lpnrLocal;// pointer to enumerated structures
-    DWORD i;
+    bool Fl_File_Chooser::enum_netresources(Fl_Callback *cb, LPNETRESOURCE lpnr, DWORD scope)
+    { 
+        DWORD dwResult, dwResultEnum;
+        HANDLE hEnum;
+        DWORD cbBuffer = 16384; // 16K is a good size
+        DWORD cEntries = (DWORD)-1; // enumerate all possible entries
+        LPNETRESOURCE lpnrLocal;// pointer to enumerated structures
+        DWORD i;
 
     // Call the WNetOpenEnum function to begin the enumeration.
-    dwResult = WNetOpenEnum(scope,
-            RESOURCETYPE_DISK,  // disk resources
-            0,                  // enumerate all resources
-            lpnr,               // NULL first time the function is called
-            &hEnum);            // handle to the resource
+        dwResult = WNetOpenEnum(scope,
+                RESOURCETYPE_DISK,  // disk resources
+                0,                  // enumerate all resources
+                lpnr,               // NULL first time the function is called
+                &hEnum);            // handle to the resource
 
-    if(dwResult != NO_ERROR) {  
+        if(dwResult != NO_ERROR) {  
         // Process errors with an application-defined error handler.
         //NetErrorHandler(hwnd, dwResult, (LPSTR)"WNetOpenEnum");
-        return false;
-    }
+            return false;
+        }
 
-    lpnrLocal = new NETRESOURCE[cbBuffer];
-    do {  
+        lpnrLocal = new NETRESOURCE[cbBuffer];
+        do {  
         // Initialize the buffer.
-        memset(lpnrLocal, 0, cbBuffer*sizeof(NETRESOURCE));
+            memset(lpnrLocal, 0, cbBuffer*sizeof(NETRESOURCE));
 
         // Call the WNetEnumResource function to continue the enumeration.
-        dwResultEnum = WNetEnumResource(hEnum,      // resource handle
-                &cEntries,  // defined locally as -1
-                lpnrLocal,  // LPNETRESOURCE
-                &cbBuffer); // buffer size
+            dwResultEnum = WNetEnumResource(hEnum,      // resource handle
+                    &cEntries,  // defined locally as -1
+                    lpnrLocal,  // LPNETRESOURCE
+                    &cbBuffer); // buffer size
 
         // If the call succeeds, loop through the structures.
-        if (dwResultEnum == NO_ERROR) {
-            for(i = 0; i < cEntries; i++) {
+            if (dwResultEnum == NO_ERROR) {
+                for(i = 0; i < cEntries; i++) {
                 // Call an application-defined function to
                 // display the contents of the NETRESOURCE structures.
-                cb(this, (void *)(&lpnrLocal[i]));
+                    cb(this, (void *)(&lpnrLocal[i]));
+                }
             }
-        }
-        else if (dwResultEnum != ERROR_NO_MORE_ITEMS) // Process errors.
-        {
+            else if (dwResultEnum != ERROR_NO_MORE_ITEMS) // Process errors.
+            {
             //NetErrorHandler(hwnd, dwResultEnum, (LPSTR)"WNetEnumResource");
-            break;
+                break;
+            }
+
+        } while(dwResultEnum != ERROR_NO_MORE_ITEMS);
+
+        delete []lpnrLocal;
+        dwResult = WNetCloseEnum(hEnum);
+
+        if(dwResult != NO_ERROR) { 
+        //NetErrorHandler(hwnd, dwResult, (LPSTR)"WNetCloseEnum");
+            return false;
         }
 
-    } while(dwResultEnum != ERROR_NO_MORE_ITEMS);
-
-    delete []lpnrLocal;
-    dwResult = WNetCloseEnum(hEnum);
-
-    if(dwResult != NO_ERROR) { 
-        //NetErrorHandler(hwnd, dwResult, (LPSTR)"WNetCloseEnum");
-        return false;
+        return true;
     }
 
-    return true;
-}
+    static void cb_add_netitem(Fl_Widget *w, void *d) { 
+        ((Fl_File_Chooser *)w)->add_netitem((LPNETRESOURCE)d);  
+    }
 
-static void cb_add_netitem(Fl_Widget *w, void *d) { 
-    ((Fl_File_Chooser *)w)->add_netitem((LPNETRESOURCE)d);  
-}
-
-void Fl_File_Chooser::add_netitem(LPNETRESOURCE net)
-{
-    if(!net->lpRemoteName) return;
+    void Fl_File_Chooser::add_netitem(LPNETRESOURCE net)
+    {
+        if(!net->lpRemoteName) return;
 /*
     filebrowser()->begin();
 
@@ -1201,15 +1199,16 @@ void Fl_File_Chooser::add_netitem(LPNETRESOURCE net)
 #ifdef UNICODE
     free(remote_name);
 #endif*/
-}
+    }
 
-void Fl_File_Chooser::read_network(LPNETRESOURCE net)
-{
-    scope = RESOURCE_CONTEXT;
-    if(net) scope = RESOURCE_GLOBALNET;     
+    void Fl_File_Chooser::read_network(LPNETRESOURCE net)
+    {
+        scope = RESOURCE_CONTEXT;
+        if(net) scope = RESOURCE_GLOBALNET;     
 
-    filebrowser()->clear(); 
-    enum_netresources(cb_add_netitem, net, scope);  
-}
+        filebrowser()->clear(); 
+        enum_netresources(cb_add_netitem, net, scope);  
+    }
 
 #endif
+

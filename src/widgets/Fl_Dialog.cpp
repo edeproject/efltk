@@ -192,8 +192,8 @@ void Fl_Dialog::submit(int button_id)
 {
     for (unsigned i = 0; i < m_buttonList.size(); i++) {
         Fl_Widget *btn = m_buttonList[i];
-        if(button_id == btn->argument()) {
-            btn->do_callback(btn->argument());
+        if (button_id == btn->argument()) {
+            btn->do_callback(FL_DIALOG_BUTTON,btn->argument());
             return; // Only one allowed
         }
     }

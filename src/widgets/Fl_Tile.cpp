@@ -191,7 +191,7 @@ int Fl_Tile::handle(int event)
                 } else
                     newy = sy;
                 position(sx,sy,newx,newy);
-                do_callback(event);
+                do_callback(FL_DATA_CHANGE);
                 return 1;
             }
 

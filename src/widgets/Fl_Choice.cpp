@@ -144,7 +144,7 @@ int Fl_Choice::handle(int e)
             // user-friendly.
             //  Fl::event_is_click(0);
             if (focus_on_click()) take_focus();
-        EXECUTE:
+EXECUTE:
             if (popup(0, 0, w(), h())) {
                 take_focus();
                 redraw(FL_DAMAGE_VALUE);
@@ -257,7 +257,6 @@ void Fl_Choice::ctor_init()
     style(default_style);
     clear_flag(FL_ALIGN_MASK);
     set_flag(FL_ALIGN_LEFT);
-    when(FL_WHEN_RELEASE);
 
     anim_flags(TOP_TO_BOTTOM);
 }

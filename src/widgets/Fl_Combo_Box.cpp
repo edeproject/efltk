@@ -201,7 +201,6 @@ Fl_Popup_ListView::Fl_Popup_ListView(Fl_Widget *masterWidget,Fl_Widget *editCont
     m_editControl = editControl;
     m_listView = new Fl_ListView(0,0,w(),h());
     m_listView->callback(Fl_Popup_ListView::cb_clicked);
-    m_listView->when(FL_WHEN_CHANGED|FL_WHEN_RELEASE);
     m_listView->layout_align(FL_ALIGN_CLIENT);
     m_listView->layout_spacing(0);
     box(FL_THIN_UP_BOX);
@@ -372,7 +371,7 @@ int Fl_Combo_Box_Panel::handle(int event) {
     return 0;
 }
 //-------------------------------------------------------------------
-int button_to_event(int argument) {
+Fl_Event_Type button_to_event(int argument) {
     switch (argument) {
         case FL_CBB_INSERT:     return FL_UC_INSERT;
         case FL_CBB_EDIT:       return FL_UC_EDIT;
@@ -473,7 +472,7 @@ void Fl_Combo_Box::cb_browse(Fl_Widget *w, void *) {
 void Fl_Combo_Box::cb_button(Fl_Widget *w, void *) {
     Fl_Combo_Box *cb = (Fl_Combo_Box *) w->parent();
     cb->take_focus();
-    int event = button_to_event(w->argument());
+    Fl_Event_Type event = button_to_event(w->argument());
     cb->do_callback(event);
 }
 

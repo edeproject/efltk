@@ -157,7 +157,7 @@ static int compare_marks(const int* index1,int L1, const int* index2, int L2)
 int Fl_Browser::compare_marks(int mark1, int mark2)
 {
     return ::compare_marks(item_index[mark1], item_level[mark1],
-        item_index[mark2], item_level[mark2]);
+            item_index[mark2], item_level[mark2]);
 }
 
 
@@ -395,7 +395,7 @@ static void
     glyph(const Fl_Widget* widget, int glyph, int x,int y,int w,int h, Fl_Flags f)
 {
     fl_color((f&FL_SELECTED) ? widget->selection_text_color()
-            : fl_inactive(widget->text_color()));
+        : fl_inactive(widget->text_color()));
     int lx = x+w/2;
     int ly = y+(h-1)/2;
     switch (glyph)
@@ -421,7 +421,7 @@ static void
         case CLOSED_ELL:
         case OPEN_ELL:
             fl_yxline(lx, y, lx, ly);
-        J1:
+J1:
             fl_glyph(widget, glyph < OPEN_ELL ? FL_GLYPH_RIGHT : FL_GLYPH_DOWN,
                 x, y, w, h, f);
             break;
@@ -964,14 +964,14 @@ int Fl_Browser::handle(int event)
             // For all mouse events check to see if we are in the scrollbar
             // areas and send to them:
             if (scrollbar.visible() &&
-                    (scrollbar_align()&FL_ALIGN_LEFT ?
-                        (Fl::event_x() < scrollbar.x()+scrollbar.w()) :
-                        (Fl::event_x() >= scrollbar.x())))
+                (scrollbar_align()&FL_ALIGN_LEFT ?
+                    (Fl::event_x() < scrollbar.x()+scrollbar.w()) :
+                    (Fl::event_x() >= scrollbar.x())))
                 return scrollbar.send(event);
             if (hscrollbar.visible() &&
-                    (scrollbar_align()&FL_ALIGN_TOP ?
-                        (Fl::event_y() < hscrollbar.y()+hscrollbar.h()) :
-                        (Fl::event_y() >= hscrollbar.y())))
+                (scrollbar_align()&FL_ALIGN_TOP ?
+                    (Fl::event_y() < hscrollbar.y()+hscrollbar.h()) :
+                    (Fl::event_y() >= hscrollbar.y())))
                 return hscrollbar.send(event);
                                  // return true for enter/move
             if (event != FL_PUSH) return 1;
@@ -985,7 +985,7 @@ int Fl_Browser::handle(int event)
                 int arrow_size = text_size()|1;
                 int xx = (item_level[HERE]+indented())*arrow_size+X-xposition_-Fl::event_x();
                 if ((event==FL_PUSH || openclose_drag) && xx > 0 && xx < arrow_size &&
-                        item_is_parent())
+                    item_is_parent())
                 {
                     if (openclose_drag != 1) {openclose_drag = 1; damage_item(HERE);}
                 }
@@ -1004,7 +1004,7 @@ int Fl_Browser::handle(int event)
                             drag_type = !item()->selected();
                                  // don't change it
                             if (openclose_drag) drag_type = !drag_type;
-                            set_item_selected(drag_type, FL_WHEN_CHANGED);
+                            set_item_selected(drag_type, FL_DATA_EVENTS);
                             set_focus();
                                  // make it not be a double-click for callback
                             Fl::event_clicks(0);
@@ -1019,7 +1019,7 @@ int Fl_Browser::handle(int event)
                         }
                         else
                         {
-                            select_only_this(FL_WHEN_CHANGED);
+                            select_only_this(FL_DATA_EVENTS);
                             drag_type = true;
                             return 1;
                         }
@@ -1029,7 +1029,7 @@ int Fl_Browser::handle(int event)
                     set_mark(TEMP, HERE);
                     for (;;)
                     {
-                        set_item_selected(drag_type, FL_WHEN_CHANGED);
+                        set_item_selected(drag_type, FL_DATA_EVENTS);
                         if (at_mark(FOCUS)) break;
                         if (!(direction<0 ? next_visible() : previous_visible())) break;
                     }
@@ -1038,7 +1038,7 @@ int Fl_Browser::handle(int event)
                 }
                 else
                 {
-                    select_only_this(FL_WHEN_CHANGED);
+                    select_only_this(FL_DATA_EVENTS);
                 }
                 return 1;
             }
@@ -1049,10 +1049,10 @@ int Fl_Browser::handle(int event)
             {
                 // toggle the open/close state of this item
                 set_item_opened(!(item()->flags()&FL_VALUE));
-                                 // make next click not be double
+                // make next click not be double
                 Fl::event_is_click(0);
             }
-            else if (Fl::event_clicks() && (when()&FL_WHEN_ENTER_KEY))
+            else if (Fl::event_clicks())
             {
                 // double clicks act like Enter
                 Fl::e_keysym = FL_Enter;
@@ -1060,7 +1060,7 @@ int Fl_Browser::handle(int event)
                 execute(item());
                 return 1;
             }
-            if ((when()&FL_WHEN_RELEASE) && (changed() || (when()&FL_WHEN_NOT_CHANGED)))
+            if (changed())
             {
                 clear_changed();
                 execute(item());
@@ -1084,27 +1084,27 @@ int Fl_Browser::handle(int event)
                     goto AFTER_MOVEMENT_KEY;
                 case FL_Down:
                     if (goto_visible_focus()) next_visible();
-                AFTER_MOVEMENT_KEY:
+AFTER_MOVEMENT_KEY:
                     if (!item()) return 1;
                     if (multi() && Fl::event_state(FL_SHIFT|FL_CTRL))
                     {
-                        if (Fl::event_state(FL_SHIFT)) set_item_selected(1,FL_WHEN_CHANGED);
+                        if (Fl::event_state(FL_SHIFT)) set_item_selected(1,FL_DATA_EVENTS);
                         set_focus();
                     }
                     else
                     {
-                        select_only_this(FL_WHEN_CHANGED);
+                        select_only_this(FL_DATA_EVENTS);
                     }
                     //goto RELEASE;
                     return 1;
 
                 case ' ':
                     if (!multi() || !goto_visible_focus()) break;
-                    set_item_selected(!item()->selected(), FL_WHEN_CHANGED);
+                    set_item_selected(!item()->selected(), FL_DATA_EVENTS);
                     return 1;
 
                 case FL_Enter:
-                    if (!(when() & FL_WHEN_ENTER_KEY)) break;
+                    //if (!(when() & FL_WHEN_ENTER_KEY)) break;
                     if (!goto_visible_focus()) break;
                     clear_changed();
                     execute(item());
@@ -1137,7 +1137,7 @@ int Fl_Browser::handle(int event)
 Fl_Widget* Fl_Browser::goto_visible_focus()
 {
     if (item_position[FOCUS] >= yposition_ &&
-            item_position[FOCUS] <= yposition_+H)
+        item_position[FOCUS] <= yposition_+H)
     {
         if (goto_mark(FOCUS)) return item();
     }

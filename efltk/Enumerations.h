@@ -74,7 +74,7 @@ typedef unsigned char uint8;
 typedef uint32        uint;
 
 #include "Fl_Events.h"
-
+/*
 enum { // Fl_Widget::when():
     FL_WHEN_NEVER       = 0,
     FL_WHEN_CHANGED = 1,
@@ -85,7 +85,7 @@ enum { // Fl_Widget::when():
     FL_WHEN_ENTER_KEY_CHANGED=11,
     FL_WHEN_NOT_CHANGED = 2 // modifier bit to disable changed() test
 };
-
+*/
 // Fl::event_key() and Fl::get_key(n) (use ascii letters for all other keys):
 #define FL_Space    32
 #define FL_Button(n)    (0xfee8+(n))    // use Fl_Button(FL_*_MOUSE)

@@ -152,7 +152,7 @@ __INT:
 
     if (dir > 0)
     {
-    UP_CASE:
+UP_CASE:
         // up to a larger absolute value, which is much simpler:
         for (p = q; p >= 0; p--)
         {
@@ -227,9 +227,10 @@ __INT:
 DONE:
     position(q, q+1);
     when(save_when);
-    if (save_when&(FL_WHEN_CHANGED|FL_WHEN_ENTER_KEY) && changed())
+    if (changed())
     {
-        clear_changed(); do_callback(FL_KEY);
+        clear_changed(); 
+        do_callback(FL_DATA_CHANGE);
     }
     return 1;
 }

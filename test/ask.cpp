@@ -37,91 +37,91 @@
 #include <efltk/Fl_Input.h>
 #include <efltk/Fl_Button.h>
 #include <efltk/Fl_Return_Button.h>
-
-static void ok_callback(Fl_Widget* w, void*) {
-  printf("ok\n");
-  w->window()->set_value();
-  w->window()->hide();
-}
-
-static void cancel_callback(Fl_Widget* w, void*) {
-  printf("cancel\n");
-  w->window()->hide();
-}
-
-int get_string(char*buffer) {
-  Fl_Window window(320,75);
-  Fl_Input input(60, 10, 250, 25, "Input:");
-  input.value(buffer);
-  input.when(0);
-  Fl_Button cancel(60, 40, 80, 25, "cancel");
-  cancel.callback(cancel_callback);
-  Fl_Return_Button ok(150, 40, 80, 25, "OK");
-  ok.callback(ok_callback);
-  window.hotspot(&cancel); // you must position modal windows
-  window.end();
-  //window.clear_border();
-  if (window.exec()) {
-    strcpy(buffer,input.value());
-    return 1;
-  } else {
-    return 0;
-  }
-}
-
-void rename_me(Fl_Widget*o) {
-  if (get_string((char*)(o->label()))) o->redraw();
-}
-
-#if 1
 #include <efltk/fl_ask.h>
 #include <stdlib.h>
 
-//  int recurse;
+static void ok_callback(Fl_Widget* w, void*) {
+    if (Fl::event() == FL_BUTTON_PRESSED) {
+        printf("ok\n");
+        w->window()->set_value();
+        w->window()->hide();
+    }
+}
+
+static void cancel_callback(Fl_Widget* w, void*) {
+    if (Fl::event() == FL_BUTTON_PRESSED) {
+        printf("cancel\n");
+        w->window()->hide();
+    }
+}
+
+int get_string(char*buffer) {
+    Fl_Window window(320,75);
+    Fl_Input input(60, 10, 250, 25, "Input:");
+    input.value(buffer);
+    input.when(0);
+    Fl_Button cancel(60, 40, 80, 25, "cancel");
+    cancel.callback(cancel_callback);
+    Fl_Return_Button ok(150, 40, 80, 25, "OK");
+    ok.callback(ok_callback);
+    window.hotspot(&cancel); // you must position modal windows
+    window.end();
+    if (window.exec()) {
+        strcpy(buffer,input.value());
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+void rename_me(Fl_Widget*o) {
+    if (Fl::event() == FL_BUTTON_PRESSED) {
+        if (get_string((char*)(o->label()))) o->redraw();
+    }
+}
 
 void window_callback(Fl_Widget*, void*) {
-//    printf("window_callback entered, level %d\n", recurse++);
-  if (!fl_ask("Are you sure you want to quit?")) {
-//      printf("window_callback exited, level %d\n", --recurse);
-    return;
-  }
-  exit(0);
+    if (Fl::event() == FL_WINDOW_CLOSE) {
+        if (!fl_ask("Are you sure you want to quit?")) {
+            return;
+        }
+        exit(0);
+    }
 }
-#endif
 
 int main(int argc, char **argv) {
-  char buffer[128] = "test text";
+    char buffer[128] = "test text";
 
 #if 1
 // this is a test to make sure automatic destructors work.  Pop up
 // the question dialog several times and make sure it don't crash.
 
-  Fl_Window window(200, 55);
-  Fl_Return_Button b(20, 10, 160, 35, buffer); b.callback(rename_me);
-  window.add(b);
-  window.resizable(&b);
-  window.show(argc, argv);
+    Fl_Window window(200, 55);
+    Fl_Return_Button b(20, 10, 160, 35, buffer); b.callback(rename_me);
+    window.add(b);
+    window.resizable(&b);
+    window.show(argc, argv);
 
 // Also we test to see if the exit callback works:
-  window.callback(window_callback);
+    window.callback(window_callback);
 
-  return Fl::run();
+    return Fl::run();
 
 #else
 // This is the demo as written in the documentation, it only creates
 // the popup window once:
 
-  if (get_string(buffer)) {
-    puts(buffer);
-  } else {
-    puts("cancel");
-  }
-  return 0;
+    if (get_string(buffer)) {
+        puts(buffer);
+    } else {
+        puts("cancel");
+    }
+    return 0;
 
 #endif
 
 }
-    
+
 //
 // End of "$Id$".
 //

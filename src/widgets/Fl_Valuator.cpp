@@ -36,7 +36,6 @@
 void Fl_Valuator::ctor_init() {
     clear_flag(FL_ALIGN_MASK);
     set_flag(FL_ALIGN_BOTTOM);
-    when(FL_WHEN_CHANGED);
     value_ = 0.0;
     step_ = 0.01f;
     minimum_ = 0;
@@ -102,25 +101,23 @@ void Fl_Valuator::handle_drag(double v)
     if (v != value_) {
         value_ = v;
         value_damage();
-        if (when() & FL_WHEN_CHANGED || !Fl::pushed()) {
+        if (!Fl::pushed()) 
             do_callback(FL_DATA_CHANGE);
-        }
-        else set_changed();
     }
 }
 
 
 void Fl_Valuator::handle_release()
 {
-    if (when()&FL_WHEN_RELEASE && !Fl::pushed())
+    if (!Fl::pushed())
     {
         // insure changed() is off even if no callback is done.  It may have
         // been turned on by the drag, and then the slider returned to it's
         // initial position:
         clear_changed();
         // now do the callback only if slider in new position or always is on:
-        if (value_ != previous_value_ || when() & FL_WHEN_NOT_CHANGED)
-            do_callback(FL_RELEASE);
+        if (value_ != previous_value_)
+            do_callback(FL_DATA_CHANGE);
     }
 }
 
@@ -161,7 +158,7 @@ int Fl_Valuator::handle(int event)
                     case FL_Up:
                     case FL_Right:
                         i = linesize();
-                    J1:
+J1:
                         if (Fl::event_state()&(FL_SHIFT|FL_CTRL|FL_ALT)) i *= 10;
                         if (maximum() < minimum()) i = -i;
                         handle_drag(value()+i);
