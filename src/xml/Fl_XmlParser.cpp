@@ -392,12 +392,15 @@ int Fl_XmlParser::parse_node(Fl_XmlNode *node)
 
                         tokenizer.cdata_mode(true);
                         while(!tokenizer.eos()) {
-                            cdata += *tokenizer++;
-                            if(!strncmp(&cdata[cdata.length()-3], "]]>", 3))
+                            cdata += *tokenizer;
+                            if((*tokenizer)[0]=='>' && !strncmp(cdata.c_str()+cdata.length()-3, "]]>", 3))
                                 break;
+                            tokenizer++;
                         }
                         tokenizer.cdata_mode(false);
 
+                        if(!strncmp(cdata.c_str(), "[CDATA[", 7))
+                            cdata.sub_delete(0, 7); //Delete "[CDATA["
                         cdata.sub_delete(cdata.length()-3, 3); //Delete "]]>"
 
                         if(ctxptr->handle_events()) ctxptr->handler()->cdata(cdata);
