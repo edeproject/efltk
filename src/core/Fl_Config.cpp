@@ -2,13 +2,16 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include <config.h>
+#include "fl_internal.h"
 
 #include <efltk/vsnprintf.h>
+#include <efltk/Fl_String_List.h>
+#include <efltk/Fl_Exception.h>
 #include <efltk/Fl_Config.h>
 #include <efltk/filename.h>
 #include <efltk/fl_utf8.h>
 
+#include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/stat.h>
@@ -92,7 +95,7 @@ char *get_sys_dir() {
 #endif
 }
 
-char *Fl_Config::find_config_file(const char *filename, bool create, ConfMode mode)
+char *Fl_Config::find_config_file(const char *filename, bool create, int mode)
 {
     static char path[4096];
 
@@ -126,48 +129,48 @@ char *Fl_Config::find_config_file(const char *filename, bool create, ConfMode mo
 #define L(item) ((Line*)item)
 #define S(item) ((Section*)item)
 
-Fl_Config::Fl_Config(const char *vendor, const char *application, ConfMode mode)
+Fl_Config::Fl_Config(const char *vendor, const char *application, int mode)
 {
-    cur_sec = 0;
-    changed=false;
-    _error = 0;
+    m_cur_sec = 0;
+    m_changed=false;
+    m_error = 0;
 
-    if(vendor) vendor_ = vendor;
-    if(application) app_ = application;
+    if(vendor) m_vendor = vendor;
+    if(application) m_app = application;
 
-    if(!app_.empty()) {
+    if(!m_app.empty()) {
         const char *file=0;
         char tmp[FL_PATH_MAX];
 #ifdef _WIN32
         if(mode==SYSTEM)
-            snprintf(tmp, sizeof(tmp)-1, "%s%c%s.conf", app_.c_str(), slash, app_.c_str());
+            snprintf(tmp, sizeof(tmp)-1, "%s%c%s.conf", m_app.c_str(), slash, m_app.c_str());
         else
 #endif
-            snprintf(tmp, sizeof(tmp)-1, "apps%c%s%c%s.conf", slash, app_.c_str(), slash, app_.c_str());
+            snprintf(tmp, sizeof(tmp)-1, "apps%c%s%c%s.conf", slash, m_app.c_str(), slash, m_app.c_str());
         file = find_config_file(tmp, true, mode);
         if(file) {
             bool ret = makePathForFile(file);
             if(ret) {
-                filename_ = file;
+                m_filename = file;
                 read_file(true);
             } else
-                _error = CONF_ERR_FILE;
+                m_error = CONF_ERR_FILE;
         } else
-            _error = CONF_ERR_FILE;
+            m_error = CONF_ERR_FILE;
     } else
-        _error = CONF_ERR_FILE;
+        m_error = CONF_ERR_FILE;
 }
 
 Fl_Config::Fl_Config(const char *filename, bool read, bool create)
 {
-    if(filename) filename_ = filename;
+    if(filename) m_filename = filename;
 
-    _error = 0;
-    cur_sec = 0;
-    changed=false;
+    m_error = 0;
+    m_cur_sec = 0;
+    m_changed=false;
 
-    if(create && !filename_.empty()) {
-        makePathForFile(filename_.c_str());
+    if(create && !m_filename.empty()) {
+        makePathForFile(m_filename.c_str());
     }
 
     if(read) read_file(create);
@@ -199,34 +202,34 @@ const char *Fl_Config::strerror(int error)
 {
     switch(error)
     {
-    case CONF_SUCCESS: return "successful completion";
-    case CONF_ERR_FILE: return "could not access config file";
-    case CONF_ERR_SECTION: return "config file section not found";
-    case CONF_ERR_KEY: return "key not found in section";
-    case CONF_ERR_MEMORY: return "could not allocate memory";
-    case CONF_ERR_NOVALUE: return "invalid value associated with key";
-    default: return "unknown error";
+    case CONF_SUCCESS:     return _("Successful completion");
+    case CONF_ERR_FILE:    return _("Could not access config file");
+    case CONF_ERR_SECTION: return _("Config file section not found");
+    case CONF_ERR_KEY:     return _("Key not found in section");
+    case CONF_ERR_MEMORY:  return _("Could not allocate memory");
+    case CONF_ERR_NOVALUE: return _("Invalid value associated with key");
+    default:               return _("Unknown error");
     }
 }
 
 bool Fl_Config::read_file(bool create)
 {
     bool error = false;
-    if(filename_.empty()) {
-        _error = CONF_ERR_FILE;
+    if(m_filename.empty()) {
+        m_error = CONF_ERR_FILE;
         return false;
     }
 
-    if(create && !fl_file_exists(filename_.c_str())) {
-        FILE *f = fl_fopen(filename_.c_str(), "w+");
+    if(create && !fl_file_exists(m_filename.c_str())) {
+        FILE *f = fl_fopen(m_filename.c_str(), "w+");
         if(f) {
-            fputs("\n", f);
+            fputs(" ", f);
             fclose(f);
         } else error=true;
     }
 
     if(error) {
-        _error = CONF_ERR_FILE;
+        m_error = CONF_ERR_FILE;
         return false;
     }
 
@@ -236,76 +239,79 @@ bool Fl_Config::read_file(bool create)
 
     /////
     struct stat fileStat;
-    stat(filename_.c_str(), &fileStat);
+    stat(m_filename.c_str(), &fileStat);
     unsigned int size = fileStat.st_size;
     if(size == 0) {
-        _error = 0;
+        m_error = 0;
         return true;
     }
 
-    FILE *fp = fl_fopen(filename_.c_str(), "r");
+    FILE *fp = fl_fopen(m_filename.c_str(), "r");
     if(!fp) {
-        //fprintf(stderr, "fp == 0: %s\n", filename_);
-        _error = CONF_ERR_FILE;
+        //fprintf(stderr, "fp == 0: %s\n", m_filename);
+        m_error = CONF_ERR_FILE;
         return false;
     }
 
-    char *buffer, *lines, *tmp;
-    buffer = (char*)malloc(size*sizeof(char));
+    char *buffer = (char*)malloc(size*sizeof(char));
     if(!buffer) {
-        _error = CONF_ERR_MEMORY;
+        m_error = CONF_ERR_MEMORY;
         return false;
     }
 
     unsigned int readed = fread(buffer, 1, size, fp);
     if(readed <= 0) {
-        free(buffer);
+        free((char*)buffer);
         fclose(fp);
-        _error = CONF_ERR_FILE;
+        m_error = CONF_ERR_FILE;
         return false;
     }
     fclose(fp);
 
-    Section *section = 0;
-    char *ptr = buffer;
-    lines = strtok(ptr, "\n");
-    while(lines != 0)
-    {
-        if(lines)
-        {
-            while(*lines && (*lines==' '||*lines=='\t')) lines++;
+    Fl_String_List strings;
+    strings.from_string(buffer, "\n");
 
-            if (lines[0] == '[')
-            {
-                if ((tmp = strchr(lines, ']')))
-                {
-                    *tmp = '\0';
-                    section = create_section(&lines[1]);
-                }
-            }
-            else if (lines[0] != '#')
-            {
-                tmp = strchr(lines, '=');
-                if(!tmp) tmp = strchr(lines, ':');
-                if(tmp) {
-                    *tmp = '\0';
-                    tmp++;
-                    create_string(section, lines, tmp);
-                }
-            }
+    free((char*)buffer);
+
+    Section *section = 0;
+    for(unsigned n=0; n<strings.size(); n++)
+    {
+        Fl_String line;
+        int comment_pos = strings[n].rpos('#');
+        if(comment_pos>=0) {
+            line = strings[n].sub_str(comment_pos, strings[n].length()-comment_pos).trim();
+        } else {
+            line = strings[n].trim();
         }
 
-        lines = strtok(NULL,"\n");
+        if(line[0] == '[')
+        {
+            int pos = line.pos(']');
+            if(pos>=0)
+            {
+                Fl_String sec(line.sub_str(1, pos-1));
+                section = create_section(sec);
+            }
+        }
+        else if(line[0] != '#')
+        {
+            int pos = line.pos('=');
+            if(pos==-1) pos = line.pos(':');
+            if(pos>=0) {
+                Fl_String key(line.sub_str(0, pos));
+                pos++;
+                Fl_String value(line.sub_str(pos, line.length()-pos));
+                create_string(section, key, value);
+            }
+        }
     }
 
-    free(buffer);
-
-    _error = 0;
-    changed=false;
+    m_error = 0;
+    m_changed=false;
     return true;
 }
 
-void Fl_Config::write_section(int indent, FILE *fp, Section *sec)
+void Fl_Config::write_section(int indent, FILE *fp, Section *sec) const
 {
     Section *child;
     uint n;
@@ -331,22 +337,21 @@ void Fl_Config::write_section(int indent, FILE *fp, Section *sec)
 
 bool Fl_Config::flush()
 {
-    if(!changed) return true;
+    if(!m_changed) return true;
 
-    if(filename_.empty()) {
-        _error = CONF_ERR_FILE;
+    if(m_filename.empty()) {
         return false;
     }
-    FILE *file = fl_fopen(filename_.c_str(), "w+");
+    FILE *file = fl_fopen(m_filename.c_str(), "w+");
     if(!file) {
-        _error = CONF_ERR_FILE;
+        fl_throw(::strerror(errno));
         return false;
     }
 
-    fprintf( file, "# EFLTK Configuration - Version %f\n", FL_VERSION);
-    if(!vendor_.empty()) fprintf( file, "# Vendor: %s\n", vendor_.c_str());
-    if(!app_.empty())    fprintf( file, "# Application: %s\n", app_.c_str());
-    fprintf( file, "\n");
+    fprintf(file, "# EFLTK Configuration - Version %f\n", FL_VERSION);
+    if(!m_vendor.empty()) fprintf(file, "# Vendor: %s\n", m_vendor.c_str());
+    if(!m_app.empty())    fprintf(file, "# Application: %s\n", m_app.c_str());
+    fprintf(file, "\n");
 
     uint n;
     for(n=0; n<lines.size(); n++) {
@@ -363,148 +368,105 @@ bool Fl_Config::flush()
     }
 
     fclose(file);
-    _error = 0;
 
-    changed=false;
+    m_error = 0;
+    m_changed=false;
 
     return true;
 }
 
-Line *Fl_Config::create_string(Section *section, const char * key, const char * value)
+Line *Fl_Config::create_string(Section *section, const Fl_String &key, const Fl_String &value)
 {
-    if(!key || !*key) return 0;
+    if(key.empty()) return 0;
 
     Line *line = new Line(key, value);
-    line->key = line->key.trim();
-    line->value = line->value.trim();
-
-    _error=0;
+    m_error=0;
 
     if(section) section->lines.append(line);
     else lines.append(line);
     return line;
 }
 
-Section *Fl_Config::create_section(const char *name)
+Section *Fl_Config::create_section(const Fl_String &name)
 {
     if(!name) return 0;
+
     Section *section = find_section(name, true);
     if(section) return section;
 
-    Section *parent=0;
-    char secpath[1024]={0}, secname[256]={0};
-    int namelen=strlen(name);
-    const char *ptr=name+namelen-1;
-    char ch;
-    bool gotname=false;
-    int namebegin=namelen;
-    while((ch=*ptr--)) {
-        namebegin--;
-        if(ch=='/') {
-            if(!gotname) {
-                strncpy(secname, name+(namebegin+1), namelen-namebegin-1);
-                gotname = true;
-                break;
-            }
-        }
+    int pos = name.rpos('/');
+    if(pos==-1) {
+        section = new Section(name, "", 0);
+        sections.append(section);
+        return section;
     }
+    pos++;
 
-    if(!gotname) strncpy(secname, name, sizeof(secname)-1);
-    if(gotname) strncpy(secpath, name, namebegin+1);
+    Fl_String sec_name(name.sub_str(pos, name.length()-pos));
 
-    SectionList *list;
+    Fl_String sec_path(name.sub_str(0, pos));
 
-    if(*secpath) {
-        parent = find_section(secpath, false);
+    Section *parent = find_section(sec_path, false);
+    SectionList *list = &sections;
 
-        if(!parent) {
-            // Add all parent sections!
+    if(!parent) {
+        Fl_String_List sections;
+        sections.from_string(sec_path, "/");
 
-            char tmp[256]={0}, *tmpptr = tmp;
-            char tmppath[1024]={0};
-            char *ptr = secpath; int pos=0;
-            while( (ch=*ptr++) ) {
-                if(ch=='/') {
-                    if(parent) list = &parent->sections;
-                    else list = &sections;
+        Fl_String path;
+        for(unsigned n=0; n<sections.size(); n++) {
+            if(parent) list = &parent->sections;
 
-                    parent = new Section(tmp, tmppath, parent);
-                    list->append(parent);
+            parent = new Section(sections[n], path, parent);
+            list->append(parent);
 
-                    memset(tmp, 0, sizeof(tmp));
-                    tmpptr = tmp;
-
-                    strncpy(tmppath+pos, tmpptr, strlen(tmpptr));
-                    pos+=strlen(tmpptr);
-                    strncpy(tmppath+pos, "/", 1);
-                    pos++;
-
-                    continue;
-                }
-                *tmpptr++ = ch;
-            }
+            path += sections[n];
+            path += '/';
         }
-
     }
 
     if(parent) list = &parent->sections;
-    else list = &sections;
 
-    section = new Section(secname, secpath, parent);
+    section = new Section(sec_name, sec_path, parent);
     list->append(section);
 
-    _error = 0;
-
+    m_error = 0;
     return section;
 }
 
-Section *Fl_Config::find_section(const char *path, bool perfect_match)
+Section *Fl_Config::find_section(const char *path, bool perfect_match) const
 {
     if(!path || !*path) return 0;
 
-    int last_slash = -1, pos=0;
-
     Section *section=0;
-    char sec[256]={0};
-    const char *pathptr = path;
-    char *secptr = sec;
-    char ch;
-    while((ch=*pathptr++)) {
-        pos++;
-        if(ch=='/')
-        {
-            last_slash=pos;
-            Section *tmp = find_section(section, sec, false);
-            if(!tmp) if(perfect_match) return 0; else break;
-            section = tmp;
+    Fl_String_List sections;
+    sections.from_string(path, "/");
 
-            memset(sec, 0, sizeof(sec));
-            secptr = sec;
-        } else
-            *secptr++ = ch;
-    }
-
-    if(last_slash==-1) {
+    if(sections.size()==0)
         return find_section(0, path, false);
-    } else
-    if(last_slash<pos) {
-        Section *tmp = find_section(section, sec, false);
-        if(!tmp&&perfect_match) return 0;
-        else if(tmp) section = tmp;
-    }
 
+    for(unsigned n=0; n<sections.size(); n++) {
+
+        Section *tmp = find_section(section, sections[n], false);
+        if(!tmp) {
+            if(perfect_match)
+                return 0;
+            else
+                break;
+        }
+        section = tmp;
+    }
     return section;
 }
 
-Section *Fl_Config::find_section(Section *sec, const char *name, bool recursive)
+Section *Fl_Config::find_section(Section *sec, const char *name, bool recursive) const
 {
-    SectionList *list = sec?&sec->sections:&sections;
+    const SectionList *list = sec ? &sec->sections : &sections;
     Section *s;
 
     for(uint n=0; n<list->size(); n++) {
         s = S(list->item(n));
         if(s->name == name) {
-            _error = 0;
             return s;
         }
         if(recursive) {
@@ -512,8 +474,6 @@ Section *Fl_Config::find_section(Section *sec, const char *name, bool recursive)
             if(s) return s;
         }
     }
-
-    _error = CONF_ERR_SECTION;
     return 0;
 }
 
@@ -523,12 +483,12 @@ Line *Fl_Config::find_string(Section *section, const char *key)
         for(uint n=0; n<section->lines.size(); n++) {
             Line *line = L(section->lines[n]);
             if(!line->key.empty() && line->key==key) {
-                _error = 0;
+                m_error = 0;
                 return line;
             }
         }
     }
-    _error = CONF_ERR_KEY;
+    m_error = CONF_ERR_KEY;
     return 0;
 }
 
@@ -542,36 +502,34 @@ void Fl_Config::remove_key(const char *section, const char *key)
             if ((line = find_string(sect, key)) != 0) {
                 sect->lines.remove(line);
                 delete line;
-                _error = 0;
-                changed = true;
+                m_error = 0;
+                m_changed = true;
                 return;
             }
         }
     }
-    _error = CONF_ERR_KEY;
+    m_error = CONF_ERR_KEY;
 }
 
 void Fl_Config::remove_sec(const char *section)
 {
-    if(section) {
-        Section *sect;
-        if((sect = find_section(section, true)) != 0) {
-            if(sect->parent) {
-                sect->parent->sections.remove(sect);
-            } else {
-                sections.remove(sect);
-            }
-            delete sect;
-            _error = 0;
-            changed = true;
-            return;
+    if(!section) return;
+
+    Section *sect;
+    if((sect = find_section(section, true)) != 0) {
+        if(sect->parent) {
+            sect->parent->sections.remove(sect);
+        } else {
+            sections.remove(sect);
         }
+        delete sect;
+        m_error = 0;
+        m_changed = true;
+        return;
     }
 
-    _error = CONF_ERR_SECTION;
+    m_error = CONF_ERR_SECTION;
 }
-
-#include "fl_internal.h"
 
 // returns "C" locale string of double
 const char *double_to_str(double v)
@@ -610,125 +568,147 @@ double str_to_double(const char *v)
 int Fl_Config::_read_string(Section *s, const char *key, char *ret, const char *def_value, int size)
 {
     if(!key || !s) {
-        strncpy(ret, def_value?def_value:"\0", size);
-        _error = !key ? CONF_ERR_KEY : CONF_ERR_SECTION;
-        return _error;
+        if(def_value) strncpy(ret, def_value, size);
+        else ret[0] = '\0';
+        m_error = (!key ? CONF_ERR_KEY : CONF_ERR_SECTION);
+        return m_error;
     }
 
     Line *l = find_string(s, key);
-    if(l && !l->value.empty())
-    {
-        char *tmp = (char *)strchr(l->value.c_str(), '#');
-        if(tmp) *tmp = '\0';
-        strncpy(ret, l->value.c_str(), size);
-        return (_error = CONF_SUCCESS);
+    if(l) {
+        int len = (l->value.length() < size) ? l->value.length()+1 : size;
+        memcpy(ret, l->value.c_str(), len);
+        return (m_error = CONF_SUCCESS);
     }
 
-    strncpy(ret, def_value?def_value:"\0", size);
-    return (_error = CONF_ERR_KEY);
+    if(def_value) strncpy(ret, def_value, size);
+    else ret[0] = '\0';
+
+    m_error = CONF_ERR_KEY;
+    return m_error;
 }
 
 int Fl_Config::_read_string(Section *s, const char *key, char *&ret, const char *def_value)
 {
     if(!key || !s) {
         ret = def_value?strdup(def_value):0;
-        _error = !key ? CONF_ERR_KEY : CONF_ERR_SECTION;
-        return _error;
+        m_error = (!key ? CONF_ERR_KEY : CONF_ERR_SECTION);
+        return m_error;
     }
 
     Line *l = find_string(s, key);
     if(l && !l->value.empty())
     {
-        char *tmp = (char *)strchr(l->value.c_str(), '#');
-        if(tmp) *tmp = '\0';
         ret = strdup(l->value.c_str());
-        return (_error = CONF_SUCCESS);
+        return (m_error = CONF_SUCCESS);
     }
 
-    ret = def_value?strdup(def_value):0;
-    return (_error = CONF_ERR_KEY);
+    ret = def_value ? strdup(def_value) : 0;
+    m_error = CONF_ERR_KEY;
+    return m_error;
+}
+
+int Fl_Config::_read_string(Section *s, const char *key, Fl_String &ret, const char *def_value)
+{
+    if(!key || !s) {
+        ret = def_value;
+        m_error = !key ? CONF_ERR_KEY : CONF_ERR_SECTION;
+        return m_error;
+    }
+
+    Line *l = find_string(s, key);
+    if(l) {
+        ret = l->value;
+        return (m_error = CONF_SUCCESS);
+    }
+
+    ret = def_value;
+    return (m_error = CONF_ERR_KEY);
 }
 
 int Fl_Config::_read_long(Section *s, const char *key, long &ret, long def_value)
 {
-    char tmp[128];
-    if(!_read_string(s, key, tmp, 0, sizeof(tmp)-1)) {
-        ret = *tmp?atol(tmp):def_value;
+    Fl_String tmp;
+    if(!_read_string(s, key, tmp, 0)) {
+        ret = tmp[0] ? strtol(tmp, NULL, 10) : def_value;
     } else
         ret = def_value;
-    return _error;
+    return m_error;
 }
 
 int Fl_Config::_read_int(Section *s, const char *key, int &ret, int def_value)
 {
-    char tmp[128];
-    if(!_read_string(s, key, tmp, 0, sizeof(tmp)-1)) {
-        ret = *tmp?atoi(tmp):def_value;
+    Fl_String tmp;
+    if(!_read_string(s, key, tmp, 0)) {
+        ret = tmp.to_int(def_value);
     } else
         ret = def_value;
-    return _error;
+    return m_error;
 }
 
 int Fl_Config::_read_float (Section *s, const char *key, float &ret, float def_value)
 {
-    char tmp[128];
-    if(!_read_string(s, key, tmp, 0, sizeof(tmp)-1)) {
+    Fl_String tmp;
+    if(!_read_string(s, key, tmp, 0)) {
         ret = (float)str_to_double(tmp);
     } else
         ret = def_value;
-    return _error;
+    return m_error;
 }
 
 int Fl_Config::_read_double(Section *s, const char *key, double &ret, double def_value)
 {
-    char tmp[128];
-    if(!_read_string(s, key, tmp, 0, sizeof(tmp)-1)) {
+    Fl_String tmp;
+    if(!_read_string(s, key, tmp, 0)) {
         ret = str_to_double(tmp);
     } else
         ret = def_value;
-    return _error;
+    return m_error;
 }
 
 int Fl_Config::_read_bool(Section *s, const char *key, bool &ret, bool def_value)
 {
-    char tmp[128];
-    if(_read_string(s, key, tmp, 0, sizeof(tmp)-1)) {
+    Fl_String tmp;
+    if(_read_string(s, key, tmp, 0)) {
         ret = def_value;
-        return _error;
+        return m_error;
     }
 
-    if( !strcasecmp(tmp, "TRUE") ||
-       !strcasecmp(tmp, "YES") ||
-       !strcasecmp(tmp, "ON") ||
-       !strcasecmp(tmp, "1") ) {
+    tmp = tmp.upper_case();
+    if(tmp=="TRUE" ||
+       tmp=="YES" ||
+       tmp=="ON" ||
+       tmp=="1" )
+    {
         ret = true;
-    } else if( !strcasecmp(tmp, "FALSE") ||
-              !strcasecmp(tmp, "NO") ||
-              !strcasecmp(tmp, "OFF") ||
-              !strcasecmp(tmp, "0") ) {
+    } else if(tmp=="FALSE" ||
+              tmp=="NO" ||
+              tmp=="OFF" ||
+              tmp=="0" )
+    {
         ret = false;
     } else {
-        _error = CONF_ERR_NOVALUE;
+        m_error = CONF_ERR_NOVALUE;
         ret = def_value;
     }
-    return _error;
+    return m_error;
 }
 
 int Fl_Config::_read_color(Section *s, const char *key, Fl_Color &ret, Fl_Color def_value)
 {
-    char tmp[128];
-    if(_read_string(s, key, tmp, 0, sizeof(tmp)-1)) {
+    Fl_String tmp;
+    if(_read_string(s, key, tmp, 0)) {
         ret = def_value;
-        return _error;
+        return m_error;
     }
 
     int r=0,g=0,b=0;
     if(sscanf(tmp, "RGB(%d,%d,%d)", &r, &g, &b)!=3) {
         ret = def_value;
-        return (_error = CONF_ERR_NOVALUE);
+        return (m_error = CONF_ERR_NOVALUE);
     }
     ret = fl_rgb(r,g,b);
-    return _error;
+    return m_error;
 }
 
 /*
@@ -737,18 +717,23 @@ int Fl_Config::_read_color(Section *s, const char *key, Fl_Color &ret, Fl_Color 
 
 int Fl_Config::_write_string(Section *s, const char *key, const char *value)
 {
-    if(!s) return (_error = CONF_ERR_SECTION);
-    if(!key) return (_error = CONF_ERR_KEY);
+    Fl_String val(value);
+    return _write_string(s, key, val);
+}
+
+int Fl_Config::_write_string(Section *s, const char *key, const Fl_String &value)
+{
+    if(!s) return (m_error = CONF_ERR_SECTION);
+    if(!key) return (m_error = CONF_ERR_KEY);
 
     Line *line;
     if((line = find_string(s, key))) {
-        line->value = value ? value : "";
+        line->value = value;
     } else
         create_string(s, key, value);
 
-    changed=true;
-
-    return (_error=CONF_SUCCESS);
+    m_changed=true;
+    return (m_error=CONF_SUCCESS);
 }
 
 int Fl_Config::_write_long(Section *s, const char *key, const long value)
