@@ -77,7 +77,6 @@ Fl_Param& Fl_Params::operator [] (const char *paramName) const {
             return *item;
     }
     fl_throw("Invalid parameter name: "+Fl_String(paramName));
-    return *(Fl_Param *)0L;  // Just blocking the warning
 }
 //---------------------------------------------------------------------------
 Fl_Param& Fl_Params::operator [] (const Fl_String& paramName) const {

@@ -2672,11 +2672,14 @@ static int min( int i1, int i2 )
 }
 
 
-int
-   Fl_Text_Buffer::insertfile(const char *file, int pos, int buflen)
+int Fl_Text_Buffer::insertfile(const char *file, int pos, int buflen)
 {
-   FILE *fp;  int r;
-   if (!(fp = fl_fopen(file, "r"))) return 1;
+   FILE *fp;
+   int   r;
+
+   fp = fl_fopen(file, "r");
+   if (!fp) return 1;
+
    char *buffer = new char[buflen];
    for (; (r = fread(buffer, 1, buflen - 1, fp)) > 0; pos += r)
    {
@@ -2694,8 +2697,8 @@ int
 int
    Fl_Text_Buffer::outputfile(const char *file, int start, int end, int buflen)
 {
-   FILE *fp;
-   if (!(fp = fl_fopen(file, "w"))) return 1;
+   FILE *fp = fl_fopen(file, "w");
+   if (!fp) return 1;
    for (int n; (n = min(end - start, buflen)); start += n)
    {
       char *p = (char*)text_range(start, start + n);

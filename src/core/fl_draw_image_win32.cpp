@@ -198,8 +198,8 @@ bool Fl_Renderer::render_to_pixmap(uint8 *src, Fl_Rect *src_rect, Fl_PixelFormat
     int Y = dst_rect->y();
     int W = dst_rect->w();
     int H = dst_rect->h();
-    int cx = src_rect->x();
-    int cy = src_rect->y();
+    //int cx = src_rect->x();
+    //int cy = src_rect->y();
     bool ret = false;
 
     if(flags & FL_ALIGN_SCALE)
@@ -452,7 +452,7 @@ uint8 *Fl_Renderer::data_from_pixmap(Pixmap src, Fl_Rect &rect, Fl_PixelFormat *
 
 	Fl_PixelFormat srcfmt;
 	srcfmt.init(dib_hdr->biBitCount, 0,0,0,0);
-	
+
 	uint8 *ret=0;
 	if(!fl_format_equal(&srcfmt, desired)) {
 		Fl_Rect r(0,0,w,h);

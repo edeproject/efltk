@@ -879,16 +879,16 @@ FILE *fl_fopen(const char* f, const char *mode)
 int fl_chmod(const char* f, int mode)
 {
 #if defined(_WIN32) && !defined(_WIN32_WCE)
-	if (fl_is_nt4()) {
-		int l = strlen(f);
-		grow_wbuf(l);
-		wbuf[fl_utf2unicode((const unsigned char*)f, l, SHORT(wbuf))] = 0;
-		return _wchmod(wbuf, mode);
-	} else {
-		return _chmod(fl_utf2mbcs(f), mode);
-	}
+    if (fl_is_nt4()) {
+        int l = strlen(f);
+        grow_wbuf(l);
+        wbuf[fl_utf2unicode((const unsigned char*)f, l, SHORT(wbuf))] = 0;
+        return _wchmod(wbuf, mode);
+    } else {
+        return _chmod(fl_utf2mbcs(f), mode);
+    }
 #else
-	return chmod(f, mode);
+    return chmod(f, mode);
 #endif
 }
 

@@ -4,13 +4,14 @@
   <MACROS>
     <VERSION value="BCB.06.00"/>
     <PROJECT value="\efltk\hello.exe"/>
-    <OBJFILES value="obj\hello.obj"/>
+    <OBJFILES value="obj\hello.obj obj\Fl_ODBC_Database.obj obj\Fl_Query.obj obj\Fl_Params.obj 
+      obj\Fl_Database.obj"/>
     <RESFILES value="hello.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES)"/>
-    <LIBFILES value="..\lib\libefltk.lib"/>
+    <LIBFILES value="..\lib\libefltk.lib D:\spdb\odbc.w32\odbc32.lib"/>
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
     <PACKAGES value="vcl.bpi rtl.bpi dbrtl.bpi vcldb.bpi vclx.bpi bdertl.bpi vcldbx.bpi 
@@ -20,7 +21,7 @@
       xmlrtl.bpi inet.bpi inetdbbde.bpi inetdbxpress.bpi inetdb.bpi nmfast.bpi 
       webdsnap.bpi bcbie.bpi websnap.bpi soaprtl.bpi dbxcds.bpi indy.bpi 
       bcb2kaxserver.bpi"/>
-    <PATHCPP value=".;..\test"/>
+    <PATHCPP value=".;..\test;..\src\db\odbc;..\src\db;..\src\db;..\src\db"/>
     <PATHPAS value=".;"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
@@ -30,14 +31,14 @@
     <USERDEFINES value="_DEBUG;_WIN32"/>
     <SYSDEFINES value="NO_STRICT;_NO_VCL;_RTLDLL;USEPACKAGES"/>
     <MAINSOURCE value="hello.bpf"/>
-    <INCLUDEPATH value="..\test;$(BCB)\include;$(BCB)\include\vcl;\efltk"/>
-    <LIBPATH value="..\test;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <INCLUDEPATH value="..\src\db;..\src\db\odbc;..\test;$(BCB)\include;$(BCB)\include\vcl;\efltk"/>
+    <LIBPATH value="..\src\db;..\src\db\odbc;..\test;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I..\test -I$(BCB)\include -I$(BCB)\include\vcl -I\efltk -src_suffix cpp 
-      -D_DEBUG -D_WIN32 -boa"/>
+    <IDLCFLAGS value="-I..\src\db -I..\src\db\odbc -I..\test -I$(BCB)\include 
+      -I$(BCB)\include\vcl -I\efltk -src_suffix cpp -D_DEBUG -D_WIN32 -boa"/>
     <CFLAG1 value="-vGc -vGt -vGd -Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a4 -5 -b 
       -k -y -v -vi- -tWC -tWM- -c"/>
     <PFLAGS value="-N2\efltk\bcb6\obj -N0\efltk\bcb6\obj -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
@@ -57,6 +58,11 @@
       <FILE FILENAME="hello.bpf" FORMNAME="" UNITNAME="hello" CONTAINERID="BPF" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\test\hello.cpp" FORMNAME="" UNITNAME="hello" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\lib\libefltk.lib" FORMNAME="" UNITNAME="libefltk.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="D:\spdb\odbc.w32\odbc32.lib" FORMNAME="" UNITNAME="odbc32.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\db\odbc\Fl_ODBC_Database.cpp" FORMNAME="" UNITNAME="Fl_ODBC_Database" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\db\Fl_Query.cpp" FORMNAME="" UNITNAME="Fl_Query" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\db\Fl_Params.cpp" FORMNAME="" UNITNAME="Fl_Params" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\db\Fl_Database.cpp" FORMNAME="" UNITNAME="Fl_Database" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>

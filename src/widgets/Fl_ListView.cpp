@@ -482,7 +482,7 @@ unsigned Fl_ListView::find_safe_top() const
     if(!children() || yposition_<=0) return 0;
 
     unsigned idx = 0;
-    for(unsigned n=m_ypos_lookup.size()-1; n>=0; n--) {
+    for(int n=m_ypos_lookup.size()-1; n>=0; n--) {
         Fl_ListView_Item *i = child(m_ypos_lookup[n]);
         if(i->y() < yposition_) {
             idx = m_ypos_lookup[n];

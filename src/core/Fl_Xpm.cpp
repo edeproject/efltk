@@ -260,10 +260,9 @@ static bool xpm_create(Fl_IO *xpm_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
     } else {
         do {
             here = xpm_gets(xpm_io, line, sizeof(line));
-            if ( !here ) {
+            if ( !here )
                 fl_throw("XPM: Premature end of data 1");
-                return 0; //just in case..
-            }
+
             here = skipspace(here);
         } while(*here != '"');
     }
@@ -280,14 +279,12 @@ static bool xpm_create(Fl_IO *xpm_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
     if(sscanf(here + offset, "%d %d %d %d", &w, &h, &ncolors, &cpp) != 4
        || w <= 0 || h <= 0 || ncolors <= 0 || cpp <= 0) {
         fl_throw("XPM: Invalid format description");
-        return 0; //just in case..
     }
 
     keystrings = (char *)malloc(ncolors * cpp);
     if(!keystrings) {
         free(pixels);
         fl_throw("XPM: Out of memory");
-        return 0; //just in case..
     }
     nextkey = keystrings;
 

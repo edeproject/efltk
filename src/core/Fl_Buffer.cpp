@@ -120,10 +120,8 @@ void Fl_Buffer::read_file(const char *fileName)
 void Fl_Buffer::save_file(const char *fileName) 
 {
     FILE *f = fopen(fileName, "w+b");
-    if (!f) {
+    if (!f)
         fl_throw("Can't open file <" + Fl_String(fileName) + "> for writing");
-        return;
-    }
 
     char *ptr = m_buffer;
     unsigned p = 0;

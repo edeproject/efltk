@@ -358,18 +358,18 @@ static const uint32 etb_version    = 0x10000001;
 
 bool MessageHash::load_etb(FILE *fp)
 {
-    clear();	
+    clear();
 
     long size;
-    if(fseek(fp, 0, SEEK_END)!=0) { fl_throw(strerror(errno)); return false; }
-    if( (size = ftell(fp)) == -1) { fl_throw(strerror(errno)); return false; }
-    if(fseek(fp, 0, SEEK_SET)!=0) { fl_throw(strerror(errno)); return false; }	
+    if (fseek(fp, 0, SEEK_END)!=0) { fl_throw(strerror(errno)); }
+    size = ftell(fp);
+    if ( size == -1) { fl_throw(strerror(errno)); }
+    if (fseek(fp, 0, SEEK_SET)!=0) { fl_throw(strerror(errno)); }
 
     char *data = (char *)malloc(size);
     if(fread(data, size, 1, fp)==0 && errno!=0) {
         free(data);
         fl_throw(strerror(errno));
-        return false;
     }
 
     etb_header *head = (etb_header*)data;
@@ -443,15 +443,15 @@ bool MessageHash::load_mo(FILE *fp)
     clear();
 
     long size;
-    if(fseek(fp, 0, SEEK_END)!=0) { fl_throw(strerror(errno)); return false; }
-    if( (size = ftell(fp)) == -1) { fl_throw(strerror(errno)); return false; }
-    if(fseek(fp, 0, SEEK_SET)!=0) { fl_throw(strerror(errno)); return false; }
+    if(fseek(fp, 0, SEEK_END)!=0) { fl_throw(strerror(errno)); }
+    size = ftell(fp);
+    if( size == -1) { fl_throw(strerror(errno)); }
+    if(fseek(fp, 0, SEEK_SET)!=0) { fl_throw(strerror(errno)); }
 
     struct mo_file_header *data = (struct mo_file_header *) malloc (size);
     if(fread(data, size, 1, fp)==0 && errno!=0) {
         free(data);
         fl_throw(strerror(errno));
-        return false;
     }
 
     if(data->magic!=MO_MAGIC && data->magic != MO_MAGIC_SWAPPED) {

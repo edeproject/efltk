@@ -306,7 +306,6 @@ error:
     if(data) delete []data;
     data = 0;
     fl_throw(error_str?error_str:"BMP: Unknown");
-    return false;
 }
 
 static bool bmp_read_file(FILE *fp, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h)

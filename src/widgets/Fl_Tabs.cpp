@@ -624,10 +624,8 @@ int Fl_Tabs::handle(int event) {
 
         case FL_FOCUS:
         case FL_UNFOCUS:
-            if (true) { //Fl::visible_focus()
-                redraw();
-                return 1;
-            } else return 0;
+            redraw();
+            return 1;
 
         case FL_KEYBOARD:
             switch (Fl::event_key()) {
@@ -872,12 +870,11 @@ void Fl_Tabs::draw_tab(Fl_Tab_Info *tab,Fl_Flags flags) {
     }
     int yt = tab->m_y + tab->m_height / 2 - ht / 2;
     widget->label_type()->draw(widget->label().c_str(), labelLeft, yt, wt, ht, widget->label_color(), 0);
-    if (Fl::focus() == this && (flags & FL_SELECTED)) {
+    if (Fl::focus() == this && (flags & FL_SELECTED))
         focus_box()->draw(tab->m_x+focus_dx,tab->m_y+focus_dy,tab->m_width-focus_dw,tab->m_height-focus_dh,0,m_tabsMode | FL_INVISIBLE);
-    }
 }
 
-void Fl_Tabs::layout() 
+void Fl_Tabs::layout()
 {
     int wt = 0;
     int i;

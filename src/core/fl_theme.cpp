@@ -146,12 +146,14 @@ extern "C" bool fltk_theme()
 
             // box around widget
             if(!conf.read("box", valstr, 0, sizeof(valstr))) {
-                if( (boxtype = Fl_Boxtype_::find(valstr)) ) style->box = boxtype;
+                boxtype = Fl_Boxtype_::find(valstr);
+                if (boxtype) style->box = boxtype;
             }
 
             // box around buttons within widget
             if(!conf.read("button box", valstr, 0, sizeof(valstr))) {
-                if ( (boxtype = Fl_Boxtype_::find(valstr)) ) style->button_box = boxtype;
+                boxtype = Fl_Boxtype_::find(valstr);
+                if (boxtype) style->button_box = boxtype;
             }
 
             // color of widget background
@@ -194,17 +196,20 @@ extern "C" bool fltk_theme()
 
             // font used for widget's label
             if(!conf.read("label font", valstr, 0, sizeof(valstr))) {
-                if ( (font = grok_font(&conf, valstr)) ) style->label_font = font;
+                font = grok_font(&conf, valstr);
+                if (font) style->label_font = font;
             }
 
             // font used for text within widget
             if(!conf.read("text font", valstr, 0, sizeof(valstr))) {
-                if ( (font = grok_font(&conf, valstr)) ) style->text_font = font;
+                font = grok_font(&conf, valstr);
+                if (font) style->text_font = font;
             }
 
             // type of widget's label
             if(!conf.read("label type", valstr, 0, sizeof(valstr))) {
-                if ( (labeltype = Fl_Labeltype_::find(valstr)) ) style->label_type = labeltype;
+                labeltype = Fl_Labeltype_::find(valstr);
+                if (labeltype) style->label_type = labeltype;
             }
 
             // font size of widget's label

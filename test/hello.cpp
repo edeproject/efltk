@@ -30,27 +30,46 @@
 #include <efltk/x.h>
 #endif
 
-#include <efltk/Fl.h>
-#include <efltk/Fl_WM.h>
-#include <efltk/Fl_Box.h>
+#include <efltk/db/Fl_ODBC_Database.h>
+#include <efltk/db/Fl_Database.h>
+#include <efltk/db/Fl_Query.h>
+#include <efltk/Fl_String.h>
 
 int main(int argc, char **argv)
 {
-    Fl_Window *window = new Fl_Window(20,20,300,180);
+    Fl_ODBC_Database db("DSN=europe_store;UID=tmr01;PWD=tmr01");
 
-    //Set type to DIALOG
-    window->window_type(Fl_WM::DIALOG);
+    try {
+        // Create temp table
+        Fl_String sql = "CREATE TEMP TABLE tt(";
+        sql += "id serial primary key,dt date,dtm datetime year to second,";
+        sql += "ival int,fval decimal(16,2),sval varchar(255),tval text)";
+        Fl_Query q1(&db,sql);
+        q1.exec();
 
-    window->begin();
-    Fl_Box *box = new Fl_Box(20,40,260,100,"Hello World");
-    box->box(FL_UP_BOX);
-    box->label_font(FL_HELVETICA_BOLD_ITALIC);
-    box->label_size(36);
-    box->label_type(FL_SHADOW_LABEL);
-    window->end();
-    window->show(argc, argv);
+        puts("Table created");
 
-    return Fl::run();
+        sql = "insert into tt(dt)";
+        sql += " values(:dt)";
+        q1.sql(sql);
+        q1.param("dt").set_date(Fl_Date_Time::Now());
+        //q1.param("dtm") = Fl_Date_Time::Now();
+        q1.exec();
+
+        puts("Row(s) inserted");
+
+        q1.sql("select * from tt");
+        q1.open();
+        for (unsigned i=0;i < q1.field_count(); i++) {
+            printf("%s ",q1.field(i).as_string().c_str());
+        }
+        printf("\n");
+        q1.close();
+    }
+    catch (Fl_Exception& e) {
+        puts("\nERROR:");
+        puts(e.text());
+    }
 }
 
 //

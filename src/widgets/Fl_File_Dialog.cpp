@@ -684,7 +684,7 @@ void Fl_File_Chooser::parse_dirs(const Fl_String &fp)
     while(n-->0) {
         char ch = fp.c_str()[n];
         if(ch == slash) {
-            item = new Fl_Item(fp.sub_str(0, n+1));
+            new Fl_Item(fp.sub_str(0, n+1));
         }
     }
 

@@ -58,7 +58,7 @@ public:
     virtual bool              write_field(const char *fname,const Fl_Variant& fvalue);
 
     // dataset navigation
-    virtual bool              open() { fl_throw("Not implemented yet"); return false; }
+    virtual bool              open() { fl_throw("Not implemented yet"); }
     virtual bool              close();
     virtual bool              first();
     virtual bool              next();

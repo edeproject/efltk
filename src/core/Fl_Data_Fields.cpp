@@ -34,13 +34,13 @@ Fl_Data_Field::Fl_Data_Field(const char *name) {
 // convertors
 int Fl_Data_Field::as_int() const {
     switch (value.type()) {
-        case VAR_INT:        return value.get_int();              break;
-        case VAR_FLOAT:      return (int)value.get_float();       break;
+        case VAR_INT:        return value.get_int();
+        case VAR_FLOAT:      return (int)value.get_float();
         case VAR_STRING:
         case VAR_TEXT:
-        case VAR_BUFFER:     return atoi(value.get_string());     break;
-        case VAR_DATE:       return int(value.get_date());        break;
-        case VAR_DATETIME:   return int(value.get_datetime());    break;
+        case VAR_BUFFER:     return atoi(value.get_string());
+        case VAR_DATE:       return int(value.get_date());
+        case VAR_DATETIME:   return int(value.get_datetime());
         case VAR_IMAGEPTR:   fl_throw("Can't convert image field");
         case VAR_NONE:       fl_throw("Can't convert field w/o type");
     }
@@ -50,14 +50,14 @@ int Fl_Data_Field::as_int() const {
 bool Fl_Data_Field::as_bool() const {
     char ch;
     switch (value.type()) {
-        case VAR_INT:        return (value.get_int()>0);          break;
-        case VAR_FLOAT:      return (value.get_float()>.5f);      break;
+        case VAR_INT:        return (value.get_int()>0);
+        case VAR_FLOAT:      return (value.get_float()>.5f);
         case VAR_STRING:
         case VAR_TEXT:
         case VAR_BUFFER:     ch = value.get_string()[0];
-            return (strchr("YyTt",ch)!=0);                          break;
-        case VAR_DATE:       return bool(value.get_date()!=0);    break;
-        case VAR_DATETIME:   return bool(value.get_datetime()!=0);break;
+            return (strchr("YyTt",ch)!=0);
+        case VAR_DATE:       return bool(value.get_date()!=0);
+        case VAR_DATETIME:   return bool(value.get_datetime()!=0);
         case VAR_IMAGEPTR:   fl_throw("Can't convert image field");
         case VAR_NONE:       fl_throw("Can't convert field w/o type");
     }
@@ -66,13 +66,13 @@ bool Fl_Data_Field::as_bool() const {
 
 double Fl_Data_Field::as_float() const {
     switch (value.type()) {
-        case VAR_INT:        return value.get_int();              break;
-        case VAR_FLOAT:      return value.get_float();            break;
+        case VAR_INT:        return value.get_int();
+        case VAR_FLOAT:      return value.get_float();
         case VAR_STRING:
         case VAR_TEXT:
-        case VAR_BUFFER:     return atof(value.get_string());     break;
-        case VAR_DATE:       return double(value.get_date());     break;
-        case VAR_DATETIME:   return double(value.get_datetime()); break;
+        case VAR_BUFFER:     return atof(value.get_string());
+        case VAR_DATE:       return double(value.get_date());
+        case VAR_DATETIME:   return double(value.get_datetime());
         case VAR_IMAGEPTR:   fl_throw("Can't convert image field");
         case VAR_NONE:       fl_throw("Can't convert field w/o type");
     }
@@ -82,7 +82,7 @@ double Fl_Data_Field::as_float() const {
 Fl_String Fl_Data_Field::as_string() const {
     char print_buffer[32];
     switch (value.type()) {
-        case VAR_INT:        
+        case VAR_INT:
             sprintf(print_buffer,"%i",value.get_int());
             return Fl_String(print_buffer);
         case VAR_FLOAT:
@@ -174,7 +174,6 @@ Fl_Data_Field& Fl_Data_Fields::add(const char *fname) {
         return *field;
     }
     fl_throw("Attempt to duplicate field name");
-    return error;
 }
 
 Fl_Data_Field& Fl_Data_Fields::add(Fl_Data_Field *field) {

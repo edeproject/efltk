@@ -312,10 +312,8 @@ bool Fl_Config::flush()
     if(m_filename.empty()) return false;
 
     FILE *file = fl_fopen(m_filename.c_str(), "w+");
-    if(!file) {
+    if(!file)
         fl_throw(::strerror(errno));
-        return false;
-    }
 
     LOCALE_TO_C();
 

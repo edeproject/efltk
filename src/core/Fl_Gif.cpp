@@ -120,21 +120,21 @@ static bool gif_create(Fl_IO &gif_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
     int imageCount = 0;
     char version[4];
     int imageNumber = 1;
-	
+
     if(!gif_io.read(buf, 6)) {
         RWSetMsg("GIF: Can't read magic number");
-        goto done;
+        //goto done;
     }
     if (strncmp((char *) buf, "GIF", 3) != 0) {
         RWSetMsg("GIF: Not a GIF file");
-        goto done;
+        //goto done;
     }
     strncpy(version, (char *) buf + 3, 3);
     version[3] = '\0';
-	
+
     if ((strcmp(version, "87a") != 0) && (strcmp(version, "89a") != 0)) {
         RWSetMsg("GIF: Bad version number, not '87a' or '89a'");
-        goto done;
+        //goto done;
     }
     Gif89.transparent = -1;
     Gif89.delayTime = -1;
@@ -143,7 +143,7 @@ static bool gif_create(Fl_IO &gif_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
 
     if (!gif_io.read(buf, 7)) {
         RWSetMsg("GIF: Failed to read screen descriptor");
-        goto done;
+        //goto done;
     }
     GifScreen.Width = LM_to_uint(buf[0], buf[1]);
     GifScreen.Height = LM_to_uint(buf[2], buf[3]);
@@ -156,36 +156,36 @@ static bool gif_create(Fl_IO &gif_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
         if (ReadColorMap(gif_io, GifScreen.BitPixel, GifScreen.ColorMap,
                          &GifScreen.GrayScale2)) {
             RWSetMsg("GIF: Error reading global colormap");
-            goto done;
+            //goto done;
         }
     }
     do {
         if (!gif_io.read(&c, 1)) {
             RWSetMsg("GIF: EOF / read error on image data");
-            goto done;
+            //goto done;
         }
-        if (c == ';') {		/* GIF terminator */
+        if (c == ';') { /* GIF terminator */
             if (imageCount < imageNumber) {
                 RWSetMsg("GIF: Too few image(s) found in file");
-                goto done;
+                //goto done;
             }
         }
-        if (c == '!') {		/* Extension */
+        if (c == '!') { /* Extension */
             if (!gif_io.read(&c, 1)) {
                 RWSetMsg("GIF: EOF / read error on extention function code");
-                goto done;
+                //goto done;
             }
             DoExtension(gif_io, c);
             continue;
         }
-        if (c != ',') {		/* Not a valid start character */
+        if (c != ',') { /* Not a valid start character */
             continue;
         }
         ++imageCount;
 
         if (!gif_io.read(buf, 9)) {
             RWSetMsg("GIF: Couldn't read left/top/width/height");
-            goto done;
+            //goto done;
         }
         useGlobalColormap = !BitSet(buf[8], LOCALCOLORMAP);
 
@@ -194,7 +194,7 @@ static bool gif_create(Fl_IO &gif_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
         if (!useGlobalColormap) {
             if (ReadColorMap(gif_io, bitPixel, localColorMap, &grayScale)) {
                 RWSetMsg("GIF: Error reading local colormap");
-                goto done;
+                //goto done;
             }
             data = ReadImage(gif_io, LM_to_uint(buf[4], buf[5]),
                              LM_to_uint(buf[6], buf[7]),
@@ -231,7 +231,7 @@ static int ReadColorMap(Fl_IO &gif_io, int number, unsigned char buffer[3][MAXCO
     for (i = 0; i < number; ++i) {
         if (!gif_io.read(rgb, sizeof(rgb))) {
             RWSetMsg("GIF: Bad colormap");
-            return 1;
+            //return 1;
         }
         buffer[CM_RED][i] = rgb[0];
         buffer[CM_GREEN][i] = rgb[1];
@@ -469,11 +469,11 @@ static uint8 *ReadImage(Fl_IO &gif_io, int len, int height, int cmapSize,
      */
     if (!gif_io.read(&c, 1)) {
         RWSetMsg("GIF: EOF / read error on image data");
-        return NULL;
+        //return NULL;
     }
     if (LWZReadByte(gif_io, TRUE, c) < 0) {
         RWSetMsg("GIF: Error reading image");
-        return NULL;
+        //return NULL;
     }
     /*
      **	If this is an "uninteresting picture" ignore it.
