@@ -317,7 +317,7 @@ void Fl_ODBC_Database::open_query(Fl_Query *query) {
       fl_throw(error);
    }
 
-   m_active = true;
+   query_active(query,true);
 
    short count = (short) query_count_cols(query);
 
@@ -362,9 +362,106 @@ void Fl_ODBC_Database::open_query(Fl_Query *query) {
    fetch_query(query);
 }
 
+unsigned trim_field(char *s,int sz) {
+   register char *p = s + sz;
+   char ch = s[0];
+   s[0] = '!';
+   while ( *(--p) == ' ' ) {
+   }
+   *(++p) = 0;
+   if (ch == ' ' && s[1] == 0)
+      return 0;
+   s[0] = ch;
+   return p - s;
+}
+
 void Fl_ODBC_Database::fetch_query(Fl_Query *query) {
+   if (!query->active())
+      fl_throw("Dataset isn't open");
+
+   HSTMT stmt = query_handle(query);
+   int rc = SQLFetch(stmt);
+
+   bool  fetchError = false;
+   if (!successful(rc)) {
+      if (rc < 0) {
+         fl_throw(query_error(query));
+      } else {
+         query_eof(query,rc==SQL_NO_DATA);
+         return;
+      }
+   }
+
+   Fl_Data_Fields& fields = query_fields(query); 
+   unsigned	fieldCount = fields.count();
+   SQLINTEGER  dataLength;
+
+   if (!fieldCount) return;
+/*   
+   for (unsigned column = 0; column < fieldCount; ) {
+      Fl_ODBC_Field *field = (Fl_ODBC_Field *)&m_fields[column];
+      const short fieldType = (short) field.type();
+      int         readSize = field.fieldBufferSize();
+      char       *buffer = (char *)field.fieldBuffer();
+
+      column++;
+
+      switch (fieldType) {
+
+      case SQL_C_SLONG:
+      case SQL_C_DOUBLE:
+      case SQL_C_TIMESTAMP:
+         m_retcode = SQLGetData(m_statement,column,fieldType,buffer,0,&dataLength);
+         break;
+
+      case SQL_C_BINARY:
+      case SQL_C_CHAR:
+         m_retcode = SQLGetData(m_statement,column,fieldType,buffer,readSize,&dataLength);
+         if (dataLength > readSize) { // continue to fetch BLOB data
+            field.checkSize(dataLength);
+            buffer = (char *)field.fieldBuffer();
+            char *offset = buffer + readSize - 1;
+            readSize = dataLength - readSize + 1;
+            m_retcode = SQLGetData(m_statement,column,fieldType,offset,readSize,NULL);
+         }
+         break;
+
+      case SQL_BIT:
+         m_retcode = SQLGetData(m_statement,column,fieldType,buffer,1,&dataLength);
+         break;
+
+      default:
+         dataLength = 0;
+         break;
+      }
+
+      if (fieldType == SQL_C_CHAR && dataLength > 0) {
+         if (fetchError) dataLength = strlen(buffer);
+         dataLength = trim_field(buffer,dataLength);
+      }
+      if (dataLength <= 0) {
+         memset(buffer, 0, field.fieldSize());
+         field.m_fldNull = true;
+      } else {
+         field.setSize(dataLength);
+         field.m_fldNull = false;
+      }
+   }
+*/
 }
 
 void Fl_ODBC_Database::close_query(Fl_Query *query) {
+   query_active(query,false);
+/*
+   m_active = false;
+   m_eof = true;
+   if (releaseStatement) {
+      m_prepared = false;
+      freeStmt(SQL_DROP);
+   } else {
+      freeStmt(SQL_CLOSE);
+   }
+   m_fields.clear();
+*/
 }
 
