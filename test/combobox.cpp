@@ -4,7 +4,7 @@
 #include <efltk/fl_ask.h>
 
 void cb_callback(Fl_Widget *combo_box,void *) {
-    And     char *msg = "Not a combo box specific event";
+    char *msg = "Not a combo box specific event";
     switch (combo_box->event()) {
         case FL_DATA_CHANGE: {
                 msg = "Data changed"; 
