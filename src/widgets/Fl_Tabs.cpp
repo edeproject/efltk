@@ -34,9 +34,8 @@
 #include <efltk/fl_draw.h>
 #include <efltk/Fl_Tooltip.h>
 
-#define BORDER 10
 #define TABSLOPE 5
-#define EXTRASPACE 5
+#define EXTRASPACE 5+button_box()->dw()
 
 // return the left edges of each tab (plus a fake left edge for a tab
 // past the right-hand one).  These position are actually of the left
@@ -61,7 +60,7 @@ int Fl_Tabs::tab_positions(int* p, int* w)
             //if (2*TABSLOPE > w[i]) w[i] = 2*TABSLOPE;
         } else
         w[i] = 2*TABSLOPE;
-        p[i+1] = p[i]+w[i];
+        p[i+1] = p[i]+w[i]+1;
     }
     int r = this->w()-TABSLOPE-1;
     if (p[i] <= r) return selected;
@@ -87,7 +86,7 @@ int Fl_Tabs::tab_positions(int* p, int* w)
     // adjust edges according to visiblity:
     for (i = children(); i > selected; i--)
     {
-        p[i] = p[i-1]+w[i-1];
+        p[i] = p[i-1]+w[i-1]+1;
     }
     return selected;
 }
@@ -331,7 +330,7 @@ int Fl_Tabs::value(Fl_Widget *newvalue)
         Fl_Widget* o = child(i);
         if (o == newvalue)
         {
-                                 // no change
+            // no change
             if (o->visible()) return 0;
             o->show();
             if (setfocus) o->take_focus();
@@ -356,16 +355,19 @@ static int p[128];
 void Fl_Tabs::draw()
 {
     Fl_Widget *v = value();
-	int selected=-1;
-	int i;
-	int w[128];
+    int selected=-1;
+    int i;
+    int w[128];
 
     H = tab_height();
     if (damage() & FL_DAMAGE_ALL)// redraw the entire thing:
     {
-		fl_push_clip(0,0,this->w(),this->h());
-        if (v) draw_child(*v);			
-	}                            // redraw the child
+        fl_push_clip(0,0,this->w(),this->h());
+        if (v) draw_child(*v);
+        parent()->draw_group_box();
+        box()->draw(0, (H>=0?H:0), this->w(), this->h()-(H>=0?H:-H), v ? v->color() : color(), FL_INVISIBLE);
+        fl_pop_clip();
+    }                            // redraw the child
     else
     {
         if (v) update_child(*v);
@@ -384,30 +386,6 @@ void Fl_Tabs::draw()
             i = selected;
             draw_tab(p[i], p[i+1], w[i], H, child(i), SELECTED);
         }
-        /*else
-        {
-            // draw the edge when no selection:
-            fl_color(H >= 0 ? FL_LIGHT3 : FL_DARK3);
-            int b = H >= 0 ? H : h()+H;
-            fl_line(0, b, this->w(), b);
-        }*/
-
-    }
-
-    if (damage() & FL_DAMAGE_ALL) {
-        // Clip out buttons
-        fl_clip_out(0, H>=0 ? 0 : h()+H, p[children()], (H>=0?H:-H));
-
-        if(selected>=0) {
-            i = selected;
-            // Clip out little piece of box()
-            fl_clip_out(p[i], (H>=0?H:this->h()+H)-1,
-                        p[i+1]-p[i], box()->dy()+1);
-        }
-
-        parent()->draw_group_box();
-        box()->draw(0, (H>=0?H:0), this->w(), this->h()-(H>=0?H:-H), v ? v->color() : color(), FL_INVISIBLE);
-        fl_pop_clip();
     }
 
     if (damage() & FL_DAMAGE_EXPOSE) {
@@ -420,130 +398,146 @@ void Fl_Tabs::draw()
 
 void Fl_Tabs::draw_tab(int x1, int x2, int W, int H, Fl_Widget* o, int what)
 {	
-  int sel = (what == SELECTED);
-  int dh = box()->dh();
-  int dy = box()->dy();
+  bool sel = (what == SELECTED);
 
   if ((x2 < x1+W) && what == RIGHT) x1 = x2 - W;
   
-  Fl_Color c = (!sel && o==push_) ? fl_color_average(selection_color(), o->selection_color(), 0.8) : o->color();  
+  Fl_Color c = (!sel && o==push_) ? fl_color_average(selection_color(), o->selection_color(), 0.8) : o->color();
+  Fl_Flags f=sel?FL_SELECTED:0;
 
   if (H >= 0) {
-	int height = sel?(H + dh - dy):H;
-    if (sel) fl_push_clip(x1, 0, x2 - x1, height-1);
-    else fl_push_clip(x1, 0, x2 - x1, height);
-
-    H += dh;
-
-    box()->draw(x1, 0, W, H, c, 0);
-    o->draw_label(x1, 0, W, H, FL_ALIGN_CENTER);
-    if (focused() && o->visible())
-		focus_box()->draw(x1, 0, W, H, FL_BLACK, FL_INVISIBLE);        
-
-    fl_pop_clip();
-  } else {	
-    H = -H;	
-	int height = sel?(H + dh - dy):H;
-    if (sel) fl_push_clip(x1, h() - H - dh + dy + 1, x2 - x1, height);
-    else fl_push_clip(x1, h() - H, x2 - x1, height);
-
-    H += dh;
-
-    box()->draw(x1, h() - H, W, H, c, 0);
-    o->draw_label(x1, h() - H, W, H, FL_ALIGN_CENTER);
-    if(focused() && o->visible())
-      focus_box()->draw(x1, h() - H, W, H, FL_BLACK, FL_INVISIBLE);
-
-    fl_pop_clip();
+      H--;
+      int adjust = (sel?box()->dy()+1:0);
+      button_box()->draw(x1, 0, W, H+adjust, c, f|FL_ALIGN_TOP);
+      o->draw_label(x1, button_box()->dy(), W, H, FL_ALIGN_CENTER);
+      if (focused() && o->visible())
+          focus_box()->draw(x1+button_box()->dx(),
+                            button_box()->dy(),
+                            W-button_box()->dw(),
+                            H-button_box()->dh()+adjust,
+                            FL_BLACK, FL_INVISIBLE|FL_ALIGN_TOP|f);
+  } else {
+      H = -H;
+      int adjust = (sel?(box()->dh()-box()->dy()):0);
+      button_box()->draw(x1, h()-H-adjust, W, H+adjust-1, c, f|FL_ALIGN_BOTTOM);
+      o->draw_label(x1, h()-H, W, H-1, FL_ALIGN_CENTER);
+      if(focused() && o->visible())
+          focus_box()->draw(x1+button_box()->dx(),
+                            h()-H+button_box()->dy()-adjust,
+                            W-button_box()->dw(),
+                            H-button_box()->dh()+adjust-1,
+                            FL_BLACK, FL_INVISIBLE|FL_ALIGN_BOTTOM|f);
   }
-
-  // Old draw_tab method from FLTK2
-#if 0
-   if (x2 < x1+W)
-    {
-        if (what == LEFT)
-        {
-            if (x1+W < x2+TABSLOPE) x2 = x1+W;
-            else x2 += TABSLOPE;
-        }
-        else
-        {
-            if (x1+W < x2+TABSLOPE) x1 = x2-W;
-            else x1 -= TABSLOPE;
-        }
-    }
-    int sel = (what == SELECTED);
-    fl_color(o->color());
-    if (H >= 0)
-    {
-        fl_newpath();
-        fl_vertex(x1, H+sel);
-        fl_vertex(x1+TABSLOPE, 0);
-        fl_vertex(x2, 0);
-        fl_vertex(x2+TABSLOPE, H+sel);
-        fl_fill();
-        fl_color(!sel && o==push_ ? FL_DARK3 : FL_LIGHT3);
-        fl_line(x1, H, x1+TABSLOPE, 0);
-        fl_line(x1+TABSLOPE, 0, x2, 0);
-        if (sel)
-        {
-            if (x1>0) fl_line(0, H, x1, H);
-            if (x2+TABSLOPE < w()-1) fl_line(x2+TABSLOPE, H, w()-1, H);
-        }
-        fl_color(!sel && o==push_ ? FL_LIGHT3 : FL_DARK3);
-        fl_line(x2, 0, x2+TABSLOPE, H);
-    }
-    else
-    {
-        fl_newpath();
-        fl_vertex(x1, h()+H-sel);
-        fl_vertex(x1+TABSLOPE, h());
-        fl_vertex(x2, h());
-        fl_vertex(x2+TABSLOPE, h()+H-sel);
-        fl_fill();
-        fl_color(!sel && o==push_ ? FL_LIGHT3 : FL_DARK3);
-        fl_newpath();
-        fl_vertex(x1+TABSLOPE, h()-1);
-        fl_vertex(x2, h()-1);
-        fl_vertex(x2+TABSLOPE, h()+H);
-        fl_stroke();
-        if (sel)
-        {
-            if (x1>0) fl_line(0, h()+H, x1, h()+H);
-            if (x2+TABSLOPE < w()-1) fl_line(x2+TABSLOPE, h()+H, w()-1, h()+H);
-        }
-        fl_color(!sel && o==push_ ? FL_DARK3 : FL_LIGHT3);
-        fl_line(x1, h()+H, x1+TABSLOPE, h()-1);
-    }
-    if (W > TABSLOPE+EXTRASPACE/2)
-    {
-        int x = (what==LEFT ? x1 : x2-W)+(TABSLOPE+EXTRASPACE/2);
-        int w = W-(TABSLOPE+EXTRASPACE/2);
-        int y,h;
-        if (H<0)
-        {
-            y = this->h()+H;
-            h = -H-1;
-        }
-        else
-        {
-            y = 2;
-            h = H-1;
-        }
-        o->draw_label(x, y, w, h, FL_ALIGN_CENTER);
-        if (sel && focused())
-        {
-            if (H<0) y--;
-            focus_box()->draw(x, y, w, h, FL_BLACK, FL_INVISIBLE);
-        }
-    }
-#endif
 }
 
+#define CORNER 5
+
+#define C(c) fl_color(c + (FL_GRAY_RAMP-'A'));
+//#define C(c) fl_color(fl_gray_ramp(c))
+
+class TabBox : public Fl_Flat_Box {
+public:
+    TabBox() : Fl_Flat_Box(0) { dx_=dy_=2; dw_=dh_=4;}
+    void draw(int x,int y,int w,int h, Fl_Color color, Fl_Flags f) const
+    {
+        bool sel = (f&FL_SELECTED);
+
+        if(f&FL_ALIGN_TOP) {
+            if(sel) h--;
+            int cX=x+CORNER;
+            int cY=y+CORNER;
+            C('W');
+            fl_line(x, y+h, x, cY);
+            fl_line(x, cY, cX, y);
+            fl_line(cX, y, x+w, y);
+            C('A');
+            fl_line(x+w, y, x+w, y+h);
+
+            x++; y++; w-=2; h--;
+            C('T');
+            fl_line(x, y+h, x, cY);
+            fl_line(x, cY, cX, y);
+            fl_line(cX, y, x+w, y);
+            C('M');
+            fl_line(x+w, y, x+w, y+h);
+
+            x++; y++; w--;
+            fl_color(color);
+            fl_newpath();
+            fl_vertex(x, y+h);   fl_vertex(x, cY);
+            fl_vertex(cX, y);    fl_vertex(x+w, y);
+            fl_vertex(x+w, y+h); fl_vertex(x, y+h);
+            fl_closepath();
+            fl_fill();
+
+        } else {
+
+            if(sel) { y++; h--; }
+
+            int cX=x+CORNER;
+            int cY=y+h-CORNER;
+            C('W');
+            fl_line(x, y, x, cY);       // '|'
+            fl_line(x, cY, cX, y+h);    // '\'
+            C('A');
+            fl_line(cX, y+h, x+w, y+h); // '_'
+            fl_line(x+w, y+h, x+w, y);  // '|'
+
+            x++; w-=2; h--;
+            C('T');
+            fl_line(x, y, x, cY);
+            fl_line(x, cY, cX, y+h);
+            C('M');
+            fl_line(cX, y+h, x+w, y+h);
+            fl_line(x+w, y+h, x+w, y);
+
+            x++; w--;
+            fl_color(color);
+            fl_newpath();
+            fl_vertex(x, y);    fl_vertex(x, cY);
+            fl_vertex(cX, y+h); fl_vertex(x+w, y+h);
+            fl_vertex(x+w, y);  fl_vertex(x, y);
+            fl_closepath();
+            fl_fill();
+        }
+    }
+};
+TabBox tabbox;
+
+class TabFocusBox : public Fl_Flat_Box {
+public:
+    TabFocusBox() : Fl_Flat_Box(0) { }
+    void draw(int x,int y,int w,int h, Fl_Color color, Fl_Flags f) const
+    {
+        fl_line_style(FL_DOT);
+        fl_color(color);
+        if(f&FL_ALIGN_TOP) {
+            int cX=x+CORNER;
+            int cY=y+CORNER;
+            fl_line(x, y+h, x, cY+1);
+            fl_line(x, cY, cX, y);
+            fl_line(cX+1, y, x+w, y);
+            fl_line(x+w, y, x+w, y+h);
+            fl_line(x+w, y+h, x, y+h);
+        } else {
+            int cX=x+CORNER;
+            int cY=y+h-CORNER;
+            fl_line(x, y, x, cY-1);
+            fl_line(x, cY, cX, y+h);
+            fl_line(cX+1, y+h, x+w, y+h);
+            fl_line(x+w, y+h, x+w, y);
+            fl_line(x, y, x+w, y);
+        }
+        fl_line_style(0);
+    }
+};
+TabFocusBox tabfocusbox;
 
 static void revert(Fl_Style* s)
 {
     s->box = FL_UP_BOX;
+    s->button_box = &tabbox;
+    s->focus_box = &tabfocusbox;
     s->color = FL_GRAY;
     s->selection_color = FL_GRAY;
 }
