@@ -36,7 +36,7 @@
 #include <efltk/fl_show_colormap.h>
 
 void cb(Fl_Widget *ob) {
-  printf("Callback for %s '%s'\n",ob->label(),((Fl_Input*)ob)->value());
+    printf("Callback for %s '%s'\n",ob->label(),((Fl_Input*)ob)->value());
 }
 
 int when = 0;
@@ -79,6 +79,7 @@ void color_cb(Fl_Widget* button, void* v) {
 }
 
 int main(int argc, char **argv) {
+
   Fl_Window *window = new Fl_Window(400,350);
 
   int y = 10;
@@ -135,7 +136,7 @@ int main(int argc, char **argv) {
   window->resizable(window);
   window->end();
   window->show(argc,argv);
-// CET - FIXME - crashes windows  Fl::lock();
+
   return Fl::run();
 }
 
