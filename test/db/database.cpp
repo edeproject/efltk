@@ -13,8 +13,7 @@
 #ifdef ODBC_DRIVER
 #include <efltk/db/Fl_ODBC_Database.h>
 #define DATABASE Fl_ODBC_Database		
-//#define CONSTR_TEMPLATE "DSN=odbc_dsn;UID=user;PWD=passwd"
-#define CONSTR_TEMPLATE "DSN=eweline;UID=ewe;PWD=line"
+#define CONSTR_TEMPLATE "DSN=odbc_dsn;UID=user;PWD=passwd"
 #endif
 
 #ifdef MYSQL_DRIVER
