@@ -33,6 +33,8 @@ Fl_ODBC_Database::Fl_ODBC_Database(const Fl_String connString)
 }
 
 Fl_ODBC_Database::~Fl_ODBC_Database() {
+	 close();
+	 close_connection();
    delete m_connect;
 }
 
