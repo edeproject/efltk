@@ -1370,9 +1370,7 @@ int Fl_Input::handle(int event, int X, int Y, int W, int H)
             else menu_.find("Cut")->activate();
             ((Fl_Group *)&menu_)->focus(-1);
             menu_widget = this;
-			printf("Popup up!\n");
             menu_.popup(Fl::event_x(), Fl::event_y());
-			printf("Popup done!\n");
             menu_widget = 0;
             return 1;
         }
