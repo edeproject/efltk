@@ -40,9 +40,12 @@ public:
 /** Fl_Menu_ */
 class FL_API Fl_Menu_ : public Fl_Group {
 public:
-    // Constructors does end()
+    // Constructors do end()
+    /** Default ctor */
     Fl_Menu_();
+    /** Traditional ctor */
     Fl_Menu_(int,int,int,int, const char* l=0);
+    /** New style ctor */
     Fl_Menu_(const char* l,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=-1);
 
     Fl_Callback *about_to_show;

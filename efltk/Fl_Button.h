@@ -36,8 +36,11 @@ class FL_API Fl_Button : public Fl_Widget {
 public:
     static Fl_Named_Style* default_style;
 
-	/** The constructor creates the button using the position, size, and label. */
+     /** The traditional constructor creates the button using the position, size, and label. */
     Fl_Button(int x, int y, int w, int h,const char *l=0);
+
+     /** The new style constructor creates the button using the label, size, and alignment. */
+    Fl_Button(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP);
 
     /** values for type(int), which can be one of: */
     enum {
@@ -50,18 +53,18 @@ public:
     bool value() const { return Fl_Widget::value(); }
     bool value(bool);
 
-	/** Same as value(true). */
+    /** Same as value(true). */
     bool set();
 
-	/** Same as value(false). */
+    /** Same as value(false). */
     bool clear();
 
-	/** Turns on this button and turns off all other radio buttons in the group (calling value(true) or set() does not do this). */
+    /** Turns on this button and turns off all other radio buttons in the group (calling value(true) or set() does not do this). */
     void setonly();
 
     virtual void draw();
     virtual int handle(int event);
-	virtual void preferred_size(int& w, int& h) const;
+    virtual void preferred_size(int& w, int& h) const;
 
 protected:
     void draw(int glyph, int glyph_width) const;

@@ -72,6 +72,7 @@ void Fl_Widget::ctor_init(int X, int Y, int W, int H, const char* L) {
     if (Fl_Group::current()) Fl_Group::current()->add(this);
 }
 
+// Traditional ctor
 Fl_Widget::Fl_Widget(int X, int Y, int W, int H, const char* L)
 {
     label_width_ = -1; // No label width limit
@@ -79,6 +80,9 @@ Fl_Widget::Fl_Widget(int X, int Y, int W, int H, const char* L)
     ctor_init(X, Y, W, H, L);
 }
 
+// New style ctor
+// The meaning of the layout_size is defined by layout_al - the alignment of the 
+// widget in the layout
 Fl_Widget::Fl_Widget(const char* l,int layout_size,Fl_Align layout_al,int label_w) {
     label_width_ = label_w; // No label width limit
     layout_flags_ = layout_al;

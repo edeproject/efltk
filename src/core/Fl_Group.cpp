@@ -49,6 +49,7 @@ extern Fl_Named_Style* group_style;
 static Fl_Named_Style the_style(0, revert, &group_style);
 Fl_Named_Style* group_style = &the_style;
 
+// Traditional ctor
 Fl_Group::Fl_Group(int X,int Y,int W,int H,const char *l)
 : Fl_Widget(X,Y,W,H,l), m_layout_spacing(1), m_focus(-1), m_resizable(0), m_data_source(0)
 {
@@ -61,6 +62,7 @@ Fl_Group::Fl_Group(int X,int Y,int W,int H,const char *l)
     begin();
 }
 
+// New style ctor
 Fl_Group::Fl_Group(const char* l,int layout_size,Fl_Align layout_al,int label_w)
 : Fl_Widget(l,layout_size,layout_al,label_w), m_layout_spacing(1), m_focus(-1), m_resizable(0), m_data_source(0)
 {
@@ -73,6 +75,7 @@ Fl_Group::Fl_Group(const char* l,int layout_size,Fl_Align layout_al,int label_w)
     begin();
 }
 
+// Cleanup
 void Fl_Group::clear()
 {
     init_sizes();
@@ -92,6 +95,7 @@ void Fl_Group::clear()
     }
 }
 
+// dtor
 Fl_Group::~Fl_Group() { 
     clear(); 
     if(Fl_Group::current()==this)

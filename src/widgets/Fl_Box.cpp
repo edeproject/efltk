@@ -36,12 +36,14 @@ static void revert(Fl_Style* s)
 static Fl_Named_Style style(0, revert, &Fl_Box::default_style);
 Fl_Named_Style* Fl_Box::default_style = &::style;
 
+// Traditional ctor
 Fl_Box::Fl_Box(int x, int y, int w, int h, const char *l)
 : Fl_Widget(x,y,w,h,l)
 {
     style(default_style);
 }
 
+// New style ctor
 Fl_Box::Fl_Box(const char* l,int layout_sz,Fl_Align layout_al,int label_w)
 : Fl_Widget(l,layout_sz,layout_al,label_w)
 {

@@ -1276,6 +1276,7 @@ static void revert(Fl_Style* s)
 static Fl_Named_Style style("Browser", revert, &Fl_Browser::default_style);
 Fl_Named_Style* Fl_Browser::default_style = &::style;
 
+// ctor initializer - used in both ctors
 void Fl_Browser::ctor_init() {
     set_click_to_focus();
     style(default_style);
@@ -1302,6 +1303,7 @@ void Fl_Browser::ctor_init() {
     Fl_Group::current(parent());
 }
 
+// Traditional ctor
 Fl_Browser::Fl_Browser(int X,int Y,int W,int H,const char* L)
 : Fl_Menu_(X,Y,W,H,L), endgroup(0),
 scrollbar(X+W-SLIDER_WIDTH,Y,SLIDER_WIDTH,H-SLIDER_WIDTH),
@@ -1310,6 +1312,7 @@ hscrollbar(X,Y+H-SLIDER_WIDTH,W-SLIDER_WIDTH,SLIDER_WIDTH)
     ctor_init();
 }
 
+// New style ctor
 Fl_Browser::Fl_Browser(const char* l,int layout_sz,Fl_Align layout_al,int label_w) 
 : Fl_Menu_(l,layout_sz,layout_al,label_w), endgroup(0),
 scrollbar(X+W-SLIDER_WIDTH,Y,SLIDER_WIDTH,H-SLIDER_WIDTH),
@@ -1318,6 +1321,7 @@ hscrollbar(X,Y+H-SLIDER_WIDTH,W-SLIDER_WIDTH,SLIDER_WIDTH)
     ctor_init();
 }
 
+// dtor
 Fl_Browser::~Fl_Browser()
 {
     for (int i = 0; i < NUMMARKS; i++) free(item_index[i]);

@@ -39,10 +39,11 @@ public:
      * However such widgets are useful as placeholders or Fl_Group::resizable() values. 
      * To change the box to something visible, use box(n). 
      */
+
+    /** Traditional ctor */
     Fl_Box(int x, int y, int w, int h, const char *label=0);
-   /**
-     * By default, box label has the label inside
-    */
+
+    /** New style ctor */
     Fl_Box(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=-1);
 
     virtual void draw();

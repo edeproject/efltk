@@ -29,6 +29,7 @@ class FL_API Fl_Align_Group : public Fl_Group {
 public:
     void layout();
 
+    /** Traditional ctor */
     Fl_Align_Group(int X, int Y, int W, int H, const char* L = 0) 
     : Fl_Group(X,Y,W,H,L) {
         n_to_break_ = 0; vertical_ = 1;
@@ -36,6 +37,7 @@ public:
         dw_ = dh_ = 0;
     }
 
+    /** New style ctor */
     Fl_Align_Group(const char* L = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100) 
     : Fl_Group(L,layout_size,layout_al,label_w) {
         n_to_break_ = 0; vertical_ = 1;
