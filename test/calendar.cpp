@@ -32,23 +32,24 @@ Fl_Popup_Calendar *pc;
 Fl_Input          *input;
 static void cb_test(Fl_Widget*, void*) {
    char buffer[24];
-   pc->resize(100,100,140,140);
+   //pc->resize(100,100,200,100);
    pc->popup();
    pc->date().format_date(buffer);
    if (pc->value())
-         input->value(buffer);
+       input->value(buffer);
    else  input->value("Canceled");
 }
 
 int main(int argc, char **argv) {
     Fl_Window *window = new Fl_Window(300,180);
 
-    new Fl_Calendar(10,10,150,150,"date:");
+    Fl_Calendar *c = new Fl_Calendar(10,20,150,150,"date:");
+    c->box(FL_EMBOSSED_BOX);
     Fl_Button *btn = new Fl_Button(170,70,120,25,"Popup calendar");
     input = new Fl_Input(170,100,120,25);
     btn->callback(cb_test);
     window->end();
-    pc = new Fl_Popup_Calendar();
+    pc = new Fl_Popup_Calendar(btn);
     window->show(argc, argv);
 
     return Fl::run();
