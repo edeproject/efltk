@@ -28,7 +28,11 @@ int main(int argc, char *argv[])
 {
    Fl_Directory_DS   dds;
 
+#ifdef _WIN32
+   dds.directory("C:\\");
+#else
    dds.directory("/usr/lib");
+#endif
    dds.open();
    while (!dds.eof()) {
       Fl_Date_Time d = dds["modified"].get_date();

@@ -30,8 +30,6 @@
 #include <efltk/Fl_WM.h>
 #include <efltk/Fl_Box.h>
 
-#include <stdio.h>
-
 int main(int argc, char **argv)
 {
     Fl_Window *window = new Fl_Window(300,180);
@@ -40,7 +38,7 @@ int main(int argc, char **argv)
     window->window_type(Fl_WM::DIALOG);
 
     window->begin();
-    Fl_Box *box = new Fl_Box(20,40,260,100,"Hello, World!");
+    Fl_Box *box = new Fl_Box(20,40,260,100,"Hello World");
     box->box(FL_UP_BOX);
     box->label_font(FL_HELVETICA_BOLD_ITALIC);
     box->label_size(36);

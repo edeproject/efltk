@@ -23,8 +23,6 @@
 # Please report all bugs and problems to "fltk-bugs@easysw.com".
 #
 
-# * essai.theme removed from default list because it requires -ljpeg
-#   and breaks the build on some platforms
 THEMES = \
 	essai.theme \
         eblue.theme
@@ -55,7 +53,7 @@ eblue.theme : $(EBLUE_OBJ)
 	$(THEMECOMMAND) $@ $(EBLUE_OBJ) $(DSOLIBS)
 
 clean :
-	-@ rm -f *.shared.o $(LIBRARY)$(LIBEXT) $(THEMES) core *~ makedepend
+	-@ rm -f *.o $(LIBRARY)$(LIBEXT) $(THEMES) core *~ makedepend
 	@touch makedepend
 
 install : $(INSTALLTARGETS)
@@ -72,7 +70,10 @@ install_programs:
 
 depend:
 
+# include dependency files if it exist
+ifeq (makedepend, $(wildcard makedepend))
 include makedepend
+endif
 
 #
 # End of "$Id$".

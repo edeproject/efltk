@@ -31,7 +31,6 @@
 #include <efltk/Fl_Text_Display.h>
 #include <efltk/Fl_Text_Editor.h>
 
-
 #include <stdio.h>
 
 int main() {

@@ -101,9 +101,6 @@ help: help.cpp $(FLCORELIB) $(FLUILIB)
 threads: threads.cpp $(FLCORELIB) $(FLUILIB)
 	$(CXX) -I.. $(CXXFLAGS) $< $(LDLIBS) $(THREADSLIBS) -o $@
 
-directory: directory.cpp $(FLCORELIB)
-	$(CXX) -I.. $(CXXFLAGS) $< $(LDLIBS) -lstdc++ -o $@
-
 # If you have libjpeg installed, you might want to try this test program:
 
 jpeg_image: jpeg_image.cpp
@@ -111,8 +108,6 @@ jpeg_image: jpeg_image.cpp
 
 depend:
 	$(MAKEDEPEND) -I.. $(CXXFLAGS) $(CPPFILES) > makedepend
-
-include makedepend
 
 clean:
 	-@ rm -f $(ALL) *.exe jpeg_image *.o core *~ makedepend
@@ -125,6 +120,11 @@ install_static:
 install_shared:
 
 install_programs:
+
+# include dependency files if it exist
+ifeq (makedepend, $(wildcard makedepend))
+include makedepend
+endif
 
 #
 # End of "$Id$".

@@ -102,6 +102,14 @@ INSTALLTARGETS	=@INSTALLTARGETS@
 	@echo Compiling $<...
 	@$(CXX) -I.. -I../.. $(CXXFLAGS) -c $< -o $@
 
+%.static.o : %.cpp
+	@echo Compiling $<...
+	@$(CXX) -I.. -I../.. $(CXXFLAGS) -c $< -o $@
+
+%.static.o : %.c
+	@echo Compiling $<...
+	@$(CC) -I.. -I../.. $(CFLAGS) -c $< -o $@
+
 %.shared.o : %.cpp
 	@echo Compiling $<...
 	@$(CXX) -I.. -I../.. $(DSOCFLAGS) $(CXXFLAGS) -c $< -o $@

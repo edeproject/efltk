@@ -25,6 +25,8 @@
 
 OUT_MAGIC := $(shell mkdir ../../lib > /dev/null 2>&1 || :)
 
+include ../../makeinclude
+
 CPPFILES = \
 	Fl_Images.cpp \
         Fl_Jpeg.cpp \
@@ -34,7 +36,6 @@ CFILES =
 
 ################################################################
 
-include ../../makeinclude
 DSOCFLAGS += -DFL_LIBRARY
 DSOCXXFLAGS += -DFL_LIBRARY
 
@@ -45,6 +46,8 @@ DSO = ../../lib/$(LIBNAME)
 DSONAME = $(LIBNAME)$(DSOEXT)
 
 OBJECTS = $(CPPFILES:.cpp=.o) $(CFILES:.c=.o)
+STATIC_OBJECTS = $(OBJECTS:.o=.static.o)
+SHARED_OBJECTS = $(OBJECTS:.o=.shared.o)
 
 all: $(BUILDTARGETS)
 
@@ -54,31 +57,30 @@ shared: $(DSO)$(DSOEXT)
 
 programs:
 
-$(LIBRARY).a: $(OBJECTS)
+$(LIBRARY).a: $(STATIC_OBJECTS)
 	@rm -f $@
 	@echo $(LIBCOMMAND) $@ ...
-	@$(LIBCOMMAND) $@ $(OBJECTS)
+	@$(LIBCOMMAND) $@ $(STATIC_OBJECTS)
 	@$(RANLIB) $@
 
-$(DSO).so.2 $(DSO).sl.2: $(OBJECTS:.o=.shared.o)
+$(DSO).so.2 $(DSO).sl.2: $(SHARED_OBJECTS)
 	@rm -f $@
 	@echo $(DSOCOMMAND) $(DSONAME) ...
-	@$(DSOCOMMAND) $(DSONAME) $(OBJECTS:.o=.shared.o) $(DSOLIBS)
+	@$(DSOCOMMAND) $(DSONAME) $(SHARED_OBJECTS) $(DSOLIBS)
 ifeq ($(HAVE_STRIP), 1) 
 	@$(STRIP) $(DSONAME)
 endif
 	@mv $(DSONAME) $@
 
 DLLIMPORTNAME = $(LIBNAME).2.dll$(LIBEXT)
-$(DSO).2.dll: $(OBJECTS:.o=.shared.o)
+$(DSO).2.dll: $(SHARED_OBJECTS)
 	@-rm -f $@
 	@echo $(DSOCOMMAND) $@ ...
-	@$(DSOCOMMAND) $@ $(OBJECTS:.o=.shared.o) $(DSOLIBS)
-	-mv $@.import ../lib/$(DLLIMPORTNAME)
+	@$(DSOCOMMAND) $@ $(SHARED_OBJECTS) $(DSOLIBS)
+	-mv $@.import ../../lib/$(DLLIMPORTNAME)
 
-clean :
-	@rm -f *.o $(LIBRARY)$(LIBEXT) $(DSO)$(DSOEXT) ../lib/$(DLLIMPORTNAME) \
-	       core *~ ../include/*~ makedepend cmap
+clean:
+	@rm -f *~ *.o $(LIBRARY).* makedepend
 	@touch makedepend
 
 depend:
@@ -87,7 +89,10 @@ depend:
 	cat foo >> makedepend
 	rm foo
 
+# include dependency files if it exist
+ifeq (makedepend, $(wildcard makedepend))
 include makedepend
+endif
 
 ################################################################
 

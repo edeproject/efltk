@@ -1,4 +1,4 @@
-# See ../Makefile
+include ../../makeinclude
 
 CPPFILES = \
 	Fl.cpp \
@@ -90,16 +90,47 @@ CFILES = \
 	numericsort.c \
 	vsnprintf.c
 
-all:
-	make -C .. all
+################################################################
+
+DSOCFLAGS += -DFL_LIBRARY
+DSOCXXFLAGS += -DFL_LIBRARY
+
+LIBNAME = libefltk
+DSOLIBNAME = $(LIBNAME)
+LIBRARY = ../lib/$(LIBNAME)
+DSO = ../lib/$(LIBNAME)
+DSONAME = $(LIBNAME)$(DSOEXT)
+
+OBJECTS = $(CPPFILES:.cpp=.o) $(CFILES:.c=.o)
+STATIC_OBJECTS = $(OBJECTS:.o=.static.o)
+SHARED_OBJECTS = $(OBJECTS:.o=.shared.o)
+
+all: $(BUILDTARGETS)
+
+static: $(LIBRARY)$(LIBEXT)
+
+shared: $(DSO)$(DSOEXT)
+
+programs:
+
+$(LIBRARY).a: $(STATIC_OBJECTS)
+
+$(DSO).so.2 $(DSO).sl.2: $(SHARED_OBJECTS)
+
+$(DSO).2.dll: $(SHARED_OBJECTS)
 
 clean:
-	make -C .. clean
-
-install:
-	make -C .. install
+	@rm -f *.o *~ makedepend cmap
+	@touch makedepend
 
 depend:
-	make -C .. depend
+	$(MAKEDEPEND) -I../.. $(CXXFLAGS) $(CPPFILES) $(CFILES) > makedepend
+	sed -e "s'\.o'\.shared\.o'" makedepend > foo
+	cat foo >> makedepend
+	rm foo
 
-include ../makedepend
+# include dependency files if it exist
+ifeq (makedepend, $(wildcard makedepend))
+include makedepend
+endif
+
