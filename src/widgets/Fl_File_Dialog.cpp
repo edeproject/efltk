@@ -167,15 +167,15 @@ Fl_FileItem::Fl_FileItem(const char *filename, Fl_FileAttr *a)
 #endif
     } else {
 
-        if(a->flags & FL_DIR) {
+        if(a->flags & FL_LINK) {
+            this->type(DIR);
+            typestr=_(types[3]);
+        } else if(a->flags & FL_DIR) {
             this->type(DIR);
             typestr=_(types[2]);
         } else if(a->flags & FL_FILE) {
             this->type(FILE);
             typestr=_(types[1]);
-        }	else if(a->flags & FL_LINK) {
-            this->type(FILE);
-            typestr=_(types[3]);
         }
 
         double s = get_file_size(a->size, &prefix);
@@ -962,9 +962,20 @@ void Fl_File_Dialog::read_dir(const char *_path)
                 {
                     snprintf(filename, sizeof(filename)-1, "%s%c%s", fullpath(), slash, files[n]->d_name);
                     Fl_FileAttr *attr = fl_file_attr(filename);
+
+#ifndef _WIN32
+                    if(attr->flags & FL_LINK) {
+                        char tmp[FL_PATH_MAX] = {0};
+                        if(readlink(filename, tmp, sizeof(tmp)))
+                            if(fl_is_dir(tmp)) attr->flags |= FL_DIR;
+                    }
+#endif
+
                     if(attr->flags & FL_DIR) {
                         Fl_FileItem *it = new Fl_FileItem(files[n]->d_name, attr);
                         it->image(&fold_pix);
+                        free(files[n]);
+                        files[n] = 0;
                     } else
                         delete attr;
                 }
@@ -972,22 +983,23 @@ void Fl_File_Dialog::read_dir(const char *_path)
 
             for(n=0; n<count; n++)
             {
-                if((strcmp(files[n]->d_name, ".") && strcmp(files[n]->d_name, "..") != 0) && mode() != Fl_File_Dialog::DIRECTORY)
+                if(files[n] && (strcmp(files[n]->d_name, ".") && strcmp(files[n]->d_name, "..") != 0) && mode() != Fl_File_Dialog::DIRECTORY)
                 {
-					bool sel = false;
+                    bool sel = false;
                     snprintf(filename, sizeof(filename)-1, "%s%c%s", fullpath(), slash, files[n]->d_name);
                     Fl_FileAttr *attr = fl_file_attr(filename);
                     if(!(attr->flags & FL_DIR)) {
-						Fl_FileItem *item=0;
-						if(default_filename_) sel = !strcmp(default_filename_, files[n]->d_name);
+                        Fl_FileItem *item=0;
+                        if(default_filename_) sel = !strcmp(default_filename_, files[n]->d_name);
                         if(_cur_filter) {
                             if(fl_file_match(filename, _cur_filter->pattern))
-								item = new Fl_FileItem(files[n]->d_name, attr);
+                                item = new Fl_FileItem(files[n]->d_name, attr);
                         } else {
-                            item = new Fl_FileItem(files[n]->d_name, attr);                            
+                            item = new Fl_FileItem(files[n]->d_name, attr);
                         }
                         if(item) {
                             item->image(&file_pix);
+                            item->type(Fl_FileItem::FILE);
                             if(sel) {
                                 selected = item;
                             }
@@ -995,7 +1007,7 @@ void Fl_File_Dialog::read_dir(const char *_path)
                     } else
                         delete attr;
                 }
-                free(files[n]);
+                if(files[n]) free(files[n]);
             }
             free(files);
         }
@@ -1134,6 +1146,7 @@ void Fl_File_Dialog::folder_clicked(Fl_FileItem *i)
 
     if(Fl::event_clicks()) {
         char tmp[FL_PATH_MAX];
+
         if(fullpath()) {
             if(!strcmp(fullpath(), "/"))
                 sprintf(tmp, "%s%s", fullpath(), i->label());
@@ -1147,6 +1160,13 @@ void Fl_File_Dialog::folder_clicked(Fl_FileItem *i)
         else
             sprintf(tmp, "%s", i->label());
 
+#ifndef _WIN32
+        if(i->attr->flags & FL_LINK) {
+            int len=0;
+            if((len=readlink(tmp, tmp, sizeof(tmp)))) tmp[len] = '\0';
+            else return;
+        }
+#endif
         read_dir(tmp);
     }
 }
