@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #ifndef _WIN32
+#include <unistd.h>
 #include <fcntl.h>
 #include <netinet/in.h>
 #include <netdb.h>
@@ -130,10 +131,10 @@ void Fl_Socket::close()
 // Read & write
 int  Fl_Socket::read(char *buffer,int size) 
 {
-#ifdef WIN32
+#ifdef _WIN32
 	return recv(m_sockfd, buffer, size, NULL);
 #else
-	return read(m_sockfd, buffer, size);
+	return ::read(m_sockfd, buffer, size);
 #endif
 }
 
@@ -142,7 +143,7 @@ int  Fl_Socket::write(char *buffer,int size)
 #ifdef _WIN32
 	return send(m_sockfd, buffer, size, NULL);
 #else
-	return write(m_sockfd, buffer, size);
+	return ::write(m_sockfd, buffer, size);
 #endif
 }
 
