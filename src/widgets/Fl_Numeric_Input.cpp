@@ -132,14 +132,14 @@ int Fl_Numeric_Input::handle_arrow(int dir)
                 // if no digits before cursor, assumme we are not pointing at a number:
                 if (g >= q-1) goto DONE;
                 // if it does not like period edit the last digit instead:
-                if (!replace(q, q, decimal)) {q--; goto INT;}
+                if (!replace(q, q, decimal)) {q--; goto __INT;}
                 q++;
                 break;
             }
         }
         replace(q,q,'0');
     }
-    INT:
+    __INT:
 
     // if it's a negative number we reverse direction:
     for (p = q-1; p >= 0; p--)

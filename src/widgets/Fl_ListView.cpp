@@ -34,7 +34,7 @@ Fl_ListView::Fl_ListView(int X,int Y,int W,int H,const char* L)
     item_      = 0;
     yposition_ = xposition_ = 0;
     scrolldy = scrolldx = 0;
-    sort_type_ = SORT_UNKNOWN;
+    sort_type_ = SORT_ABSOLUTE;
 
     hscrollbar.type(Fl_Scrollbar::HORIZONTAL);
     hscrollbar.callback(hscrollbar_cb);
@@ -70,38 +70,45 @@ void Fl_ListView::end()
     Fl_Group::end();
 }
 
-static int scol=-1;
-static int col_sort_asc(const void *w1, const void *w2) {
-    Fl_ListView_Item *i1 = *(Fl_ListView_Item **)w1;
-    Fl_ListView_Item *i2 = *(Fl_ListView_Item **)w2;
-    return strcmp(i1->label(scol)?i1->label(scol):"", i2->label(scol)?i2->label(scol):"");
-}
-static int col_sort_desc(const void *w1, const void *w2) {
-    Fl_ListView_Item *i1 = *(Fl_ListView_Item **)w1;
-    Fl_ListView_Item *i2 = *(Fl_ListView_Item **)w2;
-    return strcmp(i2->label(scol)?i2->label(scol):"", i1->label(scol)?i1->label(scol):"");
+Fl_ListView_Item *Fl_ListView::find_userdata(void *data, uint start_index)
+{
+	for(uint n=start_index; n<children(); n++) {
+		if(items[n]->user_data()==data) 
+			return items[n];
+	}
+	return 0;
 }
 
-// Returns sort mode: ASC,DESC,UNKNOWN
+Fl_ListView_Item *Fl_ListView::find_text(const char *text, uint column, uint start_index)
+{
+	for(uint n=start_index; n<children(); n++) {
+		const char *itext = items[n]->label(column);
+		if(!strcmp(text, itext))			
+			return items[n];
+	}
+	return 0;
+}
+
+static int scol=-1;
+static int stype=-1;
+static int fl_listview_sort(const void *w1, const void *w2) {
+    Fl_ListView_Item *i1 = *(Fl_ListView_Item **)w1;
+    Fl_ListView_Item *i2 = *(Fl_ListView_Item **)w2;
+	return i1->compare(i2, scol, stype);    
+}
+
+// Returns sort type: ASC, DESC, ABSOLUTE
 int Fl_ListView::sort(int column)
 {
-    if(scol!=column) sort_type_=SORT_UNKNOWN;
+    if(scol!=column) sort_type_=SORT_ABSOLUTE;
+
+    sort_type_++;
+    if(sort_type_==SORT_LAST_TYPE)
+        sort_type_=SORT_ABSOLUTE;
 
     scol = column;
-    sort_type_++;
-    if(sort_type_>SORT_UNKNOWN)
-        sort_type_=SORT_ASC;
-
-    switch(sort_type_) {
-    case SORT_ASC:
-        items.sort(col_sort_asc);
-        break;
-    case SORT_DESC:
-        items.sort(col_sort_desc);
-        break;
-    default:
-        break;
-    }
+    stype = sort_type_;
+	items.sort(fl_listview_sort);
 
     calc_total_h = true;
     relayout();
@@ -160,7 +167,7 @@ Fl_ListView_Item* Fl_ListView::item_at(int Y)
     for(uint a=find_safe_top(); a<children(); a++)
     {
         w=child(a);
-        if(Y>w->y() && Y<w->y()+w->h())
+        if(Y>=w->y() && Y<=w->y()+w->h())
             return w;
     }
     return 0;
@@ -983,6 +990,7 @@ void Fl_ListView::remove(int index)
     Fl_ListView_Item *w = child(index);
     if(w==item_) item_ = 0;
 
+	w->abs_index(-1);
     w->parent(0);
     items.remove(index);
 
@@ -1000,6 +1008,7 @@ void Fl_ListView::insert(Fl_ListView_Item  &o, uint index)
         o.parent()->remove(n);
     }
     o.parent(this);
+	o.abs_index(children());
     if(children() == 0) {
         // allocate for 1 child
         items.append(&o);

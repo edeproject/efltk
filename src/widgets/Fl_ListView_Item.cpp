@@ -45,6 +45,12 @@ Fl_ListView_Item::~Fl_ListView_Item()
     }
 }
 
+void Fl_ListView_Item::redraw(uchar c) 
+{ 
+	damage_ = c; 
+	if(parent()) parent()->redraw(FL_DAMAGE_CHILD); 
+}
+
 Fl_ListItem_Attr *Fl_ListView_Item::create_attr(int col)
 {
     Fl_ListItem_Attr *a = new Fl_ListItem_Attr;
@@ -59,6 +65,25 @@ void Fl_ListView_Item::add_attr(int col)
     attr_list[col] = create_attr(col);
 }
 
+int Fl_ListView_Item::compare(Fl_ListView_Item *other, int column, int sort_type)
+{
+	const char *txt = label(column);
+	const char *other_txt = other->label(column);
+	if(!txt) txt="";
+	if(!other_txt) other_txt="";
+
+	switch(sort_type) {
+    case Fl_ListView::SORT_ASC:
+        return strcmp(txt, other_txt);
+        break;
+    case Fl_ListView::SORT_DESC:
+        return strcmp(other_txt, txt);
+        break;
+    default:
+        break;		
+	}
+	return abs_index()-other->abs_index();		
+}
 
 bool Fl_ListView_Item::selected()
 {

@@ -32,7 +32,7 @@ Fl_ListView_Header::Fl_ListView_Header(int X,int Y,int W,int H,const char*l)
 {
     style(default_style);
     attr_list.auto_delete(true);
-    sort_type = Fl_ListView::SORT_UNKNOWN;
+    sort_type = Fl_ListView::SORT_ABSOLUTE;
     sort_col = 0;
 }
 
@@ -259,7 +259,7 @@ void Fl_ListView_Header::draw()
             int X=0,Y=0,W=a->width,H=h();
             if(f&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT)) {X += 3; W -= 6;}
 
-            if(sort_col==(int)n && sort_type>=0 && sort_type<Fl_ListView::SORT_UNKNOWN)
+            if(sort_col==(int)n && sort_type>Fl_ListView::SORT_ABSOLUTE && sort_type<Fl_ListView::SORT_LAST_TYPE)
                 W-=(SORT_ARROW+2);
 
             int tw=W-iw;

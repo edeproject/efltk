@@ -54,6 +54,8 @@
 bool Fl_FileAttr::parse(const char *filename)
 {
 #ifdef _WIN32
+	capacity=0;
+	free=0;					
     if(strlen(filename) < 4 && filename[1]==':') {
         char nbuf[4];nbuf[0] = filename[0];nbuf[1]=':';nbuf[2]='\\';nbuf[3]='\0';
 
@@ -62,9 +64,8 @@ bool Fl_FileAttr::parse(const char *filename)
         uint type = GetDriveType(nbuf);
         if(type==DRIVE_CDROM||type==DRIVE_FIXED) {
             uint64 ign;
-            GetDiskFreeSpaceEx(nbuf, (PULARGE_INTEGER)&ign, (PULARGE_INTEGER)&used, (PULARGE_INTEGER)&free);
+            GetDiskFreeSpaceEx(nbuf, (PULARGE_INTEGER)&ign, (PULARGE_INTEGER)&capacity, (PULARGE_INTEGER)&free);
         }
-
         flags |= FL_DEVICE;
         return true;
     }
@@ -87,9 +88,10 @@ bool Fl_FileAttr::parse(const char *filename)
     if(S_ISREG(s.st_mode)) flags |= FL_FILE;
     if(S_ISLNK(s.st_mode)) flags |= FL_LINK;
 
-    size = (uint)s.st_size;
+    size = (ulong)s.st_size;
+	modified = (ulong)s.st_mtime;
 
-    const time_t *t = &s.st_mtime;
+    const time_t *t = &s.st_mtime;	
     struct tm *lt = localtime(t);
     strftime(time, 128, "%x  %X", lt);
 

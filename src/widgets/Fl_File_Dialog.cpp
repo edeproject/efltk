@@ -119,21 +119,26 @@ Fl_FileItem::Fl_FileItem(const char *filename, Fl_FileAttr *a)
 
         char nbuf[4];nbuf[0] = filename[0];nbuf[1]=':';nbuf[2]='\\';nbuf[3]='\0';
         uint type = GetDriveType(nbuf);
-        if(type==DRIVE_CDROM)
+        if(type==DRIVE_CDROM) {
             typestr=_(types[4]);
-        if(type==DRIVE_REMOVABLE)
+		} else
+        if(type==DRIVE_REMOVABLE) {
             typestr=_(types[5]);
-        if(type==DRIVE_FIXED)
+		} else
+        if(type==DRIVE_FIXED) {
             typestr=_(types[6]);
-        if(type==DRIVE_REMOTE)
+		} else
+        if(type==DRIVE_REMOTE) {
             typestr=_(types[7]);
-        if(type==DRIVE_RAMDISK)
+		} else
+        if(type==DRIVE_RAMDISK) {
             typestr=_(types[8]);
+		}
 
         label(1, typestr);
 
         uint s = 0;
-        s = get_dev_size(a->used, &prefix);
+        s = get_dev_size(a->capacity, &prefix);
         if(s>0) {
             sprintf(size, "%d %s", s, prefix);
             label(2, size);
@@ -144,6 +149,20 @@ Fl_FileItem::Fl_FileItem(const char *filename, Fl_FileAttr *a)
             sprintf(free, "%d %s", s, prefix);
             label(3, free);
         } else label(3,0);
+		
+		/*
+		//TOO SLOW!!!
+		char drivename[255];		
+		if(GetVolumeInformation(
+			filename,
+			drivename,
+			sizeof(drivename)-1,
+			NULL, NULL, NULL, NULL, 0))
+		{
+			if(drivename[0])
+				snprintf(fname, sizeof(fname)-1, "%s (%s)", filename, drivename);
+		} 	
+		*/
 #endif
     } else {
 
@@ -179,6 +198,53 @@ Fl_FileItem::Fl_FileItem(const char *filename, Fl_FileAttr *a)
 Fl_FileItem::~Fl_FileItem()
 {
     if(attr) delete attr;
+}
+
+uint uint64_to_uint(uint64 size) {
+	size /= 1024;
+	return (uint)size;
+}
+
+int Fl_FileItem::compare(Fl_ListView_Item *other, int column, int sort_type)
+{
+#ifdef _WIN32
+	if(type()==DEVICE && ((Fl_FileItem*)other)->type()==DEVICE) {						
+		switch(column) {
+		case 2: {
+				uint c1 = uint64_to_uint(attr->capacity);
+				uint c2 = uint64_to_uint(((Fl_FileItem*)other)->attr->capacity);
+				if(sort_type==Fl_ListView::SORT_ASC) return c1-c2;
+				else if(sort_type==Fl_ListView::SORT_DESC) return c2-c1;
+			}
+			break;
+		case 3: {
+				uint c1 = uint64_to_uint(attr->free);
+				uint c2 = uint64_to_uint(((Fl_FileItem*)other)->attr->free);
+				if(sort_type==Fl_ListView::SORT_ASC) return c1-c2;
+				else if(sort_type==Fl_ListView::SORT_DESC) return c2-c1;
+			}
+			break;
+		default:
+			break;
+		}
+
+	} else 
+#endif
+	{
+		switch(column) {
+		case 1:
+			if(sort_type==Fl_ListView::SORT_ASC) return (attr->size - ((Fl_FileItem*)other)->attr->size);
+			else if(sort_type==Fl_ListView::SORT_DESC) return (((Fl_FileItem*)other)->attr->size - attr->size);
+			break;
+		case 3:
+			if(sort_type==Fl_ListView::SORT_ASC) return (attr->modified - ((Fl_FileItem*)other)->attr->modified);
+			else if(sort_type==Fl_ListView::SORT_DESC) return (((Fl_FileItem*)other)->attr->modified - attr->modified);
+			break;
+		default:
+			break;
+		}
+	}
+	return Fl_ListView_Item::compare(other, column, sort_type);
 }
 
 ///////////////////////////////
@@ -859,7 +925,7 @@ void Fl_File_Dialog::read_dir(const char *_path)
     if(get_drives)
     {
         listview_->column_name(1, _("Type"));
-        listview_->column_name(2, _("Used Space"));
+        listview_->column_name(2, _("Capacity"));
         listview_->column_name(3, _("Free Space"));
         DWORD drvs = GetLogicalDrives();
         char drive[4];
