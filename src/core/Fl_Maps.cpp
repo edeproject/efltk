@@ -297,21 +297,11 @@ Fl_String_String_Map::Pair *Fl_String_String_Map::find_pair(int Y, const char *i
         else            return 0;
     }
 
-    // Do binary search
-    int bottom=0, top=wlist.size()-1, mid;
-    int L = ( top + bottom ) / 2 ;
-    Pair *test = (Pair*)wlist[L];
-    if(test->id == id) return test;
-    while(bottom <= top) {
-        mid = top + bottom / 2 ;
-        test = (Pair*)wlist[mid];
-        int d = strcmp(id, test->id);
-        if(!d)
+    for(unsigned n=0; n<wlist.size(); n++) {
+        Pair *test = (Pair*)wlist[n];
+        if(strcmp(id, test->id)==0) {
             return test;
-        else if(d>0)
-            bottom = mid + 1;
-        else
-            top = mid-1;
+        }
     }
     return 0;
 }
@@ -434,21 +424,11 @@ Fl_Int_String_Map::Pair *Fl_Int_String_Map::find_pair(int Y, int id) const
         else            return 0;
     }
 
-    // Do binary search
-    int bottom=0, top=wlist.size()-1, mid;
-    int L = ( top + bottom ) / 2 ;
-    Pair *test = (Pair*)wlist[L];
-    if(test->id == id) return test;
-    while(bottom <= top) {
-        mid = top + bottom / 2 ;
-        test = (Pair*)wlist[mid];
-        int d = id - test->id;
-        if(!d)
+    for(unsigned n=0; n<wlist.size(); n++) {
+        Pair *test = (Pair*)wlist[n];
+        if(id==test->id) {
             return test;
-        else if(d>0)
-            bottom = mid + 1;
-        else
-            top = mid-1;
+        }
     }
     return 0;
 }
@@ -539,21 +519,11 @@ Fl_String_Ptr_Map::Pair *Fl_String_Ptr_Map::find_pair(int Y, const char *id) con
         else            return 0;
     }
 
-    // Do binary search
-    int bottom=0, top=wlist.size()-1, mid;
-    int L = ( top + bottom ) / 2 ;
-    Pair *test = (Pair*)wlist[L];
-    if(test->id == id) return test;
-    while(bottom <= top) {
-        mid = top + bottom / 2 ;
-        test = (Pair*)wlist[mid];
-        int d = strcmp(id, test->id);
-        if(!d)
+    for(unsigned n=0; n<wlist.size(); n++) {
+        Pair *test = (Pair*)wlist[n];
+        if(strcmp(id, test->id)==0) {
             return test;
-        else if(d>0)
-            bottom = mid + 1;
-        else
-            top = mid-1;
+        }
     }
     return 0;
 }
@@ -644,21 +614,11 @@ Fl_Int_Ptr_Map::Pair *Fl_Int_Ptr_Map::find_pair(int Y, int id) const
         else            return 0;
     }
 
-    // Do binary search
-    int bottom=0, top=wlist.size()-1, mid;
-    int L = ( top + bottom ) / 2 ;
-    Pair *test = (Pair*)wlist[L];
-    if(test->id == id) return test;
-    while(bottom <= top) {
-        mid = top + bottom / 2 ;
-        test = (Pair*)wlist[mid];
-        int d = id - test->id;
-        if(!d)
+    for(unsigned n=0; n<wlist.size(); n++) {
+        Pair *test = (Pair*)wlist[n];
+        if(test->id==id) {
             return test;
-        else if(d>0)
-            bottom = mid + 1;
-        else
-            top = mid-1;
+        }
     }
     return 0;
 }
