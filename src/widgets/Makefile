@@ -27,9 +27,10 @@ CPPFILES = \
 	Fl_Input_Browser.cpp \
 	Fl_Item.cpp \
 	Fl_Light_Button.cpp \
-	Fl_ListView.cpp \
-	Fl_ListView_Header.cpp \
-	Fl_ListView_Item.cpp \
+        Fl_ListView.cpp \
+        Fl_ListView_Item.cpp \
+        Fl_ListView_ItemExt.cpp \
+        Fl_ListView_Header.cpp \
 	Fl_MDI_Window.cpp \
 	Fl_Main_Window.cpp \
 	Fl_Masked_Input.cpp \
@@ -64,6 +65,7 @@ CPPFILES = \
 	Fl_Text_Buffer.cpp \
 	Fl_Text_Display.cpp \
 	Fl_Text_Editor.cpp \
+	Fl_Table_Base.cpp \
 	Fl_Tabs.cpp \
 	Fl_Tile.cpp \
 	Fl_Tool_Bar.cpp \

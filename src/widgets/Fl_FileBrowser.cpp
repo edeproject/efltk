@@ -300,7 +300,9 @@ void Fl_File_Browser::up()
 const Fl_String &Fl_File_Browser::filename() const
 {
     if(item() && item()!=up_item()) {
-        return item()->label(1);
+        static Fl_String ret;
+        ret = item()->label(1);
+        return ret;
     }
     return Fl_String::null_object;
 }
@@ -434,6 +436,7 @@ int                                         // O - Number of files loaded
         }
 #endif // _WIN32
         end();
+        resizable_col(0, false);
         return children();
 
     } else {
@@ -455,6 +458,7 @@ int                                         // O - Number of files loaded
                 insert(*m_up_item, 0);
             }
 
+            resizable_col(0, false);
             return 0;
         }
 
@@ -465,12 +469,11 @@ int                                         // O - Number of files loaded
         }
 
         //I18N !! UHH, Pretty lame way.. :)
-        if(header()->columns()>0) {
-            for(uint n=0; n<header()->columns(); n++) {
-                header()->column_label(n, _(header()->column_label(n)));
-            }
+        for(unsigned n=0; n < columns(); n++) {
+            column(n)->label(_(column(n)->label()));
         }
     }
 
+    resizable_col(0, false);
     return children()-1;
 }

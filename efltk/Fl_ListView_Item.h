@@ -1,185 +1,144 @@
-/*
- * $Id$
- *
- * Extended Fast Light Toolkit (EFLTK)
- * Copyright (C) 2002-2003 by EDE-Team
- * WWW: http://www.sourceforge.net/projects/ede
- *
- * Fast Light Toolkit (FLTK)
- * Copyright (C) 1998-2003 by Bill Spitzak and others.
- * WWW: http://www.fltk.org
- *
- * This library is distributed under the GNU LIBRARY GENERAL PUBLIC LICENSE
- * version 2. See COPYING for details.
- *
- * Author : Mikko Lahteenmaki
- * Email  : mikko@fltk.net
- *
- * Please report all bugs and problems to "efltk-bugs@fltk.net"
- *
- */
-
 #ifndef _FL_LISTVIEW_ITEM_H_
 #define _FL_LISTVIEW_ITEM_H_
 
-#include "Fl.h"
-#include "Fl_Font.h"
-#include "Fl_Style.h"
 #include "Fl_Image.h"
-#include "Fl_Image_List.h"
-#include "Fl_Int_List.h"
-#include "Fl_String_List.h"
-#include "Fl_Ptr_List.h"
+#include "Fl_String.h"
+#include "Fl_Packed_Strings.h"
 
 class Fl_ListView;
 
-// ListView_Item attributes for each column
-class Fl_ListItem_Attr
-{
-public:
-    Fl_String       col_label;
-    int16           col_width;
-};
-
-/** Fl_ListView_Item */
 class FL_API Fl_ListView_Item {
 public:
     Fl_ListView_Item(const char *label1=0,
-        const char *label2=0,
-        const char *label3=0,
-        const char *label4=0,
-        const char *label5=0);
+                     const char *label2=0,
+                     const char *label3=0,
+                     const char *label4=0,
+                     const char *label5=0);
     virtual ~Fl_ListView_Item();
 
-    bool selected() const;
+    const char *label() const;
+    const char *label(unsigned col) const;
+    void label(unsigned col, const char *text);
+    void label(unsigned col, const Fl_String &text);
 
-    void *user_data() const { return user_data_; }
-    void user_data(void* v) { user_data_ = v; }
-    long argument() const   { return (long)user_data_; }
-    void argument(long v)   { user_data_ = (void*)v; }
+    virtual void columns(unsigned count);
+    virtual unsigned columns() const;
 
-    uchar damage() const { return damage_; }
-    void set_damage(uchar c) { damage_ = c; }
+    // Layouting:
+    virtual int preferred_width(int col) const;
+    virtual void width_changed(unsigned row, int col);
+    virtual void setup(unsigned row);
+
+    virtual void draw_cell(unsigned row, unsigned col, int width, int height);
+
+    void parent(Fl_ListView *p) { m_parent = p; }
+    Fl_ListView *parent() const { return m_parent; }
+
+    void *user_data()       { return m_user_data; }
+    void user_data(void *d) { m_user_data = d; }
+    long argument() const   { return (long)m_user_data; }
+    void argument(long v)   { m_user_data = (void*)v; }
+
+    uchar damage() const { return m_damage; }
+    void set_damage(uchar c) { m_damage = c; }
     void redraw(uchar c);
     void redraw() { redraw(FL_DAMAGE_ALL); }
 
-    Fl_ListView *parent() const { return parent_; }
-    void parent(Fl_ListView *l) { parent_ = l; }
+    //int h() const;
+    //void h(int height);
 
-    int column_width(int col) const;
+//    void index(unsigned idx) { m_index = idx; }
+//    unsigned index() const { return m_index; }
 
-    void check_columns(uint count);
-    void columns(uint count);
-    uint columns() const;
+    void image(Fl_Image *im) { m_image = im; }
+    void image(Fl_Image &im) { m_image = &im; }
+    Fl_Image *image() { return m_image; }
+    const Fl_Image *image() const { return m_image; }
+    void image(unsigned col, Fl_Image &im) { image(im); }
+    void image(unsigned col, Fl_Image *im) { image(im); }
 
-    virtual void draw_cell(int col, int width, bool selected);
-    virtual void layout();
+    //bool selected() const;
+    //bool inactive() const;
 
-    const Fl_String &label() const;
-    const Fl_String &label(int col) const;
-    void label(int col, const char *text);
-    void label(int col, const Fl_String &text);
-    void copy_label(int col, const char *txt) { label(col, txt); }
+    virtual int compare(Fl_ListView_Item *other, int column, int sort_type);
 
-    void image(Fl_Image *im) { image_ = im; }
-    void image(Fl_Image &im) { image_ = &im; }
-    Fl_Image *image() { return image_; }
-    const Fl_Image *image() const { return image_; }
-    void image(int col, Fl_Image &im) { image(im); }
-    void image(int col, Fl_Image *im) { image(im); }
+    ///////////////////////////////////////////////
+    // Compatibility section:
 
-    int y() const { return y_; }
-    void y(int Y) { y_ = Y; }
-    int h() const { return h_; }
-    void h(int H) { h_ = H; }
-
-    // Current index on the list
-    void index(int i) { index_ = i; }
-    int index() const { return index_; }
-
-    virtual int compare_strings(Fl_ListView_Item *other, int column, int sort_type);
-    virtual int compare_integers(Fl_ListView_Item *other, int column, int sort_type);
-    virtual int compare_floats(Fl_ListView_Item *other, int column, int sort_type);
-    virtual int compare_dates(Fl_ListView_Item *other, int column, int sort_type);
-    virtual int compare_datetimes(Fl_ListView_Item *other, int column, int sort_type);
+    void copy_label(unsigned col, const char *text) { label(col, text); }
 
 protected:
-    Fl_Ptr_List attr_list;
+    Fl_Packed_Strings strings;
 
-    // Creates and intializes attr class,
-    // extended listitems with more column specific attributes must override this
-    virtual Fl_ListItem_Attr *create_attr(int col);
+    void draw_row(unsigned row, int x, int y, int w, int h) const;
+
+    int compare_strings(Fl_ListView_Item *other, int column, int sort_type) const;
+    int compare_integers(Fl_ListView_Item *other, int column, int sort_type) const;
+    int compare_floats(Fl_ListView_Item *other, int column, int sort_type) const;
+    int compare_dates(Fl_ListView_Item *other, int column, int sort_type) const;
+    int compare_datetimes(Fl_ListView_Item *other, int column, int sort_type) const;
 
 private:
-    int y_, h_;
-
-    unsigned index_;
-    uchar damage_;
-    Fl_Image *image_;
-    void *user_data_;
-    Fl_ListView *parent_;
-    void add_attr(int col);
+    Fl_ListView *m_parent;
+    void *m_user_data;
+    Fl_Image *m_image;
+    //unsigned m_index;
+    uchar m_damage;
 };
 
-//////////////////////////////////////////
-//////////////////////////////////////////
-
-// ListView_ItemExt attributes for each column
-class Fl_ListItem_AttrExt : public Fl_ListItem_Attr
-{
-public:
-    Fl_Flags col_flags;
-    Fl_Font col_font;
-    int col_font_size;
-    Fl_Color col_color;
-    Fl_Image *col_image;
-    Fl_Labeltype col_label_type;
-};
-
-/** Fl_ListView_ItemExt */
 class FL_API Fl_ListView_ItemExt : public Fl_ListView_Item {
 public:
     Fl_ListView_ItemExt(const char *label1=0,
-        const char *label2=0,
-        const char *label3=0,
-        const char *label4=0,
-        const char *label5=0);
+                        const char *label2=0,
+                        const char *label3=0,
+                        const char *label4=0,
+                        const char *label5=0);
     virtual ~Fl_ListView_ItemExt();
 
-    virtual void draw_cell(int col, int width, bool selected);
-    virtual void layout();
+    virtual void columns(unsigned count);
+    virtual unsigned columns() const { return Fl_ListView_Item::columns(); }
 
-    int leading() const { return leading_; }
-    void leading(int l) { leading_ = l; }
+    // Layouting:
+    virtual int preferred_width(int col) const;
+    virtual void width_changed(unsigned row, int col);
+    virtual void setup(unsigned row);
 
-    Fl_Flags flags(int col, int f);
-    Fl_Flags flags(int col) const ;
-    Fl_Flags set_flag(int col, int f);
-    Fl_Flags clear_flag(int col, int f);
-    Fl_Flags invert_flag(int col, int f);
+    virtual void draw_cell(unsigned row, unsigned col, int width, int height);
 
-    Fl_Font label_font(int col) const;
-    Fl_Labeltype label_type(int col) const;
-    int label_size(int col) const;
-    Fl_Color label_color(int col) const;
+    int leading() const { return m_leading; }
+    void leading(int l) { m_leading = l; }
 
-    void label_size(int col, int size);
-    void label_font(int col, Fl_Font font);
-    void label_color(int col, Fl_Color color);
-    void label_type(int col, Fl_Labeltype type);
+    Fl_Flags flags(unsigned col, Fl_Flags f);
+    Fl_Flags flags(unsigned col) const ;
+    Fl_Flags set_flag(unsigned col, Fl_Flags f);
+    Fl_Flags clear_flag(unsigned col, Fl_Flags f);
+    Fl_Flags invert_flag(unsigned col, Fl_Flags f);
 
-    void label_font(int col, Fl_Font font, int size) { label_font(col, font); label_size(col, size); }
+    int label_size(unsigned col) const;
+    void label_size(unsigned col, int size);
 
-    void image(int col, Fl_Image *im);
-    void image(int col, Fl_Image &im);
-    Fl_Image *image(int col);
-    const Fl_Image *image(int col) const;
+    Fl_Font label_font(unsigned col) const;
+    void label_font(unsigned col, Fl_Font font);
+
+    Fl_Labeltype label_type(unsigned col) const;
+    void label_type(unsigned col, Fl_Labeltype type);
+
+    Fl_Color label_color(unsigned col) const;
+    void label_color(unsigned col, Fl_Color color);
+
+    void label_font(unsigned col, Fl_Font font, int size) { label_font(col, font); label_size(col, size); }
+
+    void image(unsigned col, Fl_Image *im);
+    void image(unsigned col, Fl_Image &im);
+    Fl_Image *image(unsigned col);
+    const Fl_Image *image(unsigned col) const;
 
 protected:
-    int leading_;
-    virtual Fl_ListItem_Attr *create_attr(int col);
+    void draw_label(unsigned col, const char *label, int X, int Y, int W, int H, Fl_Flags flags);
+
 private:
-    void draw_label(const char *label, int X, int Y, int W, int H, Fl_Flags flags, void *a);
+    int m_leading;
+    Fl_Ptr_List col_attrs;
 };
 
 //////////////////////////////////////////

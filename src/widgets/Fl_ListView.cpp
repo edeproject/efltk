@@ -1,73 +1,667 @@
 #include <efltk/Fl_ListView.h>
 #include <efltk/fl_draw.h>
-
-#define SEL(w) (selection.index_of(w)!=-1)
-#define SLIDER_WIDTH scrollbar_width()
+#include <efltk/Fl_ListView_Header.h>
 
 static void revert(Fl_Style* s) {
     s->box = FL_DOWN_BOX;
     s->button_box = FL_NO_BOX;
     s->leading = 2;
 }
+
 static Fl_Named_Style style("ListView", revert, &Fl_ListView::default_style);
 Fl_Named_Style* Fl_ListView::default_style = &::style;
 
 Fl_ListView *Fl_ListView::current=0;
 
-void Fl_ListView::ctor_init() {
+void Fl_ListView::ctor_init()
+{
     style(default_style);
     set_click_to_focus();
 
-    _header = &head;
+    m_header = new Fl_ListView_Header(this);
+    m_type_in_mode = TYPE_IN_SELECT;
+    //m_type_in_mode = TYPE_IN_HIDE;
 
-    type(BOTH);
+    m_sort_type = Fl_ListView::SORT_NONE;
+    m_sort_col = -1;
 
-    calc_total_h = true;
-    first_vis = -1;
-    total_height = 0;
-    item_      = 0;
-    yposition_ = xposition_ = 0;
-    scrolldy = scrolldx = 0;
-    sort_type_ = SORT_ABSOLUTE;
+    cur_row = -1;
 
-    hscrollbar.type(Fl_Scrollbar::HORIZONTAL);
-    hscrollbar.callback(hscrollbar_cb);
-    vscrollbar.callback(vscrollbar_cb);
+    default_row_height(0);
 
-    find_def = true;
-    draw_stripes_ = false;
+    // enable col header and resizing
+    col_header(true);
+    col_resize(true);
 
-    Fl_Group::remove(find(head));
-    Fl_Group::remove(find(vscrollbar));
-    Fl_Group::remove(find(hscrollbar));
-    head.parent(this);
-    hscrollbar.parent(this);
-    vscrollbar.parent(this);
+    m_needsetup = true;
+    m_draw_stripes = false;
 
-    Fl_Group::end();
-    Fl_ListView::current = this;
+    begin();
 }
 
-Fl_ListView::Fl_ListView(int X,int Y,int W,int H,const char* L)
-: Fl_Group(X,Y,W,H,L),
-vscrollbar(X+W-SLIDER_WIDTH,Y,SLIDER_WIDTH,H-SLIDER_WIDTH),
-hscrollbar(X,Y+H-SLIDER_WIDTH,W-SLIDER_WIDTH,SLIDER_WIDTH),
-head(0,0,W,20)
+Fl_ListView::Fl_ListView(const char *l, int layout_size, Fl_Align layout_al, int label_w)
+    : Fl_Table_Base(l, layout_size, layout_al, label_w)
 {
     ctor_init();
 }
 
-Fl_ListView::Fl_ListView(const char* l,int layout_size,Fl_Align layout_al,int label_w)
-: Fl_Group(l,layout_size,layout_al,label_w),
-vscrollbar(X+W-SLIDER_WIDTH,Y,SLIDER_WIDTH,H-SLIDER_WIDTH),
-hscrollbar(X,Y+H-SLIDER_WIDTH,W-SLIDER_WIDTH,SLIDER_WIDTH),
-head(0,0,W,20)
+Fl_ListView::Fl_ListView(int X, int Y, int W, int H, const char *l)
+    : Fl_Table_Base(X, Y, W, H, l)
 {
     ctor_init();
 }
 
-Fl_ListView::~Fl_ListView() {
+Fl_ListView::~Fl_ListView()
+{
     clear();
+    clear_columns();
+}
+
+void Fl_ListView::clear()
+{
+    cur_row = -1;
+    unselect_all();
+
+    for(unsigned n=0; n < row_count(); n++) {
+        Fl_ListView_Item *w = items[n];
+        w->parent(0);
+        delete w;
+    }
+    items.clear();
+    row_count(0);
+
+    relayout();
+}
+
+void Fl_ListView::table_draw(TableContext context, unsigned R, unsigned C,
+                             int X, int Y, int W, int H)
+{
+    if(context==CONTEXT_NONE) return;
+
+    static int drawing_row = -1;
+    static bool drawed_header = -1;
+    bool damage_all = (damage() & ~FL_DAMAGE_CHILD);
+
+    if(drawed_header && context!=CONTEXT_COL_HEADER) {
+        header()->set_damage(0);
+        drawed_header = false;
+    }
+
+    if(context==CONTEXT_BEGIN) {
+        drawing_row = -1;
+        drawed_header = false;
+    }
+    else if(context==CONTEXT_END) {
+        if(drawing_row>=0)
+            child(drawing_row)->set_damage(0);
+    }
+    else if(context==CONTEXT_CELL) {
+        fl_push_matrix();
+        fl_translate(X, Y);
+
+        Fl_ListView_Item *item = items[R];
+
+        if(!damage_all) {
+            if(item->damage())
+                item->draw_cell(R, C, W, H);
+        } else {
+            item->set_damage(FL_DAMAGE_ALL|FL_DAMAGE_EXPOSE);
+            item->draw_cell(R, C, W, H);
+        }
+
+        if(drawing_row!=(int)R) {
+            if(drawing_row>=0)
+                child(drawing_row)->set_damage(0);
+            drawing_row = R;
+        }
+
+        fl_pop_matrix();
+    }
+    else if(context==CONTEXT_COL_HEADER) {
+
+        fl_push_matrix();
+        fl_translate(X, Y);
+
+        if(!damage_all) {
+            if(header()->damage())
+                header()->draw(C, W, H);
+        } else {
+            header()->set_damage(FL_DAMAGE_ALL|FL_DAMAGE_EXPOSE);
+            header()->draw(C, W, H);
+        }
+        drawed_header = true;
+
+        fl_pop_matrix();
+    }
+    else if(context==CONTEXT_ROW_HEADER) {
+        fl_color(color());
+        fl_rectf(X,Y,W,H);
+    }
+}
+
+void Fl_ListView::layout()
+{
+    if(m_needsetup) {
+
+        unsigned n;
+        for(n=0; n < row_count(); n++) {
+            //child(n)->index(n); //Set indexes also..
+            if(row_height(n)==0) {
+                items[n]->setup(n);
+            }
+        }
+
+        // Find col width for -1 columns
+        for(n=0; n<(unsigned)columns(); n++) {
+            if(col_width(n)<0)
+                col_width(n, preferred_col_width(n));
+        }
+
+        m_needsetup = false;
+    }
+
+    Fl_Table_Base::layout();
+}
+
+void Fl_ListView::resetup()
+{
+    for(unsigned n=0; n < row_count(); n++) {
+        row_height(n, 0);
+    }
+    m_needsetup = true;
+    relayout();
+}
+
+int Fl_ListView::handle(int event)
+{
+    return Fl_Table_Base::handle(event);
+}
+
+void Fl_ListView::table_layout(TableContext context, unsigned row, unsigned col)
+{
+    if(context==CONTEXT_COL_HEADER && width_changed_notify()) {
+        bool need_relayout = false;
+        for(unsigned n=0; n < row_count(); n++) {
+            int oldh = row_height(n);
+            items[n]->width_changed(n, col);
+            if(row_height(n) != oldh) {
+                need_relayout = true;
+            }
+        }
+        if(need_relayout) {
+            layout();
+        }
+    }
+}
+
+int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int event)
+{
+    static bool on_drag = false;
+
+    static int sel_item = 0;
+    int current_item = 0;
+
+    int ret = 0;
+    if(!on_drag && (context==CONTEXT_COL_HEADER || header()->capture_events())) {
+        ret = header()->handle(C, event);
+        if(ret || header()->capture_events())
+            return ret;
+    }
+
+    int shiftstate =
+        (Fl::event_state() & FL_CTRL) ? FL_CTRL :
+        (Fl::event_state() & FL_SHIFT) ? FL_SHIFT : 0;
+
+    switch ( event )
+    {
+    case FL_FOCUS:
+        reset_search();
+    case FL_UNFOCUS:
+        return 1; //Keyboard focus
+
+    case FL_MOVE:
+    case FL_ENTER:
+        Fl::belowmouse(this);
+        ret = 1;
+        break;
+
+    case FL_PUSH:
+        if(context==CONTEXT_CELL)
+        {
+            current_item = R;
+
+            // Handle selection in table.
+            // Select cell under cursor, and enable drag selection mode.
+
+            cur_row = current_item;
+            on_drag = true;
+
+            if(Fl::event_button() == FL_LEFT_MOUSE && multi())
+            {
+                switch(shiftstate) {
+                case FL_CTRL: {
+                    // start a new selection block without changing state
+                    select_row(current_item, 2);
+                    sel_item = current_item;
+                    show_row(current_item);
+                    ret = 1;
+                }
+                break;
+
+                case FL_SHIFT: {
+                    // We want to change the selection between
+                    // the top most selected item and the just clicked item.
+                    // start a new selection block without changing state
+                    select_items(sel_item, current_item);
+                    sel_item = current_item;
+                    Fl::event_clicks(0);
+                    show_row(current_item);
+                    ret = 1;
+                }
+                break;
+
+                default: {
+                    select_only_row(current_item);
+                    sel_item = current_item;
+                    show_row(current_item);
+                    ret = 1;
+                }
+                break;
+                }
+
+            } else { // LEFT_MOUSE && multi()
+
+                select_only_row(current_item);
+                sel_item = current_item;
+                show_row(current_item);
+                ret = 1;
+            }
+
+            if(when() & FL_WHEN_CHANGED) do_callback(FL_DATA_CHANGE);
+            else set_changed();
+        }
+        break;
+
+    case FL_DRAG: {
+        if(!on_drag) break;
+
+        if(context==CONTEXT_CELL) current_item = R;
+        else                      current_item = row_at(yposition()+Fl::event_y()-tiy);
+        if(current_item==-1) return 0;
+
+        if(multi())
+        {
+            // CTRL does not unselect others
+            if(shiftstate!=FL_CTRL)
+            {
+                // Turn off items that are not in selection
+                //unselect_all();
+
+                // minimum drawing:
+                // Maybe leaves some items undamaged..? test test test... :)
+                int start=0, end=0;
+                int from = sel_item, to = current_item;
+                if(to < from) {
+                    start=to; end=from;
+                } else {
+                    start=from; end=to;
+                }
+
+                Fl_Int_List clear_list;
+                unsigned n;
+                for(n=0; n<selection.size(); n++)
+                {
+                    int item = selection[n];
+                    if(item < start || item > end) {
+                        set_select_flag(item, 0);
+                        child(item)->redraw();
+                        clear_list.append(n);
+                    }
+                }
+
+                for(n=0; n<clear_list.size(); n++) {
+                    selection.remove(clear_list[n]);
+                }
+            }
+
+            if(sel_item != current_item || sel_item==0 || sel_item==int(children()-1))
+            {
+                // Mark items selected
+                select_items(sel_item, current_item);
+                show_row( (cur_row = current_item) );
+            }
+
+            if(sel_item!=current_item) {
+                if(when() & FL_WHEN_CHANGED) do_callback(FL_DATA_CHANGE);
+                else set_changed();
+            }
+
+        } else { // end multi
+
+            select_only_row(current_item);
+            show_row( (cur_row = current_item) );
+        }
+        return 1;
+    }
+
+    case FL_RELEASE:
+        if(Fl::event_button() == 1) {
+            on_drag = false;
+            ret = 1;
+        }
+
+        if (when() & FL_WHEN_RELEASE && context==CONTEXT_CELL) {
+            if (Fl::event_clicks()) {
+                do_callback(event);
+                Fl::event_clicks(0);
+                return 1;
+            }
+            do_callback(event);
+        }
+        break;
+
+    case FL_KEY:
+        ret = handle_key();
+
+    default:
+        break;
+    }
+
+    return ret;
+}
+
+int Fl_ListView::handle_key()
+{
+    if(!children()) return 0;
+
+    Fl::event_clicks(0); // make program not think it is a double-click
+
+    switch(Fl::event_key())
+    {
+    case FL_Home: {
+        m_search_str.clear();
+        yposition(0);
+        item(child(0));
+        select_only_row(0);
+        return 1;
+    }
+
+    case FL_End: {
+        m_search_str.clear();
+        yposition(table_h - tih);
+        item(child(children()-1));
+        select_only_row(children()-1);
+        return 1;
+    }
+
+    case FL_Up: {
+        m_search_str.clear();
+        int index;
+        if(cur_row==-1) index = children()-1;
+        else index = prev_row();
+        if(index>=0) {
+            if(Fl::event_state(FL_SHIFT|FL_CTRL) && multi())
+                select_row(index, 1);
+            else
+                select_only_row(index);
+            show_row(index);
+            cur_row = index;
+        }
+        if ((when()&FL_WHEN_RELEASE) && (changed() || (when()&FL_WHEN_NOT_CHANGED))) {
+            clear_changed();
+            do_callback(FL_DATA_CHANGE);
+        }
+        return 1;
+    }
+
+    case FL_Down: {
+        m_search_str.clear();
+        int index;
+        if(cur_row==-1) index = 0;
+        else index = next_row();
+        if(index>=0 && index<int(children())) {
+            if(Fl::event_state(FL_SHIFT|FL_CTRL) && multi())
+                select_row(index, 1);
+            else
+                select_only_row(index);
+            show_row(index);
+            cur_row = index;
+        }
+        if ((when()&FL_WHEN_RELEASE) && (changed() || (when()&FL_WHEN_NOT_CHANGED))) {
+            clear_changed();
+            do_callback(FL_DATA_CHANGE);
+        }
+        return 1;
+    }
+
+    case FL_Enter:
+        if (!(when() & FL_WHEN_ENTER_KEY)) break;
+        clear_changed();
+        do_callback(FL_DATA_CHANGE);
+        return 1;
+
+    default: {
+        int ret=0;
+        ret = vscrollbar->send(FL_KEY);
+        if(!ret) ret = hscrollbar->send(FL_KEY);
+
+        if(ret)
+        {
+            if(Fl::event_key()==FL_Page_Up)
+                select_only_row( row_at(yposition()) );
+            else if(Fl::event_key()==FL_Page_Down)
+                select_only_row( row_at(yposition()+tih) );
+
+            show_row(cur_row);
+            return 1;
+        }
+        else if(m_type_in_mode) {
+
+            // Type-in search
+            bool bs = false;
+            switch (Fl::event_key())
+            {
+            case FL_BackSpace:
+                if(!m_search_str.empty()) {
+                    m_search_str.sub_delete(m_search_str.length()-1);
+                    bs = true;
+                    break;
+                }
+                return 0;
+
+            case FL_Delete:
+            case FL_Escape:
+                reset_search();
+                return 1;
+
+            default:
+                break;
+            } //end switch (Fl::event_key())
+
+            int i;
+
+            // insert any text:
+            if(Fl::compose(i) || bs)
+            {
+                if(!bs && !i && !Fl::event_length())
+                    return 1;
+
+                Fl_String search_str = m_search_str;
+                if(!bs)
+                    search_str.append(Fl::event_text(), Fl::event_length());
+                //printf("Search str: (%s)\n", search_str.c_str());
+
+                int index = find_text_row(search_str);
+                if(index) {
+                    m_search_str = search_str;
+                    if(type_in_mode()==TYPE_IN_SELECT) {
+
+                        select_only_row(index);
+                        show_row(index);
+
+                    } else if(type_in_mode()==TYPE_IN_HIDE) {
+
+                        unsigned col = (sort_col()>0) ? sort_col() : 0;
+                        Fl_String search = search_str.lower_case();
+                        for(unsigned n=0; n<row_count(); n++) {
+                            visible_row(n, match_text(search, items[n]->label(col)));
+                        }
+                        show_row(0);
+                        redraw();
+                    }
+                    return 1;
+                }
+            } // end compose
+        } // end if(m_type_in_mode)
+        break;
+    } // end default:
+
+    } // event_key
+    return 0;
+}
+
+void Fl_ListView::reset_search()
+{
+    if(!m_search_str.empty()) {
+        m_search_str.clear();
+    }
+
+    if(type_in_mode()==TYPE_IN_HIDE) {
+        bool need_redraw=false;
+        for(unsigned n=0; n<row_count(); n++) {
+            if(!visible_row(n)) {
+                visible_row(n, true);
+                need_redraw=true;
+            }
+        }
+        if(need_redraw) {
+            show_row(0);
+            redraw();
+        }
+    }
+}
+
+static int scol=-1;
+static int stype=-1;
+static int fl_listview_sort(const void *w1, const void *w2) {
+    Fl_ListView_Item *i1 = *(Fl_ListView_Item **)w1;
+    Fl_ListView_Item *i2 = *(Fl_ListView_Item **)w2;
+    return i1->compare(i2, scol, stype);
+}
+
+// Returns sort type: ASC, DESC, ABSOLUTE
+int Fl_ListView::sort(int column)
+{
+    if(scol!=column) m_sort_type=SORT_NONE;
+
+    m_sort_type++;
+    if(m_sort_type==SORT_LAST_TYPE)
+        m_sort_type=SORT_NONE;
+
+    m_sort_col = scol = column;
+    stype = m_sort_type;
+
+    if(m_sort_type==SORT_NONE || m_columns[column]->type()==VAR_NONE)
+        return SORT_NONE;
+
+    unsigned n;
+    Fl_ListItem_List list;
+    Fl_Int_List flags;
+
+    // We must preserve row flags, cause item indexes may change.
+    // e.g. Selected items stays selected.
+    for(n=0; n<row_count(); n++) {
+        if(row_flags(n)) {
+            list.append(items[n]);
+            flags.append(row_flags(n));
+            row_flags(n, 0);
+        }
+    }
+    selection.clear();
+
+    // Sort
+    items.sort(fl_listview_sort);
+
+    // Update row flags for new indexes
+    for(n=0; n<list.size(); n++) {
+        int new_index = items.index_of(list[n]);
+        if(new_index>-1) {
+            row_flags(new_index, flags[n]);
+            if(selected_row(new_index)) {
+                selection.append(new_index);
+            }
+        }
+    }
+
+    redraw();
+    return m_sort_type;
+}
+
+Fl_ListItem_List &Fl_ListView::get_selection()
+{
+    stored_selection.clear();
+    for(unsigned n=0; n<selection.size(); n++) {
+        stored_selection.append(items[selection[n]]);
+    }
+    return stored_selection;
+}
+
+const Fl_ListItem_List &Fl_ListView::get_selection() const {
+    return (const Fl_ListItem_List &)get_selection();
+}
+
+Fl_ListView_Item* Fl_ListView::next()
+{
+    if(cur_row==-1) return 0;
+    unsigned next_i = cur_row+1;
+    for(; next_i < row_count(); next_i++) {
+        if(visible_row(next_i))
+            break;
+    }
+    if(next_i >= row_count()) return 0;
+
+    Fl_ListView_Item *w = items[next_i];
+    return item(w);
+}
+
+Fl_ListView_Item* Fl_ListView::prev()
+{
+    if(cur_row<=0) return 0;
+    int prev_i = cur_row-1;
+    for(; prev_i>=0; prev_i--) {
+        if(visible_row(prev_i))
+            break;
+    }
+    if(prev_i < 0) return 0;
+
+    Fl_ListView_Item *w = items[prev_i];
+    return item(w);
+}
+
+int Fl_ListView::next_row()
+{
+    if(cur_row==-1) return -1;
+    unsigned next_i = cur_row+1;
+    for(; next_i < row_count(); next_i++) {
+        if(visible_row(next_i))
+            break;
+    }
+    if(next_i >= row_count()) return -1;
+    cur_row = next_i;
+    return next_i;
+}
+
+int Fl_ListView::prev_row()
+{
+    if(cur_row<=0) return -1;
+    int prev_i = cur_row-1;
+    for(; prev_i>=0; prev_i--) {
+        if(visible_row(prev_i))
+            break;
+    }
+    if(prev_i < 0) return 0;
+    cur_row = prev_i;
+    return prev_i;
 }
 
 void Fl_ListView::begin()
@@ -82,1099 +676,442 @@ void Fl_ListView::end()
     Fl_Group::end();
 }
 
-Fl_ListView_Item *Fl_ListView::find_userdata(void *data, uint start_index) const
+int Fl_ListView::find_userdata_row(void *data, unsigned start_index, unsigned end_index) const
 {
-    for(uint n=start_index; n<children(); n++) {
-        if(items[n]->user_data()==data) 
+    if(start_index >= row_count())
+        start_index = 0;
+    if(end_index <= start_index || end_index >= row_count())
+        end_index = row_count() - 1;
+
+    for(unsigned n=start_index; n<=end_index; n++) {
+        if(items[n]->user_data()==data)
+            return n;
+    }
+    return 0;
+}
+
+Fl_ListView_Item *Fl_ListView::find_userdata(void *data, unsigned start_index, unsigned end_index) const
+{
+    if(start_index >= row_count())
+        start_index = 0;
+    if(end_index <= start_index || end_index >= row_count())
+        end_index = row_count() - 1;
+
+    for(unsigned n=start_index; n<=end_index; n++) {
+        if(items[n]->user_data()==data)
             return items[n];
     }
     return 0;
 }
 
-Fl_ListView_Item *Fl_ListView::find_text(const char *text, uint column, uint start_index) const
+bool Fl_ListView::match_text(const Fl_String &key, const char *text) const
 {
-    for(uint n=start_index; n<children(); n++) {
-        const char *itext = items[n]->label(column);
-        if(!strcmp(text, itext))            
+    Fl_String tmp(text);
+    return (strncmp(tmp.lower_case(), key, key.length()) == 0);
+}
+
+int Fl_ListView::find_text_row(const char *text, int column, unsigned start_index, unsigned end_index) const
+{
+    if(start_index >= row_count())
+        start_index = 0;
+    if(end_index <= start_index || end_index >= row_count())
+        end_index = row_count() - 1;
+
+    unsigned col = (column<0) ? sort_col() : column;
+    if(col<0) col = 0;
+
+    Fl_String tmp(text);
+    Fl_String search = tmp.lower_case();
+
+    for(unsigned n=start_index; n<=end_index; n++) {
+        if(match_text(search, items[n]->label(col)))
+            return n;
+    }
+    return 0;
+}
+
+Fl_ListView_Item *Fl_ListView::find_text(const char *text, int column, unsigned start_index, unsigned end_index) const
+{
+    if(start_index >= row_count())
+        start_index = 0;
+    if(end_index <= start_index || end_index >= row_count())
+        end_index = row_count() - 1;
+
+    unsigned col = (column<0) ? sort_col() : column;
+    if(col<0) col = 0;
+
+    Fl_String tmp(text);
+    Fl_String search = tmp.lower_case();
+
+    for(unsigned n=start_index; n<=end_index; n++) {
+        if(match_text(search, items[n]->label(col)))
             return items[n];
     }
     return 0;
 }
 
-static int scol=-1;
-static int stype=-1;
-static int fl_listview_sort_strings(const void *w1, const void *w2) {
-    Fl_ListView_Item *i1 = *(Fl_ListView_Item **)w1;
-    Fl_ListView_Item *i2 = *(Fl_ListView_Item **)w2;
-    return i1->compare_strings(i2, scol, stype);    
-}
-
-static int fl_listview_sort_integers(const void *w1, const void *w2) {
-    Fl_ListView_Item *i1 = *(Fl_ListView_Item **)w1;
-    Fl_ListView_Item *i2 = *(Fl_ListView_Item **)w2;
-    return i1->compare_integers(i2, scol, stype);    
-}
-
-static int fl_listview_sort_floats(const void *w1, const void *w2) {
-    Fl_ListView_Item *i1 = *(Fl_ListView_Item **)w1;
-    Fl_ListView_Item *i2 = *(Fl_ListView_Item **)w2;
-    return i1->compare_floats(i2, scol, stype);    
-}
-
-static int fl_listview_sort_dates(const void *w1, const void *w2) {
-    Fl_ListView_Item *i1 = *(Fl_ListView_Item **)w1;
-    Fl_ListView_Item *i2 = *(Fl_ListView_Item **)w2;
-    return i1->compare_dates(i2, scol, stype);    
-}
-
-static int fl_listview_sort_datetimes(const void *w1, const void *w2) {
-    Fl_ListView_Item *i1 = *(Fl_ListView_Item **)w1;
-    Fl_ListView_Item *i2 = *(Fl_ListView_Item **)w2;
-    return i1->compare_datetimes(i2, scol, stype);    
-}
-
-// Returns sort type: ASC, DESC, ABSOLUTE
-int Fl_ListView::sort(int column)
+Fl_ListView_Item *Fl_ListView::item(Fl_ListView_Item *i)
 {
-    if(scol!=column) sort_type_=SORT_ABSOLUTE;
+    if(i && i->parent()!=this) return 0;
 
-    sort_type_++;
-    if(sort_type_==SORT_LAST_TYPE)
-        sort_type_=SORT_ABSOLUTE;
-
-    scol = column;
-    stype = sort_type_;
-    switch (column_type(column)) {
-        case VAR_INT:
-            items.sort(fl_listview_sort_integers);
-            break;
-        case VAR_FLOAT:
-            items.sort(fl_listview_sort_floats);
-            break;
-        case VAR_DATE:
-            items.sort(fl_listview_sort_dates);
-            break;
-        case VAR_DATETIME:
-            items.sort(fl_listview_sort_datetimes);
-            break;
-        default:
-            items.sort(fl_listview_sort_strings);
-            break;
+    if(i) {
+        cur_row = items.index_of(i);
+    } else {
+        cur_row = -1;
     }
-
-    calc_total_h = true;
-    relayout();
-    redraw();
-    return sort_type_;
+    return i;
 }
 
-Fl_ListView_Item* Fl_ListView::top()
+// set current item to one at or before Y pixels from top of browser
+int Fl_ListView::row_at(int Y) const
 {
     if(!children()) return 0;
-    return item(child(0));
-}
+    if(Y < 0) return 0;
+    if(Y > table_h) return items.size()-1;
 
-Fl_ListView_Item* Fl_ListView::next()
-{
-    if(!item()) return 0;
-    uint next_i = item()->index()+1;
-    if(next_i >= children()) return 0;
-    Fl_ListView_Item *w = child(next_i);
-    item(w);
-    return w;
-}
-
-Fl_ListView_Item* Fl_ListView::prev()
-{
-    if(!item() || item()->index()==0) return 0;
-    int prev_i = item()->index()-1;
-    if(prev_i < 0) return 0;
-    Fl_ListView_Item *w = child(prev_i);
-    item(w);
-    return w;
-}
-
-bool Fl_ListView::show_item(Fl_ListView_Item *w)
-{
-    if(w->y() < yposition_) {
-        yposition(w->y());
-        redraw(FL_DAMAGE_CONTENTS);
-        return true;
-    } else if(w->y()+w->h() > yposition_+H) {
-        yposition(w->y()+w->h()-H);
-        redraw(FL_DAMAGE_CONTENTS);
-        return true;
-    }
-    return false;
+    int R,C;
+    position2rowcol(0, Y, R, C);
+    return R;
 }
 
 // set current item to one at or before Y pixels from top of browser
 Fl_ListView_Item* Fl_ListView::item_at(int Y) const
 {
-    if(Y < 0) Y = 0;
     if(!children()) return 0;
+    if(Y < 0) return items[0];
+    if(Y > table_h) return items[items.size()-1];
 
-    // move forward to the item:
-    Fl_ListView_Item *w=0;
-    for(uint a=find_safe_top(); a<children(); a++)
-    {
-        w=child(a);
-        if(Y>=w->y() && Y<=w->y()+w->h())
-            return w;
+    int R,C;
+    position2rowcol(0, Y, R, C);
+    return items[R];
+}
+
+bool Fl_ListView::show_item(Fl_ListView_Item *w)
+{
+    if(!w || w->parent()!=this) return false;
+
+    int index = items.index_of(w);
+    if(index==-1) return false;
+
+    int item_y  = row_scroll_position(index);
+    int item_yh = item_y+row_height(index);
+
+    if(item_y < yposition()) {
+        yposition(item_y);
+        return true;
+    } else if(item_yh > yposition()+tih) {
+        yposition(item_yh-tih);
+        return true;
     }
-    return 0;
+    return false;
 }
 
-void Fl_ListView::damage_item(Fl_ListView_Item *item)
+bool Fl_ListView::select_row(unsigned row, int value)
 {
-    item->set_damage(FL_DAMAGE_ALL);
-}
-
-void Fl_ListView::draw_row(int x, int y, int w, int h, Fl_ListView_Item *widget, bool selected) const
-{
-    if(selected) {
-
-        int rowW = 0;
-        for(unsigned n=0; n<header()->columns(); n++)
-            rowW += header()->column_width(n);
-
-        fl_color(selection_color());
-        fl_rectf(x, y, rowW, h);
-
-        int rightW = w-rowW;
-        if(rightW > 0) {
-            if(draw_stripes_ && widget->index() & 1)
-                fl_color(button_color());
-            else
-                fl_color(color());
-            fl_rectf(x+rowW, y, rightW, h);
-        }
-
-    } else if(draw_stripes_) {
-
-        Fl_Color c0 = color();
-        Fl_Color c1 = button_color();
-        if(widget->index() & 1 && c1 != c0) {
-            // draw odd-numbered items with a dark stripe, plus contrast-enhancing
-            // pixel rows on top and bottom:
-            fl_color(c1);
-            fl_rectf(x, y, w, h);
-
-            fl_color(fl_lighter(button_color()));
-            fl_line(x, y, w, y);
-            fl_line(x, y+h-1, w, y+h-1);
+    if(set_select_flag(row, value)) {
+        if(selected_row(row)) {
+            selection.append(row);
         } else {
-            fl_color(c0);
-            fl_rectf(x, y, w, h);
+            selection.remove(row);
         }
-
-    } else {
-        fl_color(color());
-        fl_rectf(x, y, w, h);
+        items[row]->redraw();
+        return true;
     }
+    return false;
 }
 
-void Fl_ListView::draw_item(Fl_ListView_Item *widget) const
+bool Fl_ListView::select_only_row(unsigned row)
 {
-    bool selected = SEL(widget);
-    int y = widget->y() - yposition_+Y;
-
-    int x = X-xposition_;
-
-    draw_row(X, y, W, widget->h(), widget, selected);
-
-    fl_push_matrix();
-    fl_translate(x, y);
-
-    int cellX=box()->dx();
-    for(int a=0; a<columns(); a++) {
-        widget->draw_cell(a, column_width(a), selected);
-        cellX += column_width(a);
-        fl_translate(column_width(a), 0);
+    unselect_all();
+    if(set_select_flag(row, 1)) {
+        selection.append(row);
+        items[row]->redraw();
     }
-
-    fl_pop_matrix();
-    widget->set_damage(0);
+    cur_row = row;
+    return true;
 }
 
-void Fl_ListView::draw_clip_cb(void* v,int X, int Y, int W, int H)
-{
-    ((Fl_ListView*)v)->draw_clip(X,Y,W,H);
-}
-
-void Fl_ListView::draw_clip(int x, int y, int w, int h) const
-{
-    if(!children()) {
-        fl_color(color());
-        fl_rectf(x,y,w,h);
-        return;
-    }
-
-    fl_push_clip(x,y,w,h);
-
-    int draw_all = damage() & (FL_DAMAGE_ALL|FL_DAMAGE_CONTENTS);
-    int draw_scroll = damage() & (FL_DAMAGE_SCROLL);
-
-    Fl_ListView_Item *widget = 0;
-    for(uint n=find_safe_top(); n < children(); n++)
-    {
-        widget = child(n);
-
-        if(widget->y()-yposition_ < -widget->h()) continue;
-        if(widget->y()-yposition_ > y+h) break;
-
-        if(draw_scroll || draw_all || (widget->damage() & FL_DAMAGE_ALL)) {
-            draw_item(widget);
-        }
-    }
-
-    // erase the area below the last item:
-    if(widget) {
-        int bottom_y = widget->y()+widget->h()-yposition_+Y;
-        if(bottom_y < y+h) {
-            fl_color(color());
-            fl_rectf(x, bottom_y, w, y+h-bottom_y);
-        }
-    }
-    fl_pop_clip();
-}
-
-void Fl_ListView::draw_header() const
-{
-    if(!(damage() & FL_DAMAGE_ALL) && !(_header->damage() & FL_DAMAGE_ALL))
-        return;
-
-    if(!_header->visible()) return;
-
-    fl_push_clip(HX,HY,HW,HH);
-    int xp = HX-xposition_;
-
-    fl_push_matrix();
-    fl_translate(xp, HY);
-
-    _header->draw();
-
-    fl_pop_matrix();
-
-    fl_pop_clip();
-
-    _header->set_damage(0);
-}
-
-void Fl_ListView::draw()
-{
-    if(totalheight() < H)
-        yposition_ = 0;
-    else if((total_height < yposition_+H) && totalheight() > H)
-        yposition_ = total_height-H;
-
-    draw_header();
-
-    // redraw contents
-    if((damage() & (FL_DAMAGE_ALL|FL_DAMAGE_CONTENTS))) {
-
-        //printf("contents %d %d %d %d\n", X,Y,W,H);
-        draw_frame();
-        draw_clip(X, Y, W, H);
-
-    } else {
-
-        // minimal update
-        //printf("minimal redraw damage %x\n", damage());
-        if(scrolldy || scrolldx) {
-
-            fl_scroll(X, Y, W, H, scrolldx, scrolldy, draw_clip_cb, this);
-
-        } else {
-
-            bool clipped = false;
-            Fl_ListView_Item *widget = 0;
-            for(uint n=find_safe_top(); n < children(); n++) {
-                widget = child(n);
-
-                if(widget->y()-yposition_ < -widget->h()) continue;
-                if(widget->y()-yposition_ > Y+H) break;
-
-                if(!clipped) {
-                    fl_push_clip(X, Y, W, H);
-                    clipped = true;
-                }
-
-                if((widget->damage() & (FL_DAMAGE_ALL|FL_DAMAGE_VALUE)))
-                    draw_item(widget);
-            }
-            if(clipped) fl_pop_clip();
-        }
-    }
-
-    scrolldy = scrolldx = 0;
-
-    // draw the scrollbars:
-    if(damage() & (FL_DAMAGE_ALL|FL_DAMAGE_CONTENTS)) {
-        vscrollbar.set_damage(FL_DAMAGE_ALL);
-        hscrollbar.set_damage(FL_DAMAGE_ALL);
-        if(vscrollbar.visible() && hscrollbar.visible()) {
-            // fill in the little box in the corner
-            fl_color(parent()->color());
-            fl_rectf(vscrollbar.x(), hscrollbar.y(), vscrollbar.w(), hscrollbar.h());
-        }
-    }
-    update_child(vscrollbar);
-    update_child(hscrollbar);
-}
-
-////////////////////////////////////////////////////////////////
-// Scrolling and layout:
-void Fl_ListView::layout_scrollbars()
-{
-    int max_cols_w = 0;
-    for(int a=0; a<columns(); a++)
-        max_cols_w += column_width(a);
-
-    if((type()&VERTICAL) && (type()&ALWAYS_ON || total_height > H || yposition_))
-    {
-        if(!vscrollbar.visible()) {
-            vscrollbar.set_visible();
-            W -= vscrollbar.w();
-            HW-= vscrollbar.w();
-            redraw(FL_DAMAGE_ALL);
-        }
-    } else {
-        if(vscrollbar.visible()) {
-            vscrollbar.clear_visible();
-            W += vscrollbar.w();
-            HW+= vscrollbar.w();
-            redraw(FL_DAMAGE_ALL);
-        }
-    }
-
-    if((type()&HORIZONTAL) && (type()&ALWAYS_ON || max_cols_w > W || xposition_)) {
-        if (!hscrollbar.visible()) {
-            hscrollbar.set_visible();
-            H -= hscrollbar.h();
-            //HH-= hscrollbar.h();
-            redraw(FL_DAMAGE_ALL);
-        }
-    } else {
-        if(hscrollbar.visible()) {
-            hscrollbar.clear_visible();
-            H += hscrollbar.h();
-            //HH+= hscrollbar.h();
-            redraw(FL_DAMAGE_ALL);
-        }
-    }
-
-    int vx = vscrollbar.flags()&FL_ALIGN_LEFT ? X-vscrollbar.w() : X+W;
-    int vy = Y-(_header->visible() ? _header->h() : 0);
-    int vh = H+(_header->visible() ? _header->h() : 0);
-    vscrollbar.resize(vx, vy, vscrollbar.w(), vh);
-    vscrollbar.value(yposition_, H, 0, total_height);
-    if(children()>0) vscrollbar.linesize(child(0)->h());
-
-    int hy = hscrollbar.flags()&FL_ALIGN_TOP ? box()->dy() : Y+H;
-    hscrollbar.resize(X, hy, W, hscrollbar.h());
-    hscrollbar.value(xposition_, W, 0, max_cols_w/*max_width*/);
-    if(children()>0) hscrollbar.linesize(child(0)->h());
-}
-
-unsigned Fl_ListView::find_safe_top() const
-{
-    if(!children() || yposition_<=0) return 0;
-
-    unsigned idx = 0;
-    for(int n=m_ypos_lookup.size()-1; n>=0; n--) {
-        Fl_ListView_Item *i = child(m_ypos_lookup[n]);
-        if(i->y() < yposition_) {
-            idx = m_ypos_lookup[n];
-            break;
-        }
-    }
-
-    return idx;
-}
-
-void Fl_ListView::layout()
-{
-    X = 0; Y = 0;
-    W = w(); H = h();
-    box()->inset(X,Y,W,H);
-
-    HX=X; HY=Y;
-    HH = _header->visible() ? _header->h() : 0;
-    HW = W;
-
-    H-=HH;
-    Y+=HH;
-
-    if(vscrollbar.visible()) {
-        W -= vscrollbar.w();
-        HW-= vscrollbar.w();
-        if(vscrollbar.flags() & FL_ALIGN_LEFT) {
-            X += vscrollbar.w();
-            HX+= vscrollbar.w();
-        }
-    }
-    if(hscrollbar.visible()) {
-        H -= hscrollbar.h();
-        if(hscrollbar.flags() & FL_ALIGN_TOP) {
-            Y += hscrollbar.h();
-            HY+= hscrollbar.h();
-        }
-    }    
-
-    if(children()>0 && calc_total_h) {
-
-        int widgety=0;
-        Fl_ListView_Item *widget = 0;
-
-        m_ypos_lookup.clear();
-        m_ypos_lookup.append(0);
-
-        for(uint a=0; a < children(); a++)
-        {
-            if(a%1000 == 0) {               
-                m_ypos_lookup.append(a);
-            }
-            widget = (Fl_ListView_Item *)child(a);
-            widget->y(widgety);
-            widget->layout();
-
-            widgety+=widget->h();
-
-            widget->index(a);
-        }   
-
-        total_height = widgety;
-        calc_total_h = false;
-
-        if(find_def) find_default_sizes();
-    }
-
-    layout_scrollbars();
-
-    if(layout_damage() && _header->visible()) {
-        _header->resize(HX, HY, HW, HH);
-        _header->layout();
-    }
-
-    //Clear layout flag
-    Fl_Widget::layout();
-}
-
-void Fl_ListView::hscrollbar_cb(Fl_Widget* o, void*) {
-    ((Fl_ListView *)(o->parent()))->xposition(int(((Fl_Scrollbar*)o)->value()));
-}
-
-void Fl_ListView::vscrollbar_cb(Fl_Widget* o, void*) {
-    ((Fl_ListView *)(o->parent()))->yposition(int(((Fl_Scrollbar*)o)->value()));
-}
-
-void Fl_ListView::xposition(int X)
-{
-    if(X == xposition_) return;
-    ((Fl_Slider*)(&hscrollbar))->value(X);
-    int dx = xposition_-X;
-    if(dx) {
-        xposition_ = X;
-        scrolldx += dx;        
-        _header->set_damage(FL_DAMAGE_ALL);
-        redraw(FL_DAMAGE_SCROLL);
-    }
-}
-
-void Fl_ListView::yposition(int Y)
-{
-    if(Y == yposition_) return;
-
-    ((Fl_Slider*)(&vscrollbar))->value(Y);
-    int dy = yposition_-Y;
-    if(dy) {
-        scrolldy += (yposition_-Y);
-        yposition_ = Y;
-        redraw(FL_DAMAGE_SCROLL);
-    }
-}
-
-////////////////////////////////////////////////////////////////
-// Event handling
-
-// force current item to a state
-int Fl_ListView::select(Fl_ListView_Item *w, int value)
-{
-    if(value) {
-        if(SEL(w)) return 0;
-        selection.append(w);        
-    } else {        
-        selection.remove(w);        
-    }
-
-    if(selection.size()>0 && move()) {
-        sort_selection();
-    }
-
-    damage_item(w);
-    return 1;
-}
-
-// Turn off all lines in the browser:
-int Fl_ListView::unselect_all()
-{
-    for(uint n=0; n<selection.count(); n++)
-        damage_item(selection[n]);
-    selection.clear();
-    return 1;
-}
-
-// Set both the single and multi-browser to only this item:
-int Fl_ListView::select_only(Fl_ListView_Item *w)
-{
-    // Turn off all other items:
-    unselect_all();    
-    set_changed();
-    selection.append(w);    
-    damage_item(w);    
-
-    item(w);
-    return 1;
-}
-
-#define HANDLE_HEADER_PUSH if(Fl::event_inside(HX,HY,HW,HH) && _header->visible()) { header_pushed=true; return head.send(event); }
-#define HANDLE_HEADER if(Fl::event_inside(HX,HY,HW,HH) && _header->visible()) { return head.send(event); }
-
-int Fl_ListView::handle(int event)
-{
-    static bool header_pushed=false;
-    static char drag_type=0; // for multibrowser
-
-    // for moving and selecting
-    static Fl_ListView_Item *sel_item=0;
-
-    switch (event)
-    {
-        case FL_FOCUS:
-        case FL_UNFOCUS:
-            return 1;
-
-        case FL_PUSH:
-            HANDLE_HEADER_PUSH;
-        case FL_MOVE:
-            HANDLE_HEADER;
-        case FL_ENTER:
-            if(vscrollbar.align()&FL_ALIGN_LEFT ? (Fl::event_x() < vscrollbar.x()+vscrollbar.w()) : (Fl::event_x() >= vscrollbar.x()))
-                if(vscrollbar.send(event))
-                    return 1;
-            if(hscrollbar.align()&FL_ALIGN_TOP ? (Fl::event_y() < hscrollbar.y()+hscrollbar.h()) : (Fl::event_y() >= hscrollbar.y()))
-                if(hscrollbar.send(event))
-                    return 1;
-
-            if(event != FL_PUSH)
-            {
-                Fl::belowmouse(this);
-                return 1;
-            }
-
-            take_focus();
-        case FL_DRAG:
-            {
-                if(header_pushed)
-                    HANDLE_HEADER;
-                int my = Fl::event_y()+yposition_-Y;
-                Fl_ListView_Item *i = item_at(my);
-                if(!i) return 0;
-
-                if(event == FL_DRAG)
-                {
-                    if(move())
-                    {
-                        if(sel_item)
-                        {
-                            if(selection.size() > 0) //Move many
-                            {                               
-                                int offset = i->h()-sel_item->h()/2;
-                                if(my < sel_item->y()-offset) //UP
-                                {
-                                    int cnt = sel_item->index() - i->index();                                       
-                                    if(selection.item(selection.size()-1)->index()-cnt >= 0) {                                      
-                                        moveselection_up(cnt);                                        
-                                        show_item(sel_item);
-                                        redraw(FL_DAMAGE_CONTENTS);
-                                    }
-                                }
-                                else if(my > sel_item->y()+sel_item->h()+offset) //DOWN
-                                {
-                                    int cnt = i->index() - sel_item->index();                                   
-                                    if(selection.item(0)->index()+cnt < (int)children()) {
-                                        moveselection_down(cnt);                                        
-                                        show_item(sel_item);
-                                        redraw(FL_DAMAGE_CONTENTS);
-                                    }
-                                }
-                            }
-                        } //sel_item
-
-                    } else if(multi()) // end move
-                    {
-                        if(sel_item) {
-                        // If not movable, then dragging selects
-                        //drag_type = !SEL(i);
-                        //select(i, drag_type);
-                            if(item()!=i) {
-                                select_items(sel_item->index(), i->index());
-                                item(i);
-                                show_item(i);
-                                redraw(FL_DAMAGE_CHILD);
-                            }
-                        }
-                    //return 1;
-
-                    } else { // end multi
-
-                        select_only(i);
-                        item(i);
-                        show_item(i);
-                        redraw(FL_DAMAGE_CHILD);
-                    //return 1;
-
-                    }
-
-                    if(sel_item!=i) {
-                        if(when() & FL_WHEN_CHANGED) do_callback(FL_DATA_CHANGE);
-                        else set_changed();
-                    }
-                    return 1;
-
-                } // end if( event != FL_PUSH )
-                else if(event == FL_PUSH) {
-
-                // If different item, set clicks to 0
-                    if(i != item()) Fl::event_clicks(0);
-
-                    item(i);
-                    damage_item(i);                
-                    show_item(i);
-                    int ret = 0;
-
-                    if(Fl::event_button() == FL_LEFT_MOUSE && multi())
-                    {
-                    // Multiple selection button handling
-                        if(Fl::event_state(FL_CTRL))
-                        {
-                        // start a new selection block without changing state
-                            drag_type = !SEL(i);
-                            select(i, drag_type);
-                            sel_item = i;
-                            show_item(i);
-                            redraw(FL_DAMAGE_CHILD);
-                            ret = 1;
-                        }
-                        else if(Fl::event_state(FL_SHIFT)) {
-                        // We want to change the selection between
-                        // the top most selected item and the just clicked item.
-                        // start a new selection block without changing state
-                            drag_type = !SEL(i);
-                        //select(i, drag_type);
-                            select_items(sel_item->index(), i->index());
-                            sel_item  = i;
-                            Fl::event_clicks(0);
-                            show_item(i);
-                            redraw(FL_DAMAGE_CHILD);
-                            ret = 1;
-                        } else {
-                        //Normal push
-                            select_only(i);
-                            drag_type = 1;
-                            sel_item  = i;
-                            show_item(i);
-                            redraw(FL_DAMAGE_CHILD);
-                            ret = 1;
-                        }
-
-                    } else { // LEFT_MOUSE && multi()
-
-                        select_only(i);
-                        sel_item  = i;
-                        show_item(i);
-                        redraw(FL_DAMAGE_CHILD);
-                        ret = 1;
-                    }
-
-                    if (when() & FL_WHEN_CHANGED)
-                        do_callback(FL_DATA_CHANGE);
-                    else
-                        set_changed();
-
-                    return ret;
-                }
-            }  // end case FL_PUSH / FL_DRAG
-            return 1;
-
-        case FL_RELEASE:
-            {
-                HANDLE_HEADER;
-                header_pushed=false;
-
-                if (when() & FL_WHEN_RELEASE) {
-                    if (Fl::event_clicks()) {
-                        do_callback(event);
-                        Fl::event_clicks(0);
-                        return 1;
-                    }
-                    do_callback(event);
-                }
-            }
-            return 1;
-
-        case FL_KEY:
-            {
-                Fl::event_clicks(0); // make program not think it is a double-click
-                switch(Fl::event_key())
-                {
-                    case FL_Delete:
-                        return 1;
-                    case FL_Home:
-                        yposition(0);
-                        item(child(0));
-                        select_only(child(0));
-                        return 1;
-
-                    case FL_End:
-                        yposition(totalheight()-h());
-                        item(child(children()-1));
-                        select_only(child(children()-1));
-                        redraw(FL_DAMAGE_CONTENTS);
-                        return 1;
-
-                    case FL_Up:
-                        {
-                            Fl_ListView_Item *i;
-                            if(!item() && children()>0) i = child(children()-1);
-                            else i = prev();
-                            if(i) {
-                                if(i->y() <= yposition_)
-                                    scroll_up(i->h()+10);
-                                if(Fl::event_state(FL_SHIFT|FL_CTRL) && multi())
-                                    select(i, 1);
-                                else
-                                    select_only(i);
-
-                                show_item(i);
-                                redraw(FL_DAMAGE_CONTENTS);
-                            }
-                            if ((when()&FL_WHEN_RELEASE) && (changed() || (when()&FL_WHEN_NOT_CHANGED))) {
-                                clear_changed();
-                                do_callback(event);
-                            }
-                            return 1;
-                        }
-
-                    case FL_Down:
-                        {
-                            Fl_ListView_Item *i;
-                            if(!item() && children()>0) i = child(0);
-                            else i = next();
-                            if(i) {
-                                if(i->y()+i->h() >= yposition_+H)
-                                    scroll_down(i->h()+10);
-                                if(Fl::event_state(FL_SHIFT|FL_CTRL) && multi())
-                                    select(i, 1);
-                                else
-                                    select_only(i);
-
-                                show_item(i);
-                                redraw(FL_DAMAGE_CONTENTS);
-                            }
-                            if ((when()&FL_WHEN_RELEASE) && (changed() || (when()&FL_WHEN_NOT_CHANGED))) {
-                                clear_changed();
-                                do_callback(event);
-                            }
-                            return 1;
-                        }
-
-                    case FL_Enter:
-                        if (!(when() & FL_WHEN_ENTER_KEY)) break;
-                        clear_changed();
-                        do_callback(event);
-                        return 1;
-
-                    default:
-                        int ret=0;
-                        ret = vscrollbar.send(event);
-                        if(!ret) ret = hscrollbar.send(event);
-                        if(ret) {
-                            if(Fl::event_key()==FL_Page_Up)
-                                select_only(item_at(yposition_+10));
-                            else if(Fl::event_key()==FL_Page_Down)
-                                select_only(item_at(yposition_+H-10));
-                            show_item(item());
-                            redraw(FL_DAMAGE_CONTENTS);
-                            return 1;
-                        }
-                        break;
-
-                } // event_key
-                break;
-            } // FL_KEYBOARD
-        case FL_MOUSEWHEEL:
-            {
-            /*if(vscrollbar.visible())
-                return vscrollbar.send(event);
-            else if(hscrollbar.visible())
-                return hscrollbar.send(event);
-            break;*/
-                if(Fl::event_dy()>0) scroll_up(25);
-                else scroll_down(25);
-                return 1;
-            }
-        default:
-            break;
-    } // event
-
-    return 0;
-}
-
-void Fl_ListView::scroll_down(int pixels)
-{
-    if(children() && totalheight() > H)
-    {
-        if(yposition_ > (totalheight() - H)) {
-            yposition(totalheight() - H);
-            return;
-        }
-
-        int yp = yposition_+pixels;
-        if(yp > (totalheight() - H)) yp = totalheight()-H;
-
-        yposition(yp);
-    }
-}
-
-void Fl_ListView::scroll_up(int pixels)
-{
-    if(children())
-    {
-        if(yposition_-pixels <= 0)
-        {
-            if(yposition_ > 0)
-                yposition(0);
-            return;
-        }
-        yposition(yposition_-pixels);
-    }
-}
-
-static int cmp(const void *w1, const void *w2) {
-    return (*(Fl_ListView_Item **)w2)->index() - (*(Fl_ListView_Item **)w1)->index();
-}
-
-void Fl_ListView::sort_selection() {
-    selection.sort(cmp);
-}
-
-void Fl_ListView::moveselection_up(int dy)
-{   
-    unsigned n=selection.size();
-    Fl_ListView_Item *i;
-
-    while(n--)
-    {
-        i = selection[n];
-        items.remove(i->index());
-        items.insert(i->index()-dy, i);
-    }
-
-    // Update Y positions and indexes for safe range, after move.
-    // -10 and +10, only to be sure everything is correct
-    int range_start = selection[selection.size()-1]->index()-10;
-    int range_end   = selection[0]->index()+10;
-    int y, idx;
-
-    if(range_start<=0) {
-        range_start=0;
-        y = 0; idx = 0;
-    } else {
-        y = child(range_start)->y();
-        idx = child(range_start)->index();
-    }
-    if((unsigned)range_end>items.size())
-        range_end=items.size();
-
-    for(n=range_start; n<(unsigned)range_end; n++) {
-        child(n)->y(y);
-        child(n)->index(idx);
-        y += child(n)->h();
-        idx++;
-    }
-}
-
-void Fl_ListView::moveselection_down(int dy)
-{
-    unsigned n;
-    Fl_ListView_Item *i;
-    for(n=0; n<selection.size(); n++)
-    {
-        i = selection[n];
-        items.remove(i->index());
-        items.insert(i->index()+dy, i);
-    }
-
-    // Update Y positions and indexes for safe range, after move.
-    // -10 and +10, only to be sure everything is correct
-    int range_start = selection[selection.size()-1]->index()-10;
-    int range_end   = selection[0]->index()+10;
-    int y, idx;
-
-    if(range_start<=0) {
-        range_start=0;
-        y = 0; idx = 0;
-    } else {
-        y = child(range_start)->y();
-        idx = child(range_start)->index();
-    }
-    if((unsigned)range_end>items.size())
-        range_end=items.size();
-
-    for(n=range_start; n<(unsigned)range_end; n++) {
-        child(n)->y(y);
-        child(n)->index(idx);
-        y += child(n)->h();
-        idx++;
-    }
-}
-
-void Fl_ListView::remove_selection()
-{
-    int a = 0;
-    for(uint n=0; n<selection.size(); n++) {
-        Fl_ListView_Item *item = selection.item(n);
-        if(!a) a = item->index();
-        delete item;
-    }
-    selection.clear();
-    select_only(child(a));
-}
-
-void Fl_ListView::clear_selection()
-{
-    selection.clear();
-}
-
-void Fl_ListView::select_items(int from, int to)
+void Fl_ListView::select_items(unsigned from, unsigned to)
 {
     int start=0, end=0;
     if(to < from) {
         start=to;
-        end=from;
+        end=from+1;
     } else {
         start=from;
         end=to+1;
     }
 
-    unselect_all();
     for(int n=start; n<end; n++) {
-        selection.append(child(n));
-        set_changed();
-        damage_item(child(n));
-    }
-
-    if(selection.size()>0 && move()) {
-        sort_selection();
+        if(selection.index_of(n)==-1) {
+            if(set_select_flag(n, 1))
+                items[n]->redraw();
+            selection.append(n);
+        }
     }
 }
 
-void Fl_ListView::clear()
+bool Fl_ListView::unselect_all()
 {
-    for(uint n=0; n<children(); n++) {
-        Fl_ListView_Item *w = child(n);
-        w->parent(0);
-        delete w;
-    }
-    items.clear();
-    selection.clear();
+    if(selection.empty()) return false;
 
-    first_vis = -1;
-    scrolldy = scrolldx = 0;
-    yposition_ = xposition_ = 0;
-    item_ = 0;
-    total_height = 0;
+    for(unsigned n=0; n<selection.count(); n++) {
+        set_select_flag(selection[n], 0);
+        items[selection[n]]->redraw();
+    }
+    selection.clear();
+    return true;
+}
+
+bool Fl_ListView::set_select_flag(unsigned row, int flag)
+{
+    if(row >= row_count() ) { return 0; }
+
+    bool oldval = selected_row(row);
+    if(!selectable_row(row)) flag=0;
+
+    if(flag==0) {
+        row_flags(row, row_flags(row)&~SELECTED);
+    } else if(flag==1) {
+        row_flags(row, row_flags(row)|SELECTED);
+    } else if(flag==2) {
+        row_flags(row, row_flags(row)^SELECTED);
+    }
+    return (oldval!=selected_row(row));
+}
+
+void Fl_ListView::select_all_rows(int flag)
+{
+    for(unsigned row=0; row<row_count(); row++)
+    {
+        if(flag==0) {
+            row_flags(row, row_flags(row)&~SELECTED);
+        } else if(flag==1) {
+            row_flags(row, row_flags(row)|SELECTED);
+        } else if(flag==2) {
+            row_flags(row, row_flags(row)^SELECTED);
+        }
+    }
+    redraw();
+}
+
+void Fl_ListView::inactive_row(unsigned row, bool val)
+{
+    if(val) row_flags(row, row_flags(row)|INACTIVE);
+    else    row_flags(row, row_flags(row)&~INACTIVE);
+}
+
+void Fl_ListView::selectable_row(unsigned row, bool val)
+{
+    if(val) row_flags(row, row_flags(row)&~NON_SELECTABLE);
+    else    row_flags(row, row_flags(row)|NON_SELECTABLE);
+}
+
+int Fl_ListView::find(const Fl_ListView_Item *item) const
+{
+    if(!item) return children();
+    // Search backwards so if children are deleted in backwards order
+    // they are found quickly:
+    for(int index = children(); index--;)
+        if(child(index) == item)
+            return index;
+    return children();
+}
+
+void Fl_ListView::insert(Fl_ListView_Item &item, int pos)
+{
+    if(item.parent()) {
+        int n = item.parent()->find(item);
+        if(item.parent() == this) {
+            if(pos > n) pos--;
+            if(pos == n) return;
+        }
+        item.parent()->remove(n);
+    }
+
+    // Update parent and index
+    item.parent(this);
+
+    if(children() == 0) {
+        // allocate for 1 child
+        items.append(&item);
+    } else {
+        items.insert(pos, &item);
+    }
+
+    // Update row count in table
+    if(items.size() != row_count())
+        row_count(items.size());
+
+    // Relayout
+    m_needsetup = true;
+    relayout();
+}
+
+void Fl_ListView::add(Fl_ListView_Item &item)
+{
+    insert(item, children());
 }
 
 void Fl_ListView::remove(int index)
 {
-    if((uint)index >= children()) return;
+    if(index >= int(children())) return;
 
     Fl_ListView_Item *w = child(index);
-    if(w==item_) item_ = 0;
+    if(cur_row==index) cur_row = -1;
 
     w->parent(0);
     items.remove(index);
 
-    calc_total_h = true;
-}
-
-void Fl_ListView::insert(Fl_ListView_Item  &o, uint index)
-{
-    if (o.parent()) {
-        uint n = o.index();
-        if (o.parent() == this) {
-            if (index > n) index--;
-            if (index == n) return;
-        }
-        o.parent()->remove(n);
-    }
-    o.parent(this);
-    if(children() == 0) {
-        // allocate for 1 child
-        items.append(&o);
-    } else {
-        items.insert(index, &o);
-    }
-
-    calc_total_h = true;
+    // Relayout
+    m_needsetup = true;
     relayout();
 }
 
-void Fl_ListView::add(Fl_ListView_Item &w)
+///////////////////////////////
+// Column functions
+
+void Fl_ListView::columns(unsigned count)
 {
-    insert(w, children());
+    uint old_size = m_columns.size();
+    uint new_size = count;
+
+    if(old_size < new_size) {
+        for(uint n=old_size; n<new_size; n++) {
+            add_column("");
+        }
+    } else {
+        for(uint n=new_size; n<old_size; n++) {
+            delete m_columns[n];
+        }
+        m_columns.resize(new_size);
+        col_count(new_size);
+    }
+
+    // Relayout
+    m_needsetup = true;
+    relayout();
+}
+
+Fl_ListView_Column *Fl_ListView::add_column(const char *name, int width, Fl_Variant_Type column_type)
+{
+    Fl_ListView_Column *col = new Fl_ListView_Column();
+    col->label(name);
+    col->type(column_type);
+    m_columns.append(col);
+    col_count(m_columns.size());
+    col_width(m_columns.size()-1, width);
+
+    // Relayout
+    m_needsetup = true;
+    relayout();
+
+    return col;
+}
+
+void Fl_ListView::remove_column(unsigned index)
+{
+    Fl_ListView_Column *col = m_columns[index];
+    m_columns.remove(index);
+    col_count(m_columns.size());
+
+    // Relayout
+    m_needsetup = true;
+    relayout();
+
+    delete col;
+}
+
+bool Fl_ListView::remove_column(const char *name)
+{
+    Fl_ListView_Column *col = 0;
+    for(unsigned n=0; n<m_columns.size(); n++) {
+        if(m_columns[n]->label() == name) {
+            col = m_columns[n];
+            m_columns.remove(n);
+            break;
+        }
+    }
+    if(col) {
+        col_count(m_columns.size());
+        delete col;
+
+        // Relayout
+        m_needsetup = true;
+        relayout();
+
+        return true;
+    }
+    return false;
+}
+
+void Fl_ListView::clear_columns()
+{
+    for(unsigned n=0; n<m_columns.size(); n++) {
+        Fl_ListView_Column *col = m_columns[n];
+        delete col;
+    }
+
+    m_columns.clear();
+    col_count(0);
+
+    // Relayout
+    m_needsetup = true;
+    relayout();
+}
+
+int Fl_ListView::preferred_col_width(int col)
+{
+    int max = 0;
+    for(unsigned a=0; a < row_count(); a++) {
+        Fl_ListView_Item *widget = items[a];
+        int preferred_w = widget->preferred_width(col);
+        if(max < preferred_w+20)
+            max = preferred_w+20;
+    }
+    return max;
 }
 
 void Fl_ListView::find_default_sizes()
 {
     uint a;
-    int i;
+    unsigned i;
     Fl_Int_List max_col_w;
 
     bool do_find=false;
     for(i=0; i<columns(); i++) {
         max_col_w.append(0);
-        if(column_width(i) < 0) do_find = true;
+        if(col_width(i) < 0)
+            do_find = true;
     }
 
-    if(!do_find) return;
+    if(!do_find)
+        return;
 
-    for(a=0; a<children(); a++) {
-        Fl_ListView_Item *widget = (Fl_ListView_Item *)child(a);
+    for(a=0; a < row_count(); a++) {
+        Fl_ListView_Item *widget = items[a];
         for(i=0; i<columns(); i++) {
-            if(column_width(i) > 0) continue;
-            if(max_col_w[i] < widget->column_width(i)+20)
-                max_col_w[i] = widget->column_width(i)+20;
+            if(col_width(i) > 0) continue;
+            int preferred_w = widget->preferred_width(i);
+            if(max_col_w[i] < preferred_w+20)
+                max_col_w[i] = preferred_w+20;
         }
     }
 
     for(i=0; i<columns(); i++) {
-        if(column_width(i) > 0) continue;
+        if(col_width(i) > 0) continue;
         column_width(i, max_col_w[i]);
     }
-
-    find_def = false;
 }
 
-void Fl_ListView::fill(Fl_Data_Source &ds,Fl_String user_data_column_name) 
+void Fl_ListView::fill(Fl_Data_Source &ds, const char *user_data_column_name_)
 {
     // Final version should replace the existing rows (truncate them,if necessary).
     clear();
 
     if (!ds.open()) return;
+
+    Fl_String user_data_column_name(user_data_column_name_);
 
     // First version is very primitive.
     // Final version should replace the existing columns, if necessary.
@@ -1197,8 +1134,8 @@ void Fl_ListView::fill(Fl_Data_Source &ds,Fl_String user_data_column_name)
         // If exists, leave it intact. This way user may resize
         // columns and we won't destroy the user' column widths
         bool keepColumnWidth = false;
-        if ((int)actualColumn < columns()) {
-            if (df.name() == column_name(actualColumn) && df.type() == column_type(actualColumn)) 
+        if (actualColumn < m_columns.size()) {
+            if (df.name() == m_columns[actualColumn]->label() && df.type() == m_columns[actualColumn]->type())
                 keepColumnWidth = true;
         }
 
@@ -1210,15 +1147,16 @@ void Fl_ListView::fill(Fl_Data_Source &ds,Fl_String user_data_column_name)
             add_column(df.name(),width,df.type());
         }
 
-        column_flags(actualColumn,df.flags);
+        m_columns[actualColumn]->flags(df.flags);
         actualColumn++;
     }
-    columns(actualColumn);
+    m_columns.resize(actualColumn);
 
     begin();
 
     while (!ds.eof()) {
-        Fl_ListView_ItemExt *item = new Fl_ListView_ItemExt();
+        //Fl_ListView_ItemExt *item = new Fl_ListView_ItemExt();
+        Fl_ListView_Item *item = new Fl_ListView_Item();
         item->columns(columnCount);
         item->user_data(ds.user_data());
         actualColumn = 0;
@@ -1228,7 +1166,7 @@ void Fl_ListView::fill(Fl_Data_Source &ds,Fl_String user_data_column_name)
             if (int(col) == user_data_column) {
                 item->argument(df.as_int());
             } else {
-                item->flags(col, df.flags);
+                //item->flags(col, df.flags);
                 if (df.type() == VAR_IMAGEPTR) item->image(actualColumn, (Fl_Image *)df.as_image());
                 else item->label(actualColumn, df.as_string());
                 actualColumn++;
@@ -1238,6 +1176,4 @@ void Fl_ListView::fill(Fl_Data_Source &ds,Fl_String user_data_column_name)
     }
     ds.close();
     end();
-
-    find_def = false;
 }

@@ -667,7 +667,7 @@ void Fl_File_Chooser::filters(const char *filters)
 void Fl_File_Chooser::parse_dirs(const Fl_String &fp)
 {   
     m_path_input->clear();
-    Fl_Item *item=0;
+    //Fl_Item *item=0;
 
     if(fp.empty() || !strcmp(fp, _("My Computer"))) {
         m_path_input->begin();
@@ -813,7 +813,7 @@ void Fl_File_Chooser::file_clicked(Fl_ListView_Item *i)
                     files += "....";
                     break;
                 }
-                if(!item->label(1).empty()) {
+                if(*item->label(1)) {
                     files += item->label(1);
                     files += " ";
                     items++;
@@ -1084,25 +1084,6 @@ void Fl_File_Chooser::update_preview(const Fl_String filename)
 
 int Fl_File_Chooser::handle(int event)
 {
-	switch(event) {
-	case FL_SHOW:
-		refresh();
-		break;
-
-	case FL_KEYUP:
-		if(Fl::event_key()==FL_BackSpace) {
-			if(Fl::focus()==filebrowser()) {
-				cb_up(0, this);
-				return 1;
-	        }
-		}
-		break;
-
-	default: 
-		break;
-
-	}
-    
     return Fl_Dialog::handle(event);
 }
 
