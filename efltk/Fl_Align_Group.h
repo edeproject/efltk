@@ -35,6 +35,14 @@ public:
         dw_ = dh_ = 0;
     }
 
+    Fl_Align_Group(const char* L = 0,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100) : Fl_Group(0,0,10,10,L) {
+        n_to_break_ = 0; vertical_ = 1;
+        align_ = FL_ALIGN_LEFT;
+        dw_ = dh_ = 0;
+        label_width(label_w);
+        layout_align(layout_al);
+    }
+
     bool vertical() const {return vertical_;}
     void vertical(bool v) {vertical_ = v;}
 

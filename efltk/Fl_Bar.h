@@ -30,11 +30,12 @@ public:
     static Fl_Named_Style* default_style;
 
     Fl_Bar(int x,int y,int w ,int h,const char *l = 0);
+    Fl_Bar(const char* l = 0,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
 
     // values for type(int)
     enum {
-        VERTICAL	= GROUP_TYPE,
-        HORIZONTAL	= GROUP_TYPE+1
+        VERTICAL    = GROUP_TYPE,
+        HORIZONTAL  = GROUP_TYPE+1
     };
 
     void layout();
@@ -52,6 +53,8 @@ protected:
     bool pushed;
 
 private:
+    void initialize(int h);
+
     bool open_;
     int glyph_size_;
     int saved_size;
