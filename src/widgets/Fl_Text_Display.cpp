@@ -1318,9 +1318,7 @@ void Fl_Text_Display::buffer_modified_cb( int pos, int nInserted, int nDeleted,
   Fl_Text_Buffer *buf = textD->mBuffer;
   int oldFirstChar = textD->mFirstChar;
   int scrolled, origCursorPos = textD->mCursorPos;
-  int wrapModStart, wrapModEnd;
-
-  textD->set_changed();
+  int wrapModStart, wrapModEnd;  
 
   // refigure scrollbars & stuff
   textD->relayout();

@@ -95,10 +95,6 @@ class FL_API Fl_Text_Editor : public Fl_Text_Display {
     Key_Binding* key_bindings;
     static Key_Binding* global_key_bindings;
     Key_Func default_key_function_;
-
-private:
-    void maybe_do_callback();
-
 };
 
 #endif

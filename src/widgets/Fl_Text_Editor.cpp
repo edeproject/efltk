@@ -342,7 +342,7 @@ int Fl_Text_Editor::kf_backspace(int, Fl_Text_Editor* e)
 int Fl_Text_Editor::kf_enter(int, Fl_Text_Editor* e)
 {
     if (e->when() & FL_WHEN_ENTER_KEY) {
-        e->maybe_do_callback();
+        e->do_callback();
     }
 
     kill_selection(e);
@@ -566,15 +566,10 @@ int Fl_Text_Editor::kf_select_all(int, Fl_Text_Editor* e)
     return 1;
 }
 
-void Fl_Text_Editor::maybe_do_callback()
-{
-    if (changed() || (when()&FL_WHEN_NOT_CHANGED)) {
-        clear_changed(); do_callback();
-    }
-}
-
 int Fl_Text_Editor::handle_key()
 {
+	if(when()&FL_WHEN_CHANGED) do_callback(); else set_changed();
+
     // Call fltk's rules to try to turn this into a printing character.
     // This uses the right-hand ctrl key as a "compose prefix" and returns
     // the changes that should be made to the text, as a number of
@@ -586,14 +581,12 @@ int Fl_Text_Editor::handle_key()
         kill_selection(this);
         if (Fl::event_length())
         {
-            if(when()&FL_WHEN_CHANGED) do_callback(); else set_changed();
-
             if (insert_mode()) insert(Fl::event_text());
             else overstrike(Fl::event_text());
         }
         show_insert_position();
         return 1;
-    }
+    }	
 
     int key = Fl::event_key();
     int state = Fl::event_state() & (FL_SHIFT|FL_CTRL|FL_ALT|FL_WIN);
@@ -638,7 +631,7 @@ int Fl_Text_Editor::handle(int event)
             return 3;        // indicate that this widget should get initial focus
 
         case FL_UNFOCUS:
-            if (when() & FL_WHEN_RELEASE) maybe_do_callback();
+            if (when() & FL_WHEN_RELEASE) do_callback();
             return 1;
 
         default:
@@ -650,7 +643,7 @@ int Fl_Text_Editor::handle(int event)
         switch (event)
         {
         case FL_HIDE:
-            if (when() & FL_WHEN_RELEASE) maybe_do_callback();
+            if (when() & FL_WHEN_RELEASE) do_callback();
             return 1;
 
         case FL_KEY:
