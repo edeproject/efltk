@@ -710,7 +710,7 @@ Fl_Widget* Fl_Tabs::value() {
 // visible, if it is really a child:
 int Fl_Tabs::value(Fl_Widget *newvalue) 
 {	
-	if(!contains(newvalue)) return 0;
+	if(newvalue && !contains(newvalue)) return 0;
 	if(value_==newvalue) { value_->show(); return 0; }
 
     for (int i = 0; i < children(); i++) {
@@ -722,8 +722,10 @@ int Fl_Tabs::value(Fl_Widget *newvalue)
         }
     }
 
+	value_ = newvalue;
+
 	if(when() & FL_WHEN_CHANGED)
-		do_callback();
+		do_callback();	
 
     relayout();
 	redraw();
@@ -907,7 +909,7 @@ void Fl_Tabs::layout()
     Fl_Tab_Info *activeTab = 0L;
     Fl_Widget *activeWidget = 0L;
 
-    if(!(layout_damage() & FL_LAYOUT_WH) || !m_showTabs && value()) {
+    if(value() && (!(layout_damage() & FL_LAYOUT_WH) || !m_showTabs)) {
         if((layout_damage() & FL_LAYOUT_XY)) value()->layout_damage(value()->layout_damage()|FL_LAYOUT_XY);       
         value()->resize(group_x, group_y, group_w, group_h);
         if(value()->layout_damage()) value()->layout();
