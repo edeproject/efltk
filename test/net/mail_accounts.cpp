@@ -9,17 +9,17 @@
 #include "mail_accounts.h"
 
 static Fl_Menu_Item serverMode[] = {
-  {"IMAP",FL_ALT+'i'},
-  {"POP3",FL_ALT+'p'},
-  {"SMTP",FL_ALT+'s'},
-  {0}
+    {"IMAP",FL_ALT+'i'},
+    {"POP3",FL_ALT+'p'},
+    {"SMTP",FL_ALT+'s'},
+    {0}
 };
 
 Fl_Mail_Accounts *mailAccounts;
 
 static void get_string_ok_cb(Fl_Widget* w, void*) {
-  w->window()->set_value();
-  w->window()->hide();
+    w->window()->set_value();
+    w->window()->hide();
 }
 
 static void get_string_cancel_cb(Fl_Widget* w, void*) {
@@ -102,8 +102,16 @@ Fl_Mail_Accounts::Fl_Mail_Accounts() : Fl_Dialog(500,350,"Mail Accounts") {
     m_accountListView = new Fl_ListView(10,10,150,100);
     m_accountListView->add_column("type",40);
     m_accountListView->add_column("account",200);
+    m_accountListView->add_column("server",100);
+    m_accountListView->add_column("user",100);
+    m_accountListView->add_column("password",100);
+    m_accountListView->visible_col(2,false);
+    m_accountListView->visible_col(3,false);
+    m_accountListView->visible_col(4,false);
+
     m_accountListView->layout_align(FL_ALIGN_CLIENT);
     m_accountListView->callback(account_clicked_cb);
+    m_accountListView->end();
 
     Fl_Group *group2 = new Fl_Group(10,10,150,20);
     group2->layout_align(FL_ALIGN_BOTTOM);
@@ -139,13 +147,14 @@ bool Fl_Mail_Accounts::exec() {
     try {
         m_config->clear();
         m_config->read_file();
-        unsigned accountNumber = m_config->sections.count();
+        m_accountListView->clear();
+        unsigned accountNumber = m_config->sections().count();
         for (unsigned account = 0; account < accountNumber; account++) {
-            Section *section = (Section *)m_config->sections[account];
-            if (section->name.pos("Account:") == 0) {
+            Fl_Config_Section *section = (Fl_Config_Section *)m_config->sections()[account];
+            if (section->name().pos("Account:") == 0) {
                 m_config->set_section(section);
                 Fl_String accountName,accountType,server,user,password;
-                accountName = section->name.sub_str(8,32);
+                accountName = section->name().sub_str(8,32);
                 m_config->read("Type",accountType,"IMAP");
                 m_config->read("Server",server,"mail");
                 m_config->read("User",user,"");
@@ -173,7 +182,7 @@ bool Fl_Mail_Accounts::exec() {
             Fl_String user = item->label(3);
             Fl_String password = item->label(4);
 
-            Section *section = m_config->create_section("Account:"+accountName);
+            Fl_Config_Section *section = m_config->create_section("Account:"+accountName);
             m_config->set_section(section);
             m_config->write("Type",accountType);
             m_config->write("Server",server);
@@ -190,6 +199,7 @@ bool Fl_Mail_Accounts::exec() {
 }
 
 void Fl_Mail_Accounts::add_account(Fl_String accountName,Fl_String accountType,Fl_String server,Fl_String user,Fl_String password) {
+    Fl_Group *saveCurrent = Fl_Group::current();
     m_accountListView->begin();
     Fl_ListView_Item *item = new Fl_ListView_Item();
     item->columns(5);
@@ -198,7 +208,8 @@ void Fl_Mail_Accounts::add_account(Fl_String accountName,Fl_String accountType,F
     item->label(2,server);
     item->label(3,user);
     item->label(4,password);
-    m_accountListView->end();
+    //m_accountListView->end();
+    Fl_Group::current(saveCurrent);
 }
 
 void Fl_Mail_Accounts::account_info_changed() {
