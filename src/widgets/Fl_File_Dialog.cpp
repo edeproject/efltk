@@ -641,36 +641,37 @@ void Fl_File_Chooser::get_selected(Fl_String_List &list)
 
 void Fl_File_Chooser::filters(const char *filters)
 {
-	unsigned n;
-	for(n=0; n < (unsigned)m_filter_input->children(); n++) {
-		free((char*)m_filter_input->child(n)->user_data());
-	}
+    unsigned n;
+    for(n=0; n < (unsigned)m_filter_input->children(); n++) {
+        free((char*)m_filter_input->child(n)->user_data());
+    }
     m_filter_input->clear();
 
-    m_filter_input->begin();    
+    m_filter_input->begin();
 
-	Fl_String_List list;
-	list.from_string(filters, ",");
+    Fl_String_List list;
+    list.from_string(filters, ",");
 
-	Fl_Item *i;
+    Fl_Item *i;
     for(n=0; n<list.size(); n+=2)
     {
         if(list.size() <= n+1) break;
 
-		i = new Fl_Item();
-		i->label(list[n].trim());
-		i->user_data(strdup(list[n+1].trim()));
+        i = new Fl_Item();
+        i->label(list[n].trim());
+        i->user_data(strdup(list[n+1].trim()));
     }
 
-	if(m_filter_input->children()==0) {
+    if(m_filter_input->children()==0) {
         i = new Fl_Item(_("All Files (*)"));
-		i->user_data(strdup("*"));
-	}
+        i->user_data(strdup("*"));
+    }
 
-	i = (Fl_Item*)m_filter_input->child(0);
+    i = (Fl_Item*)m_filter_input->child(0);
     m_filter_input->value(i->label().c_str());
-    
-	m_filter_input->end();
+    m_filter_input->item(i);
+
+    m_filter_input->end();
     m_filter_input->redraw();
 }
 
