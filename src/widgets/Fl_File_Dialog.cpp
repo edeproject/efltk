@@ -677,7 +677,7 @@ void Fl_File_Chooser::parse_dirs(const Fl_String &fp)
 	if(fp.empty() || fp==_("My Computer")) {
 		m_path_input->begin();
 		m_path_input->add(_("My Computer"));
-		m_path_input->value(fp.empty() ? _("My Computer") : fp);
+		m_path_input->value(fp.empty() ? _("My Computer") : fp.c_str());
 		m_path_input->end();
 		m_path_input->redraw();
 		return;
