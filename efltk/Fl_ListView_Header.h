@@ -12,7 +12,7 @@ class Fl_ListView;
 class Fl_ListView_Header : public Fl_Widget
 {
 public:
-	static Fl_Named_Style* default_style;
+    static Fl_Named_Style* default_style;
 
     Fl_ListView_Header(Fl_ListView *parent);
     virtual ~Fl_ListView_Header();
@@ -21,7 +21,9 @@ public:
     void hide();
 
     virtual void draw(int col, int width, int height);
+    virtual void draw() { Fl_Widget::draw(); }
     virtual int handle(int col, int event);
+    virtual int handle(int event) { return Fl_Widget::handle(event); }
 
     bool capture_events() const { return (m_capture>=0); }
 
