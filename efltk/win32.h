@@ -51,7 +51,7 @@
 
 ////////////////////////////////////////////////////////////////
 // Emulate X somewhat:
-
+typedef HDC GC;
 typedef HWND Window;
 typedef POINT XPoint;
 struct FL_API XRectangle {int x, y, width, height;};

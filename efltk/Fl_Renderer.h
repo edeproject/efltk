@@ -1,33 +1,23 @@
-#ifndef _Fl_RENDERER_H
-#define _Fl_RENDERER_H
+#ifndef _Fl_RENDERER_H_
+#define _Fl_RENDERER_H_
 
 #include "Enumerations.h"
 #include "Fl_Util.h"
 #include "x.h"
 
-#include <string.h>
-
-#ifdef _WIN32
-# include <windows.h>
-  typedef HDC GC;
-#else
-# include <X11/Xlib.h>
-# include <X11/Xutil.h>
-#endif
-
 // Mask types:
-typedef enum {
+enum {
     FL_MASK_NONE = 0,
     FL_MASK_ALPHA,
     FL_MASK_COLORKEY,
     FL_MASK_PIXELKEY,
 
-	// Backward compatibility:
+    // Backward compatibility:
     MASK_NONE = FL_MASK_NONE,
     MASK_ALPHA = FL_MASK_ALPHA,
     MASK_COLORKEY = FL_MASK_COLORKEY,
     MASK_PIXELKEY = FL_MASK_PIXELKEY
-} Fl_Mask_Type;
+};
 
 //Internally used only
 typedef struct {
@@ -150,9 +140,7 @@ public:
     static bool lil_endian();
 };
 
-typedef struct _blit_info BlitInfo;
-typedef void (*Blit_Function)(BlitInfo *info);
-typedef struct _blit_info
+typedef struct
 {
     uint8 *s_pixels;
     int s_width;
@@ -170,6 +158,8 @@ typedef struct _blit_info
 
     bool hw_surface;
 } BlitInfo;
+
+typedef void (*Blit_Function)(BlitInfo *info);
 
 // Fast pixel modifier color functions:
 extern bool fl_format_equal(Fl_PixelFormat *A, Fl_PixelFormat *B);

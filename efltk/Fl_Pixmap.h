@@ -40,16 +40,17 @@ class FL_API Fl_Pixmap : public Fl_Image
 public:
     const char * const * data; //XPM data
 
-    Fl_Pixmap(char * const *d) : Fl_Image() { data = (const char **)d; measure(w,h); }
-    Fl_Pixmap(uchar* const *d) : Fl_Image() { data = (const char **)d; measure(w,h); }
-    Fl_Pixmap(const char * const *d) : Fl_Image() { data = (const char **)d; measure(w,h); }
-    Fl_Pixmap(const uchar* const *d) : Fl_Image() { data = (const char **)d; measure(w,h); }
+    Fl_Pixmap(char * const *d) : Fl_Image() { data = (const char **)d; measure(m_width, m_height); }
+    Fl_Pixmap(uchar* const *d) : Fl_Image() { data = (const char **)d; measure(m_width, m_height); }
+    Fl_Pixmap(const char * const *d) : Fl_Image() { data = (const char **)d; measure(m_width, m_height); }
+    Fl_Pixmap(const uchar* const *d) : Fl_Image() { data = (const char **)d; measure(m_width, m_height); }
     virtual ~Fl_Pixmap() { }
 
     virtual void measure(int &w, int &h);
-    virtual void draw(int dx, int dy, int dw, int dh,
-                      int sx, int sy, int sw, int sh,
-                      Fl_Flags f);
+protected:
+    virtual void _draw(int dx, int dy, int dw, int dh,
+                       int sx, int sy, int sw, int sh,
+                       Fl_Flags f);
 };
 
 #endif

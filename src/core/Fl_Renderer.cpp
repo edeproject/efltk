@@ -219,43 +219,65 @@ uint8 *Fl_Renderer::system_convert(Fl_PixelFormat *src_fmt, Fl_Size *src_size, u
     return tmp;
 }
 
-
-
-
-
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
 
 bool fl_format_equal(Fl_PixelFormat *A, Fl_PixelFormat *B) {
     return ( A->bitspp==B->bitspp && A->Rmask==B->Rmask && A->Amask==B->Amask );
 }
 
+#define SCALE2UINT8_RGB(R, G, B) \
+    if(R<0) R=0; if(R>255) R=255; \
+    if(G<0) G=0; if(G>255) G=255; \
+    if(B<0) B=0; if(B>255) B=255
+
+#define SCALE_RGB(R, G, B, dR, dG, dB) \
+    int SR=R; int SG=G; int SB=B; \
+    SCALE2UINT8_RGB(SR,SG,SB); \
+    dR=SR; dG=SG; dB=SB
+
+#define SCALE2UINT8_RGBA(R, G, B, A) \
+    if(R<0) R=0; if(R>255) R=255; \
+    if(G<0) G=0; if(G>255) G=255; \
+    if(B<0) B=0; if(B>255) B=255; \
+    if(A<0) A=0; if(A>255) A=255
+
+#define SCALE_RGBA(R, G, B, A, dR, dG, dB, dA) \
+    int SR=R; int SG=G; int SB=B; int SA=A;\
+    SCALE2UINT8_RGBA(SR,SG,SB,SA); \
+    dR=SR; dG=SG; dB=SB; dA=SA
+
 /* Load pixel of the specified format from a buffer and get its R-G-B values */
-/* FIXME: rescale values to 0..255 here? */
 void fl_rgb_from_pixel(uint32 pixel, Fl_PixelFormat *fmt, uint8 &r, uint8 &g, uint8 &b)
 {
-    r = (((pixel&fmt->Rmask)>>fmt->Rshift)<<fmt->Rloss)&0xFF;
-    g = (((pixel&fmt->Gmask)>>fmt->Gshift)<<fmt->Gloss)&0xFF;
-    b = (((pixel&fmt->Bmask)>>fmt->Bshift)<<fmt->Bloss)&0xFF;
+    SCALE_RGB((((pixel&fmt->Rmask)>>fmt->Rshift)<<fmt->Rloss),
+              (((pixel&fmt->Gmask)>>fmt->Gshift)<<fmt->Gloss),
+              (((pixel&fmt->Bmask)>>fmt->Bshift)<<fmt->Bloss),
+              r,g,b);
 }
 
 void fl_rgb_from_rgb565(uint16 pixel, uint8 &r, uint8 &g, uint8 &b)
 {
-    r = (((pixel&0xF800)>>11)<<3);
-    g = (((pixel&0x07E0)>>5)<<2);
-    b = ((pixel&0x001F)<<3);
+    SCALE_RGB((((pixel&0xF800)>>11)<<3),
+              (((pixel&0x07E0)>>5)<<2),
+              ((pixel&0x001F)<<3),
+              r, g, b);
 }
 
 void fl_rgb_from_rgb555(uint16 pixel, uint8 &r, uint8 &g, uint8 &b)
 {
-    r = (((pixel&0x7C00)>>10)<<3);
-    g = (((pixel&0x03E0)>>5)<<3);
-    b = ((pixel&0x001F)<<3);
+    SCALE_RGB((((pixel&0x7C00)>>10)<<3),
+              (((pixel&0x03E0)>>5)<<3),
+              ((pixel&0x001F)<<3),
+              r, g, b);
 }
 
 void fl_rgb_from_rgb888(uint32 pixel, uint8 &r, uint8 &g, uint8 &b)
 {
-    r = ((pixel&0xFF0000)>>16);
-    g = ((pixel&0xFF00)>>8);
-    b = (pixel&0xFF);
+    SCALE_RGB(((pixel&0xFF0000)>>16),
+              ((pixel&0xFF00)>>8),
+              (pixel&0xFF),
+              r, g, b);
 }
 
 void fl_retrieve_rgb_pixel(uint8 *buf, int bpp, uint32 &pixel)
@@ -382,9 +404,8 @@ void fl_assemble_rgb_amask(uint8 *buf, int bpp, Fl_PixelFormat *fmt, uint8 r, ui
 {
     switch (bpp) {
     case 2: {
-        uint16 *bufp;
+        uint16 *bufp = (uint16 *)buf;
         uint32 pixel;
-        bufp = (uint16 *)buf;
         fl_pixel_from_rgb(pixel, fmt, r, g, b);
         *bufp = uint16(pixel) | (*bufp & Amask);
     }
@@ -404,9 +425,8 @@ void fl_assemble_rgb_amask(uint8 *buf, int bpp, Fl_PixelFormat *fmt, uint8 r, ui
     break;
 
     case 4: {
-        uint32 *bufp;
+        uint32 *bufp = (uint32 *)buf;
         uint32 pixel;
-        bufp = (uint32 *)buf;
         fl_pixel_from_rgb(pixel, fmt, r, g, b);
         *bufp = pixel | (*bufp & Amask);
     }
@@ -417,45 +437,49 @@ void fl_assemble_rgb_amask(uint8 *buf, int bpp, Fl_PixelFormat *fmt, uint8 r, ui
     }
 }
 
-/* FIXME: Should we rescale alpha into 0..255 here? */
 void fl_rgba_from_pixel(uint32 pixel, Fl_PixelFormat *fmt, uint8 &r, uint8 &g, uint8 &b, uint8 &a)
 {
-    r = ((pixel&fmt->Rmask)>>fmt->Rshift)<<fmt->Rloss;
-    g = ((pixel&fmt->Gmask)>>fmt->Gshift)<<fmt->Gloss;
-    b = ((pixel&fmt->Bmask)>>fmt->Bshift)<<fmt->Bloss;
-    a = ((pixel&fmt->Amask)>>fmt->Ashift)<<fmt->Aloss;
+    SCALE_RGBA((((pixel&fmt->Rmask)>>fmt->Rshift)<<fmt->Rloss),
+               (((pixel&fmt->Gmask)>>fmt->Gshift)<<fmt->Gloss),
+               (((pixel&fmt->Bmask)>>fmt->Bshift)<<fmt->Bloss),
+               (((pixel&fmt->Amask)>>fmt->Ashift)<<fmt->Aloss),
+               r,g,b,a);
 }
 
 void fl_rgba_from_8888(uint32 pixel, Fl_PixelFormat *fmt, uint8 &r, uint8 &g, uint8 &b, uint8 &a)
 {
-    r = (pixel&fmt->Rmask)>>fmt->Rshift;
-    g = (pixel&fmt->Gmask)>>fmt->Gshift;
-    b = (pixel&fmt->Bmask)>>fmt->Bshift;
-    a = (pixel&fmt->Amask)>>fmt->Ashift;
+    SCALE_RGBA(((pixel&fmt->Rmask)>>fmt->Rshift),
+               ((pixel&fmt->Gmask)>>fmt->Gshift),
+               ((pixel&fmt->Bmask)>>fmt->Bshift),
+               ((pixel&fmt->Amask)>>fmt->Ashift),
+               r,g,b,a);
 }
 
 void fl_rgba_from_rgba8888(uint32 pixel, uint8 &r, uint8 &g, uint8 &b, uint8 &a)
 {
-    r = (pixel>>24);
-    g = ((pixel>>16)&0xFF);
-    b = ((pixel>>8)&0xFF);
-    a = (pixel&0xFF);
+    SCALE_RGBA((pixel>>24),
+               ((pixel>>16)&0xFF),
+               ((pixel>>8)&0xFF),
+               (pixel&0xFF),
+               r,g,b,a);
 }
 
 void fl_rgba_from_argb8888(uint32 pixel, uint8 &r, uint8 &g, uint8 &b, uint8 &a)
 {
-    r = ((pixel>>16)&0xFF);
-    g = ((pixel>>8)&0xFF);
-    b = (pixel&0xFF);
-    a = (pixel>>24);
+    SCALE_RGBA(((pixel>>16)&0xFF),
+               ((pixel>>8)&0xFF),
+               (pixel&0xFF),
+               (pixel>>24),
+               r,g,b,a);
 }
 
 void fl_rgba_from_abgr8888(uint32 pixel, uint8 &r, uint8 &g, uint8 &b, uint8 &a)
 {
-    r = (pixel&0xFF);
-    g = ((pixel>>8)&0xFF);
-    b = ((pixel>>16)&0xFF);
-    a = (pixel>>24);
+    SCALE_RGBA((pixel&0xFF),
+               ((pixel>>8)&0xFF),
+               ((pixel>>16)&0xFF),
+               (pixel>>24),
+               r,g,b,a);
 }
 
 void fl_disemble_rgba(uint8 *buf, int bpp, Fl_PixelFormat *fmt, uint32 &pixel, uint8 &r, uint8 &g, uint8 &b, uint8 &a)

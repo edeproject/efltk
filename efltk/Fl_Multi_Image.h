@@ -32,10 +32,6 @@ class Fl_Multi_Image : public Fl_Image
   Fl_Image* images[MAXIMAGES];
   Fl_Flags flags[MAXIMAGES];
 public:
-  void measure(int&,int&);
-  void draw(int dx, int dy, int dw, int dh,
-            int sx, int sy, int sw, int sh,
-            Fl_Flags f);
   Fl_Multi_Image(Fl_Image& image0,
                  Fl_Flags flags1, Fl_Image& image1) {
       images[0] = &image0;
@@ -119,6 +115,13 @@ public:
     flags[6] = flags6; images[6] = &image6;
     flags[7] = flags7; images[7] = &image7;
   }
+
+  virtual void measure(int&,int&);
+
+protected:
+    virtual void _draw(int dx, int dy, int dw, int dh,
+                      int sx, int sy, int sw, int sh,
+                      Fl_Flags f);
 };
 
 #endif

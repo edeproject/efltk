@@ -1,4 +1,5 @@
 #include <efltk/Fl_Renderer.h>
+#include <string.h>
 
 extern Blit_Function get_blit_a(Fl_PixelFormat *srcfmt, Fl_PixelFormat *dstfmt, int flags);
 

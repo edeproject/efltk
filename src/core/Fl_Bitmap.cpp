@@ -58,18 +58,18 @@ Pixmap fl_create_bitmap(const uchar* bitmap, int w, int h)
 }
 #endif
 
-void Fl_Bitmap::draw(int dx, int dy, int dw, int dh,
-                     int sx, int sy, int sw, int sh,
-                     Fl_Flags f)
+void Fl_Bitmap::_draw(int dx, int dy, int dw, int dh,
+                      int sx, int sy, int sw, int sh,
+                      Fl_Flags f)
 {
     if(!mask) {
-        mask = (void*)fl_create_bitmap(_data, w, h);
+        mask = (void*)fl_create_bitmap(m_data, width(), height());
     }
 
     if( (f&FL_ALIGN_TILED)==FL_ALIGN_TILED ) {
         to_screen_tiled(dx, dy, dw, dh, 0, 0);
     } else {
-        to_screen(dx,dy, w,h, 0, 0);
+        to_screen(dx,dy, width(), height(), 0, 0);
     }
 }
 

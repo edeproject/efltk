@@ -33,10 +33,10 @@ public:
     Fl_Bitmap(const uint8 *bits, int W, int H, bool allow_free=false) : Fl_Image(W, H, 1, (uint8*)bits, allow_free) { }
     Fl_Bitmap(const char  *bits, int W, int H, bool allow_free=false) : Fl_Image(W, H, 1, (uint8*)bits, allow_free) { }
 
-    virtual void draw(int dx, int dy, int dw, int dh,
-                      int sx, int sy, int sw, int sh,
-                      Fl_Flags f);
-    void draw(int x, int y) { draw(x,y,w,h,0,0,0,0,0); }
+protected:
+    virtual void _draw(int dx, int dy, int dw, int dh,
+                       int sx, int sy, int sw, int sh,
+                       Fl_Flags f);
 };
 
 #endif

@@ -62,44 +62,44 @@ Fl_Ptr_List &fl_list_imageio() {
 
 //////////////////////////////////////
 
-bool Fl_Image::_state_effect_all = true;
+bool Fl_Image::m_state_effect_all = true;
 
 Fl_Image::Fl_Image() 
-{ 
-	init(0,0,0,0,0,0,0,0); 
+{
+    init(0,0,0,0,0,0,0,0);
 }
 
 Fl_Image::Fl_Image(const char *filename, int quality)
 {
-	init(0,0,0,0,0,0,0,0);
-	quality_ = quality;
-	read_image(filename);
+    init(0,0,0,0,0,0,0,0);
+    m_quality = quality;
+    read_image(filename);
 }
 
 Fl_Image::Fl_Image(const uint8 *data, uint32 data_size, int quality)
 {
-	init(0,0,0,0,0,0,0,0);
-	quality_ = quality;
-	read_image(0, data, data_size);
+    init(0,0,0,0,0,0,0,0);
+    m_quality = quality;
+    read_image(0, data, data_size);
 }
 
 Fl_Image::Fl_Image(const char * const *data, int quality)
 {
-	init(0,0,0,0,0,0,0,0);
-	quality_ = quality;
-	read_image(0, data);
+    init(0,0,0,0,0,0,0,0);
+    m_quality = quality;
+    read_image(0, data);
 }
 
 Fl_Image::Fl_Image(int W, int H, Fl_PixelFormat *fmt, uint8 *data, bool allow_free)
 {
     init(W, H, fmt->bitspp, data, fmt->Rmask, fmt->Gmask, fmt->Bmask, fmt->Amask);
-	if(data) _data_alloc = allow_free;
+    if(data) m_data_alloc = allow_free;
 }
 
 Fl_Image::Fl_Image(int W, int H, int bits_pp, uint8 *data, bool allow_free, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask)
 {
     init(W, H, bits_pp, data, Rmask, Gmask, Bmask, Amask);
-    if(data) _data_alloc = allow_free;
+    if(data) m_data_alloc = allow_free;
 }
 
 Fl_Image::Fl_Image(Fl_Image &i)
@@ -110,58 +110,60 @@ Fl_Image::Fl_Image(Fl_Image &i)
 
 void Fl_Image::copy(Fl_Image &src, Fl_Image &dst)
 {
-	dst.clear();
+    dst.clear();
 
-	dst.w = src.w;
-	dst.h = src.h;
-	dst._pitch = src._pitch;
-	dst._threshold = src._threshold;
-	dst.quality_ = src.quality_;
-	dst._state_effect = src._state_effect;
-	dst._data_alloc = true;
+    dst.m_width     = src.m_width;
+    dst.m_height    = src.m_height;
+    dst.m_pitch     = src.m_pitch;
+    dst.m_threshold = src.m_threshold;
+    dst.m_quality   = src.m_quality;
+    dst.m_state_effect = src.m_state_effect;
+    dst.m_data_alloc = true;
 
-	dst.fmt.copy(&src.fmt);
+    dst.m_id_alloc = dst.m_mask_alloc = false;
+    dst.id = dst.mask = 0;
 
-	dst._data = new uint8[src.h*src._pitch];
-    memcpy(dst._data, src._data, src.h*src._pitch);
+    dst.m_fmt.copy(&src.m_fmt);
+
+    dst.m_data = new uint8[src.m_height*src.m_pitch];
+    memcpy(dst.m_data, src.m_data, src.m_height*src.m_pitch);
 }
 
 void Fl_Image::init(int W, int H, int bits_pp, uint8 *data, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask)
 {
-    _state_effect = true;
+    m_state_effect = true;
 
-    _state = 0;
-    _mod_data = 0;
-    last_w = last_h = 0;
-    _mask_alloc = false;
-    _id_alloc = false;
+    m_state = 0;
+    m_mod_data = 0;
+    m_lastw = m_lasth = 0;
+    m_mask_alloc = false;
+    m_id_alloc = false;
 
-    w = W;
-    h = H;
+    m_width = W;
+    m_height = H;
 
-    fmt.init(bits_pp, Rmask, Gmask, Bmask, Amask);
+    m_fmt.init(bits_pp, Rmask, Gmask, Bmask, Amask);
 
-	quality_ = FL_QUALITY_NORMAL;
-    draw_flags = 0;
-    _data_alloc = false;
-    _data = data;
-    _pitch = 0;
+    m_quality = FL_QUALITY_NORMAL;
+    m_data_alloc = false;
+    m_data = data;
+    m_pitch = 0;
 
     if(W>0 && H>0 && bits_pp>0) {
-        _pitch = Fl_Renderer::calc_pitch(fmt.bytespp, w);
-        if(!_data) {
-            _data_alloc = true;
+        m_pitch = Fl_Renderer::calc_pitch(m_fmt.bytespp, m_width);
+        if(!m_data) {
+            m_data_alloc = true;
             // Allocate uint8 data array and initialize it to 0
-            _data = new uint8[H*_pitch];
-            memset(_data, 0, H*_pitch);
+            m_data = new uint8[H*m_pitch];
+            memset(m_data, 0, H*m_pitch);
         }
     }
 
-	// Masking:
-	_threshold = 128;
+    // Masking:
+    m_threshold = 128;
     id = mask = 0;
 
-    no_screen_ = false;
+    m_no_screen = false;
 }
 
 Fl_Image::~Fl_Image()
@@ -171,7 +173,7 @@ Fl_Image::~Fl_Image()
 
 bool Fl_Image::check_map(Fl_PixelFormat *new_map)
 {
-    return check_map(&fmt, new_map);
+    return check_map(format(), new_map);
 }
 
 bool Fl_Image::check_map(Fl_PixelFormat *cur_fmt, Fl_PixelFormat *new_fmt)
@@ -188,60 +190,41 @@ void Fl_Image::system_convert()
 
     Fl_PixelFormat *format = Fl_Renderer::system_format();
 
-    if( fl_format_equal((&fmt), format) ) {
+    if( fl_format_equal((&m_fmt), format) ) {
         return;
     }
 
-    fmt.invalidate_map();
+    m_fmt.invalidate_map();
     // Check to make sure the blit mapping is valid
     check_map(format);
 
-    Fl_Size s(w,h);
-    uint8 *system_fmt = Fl_Renderer::system_convert(&fmt, &s, _data, FL_BLIT_HW_PALETTE);
-    if(_data_alloc) delete []_data;
+    Fl_Size s(m_width, m_height);
+    uint8 *system_fmt = Fl_Renderer::system_convert(&m_fmt, &s, m_data, FL_BLIT_HW_PALETTE);
+    if(m_data_alloc) free(m_data);
 
-    _data = system_fmt;
-    _data_alloc = true;
+    m_data = system_fmt;
+    m_data_alloc = true;
 
-    fmt.bitspp = format->bitspp;
-    fmt.bytespp = format->bytespp;
-    fmt.Rloss = format->Rloss;
-    fmt.Gloss = format->Gloss;
-    fmt.Bloss = format->Bloss;
-    fmt.Aloss = format->Aloss;
-    fmt.Rshift = format->Rshift;
-    fmt.Gshift = format->Gshift;
-    fmt.Bshift = format->Bshift;
-    fmt.Ashift = format->Ashift;
-    fmt.Rmask = format->Rmask;
-    fmt.Gmask = format->Gmask;
-    fmt.Bmask = format->Bmask;
-    fmt.Amask = format->Amask;
-
-    if(!format->palette) {
-        if(fmt.palette) delete fmt.palette;
-        fmt.palette=0;
-    } else {
-        if(!fmt.palette) fmt.palette = new Fl_Colormap();
-        fmt.palette->copy(format->palette);
-        fmt.map_this(format);
+    m_fmt.copy(format);
+    if(format->palette) {
+        m_fmt.map_this(format);
     }
 
-    _pitch = Fl_Renderer::calc_pitch(fmt.bytespp, w);
+    m_pitch = Fl_Renderer::calc_pitch(bytespp(), m_width);
 
     invalidate();
 }
 
 void Fl_Image::invalidate()
 {
-    if(mask && _mask_alloc) {
+    if(mask && m_mask_alloc) {
         fl_delete_bitmap((Pixmap)mask);
-        _mask_alloc = false;
+        m_mask_alloc = false;
         mask = 0;
     }
     if(id) {
         fl_delete_offscreen((Pixmap)id);
-        _id_alloc = false;
+        m_id_alloc = false;
         id = 0;
     }
 }
@@ -249,33 +232,23 @@ void Fl_Image::invalidate()
 void Fl_Image::clear()
 {
     invalidate();
-    if(_data && _data_alloc) {
-        free(_data); //Allocated by malloc
+    if(m_data && m_data_alloc) {
+        free(m_data); //Allocated by malloc
     }
-    _data = 0;
-    _data_alloc = false;
-    _pitch = 0;
-    w = h = 0;
+    m_data = 0;
+    m_data_alloc = false;
+    m_pitch = 0;
+    m_width = m_height = 0;
 }
 
 Fl_Image *Fl_Image::grayscale(Fl_PixelFormat *new_format)
 {
-    Fl_Image *ret = new Fl_Image(w, h, new_format->bitspp);
-    ret->fmt.realloc(new_format->bitspp,
-                     new_format->Rmask,
-                     new_format->Gmask,
-                     new_format->Bmask,
-                     new_format->Amask);
-
-    if(new_format->palette) {
-        if(!ret->fmt.palette) ret->fmt.palette = new Fl_Colormap();
-        ret->fmt.palette->copy(new_format->palette);
-    }
-
+    Fl_Image *ret = new Fl_Image(width(), height(), new_format->bitspp);
+    ret->m_fmt.copy(new_format);
     ret->check_map(new_format);
 
-    Fl_Rect r(0,0,w,h);
-    Fl_Renderer::blit(_data, &r, format(), pitch(),
+    Fl_Rect r(0,0,width(),height());
+    Fl_Renderer::blit(m_data, &r, format(), pitch(),
                        ret->data(), &r, ret->format(), ret->pitch(), 0);
 
     Fl_Image_Filter::apply_to_this(ret, 0, FILTER_DESATURATE);
@@ -285,12 +258,12 @@ Fl_Image *Fl_Image::grayscale(Fl_PixelFormat *new_format)
 
 Fl_Image *Fl_Image::scale(int W, int H)
 {
-    Fl_Image *ret = new Fl_Image(W, H, fmt.bitspp);
+    Fl_Image *ret = new Fl_Image(W, H, bitspp());
     ret->format()->copy(format());
 
-    Fl_Rect olds(0,0,w,h); Fl_Rect news(0,0,W,H);
-    bool success = Fl_Renderer::stretch(_data, fmt.bytespp, _pitch, &olds,
-                                         ret->data(), fmt.bytespp, ret->pitch(), &news);
+    Fl_Rect olds(0,0,width(),height()); Fl_Rect news(0,0,W,H);
+    bool success = Fl_Renderer::stretch(m_data, bytespp(), pitch(), &olds,
+                                        ret->data(), bytespp(), ret->pitch(), &news);
     if(!success) {
         delete ret;
         ret = 0;
@@ -322,8 +295,8 @@ uint8 *render_box(int w, int h, int bitspp, uint color, Fl_Colormap *pal, uint8 
     int height = h; int width = w;
     while ( height-- ) {
         DUFFS_LOOP(
-                    {
-                        switch(bitspp)
+                   {
+                       switch(bitspp)
                         {
                         case 32: (uint32&)(*ptr) = fill_color; break;
                         case 24: ptr[0] = r; ptr[1] = g; ptr[2] = b; break;
@@ -332,37 +305,32 @@ uint8 *render_box(int w, int h, int bitspp, uint color, Fl_Colormap *pal, uint8 
                         case 8:  (uint8&)(*ptr) = (uint8&)fill_color; break;
                         default: break;
                         }
-                        ptr += bpp;
-                    }, width);
+                       ptr += bpp;
+                   }, width);
         ptr += skip;
     }
-
     return ret;
 }
 
 Fl_Image *Fl_Image::fore_blend(uint color, Fl_PixelFormat *new_format)
 {
-    Fl_Image *ret = new Fl_Image(w, h, new_format->bitspp);
-    ret->fmt.realloc(new_format->bitspp,
-                     new_format->Rmask,
-                     new_format->Gmask,
-                     new_format->Bmask,
-                     new_format->Amask);
+    Fl_Image *ret = new Fl_Image(width(), height(), new_format->bitspp);
+    ret->m_fmt.copy(new_format);
 
-    uint8 *src = _data;
+    uint8 *src = m_data;
     uint8 *dst = ret->data();
 
-    Fl_PixelFormat *srcfmt = &fmt;
-    Fl_PixelFormat *dstfmt = &ret->fmt;
+    Fl_PixelFormat *srcfmt = &m_fmt;
+    Fl_PixelFormat *dstfmt = ret->format();
 
     int srcbpp = srcfmt->bytespp;
     int dstbpp = dstfmt->bytespp;
 
-    int srcskip = _pitch - w * srcbpp;
-    int dstskip = ret->pitch() - w * dstbpp;
+    int srcskip = pitch() - width() * srcbpp;
+    int dstskip = ret->pitch() - width() * dstbpp;
 
-    int width = w;
-    int height = h;
+    int width = m_width;
+    int height = m_height;
 
     uint8 sA = srcfmt->alpha;
     uint8 dA = dstfmt->Amask ? 255 : 0;
@@ -402,24 +370,14 @@ Fl_Image *Fl_Image::fore_blend(uint color, Fl_PixelFormat *new_format)
 
 Fl_Image *Fl_Image::back_blend(uint color, Fl_PixelFormat *new_format)
 {
-    Fl_Image *ret = new Fl_Image(w, h, new_format->bitspp);
-    ret->fmt.realloc(new_format->bitspp,
-                     new_format->Rmask,
-                     new_format->Gmask,
-                     new_format->Bmask,
-                     new_format->Amask);
-
-    if(new_format->palette) {
-        if(!ret->fmt.palette) ret->fmt.palette = new Fl_Colormap();
-        ret->fmt.palette->copy(new_format->palette);
-    }
-
+    Fl_Image *ret = new Fl_Image(width(), height(), new_format->bitspp);
+    ret->m_fmt.copy(new_format);
     ret->check_map(new_format);
-    render_box(w, h, ret->bitspp(), color, ret->format()->palette, ret->data());
+    render_box(width(), height(), ret->bitspp(), color, ret->format()->palette, ret->data());
 
     check_map(new_format);
-    Fl_Rect R(0,0,w,h);
-    Fl_Renderer::alpha_blit(_data, &R, &fmt, _pitch,
+    Fl_Rect R(0,0,width(),height());
+    Fl_Renderer::alpha_blit(m_data, &R, format(), pitch(),
                             ret->data(), &R, ret->format(), ret->pitch(),
                             FL_BLIT_HW_PALETTE);
     return ret;
@@ -428,7 +386,7 @@ Fl_Image *Fl_Image::back_blend(uint color, Fl_PixelFormat *new_format)
 Fl_Image *Fl_Image::blend(Fl_Image *back, Fl_Rect *back_rect, Fl_PixelFormat *new_format)
 {
     //Check boundary...
-    int X=0,Y=0,W=w,H=h;
+    int X=0,Y=0,W=width(),H=height();
     if(back_rect->x() < 0) {
         W+=back_rect->x();
         X=(back_rect->x()*-1);
@@ -454,10 +412,10 @@ Fl_Image *Fl_Image::blend(Fl_Image *back, Fl_Rect *back_rect, Fl_PixelFormat *ne
         return 0;
 
     Fl_Image *ret = new Fl_Image(W, H, new_format, 0, true);
-    ret->fmt.copy(new_format);
+    ret->format()->copy(new_format);
 
     Fl_Rect tmp_r(0, 0, W, H);
-    back->fmt.map_this(new_format);
+    back->format()->map_this(new_format);
     Fl_Renderer::blit(back->data(), back_rect, back->format(), back->pitch(),
                       ret->data(), &tmp_r, new_format, ret->pitch(), 0);
 
@@ -465,25 +423,25 @@ Fl_Image *Fl_Image::blend(Fl_Image *back, Fl_Rect *back_rect, Fl_PixelFormat *ne
     check_map(new_format);
 
     Fl_Rect tmp_r2(X, Y, W, H);
-    Fl_Renderer::alpha_blit(_data, &tmp_r2, &fmt, _pitch,
-                             ret->data(), &tmp_r, ret->format(), ret->pitch(),
-                             FL_BLIT_HW_PALETTE);
+    Fl_Renderer::alpha_blit(m_data, &tmp_r2, format(), pitch(),
+                            ret->data(), &tmp_r, ret->format(), ret->pitch(),
+                            FL_BLIT_HW_PALETTE);
 
     return ret;
 }
 
 void Fl_Image::set_offscreen(Pixmap p, bool allow_free)
 {
-    if(id && _id_alloc) fl_delete_offscreen((Pixmap)id);
+    if(id && m_id_alloc) fl_delete_offscreen((Pixmap)id);
     id = (void*)p;
-    _id_alloc = allow_free;
+    m_id_alloc = allow_free;
 }
 
 void Fl_Image::set_mask(Pixmap m, bool allow_free)
 {
-    if(mask && _mask_alloc) fl_delete_bitmap((Pixmap)mask);
+    if(mask && m_mask_alloc) fl_delete_bitmap((Pixmap)mask);
     mask = (void*)m;
-    _mask_alloc = allow_free;
+    m_mask_alloc = allow_free;
 }
 
 #ifdef _WIN32
@@ -581,7 +539,7 @@ Pixmap Fl_Image::create_color_mask(Fl_Rect &rect, uint8 *data, int pitch, Fl_Pix
     Fl_PixelFormat pf;
     if(bitspp() < 16) {
         use_table = true;
-        if(!fmt.table) {
+        if(!m_fmt.table) {
             pf.init(32,0xFF000000, 0x00FF0000,0x0000FF00, 0x000000FF);
             check_map(&pf);
         }
@@ -612,7 +570,7 @@ Pixmap Fl_Image::create_color_mask(Fl_Rect &rect, uint8 *data, int pitch, Fl_Pix
         for(int x = 0; x < rect.w(); x++)
         {
             fl_disemble_rgb(ptr, format->bytespp, (format), pixel, r, g, b);
-            if(fmt.bytespp==1) {
+            if(m_fmt.bytespp==1) {
                 if(is_xpm && format->palette->colors[*ptr].a) {
                     // Fixes indexed XPM's
                     fl_line(x, a, x, a);
@@ -688,14 +646,14 @@ Pixmap Fl_Image::create_mask(int W, int H)
 {
     if(mask_type()==FL_MASK_NONE) return 0;
 
-    Fl_Rect rect1(0,0,w,h);
+    Fl_Rect rect1(0,0,width(),height());
     Fl_Rect rect2(0,0,W,H);
 
-    int newpitch = Fl_Renderer::calc_pitch(fmt.bytespp, W);
+    int newpitch = Fl_Renderer::calc_pitch(bytespp(), W);
     Pixmap bitmap=0;
     uint8 *dataptr=0, *alloc=0;
 
-    if(W!=w || H!=h) {
+    if(W!=width() || H!=height()) {
         alloc = new uint8[newpitch*H];
         if(!Fl_Renderer::stretch(data(), bytespp(), pitch(), &rect1, alloc, bytespp(), newpitch, &rect2)) {
             delete []alloc;
@@ -724,52 +682,46 @@ Pixmap Fl_Image::create_mask(int W, int H)
     return bitmap;
 }
 
-void Fl_Image::draw(int dx, int dy, int dw, int dh,
-                    int sx, int sy, int sw, int sh,
-                    Fl_Flags f)
+void Fl_Image::_draw(int dx, int dy, int dw, int dh,
+                     int sx, int sy, int sw, int sh,
+                     Fl_Flags f)
 {
-    if(!_data || w < 1 || h < 1 || dw<1 || dh<1)
+    if(!m_data || width() < 1 || height() < 1 || dw<1 || dh<1)
         return;
 
     // Init renderer before first draw!!!
     Fl_Renderer::system_init();
 
-    if(sw<=0) sw=w;
-    if(sh<=0) sh=h;
+    if(sw<=0) sw=width();
+    if(sh<=0) sh=height();
 
     bool need_redraw=false;
 
-    uint8 *draw_data = _data;
-    Fl_PixelFormat *draw_fmt = &fmt;
-    int draw_pitch = Fl_Renderer::calc_pitch(Fl_Renderer::system_format()->bytespp, w);
+    uint8 *draw_data = m_data;
+    Fl_PixelFormat *draw_fmt = format();
+    int draw_pitch = Fl_Renderer::calc_pitch(Fl_Renderer::system_format()->bytespp, width());
+    int draw_flags = 0;
 
     if((f&FL_ALIGN_SCALE)==FL_ALIGN_SCALE) {
         draw_flags |= FL_ALIGN_SCALE;
     } else {
-        if((draw_flags&FL_ALIGN_SCALE)) {
-            // If we were in scale mode, we have to delete mask, if we ahve one..
-            if(mask && _mask_alloc) fl_delete_offscreen((Pixmap)mask);
-            mask=0;
-            need_redraw=true;
-        }
-        draw_flags &= ~FL_ALIGN_SCALE;
-        last_w = last_h = 0;
+        m_lastw = m_lasth = 0;
     }
 
     //Detect scaling
-    if((last_w!=dw || last_h!=dh) && (draw_flags&FL_ALIGN_SCALE) ) {
+    if((m_lastw!=dw || m_lasth!=dh) && (draw_flags&FL_ALIGN_SCALE) ) {
         need_redraw=true;
-        last_w = dw;
-        last_h = dh;
+        m_lastw = dw;
+        m_lasth = dh;
     }
 
     int save_alpha = alpha();
-    _mod_data = 0;
+    m_mod_data = 0;
 
     //Detect and change state, if needed
     int F = (f&0x00029000);
-    if(_state_effect_all)
-    if(_state != F && _state_effect) {
+    if(m_state_effect_all)
+    if(m_state != F && m_state_effect) {
         if(!F) {
             //printf("NORMAL\n\n");
             need_redraw=true;
@@ -778,9 +730,9 @@ void Fl_Image::draw(int dx, int dy, int dw, int dh,
             //printf("SELECTED\n\n");
             alpha(60);
 
-            _mod_data = fore_blend(fl_get_color(Fl_Widget::default_style->selection_color));
-            if(_mod_data) {
-                draw_data = _mod_data->data();
+            m_mod_data = fore_blend(fl_get_color(Fl_Widget::default_style->selection_color));
+            if(m_mod_data) {
+                draw_data = m_mod_data->data();
                 draw_fmt = Fl_Renderer::system_format();
                 need_redraw=true;
             }
@@ -790,23 +742,23 @@ void Fl_Image::draw(int dx, int dy, int dw, int dh,
 
             alpha(128);
 
-            _mod_data = fore_blend(fl_get_color(FL_GRAY));
-            if(_mod_data) {
-                draw_data = _mod_data->data();
+            m_mod_data = fore_blend(fl_get_color(FL_GRAY));
+            if(m_mod_data) {
+                draw_data = m_mod_data->data();
                 draw_fmt = Fl_Renderer::system_format();
                 need_redraw=true;
             }
         } else if((F & FL_HIGHLIGHT)==FL_HIGHLIGHT && bitspp()>=16) {
             //printf("HIGHLIGHT\n\n");
 
-            _mod_data = Fl_Image_Filter::apply_to_new(this, 0, FILTER_BRIGHTNESS, 0.2f);
-            if(_mod_data) {
-                draw_data = _mod_data->data();
+            m_mod_data = Fl_Image_Filter::apply_to_new(this, 0, FILTER_BRIGHTNESS, 0.2f);
+            if(m_mod_data) {
+                draw_data = m_mod_data->data();
                 draw_fmt = format();
                 need_redraw=true;
             }
         }
-        _state = F;
+        m_state = F;
     }
     alpha(save_alpha);
 
@@ -820,18 +772,18 @@ void Fl_Image::draw(int dx, int dy, int dw, int dh,
             // Stretching with mask! This very NOT EFFICIENT!
             // This should be should used only when it's absolutely necessary!
             // THIS IS DISABLED! IF SOME APP WANTS TO DO THIS, ITHAS TO IT BY IT SELF!
-            if(mask && _mask_alloc) fl_delete_offscreen((Pixmap)mask);
+            if(mask && m_mask_alloc) fl_delete_offscreen((Pixmap)mask);
             //mask = (void *)create_mask(dw, dh);
-            _mask_alloc = false;//(mask!=0);
+            m_mask_alloc = false;//(mask!=0);
             mask=0;
 
         } else {
 
-            id = (void *)fl_create_offscreen(w, h);
-            _id_alloc = true;
+            id = (void *)fl_create_offscreen(width(), height());
+            m_id_alloc = true;
             if(!mask) {
-                mask = (void *)create_mask(w, h);
-                _mask_alloc = (mask!=0);
+                mask = (void *)create_mask(width(), height());
+                m_mask_alloc = (mask!=0);
             }
         }
 
@@ -847,7 +799,7 @@ void Fl_Image::draw(int dx, int dy, int dw, int dh,
             // This is NOT very efficent, thats why user should convert images to system fmt
             // before draw it!
             uint8 *system_fmt = 0;
-            Fl_Size size(w, h);
+            Fl_Size size(width(), height());
             system_fmt = Fl_Renderer::system_convert(draw_fmt, &size, draw_data, FL_BLIT_HW_PALETTE);
 
             //printf("draw %d %d %d %d -> %d %d %d %d\n", sx,sy,sw,sh, dx,dy,dw,dh);
@@ -864,14 +816,15 @@ void Fl_Image::draw(int dx, int dy, int dw, int dh,
         fl_end_offscreen();
     }
 
-    if(_mod_data) {
-        delete _mod_data;
+    if(m_mod_data) {
+        delete m_mod_data;
+        m_mod_data = 0;
     }
 
-    if(no_screen_) return;
+    if(m_no_screen) return;
 
     if((!draw_flags && (f&FL_ALIGN_TILED)!=FL_ALIGN_TILED)
-      && (!sx && !sy)) { dw=w; dh=h; }
+       && (!sx && !sy)) { dw=width(); dh=height(); }
 
     if( (f&FL_ALIGN_TILED)==FL_ALIGN_TILED) {
         to_screen_tiled(dx, dy, dw, dh, 0, 0);
@@ -935,7 +888,7 @@ bool Fl_Image::read_image(const char *filename, const uint8 *data, uint32 data_s
         // ONLY XPM DATA READ:
         Fl_Image_IO *r = &xpm_reader;
         if(r->is_valid_xpm && r->read_mem && r->is_valid_xpm((const uint8**)data))
-            ret = r->read_mem((uint8*)data, data_size, quality_, _data, fmt, w, h);
+            ret = r->read_mem((uint8*)data, data_size, m_quality, m_data, m_fmt, m_width, m_height);
 
     } else {
 
@@ -943,10 +896,10 @@ bool Fl_Image::read_image(const char *filename, const uint8 *data, uint32 data_s
             Fl_Image_IO *r = (Fl_Image_IO *)imageio_list[n];
             if(fp) {
                 if(r->is_valid_file && r->read_file && r->is_valid_file(filename, fp))
-                    ret = r->read_file(fp, 0, _data, fmt, w, h);
+                    ret = r->read_file(fp, 0, m_data, m_fmt, m_width, m_height);
             } else {
                 if(r->is_valid_mem && r->is_valid_mem(data, data_size))
-                    ret = r->read_mem((uint8*)data, data_size, quality_, _data, fmt, w, h);
+                    ret = r->read_mem((uint8*)data, data_size, m_quality, m_data, m_fmt, m_width, m_height);
             }
         }
     }
@@ -956,9 +909,9 @@ bool Fl_Image::read_image(const char *filename, const uint8 *data, uint32 data_s
         mask_type(FL_MASK_ALPHA);
     }
 
-    if(ret && _data) {
-        _data_alloc = true;
-        _pitch = Fl_Renderer::calc_pitch(bytespp(), width());
+    if(ret && m_data) {
+        m_data_alloc = true;
+        m_pitch = Fl_Renderer::calc_pitch(bytespp(), width());
     }
 
     xpm_data=false;
@@ -982,7 +935,7 @@ bool Fl_Image::write_image(const char *filename, Fl_Image_IO *io)
     FILE *fp = fl_fopen(filename, "wb");
     if(!fp) return false;
 
-    bool ret = io->write_file(fp, quality_, _data, fmt, w, h);
+    bool ret = io->write_file(fp, m_quality, m_data, m_fmt, m_width, m_height);
 
     if(fp) fclose(fp);
     return ret;
@@ -1001,5 +954,5 @@ bool Fl_Image::write_image(uint8 *&data, int &data_size, Fl_Image_IO *io)
     fl_register_imageio(&bmp_reader);
     fl_register_imageio(&gif_reader);
 
-    return io->write_mem(data, data_size, quality_, _data, fmt, w, h);
+    return io->write_mem(data, data_size, m_quality, m_data, m_fmt, m_width, m_height);
 }

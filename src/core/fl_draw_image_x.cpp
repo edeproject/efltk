@@ -52,8 +52,8 @@ void Fl_Image::to_screen(int XP, int YP, int WP, int HP, int, int)
         } else {
             // mask only
             XSetStipple(fl_display, fl_gc, (Pixmap)mask);
-            int ox = X-cx; if (ox < 0) ox += w;
-            int oy = Y-cy; if (oy < 0) oy += h;
+            int ox = X-cx; if (ox < 0) ox += width();
+            int oy = Y-cy; if (oy < 0) oy += height();
             XSetTSOrigin(fl_display, fl_gc, ox, oy);
             XSetFillStyle(fl_display, fl_gc, FillStippled);
             XFillRectangle(fl_display, fl_window, fl_gc, X, Y, W, H);
@@ -79,18 +79,18 @@ void Fl_Image::to_screen_tiled(int XP, int YP, int WP, int HP, int, int)
     //XGCValues	xgcval, xgcsave;
     //if(mask)
     {
-        int temp = -cx % w;
-        cx = (temp>0 ? w : 0) - temp;
-        temp = -cy % h;
-        cy = (temp>0 ? h : 0) - temp;
+        int temp = -cx % width();
+        cx = (temp>0 ? width() : 0) - temp;
+        temp = -cy % height();
+        cy = (temp>0 ? height() : 0) - temp;
 
         int ccx=cx;
         while (-cy < H) {
             while (-cx < W) {
-                to_screen(X-cx, Y-cy, w, h, 0,0);
-                cx -= w;
+                to_screen(X-cx, Y-cy, width(), height(), 0,0);
+                cx -= width();
             }
-            cy -= h;
+            cy -= height();
             cx = ccx;
         }
 
