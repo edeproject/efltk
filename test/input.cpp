@@ -40,7 +40,7 @@ void cb(Fl_Widget *ob) {
 }
 
 int when = 0;
-Fl_Input *input[5];
+Fl_Input *input[6];
 
 void toggle_cb(Fl_Widget *o, long v) {
   if (((Fl_Toggle_Button*)o)->value()) when |= v; else when &= ~v;
@@ -54,7 +54,7 @@ void test(Fl_Input *i) {
 }
 
 void button_cb(Fl_Widget *,void *) {
-  for (int i=0; i<5; i++) test(input[i]);
+  for (int i=0; i<6; i++) test(input[i]);
 }
 
 void color_cb(Fl_Widget* button, void* v) {
@@ -99,10 +99,13 @@ int main(int argc, char **argv) {
   input[2]->tooltip("Input field for integer number");
   input[3] = new Fl_Secret_Input(70,y,300,23,"Secret:"); y += 27;
   input[3]->tooltip("Input field for password");
-  input[4] = new Fl_Wordwrap_Input(70,y,300,100,"Wordwrap:"); y += 105;
+  input[4] = new Fl_Wordwrap_Input(70,y,300,70,"Wordwrap:"); y += 75;
   input[4]->tooltip("Input field for short text with newlines");
+  input[5] = new Fl_Input(70,y,300,23,"Right al."); y += 30;
+  input[5]->type(32);
+  input[5]->tooltip("Eg.: monetary input");
 
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 6; i++) {
     input[i]->when(0); input[i]->callback(cb);
   }
   int y1 = y;

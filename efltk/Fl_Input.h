@@ -35,7 +35,8 @@ public:
     // 5 and 6 not used now...
         INPUT_TYPE = 7,
         READ_ONLY = 8,
-        WORDWRAP = 16
+        WORDWRAP = 16,
+	RIGHT_ALIGNED = 32
     };
 
     Fl_Input(int, int, int, int, const char* = 0);
