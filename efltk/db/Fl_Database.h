@@ -60,6 +60,7 @@ protected:
    void *query_handle(const Fl_Query *q) const     { return q->m_stmt; }
    void  query_handle(Fl_Query *q,void *handle)    { q->m_stmt = handle; } 
 
+   void  query_active(Fl_Query *q,bool active)     { q->m_active = active; }
    void  query_eof(Fl_Query *q,bool eof)           { q->m_eof = eof; }
    Fl_Data_Fields& query_fields(Fl_Query *q)       { return q->m_fields; }
 
