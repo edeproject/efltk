@@ -280,18 +280,17 @@ void build_window()
 	results = new Fl_ListView(0,0,100,100);	
 	results->layout_align(FL_ALIGN_CLIENT);
 
-	Fl_Group *g = new Fl_Group(0,0,30,60);
-	g->layout_settings(false, false);
+	Fl_Group *g = new Fl_Group(0,0,100,30);
 	g->begin();
 
-		sql_input = new Fl_Input(0,0,10,10);
+		sql_input = new Fl_Input(0,0,60,30);
 		sql_input->value("SELECT * FROM _test_");
-		sql_input->layout_align(FL_ALIGN_CLIENT);
+		g->resizable(sql_input);
 	
-		send_btn = new Fl_Button(0,0,60,60,"SEND");
+		send_btn = new Fl_Button(60,0,40,30,"SEND");
 		send_btn->callback(send_cb);
-		send_btn->layout_align(FL_ALIGN_RIGHT);	
 	
+	g->store_sizes(); //Remember initial sizes for resizing
 	g->end();	
 	g->layout_align(FL_ALIGN_BOTTOM);
 
@@ -300,7 +299,6 @@ void build_window()
 	g->begin();
 
 	Fl_Group *g2 = new Fl_Group(0,0,10,g->h()/2);
-	g2->layout_settings(false, false);
 		
 		Fl_Box *empty = new Fl_Box(0,0,90,23);
 		empty->layout_align(FL_ALIGN_LEFT);
@@ -313,7 +311,6 @@ void build_window()
 	g2->layout_align(FL_ALIGN_CLIENT);
 		
 	g2 = new Fl_Group(0,0,10,g->h()/2);
-	g2->layout_settings(false, false);
 	g2->begin();
 		
 		con_btn = new Fl_Button(0,0,90,20,"Connect");

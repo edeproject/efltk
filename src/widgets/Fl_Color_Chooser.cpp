@@ -453,7 +453,7 @@ void Fl_Color_Chooser::ctor_init(int X, int Y, int W, int H) {
     choice.end();
     end();
     resizable(huebox);
-    sizes();
+    store_sizes();
     resize(X,Y,W,H);
     r_ = g_ = b_ = 0;
     hue_ = 0.0;

@@ -37,7 +37,7 @@
 
 void Fl_Tile::position(int oix, int oiy, int newx, int newy)
 {
-    int* p = sizes();
+    int* p = store_sizes();
     p += 8;                      // skip group & resizable's saved size
     int numchildren = children();
     for (int i=0; i < numchildren; p += 4, i++)
@@ -70,7 +70,7 @@ void Fl_Tile::position(int oix, int oiy, int newx, int newy)
 // resizing is equivalent to moving  the lower-right corner (sort of):
 void Fl_Tile::layout()
 {
-    int* p = sizes();            // remember the initial positions on first call here
+    int* p = store_sizes();            // remember the initial positions on first call here
     if (layout_damage() & FL_LAYOUT_WH)
     {
         layout_damage(layout_damage() & ~FL_LAYOUT_WH);
@@ -128,7 +128,7 @@ int Fl_Tile::handle(int event)
                 int mindy = 100;
                 int oldx = 0;
                 int oldy = 0;
-                int* q = sizes();
+                int* q = store_sizes();
                 int* p = q+8;
                 int numchildren = children();
                 for (int i=0; i < numchildren; p += 4, i++)

@@ -362,7 +362,7 @@ void Fl_Group::init_sizes()
 }
 
 
-int* Fl_Group::sizes()
+int *Fl_Group::store_sizes()
 {
     if(m_sizes.size()<=0) {
         // first thing in sizes array is the group's size:
@@ -396,8 +396,8 @@ int* Fl_Group::sizes()
                 m_sizes.append(widget->y()+widget->h());
             }
         }
-    }
-    return (int*)m_sizes.data();
+    }    
+	return (int*)m_sizes.data();
 }
 
 static int max(int a,int b) {
@@ -453,7 +453,7 @@ void Fl_Group::layout()
 
     int* p = 0;
     if (resizable() && children() > 0) {
-        p = sizes(); // initialize the size array
+        p = store_sizes(); // initialize the size array			
     }
 
     if(children() > 0 && layout_damage&(FL_LAYOUT_DAMAGE|FL_LAYOUT_WH))

@@ -169,7 +169,7 @@ void Fl_Window::show(int argc, char **argv)
 
     if (geometry)
     {
-        sizes();                 //to allocate the array if this window was not end()ed...
+        store_sizes();                 //to allocate the array if this window was not end()ed...
         int flags = 0, gx = x(), gy = y(); unsigned int gw = w(), gh = h();
         flags = XParseGeometry(geometry, &gx, &gy, &gw, &gh);
         if (flags & XNegative) gx = Fl::w()-w()+gx;
