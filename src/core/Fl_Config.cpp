@@ -264,8 +264,7 @@ bool Fl_Config::read_file(bool create)
     }
     fclose(fp);
 
-    Fl_String_List strings;
-    strings.from_string(buffer, "\n");
+    Fl_String_List strings(buffer, "\n");
 
     free((char*)buffer);
 
@@ -390,12 +389,12 @@ Fl_Config_Section *Fl_Config::find_section(const char *path, bool perfect_match)
     sections.from_string(path, "/");
 
     if(sections.size()==0)
-        return find_section(path, false);
+        return find(path, false);
 
     Fl_Config_Section *section = (Fl_Config_Section *)this;
     for(unsigned n=0; n<sections.size(); n++) {
 
-        Fl_Config_Section *tmp = section->find_section(sections[n], false);
+        Fl_Config_Section *tmp = section->find(sections[n], false);
         if(!tmp) {
             if(perfect_match)
                 return 0;
@@ -728,7 +727,7 @@ Fl_String *Fl_Config_Section::find_entry(const char *key) const
     return 0;
 }
 
-Fl_Config_Section *Fl_Config_Section::find_section(const char *name, bool recursive) const
+Fl_Config_Section *Fl_Config_Section::find(const char *name, bool recursive) const
 {
     const Fl_Config_Sections *list = &sections();
 
@@ -738,7 +737,7 @@ Fl_Config_Section *Fl_Config_Section::find_section(const char *name, bool recurs
             return s;
         }
         if(recursive) {
-            s = s->find_section(name, recursive);
+            s = s->find(name, recursive);
             if(s) return s;
         }
     }

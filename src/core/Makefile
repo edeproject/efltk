@@ -15,10 +15,12 @@ CPPFILES = \
 	Fl_Image_Filter.cpp \
 	Fl_Lists.cpp \
 	Fl_Maps.cpp \
+        Fl_PackedStrings.cpp \
 	Fl_Pixmap.cpp \
 	Fl_Renderer.cpp \
 	Fl_Socket.cpp \
 	Fl_String.cpp \
+	Fl_String_List.cpp \
 	Fl_Style.cpp \
 	Fl_Style_Set.cpp \
 	Fl_Thread.cpp \
