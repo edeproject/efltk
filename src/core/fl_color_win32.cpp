@@ -151,6 +151,7 @@ HPEN fl_set_geometric_pen()
 		return fl_set_cosmetic_pen();
 	}
 
+	HPEN oldpen = fl_pen;
 	if(!fl_pen || pen_colorref != fl_colorref) 
 	{
 		if(styled) {			
@@ -166,8 +167,8 @@ HPEN fl_set_geometric_pen()
 		return fl_pen;
 	}
 
-	HPEN oldp = (HPEN)SelectObject(fl_gc, fl_pen);
-	DeleteObject(oldp);
+	SelectObject(fl_gc, fl_pen);
+	if(oldpen) DeleteObject(oldpen);
 
 	return fl_pen;
 }
@@ -181,8 +182,10 @@ HPEN fl_set_cosmetic_pen()
 		return stockpen;
 	}
 #endif
+	HPEN oldpen = fl_cosm_pen;
+
 	if(!fl_cosm_pen || cosm_pen_colorref != fl_colorref) 
-	{
+	{		
 		LOGBRUSH penbrush = { BS_SOLID, fl_colorref, 0 };
 		if(line_width<2) {
 			// We can use cosmetic pen, since line_width is <2
@@ -190,16 +193,15 @@ HPEN fl_set_cosmetic_pen()
 		} else {			
 			// Pen must be geometric, if line_width>1			
 			fl_cosm_pen = ExtCreatePen(PS_SOLID | cap_style | PS_GEOMETRIC, line_width, &penbrush, 0,0);					
-		}		
-
+		}
 		cosm_pen_colorref = fl_colorref;
 	} else {
 		SelectObject(fl_gc, fl_cosm_pen);
 		return fl_cosm_pen;
 	}
 
-	HPEN oldp = (HPEN)SelectObject(fl_gc, fl_cosm_pen);
-	DeleteObject(oldp);
+	SelectObject(fl_gc, fl_cosm_pen);
+	if(oldpen) DeleteObject(oldpen);
 
 	return fl_cosm_pen;
 }
@@ -211,6 +213,7 @@ HBRUSH fl_setbrush()
 	SetDCBrushColor(fl_gc, fl_colorref);
 	fl_brush = stockbrush;
 #else
+	HBRUSH oldbrush = fl_brush;
     if(!fl_brush || brush_colorref != fl_colorref || brush_dc != fl_gc) 
 	{
         fl_brush = CreateSolidBrush(fl_colorref);
@@ -221,8 +224,8 @@ HBRUSH fl_setbrush()
 		return fl_brush;
 	}
 
-	HBRUSH oldb = (HBRUSH)SelectObject(fl_gc, fl_brush);
-	DeleteObject(oldb);
+	SelectObject(fl_gc, fl_brush);
+	if(oldbrush) DeleteObject(oldbrush);
 #endif
     return fl_brush;
 }
