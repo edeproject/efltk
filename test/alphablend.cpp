@@ -82,7 +82,7 @@ public:
         }
 
         // Draw string
-        fl_draw(str, tX, tY+int(fl_height()));
+        fl_draw(str, float(tX), float(tY+int(fl_height())));
 
         oX=X; oY=Y;
     }
@@ -141,7 +141,7 @@ uchar* make_image()
 
 int main(int argc, char *argv[])
 {
-#ifdef HAVE_PNG
+#if HAVE_PNG
     // Initialize extension for PNG
     fl_init_images_lib();
     Fl::args(argc, argv);
@@ -158,7 +158,7 @@ int main(int argc, char *argv[])
 
         BBWin bwin(bb_bg, bb);
         bwin.resizable(bwin);
-        Fl::add_timeout(0.1, bb_timeout, (void *)&bwin);
+        Fl::add_timeout(0.1f, bb_timeout, (void *)&bwin);
 
         //////////////////////////////
 
