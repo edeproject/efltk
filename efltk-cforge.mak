@@ -11,16 +11,16 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x400344
+# %FirstUniqueId:	0x400347
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
 
 MAKE = make
 
-IDE_BLIND_INCLUDES = -I- -I./ -Iefltk -Isrc -Isrc/images -Isrc/xml -Isrc/db/odbc -Itest -Itest/net
+IDE_BLIND_INCLUDES = -I- -I./ -Iefltk -Isrc -Isrc/images -Isrc/xml -Isrc/db/odbc -Itest -Itest/net -Itest/db
 
-DEPEND_INCLUDES = -I- -I./ -Iefltk -Isrc -Isrc/images -Isrc/xml -Isrc/db/odbc -Itest -Itest/net
+DEPEND_INCLUDES = -I- -I./ -Iefltk -Isrc -Isrc/images -Isrc/xml -Isrc/db/odbc -Itest -Itest/net -Itest/db
 
 ALLDEFINES = $(ALLINCLUDES)
 
@@ -507,8 +507,19 @@ lib/libefltk_net.so ::	lib/Fl_FTP_Socket.o
 # %ObjsDir:	test/net
 test/net/ftp_socket ::	test/net/ftp_socket.o\
 	test/net/Fl_FTP_Socket.o\
-	test/net/Fl_Socket.o
+	test/net/Fl_Socket.o\
+	test/net/Fl_Buffer.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+# %UniqueId:	0x400345
+# %TargetType:	C_EXE
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	test/db
+# %IncDir:	test/db
+# %ObjsDir:	test/db
+test/db/db_odbc ::	test/db/db_odbc.o
+	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk -lefltk_odbc
 
 # %ObjectFilesLinking
 # %TargetType:	C++_OBJ
@@ -709,7 +720,7 @@ lib/Fl_Boxtype.o : src/core/Fl_Boxtype.cpp
 
 # %TargetType:	C++_OBJ
 # %ParentTarget:	0x400002
-# %SourceTarget:	0x40028c
+# %SourceTarget:	0x400343
 lib/Fl_Buffer.o : src/core/Fl_Buffer.cpp
 	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
 
@@ -1892,7 +1903,7 @@ lib/Fl_Query.o : src/db/Fl_Query.cpp
 
 # %TargetType:	C++_OBJ
 # %ParentTarget:	0x400002
-# %SourceTarget:	0x400338
+# %SourceTarget:	0x400342
 lib/Fl_Socket.o : src/core/Fl_Socket.cpp
 	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
 
@@ -1906,14 +1917,14 @@ test/socket.o : test/socket.cpp
 
 # %TargetType:	C++_OBJ
 # %ParentTarget:	0x40033a
-# %SourceTarget:	0x400338
+# %SourceTarget:	0x400342
 test/Fl_Socket.o : src/core/Fl_Socket.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
 # %TargetType:	C++_OBJ
 # %ParentTarget:	0x40033c
-# %SourceTarget:	0x40033d
+# %SourceTarget:	0x400341
 lib/Fl_FTP_Socket.o : src/net/Fl_FTP_Socket.cpp
 	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
 
@@ -1946,6 +1957,20 @@ test/Fl_Buffer.o : src/core/Fl_Buffer.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x400345
+# %SourceTarget:	0x400346
+test/db/db_odbc.o : test/db/db_odbc.cpp
+	$(CXX) -c -o $@ $< -Itest/db -Itest/db $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40033f
+# %SourceTarget:	0x400343
+test/net/Fl_Buffer.o : src/core/Fl_Buffer.cpp
+	$(CXX) -c -o $@ $< -Itest/net -Itest/net $(CXXFLAGS)
+
+
 # DO NOT DELETE
 
 lib/Fl_ODBC_Database.o :	src/db/odbc/fl_odbc.h\
@@ -1953,12 +1978,16 @@ lib/Fl_ODBC_Database.o :	src/db/odbc/fl_odbc.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_String.h\
 	efltk/Enumerations.h\
+	efltk/db/Fl_Query.h\
 	efltk/Fl_Data_Source.h\
 	efltk/Fl_Data_Fields.h\
 	efltk/Fl_Flags.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
+	efltk/db/Fl_Params.h\
+	efltk/db/Fl_ODBC_Database.h\
+	efltk/db/Fl_Database.h\
 	efltk/Fl_Thread.h\
 	efltk/Fl_Thread_Linux.h\
 	efltk/Fl_Thread_w32.h
@@ -6273,9 +6302,9 @@ test/Fl_Socket.o :	efltk/Fl_Exception.h\
 lib/Fl_FTP_Socket.o :	efltk/net/Fl_FTP_Socket.h\
 	efltk/Fl_Socket.h\
 	efltk/Fl_Buffer.h\
-	efltk/Fl_Export.h\
 	efltk/Fl_String.h\
 	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
 	efltk/Fl_Exception.h
 test/net/ftp_socket.o :	efltk/net/Fl_FTP_Socket.h\
 	efltk/Fl_Socket.h\
@@ -6287,9 +6316,9 @@ test/net/ftp_socket.o :	efltk/net/Fl_FTP_Socket.h\
 test/net/Fl_FTP_Socket.o :	efltk/net/Fl_FTP_Socket.h\
 	efltk/Fl_Socket.h\
 	efltk/Fl_Buffer.h\
-	efltk/Fl_Export.h\
 	efltk/Fl_String.h\
 	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
 	efltk/Fl_Exception.h
 test/net/Fl_Socket.o :	efltk/Fl_Exception.h\
 	efltk/Fl_Export.h\
@@ -6302,6 +6331,32 @@ test/Fl_Buffer.o :	efltk/Fl_Exception.h\
 	efltk/Fl_String.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Buffer.h
+test/db/db_odbc.o :	efltk/db/Fl_ODBC_Database.h\
+	efltk/db/Fl_Database.h\
+	efltk/db/Fl_Query.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/db/Fl_Params.h\
+	efltk/Fl_Thread.h\
+	efltk/Fl_Thread_Linux.h\
+	efltk/Fl_Thread_w32.h\
+	efltk/Fl_Exception.h\
+	efltk/fl_ask.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl.h
 
 
 # %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x4
@@ -6332,7 +6387,7 @@ test/Fl_Buffer.o :	efltk/Fl_Exception.h\
 # %TargetInfo src/core/Fl_Bitmap.cpp	SourceOrHeader,	UniqueId=0x400289,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_Bmp.cpp	SourceOrHeader,	UniqueId=0x40028a,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_Boxtype.cpp	SourceOrHeader,	UniqueId=0x40028b,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Buffer.cpp	SourceOrHeader,	UniqueId=0x40028c,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/core/Fl_Buffer.cpp	SourceOrHeader,	UniqueId=0x400343,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_Config.cpp	SourceOrHeader,	UniqueId=0x40028d,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_Data_Fields.cpp	SourceOrHeader,	UniqueId=0x40028e,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_Data_Source.cpp	SourceOrHeader,	UniqueId=0x40028f,	TargetType=C++,	IDEFlags=0x4
@@ -6501,9 +6556,11 @@ test/Fl_Buffer.o :	efltk/Fl_Exception.h\
 # %TargetInfo src/db/Fl_Database.cpp	SourceOrHeader,	UniqueId=0x400332,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/db/Fl_Params.cpp	SourceOrHeader,	UniqueId=0x400333,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/db/Fl_Query.cpp	SourceOrHeader,	UniqueId=0x400334,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Socket.cpp	SourceOrHeader,	UniqueId=0x400338,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/core/Fl_Socket.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400342,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/socket.cpp	SourceOrHeader,	UniqueId=0x40033b,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/net/Fl_FTP_Socket.cpp	SourceOrHeader,	UniqueId=0x40033d,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/net/Fl_FTP_Socket.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400341,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/net/ftp_socket.cpp	SourceOrHeader,	UniqueId=0x400340,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/db/db_odbc.cpp	SourceOrHeader,	UniqueId=0x400346,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x4
@@ -6718,12 +6775,9 @@ test/Fl_Buffer.o :	efltk/Fl_Exception.h\
 # %TargetInfo efltk/db/Fl_Query.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400335,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/db/Fl_Params.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400336,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/db/Fl_Database.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400337,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Socket.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400339,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/net/Fl_FTP_Socket.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40033e,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo test/net/ftp_socket.cpp	SourceOrHeader,	UniqueId=0x400340,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/net/Fl_FTP_Socket.cpp	SourceOrHeader,	UniqueId=0x400341,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Socket.cpp	SourceOrHeader,	UniqueId=0x400342,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Buffer.cpp	SourceOrHeader,	UniqueId=0x400343,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo efltk/Fl_Socket.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400339,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/net/Fl_FTP_Socket.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40033e,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/db/Fl_ODBC_Database.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400344,	TargetType=INC,	IDEFlags=0xe
 
 
 # %UniqueId:	0x400001
@@ -6771,4 +6825,5 @@ test/Fl_Buffer.o :	efltk/Fl_Exception.h\
 #	0x400284
 #	0x40033a
 #	0x40033f
+#	0x400345
 #

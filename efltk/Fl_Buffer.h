@@ -19,33 +19,59 @@
 #define __FL_BUFFER_H__
 
 #include <efltk/Fl_Export.h>
+#include <efltk/Fl_String.h>
 
 class FL_API Fl_Buffer {
 protected:
-	unsigned m_size;
-	unsigned m_bytes;
-	char *   m_buffer;
+    unsigned m_size;
+    unsigned m_bytes;
+    char *   m_buffer;
 public:
-	Fl_Buffer(unsigned sz=16);
-	~Fl_Buffer();
-	char *data() const { return m_buffer; }
-	bool check_size(unsigned sz);
-	void set(const char *data,unsigned sz);
-	void set(const Fl_Buffer& buffer);
-	bool append(const char *data,unsigned sz);
-	bool append(const Fl_Buffer& buffer);
-	void reset(unsigned sz=0);
-	void fill(char c);
+    Fl_Buffer(unsigned sz=16);
+    ~Fl_Buffer();
+    char *data() const { return m_buffer; }
+    bool check_size(unsigned sz);
 
-	unsigned size()  const { return m_size; }
-	unsigned bytes() const { return m_bytes; }
-	void bytes(unsigned b) { set(0L,b); }
+    void set(const char *data,unsigned sz);
+    void set(const Fl_Buffer& buffer);
+    void set(const Fl_String& str);
+
+    void append(const char *data,unsigned sz);
+    void append(const Fl_Buffer& buffer);
+    void append(const Fl_String& buffer);
+
+    Fl_Buffer& operator = (const Fl_Buffer& buffer) {
+        set(buffer);
+        return *this;
+    }
+
+    Fl_Buffer& operator = (const Fl_String& buffer) {
+        set(buffer);
+        return *this;
+    }
+
+    Fl_Buffer& operator += (const Fl_Buffer& buffer) {
+        append(buffer);
+        return *this;
+    }
+
+    Fl_Buffer& operator += (const Fl_String& buffer) {
+        append(buffer);
+        return *this;
+    }
+
+    void reset();
+    void fill(char c);
+
+    unsigned size()  const { return m_size; }
+    unsigned bytes() const { return m_bytes; }
+    void bytes(unsigned b) { set(0L,b); }
 };
 
 class FL_API Fl_String_Buffer : public Fl_Buffer {
 public:
-	Fl_String_Buffer(unsigned sz=16) : Fl_Buffer(sz) {}
-	char& operator [] (int ndx) { return m_buffer[ndx]; }
+    Fl_String_Buffer(unsigned sz=16) : Fl_Buffer(sz) {}
+    char& operator [] (int ndx) { return m_buffer[ndx]; }
 };
 
 #endif

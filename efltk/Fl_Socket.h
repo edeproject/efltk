@@ -17,54 +17,58 @@ typedef int SOCKET;
 #include <efltk/Fl_Buffer.h>
 
 class FL_API Fl_Socket {
-	SOCKET		m_sockfd;
-	int			m_domain;
-	int			m_type;
-	int 	   	m_protocol;
-	Fl_String	m_host;
-	int			m_port;
-	fd_set		inputs,outputs;
-	int			m_receiveLowWaterMark;
+    SOCKET		m_sockfd;
+    int			m_domain;
+    int			m_type;
+    int 	   	m_protocol;
+    Fl_String	m_host;
+    int			m_port;
+    fd_set		inputs,outputs;
+    int			m_receiveLowWaterMark;
 
 protected:
-	static int	m_socketCount;
-	static bool m_inited;
+    static int	m_socketCount;
+    static bool m_inited;
 
-	static void init();
-	static void cleanup();
+    static void init();
+    static void cleanup();
+
+    char get_char();
 
 public:
    // Constructor & destructor
-	Fl_Socket(int domain=AF_INET, int type=SOCK_STREAM, int protocol=0);
-	virtual ~Fl_Socket();
+    Fl_Socket(int domain=AF_INET, int type=SOCK_STREAM, int protocol=0);
+    virtual ~Fl_Socket();
 
-	int  handle() const { return m_sockfd; }
+    int  handle() const { return m_sockfd; }
 
-	void host(Fl_String hostName);
-	const char *host() const { return m_host; }
+    void host(Fl_String hostName);
+    const char *host() const { return m_host; }
 
-	void port(int portNumber);
-	int port() const { return m_port; }
+    void port(int portNumber);
+    int port() const { return m_port; }
 
    // Connect & disconnect
-	virtual void open(Fl_String hostName="", int port=0);
-	virtual void close();
+    virtual void open(Fl_String hostName="", int port=0);
+    virtual void close();
 
-	bool active() const { return m_sockfd != INVALID_SOCKET; }
+    bool active() const { return m_sockfd != INVALID_SOCKET; }
 
    // Settings
-	int  control(int flag, unsigned long *check);
-	int  set_option(int level,int option,int  value);
-	int  get_option(int level,int option,int& value);
+    int  control(int flag, unsigned long *check);
+    int  set_option(int level,int option,int  value);
+    int  get_option(int level,int option,int& value);
 
-   // Read & write
-	int read(char *buffer,int size);
-	int read(Fl_Buffer& buffer);
-	int write(const char *buffer,int size);
-	int write(const Fl_Buffer& buffer);
+    // Read & write
+    int read_line(char *buffer,int size);
+    int read_line(Fl_Buffer& buffer);
+    int read(char *buffer,int size);
+    int read(Fl_Buffer& buffer);
+    int write(const char *buffer,int size);
+    int write(const Fl_Buffer& buffer);
 
-	bool ready_to_read(int waitmsec);
-	bool ready_to_write();
+    bool ready_to_read(int waitmsec);
+    bool ready_to_write();
 };
 
 #endif
