@@ -1,0 +1,47 @@
+
+Notes about unixODBC
+::::::::::::::::::::
+
+So far autoconf should be able to detect unixODBC on Your computer, but
+sometimes user should manualy add one sympolic link in libraries directory
+where libodbcinst shared library (DLL) is.
+
+To do so, You have to log-in as root and try find libodbcinst.so file.
+The best way is to use "locate" utility. When You find it, go to it's
+directory and do something like this:
+
+[root@pug lib]# ln -s libodbcinst.so.1.0.0 libodbcinst.so
+
+Note that "[root@pug lib]#" is shell prompt :)
+
+Than try to run eFLTK configure script again.
+
+
+###
+# Autoconf definitions...
+###
+
+After ./configure, we will have some substitued variables inside config.h
+and makeinclude:
+
+config.h
+
+If unixODBC is found, HAVE_UNIXODBC will be set to 1, otherwise (or if
+you've specified --without-unixODBC) it will be set to 0.
+
+makeinclude
+
+If unixODBC is found following variables will be set to valid values
+UNIXODBCLIB
+UNIXODBCINSTLIB (developers will discuss about this more, so it's not
+	included yet)
+UNIXODBCLDIR
+
+
+
+Good luck!
+
+EDE team
+
+...............
+$Id$
