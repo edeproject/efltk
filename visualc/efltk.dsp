@@ -186,6 +186,10 @@ SOURCE=..\src\widgets\Fl_Button.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\widgets\Fl_Button_Group.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\widgets\Fl_Calendar.cpp
 # End Source File
 # Begin Source File
@@ -215,6 +219,10 @@ SOURCE=..\src\core\fl_color.cpp
 # Begin Source File
 
 SOURCE=..\src\widgets\Fl_Color_Chooser.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Combo_Box.cpp
 # End Source File
 # Begin Source File
 
@@ -347,6 +355,10 @@ SOURCE=..\src\widgets\Fl_Help_Dialog.cpp
 # Begin Source File
 
 SOURCE=..\src\widgets\Fl_Highlight_Button.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_iconv_converters.cpp
 # End Source File
 # Begin Source File
 
@@ -750,6 +762,10 @@ SOURCE=..\src\core\vsnprintf.c
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
+SOURCE=..\src\core\aimm.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\core\ARRAY.h
 # End Source File
 # Begin Source File
@@ -807,6 +823,10 @@ SOURCE=..\efltk\Fl_Buffer.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Button_Group.h
 # End Source File
 # Begin Source File
 
@@ -1439,18 +1459,6 @@ SOURCE=..\src\widgets\slowarrow.h
 # Begin Source File
 
 SOURCE=..\efltk\vsnprintf.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\efltk\win32.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\efltk\x.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\efltk\Xutf8.h
 # End Source File
 # End Group
 # End Target
