@@ -299,6 +299,73 @@ static const Fl_Dialog_Button_Template buttonTemplates[] = {
     { 0,             "",       &pixmap_help }
 };
 
+class Fl_Dialog_Button : public Fl_Group {
+    Fl_Button *m_button;
+    bool            m_default;
+protected:
+    static void dialog_button_cb(Fl_Widget *w,void *);
+public:
+    Fl_Dialog_Button(const char* l,Fl_Pixmap *p,int id);
+
+    virtual void preferred_size(int& w,int& h) const;
+    virtual void layout();
+
+    void default_button(bool d);
+    bool default_button() const { return m_default; }
+};
+
+void Fl_Dialog_Button::dialog_button_cb(Fl_Widget *w,void *) {
+    Fl_Group *frame = w->parent();
+    frame->do_callback(FL_DIALOG_BTN);
+}
+
+Fl_Dialog_Button::Fl_Dialog_Button(const char* l,Fl_Pixmap *p,int id)
+: Fl_Group("",30,FL_ALIGN_RIGHT) {
+    m_button = new Fl_Button(0,0,10,10,l);
+    m_button->image(p);
+    m_button->callback(Fl_Dialog_Button::dialog_button_cb,(void *)id);
+    end();
+}
+
+void Fl_Dialog_Button::preferred_size(int& w,int& h) const {
+    int bw = w;
+    int bh = h - 6;
+
+    if (m_default) bw -= 6;
+
+    m_button->preferred_size(bw,bh);
+
+    w = bw;
+
+    if (bh + 6 > h)
+        h = bh + 6;
+
+    if (m_default) w += 6;
+}
+
+void Fl_Dialog_Button::Fl_Dialog_Button::layout() {
+    Fl_Group::layout();
+    int bx = 0;
+    int bw = w();
+    int bh = h() - 6;
+    if (m_default) {
+        bx = 3;
+        bw -= 6;
+    }
+    m_button->resize(bx,3,bw,bh);
+}
+
+
+void Fl_Dialog_Button::default_button(bool d) {
+    if (d) {
+        box(FL_THIN_DOWN_BOX);
+        color(FL_BLACK);
+    } else {
+        box(FL_NO_BOX);
+    }
+    m_default = d;
+}
+
 void Fl_Dialog::escape_callback(Fl_Dialog *dialog, void *) {
     if (dialog->m_buttons & Fl_Dialog::BTN_CANCEL) {
         Fl::exit_modal();
@@ -326,7 +393,7 @@ void Fl_Dialog::buttons_callback(Fl_Button *btn, long id)
         dialog->m_modalResult = (int)id;
     } else {
         // this requires event_argument!
-        dialog->do_callback(FL_DIALOG_BTN);
+        dialog->do_callback(btn,btn->argument(),FL_DIALOG_BTN);
     }
 }
 
@@ -335,12 +402,10 @@ Fl_Dialog::Fl_Dialog(int ww, int hh, const char *label, Fl_Data_Source *ds)
 {
     m_defaultButton = 0;
 
-    m_buttonPanel = new Fl_Group(0,0,10,10);
-    Fl_Box *resize = new Fl_Box(0,-1,10,1);
-    resize->hide();
-    m_buttonPanel->resizable(resize);
-    m_buttonPanel->layout_align(FL_ALIGN_BOTTOM);
-    m_buttonPanel->layout_spacing(3);
+    m_buttonPanel = new Fl_Group("",30,FL_ALIGN_BOTTOM);
+    //Fl_Box *resize = new Fl_Box(0,-1,10,1);
+    //resize->hide();
+    m_buttonPanel->layout_spacing(2);
     m_buttonPanel->end();
 
     m_tabs = new Fl_Tabs(0,0,10,10);
@@ -363,21 +428,20 @@ Fl_Dialog::~Fl_Dialog() {
 
 void Fl_Dialog::enable_button(int button_mask,bool enabled)
 {
-    for(unsigned i = 0; i < m_buttonList.size(); i++) {
-        Fl_Button *btn = (Fl_Button*)m_buttonList[i];
-        if(button_mask & btn->argument()) {
+    for (unsigned i = 0; i < m_buttonList.size(); i++) {
+        Fl_Widget *btn = m_buttonList[i];
+        if (button_mask & btn->argument()) {
             if (enabled)
                 btn->activate();
-            else
-                btn->deactivate();          
+            else btn->deactivate();          
         }
     }
 }
 
 void Fl_Dialog::submit(int button_id)
 {
-    for(unsigned i = 0; i < m_buttonList.size(); i++) {
-        Fl_Button *btn = (Fl_Button*)m_buttonList[i];
+    for (unsigned i = 0; i < m_buttonList.size(); i++) {
+        Fl_Widget *btn = m_buttonList[i];
         if(button_id == btn->argument()) {
             btn->do_callback(btn->argument());
             return; // Only one allowed
@@ -422,15 +486,16 @@ void Fl_Dialog::clear_buttons()
         m_buttonPanel->remove(btn);
         delete btn;
     }
+    m_buttonList.clear();
+    m_defaultButton = 0L;
 }
 
 void Fl_Dialog::buttons(int buttons_mask,int default_button) 
 {
     Fl_Group *saved = Fl_Group::current();
 
-    Fl_Button *btn;
+    Fl_Dialog_Button *btn;
     unsigned i;
-    m_defaultButton = 0L;
     m_buttons = buttons_mask;
     clear_buttons();
 
@@ -443,36 +508,26 @@ void Fl_Dialog::buttons(int buttons_mask,int default_button)
         long id = buttonTemplate.id;
         if (buttons_mask & id) 
         {
+            btn = new Fl_Dialog_Button(_(buttonTemplate.label),buttonTemplate.pixmap,id);
             if (id == default_button) {
-                Fl_Group *default_box = new Fl_Group(0,0,10,10);
-                default_box->color(FL_BLACK);
-                default_box->box(FL_THIN_DOWN_BOX);
-                btn = new Fl_Button(0,0,10,10, _(buttonTemplate.label));
-                default_box->end();
-                default_box->user_data((void *)id);
+                btn->default_button(true);
                 m_defaultButton = btn;
-            } else {
-                btn = new Fl_Button(0,0,10,10, _(buttonTemplate.label));
             }
-
             btn->callback((Fl_Callback1*)Fl_Dialog::buttons_callback, id);
-            btn->image(buttonTemplate.pixmap);
 
             m_buttonList.append(btn);
 
-            fl_font(btn->label_font(), btn->label_size());
-            int hh = int(fl_height());
-            if (btn->image()) {
-                int ih = btn->image()->height();
-                if (ih > hh) hh = ih;
-            }
-            hh += btn->box()->dh();// * 2;
-            if (hh > maxh) maxh = hh;
+            // Check the maximum button height
+            int bw = 100;
+            int bh = 25;
+            btn->preferred_size(bw,bh);
+            if (bh > maxh) maxh = bh;
         }
     }
     m_buttonPanel->end();
 
     // resize buttons
+    /*
     int bx = (w()-layout_spacing()*2) + 3;
     for (i = 0; i < m_buttonList.size(); i++) 
     {
@@ -492,9 +547,9 @@ void Fl_Dialog::buttons(int buttons_mask,int default_button)
             btn->resize(bx,5,ww,maxh);
         }
     }
-
+    */
     // resize button panel
-    m_buttonPanel->h(maxh + 8);
+    m_buttonPanel->h(maxh + m_buttonPanel->layout_spacing() * 2);
 
     relayout();
     Fl_Group::current(saved);
@@ -576,4 +631,30 @@ bool Fl_Dialog::save_data(Fl_Data_Source *ds) {
         fl_alert("Can't open "+label()+".\n"+e.text());
         return false;
     }
+}
+
+void Fl_Dialog::user_button(int button_id, Fl_String label, Fl_Pixmap *pixmap) {
+    // Checking the button_id
+    if (button_id <= BTN_HELP)
+        fl_throw("Invalid button id");
+
+    for (unsigned i = 0; i < m_buttonList.size(); i++) {
+        Fl_Button *btn = (Fl_Button*)m_buttonList[i];
+        if (button_id == btn->argument()) 
+            fl_throw("Duplicated button id");
+    }
+
+    if (pixmap) {
+        if (pixmap->width() > 20 || pixmap->height() > 20) {
+            fl_throw("Button pixmap has size > 20");
+        }
+    }
+
+    m_buttonPanel->begin();
+    Fl_Dialog_Button *btn = new Fl_Dialog_Button(_(label.c_str()),pixmap,button_id);
+    btn->callback((Fl_Callback1*)Fl_Dialog::buttons_callback,button_id);
+    if (pixmap)
+        btn->image(pixmap);
+    m_buttonList.append(btn);
+    m_buttonPanel->end();
 }

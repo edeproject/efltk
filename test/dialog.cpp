@@ -23,6 +23,7 @@
 //
 
 #include <efltk/Fl.h>
+#include <efltk/fl_ask.h>
 #include <efltk/Fl_Window.h>
 #include <efltk/Fl_Calendar.h>
 #include <efltk/Fl_Button.h>
@@ -31,6 +32,9 @@
 #include <efltk/fl_ask.h>
 
 #include <stdio.h>
+
+#include "smile.xpm"
+Fl_Pixmap smile_pixmap(smile_xpm);
 
 Fl_Dialog *dlg;
 Fl_Input *input1, *input2;
@@ -59,6 +63,16 @@ static void cb_test(Fl_Widget*, void*) {
     }
 }
 
+void dialog_callback(Fl_Widget *widget,void *data) {
+    // we only need dialog buttons' events here
+    if (Fl::event() == FL_DIALOG_BTN) { 
+        // we only want to process user-defined buttons here
+        if (widget->argument() > Fl_Dialog::BTN_HELP) {
+            fl_alert("User defined button clicked.\nButton id is "+Fl_String((int)widget->argument()));
+        }
+    }
+}
+
 int main(int argc, char **argv) {
     Fl_Window *window = new Fl_Window(300,180);
 
@@ -81,7 +95,13 @@ int main(int argc, char **argv) {
     lastNameInput->field_name("last_name");
     dlg->end();
     dlg->buttons(FL_DLG_OK|FL_DLG_CANCEL|FL_DLG_HELP,FL_DLG_OK);
-    dlg->relayout();
+
+    // User may add his own buttons. The button bitmap is optional,
+    // and it should 20x20 or less if presented. The button id should 
+    // be unique inside the dialog.
+    dlg->user_button(1024,"User Button",&smile_pixmap);
+
+    dlg->callback(dialog_callback);
 
     return Fl::run();
 }

@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x400431
+# %FirstUniqueId:	0x400432
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -5661,6 +5661,9 @@ lib/Fl_Button.o :	efltk/fl_draw.h\
 	efltk/win32.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h\
+	efltk/Fl_Size.h\
+	efltk/Fl_Point.h\
+	efltk/Fl_Rect.h\
 	efltk/Fl_Button.h\
 	efltk/Fl.h
 lib/Fl_Calendar.o :	src/core/fl_internal.h\
@@ -5893,33 +5896,36 @@ lib/Fl_Dialog.o :	efltk/Fl_Dialog.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
 	efltk/Fl_String.h\
-	efltk/Fl_Widget_List.h\
-	efltk/Fl_Widget.h\
-	efltk/Fl_Exception.h\
-	efltk/Fl_Style.h\
-	efltk/Fl_Font.h\
-	efltk/Fl_Int_List.h\
-	efltk/Fl_String_List.h\
-	efltk/Fl_Labeltype.h\
-	efltk/Fl_Color.h\
-	efltk/Fl_Boxtype.h\
-	efltk/Fl_Scroll.h\
-	efltk/Fl_Scrollbar.h\
-	efltk/Fl_Slider.h\
-	efltk/Fl_Valuator.h\
-	efltk/Fl_Group.h\
-	efltk/Fl_Window.h\
-	efltk/fl_draw.h\
-	efltk/Fl_Device.h\
-	efltk/fl_ask.h\
 	efltk/Fl_Pixmap.h\
 	efltk/Fl_Image.h\
 	efltk/Fl_PtrList.h\
 	efltk/Fl_Renderer.h\
 	efltk/x.h\
 	efltk/win32.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Boxtype.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h\
+	efltk/Fl_Size.h\
+	efltk/Fl_Point.h\
+	efltk/Fl_Rect.h\
+	efltk/Fl_Scroll.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Window.h\
+	efltk/fl_draw.h\
+	efltk/fl_ask.h\
 	efltk/Fl_Tabs.h\
 	efltk/Fl_Input.h\
 	efltk/Fl_Box.h\
@@ -7959,34 +7965,46 @@ test/curve.o :	efltk/Fl_Toggle_Button.h\
 	efltk/Fl_Double_Window.h\
 	efltk/Fl_Window.h\
 	efltk/Fl.h
-test/dialog.o :	efltk/fl_ask.h\
-	efltk/Fl_Style.h\
-	efltk/Fl_Font.h\
-	efltk/Fl_Int_List.h\
-	efltk/Fl_Ptr_List.h\
+test/dialog.o :	test/smile.xpm\
+	efltk/Fl_Input.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Export.h\
-	efltk/Fl_String_List.h\
-	efltk/Fl_String.h\
-	efltk/Fl_Labeltype.h\
-	efltk/Fl_Flags.h\
-	efltk/Fl_Color.h\
-	efltk/Fl_Boxtype.h\
-	efltk/Fl_Input.h\
 	efltk/Fl_Widget.h\
 	efltk/Fl_Data_Source.h\
 	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
 	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
 	efltk/Fl_Dialog.h\
 	efltk/Fl_Dialog_DS.h\
+	efltk/Fl_Pixmap.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Group.h\
 	efltk/Fl_Widget_List.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl_Size.h\
+	efltk/Fl_Point.h\
+	efltk/Fl_Rect.h\
 	efltk/Fl_Scroll.h\
 	efltk/Fl_Scrollbar.h\
 	efltk/Fl_Slider.h\
 	efltk/Fl_Valuator.h\
-	efltk/Fl_Group.h\
 	efltk/Fl_Window.h\
 	efltk/Fl_Button.h\
 	efltk/Fl_Calendar.h\
@@ -7994,6 +8012,7 @@ test/dialog.o :	efltk/fl_ask.h\
 	efltk/Fl_Popup_Window.h\
 	efltk/Fl_Menu_Window.h\
 	efltk/Fl_Single_Window.h\
+	efltk/fl_ask.h\
 	efltk/Fl.h
 test/directory.o :	efltk/Fl_Directory_DS.h\
 	efltk/Fl_Memory_DS.h\
@@ -10773,33 +10792,36 @@ test/Fl_Dialog.o :	efltk/Fl_Dialog.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
 	efltk/Fl_String.h\
-	efltk/Fl_Widget_List.h\
-	efltk/Fl_Widget.h\
-	efltk/Fl_Exception.h\
-	efltk/Fl_Style.h\
-	efltk/Fl_Font.h\
-	efltk/Fl_Int_List.h\
-	efltk/Fl_String_List.h\
-	efltk/Fl_Labeltype.h\
-	efltk/Fl_Color.h\
-	efltk/Fl_Boxtype.h\
-	efltk/Fl_Scroll.h\
-	efltk/Fl_Scrollbar.h\
-	efltk/Fl_Slider.h\
-	efltk/Fl_Valuator.h\
-	efltk/Fl_Group.h\
-	efltk/Fl_Window.h\
-	efltk/fl_draw.h\
-	efltk/Fl_Device.h\
-	efltk/fl_ask.h\
 	efltk/Fl_Pixmap.h\
 	efltk/Fl_Image.h\
 	efltk/Fl_PtrList.h\
 	efltk/Fl_Renderer.h\
 	efltk/x.h\
 	efltk/win32.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Boxtype.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h\
+	efltk/Fl_Size.h\
+	efltk/Fl_Point.h\
+	efltk/Fl_Rect.h\
+	efltk/Fl_Scroll.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Window.h\
+	efltk/fl_draw.h\
+	efltk/fl_ask.h\
 	efltk/Fl_Tabs.h\
 	efltk/Fl_Input.h\
 	efltk/Fl_Box.h\
@@ -11213,7 +11235,7 @@ test/group_grow.o :	efltk/Fl_Button.h\
 # %TargetInfo src/widgets/Fl_Bar.cpp	SourceOrHeader,	UniqueId=0x4002ea,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Box.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4002eb,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Browser.cpp	SourceOrHeader,	UniqueId=0x4002ec,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/widgets/Fl_Button.cpp	SourceOrHeader,	UniqueId=0x4002ed,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Button.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4002ed,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Calendar.cpp	SourceOrHeader,	UniqueId=0x4002ee,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Check_Button.cpp	SourceOrHeader,	UniqueId=0x4002ef,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Choice.cpp	SourceOrHeader,	UniqueId=0x4002f0,	TargetType=C++,	IDEFlags=0x6
@@ -11363,6 +11385,7 @@ test/group_grow.o :	efltk/Fl_Button.h\
 # %TargetInfo src/core/Fl_Packed_Strings.cpp	SourceOrHeader,	UniqueId=0x400422,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/tabs.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400424,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/layout_sizes.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400428,	TargetType=C++,	IDEFlags=0xe
+# %TargetInfo test/group_grow.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400430,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x6
@@ -11640,7 +11663,7 @@ test/group_grow.o :	efltk/Fl_Button.h\
 # %TargetInfo efltk/Fl_Rect.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400429,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Point.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40042a,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Size.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40042b,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo test/group_grow.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400430,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/smile.xpm	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400431,	TargetType=XPM,	IDEFlags=0xc
 
 
 # %UniqueId:	0x400001

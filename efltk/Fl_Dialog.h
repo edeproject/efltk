@@ -26,6 +26,7 @@
 #include "Fl_Scroll.h"
 #include "Fl_Widget_List.h"
 #include "Fl_Variant.h"
+#include "Fl_Pixmap.h"
 
 #include "Fl_Dialog_DS.h"
 
@@ -145,6 +146,17 @@ public:
     void clear_buttons();
 
     /**
+     * Adds user-defined button to the dialog.
+     * The size of the pixmap should be 20x20 or less to conform with the
+     * existing dialog buttons and the rest of the system. The id of the
+     * button must be greater than BTN_HELP, and unique in the button
+     * list for the dialog. If any of these conditions is violated - the
+     * exception is thrown. This enforces the dialogs in the system to 
+     * more or less standard.
+     */
+    void user_button(int button_id, Fl_String label, Fl_Pixmap *pixmap=NULL);
+
+    /**
      * Add new scrollable page to dialog.
      * Returns new scroll group.
      *
@@ -192,7 +204,7 @@ private:
 
     static void escape_callback(Fl_Dialog *dialog, void *);
 
-    Fl_Button      *m_defaultButton;
+    Fl_Widget      *m_defaultButton;
     Fl_Group       *m_buttonPanel;
     Fl_Widget_List  m_buttonList;
     int             m_buttons;

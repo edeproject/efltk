@@ -210,7 +210,7 @@ void Fl_Button::draw(int glyph, int glyph_width) const
           // only will redraw correctly and with minimum blinking.
                                        } else */
         if ((damage()&FL_DAMAGE_EXPOSE) ||
-                (damage()&FL_DAMAGE_HIGHLIGHT) && !focused())
+            (damage()&FL_DAMAGE_HIGHLIGHT) && !focused())
         {
             // erase the background behind where the label will draw:
             fl_push_clip(0, 0, w, h);
@@ -228,7 +228,7 @@ void Fl_Button::draw(int glyph, int glyph_width) const
         bool drawed = false;
         if(image() && !image()->get_mask()) {
             if((align()&FL_ALIGN_TILED || align()&FL_ALIGN_SCALE) &&
-                    ( !(align()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT|FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) || (align()&FL_ALIGN_INSIDE) )
+                ( !(align()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT|FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) || (align()&FL_ALIGN_INSIDE) )
                 ) {
                 // We can draw only frame, if drawing image tiled or scale
                 // And no mask defined to image...
@@ -289,10 +289,11 @@ void Fl_Button::preferred_size(int& w, int& h) const
 {
     measure_label(w, h);
 
-    if(image()) {
+    if (image()) {
         w += image()->width();
-        if(h < image()->height())
+        if (h < image()->height())
             h = image()->height();
+        w += 4;
     }
 
     w += box()->dw() + 4;
