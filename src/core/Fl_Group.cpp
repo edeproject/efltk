@@ -405,72 +405,8 @@ int *Fl_Group::store_sizes()
     return (int*)m_sizes.data();
 }
 
-static int max(int a,int b) {
-    if (a>b) return a;
-    return b;
-}
-/*
-static int widget_total_width(Fl_Widget *w,int pref_w) {
-    int label_w = w->label_width();
-    if (label_w < 0) label_w = 0;
-    if (w->align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) 
-        return max(label_w,pref_w);
-    return pref_w + label_w;
-}
-
-static int widget_total_height(Fl_Widget *w,int pref_h) {
-    if (!(w->align() & FL_ALIGN_INSIDE)) {
-        if (w->align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) 
-            return w->label_height() + pref_h;
-        return max(w->label_height(),pref_h);
-    }
-    return pref_h;
-}
-
-static void widget_position(Fl_Widget *w,int x,int y,int& wx,int& wy) {
-    int label_w = w->label_width();
-    if (label_w < 0) label_w = 0;
-    if (w->align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) {
-        wx = x;
-        wy = y;
-        if (!(w->align() & FL_ALIGN_INSIDE))
-            if (w->align() & FL_ALIGN_TOP)
-                wy = y + w->label_height();
-    } else {
-        wx = x;
-        wy = y;
-        if (!(w->align() & FL_ALIGN_INSIDE))
-            if (w->align() & FL_ALIGN_LEFT)
-                wx = x + label_w;
-    }
-}
-
-static void widget_size(Fl_Widget *w,int ow,int oh,int& nw,int& nh) {
-    int label_w = w->label_width();
-    if (label_w < 0) label_w = 0;
-    nw = ow;
-    nh = oh;
-    if (w->align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) {
-        if (!(w->align() & FL_ALIGN_INSIDE))
-            nh -= w->label_height();
-    } else {
-        if (!(w->align() & FL_ALIGN_INSIDE))
-            nw -= label_w;
-    }
-    if (nw < 0) nw = 0;
-    if (nh < 0) nh = 0;
-}
-*/
-
-static void check_label_width(Fl_Widget * w, int & pref_w)
-{
-    int label_w = w->label_width();
-    if (label_w < 0) label_w = 0;
-    if (!(w->align() & FL_ALIGN_INSIDE))
-        if (w->align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM))
-            if (label_w > pref_w)
-                pref_w = label_w;
-}
+#undef max
+#define max(a, b) ((a) > (b) ? (a) : (b))
 
 void Fl_Group::layout()
 {
@@ -480,7 +416,6 @@ void Fl_Group::layout()
     int pref_x, pref_y;
     int pref_w, pref_h;
     int total_w, total_h;
-    int label_w=0;
     int extend_w, extend_h;
     Fl_Widget::layout();
 
@@ -564,7 +499,6 @@ void Fl_Group::layout()
 
                     pref_w = o->w();
                     pref_h = hh;
-                    check_label_width(o, pref_w);
 
                     o->preferred_size(pref_w,pref_h);
 
@@ -583,7 +517,6 @@ void Fl_Group::layout()
 
                     pref_w = o->w();
                     pref_h = hh;
-                    check_label_width(o, pref_w);
 
                     o->preferred_size(pref_w,pref_h);
 
@@ -603,12 +536,6 @@ void Fl_Group::layout()
                     pref_w = ww;
                     pref_h = o->h();
 
-                    if (!(o->align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM))) {
-                        label_w = o->label_width();
-                        if (label_w < 0) label_w = 0;
-                        pref_w -= label_w;
-                    }
-
                     o->preferred_size(pref_w,pref_h);
 
                     widget_layout_position(o,xx,yy,pref_x,pref_y);
@@ -626,12 +553,6 @@ void Fl_Group::layout()
 
                     pref_w = ww;
                     pref_h = o->h();
-
-                    if (!(o->align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM))) {
-                        label_w = o->label_width();
-                        if (label_w < 0) label_w = 0;
-                        pref_w -= label_w;
-                    }
 
                     o->preferred_size(pref_w,pref_h);
 
@@ -697,13 +618,6 @@ void Fl_Group::layout()
         if(client) {
             pref_w = ww;
             pref_h = hh;
-            label_w = client->label_width();
-            if ((label_w >= 0) && (client->align() & 15))
-                if (client->align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) {
-                    pref_h -= client->label_height();
-                } else {
-                    pref_w -= label_w;
-                }
             client->preferred_size(pref_w,pref_h);
 
             // Center the widget in the client area, if it's preferred

@@ -73,13 +73,12 @@ public:
     void    type(uchar t)        { type_ = t; }
 
     virtual void draw();
-    int dispatch_event(int event);
-    virtual int  handle(int event);
     virtual void layout();
     virtual void preferred_size(int& w, int& h) const;
 
-    virtual ~Fl_Widget();
     int send(int event);
+    int dispatch_event(int event);
+    virtual int handle(int event);
 
     static Fl_Named_Style* default_style;
 
@@ -91,8 +90,9 @@ public:
     static void default_glyph(const Fl_Widget *widget, int glyph, int x, int y, int w, int h, Fl_Flags flags);
 
     Fl_Group *parent() const    { return parent_; }
-    void    parent(Fl_Group* w) { parent_ = w; }
-    Fl_Window *window() const;
+    void parent(Fl_Group* w) { parent_ = w; }
+    
+	Fl_Window *window() const;
 
     int  x() const       {return x_;}
     void x(int v)        {x_ = v;}
@@ -114,17 +114,13 @@ public:
     bool size(int W,int H)     { return resize(x_,y_,W,H); }
 
     const Fl_String &label() const  { return label_; }
-    void    label(const Fl_String &l) { label_ = l; }
-    void    label(const char *l)      { label_ = l ? l : ""; }
+    void label(const Fl_String &l) { label_ = l; }
+    void label(const char *l)      { label_ = l ? l : ""; }
 
-    // Compatibility:
-    void    copy_label(const char *a) { label(a); }
-    void    copy_label(const Fl_String &a) { label(a); }
+    // Compatibility: REMOVE THESE!
+    void copy_label(const char *a) { label(a); }
+    void copy_label(const Fl_String &a) { label(a); }
 
-    /// By default, label has no width limit
-    void label_width(int lw) { label_width_=lw; }
-    int  label_width() const { return label_width_; }
-    int  label_height() const;
     void measure_label(int& w, int& h) const;
 
     const Fl_String &tooltip() const    { return tooltip_; }
@@ -143,8 +139,11 @@ public:
     void shortcut(int s) { shortcut_ = s; }
     int test_shortcut() const;
 
+	// REMOVE THIS!
     static void default_callback(Fl_Widget *w, void *arg);
 
+	// Remove these at some point in future!?
+	// Use only signals/slots for new code!!
     Fl_Callback_p callback() const { return callback_; }
     void callback(Fl_Callback *c, void *p) { callback_=c; user_data_=p; }
     void callback(Fl_Callback *c) { callback_=c; }
@@ -157,16 +156,13 @@ public:
     long argument() const    { return (long)user_data_; }
     void argument(long v)    { user_data_ = (void*)v; }
 
-    // New event will remove this!
+    // REMOVE THESE!?
     uchar when() const        { return when_; }
     void  when(uchar i)       { when_ = i; }
 
-    void do_callback(Fl_Widget *o, void *arg, void * widget_data = 0)
-        { if (!emit_signal(FL_VALUE_CHANGED, widget_data)) do_callback_(); }
-    void do_callback(Fl_Widget *o, long arg, void * widget_data = 0)
-        { if (!emit_signal(FL_VALUE_CHANGED, widget_data)) do_callback_(); }
-    void do_callback(void * widget_data = 0)
-        { if (!emit_signal(FL_VALUE_CHANGED, widget_data)) do_callback_(); }
+    void do_callback(Fl_Widget *o, void *arg, void * widget_data = 0)	{ if (!emit_signal(FL_VALUE_CHANGED, widget_data)) do_callback_(); }
+    void do_callback(Fl_Widget *o, long arg, void * widget_data = 0)	{ if (!emit_signal(FL_VALUE_CHANGED, widget_data)) do_callback_(); }
+    void do_callback(void * widget_data = 0)							{ if (!emit_signal(FL_VALUE_CHANGED, widget_data)) do_callback_(); }
 
     void connect(int event, void * obj, Fl_Signal_Callback *cb);
     void connect(int event, Fl_Signal_Callback *cb);
@@ -312,6 +308,8 @@ public:
     // Dialog support
     virtual void reset() { }
 
+    virtual ~Fl_Widget();
+
 protected:
     /**
      * Traditional ctor
@@ -348,12 +346,12 @@ private:
     uchar           type_, widget_type_;
     uchar           damage_;
     uchar           layout_damage_, layout_flags_;
-    uchar           when_;
+    uchar           when_;	// REMOVE THIS!
 
-    Fl_String field_name_; // data source support
-    Fl_String tooltip_; // make this into another widget?
+    Fl_String field_name_;	// data source support
+    Fl_String tooltip_;		// make this into another widget?
     Fl_String label_;
-    short label_width_;
+
     Fl_Image *image_;
     Fl_Group *parent_;
     const Fl_Style* style_;
@@ -363,14 +361,31 @@ private:
     Fl_Signal signal_;
 
 public:
-    // default slots
+    /* Define default slots */
     DEFSLOT_O(Fl_Widget, Fl_Widget, slot_label, const char *);
     DEFSLOT_O(Fl_Widget, Fl_Widget, slot_active, int);
     DEFSLOT_O(Fl_Widget, Fl_Widget, slot_visibility, int);
 
-    void slot_label(const char * s) { label(s); redraw_label(); redraw(); }
-    void slot_active(int value) { if (value) activate(); else deactivate(); }
-    void slot_visibility(int value) { if (value) show(); else hide(); }
+	/**
+	 * Change label of widget. This function redraws label also.
+	 * This function is provided for straight signal connections.
+	 * @param newlabel New label to set.
+	 */
+    void slot_label(const char *newlabel) { label(newlabel); redraw_label(); }
+    
+	/**
+	 * Activate / Deactivate widget. 
+	 * This function is provided for straight signal connections.
+	 * @param value True for activate and false for deactivate.
+	 */
+	void slot_active(int value) { if(value) activate(); else deactivate(); }
+
+	/**
+	 * Show / hide widget.
+	 * This function is provided for straight signal connections.
+	 * @param value True for show and false for hide.
+	 */
+    void slot_visibility(int value) { if(value) show(); else hide(); }
 };
 
 #endif

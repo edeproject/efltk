@@ -108,15 +108,6 @@ void Fl_Widget::draw_label(int X, int Y, int W, int H, Fl_Flags flags) const
 
 	if (flags & FL_ALIGN_CLIP) fl_push_clip(X, Y, W, H);
 
-	if (label_width_ > 0) {
-		flags.set(FL_ALIGN_WRAP);/* | FL_ALIGN_TOP*/; // <- why was FL_ALIGN_TOP here ?
-		int x_right = X + W;
-		if (W > label_width_) 
-			W = label_width_;
-		if (flags & FL_ALIGN_RIGHT) 
-			X = x_right - W;
-	}
-
 	if (image_)
 	{
 		fl_color(fl_inactive(color, flags));
@@ -192,30 +183,14 @@ void Fl_Widget::draw_label(int X, int Y, int W, int H, Fl_Flags flags) const
 void Fl_Widget::measure_label(int& w, int& h) const
 {
 	fl_font(label_font(), float(label_size()));
-	int flags = this->flags();
-	if (label_width_ < 0)
-		w = h = 300;               // default, rather arbitrary choice for maximum wrap width
-	else if (label_width_ == 0)
-		w = h = 0;                 // no limits at all
-	else {
-		w = label_width_;
-		flags |= FL_ALIGN_WRAP;
-		h = 0;                     // define wrap width
-	}
+	w = h = 300;               // default, rather arbitrary choice for maximum wrap width
 	if (label().length()) 
-		fl_measure(label().c_str(), w, h, flags);
+		fl_measure(label().c_str(), w, h, flags());
 	else {
 		w = 0;
 		h = 0;
 	}
 }
-
-int Fl_Widget::label_height() const {
-	int w, h;
-	measure_label(w,h);
-	return h;
-}
-
 
 const Fl_Labeltype_* Fl_Labeltype_::find(const char* name)
 {

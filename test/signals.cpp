@@ -1,6 +1,8 @@
 /*
-    Signal/Slot example
-*/
+ * $Id$
+ * 
+ * Signal/Slot demo for Extended Fast Light Toolkit - eFLTK
+ */
 
 #include <efltk/Fl.h>
 #include <efltk/Fl_Widget.h>
@@ -8,57 +10,70 @@
 #include <efltk/Fl_Check_Button.h>
 #include <efltk/Fl_Input.h>
 
-/*
-NOTES:
-1) Fl_Widget::set_label() doesn't redraw the label... why ?!
-2) FL_CALLBACK remained, FL_CHANGED already defined for something else
-2) It would be too complicated to add FL_WINDOW_CLOSE. FL_CALLBACK
-   is emitted in do_callback. In order to use FL_WINDOW_CLOSE, the
-   window::handle couldn't use do_callback, but than it won't be
-   back compatible...
-*/
-
-static void bye_bye(Fl_Widget*, void *)
+// Called upon FL_WINDOW_CLOSE - When user clickc "X" in title bar
+static void bye_bye(Fl_Window *window)
 {
-    printf("Bye-Bye!\n");
+	static bool exit = false;    
+	if(exit)	window->hide();
+	else		printf("Bye-Bye! - One more time and we're out\n");
+	exit = true;
 }
 
-static void show_visibility(Fl_Widget*w, void *)
+// Called upon grp_right FL_HIDE/FL_SHOW events - see connections
+static void show_visibility(Fl_Group *grp_right)
 {
-    printf("Visible: %s!\n", w->visible()?"yes":"no");
+    printf("grp_right visible: %s!\n", grp_right->visible() ? "yes" : "no");
 }
 
-int main()
+int main(int argc, char *argv[])
 {
+	// Create window & some groups
     Fl_Window win(400,200);
-        Fl_Group grp_left(0, 200, FL_ALIGN_LEFT);
-            Fl_Check_Button b0("(de)activate", 20, FL_ALIGN_TOP);
-            Fl_Check_Button b1("show/hide", 20, FL_ALIGN_TOP);
-            Fl_Input  i0("Some text:", 20, FL_ALIGN_TOP, 50);
+	win.layout_spacing(5);
+        
+		Fl_Group grp_left(0, 200, FL_ALIGN_LEFT);
+            Fl_Check_Button activate_button("(de)activate", 20, FL_ALIGN_TOP);
+            Fl_Check_Button show_button("show/hide", 20, FL_ALIGN_TOP);
+            Fl_Input label_input("Group label", 20, FL_ALIGN_TOP);
+			label_input.align(FL_ALIGN_INSIDE);
+			label_input.when(FL_WHEN_CHANGED);
         grp_left.end();
-        Fl_Group grp("This is a group", 0, FL_ALIGN_CLIENT);
-            grp.box(FL_UP_BOX);
-            grp.align(FL_ALIGN_CENTER);
+        
+		Fl_Group grp_right("This is a group", 0, FL_ALIGN_CLIENT);
+            grp_right.box(FL_UP_BOX);
+            grp_right.align(FL_ALIGN_CENTER | FL_ALIGN_WRAP);
             Fl_Button nop0("Nop", 20, FL_ALIGN_TOP);
             Fl_Button nop1("Nop", 20, FL_ALIGN_TOP);
             Fl_Button nop2("Nop", 20, FL_ALIGN_TOP);
-        grp.end();
+        grp_right.end();
+
     win.end();
 
-    b0.value(1);
-    b1.value(1);
+    activate_button.value(1);
+    show_button.value(1);
 
-    // make connections
-    // this is the most interesting part
-    b0.connect(FL_VALUE_CHANGED, SLOT(&grp, slot_active));
-    b1.connect(FL_VALUE_CHANGED, SLOT(&grp, slot_visibility));
-    i0.connect(FL_VALUE_CHANGED, SLOT(&grp, slot_label));
+    // Make connections.
+    // This is the most interesting part
+
+	// Connect activate_button to default slot: Fl_Widget::slot_active
+    activate_button.connect(FL_VALUE_CHANGED, SLOT(&grp_right, slot_active));
+
+	// Connect show_button to default slot: Fl_Widget::slot_visibility
+    show_button.connect(FL_VALUE_CHANGED, SLOT(&grp_right, slot_visibility));
+
+	// Connect label_input to default slot: Fl_Widget::slot_label
+    label_input.connect(FL_VALUE_CHANGED, SLOT(&grp_right, slot_label));
+
+	// Called when user clicks "X" in titlebar
     win.connect(FL_WINDOW_CLOSE, STATIC_SLOT(bye_bye));
-    grp.connect(FL_SHOW, STATIC_SLOT(show_visibility));
-    grp.connect(FL_HIDE, STATIC_SLOT(show_visibility));
-    // ---
 
-    win.show();
+	// Called upon FL_SHOW event
+    grp_right.connect(FL_SHOW, STATIC_SLOT(show_visibility));
+
+	// Called upon FL_HIDE event
+    grp_right.connect(FL_HIDE, STATIC_SLOT(show_visibility));
+
+    win.show(argc, argv);
     return Fl::run();
 }
 

@@ -978,6 +978,10 @@ SOURCE=..\efltk\fl_draw.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\efltk\Fl_Events.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\efltk\Fl_Exception.h
 # End Source File
 # Begin Source File
@@ -1338,6 +1342,10 @@ SOURCE=..\efltk\fl_show_colormap.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\efltk\Fl_Signal.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\efltk\Fl_Simple_Counter.h
 # End Source File
 # Begin Source File
@@ -1571,6 +1579,14 @@ SOURCE=..\src\widgets\slowarrow.h
 # Begin Source File
 
 SOURCE=..\efltk\vsnprintf.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\x.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Xutf8.h
 # End Source File
 # End Group
 # End Target

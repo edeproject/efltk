@@ -74,15 +74,15 @@ typedef struct Fl_Signal_Struct
     // Call all connected callbacks. 
     // That is - emit signal    
     int emit(int event, void *caller, void *user_data, void *opt_data) {
-	int cnt = 0;
+		int cnt = 0;
         for(Fl_Signal_Func *cb = first; cb; cb=cb->next) {
             if(cb->event!=event) continue;
-	    cnt ++;
+			cnt++;
             //void *caller, void *user_data, int event, void *opt_data, void *receiver 
             if(cb->obj_ptr) cb->func(caller, user_data, event, opt_data, cb->obj_ptr);
             else            cb->func(caller, user_data, event, opt_data, 0);
         }
-	return cnt; // return 0 if no event handlers were found
+		return cnt; // return 0 if no event handlers were found
     }
 
 private:
