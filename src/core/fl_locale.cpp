@@ -23,13 +23,14 @@ static void set_locale()
         return;
 
     if(last_locale) delete []last_locale;
-    last_locale = strdup(current_locale);
+    if(current_locale) last_locale = strdup(current_locale);
+    else last_locale = strdup("C");
 
 #ifndef _WIN32
     if(!XSupportsLocale())
         Fl::warning("Locale not supported by Xlib");
     if(!XSetLocaleModifiers(""))
-        Fl::warning ("Cannot set locale modifiers");
+        Fl::warning ("Cannot XLib set locale modifiers");
 #endif
 }
 

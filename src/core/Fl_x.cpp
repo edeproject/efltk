@@ -321,37 +321,39 @@ char fl_ping_xim = 0;
 
 void fl_init_xim()
 {
-        XIMStyles* xim_styles;
-        if (!fl_display) return;
-        if (fl_xim_im) return;
+    static bool print_once=false;
 
-        fl_xim_im = XOpenIM(fl_display, NULL, NULL, NULL);
-        xim_styles = NULL;
-        fl_xim_ic = NULL;
+    XIMStyles* xim_styles;
+    if (!fl_display) return;
+    if (fl_xim_im) return;
 
-        if (fl_xim_im) {
-                XGetIMValues (fl_xim_im, XNQueryInputStyle,
-                        &xim_styles, NULL, NULL);
-        } else {
-                Fl::warning("XOpenIM() failed\n");
-                return;
-        }
-        if (xim_styles && xim_styles->count_styles) {
-                fl_xim_ic = XCreateIC(fl_xim_im,
-                        XNInputStyle, (XIMPreeditNothing | XIMStatusNothing),
-                        NULL);
-        } else {
-                Fl::warning("No XIM style found\n");
-                XCloseIM(fl_xim_im);
-                fl_xim_im = NULL;
-                return;
-        }
-        if (!fl_xim_ic) {
-                Fl::warning("XCreateIC() failed\n");
-                XCloseIM(fl_xim_im);
-                XFree(xim_styles);
-                fl_xim_im = NULL;
-        }
+    fl_xim_im = XOpenIM(fl_display, NULL, NULL, NULL);
+    xim_styles = NULL;
+    fl_xim_ic = NULL;
+
+    if (fl_xim_im) {
+        XGetIMValues (fl_xim_im, XNQueryInputStyle,
+                      &xim_styles, NULL, NULL);
+    } else {
+        if(!print_once) { Fl::warning("XOpenIM() failed\n"); print_once=true; }
+        return;
+    }
+    if (xim_styles && xim_styles->count_styles) {
+        fl_xim_ic = XCreateIC(fl_xim_im,
+                              XNInputStyle, (XIMPreeditNothing | XIMStatusNothing),
+                              NULL);
+    } else {
+        if(!print_once) { Fl::warning("No XIM style found\n"); print_once=true; }
+        XCloseIM(fl_xim_im);
+        fl_xim_im = NULL;
+        return;
+    }
+    if (!fl_xim_ic) {
+        if(!print_once) { Fl::warning("XCreateIC() failed\n"); print_once=true; }
+        XCloseIM(fl_xim_im);
+        XFree(xim_styles);
+        fl_xim_im = NULL;
+    }
 }
 #endif
 
