@@ -720,7 +720,7 @@ Blit_Function get_blit_a(Fl_PixelFormat *src_fmt, Fl_PixelFormat *dst_fmt, int f
     Fl_PixelFormat *df = dst_fmt;
 
     if(sf->Amask == 0) {
-        if((flags & FL_BLIT_COLOR_KEY)) {
+        if(flags==1) {
             if(df->bytespp == 1) {
                 once("BlitNto1SurfaceAlphaKey");
                 return BlitNto1SurfaceAlphaKey;

@@ -540,7 +540,7 @@ Blit_Function get_blit_n(Fl_PixelFormat *srcfmt, Fl_PixelFormat *dstfmt, int fla
         return 0;
     }
 
-    if((flags & FL_BLIT_COLOR_KEY)) {
+    if(flags==1) { // FL_BLIT_COLOR_KEY
         /* colorkey blit: Here we don't have too many options, mostly
          because RLE is the preferred fast way to deal with this.
          If a particular case turns out to be useful we'll add it. */
@@ -559,6 +559,7 @@ Blit_Function get_blit_n(Fl_PixelFormat *srcfmt, Fl_PixelFormat *dstfmt, int fla
 
     if(dstfmt->bitspp == 8) {
         /* We assume 8-bit destinations are palettized */
+ 
         if ( (srcfmt->bytespp == 4) &&
             (srcfmt->Rmask == 0x00FF0000) &&
             (srcfmt->Gmask == 0x0000FF00) &&

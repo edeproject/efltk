@@ -52,11 +52,7 @@ bool Fl_Renderer::blit(uint8 *src, Fl_Rect *src_rect, Fl_PixelFormat *src_fmt, i
 
     Blit_Function blit_f = 0;
 
-    int index = 0;
-    index |= (!!(flags & FL_BLIT_COLOR_KEY)) << 0;
-    if((src_fmt->alpha != 255 || src_fmt->Amask)) {
-        index |= 2;
-    }
+    int index = (flags & FL_BLIT_COLOR_KEY) ? 1 : 0;
 
     if(src_fmt->identity && index==0) {
         blit_f = BlitCopy;
@@ -112,8 +108,7 @@ bool Fl_Renderer::alpha_blit(uint8 *src, Fl_Rect *src_rect, Fl_PixelFormat *src_
     if(flags&FL_BLIT_HW_PALETTE) info.hw_surface=true;
     else info.hw_surface=false;
 
-    int index = 0;
-    index |= (flags & FL_BLIT_COLOR_KEY) ? 1 : 0;
+    int index = (flags & FL_BLIT_COLOR_KEY) ? 1 : 0;
 
     Blit_Function blit_f = 0;
 
