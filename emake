@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# Setup for parallel builds
+OSY=`uname`
+MFLAGS=
+
+if [ "$OSY" = "Linux" ]; then
+	NUMPROCS=`egrep -c '^cpu[0-9]+' /proc/stat || :`
+	if [ "$NUMPROCS" = "0" ]; then
+		NUMPROCS=1
+	fi
+	MFLAGS=-j$NUMPROCS
+fi
+if [ "$OSY" = "SunOS" ]; then
+	MFLAGS=-j2
+fi
+
+PWD=`pwd`
+LD_LIBRARY_PATH=$PWD/lib:$LD_LIBRARY_PATH
+export MFLAGS LD_LIBRARY_PATH
+
+echo -n "Checking make program to use ... "
+GMAKE=`which gmake`
+MAKE=
+if [ -x "${GMAKE}" ] ; then
+        echo "gmake"
+	MAKE=gmake
+else
+        echo "make."
+	MAKE=make
+fi
+
+$MAKE $MFLAGS $*
+
+if [ "$1" = "" ]; then
+	echo
+        echo "EFLTK compiled!"
+	echo "To install EFLTK, type as superuser:"
+        echo "./emake install"
+        echo
+fi

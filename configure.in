@@ -202,7 +202,7 @@ case $uname in
           THEMECOMMAND="\${CXX} $DEBUGFLAG -o"
 	  ;;
     *)
-          DSOCOMMAND="\${CXX} -Wl,-rpath,\${EFLTK_LIBDIR} -shared $DEBUGFLAG -o"
+          DSOCOMMAND="\${CXX} -Wl,-soname,\${DSONAME} -shared $DEBUGFLAG -o"
           THEMECOMMAND="\${CXX} -shared $DEBUGFLAG -o"
           DSOCFLAGS="-fPIC"
 	  ;;
@@ -454,15 +454,6 @@ STRIP=strip
 AC_PATH_PROG(STRIP_PATH, ${STRIP},, $PATH)
 AC_SUBST(STRIP_PATH)
 
-dnl # Check for gmake
-MAKE=gmake
-AC_PATH_PROG(MAKE_PATH, ${MAKE},, $PATH)
-if test -z "$MAKE_PATH"; then
-	MAKE=make
-else
-	MAKE=gmake
-fi
-
 MAKEDEPEND="\${CXX} -M"
 
 dnl# add warnings to compiler switches:
@@ -606,14 +597,11 @@ echo "ODBC libs: $UNIXODBCLIB"
 echo
 echo "Iconv found: $iconv_found"
 if test "$iconv_found" = no; then
-echo "    WARNING:"
-echo "    Iconv library not found!"
-echo "    Only most common codeset converters"
-echo "    available. It's recommended to install iconv"
+echo "    WARNING: Iconv library not found!"
 fi
 echo "-------------------------"
 echo "EFLTK is ready for build."
-echo "To start building, type: $MAKE"
+echo "To start building, type: ./emake"
 echo
 
 dnl#
