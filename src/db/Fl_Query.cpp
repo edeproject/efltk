@@ -25,7 +25,18 @@
 #include <stdlibx.h>
 #endif
 
-Fl_Query::Fl_Query(Fl_Database *db,Fl_String _sql)
+Fl_Query::Fl_Query(Fl_Database *db,const Fl_String& _sql)
+: Fl_Data_Source(0L) {
+   if (!db) fl_throw("Database must exist");
+   m_prepared = false;
+   m_active = false;
+   m_eof = false;
+   m_database = db;
+   m_stmt = 0L;
+   sql(_sql);
+}
+
+Fl_Query::Fl_Query(Fl_Database *db,const char *_sql)
 : Fl_Data_Source(0L) {
    if (!db) fl_throw("Database must exist");
    m_prepared = false;
@@ -51,6 +62,7 @@ void Fl_Query::free_stmt() {
       m_database->deallocate_query(this);
       m_active = false;
       m_stmt = 0L;
+      m_prepared = false;
    }
 }
 
@@ -90,7 +102,14 @@ bool Fl_Query::close() {
    return true;
 }
 
-void Fl_Query::sql(Fl_String _sql) {
+void Fl_Query::sql(const char *_sql) {
+   Fl_String  tempSQL = _sql;
+   sql(tempSQL);
+}
+
+Fl_Param *theParam;
+
+void Fl_Query::sql(const Fl_String& _sql) {
    // Looking up for SQL parameters
    Fl_String  paramName;
    char     delimitter[] = " ";
@@ -99,8 +118,7 @@ void Fl_Query::sql(Fl_String _sql) {
    char     *paramStart = s;
    char     *paramEnd;
    int      paramNumber = 0;
-   uint i;
-   for (i = 0; i < m_params.count(); i++) {
+   for (unsigned i = 0; i < m_params.count(); i++) {
       Fl_Param& param = m_params[i];
       param.bind_clear();
    }
@@ -163,15 +181,15 @@ void Fl_Query::sql(Fl_String _sql) {
       endOfString = (*paramEnd == 0);
       *paramEnd = char(0);
       if (ptr != paramStart) {
-         Fl_Param *param;
+         //Fl_Param *param;
          int   index = m_params.param_index(paramStart);
          if ( index == -1 ) {
-            param = new Fl_Param(paramStart);
-            m_params.add(param);
+            theParam = new Fl_Param(paramStart);
+            m_params.add(theParam);
          } else {
-            param = &m_params[index];
+            theParam = &m_params[index];
          }
-         param->bind_add(paramNumber);
+         theParam->bind_add(paramNumber);
          paramNumber++;
          odbcSQL += "?";
          odbcSQL += delimitter;
@@ -184,14 +202,14 @@ void Fl_Query::sql(Fl_String _sql) {
 
    free(s);
 
-   for (i = m_params.count() - 1; i >= 0; i--)
-   if (!m_params[i].bind_count())
-      m_params.remove(i);
+   for (int p = m_params.count() - 1; p >= 0; p--)
+   if (!m_params[p].bind_count())
+      m_params.remove(p);
 
    if (m_sql != odbcSQL) {
       m_sql = odbcSQL;
       if ( active() )
          close();
-      m_prepared = false;
+      free_stmt();
    }
 }

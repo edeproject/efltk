@@ -21,6 +21,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// ctor
+Fl_Data_Field::Fl_Data_Field(const char *name) {
+   m_name = name;
+   width = -1;
+   align = FL_ALIGN_LEFT;
+   m_dataSize = 0;
+}
+
 // convertors
 int Fl_Data_Field::as_int() const {
    switch (value.type()) {

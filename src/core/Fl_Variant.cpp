@@ -100,6 +100,19 @@ void Fl_Variant::set_buffer(const void *value, int sz) {
       m_size = 0;
    }
 }
+
+//---------------------------------------------------------------------------
+void Fl_Variant::resize_buffer(int sz) {
+   m_type = VAR_BUFFER;
+   if (sz) {
+      m_size = sz;
+      m_data.stringData = (char *)realloc(m_data.stringData,sz);
+   } else {
+      free_buffers();
+      m_data.stringData = NULL;
+      m_size = 0;
+   }
+}
 //---------------------------------------------------------------------------
 void Fl_Variant::set_image_ptr(const Fl_Image *value) {
    free_buffers();

@@ -19,7 +19,7 @@
 #include <efltk/db/Fl_Query.h>
 
 void Fl_Database::open(const Fl_String connString) {
-   if (connString != m_connString) {
+   if (connString.length() && connString != m_connString) {
       close();
       m_connString = connString;
    }
