@@ -113,12 +113,6 @@ void Fl_Group::insert(Fl_Widget &o, int index)
     init_sizes();
 }
 
-
-void Fl_Group::add(Fl_Widget &o) {
-    insert(o, children());
-}
-
-
 void Fl_Group::remove(int index)
 {
     if(index >= children()) return;

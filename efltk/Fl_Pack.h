@@ -59,16 +59,13 @@ public:
 	/** 
 	 * Get the number of extra pixels of blank space that are added between each child widgets.
 	 */
-    int spacing() const { return spacing_; }
+    int spacing() const { return layout_spacing(); }
 	
 	/**
 	 * Set the number of extra pixels of blank space that are added between each child widgets.
 	 * @param i pixels
 	 */
-    void spacing(int i) { spacing_ = i; }
-
-private:
-    int spacing_;
+    void spacing(int i) { layout_spacing(i); }
 };
 
 #endif

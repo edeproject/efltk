@@ -61,6 +61,7 @@ public:
 
     virtual void draw();
     virtual int handle(int event);
+	virtual void preferred_size(int& w, int& h) const;
 
 protected:
     void draw(int glyph, int glyph_width) const;

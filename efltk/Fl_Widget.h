@@ -68,6 +68,8 @@ public:
     virtual void draw();
     virtual int handle(int);
     virtual void layout();
+	virtual void preferred_size(int& w, int& h) const;
+
     virtual ~Fl_Widget();
     int send(int event);
 
@@ -106,8 +108,7 @@ public:
     /// By default, label has no width limit
     void    label_width(int lw=-1) { label_width_=lw; }
     int     label_width() const { return label_width_; }
-    void    measure_label(int& w, int& h) const;
-    void    preffered_size(int& w, int& h) const;
+    void    measure_label(int& w, int& h) const;    
 
     const Fl_String &tooltip() const   { return tooltip_; }
     void    tooltip(const char *t)       { tooltip_ = t ? t : ""; }

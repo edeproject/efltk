@@ -35,7 +35,8 @@ public:
     static Fl_Named_Style* default_style;
 
     Fl_Check_Button(int x,int y,int w,int h,const char *l = 0);
-
+	
+	virtual void preferred_size(int& w, int& h) const;
     virtual void draw();
 };
 

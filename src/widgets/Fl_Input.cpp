@@ -289,18 +289,18 @@ void Fl_Input::draw(int X, int Y, int W, int H)
     setfont();
     int height = line_height();
     float desc = height-fl_descent()-leading()/2.0f;
-
+	
     if (ALL)
-    {
+    {		
         // draw and measure the inside label:
         if(!label().empty() && (!(flags()&15)||(flags()&FL_ALIGN_INSIDE)))
         {
-            int hh = 0;
-            measure_label(m_label_width,hh);
-            float width = m_label_width;
-            m_label_width = int(width+fl_width(":")+2.5f);
+			fl_font(label_font(), float(label_size()));
+            float width = fl_width(label());
+            
+			inside_label_width = int(width+fl_width(":")+2.5f);
 
-            fl_push_clip(X, Y, m_label_width, H);
+            fl_push_clip(X, Y, inside_label_width, H);
             if(!box()->fills_rectangle() && parent()) 
                 parent()->draw_group_box();
             box()->draw(0,0,w(),h(),color(),f);
@@ -313,13 +313,13 @@ void Fl_Input::draw(int X, int Y, int W, int H)
             fl_draw(label(), float(X+2), float(y));
             fl_draw(":", X+2+width, y);
             setfont();
-        }
-        else
-        {
-            m_label_width = 0;
-        }
-    }
-    X += m_label_width; W -= m_label_width;
+			
+			X += inside_label_width; 
+			W -= inside_label_width;			
+        } else {
+			inside_label_width = 0;
+		}
+    }    
 
     bool erase_cursor_only = (this == ::erase_cursor_only && !ALL);
 
@@ -1006,8 +1006,9 @@ Fl_Input::Fl_Input(int x, int y, int w, int h, const char* l)
     buffer  = 0;
     value_ = "";
     xscroll_ = yscroll_ = 0;
-    style(default_style);
-    m_label_width = 0;
+	inside_label_width = 0;
+
+    style(default_style);	
 }
 
 void Fl_Input::put_in_buffer(int len)
@@ -1418,7 +1419,8 @@ static void dnd_timeout(void* p)
 
 int Fl_Input::handle(int event, int X, int Y, int W, int H)
 {
-    X += m_label_width; W -= m_label_width;
+    X += inside_label_width; W -= inside_label_width;
+
     int newpos, newmark;
 
     switch (event)
@@ -1752,6 +1754,16 @@ bool Fl_Input::save_data(Fl_Data_Source *ds) const
     Fl_Variant  fld_value;
     fld_value.set_string(value());
     return ds->write_field(field_name().c_str(), fld_value);
+}
+
+void Fl_Input::preferred_size(int& w, int& h) const
+{
+	fl_font(text_font(), text_size());
+	h = fl_height() + box()->dh() + 2;
+	if(maximum_size()>0)
+		w = maximum_size()*fl_width((unsigned int)'W');
+	else
+		w = 8*fl_height();		
 }
 
 //

@@ -39,32 +39,39 @@ public:
     };
 
     Fl_Input(int, int, int, int, const char* = 0);
-    ~Fl_Input();
+    virtual ~Fl_Input();
     static Fl_Named_Style* default_style;
 
     int input_type() const {return type() & INPUT_TYPE; }
     void input_type(int t) { type(t | readonly()); }
-    int readonly() const { return (type() & READ_ONLY); }
+    
+	int readonly() const { return (type() & READ_ONLY); }
     void readonly(int b) { if (b) type(type() | READ_ONLY); else type(type() & ~READ_ONLY); }
+
     int wordwrap() const { return (type() & WORDWRAP); }
     void wordwrap(int b) { if (b) type(type() | WORDWRAP); else type(type() & ~WORDWRAP); }
 
+	virtual void preferred_size(int& w, int& h) const;
+
     virtual void draw();
-    virtual void draw(int, int, int, int);
+    virtual void draw(int x, int y, int w, int h);
     virtual int handle(int);
-    virtual int handle(int event, int, int, int, int);
+    virtual int handle(int event, int x, int y, int w, int h);
 
     bool value(const char*);
     bool value(const char*, int);
-    bool static_value(const char*);
+    
+	bool static_value(const char*);
     bool static_value(const char*, int);
+
     const char* value() const {return value_;}
-    char index(int i) const {return value_[i];}
+    
+	char index(int i) const {return value_[i];}
     int size() const {return size_;}
-    int maximum_size() { return maximum_size_; }
+    int maximum_size() const { return maximum_size_; }
     void maximum_size(int m) { maximum_size_ = m; }
 
-  // Data source support
+	// Data source support
     virtual bool load_data(Fl_Data_Source *ds);
     virtual bool save_data(Fl_Data_Source *ds) const;
 
@@ -105,7 +112,7 @@ private:
     int mark_;
     int xscroll_, yscroll_;
     int mu_p;
-    int m_label_width;
+    int inside_label_width;
 
     const char* expand(const char*, char*, int) const;
     float expandpos(const char*, const char*, const char*, int*) const;

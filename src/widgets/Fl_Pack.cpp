@@ -55,23 +55,19 @@ Fl_Pack::Fl_Pack(int x,int y,int w ,int h,const char *l)
 : Fl_Group(x, y, w, h, l)
 {
     style(default_style);
-    spacing_ = 0;
-    type(VERTICAL);
-    //resizable(0);
+	layout_spacing(0);    
+    type(VERTICAL);    
 }
 
 
 void Fl_Pack::layout()
 {
-    for (int iter = 0; iter < 2; iter++)
-    {
-        if (!layout_damage()) break;
-
         // we only need to do something special if the group is resized:
         if (!(layout_damage() & (FL_LAYOUT_WH|FL_LAYOUT_DAMAGE)) || !children())
         {
             Fl_Group::layout();
-            if (!(layout_damage() & FL_LAYOUT_DAMAGE)) break;
+            if (!(layout_damage() & FL_LAYOUT_DAMAGE)) 
+				return;
         }
 
         // clear the layout flags, so any resizes of children will set them again:
@@ -97,14 +93,14 @@ void Fl_Pack::layout()
             {
                 widget->resize(x, y, widget->w(), b-y);
                 widget->layout();
-                x = widget->x()+widget->w()+spacing_;
+                x = widget->x() + widget->w() + layout_spacing();
                 saw_vertical = true;
             }                    // put along top edge:
             else
             {
                 widget->resize(x, y, r-x, widget->h());
                 widget->layout();
-                y = widget->y()+widget->h()+spacing_;
+                y = widget->y() + widget->h() + layout_spacing();
                 saw_horizontal = true;
             }
         }
@@ -121,7 +117,7 @@ void Fl_Pack::layout()
                 int W = widget->w();
                 widget->resize(r-W, y, W, b-y);
                 widget->layout();
-                r = widget->x()-spacing_;
+                r = widget->x() - layout_spacing();
                 saw_vertical = true;
             }                    // put along top edge:
             else
@@ -129,7 +125,7 @@ void Fl_Pack::layout()
                 int H = widget->h();
                 widget->resize(x, b-H, r-x, H);
                 widget->layout();
-                b = widget->y()-spacing_;
+                b = widget->y() - layout_spacing();
                 saw_horizontal = true;
             }
         }
@@ -148,8 +144,6 @@ void Fl_Pack::layout()
         int H = h();
         if (b < y || !resizable() && !saw_vertical) H -= (b-y);
         size(W,H);
-    }
-    //redraw();
 }
 
 

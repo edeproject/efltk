@@ -271,6 +271,12 @@ void Fl_Button::draw()
     draw(0,0);
 }
 
+void Fl_Button::preferred_size(int& w, int& h) const
+{	
+	measure_label(w, h);
+	w += box()->dw();
+	h += box()->dh();
+}
 
 ////////////////////////////////////////////////////////////////
 
@@ -284,7 +290,8 @@ static void revert(Fl_Style* s)
 static Fl_Named_Style style("Button", revert, &Fl_Button::default_style);
 Fl_Named_Style* Fl_Button::default_style = &::style;
 
-Fl_Button::Fl_Button(int x,int y,int w,int h, const char *l) : Fl_Widget(x,y,w,h,l)
+Fl_Button::Fl_Button(int x,int y,int w,int h, const char *l) 
+: Fl_Widget(x,y,w,h,l)
 {
     style(default_style);
     //set_click_to_focus();

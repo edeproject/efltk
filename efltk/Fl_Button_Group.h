@@ -1,41 +1,57 @@
-#ifndef __FL_BUTTON_GROUP_H__
-#define __FL_BUTTON_GROUP_H__
+#ifndef _FL_BUTTON_GROUP_H_
+#define _FL_BUTTON_GROUP_H_
 
-#include <efltk/Fl_Group.h>
-#include <efltk/Fl_Box.h>
-#include <efltk/Fl_Input.h>
-#include <efltk/Fl_Button.h>
-#include <efltk/Fl_String.h>
-#include <efltk/Fl_String_List.h>
+#include "Fl_Group.h"
+#include "Fl_Input.h"
+#include "Fl_Button.h"
+#include "Fl_String_List.h"
 
-class Fl_Query;
-
+/**
+ * Fl_Button_Group
+ */
 class FL_API Fl_Button_Group : public Fl_Group {
-protected:
-    bool           m_singleSelection;
-    Fl_String      m_lastValue;
-    Fl_String_List m_buttonLabels;
-    Fl_Button     *m_otherButton;
-    Fl_Input      *m_otherInput;
-    int  buttonIndex(const char *buttonLabel);
-    void deselectAllButtons();
-    void selectButton(int choice);
-    virtual Fl_Button *createButton(const char *) = 0L;
 public:
+	static Fl_Named_Style* default_style;
 
-    Fl_Button_Group(int,int,int,int,const char * = 0);
+	// Values for type()
+	enum {
+		NORMAL_BUTTONS = 0,
+		CHECK_BUTTONS,
+		RADIO_BUTTONS		
+	};
+
+    Fl_Button_Group(int x, int y, int w, int h, const char *label = 0);
+
     void buttons(const Fl_String_List& sl);
 
-    virtual void clearButtons();
+    Fl_String value() const;
+    
+	void value(const char *s, const char *separator="|");
+	void value(const Fl_String &s, const char *separator="|");
+	void value(const Fl_String_List &sl);
 
-    virtual Fl_String value() const;
-    virtual void value(const Fl_String s);
+    virtual void layout();
+    virtual void preferred_size(int& x,int& y) const;
 
-    void layout();
-    void preferred_size(int& x,int& y);
+protected:
+    Fl_Button     *m_input_button;	// Button for input field
+    Fl_Input      *m_input;			// Input field
 
-    virtual void load(Fl_Query *);
-    virtual void save(Fl_Query *);
+	int button_index(const char *label);
+	void deselect_all();
+    virtual Fl_Button *create_button(const char *label);
+};
+
+class Fl_Check_Buttons : public Fl_Button_Group
+{
+public:
+	Fl_Check_Buttons(int x, int y, int w, int h, const char *label = 0) : Fl_Button_Group(x,y,w,h,label) { type(CHECK_BUTTONS); }
+};
+
+class Fl_Radio_Buttons : public Fl_Button_Group
+{
+public:
+	Fl_Radio_Buttons(int x, int y, int w, int h, const char *label = 0) : Fl_Button_Group(x,y,w,h,label) { type(RADIO_BUTTONS); }
 };
 
 #endif

@@ -603,9 +603,8 @@ void Fl_Widget::draw()
     draw_inside_label();
 }
 
-void Fl_Widget::preffered_size(int& w, int& h) const {
-    measure_label(w,h);
-    if (h < this->h()) h = this->h();
+void Fl_Widget::preferred_size(int& w, int& h) const {
+    h = this->h();
     w = this->w();
 }
 
