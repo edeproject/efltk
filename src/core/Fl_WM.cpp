@@ -684,7 +684,6 @@ static int wm_event_handler(int e)
         else if(fl_xevent.xproperty.atom==_XA_NET_ACTIVE_WINDOW)
             action = Fl_WM::WINDOW_ACTIVE;
         else if(fl_xevent.xproperty.atom==_XA_NET_WM_NAME) {
-            printf("NAME\n");
             action = Fl_WM::WINDOW_NAME;
         }
         else if(fl_xevent.xproperty.atom==_XA_NET_WM_VISIBLE_NAME)
