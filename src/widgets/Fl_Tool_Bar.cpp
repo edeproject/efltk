@@ -330,7 +330,7 @@ Fl_Divider *Fl_Tool_Bar::add_divider()
     int dw, dh;
     get_icon_size(tb_size(), dw, dh);
 
-    Fl_VertDivider *l = new Fl_VertDivider(4, dh);
+    Fl_VertDivider *l = new Fl_VertDivider(5, dh);
 
     end();
     return l;
