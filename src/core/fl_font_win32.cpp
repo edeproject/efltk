@@ -55,6 +55,35 @@ static Fl_FontSize* all_fonts;
 
 #include <stdio.h>
 
+static DWORD str_to_charset(const char *str)
+{
+	if(!str || !*str) return DEFAULT_CHARSET;
+
+#define EIF(s) else if(!strcmp(str, s)) return 
+	
+	if(strstr(str, "8859"))	return ANSI_CHARSET; //Return ANSI for ISO8859-* ?
+	EIF("Ansi")				ANSI_CHARSET;
+	EIF("Baltic")			BALTIC_CHARSET;
+	EIF("Chinese Big5")		CHINESEBIG5_CHARSET;
+	EIF("Eastern Europe")	EASTEUROPE_CHARSET;
+	EIF("Gb2312")			GB2312_CHARSET;
+	EIF("Greek")			GREEK_CHARSET;
+	EIF("Hangul")			HANGUL_CHARSET;
+	EIF("MAC")				MAC_CHARSET;
+	EIF("OEM")				OEM_CHARSET;
+	EIF("Russian")			RUSSIAN_CHARSET;
+	EIF("Shift Jis")		SHIFTJIS_CHARSET;
+	EIF("Symbol")			SYMBOL_CHARSET;
+	EIF("Turkish")			TURKISH_CHARSET;
+	EIF("Vietnamese")		VIETNAMESE_CHARSET;
+	EIF("Johab")			JOHAB_CHARSET;
+	EIF("Arabic")			ARABIC_CHARSET;
+	EIF("Hebrew")			HEBREW_CHARSET;
+	EIF("Thai")				THAI_CHARSET;
+
+	return DEFAULT_CHARSET;	
+}
+
 Fl_FontSize::Fl_FontSize(const char* name, int size, int charset) 
 {	
   fl_fontsize = this;
@@ -126,30 +155,10 @@ Fl_Font fl_create_font(const char *system_name)
     f->bold_ = f;
     f->italic_ = f;
     f->first = 0;
+	f->charsets_ = 0;
+	f->sizes_ = 0;
     return f;
 }
-
-////////////////////////////////////////////////////////////////
-
-// The predefined fonts that fltk has:  bold:       italic:
-Fl_Font_ fl_fonts[] = {
-	{" Arial",				fl_fonts+1, fl_fonts+2},
-	{"BArial", 				fl_fonts+1, fl_fonts+3},
-	{"IArial",				fl_fonts+3, fl_fonts+2},
-	{"PArial",				fl_fonts+3, fl_fonts+3},
-	{" Courier New",		fl_fonts+5, fl_fonts+6},
-	{"BCourier New",		fl_fonts+5, fl_fonts+7},
-	{"ICourier New",		fl_fonts+7, fl_fonts+6},
-	{"PCourier New",		fl_fonts+7, fl_fonts+7},
-	{" Times New Roman",	fl_fonts+9, fl_fonts+10},
-	{"BTimes New Roman",	fl_fonts+9, fl_fonts+11},
-	{"ITimes New Roman",	fl_fonts+11,fl_fonts+10},
-	{"PTimes New Roman",	fl_fonts+11,fl_fonts+11},
-	{" Symbol",				fl_fonts+12,fl_fonts+12},
-	{" Terminal",			fl_fonts+14,fl_fonts+14},
-	{"BTerminal",			fl_fonts+14,fl_fonts+14},
-	{" Wingdings",			fl_fonts+15,fl_fonts+15},
-};
 
 ////////////////////////////////////////////////////////////////
 // Public interface:
@@ -159,27 +168,29 @@ HFONT fl_xfont() {return current_font;}
 TEXTMETRIC* fl_textmetric() {return &(fl_fontsize->metr);}
 
 // we need to decode the encoding somehow!
-static int charset = DEFAULT_CHARSET;
+static int fl_charset = DEFAULT_CHARSET;
 
 void fl_font(Fl_Font font, float psize) 
 {
+	fl_charset = str_to_charset(fl_encoding_);	
+
   // only integers supported right now, I think there is a newer
   // interface that takes arbitrary sizes, though...
   psize = float(int(psize+.5f));
   unsigned size = unsigned(psize);
 
   if (font == fl_font_ && psize == fl_size_ &&
-      fl_fontsize->charset == charset) return;
+      fl_fontsize->charset == fl_charset) return;
   fl_font_ = font; fl_size_ = psize;
 
   Fl_FontSize* f;
   // search the fontsizes we have generated already:
   for (f = font->first; f; f = f->next) {
-	if (f->size == size && f->charset == charset) break;
+	if (f->size == size && f->charset == fl_charset) break;
   }
 
   if (!f) {
-		f = new Fl_FontSize(font->name_, size, charset);
+		f = new Fl_FontSize(font->name_, size, fl_charset);
 		f->next = font->first;
 		((Fl_Font_*)font)->first = f;
   }
@@ -310,15 +321,34 @@ void fl_rtl_draw(const char *str, int n, float x, float y)
 }
 
 // Change the encoding to use for the next font selection.
-// Encodings is NYI. We need a way to translate the ISO encoding names
-// to Win32 encoding enumerations. Ie "iso8859-1" turns into ANSI_CHARSET,
-// etc.
 void fl_encoding(const char* f) {
   if (f != fl_encoding_) {
     fl_encoding_ = f;
     // charset = decode_the_encoding(f);
   }
 }
+
+////////////////////////////////////////////////////////////////
+
+// The predefined fonts that fltk has:  bold:       italic:
+Fl_Font_ fl_fonts[] = {
+	{" Arial",				fl_fonts+1, fl_fonts+2,0,0},
+	{"BArial", 				fl_fonts+1, fl_fonts+3,0,0},
+	{"IArial",				fl_fonts+3, fl_fonts+2,0,0},
+	{"PArial",				fl_fonts+3, fl_fonts+3,0,0},
+	{" Courier New",		fl_fonts+5, fl_fonts+6,0,0},
+	{"BCourier New",		fl_fonts+5, fl_fonts+7,0,0},
+	{"ICourier New",		fl_fonts+7, fl_fonts+6,0,0},
+	{"PCourier New",		fl_fonts+7, fl_fonts+7,0,0},
+	{" Times New Roman",	fl_fonts+9, fl_fonts+10,0,0},
+	{"BTimes New Roman",	fl_fonts+9, fl_fonts+11,0,0},
+	{"ITimes New Roman",	fl_fonts+11,fl_fonts+10,0,0},
+	{"PTimes New Roman",	fl_fonts+11,fl_fonts+11,0,0},
+	{" Symbol",				fl_fonts+12,fl_fonts+12,0,0},
+	{" Terminal",			fl_fonts+14,fl_fonts+14,0,0},
+	{"BTerminal",			fl_fonts+14,fl_fonts+14,0,0},
+	{" Wingdings",			fl_fonts+15,fl_fonts+15,0,0},
+};
 
 //
 // End of "$Id$".

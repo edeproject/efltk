@@ -54,74 +54,130 @@ const char* Fl_Font_::name(int* ap) const
     return buffer;
 }
 
+static const char *charset_to_str(DWORD ch)
+{
+	switch(ch) {
+		case ANSI_CHARSET:			return "Ansi";
+		case BALTIC_CHARSET:		return "Baltic";
+		case CHINESEBIG5_CHARSET:	return "Chinese Big5";
+		case EASTEUROPE_CHARSET:	return "Eastern Europe";
+		case GB2312_CHARSET:		return "Gb2312";
+		case GREEK_CHARSET:			return "Greek";
+		case HANGUL_CHARSET:		return "Hangul";
+		case MAC_CHARSET:			return "MAC";
+		case OEM_CHARSET:			return "OEM";
+		case RUSSIAN_CHARSET:		return "Russian";
+		case SHIFTJIS_CHARSET:		return "Shift Jis";
+		case SYMBOL_CHARSET:		return "Symbol";
+		case TURKISH_CHARSET:		return "Turkish";
+		case VIETNAMESE_CHARSET:	return "Vietnamese";
+		case JOHAB_CHARSET:			return "Johab";
+		case ARABIC_CHARSET:		return "Arabic";
+		case HEBREW_CHARSET:		return "Hebrew";
+		case THAI_CHARSET:			return "Thai";
+
+		case DEFAULT_CHARSET:
+		default:
+			break;
+	}
+	return "Unknown";
+}
+
+static Fl_Font_ *enc_font=0;
+static int CALLBACK encoding_enumcb(CONST LOGFONT* lplf,
+			CONST TEXTMETRIC* lpntm,
+			DWORD fontType,
+			LPARAM p)
+{
+	const char *c = charset_to_str(lplf->lfCharSet);
+	for(uint n=0; n<enc_font->charsets_->size(); n++)
+		if(!strcmp(enc_font->charsets_->item(n), c))
+			return 0;
+	
+	enc_font->charsets_->append(c);
+	return 1;
+}
 
 int Fl_Font_::encodings(const char**& arrayp) const
 {
-    // CET - FIXME - What about this encoding stuff?
-    // WAS: we need some way to find out what charsets are supported
-    // and turn these into ISO encoding names, and return this list.
+	if(charsets_) {
+		// Cached..
+		arrayp=(const char**)charsets_->data();
+		return charsets_->size();
+	}
+
+	((Fl_Font_*)this)->charsets_ = new Fl_CString_List;
+	enc_font = (Fl_Font_*)this;
+
+    HDC dc = fl_getDC();
+    LOGFONT lf;
+    memset(&lf, 0, sizeof(lf));
+	strncpy(lf.lfFaceName, name_+1, 32);
+	lf.lfCharSet = DEFAULT_CHARSET;
+
+    EnumFontFamiliesEx(dc, &lf, (FONTENUMPROC)encoding_enumcb, 0, 0);
+
+	if(charsets_->size()==0) charsets_->append("Unknown");
+	else charsets_->sort();
+	
     // This is a poor simulation:
-    static const char* simulation[] = {"iso8859-1", 0};
-    arrayp = simulation;
-    return 1;
+    //static const char* simulation[] = {"iso8859-1", 0};
+    //arrayp = simulation;
+    //return 1;
+	
+	arrayp=(const char**)charsets_->data();
+	return charsets_->size();
 }
 
 
 ////////////////////////////////////////////////////////////////
 // List sizes:
 
-static int nbSize;
-//static int cyPerInch;
-#define MAX_SIZES 16
-static int sizes[MAX_SIZES];
-
-static int CALLBACK EnumSizeCb(CONST LOGFONT* lpelf,
+static Fl_Font_ *size_font=0;
+static int CALLBACK size_enumcb(CONST LOGFONT* lpelf,
 CONST TEXTMETRIC* lpntm,
 DWORD fontType,
 LPARAM p)
 {
-    if ((fontType & RASTER_FONTTYPE) == 0)
-    {
+    if ((fontType & RASTER_FONTTYPE) == 0) {
         // Scalable font
-        sizes[0] = 0;
-        nbSize = 1;
         return 0;
     }
-
     int add = lpntm->tmHeight - lpntm->tmInternalLeading;
-    //add = MulDiv(add, 72, cyPerInch); // seems to be correct before this
-
-    int start = 0;
-    while ((start < nbSize) && (sizes[start] < add)) start++;
-
-    if ((start < nbSize) && (sizes[start] == add)) return (1);
-
-    for (int i=nbSize; i>start; i--) sizes[i] = sizes[i - 1];
-
-    sizes[start] = add;
-    nbSize++;
-
-    // Stop enum if buffer overflow
-    return (nbSize < MAX_SIZES);
+	size_font->sizes_->append(add);
+    return 1;
 }
 
 
 int Fl_Font_::sizes(int*& sizep) const
 {
-    nbSize = 0;
+	if(sizes_) {
+		// Cached..
+		sizep=(int*)sizes_->data();
+		return sizes_->size();
+	}
+
+	((Fl_Font_*)this)->sizes_ = new Fl_Int_List;
+	size_font = (Fl_Font_*)this;
+
     HDC dc = fl_getDC();
-    //cyPerInch = GetDeviceCaps(dc, LOGPIXELSY);
-    //if (cyPerInch < 1) cyPerInch = 1;
-    EnumFontFamilies(dc, name_+1, EnumSizeCb, 0);
-    sizep = ::sizes;
-    return nbSize;
+	LOGFONT lf;
+    memset(&lf, 0, sizeof(lf));
+	strncpy(lf.lfFaceName, name_+1, 32);
+	lf.lfCharSet = DEFAULT_CHARSET;
+	EnumFontFamiliesEx(dc, &lf, (FONTENUMPROC)size_enumcb, 0, 0);    
+
+	if(sizes_->size()==0) sizes_->append(0);
+	else sizes_->sort();
+
+	sizep=(int*)sizes_->data();
+	return sizes_->size();
 }
 
 
 ////////////////////////////////////////////////////////////////
 // list fonts:
 
-//static char *attr_names[] = { " Bold-Italic", " Bold Italic", " Italic", " Bold", NULL};
 static char *attr_letters = "PPIB ";
 
 static Fl_Font_* make_a_font(char attrib, const char* name, CONST LOGFONT *lfont)
@@ -134,6 +190,8 @@ static Fl_Font_* make_a_font(char attrib, const char* name, CONST LOGFONT *lfont
     }
     // no, lets create a font:
     Fl_Font_* newfont = new Fl_Font_;
+	newfont->charsets_ = 0;
+	newfont->sizes_ = 0;
     char *n = new char[strlen(name)+2];
     n[0] = attrib;
     strcpy(n+1, name);
@@ -174,15 +232,11 @@ static int CALLBACK enumcb(CONST LOGFONT* lplf,
     // we need to do something about different encodings of the same font
     // in order to match X!  I can't tell if each different encoding is
     // returned sepeartely or not.  This is what fltk 1.0 did:
-    if (lplf->lfCharSet != ANSI_CHARSET) return 1;
-    //const char *name = (const char*)(lplf->lfFaceName);
+    if(lplf->lfCharSet != ANSI_CHARSET) return 1;
+
     const char *name = (const char*)(((ENUMLOGFONT *)lplf)->elfFullName);	
 
     bool bNeedBold = (lplf->lfWeight <= FW_NORMAL);
-	
-	// This is not true, if using some other locale than en_US...
-    //if(strstr(name, " Bold") == name + strlen(name) - 5)
-    //    bNeedBold = true;
 
     Fl_Font_* base = make_a_font(' ', name, lplf);
     base->italic_ = make_a_font('I', name, lplf);
@@ -200,7 +254,6 @@ static int CALLBACK enumcb(CONST LOGFONT* lplf,
     return 1;
 }
 
-
 // Sort fonts by their "nice" name (it is possible Win32 always returns
 // them in this order, but I'm not sure):
 static int sort_function(const void *aa, const void *bb)
@@ -211,17 +264,23 @@ static int sort_function(const void *aa, const void *bb)
     return name_a[0]-name_b[0];  // sort by attribute
 }
 
-
 int fl_list_fonts(Fl_Font*& arrayp)
 {
-    if (font_array) {arrayp = font_array; return num_fonts;}
+    if (font_array) {
+		arrayp = font_array; 
+		return num_fonts;
+	}
     HDC dc = fl_getDC();
     LOGFONT lf;
     memset(&lf, 0, sizeof(lf));
-    lf.lfCharSet = ANSI_CHARSET;
+	
+	// According to MSDN:
+	// to enumerate all styles and charsets of all fonts:
+	lf.lfFaceName[0] = '\0';
+	lf.lfCharSet = DEFAULT_CHARSET;
+
     EnumFontFamiliesEx(dc, &lf, (FONTENUMPROC)enumcb, 0, 0);
-    //EnumFontFamiliesEx(dc, NULL, (FONTENUMPROC)enumcb, 0);
-    ReleaseDC(0, dc);
+    
     qsort(font_array, num_fonts, sizeof(Fl_Font), sort_function);
     arrayp = font_array;
     return num_fonts;

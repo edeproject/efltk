@@ -45,7 +45,10 @@ struct FL_API Fl_Font_ {
     // list of sizes (used by X and Win32 GDI):
     Fl_FontSize *first;
 
-#ifndef _WIN32
+#ifdef _WIN32
+	Fl_CString_List *charsets_;
+	Fl_Int_List *sizes_;
+#else
     // XWindows cache stuff:
     bool xlist_cached_; //Are all XListFonts cached
     Fl_CString_List xlist_; //Cached xlist
