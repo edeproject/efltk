@@ -154,11 +154,15 @@ void Fl_Renderer::system_init()
             break;
     }
 
-    printf("System Image Format: %d bits per pixel / Display Visual %d bits per pixel\n", pfv->bits_per_pixel, fl_visual->depth);
-
-    s_image.format = ZPixmap;
-    //s_image.byte_order = ImageByteOrder(fl_display);
+    //XPutImage will handle swapping...
     s_image.byte_order = (WORDS_BIGENDIAN==1) ? MSBFirst : LSBFirst;
+    s_image.format = ZPixmap;
+
+#ifdef _DEBUG
+    printf("System Image Format: %d bits per pixel\n", pfv->bits_per_pixel);
+    printf("Display Visual: %d bits per pixel\n", fl_visual->depth);
+    printf("System Image byte-order: %s", (s_image.byte_order==LSBFirst)?"Little-endian":"Big-endian");
+#endif
 
     s_image.depth = fl_visual->depth;
     s_image.bits_per_pixel = pfv->bits_per_pixel;
@@ -181,17 +185,6 @@ void Fl_Renderer::system_init()
                  fl_visual->visual->green_mask,
                  fl_visual->visual->blue_mask,
                  0);
-
-    printf("Masks1: 0x%x 0x%x 0x%x\n",
-           sys_fmt.Rmask,
-           sys_fmt.Gmask,
-           sys_fmt.Bmask);
-
-    printf("Shifts1: %d %d %d\n",
-           sys_fmt.Rshift,
-           sys_fmt.Gshift,
-           sys_fmt.Bshift);
-
 
 #if USE_COLORMAP
     if(pfv->bits_per_pixel<=8) {

@@ -376,11 +376,6 @@ static void figure_out_visual()
     int gs = fl_greenshift;
     int bs = fl_blueshift;
 
-    printf("Shifts2: %d %d %d\n",
-           fl_redshift,
-           fl_greenshift,
-           fl_blueshift);
-
     switch (fl_bytes_per_pixel) {
 
     case 2:
@@ -438,12 +433,6 @@ static void figure_out_visual()
     default:
         Fl::fatal("Can't do %d bits_per_pixel",fl_xi.bits_per_pixel);
     }
-
-    printf("Shifts3: %d %d %d\n",
-           fl_redshift,
-           fl_greenshift,
-           fl_blueshift);
-
 }
 
 #define MAXBUFFER 0x40000 // 256k
