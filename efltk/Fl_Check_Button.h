@@ -37,7 +37,7 @@ public:
     /** The traditional constructor creates the check button using the position, size, and label. */
     Fl_Check_Button(int x,int y,int w,int h,const char *l = 0);
 
-    /** The new style constructor creates the check button using the label, size, alignment, and label_width. */
+    /** The new style constructor creates the check button using the label, size, alignment. */
     Fl_Check_Button(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP);
 
     virtual void preferred_size(int& w, int& h) const;

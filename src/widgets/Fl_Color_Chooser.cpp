@@ -440,16 +440,8 @@ static void revert(Fl_Style* s) {
 static Fl_Named_Style style("Color_Chooser", revert, &Fl_Color_Chooser::default_style);
 Fl_Named_Style* Fl_Color_Chooser::default_style = &::style;
 
-Fl_Color_Chooser::Fl_Color_Chooser(int X, int Y, int W, int H, const char* L)
-: Fl_Group(0,0,180,100,L),
-huebox(0,0,100,100),
-valuebox(100,0,20,100),
-nrgroup(120,0, 60, 100),
-choice(0,0,60,21),
-rvalue(0,22,60,21),
-gvalue(0,44,60,21),
-bvalue(0,66,60,21)
-{
+// ctor initializer - used in both ctors
+void Fl_Color_Chooser::ctor_init(int X, int Y, int W, int H) {
     style(Fl_Color_Chooser::default_style);
 
     nrgroup.end();
@@ -477,6 +469,34 @@ bvalue(0,66,60,21)
     rvalue.step(0.01);
     gvalue.step(0.01);
     bvalue.step(0.01);
+}
+
+// Traditional ctor
+Fl_Color_Chooser::Fl_Color_Chooser(int X, int Y, int W, int H, const char* L)
+: Fl_Group(0,0,180,100,L),
+huebox(0,0,100,100),
+valuebox(100,0,20,100),
+nrgroup(120,0, 60, 100),
+choice(0,0,60,21),
+rvalue(0,22,60,21),
+gvalue(0,44,60,21),
+bvalue(0,66,60,21)
+{
+    ctor_init(X, Y, W, H);
+}
+
+// New style ctor
+Fl_Color_Chooser::Fl_Color_Chooser(const char* l,int layout_size,Fl_Align layout_al,int label_w)
+: Fl_Group(l,layout_size,layout_al,label_w),
+huebox(0,0,100,100),
+valuebox(100,0,20,100),
+nrgroup(120,0, 60, 100),
+choice(0,0,60,21),
+rvalue(0,22,60,21),
+gvalue(0,44,60,21),
+bvalue(0,66,60,21)
+{
+    ctor_init(0, 0, w(), h());
 }
 
 Fl_Color Fl_Color_Chooser::value() const {

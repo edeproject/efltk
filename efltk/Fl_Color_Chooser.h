@@ -72,7 +72,11 @@ class FL_API Fl_Color_Chooser : public Fl_Group {
 public:
     static Fl_Named_Style* default_style;
 
-    Fl_Color_Chooser(int,int,int,int,const char* = 0);
+    /** The traditional constructor creates the color chooser widget using the position, size, and label. */
+    Fl_Color_Chooser(int,int,int,int,const char* l= 0);
+
+    /** The new style constructor creates the color chooser widget using the label, size, alignment, and label_width. */
+    Fl_Color_Chooser(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
 
     Fl_Color value() const;
     void value(Fl_Color);
@@ -90,7 +94,7 @@ public:
     static void hsv2rgb(float, float, float,float&,float&,float&);
     static void rgb2hsv(float, float, float,float&,float&,float&);
 
-	void draw();
+    void draw();
 
 private:
     Flcc_HueBox huebox;
@@ -102,7 +106,9 @@ private:
     Flcc_Value_Input bvalue;
     float hue_, saturation_, value_;
     float r_, g_, b_;
+
     void set_valuators();
+    void ctor_init(int X, int Y, int W, int H);
 
     static void rgb_cb(Fl_Widget*, Fl_Color_Chooser*);
     static void mode_cb(Fl_Widget*, Fl_Color_Chooser*);
