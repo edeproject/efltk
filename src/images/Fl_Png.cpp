@@ -50,7 +50,6 @@ static bool png_is_valid_mem(const uint8 *stream, uint32 size)
 // PNG READ METHODS:
 
 static void read_data_fn(png_structp png_ptr, png_bytep d, png_size_t length) {
-
     ((Fl_IO*)png_ptr->io_ptr)->read(d, length);
 }
 
@@ -97,7 +96,6 @@ static bool png_create(Fl_IO &png_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
 
     if(!setup_png_transformations(png_ptr, info_ptr, transv, ctype, ckey, bitspp, w, h))
         goto error;
-
     if(ctype != PNG_COLOR_TYPE_PALETTE) {
 #if !WORDS_BIGENDIAN
         Rmask = 0x000000FF;
@@ -113,14 +111,6 @@ static bool png_create(Fl_IO &png_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
 #endif
         if(info_ptr->channels == 4)
             fmt.masktype = FL_MASK_ALPHA;
-    }
-
-    if(ckey != -1) {
-        // FIXME: Should these be truncated or shifted down?
-        fmt.masktype = FL_MASK_COLORKEY;
-        fmt.colorkey = fl_rgb((uint8)transv->red,
-                              (uint8)transv->green,
-                              (uint8)transv->blue);
     }
 
     fmt.realloc(bitspp,Rmask,Gmask,Bmask,Amask);
@@ -156,6 +146,14 @@ static bool png_create(Fl_IO &png_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
                 palette->colors[i].r = info_ptr->palette[i].red;
             }
         }
+    }
+
+    if(ckey != -1 && ctype!=PNG_COLOR_TYPE_PALETTE) {
+        // FIXME: Should these be truncated or shifted down?
+        fmt.masktype = FL_MASK_COLORKEY;
+        fmt.colorkey = fl_rgb((uint8)transv->red,
+                              (uint8)transv->green,
+                              (uint8)transv->blue);
     }
 
     if(rows) free(rows);
@@ -200,26 +198,34 @@ bool setup_png_transformations(png_structp png_ptr, png_infop info_ptr, png_colo
      if more than one index has transparency, use full alpha channel */
     if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)) {
         int num_trans;
-        uint8 *trans;
+        png_bytep trans;
         png_get_tRNS(png_ptr, info_ptr, &trans, &num_trans, &transv);
         if(col_type == PNG_COLOR_TYPE_PALETTE) {
-            if(num_trans == 1) {
-                /* exactly one transparent value: set colour key */
-                ckey = trans[0];
-            } else
+            /* Check if all tRNS entries are opaque except one */
+            int i, t = -1;
+            for(i = 0; i < num_trans; i++)
+                if(trans[i] == 0) {
+                    if(t >= 0)
+                        break;
+                    t = i;
+                } else if(trans[i] != 255)
+                    break;
+            if(i == num_trans) {
+                /* exactly one transparent index */
+                ckey = t;
+            } else {
+                /* more than one transparent index, or translucency */
                 png_set_expand(png_ptr);
+            }
         } else
             ckey = -1; /* actual value will be set later */
     }
-
     /* If interlaced, handle that */
     if(interlace_type != PNG_INTERLACE_NONE) {
         png_set_interlace_handling(png_ptr);
     }
-
     /* Update the info the reflect our transformations */
     png_read_update_info(png_ptr, info_ptr);
-
     png_get_IHDR(png_ptr, info_ptr,
                  (ulong*)&width, (ulong*)&height,
                  &bit_depth,
@@ -227,7 +233,6 @@ bool setup_png_transformations(png_structp png_ptr, png_infop info_ptr, png_colo
                  &interlace_type,
                  &compression_type,
                  &filter_type);
-
     channels = png_get_channels(png_ptr, info_ptr);
     bitspp = bit_depth*channels;
 
