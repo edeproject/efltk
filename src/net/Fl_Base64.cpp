@@ -9,7 +9,6 @@
   **/
 
 #include <efltk/net/Fl_Base64.h>
-#include <efltk/Fl_Buffer.h>
 
 /**
  * Following structures are originally from mutt
@@ -63,8 +62,7 @@ Fl_Base64::~Fl_Base64()
  * @see encode(Fl_Buffer bufSource)
  * @author Dejan Lekic, http://dejan.nu6.org
  */
-static void 
-Fl_Base64::encode(Fl_Buffer& bufDest, Fl_Buffer& bufSource);
+void Fl_Base64::encode(Fl_Buffer& bufDest, Fl_Buffer& bufSource)
 {
 	char c;
 	char *current = bufSource.data();
@@ -125,9 +123,9 @@ Fl_Base64::encode(Fl_String& strDest, const Fl_Buffer& bufSource)
 {
 	Fl_String strOut;
 	Fl_Buffer bufOut;
-	Fl_Buffer bufIn = *bufSource;
+	Fl_Buffer bufIn = bufSource;
 	//bufIn.append(bufSource->data(), bufSource->size()+1);
-	encode(&bufOut, &bufIn);
+	encode(bufOut, bufIn);
 	strDest.clear();
 	strDest.append((const char*)bufOut.data(), bufOut.bytes());
 } /* encode(Fl_Buffer bufSource) */
