@@ -186,24 +186,6 @@ Fl_Menu_Item pulldown[] = {
 #define WIDTH 600
 #define HEIGHT 24 //30 // use 25 for better Windoze look
 
-class I : public Fl_Item_Group
-{
-public:
-    I(const char *n) : Fl_Item_Group(n) { }
-
-    int handle(int e)
-    {
-        printf("E %d\n", e);
-
-        if(e==FL_RELEASE)
-        {
-            menus[3]->popup(Fl::event_x(), Fl::event_y());
-            return 1;
-        }
-        return Fl_Item_Group::handle(e);
-    }
-};
-
 int main(int argc, char **argv) {
   for (int i=0; i<99; i++) {
       char buf[100];
@@ -268,11 +250,6 @@ int main(int argc, char **argv) {
   mb.type(Fl_Menu_Button::POPUP3);
   mb.menu(menutable);
   mb.callback(test_cb);
-
-  I *i = new I("test");
-  new I("test2");
-
-  mb.add(i);
   menus[3] = &mb;
 
   window.view()->end();
