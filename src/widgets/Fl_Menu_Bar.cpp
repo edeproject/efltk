@@ -33,8 +33,8 @@
 static void revert_menubar(Fl_Style* s) {
     s->leading = 5;
     s->color = FL_GRAY;
-	s->selection_color = FL_LIGHT1;
-	s->selection_text_color = FL_BLACK;
+    s->selection_color = FL_LIGHT1;
+    s->selection_text_color = FL_BLACK;
     s->box = FL_FLAT_BOX;
 #if 0
     // NT 4.0 style
@@ -48,9 +48,8 @@ static void revert_menubar(Fl_Style* s) {
 static Fl_Named_Style style_menubar("Menu_Bar", revert_menubar, &Fl_Menu_Bar::default_style);
 Fl_Named_Style* Fl_Menu_Bar::default_style = &::style_menubar;
 
-Fl_Menu_Bar::Fl_Menu_Bar(int x,int y,int w,int h,const char *l)
-    : Fl_Menu_(x,y,w,h,l)
-{
+// ctor initialized - used in both ctors
+void Fl_Menu_Bar::ctor_init() {
     style(default_style);
     shortcut(FL_Alt_L);
     lines=1;
@@ -64,7 +63,21 @@ Fl_Menu_Bar::Fl_Menu_Bar(int x,int y,int w,int h,const char *l)
 
     value(-1);
 
-	anim_flags_ = TOP_TO_BOTTOM;
+    anim_flags_ = TOP_TO_BOTTOM;
+}
+
+// Traditional ctor
+Fl_Menu_Bar::Fl_Menu_Bar(int x,int y,int w,int h,const char *l)
+: Fl_Menu_(x,y,w,h,l)
+{
+    ctor_init();
+}
+
+// New style ctor
+Fl_Menu_Bar::Fl_Menu_Bar(const char* l,int layout_size,Fl_Align layout_al,int label_w)
+: Fl_Menu_(l,layout_size,layout_al,label_w)
+{
+    ctor_init();
 }
 
 void Fl_Menu_Bar::draw()
@@ -92,17 +105,17 @@ void Fl_Menu_Bar::draw()
         else if(i==highlight_) f|=FL_HIGHLIGHT;
 
         if( (damage()&(~FL_DAMAGE_HIGHLIGHT)) ||
-           (selected_==i || last_selected_==i) ||
-           (highlight_==i || last_highlight_==i) )
+                (selected_==i || last_selected_==i) ||
+                (highlight_==i || last_highlight_==i) )
         {
             Fl_Color save_color = widget->highlight_label_color();
             widget->highlight_label_color(highlight_label_color());
             Fl_Color save_scolor = widget->selection_text_color();
             widget->selection_text_color(selection_text_color());
-			int save_flags = widget->flags();
-			widget->flags(f);
+            int save_flags = widget->flags();
+            widget->flags(f);
 
-			Fl_Color c = (selected_==i)?selection_color():button_color();
+            Fl_Color c = (selected_==i)?selection_color():button_color();
             button_box()->draw(widget->x(), widget->y(), widget->w(), widget->h(), c, f);
             //update_child(*widget);
             fl_push_matrix();
@@ -110,9 +123,9 @@ void Fl_Menu_Bar::draw()
             widget->draw();
             fl_pop_matrix();
 
-			widget->flags(save_flags);
+            widget->flags(save_flags);
             widget->highlight_label_color(save_color);
-			widget->selection_text_color(save_scolor);
+            widget->selection_text_color(save_scolor);
         }
     }
 
@@ -189,8 +202,8 @@ void Fl_Menu_Bar::layout()
         w->position(X,Y);
     }
 
-	if(do_layout)
-		Fl_Widget::size(W,H);
+    if(do_layout)
+        Fl_Widget::size(W,H);
     Fl_Widget::layout();
 }
 
@@ -198,67 +211,67 @@ int Fl_Menu_Bar::handle(int event)
 {
     static bool menu_up=false;
     switch(event) {
-	case FL_FOCUS: return 1;
+        case FL_FOCUS: return 1;
 
-    case FL_LEAVE:
-        if(menu_up) return 0;
-        highlight_ = selected_ = -1;
-        redraw(FL_DAMAGE_HIGHLIGHT);
-        return 1;
-
-    case FL_PUSH: {
-        value(-1);
-        key_event = false;
-        Fl_Widget *w = (highlight_>=0) ? child(highlight_) : 0;
-        if(w && w->type()!=Fl_Item::NO_EXECUTE) {
-            menu_up=true;
-            popup(0,0,0,0);
-            menu_up=false;
+        case FL_LEAVE:
+            if(menu_up) return 0;
+            highlight_ = selected_ = -1;
+            redraw(FL_DAMAGE_HIGHLIGHT);
             return 1;
-        }
-        break;
-    }
-    case FL_ENTER:
-    case FL_MOVE: {
-        int index = -1;
-        for(int i = 0; i < children(); i++) {
-            Fl_Widget *widget = child(i);
-            if(!widget->visible()) continue;
-            if(Fl::event_inside(widget->x(), widget->y(), widget->w(), widget->h())) {
-                index = i;
+
+        case FL_PUSH: {
+                value(-1);
+                key_event = false;
+                Fl_Widget *w = (highlight_>=0) ? child(highlight_) : 0;
+                if(w && w->type()!=Fl_Item::NO_EXECUTE) {
+                    menu_up=true;
+                    popup(0,0,0,0);
+                    menu_up=false;
+                    return 1;
+                }
                 break;
             }
-        }
-        if(index!=last_highlight_) {
-            highlight_ = index;
-            redraw(FL_DAMAGE_HIGHLIGHT);
-        }
-        break;
-    }
-
-	case FL_KEY:
-    case FL_SHORTCUT: {
-		if(!Fl::event_state(FL_ALT)) break;
-		if(!focused()) {
-			take_focus();
-			key_event = true;
-		}
-        for(int i = 0; i < children(); i++) {
-            Fl_Widget* w = child(i);
-            if(w->is_group() && w->active() && w->test_shortcut()) {				
-                value(i);
-				menu_up=true;
-                popup(0,0,0,0);
-				menu_up=false;				
-                return 1;
+        case FL_ENTER:
+        case FL_MOVE: {
+                int index = -1;
+                for(int i = 0; i < children(); i++) {
+                    Fl_Widget *widget = child(i);
+                    if(!widget->visible()) continue;
+                    if(Fl::event_inside(widget->x(), widget->y(), widget->w(), widget->h())) {
+                        index = i;
+                        break;
+                    }
+                }
+                if(index!=last_highlight_) {
+                    highlight_ = index;
+                    redraw(FL_DAMAGE_HIGHLIGHT);
+                }
+                break;
             }
-        }
-        if(handle_shortcut()) return 1;
-        break;
-    }
 
-    default:
-        break;
+        case FL_KEY:
+        case FL_SHORTCUT: {
+                if(!Fl::event_state(FL_ALT)) break;
+                if(!focused()) {
+                    take_focus();
+                    key_event = true;
+                }
+                for(int i = 0; i < children(); i++) {
+                    Fl_Widget* w = child(i);
+                    if(w->is_group() && w->active() && w->test_shortcut()) {                
+                        value(i);
+                        menu_up=true;
+                        popup(0,0,0,0);
+                        menu_up=false;              
+                        return 1;
+                    }
+                }
+                if(handle_shortcut()) return 1;
+                break;
+            }
+
+        default:
+            break;
 
     }
 

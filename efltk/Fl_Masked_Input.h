@@ -28,7 +28,14 @@
 /** Fl_Masked_Input */
 class FL_API Fl_Masked_Input : public Fl_Input {
 public:
-    Fl_Masked_Input(int,int,int,int,const char * = 0);
+
+    /** Creates new masked input widget using the given position, size, and label string. */
+    Fl_Masked_Input(int x,int y,int w,int h,const char *l = 0)
+    : Fl_Input(x, y, w, h, l) {}
+
+    /** Creates new masked input widget using the label, size, alignment, and label_width. */
+    Fl_Masked_Input(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100)
+    : Fl_Input(l,layout_size,layout_al,label_w) {}
 
     void mask(const char *m);
     const char *mask() const  { return m_mask.c_str(); }

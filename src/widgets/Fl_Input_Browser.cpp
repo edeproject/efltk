@@ -217,14 +217,13 @@ void Fl_Input_Browser::input_cb(Fl_Input *in, Fl_Input_Browser *data) {
 #define popup_maxw 600
 #define popup_maxh 400
 
-Fl_Input_Browser::Fl_Input_Browser(int x, int y, int w, int h, const char *l)
-: Fl_Menu_(x, y, w, h, l), m_input(x,y,w,h)
-{
+// ctor initializer - used in both ctors
+void Fl_Input_Browser::ctor_init() {
     callback(Fl_Widget::default_callback);
     align(FL_ALIGN_LEFT);
     style(default_style);
 
-    if(input()->parent()) input()->parent()->remove(input());
+    if (input()->parent()) input()->parent()->remove(input());
     input()->parent(this);
     input()->when(FL_WHEN_CHANGED | FL_WHEN_ENTER_KEY_ALWAYS);
     input()->callback((Fl_Callback *)input_cb, this);
@@ -234,6 +233,22 @@ Fl_Input_Browser::Fl_Input_Browser(int x, int y, int w, int h, const char *l)
     win = 0; list = 0;
 }
 
+// Traditional ctor
+Fl_Input_Browser::Fl_Input_Browser(int x, int y, int w, int h, const char *l)
+: Fl_Menu_(x, y, w, h, l), m_input(x,y,w,h)
+{
+    ctor_init();
+}
+
+// New Style ctor
+Fl_Input_Browser::Fl_Input_Browser(const char* l,int layout_size,Fl_Align layout_al,int label_w)
+: Fl_Menu_(l,layout_size,layout_al,label_w), m_input(0,0,10,10)
+{
+    m_input.resize(x(),y(),w(),h());
+    ctor_init();
+}
+
+// Destructor
 Fl_Input_Browser::~Fl_Input_Browser()
 {
     input()->parent(0);    

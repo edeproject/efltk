@@ -29,7 +29,11 @@ class FL_API Fl_Light_Button : public Fl_Check_Button {
 public:
     static Fl_Named_Style* default_style;
 
+    /** Creates new light button widget using the given position, size, and label string. */
     Fl_Light_Button(int x,int y,int w,int h,const char *l = 0);
+
+    /** Creates new input widget using the label, size, and alignment. */
+    Fl_Light_Button(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP);
 
     static void default_glyph(const Fl_Widget*,int,int,int,int,int,Fl_Flags);
 };

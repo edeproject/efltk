@@ -31,7 +31,11 @@ class Fl_Menu_Bar : public Fl_Menu_ {
 public:
     static Fl_Named_Style* default_style;
 
+    /** Creates new menu bar widget using the given position, size, and label. */
     Fl_Menu_Bar(int x,int y,int w,int h,const char *l=0);
+
+    /** Creates new menu bar widget using the label, size, alignment, and label_width. */
+    Fl_Menu_Bar(const char* l = 0,int layout_size=20,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=-1);
 
     virtual int handle(int ev);
     virtual void layout();
@@ -49,6 +53,8 @@ public:
 
 private:
     Fl_Widget *right_;
+
+    void ctor_init();    
 
     int highlight_, last_highlight_;
     int selected_, last_selected_;

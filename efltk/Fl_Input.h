@@ -36,7 +36,7 @@ public:
         INPUT_TYPE = 7,
         READ_ONLY = 8,
         WORDWRAP = 16,
-	RIGHT_ALIGNED = 32
+        RIGHT_ALIGNED = 32
     };
 
     /** Creates new input widget using the given position, size, and label string. */
@@ -45,7 +45,7 @@ public:
     /** Creates new input widget using the label, size, alignment, and label_width. */
     Fl_Input(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
 
-    /** destructor */
+    /** Destructor */
     virtual ~Fl_Input();
 
     static Fl_Named_Style* default_style;

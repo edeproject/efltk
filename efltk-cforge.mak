@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x4003e9
+# %FirstUniqueId:	0x4003eb
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -814,6 +814,16 @@ test/masked_input ::	test/maskedinput.o
 # %IncDir:	test
 # %ObjsDir:	test
 test/input ::	test/input.o
+	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+# %UniqueId:	0x4003e9
+# %TargetType:	C_EXE
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	test
+# %IncDir:	test
+# %ObjsDir:	test
+test/input_browser ::	test/input_browser.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %ObjectFilesLinking
@@ -2690,6 +2700,13 @@ test/maskedinput.o : test/maskedinput.cpp
 # %ParentTarget:	0x4003e6
 # %SourceTarget:	0x4003e7
 test/input.o : test/input.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x4003e9
+# %SourceTarget:	0x4003ea
+test/input_browser.o : test/input_browser.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
@@ -10600,6 +10617,34 @@ test/input.o :	efltk/fl_show_colormap.h\
 	efltk/Fl_Group.h\
 	efltk/Fl_Widget_List.h\
 	efltk/Fl.h
+test/input_browser.o :	efltk/Fl_Input_Browser.h\
+	efltk/Fl_Menu_Window.h\
+	efltk/Fl_Single_Window.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Menu_.h\
+	efltk/Fl_Menu_Item.h\
+	efltk/Fl_Input.h\
+	efltk/Fl.h
 
 
 # %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x6
@@ -10744,19 +10789,19 @@ test/input.o :	efltk/fl_show_colormap.h\
 # %TargetInfo src/widgets/Fl_Help_Dialog.cpp	SourceOrHeader,	UniqueId=0x4002fc,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Highlight_Button.cpp	SourceOrHeader,	UniqueId=0x4002fd,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Input.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4002fe,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/widgets/Fl_Input_Browser.cpp	SourceOrHeader,	UniqueId=0x4002ff,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Input_Browser.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4002ff,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Item.cpp	SourceOrHeader,	UniqueId=0x400300,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/widgets/Fl_Light_Button.cpp	SourceOrHeader,	UniqueId=0x400301,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Light_Button.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400301,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_ListView.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400302,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_ListView_Header.cpp	SourceOrHeader,	UniqueId=0x400303,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_ListView_Item.cpp	SourceOrHeader,	UniqueId=0x400304,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/widgets/Fl_MDI_Bar.cpp	SourceOrHeader,	UniqueId=0x400305,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_MDI_Bar.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400305,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_MDI_Window.cpp	SourceOrHeader,	UniqueId=0x400306,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Main_Window.cpp	SourceOrHeader,	UniqueId=0x400307,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/widgets/Fl_Masked_Input.cpp	SourceOrHeader,	UniqueId=0x400308,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Masked_Input.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400308,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Menu.cpp	SourceOrHeader,	UniqueId=0x400309,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Menu_.cpp	SourceOrHeader,	UniqueId=0x40030a,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/widgets/Fl_Menu_Bar.cpp	SourceOrHeader,	UniqueId=0x40030b,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Menu_Bar.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x40030b,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Menu_Button.cpp	SourceOrHeader,	UniqueId=0x40030c,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Menu_Item.cpp	SourceOrHeader,	UniqueId=0x40030d,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Menu_Window.cpp	SourceOrHeader,	UniqueId=0x40030e,	TargetType=C++,	IDEFlags=0x6
@@ -10938,7 +10983,7 @@ test/input.o :	efltk/fl_show_colormap.h\
 # %TargetInfo efltk/Fl_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000a4,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Box.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000a5,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Workspace.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000a6,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Menu_Bar.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000a7,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Menu_Bar.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4000a7,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Menu_Window.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000a8,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Single_Window.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000a9,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Menu_.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000aa,	TargetType=INC,	IDEFlags=0xe
@@ -10981,7 +11026,7 @@ test/input.o :	efltk/fl_show_colormap.h\
 # %TargetInfo efltk/Fl_XmlParser.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000e0,	TargetType=INC,	IDEFlags=0xc
 # %TargetInfo efltk/Fl_XmlDoc.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000e1,	TargetType=INC,	IDEFlags=0xc
 # %TargetInfo efltk/Fl_Highlight_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000e4,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Light_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000e5,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Light_Button.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4000e5,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Check_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000e6,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Radio_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000e7,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Repeat_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000e8,	TargetType=INC,	IDEFlags=0xe
@@ -11000,7 +11045,7 @@ test/input.o :	efltk/fl_show_colormap.h\
 # %TargetInfo efltk/Fl_Float_Input.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400155,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Numeric_Input.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400156,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Input.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400157,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Masked_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400158,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Masked_Input.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400158,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Date_Time_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400159,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Dial.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40015a,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Dialog.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40015b,	TargetType=INC,	IDEFlags=0xe
@@ -11017,7 +11062,7 @@ test/input.o :	efltk/fl_show_colormap.h\
 # %TargetInfo src/widgets/Pixmaps.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400167,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Divider.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400168,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_File_Dialog.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400169,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Input_Browser.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40016a,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Input_Browser.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40016a,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Image_Cache.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40016b,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Help_Dialog.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40016c,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Simple_Html.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40016d,	TargetType=INC,	IDEFlags=0xe
@@ -11026,7 +11071,7 @@ test/input.o :	efltk/fl_show_colormap.h\
 # %TargetInfo efltk/Fl_Tool_Bar.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400170,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Menu_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400171,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Pack.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400172,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_MDI_Bar.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400173,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_MDI_Bar.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400173,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo src/core/ARRAY.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400174,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Multi_Image.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400175,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Output.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400176,	TargetType=INC,	IDEFlags=0xe
@@ -11133,6 +11178,7 @@ test/input.o :	efltk/fl_show_colormap.h\
 # %TargetInfo efltk/Fl_Check_Buttons.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d2,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Radio_Buttons.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4003d3,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Int_Input.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4003e8,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo test/input_browser.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4003ea,	TargetType=C++,	IDEFlags=0x4
 
 
 # %UniqueId:	0x400001
@@ -11206,6 +11252,7 @@ test/input.o :	efltk/fl_show_colormap.h\
 #	0x40038a
 #	0x40033a
 #	0x400388
+#	0x4003e9
 #
 # %UniqueId:	0x40038c
 # %IDEFlags:	0

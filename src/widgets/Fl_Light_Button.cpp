@@ -32,7 +32,7 @@
 
                                  /*t*/
 static void glyph(const Fl_Widget* widget, int,
-int x,int y,int w,int h, Fl_Flags f)
+    int x,int y,int w,int h, Fl_Flags f)
 {
     int ww = w/2+1;
     Fl_Color color;
@@ -66,6 +66,7 @@ static void revert(Fl_Style* s)
 static Fl_Named_Style style("Light_Button", revert, &Fl_Light_Button::default_style);
 Fl_Named_Style* Fl_Light_Button::default_style = &::style;
 
+// Traditional ctor
 Fl_Light_Button::Fl_Light_Button(int x, int y, int w, int h, const char *l)
 : Fl_Check_Button(x, y, w, h, l)
 {
@@ -73,6 +74,13 @@ Fl_Light_Button::Fl_Light_Button(int x, int y, int w, int h, const char *l)
     style(default_style);
 }
 
+// New style ctor
+Fl_Light_Button::Fl_Light_Button(const char* l,int layout_size,Fl_Align layout_al)
+: Fl_Check_Button(l,layout_size,layout_al)
+{
+    default_style->parent = Fl_Button::default_style;
+    style(default_style);
+}
 
 //
 // End of "$Id$".

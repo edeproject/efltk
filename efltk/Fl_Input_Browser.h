@@ -40,7 +40,13 @@ public:
         NONEDITABLE_INDENTED = 3
     };
 
+    /** Creates new input browser widget using the given position, size, and label. */
     Fl_Input_Browser(int,int,int,int,const char * = 0);
+
+    /** Creates new input browser widget using the label, size, alignment, and label_width. */
+    Fl_Input_Browser(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
+
+    /** Destructor */
     virtual ~Fl_Input_Browser();
 
     void popup();
@@ -68,6 +74,8 @@ private:
     friend class ComboBrowser;
 
     bool over_now, over_last;
+
+    void ctor_init();
     static void input_cb(Fl_Input *in, Fl_Input_Browser *d);
 };
 
