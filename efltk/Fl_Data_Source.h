@@ -62,6 +62,7 @@ public:
    virtual bool              prior() { return true; }
    virtual bool              last()  { return true; }
    virtual bool              find(Fl_Variant position) { return true; }
+   virtual bool              eof()   { return true; }
 
    // load data into widgets
    bool load();

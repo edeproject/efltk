@@ -40,8 +40,8 @@ public:
 
     uchar damage() const { return damage_; }
     void set_damage(uchar c) { damage_ = c; }
-	void redraw(uchar c);
-	void redraw() { redraw(FL_DAMAGE_ALL); }
+    void redraw(uchar c);
+    void redraw() { redraw(FL_DAMAGE_ALL); }
 
     Fl_ListView *parent() { return parent_; }
     void parent(Fl_ListView *l) { parent_ = l; }

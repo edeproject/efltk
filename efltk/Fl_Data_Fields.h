@@ -20,6 +20,7 @@
 
 #include <efltk/Fl_Variant.h>
 #include <efltk/Fl_Ptr_List.h>
+#include <efltk/Fl_Flags.h>
 
 class Fl_Data_Fields;
 
@@ -28,10 +29,25 @@ class FL_API Fl_Data_Field {
 protected:
    Fl_String   m_name;
 public:
-   Fl_Data_Field(const char *name) { m_name = name; width = -1; }
+   Fl_Data_Field(const char *name)  { m_name = name; width = -1; align = FL_ALIGN_LEFT; }
    Fl_Variant  value;
+
+   // attributes
    int         width;
-   const char *name() const { return m_name.c_str(); }
+   Fl_Align    align;
+
+   const char *name() const         { return m_name.c_str();   }
+
+   // convertors
+   operator int () const            { return as_int();         }
+   operator double () const         { return as_float();       }
+   operator Fl_String () const      { return as_string();      }
+   operator Fl_Date_Time () const   { return as_date();        }
+
+   int as_int() const;
+   double as_float() const;
+   Fl_String as_string() const;
+   Fl_Date_Time as_date() const;
 };
 
 class FL_API Fl_Data_Fields {
