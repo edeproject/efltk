@@ -1,7 +1,7 @@
 #
 #	File is generated automatically! Don't edit it!
 #
-# %IdeVersion:	2623
+# %IdeVersion:	3116
 #
 # %IdeAuthor:	Alexey Parshin
 #
@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x400455
+# %FirstUniqueId:	0x400456
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -111,7 +111,7 @@ WEB_BROWSER_FLAGS =
 # %SrcDir:	src
 # %IncDir:	efltk
 # %ObjsDir:	lib
-lib/libefltk.so ::	lib/Fl.o\
+lib/libefltk.so  :: 	lib/Fl.o\
 	lib/Fl_Align_Group.o\
 	lib/Fl_Bar.o\
 	lib/Fl_Bitmap.o\
@@ -303,7 +303,7 @@ lib/libefltk.so ::	lib/Fl.o\
 # %SrcDir:	src/images
 # %IncDir:	src/images
 # %ObjsDir:	lib
-lib/libefltk_images.so ::	lib/Fl_Images.o\
+lib/libefltk_images.so  :: 	lib/Fl_Images.o\
 	lib/Fl_Jpeg.o\
 	lib/Fl_Png.o
 	rm -f $@
@@ -316,7 +316,7 @@ lib/libefltk_images.so ::	lib/Fl_Images.o\
 # %SrcDir:	src/xml
 # %IncDir:	src/xml
 # %ObjsDir:	lib
-lib/libefltk_xml.so ::	lib/Fl_XmlDoc.o\
+lib/libefltk_xml.so  :: 	lib/Fl_XmlDoc.o\
 	lib/Fl_XmlNode.o\
 	lib/Fl_XmlParser.o\
 	lib/Fl_XmlTokenizer.o
@@ -330,7 +330,7 @@ lib/libefltk_xml.so ::	lib/Fl_XmlDoc.o\
 # %SrcDir:	src/db/odbc
 # %IncDir:	src/db/odbc
 # %ObjsDir:	lib
-lib/libefltk_odbc.so ::	lib/Fl_ODBC_Database.o\
+lib/libefltk_odbc.so  :: 	lib/Fl_ODBC_Database.o\
 	lib/fl_odbc.o
 	rm -f $@
 	$(LD) -shared -o $@ $^ $(LDOPTIONS)
@@ -342,7 +342,7 @@ lib/libefltk_odbc.so ::	lib/Fl_ODBC_Database.o\
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/arc ::	test/arc.o
+test/arc  :: 	test/arc.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x400186
@@ -352,7 +352,7 @@ test/arc ::	test/arc.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/ask ::	test/ask.o
+test/ask  :: 	test/ask.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x400188
@@ -362,7 +362,7 @@ test/ask ::	test/ask.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/bitmap ::	test/bitmap.o
+test/bitmap  :: 	test/bitmap.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x40018c
@@ -372,7 +372,7 @@ test/bitmap ::	test/bitmap.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/boxtype ::	test/boxtype.o
+test/boxtype  :: 	test/boxtype.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x40018e
@@ -382,7 +382,7 @@ test/boxtype ::	test/boxtype.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/browser ::	test/browser.o
+test/browser  :: 	test/browser.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x400192
@@ -392,7 +392,7 @@ test/browser ::	test/browser.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/button ::	test/button.o
+test/button  :: 	test/button.o
 	pwd
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
@@ -403,7 +403,7 @@ test/button ::	test/button.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/buttons ::	test/buttons.o
+test/buttons  :: 	test/buttons.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x400249
@@ -413,7 +413,7 @@ test/buttons ::	test/buttons.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/calendar ::	test/calendar.o
+test/calendar  :: 	test/calendar.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x40024b
@@ -423,7 +423,7 @@ test/calendar ::	test/calendar.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/checkers ::	test/checkers.o
+test/checkers  :: 	test/checkers.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x40025e
@@ -433,7 +433,7 @@ test/checkers ::	test/checkers.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/clock ::	test/clock.o
+test/clock  :: 	test/clock.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x400262
@@ -443,7 +443,7 @@ test/clock ::	test/clock.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/color_chooser ::	test/color_chooser.o
+test/color_chooser  :: 	test/color_chooser.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x400266
@@ -453,7 +453,7 @@ test/color_chooser ::	test/color_chooser.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/cube ::	test/cube.o
+test/cube  :: 	test/cube.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk -lefltk_gl -lGL
 
 # %UniqueId:	0x40026b
@@ -463,7 +463,7 @@ test/cube ::	test/cube.o
 # %SrcDir:	src
 # %IncDir:	efltk
 # %ObjsDir:	lib
-lib/libefltk_gl.so ::	lib/Fl_Gl_Choice.o\
+lib/libefltk_gl.so  :: 	lib/Fl_Gl_Choice.o\
 	lib/Fl_Gl_Overlay.o\
 	lib/Fl_Gl_Window.o\
 	lib/gl_draw.o\
@@ -478,7 +478,7 @@ lib/libefltk_gl.so ::	lib/Fl_Gl_Choice.o\
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/cursor ::	test/cursor.o
+test/cursor  :: 	test/cursor.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x400284
@@ -488,7 +488,7 @@ test/cursor ::	test/cursor.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/editor ::	test/editor.o
+test/editor  :: 	test/editor.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x40033a
@@ -498,7 +498,7 @@ test/editor ::	test/editor.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/sockets ::	test/socket.o\
+test/sockets  :: 	test/socket.o\
 	test/Fl_Socket.o\
 	test/Fl_Buffer.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
@@ -510,7 +510,7 @@ test/sockets ::	test/socket.o\
 # %SrcDir:	src
 # %IncDir:	efltk
 # %ObjsDir:	lib
-lib/libefltk_net.so ::	lib/Fl_FTP_Connect.o\
+lib/libefltk_net.so  :: 	lib/Fl_FTP_Connect.o\
 	lib/Fl_IMAP_Connect.o\
 	lib/Fl_IMAP_DS.o\
 	lib/Fl_FTP_DS.o\
@@ -526,7 +526,7 @@ lib/libefltk_net.so ::	lib/Fl_FTP_Connect.o\
 # %SrcDir:	test/net
 # %IncDir:	test/net
 # %ObjsDir:	test/net
-test/net/ftp_connect ::	test/net/ftp_connect.o
+test/net/ftp_connect  :: 	test/net/ftp_connect.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk -lefltk_net
 
 # %UniqueId:	0x400345
@@ -536,7 +536,7 @@ test/net/ftp_connect ::	test/net/ftp_connect.o
 # %SrcDir:	test/db
 # %IncDir:	test/db
 # %ObjsDir:	test/db
-test/db/db_odbc ::	test/db/db_odbc.o
+test/db/db_odbc  :: 	test/db/db_odbc.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk -lefltk_odbc
 
 # %UniqueId:	0x40034e
@@ -546,7 +546,7 @@ test/db/db_odbc ::	test/db/db_odbc.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/curve ::	test/curve.o
+test/curve  :: 	test/curve.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x400352
@@ -556,7 +556,7 @@ test/curve ::	test/curve.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/directory ::	test/directory.o
+test/directory  :: 	test/directory.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x400354
@@ -566,7 +566,7 @@ test/directory ::	test/directory.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/doublebuffer ::	test/doublebuffer.o
+test/doublebuffer  :: 	test/doublebuffer.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x400364
@@ -576,7 +576,7 @@ test/doublebuffer ::	test/doublebuffer.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/imap_connect ::	test/imap_connect.o\
+test/imap_connect  :: 	test/imap_connect.o\
 	test/Fl_IMAP_Connect.o\
 	test/Fl_IMAP_DS.o\
 	test/mail_accounts.o
@@ -589,7 +589,7 @@ test/imap_connect ::	test/imap_connect.o\
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/exceptions ::	test/exceptions.o
+test/exceptions  :: 	test/exceptions.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x40036d
@@ -599,7 +599,7 @@ test/exceptions ::	test/exceptions.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/fast_slow ::	test/fast_slow.o
+test/fast_slow  :: 	test/fast_slow.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x400370
@@ -609,7 +609,7 @@ test/fast_slow ::	test/fast_slow.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/file_chooser ::	test/file_chooser.o
+test/file_chooser  :: 	test/file_chooser.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk -lefltk_images -ljpeg -lpng
 
 # %UniqueId:	0x40037b
@@ -619,7 +619,7 @@ test/file_chooser ::	test/file_chooser.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/dialog ::	test/dialog.o\
+test/dialog  :: 	test/dialog.o\
 	test/Fl_Dialog.o\
 	test/Fl_Dialog_DS.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
@@ -631,7 +631,7 @@ test/dialog ::	test/dialog.o\
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/listview ::	test/listview.o
+test/listview  :: 	test/listview.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x400380
@@ -641,7 +641,7 @@ test/listview ::	test/listview.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/listview_ds ::	test/listview_ds.o
+test/listview_ds  :: 	test/listview_ds.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x400382
@@ -651,7 +651,7 @@ test/listview_ds ::	test/listview_ds.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/fonts ::	test/fonts.o
+test/fonts  :: 	test/fonts.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x400384
@@ -661,7 +661,7 @@ test/fonts ::	test/fonts.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/fullscreen ::	test/fullscreen.o
+test/fullscreen  :: 	test/fullscreen.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk -lefltk_gl -lGL
 
 # %UniqueId:	0x400388
@@ -671,7 +671,7 @@ test/fullscreen ::	test/fullscreen.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/progress ::	test/progress.o
+test/progress  :: 	test/progress.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x40038a
@@ -681,7 +681,7 @@ test/progress ::	test/progress.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/menubar ::	test/menubar.o
+test/menubar  :: 	test/menubar.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x40038d
@@ -691,7 +691,7 @@ test/menubar ::	test/menubar.o
 # %SrcDir:	tools/efluid
 # %IncDir:	tools/efluid
 # %ObjsDir:	tools/efluid
-tools/efluid/efluid ::	tools/efluid/Fl_Function_Type.o\
+tools/efluid/efluid  :: 	tools/efluid/Fl_Function_Type.o\
 	tools/efluid/Fl_Group_Type.o\
 	tools/efluid/Fl_Menu_Type.o\
 	tools/efluid/Fl_Type.o\
@@ -718,7 +718,7 @@ tools/efluid/efluid ::	tools/efluid/Fl_Function_Type.o\
 # %SrcDir:	tools/etranslate
 # %IncDir:	tools/etranslate
 # %ObjsDir:	tools/etranslate
-tools/etranslate/etranslate ::	tools/etranslate/compile.o\
+tools/etranslate/etranslate  :: 	tools/etranslate/compile.o\
 	tools/etranslate/etranslate.o\
 	tools/etranslate/extract.o\
 	tools/etranslate/load_etm.o\
@@ -735,7 +735,7 @@ tools/etranslate/etranslate ::	tools/etranslate/compile.o\
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/combobox ::	test/combobox.o
+test/combobox  :: 	test/combobox.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x4003c8
@@ -745,7 +745,7 @@ test/combobox ::	test/combobox.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/labelwidth ::	test/labelwidth.o
+test/labelwidth  :: 	test/labelwidth.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x4003d8
@@ -755,7 +755,7 @@ test/labelwidth ::	test/labelwidth.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/labelwidth2 ::	test/labelwidth2.o
+test/labelwidth2  :: 	test/labelwidth2.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x4003da
@@ -765,7 +765,7 @@ test/labelwidth2 ::	test/labelwidth2.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/layout ::	test/layout.o
+test/layout  :: 	test/layout.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x4003dc
@@ -775,7 +775,7 @@ test/layout ::	test/layout.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/layout2 ::	test/layout2.o
+test/layout2  :: 	test/layout2.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x4003de
@@ -785,7 +785,7 @@ test/layout2 ::	test/layout2.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/button_groups ::	test/button_groups.o
+test/button_groups  :: 	test/button_groups.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x4003e0
@@ -795,7 +795,7 @@ test/button_groups ::	test/button_groups.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/listview_sort ::	test/listview_sort.o
+test/listview_sort  :: 	test/listview_sort.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x4003e2
@@ -805,7 +805,7 @@ test/listview_sort ::	test/listview_sort.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/date_time_widgets ::	test/date_time_widgets.o
+test/date_time_widgets  :: 	test/date_time_widgets.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x4003e4
@@ -815,7 +815,7 @@ test/date_time_widgets ::	test/date_time_widgets.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/masked_input ::	test/maskedinput.o
+test/masked_input  :: 	test/maskedinput.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x4003e6
@@ -825,7 +825,7 @@ test/masked_input ::	test/maskedinput.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/input ::	test/input.o
+test/input  :: 	test/input.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x4003e9
@@ -835,7 +835,7 @@ test/input ::	test/input.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/input_browser ::	test/input_browser.o
+test/input_browser  :: 	test/input_browser.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x4003ed
@@ -845,7 +845,7 @@ test/input_browser ::	test/input_browser.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/split ::	test/split.o
+test/split  :: 	test/split.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x400418
@@ -855,7 +855,7 @@ test/split ::	test/split.o
 # %SrcDir:	
 # %IncDir:	
 # %ObjsDir:	
-doc/EventsProposal.html ::
+doc/EventsProposal.html  :: 
 	case $@ in \
 	/*) full_name=$@ ;;\
 	*) full_name=`pwd`/$@ ;;\
@@ -869,7 +869,7 @@ doc/EventsProposal.html ::
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/hello ::	test/hello.o
+test/hello  :: 	test/hello.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x400423
@@ -879,7 +879,7 @@ test/hello ::	test/hello.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/tabs ::	test/tabs.o
+test/tabs  :: 	test/tabs.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x40042f
@@ -889,7 +889,7 @@ test/tabs ::	test/tabs.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-group_grow ::	test/group_grow.o\
+group_grow  :: 	test/group_grow.o\
 	test/Fl_Group.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
@@ -900,7 +900,7 @@ group_grow ::	test/group_grow.o\
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-main_window ::	test/main_window.o
+main_window  :: 	test/main_window.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x400449
@@ -910,7 +910,7 @@ main_window ::	test/main_window.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-mdi_test ::	test/mdi_test.o
+mdi_test  :: 	test/mdi_test.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x40044e
@@ -920,7 +920,7 @@ mdi_test ::	test/mdi_test.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/tabs2 ::	test/tabs2.o
+test/tabs2  :: 	test/tabs2.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %ObjectFilesLinking
@@ -6407,7 +6407,8 @@ lib/Fl_Light_Button.o :	efltk/Fl_Light_Button.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl.h
-lib/Fl_ListView.o :	efltk/Fl_ListView_Header.h\
+lib/Fl_ListView.o :	efltk/Fl_Events.h\
+	efltk/Fl_ListView_Header.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Export.h\
@@ -6718,6 +6719,7 @@ lib/Fl_Menu_.o :	efltk/Fl_Item.h\
 	efltk/Fl_Flags.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Enumerations.h\
+	efltk/Fl_Events.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
@@ -10285,6 +10287,7 @@ lib/Fl_Combo_Box.o :	efltk/Fl_Combo_Box.h\
 	efltk/Fl_ListView_Column.h\
 	efltk/Fl_String.h\
 	efltk/Enumerations.h\
+	efltk/Fl_Events.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_ListView_Header.h\
 	efltk/Fl_Ptr_List.h\
@@ -11590,7 +11593,7 @@ test/tabs2.o :	/cvs/efltk/test/multitabs_glyph3.xpm\
 # %TargetInfo src/widgets/Fl_Input_Browser.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4002ff,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Item.cpp	SourceOrHeader,	UniqueId=0x400300,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Light_Button.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400301,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/widgets/Fl_ListView.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400302,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_ListView.cpp	SourceOrHeader,	UniqueId=0x400302,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_ListView_Header.cpp	SourceOrHeader,	UniqueId=0x400303,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_ListView_Item.cpp	SourceOrHeader,	UniqueId=0x400304,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_MDI_Bar.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400305,	TargetType=C++,	IDEFlags=0x6
@@ -12026,6 +12029,7 @@ test/tabs2.o :	/cvs/efltk/test/multitabs_glyph3.xpm\
 # %TargetInfo /cvs/efltk/test/multitabs_glyph3.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x400452,	TargetType=XPM,	IDEFlags=0x4
 # %TargetInfo /cvs/efltk/test/multitabs_glyph2.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x400453,	TargetType=XPM,	IDEFlags=0x4
 # %TargetInfo /cvs/efltk/test/multitabs_glyph1.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x400454,	TargetType=XPM,	IDEFlags=0x4
+# %TargetInfo efltk/Fl_Events.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400455,	TargetType=INC,	IDEFlags=0xe
 
 
 # %UniqueId:	0x400001
