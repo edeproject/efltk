@@ -1468,8 +1468,8 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
   Fl_Text_Buffer * buf = mBuffer;
   int i, X, Y, startX, charIndex, lineStartPos, lineLen, fontHeight;
   int stdCharWidth, charWidth, startIndex, charStyle, style;
-  int charLen, outStartIndex, outIndex, hasCursor = 0/*, cursorX=0*/;
-  int dispIndexOffset, cursorPos = mCursorPos;
+  int charLen, outStartIndex, outIndex; //hasCursor=0, cursorX=0;
+  int dispIndexOffset;//, cursorPos = mCursorPos;
   char expandedChar[ FL_TEXT_MAX_EXP_CHAR_LEN ], outStr[ MAX_DISP_LINE_LEN ];
   char *outPtr;
   const char *lineStr;
@@ -2187,7 +2187,7 @@ void Fl_Text_Display::scroll(int topLineNum, int horizOffset)
   mHorizOffsetHint = horizOffset;
   relayout();
   //redraw();
-  redraw(FL_DAMAGE_VALUE);
+  //redraw(FL_DAMAGE_VALUE);
 }
 
 void Fl_Text_Display::scroll_(int topLineNum, int horizOffset)
@@ -2215,7 +2215,7 @@ void Fl_Text_Display::scroll_(int topLineNum, int horizOffset)
 
   // redraw all text
   //redraw(FL_DAMAGE_SCROLL);
-  //redraw();
+  redraw();
 }
 
 /*
@@ -2886,7 +2886,7 @@ void Fl_Text_Display::draw()
 
   // draw the non-text, non-scrollbar areas.
   if (damage() & FL_DAMAGE_ALL) {
-      printf("drawing all\n");
+      //printf("drawing all\n");
 
     // draw the box()
     draw_frame();	
@@ -2916,12 +2916,12 @@ void Fl_Text_Display::draw()
 	       mVScrollBar->w(), mHScrollBar->h());
     }
 
-	draw_line_numbers(true);
+    draw_line_numbers(true);
 
     // blank the previous cursor protrusions
   }
   else if (damage() & (FL_DAMAGE_SCROLL | FL_DAMAGE_VALUE)) {
-      printf("blanking previous cursor extrusions at Y: %d\n", mCursorOldY);
+      //printf("blanking previous cursor extrusions at Y: %d\n", mCursorOldY);
 
     // CET - FIXME - save old cursor position instead and just draw side needed?
     fl_push_clip(text_area.x-LEFT_MARGIN,
@@ -2934,7 +2934,8 @@ void Fl_Text_Display::draw()
              RIGHT_MARGIN, mMaxsize, color());
     fl_pop_clip();
 
-	draw_line_numbers(false);
+    draw_line_numbers(false);
+
   }
 
   // draw the scrollbars
@@ -2946,48 +2947,50 @@ void Fl_Text_Display::draw()
   update_child(*mHScrollBar);
 
   // draw all of the text
-  if (damage() & (FL_DAMAGE_ALL | FL_DAMAGE_VALUE)) {
-    //printf("drawing all text\n");
-    int X, Y, W, H;
-    if (fl_clip_box(text_area.x, text_area.y, text_area.w, text_area.h,
-                    X, Y, W, H)) {
-      // Draw text using the intersected clipping box...
-      // (this sets the clipping internally)
-      draw_text(X, Y, W, H);
-    } else {
-      // Draw the whole area...
-      draw_text(text_area.x, text_area.y, text_area.w, text_area.h);
-    }
+  if (damage() & (FL_DAMAGE_ALL | FL_DAMAGE_VALUE))
+  {
+      //printf("drawing all text\n");
+      int X, Y, W, H;
+      if (fl_clip_box(text_area.x, text_area.y, text_area.w, text_area.h,
+                      X, Y, W, H)) {
+          // Draw text using the intersected clipping box...
+          // (this sets the clipping internally)
+          draw_text(X, Y, W, H);
+      } else {
+          // Draw the whole area...
+          draw_text(text_area.x, text_area.y, text_area.w, text_area.h);
+      }
   }
   else if (damage() & FL_DAMAGE_SCROLL) {
-    // draw some lines of text
-    fl_push_clip(text_area.x, text_area.y,
-                 text_area.w, text_area.h);
-    //printf("drawing text from %d to %d\n", damage_range1_start, damage_range1_end);
-    draw_range(damage_range1_start, damage_range1_end);
-    if (damage_range2_end != -1) {
-      //printf("drawing text from %d to %d\n", damage_range2_start, damage_range2_end);
-      draw_range(damage_range2_start, damage_range2_end);
-    }
-    damage_range1_start = damage_range1_end = -1;
-    damage_range2_start = damage_range2_end = -1;
-    fl_pop_clip();
+      // draw some lines of text
+
+      fl_push_clip(text_area.x, text_area.y,
+                   text_area.w, text_area.h);
+      //printf("drawing text from %d to %d\n", damage_range1_start, damage_range1_end);
+      draw_range(damage_range1_start, damage_range1_end);
+      if (damage_range2_end != -1) {
+          //printf("drawing text from %d to %d\n", damage_range2_start, damage_range2_end);
+          draw_range(damage_range2_start, damage_range2_end);
+      }
+      damage_range1_start = damage_range1_end = -1;
+      damage_range2_start = damage_range2_end = -1;
+      fl_pop_clip();
   }
 
   // draw the text cursor
   if (damage() & (FL_DAMAGE_ALL | FL_DAMAGE_SCROLL | FL_DAMAGE_VALUE)
       && !buffer()->primary_selection()->selected() &&
       mCursorOn && Fl::focus() == this ) {
-    fl_push_clip(text_area.x-LEFT_MARGIN,
-                 text_area.y,
-                 text_area.w+LEFT_MARGIN+RIGHT_MARGIN,
-                 text_area.h);
+      fl_push_clip(text_area.x-LEFT_MARGIN,
+                   text_area.y,
+                   text_area.w+LEFT_MARGIN+RIGHT_MARGIN,
+                   text_area.h);
 
-    int X, Y;
-    if (position_to_xy(mCursorPos, &X, &Y)) draw_cursor(X, Y);
-    //printf("drew cursor at pos: %d (%d,%d)\n", mCursorPos, X, Y);
-    mCursorOldY = Y;
-    fl_pop_clip();
+      int X, Y;
+      if (position_to_xy(mCursorPos, &X, &Y)) draw_cursor(X, Y);
+      //printf("drew cursor at pos: %d (%d,%d)\n", mCursorPos, X, Y);
+      mCursorOldY = Y;
+      fl_pop_clip();
   }
 }
 
