@@ -171,7 +171,7 @@ bool Fl_Widget::resize(int X, int Y, int W, int H)
 
 void Fl_Widget::relayout()
 {
-    relayout(FL_LAYOUT_DAMAGE);
+    relayout(FL_LAYOUT_DAMAGE|FL_LAYOUT_XYWH);
 }
 
 void Fl_Widget::relayout(uchar flags)
@@ -469,7 +469,7 @@ void Fl_Widget::hide()
         set_flag(FL_INVISIBLE);
         // we must redraw the enclosing group that has an opaque box:
         for (Fl_Widget *p = parent(); p; p = p->parent())
-            if (p->box() != FL_NO_BOX || !p->parent()) {p->redraw(); break;}
+            if (p->box() != FL_NO_BOX || !p->parent()) { p->redraw(); break; }
         dispatch_event(FL_HIDE);
     }
     else
