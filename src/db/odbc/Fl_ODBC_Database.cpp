@@ -255,6 +255,7 @@ void Fl_ODBC_Database::prepare_query(Fl_Query *query) {
 void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
     int               rc;
     SQLINTEGER        cbNullData = SQL_NULL_DATA;
+    SQLINTEGER        cbNTS = SQL_NTS;
     SQLINTEGER       *pcbLen;
 
     SQLHSTMT    statement = (SQLHSTMT)query_handle(query);
@@ -284,12 +285,14 @@ void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
                     len       = param->size();
                     paramType = SQL_C_CHAR;
                     sqlType   = SQL_CHAR;
+                    pcbLen    = &cbNTS;
                     break;
                 case VAR_TEXT:
                     buff      = (void *)param->get_string();
                     len       = param->size();
                     paramType = SQL_C_CHAR;
                     sqlType   = SQL_LONGVARCHAR;
+                    pcbLen    = &cbNTS;
                     break;
                 case VAR_BUFFER:
                     buff      = (void *)param->get_string();
@@ -340,6 +343,7 @@ void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
                 scale = 0;
             }
             rc = SQLBindParameter(statement,paramNumber,parameterMode,paramType,sqlType,len,scale,buff,short(len),pcbLen);
+            //rc = SQLBindParameter(statement,paramNumber,parameterMode,paramType,sqlType,len,scale,buff,short(len),NULL);
             if (rc != 0)
                 fl_throw("Can't bind parameter " + Fl_String(paramNumber) + ": " + query_error(query));
         }
