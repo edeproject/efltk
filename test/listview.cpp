@@ -102,15 +102,15 @@ void cb_button_box(Fl_Widget *w, Fl_ListView *l)
 {
     static int boxmode = 0;
     switch (boxmode) {
-    case 0: l->button_box(FL_BORDER_BOX); break;
-    case 1: l->button_box(FL_THIN_DOWN_BOX); break;
-    case 2: l->button_box(FL_DOWN_BOX); break;
-    case 3: l->button_box(FL_THIN_UP_BOX); break;
-    case 4: l->button_box(FL_UP_BOX); break;
-    case 5: l->button_box(FL_FLAT_BOX); break;
+        case 0: l->button_box(FL_BORDER_BOX); break;
+        case 1: l->button_box(FL_THIN_DOWN_BOX); break;
+        case 2: l->button_box(FL_DOWN_BOX); break;
+        case 3: l->button_box(FL_THIN_UP_BOX); break;
+        case 4: l->button_box(FL_UP_BOX); break;
+        case 5: l->button_box(FL_NO_BOX); break;
     }
     boxmode++;
-    if (boxmode > 4) boxmode = 0;
+    if (boxmode > 5) boxmode = 0;
 
     l->recalc_totalheight();
     l->redraw();
