@@ -398,33 +398,21 @@ void Fl_Type::remove() {
 }
 
 // update a string member:
-int storestring(const char *n, const char * & p, int nostrip) {
-  if (n == p) return 0;
-  int length = 0;
-  if (n) { // see if blank, strip leading & trailing blanks
-    if (!nostrip) while (isspace(*n)) n++;
-    const char *e = n + strlen(n);
-    if (!nostrip) while (e > n && isspace(*(e-1))) e--;
-    length = e-n;
-    if (!length) n = 0;
-  }    
-  if (n == p) return 0;
-  if (n && p && !strncmp(n,p,length) && !p[length]) return 0;
-  if (p) free((void *)p);
-  if (!n || !*n) {
-    p = 0;
-  } else {
-    char *q = (char *)malloc(length+1);
-    strncpy(q,n,length);
-    q[length] = 0;
-    p = q;
-  }
-  modflag = 1;
-  return 1;
+int storestring(const char *n, Fl_String& p, int nostrip) 
+{
+	if(!n) { p.clear(); return 0; }
+	if(p==n) return 0;
+	
+	Fl_String N = n;
+	if(!nostrip)	p = N.trim();
+	else			p = N;
+
+	modflag = 1;
+	return !p.empty();
 }
 
 void Fl_Type::name(const char *n) {
-  if (storestring(n,name_)) widget_browser->redraw();
+  if (storestring(n, name_)) widget_browser->redraw();
 }
 
 void Fl_Type::label(const char *n) {
@@ -481,6 +469,7 @@ int Fl_Type::is_menu_button() const {return 0;}
 int Fl_Type::is_group() const {return 0;}
 int Fl_Type::is_window() const {return 0;}
 int Fl_Type::is_code_block() const {return 0;}
+int Fl_Type::is_decl() const {return 0;}
 int Fl_Type::is_decl_block() const {return 0;}
 int Fl_Type::is_class() const {return 0;}
 int Fl_Type::is_counter() const {return 0;}
@@ -591,39 +580,40 @@ void Fl_Type::write() {
   write_close(level);
 }
 
-void Fl_Type::write_properties() {
-  int level = 0;
-  for (Fl_Type* p = parent; p; p = p->parent) level++;
-  // repeat this for each attribute:
-  if (label()) {
-    write_indent(level+1);
-    write_word("label");
-    write_word(label());
-  }
-  if (user_data()) {
-    write_indent(level+1);
-    write_word("user_data");
-    write_word(user_data());
-    if (user_data_type()) {
-      write_word("user_data_type");
-      write_word(user_data_type());
-    }
-  }
-  if (callback()) {
-    write_indent(level+1);
-    write_word("callback");
-    write_word(callback());
-  }
-  if (is_parent() && open_) write_word("open");
-  if (selected) write_word("selected");
-  if (tooltip()) {
-    write_indent(level+1);
-    write_word("tooltip");
-    write_word(tooltip());
-  }
+void Fl_Type::write_properties() 
+{
+	int level = 0;
+	for (Fl_Type* p = parent; p; p = p->parent) level++;
+	// repeat this for each attribute:
+	if (!label().empty()) {
+		write_indent(level+1);
+		write_word("label");
+		write_word(label());
+	}
+	if (!user_data().empty()) {
+		write_indent(level+1);
+		write_word("user_data");
+		write_word(user_data());
+		if (!user_data_type().empty()) {
+			write_word("user_data_type");
+			write_word(user_data_type());
+		}
+	}
+	if (!callback().empty()) {
+		write_indent(level+1);
+		write_word("callback");
+		write_word(callback());
+	}
+	if (is_parent() && open_) write_word("open");
+	if (selected) write_word("selected");
+	if (!tooltip().empty()) {
+		write_indent(level+1);
+		write_word("tooltip");
+		write_word(tooltip());
+	}
 }
 
-void Fl_Type::read_property(const char *c) {
+void Fl_Type::read_property(const Fl_String &c) {
   if (!strcmp(c,"label"))
     label(read_word());
   else if (!strcmp(c,"tooltip"))
@@ -641,8 +631,6 @@ void Fl_Type::read_property(const char *c) {
   else
     read_error("Unknown property \"%s\"", c);
 }
-
-int Fl_Type::read_fdesign(const char*, const char*) {return 0;}
 
 //
 // End of "$Id$".

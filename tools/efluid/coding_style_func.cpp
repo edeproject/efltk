@@ -1,8 +1,10 @@
+#include <efltk/Fl_Window.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <efltk/Fl_Window.h>
+
 #include "Fl_Type.h"	// for indent() prototype
 #if defined(_WIN32) && !defined (__GNUC__)
 #	define strcasecmp  stricmp
@@ -137,45 +139,3 @@ void show_coding_style_cb(Fl_Widget *, void *)
 	}
 }
 
-// For back compatabilty any lines that start with # are written at
-// into the include header file:
-
-// Test to see if extra code is a declaration:
-static bool isdeclare(const char *c) {
-  while (isspace(*c)) c++;
-  if (*c == '#') return true;
-  if (!strncmp(c,"extern",6)) return true;
-  if (!strncmp(c,"typedef",7)) return true;
-  return false;
-}
-
-void write_includes_from_code(char* pBlock)
-{
-  char *pTemp = strchr(pBlock, '\n');
-  while (pTemp) {
-    *pTemp = '\0';
-    if (isdeclare(pBlock)) write_declare("%s", pBlock);
-    *pTemp = '\n';
-    pBlock = pTemp + 1;
-    pTemp = strchr(pBlock, '\n');
-  }
-  if (*pBlock) {
-    if (isdeclare(pBlock)) write_declare("%s", pBlock);
-  }
-}
-
-// And the code is written out with all the # lines removed:
-void write_code_block(char *pBlock)
-{
-  char *pTemp = strchr(pBlock, '\n');
-  while (pTemp) {
-    *pTemp = '\0';
-    if (!isdeclare(pBlock)) write_c("%s%s\n", indent(), pBlock);
-    *pTemp = '\n';
-    pBlock = pTemp + 1;
-    pTemp = strchr(pBlock, '\n');
-  }
-  if (*pBlock) {
-    if (!isdeclare(pBlock)) write_c("%s%s\n", indent(), pBlock);
-  }
-}

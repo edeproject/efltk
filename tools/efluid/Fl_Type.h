@@ -38,6 +38,12 @@
 
 #include <stdio.h> //for FILE
 
+// write_static types:
+#define DIRECTIVES	10 //include directives only
+#define FUNCTIONS	20 //function declarations only
+#define VARIABLES	30 //variable declarations only
+#define CODE		40 //actual code
+
 class FLUID_API Fl_Type {
 
   friend class Widget_Browser;
@@ -49,14 +55,14 @@ protected:
 
   Fl_Type();
 
-  const char *name_;
-  const char *label_;
-  const char *tooltip_;
-  const char *user_data_;
-  const char *user_data_type_;
+  Fl_String name_;
+  Fl_String label_;
+  Fl_String tooltip_;
+  Fl_String user_data_;
+  Fl_String user_data_type_;
 
 public:	// things that should not be public:
-  const char *callback_;
+  Fl_String callback_;
 
   Fl_Type* parent;
   Fl_Type* first_child;
@@ -88,17 +94,22 @@ public:
   virtual const char *title(); // string for browser
   virtual const char *type_name() const = 0; // type for code output
 
-  const char *name() const {return name_;}
+  const Fl_String &name() const {return name_;}
   void name(const char *);
-  const char *label() const {return label_;}
+
+  const Fl_String &label() const {return label_;}
   void label(const char *);
-  const char *tooltip() const {return tooltip_;}
+
+  const Fl_String &tooltip() const {return tooltip_;}
   void tooltip(const char *);
-  const char *callback() { return callback_;}
+
+  const Fl_String &callback() { return callback_;}
   void callback(const char *);
-  const char *user_data() const {return user_data_;}
+
+  const Fl_String &user_data() const {return user_data_;}
   void user_data(const char *);
-  const char *user_data_type() const {return user_data_type_;}
+
+  const Fl_String &user_data_type() const {return user_data_type_;}
   void user_data_type(const char *);
 
   virtual Fl_Type* click_test(int,int);
@@ -112,11 +123,18 @@ public:
   // read and write data to a saved file:
   void write();
   virtual void write_properties();
-  virtual void read_property(const char *);
-  virtual int read_fdesign(const char*, const char*);
+  virtual void read_property(const Fl_String &c);
 
   // write code, these are called in order:
-  virtual void write_static(); // write static stuff to .c file
+  
+  // write static stuff to files.
+  // type = 0 - include directives only ==> header & source
+  // type = 1 - function declarations only ==> header & source
+  // type = 2 - rest ==> source
+  // type = 3 - variable declarations only ==> header & source
+
+  virtual void write_static(int type); 
+
   virtual void write_code();   // write .h and .c file
   virtual void write_strings(FILE *fp);  //Write locale strings
 
@@ -137,6 +155,7 @@ public:
   virtual int is_window() const;
   virtual int is_code_block() const;
   virtual int is_decl_block() const;
+  virtual int is_decl() const;
   virtual int is_class() const;
   virtual int is_browser() const;
   virtual int is_input() const;
@@ -178,12 +197,12 @@ class FLUID_API Fl_Widget_Type : public Fl_Type {
   virtual Fl_Widget_Type *_make() = 0; // virtual constructor
   virtual void setlabel(const char *);
 
-  const char *user_class_;
+  Fl_String user_class_;
   uchar hotspot_;
 
 protected:
 
-  void write_static();
+  void write_static(int type);
   void write_code();
   void write_code1();
   void write_widget_code();
@@ -192,7 +211,7 @@ protected:
   void write_strings(FILE *fp);  //Write locale strings
 
 public:
-  const char *extra_code_; //Should be private
+  Fl_String extra_code_; //Should be private
 
   Fl_Widget *o;
   int public_;
@@ -205,12 +224,15 @@ public:
   Fl_Type *make();
   void open();
 
-  const char *extra_code() { return extra_code_;}
+  const Fl_String &extra_code() { return extra_code_;}
   void extra_code(const char *);
-  const char *user_class() const {return user_class_;}
+
+  const Fl_String &user_class() const {return user_class_;}
   void user_class(const char *);
+
   uchar hotspot() const {return hotspot_;}
   void hotspot(uchar v) {hotspot_ = v;}
+
   uchar resizable() const;
   void resizable(uchar v);
 
@@ -219,8 +241,7 @@ public:
   virtual int is_widget() const;
 
   virtual void write_properties();
-  virtual void read_property(const char *);
-  virtual int read_fdesign(const char*, const char*);
+  virtual void read_property(const Fl_String &c);
 
   virtual ~Fl_Widget_Type();
   void redraw();
@@ -290,8 +311,7 @@ public:
   void fix_overlay();	// update the bounding box, etc
 
   virtual void write_properties();
-  virtual void read_property(const char *);
-  virtual int read_fdesign(const char*, const char*);
+  virtual void read_property(const Fl_String &c);
 
   void add_child(Fl_Type*, Fl_Type*);
   void move_child(Fl_Type*, Fl_Type*);
@@ -337,7 +357,7 @@ FLUID_API extern int indentation;
 FLUID_API extern const char* indent();
 
 FLUID_API int read_file(const char *, int merge);
-FLUID_API const char *read_word(int wantbrace = 0);
+FLUID_API Fl_String &read_word(int wantbrace = 0);
 FLUID_API void read_error(const char *format, ...);
 
 extern double read_version;
@@ -346,9 +366,16 @@ extern double read_version;
 FLUID_API const char *c_check(const char *c, int type = 0);
 
 // replace a string pointer with new value, strips leading/trailing blanks:
-FLUID_API int storestring(const char *n, const char * & p, int nostrip=0);
+FLUID_API int storestring(const char *n, Fl_String& p, int nostrip=0);
 
 FLUID_API extern int include_H_from_C;
+
+FLUID_API void write_code_block(const Fl_String &pBlock);
+
+FLUID_API void write_includes_from_code(const Fl_String &pBlock);
+FLUID_API void write_externs_from_code(const Fl_String &pBlock);
+FLUID_API void write_typedefs_from_code(const Fl_String &pBlock);
+
 
 //
 // End of "$Id$".

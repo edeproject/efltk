@@ -28,14 +28,17 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
+#include <efltk/Fl.h>
+#include <efltk/fl_message.h>
+
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+
 #include "alignment_panel.h"
 #include "Fluid_Image.h"
-#include <efltk/Fl.h>
 #include "Fl_Type.h"
 
 extern bool i18n;
@@ -45,88 +48,104 @@ extern bool i18n;
 
 static FILE *fout;
 
-int open_write(const char *s) {
-  if (!s) {fout = stdout; return 1;}
-  FILE *f = fopen(s,"w");
-  if (!f) return 0;
-  fout = f;
-  return 1;
+int open_write(const char *s) 
+{
+	if (!s) { fout = stdout; return 1; }
+	FILE *f = fopen(s,"w");
+	if (!f) return 0;
+	fout = f;
+	return 1;
 }
 
-int close_write() {
-  if (fout != stdout) {
-    int x = fclose(fout);
-    fout = stdout;
-    return x >= 0;
-  }
-  return 1;
+int close_write() 
+{
+	if (fout != stdout) {
+		int x = fclose(fout);
+		fout = stdout;
+		return x >= 0;
+	}
+	return 1;
 }
 
 static int needspace;
 int is_id(char); // in code.C
 
 // write a string, quoting characters if necessary:
-void write_word(const char *w) {
-  if (needspace) putc(' ', fout);
-  needspace = 1;
-  if (!w || !*w) {fprintf(fout,"{}"); return;}
-  const char *p;
-  // see if it is a single word:
-  for (p = w; is_id(*p); p++) ;
-  if (!*p) {fprintf(fout,"%s",w); return;}
-  // see if there are matching braces:
-  int n = 0;
-  for (p = w; *p; p++) {
-    if (*p == '{') n++;
-    else if (*p == '}') {n--; if (n<0) break;}
-  }
-  int mismatched = (n != 0);
-  // write out brace-quoted string:
-  putc('{', fout);
-  for (; *w; w++) {
-    switch (*w) {
-    case '{':
-    case '}':
-      if (!mismatched) break;
-    case '\\':
-    case '#':
-      putc('\\',fout);
-      break;
-    }
-    putc(*w,fout);
-  }
-  putc('}', fout);
+void write_word(const char *w) 
+{
+	if (needspace) putc(' ', fout);
+
+	needspace = 1;
+	if (!w || !*w) {
+		fprintf(fout,"{}"); 
+		return;
+	}
+	const char *p;
+	
+	// see if it is a single word:
+	for (p = w; is_id(*p); p++) ;
+
+	if (!*p) { fprintf(fout,"%s",w); return; }
+  
+	// see if there are matching braces:
+	int n = 0;
+	for (p = w; *p; p++) {
+		if (*p == '{') n++;
+		else if (*p == '}') { n--; if (n<0) break; }
+	}
+  
+	int mismatched = (n != 0);
+	// write out brace-quoted string:
+	putc('{', fout);
+	for (; *w; w++) {
+		switch (*w) {
+		case '{':
+		case '}':
+			if (!mismatched) break;
+		
+		case '\\':
+		case '#':
+			putc('\\',fout);
+			break;
+		}
+		putc(*w,fout);
+	}
+	putc('}', fout);
 }
 
 // write an arbitrary formatted word, or a comment, etc:
-void write_string(const char *format, ...) {
-  va_list args;
-  va_start(args, format);
-  if (needspace) fputc(' ',fout);
-  vfprintf(fout, format, args);
-  va_end(args);
-  needspace = !isspace(format[strlen(format)-1]);
+void write_string(const char *format, ...) 
+{
+	va_list args;
+	va_start(args, format);
+	if (needspace) fputc(' ', fout);
+	vfprintf(fout, format, args);
+	va_end(args);
+	needspace = !isspace(format[strlen(format)-1]);
 }
 
 // start a new line and indent it for a given nesting level:
-void write_indent(int n) {
-  fputc('\n',fout);
-  while (n--) {fputc(' ',fout); fputc(' ',fout);}
-  needspace = 0;
+void write_indent(int n) 
+{
+	fputc('\n',fout);
+	while (n--) { fputc(' ',fout); fputc(' ',fout); }
+	needspace = 0;
 }
 
 // write a '{' at the given indenting level:
-void write_open(int) {
-  if (needspace) fputc(' ',fout);
-  fputc('{',fout);
-  needspace = 0;
+void write_open(int) 
+{
+	if (needspace) fputc(' ',fout);
+	fputc('{',fout);
+	needspace = 0;
 }
 
 // write a '}' at the given indenting level:
-void write_close(int n) {
-  if (needspace) write_indent(n);
-  fputc('}',fout);
-  needspace = 1;
+void write_close(int n) 
+{
+	if (needspace) write_indent(n);
+	fputc('}',fout);
+	needspace = 1;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -155,20 +174,20 @@ int close_read() {
   return 1;
 }
 
-#include <efltk/fl_message.h>
-
-void read_error(const char *format, ...) {
+void read_error(const char *format, ...) 
+{
   va_list args;
   va_start(args, format);
-  if (!fin) {
+  //if (!fin) 
+  {
     char buffer[1024];
     vsprintf(buffer, format, args);
     fl_message(buffer);
-  } else {
+  } /*else {
     fprintf(stderr, "%s:%d: ", fname, lineno);
     vfprintf(stderr, format, args);
     fprintf(stderr, "\n");
-  }
+  }*/
   va_end(args);
 }
 
@@ -221,86 +240,70 @@ static int read_quoted() {	// read whatever character is after a \ .
 //	everything between matching {...} (unless wantbrace != 0)
 //	the characters '{' and '}'
 
-static char *buffer;
-static int buflen;
-static void expand_buffer(int length) {
-  if (length >= buflen) {
-    if (!buflen) {
-      buflen = length+1;
-      buffer = (char*)malloc(buflen);
-    } else {
-      buflen = 2*buflen;
-      if (length >= buflen) buflen = length+1;
-      buffer = (char *)realloc((void *)buffer,buflen);
-    }
-  }
-}
+static Fl_String buffer;
 
-const char *read_word(int wantbrace) {
-  int x;
-
-  // skip all the whitespace before it:
-  for (;;) {
-    x = getc(fin);
-    if (x < 0) {	// eof
-      return 0;
-    } else if (x == '#') {	// comment
-      do x = getc(fin); while (x >= 0 && x != '\n');
-      lineno++;
-      continue;
-    } else if (x == '\n') {
-      lineno++;
-    } else if (!isspace(x)) {
-      break;
-    }
-  }
-
-  expand_buffer(100);
-
-  if (x == '{' && !wantbrace) {
-
-    // read in whatever is between braces
-    int length = 0;
-    int nesting = 0;
-    for (;;) {
-      x = getc(fin);
-      if (x<0) {read_error("Missing '}'"); break;}
-      else if (x == '#') { // embedded comment
-	do x = getc(fin); while (x >= 0 && x != '\n');
-	lineno++;
-	continue;
-      } else if (x == '\n') lineno++;
-      else if (x == '\\') {x = read_quoted(); if (x<0) continue;}
-      else if (x == '{') nesting++;
-      else if (x == '}') {if (!nesting--) break;}
-      buffer[length++] = x;
-      expand_buffer(length);
-    }
-    buffer[length] = 0;
-    return buffer;
-
-  } else if (x == '{' || x == '}') {
-    // all the punctuation is a word:
-    buffer[0] = x;
-    buffer[1] = 0;
-    return buffer;
-
-  } else {
-
-    // read in an unquoted word:
-    int length = 0;
-    for (;;) {
-      if (x == '\\') {x = read_quoted(); if (x<0) continue;}
-      else if (x<0 || isspace(x) || x=='{' || x=='}' || x=='#') break;
-      buffer[length++] = x;
-      expand_buffer(length);
-      x = getc(fin);
-    }
-    ungetc(x, fin);
-    buffer[length] = 0;
-    return buffer;
-
-  }
+Fl_String &read_word(int wantbrace) 
+{
+	buffer.clear();
+	int x;
+	
+	// skip all the whitespace before it:
+	for (;;) {
+		x = getc(fin);
+		if (x < 0) {	// eof
+			return buffer;
+		} else if (x == '#') {	// comment
+			do x = getc(fin); while (x >= 0 && x != '\n');
+			lineno++;
+			continue;
+		} else if (x == '\n') {
+			lineno++;
+		} else if (!isspace(x)) {
+			break;
+		}
+	}
+	
+	if (x == '{' && !wantbrace) {
+		
+		// read in whatever is between braces
+		int nesting = 0;
+		for (;;) {
+			x = getc(fin);
+			if (x<0) {
+				read_error("Missing '}'"); 
+				break;
+			}
+			else if (x == '#') { // embedded comment
+				do x = getc(fin); while (x >= 0 && x != '\n');
+				lineno++;
+				continue;
+			} 
+			else if (x == '\n') lineno++;
+			else if (x == '\\') { x = read_quoted(); if (x<0) continue; }
+			else if (x == '{') nesting++;
+			else if (x == '}') { if (!nesting--) break; }
+			buffer += (char)x;			
+		}
+		return buffer;
+		
+	} else if (x == '{' || x == '}') {
+		// all the punctuation is a word:
+		buffer += (char)x;
+		return buffer;
+		
+	} else {
+		
+		// read in an unquoted word:
+		for (;;) {
+			if (x == '\\') { x = read_quoted(); if (x<0) continue; }
+			else if (x<0 || isspace(x) || x=='{' || x=='}' || x=='#') break;
+			buffer += (char)x;
+			x = getc(fin);
+		}
+		ungetc(x, fin);
+		return buffer;
+		
+	}
 }
 
 ////////////////////////////////////////////////////////////////
@@ -322,7 +325,7 @@ extern char* theme;
 
 int write_file(const char *filename, int selected_only) {
   if (!open_write(filename)) return 0;
-  write_string("# data file for the FLTK User Interface Designer (FLUID)\n"
+  write_string("# data file for the eFLTK User Interface Designer (eFLUID)\n"
 	       "version %.4f",FL_VERSION);
   if(strlen(images_dir)) write_string("\nimages_dir %s", images_dir);
   if(!include_H_from_C)
@@ -353,8 +356,6 @@ extern char *lc2(const char *v);
 ////////////////////////////////////////////////////////////////
 // read all the objects out of the input file:
 
-void read_fdesign();
-
 double read_version;
 
 extern Fl_Type *Fl_Type_make(const char *tn);
@@ -362,120 +363,117 @@ extern void set_theme(const char* s);
 
 extern int pasteoffset;
 
-static void read_children(Fl_Type *p, int paste) {
-  Fl_Type::current = p;
-  for (;;) {
-    unsigned int i;
-    const char *c = read_word();
-  REUSE_C:
-    if (!c) {
-      if (p && !paste) read_error("Missing '}'");
-      break;
-    }
+static void read_children(Fl_Type *p, int paste) 
+{
+	Fl_Type::current = p;
+	for (;;) {
+		unsigned int i;
+		Fl_String &c = read_word();
+REUSE_C:
+		if(c.empty()) {
+			if(p && !paste) read_error("Missing '}'");
+			break;
+		}
 
-    if (!strcmp(c,"}")) {
-      if (!p) read_error("Unexpected '}'");
-      break;
-    }
+		if(c=="}") {
+			if (!p) read_error("Unexpected '}'");
+			break;
+		}
 
-    // this is the first word in a .fd file:
-    if (!strcmp(c,"Magic:")) {
-      read_fdesign();
-      return;
-    }
+		if(c=="version") {
+			c = lc2(read_word());
+			read_version = strtod(c,0);
+			if(read_version<=0) read_error("unknown version '%s'", c.c_str());
+			continue;
+		}
 
-    if (!strcmp(c,"version")) {
-        c = lc2(read_word());
-        read_version = strtod(c,0);
-        if(read_version<=0) read_error("unknown version '%s'",c);
-        continue;
-    }
+		// back compatability with Vincent Penne's original class code:
+		if (!p && c=="define_in_struct") {
+			Fl_Type *t = Fl_Type_make("class");
+			t->name(read_word());
+			Fl_Type::current = p = t;
+			paste = 1; // stops "missing }" error
+			continue;
+		}
 
-    // back compatability with Vincent Penne's original class code:
-    if (!p && !strcmp(c,"define_in_struct")) {
-      Fl_Type *t = Fl_Type_make("class");
-      t->name(read_word());
-      Fl_Type::current = p = t;
-      paste = 1; // stops "missing }" error
-      continue;
-    }
+		if(c=="do_not_include_H_from_C")
+		{
+			include_H_from_C=0;
+			goto CONTINUE;
+		} 
+		else if(c=="i18n")
+		{
+			i18n=true;
+			goto CONTINUE;
+		} 
+		else if(c=="images_dir")
+		{
+			images_dir = strdup(read_word()); // This will never get deleted ...
+			goto CONTINUE;
+		}
+		else if(c=="header_name") {
+			if (!header_file_set) header_file_name = strdup(read_word());
+			else read_word();
+			goto CONTINUE;
+		}
+		else if(c=="code_name") {
+			if (!code_file_set) code_file_name = strdup(read_word());
+			else read_word();
+			goto CONTINUE;
+		}
+		else if(c=="theme" || c=="scheme") {
+			set_theme(read_word());
+			goto CONTINUE;
+		}
 
-    if (!strcmp(c,"do_not_include_H_from_C"))
-    {
-      include_H_from_C=0;
-      goto CONTINUE;
-    }
-    if (!strcmp(c,"i18n"))
-    {
-      i18n=true;
-      goto CONTINUE;
-    }
-    if (!strcmp(c,"images_dir"))
-    {
-      images_dir = strdup(read_word()); // This will never get deleted ...
-      goto CONTINUE;
-    }
-    if (!strcmp(c,"header_name")) {
-      if (!header_file_set) header_file_name = strdup(read_word());
-      else read_word();
-      goto CONTINUE;
-    }
+		for (i=0; i<sizeof(inttable)/sizeof(*inttable); i++) {
+			if(c==inttable[i].name) {
+				c = read_word();
+				*inttable[i].value = strtol(c,0,10);
+				goto CONTINUE;
+			}
+		}
 
-    if (!strcmp(c,"code_name")) {
-      if (!code_file_set) code_file_name = strdup(read_word());
-      else read_word();
-      goto CONTINUE;
-    }
+		{
+			Fl_Type *t = Fl_Type_make(c);
+			if (!t) {
+				read_error("Unknown word \"%s\"", c);
+				continue;
+			}
+			t->name(read_word());
 
-    if (!strcmp(c, "theme") || !strcmp(c, "scheme")) {
-      set_theme(read_word());
-      goto CONTINUE;
-    }
+			c = read_word(1);
+			if(c!="{") {
+				read_error("Missing property list for %s\n", t->title());
+				goto REUSE_C;
+			}
 
-    for (i=0; i<sizeof(inttable)/sizeof(*inttable); i++) {
-      if (!strcmp(c,inttable[i].name)) {
-	c = read_word();
-	*inttable[i].value = int(strtol(c,0,0));
-	goto CONTINUE;
-      }
-    }
+			t->open_ = 0;
+			for (;;) {
+				const Fl_String &c = read_word();
+				if(c.empty() || c=="}") break;
+				t->read_property(c);
+			}
 
-    {Fl_Type *t = Fl_Type_make(c);
-    if (!t) {
-      read_error("Unknown word \"%s\"", c);
-      continue;
-    }
-    t->name(read_word());
-
-    c = read_word(1);
-    if (strcmp(c,"{")) {
-      read_error("Missing property list for %s\n",t->title());
-      goto REUSE_C;
-    }
-
-    t->open_ = 0;
-    for (;;) {
-      const char *c = read_word();
-      if (!c || !strcmp(c,"}")) break;
-      t->read_property(c);
-    }
-
-    if (!t->is_parent()) continue;
-    c = read_word(1);
-    if (strcmp(c,"{")) {
-      read_error("Missing child list for %s\n",t->title());
-      goto REUSE_C;
-    }
-    // Start of ugly hack
-    int saved_pasteoffset=pasteoffset;
-    pasteoffset=0;
-    read_children(t, 0);
-    pasteoffset=saved_pasteoffset;
-    // End of Ugly hack
-    }
-    Fl_Type::current = p;
-  CONTINUE:;
-  }
+			if (!t->is_parent()) 
+				continue;
+			
+			c = read_word(1);
+			if(c!="{") {
+				read_error("Missing child list for %s\n",t->title());
+				goto REUSE_C;
+			}
+    
+			// Start of ugly hack
+			int saved_pasteoffset=pasteoffset;
+			pasteoffset=0;
+			read_children(t, 0);
+			pasteoffset=saved_pasteoffset;
+			// End of Ugly hack
+		}
+		Fl_Type::current = p;
+CONTINUE: ;
+	}
 }
 
 extern void deselect();
@@ -492,176 +490,58 @@ int read_file(const char *filename, int merge) {
   return close_read();
 }
 
-////////////////////////////////////////////////////////////////
-// Read Forms and XForms fdesign files:
+#include <efltk/Fl_String_List.h>
+// For back compatabilty any lines that start with # are written at
+// into the include header file:
 
-int read_fdesign_line(const char*& name, const char*& value) {
+#define isinclude(str) ((*(str) == '#') && (strstr((str), "include")!=NULL))
+#define isextern(str)  (!strncmp((str), "extern", 6))
+#define istypedef(str) (!strncmp((str), "typedef", 7))
 
-  int length = 0;
-  int x;
-  // find a colon:
-  for (;;) {
-    x = getc(fin);
-    if (x < 0) return 0;
-    if (x == '\n') {length = 0; continue;} // no colon this line...
-    if (!isspace(x)) {
-      buffer[length++] = x;
-      expand_buffer(length);
-    }
-    if (x == ':') break;
-  }
-  int valueoffset = length;
-  buffer[length-1] = 0;
-
-  // skip to start of value:
-  for (;;) {
-    x = getc(fin);
-    if (x < 0 || x == '\n' || !isspace(x)) break;
-  }
-
-  // read the value:
-  for (;;) {
-    if (x == '\\') {x = read_quoted(); if (x<0) continue;}
-    else if (x == '\n') break;
-    buffer[length++] = x;
-    expand_buffer(length);
-    x = getc(fin);
-  }
-  buffer[length] = 0;
-  name = buffer;
-  value = buffer+valueoffset;
-  return 1;
+// Test to see if extra code is a declaration:
+static bool isdeclare(const char *c) {
+	while (isspace(*c)) c++;
+	if(isinclude(c))	return true;
+	if(isextern(c))		return true;
+	if(istypedef(c))	return true;
+	return false;
 }
 
-int fdesign_flip;
-int fdesign_magic;
-#include <efltk/Fl_Group.h>
-
-static const char *class_matcher[] = {
-"FL_CHECKBUTTON", "Fl_Check_Button",
-"FL_ROUNDBUTTON", "Fl_Round_Button",
-"FL_ROUND3DBUTTON", "Fl_Round_Button",
-"FL_LIGHTBUTTON", "Fl_Light_Button",
-"FL_FRAME", "Fl_Box",
-"FL_LABELFRAME", "Fl_Box",
-"FL_TEXT", "Fl_Box",
-"FL_VALSLIDER", "Fl_Value_Slider",
-"FL_MENU", "Fl_Menu_Button",
-"3", "FL_BITMAP",
-"1", "FL_BOX",
-"71","FL_BROWSER",
-"11","FL_BUTTON",
-"4", "FL_CHART",
-"42","FL_CHOICE",
-"61","FL_CLOCK",
-"25","FL_COUNTER",
-"22","FL_DIAL",
-"101","FL_FREE",
-"31","FL_INPUT",
-"12","Fl_Light_Button",
-"41","FL_MENU",
-"23","FL_POSITIONER",
-"13","Fl_Round_Button",
-"21","FL_SLIDER",
-"2", "FL_BOX", // was FL_TEXT
-"62","FL_TIMER",
-"24","Fl_Value_Slider",
-0};
-
-void read_fdesign() {
-  fdesign_magic = atoi(read_word());
-  fdesign_flip = (fdesign_magic < 13000);
-  Fl_Widget_Type *window = 0;
-  Fl_Widget_Type *group = 0;
-  Fl_Widget_Type *widget = 0;
-  if (!Fl_Type::current) {
-    Fl_Type *t = Fl_Type_make("Function");
-    t->name("create_the_forms()");
-    Fl_Type::current = t;
-  }
-  for (;;) {
-    const char *name;
-    const char *value;
-    if (!read_fdesign_line(name, value)) break;
-
-    if (!strcmp(name,"Name")) {
-
-      window = (Fl_Widget_Type*)Fl_Type_make("Fl_Window");
-      window->name(value);
-      window->label(value);
-      Fl_Type::current = widget = window;
-
-    } else if (!strcmp(name,"class")) {
-
-      if (!strcmp(value,"FL_BEGIN_GROUP")) {
-	group = widget = (Fl_Widget_Type*)Fl_Type_make("Fl_Group");
-	Fl_Type::current = group;
-      } else if (!strcmp(value,"FL_END_GROUP")) {
-	if (group) {
-	  Fl_Group* g = (Fl_Group*)(group->o);
-	  g->begin();
-	  // g->forms_end();
-          void fl_end_group();
-          fl_end_group(); // how 'bout this instead?
-	  Fl_Group::current(0);
+void write_includes_from_code(const Fl_String &pBlock)
+{
+	Fl_String_List lines(pBlock, "\n");
+	for(unsigned n=0; n<lines.size(); n++) {
+		if (isinclude(lines[n].c_str())) 
+			write_declare("%s", lines[n].c_str());
 	}
-	group = widget = 0;
-	Fl_Type::current = window;
-      } else {
-	for (int i = 0; class_matcher[i]; i += 2)
-	  if (!strcmp(value,class_matcher[i])) {
-	    value = class_matcher[i+1]; break;}
-	widget = (Fl_Widget_Type*)Fl_Type_make(value);
-	if (!widget) {
-	  printf("class %s not found, using Fl_Button\n", value);
-	  widget = (Fl_Widget_Type*)Fl_Type_make("Fl_Button");
-	}
-      }
-
-    } else if (widget) {
-      if (!widget->read_fdesign(name, value))
-	printf("Ignoring \"%s: %s\"\n", name, value);
-    }
-  }
 }
 
-// This is copied from forms_compatability.cxx:
+void write_externs_from_code(const Fl_String &pBlock)
+{
+	Fl_String_List lines(pBlock, "\n");
+	for(unsigned n=0; n<lines.size(); n++) {
+		if (isextern(lines[n].c_str())) 
+			write_declare("%s", lines[n].c_str());
+	}
+}
 
-void fl_end_group() {
-  Fl_Group* g = Fl_Group::current();
-  // set the dimensions of a group to surround contents
-  if (g->children() && !g->w()) {
-    Fl_Widget* o = g->child(0);
-    int rx = o->x();
-    int ry = o->y();
-    int rw = rx+o->w();
-    int rh = ry+o->h();
-    for (int i=g->children()-1; i>0; i--) {
-      o = g->child(i);
-      if (o->x() < rx) rx = o->x();
-      if (o->y() < ry) ry = o->y();
-      if (o->x()+o->w() > rw) rw = o->x()+o->w();
-      if (o->y()+o->h() > rh) rh = o->y()+o->h();
-    }
-    g->x(rx);
-    g->y(ry);
-    g->w(rw-rx);
-    g->h(rh-ry);
-  }
-  // flip all the children's coordinate systems:
-  //if (fl_flip) {
-    Fl_Widget* o = g->is_window() ? g : g->window();
-    int Y = o->h();
-    for (int i=g->children(); i--;) {
-      Fl_Widget* o = g->child(i);
-//      o->y(Y-o->y()-o->h());
-      // I think this is equivalent?
-      o->position(o->x(), Y-o->y()-o->h());
-    }
-    //g->oy_ = Y-g->oy_-g->h();
-    //}
-    //g->fix_old_positions();
-  g->end();
+void write_typedefs_from_code(const Fl_String &pBlock)
+{
+	Fl_String_List lines(pBlock, "\n");
+	for(unsigned n=0; n<lines.size(); n++) {
+		if (istypedef(lines[n].c_str())) 
+			write_declare("%s", lines[n].c_str());
+	}
+}
+
+// And the code is written out with all the # lines removed:
+void write_code_block(const Fl_String &pBlock)
+{
+	Fl_String_List lines(pBlock, "\n");
+	for(unsigned n=0; n<lines.size(); n++) {
+		if (!isdeclare(lines[n])) 
+			write_c("%s%s\n", indent(), lines[n].c_str());
+	}
 }
 
 //

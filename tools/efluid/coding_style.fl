@@ -1,5 +1,5 @@
-# data file for the FLTK User Interface Designer (FLUID)
-version 2.0030 
+# data file for the eFLTK User Interface Designer (eFLUID)
+version 2.0003 
 images_dir ./ 
 i18n 
 header_name {.h} 
@@ -37,7 +37,7 @@ decl {extern void write_code_block(char *pBlock);} {public
 decl {extern void load_coding_style();} {public
 } 
 
-decl {extern const char *get_opening_brace(int is_function);} {public
+decl {extern const char *get_opening_brace(int is_function);} {selected public
 } 
 
 decl {extern const char *get_indent_string(int level);} {public
@@ -63,7 +63,7 @@ decl {int always_return_parens;} {}
 
 decl {int indent_code;} {} 
 
-Function {use_coding_style()} {private return_type void attributes static
+Function {use_coding_style()} {open private return_type void attributes static
 } {
   code {gbrace_style = brace_style;
 gno_space_parens = no_space_parens;
@@ -76,46 +76,46 @@ galways_return_parens = always_return_parens;} {}
 Function {make_codingstyle_window()} {open
 } {
   Fl_Window {} {open
-    xywh {40 150 310 255} resizable visible
+    xywh {434 180 310 255} resizable visible
   } {
     Fl_Tabs {} {open
-      xywh {0 0 303 220}
+      xywh {0 0 303 220} color 0xfffffffe
     } {
       Fl_Group {} {
-        label {Brace Style} open selected
-        xywh {0 20 303 200}
+        label {Brace Style} open
+        xywh {1 24 301 195}
       } {
         Fl_Group {} {
           label {Brace Style}
-          xywh {14 22 282 122} align 5 box ENGRAVED_BOX
+          xywh {14 22 282 122} align FL_ALIGN_TOP|FL_ALIGN_LEFT box ENGRAVED_BOX
         } {
           Fl_Box {} {
             label {if ( x ) \{}
-            private xywh {20 6 47 20} align 20
+            private xywh {20 6 47 20} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE
           }
           Fl_Box {} {
             label {++y;}
-            private xywh {20 25 45 20} align 24
+            private xywh {20 25 45 20} align FL_ALIGN_RIGHT|FL_ALIGN_INSIDE
           }
           Fl_Box {} {
             label {\}}
-            private xywh {20 41 36 20} align 20
+            private xywh {20 41 36 20} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE
           }
           Fl_Box {} {
             label {if ( x )}
-            private xywh {114 6 47 20} align 20
+            private xywh {114 6 47 20} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE
           }
           Fl_Box {} {
             label {\{}
-            private xywh {114 25 36 20} align 20
+            private xywh {114 25 36 20} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE
           }
           Fl_Box {} {
             label {++y;}
-            private xywh {115 42 46 20} align 24
+            private xywh {115 42 46 20} align FL_ALIGN_RIGHT|FL_ALIGN_INSIDE
           }
           Fl_Box {} {
             label {\}}
-            private xywh {114 59 36 20} align 20
+            private xywh {114 59 36 20} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE
           }
           Fl_Round_Button pStyle1 {
             label {Style 1}
@@ -125,19 +125,19 @@ Function {make_codingstyle_window()} {open
           }
           Fl_Box {} {
             label {if ( x )}
-            private xywh {201 6 47 20} align 20
+            private xywh {201 6 47 20} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE
           }
           Fl_Box {} {
             label {\{}
-            private xywh {201 25 36 20} align 24
+            private xywh {201 25 36 20} align FL_ALIGN_RIGHT|FL_ALIGN_INSIDE
           }
           Fl_Box {} {
             label {++y;}
-            private xywh {227 42 34 22} align 24
+            private xywh {227 42 34 22} align FL_ALIGN_RIGHT|FL_ALIGN_INSIDE
           }
           Fl_Box {} {
             label {\}}
-            private xywh {201 59 36 20} align 24
+            private xywh {201 59 36 20} align FL_ALIGN_RIGHT|FL_ALIGN_INSIDE
           }
           Fl_Round_Button pStyle2 {
             label {Style 2}
@@ -165,11 +165,11 @@ Function {make_codingstyle_window()} {open
       }
       Fl_Group {} {
         label Other open
-        xywh {0 20 303 200} hide
+        xywh {1 24 301 195} hide
       } {
         Fl_Group {} {
           label Indentation open
-          xywh {11 22 284 90} align 5 box ENGRAVED_BOX
+          xywh {11 22 284 90} align FL_ALIGN_TOP|FL_ALIGN_LEFT box ENGRAVED_BOX
         } {
           Fl_Value_Input pTabSize {
             label {Tab size for indents}
@@ -219,7 +219,7 @@ o->window()->hide();}
   }
 } 
 
-Function {load_codingstyle_window()} {return_type void
+Function {load_codingstyle_window()} {open return_type void
 } {
   code {brace_style = gbrace_style;
 no_space_parens = gno_space_parens;

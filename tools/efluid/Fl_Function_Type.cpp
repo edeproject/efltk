@@ -150,31 +150,30 @@ const char *c_check(const char *c, int type) {
 ////////////////////////////////////////////////////////////////
 
 class Fl_Function_Type : public Fl_Type {
-  const char* return_type;
-  const char* attributes;
+  Fl_String return_type;
+  Fl_String attributes;
   char public_, cdecl_, constructor, havewidgets;
 public:
   Fl_Type *make();
   void write_code();
   void open();
-  int ismain() {return name_ == 0;}
-  virtual const char *type_name() const {return "Function";}
-  virtual const char *title() {
-    return name() ? name() : "main()";
-  }
+  int ismain() { return name_.empty(); } //==0
+  
+  virtual const char *type_name() const { return "Function"; }
+  virtual const char *title() { return name().empty() ? "main()" : name(); }
+
   int is_parent() const {return 1;}
   int is_code_block() const {return 1;}
   void write_properties();
-  void read_property(const char *);
+  void read_property(const Fl_String &c);
 };
 
-Fl_Type *Fl_Function_Type::make() {
+Fl_Type *Fl_Function_Type::make() 
+{
   Fl_Type *p = Fl_Type::current;
   while (p && !p->is_decl_block()) p = p->parent;
   Fl_Function_Type *o = new Fl_Function_Type();
   o->name("make_window()");
-  o->attributes = 0;
-  o->return_type = 0;
   o->add(p);
   o->factory = this;
   o->public_ = 1;
@@ -182,32 +181,34 @@ Fl_Type *Fl_Function_Type::make() {
   return o;
 }
 
-void Fl_Function_Type::write_properties() {
-  Fl_Type::write_properties();
-  if (!public_) write_string("private");
-  if (cdecl_) write_string("C");
-  if (return_type) {
-    write_string("return_type");
-    write_word(return_type);
-  }
-  if (attributes) {
-    write_string("attributes");
-    write_word(attributes);
-  }
+void Fl_Function_Type::write_properties() 
+{
+	Fl_Type::write_properties();
+	if (!public_) write_string("private");
+	if (cdecl_) write_string("C");
+	if (!return_type.empty()) {
+		write_string("return_type");
+		write_word(return_type);
+	}
+	if (!attributes.empty()) {
+		write_string("attributes");
+		write_word(attributes);
+	}
 }
 
-void Fl_Function_Type::read_property(const char *c) {
-  if (!strcmp(c,"private")) {
-    public_ = 0;
-  } else if (!strcmp(c,"C")) {
-    cdecl_ = 1;
-  } else if (!strcmp(c,"return_type")) {
-    storestring(read_word(),return_type);
-  } else if (!strcmp(c,"attributes")) {
-    storestring(read_word(),attributes);
-  } else {
-    Fl_Type::read_property(c);
-  }
+void Fl_Function_Type::read_property(const Fl_String &c) 
+{
+	if (!strcmp(c,"private")) {
+		public_ = 0;
+	} else if (!strcmp(c,"C")) {
+		cdecl_ = 1;
+	} else if (!strcmp(c,"return_type")) {
+		storestring(read_word(),return_type);
+	} else if (!strcmp(c,"attributes")) {
+		storestring(read_word(),attributes);
+	} else {
+		Fl_Type::read_property(c);
+	}
 }
 
 #include "function_panel.h"
@@ -222,18 +223,22 @@ static void cancel_callback(Fl_Widget* w, void*) {
   w->window()->hide();
 }
 
-void Fl_Function_Type::open() {
+void Fl_Function_Type::open() 
+{
   if (!function_panel) {
     make_function_panel();
     f_panel_ok->callback(ok_callback);
     f_panel_cancel->callback(cancel_callback);
   }
-  f_return_type_input->static_value(return_type);
-  f_attributes_input->static_value(attributes);
-  f_name_input->static_value(name());
+  
+  f_return_type_input->value(return_type);
+  f_attributes_input->value(attributes);
+  f_name_input->value(name());
+
   f_public_button->value(public_);
   f_c_button->value(cdecl_);
   const char* message = 0;
+
   for (;;) {
     if (message) fl_alert(message);
     if (!function_panel->exec()) break;
@@ -262,114 +267,132 @@ Fl_Function_Type Fl_Function_type;
 
 Fl_Widget_Type* last_group;
 
-void Fl_Function_Type::write_code() {
-  const char* rtype = return_type;
-  constructor=0;
-  havewidgets = 0;
-  Fl_Type *child;
-  char attr[256];
-  if (attributes) {
-    strncpy(attr, attributes, 255);
-    strcat(attr, " ");
-  } else
-    attr[0] = 0;
-  for (child = first_child; child; child = child->next_brother)
-    if (child->is_widget()) {
-      havewidgets = 1;
-      last_group = (Fl_Widget_Type*)child;
-    }
-  write_c("\n");
-  if (ismain()) {
-	write_c("int main%s(int argc, char **argv)%s\n",
-			gno_space_parens ? "" : " ", get_opening_brace(1));
-    // write_c("int main(int argc, char **argv) {\n");
-    if (havewidgets)
-      rtype = last_group->subclass();
-    else 
-      rtype = "void";
-  } else {
-    const char* star = "";
-    // from matt: let the user type "static " at the start of type
-    // in order to declare a static method;
-    int is_static = 0;
-    int is_virtual = 0;
-    if (rtype) {
-      if (!strcmp(rtype,"static")) {is_static = 1; rtype = 0;}
-      else if (!strncmp(rtype, "static ",7)) {is_static = 1; rtype += 7;}
-      if (!strcmp(rtype, "virtual")) {is_virtual = 1; rtype = 0;}
-      else if (!strncmp(rtype, "virtual ",8)) {is_virtual = 1; rtype += 8;}
-    }
-    if (!rtype) {
-      if (havewidgets) {
-	rtype = last_group->subclass();
-	star = "*";
-      } else rtype = "void";
-    }
+void Fl_Function_Type::write_code() 
+{
+	constructor=0;
+	havewidgets = 0;
+	Fl_Type *child;
+	Fl_String attr;
+	Fl_String rtype = return_type;
+	
+	if (!attributes.empty()) {
+		attr = attributes;
+		attr += " ";
+	}
 
-    const char* k = member_of(0);
-    if (k) {
-      write_public(public_);
-      if (name()[0] == '~')
-	constructor = 1;
-      else {
-	size_t n = strlen(k);
-	if (!strncmp(name(), k, n) && name()[n] == '(') constructor = 1;
-      }
-	  write_h(get_indent_string(1));
-      if (is_static) write_h("static ");
-      if (is_virtual) write_h("virtual ");
-      if (!constructor) {
-        write_h("%s%s%s ", attr, rtype, star);
-	write_c("%s%s ", rtype, star);
-      }
+	for (child = first_child; child; child = child->next_brother) 
+	{
+		if (child->is_widget()) {
+			havewidgets = 1;
+			last_group = (Fl_Widget_Type*)child;
+		}
 
-      // if this is a subclass, only write_h() the part before the ':'
-      char s[1024], *sptr = s;
-      char *nptr = (char *)name();
+		write_c("\n");
+		if (ismain()) {
 
-      while (*nptr) {
-        if (*nptr == ':') {
-	  if (nptr[1] != ':') break;
-	  // Copy extra ":" for "class::member"...
-          *sptr++ = *nptr++;
-        }	  
-        *sptr++ = *nptr++;
-      }
-      *sptr = '\0';
+			write_c("int main%s(int argc, char **argv)%s\n",
+					gno_space_parens ? "" : " ", get_opening_brace(1));
+			if (havewidgets)	rtype = last_group->subclass();
+			else				rtype = "void";
 
-      if(constructor)	// already wrote this for constructors.
-	write_h("%s", attr);
-      write_h("%s;\n", s);
-      write_c("%s::%s%s", k, strip_default_args(name()), get_opening_brace(1));
-    } else {
-      if (public_) {
-	if (cdecl_)
-	  write_h("extern \"C\" { %s%s%s %s; }\n", attr, rtype, star, name());
-	else
-	  write_h("%s%s%s %s;\n", attr, rtype, star, name());
-      }
-      else write_c("static ");
-      write_c("%s%s %s%s", rtype, star, name(), get_opening_brace(1));
-    }
-  }
-  indentation += 2;
-  if(havewidgets) 
-    write_c("%s%s* w;\n", indent(), last_group->subclass());
+		} else {
 
-  for (Fl_Type* q = first_child; q; q = q->next_brother) q->write_code();
+			const char* star = "";
+			
+			// from matt: let the user type "static " at the start of type
+			// in order to declare a static method;
+			int is_static = 0;
+			int is_virtual = 0;
+			if(!rtype.empty()) {
+				if(rtype=="static") { is_static = 1; rtype = ""; }
+				else if(!strncmp(rtype.c_str(), "static ", 7)) { is_static = 1; rtype.sub_delete(0, 7); }
 
-  if (ismain()) {
-    if (havewidgets) write_c("%sw->show(argc, argv);\n", get_indent_string(1));
-    write_c("%sreturn %s%sFl::run()%s;\n", get_indent_string(1),
-			gno_space_parens ? "" : " ",
-			galways_return_parens ? "(" : "", galways_return_parens ? ")" : "");
-  } else if (havewidgets && !constructor && !return_type)
-    write_c("%sreturn %s%sw%s;\n", get_indent_string(1), 
-			gno_space_parens ? "" : " ",
-			galways_return_parens ? "(" : "", galways_return_parens ? ")" : "");
-  write_c("}\n");
-  indentation -= 2;
-  if (indentation < 0) indentation = 0;
+				if(rtype=="virtual") { is_virtual = 1; rtype = ""; }
+				else if(!strncmp(rtype.c_str(), "virtual ", 8)) { is_virtual = 1; rtype.sub_delete(0,8); }
+			}
+			
+			if(rtype.empty()) {
+				if (havewidgets) {
+					rtype = last_group->subclass();					
+					star = "*";
+				} else 
+					rtype = "void";
+			}
+			
+			const char* k = member_of(0);
+			if (k) {
+				write_public(public_);
+				if (name()[0] == '~')
+					constructor = 1;
+				else {
+					int n = strlen(k);
+					if (!strncmp(name().c_str(), k, n) && name().c_str()[n] == '(') 
+						constructor = 1;
+				}
+				
+				write_h(get_indent_string(1));
+				if (is_static) write_h("static ");
+				if (is_virtual) write_h("virtual ");
+				if (!constructor) {
+					write_h("%s%s%s ", attr.c_str(), rtype.c_str(), star);
+					write_c("%s%s ", rtype.c_str(), star);
+				}
+				
+				// if this is a subclass, only write_h() the part before the ':'
+				char s[1024], *sptr = s;
+				const char *nptr = name().c_str();
+				
+				while (*nptr) {
+					if (*nptr == ':') {
+						if (nptr[1] != ':') break;
+						// Copy extra ":" for "class::member"...
+						*sptr++ = *nptr++;
+					}	  
+					*sptr++ = *nptr++;
+				}
+				*sptr = '\0';
+				
+				if(constructor)	// already wrote this for constructors.
+					write_h("%s", attr.c_str());
+				write_h("%s;\n", s);
+				write_c("%s::%s%s", k, strip_default_args(name()), get_opening_brace(1));
+				printf("%s::%s%s\n", k, strip_default_args(name()), get_opening_brace(1));
+
+			} else {
+
+				if (public_) {
+					if (cdecl_)
+						write_h("extern \"C\" { %s%s%s %s; }\n", attr.c_str(), rtype.c_str(), star, name().c_str());
+					else
+						write_h("%s%s%s %s;\n", attr.c_str(), rtype.c_str(), star, name().c_str());
+				}
+				else 
+					write_c("static ");
+				write_c("%s%s %s%s", rtype.c_str(), star, name().c_str(), get_opening_brace(1));
+			}
+		}
+		
+		indentation += 2;
+		if(havewidgets) 
+			write_c("%s%s* w;\n", indent(), last_group->subclass());
+		
+		for (Fl_Type* q = first_child; q; q = q->next_brother) 
+			q->write_code();
+		
+		if (ismain()) {
+			if (havewidgets) write_c("%sw->show(argc, argv);\n", get_indent_string(1));
+			write_c("%sreturn %s%sFl::run()%s;\n", get_indent_string(1),
+					gno_space_parens ? "" : " ",
+					galways_return_parens ? "(" : "", galways_return_parens ? ")" : "");
+		} else if (havewidgets && !constructor && !return_type)
+			write_c("%sreturn %s%sw%s;\n", get_indent_string(1), 
+					gno_space_parens ? "" : " ",
+					galways_return_parens ? "(" : "", galways_return_parens ? ")" : "");
+		
+		write_c("}\n");
+		indentation -= 2;
+		if (indentation < 0) indentation = 0;
+	}
 }
 
 ////////////////////////////////////////////////////////////////
@@ -378,7 +401,7 @@ class Fl_Code_Type : public Fl_Type {
 public:
   Fl_Type *make();
   void write_code();
-  void write_static();
+  void write_static(int type);
   void open();
   virtual const char *type_name() const {return "code";}
   int is_code_block() const {return 0;}
@@ -398,50 +421,58 @@ Fl_Type *Fl_Code_Type::make() {
   return o;
 }
 
-void Fl_Code_Type::open() {
-  if (!code_panel) {
-    make_code_panel();
-    code_panel_ok->callback(ok_callback);
-    code_panel_cancel->callback(cancel_callback);
-  }
+void Fl_Code_Type::open() 
+{
+	if (!code_panel) {
+		make_code_panel();
+		code_panel_ok->callback(ok_callback);
+		code_panel_cancel->callback(cancel_callback);
+	}
 
-  code_input->buffer()->text(name());//static_value(name());
+	code_input->buffer()->text(name());//value(name());
 
-  const char* message = 0;
-  for (;;) { // repeat as long as there are errors
-    if (message) fl_alert(message);
-    if (!code_panel->exec()) break;
-    const char*c = code_input->buffer()->text();//value();
-    message = c_check(c); if (message) continue;
-    name(c);
-    break;
-  }
-  code_panel->hide();
-  delete code_panel;
-  code_panel = NULL;
+	const char* message = 0;
+	for (;;) { // repeat as long as there are errors
+		if (message) fl_alert(message);
+		if (!code_panel->exec()) break;
+		const char*c = code_input->buffer()->text();//value();
+		message = c_check(c); if (message) continue;
+		name(c);
+		break;
+	}
+	code_panel->hide();
+	delete code_panel;
+	code_panel = NULL;
 }
 
 Fl_Code_Type Fl_Code_type;
 
-void Fl_Code_Type::write_code() {
-  const char* c = name();
-  if (!c) return;
-  //write_c("%s%s\n", indent(), c);
-  write_code_block((char *)c);
-  for (Fl_Type* q = first_child; q; q = q->next_brother) q->write_code();
+void Fl_Code_Type::write_code() 
+{
+	if(name().empty()) return;
+	//write_c("%s%s\n", indent(), c);
+	write_code_block(name());
+	for (Fl_Type* q = first_child; q; q = q->next_brother) q->write_code();
 }
 
-void Fl_Code_Type::write_static() {
-  const char* c = name();
-  if (!c) return;
-  //write_c("%s%s\n", indent(), c);
-  write_includes_from_code((char *)c);
+void Fl_Code_Type::write_static(int type) 
+{
+	if(name().empty()) return;
+
+	switch(type) {
+	case DIRECTIVES:
+		write_includes_from_code(name());	break;
+	case FUNCTIONS:
+		write_externs_from_code(name());	break;
+	default:
+		break;
+	}
 }
 
 ////////////////////////////////////////////////////////////////
 
 class Fl_CodeBlock_Type : public Fl_Type {
-  const char* after;
+  Fl_String after;
 public:
   Fl_Type *make();
   void write_code();
@@ -450,75 +481,82 @@ public:
   int is_code_block() const {return 1;}
   int is_parent() const {return 1;}
   void write_properties();
-  void read_property(const char *);
+  void read_property(const Fl_String &c);
 };
 
-Fl_Type *Fl_CodeBlock_Type::make() {
-  Fl_Type *p = Fl_Type::current;
-  while (p && !p->is_code_block()) p = p->parent;
-  if (!p) {
-    fl_message("Please select a function");
-    return 0;
-  }
-  Fl_CodeBlock_Type *o = new Fl_CodeBlock_Type();
-  o->name("if (test())");
-  o->after = 0;
-  o->add(p);
-  o->factory = this;
-  return o;
+Fl_Type *Fl_CodeBlock_Type::make() 
+{
+	Fl_Type *p = Fl_Type::current;
+	while (p && !p->is_code_block()) p = p->parent;
+	if (!p) {
+		fl_message("Please select a function");
+		return 0;
+	}
+	Fl_CodeBlock_Type *o = new Fl_CodeBlock_Type();
+	o->name("if (test())");
+	o->add(p);
+	o->factory = this;
+	return o;
 }
 
-void Fl_CodeBlock_Type::write_properties() {
-  Fl_Type::write_properties();
-  if (after) {
-    write_string("after");
-    write_word(after);
-  }
+void Fl_CodeBlock_Type::write_properties() 
+{
+	Fl_Type::write_properties();
+	if (!after.empty()) {
+		write_string("after");
+		write_word(after);
+	}
 }
 
-void Fl_CodeBlock_Type::read_property(const char *c) {
-  if (!strcmp(c,"after")) {
-    storestring(read_word(),after);
-  } else {
-    Fl_Type::read_property(c);
-  }
+void Fl_CodeBlock_Type::read_property(const Fl_String &c) 
+{
+	if (c=="after") {
+		storestring(read_word(), after);
+	} else {
+		Fl_Type::read_property(c);
+	}
 }
 
-void Fl_CodeBlock_Type::open() {
-  if (!codeblock_panel) {
-    make_codeblock_panel();
-    codeblock_panel_ok->callback(ok_callback);
-    codeblock_panel_cancel->callback(cancel_callback);
-  }
-  code_before_input->static_value(name());
-  code_after_input->static_value(after);
-  const char* message = 0;
-  for (;;) { // repeat as long as there are errors
-    if (message) fl_alert(message);
-    if (!codeblock_panel->exec()) break;
-    const char*c = code_before_input->value();
-    message = c_check(c); if (message) continue;
-    name(c);
-    c = code_after_input->value();
-    message = c_check(c); if (message) continue;
-    storestring(c, after);
-    break;
-  }
-  codeblock_panel->hide();
-  delete codeblock_panel;
-  codeblock_panel = NULL;
+void Fl_CodeBlock_Type::open() 
+{
+	if (!codeblock_panel) {
+		make_codeblock_panel();
+		codeblock_panel_ok->callback(ok_callback);
+		codeblock_panel_cancel->callback(cancel_callback);
+	}
+	code_before_input->value(name());
+	code_after_input->value(after);
+	const char* message = 0;
+	for (;;) { // repeat as long as there are errors
+		if (message) fl_alert(message);
+		if (!codeblock_panel->exec()) break;
+		const char*c = code_before_input->value();
+		message = c_check(c); 
+		if (message) continue;
+		name(c);
+		c = code_after_input->value();
+		message = c_check(c); 
+		if (message) continue;
+		storestring(c, after);
+		break;
+	}
+	codeblock_panel->hide();
+	delete codeblock_panel;
+	codeblock_panel = NULL;
 }
 
 Fl_CodeBlock_Type Fl_CodeBlock_type;
 
-void Fl_CodeBlock_Type::write_code() {
-  const char* c = name();
-  write_c("%s%s%s", indent(), c ? c : "", get_opening_brace(0));
-  indentation += 2;
-  for (Fl_Type* q = first_child; q; q = q->next_brother) q->write_code();
-  indentation -= 2;
-  if (after) write_c("%s} %s\n", indent(), after);
-  else write_c("%s}\n", indent());
+void Fl_CodeBlock_Type::write_code() 
+{
+	write_c("%s%s%s", indent(), name().c_str(), get_opening_brace(0));
+	indentation += 2;
+  
+	for (Fl_Type* q = first_child; q; q = q->next_brother) q->write_code();
+	indentation -= 2;
+
+	if(!after.empty())	write_c("%s} %s\n", indent(), after);
+	else				write_c("%s}\n", indent());
 }
 
 ////////////////////////////////////////////////////////////////
@@ -531,105 +569,118 @@ public:
   void open();
   virtual const char *type_name() const {return "decl";}
   void write_properties();
-  void read_property(const char *);
+  void read_property(const Fl_String &c);
+
+  int is_decl() const { return 1; }
 };
 
-Fl_Type *Fl_Decl_Type::make() {
-  Fl_Type *p = Fl_Type::current;
-  while (p && !p->is_decl_block()) p = p->parent;
-  Fl_Decl_Type *o = new Fl_Decl_Type();
-  o->public_ = 0;
-  o->name("int x;");
-  o->add(p);
-  o->factory = this;
-  return o;
+Fl_Type *Fl_Decl_Type::make() 
+{
+	Fl_Type *p = Fl_Type::current;
+	while (p && !p->is_decl_block()) p = p->parent;
+	Fl_Decl_Type *o = new Fl_Decl_Type();
+	o->public_ = 0;
+	o->name("int x;");
+	o->add(p);
+	o->factory = this;
+	return o;
 }
 
-void Fl_Decl_Type::write_properties() {
-  Fl_Type::write_properties();
-  if (public_) write_string("public");
+void Fl_Decl_Type::write_properties() 
+{
+	Fl_Type::write_properties();
+	if (public_) write_string("public");
 }
 
-void Fl_Decl_Type::read_property(const char *c) {
-  if (!strcmp(c,"public")) {
-    public_ = 1;
-  } else {
-    Fl_Type::read_property(c);
-  }
+void Fl_Decl_Type::read_property(const Fl_String &c) 
+{
+	if(c=="public") {
+		public_ = 1;
+	} else {
+	    Fl_Type::read_property(c);
+	}
 }
 
-void Fl_Decl_Type::open() {
-  if (!decl_panel) {
-    make_decl_panel();
-    decl_panel_ok->callback(ok_callback);
-    decl_panel_cancel->callback(cancel_callback);
-  }
-  decl_input->static_value(name());
-  decl_public_button->value(public_);
-  const char* message = 0;
-  for (;;) { // repeat as long as there are errors
-    if (message) fl_alert(message);
-    if (!decl_panel->exec()) break;
-    const char*c = decl_input->value();
-    while (isspace(*c)) c++;
-    message = c_check(c&&c[0]=='#' ? c+1 : c);
-    if (message) continue;
-    name(c);
-    public_ = decl_public_button->value();
-    break;
-  }
-  decl_panel->hide();
-  delete decl_panel;
-  decl_panel = NULL;
+void Fl_Decl_Type::open() 
+{
+	if (!decl_panel) {
+		make_decl_panel();
+		decl_panel_ok->callback(ok_callback);
+		decl_panel_cancel->callback(cancel_callback);
+	}
+	decl_input->value(name());
+	decl_public_button->value(public_);
+	const char* message = 0;
+	for (;;) { // repeat as long as there are errors
+		if (message) fl_alert(message);
+		if (!decl_panel->exec()) break;
+		const char*c = decl_input->value();
+		while (isspace(*c)) c++;
+		message = c_check(c&&c[0]=='#' ? c+1 : c);
+		if (message) continue;
+		name(c);
+		public_ = decl_public_button->value();
+		break;
+	}
+	decl_panel->hide();
+	delete decl_panel;
+	decl_panel = NULL;
 }
 
 Fl_Decl_Type Fl_Decl_type;
 
-void Fl_Decl_Type::write_code() {
-  const char* c = name();
-  if (!c) return;
-  // handle putting #include or extern or typedef into decl:
-  if (!isalpha(*c) && *c != '~'
-      || !strncmp(c,"extern",6) && isspace(c[6])
-      || !strncmp(c,"class",5) && isspace(c[5])
-      || !strncmp(c,"typedef",7) && isspace(c[7])
-//    || !strncmp(c,"struct",6) && isspace(c[6])
+void Fl_Decl_Type::write_code() 
+{
+	if(name().empty()) return;
+	
+	// handle putting #include or extern or typedef into decl:
+	if (!isalpha(name()[0]) && name()[0] != '~'
+		|| !strncmp(name(),"extern",6) && isspace(name()[6])
+		|| !strncmp(name(),"class",5) && isspace(name()[5])
+		|| !strncmp(name(),"typedef",7) && isspace(name()[7])
+		//|| !strncmp(c,"struct",6) && isspace(c[6])
       ) {
-    if (public_)
-      write_h("%s\n", c);
-    else
-      write_c("%s\n", c);
-    return;
-  }
-  // lose all trailing semicolons so I can add one:
-  const char* e = c+strlen(c);
-  while (e>c && e[-1]==';') e--;
-  if (member_of()) {
-    write_public(public_);
-    write_h("%s%.*s;\n", get_indent_string(1), e-c, c);
-  } else {
-    if (public_) {
-      write_h("extern %.*s;\n", e-c, c);
-      write_c("%.*s;\n", e-c, c);
-    } else {
-      write_c("static %.*s;\n", e-c, c);
-    }
-  }
+		if (public_)
+			write_h("%s\n", name().c_str());
+		else
+			write_c("%s\n", name().c_str());
+		return;
+	}
+  
+	Fl_String decl = name().trim();
 
-  for (Fl_Type* q = first_child; q; q = q->next_brother) q->write_code();
+	// Strip trailing ;'s
+	for(int n=decl.length()-1; n>=0; n--) {
+		if(decl[n]==';') decl[n] = '\0';
+	}
+	if(decl[0]=='\0') return;
+
+	if (member_of()) {
+		write_public(public_);
+		write_h("%s%s;\n", get_indent_string(1), decl.c_str());
+	} else {
+		if (public_) {
+			write_h("extern %s;\n", decl.c_str());
+			write_c("%s;\n", decl.c_str());
+		} else {
+			write_c("static %s;\n", decl.c_str());
+		}
+	}
+
+	for (Fl_Type* q = first_child; q; q = q->next_brother) q->write_code();
 }
 
 ////////////////////////////////////////////////////////////////
 
 class Fl_DeclBlock_Type : public Fl_Type {
-  const char* after;
+  Fl_String after;
 public:
   Fl_Type *make();
   void write_code();
   void open();
   virtual const char *type_name() const {return "declblock";}
   void write_properties();
-  void read_property(const char *);
+  void read_property(const Fl_String &c);
   int is_parent() const {return 1;}
   int is_decl_block() const {return 1;}
 };
@@ -651,12 +702,13 @@ void Fl_DeclBlock_Type::write_properties() {
   write_word(after);
 }
 
-void Fl_DeclBlock_Type::read_property(const char *c) {
-  if (!strcmp(c,"after")) {
-    storestring(read_word(),after);
-  } else {
-    Fl_Type::read_property(c);
-  }
+void Fl_DeclBlock_Type::read_property(const Fl_String &c) 
+{
+	if (c=="after") {
+		storestring(read_word(),after);
+	} else {
+		Fl_Type::read_property(c);
+	}
 }
 
 void Fl_DeclBlock_Type::open() {
@@ -665,8 +717,8 @@ void Fl_DeclBlock_Type::open() {
     declblock_panel_ok->callback(ok_callback);
     declblock_panel_cancel->callback(cancel_callback);
   }
-  decl_before_input->static_value(name());
-  decl_after_input->static_value(after);
+  decl_before_input->value(name());
+  decl_after_input->value(after);
   const char* message = 0;
   for (;;) { // repeat as long as there are errors
     if (message) fl_alert(message);
@@ -690,17 +742,21 @@ void Fl_DeclBlock_Type::open() {
 
 Fl_DeclBlock_Type Fl_DeclBlock_type;
 
-void Fl_DeclBlock_Type::write_code() {
-  const char* c = name();
-  if (c) write_c("%s\n", c);
-  for (Fl_Type* q = first_child; q; q = q->next_brother) q->write_code();
-  if (after) write_c("%s\n", after);
+void Fl_DeclBlock_Type::write_code() 
+{
+	if(!name().empty())
+		write_c("%s\n", name().c_str());
+
+	for (Fl_Type* q = first_child; q; q = q->next_brother) q->write_code();
+	
+	if(!after.empty()) 
+		write_c("%s\n", after.c_str());
 }
 
 ////////////////////////////////////////////////////////////////
 
 class Fl_Class_Type : public Fl_Type {
-  const char* subclass_of;
+  Fl_String subclass_of;
   char public_;
 public:
   // state variables for output:
@@ -715,112 +771,120 @@ public:
   int is_decl_block() const {return 1;}
   int is_class() const {return 1;}
   void write_properties();
-  void read_property(const char *);
+  void read_property(const Fl_String &c);
 };
 
 // Return the class that this is a member of, or null if this is not
 // a member of a class. If need_nest is true then a fully-qualified
 // name (ie foo::bar::baz) of nested classes is returned, you need this
 // if you actually want to print the class.
-const char* Fl_Type::member_of(bool need_nest) const {
-  Fl_Type* p = parent;
-  while (p) {
-    if (p->is_class()) {
-      if (!need_nest) return p->name();
-      // see if we are nested in another class, we must fully-qualify name:
-      // this is lame but works...
-      const char* q = p->member_of(true);
-      if (!q) return p->name();
-      static char buffer[256];
-      if (q != buffer) strcpy(buffer, q);
-      strcat(buffer, "::");
-      strcat(buffer, p->name());
-      return buffer;
-    }
-    p = p->parent;
-  }
-  return 0;
+const char* Fl_Type::member_of(bool need_nest) const 
+{
+	Fl_Type* p = parent;
+	while (p) {
+		if (p->is_class()) {
+			if (!need_nest) return p->name();
+			// see if we are nested in another class, we must fully-qualify name:
+			// this is lame but works...
+			const char* q = p->member_of(true);
+			if (!q) return p->name();
+			
+			static char buffer[256];
+			if (q != buffer) strcpy(buffer, q);
+			strcat(buffer, "::");
+			strcat(buffer, p->name());
+			return buffer;
+		}
+		p = p->parent;
+	}
+	return 0;
 }
 
-Fl_Type *Fl_Class_Type::make() {
-  Fl_Type *p = Fl_Type::current;
-  while (p && !p->is_decl_block()) p = p->parent;
-  Fl_Class_Type *o = new Fl_Class_Type();
-  o->name("UserInterface");
-  o->subclass_of = 0;
-  o->public_ = 1;
-  o->add(p);
-  o->factory = this;
-  return o;
+Fl_Type *Fl_Class_Type::make() 
+{
+	Fl_Type *p = Fl_Type::current;
+	while (p && !p->is_decl_block()) p = p->parent;
+	Fl_Class_Type *o = new Fl_Class_Type();
+	o->name("UserInterface");
+	o->public_ = 1;
+	o->add(p);
+	o->factory = this;
+	return o;
 }
 
-void Fl_Class_Type::write_properties() {
-  Fl_Type::write_properties();
-  if (subclass_of) {
-    write_string(":");
-    write_word(subclass_of);
-  }
-  if (!public_) write_string("private");
+void Fl_Class_Type::write_properties() 
+{
+	Fl_Type::write_properties();
+	if(!subclass_of.empty()) {
+		write_string(":");
+		write_word(subclass_of);
+	}
+	if (!public_) write_string("private");
 }
 
-void Fl_Class_Type::read_property(const char *c) {
-  if (!strcmp(c,"private")) {
-    public_ = 0;
-  } else if (!strcmp(c,":")) {
-    storestring(read_word(), subclass_of);
-  } else {
-    Fl_Type::read_property(c);
-  }
+void Fl_Class_Type::read_property(const Fl_String &c) 
+{
+	if (!strcmp(c,"private")) {
+		public_ = 0;
+	} else if (!strcmp(c,":")) {
+		storestring(read_word(), subclass_of);
+	} else {
+		Fl_Type::read_property(c);
+	}
 }
 
-void Fl_Class_Type::open() {
-  if (!class_panel) {
-    make_class_panel();
-    c_panel_ok->callback(ok_callback);
-    c_panel_cancel->callback(cancel_callback);
-  }
-  c_name_input->static_value(name());
-  c_subclass_input->static_value(subclass_of);
-  c_public_button->value(public_);
-  const char* message = 0;
-  for (;;) { // repeat as long as there are errors
-    if (message) fl_alert(message);
-    if (!class_panel->exec()) break;
-    const char*c = c_name_input->value();
-    while (isspace(*c)) c++;
-    if (!*c) goto OOPS;
-    while (is_id(*c)) c++;
-    while (isspace(*c)) c++;
-    if (*c) {OOPS: message = "class name must be C++ identifier"; continue;}
-    c = c_subclass_input->value();
-    message = c_check(c); if (message) continue;
-    name(c_name_input->value());
-    storestring(c, subclass_of);
-    public_ = c_public_button->value();
-    break;
-  }
-  class_panel->hide();
-  delete class_panel;
-  class_panel = NULL;
+void Fl_Class_Type::open() 
+{
+	if (!class_panel) {
+		make_class_panel();
+		c_panel_ok->callback(ok_callback);
+		c_panel_cancel->callback(cancel_callback);
+	}
+	c_name_input->value(name());
+	c_subclass_input->value(subclass_of);
+	c_public_button->value(public_);
+	const char* message = 0;
+	for (;;) { // repeat as long as there are errors
+		if (message) fl_alert(message);
+		if (!class_panel->exec()) break;
+		const char*c = c_name_input->value();
+		while (isspace(*c)) c++;
+		if (!*c) goto OOPS;
+		while (is_id(*c)) c++;
+		while (isspace(*c)) c++;
+		if (*c) {OOPS: message = "class name must be C++ identifier"; continue;}
+		c = c_subclass_input->value();
+		message = c_check(c); if (message) continue;
+		name(c_name_input->value());
+		storestring(c, subclass_of);
+		public_ = c_public_button->value();
+		break;
+	}
+	class_panel->hide();
+	delete class_panel;
+	class_panel = NULL;
 }
 
 Fl_Class_Type Fl_Class_type;
 
 static Fl_Class_Type *current_class;
 extern int varused_test;
-void write_public(int state) {
-  if (!current_class || varused_test) return;
-  if (current_class->write_public_state == state) return;
-  current_class->write_public_state = state;
-  write_h(state ? "public:\n" : "private:\n");
+
+void write_public(int state) 
+{
+	if (!current_class || varused_test) return;
+	if (current_class->write_public_state == state) return;
+	
+	current_class->write_public_state = state;
+	write_h(state ? "public:\n" : "private:\n");
 }
 
 void Fl_Class_Type::write_code() {
   parent_class = current_class;
   current_class = this;
   write_public_state = 0;
-  write_h("\nclass %s ", name());
-  if (subclass_of) write_h(": %s ", subclass_of);
+  write_h("\nclass %s ", name().c_str());
+  if (!subclass_of.empty()) write_h(": %s ", subclass_of.c_str());
   write_h("%s", get_opening_brace(1));
   for (Fl_Type* q = first_child; q; q = q->next_brother) q->write_code();
   write_h("};\n");

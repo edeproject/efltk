@@ -656,7 +656,7 @@ void Fl_Window_Type::write_properties() {
 }
 
 extern int pasteoffset;
-void Fl_Window_Type::read_property(const char *c) {
+void Fl_Window_Type::read_property(const Fl_String &c) {
   if (!strcmp(c,"modal")) {
     modal = 1;
   } else if (!strcmp(c,"non_modal")) {
@@ -673,25 +673,6 @@ void Fl_Window_Type::read_property(const char *c) {
   } else {
     Fl_Widget_Type::read_property(c);
   }
-}
-
-int Fl_Window_Type::read_fdesign(const char* name, const char* value) {
-  int x;
-  o->box(FL_NO_BOX); // because fdesign always puts an Fl_Box next
-  if (!strcmp(name,"Width")) {
-    if (sscanf(value,"%d",&x) == 1) o->size(x,o->h());
-  } else if (!strcmp(name,"Height")) {
-    if (sscanf(value,"%d",&x) == 1) o->size(o->w(),x);
-  } else if (!strcmp(name,"NumberofWidgets")) {
-    return 1; // we can figure out count from file
-  } else if (!strcmp(name,"border")) {
-    if (sscanf(value,"%d",&x) == 1) border = x;
-  } else if (!strcmp(name,"title")) {
-    label(value);
-  } else {
-    return Fl_Widget_Type::read_fdesign(name,value);
-  }
-  return 1;
 }
 
 //

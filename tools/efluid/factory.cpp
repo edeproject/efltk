@@ -184,6 +184,7 @@ static Fl_Round_Button_Type Fl_Round_Button_type;
 ////////////////////////////////////////////////////////////////
 
 #include <efltk/Fl_Input.h>
+
 static const Enumeration input_type_menu[] = {
   {"Normal",	0,	(void*)Fl_Input::NORMAL},
   {"Float",	0,	(void*)1,			"Fl_Float_Input"},
@@ -192,7 +193,8 @@ static const Enumeration input_type_menu[] = {
   {"Multiline",	0,	(void*)Fl_Input::MULTILINE,	"Fl_Multiline_Input"},
   {"Wordwrap",	0,	(void*)(Fl_Input::MULTILINE|Fl_Input::WORDWRAP),	"Fl_Wordwrap_Input"},
   {0}};
-class Fl_Input_Type : public Fl_Widget_Type {
+
+  class Fl_Input_Type : public Fl_Widget_Type {
   int is_input() const {return 1;}
   const Enumeration *subtypes() const {return input_type_menu;}
 public:
@@ -556,154 +558,6 @@ Fl_Type *Fl_Type_make(const char *tn, Fl_Menu_Item* menu) {
 
 Fl_Type *Fl_Type_make(const char *tn) {
   return Fl_Type_make(tn, New_Menu);
-}
-
-#include <efltk/Fl_Browser.h>
-
-////////////////////////////////////////////////////////////////
-
-// Since I have included all the .h files, do this table here:
-
-// This table is only used for back compatability with XForms fdesign files,
-// there should be no need to add to it in future versions of fluid.
-
-struct symbol {const char *name; int value;};
-
-static symbol table[] = {
-  {"BLACK",	FL_BLACK},
-  {"RED",	FL_RED},
-  {"GREEN",	FL_GREEN},
-  {"YELLOW",	FL_YELLOW},
-  {"BLUE",	FL_BLUE},
-  {"MAGENTA",	FL_MAGENTA},
-  {"CYAN",	FL_CYAN},
-  {"WHITE",	FL_WHITE},
-
-  {"LCOL",		FL_BLACK},
-  {"COL1",		FL_GRAY},
-  {"MCOL",		51},
-  {"LEFT_BCOL",		55},
-  {"TOP_BCOL",		53},
-  {"BOTTOM_BCOL",	45},
-  {"RIGHT_BCOL",	39},
-  {"INACTIVE",		FL_INACTIVE_COLOR},
-  {"INACTIVE_COL",	FL_INACTIVE_COLOR},
-  {"FREE_COL1",		16},
-  {"FREE_COL2",		17},
-  {"FREE_COL3",		18},
-  {"FREE_COL4",		19},
-  {"FREE_COL5",		20},
-  {"FREE_COL6",		21},
-  {"FREE_COL7",		22},
-  {"FREE_COL8",		23},
-  {"FREE_COL9",		24},
-  {"FREE_COL10",	25},
-  {"FREE_COL11",	26},
-  {"FREE_COL12",	27},
-  {"FREE_COL13",	28},
-  {"FREE_COL14",	29},
-  {"FREE_COL15",	30},
-  {"FREE_COL16",	31},
-  {"TOMATO",		131},
-  {"INDIANRED",		164},
-  {"SLATEBLUE",		195},
-  {"DARKGOLD",		84},
-  {"PALEGREEN",		157},
-  {"ORCHID",		203},
-  {"DARKCYAN",		189},
-  {"DARKTOMATO",	113},
-  {"WHEAT",		174},
-
-  {"ALIGN_CENTER",	FL_ALIGN_CENTER},
-  {"ALIGN_TOP",		FL_ALIGN_TOP},
-  {"ALIGN_BOTTOM",	FL_ALIGN_BOTTOM},
-  {"ALIGN_LEFT",	FL_ALIGN_LEFT},
-  {"ALIGN_RIGHT",	FL_ALIGN_RIGHT},
-  {"ALIGN_INSIDE",	FL_ALIGN_INSIDE},
-  {"ALIGN_TOP_LEFT",	 FL_ALIGN_TOP | FL_ALIGN_LEFT},
-  {"ALIGN_TOP_RIGHT",	 FL_ALIGN_TOP | FL_ALIGN_RIGHT},
-  {"ALIGN_BOTTOM_LEFT",	 FL_ALIGN_BOTTOM | FL_ALIGN_LEFT},
-  {"ALIGN_BOTTOM_RIGHT", FL_ALIGN_BOTTOM | FL_ALIGN_RIGHT},
-  {"ALIGN_CENTER|FL_ALIGN_INSIDE",	FL_ALIGN_CENTER|FL_ALIGN_INSIDE},
-  {"ALIGN_TOP|FL_ALIGN_INSIDE",		FL_ALIGN_TOP|FL_ALIGN_INSIDE},
-  {"ALIGN_BOTTOM|FL_ALIGN_INSIDE",	FL_ALIGN_BOTTOM|FL_ALIGN_INSIDE},
-  {"ALIGN_LEFT|FL_ALIGN_INSIDE",	FL_ALIGN_LEFT|FL_ALIGN_INSIDE},
-  {"ALIGN_RIGHT|FL_ALIGN_INSIDE",	FL_ALIGN_RIGHT|FL_ALIGN_INSIDE},
-  {"ALIGN_INSIDE|FL_ALIGN_INSIDE",	FL_ALIGN_INSIDE|FL_ALIGN_INSIDE},
-  {"ALIGN_TOP_LEFT|FL_ALIGN_INSIDE",	FL_ALIGN_TOP|FL_ALIGN_LEFT|FL_ALIGN_INSIDE},
-  {"ALIGN_TOP_RIGHT|FL_ALIGN_INSIDE",	FL_ALIGN_TOP|FL_ALIGN_RIGHT|FL_ALIGN_INSIDE},
-  {"ALIGN_BOTTOM_LEFT|FL_ALIGN_INSIDE",	FL_ALIGN_BOTTOM|FL_ALIGN_LEFT|FL_ALIGN_INSIDE},
-  {"ALIGN_BOTTOM_RIGHT|FL_ALIGN_INSIDE",FL_ALIGN_BOTTOM|FL_ALIGN_RIGHT|FL_ALIGN_INSIDE},
-
-  {"ALIGN_LEFT_TOP",	 FL_ALIGN_TOP | FL_ALIGN_LEFT},
-  {"ALIGN_RIGHT_TOP",	 FL_ALIGN_TOP | FL_ALIGN_RIGHT},
-  {"ALIGN_LEFT_BOTTOM",	 FL_ALIGN_BOTTOM | FL_ALIGN_LEFT},
-  {"ALIGN_RIGHT_BOTTOM", FL_ALIGN_BOTTOM | FL_ALIGN_RIGHT},
-  {"INVALID_STYLE",	 255},
-  {"NORMAL_STYLE",	 0},
-  {"BOLD_STYLE",	 1},
-  {"ITALIC_STYLE",	 2},
-  {"BOLDITALIC_STYLE",	 3},
-  {"FIXED_STYLE",	 4},
-  {"FIXEDBOLD_STYLE",	 5},
-  {"FIXEDITALIC_STYLE",	 6},
-  {"FIXEDBOLDITALIC_STYLE",  7},
-  {"TIMES_STYLE",	 8},
-  {"TIMESBOLD_STYLE",	 9},
-  {"TIMESITALIC_STYLE",	 10},
-  {"TIMESBOLDITALIC_STYLE",  11},
-//   {"SHADOW_STYLE",	0x100
-//   {"ENGRAVED_STYLE",	0x200
-//   {"EMBOSSED_STYLE",	0x300
-  {"TINY_SIZE",		8},
-  {"SMALL_SIZE",	11},
-  {"NORMAL_SIZE",	12},
-  {"MEDIUM_SIZE",	18},
-  {"LARGE_SIZE",	24},
-  {"HUGE_SIZE",		32},
-  {"DEFAULT_SIZE",	12},
-  {"TINY_FONT",		8},
-  {"SMALL_FONT",	11},
-  {"NORMAL_FONT",	12},
-  {"MEDIUM_FONT",	18},
-  {"LARGE_FONT",	24},
-  {"HUGE_FONT",		32},
-  {"NORMAL_FONT1",	11},
-  {"NORMAL_FONT2",	12},
-  {"DEFAULT_FONT",	11},
-  {"RETURN_END_CHANGED",0},
-  {"RETURN_CHANGED",	1},
-  {"RETURN_END",	2},
-  {"RETURN_ALWAYS",	3},
-  {"PUSH_BUTTON",	Fl_Button::TOGGLE},
-  {"RADIO_BUTTON",	Fl_Button::RADIO},
-  {"HIDDEN_BUTTON",	Fl_Button::HIDDEN},
-  {"SELECT_BROWSER",	Fl_Browser::NORMAL},
-  {"HOLD_BROWSER",	Fl_Browser::NORMAL},
-  {"MULTI_BROWSER",	Fl_Browser::MULTI},
-  //  {"SIMPLE_COUNTER",	Fl_Counter::SIMPLE},
-  {"LINE_DIAL",		Fl_Dial::LINE},
-  {"FILL_DIAL",		Fl_Dial::FILL},
-  {"VERT_SLIDER",	Fl_Slider::VERTICAL},
-  {"HOR_SLIDER",	Fl_Slider::HORIZONTAL},
-  {"VERT_FILL_SLIDER",	Fl_Slider::VERTICAL},
-  {"HOR_FILL_SLIDER",	Fl_Slider::HORIZONTAL},
-  {"VERT_NICE_SLIDER",	Fl_Slider::VERTICAL},
-  {"HOR_NICE_SLIDER",	Fl_Slider::HORIZONTAL},
-};
-
-#include <stdlib.h>
-
-int lookup_symbol(const char *name, int &v, int numberok) {
-  if (name[0]=='F' && name[1]=='L' && name[2]=='_') name += 3;
-  for (int i=0; i < int(sizeof(table)/sizeof(*table)); i++)
-    if (!strcasecmp(name,table[i].name)) {v = table[i].value; return 1;}
-  if (numberok) {
-    char* p;
-    v = strtol(name, &p, 0);
-    if (!*p && p > name) return 1;
-  }
-  return 0;
 }
 
 //

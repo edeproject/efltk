@@ -1,4 +1,4 @@
-# data file for the FLTK User Interface Designer (FLUID)
+# data file for the eFLTK User Interface Designer (eFLUID)
 version 2.0003 
 images_dir ./ 
 i18n 
@@ -10,7 +10,7 @@ snap 2
 Function {make_widget_panel()} {open
 } {
   Fl_Window {} {open
-    xywh {205 168 380 405}
+    xywh {531 140 380 405}
     extra_code {\#include <efltk/Fl_WM.h>
 o->window_type(Fl_WM::UTIL);
 o->size_range(o->w(), o->h());} visible
@@ -23,7 +23,7 @@ o->size_range(o->w(), o->h());} visible
       Fl_Group {} {
         label GUI
         callback propagate_group open
-        xywh {1 23 378 329}
+        xywh {1 24 378 328}
         extra_code {o->parent()->resizable(o);}
       } {
         Fl_Input {} {
@@ -47,23 +47,23 @@ o->size_range(o->w(), o->h());} visible
         }
         Fl_Box image_label {
           label Image
-          xywh {9 55 71 22} align 24
+          xywh {9 55 71 22} align FL_ALIGN_RIGHT|FL_ALIGN_INSIDE
         }
         Fl_Button {} {
           label {Image name}
           callback image_cb
           tooltip {Select an image to label the widget}
-          xywh {80 54 215 22} align 84 box DOWN_BOX color 7
+          xywh {80 54 215 22} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE box DOWN_BOX color 7
         }
         Fl_Check_Button include_image_button {
           label inline
           callback image_inlined_cb
           tooltip {The image data is inserted as inline data into the output C++ code, rather than generating code to read the image file.}
-          xywh {300 54 72 22} align 84 label_size 10
+          xywh {300 54 72 22} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE label_size 10
         }
         Fl_Box {} {
           label Alignment
-          xywh {10 77 70 22} align 24
+          xywh {10 77 70 22} align FL_ALIGN_RIGHT|FL_ALIGN_INSIDE
         }
         Fl_Button {} {
           label {@-1<-}
@@ -98,7 +98,7 @@ o->size_range(o->w(), o->h());} visible
           user_data FL_ALIGN_INSIDE
           callback align_cb
           tooltip {Places label inside the widget}
-          xywh {170 79 40 20} type TOGGLE label_type SYMBOL_LABEL
+          xywh {165 79 45 20} type TOGGLE label_type SYMBOL_LABEL
         }
         Fl_Button {} {
           label clip
@@ -118,25 +118,25 @@ o->size_range(o->w(), o->h());} visible
           label x
           callback x_cb
           tooltip {The x coordinate of the widget.}
-          xywh {80 125 57 22} align 20 label_size 10 maximum 2000 step 1 value 10
+          xywh {80 125 57 22} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE label_size 10 maximum 2000 step 1 value 10
         }
         Fl_Value_Input widget_y {
           label y
           callback y_cb
           tooltip {The y coordinate of the widget.}
-          xywh {137 125 57 22} align 20 label_size 10 maximum 2000 step 1 value 10
+          xywh {137 125 57 22} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE label_size 10 maximum 2000 step 1 value 10
         }
         Fl_Value_Input widget_width {
           label w
           callback width_cb
           tooltip {The width of the widget.}
-          xywh {194 125 57 22} align 20 label_size 10 maximum 2000 step 1 value 10
+          xywh {194 125 57 22} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE label_size 10 maximum 2000 step 1 value 10
         }
         Fl_Value_Input widget_height {
           label h
           callback height_cb
           tooltip {The height of the widget.}
-          xywh {251 125 57 22} align 20 label_size 10 maximum 2000 step 1 value 10
+          xywh {251 125 57 22} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE label_size 10 maximum 2000 step 1 value 10
         }
         Fl_Check_Button {} {
           label Border
@@ -166,19 +166,19 @@ o->size_range(o->w(), o->h());} visible
           label value
           callback value_cb
           tooltip {The initial value of this widget}
-          xywh {80 150 90 22} align 20 label_size 10
+          xywh {80 150 90 22} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE label_size 10
         }
         Fl_Value_Input {} {
           label min
           callback min_cb
           tooltip {The minimum value for this valuator}
-          xywh {175 150 90 22} align 20 label_size 10
+          xywh {175 150 90 22} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE label_size 10
         }
         Fl_Value_Input {} {
           label max
           callback max_cb
           tooltip {The maximum value for this valuator}
-          xywh {270 150 100 22} align 20 label_size 10 value 1
+          xywh {270 150 100 22} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE label_size 10 value 1
         }
         Fl_Value_Input {} {
           label step
@@ -186,50 +186,50 @@ o->size_range(o->w(), o->h());} visible
           tooltip {step:
 Round all movements to multiples of this.
 }
-          xywh {80 175 90 22} align 20 label_size 10
+          xywh {80 175 90 22} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE label_size 10
         }
         Fl_Value_Input {} {
           label line
           callback line_cb
           tooltip {linesize:
 Increment/decrement for arrow keys.}
-          xywh {175 175 90 22} align 20 label_size 10 minimum 1 step 1
+          xywh {175 175 90 22} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE label_size 10 minimum 1 step 1
         }
         Fl_Value_Input {} {
           label size
           callback slider_size_cb
           tooltip {The size of the scroller}
-          xywh {270 175 100 22} align 20 label_size 10
+          xywh {270 175 100 22} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE label_size 10
           extra_code {o->step(0.01);}
         }
         Fl_Group {} {
           label Attributes
           callback propagate_group open
-          xywh {75 202 300 40} align 4
+          xywh {75 202 300 40} align FL_ALIGN_LEFT
         } {
           Fl_Check_Button {} {
             label Resizable
             callback resizable_cb
             tooltip {If on, this widget and all it's parents are resizable.  When the parent resizes it moves/resizes all it's children so that this widget's edges remain the same distance from all four sides of the parent.  If this is off this widget will not resize, unless it overlaps a resizable sibling.}
-            xywh {0 0 145 20} align 84
+            xywh {0 0 145 20} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE
           }
           Fl_Check_Button {} {
             label Hotspot
             callback hotspot_cb
             tooltip {Positions the window so this widget is under the mouse.  This is done when show() is called.}
-            xywh {170 0 120 20} align 84
+            xywh {170 0 120 20} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE
           }
           Fl_Check_Button {} {
             label Visible
             callback visible_cb
             tooltip {If unchecked the widget is initially invisible.}
-            xywh {0 20 150 20} align 84
+            xywh {0 20 150 20} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE
           }
           Fl_Check_Button {} {
             label Active
             callback active_cb
             tooltip {If unchecked the widget is initially inactive (disabled, grayed out).}
-            xywh {170 20 120 20} align 84
+            xywh {170 20 120 20} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE
           }
         }
         Fl_Button {} {
@@ -241,7 +241,7 @@ To delete the shortcut:
    Click here, then type backspace.
 To get out of shortcut-setting mode:
    Click the mouse on this again, or on some other field.}
-          xywh {75 245 300 22} align 4 box DOWN_BOX color 7
+          xywh {75 245 294 22} align FL_ALIGN_LEFT box DOWN_BOX color 7
           extra_code {\#include "Shortcut_Button.h"}
           class Shortcut_Button
         }
@@ -249,7 +249,7 @@ To get out of shortcut-setting mode:
           label Tooltip
           callback tooltip_cb
           tooltip {The pop up tooltip which should be used for the widget.}
-          xywh {75 272 300 55} type Wordwrap color 0xffffe100
+          xywh {75 272 294 51} type Wordwrap color 0xffffe100
         }
         Fl_Box {} {
           label resizable
@@ -258,7 +258,7 @@ To get out of shortcut-setting mode:
         }
         Fl_Box {} {
           label Dimensions
-          xywh {10 125 70 22} align 24
+          xywh {10 125 70 22} align FL_ALIGN_RIGHT|FL_ALIGN_INSIDE
         }
         Fl_Button {} {
           label tile
@@ -275,16 +275,21 @@ To get out of shortcut-setting mode:
           xywh {330 79 40 20} type TOGGLE
         }
         Fl_Choice {} {
-          label {Layout:}
-          callback layoutalign_cb open selected
+          label Layout
+          callback layoutalign_cb open
           tooltip {Change the layout align}
-          xywh {79 101 291 22}
+          xywh {80 101 175 22}
         } {}
+        Fl_Value_Input {} {
+          label Spacing
+          callback layoutspacing_cb selected
+          xywh {315 101 55 22}
+        }
       }
       Fl_Group {} {
         label Style
         callback propagate_group open
-        xywh {1 23 378 329} hide
+        xywh {1 24 378 328} hide
       } {
         Fl_Choice {} {
           label box
@@ -392,7 +397,7 @@ To get out of shortcut-setting mode:
           label {Reset to default}
           callback default_cb
           tooltip {Reset all the above items to the default values for this widget class.}
-          xywh {5 304 124 23}
+          xywh {5 300 124 23}
         }
         Fl_Box {} {
           xywh {135 277 215 25} hide
@@ -402,7 +407,7 @@ To get out of shortcut-setting mode:
       Fl_Group {} {
         label {C++}
         callback propagate_group open
-        xywh {1 23 378 329} hide
+        xywh {1 24 378 328} hide
       } {
         Fl_Input {} {
           label Name
@@ -476,18 +481,18 @@ o->parent()->resizable(o);}
       Fl_Button {} {
         label {&Cancel}
         callback cancel_cb
-        xywh {310 5 65 22}
+        xywh {310 4 65 23}
       }
       Fl_Button {} {
         label {&OK}
         callback ok_cb
         tooltip {Closes this attribute window}
-        xywh {240 5 65 22}
+        xywh {240 4 65 23}
       }
     }
     Fl_Divider {} {
       label label
-      xywh {0 356 380 20}
+      xywh {0 356 380 20} color 49
     }
   }
 } 

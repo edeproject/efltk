@@ -255,25 +255,24 @@ int Shortcut_Button::handle(int e) {
   
 #define NOT_DEFAULT(W, what) (W->o->what() != ((Fl_Widget_Type*)(W->factory))->o->what())
 
-void shortcut_in_cb(Shortcut_Button* i, void* v) {
-  if (v == LOAD) {
-    if (!current_widget->is_button() &&
-	!((Fl_Widget_Type*)(current_widget->factory))->o->shortcut()) {i->hide(); return;}
-    i->show();
-    i->svalue = ((current_widget->o))->shortcut();
-    i->redraw();
-  } else {
-    for (Fl_Type *o = Fl_Type::first; o; o = o->walk())
-      if (o->selected && o->is_widget()) {
-	Fl_Widget* b = ((Fl_Widget_Type*)o)->o;
-	b->shortcut(i->svalue);
-	if (o->is_menu_item()) ((Fl_Widget_Type*)o)->redraw();
-      }
-  }
-  Fl_Color tc = FL_BLACK;
-  if (NOT_DEFAULT(current_widget, shortcut)) tc = FL_RED;
-  if (i->label_color() != tc)
-    { i->label_color(tc); i->redraw_label(); }
+void shortcut_in_cb(Shortcut_Button* i, void* v) 
+{
+	if (v == LOAD) {
+		i->svalue = ((current_widget->o))->shortcut();
+		i->redraw();
+	} else {
+		for (Fl_Type *o = Fl_Type::first; o; o = o->walk()) {
+			if (o->selected && o->is_widget()) {
+				Fl_Widget* b = ((Fl_Widget_Type*)o)->o;
+				b->shortcut(i->svalue);
+				if (o->is_menu_item()) ((Fl_Widget_Type*)o)->redraw();
+			}
+		}
+	}
+
+	Fl_Color c = FL_BLACK;
+	if (NOT_DEFAULT(current_widget, shortcut)) c = FL_RED;
+	if (i->label_color() != c) { i->label_color(c); i->redraw_label(); }
 }
 
 //

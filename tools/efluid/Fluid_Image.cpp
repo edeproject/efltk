@@ -106,7 +106,8 @@ void generic_image::label(Fl_Widget *o) {
 static int image_file_header_written;
 
 #define MAX_CLINESIZE 1024
-void generic_image::write_static() {
+void generic_image::write_static() 
+{
   uchar* d=0;
   if (!p) return;
   if(image_file_header_written != write_number)
@@ -216,7 +217,8 @@ void bitmap_image::label(Fl_Widget *o) {
 
 static int bitmap_header_written;
 
-void bitmap_image::write_static() {
+void bitmap_image::write_static() 
+{
   if (!p) return;
   write_c("\n");
   if (bitmap_header_written != write_number) {
