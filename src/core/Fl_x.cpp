@@ -785,8 +785,9 @@ bool fl_handle()
 
                     if (window && (Atom)(data[0]) == WM_DELETE_WINDOW)
                     {
+                        // user clicked close box
                         if (!Fl::grab() && !(Fl::modal() && window != Fl::modal()))
-                            window->do_callback(FL_WND_DESTROY);
+                            window->do_callback(FL_WINDOW_CLOSE);
                         return true;
 
                     }
