@@ -280,7 +280,7 @@ void Fl_Combo_Box_Panel::draw() {
     }
 
     fl_push_clip(xx, yy, w(), hh);
-    
+
     for (unsigned c = 0; c < item->columns(); c++) {
         int ww = m_listView->column_width(c);
         fl_push_clip(xx+dd,yy,ww-dd,hh);
@@ -334,8 +334,8 @@ int button_to_event(int argument) {
     return FL_NO_EVENT;
 }
 
-Fl_Combo_Box::Fl_Combo_Box(int x,int y,int w,int h,const char *label)
-: Fl_Group(x,y,w,h,label) {
+// ctor initializer - used in both ctors
+void Fl_Combo_Box::ctor_init() {
     align(FL_ALIGN_LEFT);
     box(FL_THIN_DOWN_BOX);
     layout_spacing(0);
@@ -378,6 +378,18 @@ Fl_Combo_Box::Fl_Combo_Box(int x,int y,int w,int h,const char *label)
     m_panel->layout_align(FL_ALIGN_CLIENT);
 
     end();
+}
+
+// Traditional ctor
+Fl_Combo_Box::Fl_Combo_Box(int x,int y,int w,int h,const char *label)
+: Fl_Group(x,y,w,h,label) {
+    ctor_init();
+}
+
+// New style ctor
+Fl_Combo_Box::Fl_Combo_Box(const char* l,int layout_size,Fl_Align layout_al,int label_w)
+: Fl_Group(l,layout_size,layout_al,label_w) {
+    ctor_init();
 }
 
 Fl_ListView *Fl_Combo_Box::listview() const { 

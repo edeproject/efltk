@@ -20,11 +20,18 @@ class Fl_Combo_Box : public Fl_Group {
     Fl_Combo_Box_Panel  *m_panel;
     Fl_Popup_ListView   *m_popup;
     Fl_Button           *m_buttons[5];
+
+    void ctor_init();
 protected:
     static void Fl_Combo_Box::cb_browse(Fl_Widget *w, void *data);
     static void Fl_Combo_Box::cb_button(Fl_Widget *w, void *data);
 public:
+    /** Creates a new combo box widget using the given position, size, and label string. */
     Fl_Combo_Box(int x,int y,int w,int h,const char *label=0);
+
+    /** Creates the combo box widget using the label, size, alignment, and label_width. */
+    Fl_Combo_Box(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
+
     Fl_ListView *listview() const;
 
     void buttons(int buttons_set=FL_CBB_BROWSE);
