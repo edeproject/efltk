@@ -37,24 +37,31 @@ static int px,py,pw,ph;
 
 static void draw_current_rect()
 {
-    #ifdef _WIN32
+#ifdef _WIN32
     int old = SetROP2(fl_gc, R2_NOT);
-    fl_rect(px, py, pw, ph);
+
+    MoveToEx(fl_gc, px, py, 0L);
+    LineTo(fl_gc, px+pw-1, py);
+    LineTo(fl_gc, px+pw-1, py+ph-1);
+    LineTo(fl_gc, px, py+ph-1);
+    LineTo(fl_gc, px, py);
+
     SetROP2(fl_gc, old);
-    #else
+#else
     XSetFunction(fl_display, fl_gc, GXxor);
     XSetForeground(fl_display, fl_gc, 0xffffffff);
     XDrawRectangle(fl_display, fl_window, fl_gc, px, py, pw, ph);
     XSetFunction(fl_display, fl_gc, GXcopy);
-    #endif
+#endif
 }
-
 
 void fl_overlay_clear()
 {
-    if (pw > 0) {draw_current_rect(); pw = 0;}
+    if (pw > 0) {
+        draw_current_rect();
+        pw = 0;
+    }
 }
-
 
 void fl_overlay_rect(int x, int y, int w, int h)
 {
@@ -71,7 +78,6 @@ void fl_overlay_rect(int x, int y, int w, int h)
     px = x; py = y; pw = w; ph = h;
     draw_current_rect();
 }
-
 
 //
 // End of "$Id$".
