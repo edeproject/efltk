@@ -158,8 +158,12 @@ int main(int argc, char **argv)
     }
 #endif
 
+    Fl_Renderer::system_init();
     //Fl_Double_Window window(300,300); ::w = &window;
     Fl_Window window(400,300); ::w = &window;
+    char title[64];
+    sprintf(title, "System byte order is '%s'", Fl_Renderer::big_endian()?"BIG-ENDIAN":"LIL-ENDIAN");
+    window.label(title);
 
     Fl_Toggle_Button b(100,55,100,100,"Fl_Pixmap"); ::b = &b;
     b.image(pixmap);
