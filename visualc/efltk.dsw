@@ -59,9 +59,6 @@ Package=<5>
 
 Package=<4>
 {{{
-    Begin Project Dependency
-    Project_Dep_Name socket
-    End Project Dependency
 }}}
 
 ###############################################################################
@@ -270,18 +267,6 @@ Package=<4>
 
 ###############################################################################
 
-Project: "listview_ds"=..\test\tools\test\listview_ds.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
 Project: "mdi"=.\mdi.dsp - Package Owner=<4>
 
 Package=<5>
@@ -410,6 +395,9 @@ Package=<5>
 
 Package=<4>
 {{{
+    Begin Project Dependency
+    Project_Dep_Name efltk
+    End Project Dependency
 }}}
 
 ###############################################################################
