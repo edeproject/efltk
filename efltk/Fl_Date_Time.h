@@ -17,8 +17,6 @@
 #ifndef __FL_DATE_TIME_H__
 #define __FL_DATE_TIME_H__
 
-#include <sys/time.h>
-
 #include "Fl_Export.h"
 #include "Fl_String.h"
 
@@ -38,7 +36,7 @@ public:
    Fl_Date_Time (const Fl_Date_Time &dt);
    Fl_Date_Time (const double dt=0);
 
-   static Fl_Date_Time convert (const time_t);
+   static Fl_Date_Time convert (const long);
 
    void format_date(char *str) const;
    void format_time(char *str, bool ampm=true) const;

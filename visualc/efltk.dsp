@@ -282,6 +282,10 @@ SOURCE=..\src\core\fl_diamond_box.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\widgets\Fl_Directory_DS.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\core\Fl_display.cpp
 # End Source File
 # Begin Source File
@@ -835,6 +839,14 @@ SOURCE=..\efltk\Fl_Dial.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_Dialog.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Dialog_Data_Source.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Directory_DS.h
 # End Source File
 # Begin Source File
 

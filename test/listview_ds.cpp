@@ -30,7 +30,11 @@ int main(int argc, char *argv[])
 {
    Fl_Directory_DS   dds;
 
+#ifdef _WIN32
+   dds.directory("C:\\");
+#else
    dds.directory("/usr/lib");
+#endif
 
    Fl_Window *window = new Fl_Window(400,300);
    Fl_ListView *lv = new Fl_ListView(10,10,380,280);

@@ -604,7 +604,7 @@ short Fl_Date_Time::day_of_year( void ) const {
     return (short) (m_dateTime - temp.m_dateTime);
 }
 
-Fl_Date_Time Fl_Date_Time::convert(const time_t tt) {
+Fl_Date_Time Fl_Date_Time::convert(const long tt) {
    struct tm *t = localtime(&tt);
    double dat,tim;
    encode_date(dat,short(t->tm_year+1900),short(t->tm_mon+1),short(t->tm_mday));

@@ -17,9 +17,14 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <dirent.h>
 #include <efltk/filename.h>
 #include <efltk/Fl_Directory_DS.h>
+
+#ifndef _WIN32
+# include <dirent.h>
+#else
+# define lstat stat
+#endif
 
 static Fl_Variant    notFound;
 static Fl_Data_Field fieldNotFound("not_found");
@@ -133,6 +138,7 @@ bool Fl_Directory_DS::open() {
          }
          if ((st.st_mode & S_IFREG) == S_IFREG)
             modeName = "file";
+#ifndef _WIN32
          if ((st.st_mode & S_IFLNK) == S_IFLNK) {
             stat(fullName.c_str(),&st);
             if ((st.st_mode & S_IFDIR) == S_IFDIR) {
@@ -143,6 +149,7 @@ bool Fl_Directory_DS::open() {
                modeName = "file";
             modeName += " link";
          }
+#endif
 
          if (executable)
                df["executable"] = "*";
@@ -173,7 +180,7 @@ bool Fl_Directory_DS::open() {
    free(files);
    first();
 
-   return m_list.count();
+   return (m_list.count()>0);
 }
 
 bool Fl_Directory_DS::close() {
@@ -230,6 +237,7 @@ bool Fl_Directory_DS::prior() {
 bool Fl_Directory_DS::find(Fl_Variant position) {
    unsigned    cnt = m_list.count();
    Fl_String   name;
+   unsigned i;
    switch (position.type()) {
    case VAR_INT:  if (position.get_int() < (int)cnt) {
                      m_currentIndex = position.get_int();
@@ -239,7 +247,7 @@ bool Fl_Directory_DS::find(Fl_Variant position) {
                   break;
    case VAR_STRING:
                   name = position.get_string();
-                  for (unsigned i = 0; i < cnt; i++) {
+                  for (i = 0; i < cnt; i++) {
                      Fl_Data_Fields& entry = *(Fl_Data_Fields *)m_list[i];
                      if (entry["name"] == name) {
                         m_currentIndex = i;
