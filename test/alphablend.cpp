@@ -138,13 +138,13 @@ Fl_Image *make_ball(int radius)
     /* Create a 16 (4/4/4/4) bpp square with a full 4-bit alpha channel */
     /* Note: this isn't any faster than a 32 bit alpha surface */
     alphamask = 0x0000000F;
-    light = new Fl_Image(2*radius, 2*radius, 16, 0,
+    light = new Fl_Image(2*radius, 2*radius, 16, 0, true,
                          0x0000F000, 0x00000F00, 0x000000F0, alphamask);
 #else
     uint32 *buf;
     /* Create a 32 (8/8/8/8) bpp square with a full 8-bit alpha channel */
     alphamask = 0x000000FF;
-    light = new Fl_Image(2*radius, 2*radius, 32, 0,
+    light = new Fl_Image(2*radius, 2*radius, 32, 0, true,
                          0xFF000000, 0x00FF0000, 0x0000FF00, alphamask);
 #endif
 
