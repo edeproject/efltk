@@ -63,6 +63,21 @@ Package=<4>
 
 ###############################################################################
 
+Project: "efltk_db"=.\efltk_db.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name efltk
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "efltk_images"=.\efltk_images.dsp - Package Owner=<4>
 
 Package=<5>
@@ -71,6 +86,24 @@ Package=<5>
 
 Package=<4>
 {{{
+}}}
+
+###############################################################################
+
+Project: "efltk_odbc"=.\efltk_odbc.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name efltk
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name efltk_db
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -290,6 +323,18 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name efltk
     End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "odbc_test"=.\odbc_test.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
 }}}
 
 ###############################################################################
