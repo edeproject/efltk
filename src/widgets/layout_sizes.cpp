@@ -21,6 +21,8 @@
 
 #include "layout_sizes.h"
 
+#define max(a,b) ((a) > (b) ? (a) : (b))
+
 int widget_layout_width(Fl_Widget *w) 
 {
 	if (!(w->align() & FL_ALIGN_INSIDE)) {
