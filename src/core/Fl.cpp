@@ -234,7 +234,10 @@ static char in_idle;
 
 int Fl::run()
 {
-    while (first_window()) wait(FOREVER);
+    while(first_window() && first_window()->shown()) wait(FOREVER);
+
+    // We could add here "EXIT" handlers... for cleanup!
+
     return(0);
     // WAS: This was tried for fltk 2.0, and the callback for closing the last
     // window in Fl_Window.C called exit(). This proved to be unpopular:
@@ -514,22 +517,21 @@ void Fl_Widget::throw_focus()
 
 void Fl::modal(Fl_Widget* widget, bool grab)
 {
-
     // release the old grab:
     if (grab_)
     {
         grab_ = false;
-        #ifdef _WIN32
+#ifdef _WIN32
         ReleaseCapture();
         // if (event() == FL_PUSH) repost_the_push_event(); NYI
-        #else
+#else
         XUngrabKeyboard(fl_display, fl_event_time);
         Fl::event_is_click(0);   // avoid double click
         XAllowEvents(fl_display, event()==FL_PUSH ? ReplayPointer : AsyncPointer, CurrentTime);
-                                 // Qt did not do this...
+        // Qt did not do this...
         XUngrabPointer(fl_display, fl_event_time);
         XFlush(fl_display);      // make sure we are out of danger before continuing...
-        #endif
+#endif
         // because we "pushed back" the FL_PUSH, make it think no buttons are down:
         e_state &= 0xffffff;
         e_keysym = 0;
@@ -541,7 +543,7 @@ void Fl::modal(Fl_Widget* widget, bool grab)
     // grab is running. I just grab fltk's first window:
     if (grab && widget)
     {
-        #ifdef _WIN32
+#ifdef _WIN32
         Fl_Window* window = first_window();
         if (window)
         {
@@ -549,27 +551,27 @@ void Fl::modal(Fl_Widget* widget, bool grab)
             SetCapture(fl_xid(window));
             grab_ = true;
         }
-        #else
+#else
         Fl_Window* window = first_window();
         if (window &&
             XGrabKeyboard(fl_display,
-            fl_xid(window),
-            true,                // owner_events
-            GrabModeAsync,       // pointer_mode
-            GrabModeAsync,       // keyboard_mode
-            fl_event_time) == GrabSuccess)
+                          fl_xid(window),
+                          true,                // owner_events
+                          GrabModeAsync,       // pointer_mode
+                          GrabModeAsync,       // keyboard_mode
+                          fl_event_time) == GrabSuccess)
         {
             //XAllowEvents(fl_display, SyncKeyboard, CurrentTime);
             if (XGrabPointer(fl_display,
-                fl_xid(window),
-                true,            // owner_events
-                ButtonPressMask|ButtonReleaseMask|
-                ButtonMotionMask|PointerMotionMask,
-                GrabModeSync,    // pointer_mode
-                GrabModeAsync,   // keyboard_mode
-                None,            // confine_to
-                None,            // cursor
-                fl_event_time) == GrabSuccess)
+                             fl_xid(window),
+                             true,            // owner_events
+                             ButtonPressMask|ButtonReleaseMask|
+                             ButtonMotionMask|PointerMotionMask,
+                             GrabModeSync,    // pointer_mode
+                             GrabModeAsync,   // keyboard_mode
+                             None,            // confine_to
+                             None,            // cursor
+                             fl_event_time) == GrabSuccess)
             {
                 grab_ = true;
                 XAllowEvents(fl_display, SyncPointer, CurrentTime);
@@ -584,7 +586,7 @@ void Fl::modal(Fl_Widget* widget, bool grab)
         {
             //printf("XGrabKeyboard failed\n");
         }
-        #endif
+#endif
     }
 
     if (widget != modal_)

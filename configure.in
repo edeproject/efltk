@@ -450,9 +450,9 @@ PREFIX=${prefix}
 AC_SUBST(DEBUGFLAG)
 
 dnl# if test "$PREFIX" = "NONE"; then
-dnl#     AC_DEFINE_UNQUOTED(CONFIGDIR, "${ac_default_prefix}/lib/fltk")
+dnl#     AC_DEFINE_UNQUOTED(CONFIGDIR, "${ac_default_prefix}/share/fltk")
 dnl# else
-dnl#     AC_DEFINE_UNQUOTED(CONFIGDIR, "${prefix}/lib/fltk")
+dnl#     AC_DEFINE_UNQUOTED(CONFIGDIR, "${prefix}/share/fltk")
 dnl# fi
 
 AC_SUBST(DSOEXT)

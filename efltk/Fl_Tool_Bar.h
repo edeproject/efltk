@@ -7,6 +7,8 @@
 class Fl_Tool_Bar : public Fl_Bar
 {
 public:
+    static Fl_Named_Style* default_style;
+
     Fl_Tool_Bar(int x, int y, int w, int h, const char *label=0);
     ~Fl_Tool_Bar();
 

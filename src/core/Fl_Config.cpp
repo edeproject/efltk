@@ -9,12 +9,18 @@
 #include <stdio.h>
 #include <sys/stat.h>
 
+#include <config.h>
+
 #ifdef _WIN32
+
 # include <io.h>
 # define access(a,b) _access(a,b)
 # define R_OK 4
+
 #else
+
 # include <unistd.h>
+
 #endif /* _WIN32 */
 
 int conf_is_path_rooted(const char *fn)
@@ -29,44 +35,111 @@ int conf_is_path_rooted(const char *fn)
     return 0;
 }
 
-#define CONFIGDIR "ede"
 // This should stay public so that programs can locate their config files easily.
-const char* fl_find_config_file(const char* fn, bool cflag)
+const char* fl_find_config_file(const char *filename, bool create)
 {
     static char path[4096];
 
-    if(conf_is_path_rooted(fn)) {
-        strcpy(path, fn);
-        return (cflag || !access(path, R_OK)) ? path : 0;
+    if(conf_is_path_rooted(filename)) {
+        strncpy(path, filename, sizeof(path));
+        return (create || !access(path, R_OK)) ? path : 0;
     }
     char *cptr = fl_get_homedir();
     if(cptr) {
-        snprintf(path, sizeof(path)-1, "%s%s%s", cptr, "/.ede/", fn);
-        if(cflag || !access(path, R_OK)) {
+        snprintf(path, sizeof(path)-1, "%s%s%s", cptr, "/.ede/", filename);
+        if(create || !access(path, R_OK)) {
             delete []cptr;
             return path;
         }
         delete []cptr;
     }
 
-    snprintf(path, sizeof(path), CONFIGDIR "/%s", fn);
-    return (cflag || !access(path, R_OK)) ? path : 0;
+    snprintf(path, sizeof(path)-1, CONFIGDIR "/%s", filename);
+    return (create || !access(path, R_OK)) ? path : 0;
 }
 
 #ifdef BACKWARD_COMPATIBLE
 Fl_Config *current_config=0;
 #endif
 
+// recursively create a path in the file system
+static bool makePath( const char *path ) {
+    if(access(path, 0)) {
+        const char *s = strrchr( path, '/' );
+        if ( !s ) return 0;
+        int len = s-path;
+        char *p = (char*)malloc( len+1 );
+        memcpy( p, path, len );
+        p[len] = 0;
+        makePath( p );
+        free( p );
+#if defined(WIN32) && !defined(__CYGWIN__)
+        return ( mkdir( path ) == 0 );
+#else
+        return ( mkdir( path, 0777 ) == 0 );
+#endif // WIN32 && !__CYGWIN__
+    }
+    return true;
+}
+
+// strip the filename and create a path
+static bool makePathForFile( const char *path )
+{
+    const char *s = strrchr( path, '/' );
+    if ( !s ) return false;
+    int len = s-path;
+    char *p = (char*)malloc( len+1 );
+    memcpy( p, path, len );
+    p[len] = 0;
+    bool ret=makePath( p );
+    free( p );
+    return ret;
+}
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-Fl_Config::Fl_Config(const char *_filename, bool read, bool create)
+Fl_Config::Fl_Config(const char *vendor, const char *application, ConfMode mode)
 {
-    _error = 0;
-    filename = _filename?strdup(_filename):0;
     cur_sec = 0;
     changed=false;
+    _error = 0;
+
+    vendor_ = vendor?strdup(vendor):0;
+    app_    = application?strdup(application):0;
+
+    if(app_) {
+        const char *file=0;
+        char tmp[FL_PATH_MAX];
+        if(mode==USER) {
+            snprintf(tmp, sizeof(tmp)-1, "apps/%s/%s.conf", app_, app_);
+            file = fl_find_config_file(tmp);
+        } else {
+            snprintf(tmp, sizeof(tmp)-1, CONFIGDIR"/apps/%s/%s.conf", app_, app_);
+            file = tmp;
+        }
+        bool ret = makePathForFile(file);
+        if(ret) {
+            filename_ = strdup(file);
+            read_file(true);
+        }
+    }
+}
+
+Fl_Config::Fl_Config(const char *filename, bool read, bool create)
+{
+    vendor_ = 0;
+    app_    = 0;
+
+    _error = 0;
+    filename_ = filename?strdup(filename):0;
+    cur_sec = 0;
+    changed=false;
+
+    if(create && filename_) {
+        makePathForFile(filename_);
+    }
 
     if(read) read_file(create);
 }
@@ -79,7 +152,7 @@ Fl_Config::~Fl_Config()
     for(s = sections.first(); s != 0; s = sections.next() )
         if(s) delete s;
 
-    if(filename) delete []filename;
+    if(filename_) delete []filename_;
 
 #ifdef BACKWARD_COMPATIBLE
     if(current_config==this) current_config=0;
@@ -111,11 +184,11 @@ const char *Fl_Config::strerror(int error)
 bool Fl_Config::read_file(bool create)
 {
     bool error = false;
-    if(filename)
+    if(filename_)
     {
-        if(create && !fl_file_exists(filename))
+        if(create && !fl_file_exists(filename_))
         {
-            FILE *f = fopen(filename, "w+");
+            FILE *f = fopen(filename_, "w+");
             if(f) {
                 fputs("\n",f);
                 fclose(f);
@@ -137,15 +210,15 @@ bool Fl_Config::read_file(bool create)
     sections.clear();
 
     /////
-    FILE *fp = fopen(filename, "rw+");
+    FILE *fp = fopen(filename_, "rw+");
     if(!fp) {
-        //fprintf(stderr, "fp == 0: %s\n", filename);
+        //fprintf(stderr, "fp == 0: %s\n", filename_);
         _error = CONF_ERR_FILE;
         return false;
     }
 
     struct stat fileStat;
-    stat(filename, &fileStat);
+    stat(filename_, &fileStat);
     unsigned int size = fileStat.st_size;
     if(size == 0) {
         _error = 0;
@@ -232,16 +305,24 @@ bool Fl_Config::flush()
 {
     if(!changed) return true;
 
-    FILE *file;
-    if(!filename || !(file = fopen(filename, "w"))) {
+    if(!filename_) {
+        _error = CONF_ERR_FILE;
+        return false;
+    }
+    FILE *file = fopen(filename_, "w+");
+    if(!file) {
         _error = CONF_ERR_FILE;
         return false;
     }
 
+    fprintf( file, "# EFLTK Configuration - Version %f\n", FL_VERSION);
+    if(vendor_) fprintf( file, "# Vendor: %s\n", vendor_ );
+    if(app_)    fprintf( file, "# Application: %s\n", app_ );
+    fprintf( file, "\n");
+
     Section *s;
     for(s = sections.first(); s != 0; s = sections.next() )
-        if(s)
-        {
+        if(s) {
             write_section(0, file, s);
         }
 
@@ -255,12 +336,15 @@ bool Fl_Config::flush()
 
 Line *Fl_Config::create_string(Section *section, const char * key, const char * value)
 {
+    if(!section || !key || !*key) return 0;
+
     Line *line = new Line(key, value);
 
     line->key = fl_trim(line->key);
     if(line->value) {
         line->value = fl_trim(line->value);
     }
+    _error=0;
 
     section->lines.append(line);
     return line;
@@ -268,6 +352,7 @@ Line *Fl_Config::create_string(Section *section, const char * key, const char * 
 
 Section *Fl_Config::create_section(const char *name)
 {
+    if(!name) return 0;
     Section *section = find_section(name, true);
     if(section) return section;
 
@@ -332,6 +417,8 @@ Section *Fl_Config::create_section(const char *name)
 
     section = new Section(secname, secpath, parent);
     list->append(section);
+
+    _error = 0;
 
     return section;
 }
@@ -462,15 +549,12 @@ void Fl_Config::remove_sec(const char *section)
  *  Read functions
  */
 
-char *Fl_Config::read_string(Section *s, const char *key)
+int Fl_Config::_read_string(Section *s, const char *key, char *ret, const char *def_value, int size)
 {
-    if(!key) {
-        _error = CONF_ERR_KEY;
-        return 0;
-    }
-    if(!s) {
-        _error = CONF_ERR_SECTION;
-        return 0;
+    if(!key || !s) {
+        strncpy(ret, def_value?def_value:"\0", size);
+        _error = !key ? CONF_ERR_KEY : CONF_ERR_SECTION;
+        return _error;
     }
 
     Line *l = find_string(s, key);
@@ -478,103 +562,126 @@ char *Fl_Config::read_string(Section *s, const char *key)
     {
         char *tmp = strchr(l->value, '#');
         if(tmp) *tmp = '\0';
-        _error = 0;
-        return strdup(l->value);
+        strncpy(ret, l->value, size);
+        return (_error = CONF_SUCCESS);
     }
 
-    _error = CONF_ERR_KEY;
-    return 0;
+    strncpy(ret, def_value?def_value:"\0", size);
+    return (_error = CONF_ERR_KEY);
 }
 
-long Fl_Config::read_long(Section *s, const char *key)
+int Fl_Config::_read_string(Section *s, const char *key, char *&ret, const char *def_value)
 {
-    char *k = read_string(s, key);
-    if(!k) return 0;
-    long ret = atol(k);
-    delete []k;
-    return ret;
+    if(!key || !s) {
+        ret = def_value?strdup(def_value):0;
+        _error = !key ? CONF_ERR_KEY : CONF_ERR_SECTION;
+        return _error;
+    }
+
+    Line *l = find_string(s, key);
+    if(l&&l->value)
+    {
+        char *tmp = strchr(l->value, '#');
+        if(tmp) *tmp = '\0';
+        ret = strdup(l->value);
+        return (_error = CONF_SUCCESS);
+    }
+
+    ret = def_value?strdup(def_value):0;
+    return (_error = CONF_ERR_KEY);
 }
 
-int Fl_Config::read_int(Section *s, const char *key)
+int Fl_Config::_read_long(Section *s, const char *key, long &ret, long def_value)
 {
-    char *k = read_string(s, key);
-    if(!k) return 0;
-    int ret = atoi(k);
-    delete []k;
-    return ret;
-}
-
-float Fl_Config::read_float(Section *s, const char *key)
-{
-    char *k = read_string(s, key);
-    if(!k) return 0;
-    float ret = (float)atof(k);
-    delete []k;
-    return ret;
-}
-
-bool Fl_Config::read_bool(Section *s, const char *key)
-{
-    bool ret = false;
-    char *k = read_string(s, key);
-    if(!k) return false;
-
-    if( !strcasecmp(k, "TRUE") ||
-       !strcasecmp(k, "YES") ||
-       !strcasecmp(k, "ON") ||
-       !strcasecmp(k, "1") ) {
-
-        ret = true;
-
+    char tmp[128];
+    if(!_read_string(s, key, tmp, 0, sizeof(tmp)-1)) {
+        ret = *tmp?atol(tmp):def_value;
     } else
-    if( !strcasecmp(k, "FALSE") ||
-       !strcasecmp(k, "NO") ||
-       !strcasecmp(k, "OFF") ||
-       !strcasecmp(k, "0") ) {
-
-        ret = false;
-
-    } else {
-
-        _error = CONF_ERR_NOVALUE;
-        return false;
-
-    }
-
-    delete []k;
-    _error = 0;
-    return ret;
+        ret = def_value;
+    return _error;
 }
 
-Fl_Color Fl_Config::read_color(Section *s, const char *key)
+int Fl_Config::_read_int(Section *s, const char *key, int &ret, int def_value)
 {
-    char *k = read_string(s, key);
-    if(!k) return FL_BLACK;
+    char tmp[128];
+    if(!_read_string(s, key, tmp, 0, sizeof(tmp)-1)) {
+        ret = *tmp?atoi(tmp):def_value;
+    } else
+        ret = def_value;
+    return _error;
+}
+
+int Fl_Config::_read_float (Section *s, const char *key, float &ret, float def_value)
+{
+    char tmp[128];
+    if(!_read_string(s, key, tmp, 0, sizeof(tmp)-1)) {
+        ret = (float)(*tmp?atof(tmp):def_value);
+    } else
+        ret = def_value;
+    return _error;
+}
+
+int Fl_Config::_read_double(Section *s, const char *key, double &ret, double def_value)
+{
+    char tmp[128];
+    if(!_read_string(s, key, tmp, 0, sizeof(tmp)-1)) {
+        ret = (double)(*tmp?atof(tmp):def_value);
+    } else
+        ret = def_value;
+    return _error;
+}
+
+int Fl_Config::_read_bool(Section *s, const char *key, bool &ret, bool def_value)
+{
+    char tmp[128];
+    if(_read_string(s, key, tmp, 0, sizeof(tmp)-1)) {
+        ret = def_value;
+        return _error;
+    }
+
+    if( !strcasecmp(tmp, "TRUE") ||
+       !strcasecmp(tmp, "YES") ||
+       !strcasecmp(tmp, "ON") ||
+       !strcasecmp(tmp, "1") ) {
+        ret = true;
+    } else if( !strcasecmp(tmp, "FALSE") ||
+              !strcasecmp(tmp, "NO") ||
+              !strcasecmp(tmp, "OFF") ||
+              !strcasecmp(tmp, "0") ) {
+        ret = false;
+    } else {
+        _error = CONF_ERR_NOVALUE;
+        ret = def_value;
+    }
+    return _error;
+}
+
+int Fl_Config::_read_color(Section *s, const char *key, Fl_Color &ret, Fl_Color def_value)
+{
+    char tmp[128];
+    if(_read_string(s, key, tmp, 0, sizeof(tmp)-1)) {
+        ret = def_value;
+        return _error;
+    }
 
     int r=0,g=0,b=0;
-    if(sscanf(k, "RGB(%d,%d,%d)", &r, &g, &b)!=3) {
-        _error = CONF_ERR_NOVALUE;
-        return FL_BLACK;
+    if(sscanf(tmp, "RGB(%d,%d,%d)", &r, &g, &b)!=3) {
+        ret = def_value;
+        return (_error = CONF_ERR_NOVALUE);
     }
-    delete []k;
-    _error = 0;
-    return fl_rgb(r,g,b);
+    ret = fl_rgb(r,g,b);
+    return _error;
 }
 
 /*
  *  Write functions
  */
 
-void Fl_Config::write_string(Section *s, const char *key, const char *value)
+int Fl_Config::_write_string(Section *s, const char *key, const char *value)
 {
-    if(!key) {
-        _error = CONF_ERR_KEY;
-        return;
-    }
-    if(!s) {
-        _error = CONF_ERR_SECTION;
-        return;
-    }
+    if(!s) return (_error = CONF_ERR_SECTION);
+    if(!key) return (_error = CONF_ERR_KEY);
+
     Line *line;
     if((line = find_string(s, key)))
     {
@@ -589,86 +696,48 @@ void Fl_Config::write_string(Section *s, const char *key, const char *value)
 #ifdef BACKWARD_COMPATIBLE
     current_config=this;
 #endif
+    return (_error=CONF_SUCCESS);
 }
 
-void Fl_Config::write_long(Section *s, const char *key, const long value)
+int Fl_Config::_write_long(Section *s, const char *key, const long value)
 {
     char tmp[128];
-    sprintf(tmp, "%ld", value);
-    write_string(s, key, tmp);
+    snprintf(tmp, sizeof(tmp)-1, "%ld", value);
+    return _write_string(s, key, tmp);
 }
 
-void Fl_Config::write_int(Section *s, const char *key, const int value)
+int Fl_Config::_write_int(Section *s, const char *key, const int value)
 {
     char tmp[128];
-    sprintf(tmp, "%d", value);
-    write_string(s, key, tmp);
+    snprintf(tmp, sizeof(tmp)-1, "%d", value);
+    return _write_string(s, key, tmp);
 }
 
-void Fl_Config::write_float(Section *s, const char *key, const float value)
+int Fl_Config::_write_float(Section *s, const char *key, const float value)
 {
-    char tmp[256];
-    sprintf(tmp, "%f", value);
-    write_string(s, key, tmp);
+    char tmp[128];
+    snprintf(tmp, sizeof(tmp)-1, "%f", value);
+    return _write_string(s, key, tmp);
 }
 
-void Fl_Config::write_bool(Section *s, const char *key, const bool value)
+int Fl_Config::_write_double(Section *s, const char *key, const double value)
 {
-    if(value)
-        write_string(s, key, "1");
-    else
-        write_string(s, key, "0");
+    char tmp[128];
+    snprintf(tmp, sizeof(tmp)-1, "%g", value);
+    return _write_string(s, key, tmp);
 }
 
-void Fl_Config::write_color(Section *s, const char *key, const Fl_Color value)
+int Fl_Config::_write_bool(Section *s, const char *key, const bool value)
+{
+    if(value) return _write_string(s, key, "1");
+    return _write_string(s, key, "0");
+}
+
+int Fl_Config::_write_color(Section *s, const char *key, const Fl_Color value)
 {
     uint8 r,g,b;
     fl_get_color(value, r,g,b);
     char tmp[32];
-    sprintf(tmp, "RGB(%d,%d,%d)", r,g,b);
-    write_string(s, key, tmp);
+    snprintf(tmp, sizeof(tmp)-1, "RGB(%d,%d,%d)", r,g,b);
+    return _write_string(s, key, tmp);
 }
-
-void Fl_Config::write_string(const char *sect, const char *key, const char *value)
-{
-    Section *sec = find_section(sect, true);
-    if(!sec) sec = create_section(sect);
-
-    write_string(sec, key, value);
-}
-
-void Fl_Config::write_long(const char *sect, const char *key, const long value)
-{
-    Section *sec = find_section(sect, true);
-    if(!sec) sec = create_section(sect);
-    write_long(sec, key, value);
-}
-
-void Fl_Config::write_int(const char *sect, const char *key, const int value)
-{
-    Section *sec = find_section(sect, true);
-    if(!sec) sec = create_section(sect);
-    write_int(sec, key, value);
-}
-
-void Fl_Config::write_float(const char *sect, const char *key, const float value)
-{
-    Section *sec = find_section(sect, true);
-    if(!sec) sec = create_section(sect);
-    write_float(sec, key, value);
-}
-
-void Fl_Config::write_bool(const char *sect, const char *key, const bool value)
-{
-    Section *sec = find_section(sect, true);
-    if(!sec) sec = create_section(sect);
-    write_bool(sec, key, value);
-}
-
-void Fl_Config::write_color(const char *sect, const char *key, const Fl_Color value)
-{
-    Section *sec = find_section(sect, true);
-    if(!sec) sec = create_section(sect);
-    write_color(sec, key, value);
-}
-

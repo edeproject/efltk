@@ -7,7 +7,7 @@
 // This is defined to include
 // backward compatible funtions and behaviour with
 // old Fl_Config
-#define BACKWARD_COMPATIBLE 1
+//#define BACKWARD_COMPATIBLE 1
 
 #include "Enumerations.h"
 #include "Fl_PtrList.h"
@@ -69,11 +69,28 @@ public:
     // List of sections
     Fl_PtrList<Section> sections;
 
-/////////////////////////
-/////////////////////////
+    /////////////////////////
+    /////////////////////////
+    typedef enum {
+        USER=1,
+        SYSTEM
+    } ConfMode;
 
-    Fl_Config(const char *_filename, bool read=true, bool create=true);
+    // Creates/reads app specific config file.
+    // File is created in ($home)/.ede/apps/($application)/($application).conf
+    // Or ($prefix)/share/ede/apps/($application)/($application).conf
+    // depending ConfMode, USER or SYSTEM
+    // Vendor is only used to write it down to file.
+    Fl_Config(const char *vendor, const char *application, ConfMode mode=USER);
+
+    //Straight access for some file in filesystem.
+    Fl_Config(const char *filename, bool readfile=true, bool createfile=true);
+
     ~Fl_Config();
+
+    const char *filename() { return filename_; }
+    const char *vendor() { return vendor_; }
+    const char *application() { return app_; }
 
     // This returns true, if data changed.
     // call flush() to sync changes to file
@@ -94,46 +111,53 @@ public:
     LineList *line_list(const char *secpath) { Section *s=find_section(secpath); return s?&s->lines:0; }
 
     //sets section that is used as default
-    bool set_section(const char *secpath) { set_section(find_section(secpath)); return cur_sec ? true : false; }
+    void set_section(const char *secpath) { set_section(create_section(secpath)); }
     void set_section(Section *sec) { cur_sec = sec; }
 
     void remove_key(const char *section, const char *key);
     void remove_sec(const char *section);
 
-    //these functions assumes that current section is setted
-    char *read_string(const char *key) { return read_string(cur_sec, key); }
-    long  read_long  (const char *key) { return read_long(cur_sec, key); }
-    int   read_int   (const char *key) { return read_int(cur_sec, key); }
-    float read_float (const char *key) { return read_float(cur_sec, key); }
-    bool  read_bool  (const char *key) { return read_bool(cur_sec, key); }
-    Fl_Color read_color(const char *key) { return read_color(cur_sec, key); }
+    //These functions assumes that section is set by set_section function!
+    int read(const char *key, char *ret, const char *def_value, int size) { return _read_string(cur_sec, key, ret, def_value, size); }
+    int read(const char *key, char *&ret, const char *def_value=0) { return _read_string(cur_sec, key, ret, def_value); }
+    int read(const char *key, long &ret, long def_value=0)         { return _read_long(cur_sec, key, ret, def_value);   }
+    int read(const char *key, int &ret, int def_value=0)           { return _read_int(cur_sec, key, ret, def_value);    }
+    int read(const char *key, float &ret, float def_value=0)       { return _read_float(cur_sec, key, ret, def_value);  }
+    int read(const char *key, double &ret, double def_value=0)     { return _read_double(cur_sec, key, ret, def_value); }
+    int read(const char *key, bool &ret, bool def_value=0)         { return _read_bool(cur_sec, key, ret, def_value);   }
+    int read(const char *key, Fl_Color &ret, Fl_Color def_value=0) { return _read_color(cur_sec, key, ret, def_value);  }
 
-    void write_string(const char *key, const char *value)  { write_string(cur_sec, key, value); }
-    void write_long  (const char *key, const long value)   { write_long(cur_sec, key, value); }
-    void write_int   (const char *key, const int value)    { write_int(cur_sec, key, value); }
-    void write_float (const char *key, const float value)  { write_float(cur_sec, key, value); }
-    void write_bool  (const char *key, const bool value)   { write_bool(cur_sec, key, value); }
-    void write_color (const char *key, const Fl_Color value) { write_color(cur_sec, key, value); }
+    //These functions assumes that section is set by set_section function!
+    int write(const char *key, const char *value)    { return _write_string(cur_sec, key, value); }
+    int write(const char *key, const long value)     { return _write_long(cur_sec, key, value); }
+    int write(const char *key, const int value)      { return _write_int(cur_sec, key, value); }
+    int write(const char *key, const float value)    { return _write_float(cur_sec, key, value); }
+    int write(const char *key, const double value)   { return _write_double(cur_sec, key, value); }
+    int write(const char *key, const bool value)     { return _write_bool(cur_sec, key, value); }
+    int write(const char *key, const Fl_Color value) { return _write_color(cur_sec, key, value); }
 
-    //Always give section as first parameter
-    char *read_string(const char *section, const char *key) { return read_string(find_section(section), key); }
-    long read_long(const char *section, const char *key)    { return read_long(find_section(section), key);   }
-    int  read_int(const char *section, const char *key)     { return read_int(find_section(section), key);    }
-    float read_float(const char *section, const char *key)  { return read_float(find_section(section), key);  }
-    bool read_bool(const char *section, const char *key)    { return read_bool(find_section(section), key);   }
-    Fl_Color read_color(const char *section, const char *key) { return read_color(find_section(section), key); }
+    //Always give section as first parameter!
+    int get(const char *section, const char *key, char *ret, const char *def_value, int size) { return _read_string(find_section(section), key, ret, def_value, size); }
+    int get(const char *section, const char *key, char *&ret, const char *def_value=0) { return _read_string(find_section(section), key, ret, def_value); }
+    int get(const char *section, const char *key, long &ret, long def_value=0)        { return _read_long(find_section(section), key, ret, def_value);            }
+    int get(const char *section, const char *key, int &ret, int def_value=0)          { return _read_int(find_section(section), key, ret, def_value);               }
+    int get(const char *section, const char *key, float &ret, float def_value=0)      { return _read_float(find_section(section), key, ret, def_value);         }
+    int get(const char *section, const char *key, double &ret, double def_value=0)    { return _read_double(find_section(section), key, ret, def_value);      }
+    int get(const char *section, const char *key, bool &ret, bool def_value=0)        { return _read_bool(find_section(section), key, ret, def_value);            }
+    int get(const char *section, const char *key, Fl_Color &ret, Fl_Color def_value=0) { return _read_color(find_section(section), key, ret, def_value);   }
 
-    //Always give section as first parameter
-    void write_string(const char *sec, const char *key, const char *value);
-    void write_long  (const char *sec, const char *key, const long value);
-    void write_int   (const char *sec, const char *key, const int value);
-    void write_float (const char *sec, const char *key, const float value);
-    void write_bool  (const char *sec, const char *key, const bool value);
-    void write_color (const char *sec, const char *key, const Fl_Color value);
+    //Always give section as first parameter!
+    int set(const char *section, const char *key, const char *value) { return _write_string(create_section(section), key, value); }
+    int set(const char *section, const char *key, const long value)  { return _write_long(create_section(section), key, value);   }
+    int set(const char *section, const char *key, const int value)   { return _write_int(create_section(section), key, value);    }
+    int set(const char *section, const char *key, const float value) { return _write_float(create_section(section), key, value);  }
+    int set(const char *section, const char *key, const bool value)  { return _write_double(create_section(section), key, value); }
+    int set(const char *section, const char *key, const Fl_Color value) { return _write_color(create_section(section), key, value); }
 
 private:
     int _error;
-    char *filename;
+    char *filename_;
+    char *vendor_, *app_;
     Section *cur_sec;
     bool changed;
 
@@ -141,19 +165,22 @@ private:
     Line *create_string(Section *section, const char * key, const char * value);
     Line *find_string(Section *section, const char *key);
 
-    char *read_string(Section *s, const char *key);
-    long  read_long  (Section *s, const char *key);
-    int   read_int   (Section *s, const char *key);
-    float read_float (Section *s, const char *key);
-    bool  read_bool  (Section *s, const char *key);
-    Fl_Color read_color(Section *s, const char *key);
+    int _read_string(Section *s, const char *key, char *ret, const char *def_value, int size);
+    int _read_string(Section *s, const char *key, char *&ret, const char *def_value);
+    int _read_long  (Section *s, const char *key, long &ret, long def_value);
+    int _read_int   (Section *s, const char *key, int &ret, int def_value);
+    int _read_float (Section *s, const char *key, float &ret, float def_value);
+    int _read_double(Section *s, const char *key, double &ret, double def_value);
+    int _read_bool  (Section *s, const char *key, bool &ret, bool def_value);
+    int _read_color(Section *s, const char *key, Fl_Color &ret, Fl_Color def_value);
 
-    void write_string(Section *s, const char *key, const char *value);
-    void write_long  (Section *s, const char *key, const long value);
-    void write_int   (Section *s, const char *key, const int value);
-    void write_float (Section *s, const char *key, const float value);
-    void write_bool  (Section *s, const char *key, const bool value);
-    void write_color (Section *s, const char *key, const Fl_Color value);
+    int _write_string(Section *s, const char *key, const char *value);
+    int _write_long  (Section *s, const char *key, const long value);
+    int _write_int   (Section *s, const char *key, const int value);
+    int _write_float (Section *s, const char *key, const float value);
+    int _write_double(Section *s, const char *key, const double value);
+    int _write_bool  (Section *s, const char *key, const bool value);
+    int _write_color (Section *s, const char *key, const Fl_Color value);
 
 public:
 #ifdef BACKWARD_COMPATIBLE
@@ -184,7 +211,7 @@ public:
     // get the string value of a key from the config file
     int get(const char *key, char *value, int value_length) {
         char s[1024]={0}, k[256]={0}; __get_section_and_key(key, s, k);
-        char *readed = read_string(s, k);
+        char *readed = _read_string(find_section(s), k);
         if(readed) { strncpy(value, readed, value_length); delete []readed; }
         return error();
     }
@@ -192,21 +219,21 @@ public:
     // get the long value of a key from the config file
     int get(const char *key, long &lvalue) {
         char s[1024]={0}, k[256]={0}; __get_section_and_key(key, s, k);
-        lvalue = read_long(s, k);
+        lvalue = _read_long(find_section(s), k);
         return error();
     }
 
     // get the int value of a key from the config file
     int get(const char *key, int &ivalue) {
         char s[1024]={0}, k[256]={0}; __get_section_and_key(key, s, k);
-        ivalue = read_int(s, k);
+        ivalue = _read_int(find_section(s), k);
         return error();
     }
 
     // get the uchar value of a key from the config file
     int get(const char *key, uchar &ucvalue) {
         char s[1024]={0}, k[256]={0}; __get_section_and_key(key, s, k);
-        int v = read_int(s, k);
+        int v = _read_int(find_section(s), k);
         ucvalue = (uchar)v;
         return error();
     }
@@ -214,42 +241,42 @@ public:
     // get the boolean value of a key from the config file
     int get_boolean(const char *key, int &bvalue) {
         char s[1024]={0}, k[256]={0}; __get_section_and_key(key, s, k);
-        bvalue = read_bool(s, k);
+        bvalue = _read_bool(find_section(s), k);
         return error();
     }
 
     // set the string value of a key in the config file
     int set(const char *key, const char *value = "") {
         char s[1024]={0}, k[256]={0}; __get_section_and_key(key, s, k);
-        write_string(s, k, value);
+        _write_string(find_section(s), k, value);
         return error();
     }
 
     // clear the string value of a key in the config file
     int clear(const char *key)  {
         char s[1024]={0}, k[256]={0}; __get_section_and_key(key, s, k);
-        write_string(s, k, "");
+        _write_string(find_section(s), k, "");
         return error();
     }
 
     // set the long value of a key in the config file
     int set(const char *key, long lvalue) {
         char s[1024]={0}, k[256]={0}; __get_section_and_key(key, s, k);
-        write_long(s, k, lvalue);
+        _write_long(find_section(s), k, lvalue);
         return error();
     }
 
     // set the int value of a key in the config file
     int set(const char *key, int ivalue) {
         char s[1024]={0}, k[256]={0}; __get_section_and_key(key, s, k);
-        write_int(s, k, ivalue);
+        _write_int(find_section(s), k, ivalue);
         return error();
     }
 
     // set the boolean value of a key in the config file
     int set_boolean(const char *key, int bvalue) {
         char s[1024]={0}, k[256]={0}; __get_section_and_key(key, s, k);
-        write_bool(s, k, bvalue>1?true:false);
+        _write_bool(find_section(s), k, bvalue>1?true:false);
         return error();
     }
 
@@ -269,7 +296,7 @@ public:
 };
 
 FL_API int conf_is_path_rooted(const char *path);
-FL_API const char* fl_find_config_file(const char* fn, bool cflag=true);
+FL_API const char* fl_find_config_file(const char *filename, bool create=true);
 #ifdef BACKWARD_COMPATIBLE
 extern Fl_Config *current_config;
 inline void conf_clear_cache(void) { if(current_config) current_config->flush(); }

@@ -44,10 +44,10 @@
 
 #define FL_MAJOR_VERSION	2
 #define FL_MINOR_VERSION	0
-#define FL_PATCH_VERSION	1
+#define FL_PATCH_VERSION        3
 #define FL_VERSION		((double)FL_MAJOR_VERSION + \
-				 (double)FL_MINOR_VERSION * 0.01 + \
-				 (double)FL_PATCH_VERSION * 0.0001)
+				 (double)FL_MINOR_VERSION * 0.1 + \
+				 (double)FL_PATCH_VERSION * 0.001)
 
 #ifndef _WIN32
 

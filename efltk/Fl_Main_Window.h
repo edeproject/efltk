@@ -1,7 +1,7 @@
 #ifndef _FL_MAINWIN_H_
 #define _FL_MAINWIN_H_
 
-#include "Fl_Window.h"
+#include "Fl_Double_Window.h"
 #include "Fl_Button.h"
 #include "Fl_Box.h"
 #include "Fl_Widget.h"
@@ -11,7 +11,7 @@
 #include "Fl_Menu_Bar.h"
 #include "Fl_Tool_Bar.h"
 
-class Fl_Main_Window : public Fl_Window
+class Fl_Main_Window : public Fl_Double_Window
 {
 public:
     Fl_Main_Window(int w, int h, const char *l=0);

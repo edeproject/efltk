@@ -48,9 +48,22 @@ void Fl_Tool_Bar::cb_menu(Fl_Widget *w, void *data)
 int Fl_Tool_Bar::button_w = 24;
 int Fl_Tool_Bar::button_h = 24;
 
+static void revert(Fl_Style* s)
+{
+    s->button_box = FL_THIN_UP_BOX;
+    s->glyph = Fl_Tool_Bar::button_glyph;
+    s->color = FL_GRAY;
+}
+
+static Fl_Named_Style style("Tool_Bar", revert, &Fl_Tool_Bar::default_style);
+Fl_Named_Style* Fl_Tool_Bar::default_style = &::style;
+
+
 Fl_Tool_Bar::Fl_Tool_Bar(int x, int y, int w, int h, const char *label)
     : Fl_Bar(x,y,w,h)
 {
+    style(default_style);
+
     menu_ = new Fl_Menu_(0,0,0,0,0);
     menu_->callback(cb_menu, this);
 
@@ -60,8 +73,6 @@ Fl_Tool_Bar::Fl_Tool_Bar(int x, int y, int w, int h, const char *label)
 	if(menu_but->parent()) menu_but->parent()->remove(menu_but);
 
     space_ = 2;
-    button_box(FL_THIN_UP_BOX);
-    glyph(Fl_Tool_Bar::button_glyph);
 }
 
 Fl_Tool_Bar::~Fl_Tool_Bar()

@@ -146,8 +146,8 @@
 /* Enables fl_load_plugin() on Unix */
 #define HAVE_DLOPEN 0
 
-/* Where, after ~/.fltk, to look for plugin files */
-#define CONFIGDIR "/usr/local/lib/fltk"
+/* Where, after ~/.ede, to look for configuration files */
+#define CONFIGDIR "/usr/local/share/ede"
 
 /* The BoXX machines (and possibly other Linux machines) have bugs in
    the X/OpenGL driver for FireGL for handling hardware overlays. Turn

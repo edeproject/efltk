@@ -30,14 +30,15 @@ CPPFILES = demo.cpp hello.cpp resizable.cpp scroll.cpp image.cpp file_chooser.cp
            keyboard.cpp label.cpp layout.cpp arc.cpp ask.cpp button.cpp buttons.cpp \
            clock.cpp color_chooser.cpp cube.cpp cursor.cpp curve.cpp fast_slow.cpp \
            fonts.cpp fullscreen.cpp gl_overlay.cpp iconize.cpp input.cpp navigation.cpp \
-           output.cpp overlay.cpp pack.cpp radio.cpp shape.cpp tile.cpp CubeMain.cpp CubeView.cpp
+           output.cpp overlay.cpp pack.cpp radio.cpp shape.cpp tile.cpp CubeMain.cpp CubeView.cpp \
+           preferences.cpp
 
 ALL =   demo hello resizable scroll image file_chooser menubar browser \
 	threads progress editor inactive checkers valuators glpuzzle boxtype \
         multi_image help mdi_test resize tabs line_style doublebuffer subwindow \
         keyboard label layout arc ask button buttons clock color_chooser cube \
         cursor curve fast_slow fonts fullscreen gl_overlay iconize input navigation \
-        output overlay pack radio shape tile CubeView
+        output overlay pack radio shape tile CubeView preferences
 
 all: demos
 

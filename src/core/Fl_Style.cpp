@@ -292,13 +292,13 @@ Fl_Theme Fl_Style::load_theme(const char* name)
 
     // search for the file:
     const char *path = fl_find_config_file(name);
-
-    if (!path)
-    {
+    if (!path) {
         // If they said "default" it is ok if the plugin is not found:
         if (!strncmp(name, "default.", 8)) return fltk_theme;
         return 0;
     }
+
+    if(!fl_file_exists(path)) return 0;
 
     return (Fl_Theme)fl_load_plugin(path, "fltk_theme");
 }
