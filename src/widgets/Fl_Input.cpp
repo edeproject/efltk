@@ -1171,6 +1171,7 @@ bool Fl_Input::handle_key()
 
         case FL_Insert:
             if (ctrl) copy();
+			if (readonly()) { fl_beep(); return true; }
             else if (shift) Fl::paste(*this, true);
             else return false;   // CUA toggles insert mode on/off
             return true;
@@ -1181,6 +1182,7 @@ bool Fl_Input::handle_key()
         case FL_Delete:
             // I don't know what CUA does with ctrl+delete, I made it delete words
             if (shift) copy();
+			if (readonly()) { fl_beep(); return true; }
             if (mark() != position()) cut();
             else cut(ctrl ? word_end(position()+1)-position() : 1);
             return true;
@@ -1190,6 +1192,7 @@ bool Fl_Input::handle_key()
             ctrl = alt;
         case FL_BackSpace:
             // I don't know what CUA does with ctrl+backspace, I made it delete words
+			if (readonly()) { fl_beep(); return true; }
             if (mark() != position()) cut();
             else cut(ctrl ? word_start(position()-1)-position() : -1);
             return true;
@@ -1420,10 +1423,13 @@ int Fl_Input::handle(int event, int X, int Y, int W, int H)
             if(readonly()) {
                 menu_->find("Cut")->deactivate();
                 menu_->find("Paste")->deactivate();
-            }
+            } else {
+				menu_->find("Paste")->activate();
+			}
             menu_widget = this;
             menu_->popup(Fl::event_x(), Fl::event_y());
             menu_widget = 0;
+			redraw(FL_DAMAGE_EXPOSE);
             return 1;
         }
 
@@ -1611,6 +1617,7 @@ int Fl_Input::handle(int event, int X, int Y, int W, int H)
 
         case FL_PASTE:
         {
+			if (readonly()) { fl_beep(); return true; }
             const char* t = Fl::event_text();
             int n = Fl::event_length();
             // strip trailing nulls:
