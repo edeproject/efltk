@@ -769,6 +769,12 @@ int MenuWindow::handle(int event)
                 selected_=-1;
                 redraw(FL_DAMAGE_CHILD);
             }
+            state->open_widget = 0;
+            state->open_index = -1;
+            state->open_window = 0;
+            state->close_window = 0;
+            Fl::remove_timeout(timeout_open_childwin, state);
+            Fl::remove_timeout(timeout_close_childwin, state);
             return 1;
         }
 
@@ -782,7 +788,6 @@ int MenuWindow::handle(int event)
         }
 
         if(widget) {
-
             tooltip(widget->tooltip());
             Fl_Tooltip::enter(this);
 
@@ -865,7 +870,7 @@ int MenuWindow::handle(int event)
     EXECUTE: // execute the item pointed to by w and current item				
         // If clicked check button in menubar...
         if(state->menubar && widget_ && checkmark(widget_)) {			
-			state->state = DONE_STATE;
+            state->state = DONE_STATE;
             state->level=0;
             Fl::exit_modal();
             return 1;
