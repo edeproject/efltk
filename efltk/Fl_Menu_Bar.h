@@ -40,7 +40,7 @@ public:
     virtual int handle(int ev);
     virtual void layout();
     virtual void draw();
-	virtual void preferred_size(int w, int h) const;
+	virtual void preferred_size(int& w, int& h) const;
 
     int popup(int X, int Y, int W, int H);
 
