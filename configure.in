@@ -418,6 +418,13 @@ if test "$have_pthread" = yes; then
 fi
 AC_SUBST(THREADSLIBS)
 
+STRIP=strip
+AC_PATH_PROG(STRIP_PATH, ${STRIP},, $PATH)
+if test z${STRIP_PATH} != z; then
+	HAVE_STRIP=1
+        AC_SUBST(HAVE_STRIP)
+        AC_SUBST(STRIP_PATH)
+fi
 
 MAKEDEPEND="\${CXX} -M"
 
