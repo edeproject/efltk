@@ -272,7 +272,6 @@ void MenuWindow::layout()
         if(parent) {
             if(Fl_Menu_::subwindow_effect()) {
                 anim_flags = Fl_Menu_::LEFT_TO_RIGHT;
-                slow_down_to_w = 15;
             }
         }
     }
@@ -1077,12 +1076,6 @@ int Fl_Menu_::popup(int X, int Y, int W, int H)
 
     first_menu->relayout(menu_indexes, menu_level);
 
-    if(type()&7) {
-        if(first_menu->ow>first_menu->oh) first_menu->slow_down_to_w = 15;
-        else first_menu->slow_down_to_h = 15;
-    } else
-        first_menu->slow_down_to_h = 20;
-
     // Force menu X/Y on screen
     if(Y+first_menu->oh > Fl::h()) {
         if(first_menu->oh>Fl::h()) Y = 0;
@@ -1156,7 +1149,6 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
     first_menu->anim_flags = anim_flags_;
     first_menu->anim_speed(speed);
     first_menu->menubar = true;
-    first_menu->slow_down_to_h = 20;
     first_menu->child_of(Fl::first_window());
 
     Fl_Widget* saved_modal = Fl::modal();

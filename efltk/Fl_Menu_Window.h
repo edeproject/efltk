@@ -60,9 +60,6 @@ protected:
     float anim_speed_;
 
     bool animating; //set true, while animating
-
-    int slow_down_to_h;
-    int slow_down_to_w;
 };
 
 #endif

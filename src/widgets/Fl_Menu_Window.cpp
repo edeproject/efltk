@@ -47,8 +47,6 @@ Fl_Menu_Window::Fl_Menu_Window(int W, int H, const char *l)
 {
     animating=false;
     anim_speed_=Fl_Menu_::default_anim_speed();
-    slow_down_to_h=0;
-    slow_down_to_w=0;
 }
 
 Fl_Menu_Window::Fl_Menu_Window(int X, int Y, int W, int H, const char *l)
@@ -56,8 +54,6 @@ Fl_Menu_Window::Fl_Menu_Window(int X, int Y, int W, int H, const char *l)
 {
     animating=false;
     anim_speed_=Fl_Menu_::default_anim_speed();
-    slow_down_to_h=0;
-    slow_down_to_w=0;
 }
 
 

@@ -53,8 +53,6 @@ public:
 
     Fl_TooltipBox() : Fl_Menu_Window(0, 0)
     {
-        slow_down_to_h=-1;
-        slow_down_to_w=-1;
         no_layout = false;
         style(Fl_Tooltip::default_style);
         set_override();
