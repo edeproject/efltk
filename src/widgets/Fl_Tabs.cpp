@@ -135,7 +135,7 @@ Fl_Widget *Fl_Tabs::which(int event_x, int event_y)
     if (event_x < 0) return 0;
     int p[128], w[128];
     int selected = tab_positions(p, w);
-    int d = (event_y-(H>=0?0:h()))*TABSLOPE/H;
+    int d = (event_y-(H>=0?0:h()))*TABSLOPE/(H==0?1:H);
     for (int i=0; i<children(); i++)
     {
         if (event_x < p[i+1]+(i<selected ? TABSLOPE-d : d)) return child(i);
@@ -349,22 +349,23 @@ enum {LEFT, RIGHT, SELECTED};
 
 extern Fl_Widget* fl_did_clipping;
 
+#include <stdio.h>
+
 static int H;
 static int p[128];
 void Fl_Tabs::draw()
 {
     Fl_Widget *v = value();
+	int selected=-1;
+	int i;
+	int w[128];
 
     H = tab_height();
     if (damage() & FL_DAMAGE_ALL)// redraw the entire thing:
     {
-        fl_push_clip(0, 0, w(), h());
-        if (v) draw_child(*v);
-        parent()->draw_group_box();
-        /*    fl_color(color());
-            fl_rectf(0, H>=0 ? 0 : h()+H, w(), H>=0?H:-H);*/
-        fl_pop_clip();
-    }                            // redraw the child
+		fl_push_clip(0,0,this->w(),this->h());
+        if (v) draw_child(*v);			
+	}                            // redraw the child
     else
     {
         if (v) update_child(*v);
@@ -372,41 +373,93 @@ void Fl_Tabs::draw()
 
     // draw the tabs if needed:
     if (damage() & (FL_DAMAGE_VALUE|FL_DAMAGE_ALL))
-    {
-        int w[128];
-        int selected = tab_positions(p,w);
-        int i;
+    {		        
+        selected = tab_positions(p,w);        
 
-        for (i=0; i<selected; i++)
+        for(i=0; i<selected; i++)
             draw_tab(p[i], p[i+1], w[i], H, child(i), LEFT);
-        for (i=children()-1; i > selected; i--)
+        for(i=children()-1; i > selected; i--)
             draw_tab(p[i], p[i+1], w[i], H, child(i), RIGHT);
-        if (v)
-        {
+        if(v) {
             i = selected;
             draw_tab(p[i], p[i+1], w[i], H, child(i), SELECTED);
         }
-        else
+        /*else
         {
             // draw the edge when no selection:
             fl_color(H >= 0 ? FL_LIGHT3 : FL_DARK3);
             int b = H >= 0 ? H : h()+H;
             fl_line(0, b, this->w(), b);
-        }
+        }*/
 
     }
-    if (damage() & FL_DAMAGE_EXPOSE)
-    {
-        fl_clip_out(0, H>=0 ? 0 : h()+H, p[children()]+TABSLOPE, (H>=0?H:-H));
+
+	if (damage() & FL_DAMAGE_ALL) {
+		// Clip out buttons
+		fl_clip_out(0, H>=0 ? 0 : h()+H, p[children()], (H>=0?H:-H));
+				
+		if(selected>=0) {			
+			i = selected;
+			// Clip out little piece of box()
+			fl_clip_out(p[i], (H>=0?H:this->h()+H)-1,
+						p[i+1]-p[i], box()->dy());
+		}
+				
+		parent()->draw_group_box();				
+		box()->draw(0, (H>=0?H:0), this->w(), this->h()-(H>=0?H:-H), v ? v->color() : color(), FL_INVISIBLE);
+		fl_pop_clip();				
+	}	
+
+	if (damage() & FL_DAMAGE_EXPOSE) {
+		fl_clip_out(0, H>=0 ? 0 : h()+H, p[children()]+TABSLOPE, (H>=0?H:-H));
         fl_clip_out(0, H>0 ? H : 0, this->w(), h()-(H>=0?H:-H-1));
         fl_did_clipping = this;
-    }
+    }	
 }
 
 
 void Fl_Tabs::draw_tab(int x1, int x2, int W, int H, Fl_Widget* o, int what)
-{
-    if (x2 < x1+W)
+{	
+  int sel = (what == SELECTED);
+  int dh = button_box()->dh();
+  int dy = button_box()->dy();
+
+  if ((x2 < x1+W) && what == RIGHT) x1 = x2 - W;
+  
+  Fl_Color c = (!sel && o==push_) ? fl_color_average(selection_color(), o->selection_color(), 0.8) : o->color();  
+
+  if (H >= 0) {
+	int height = sel?(H + dh - dy):H;
+    if (sel) fl_push_clip(x1, 0, x2 - x1, height-1);
+    else fl_push_clip(x1, 0, x2 - x1, height);
+
+    H += dh;
+
+    button_box()->draw(x1, 0, W, H, c, 0);
+    o->draw_label(x1, 0, W, H, FL_ALIGN_CENTER);
+    if (focused() && o->visible())
+		focus_box()->draw(x1, 0, W, H, FL_BLACK, FL_INVISIBLE);        
+
+    fl_pop_clip();
+  } else {	
+    H = -H;	
+	int height = sel?(H + dh - dy):H;
+    if (sel) fl_push_clip(x1, h() - H - dh + dy + 1, x2 - x1, height);
+    else fl_push_clip(x1, h() - H, x2 - x1, height);
+
+    H += dh;
+
+    button_box()->draw(x1, h() - H, W, H, c, 0);
+    o->draw_label(x1, h() - H, W, H, FL_ALIGN_CENTER);
+    if(focused() && o->visible())
+      focus_box()->draw(x1, h() - H, W, H, FL_BLACK, FL_INVISIBLE);
+
+    fl_pop_clip();
+  }
+
+  // Old draw_tab method from FLTK2
+#if 0
+   if (x2 < x1+W)
     {
         if (what == LEFT)
         {
@@ -484,13 +537,16 @@ void Fl_Tabs::draw_tab(int x1, int x2, int W, int H, Fl_Widget* o, int what)
             focus_box()->draw(x, y, w, h, FL_BLACK, FL_INVISIBLE);
         }
     }
+#endif
 }
 
 
 static void revert(Fl_Style* s)
 {
-    s->box = FL_THIN_UP_BOX;
+    s->box = FL_UP_BOX;
+	s->button_box = FL_UP_BOX;
     s->color = FL_GRAY;
+	s->selection_color = FL_GRAY;
 }
 
 

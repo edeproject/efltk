@@ -182,7 +182,8 @@ Fl_Frame_Box::Fl_Frame_Box(const char* n, const char* s, const Fl_Frame_Box* d)
 }
 
 const Fl_Frame_Box fl_down_box("down", "2WWMMPPAA");
-const Fl_Frame_Box fl_up_box("up", "2AAWWMMTT", &fl_down_box);
+const Fl_Frame_Box fl_up_box("up", "2AAWWIIRR", &fl_down_box);
+//const Fl_Frame_Box fl_up_box("up", "2AAWWMMTT", &fl_down_box);
 
 const Fl_Frame_Box fl_thin_down_box("thin down", "2WWHH");
 const Fl_Frame_Box fl_thin_up_box("thin up", "2HHWW", &fl_thin_down_box);
