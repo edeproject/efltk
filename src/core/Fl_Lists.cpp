@@ -114,11 +114,39 @@ bool Fl_Ptr_List::remove(void *p)
     return false;
 }
 
-void Fl_Ptr_List::sort(int (*sort_function)(const void *, const void *))
+void Fl_Ptr_List::sort(Fl_Sort_Function cmpfunc)
 {
     if(size_>0) {
-        qsort(items, size_, sizeof(Fl_Ptr_List_Item), sort_function);
+        qsort(items, size_, sizeof(Fl_Ptr_List_Item), cmpfunc);
     }
+}
+
+Fl_Ptr_List_Item Fl_Ptr_List::binary_search(Fl_Ptr_List_Item key, Fl_Search_Function cmpfunc)
+{
+    // Do binary search
+    int bottom=0, top=size()-1, mid;
+    int L = ( top + bottom ) / 2 ;
+    if(cmpfunc(key, items[L])==0) return items[L];
+    while(bottom <= top) {
+        mid = top + bottom / 2 ;
+        int d = cmpfunc(key, items[mid]);
+        if(!d)
+            return items[mid];
+        else if(d>0)
+            bottom = mid + 1;
+        else
+            top = mid-1;
+    }
+    return 0;
+}
+
+Fl_Ptr_List_Item Fl_Ptr_List::search(Fl_Ptr_List_Item key, Fl_Search_Function cmpfunc)
+{
+    for(unsigned n=0; n<size(); n++) {
+        if(cmpfunc(key, items[n])==0)
+            return items[n];
+    }
+    return 0;
 }
 
 int Fl_Ptr_List::index_of(const Fl_Ptr_List_Item p) const

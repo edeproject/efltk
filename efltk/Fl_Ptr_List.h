@@ -25,7 +25,9 @@
 #include "Enumerations.h"
 
 typedef void* Fl_Ptr_List_Item;
-typedef int (*Fl_Foreach_Function)(void *item,void *arg);
+typedef int (*Fl_Foreach_Function)(void *item, void *arg);
+typedef int (*Fl_Sort_Function)(const void *item1, const void *item2);
+typedef int (*Fl_Search_Function)(const void *key, const void *other);
 
 /**
  * Fl_Ptr_List is implementation of EFLTK generic pointer-list...
@@ -61,7 +63,46 @@ public:
     void remove(unsigned pos);
     bool remove(Fl_Ptr_List_Item ptr);
 
-    void sort(int (*fcmp)(const void *, const void *));
+    /**
+     * Sort array using qsort algorithm.
+     *
+     * 'cmpfunc' returns:
+     *  @li 0 if item1 == item2
+     *  @li > 0 (positive integer) if item1 > item2
+     *  @li < 0 (negative integer) if item1 < item2
+     *
+     * @param cmpfunc user provided compare function.
+     */
+    void sort(Fl_Sort_Function cmpfunc);
+
+    /**
+     * Search from list, using linear search algorithm.
+     *
+     * 'cmpfunc' returns:
+     *  @li 0 if item1 == item2
+     *  @li !=0 (non-zero integer) if item1 != item2
+     *
+     * @param cmpfunc user provided compare function.
+     */
+    Fl_Ptr_List_Item search(Fl_Ptr_List_Item key, Fl_Search_Function cmpfunc);
+
+    /**
+     * Search from list, using linear search algorithm.
+     * @note List MUST be sorted before doing binary search.
+     *
+     * 'cmpfunc' returns:
+     *  @li 0 if item1 == item2
+     *  @li > 0 (positive integer) if item1 > item2
+     *  @li < 0 (negative integer) if item1 < item2
+     *
+     * @param cmpfunc user provided compare function.
+     */
+    Fl_Ptr_List_Item binary_search(Fl_Ptr_List_Item key, Fl_Search_Function cmpfunc);
+
+    /**
+     * Returns index item 'p', support only pointer comparing.
+     * Returns -1, if item not in list.
+     */
     int index_of(const Fl_Ptr_List_Item p) const;
 
     Fl_Ptr_List_Item item(unsigned index) const;
