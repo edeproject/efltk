@@ -48,10 +48,12 @@
 #include "bg.xpm"
 #include "bg2.xpm"
 #include "bg3.xpm"
+#include "bg4.xpm"
 
 Fl_Pixmap gray((const char **)bg_xpm);
 Fl_Pixmap blue((const char **)bg2_xpm);
 Fl_Pixmap light((const char **)bg3_xpm);
+Fl_Pixmap light_lt((const char **)bg4_xpm);
 
 class Fl_Image_Box : public Fl_Boxtype_ {
 public:
@@ -143,6 +145,7 @@ extern "C" bool fltk_theme()
     Fl_Boxtype up        = new Fl_Image_Box(&gray, 0, &light, 0 , FL_THIN_UP_BOX, FL_THIN_DOWN_BOX, FL_THIN_UP_BOX);
     Fl_Boxtype up_blue   = new Fl_Image_Box(&blue, 0, &light, 0 , FL_THIN_UP_BOX, FL_THIN_DOWN_BOX, FL_THIN_UP_BOX);
     Fl_Boxtype down      = new Fl_Image_Box(&gray, &blue, &light, 0 , FL_THIN_DOWN_BOX);
+    Fl_Boxtype down_lt   = new Fl_Image_Box(&light_lt,&light_lt, &light_lt, 0 , FL_THIN_DOWN_BOX);
 
     Fl_Boxtype border    = new Fl_Image_Box(&blue, &light, &light, 0, FL_BORDER_BOX);
     Fl_Boxtype border_hl = new Fl_Image_Box(&gray, &gray, &gray, 0, FL_FLAT_BOX, FL_THIN_DOWN_BOX, FL_THIN_UP_BOX, 0, FL_VALUE);
@@ -162,6 +165,9 @@ extern "C" bool fltk_theme()
     Fl_Style* s;
     if ((s = Fl_Style::find("combo box"))) {
         s->box = down;
+    }
+    if ((s = Fl_Style::find("listview"))) {
+        s->box = down_lt;
     }
     if ((s = Fl_Style::find("window"))) {
         s->box = flat_blue;
