@@ -542,3 +542,53 @@ void fl_alpha_blend(uint8 sR, uint8 sG, uint8 sB, uint8 A, uint8 &dR, uint8 &dG,
     dB = (((sB-dB)*(A))>>8)+dB;
 }
 
+/* The macros used to swap values */
+/* Try to use superfast macros on systems that support them */
+#ifdef linux
+#include <asm/byteorder.h>
+#endif /* linux */
+
+uint16 fl_swap_16(uint16 d) {
+#ifdef __arch__swab16
+    return (__arch__swab16(d));
+#else
+    return ((d<<8)|(d>>8));
+#endif
+}
+
+uint32 fl_swap_32(uint32 d) {
+#ifdef __arch__swab32
+    return (__arch__swab32(d));
+#else
+    return ((d<<24)|((d<<8)&0x00FF0000)|((d>>8)&0x0000FF00)|(d>>24));
+#endif
+}
+
+#if WORDS_BIGENDIAN
+uint16 fl_swap_le16(uint16 d) {
+    return fl_swap_32(d);
+}
+uint32 fl_swap_le32(uint32 d) {
+    return fl_swap_16(d);
+}
+uint16 fl_swap_be16(uint16 d) {
+    return d;
+}
+uint32 fl_swap_be32(uint32 d) {
+    return d;
+}
+#else
+uint16 fl_swap_le16(uint16 d) {
+    return d;
+}
+uint32 fl_swap_le32(uint32 d) {
+    return d;
+}
+uint16 fl_swap_be16(uint16 d) {
+    return fl_swap_16(d);
+}
+uint32 fl_swap_be32(uint32 d) {
+    return fl_swap_32(d);
+}
+#endif
+

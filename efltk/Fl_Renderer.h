@@ -157,6 +157,7 @@ typedef struct _blit_info
     bool hw_surface;
 } BlitInfo;
 
+// Fast pixel modifier color functions:
 extern bool fl_format_equal(Fl_PixelFormat *A, Fl_PixelFormat *B);
 
 /* Load pixel of the specified format from a buffer and get its R-G-B values */
@@ -188,5 +189,15 @@ extern void fl_pixel_from_rgba(uint32 &pixel, Fl_PixelFormat *fmt, uint8 r, uint
 
 /* Blend the RGB values of two pixels based on a source alpha value */
 extern void fl_alpha_blend(uint8 sR, uint8 sG, uint8 sB, uint8 A, uint8 &dR, uint8 &dG, uint8 &dB);
+
+// Byte swapping functions for EFltk:
+extern uint16 fl_swap_16(uint16 d);
+extern uint32 fl_swap_32(uint32 d);
+
+// Endian independ, swaps bytes, if needed. (e.g. big endian machine will swap bytes in 'fl_swap_le16')
+extern uint16 fl_swap_le16(uint16 d);
+extern uint32 fl_swap_le32(uint32 d);
+extern uint16 fl_swap_be16(uint16 d);
+extern uint32 fl_swap_be32(uint32 d);
 
 #endif

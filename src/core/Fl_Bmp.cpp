@@ -40,18 +40,16 @@ RGBQuad;
 
 uint16 ReadLe16()
 {
-	// SWAP IF BIG ENDIAN!
-	uint16 tmp;
-	bmp_io.read(&tmp, sizeof(uint16));	
-    return tmp;
+    uint16 tmp;
+    bmp_io.read(&tmp, sizeof(uint16));
+    return fl_swap_le16(tmp);
 }
 
 uint32 ReadLe32()
 {
-	// SWAP IF BIG ENDIAN!
     uint32 tmp;
-	bmp_io.read(&tmp, sizeof(uint32));
-    return tmp;
+    bmp_io.read(&tmp, sizeof(uint32));
+    return fl_swap_le32(tmp);
 }
 
 static bool bmp_create(uint8 *&data, Fl_PixelFormat &fmt, int &w, int &h)
@@ -268,9 +266,9 @@ static bool bmp_create(uint8 *&data, Fl_PixelFormat &fmt, int &w, int &h)
         break;
 
         default:
-            if(bmp_io.read(bits, pitch) != pitch) {				
+            if(bmp_io.read(bits, pitch) != pitch) {
                 goto error;
-			}
+            }
 #if WORDS_BIGENDIAN
             /* Byte-swap the pixels if needed. Note that the 24bpp
              case has already been taken care of above. */
@@ -278,15 +276,15 @@ static bool bmp_create(uint8 *&data, Fl_PixelFormat &fmt, int &w, int &h)
             case 15:
             case 16: {
                 uint16 *pix = (uint16 *)bits;
-                for(i = 0; i < surface->w; i++)
-                    pix[i] = SDL_Swap16(pix[i]);
+                for(i = 0; i < w; i++)
+                    pix[i] = fl_swap_16(pix[i]);
                 break;
             }
 
             case 32: {
                 uint32 *pix = (uint32 *)bits;
-                for(i = 0; i < surface->w; i++)
-                    pix[i] = SDL_Swap32(pix[i]);
+                for(i = 0; i < w; i++)
+                    pix[i] = fl_swap_32(pix[i]);
                 break;
             }
             }
