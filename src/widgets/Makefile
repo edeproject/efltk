@@ -23,6 +23,8 @@
 # Please report all bugs and problems to "fltk-bugs@easysw.com".
 #
 
+OUT_MAGIC := $(shell mkdir ../../lib > /dev/null 2>&1 || :)
+
 CPPFILES = \
 	Fl_Adjuster.cpp \
 	Fl_Align_Group.cpp \
