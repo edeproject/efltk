@@ -246,6 +246,10 @@ SOURCE=..\src\core\fl_curve.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\db\Fl_Data_Dialog.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\core\Fl_Data_Fields.cpp
 # End Source File
 # Begin Source File
@@ -571,6 +575,10 @@ SOURCE=..\src\db\Fl_Query.cpp
 # Begin Source File
 
 SOURCE=..\src\widgets\Fl_Radio_Button.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\db\Fl_Record_DS.cpp
 # End Source File
 # Begin Source File
 
