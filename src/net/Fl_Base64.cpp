@@ -66,9 +66,9 @@ Fl_Base64::~Fl_Base64()
 void 
 Fl_Base64::encode(Fl_Buffer* bufDest, Fl_Buffer* bufSource)
 {
-	unsigned char c;
-	unsigned char *current = bufSource->data();
-	size_t len = bufSource->size();
+	char c;
+	char *current = bufSource->data();
+	size_t len = bufSource->bytes();
 	
 	while (len >= 3)
 	{
@@ -88,7 +88,7 @@ Fl_Base64::encode(Fl_Buffer* bufDest, Fl_Buffer* bufSource)
 	if (len > 0)
 	{
 		c = base64chars(current[0] >> 2);
-		bufDest->Append(&c,1);		
+		bufDest->append(&c, 1);		
 		if (len > 1)
 		{
 			c = base64chars(((current[0] & 0x03) << 4) | (current[1] >> 4));
@@ -108,6 +108,7 @@ Fl_Base64::encode(Fl_Buffer* bufDest, Fl_Buffer* bufSource)
 			bufDest->append(&c, 1);
 		} /* else */
 	} /* if */
+	bufDest
 } /* encode(Fl_Buffer* bufDest, Fl_Buffer* bufSource) */
 /* ------------------------------------------------------------------------- */
 
@@ -121,16 +122,14 @@ Fl_Base64::encode(Fl_Buffer* bufDest, Fl_Buffer* bufSource)
  * @author Dejan Lekic, http://dejan.nu6.org
  */
 Fl_String
-Fl_Base64::encode(Fl_Buffer bufSource)
+Fl_Base64::encode(Fl_Buffer* bufSource)
 {
-	Fl_String strOut = "";
-	Fl_Buffer bufIn, bufOut;
-
-	bufIn.append(bufSource.data(), bufSource.size()+1);
+	Fl_String strOut;
+	Fl_Buffer bufOut;
+	Fl_Buffer bufIn = *bufSource;
+	//bufIn.append(bufSource->data(), bufSource->size()+1);
 	encode(&bufOut, &bufIn);
-	strOut.set((const char*)bufOut.data(), bufOut.size());
-
-	return strOut;
+	return Fl_String((const char*)bufOut.data(), bufOut.bytes());
 } /* encode(Fl_Buffer bufSource) */
 /* ------------------------------------------------------------------------- */
 /***** $id$
