@@ -5,6 +5,7 @@
 #include <efltk/Fl_String_Hash.h>
 #include <efltk/filename.h>
 #include <efltk/vsnprintf.h>
+#include <efltk/fl_utf8.h>
 
 #include <ctype.h>
 #include <errno.h>
@@ -490,20 +491,22 @@ void MessageHash::load_mo(FILE *fp)
     char *end = start;
     while(*end++) { if((char*)data-end >= size) break; }
     Fl_String codeset(start, start-end);
+    int converter_index=-1;
     info_pos = codeset.pos("charset");
     if(info_pos>0) {
         info_pos+=8;
         int end_pos = codeset.pos('\n', info_pos);
         if(end_pos>info_pos) {
             codeset = codeset.sub_str(info_pos, end_pos-info_pos);
+            converter_index = fl_find_converter(codeset.c_str());
         }
     }
 
     Fl_String orig, tr;
     for(uint n=0; n<numstrings; n++) {
-        if(codeset.length()>0) {
-            orig = Fl_String::from_codeset( codeset, ((char*)data+SWAP(orig_tab[n].offset)), SWAP(orig_tab[n].length));
-            tr   = Fl_String::from_codeset( codeset, ((char*)data+SWAP(trans_tab[n].offset)), SWAP(trans_tab[n].length));
+        if(converter_index>0) {
+            orig = Fl_String::from_codeset( converter_index, ((char*)data+SWAP(orig_tab[n].offset)), SWAP(orig_tab[n].length));
+            tr   = Fl_String::from_codeset( converter_index, ((char*)data+SWAP(trans_tab[n].offset)), SWAP(trans_tab[n].length));
         } else {
             orig = Fl_String( ((char*)data+SWAP(orig_tab[n].offset)), SWAP(orig_tab[n].length));
             tr   = Fl_String( ((char*)data+SWAP(trans_tab[n].offset)), SWAP(trans_tab[n].length));

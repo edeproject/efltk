@@ -18,6 +18,8 @@
 #include <efltk/Fl_Exception.h>
 #include <efltk/Fl.h>
 
+#ifndef STD_EXCEPTIONS
+
 static void default_exception_handler(Fl_Exception &e) {
     Fl::warning("Unhandled exception:\n%s", e.text().c_str());
 }
@@ -63,16 +65,18 @@ Fl_JmpBuf_Stack fl_jmpbuf_stack;
 Fl_Exception fl_last_throwed_exception;
 bool fl_exception_was_throwed;
 
-Fl_Exception::Fl_Exception(const char *text, const char *file, int line) {
+#endif
+
+Fl_Exception::Fl_Exception(Fl_String text, const char *file, int line) {
    m_file = file;
    m_text = text;
    m_line = line;
 }
 
-Fl_String Fl_Exception::text(bool shortVersion) const {	
-	if(!shortVersion && m_line) {
-		Fl_String ret;
-		return ret.printf("Error in file \'%s\' [%d]: %s", m_file, m_line, m_text);
-	}
-	return Fl_String(m_text);
+Fl_String Fl_Exception::text(bool shortVersion) const {
+    if(!shortVersion && m_line) {
+        Fl_String ret;
+        return ret.printf("Error in file \'%s\' [%d]: %s", m_file, m_line, m_text.c_str());
+    }
+    return m_text;
 }
