@@ -1,8 +1,8 @@
 /***************************************************************************
                           Fl_Database.h  -  description
                              -------------------
-    begin                : Wed Dec 15 1999
-    copyright            : (C) 1999 by Alexey Parshin
+    begin                : Sat Dec 27 2002
+    copyright            : (C) 2002 by Alexey Parshin
     email                : alexeyp@m7.tts-sf.com
  ***************************************************************************/
 
@@ -39,7 +39,6 @@ protected:
    Fl_String      m_connString;
    bool           m_active;
    bool           m_inTransaction;
-   Fl_Database_Capabilities   m_capabilities;
 
 protected:
    // Operations over query handle
