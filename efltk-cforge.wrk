@@ -2865,14 +2865,12 @@ lib/Fl_WM.o :	efltk/Fl_Callback_List.h\
 	efltk/filename.h\
 	efltk/Fl.h\
 	efltk/Fl_WM.h
-lib/Fl_Widget.o :	config.h\
-	efltk/fl_draw.h\
+lib/Fl_Widget.o :	efltk/fl_draw.h\
 	efltk/Fl_Device.h\
 	efltk/Fl_Group.h\
 	efltk/Fl_Int_List.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Enumerations.h\
-	efltk/Fl_Events.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_Widget_List.h\
 	efltk/Fl_Widget.h\
@@ -2896,9 +2894,6 @@ lib/Fl_Widget.o :	config.h\
 	efltk/win32.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h\
-	efltk/Fl_Size.h\
-	efltk/Fl_Point.h\
-	efltk/Fl_Rect.h\
 	efltk/Fl_Window.h\
 	efltk/Fl.h
 lib/Fl_Window.o :	efltk/Fl_WM.h\
@@ -4677,7 +4672,6 @@ lib/Fl_Dialog.o :	efltk/Fl_Dialog.h\
 	efltk/Fl_Flags.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Enumerations.h\
-	efltk/Fl_Events.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
@@ -4714,7 +4708,6 @@ lib/Fl_Dialog.o :	efltk/Fl_Dialog.h\
 	efltk/Fl_Window.h\
 	efltk/fl_draw.h\
 	efltk/fl_ask.h\
-	efltk/Fl_Stock_Images.h\
 	efltk/Fl_Tabs.h\
 	efltk/Fl_Input.h\
 	efltk/Fl_Box.h\
@@ -5033,7 +5026,6 @@ lib/Fl_Input.o :	efltk/Fl_Menu_Button.h\
 	efltk/Fl_Flags.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Enumerations.h\
-	efltk/Fl_Events.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
@@ -5049,7 +5041,6 @@ lib/Fl_Input.o :	efltk/Fl_Menu_Button.h\
 	efltk/Fl_Group.h\
 	efltk/Fl_Widget_List.h\
 	src/core/fl_internal.h\
-	efltk/Fl_Point.h\
 	efltk/Fl_Translator.h\
 	config.h\
 	efltk/fl_utf8.h\
@@ -5321,7 +5312,6 @@ lib/Fl_MDI_Window.o :	efltk/Fl_Item.h\
 	efltk/Fl_Flags.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Enumerations.h\
-	efltk/Fl_Events.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
@@ -5344,9 +5334,6 @@ lib/Fl_MDI_Window.o :	efltk/Fl_Item.h\
 	efltk/Fl_Widget_List.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h\
-	efltk/Fl_Size.h\
-	efltk/Fl_Point.h\
-	efltk/Fl_Rect.h\
 	efltk/Fl_MDI_Bar.h\
 	efltk/Fl_MDI_Window.h\
 	efltk/Fl.h\
@@ -5362,8 +5349,7 @@ lib/Fl_MDI_Window.o :	efltk/Fl_Item.h\
 	efltk/Fl_Menu_Item.h\
 	efltk/Fl_Scrollbar.h\
 	efltk/Fl_Slider.h\
-	efltk/Fl_Valuator.h\
-	config.h
+	efltk/Fl_Valuator.h
 lib/Fl_Main_Window.o :	efltk/Fl_Main_Window.h\
 	efltk/Fl_Tool_Bar.h\
 	efltk/Fl_Menu_Button.h\
@@ -5698,18 +5684,14 @@ lib/Fl_Multi_Image.o :	efltk/Fl_Multi_Image.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h
 lib/Fl_Numeric_Input.o :	src/core/fl_internal.h\
-	efltk/Fl_Int_List.h\
+	efltk/Fl_Translator.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Enumerations.h\
-	efltk/Fl_Events.h\
 	efltk/Fl_Export.h\
-	efltk/Fl_Point.h\
-	efltk/Fl_Translator.h\
 	efltk/Fl_String_List.h\
 	efltk/Fl_String.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Flags.h\
-	config.h\
 	efltk/Fl_Numeric_Input.h\
 	efltk/Fl_Input.h\
 	efltk/Fl_Widget.h\
@@ -5720,6 +5702,7 @@ lib/Fl_Numeric_Input.o :	src/core/fl_internal.h\
 	efltk/Fl_Exception.h\
 	efltk/Fl_Style.h\
 	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Boxtype.h\
 	efltk/fl_ask.h\
@@ -6127,7 +6110,6 @@ lib/Fl_Tabs.o :	efltk/Fl_Image.h\
 	efltk/Fl_PtrList.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Enumerations.h\
-	efltk/Fl_Events.h\
 	efltk/Fl_Renderer.h\
 	efltk/x.h\
 	efltk/win32.h\
@@ -6150,9 +6132,6 @@ lib/Fl_Tabs.o :	efltk/Fl_Image.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h\
-	efltk/Fl_Size.h\
-	efltk/Fl_Point.h\
-	efltk/Fl_Rect.h\
 	efltk/Fl_Scroll.h\
 	efltk/Fl_Scrollbar.h\
 	efltk/Fl_Slider.h\
@@ -6216,7 +6195,6 @@ lib/Fl_Text_Editor.o :	efltk/Fl_Menu_Button.h\
 	efltk/Fl_Flags.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Enumerations.h\
-	efltk/Fl_Events.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
@@ -6241,14 +6219,12 @@ lib/Fl_Text_Editor.o :	efltk/Fl_Menu_Button.h\
 	efltk/Fl_Valuator.h\
 	efltk/fl_draw.h\
 	efltk/Fl_Device.h\
-	efltk/Fl.h\
-	config.h
+	efltk/Fl.h
 lib/Fl_Tile.o :	efltk/Fl_Window.h\
 	efltk/Fl_Group.h\
 	efltk/Fl_Int_List.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Enumerations.h\
-	efltk/Fl_Events.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_Widget_List.h\
 	efltk/Fl_Widget.h\
@@ -6333,7 +6309,6 @@ lib/Fl_Valuator.o :	efltk/Fl_Valuator.h\
 	efltk/Fl_Flags.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Enumerations.h\
-	efltk/Fl_Events.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
@@ -6352,7 +6327,6 @@ lib/Fl_Value_Input.o :	efltk/Fl_Group.h\
 	efltk/Fl_Int_List.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Enumerations.h\
-	efltk/Fl_Events.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_Widget_List.h\
 	efltk/Fl_Widget.h\
@@ -9602,7 +9576,6 @@ test/Fl_Dialog.o :	efltk/Fl_Dialog.h\
 	efltk/Fl_Flags.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Enumerations.h\
-	efltk/Fl_Events.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
@@ -9639,7 +9612,6 @@ test/Fl_Dialog.o :	efltk/Fl_Dialog.h\
 	efltk/Fl_Window.h\
 	efltk/fl_draw.h\
 	efltk/fl_ask.h\
-	efltk/Fl_Stock_Images.h\
 	efltk/Fl_Tabs.h\
 	efltk/Fl_Input.h\
 	efltk/Fl_Box.h\

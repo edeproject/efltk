@@ -39,49 +39,49 @@
 #include <stdlib.h>
 
 static const Enumeration menu_item_type_menu[] = {
-  {"Normal", "NORMAL", (void*)0},
-  {"Toggle", "TOGGLE", (void*)Fl_Item::TOGGLE},
-  {"Radio",  "RADIO",  (void*)Fl_Item::RADIO},
-  {0}};
+    {"Normal", "NORMAL", (void*)0},
+    {"Toggle", "TOGGLE", (void*)Fl_Item::TOGGLE},
+    {"Radio",  "RADIO",  (void*)Fl_Item::RADIO},
+    {0}};
 
 class Fl_Menu_Item_Type : public Fl_Widget_Type {
 public:
-  const Enumeration* subtypes() const {return menu_item_type_menu;}
-  const char* type_name() const {return "Fl_Item";}
-  int is_menu_item() const {return 1;}
-  int is_button() const {return 1;} // this gets shortcut to work
-  Fl_Widget *widget(int x,int y,int w,int h);
-  Fl_Widget_Type *_make() {return new Fl_Menu_Item_Type();}
+    const Enumeration* subtypes() const {return menu_item_type_menu;}
+    const char* type_name() const {return "Fl_Item";}
+    int is_menu_item() const {return 1;}
+    int is_button() const {return 1;} // this gets shortcut to work
+    Fl_Widget *widget(int x,int y,int w,int h);
+    Fl_Widget_Type *_make() {return new Fl_Menu_Item_Type();}
 };
 
 class Fl_Menu_Divider_Type : public Fl_Widget_Type {
 public:
-  const Enumeration* subtypes() const {return 0;}
-  const char* type_name() const {return "Fl_Menu_Divider";}
-  int is_menu_item() const {return 1;}
-  Fl_Widget *widget(int x,int y,int w,int h) { return new Fl_Menu_Divider; }
-  Fl_Widget_Type *_make() {return new Fl_Menu_Divider_Type();}
+    const Enumeration* subtypes() const {return 0;}
+    const char* type_name() const {return "Fl_Menu_Divider";}
+    int is_menu_item() const {return 1;}
+    Fl_Widget *widget(int x,int y,int w,int h) { return new Fl_Menu_Divider; }
+    Fl_Widget_Type *_make() {return new Fl_Menu_Divider_Type();}
 };
 
 class Fl_Submenu_Type : public Fl_Group_Type {
 public:
-  const Enumeration* subtypes() const {return 0;}
-  const char* type_name() const {return "Fl_Item_Group";}
-  int is_menu_item() const {return 1;}
-  Fl_Widget *widget(int x,int y,int w,int h);
-  Fl_Widget_Type *_make() {return new Fl_Submenu_Type();}
+    const Enumeration* subtypes() const {return 0;}
+    const char* type_name() const {return "Fl_Item_Group";}
+    int is_menu_item() const {return 1;}
+    Fl_Widget *widget(int x,int y,int w,int h);
+    Fl_Widget_Type *_make() {return new Fl_Submenu_Type();}
 };
 
 extern int reading_file;
 
 Fl_Widget *Fl_Menu_Item_Type::widget(int,int,int,int) {
-  return new Fl_Item(reading_file ? 0 : "item");
+    return new Fl_Item(reading_file ? 0 : "item");
 }
 
 Fl_Widget *Fl_Submenu_Type::widget(int,int,int,int) {
-  Fl_Item_Group *g = new Fl_Item_Group(reading_file ? 0 : "submenu");
-  Fl_Group::current(0);
-  return g;
+    Fl_Item_Group *g = new Fl_Item_Group(reading_file ? 0 : "submenu");
+    Fl_Group::current(0);
+    return g;
 }
 
 Fl_Menu_Item_Type Fl_Menu_Item_type;
@@ -95,51 +95,51 @@ Fl_Submenu_Type Fl_Submenu_type;
 
 class Fl_Menu_Type : public Fl_Group_Type {
 public:
-  int is_menu_button() const {return 1;}
-  Fl_Menu_Type() : Fl_Group_Type() {}
-  ~Fl_Menu_Type() {}
-  Fl_Type* click_test(int x, int y);
+    int is_menu_button() const {return 1;}
+    Fl_Menu_Type() : Fl_Group_Type() {}
+    ~Fl_Menu_Type() {}
+    Fl_Type* click_test(int x, int y);
 };
 
 extern FL_API int fl_dont_execute; // in Fl_Menu.cxx
 
 Fl_Type* Fl_Menu_Type::click_test(int, int) {
-  if (selected) return 0; // let user move the widget
-  Fl_Menu_* w = (Fl_Menu_*)o;
-  if (!w->size()) return 0;
-  Fl_Widget* save = w->item();
-  w->item(0);
-  fl_dont_execute = 1;
-  Fl::pushed(w);
-  w->handle(FL_PUSH);
-  fl_dont_execute = 0;
-  const Fl_Widget* m = w->item();
-  if (m) return (Fl_Type*)(m->user_data());
-  w->item(save);
-  return this;
+    if (selected) return 0; // let user move the widget
+    Fl_Menu_* w = (Fl_Menu_*)o;
+    if (!w->size()) return 0;
+    Fl_Widget* save = w->item();
+    w->item(0);
+    fl_dont_execute = 1;
+    Fl::pushed(w);
+    w->handle(FL_PUSH);
+    fl_dont_execute = 0;
+    const Fl_Widget* m = w->item();
+    if (m) return (Fl_Type*)(m->user_data());
+    w->item(save);
+    return this;
 }
 
 ////////////////////////////////////////////////////////////////
 
 #include <efltk/Fl_Menu_Button.h>
 static const Enumeration button_type_menu[] = {
-  {"normal", 0,		(void*)0},
-  {"popup1", "POPUP1",	(void*)Fl_Menu_Button::POPUP1},
-  {"popup2", "POPUP2",	(void*)Fl_Menu_Button::POPUP2},
-  {"popup3", "POPUP3",	(void*)Fl_Menu_Button::POPUP3},
-  {"popup12","POPUP12", (void*)Fl_Menu_Button::POPUP12},
-  {"popup23","POPUP23", (void*)Fl_Menu_Button::POPUP23},
-  {"popup13","POPUP13", (void*)Fl_Menu_Button::POPUP13},
-  {"popup123","POPUP123",(void*)Fl_Menu_Button::POPUP123},
-  {0}};
+    {"normal", 0,       (void*)0},
+    {"popup1", "POPUP1",    (void*)Fl_Menu_Button::POPUP1},
+    {"popup2", "POPUP2",    (void*)Fl_Menu_Button::POPUP2},
+    {"popup3", "POPUP3",    (void*)Fl_Menu_Button::POPUP3},
+    {"popup12","POPUP12", (void*)Fl_Menu_Button::POPUP12},
+    {"popup23","POPUP23", (void*)Fl_Menu_Button::POPUP23},
+    {"popup13","POPUP13", (void*)Fl_Menu_Button::POPUP13},
+    {"popup123","POPUP123",(void*)Fl_Menu_Button::POPUP123},
+    {0}};
 
 class Fl_Menu_Button_Type : public Fl_Menu_Type {
-  const Enumeration *subtypes() const {return button_type_menu;}
+    const Enumeration *subtypes() const {return button_type_menu;}
 public:
-  virtual const char *type_name() const {return "Fl_Menu_Button";}
-  Fl_Widget *widget(int x,int y,int w,int h) {
-    return new Fl_Menu_Button(x,y,w,h,"menu");}
-  Fl_Widget_Type *_make() {return new Fl_Menu_Button_Type();}
+    virtual const char *type_name() const {return "Fl_Menu_Button";}
+    Fl_Widget *widget(int x,int y,int w,int h) {
+        return new Fl_Menu_Button(x,y,w,h,"menu");}
+    Fl_Widget_Type *_make() {return new Fl_Menu_Button_Type();}
 };
 
 Fl_Menu_Button_Type Fl_Menu_Button_type;
@@ -150,13 +150,13 @@ Fl_Menu_Button_Type Fl_Menu_Button_type;
 
 class Fl_Choice_Type : public Fl_Menu_Type {
 public:
-  int is_choice() const {return 1;}
-  virtual const char *type_name() const {return "Fl_Choice";}
-  Fl_Widget *widget(int x,int y,int w,int h) {
-    Fl_Choice *o = new Fl_Choice(x,y,w,h,"choice:");
-    return o;
-  }
-  Fl_Widget_Type *_make() {return new Fl_Choice_Type();}
+    int is_choice() const {return 1;}
+    virtual const char *type_name() const {return "Fl_Choice";}
+    Fl_Widget *widget(int x,int y,int w,int h) {
+        Fl_Choice *o = new Fl_Choice(x,y,w,h,"choice:");
+        return o;
+    }
+    Fl_Widget_Type *_make() {return new Fl_Choice_Type();}
 };
 
 Fl_Choice_Type Fl_Choice_type;
@@ -167,49 +167,49 @@ Fl_Choice_Type Fl_Choice_type;
 
 class Fl_Menu_Bar_Type : public Fl_Menu_Type {
 public:
-  virtual const char *type_name() const {return "Fl_Menu_Bar";}
-  Fl_Widget *widget(int x,int y,int w,int h) {
-      Fl_Menu_Bar *b = new Fl_Menu_Bar(x,y,w,h);
-      b->layout_menubar(false);
-      return b; }
-  Fl_Widget_Type *_make() { return new Fl_Menu_Bar_Type();}
+    virtual const char *type_name() const {return "Fl_Menu_Bar";}
+    Fl_Widget *widget(int x,int y,int w,int h) {
+        Fl_Menu_Bar *b = new Fl_Menu_Bar(x,y,w,h);
+        b->layout_menubar(false);
+        return b; }
+    Fl_Widget_Type *_make() { return new Fl_Menu_Bar_Type();}
 };
 
 Fl_Menu_Bar_Type Fl_Menu_Bar_type;
 
 #include <efltk/Fl_Input_Browser.h>
 static const Enumeration input_browser_type_menu[] = {
-  {"Normal",		0,	(void*)Fl_Input_Browser::NORMAL},
-  {"Non-Editable","NONEDITABLE",(void*)Fl_Input_Browser::NONEDITABLE},
-  {"Indented",	"INDENTED",	(void*)Fl_Input_Browser::INDENTED},
-  {"Non-Editable Indented","NONEDITABLE_INDENTED",(void*)Fl_Input_Browser::NONEDITABLE_INDENTED},
-  {0}};
+    {"Normal",      0,  (void*)Fl_Input_Browser::NORMAL},
+    {"Non-Editable","NONEDITABLE",(void*)Fl_Input_Browser::NONEDITABLE},
+    {"Indented",    "INDENTED", (void*)Fl_Input_Browser::INDENTED},
+    {"Non-Editable Indented","NONEDITABLE_INDENTED",(void*)Fl_Input_Browser::NONEDITABLE_INDENTED},
+    {0}};
 class Fl_Input_Browser_Type : public Fl_Menu_Type {
-  int is_input_browser() const {return 1;}
-  const Enumeration *subtypes() const {return input_browser_type_menu;}
+    int is_input_browser() const {return 1;}
+    const Enumeration *subtypes() const {return input_browser_type_menu;}
 public:
-  virtual const char *type_name() const {return "Fl_Input_Browser";}
-  Fl_Widget *widget(int x,int y,int w,int h) {
-    return new Fl_Input_Browser(x,y,w,h);
-  }
-  Fl_Widget_Type *_make() {return new Fl_Input_Browser_Type();}
+    virtual const char *type_name() const {return "Fl_Input_Browser";}
+    Fl_Widget *widget(int x,int y,int w,int h) {
+        return new Fl_Input_Browser(x,y,w,h);
+    }
+    Fl_Widget_Type *_make() {return new Fl_Input_Browser_Type();}
 };
 Fl_Input_Browser_Type Fl_Input_Browser_type;
 
 #include <efltk/Fl_Browser.h>
 static const Enumeration browser_type_menu[] = {
-  {"Single",	0,	(void*)Fl_Browser::NORMAL},
-  {"Multi",	0,	(void*)Fl_Browser::MULTI, "Fl_Multi_Browser"},
-  {0}};
+    {"Single",  0,  (void*)Fl_Browser::NORMAL},
+    {"Multi",   0,  (void*)Fl_Browser::MULTI, "Fl_Multi_Browser"},
+    {0}};
 class Fl_Browser_Type : public Fl_Menu_Type {
-  int is_browser() const {return 1;}
-  const Enumeration *subtypes() const {return browser_type_menu;}
+    int is_browser() const {return 1;}
+    const Enumeration *subtypes() const {return browser_type_menu;}
 public:
-  virtual const char *type_name() const {return "Fl_Browser";}
-  Fl_Widget *widget(int x,int y,int w,int h) {
-    return new Fl_Browser(x,y,w,h);
-  }
-  Fl_Widget_Type *_make() {return new Fl_Browser_Type();}
+    virtual const char *type_name() const {return "Fl_Browser";}
+    Fl_Widget *widget(int x,int y,int w,int h) {
+        return new Fl_Browser(x,y,w,h);
+    }
+    Fl_Widget_Type *_make() {return new Fl_Browser_Type();}
 };
 Fl_Browser_Type Fl_Browser_type;
 
@@ -221,58 +221,58 @@ Fl_Browser_Type Fl_Browser_type;
 #include <efltk/fl_draw.h>
 
 void Shortcut_Button::draw() {
-  box()->draw(0, 0, w(), h(),
-		   value() ? selection_color() : color());
-  fl_font(text_font(), text_size());
-  fl_color(value() ? selection_text_color() : text_color());
-  fl_draw(Fl::key_name(svalue), 6, 0, w(), h(), FL_ALIGN_LEFT);
+    box()->draw(0, 0, w(), h(),
+        value() ? selection_color() : color());
+    fl_font(text_font(), text_size());
+    fl_color(value() ? selection_text_color() : text_color());
+    fl_draw(Fl::key_name(svalue), 6, 0, w(), h(), FL_ALIGN_LEFT);
 }
 
 int Shortcut_Button::handle(int e) {
-  when(0); type(TOGGLE);
-  if (e == FL_KEY) {
-    if (!value()) return 0;
-    int v = Fl::event_text()[0];
-    if (v > 32 && v < 0x7f || v > 0xa0 && v <= 0xff) {
-      v = v | Fl::event_state()&(FL_WIN|FL_ALT|FL_CTRL);
+    when(0); type(TOGGLE);
+    if (e == FL_KEY) {
+        if (!value()) return 0;
+        int v = Fl::event_text()[0];
+        if (v > 32 && v < 0x7f || v > 0xa0 && v <= 0xff) {
+            v = v | Fl::event_state()&(FL_WIN|FL_ALT|FL_CTRL);
+        } else {
+            v = Fl::event_state()&(FL_WIN|FL_ALT|FL_CTRL|FL_SHIFT) | Fl::event_key();
+            if (v == FL_BackSpace && svalue) v = 0;
+        }
+        if (v != svalue) {svalue = v; do_callback(FL_KEY_SHORTCUT); redraw();}
+        return 1;
+    } else if (e == FL_UNFOCUS) {
+        int c = changed(); value(0); if (c) set_changed();
+        return 1;
+    } else if (e == FL_FOCUS) {
+        return value();
     } else {
-      v = Fl::event_state()&(FL_WIN|FL_ALT|FL_CTRL|FL_SHIFT) | Fl::event_key();
-      if (v == FL_BackSpace && svalue) v = 0;
+        int r = Fl_Button::handle(e);
+        if (e == FL_RELEASE && value() && Fl::focus() != this) take_focus();
+        return r;
     }
-    if (v != svalue) {svalue = v; do_callback(e); redraw();}
-    return 1;
-  } else if (e == FL_UNFOCUS) {
-    int c = changed(); value(0); if (c) set_changed();
-    return 1;
-  } else if (e == FL_FOCUS) {
-    return value();
-  } else {
-    int r = Fl_Button::handle(e);
-    if (e == FL_RELEASE && value() && Fl::focus() != this) take_focus();
-    return r;
-  }
 }
-  
+
 #define NOT_DEFAULT(W, what) (W->o->what() != ((Fl_Widget_Type*)(W->factory))->o->what())
 
 void shortcut_in_cb(Shortcut_Button* i, void* v) {
-  if (v == LOAD) {
-    if (!current_widget->is_button() &&
-	!((Fl_Widget_Type*)(current_widget->factory))->o->shortcut()) {i->hide(); return;}
-    i->show();
-    i->svalue = ((current_widget->o))->shortcut();
-    i->redraw();
-  } else {
-    for (Fl_Type *o = Fl_Type::first; o; o = o->walk())
-      if (o->selected && o->is_widget()) {
-	Fl_Widget* b = ((Fl_Widget_Type*)o)->o;
-	b->shortcut(i->svalue);
-	if (o->is_menu_item()) ((Fl_Widget_Type*)o)->redraw();
-      }
-  }
-  Fl_Color tc = FL_BLACK;
-  if (NOT_DEFAULT(current_widget, shortcut)) tc = FL_RED;
-  if (i->label_color() != tc)
+    if (v == LOAD) {
+        if (!current_widget->is_button() &&
+            !((Fl_Widget_Type*)(current_widget->factory))->o->shortcut()) {i->hide(); return;}
+        i->show();
+        i->svalue = ((current_widget->o))->shortcut();
+        i->redraw();
+    } else {
+        for (Fl_Type *o = Fl_Type::first; o; o = o->walk())
+            if (o->selected && o->is_widget()) {
+                Fl_Widget* b = ((Fl_Widget_Type*)o)->o;
+                b->shortcut(i->svalue);
+                if (o->is_menu_item()) ((Fl_Widget_Type*)o)->redraw();
+            }
+    }
+    Fl_Color tc = FL_BLACK;
+    if (NOT_DEFAULT(current_widget, shortcut)) tc = FL_RED;
+    if (i->label_color() != tc)
     { i->label_color(tc); i->redraw_label(); }
 }
 
