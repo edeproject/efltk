@@ -43,7 +43,7 @@ public:
    /**
      * By default, box label has the label inside
     */
-    Fl_Box(const char* l = 0,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=-1);
+    Fl_Box(const char* l = 0,Fl_Align layout_al=FL_ALIGN_TOP,int layout_size=30,int label_w=-1);
 
     virtual void draw();
 };

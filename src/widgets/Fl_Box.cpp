@@ -42,12 +42,10 @@ Fl_Box::Fl_Box(int x, int y, int w, int h, const char *l)
     style(default_style);
 }
 
-Fl_Box::Fl_Box(const char* l,Fl_Align layout_al,int label_w)
-: Fl_Widget(0,0,10,10,l)
+Fl_Box::Fl_Box(const char* l,Fl_Align layout_al,int layout_sz,int label_w)
+: Fl_Widget(l,layout_al,layout_sz,label_w)
 {
     style(default_style);
-    label_width(label_w);
-    layout_align(layout_al);
     align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
 }
 

@@ -52,7 +52,18 @@ Fl_Named_Style* group_style = &the_style;
 Fl_Group::Fl_Group(int X,int Y,int W,int H,const char *l)
 : Fl_Widget(X,Y,W,H,l), m_layout_spacing(1), m_focus(-1), m_resizable(0), m_data_source(0)
 {
+    widget_type(GROUP_TYPE);
+    style(::group_style);
+    align(FL_ALIGN_TOP);
+    // Subclasses may want to construct child objects as part of their
+    // constructor, so make sure they are add()'d to this object.
+    // But you must end() the object!
+    begin();
+}
 
+Fl_Group::Fl_Group(const char* l,Fl_Align layout_al,int layout_size=30,int label_w=100) 
+: Fl_Widget(l,layout_al,layout_size,label_w), m_layout_spacing(1), m_focus(-1), m_resizable(0), m_data_source(0)
+{
     widget_type(GROUP_TYPE);
     style(::group_style);
     align(FL_ALIGN_TOP);
