@@ -33,9 +33,10 @@
 #include <stdlib.h>
 
 // ctor initializer - used in both ctors
-void Fl_Valuator::ctor_init() {
-    clear_flag(FL_ALIGN_MASK);
-    set_flag(FL_ALIGN_BOTTOM);
+void Fl_Valuator::ctor_init()
+{
+    when(FL_VALUATOR_EVENTS);
+    align(FL_ALIGN_BOTTOM);
     value_ = 0.0;
     step_ = 0.01f;
     minimum_ = 0;
@@ -62,21 +63,20 @@ void Fl_Valuator::value_damage()
     redraw(FL_DAMAGE_VALUE);     // default version does partial-redraw
 }
 
-
-int Fl_Valuator::value(double v)
+bool Fl_Valuator::value(double v)
 {
     clear_changed();
-    if (v == value_) return 0;
+    if (v == value_) return false;
     value_ = v;
     value_damage();
-    return 1;
+    do_callback(FL_VALUATOR_CHANGED);
+    return true;
 }
-
 
 double Fl_Valuator::previous_value_;
 
 // inline void Fl_Valuator::handle_push() {previous_value_ = value_;}
-void Fl_Valuator::handle_drag(double v)
+void Fl_Valuator::handle_drag(double v, Fl_Event_Type cb_event)
 {
     // round to nearest multiple of step:
     if (step_ >= 1) {
@@ -101,24 +101,28 @@ void Fl_Valuator::handle_drag(double v)
     if (v != value_) {
         value_ = v;
         value_damage();
-        if (!Fl::pushed()) 
-            do_callback(FL_DATA_CHANGE);
+        do_callback(cb_event);
     }
 }
 
+void Fl_Valuator::handle_push()
+{
+    Fl::pushed(this);
+    previous_value_ = value_;
+    do_callback(FL_VALUATOR_DOWN);
+}
 
 void Fl_Valuator::handle_release()
 {
-    if (!Fl::pushed())
-    {
-        // insure changed() is off even if no callback is done.  It may have
-        // been turned on by the drag, and then the slider returned to it's
-        // initial position:
-        clear_changed();
-        // now do the callback only if slider in new position or always is on:
-        if (value_ != previous_value_)
-            do_callback(FL_DATA_CHANGE);
-    }
+    // insure changed() is off even if no callback is done.  It may have
+    // been turned on by the drag, and then the slider returned to it's
+    // initial position:
+    clear_changed();
+
+    do_callback(FL_VALUATOR_UP);
+    // now do the callback only if slider in new position or always is on:
+    if (value_ != previous_value_)
+        do_callback(FL_VALUATOR_CHANGED);
 }
 
 int Fl_Valuator::format(char* buffer)
@@ -137,49 +141,50 @@ int Fl_Valuator::handle(int event)
 {
     switch(event)
     {
-        case FL_ENTER:
-        case FL_LEAVE:
-            if (highlight_color() && takesevents()) redraw(FL_DAMAGE_HIGHLIGHT);
-        case FL_MOVE:
+    case FL_ENTER:
+    case FL_LEAVE:
+        if (highlight_color() && takesevents()) redraw(FL_DAMAGE_HIGHLIGHT);
+
+    case FL_MOVE:
+        return 1;
+
+    case FL_FOCUS:
+    case FL_UNFOCUS:
+        redraw(FL_DAMAGE_HIGHLIGHT);
+        return 1;
+
+    case FL_KEY: {
+        float i;
+        switch (Fl::event_key())
+        {
+        case FL_Down:
+        case FL_Left:
+            i = -linesize();
+            goto J1;
+        case FL_Up:
+        case FL_Right:
+            i = linesize();
+        J1:
+            if (Fl::event_state()&(FL_SHIFT|FL_CTRL|FL_ALT)) i *= 10;
+            if (maximum() < minimum()) i = -i;
+            handle_drag(value()+i, FL_VALUATOR_CHANGED);
             return 1;
-        case FL_FOCUS:
-        case FL_UNFOCUS:
-            redraw(FL_DAMAGE_HIGHLIGHT);
+        case FL_Home:
+            handle_drag(minimum(), FL_VALUATOR_CHANGED);
             return 1;
-        case FL_KEY:
-            {
-                float i;
-                switch (Fl::event_key())
-                {
-                    case FL_Down:
-                    case FL_Left:
-                        i = -linesize();
-                        goto J1;
-                    case FL_Up:
-                    case FL_Right:
-                        i = linesize();
-J1:
-                        if (Fl::event_state()&(FL_SHIFT|FL_CTRL|FL_ALT)) i *= 10;
-                        if (maximum() < minimum()) i = -i;
-                        handle_drag(value()+i);
-                        return 1;
-                    case FL_Home:
-                        handle_drag(minimum());
-                        return 1;
-                    case FL_End:
-                        handle_drag(maximum());
-                        return 1;
-                }
-                return 0;
-            }
-        case FL_MOUSEWHEEL:
-            {
-                previous_value_ = value_;
-            // For normal valuators, each click is linesize(), wheel_scroll_lines
-            // is ignored. However Fl_Scrollbar does use wheel_scroll_lines.
-                handle_drag(value()+Fl::event_dy()*linesize());
-                return 1;
-            }
+        case FL_End:
+            handle_drag(maximum(), FL_VALUATOR_CHANGED);
+            return 1;
+        }
+        return 0;
+    }
+    case FL_MOUSEWHEEL: {
+        previous_value_ = value_;
+        // For normal valuators, each click is linesize(), wheel_scroll_lines
+        // is ignored. However Fl_Scrollbar does use wheel_scroll_lines.
+        handle_drag(value()+Fl::event_dy()*linesize(), FL_VALUATOR_CHANGED);
+        return 1;
+    }
     }
     return 0;
 }
