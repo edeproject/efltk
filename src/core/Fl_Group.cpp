@@ -640,13 +640,13 @@ void Fl_Group::layout()
 		if(client) {
 			pref_w = ww;
 			pref_h = hh;
-			if (client->align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) {
-				pref_h -= client->label_height();
-			} else {
-				label_w = client->label_width();
-				if (label_w < 0) label_w = 0;
-				pref_w -= label_w;
-			}
+    		label_w = client->label_width();
+			if ((label_w >= 0) && (client->align() & 15))
+    			if (client->align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) {
+	    			pref_h -= client->label_height();
+		    	} else {
+			    	pref_w -= label_w;
+    			}
 			client->preferred_size(pref_w,pref_h);
 
             // Center the widget in the client area, if it's preferred
