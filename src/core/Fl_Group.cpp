@@ -654,10 +654,10 @@ void Fl_Group::layout()
 
             // Center the widget in the client area, if it's preferred
             // size is smaller than client area
-            //total_h = widget_total_height(client,pref_h);
-            //total_w = widget_total_width(client,pref_w);
-            //widget_position(client, xx+ww/2-total_w/2, yy+hh/2-total_h/2, pref_x, pref_y);
-			widget_position(client, xx+ww/2-pref_w/2, yy+hh/2-pref_h/2, pref_x, pref_y);
+			total_h = widget_total_height(client,pref_h);
+			total_w = widget_total_width(client,pref_w);
+			widget_position(client, xx+ww/2-total_w/2, yy+hh/2-total_h/2, pref_x, pref_y);
+			//widget_position(client, xx+ww/2-pref_w/2, yy+hh/2-pref_h/2, pref_x, pref_y);
 
 			/*
 			if(!(client->align() & FL_ALIGN_INSIDE) && client->align()&(FL_ALIGN_RIGHT|FL_ALIGN_LEFT)) {
