@@ -29,7 +29,33 @@ Fl_ListHeader::Fl_ListHeader(int X,int Y,int W,int H,const char*l)
     style(default_style);
 
     cols=0;
-    for(int a=0;a<10;a++) { colw[a]=0; colf[a]=FL_ALIGN_LEFT; coli[a]=0;}
+    for(int a=0;a<MAX_COLUMNS;a++) { colw[a]=0; colf[a]=FL_ALIGN_LEFT; coli[a]=0; coln[a]=0; }
+}
+
+Fl_ListHeader::~Fl_ListHeader()
+{
+	clear();
+}
+
+void Fl_ListHeader::clear()
+{
+	for(int n=0; n<MAX_COLUMNS; n++) {
+		if(coln[n]) delete []coln[n];
+		coln[n] = 0;
+	}
+	cols=0;	
+}
+
+void Fl_ListHeader::columns(int count)
+{
+	if(count>MAX_COLUMNS) count=MAX_COLUMNS;
+	if(count<cols) {
+		for(int n=count+1; n<cols; n++) {
+			if(coln[n]) delete []coln[n];
+			coln[n] = 0;
+		}
+	}
+	cols=count;
 }
 
 void Fl_ListHeader::draw()
@@ -453,12 +479,10 @@ void Fl_ListView::draw_clip(int x, int y, int w, int h)
             fl_color(color());
             fl_rectf(x, bottom_y, w, y+h-bottom_y);
         }
-    }
-
-    if(!children()) {
-        fl_color(color());
-        fl_rectf(x, y, w, h);
-    }
+    } else {
+		fl_color(color());
+		fl_rectf(x, y, w, h);
+	}
 
     fl_pop_clip();
 }
@@ -467,6 +491,8 @@ void Fl_ListView::draw_header()
 {
     if(!(damage() & FL_DAMAGE_ALL) && !(_header->damage() & FL_DAMAGE_ALL))
         return;
+
+	if(!_header->visible()) return;
 
     fl_push_clip(HX,HY,HW,HH);
     int xp = HX-xposition_;
@@ -485,7 +511,7 @@ void Fl_ListView::draw_header()
 }
 
 void Fl_ListView::draw()
-{
+{	
     if(totalheight() < H)
         yposition_ = 0;
     else if((total_height < yposition_+H) && totalheight() > H)
@@ -600,12 +626,14 @@ void Fl_ListView::layout_scrollbars()
     int vh = H+(_header->visible() ? _header->h() : 0);
     vscrollbar.resize(vx, vy, vscrollbar.w(), vh);
     vscrollbar.value(yposition_, H, 0, total_height);
-	vscrollbar.linesize(fl_height());
+	if(children()>0)
+		vscrollbar.linesize(child(0)->height());
 
     int hy = hscrollbar.flags()&FL_ALIGN_TOP ? box()->dy() : Y+H;
     hscrollbar.resize(X, hy, W, hscrollbar.h());
     hscrollbar.value(xposition_, W, 0, max_cols_w/*max_width*/);
-    hscrollbar.linesize(fl_height());
+	if(children()>0)
+		hscrollbar.linesize(child(0)->height());
 }
 
 void Fl_ListView::layout()
@@ -1066,8 +1094,14 @@ int Fl_ListView::handle(int event)
         } // FL_KEYBOARD
     case FL_MOUSEWHEEL:
         {
-            return vscrollbar.send(event);
+			if(vscrollbar.visible())
+				return vscrollbar.send(event);
+			else if(hscrollbar.visible())
+				return hscrollbar.send(event);
+			break;
         }
+	default:
+		break;
     } // event
 
     return 0;

@@ -22,12 +22,17 @@ public:
     static Fl_Named_Style* default_style;
 
     Fl_ListHeader(int X,int Y,int W,int H,const char*l=0);
+	~Fl_ListHeader();
+
+	void clear();
 
     void add_column(const char *name, int w) {
         ++cols;
         colw[cols-1] = w;
         coln[cols-1] = strdup(name);
     }
+
+	void columns(int count);
     int columns() { return cols; }
 
     int column_width(int c) { return colw[c]; }
@@ -67,6 +72,7 @@ public:
 
     void add_column(const char *name, int w=-1) { _header->add_column(name, w); if(w<0) find_def=true; }
     int columns() { return _header->columns(); }
+    void columns(int cnt) { _header->columns(cnt); }
 
     int column_width(int c) { return _header->column_width(c); }
     void column_width(int c, int w) { _header->column_width(c, w); if(w<0) find_def=true; }

@@ -67,8 +67,8 @@ int Fl_Button::handle(int event)
 
     switch (event)
     {
-    case FL_ENTER:
     case FL_LEAVE:
+    case FL_ENTER:
         if (highlight_color() && takesevents()) redraw(FL_DAMAGE_HIGHLIGHT);
     case FL_MOVE:
         return 1;
@@ -107,6 +107,7 @@ int Fl_Button::handle(int event)
         return 1;
     case FL_FOCUS:
     case FL_UNFOCUS:
+		already_pushed = false;
         redraw(FL_DAMAGE_HIGHLIGHT);
         // grab initial focus if we are an Fl_Return_Button:
         return shortcut()=='\r' ? 2 : 1;

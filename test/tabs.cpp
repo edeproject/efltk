@@ -14,34 +14,35 @@ static void cb_OK(Fl_Return_Button*, void*) {
 
 int main (int argc, char **argv) {
 
+	const int TABY = 20;
+
   Fl_Window* w;
    {Fl_Window* o = foo_window = new Fl_Window(320, 305);
     w = o;
      {Fl_Tabs* o = new Fl_Tabs(10, 10, 300, 200);
-       {Fl_Group* o = new Fl_Group(0, 20, 300, 180, "Label1");
+       {Fl_Group* o = new Fl_Group(0, TABY, 300, 180, "Label1");
         new Fl_Input(50, 14, 240, 22, "input:");
         new Fl_Input(50, 36, 240, 22, "input2:");
-         {Fl_Wordwrap_Input* o = new Fl_Wordwrap_Input(50, 58, 240, 99, "input3:");
-          o->type(5);
+         {Fl_Wordwrap_Input* o = new Fl_Wordwrap_Input(50, 58, 240, 99, "input3:");          
         }
         o->end();
         Fl_Group::current()->resizable(o);
       }
-       {Fl_Group* o = new Fl_Group(0, 20, 300, 180, "tab2");
+       {Fl_Group* o = new Fl_Group(0, TABY, 300, 180, "tab2");
         o->hide();
         new Fl_Button(10, 25, 100, 22, "button1");
         new Fl_Input(130, 58, 100, 22, "input in box2");
         new Fl_Button(20, 113, 260, 22, "This is stuff inside the Fl_Group \"tab2\"");
         o->end();
       }
-       {Fl_Group* o = new Fl_Group(0, 20, 300, 180, "tab3");
+       {Fl_Group* o = new Fl_Group(0, TABY, 300, 180, "tab3");
         o->hide();
         new Fl_Button(10, 30, 60, 80, "button2");
         new Fl_Button(70, 30, 60, 80, "button");
         new Fl_Button(130, 30, 60, 80, "button");
         o->end();
       }
-       {Fl_Group* o = new Fl_Group(0, 20, 300, 180, "tab4");
+       {Fl_Group* o = new Fl_Group(0, TABY, 300, 180, "tab4");
         o->label_font(fl_fonts+2);
         o->hide();
         new Fl_Button(10, 20, 60, 110, "button2");
@@ -49,7 +50,7 @@ int main (int argc, char **argv) {
         new Fl_Button(130, 20, 60, 110, "button");
         o->end();
       }
-       {Fl_Group* o = new Fl_Group(0, 20, 300, 180, "     tab5      ");
+       {Fl_Group* o = new Fl_Group(0, TABY, 300, 180, "     tab5      ");
         o->label_type(FL_ENGRAVED_LABEL);
         o->hide();
         new Fl_Button(10, 50, 60, 80, "button2");
