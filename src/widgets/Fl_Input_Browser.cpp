@@ -126,8 +126,7 @@ int ComboBrowser::handle(int event)
 void ComboBrowser::browser_cb(Fl_Widget *w, void *data)
 {
     // we get callbacks for all keys?
-    if (Fl::event() != FL_KEY && Fl::event() != FL_RELEASE) return;
-    if (Fl::event() == FL_KEY && Fl::event_key() != FL_Enter && Fl::event_key() != ' ')
+    if(Fl::event_key() != FL_Enter && Fl::event_key() != ' ')
         return;
 
     ComboBrowser *br = (ComboBrowser *)w;
