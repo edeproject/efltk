@@ -129,7 +129,7 @@ Fl_Boxtype_(0), mask(m)
     highlight_img = highlight;
     inactive_img = inactive;
 }
-
+/*
 class TabButton : public Fl_Boxtype_
 {
 public:
@@ -154,7 +154,7 @@ public:
 	}
 	Fl_Boxtype m_sel, m_norm;
 };
-
+*/
 extern "C" bool fltk_theme()
 {
     gray.state_effect(false);
@@ -182,7 +182,7 @@ extern "C" bool fltk_theme()
 
 	static Fl_Image_Box menu_up   (&gray, &blue, &light, 0 , FL_UP_BOX);
 
-	static TabButton tab_button(&up_blue, &up);
+	//static TabButton tab_button(&up_blue, &up);
 
     //  fl_background(0xD0D0E000); // it would be nice to figure out color from image
 
@@ -227,11 +227,13 @@ extern "C" bool fltk_theme()
     if((s = Fl_Style::find("browser"))) {
         s->box = FL_THIN_DOWN_BOX;
     }
+    /*
     if ((s = Fl_Style::find("tabs"))) {
         //s->box = &up;
 		s->button_box = &tab_button;
 		s->focus_box = FL_DOTTED_FRAME;
     }
+    */
     if ((s = Fl_Style::find("pack"))) {
         s->box = &flat_blue;
     }
