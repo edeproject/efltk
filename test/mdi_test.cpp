@@ -114,7 +114,9 @@ Fl_Menu_Item menutable[] = {
     {"A very long menu item"},
     {0},
   {"&Huge", 0, 0, (void*)hugemenu, FL_SUBMENU_POINTER},
-  {"button",0, 0, 0, FL_MENU_TOGGLE},
+  {"Help",0, 0, 0, FL_MENU_RIGHTLAYOUT|FL_SUBMENU},
+    {0},
+
   {0}
 };
 
@@ -245,10 +247,6 @@ int main(int argc, char **argv)
     menubar.find("&Radio/Black")->selection_text_color(FL_BLACK);
     menubar.find("&Radio/Black")->text_color(FL_BLACK);
     menubar.find("&Huge/Item 69")->deactivate();
-    menubar.begin();
-    menubar.right_layout( new Fl_Item("&Help") );
-    menubar.end();
-
 
     // Set default button sizes, toolbar defaults is 24x24
     Fl_Tool_Bar::button_h = 32;
@@ -268,6 +266,8 @@ int main(int argc, char **argv)
     Fl_Workspace s(10,30,380,360);
     // Viewport doesnt...
     //Fl_MDI_Viewport s(10,30,380,360);
+
+    s.viewport()->menu(mainwin.menu());
 
     s.viewport()->begin();
 

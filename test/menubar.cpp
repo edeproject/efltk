@@ -165,7 +165,8 @@ Fl_Menu_Item menutable[] = {
     {"A very long menu item"},
     {0},
   {"&Huge", 0, 0, (void*)hugemenu, FL_SUBMENU_POINTER},
-  {"button",0, 0, 0, FL_MENU_TOGGLE},
+  {"Help",0, 0, 0, FL_MENU_RIGHTLAYOUT|FL_SUBMENU},
+    {0},
   {0}
 };
 

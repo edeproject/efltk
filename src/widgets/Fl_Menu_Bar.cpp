@@ -24,6 +24,7 @@
 //
 
 #include <efltk/Fl.h>
+#include <efltk/Fl_Item.h>
 #include <efltk/Fl_Util.h>
 #include <efltk/Fl_Menu_Bar.h>
 #include <efltk/fl_draw.h>
@@ -147,8 +148,8 @@ void Fl_Menu_Bar::layout()
 
         if(Y+w->h() > H && do_layout) {
             h(Y+w->h()+leading()/2);
-        } else
-            w->h(h()-box()->dw()-leading());
+            H = h();
+        }
 
         w->position(X,Y);
         X += w->w();
@@ -169,8 +170,8 @@ void Fl_Menu_Bar::layout()
 
         if(Y+w->h() > H && do_layout) {
             h(Y+w->h()+leading()/2);
-        } else
-            w->h(h()-box()->dw()-leading());
+            H=h();
+        }
 
         if(lines==1)
             X=W-w->w();
@@ -178,6 +179,7 @@ void Fl_Menu_Bar::layout()
         w->position(X,Y);
     }
 
+    Fl_Widget::size(W,H);
     Fl_Widget::layout();
 }
 
@@ -195,12 +197,15 @@ int Fl_Menu_Bar::handle(int event)
     case FL_PUSH: {
         value(-1);
         key_event = false;
-        if(highlight_>=0) {
+        Fl_Widget *w = (highlight_>=0) ? child(highlight_) : 0;
+        if(w && w->type()==Fl_Widget::GROUP_TYPE) {
             menu_up=true;
             popup(0,0,0,0);
             menu_up=false;
+            return 1;
         }
-        return 1;
+
+        break;
     }
     case FL_ENTER:
     case FL_MOVE: {
@@ -217,7 +222,7 @@ int Fl_Menu_Bar::handle(int event)
             highlight_ = index;
             redraw(FL_DAMAGE_HIGHLIGHT);
         }
-        return 1;
+        break;
     }
     case FL_SHORTCUT: {
         key_event = true;

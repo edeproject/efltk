@@ -22,6 +22,7 @@
 #define LEFTBOTTOM  7
 
 class Fl_MDI_Window;
+class Fl_MDI_MenuButtons;
 
 class Fl_MDI_Titlebar : public Fl_Group {
     friend class Fl_MDI_Window;
@@ -172,6 +173,10 @@ private:
 
     short _minw, _minh;
     short _maxw, _maxh;
+
+    void add_menu_buttons();
+    void delete_menu_buttons();
+    Fl_MDI_MenuButtons *menubuttons;
 };
 
 #endif

@@ -19,6 +19,7 @@ Fl_MDI_Viewport::Fl_MDI_Viewport(int x, int y, int w, int h, const char *label)
 
     callback(cb_none);
 
+    _menu = 0;
     _aot = 0;
     _max = 0;
     _top = 0;
@@ -172,6 +173,7 @@ void Fl_MDI_Viewport::draw()
 {
     if(_max) {
         if(damage() & ~FL_DAMAGE_CHILD) {
+            draw_frame();
             fl_push_matrix();
             fl_translate(_max->x(), _max->y());
             _max->set_damage(FL_DAMAGE_ALL|FL_DAMAGE_EXPOSE);
@@ -275,7 +277,7 @@ void Fl_MDI_Viewport::layout()
                 continue;
 
             if(win==_max) {
-                win->resize(-win->box()->dx(), -win->box()->dy(), w()+win->box()->dw(), h()+win->box()->dh() );
+                win->resize(0,0,w(),h());
                 win->layout();
                 if(_aot) insert(*win,_aot);
             }
@@ -453,7 +455,7 @@ void Fl_Workspace::layout()
     Fl_Widget::layout();
     if(viewport()->maximum()) {
         vscrollbar->clear_visible(); hscrollbar->clear_visible();
-        viewport()->resize(0, 0, w(), h());
+        viewport()->resize(box()->dx(), box()->dy(), w()-box()->dw(), h()-box()->dh());
         viewport()->layout();
         return;
     }

@@ -32,23 +32,27 @@
 
 class FL_API Fl_Button : public Fl_Widget {
 public:
-  enum { // values for type(), should match Fl_Button
-    NORMAL = 0,
-    TOGGLE = RESERVED_TYPE+1,
-    RADIO  = RESERVED_TYPE+2,
-    HIDDEN = 3
-  };
-  bool   value() const {return Fl_Widget::value();}
-  bool	value(bool);
-  bool	set();
-  bool	clear();
-  void	setonly();
-  virtual int handle(int);
-  Fl_Button(int,int,int,int,const char * = 0);
-  static Fl_Named_Style* default_style;
+    static Fl_Named_Style* default_style;
+
+    enum { // values for type(), should match Fl_Button
+        NORMAL = 0,
+        TOGGLE = RESERVED_TYPE+1,
+        RADIO  = RESERVED_TYPE+2,
+        HIDDEN = 3
+    };
+
+    bool value() const {return Fl_Widget::value();}
+    bool value(bool);
+    bool set();
+    bool clear();
+    void setonly();
+
+    Fl_Button(int,int,int,int,const char * = 0);
+
+    virtual void draw();
+    virtual int handle(int);
 
 protected:
-  virtual void draw();
   void draw(int glyph, int glyph_width) const;
 };
 

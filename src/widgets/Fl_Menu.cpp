@@ -1039,7 +1039,7 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
         }
 
         if(inside && checkmark(inside)) {
-            redraw(FL_DAMAGE_CHILD);
+            if(index!=highlight_) redraw(FL_DAMAGE_CHILD);
             // Buttons in menubar:
             if( (key_event && Fl::event_key()!=FL_Enter)
                || (!key_event && Fl::event_state(FL_BUTTON1))

@@ -1327,7 +1327,7 @@ void Fl_Text_Display::buffer_modified_cb( int pos, int nInserted, int nDeleted,
   textD->relayout();
 
   // don't need to do anything else if not visible?
-  if (!textD->visible_r()) return;
+  if(!textD->visible_r() && textD->mContinuousWrap) return;
 
   /* buffer modification cancels vertical cursor motion column */
   if ( nInserted != 0 || nDeleted != 0 )
@@ -1386,7 +1386,7 @@ void Fl_Text_Display::buffer_modified_cb( int pos, int nInserted, int nDeleted,
   }
 
   // don't need to do anything else if not visible?
-  //if (!textD->visible_r()) return;
+  if (!textD->visible_r()) return;
 
   /* If the changes caused scrolling, re-paint everything and we're done. */
   if ( scrolled ) {
