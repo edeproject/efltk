@@ -19,7 +19,10 @@ static void set_locale()
     // Initialize the i18n stuff
     current_locale = setlocale(LC_ALL, "");
 
-    if(last_locale && !strcmp(last_locale, current_locale))
+    if(!current_locale)
+        Fl::warning("Locale not supported by C library, using default");
+
+    if(last_locale && current_locale && !strcmp(last_locale, current_locale))
         return;
 
     if(last_locale) delete []last_locale;
