@@ -401,11 +401,12 @@ static void Blit565to565SurfaceAlpha(BlitInfo *info)
                  * the high 16 bits, and process all three RGB
                  * components at the same time.
                  */
-                s = (s | s << 16) & 0x07e0f81f;
-                d = (d | d << 16) & 0x07e0f81f;
-                d += (s - d) * alpha >> 5;
-                d &= 0x07e0f81f;
-                *dstp++ = d | d >> 16;
+                s = (s | (s << 16)) & 0x07e0f81f;
+                d = (d | (d << 16)) & 0x07e0f81f;
+                d = (d + (((s - d) * alpha) >> 5)) & 0x07e0f81f;
+				//d += (s - d) * alpha >> 5;
+				//d &= 0x07e0f81f;                
+                *dstp++ = (d | (d >> 16));
             }, width);
             srcp += srcskip;
             dstp += dstskip;
@@ -438,10 +439,11 @@ static void Blit555to555SurfaceAlpha(BlitInfo *info)
                  * the high 16 bits, and process all three RGB
                  * components at the same time.
                  */
-                s = (s | s << 16) & 0x03e07c1f;
-                d = (d | d << 16) & 0x03e07c1f;
-                d += (s - d) * alpha >> 5;
-                d &= 0x03e07c1f;
+                s = (s | (s << 16)) & 0x03e07c1f;
+                d = (d | (d << 16)) & 0x03e07c1f;
+				d += (((s - d) * alpha) >> 5) & 0x03e07c1f;
+                //d += (s - d) * alpha >> 5;
+                //d &= 0x03e07c1f;
                 *dstp++ = d | d >> 16;
             }, width);
             srcp += srcskip;
@@ -480,9 +482,10 @@ static void BlitARGBto565PixelAlpha(BlitInfo *info)
                  */
                 s = ((s & 0xfc00) << 11) + (s >> 8 & 0xf800)
                     + (s >> 3 & 0x1f);
-                d = (d | d << 16) & 0x07e0f81f;
-                d += (s - d) * alpha >> 5;
-                d &= 0x07e0f81f;
+                d = (d | (d << 16)) & 0x07e0f81f;
+				d += (((s - d) * alpha) >> 5) & 0x07e0f81f;
+                //d += (s - d) * alpha >> 5;
+                //d &= 0x07e0f81f;
                 *dstp = d | d >> 16;
             }
             srcp++;
@@ -687,18 +690,17 @@ Blit_Function get_blit_a(Fl_PixelFormat *src_fmt, Fl_PixelFormat *dst_fmt, int f
 
             case 2:
                 if(sf->identity)
-                {
+                {					
                     if(df->Gmask == 0x7e0) {
-                        once("Blit565to565SurfaceAlpha");
+                        once("Blit565to565SurfaceAlpha");						
                         return Blit565to565SurfaceAlpha;
                     } else if(df->Gmask == 0x3e0) {
                         once("Blit555to555SurfaceAlpha");
                         return Blit555to555SurfaceAlpha;
                     }
-                } else {
-                    once("BlitNtoNSurfaceAlpha");
-                    return BlitNtoNSurfaceAlpha;
                 }
+                once("BlitNtoNSurfaceAlpha");
+                return BlitNtoNSurfaceAlpha;                
 
             case 4:
                 if(sf->Rmask == df->Rmask

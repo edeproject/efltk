@@ -165,7 +165,10 @@ MenuWindow::~MenuWindow()
 {
     animating = false;
 
-    if(child_win) delete child_win;
+    if(child_win) {
+		delete child_win;
+		child_win = 0;
+	}
 
     if(the_window==this) {
         the_widget = 0;
@@ -493,9 +496,9 @@ int MenuWindow::forward(int menu)
 void MenuWindow::open_childwin(Fl_Widget *widget, int index)
 {
     if(child_win && child_win->widget_!=widget) {
-        child_win->destroy();//hide();
+        child_win->hide();
         if(child_win->animating) return;
-        delete child_win;
+        delete child_win; child_win = 0;
         child_win = new MenuWindow(this, widget, menu_, menu_->indexes, level_+1);
         child_win->menubar = menubar;
     } else
@@ -523,10 +526,10 @@ void MenuWindow::open_childwin(Fl_Widget *widget, int index)
     if(!child_win->visible()) {
         child_win->position(nX, nY);
         child_win->show(first_menu);
-
-        //If key event, select first item
-        if(key_event) child_win->forward(level_+1);
     }
+
+    //If key event, select first item
+    if(key_event) child_win->forward(level_+1);
 }
 
 void timeout_open_childwin(void *arg) {
@@ -545,7 +548,7 @@ int MenuWindow::handle(int event)
 
     if(animating && (event==FL_MOVE||event==FL_DRAG||event==FL_KEY)) {
         // Stop animating if moving or dragging...
-        rect.set(x(), y(), w(), h());
+        //rect.set(x(), y(), w(), h());
         animating = false;
         return 0;
     }
@@ -711,7 +714,7 @@ int MenuWindow::handle(int event)
             if(widget && !widget->takesevents() && !widget->active()) {
                 // inactive item...
                 if(child_win) {
-                    child_win->destroy();
+                    child_win->hide();
                     if(child_win->animating) return 1;
                     delete child_win;
                     child_win = 0;
@@ -747,8 +750,11 @@ int MenuWindow::handle(int event)
             return 1;
         }
         if(widget && child_win) {
-            delete child_win;
-            child_win=0;
+			child_win->hide();
+			if(!child_win->animating) {
+				delete child_win;
+				child_win=0;
+			}
         }
         if (event == FL_PUSH) {
             // redraw checkboxes so they preview the state they will be in:

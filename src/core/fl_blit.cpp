@@ -110,11 +110,8 @@ bool Fl_Renderer::alpha_blit(uint8 *src, Fl_Rect *src_rect, Fl_PixelFormat *src_
 
     Blit_Function blit_f = 0;
 
-    if(src_fmt->identity && index==0) {
-        blit_f = BlitCopy;
-    } else {
-        switch(src_fmt->bytespp)
-        {
+    switch(src_fmt->bytespp)
+    {
         case 1:
             if(info.table)
                 blit_f = get_blit_1(src_fmt, dst_fmt, index);
@@ -128,9 +125,8 @@ bool Fl_Renderer::alpha_blit(uint8 *src, Fl_Rect *src_rect, Fl_PixelFormat *src_
 
         default:
             break;
-        }
     }
-
+    
     if(!blit_f)
         return false;
 

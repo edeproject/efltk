@@ -194,7 +194,8 @@ void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
 
     int pitch = Fl_Renderer::calc_pitch(Fl_Renderer::system_format()->bytespp, w);
     Fl_PixelFormat fmt;
-    fmt.copy(Fl_Renderer::system_format());
+    fmt.copy(Fl_Renderer::system_format());	
+	fmt.map_this(Fl_Renderer::system_format());
 
 #ifdef _WIN32
 	SetWindowPos(fl_xid(this), HWND_TOPMOST, x, y, w, h, (SWP_NOSENDCHANGING | SWP_NOACTIVATE));
@@ -202,20 +203,21 @@ void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
     XMoveResizeWindow(fl_display, fl_xid(this), x, y, w, h);
 #endif
 	
-    int step = 10;
+    int step = 8;
     if(anim_speed()>0) { step=int(floor((step*anim_speed())+.5f)); }
-    int alpha=10;
+    int alpha=50; //start from alpha value 50...
     bool error=false;
+	opacity = 150;
     while(!error && alpha<opacity)
     {
+		Fl::check();
+
         if(!animating || !shown() || !visible()) {
             break;
         }
 
         fmt.alpha = alpha;
-        alpha+=step;
-
-        Sleep(1);
+        alpha+=step;        
 
         if(Fl_Renderer::alpha_blit(data2, &rect2, &fmt, pitch,
                                    data, &rect2, Fl_Renderer::system_format(), pitch, 0))
@@ -227,13 +229,14 @@ void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
         } else
             error=true;
 
-        Fl::check();
+		Sleep(15);        
     }
 
     delete []data;
     delete []data2;
 
-    if(opacity==255) {
+    /*if(opacity==255)*/
+	{
 #ifdef _WIN32
         make_current();
         fl_copy_offscreen(0, 0, w, h, pm, 0, 0);

@@ -153,16 +153,16 @@ static void tooltip_timeout(void*)
         window->layout();
 
         if(!recent_tooltip && Fl_Tooltip::effects()) {
-            if(!window->shown()) window->create();
-
-            window->anim_speed(2);
+            if(!window->shown()) window->create();            
 
             switch(int(Fl_Tooltip::effect_type()))
             {
             case FL_EFFECT_FADE:
+				window->anim_speed(1);
                 window->fade(window->x(), window->y(), window->w(), window->h());
                 break;
             case FL_EFFECT_ANIM:
+				window->anim_speed(2);
                 window->animate(window->x(), window->y()+(window->h()/2), window->w(), 1,
                                 window->x(), window->y(), window->w(), window->h());
                 break;
