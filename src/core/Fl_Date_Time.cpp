@@ -430,6 +430,12 @@ Fl_Date_Time::Fl_Date_Time (short year,short month,short day,short hour,short mi
 }
 
 Fl_Date_Time::Fl_Date_Time (const char * dat) {
+
+   int i;
+   // NLS stuff
+   for (i=0; i<7;i++) dayname[i]=_(dayname[i]);
+   for (i=0; i<12;i++) mname[i]=_(mname[i]);   
+
    Fl_String  s1( Fl_String(dat).trim() );
    Fl_String  s2;
 
@@ -454,10 +460,20 @@ Fl_Date_Time::Fl_Date_Time (const char * dat) {
 }
 
 Fl_Date_Time::Fl_Date_Time (const Fl_Date_Time &dt) {
+   int i;
+   // NLS stuff
+   for (i=0; i<7;i++) dayname[i]=_(dayname[i]);
+   for (i=0; i<12;i++) mname[i]=_(mname[i]);   
+
    m_dateTime = dt.m_dateTime;
 }
 
 Fl_Date_Time::Fl_Date_Time (const double dt) {
+   int i;
+   // NLS stuff
+   for (i=0; i<7;i++) dayname[i]=_(dayname[i]);
+   for (i=0; i<12;i++) mname[i]=_(mname[i]);   
+
    m_dateTime = dt;
 }
 //----------------------------------------------------------------

@@ -16,12 +16,19 @@ DOCUMENTATION
   Please see header files and/or FLTK2 documentation
   at http://www.fltk.org/documentation.html
 
+REQUIREMENTS
+	* the packages may have other names depends on your distribution
+	- libpng, libjpeg for additional images support
+	- unixODBC, libunixODBC2-devel for database support
+	- libmesaGLU1-devel for some test examples
+
 BUILDING AND INSTALLING EFLTK
 
 	EFltk is developed and tested with following machines:
 	- MS Windows 98, 2000, XP
 	- Redhat Linux 7.3/GCC 3.2
 	- Solaris 8/GCC 3.2 (Sparc)	
+	- Mandrake Linux 9.0/GCC 3.2
 
 	Unix style machines:
 		type: ./build.gcc --'options'
