@@ -1,0 +1,403 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="..\lib\libefltk.lib"/>
+    <OBJFILES value="obj\cmap.obj obj\Fl.obj obj\Fl_abort.obj obj\Fl_add_idle.obj 
+      obj\fl_arc.obj obj\fl_arci.obj obj\Fl_arg.obj obj\Fl_Bitmap.obj 
+      obj\fl_blit.obj obj\fl_blit_1.obj obj\fl_blit_a.obj obj\fl_blit_n.obj 
+      obj\Fl_Bmp.obj obj\Fl_Boxtype.obj obj\fl_clip.obj obj\Fl_compose.obj 
+      obj\Fl_Config.obj obj\fl_cursor.obj obj\fl_curve.obj 
+      obj\Fl_Data_Fields.obj obj\Fl_Data_Source.obj obj\Fl_Date_Time.obj 
+      obj\fl_diamond_box.obj obj\Fl_display.obj obj\fl_dnd.obj obj\fl_draw.obj 
+      obj\fl_draw_image.obj obj\fl_draw_pixmap.obj obj\fl_font.obj 
+      obj\Fl_get_key.obj obj\Fl_Gif.obj obj\fl_glyph.obj obj\Fl_Group.obj 
+      obj\Fl_Image.obj obj\Fl_Image_Filter.obj obj\Fl_init.obj 
+      obj\Fl_key_name.obj obj\fl_labeltype.obj obj\fl_list_fonts.obj 
+      obj\Fl_Lists.obj obj\fl_load_plugin.obj obj\fl_locale.obj obj\fl_color.obj 
+      obj\Fl_lock.obj obj\fl_map.obj obj\fl_oval_box.obj obj\fl_overlay.obj 
+      obj\fl_overlay_visual.obj obj\Fl_own_colormap.obj obj\Fl_Pixmap.obj 
+      obj\fl_plastic_box.obj obj\fl_rect.obj obj\Fl_Renderer.obj obj\fl_rgb.obj 
+      obj\fl_round_box.obj obj\fl_rounded_box.obj obj\fl_scroll_area.obj 
+      obj\fl_shadow_box.obj obj\fl_stretch.obj obj\Fl_String.obj 
+      obj\Fl_Style.obj obj\Fl_Style_Set.obj obj\fl_theme.obj obj\Fl_Thread.obj 
+      obj\Fl_Util.obj obj\Fl_Variant.obj obj\fl_vertex.obj obj\Fl_visual.obj 
+      obj\Fl_Widget.obj obj\Fl_Window.obj obj\Fl_Window_fullscreen.obj 
+      obj\Fl_Window_hotspot.obj obj\Fl_Window_iconize.obj obj\Fl_WM.obj 
+      obj\Fl_Xpm.obj obj\Fl_Workspace.obj obj\Fl_Align_Group.obj obj\fl_ask.obj 
+      obj\Fl_Bar.obj obj\Fl_Box.obj obj\Fl_Browser.obj obj\Fl_Button.obj 
+      obj\Fl_Calendar.obj obj\Fl_Check_Button.obj obj\Fl_Choice.obj 
+      obj\Fl_Clock.obj obj\Fl_Color_Chooser.obj obj\Fl_Date_Time_Input.obj 
+      obj\Fl_Dial.obj obj\Fl_Dialog.obj obj\Fl_Directory_DS.obj 
+      obj\Fl_Double_Window.obj obj\fl_engraved_label.obj obj\Fl_File_Dialog.obj 
+      obj\Fl_FileBrowser.obj obj\Fl_FileInput.obj obj\Fl_Float_Input.obj 
+      obj\Fl_Help_Dialog.obj obj\Fl_Highlight_Button.obj obj\Fl_Input.obj 
+      obj\Fl_Input_Browser.obj obj\Fl_Item.obj obj\Fl_Light_Button.obj 
+      obj\Fl_ListView.obj obj\Fl_ListView_Header.obj obj\Fl_ListView_Item.obj 
+      obj\Fl_Main_Window.obj obj\Fl_Masked_Input.obj obj\Fl_MDI_Bar.obj 
+      obj\Fl_MDI_Window.obj obj\Fl_Menu.obj obj\Fl_Menu_.obj obj\Fl_Menu_add.obj 
+      obj\Fl_Menu_Bar.obj obj\Fl_Menu_Button.obj obj\Fl_Menu_global.obj 
+      obj\Fl_Menu_Item.obj obj\Fl_Menu_Window.obj obj\Fl_Multi_Image.obj 
+      obj\Fl_Numeric_Input.obj obj\Fl_Output.obj obj\Fl_Overlay_Window.obj 
+      obj\Fl_Pack.obj obj\Fl_Popup_Window.obj obj\Fl_ProgressBar.obj 
+      obj\Fl_Radio_Button.obj obj\Fl_Repeat_Button.obj obj\Fl_Return_Button.obj 
+      obj\Fl_Roller.obj obj\Fl_Scroll.obj obj\Fl_Scrollbar.obj 
+      obj\Fl_Shaped_Window.obj obj\fl_show_colormap.obj obj\Fl_Simple_Html.obj 
+      obj\Fl_Single_Window.obj obj\Fl_Slider.obj obj\fl_symbols.obj 
+      obj\Fl_Tabs.obj obj\Fl_Text_Buffer.obj obj\Fl_Text_Display.obj 
+      obj\Fl_Text_Editor.obj obj\Fl_Tile.obj obj\Fl_Tool_Bar.obj 
+      obj\Fl_Tooltip.obj obj\Fl_Valuator.obj obj\Fl_Value_Input.obj 
+      obj\Fl_Value_Slider.obj obj\vsnprintf.obj obj\fl_iconv_converters.obj 
+      obj\fl_converters.obj obj\Fl_Exception.obj obj\fl_utf8.obj obj\scandir.obj 
+      obj\filename_setext.obj obj\filename_list.obj obj\filename_match.obj 
+      obj\filename.obj obj\Fl_ODBC_Database.obj obj\fl_odbc.obj obj\Fl_Query.obj 
+      obj\Fl_Params.obj obj\Fl_Database.obj obj\Fl_Buffer.obj 
+      obj\Fl_PostScript.obj obj\Fl_Printer.obj obj\Fl_Memory_DS.obj 
+      obj\Fl_IMAP_DS.obj obj\Fl_IMAP_Connect.obj obj\Fl_FTP_Connect.obj 
+      obj\Fl_Socket.obj obj\Fl_Translator.obj obj\Fl_Button_Group.obj 
+      obj\Fl_Record_DS.obj obj\Fl_Data_Dialog.obj obj\Fl_Split.obj 
+      obj\Fl_Maps.obj obj\Fl_Dialog_DS.obj obj\Fl_Combo_Box.obj 
+      obj\Fl_String_List.obj obj\Fl_Packed_Strings.obj obj\Fl_Table_Base.obj 
+      obj\Fl_ListView_ItemExt.obj"/>
+    <RESFILES value=""/>
+    <IDLFILES value=""/>
+    <IDLGENFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES)"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value=""/>
+    <PACKAGES value=""/>
+    <PATHCPP value=".;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\db\odbc;..\src\db\odbc;..\src\db;..\src\db;..\src\db;..\src\core;..\src\core;..\src\core;..\src\widgets;..\src\net;..\src\net;..\src\net;..\src\core;..\src\core;..\src\widgets;..\src\db;..\src\db;..\src\widgets;..\src\core;..\src\widgets;..\src\widgets;..\src\core;..\src\core;..\src\widgets;..\src\widgets"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <LINKER value="TLib"/>
+    <USERDEFINES value="_WIN32;WIN32;_DEBUG"/>
+    <SYSDEFINES value="_RTLDLL;NO_STRICT"/>
+    <MAINSOURCE value="libefltk.bpf"/>
+    <INCLUDEPATH value="..\src\net;..\src\db;..\src\db\odbc;..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;.."/>
+    <LIBPATH value="..\src\net;..\src\db;..\src\db\odbc;..\src\widgets;..\src\core;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <WARNINGS value="-w-par"/>
+    <LISTFILE value=""/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <IDLCFLAGS value="-I..\src\net -I..\src\db -I..\src\db\odbc -I..\src\widgets -I..\src\core 
+      -I$(BCB)\include -I$(BCB)\include\vcl -I. -I.. -src_suffix cpp -D_WIN32 
+      -DWIN32 -D_DEBUG -boa"/>
+    <CFLAG1 value="-Od -H=obj\efltk.csm -Hc -P -Vx -Ve -xf -X- -r- -a4 -5 -b -d -k -y -v -vi- 
+      -c -tW -tWM"/>
+    <PFLAGS value="-N2..\bcb6\obj -N0..\bcb6\obj -$Y+ -$W -$O- -$A8 -v -JPHNE -M"/>
+    <AFLAGS value="/mx /w2 /zi"/>
+    <LFLAGS value="-l..\lib /P256"/>
+    <OTHERFILES value=""/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="$(OBJFILES)"/>
+    <ALLLIB value="cg32.lib"/>
+    <OTHERFILES value=""/>
+  </LINKER>
+  <FILELIST>
+      <FILE FILENAME="libefltk.bpf" FORMNAME="" UNITNAME="libefltk" CONTAINERID="BPF" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\cmap.cpp" FORMNAME="" UNITNAME="cmap.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl.cpp" FORMNAME="" UNITNAME="Fl.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_abort.cpp" FORMNAME="" UNITNAME="Fl_abort.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_add_idle.cpp" FORMNAME="" UNITNAME="Fl_add_idle.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_arc.cpp" FORMNAME="" UNITNAME="fl_arc.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_arci.cpp" FORMNAME="" UNITNAME="fl_arci.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_arg.cpp" FORMNAME="" UNITNAME="Fl_arg.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Bitmap.cpp" FORMNAME="" UNITNAME="Fl_Bitmap.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_blit.cpp" FORMNAME="" UNITNAME="fl_blit.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_blit_1.cpp" FORMNAME="" UNITNAME="fl_blit_1.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_blit_a.cpp" FORMNAME="" UNITNAME="fl_blit_a.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_blit_n.cpp" FORMNAME="" UNITNAME="fl_blit_n.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Bmp.cpp" FORMNAME="" UNITNAME="Fl_Bmp.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Boxtype.cpp" FORMNAME="" UNITNAME="Fl_Boxtype.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_clip.cpp" FORMNAME="" UNITNAME="fl_clip.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_compose.cpp" FORMNAME="" UNITNAME="Fl_compose.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Config.cpp" FORMNAME="" UNITNAME="Fl_Config.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_cursor.cpp" FORMNAME="" UNITNAME="fl_cursor.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_curve.cpp" FORMNAME="" UNITNAME="fl_curve.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Data_Fields.cpp" FORMNAME="" UNITNAME="Fl_Data_Fields.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Data_Source.cpp" FORMNAME="" UNITNAME="Fl_Data_Source.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Date_Time.cpp" FORMNAME="" UNITNAME="Fl_Date_Time.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_diamond_box.cpp" FORMNAME="" UNITNAME="fl_diamond_box.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_display.cpp" FORMNAME="" UNITNAME="Fl_display.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_dnd.cpp" FORMNAME="" UNITNAME="fl_dnd.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_draw.cpp" FORMNAME="" UNITNAME="fl_draw.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_draw_image.cpp" FORMNAME="" UNITNAME="fl_draw_image.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_draw_pixmap.cpp" FORMNAME="" UNITNAME="fl_draw_pixmap.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_font.cpp" FORMNAME="" UNITNAME="fl_font.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_get_key.cpp" FORMNAME="" UNITNAME="Fl_get_key.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Gif.cpp" FORMNAME="" UNITNAME="Fl_Gif.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_glyph.cpp" FORMNAME="" UNITNAME="fl_glyph.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Group.cpp" FORMNAME="" UNITNAME="Fl_Group.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Image.cpp" FORMNAME="" UNITNAME="Fl_Image.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Image_Filter.cpp" FORMNAME="" UNITNAME="Fl_Image_Filter.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_init.cpp" FORMNAME="" UNITNAME="Fl_init.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_key_name.cpp" FORMNAME="" UNITNAME="Fl_key_name.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_labeltype.cpp" FORMNAME="" UNITNAME="fl_labeltype.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_list_fonts.cpp" FORMNAME="" UNITNAME="fl_list_fonts.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Lists.cpp" FORMNAME="" UNITNAME="Fl_Lists.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_load_plugin.cpp" FORMNAME="" UNITNAME="fl_load_plugin.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_locale.cpp" FORMNAME="" UNITNAME="fl_locale.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_color.cpp" FORMNAME="" UNITNAME="fl_color.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_lock.cpp" FORMNAME="" UNITNAME="Fl_lock.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_map.cpp" FORMNAME="" UNITNAME="fl_map.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_oval_box.cpp" FORMNAME="" UNITNAME="fl_oval_box.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_overlay.cpp" FORMNAME="" UNITNAME="fl_overlay.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_overlay_visual.cpp" FORMNAME="" UNITNAME="fl_overlay_visual.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_own_colormap.cpp" FORMNAME="" UNITNAME="Fl_own_colormap.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Pixmap.cpp" FORMNAME="" UNITNAME="Fl_Pixmap.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_plastic_box.cpp" FORMNAME="" UNITNAME="fl_plastic_box.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_rect.cpp" FORMNAME="" UNITNAME="fl_rect.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Renderer.cpp" FORMNAME="" UNITNAME="Fl_Renderer.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_rgb.cpp" FORMNAME="" UNITNAME="fl_rgb.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_round_box.cpp" FORMNAME="" UNITNAME="fl_round_box.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_rounded_box.cpp" FORMNAME="" UNITNAME="fl_rounded_box.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_scroll_area.cpp" FORMNAME="" UNITNAME="fl_scroll_area.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_shadow_box.cpp" FORMNAME="" UNITNAME="fl_shadow_box.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_stretch.cpp" FORMNAME="" UNITNAME="fl_stretch.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_String.cpp" FORMNAME="" UNITNAME="Fl_String.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Style.cpp" FORMNAME="" UNITNAME="Fl_Style.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Style_Set.cpp" FORMNAME="" UNITNAME="Fl_Style_Set.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_theme.cpp" FORMNAME="" UNITNAME="fl_theme.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Thread.cpp" FORMNAME="" UNITNAME="Fl_Thread.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Util.cpp" FORMNAME="" UNITNAME="Fl_Util.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Variant.cpp" FORMNAME="" UNITNAME="Fl_Variant.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_vertex.cpp" FORMNAME="" UNITNAME="fl_vertex.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_visual.cpp" FORMNAME="" UNITNAME="Fl_visual.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Widget.cpp" FORMNAME="" UNITNAME="Fl_Widget.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Window.cpp" FORMNAME="" UNITNAME="Fl_Window.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Window_fullscreen.cpp" FORMNAME="" UNITNAME="Fl_Window_fullscreen.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Window_hotspot.cpp" FORMNAME="" UNITNAME="Fl_Window_hotspot.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Window_iconize.cpp" FORMNAME="" UNITNAME="Fl_Window_iconize.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_WM.cpp" FORMNAME="" UNITNAME="Fl_WM.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Xpm.cpp" FORMNAME="" UNITNAME="Fl_Xpm.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Workspace.cpp" FORMNAME="" UNITNAME="Fl_Workspace.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Align_Group.cpp" FORMNAME="" UNITNAME="Fl_Align_Group.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\fl_ask.cpp" FORMNAME="" UNITNAME="fl_ask.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Bar.cpp" FORMNAME="" UNITNAME="Fl_Bar.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Box.cpp" FORMNAME="" UNITNAME="Fl_Box.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Browser.cpp" FORMNAME="" UNITNAME="Fl_Browser.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Button.cpp" FORMNAME="" UNITNAME="Fl_Button.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Calendar.cpp" FORMNAME="" UNITNAME="Fl_Calendar.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Check_Button.cpp" FORMNAME="" UNITNAME="Fl_Check_Button.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Choice.cpp" FORMNAME="" UNITNAME="Fl_Choice.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Clock.cpp" FORMNAME="" UNITNAME="Fl_Clock.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Color_Chooser.cpp" FORMNAME="" UNITNAME="Fl_Color_Chooser.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Date_Time_Input.cpp" FORMNAME="" UNITNAME="Fl_Date_Time_Input.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Dial.cpp" FORMNAME="" UNITNAME="Fl_Dial.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Dialog.cpp" FORMNAME="" UNITNAME="Fl_Dialog.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Directory_DS.cpp" FORMNAME="" UNITNAME="Fl_Directory_DS.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Double_Window.cpp" FORMNAME="" UNITNAME="Fl_Double_Window.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\fl_engraved_label.cpp" FORMNAME="" UNITNAME="fl_engraved_label.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_File_Dialog.cpp" FORMNAME="" UNITNAME="Fl_File_Dialog.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_FileBrowser.cpp" FORMNAME="" UNITNAME="Fl_FileBrowser.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_FileInput.cpp" FORMNAME="" UNITNAME="Fl_FileInput.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Float_Input.cpp" FORMNAME="" UNITNAME="Fl_Float_Input.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Help_Dialog.cpp" FORMNAME="" UNITNAME="Fl_Help_Dialog.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Highlight_Button.cpp" FORMNAME="" UNITNAME="Fl_Highlight_Button.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Input.cpp" FORMNAME="" UNITNAME="Fl_Input.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Input_Browser.cpp" FORMNAME="" UNITNAME="Fl_Input_Browser.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Item.cpp" FORMNAME="" UNITNAME="Fl_Item.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Light_Button.cpp" FORMNAME="" UNITNAME="Fl_Light_Button.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_ListView.cpp" FORMNAME="" UNITNAME="Fl_ListView.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_ListView_Header.cpp" FORMNAME="" UNITNAME="Fl_ListView_Header.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_ListView_Item.cpp" FORMNAME="" UNITNAME="Fl_ListView_Item.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Main_Window.cpp" FORMNAME="" UNITNAME="Fl_Main_Window.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Masked_Input.cpp" FORMNAME="" UNITNAME="Fl_Masked_Input.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_MDI_Bar.cpp" FORMNAME="" UNITNAME="Fl_MDI_Bar.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_MDI_Window.cpp" FORMNAME="" UNITNAME="Fl_MDI_Window.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Menu.cpp" FORMNAME="" UNITNAME="Fl_Menu.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Menu_.cpp" FORMNAME="" UNITNAME="Fl_Menu_.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Menu_add.cpp" FORMNAME="" UNITNAME="Fl_Menu_add.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Menu_Bar.cpp" FORMNAME="" UNITNAME="Fl_Menu_Bar.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Menu_Button.cpp" FORMNAME="" UNITNAME="Fl_Menu_Button.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Menu_global.cpp" FORMNAME="" UNITNAME="Fl_Menu_global.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Menu_Item.cpp" FORMNAME="" UNITNAME="Fl_Menu_Item.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Menu_Window.cpp" FORMNAME="" UNITNAME="Fl_Menu_Window.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Multi_Image.cpp" FORMNAME="" UNITNAME="Fl_Multi_Image.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Numeric_Input.cpp" FORMNAME="" UNITNAME="Fl_Numeric_Input.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Output.cpp" FORMNAME="" UNITNAME="Fl_Output.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Overlay_Window.cpp" FORMNAME="" UNITNAME="Fl_Overlay_Window.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Pack.cpp" FORMNAME="" UNITNAME="Fl_Pack.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Popup_Window.cpp" FORMNAME="" UNITNAME="Fl_Popup_Window.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_ProgressBar.cpp" FORMNAME="" UNITNAME="Fl_ProgressBar.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Radio_Button.cpp" FORMNAME="" UNITNAME="Fl_Radio_Button.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Repeat_Button.cpp" FORMNAME="" UNITNAME="Fl_Repeat_Button.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Return_Button.cpp" FORMNAME="" UNITNAME="Fl_Return_Button.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Roller.cpp" FORMNAME="" UNITNAME="Fl_Roller.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Scroll.cpp" FORMNAME="" UNITNAME="Fl_Scroll.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Scrollbar.cpp" FORMNAME="" UNITNAME="Fl_Scrollbar.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Shaped_Window.cpp" FORMNAME="" UNITNAME="Fl_Shaped_Window.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\fl_show_colormap.cpp" FORMNAME="" UNITNAME="fl_show_colormap.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Simple_Html.cpp" FORMNAME="" UNITNAME="Fl_Simple_Html.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Single_Window.cpp" FORMNAME="" UNITNAME="Fl_Single_Window.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Slider.cpp" FORMNAME="" UNITNAME="Fl_Slider.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\fl_symbols.cpp" FORMNAME="" UNITNAME="fl_symbols.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Tabs.cpp" FORMNAME="" UNITNAME="Fl_Tabs.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Text_Buffer.cpp" FORMNAME="" UNITNAME="Fl_Text_Buffer.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Text_Display.cpp" FORMNAME="" UNITNAME="Fl_Text_Display.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Text_Editor.cpp" FORMNAME="" UNITNAME="Fl_Text_Editor.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Tile.cpp" FORMNAME="" UNITNAME="Fl_Tile.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Tool_Bar.cpp" FORMNAME="" UNITNAME="Fl_Tool_Bar.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Tooltip.cpp" FORMNAME="" UNITNAME="Fl_Tooltip.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Valuator.cpp" FORMNAME="" UNITNAME="Fl_Valuator.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Value_Input.cpp" FORMNAME="" UNITNAME="Fl_Value_Input.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Value_Slider.cpp" FORMNAME="" UNITNAME="Fl_Value_Slider.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\vsnprintf.c" FORMNAME="" UNITNAME="vsnprintf.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_iconv_converters.cpp" FORMNAME="" UNITNAME="fl_iconv_converters.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_converters.cpp" FORMNAME="" UNITNAME="fl_converters.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Exception.cpp" FORMNAME="" UNITNAME="Fl_Exception" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_utf8.cpp" FORMNAME="" UNITNAME="fl_utf8.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\scandir.cpp" FORMNAME="" UNITNAME="scandir.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\filename_setext.cpp" FORMNAME="" UNITNAME="filename_setext.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\filename_list.cpp" FORMNAME="" UNITNAME="filename_list.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\filename_match.cpp" FORMNAME="" UNITNAME="filename_match.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\filename.cpp" FORMNAME="" UNITNAME="filename.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\db\odbc\Fl_ODBC_Database.cpp" FORMNAME="" UNITNAME="Fl_ODBC_Database.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\db\odbc\fl_odbc.cpp" FORMNAME="" UNITNAME="fl_odbc.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\db\Fl_Query.cpp" FORMNAME="" UNITNAME="Fl_Query.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\db\Fl_Params.cpp" FORMNAME="" UNITNAME="Fl_Params.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\db\Fl_Database.cpp" FORMNAME="" UNITNAME="Fl_Database.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Buffer.cpp" FORMNAME="" UNITNAME="Fl_Buffer" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_PostScript.cpp" FORMNAME="" UNITNAME="Fl_PostScript" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Printer.cpp" FORMNAME="" UNITNAME="Fl_Printer" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Memory_DS.cpp" FORMNAME="" UNITNAME="Fl_Memory_DS" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\net\Fl_IMAP_DS.cpp" FORMNAME="" UNITNAME="Fl_IMAP_DS.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\net\Fl_IMAP_Connect.cpp" FORMNAME="" UNITNAME="Fl_IMAP_Connect.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\net\Fl_FTP_Connect.cpp" FORMNAME="" UNITNAME="Fl_FTP_Connect.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Socket.cpp" FORMNAME="" UNITNAME="Fl_Socket" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Translator.cpp" FORMNAME="" UNITNAME="Fl_Translator" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Button_Group.cpp" FORMNAME="" UNITNAME="Fl_Button_Group" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\db\Fl_Record_DS.cpp" FORMNAME="" UNITNAME="Fl_Record_DS.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\db\Fl_Data_Dialog.cpp" FORMNAME="" UNITNAME="Fl_Data_Dialog.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Split.cpp" FORMNAME="" UNITNAME="Fl_Split" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Maps.cpp" FORMNAME="" UNITNAME="Fl_Maps.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Dialog_DS.cpp" FORMNAME="" UNITNAME="Fl_Dialog_DS" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Combo_Box.cpp" FORMNAME="" UNITNAME="Fl_Combo_Box" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_String_List.cpp" FORMNAME="" UNITNAME="Fl_String_List" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Packed_Strings.cpp" FORMNAME="" UNITNAME="Fl_Packed_Strings" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_Table_Base.cpp" FORMNAME="" UNITNAME="Fl_Table_Base.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\widgets\Fl_ListView_ItemExt.cpp" FORMNAME="" UNITNAME="Fl_ListView_ItemExt.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+  </FILELIST>
+  <BUILDTOOLS>
+  </BUILDTOOLS>
+
+  <FILES>
+    <FILE type="override" value="..\src\core\vsnprintf.c" translator="Auto">
+      <CFLAG1 value=" -P-"/>
+    </FILE>
+  </FILES>
+
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=0
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1033
+CodePage=1252
+
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+
+[HistoryLists\hlIncludePath]
+Count=8
+Item0=..\src\net;..\src\db;..\src\db\odbc;..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;..
+Item1=..\src\db\odbc;..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;..
+Item2=..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;..
+Item3=..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;\efltk
+Item4=..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;r:\efltk
+Item5=..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;r:\efltk
+Item6=..\src\core;$(BCB)\include;$(BCB)\include\vcl;.
+Item7=..\src\core;$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=4
+Item0=..\src\net;..\src\db;..\src\db\odbc;..\src\widgets;..\src\core;$(BCB)\lib\obj;$(BCB)\lib
+Item1=..\src\db\odbc;..\src\widgets;..\src\core;$(BCB)\lib\obj;$(BCB)\lib
+Item2=..\src\widgets;..\src\core;$(BCB)\lib\obj;$(BCB)\lib
+Item3=..\src\core;$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=5
+Item0=_WIN32;WIN32;_DEBUG
+Item1=_WIN32;WIN32
+Item2=_DEBUG;_WIN32;WIN32
+Item3=_DEBUG;_WIN32
+Item4=_DEBUG
+
+[HistoryLists\hlIntOutputDir]
+Count=3
+Item0=..\bcb6\obj
+Item1=\efltk\bcb6\obj
+Item2=R:\efltk\bcb6\obj
+
+[HistoryLists\hlFinalOutputDir]
+Count=4
+Item0=..\lib\
+Item1=\efltk\lib\
+Item2=R:\efltk\lib\
+Item3=R:\efltk\lib
+
+[HistoryLists\hIBPIOutputDir]
+Count=3
+Item0=..\lib
+Item1=\efltk\lib
+Item2=R:\efltk\lib
+
+[HistoryLists\hlTlibPageSize]
+Count=3
+Item0=0x0100
+Item1=0x0080
+Item2=0x0010
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl
+
+[Parameters]
+RunParams=
+Launcher=
+UseLauncher=0
+DebugCWD=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteLauncher=
+RemoteCWD=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[CORBA]
+AddServerUnit=1
+AddClientUnit=1
+PrecompiledHeaders=1
+  </IDEOPTIONS>
+</PROJECT>
