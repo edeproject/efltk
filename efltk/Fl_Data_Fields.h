@@ -44,6 +44,13 @@ public:
    operator Fl_String () const      { return as_string();      }
    operator Fl_Date_Time () const   { return as_date();        }
 
+   // assignments
+   Fl_Data_Field& operator = (int v)           { value = v; return *this; }
+   Fl_Data_Field& operator = (double v)        { value = v; return *this; }
+   Fl_Data_Field& operator = (Fl_String v)     { value = v; return *this; }
+   Fl_Data_Field& operator = (Fl_Date_Time v)  { value = v; return *this; }
+   Fl_Data_Field& operator = (const char *v)   { value = v; return *this; }
+
    int as_int() const;
    double as_float() const;
    Fl_String as_string() const;
@@ -59,12 +66,16 @@ public:
    void              clear();
    int               count() const { return m_list.count(); }
    int               field_index(const char * fname) const;
+
+   Fl_Data_Field&    add(const char *fname);
+
+   const Fl_Data_Field& field(unsigned index) const;
+   Fl_Data_Field&    field(unsigned index);
+
    Fl_Variant&       operator [] (int index);
    const Fl_Variant& operator [] (int index) const;
    Fl_Variant&       operator [] (const char *fname);
    const Fl_Variant& operator [] (const char *fname) const;
-   const Fl_Data_Field& field(unsigned index) const;
-   Fl_Data_Field&    field(unsigned index);
 };
 
 #endif
