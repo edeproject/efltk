@@ -94,7 +94,6 @@ void Fl_Text_Display::ctor_init()
 
     mVScrollBar = new Fl_Scrollbar(0,0,scrollbar_width(),0);
     mVScrollBar->callback((Fl_Callback*)v_scrollbar_cb, this);
-	mVScrollBar->linesize(3);
 	mVScrollBar->set_visible();
 
     mHScrollBar = new Fl_Scrollbar(0,0,0,scrollbar_width());
@@ -2412,8 +2411,8 @@ void Fl_Text_Display::update_v_scrollbar()
 	   buffer, with minor adjustments to keep the scroll bar widget happy 
 	*/
 	
-	if(mNVisibleLines>mNBufferLines) {
-		mVScrollBar->slider_size(0);	
+	if(mNBufferLines < mNVisibleLines) {
+		mVScrollBar->slider_size(0);
 		mVScrollBar->deactivate();
 	} else {
 		mVScrollBar->value(mTopLineNum, mNVisibleLines, 1, mNBufferLines+1);	
