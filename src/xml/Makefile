@@ -7,6 +7,7 @@ CPPFILES = \
 
 CFILES =
 
+PROGRAM_LIBS = $(FLLIB)
 LIBNAME = libefltk_xml
 
 # This MUST be included after FILES

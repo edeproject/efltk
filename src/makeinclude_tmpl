@@ -14,8 +14,17 @@
 #                  e.g. for images: PROGRAM_LIBS=$(IMAGESLIB)
 #
 
+OS_NAME := $(shell uname -s | sed "s/\//-/" | sed "s/_/-/" | sed "s/-.*//g")
+ifeq ($(OS_NAME), MINGW32)
+  OS_NAME = WIN32
+endif
+
 ifneq ($(MAKEINCLUDE_INCLUDED), 1)
-include $(EFLTK_TOPDIR)/makeinclude
+ ifeq ($(OS_NAME), WIN32)
+  include $(EFLTK_TOPDIR)/MinGW/makeinclude
+ else
+  include $(EFLTK_TOPDIR)/makeinclude
+ endif
 endif
 
 OUT_MAGIC := $(shell mkdir $(EFLTK_TOPDIR)/lib > /dev/null 2>&1 || :)
@@ -75,11 +84,11 @@ ifneq ($(STRIP), )
 endif
 	@mv $(DSONAME) $@
 
-DLLIMPORTNAME = $(LIBNAME).2.dll$(LIBEXT)
+DLLIMPORTNAME = $(LIBNAME).2.0.dll$(LIBEXT)
 $(DSO).$(FL_API_VERSION).dll: $(SHARED_OBJECTS)
 	@rm -f $@
 	@echo $(DSOCOMMAND) $@ ...
-	@$(DSOCOMMAND) $@ $(SHARED_OBJECTS) $(DSOLIBS)
+	$(DSOCOMMAND) $@ $(SHARED_OBJECTS) $(DSOLIBS) $(PROGRAM_LIBS)
 	@mv $@.import $(EFLTK_TOPDIR)/lib/$(DLLIMPORTNAME)
 
 clean:
@@ -218,7 +227,7 @@ $(PROGRAM): $(OBJECTS)
 	@echo Linking $(PROGRAM)...
 	@$(CXX) -o $(EFLTK_BINDIR)/$(PROGRAM) $(OBJECTS) $(PROGRAM_LIBS) $(LDLIBS)
 ifneq ($(STRIP), ) 
-	@$(STRIP) $(EFLTK_BINDIR)/$(PROGRAM)
+	@$(STRIP) $(EFLTK_BINDIR)/$(PROGRAM)$(EXEEXT)
 endif
 
 endif

@@ -23,6 +23,7 @@
 #define _FL_DIALOG_H_
 
 #include "Fl_Window.h"
+#include "Fl_Scroll.h"
 #include "Fl_Widget_List.h"
 #include "Fl_Variant.h"
 
@@ -74,11 +75,11 @@ class Fl_Dialog_Data_Source;
 
 class FL_API Fl_Dialog : public Fl_Window {
 public:
-    Fl_Dialog(int w,int h,Fl_Data_Source *ds=NULL);
+    Fl_Dialog(int w, int h, const char *label=0, Fl_Data_Source *ds=0);
     ~Fl_Dialog();
 
-    virtual bool  load_data(Fl_Data_Source *ds=NULL);
-    virtual bool  save_data(Fl_Data_Source *ds=NULL) const;
+    virtual bool  load_data(Fl_Data_Source *ds=0);
+    virtual bool  save_data(Fl_Data_Source *ds=0) const;
 
     const Fl_Variant& operator [] (const char *field_name) const;
     Fl_Variant& operator [] (const char *field_name);
@@ -86,14 +87,15 @@ public:
     int show_modal();
 
     bool  valid();
-    void  buttons(int buttons_mask,int default_button);
-    void  user_button(Fl_Button *);
+    void  buttons(int buttons_mask, int default_button);
+	Fl_Button *button(int button_mask) const;
     void  clear_buttons();
 
-    Fl_Group *new_page(const char *label,bool autoColor=false);
+    Fl_Scroll	*new_scroll(const char *label, bool autoColor=false);
+    Fl_Group	*new_group(const char *label, bool autoColor=false);
+	Fl_Group	*new_page(const char *label,bool autoColor=false) { return (Fl_Group*)new_scroll(label, autoColor); }
 
     virtual int handle(int);
-    virtual void layout();
 
 protected:
     Fl_Widget *find_widget(const char *field_name) const;
@@ -105,9 +107,10 @@ private:
     static void buttons_callback(Fl_Widget *,void *);
     static void help_callback(Fl_Widget *,void *);
 
+    Fl_Multi_Tabs	*m_tabs;
+
     Fl_Button      *m_defaultButton;
     Fl_Group       *m_buttonPanel;
-    Fl_Multi_Tabs  *m_tabs;
     Fl_Widget_List  m_buttonList;
     int             m_buttons;
     int             m_modalResult;

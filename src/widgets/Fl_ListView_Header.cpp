@@ -11,8 +11,8 @@
 class Fl_ListHeader_Attr
 {
 public:
-    const char *label;
-    int16 width;
+    Fl_String label;
+    unsigned short width;
     Fl_Flags flags;
     Fl_Font font;
     int font_size;
@@ -32,7 +32,6 @@ Fl_ListView_Header::Fl_ListView_Header(int X,int Y,int W,int H,const char*l)
     : Fl_Widget(X,Y,W,H,l)
 {
     style(default_style);
-    attr_list.auto_delete(true);
     sort_type = Fl_ListView::SORT_ABSOLUTE;
     sort_col = 0;
 }
@@ -45,7 +44,6 @@ Fl_ListView_Header::~Fl_ListView_Header()
 void Fl_ListView_Header::add_attr(int col)
 {	
     Fl_ListHeader_Attr *a = new Fl_ListHeader_Attr;
-    a->label = 0;
     a->flags = FL_ALIGN_LEFT;
     a->width = 0;
     a->font = Fl_Widget::label_font();
@@ -75,7 +73,7 @@ void Fl_ListView_Header::columns(int count)
     } else {
         for(uint n=new_size; n<old_size; n++) {
             Fl_ListHeader_Attr *a = (Fl_ListHeader_Attr*)attr_list[n];
-            if(a->flags & FL_COPIED_LABEL) if(a->label) free((void *)a->label);
+			delete a;
         }
         attr_list.resize(new_size);
     }
@@ -151,15 +149,7 @@ const char *Fl_ListView_Header::column_label(int col)
 
 void Fl_ListView_Header::column_copy_label(int col, const char *txt)
 {
-    Fl_ListHeader_Attr *a = (Fl_ListHeader_Attr*)attr_list[col];
-    if(a->flags&FL_COPIED_LABEL) free((void*)a->label);
-    if(txt) {
-        a->label = strdup(txt);
-        a->flags |= FL_COPIED_LABEL;
-    } else {
-        a->label = 0;
-        a->flags &= ~FL_COPIED_LABEL;
-    }
+	column_label(col, txt);
 }
 
 void Fl_ListView_Header::column_label(int col, const char *text)
@@ -229,10 +219,9 @@ void Fl_ListView_Header::clear()
 {
     for(uint n=0; n<attr_list.size(); n++) {
         Fl_ListHeader_Attr *a = (Fl_ListHeader_Attr*)attr_list[n];
-        if(a->flags & FL_COPIED_LABEL)
-            if(a->label)
-                free((void *)a->label);
+		delete a;
     }
+	attr_list.clear();
 }
 
 #define SORT_ARROW 8

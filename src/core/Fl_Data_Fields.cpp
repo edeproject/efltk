@@ -25,7 +25,7 @@
 Fl_Data_Field::Fl_Data_Field(const char *name) {
    m_name = name;
    width = -1;
-   align = FL_ALIGN_LEFT;
+   flags = FL_ALIGN_LEFT;
    m_dataSize = 0;
    visible = true;
 }
@@ -151,7 +151,7 @@ Fl_Variant& Fl_Data_Fields::operator [] (const char *fname) {
    Fl_Data_Field *field=0;
    int index = field_index(fname);
    if (index < 0) {
-      fl_throw("Field name not found");
+	  field = &add(fname);
    } else {
       field = (Fl_Data_Field *)m_list[index];
    }
@@ -161,9 +161,8 @@ Fl_Variant& Fl_Data_Fields::operator [] (const char *fname) {
 const Fl_Variant& Fl_Data_Fields::operator [] (const char *fname) const {
    int index = field_index(fname);
    if (index < 0) {
-      fl_throw("Field name not found");
+	   fl_throw("Field name not found");
    }
-
    Fl_Data_Field *field = (Fl_Data_Field *)m_list[index];
    return field->value;
 }

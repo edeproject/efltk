@@ -23,6 +23,7 @@
 #
 
 SHELL=/bin/sh
+OS_NAME := $(shell uname -s | sed "s/\//-/" | sed "s/_/-/" | sed "s/-.*//g")
 
 DIRS = src tools themes efltk locale test
 
@@ -101,11 +102,21 @@ clean:
 distclean: clean
 	rm -f *~ config.* makeinclude efltk-config
 
+ifeq ($(OS_NAME), MINGW32)
+
+configure:
+
+$(GENERATED):
+
+else
+
 $(GENERATED): configure makeinclude.in configh.in efltk-config.in
 	./configure
 
 configure: configure.in
 	autoconf
+	
+endif
 
 portable-dist:
 	epm -v efltk

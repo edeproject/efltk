@@ -102,8 +102,14 @@ public:
     // element access
     char& operator [] (const int i) { return str_[i]; }
     char operator [] (const int i) const { return str_[i]; }
+
+	// Convert string to latin1. 'str' is allocated by Fl_String, caller must call free() for it. 
+	int to_latin1(char *&str);
+	// Convert string to unicode. 'str' is allocated by Fl_String, caller must call free() for it. 
+	int to_unicode(unsigned short *&str);
     
-    static Fl_String IntToString(int val);
+	static Fl_String from_latin1(const char *str, int str_len);
+	static Fl_String from_unicode(const unsigned short *str, int str_len);
 
     static Fl_String from_codeset(int conv_index, const char *str, int str_len);
     static Fl_String from_codeset(Fl_String codeset, const char *str, int str_len);

@@ -27,14 +27,29 @@
 
 class Fl_Directory_DS : public Fl_Data_Source  {
 public:
-    // ctor, dtor
-    Fl_Directory_DS() : Fl_Data_Source(0L) { m_current = 0L; m_currentIndex = -1; }
+    // ctor, dtor 
+    Fl_Directory_DS() : Fl_Data_Source(0L), m_current(0L), m_currentIndex(-1), m_showpolicy(0) { }
     virtual ~Fl_Directory_DS() { close(); }
+    virtual void clear();
+
+	enum {
+		SHOW_ALL = 0,
+		HIDE_FILES = 1,
+		HIDE_DOT_FILES = 2,
+		HIDE_DIRECTORIES = 4,
+		NO_SORT = 8
+	};
+
+	char showpolicy() const { return m_showpolicy; }
+	void showpolicy(char type) { m_showpolicy = type; }
 
     void directory(const char *d) { m_directory = d; }
-    const char *directory() const { return m_directory.c_str(); }
+    void directory(const Fl_String &d) { m_directory = d; }
+    const Fl_String &directory() const { return m_directory; }
 
-    void clear();
+	void pattern(const char *pattern) { m_pattern = pattern; }
+	void pattern(const Fl_String &pattern) { m_pattern = pattern; }
+	const Fl_String &pattern() const { return m_pattern; }
 
     // access to the field by name
     virtual const Fl_Variant& operator [] (const char *field_name) const;
@@ -46,6 +61,9 @@ public:
     // how many fields do we have in the current record?
     virtual unsigned          field_count() const;
     virtual int               field_index(const char *field_name) const;
+
+	// how many rows do we have ds?
+	virtual unsigned          record_count() const;
 
     // access to the field by number, 0..field_count()-1
     virtual const Fl_Variant& operator [] (int) const;
@@ -66,15 +84,20 @@ public:
 
 protected:
     // these methods should be implemented in derived class
-    virtual bool              load_data() { return true; }
-    virtual bool              save_data() { return true; }
+    virtual bool load_data() { return true; }
+    virtual bool save_data() { return true; }
 
-protected:
+	Fl_String get_file_type(const struct stat &st, const Fl_Image *&image) const;
+
     Fl_Ptr_List     m_list;
     Fl_Data_Fields *m_current;
     int             m_currentIndex;
-    Fl_String       m_directory;
+
+private:
     bool            m_eof;
+    Fl_String       m_directory;
+	Fl_String		m_pattern;
+	char			m_showpolicy;
 };
 
 #endif

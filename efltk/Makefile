@@ -1,4 +1,10 @@
-include ../makeinclude
+EFLTK_TOPDIR=..
+OS_NAME := $(shell uname -s | sed "s/\//-/" | sed "s/_/-/" | sed "s/-.*//g")
+ifeq ($(OS_NAME), MINGW32)
+ include $(EFLTK_TOPDIR)/MinGW/makeinclude
+else
+ include $(EFLTK_TOPDIR)/makeinclude
+endif
 
 DIRS = xml db
 

@@ -46,9 +46,8 @@ Fl_Int_Input* wEggs;
 Fl_Value_Slider* wMinutes;
 
 Fl_Input* wPaper;
-
-int main (int argc, char **argv) {
-
+int main (int argc, char **argv) 
+{
   Fl_Window* w;
   Fl::args(argc, argv);
    {Fl_Window* o = myWindow = new Fl_Window(298, 311, "My Preferences");

@@ -24,7 +24,9 @@
  */
 
 /* Emulation of posix scandir() call */
+#include <config.h>
 #include <efltk/fl_utf8.h>
+#include <efltk/Fl_Exception.h>
 #include <efltk/filename.h>
 #include <windows.h>
 #include <stdlib.h>
@@ -33,85 +35,82 @@ int fl_scandir(const char *dirname, struct dirent ***namelist,
                int (*select)(struct dirent *),
                int (*compar)(struct dirent **, struct dirent **))
 {	
-    int len;
-    char *findIn;
-    WIN32_FIND_DATAA find;
-	WIN32_FIND_DATAW findw;
+    WIN32_FIND_DATA find;
     HANDLE h;
     int nDir = 0, NDir = 0;
     struct dirent **dir = 0, *selectDir;
     unsigned long ret;	
 	unsigned short *wbuf;
 
-    len    = strlen(dirname);
-    findIn = (char *)malloc(len+5);
-    if (!findIn) return -1;
-
-    memcpy(findIn, dirname, len);
+    Fl_String findIn(dirname);
 	
 	//Convert unix '/' to windows '\'
-	for(char *d = findIn; *d; d++) if(*d=='/') *d='\\';
+	for(int n=0; n<findIn.length(); n++) if(findIn[n]=='/') findIn[n]='\\';
 
-	if(len>0 && (findIn[len-1]!='\\')) {	
-		findIn[len++] = '\\';
-		findIn[len++] = '*';
+	if(findIn.empty()) { 
+		findIn = ".\\*";
+	}
+	else if(findIn[findIn.length()-1] != '\\') {	
+		findIn += "\\*";
 	} 
-	else if(len>0 && (findIn[len-1]=='\\')) { 
-		findIn[len++] = '*';
+	else if(findIn[findIn.length()-1] == '\\') { 
+		findIn += '*';
 	}
-	else if(len==0) { 
-		findIn[len++] = '.';
-		findIn[len++] = '\\';
-		findIn[len++] = '*';
-	}
-	findIn[len] = '\0';
 
-#ifdef _WIN32_WCE
-	wbuf = (unsigned short*)malloc(sizeof(short) *(len + 10));
-	wbuf[fl_utf2unicode((const unsigned char*)findIn, len, wbuf)] = 0;
-	h = FindFirstFileW((wchar_t *)wbuf, &findw);
+#ifdef UNICODE
+	findIn.to_unicode(wbuf);
+	h = FindFirstFile((wchar_t *)wbuf, &find);
 	free((unsigned short*)wbuf);
 #else
-	if (fl_is_nt4()) {
-		wbuf = (unsigned short*)malloc(sizeof(short) *(len + 10));
-		wbuf[fl_utf2unicode((const unsigned char*)findIn, len, wbuf)] = 0;
-		h = FindFirstFileW((wchar_t *)wbuf, &findw);
-		free((unsigned short*)wbuf);
-	} else {
-		h=FindFirstFileA(fl_utf2mbcs(findIn), &find);
-	}
+	h = FindFirstFile(fl_utf2mbcs(findIn.c_str()), &find);
 #endif
 
     if(h==INVALID_HANDLE_VALUE) {
-        free((char*)findIn);
         ret = GetLastError();
         if (ret != ERROR_NO_MORE_FILES) {
-            /* TODO: return some error code */
+			TCHAR msgbuf[1024];
+#ifdef UNICODE
+			int msgbuf_len = 
+#endif
+			FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM |
+                FORMAT_MESSAGE_IGNORE_INSERTS,
+                NULL,
+                ret,
+                MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                (LPTSTR)&msgbuf,
+                sizeof(msgbuf),
+                NULL);
+#ifdef UNICODE
+			fl_throw(Fl_String::from_unicode(msgbuf, msgbuf_len)); 
+#else
+			fl_throw(msgbuf);      
+#endif
         }
         *namelist = dir;
         return nDir;
     }
     do {
-		int l;
-		if(fl_is_nt4() || fl_is_ce()) {
-			l = wcslen(findw.cFileName);
-		} else {
-			l = strlen(find.cFileName);
-		}
+#ifdef UNICODE
+		int l = wcslen(find.cFileName);
+#else
+		int l = strlen(find.cFileName);
+#endif
         selectDir = (struct dirent*)malloc(sizeof(struct dirent)+(l*5)+1);
-		if (fl_is_nt4() || fl_is_ce()) {
-			l = fl_unicode2utf((unsigned short *)findw.cFileName, l, selectDir->d_name);
-		} else {
-			wbuf = (unsigned short*)malloc(sizeof(short) * (l+1));
-			l = mbstowcs((wchar_t *)wbuf, find.cFileName, l);
-			l = fl_unicode2utf(wbuf, l, selectDir->d_name);
-			free((unsigned short*)wbuf);
-		}
+#ifdef UNICODE
+		l = fl_unicode2utf((unsigned short *)find.cFileName, l, selectDir->d_name);
+#else
+		wbuf = (unsigned short*)malloc(sizeof(short) * (l+1));
+		l = mbstowcs((wchar_t *)wbuf, find.cFileName, l);
+		l = fl_unicode2utf(wbuf, l, selectDir->d_name);
+		free((unsigned short*)wbuf);
+#endif
 		selectDir->d_name[l] = 0;
 
-        /*if(find.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-            ...
-        }*/
+        if(find.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+            selectDir->d_type = DT_DIR;
+        } else
+			selectDir->d_type = DT_REG;
+
         if(!select || (*select)(selectDir)) {
             if(nDir==NDir) {
 				if(!dir) dir = (dirent **)malloc(sizeof(struct dirent*) * 33);
@@ -122,23 +121,33 @@ int fl_scandir(const char *dirname, struct dirent ***namelist,
             nDir++;
             dir[nDir] = 0;
         } else {
-            free(selectDir);
+            free((struct dirent*)selectDir);
         }
     } 
-#ifndef _WIN32_WCE
-	while ( (fl_is_nt4() && FindNextFileW(h, &findw)) || 
-			(!fl_is_nt4() && FindNextFileA(h, &find)));
-#else
-	while ( FindNextFileW(h, &findw));			
-#endif
+	while(FindNextFile(h, &find));			
 
     ret = GetLastError();
     if (ret != ERROR_NO_MORE_FILES) {
-        /* TODO: return some error code */
-    }
-    FindClose(h);
-
-    free((char*)findIn);
+			TCHAR msgbuf[1024];
+#ifdef UNICODE
+			int msgbuf_len = 
+#endif
+			FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM |
+				FORMAT_MESSAGE_IGNORE_INSERTS,
+				NULL,
+				ret,
+				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+				(LPTSTR)&msgbuf,
+				sizeof(msgbuf),
+				NULL);
+			FindClose(h);
+#ifdef UNICODE
+			fl_throw(Fl_String::from_unicode(msgbuf, msgbuf_len)); 
+#else
+			fl_throw(msgbuf);
+#endif
+    } else
+		FindClose(h);
 
     if(compar) qsort(dir, nDir, sizeof(*dir), (int(*)(const void*, const void*))compar);
 

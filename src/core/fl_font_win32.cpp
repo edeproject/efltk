@@ -234,14 +234,14 @@ float fl_width(const char* c, int n)
   float w = 0;
   unsigned int ucs;
   while (i < n) {    
-    int l = fl_utf2ucs((const unsigned char*)c + i, n - i, &ucs);
+    int l = fl_fast_utf2ucs((const unsigned char*)c + i, n - i, &ucs);
     if (l < 1) l = 1; 
     i += l;
     if (!fl_nonspacing(ucs)) {
       w += fl_width(ucs);
     }
   }
-  return  w;
+  return w;
 }
 
 float fl_width(unsigned int ucs) 
@@ -255,7 +255,7 @@ float fl_width(unsigned int ucs)
      	fl_fontsize->width[r] = new int[0x0400];        
 		unsigned short i=0, ii = r * 0x400;
 		for (; i < 0x400; i++) {
-			GetTextExtentPoint32(dc, (const TCHAR*)&ii, 1, &s);
+			GetTextExtentPoint32W(dc, (const WCHAR*)&ii, 1, &s);
 			fl_fontsize->width[r][i] = s.cx;
 			ii++;
 		}		
@@ -263,38 +263,78 @@ float fl_width(unsigned int ucs)
 	return float(fl_fontsize->width[r][ucs&0x03FF]);
 }
 
+static inline int wchar_width(WCHAR *wc, int len) {
+	float W=0;
+	for(int n=0; n<len; n++) W += fl_width(wc[n]);
+	return int(W);
+
+}
+
 void fl_transformed_draw(const char *str, int n, float x, float y) 
 {
 	SetTextColor(fl_gc, fl_colorref);
 	SelectObject(fl_gc, current_font);
 	
-	int wn = 0, i = 0, lx = 0;
-	unsigned int u;
-	WCHAR ucs;	
-
-	while (i < n) {
-		int l = fl_utf2ucs((const unsigned char*)str + i, n - i, &u);
-		if (fl_nonspacing(u)) { 
-			x -= lx; 
-		} else { 
-			lx = int(fl_width(u));
-		}
-		ucs = u;
-		if (l < 1) l = 1;
-		i += l;
-#ifndef _WIN32_WCE
-		TextOutW(fl_gc, int(floorf(x+.5f)), int(floorf(y+.5f)), &ucs, 1);
+#ifdef _WIN32_WCE
+	RECT rect = { int(floorf(x+.5f)), int(floorf(y+.5f)), 0, 0 };	
 #else
-		const WCHAR *skod = (const WCHAR*)&ucs;
-		RECT rect = {int(floorf(x+.5f)), int(floorf(y+.5f)), 0,0};
-		DrawText(fl_gc, skod, 1, &rect, DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP);
+    int X = int(floorf(x+.5f));
+    int Y = int(floorf(y+.5f));
 #endif
-		x += lx;
-	}
+
+	unsigned ucs;
+	unsigned no_spc;
+    WCHAR buf[128];		// drawing buffer
+    int pos = 0;		// position in buffer
+
+	while(n > 0) {
+
+        if(pos>120) {
+#ifdef _WIN32_WCE			
+			DrawText(fl_gc, buf, pos, &rect, DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP);	
+			rect.left += wchar_width(buf, pos);
+#else
+			TextOutW(fl_gc, X, Y, buf, pos);
+			X += wchar_width(buf, pos);
+#endif
+			pos = 0;
+        }
+
+        int ulen = fl_fast_utf2ucs((unsigned char*)str, n, &ucs);
+        if (ulen < 1) ulen = 1;
+        no_spc = fl_nonspacing(ucs);
+        if(no_spc) ucs = no_spc;
+		buf[pos] = ucs;
+
+        if(no_spc) {
+#ifdef _WIN32_WCE
+			DrawText(fl_gc, buf, pos, &rect, DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP);	
+			rect.left += wchar_width(buf, pos);
+			rect.left -= fl_width(buf[pos]);
+#else
+			TextOutW(fl_gc, X, Y, buf, pos);
+			X += wchar_width(buf, pos);
+			X -= fl_width(buf[pos]);
+#endif
+            buf[0] = ucs;
+			pos = 0;
+        }
+
+        pos++;
+        str += ulen;
+        n-=ulen;
+    }
+    if(pos>0)
+#ifdef _WIN32_WCE			
+		DrawText(fl_gc, buf, pos, &rect, DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP);	
+#else
+		TextOutW(fl_gc, X, Y, buf, pos);
+#endif
 }
 
 void fl_rtl_draw(const char *str, int n, float x, float y)
 {
+	// USE BUFFER HERE ALSO
 	SetTextColor(fl_gc, fl_colorref);
 	SelectObject(fl_gc, current_font);
 

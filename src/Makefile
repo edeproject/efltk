@@ -24,13 +24,25 @@
 #
 
 EFLTK_TOPDIR=..
-include ../makeinclude
+OS_NAME := $(shell uname -s | sed "s/\//-/" | sed "s/_/-/" | sed "s/-.*//g")
+ifeq ($(OS_NAME), MINGW32)
+  OS_NAME = WIN32
+endif
+
+ifneq ($(MAKEINCLUDE_INCLUDED), 1)
+ ifeq ($(OS_NAME), WIN32)
+  include $(EFLTK_TOPDIR)/MinGW/makeinclude
+ else
+  include $(EFLTK_TOPDIR)/makeinclude
+ endif
+endif
 
 OUT_MAGIC := $(shell mkdir $(EFLTK_TOPDIR)/lib > /dev/null 2>&1 || :)
 
 ################################################################
 
-DIRS = core widgets db xml images opengl
+FLDIRS = core widgets db
+DIRS = xml images opengl
 
 LIBNAME = libefltk
 DSOLIBNAME = $(LIBNAME)
@@ -42,19 +54,27 @@ all: $(BUILDTARGETS)
 
 static:
 	@rm -f $(LIBRARY)$(LIBEXT)
+	@for dir in $(FLDIRS); do\
+        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) static) || break;\
+	done	
+	$(MAKE) $(LIBRARY)$(LIBEXT)
 	@for dir in $(DIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
         	(cd $$dir;$(MAKE) $(MFLAGS) static) || break;\
-	done
-	$(MAKE) $(LIBRARY)$(LIBEXT)
+	done	
 
 shared:
 	@rm -f $(LIBRARY)$(DSOEXT)
+	@for dir in $(FLDIRS); do\
+        	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
+        	(cd $$dir;$(MAKE) $(MFLAGS) shared) || break;\
+	done	
+	$(MAKE) $(DSO)$(DSOEXT)
 	@for dir in $(DIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
         	(cd $$dir;$(MAKE) $(MFLAGS) shared) || break;\
 	done
-	$(MAKE) $(DSO)$(DSOEXT)
 
 programs:
 
@@ -75,7 +95,7 @@ ifneq ($(STRIP), )
 endif
 	@mv $(DSONAME) $@
 
-DLLIMPORTNAME = $(LIBNAME).2.dll$(LIBEXT)
+DLLIMPORTNAME = $(LIBNAME).2.0.dll$(LIBEXT)
 $(DSO).$(FL_API_VERSION).dll:
 	@-rm -f $@
 	@echo $(DSOCOMMAND) $@ ...
@@ -83,14 +103,14 @@ $(DSO).$(FL_API_VERSION).dll:
 	@mv $@.import $(EFLTK_TOPDIR)/lib/$(DLLIMPORTNAME)
 
 clean:
-	@for dir in $(DIRS); do\
+	@for dir in $(DIRS) $(FLDIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
         	(cd $$dir;$(MAKE) $(MFLAGS) clean) || break;\
 	done
 	@rm -f *~ $(LIBRARY).*
 
 depend:
-	@for dir in $(DIRS); do\
+	@for dir in $(DIRS) $(FLDIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
         	(cd $$dir;$(MAKE) $(MFLAGS) depend) || break;\
 	done
@@ -105,7 +125,7 @@ install_static: static
 	@rm -f $(libdir)/$(LIBNAME)$(LIBEXT)
 	@cp -f $(LIBRARY)$(LIBEXT) $(libdir)
 	@chmod 644 $(libdir)/$(LIBNAME)$(LIBEXT)
-	@for dir in $(DIRS); do\
+	@for dir in $(DIRS) $(FLDIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
         	(cd $$dir;$(MAKE) $(MFLAGS) install_static) || break;\
 	done
@@ -121,7 +141,7 @@ install_shared: shared
 
 	@if [ "$(DSOSHORTEXT)" ]; then ln -s $(DSOLIBNAME)$(DSOEXT) $(libdir)/$(DSOLIBNAME)$(DSOSHORTEXT); fi
 	@if [ -f "$(EFLTK_TOPDIR)/lib/$(DLLIMPORTNAME)" ]; then cp -f $(EFLTK_TOPDIR)/lib/$(DLLIMPORTNAME) $(libdir); fi
-	@for dir in $(DIRS); do\
+	@for dir in $(DIRS) $(FLDIRS); do\
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
         	(cd $$dir;$(MAKE) $(MFLAGS) install_shared) || break;\
 	done

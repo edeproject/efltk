@@ -135,7 +135,7 @@
 #define USE_POLL 0
 
 /* Do we have libpng ? (for reading .png images) */
-#define HAVE_PNG 0
+#define HAVE_PNG 1
 
 /* Do we have libjpeg ? (for reading .jpg images) */
 #define HAVE_JPEG 0

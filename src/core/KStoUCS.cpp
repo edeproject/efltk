@@ -1,5 +1,7 @@
 /* $XFree86: xc/lib/X11/imKStoUCS.c,v 1.2 2001/07/25 15:04:45 dawes Exp $ */
 
+#ifndef _WIN32
+
 #include <efltk/x.h>
 
 static unsigned short const keysym_to_unicode_1a1_1ff[] = {
@@ -316,3 +318,6 @@ unsigned int KeySymToUcs4(KeySym keysym)
     else 
 	return 0;
 }
+
+#endif /* _WIN32 */
+

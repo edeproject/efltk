@@ -23,425 +23,427 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 // Contents:
-//
-//   Fl_Fl_FileBrowser::item_width()  - Return the width of a list item.
-//   Fl_Fl_FileBrowser::item_draw()   - Draw a list item.
-//   Fl_Fl_FileBrowser::FileBrowser() - Create a FileBrowser widget.
-//   Fl_Fl_FileBrowser::load()        - Load a directory into the browser.
-//   Fl_Fl_FileBrowser::filter()      - Set the filename filter.
-//
-
-//
-// Include necessary header files...
-//
+//   Fl_FileBrowser::load()			- Load a directory into the browser.
+//   Fl_FileBrowser::up()			- Up one directory, and load it
 
 #include <config.h>
+#include "../core/fl_internal.h"
 
 #include <efltk/Fl_FileBrowser.h>
+#include <efltk/Fl_Pixmap.h>
+#include <efltk/fl_ask.h>
 #include <efltk/fl_draw.h>
 #include <efltk/filename.h>
 #include <efltk/vsnprintf.h>
 #include <efltk/fl_utf8.h>
+
 #include <stdlib.h>
-#include <config.h>
 #include <string.h>
 
 #if defined(_WIN32)
-#  include <windows.h>
-#  include <direct.h>
-#endif                           /* _WIN32 */
+# include <windows.h>
+# include <io.h>
+# include <direct.h>
+#endif /* _WIN32 */
 
-#if defined(__EMX__)
-#define  INCL_DOS
-#define  INCL_DOSMISC
-#include <os2.h>
-#endif                           /* __EMX__ */
+#ifdef _WIN32
+static const char * datas_cd[] = {
+"16 16 29 1",
+" 	c None",
+".	c #737173",
+"+	c #9CCF9C",
+"@	c #CECF63",
+"#	c #C6C7C6",
+"$	c #319E9C",
+"%	c #63CF9C",
+"&	c #B5B6B5",
+"*	c #313031",
+"=	c #CECF9C",
+"-	c #DEDFDE",
+";	c #848684",
+">	c #319ECE",
+",	c #639ECE",
+"'	c #63CFCE",
+")	c #D6D7D6",
+"!	c #949694",
+"~	c #A5A6A5",
+"{	c #639E9C",
+"]	c #000000",
+"^	c #CECFCE",
+"/	c #F7F7F7",
+"(	c #E7E7E7",
+"_	c #EFEFEF",
+":	c #FFFFFF",
+"<	c #CEFFFF",
+"[	c #009ECE",
+"}	c #00FF00",
+"|	c #008600",
+"        ...     ",
+"      ..+@#..   ",
+"     .$%+@&##*  ",
+"    .%%$%=#&-&* ",
+"    ;>,%';&)#&* ",
+"   .!~{';];~&^^*",
+"   .&&^;]/];^^^*",
+"   .(/(&;];&_/^*",
+" ;;;;~&~~;$-(:* ",
+";:::.~~&)=%><&* ",
+";:###.~&^=+[[]  ",
+";:****;;^=+**]  ",
+";:}|::##***#.]  ",
+".;;;;;;;;;;;;]  ",
+" ]]]]]]]]]]]]   ",
+"                "};
 
-//
-// FL_BLINE definition from "Fl_Browser.cxx"...
-//
+static const char * datas_floppy[] = {
+"16 16 11 1",
+" 	c None",
+".	c #848684",
+"+	c #737173",
+"@	c #9CFFFF",
+"#	c #000000",
+"$	c #FFFFFF",
+"%	c #CEFFFF",
+"&	c #CECFCE",
+"*	c #C6C7C6",
+"=	c #B5B6B5",
+"-	c #FF0000",
+"         ...... ",
+"        +@@@@@@#",
+"        +$$$$$##",
+"        +$$$%%%#",
+"        +%%%%%%#",
+"        +&*&=*=#",
+"  ......+*....*#",
+" .******+&+#+$=#",
+".$$$$$$$$###### ",
+".*********-*.+# ",
+".***....****.+# ",
+".*..####...*.+# ",
+".***$$$$****.+# ",
+".............#  ",
+" ############   ",
+"                "};
 
-#define SELECTED 1
-#define NOTDISPLAYED 2
+static const char * datas_harddisk[] = {
+"16 16 12 1",
+" 	c None",
+".	c #737173",
+"+	c #B5B6B5",
+"@	c #000000",
+"#	c #FFFFFF",
+"$	c #9C9E9C",
+"%	c #D6D7D6",
+"&	c #C6C7C6",
+"*	c #00CF00",
+"=	c #008600",
+"-	c #949694",
+";	c #DEDFDE",
+"                ",
+"                ",
+"                ",
+"                ",
+"  ............. ",
+" .++++++++++++.@",
+".############$.@",
+".%&&&&&&&+*=+-.@",
+".;+&&&&&+++++-.@",
+".;..........+-.@",
+".%##########+-.@",
+"..............@ ",
+" @@@@@@@@@@@@@  ",
+"                ",
+"                ",
+"                "};
+static Fl_Pixmap cd_pix(datas_cd);
+static Fl_Pixmap floppy_pix(datas_floppy);
+static Fl_Pixmap hd_pix(datas_harddisk);
+#endif
 
-struct FL_BLINE                  // data is in a linked list of these
+
+static const char *up_xpm[] = {
+"16 16 6 1",
+" 	c None",
+"*  c #000000",
+".	c #FFE79C",
+"+	c #C6864A",
+"@	c #FFC78C",
+"#	c #000000",
+"                ",
+"                ",
+"    ...+        ",
+"   @.@@@+       ",
+"  @@@@@@@@@@@@  ",
+" @@...*.......# ",
+" @.@@***@@@@@+# ",
+" @.@*****@@@@+# ",
+" @.@@@*@@@@@@+# ",
+" @.@@@*@@@@@@+# ",
+" @.@@@*****@@+# ",
+" @.@@@@@@@@@@+# ",
+" @.+++++++++++# ",
+"  ############# ",
+"                ",
+"                "};
+static Fl_Pixmap up_pix(up_xpm);
+                    
+// Define access mode constants if they aren't already defined.
+#ifndef R_OK
+# define R_OK 04
+#endif
+
+void Fl_File_Browser::default_callback(Fl_Widget *w, void *d)
 {
-    FL_BLINE  *prev;             // Previous item in list
-    FL_BLINE  *next;             // Next item in list
-    void      *data;             // Pointer to data (function)
-    short     length;            // sizeof(txt)-1, may be longer than string
-    char      flags;             // selected, displayed
-    char      txt[1];            // start of allocated array
+	Fl_File_Browser *b = (Fl_File_Browser*)w;
+	if(!b->item()) return;
+	if(!Fl::event_clicks() && Fl::event_key()!=FL_Enter) return;
+
+	Fl_String dir(b->directory());
+
+	if(b->item() != b->up_item()) {
+		
+		dir += b->item()->label(1);		
+
+		if(access(dir, R_OK)!=0) return;
+        
+		if(fl_is_dir(dir)) {
+			b->load(dir);
+			b->redraw();
+		}
+
+	} else {
+
+		b->up();
+	}
+}
+            
+Fl_File_Browser::Fl_File_Browser(
+	int        x,	// I - Upper-lefthand X coordinate
+	int        y,   // I - Upper-lefthand Y coordinate
+	int        w,   // I - Width in pixels
+	int        h,   // I - Height in pixels
+	const char *l)  // I - Label text
+: Fl_ListView(x, y, w, h, l)
+{
+	m_add_up_item = true;
+	m_up_item = 0;
+
+	callback(default_callback);
+	when(FL_WHEN_ENTER_KEY | FL_WHEN_RELEASE);
+	data_source(&m_dir_ds);
+}
+
+#ifdef _WIN32
+
+static uint get_dev_size(uint64 size, Fl_String &suffix)
+{	
+	if(size<1024) {
+		suffix=_("bytes");
+		return (uint)size;
+	}
+	if(size>1024) {
+		size /= 1024;
+		suffix=_("Kb");
+	}
+	if(size>1024) {
+		size /= 1024;		
+		suffix=_("Mb");
+	}
+	return (uint)size;
+}
+
+#endif
+
+static const char *types[] = {
+    N_("Unknown"),
+	
+    N_("File"),
+    N_("Dir"),
+    N_("Link"),
+
+    N_("CD-Rom"),
+    N_("Removable"),
+    N_("Local Disk"),
+    N_("Network Disk"),
+    N_("RAM Disk")
 };
 
-//
-// 'Fl_FileBrowser::item_height()' - Return the height of a list item.
-//
-
-int                              // O - Height in pixels
-                                 // I - List item data
-Fl_FileBrowser::item_height(void *p) const
+// 'Fl_FileBrowser::up()' - Up one directory, and load it
+void Fl_File_Browser::up()
 {
-    FL_BLINE  *line;             // Pointer to line
-    char      *text;             // Pointer into text
-    int       height;            // Width of line
-    int       textheight;        // Height of text
+	if(directory().empty()) return;
 
-    // Figure out the standard text height...
-    textheight = text_size()+leading();
-
-    // We always have at least 1 line...
-    height = textheight;
-
-    // Scan for newlines...
-    line = (FL_BLINE *)p;
-
-    if (line != NULL)
-        for (text = line->txt; *text != '\0'; text ++)
-            if (*text == '\n')
-                height += textheight;
-
-    // If we have enabled icons then add space for them...
-//    if (Fl_FileIcon::first() != NULL && height < iconsize_)
-//        height = iconsize_;
-
-    // Add space for the selection border..
-    height += 2;
-
-    // Return the height
-    return (height);
+	Fl_String dir(directory());
+	// Remove last slash
+	dir[dir.length()-1] = '\0'; 
+		
+	int pos = dir.rpos(slash);
+	if(pos==-1) dir="";
+	else dir = dir.sub_str(0, pos);
+		
+	redraw();
+	load(dir);
 }
 
-
-//
-// 'Fl_FileBrowser::item_width()' - Return the width of a list item.
-//
-
-int                              // O - Width in pixels
-                                 // I - List item data
-Fl_FileBrowser::item_width(void *p) const
-{
-    FL_BLINE  *line;             // Pointer to line
-    char      *text,             // Pointer into text
-        *ptr,                    // Pointer into fragment
-        fragment[10240];         // Fragment of text
-    double    width,             // Width of line
-        tempwidth;               // Width of fragment
-    int       column;            // Current column
-
-    // Set the font and size...
-    fl_font(text_font(), float(text_size()));
-
-    // Scan for newlines...
-    line = (FL_BLINE *)p;
-
-    if (strchr(line->txt, '\n') == NULL &&
-        strchr(line->txt, '\t') == NULL)
-    {
-        // Do a fast width calculation...
-        width = fl_width(line->txt);
-    }
-    else
-    {
-        // More than 1 line or have columns; find the maximum width...
-        width     = 0;
-        tempwidth = 0;
-        column    = 0;
-
-        for (text = line->txt, ptr = fragment; *text != '\0'; text ++)
-            if (*text == '\n')
-        {
-            // Newline - nul terminate this fragment and get the width...
-            *ptr = '\0';
-
-            tempwidth += fl_width(fragment);
-
-            // Update the max width as needed...
-            if (tempwidth > width)
-                width = tempwidth;
-
-            // Point back to the start of the fragment...
-            ptr       = fragment;
-            tempwidth = 0;
-        }
-        else if (*text == '\t')
-        {
-            // Advance to the next column...
-            column ++;
-            tempwidth = column * fl_width("        ");
-
-            if (tempwidth > width)
-                width = tempwidth;
-
-            ptr = fragment;
-        }
-        else
-            *ptr++ = *text;
-
-        if (ptr > fragment)
-        {
-            // Nul terminate this fragment and get the width...
-            *ptr = '\0';
-
-            tempwidth += fl_width(fragment);
-
-            // Update the max width as needed...
-            if (tempwidth > width)
-                width = tempwidth;
-        }
-    }
-
-    // If we have enabled icons then add space for them...
-//    if (Fl_FileIcon::first() != NULL)
-//        width += iconsize_ + 8;
-
-    // Return the width, including space for the selection border:
-    return int(width+2.5);
-}
-
-
-//
-// 'Fl_FileBrowser::item_draw()' - Draw a list item.
-//
-
-void
-                                 // I - List item data
-Fl_FileBrowser::item_draw(void *p,
-int  x,                          // I - Upper-lefthand X coordinate
-int  y,                          // I - Upper-lefthand Y coordinate
-int  w,                          // I - Width of item
-int  h) const                    // I - Height of item
-{
-    Fl_Color  c;                 // Color of text
-    FL_BLINE  *line;             // Pointer to line
-
-    puts("Fl_FileBrowser::item_draw()");
-    // Draw the list item text...
-    line = (FL_BLINE *)p;
-
-    fl_font(text_font(), float(text_size()));
-    if (line->flags & SELECTED)
-        c = fl_contrast(text_color(), selection_color());
-    else
-        c = text_color();
-
-    if (active_r())
-        fl_color(c);
-    else
-        fl_color(fl_inactive(c));
-
-//    if (Fl_FileIcon::first() == NULL)
-//    {
-        // No icons, just draw the text...
-        fl_draw(line->txt, x + 1, y, w - 2, h, FL_ALIGN_LEFT);
-/*    }
-    else
-    {
-        // Icons; draw the text offset to the right...
-        fl_draw(line->txt, x + iconsize_ + 9, y, w - iconsize_ - 10, h,
-            FL_ALIGN_LEFT);
-
-        // And then draw the icon if it is set...
-        if (line->data)
-            ((Fl_FileIcon *)line->data)->draw(x, y, iconsize_, iconsize_,
-                (line->flags & SELECTED) ? FL_YELLOW :
-            FL_LIGHT2,
-            active_r());
-    }*/
-}
-
-
-//
-// 'Fl_FileBrowser::Fl_FileBrowser()' - Create a Fl_FileBrowser widget.
-//
-
-                                 // I - Upper-lefthand X coordinate
-Fl_FileBrowser::Fl_FileBrowser(int        x,
-int        y,                    // I - Upper-lefthand Y coordinate
-int        w,                    // I - Width in pixels
-int        h,                    // I - Height in pixels
-const char *l)                   // I - Label text
-: Fl_Browser(x, y, w, h, l)
-{
-    // Initialize the filter pattern, current directory, and icon size...
-    pattern_   = "*";
-    directory_ = "";
-    iconsize_  = 20;             // This looks best for the default icons, if loaded...
-}
-
-
-//
 // 'Fl_FileBrowser::load()' - Load a directory into the browser.
-//
+int											// O - Number of files loaded                                 
+Fl_File_Browser::load(const Fl_String &dir) // I - Directory to load
+{	
+	Fl_String old_dir(directory());
+	directory(dir);
 
-int                              // O - Number of files loaded
-                                 // I - Directory to load
-Fl_FileBrowser::load(const char *directory)
-{
-    int       i;                 // Looping var
-    int       num_files;         // Number of files in directory
-    char      filename[4096];    // Current file
-//    Fl_FileIcon   *icon;         // Icon to use
+	clear();
+	header()->clear();
+	m_up_item = 0;
 
-    clear();
-    directory_ = directory;
+    if(dir.empty()) {
+		header()->add_column("", 20);
 
-    if (directory_[0] == '\0')
-    {
-        //
-        // No directory specified; for UNIX list all mount points.  For DOS
-        // list all valid drive letters...
-        //
+        // No directory specified:
+		// for UNIX list all mount points.
+		// For Woe32 list all valid drive letters.
 
-        num_files = 0;
-        //        icon      = Fl_FileIcon::find("any", Fl_FileIcon::DEVICE);
+        //icon      = Fl_FileIcon::find("any", Fl_FileIcon::DEVICE);
+		//if (icon == (Fl_FileIcon *)0)
+        //	icon = Fl_FileIcon::find("any", Fl_FileIcon::DIR);
 
-//        if (icon == (Fl_FileIcon *)0)
-        //            icon = Fl_FileIcon::find("any", Fl_FileIcon::DIR);
+		begin();
+		char filename[FL_PATH_MAX];
+#ifdef _WIN32
+		header()->add_column(_("File"), 100);
+		header()->add_column(_("Type"), 100);
+		header()->add_column(_("Capacity"), 100);
+		header()->add_column(_("Free Space"), 100);
 
-#if defined(_WIN32)
-        DWORD   drives;          // Drive available bits
+		// Drive available bits
+        DWORD drives = GetLogicalDrives();
+        for(int i = 'A'; i <= 'Z'; i ++, drives >>= 1) {
+            if (drives & 1) {
+				Fl_ListView_Item *item = new Fl_ListView_Item();
+				item->image(&hd_pix);
+				snprintf(filename, sizeof(filename)-1, "%c:\\", i);
+                item->label(1, filename);
 
-        drives = GetLogicalDrives();
-        for (i = 'A'; i <= 'Z'; i ++, drives >>= 1)
-            if (drives & 1)
-            {
-                sprintf(filename, "%c:", i);
-                add(filename, 0);
+				Fl_File_Attr *attr = fl_file_attr(filename);
+				if(attr->flags & Fl_File_Attr::DEVICE)  
+				{
+			        uint type = GetDriveTypeA(filename);
+					char *typestr=_(types[0]);			        
 
-                num_files ++;
+					if(type==DRIVE_CDROM)			{ typestr=_(types[4]); item->image(&cd_pix); }
+					else if(type==DRIVE_REMOVABLE)	{ typestr=_(types[5]); item->image(&floppy_pix); }
+					else if(type==DRIVE_FIXED)		typestr=_(types[6]);
+					else if(type==DRIVE_REMOTE)		typestr=_(types[7]);
+					else if(type==DRIVE_RAMDISK)	typestr=_(types[8]);
+
+					item->label(2, typestr);
+
+			        uint s = 0;
+				    Fl_String suffix;
+					if((s = get_dev_size(attr->capacity, suffix))>0) {
+						item->label(3, Fl_String(s)+" "+suffix);
+					}
+					if((s = get_dev_size(attr->free, suffix))>0) {
+						item->label(4, Fl_String(s)+" "+suffix);
+					}
+
+					/*
+					//TOO SLOW!!!
+					char drivename[255];		
+					if(GetVolumeInformation(
+							filename, drivename, sizeof(drivename)-1,
+							NULL, NULL, NULL, NULL, 0))
+					{
+						if(drivename[0])
+							snprintf(fname, sizeof(fname)-1, "%s (%s)", filename, drivename);
+					} 	
+					*/
+				}
+
             }
-#elif defined(__EMX__)
-        ULONG   curdrive;        // Current drive
-        ULONG   drives;          // Drive available bits
-        int     start = 3;       // 'C' (MRS - dunno if this is correct!)
-
-        DosQueryCurrentDisk(&curdrive, &drives);
-        drives >>= start - 1;
-        for (i = 'A'; i <= 'Z'; i ++, drives >>= 1)
-            if (drives & 1)
-            {
-                sprintf(filename, "%c:", i);
-                add(filename, 0);
-
-                num_files ++;
-            }
+		}
 #else
-        FILE    *mtab;           // /etc/mtab or /etc/mnttab file
-        char    line[1024];      // Input line
+        header()->add_column(_("File"), 100);
+		header()->add_column(_("Device"), 100);
+		header()->add_column(_("Type"), 100);
+		
+		FILE    *mtab = 0;      // /etc/mtab or /etc/mnttab file
+        char    line[1024];     // Input line
+		char	dev[256];		// Device name
+		char	fstype[256];	// Filesystem type
 
-        //
         // Open the file that contains a list of mounted filesystems...
-        //
 #  if defined(__hpux) || defined(__sun)
         // Fairly standard
         mtab = fl_fopen("/etc/mnttab", "r");
 #  elif defined(__sgi) || defined(linux)
         // More standard
         mtab = fl_fopen("/etc/mtab", "r");
-#  else
-        // Otherwise fallback to full list
-        mtab = fl_fopen("/etc/fstab", "r");
-        if (mtab == NULL)
-            mtab = fl_fopen("/etc/vfstab", "r");
 #  endif
+        // Otherwise fallback to full list
+        if(mtab == NULL) mtab = fl_fopen("/etc/fstab", "r");
+        if(mtab == NULL) mtab = fl_fopen("/etc/vfstab", "r");
 
-        if (mtab != NULL)
-        {
+        if (mtab != NULL) 
+		{
             while (fgets(line, sizeof(line), mtab) != NULL)
             {
                 if (line[0] == '#' || line[0] == '\n')
                     continue;
-                if (sscanf(line, "%*s%4095s", filename) != 1)
+                if (sscanf(line, "%255s%4095s%255s", dev, filename, fstype) != 3)
                     continue;
-
-                add(filename, 0);
-                num_files ++;
+				if(!strcasecmp(dev, "none")) 
+					continue;
+				
+				Fl_ListView_Item *item = new Fl_ListView_Item();
+                item->label(1, filename);
+				item->label(2, dev);
+				item->label(3, fstype);
             }
-
             fclose(mtab);
         }
 #endif                   // _WIN32
-    }
-    else
-    {
-        dirent  **files;         // Files in in directory
+		end();
+		return children();
 
-        //
-        // Build the file list...
-        //
+	} else {
 
-#if defined(_WIN32) || defined(__EMX__)
-        strncpy(filename, directory_, sizeof(filename) - 1);
-        filename[sizeof(filename) - 1] = '\0';
+		fill(m_dir_ds);
+		if(children()==0) {
+			clear();
+			header()->clear();
 
-        i = strlen(filename) - 1;
+		    header()->add_column("", 20);
+		    header()->add_column(_("Name"), 100);
+			header()->add_column(_("Size"), 100);
+			header()->add_column(_("Type"), 100);
+			header()->add_column(_("Modified"), 100);
 
-        if (i == 2 && filename[1] == ':' &&
-            (filename[2] == '/' || filename[2] == '\\'))
-            filename[2] = '/';
-        else if (filename[i] != '/' && filename[i] != '\\')
-            strcat(filename, "/");
+			if(add_up_item()) {
+				m_up_item = new Fl_ListView_ItemExt(0, _("Up.."));
+				m_up_item->image(0, &up_pix);
+				insert(*m_up_item, 0);
+			}
 
-        num_files = fl_filename_list(filename, &files);
-#else
-        num_files = fl_filename_list(directory_, &files);
-#endif                   /* _WIN32 || __EMX__ */
+			return 0;
+		}		
 
-        if (num_files <= 0)
-            return (0);
+		if(add_up_item()) {
+			m_up_item = new Fl_ListView_ItemExt(0, _("Up.."));
+			m_up_item->image(0, &up_pix);
+			insert(*m_up_item, 0);
+		}
 
-        // Add directories first...
-        for (i = 0; i < num_files; i ++)
-            if (strcmp(files[i]->d_name, ".") != 0 &&
-                strcmp(files[i]->d_name, "..") != 0)
-            {
-                snprintf(filename, sizeof(filename), "%s/%s", directory_, files[i]->d_name);
+		//I18N !! UHH, Pretty lame way.. :)
+		if(header()->columns()>0) {
+			for(uint n=0; n<header()->columns(); n++) {
+				header()->column_label(n, _(header()->column_label(n)));
+			}
+		}
+	}	
 
-                if (fl_is_dir(filename))
-                    add(files[i]->d_name, 0);
-            }
-
-        for (i = 0; i < num_files; i ++)
-        {
-            if (strcmp(files[i]->d_name, ".") != 0 &&
-                strcmp(files[i]->d_name, "..") != 0)
-            {
-                snprintf(filename, sizeof(filename), "%s/%s", directory_, files[i]->d_name);
-
-                if (!fl_is_dir(filename) &&
-                    fl_file_match(files[i]->d_name, pattern_))
-                    add(files[i]->d_name, 0);
-            }
-
-            free(files[i]);
-        }
-
-        free(files);
-    }
-
-    return (num_files);
+    return children()-1;
 }
-
-
-//
-// 'Fl_FileBrowser::filter()' - Set the filename filter.
-//
-
-void
-                                 // I - Pattern string
-Fl_FileBrowser::filter(const char *pattern)
-{
-    // If pattern is NULL set the pattern to "*"...
-    if (pattern)
-        pattern_ = pattern;
-    else
-        pattern_ = "*";
-
-    // Reload the current directory...
-    load(directory_);
-}
-
 
 //
 // End of "$Id$".

@@ -62,13 +62,12 @@
 # define R_OK 04
 #endif
 
-bool Fl_FileAttr::parse(const char *filename)
+bool Fl_File_Attr::parse(const char *filename)
 {
 #ifdef _WIN32
 	capacity=0;
 	free=0;
-#ifdef _WIN32_WCE
-#else
+#ifndef _WIN32_WCE
 	if(strlen(filename) < 4 && filename[1]==':') {
         char nbuf[4];nbuf[0] = filename[0];nbuf[1]=':';nbuf[2]='\\';nbuf[3]='\0';
 
@@ -79,7 +78,7 @@ bool Fl_FileAttr::parse(const char *filename)
             uint64 ign;
             GetDiskFreeSpaceExA(nbuf, (PULARGE_INTEGER)&ign, (PULARGE_INTEGER)&capacity, (PULARGE_INTEGER)&free);
         }
-        flags |= FL_DEVICE;
+        flags |= DEVICE;
         return true;
     }
 
@@ -100,9 +99,9 @@ bool Fl_FileAttr::parse(const char *filename)
     if(lstat(file, &s) < 0)
         return false;
 
-    if(S_ISDIR(s.st_mode)) flags |= FL_DIR;
-    if(S_ISREG(s.st_mode)) flags |= FL_FILE;
-    if(S_ISLNK(s.st_mode)) flags |= FL_LINK;
+    if(S_ISDIR(s.st_mode)) flags |= DIR;
+    if(S_ISREG(s.st_mode)) flags |= FILE;
+    if(S_ISLNK(s.st_mode)) flags |= LINK;
 
     size = (ulong)s.st_size;
 	modified = (ulong)s.st_mtime;
@@ -114,9 +113,9 @@ bool Fl_FileAttr::parse(const char *filename)
     return true;
 }
 
-Fl_FileAttr *fl_file_attr(const char *name)
+Fl_File_Attr *fl_file_attr(const char *name)
 {
-    Fl_FileAttr *a = new Fl_FileAttr();
+    Fl_File_Attr *a = new Fl_File_Attr();
     a->parse(name);
     return a;
 }
@@ -295,22 +294,31 @@ char *fl_file_setext(char *buf, const char *ext)
     return(buf);
 }
 
-bool fl_is_dir(const char* name)
-{
-    const char *file = name;
-#if defined(_WIN32) || defined(__EMX__)
-    char tmp[FL_PATH_MAX];
-    if(name[strlen(name)-1] == '\\') {
-        // Windows thinks C:\test doesn't exists, but C:\test\ does?!!
-        strcpy(tmp, name); tmp[strlen(name)-1] = '\0';//\\';
-        file = tmp;
-    }
-#endif // WIN32 || __EMX__
+bool fl_is_dir(const char* name) {
+	if(!name || !*name) return false;
+
+#ifdef _WIN32
+	// Windows thinks that "C:" is not dir, but "C:\\" is.
+	// It also thinks that "C:\somedir\" is not dir, but "C:\somedir" is.. SIGH! 
+	char buffer[FL_PATH_MAX];
+
+	int len = strlen(name);
+	if(name[1]==':' && name[2] == '\0') {
+		buffer[0] = name[0];
+		buffer[1] = ':';
+		buffer[2] = '\\';
+		buffer[3] = '\0';
+		name = buffer;
+	}
+	else if(len>3 && (name[len-1] == '\\' || name[len-1] == '/') ) {
+		memcpy(buffer, name, len);
+		buffer[len-1] = '\0';
+		name = buffer;
+	}
+#endif
 
     struct stat s;
-    if(stat(file, &s) < 0) return false;
-    if(S_ISDIR(s.st_mode)) return true;
-    return false;
+    return (stat(name, &s)==0) && S_ISDIR(s.st_mode);
 }
 
 bool fl_file_exists(const char *name) {
@@ -403,7 +411,8 @@ Fl_String fl_file_expand(const Fl_String &from)
 			ret += value;
 			ret += slash;
 		} else {
-			ret.append(from.c_str()+n, e);			
+			ret.append(from.c_str()+n, e-n+1);
+			//ret += from.sub_str(n, e-n+1);
 		}
 		n = e;
 	}

@@ -1,5 +1,4 @@
 //
-//
 // Demo program from the fltk documentation.
 //
 // Copyright 1998-1999 by Bill Spitzak and others.
@@ -40,7 +39,9 @@ static void cb_test(Fl_Widget*, void*) {
    else  input->value("Canceled");
 }
 
-int main(int argc, char **argv) {
+#include <efltk/fl_utf8.h>
+int main(int argc, char **argv)
+{
     Fl_Window *window = new Fl_Window(300,180);
 
     Fl_Calendar *c = new Fl_Calendar(10,20,150,150,"date:");

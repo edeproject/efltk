@@ -1661,7 +1661,7 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
                 charWidth = string_width( &expandedChar[ i ], l, charStyle );
             } else {
                 charWidth = stdCharWidth;
-                X += charWidth;
+                //X += charWidth;
             }
             outPtr++;
             X += charWidth;
@@ -1973,7 +1973,6 @@ int Fl_Text_Display::string_width( const char *string, int length, int style )
 
     fl_font( font, size );
 
-    //if(length==1) return (int)fl_width(uchar( string[0]) );
     return (int)fl_width( string, length );
 }
 

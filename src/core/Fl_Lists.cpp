@@ -186,12 +186,14 @@ void Fl_String_List::sort() {
 void Fl_String_List::append(const char *item) {
     Fl_Ptr_List::append((void *)new Fl_String(item));
 }
-
-void Fl_String_List::append(Fl_String item) {
+void Fl_String_List::append(const Fl_String &item) {
     Fl_Ptr_List::append((void *)new Fl_String(item));
 }
 
-void Fl_String_List::prepend(Fl_String item) {
+void Fl_String_List::prepend(const Fl_String &item) {
+    Fl_Ptr_List::prepend((void *)new Fl_String(item));
+}
+void Fl_String_List::prepend(const char *item) {
     Fl_Ptr_List::prepend((void *)new Fl_String(item));
 }
 
@@ -217,20 +219,18 @@ int Fl_String_List::remove(Fl_String i) {
 }
 
 //Return first index of found string. -1 if none
-int Fl_String_List::index_of(const Fl_String str) {
+int Fl_String_List::index_of(const Fl_String &str) const {
+    for(uint n=0; n<size(); n++)
+        if(*item(n)==str) return n;
+    return -1;
+}
+int Fl_String_List::index_of(const char *str) const {
     for(uint n=0; n<size(); n++)
         if(*item(n)==str) return n;
     return -1;
 }
 
-int Fl_String_List::contains(const Fl_String str) {
-    int ret=0;
-    for(uint n=0; n<size(); n++)
-        if(*item(n)==str) ret++;
-    return ret;
-}
-
-char *Fl_String_List::to_cstring(const char *separator)
+char *Fl_String_List::to_cstring(const char *separator) const
 {
     char *ret=0;
     if(!size()) return ret;
@@ -247,15 +247,15 @@ char *Fl_String_List::to_cstring(const char *separator)
 		ret_len += len;
         ret = (char*)realloc(ret, sizeof(char)*ret_len);
 		
-		strncpy(ret+(ret_len-len), item(n)->c_str(), str_len);
+		memcpy(ret+(ret_len-len), item(n)->c_str(), str_len);
 		if(n<size()-1)
-			strncpy(ret+(ret_len-sep_len), separator, sep_len);		
+			memcpy(ret+(ret_len-sep_len), separator, sep_len);		
     }
     ret[ret_len]='\0';
     return ret;
 }
 
-Fl_String Fl_String_List::to_string(const char *separator)
+Fl_String Fl_String_List::to_string(const char *separator) const
 {
     Fl_String ret;
     if(!size()) return ret;
@@ -268,18 +268,29 @@ Fl_String Fl_String_List::to_string(const char *separator)
     return ret;
 }
 
-void Fl_String_List::from_string(const char *s, const char *separator)
+void Fl_String_List::from_string(const char *str, const char *separator)
 {
-    if(!s) return;
+    if(!str) return;
 
     clear();
-    char *buf = strdup(s);
-    char *p = strtok(buf, separator);
-    while (p) {
-        append(p);
-        p = strtok(NULL, separator);
+
+    const char *s = strstr(str, separator);
+    if(s) {
+        unsigned separator_len = strlen(separator);
+        do {
+            unsigned len = s - str;
+			Fl_String string(str, len);
+			append(string);
+            
+			str = s + separator_len;
+            s = strstr(str, separator);
+        }
+        while(s);
+
+		if(*str) {
+			append(str);
+		}
     }
-    free(buf);
 }
 
 void Fl_String_List::free_item(Fl_Ptr_List_Item item)

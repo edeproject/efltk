@@ -37,6 +37,9 @@ public:
     virtual const Fl_Variant& operator [] (const char *field_name) const = 0;
     virtual Fl_Variant&       operator [] (const char *field_name) = 0;
 
+	// how many rows do we have ds?
+	virtual unsigned          record_count() const = 0;
+
     // how many fields do we have in the current record?
     virtual unsigned          field_count() const = 0;
     virtual int               field_index(const char *) const { return -1; }
@@ -52,14 +55,14 @@ public:
     virtual bool              write_field(const char *fname,const Fl_Variant& fvalue) = 0;
 
     // dataset navigation
-    virtual bool              open()  { return true; }
-    virtual bool              close() { return true; }
-    virtual bool              first() { return true; }
-    virtual bool              next()  { return true; }
-    virtual bool              prior() { return true; }
-    virtual bool              last()  { return true; }
-    virtual bool              find(Fl_Variant position) { return true; }
-    virtual bool              eof() const  { return true; }
+    virtual bool              open()  { return false; }
+    virtual bool              close() { return false; }
+    virtual bool              first() { return false; }
+    virtual bool              next()  { return false; }
+    virtual bool              prior() { return false; }
+    virtual bool              last()  { return false; }
+    virtual bool              find(Fl_Variant position) { return false; }
+    virtual bool              eof() const  { return false; }
 
     // load data into widgets
     bool load();

@@ -74,8 +74,8 @@ public:
     virtual void draw_cell(int col, int width, bool selected);
     virtual void layout();
 
-    const char *label();
-    const char *label(int col);
+    const Fl_String &label();
+    const Fl_String &label(int col);
     void label(int col, const char *text);
     void label(int col, const Fl_String &text);
     void copy_label(int col, const char *txt) { label(col, txt); }

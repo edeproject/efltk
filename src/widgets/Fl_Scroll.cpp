@@ -148,14 +148,13 @@ void calc_outside_label(Fl_Widget& widget, int &x, int &y, int &w, int &h)
         w+=TW;
     }
 }
-
+#include <stdio.h>
 void Fl_Scroll::layout()
 {
     int X,Y,W,H;
     // move all the children and accumulate their bounding boxes:
     int dx = layoutdx;
     int dy = layoutdy;
-    layoutdx = layoutdy = 0;
     scrolldx += dx;
     scrolldy += dy;
     int l = w();
@@ -188,9 +187,8 @@ void Fl_Scroll::layout()
 
     const int sw = scrollbar_width();
 
-    bool need_pos=false;
-    int total_w = xposition_+r;
-    int total_h = yposition_+b;
+	int total_w = r-l;
+	int total_h = b-t;
     int xp = xposition_, yp=yposition_;
 
     // See if children would fit if we had no scrollbars...
@@ -199,7 +197,7 @@ void Fl_Scroll::layout()
     bool hneeded = false;
 
     if (type() & VERTICAL) {
-        if ((type() & ALWAYS_ON) || total_h > H || yposition_) {
+        if ((type() & ALWAYS_ON) || total_h > H || yposition_>0) {
             vneeded = true;
             W -= sw;
             if (scrollbar_align() & FL_ALIGN_LEFT) X += sw;
@@ -207,7 +205,7 @@ void Fl_Scroll::layout()
     }
 
     if (type() & HORIZONTAL) {
-        if ((type() & ALWAYS_ON) || total_w > W || xposition_) {
+        if ((type() & ALWAYS_ON) || total_w > W || xposition_>0) {
             hneeded = true;
             H -= sw;
             if (scrollbar_align() & FL_ALIGN_TOP) Y += sw;
@@ -245,24 +243,33 @@ void Fl_Scroll::layout()
         }
     }
 
+    bool need_pos=false;
+
     //Adjust Y pos
     yposition_ = (Y-t);
-    if(total_h < H) { yp = 0; need_pos = true; }
-    else if(H>b && total_h>H) { yp = total_h-H; need_pos=true; yposition_ = (Y-t);}
+	if(layoutdy==0) {
+		if(total_h < H && yp>0) { yp = 0; need_pos = true; } 
+		else if(H > b && total_h>H) { yp = total_h-H; need_pos=true; }
+	}
 
     // Adjust X pos
     xposition_ = (X-l);
-    if(total_w < W) { xp = 0; need_pos = true; }
-    else if(W>r && total_w>W) { xp = total_w-W; need_pos=true; xposition_ = (X-l); }
+	if(layoutdx==0) {
+		if(total_w < W && xp>0) { xp = 0; need_pos = true; } 
+		else if(W>r && total_w>W) { xp = total_w-W; need_pos=true; }
+	}
 
     scrollbar.resize(scrollbar_align()&FL_ALIGN_LEFT ? X-sw : X+W, Y, sw, H);
     scrollbar.value(yposition_, H, 0, total_h);
     hscrollbar.resize(X, scrollbar_align()&FL_ALIGN_TOP ? Y-sw : Y+H, W, sw);
     hscrollbar.value(xposition_, W, 0, total_w);
 
-    Fl_Widget::layout();
+    Fl_Widget::layout();		
 
-    if(need_pos) position(xp, yp);
+    layoutdx = layoutdy = 0;
+    if(need_pos) {
+		position(xp, yp);
+	}
     redraw(FL_DAMAGE_SCROLL);
 }
 

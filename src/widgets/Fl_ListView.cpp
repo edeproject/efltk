@@ -1069,7 +1069,8 @@ void Fl_ListView::find_default_sizes()
     find_def = false;
 }
 
-void Fl_ListView::fill(Fl_Data_Source &ds) {
+void Fl_ListView::fill(Fl_Data_Source &ds) 
+{
    if (!ds.open()) return;
 
    // First version is very primitive.
@@ -1084,25 +1085,29 @@ void Fl_ListView::fill(Fl_Data_Source &ds) {
    for (unsigned col = 0; col < columnCount; col++) {
       Fl_Data_Field& df = ds.field(col);
       int width = 100;
-      if (df.width >= 0)
+      if (df.width >= 0) {
          width = df.width * text_size() * 2 / 3;
+	  }
       add_column(df.name(),width);
-      column_flags(col,df.align);
+      column_flags(col,df.flags);
    }
 
    begin();
 
    while (!ds.eof()) {
-      Fl_ListView_ItemExt *item = new Fl_ListView_ItemExt("*");
+      Fl_ListView_ItemExt *item = new Fl_ListView_ItemExt();
       item->columns(columnCount);
       for (int col = 0; col < (int)columnCount; col++) {
          Fl_Data_Field& df = ds.field(col);
-         if (df.type() == VAR_IMAGEPTR)
-               item->image(col, *(Fl_Image *)df.as_image());
-         else  item->label(col, ds.field(col).as_string());
+		 item->flags(col, df.flags);
+         
+		 if(df.type() == VAR_IMAGEPTR) item->image(col, (Fl_Image *)df.as_image());
+         else item->label(col, ds.field(col).as_string());
       }
       ds.next();
    }
    ds.close();
    end();
+
+   find_def = false;
 }

@@ -63,18 +63,14 @@ void Fl_ListView_Item::add_attr(int col)
 
 int Fl_ListView_Item::compare(Fl_ListView_Item *other, int column, int sort_type)
 {
-    const char *txt = label(column);
-    const char *other_txt = other->label(column);
-    if(!txt) txt="";
-    if(!other_txt) other_txt="";
+    const Fl_String &txt = label(column);
+    const Fl_String &other_txt = other->label(column);
 
     switch(sort_type) {
     case Fl_ListView::SORT_ASC:
-        return strcmp(txt, other_txt);
-        break;
+		return strcmp(txt.c_str(), other_txt.c_str());
     case Fl_ListView::SORT_DESC:
-        return strcmp(other_txt, txt);
-        break;
+        return strcmp(other_txt.c_str(), txt.c_str());
     default:
         break;
     }
@@ -186,16 +182,16 @@ int Fl_ListView_Item::column_width(int col)
     return a->col_width;
 }
 
-const char *Fl_ListView_Item::label()
+const Fl_String &Fl_ListView_Item::label()
 {
-    if(attr_list.size()==0) return 0;
+    if(attr_list.size()==0) return Fl_String::null_object;
     Fl_ListItem_Attr *a = (Fl_ListItem_Attr*)attr_list[0];
     return a->col_label;
 }
 
-const char *Fl_ListView_Item::label(int col)
+const Fl_String &Fl_ListView_Item::label(int col)
 {
-    if((uint)col>=attr_list.size()) return 0;
+    if((uint)col>=attr_list.size()) return Fl_String::null_object;
     Fl_ListItem_Attr *a = (Fl_ListItem_Attr*)attr_list[col];
     return a->col_label;
 }
@@ -226,7 +222,10 @@ Fl_ListView_ItemExt::Fl_ListView_ItemExt(const char *label1,
                                          const char *label5)
 : Fl_ListView_Item(0,0,0,0,0)
 {
-	leading_ = parent()->leading();
+	if(parent())
+		leading_ = parent()->leading();
+	else
+		leading_ = 1;
 
     int cols = 0;
     if(label5) cols=5;
@@ -254,11 +253,11 @@ Fl_ListItem_Attr *Fl_ListView_ItemExt::create_attr(int col)
     a->col_label = 0;
     a->col_width = 0;
     a->col_image = 0;
-    a->col_flags = parent()->column_flags(col);
-    a->col_font = parent()->text_font();
-    a->col_font_size = parent()->text_size();
-    a->col_color = parent()->text_color();
-    a->col_label_type = parent()->label_type();
+    a->col_flags		= parent() ? parent()->column_flags(col)	: FL_ALIGN_LEFT;
+    a->col_font			= parent() ? parent()->text_font()			: Fl_Widget::default_style->text_font;
+    a->col_font_size	= parent() ? parent()->text_size()			: Fl_Widget::default_style->text_size;
+    a->col_color		= parent() ? parent()->text_color()			: Fl_Widget::default_style->text_color;
+    a->col_label_type	= parent() ? parent()->label_type()			: Fl_Widget::default_style->label_type;
 	return a;
 }
 
@@ -400,7 +399,7 @@ void Fl_ListView_ItemExt::draw_cell(int col, int w, bool sel)
             iw = im->width()+2;
         }
 
-        fl_font(a->col_font, a->col_font_size);
+        //fl_font(a->col_font, a->col_font_size);
         //HMM... cutting should be optional
         //if(strchr(txt, '\n')) txt = fl_cut_multiline(txt, w-iw-6);
         //else txt = fl_cut_line(txt, w-iw-6);

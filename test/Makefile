@@ -23,6 +23,19 @@
 # Please report all bugs and problems to "fltk-bugs@easysw.com".
 #
 
+EFLTK_TOPDIR=../
+OS_NAME := $(shell uname -s | sed "s/\//-/" | sed "s/_/-/" | sed "s/-.*//g")
+ifeq ($(OS_NAME), MINGW32)
+  OS_NAME = WIN32
+endif
+ifneq ($(MAKEINCLUDE_INCLUDED), 1)
+ ifeq ($(OS_NAME), WIN32)
+  include $(EFLTK_TOPDIR)/MinGW/makeinclude
+ else
+  include $(EFLTK_TOPDIR)/makeinclude
+ endif
+endif
+
 CPPFILES = demo.cpp sizes.cpp hello.cpp resizable.cpp scroll.cpp image.cpp file_chooser.cpp menubar.cpp \
 	browser.cpp threads.cpp progress.cpp editor.cpp inactive.cpp checkers.cpp \
 	valuators.cpp glpuzzle.cpp boxtype.cpp multi_image.cpp help.cpp mdi_test.cpp \
@@ -56,8 +69,6 @@ shared:
 demos: $(ALL)
 
 programs: demos
-
-include ../makeinclude
 
 # $(ALL): $(FLLIB) # only true for static library
 

@@ -53,7 +53,8 @@ Fl_Group::Fl_Group(int X,int Y,int W,int H,const char *l)
 : Fl_Widget(X,Y,W,H,l),
     m_layout_spacing(1),
     m_focus(-1),
-    m_resizable(0)
+    m_resizable(0),
+	m_data_source(0)
 {
     widget_type(GROUP_TYPE);
     style(::group_style);
@@ -454,24 +455,29 @@ void Fl_Group::layout()
             break;
 
             case FL_ALIGN_LEFT:
+				if(!o->visible()) break;
                 o->resize(xx,yy,o->w(),hh);
                 xx += o->w()+offset*2;
                 ww -= o->w()+offset*2;
                 break;
             case FL_ALIGN_RIGHT:
+				if(!o->visible()) break;
                 o->resize(xx+ww-o->w(),yy,o->w(),hh);
                 ww -= o->w()+offset*2;
                 break;
             case FL_ALIGN_TOP:
+				if(!o->visible()) break;
                 o->resize(xx,yy,ww,o->h());
                 yy += o->h()+offset*2;
                 hh -= o->h()+offset*2;
                 break;
             case FL_ALIGN_BOTTOM:
+				if(!o->visible()) break;
                 o->resize(xx,yy+hh-o->h(),ww,o->h());
                 hh -= o->h()+offset*2;
                 break;
             case FL_ALIGN_CLIENT:
+				if(!o->visible()) break;
                 client = o;
                 break;
             }

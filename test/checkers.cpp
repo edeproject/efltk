@@ -1268,7 +1268,8 @@ void intel_cb(Fl_Widget*, void*) {
   if (!intel_window) {
     intel_window = new Fl_Window(200,25,"Checkers Intelligence");
     Fl_Slider* s = new Fl_Slider(60,0,140,25);
-    s->minimum(1); s->maximum(500); s->value(50);
+    s->type(Fl_Slider::HORIZONTAL);
+    s->range(1, 500); s->value(50);
     s->callback(intel_slider_cb);
     intel_output = new Fl_Value_Output(0,0,60,25);
     intel_output->value(maxevaluate);

@@ -22,188 +22,152 @@
 #ifndef _FL_FILEDIALOG_H_
 #define _FL_FILEDIALOG_H_
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "Enumerations.h"
-#include "Fl_Util.h"
-#include "Fl_ListView.h"
-#include "Fl_ListView_Item.h"
-#include "Fl_Image.h"
 #include "Fl_Image_Cache.h"
 #include "Fl_Input_Browser.h"
-#include "Fl.h"
+#include "Fl_Item.h"
 #include "Fl_Box.h"
-#include "Fl_Window.h"
-#include "Fl_Double_Window.h"
 #include "Fl_Group.h"
-#include "Fl_Button.h"
 #include "Fl_Check_Button.h"
-#include "Fl_Return_Button.h"
-#include "Fl_Input.h"
-#include "Fl_FileInput.h"
 #include "Fl_Highlight_Button.h"
-#include "filename.h"
-
-typedef struct {	
-    const char *type_str; // e.g. "All Files"
-    const char *pattern;  // e.g. "*.{cpp|cxx}"
-} Filter;
-
-class Fl_FileItem : public Fl_ListView_Item
-{
-public:
-    Fl_FileItem(const char *filename, Fl_FileAttr *attr);
-    ~Fl_FileItem();
-
-    enum {
-        FILE = 0,
-        DIR,
-        DEVICE,
-        NETWORK
-    };
-
-    int compare(Fl_ListView_Item *other, int column, int sort_type);
-
-    uchar type() const { return type_; }
-    void  type(uchar t) { type_ = t; }
-    uchar type_;
-
-    Fl_FileAttr *attr;
-    char fname[FL_PATH_MAX];
-    char size[32];
-#ifdef _WIN32
-    char free[32]; //used in device type
-#endif
-};
-
-#define CLOSE_OK     false
-#define CLOSE_CANCEL true
-
-//typedef Fl_Double_Window FileDialogType;
-typedef Fl_Window FileDialogType;
+#include "Fl_FileBrowser.h"
 
 class PreviewBox;
 
-class Fl_File_Dialog : public FileDialogType
+class Fl_File_Chooser : public Fl_Group
 {
 public:
+	// Modes:
     enum {
         _DEFAULT = 0,
         _SAVE,
         _DIRECTORY
     };
 
-    static int initial_w, initial_h;
-    static bool initial_preview;
+	// ctor / dtor
+    Fl_File_Chooser(int x, int y, int w, int h, const char *label=0, int mode=0);
+    ~Fl_File_Chooser();
 
-    Fl_File_Dialog(int x, int y, int w, int h, const char *label=0, int mode=0);
-    Fl_File_Dialog(int w, int h, const char *label=0, int mode=0);
-    ~Fl_File_Dialog();
+	// Popup dialog for this file chooser.
+	// Returns true, if OK pressed
+	bool show_dialog(const char *caption);
 
-    void close(bool cancel);
+	// When Opening directory, it tries to find 'default filename' and mark item as selected.
+	void default_filename(const Fl_String &f) { m_default_filename = f; }
+	void default_filename(const char *f) { m_default_filename = f; }
 
-	// read_dir tries to find this filename ("filename.ext") and select that file by default
-	// this is set to 0, always after read_dir()
-	void default_filename(const char *f) { default_filename_ = f; }
+	// Change directory to 'path'
+    void directory(const Fl_String &path);
+    void directory(const char *path) { Fl_String tmp(path); directory(tmp); }
+	// Get current path
+    const Fl_String &directory() const { return m_filebrowser->directory(); }
 
-    void fullpath(const char *p) { char *tmp=0; if(p)tmp=strdup(p); if(fullpath_)delete []fullpath_; fullpath_ = tmp; }
-    const char *fullpath() { return fullpath_; }
+    const char *file_input() const { return m_file_input->value(); }
+	void file_input(const char *v) { m_file_input->value(v); }
 
-    const char *location() { return location_->value(); }
-	void location(const char *v) { location_->value(v); }
+	// Get current pattern, e.g. "*.xpm"
+	const char *pattern() const { return m_filter_input->item() ? (const char *)m_filter_input->item()->user_data() : ""; }
+	// Get current filter name, e.g. "Xpm Files"
+	const char *filter_name() const { return m_filter_input->value(); }
 
-    int mode() { return mode_; }
+	// Returns mode of file chooser
+    int mode() const { return m_mode; }
 
 	// Returns NULL terminated list of selected files.
     char **get_selected();
+	// Store selected files to 'list'
+	void get_selected(Fl_String_List &list);
 
-    Fl_ListView *listview() { return listview_; }
-	void multi_selection(bool v) { if(v) listview_->type(listview_->type()|Fl_ListView::MULTI_SELECTION); else listview_->type(listview_->type()&~Fl_ListView::MULTI_SELECTION); }
-	bool multi_selection() { return listview_->multi(); }    
+	// Set / Get multi selection
+	void multi_selection(bool v) { if(v) m_filebrowser->type(m_filebrowser->type()|Fl_ListView::MULTI_SELECTION); else m_filebrowser->type(m_filebrowser->type()&~Fl_ListView::MULTI_SELECTION); }
+	bool multi_selection() { return m_filebrowser->multi(); }    
 
-    void read_dir(const char *_path);
-    bool new_dir();
-
-    void set_filter(Filter *f) { _cur_filter = f; }
-    void filters(Filter **filters);    
-
-    // Builds filter array, takes format e.g. "All Files, *, C++ Files, *.{cpp|cxx}"
-    static Filter **build_filters(char *ptr);
-
-    bool preview() { return preview_on; }
+    bool preview() const { return m_preview->value(); }
     void preview(bool show);
-    void update_preview(const char *filename);
 
-    // Returns full path to file including filename, path could be e.g. 'filename.ext' or c:\filename.ext
-    char *get_filename(const char *path, char *buf);
-    // Returns full path to directory w/o filename, path could be e.g. 'c:\dir\somef' is returned c:\dir
-    char *get_filepath(const char *path, char *buf);
+	// Updates preview box
+    void update_preview(const Fl_String filename);
+    
+    // Stores full path to file 'buf'. Includes filename, path could be e.g. 'filename.ext' or 'c:\filename.ext'.
+	// Prepends directory(), if needed.
+    void get_filename(Fl_String path, Fl_String &buf);
+    
+	// Stores full path to directory w/o filename to 'buf'. Path could be e.g. 'c:\dir\somef' then 'c:\dir\' is returned
+    void get_filepath(Fl_String path, Fl_String &buf);
 
-    virtual int handle(int e);
+	// Get file listview object
+    Fl_File_Browser *filebrowser() { return m_filebrowser; }
 
-#ifdef _WIN32
+	// Set / Get ok button.
+	// File chooser activates/deactivates it, depending on state
+    Fl_Button *ok_button() const { return m_ok_button; }
+    void ok_button(Fl_Button *b) { m_ok_button = b; }
+
+	// Go one dir up
+	void up();
+	// Refresh contents
+	void refresh() { directory(directory()); }
+	// Create new dir. Popup dialog, for asking dirname.
+	// Returns fullpath to created dir or empty string in error
+	Fl_String new_dir();
+
+	// Set new filters.
+	// Format e.g. "All Files, *, Cpp Files, *.{cpp|cxx|C}";
+	void filters(const char *filters);
+
+	// Backward compatibility:
+    void read_dir(const char *path) { directory(path); }
+
+	virtual int handle(int e);
+	virtual void layout();
+
+/* BROKEN, for now..
+#ifdef _WIN32 	
     // MS Windows network stuff:
     bool enum_netresources(Fl_Callback *cb, LPNETRESOURCE lpnr, DWORD scope);
     void read_network(LPNETRESOURCE net=0);
     void add_netitem(LPNETRESOURCE net);
     DWORD scope;
 #endif
+*/
+
+protected:
+	// Creates group
+    void make_group();
+	//Parses 'fp' to 'm_path_input'
+	void parse_dirs(const Fl_String &fp);
+
+    Fl_Highlight_Button *m_up;
+    Fl_Highlight_Button *m_home;
+    Fl_Highlight_Button *m_refresh;
+    Fl_Highlight_Button *m_new_folder;
+
+    Fl_Input_Browser	*m_path_input;
+    Fl_Input_Browser	*m_filter_input;
+    Fl_Input_Browser	*m_file_input;
+    Fl_Check_Button		*m_preview;
+
+    Fl_File_Browser		*m_filebrowser;
 
 private:
-    Fl_ListView *listview_;
+	PreviewBox *m_preview_box;
+    Fl_Button *m_ok_button;
+	Fl_String m_default_filename; 
+    int m_mode;
 
-    Fl_Image_Cache image_cache;
-    PreviewBox *preview_;
-    Fl_Box *preview_info_;
-    Fl_Check_Button *preview_but_;
-    bool preview_on;
-
-    Fl_Highlight_Button *up_;
-    Fl_Highlight_Button *home_;
-    Fl_Highlight_Button *refresh_;
-    Fl_Highlight_Button *new_folder_;
-
-    Fl_Input_Browser *path_;
-    Fl_Input_Browser *filter_;
-    Fl_Input_Browser *location_;
-
-    Fl_Return_Button *ok_;
-    Fl_Button *cancel_;
-
-    char files[4096]; //Files buffer for location (multisel)
-    char *fullpath_;
-
-	// read_dir tries to find this filename ("filename.ext") and select that file by default
-	// this is set to 0, always after read_dir()
-	const char *default_filename_; 
-
-    Filter **_filters;
-    Filter *_cur_filter;
-
-    int mode_;
-
-    void init();
-    void make_group(int w, int h);
-
-	void parse_dirs(const char *fp);
-
-    void file_clicked(Fl_FileItem *i);
-    void folder_clicked(Fl_FileItem *i);
+    void file_clicked(Fl_ListView_Item *i);
+    void folder_clicked(Fl_ListView_Item *i);
 
     static void cb_list(Fl_Widget *, void *);
-    static void cb_preview(Fl_Widget *, void *);
+    static inline void cb_preview(Fl_Widget *w, void *d) { ((Fl_File_Chooser*)d)->preview(bool(w->value()==1)); }
 
-    static void cb_ok(Fl_Widget *, void *);
-    static void cb_cancel(Fl_Widget *, void *);
-    static void cb_new(Fl_Widget *, void *);
-    static void cb_home(Fl_Widget *, void *);
-    static void cb_refresh(Fl_Widget *, void *);
-    static void cb_up(Fl_Widget *, void *);
-
-    static void cb_dirc(Fl_Widget *, void *);
-    static void cb_filter(Fl_Widget *, void *);
+    static inline void cb_new	(Fl_Widget *, void *d) { ((Fl_File_Chooser*)d)->new_dir(); }
+    static inline void cb_home	(Fl_Widget *, void *d) { ((Fl_File_Chooser*)d)->directory(fl_homedir()); }
+    static inline void cb_refresh(Fl_Widget*, void *d) { ((Fl_File_Chooser*)d)->refresh(); }
+    static inline void cb_up	(Fl_Widget *, void *d) { ((Fl_File_Chooser*)d)->up(); }
+    
+	static inline void cb_dirc	(Fl_Widget *w, void *d) { ((Fl_File_Chooser*)d)->directory(((Fl_Input_Browser *)w)->value()); }
+    static inline void cb_filter(Fl_Widget *w, void *d) { ((Fl_File_Chooser*)d)->filebrowser()->pattern((const char *)((Fl_Input_Browser *)w)->item()->user_data()); ((Fl_File_Chooser*)d)->refresh(); }
     static void cb_location(Fl_Widget *, void *);
 };
 
@@ -212,13 +176,17 @@ private:
 // There MUST be always 'Typename' and 'Pattern'!
 
 // File select dialogs
-extern char *fl_select_file(const char *path=0, char *filters=0, const char *cap=0);
-extern char **fl_select_files(const char *path=0, char *filters=0, const char *cap=0);
+extern FL_API char *fl_select_file(const char *path=0, char *filters=0, const char *caption=0);
+extern FL_API char **fl_select_files(const char *path=0, char *filters=0, const char *caption=0);
 
 // Save file dialog
-extern char *fl_save_file(const char *path=0, char *filters=0, const char *cap=0);
+extern FL_API char *fl_save_file(const char *path=0, char *filters=0, const char *caption=0);
 
 // Directory select dialog
-extern char *fl_select_dir(const char *path=0, const char *cap=0);
+extern FL_API char *fl_select_dir(const char *path=0, const char *cap=0);
+
+extern FL_API int fc_initial_w;
+extern FL_API int fc_initial_h;
+extern FL_API bool fc_initial_preview;
 
 #endif

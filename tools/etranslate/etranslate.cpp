@@ -232,7 +232,7 @@ static int sortf(const void *w1, const void *w2) {
     TranslateItem *i2 = *(TranslateItem **)w2;
     if(i1->finished()!=i2->finished())
         return i1->finished()-i2->finished();
-    return strcasecmp(i1->orig().c_str(), i2->orig().c_str());
+	return i1->orig().casecmp(i2->orig());
 }
 
 void ETranslate::sort_strings()

@@ -48,7 +48,8 @@
  *
  */
 
-#include <efltk/Fl_String.h>
+#include "Fl_String.h"
+#include "Fl_Export.h"
 
 class Fl_Exception {
 public:
@@ -93,10 +94,10 @@ public:
 	jmp_buf *pop();
 };
 
-extern void (*fl_exception_handler)(Fl_Exception &e);
-extern Fl_Exception fl_last_throwed_exception;
-extern bool fl_exception_was_throwed;
-extern Fl_JmpBuf_Stack fl_jmpbuf_stack;
+extern FL_API void (*fl_exception_handler)(Fl_Exception &e);
+extern FL_API Fl_Exception fl_last_throwed_exception;
+extern FL_API bool fl_exception_was_throwed;
+extern FL_API Fl_JmpBuf_Stack fl_jmpbuf_stack;
 
 // END OF EFLTK EXCEPTIONS PRIVATE STUFF
 //////////////////////////////////////////

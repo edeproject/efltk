@@ -490,11 +490,20 @@ void Fl_String::set_length(int new_len)
 
 //------------------------------------------------------------------------------
 
-Fl_String Fl_String::IntToString(int val)
+int Fl_String::to_latin1(char *&str)
 {
-    Fl_String s("", 33);
-    snprintf((char*)s.c_str(), 32, "%i", val);
-    return s;
+	str = (char*)malloc(sizeof(char) * length());
+	int len = fl_utf2latin1((const uchar*)c_str(), length(), str);
+	str[len] = '\0';
+	return len;
+}
+
+int Fl_String::to_unicode(unsigned short *&str)
+{
+	str = (unsigned short *)malloc(sizeof(unsigned short) * (length()+10));
+	int len = fl_utf2unicode((const uchar*)c_str(), length(), str);
+	str[len] = 0;
+	return len;
 }
 
 //------------------------------------------------------------------------------
@@ -520,3 +529,22 @@ Fl_String Fl_String::from_codeset(int conv_index, const char *str, int str_len)
 Fl_String Fl_String::from_codeset(Fl_String codeset, const char *str, int str_len) {
     return Fl_String::from_codeset(fl_find_converter(codeset.c_str()), str, str_len);
 }
+
+Fl_String Fl_String::from_latin1(const char *str, int str_len)
+{
+	char *buf = (char*)malloc(sizeof(char) * (str_len*3));
+	int len = fl_latin12utf((const uchar*)str, str_len, buf);	
+	Fl_String ret(buf, len);
+	free((char*)buf);
+	return ret;	
+}
+
+Fl_String Fl_String::from_unicode(const unsigned short *str, int str_len)
+{
+	char *buf = (char*)malloc(sizeof(char) * (str_len*5));
+	int len = fl_unicode2utf((unsigned short *)str, str_len, buf);
+	Fl_String ret(buf, len);
+	free((char*)buf);
+	return ret;	
+}
+

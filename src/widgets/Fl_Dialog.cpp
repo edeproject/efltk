@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "../core/fl_internal.h"
+
 #include <efltk/Fl.h>
 #include <efltk/Fl_Button.h>
 #include <efltk/Fl_Input.h>
@@ -24,7 +26,6 @@
 #include <efltk/fl_draw.h>
 
 #include <efltk/Fl_Dialog.h>
-#include <efltk/Fl_Dialog_Data_Source.h>
 
 /* XPM */
 static const char * cancel_xpm[] = {
@@ -284,16 +285,45 @@ Fl_Pixmap   pixmap_ok(ok_xpm),
 
 // THESE ARE REPLACED BY Fl_Stock_Button?
 static const Fl_Dialog_Button_Template buttonTemplates[] = {
-   { FL_DLG_OK,     "Ok",     &pixmap_ok },
-   { FL_DLG_CANCEL, "Cancel", &pixmap_cancel },
-   { FL_DLG_YES,    "Yes",    &pixmap_ok },
-   { FL_DLG_NO,     "No",     &pixmap_no },
-   { FL_DLG_RETRY,  "Retry",  &pixmap_retry },
-   { FL_DLG_CONFIRM,"Confirm",&pixmap_ok },
-   { FL_DLG_IGNORE, "Ignore", &pixmap_no },
-   { FL_DLG_HELP,   "Help",   &pixmap_help },
+   { FL_DLG_OK,     N_("Ok"),     &pixmap_ok },
+   { FL_DLG_CANCEL, N_("Cancel"), &pixmap_cancel },
+   { FL_DLG_YES,    N_("Yes"),    &pixmap_ok },
+   { FL_DLG_NO,     N_("No"),     &pixmap_no },
+   { FL_DLG_RETRY,  N_("Retry"),  &pixmap_retry },
+   { FL_DLG_CONFIRM,N_("Confirm"),&pixmap_ok },
+   { FL_DLG_IGNORE, N_("Ignore"), &pixmap_no },
+   { FL_DLG_HELP,   N_("Help"),   &pixmap_help },
    { 0,             "",       &pixmap_help }
 };
+
+// Internal DS for Fl_Dialog
+class Fl_Dialog_Data_Source : public Fl_Data_Source  {
+public:
+    Fl_Dialog_Data_Source(Fl_Group *tabs) : Fl_Data_Source(tabs) {}
+
+    // access to the field value by name
+    virtual const Fl_Variant& operator [] (const char *field_name) const   { return m_fields[field_name]; }
+    virtual Fl_Variant&       operator [] (const char *field_name)         { return m_fields[field_name]; }
+    // access to the field by index
+    virtual const Fl_Data_Field& field (int field_index) const             { return m_fields.field(field_index); }
+    virtual Fl_Data_Field&       field (int field_index)                   { return m_fields.field(field_index); }
+	// how many rows do we have ds?
+	virtual unsigned          record_count() const { return 1; }
+    // how many fields do we have in the current record?
+    virtual unsigned          field_count() const                          { return m_fields.count(); }
+    virtual int               field_index(const char *field_name) const    { return m_fields.field_index(field_name); }
+    // access to the field by number, 0..field_count()-1
+    virtual const Fl_Variant& operator [] (int index) const                { return m_fields[index]; }
+    virtual Fl_Variant&       operator [] (int index)                      { return m_fields[index]; }
+    virtual bool              read_field(const char *fname,Fl_Variant& fvalue) { fvalue = (*this)[fname]; return true; }
+    virtual bool              write_field(const char *fname,const Fl_Variant& fvalue) { (*this)[fname] = fvalue; return true; }
+protected:
+    virtual bool              load_data() { return true; }
+    virtual bool              save_data() { return true; }
+private:
+    Fl_Data_Fields            m_fields;
+};
+
 
 void Fl_Dialog::escape_callback(Fl_Widget *window,void *) {
    Fl_Dialog *dialog = (Fl_Dialog *)window;
@@ -322,17 +352,25 @@ void Fl_Dialog::help_callback(Fl_Widget *btn,void *id) {
    fl_alert("Here we should show some help");
 }
 
-Fl_Dialog::Fl_Dialog(int ww,int hh,Fl_Data_Source *ds) : Fl_Window(ww,hh) {
-   m_defaultButton = NULL;
-   m_buttonPanel = new Fl_Group(0,0,10,10);
-   m_buttonPanel->end();
-   m_tabs = new Fl_Multi_Tabs(0,0,10,10);
-   m_modalResult = 0;
-   m_externalDataSource = (ds != NULL);
-   if (ds)
-         m_dataSource = ds;
-   else  m_dataSource = new Fl_Dialog_Data_Source(m_tabs);
-   callback(escape_callback);
+Fl_Dialog::Fl_Dialog(int ww, int hh, const char *label, Fl_Data_Source *ds) 
+: Fl_Window(ww,hh,label) 
+{
+	m_defaultButton = 0;
+	m_buttonPanel = new Fl_Group(0,0,10,10);
+	m_buttonPanel->layout_align(FL_ALIGN_BOTTOM);
+	m_buttonPanel->layout_spacing(3);
+	m_buttonPanel->end();
+
+	m_tabs = new Fl_Multi_Tabs(0,0,10,10);
+	m_tabs->show_tabs(false);
+	m_tabs->layout_align(FL_ALIGN_CLIENT);
+	m_modalResult = 0;
+	m_externalDataSource = (ds != NULL);
+	
+	if (ds)	m_dataSource = ds;
+	else	m_dataSource = new Fl_Dialog_Data_Source(m_tabs);
+	
+	callback(escape_callback);
 }
 
 Fl_Dialog::~Fl_Dialog() {
@@ -340,18 +378,35 @@ Fl_Dialog::~Fl_Dialog() {
       delete m_dataSource;
 }
 
-Fl_Widget *Fl_Dialog::find_widget(const char *field_name) const {
-   unsigned n_pages = m_tabs->children();
-   for (unsigned i = 0; i < n_pages; i++) {
-      Fl_Group *page = (Fl_Group *)m_tabs->child(i);
-      unsigned  n_widgets = page->children();
-      for (unsigned j = 0; j < n_widgets; j++) {
-         Fl_Widget *widget = page->child(j);
-         if(widget->field_name()==field_name)
-            return widget;
-      }
-   }
-   return 0L;
+Fl_Button *Fl_Dialog::button(int button_mask) const
+{
+	for(unsigned i = 0; i < m_buttonList.size(); i++) {
+		Fl_Widget *btn = m_buttonList[i];
+		if(button_mask & btn->argument())
+			return (Fl_Button*)btn;
+	}
+	return (Fl_Button*)0;
+}
+
+Fl_Widget *Fl_Dialog::find_widget(const char *field_name) const 
+{
+	unsigned n_pages = m_tabs->children();
+	for (unsigned i = 0; i < n_pages; i++) {
+		Fl_Widget *widget = m_tabs->child(i);
+		if(widget->is_group()) {
+			Fl_Group *page = (Fl_Group *)widget;
+			unsigned  n_widgets = page->children();
+			for (unsigned j = 0; j < n_widgets; j++) {
+				widget = page->child(j);
+				if(widget->field_name()==field_name)
+					return widget;
+			}
+		} else {
+			if(widget->field_name()==field_name)
+				return widget;
+		}
+	}
+	return (Fl_Widget*)0;
 }
 
 const Fl_Variant& Fl_Dialog::operator [] (const char *field_name) const {
@@ -366,7 +421,8 @@ bool Fl_Dialog::valid() {
    return true;
 }
 
-void Fl_Dialog::clear_buttons() {
+void Fl_Dialog::clear_buttons() 
+{
    unsigned cnt = m_buttonList.count();
    for (unsigned i = 0; i < cnt; i++) {
       Fl_Widget *btn = m_buttonList[i];
@@ -375,93 +431,85 @@ void Fl_Dialog::clear_buttons() {
    }
 }
 
-void Fl_Dialog::buttons(int buttons_mask,int default_button) {
-   Fl_Button *btn;
-   m_defaultButton = 0L;
-   m_buttons = buttons_mask;
-   clear_buttons();
-   m_buttonPanel->begin();
-   for (unsigned i = 0; buttonTemplates[i].id; i++) {
-      const Fl_Dialog_Button_Template& buttonTemplate = buttonTemplates[i];
-      int id = buttonTemplate.id;
-      if (buttons_mask & id) {
-         if (id == default_button) {
-            Fl_Group *default_box = new Fl_Group(0,0,10,10);
-            default_box->color(FL_BLACK);
-            default_box->box(FL_THIN_DOWN_BOX);
-            btn = new Fl_Button(0,0,10,10,buttonTemplate.label);
-            default_box->end();
-            default_box->user_data((void *)id);
-            m_defaultButton = btn;
-         } else
-            btn = new Fl_Button(0,0,10,10,buttonTemplate.label);
-         if (id == FL_DLG_HELP)
-               btn->callback(Fl_Dialog::help_callback);
-         else  btn->callback(Fl_Dialog::buttons_callback);
-         btn->user_data((void *)id);
-         btn->image(buttonTemplate.pixmap);
-         m_buttonList.append(btn);
-      }
-   }
-   m_buttonPanel->end();
-   relayout();
+void Fl_Dialog::buttons(int buttons_mask,int default_button) 
+{
+	Fl_Group *saved = Fl_Group::current();
+
+	Fl_Button *btn;
+	unsigned i;
+	m_defaultButton = 0L;
+	m_buttons = buttons_mask;
+	clear_buttons();
+
+	m_buttonPanel->begin();
+	for(i = 0; buttonTemplates[i].id; i++) 
+	{
+		const Fl_Dialog_Button_Template& buttonTemplate = buttonTemplates[i];
+		int id = buttonTemplate.id;
+		if (buttons_mask & id) 
+		{
+			if (id == default_button) {
+				Fl_Group *default_box = new Fl_Group(0,0,10,10);
+				default_box->layout_align(FL_ALIGN_RIGHT);
+				default_box->color(FL_BLACK);
+				default_box->box(FL_THIN_DOWN_BOX);
+				
+				btn = new Fl_Button(0,0,10,10, _(buttonTemplate.label));
+				btn->layout_align(FL_ALIGN_CLIENT);
+				default_box->end();
+				default_box->user_data((void *)id);
+				m_defaultButton = btn;
+			} else {
+				btn = new Fl_Button(0,0,10,10, _(buttonTemplate.label));
+				btn->layout_align(FL_ALIGN_RIGHT);
+			}
+			
+			if (id == FL_DLG_HELP)
+				btn->callback(Fl_Dialog::help_callback);
+			else  
+				btn->callback(Fl_Dialog::buttons_callback);
+						
+			btn->argument(id);
+			btn->image(buttonTemplate.pixmap);
+			m_buttonList.append(btn);
+		}
+	}
+	m_buttonPanel->end();
+
+	int maxh = 25;
+	for (i = 0; i < m_buttonList.size(); i++) {
+		Fl_Widget *btn = m_buttonList[i];
+		fl_font(btn->label_font(), btn->label_size());
+		
+		int hh = int(fl_height());		
+		int ww = int(fl_width(btn->label()));
+
+		if (btn->image()) ww += btn->image()->width() + 3;
+		ww += btn->box()->dw() * 2 + 4;
+		
+		if (btn == m_defaultButton) {
+			Fl_Widget *default_box = btn->parent();
+			default_box->w(ww+4);
+		}
+		btn->w(ww);
+
+		if (btn->image()) {
+			int ih = btn->image()->height();
+			if (ih > hh) hh = ih;
+		}
+		hh += btn->box()->dh();
+		if (hh > maxh) maxh = hh;
+	}
+
+	// resize button panel
+	m_buttonPanel->h(maxh + 8);
+
+	relayout();
+	Fl_Group::current(saved);
 }
 
-void Fl_Dialog::layout() {
-   unsigned cnt = m_buttonList.count();
-   unsigned i;
-   int maxh = 15;
-   if (cnt) {
-      Fl_Widget *btn = m_buttonList[0];
-      fl_font(btn->text_font(), btn->text_size());
-   }
-
-   for (i = 0; i < cnt; i++) {
-       Fl_Widget *btn = m_buttonList[i];
-
-       fl_font(btn->label_font(), btn->label_size());
-       int hh = int(fl_height());
-
-       if (btn->image()) {
-           int ih = btn->image()->height();
-           if (ih > hh) hh = ih;
-       }
-       hh += btn->box()->dh() * 2;
-       if (hh > maxh) maxh = hh;
-   }
-
-   // resize button panel
-   int bpanelh = maxh + 8;
-   m_buttonPanel->resize(4,h() - (bpanelh + 2),w()-8,bpanelh);
-
-   // resize widget area
-   m_tabs->resize(4,4,w()-8,m_buttonPanel->y()-4);
-   m_tabs->layout();
-
-   // resize buttons
-   int bx = m_buttonPanel->w() + 3;
-
-   for (i = 0; i < cnt; i++) {
-      Fl_Widget *btn = m_buttonList[i];
-
-      fl_font(btn->label_font(), btn->label_size());
-      int ww = int(fl_width(btn->label()));
-
-      if (btn->image())
-         ww += btn->image()->width() + 3;
-      ww += btn->box()->dw() * 2 + 4;
-      bx -= ww + 6;
-      if (btn == m_defaultButton) {
-         Fl_Widget *default_box = btn->parent();
-         default_box->resize(bx-2,3,ww+4,maxh+4);
-         btn->resize(2,2,ww,maxh);
-      } else {
-         btn->resize(bx,5,ww,maxh);
-      }
-   }
-}
-
-int Fl_Dialog::handle(int event) {
+int Fl_Dialog::handle(int event) 
+{
    int rc = inherited::handle(event);
    if (rc)
       return rc;
@@ -490,25 +538,35 @@ int Fl_Dialog::show_modal() {
    return m_modalResult;
 }
 
-Fl_Group *Fl_Dialog::new_page(const char *lbl,bool autoColor) {
-   if (!m_tabs->children()) {
-      m_tabs->box(FL_THIN_DOWN_BOX);
-      m_tabs->show_tabs(false);
-   } else {
-      m_tabs->box(FL_THIN_UP_BOX);
-      m_tabs->show_tabs(true);
-   }
-   return m_tabs->new_page(lbl,autoColor);
+Fl_Scroll *Fl_Dialog::new_scroll(const char *lbl,bool autoColor) 
+{
+	if(!m_tabs) return 0;
+	if (!m_tabs->children()) {
+		m_tabs->show_tabs(false);
+	} else {
+		m_tabs->show_tabs(true);
+	}
+	return m_tabs->new_scroll(lbl, autoColor);
 }
 
-bool Fl_Dialog::load_data(Fl_Data_Source *ds) {
-   if (ds)
-         return m_tabs->load_data(ds);
-   else  return m_tabs->load_data(m_dataSource);
+Fl_Group *Fl_Dialog::new_group(const char *lbl,bool autoColor) 
+{
+	if(!m_tabs) return 0;
+	if (!m_tabs->children()) {
+		m_tabs->show_tabs(false);
+	} else {
+		m_tabs->show_tabs(true);
+	}
+	return m_tabs->new_group(lbl, autoColor);
+}
+
+bool Fl_Dialog::load_data(Fl_Data_Source *ds) 
+{
+	if (ds)	return m_tabs->load_data(ds);
+	else	return m_tabs->load_data(m_dataSource);
 }
 
 bool Fl_Dialog::save_data(Fl_Data_Source *ds) const {
-   if (ds)
-         return m_tabs->save_data(ds);
-   else  return m_tabs->save_data(m_dataSource);
+	if (ds)	return m_tabs->save_data(ds);
+	else	return m_tabs->save_data(m_dataSource);
 }

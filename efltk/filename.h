@@ -29,7 +29,9 @@
 
 #if defined(_WIN32) && !defined(__CYGWIN__)
 
- struct dirent { char d_name[1]; };
+# define DT_REG 0 //Regular
+# define DT_DIR 1 //Directory
+ struct dirent { uchar d_type; char d_name[1]; };
 
 #elif defined(__linux__)
 // Newest Linux libc is broken when it emulates the 32-bit dirent, it
@@ -111,10 +113,10 @@ extern FL_API bool fl_file_exists(const char *name);
 // Check if given name is dir
 extern FL_API bool fl_is_dir(const char *path);
 
-class FL_API Fl_FileAttr
+class FL_API Fl_File_Attr
 {
 public:
-	Fl_FileAttr() { size=0; flags=0; }
+	Fl_File_Attr() { size=0; flags=0; }
 
 	enum {
 		DIR       = 1, //Directory
@@ -135,14 +137,17 @@ public:
 #endif
 };
 
-extern FL_API Fl_FileAttr *fl_file_attr(const char *name);
+// Backward compatibility
+typedef Fl_File_Attr Fl_FileAttr;
+
+extern FL_API Fl_File_Attr *fl_file_attr(const char *name);
 
 // Backward compatibility..
 inline bool fl_file_absolute(char *buf, const char *from) { return fl_file_absolute(buf, FL_PATH_MAX, from); }
 
-#define FL_DIR	  Fl_FileAttr::DIR
-#define FL_FILE   Fl_FileAttr::FILE
-#define FL_LINK   Fl_FileAttr::LINK
-#define FL_DEVICE Fl_FileAttr::DEVICE
+#define FL_DIR	  Fl_File_Attr::DIR
+#define FL_FILE   Fl_File_Attr::FILE
+#define FL_LINK   Fl_File_Attr::LINK
+#define FL_DEVICE Fl_File_Attr::DEVICE
 
 #endif

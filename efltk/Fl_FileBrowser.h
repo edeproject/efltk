@@ -22,33 +22,58 @@
 #ifndef _FL_FILEBROWSER_H_
 #define _FL_FILEBROWSER_H_
 
-#include "Fl_Browser.h"
+#include "Fl_Util.h"
+#include "Fl_ListView.h"
+#include "Fl_ListView_Item.h"
+#include "Fl_Directory_DS.h"
 
-class FL_API Fl_FileBrowser : public Fl_Browser
+class FL_API Fl_File_Browser : public Fl_ListView
 {
-    const char	*directory_;
-    uchar	iconsize_;
-    const char	*pattern_;
-
-    int		item_height(void *) const;
-    int		item_width(void *) const;
-    void       	item_draw(void *, int, int, int, int) const;
-    int		incr_height() const { return (item_height(0)); }
-
 public:
-    Fl_FileBrowser(int, int, int, int, const char * = 0);
+    Fl_File_Browser(int x, int y, int w, int h, const char *label = 0);
 
-    uchar		iconsize() const { return (iconsize_); };
-    void		iconsize(uchar s) { iconsize_ = s; redraw(); };
+	// Set match pattern files
+	void pattern(const char *pattern) { m_dir_ds.pattern(pattern); load(directory()); }
+	void pattern(const Fl_String &pattern) { m_dir_ds.pattern(pattern); load(directory()); }
+	const Fl_String &pattern() const { return m_dir_ds.pattern(); }
 
-    void		directory(const char *directory) { load(directory); }
-    const char	*directory(void) const { return (directory_); }
+	// Set files show policy, according to Fl_Directory_DS
+	char showpolicy() const { return m_dir_ds.showpolicy(); }
+	void showpolicy(char type) { m_dir_ds.showpolicy(type); }
 
-    void		filter(const char *pattern);
-    const char	*filter() const { return (pattern_); };
+	// Load and set directory
+    int	load(const Fl_String &directory);
+    int	load(const char *directory) { Fl_String dir(directory); return load(dir); }
+	
+	// Set new directory, dont load
+    void directory(const char *directory) { m_dir_ds.directory(directory); }
+    void directory(const Fl_String &directory) { m_dir_ds.directory(directory); }
+    const Fl_String &directory() const { return m_dir_ds.directory(); }
 
-    int		load(const char *directory);
+	// Go one dir up, and reload
+	void up();
+	
+	// Returns pointer to item called "UP.." 
+	Fl_ListView_ItemExt *up_item() const { return m_up_item; }
+
+	bool add_up_item() const { return m_add_up_item; }
+	void add_up_item(bool val) { m_add_up_item = val; }
+
+	// Backward compatibility:
+	void filter(const char *pattern) { m_dir_ds.pattern(pattern); load(directory()); }
+    const char *filter() const { return m_dir_ds.pattern(); };
+
+protected:
+	static void default_callback(Fl_Widget *, void *);
+
+private:
+	bool m_add_up_item;
+	Fl_ListView_ItemExt *m_up_item;
+	Fl_Directory_DS m_dir_ds;
 };
+
+// Backward compatibility
+typedef Fl_File_Browser Fl_FileBrowser;
 
 #endif // !_FL_FILEBROWSER_H_
 

@@ -4,6 +4,9 @@ void ETranslate::load_pot(FILE *fp)
 {
     browser->begin();
 
+	Fl_String encoding("iso8859-1");
+	bool encoding_found = false;
+
     Fl_String token, msgid, msgstr, comment;
     bool msgid_found = false, msgstr_found = false;
     int c=0;
@@ -68,21 +71,32 @@ void ETranslate::load_pot(FILE *fp)
             }
             token.clear();
             if(msgid_found)
-                msgstr_found = true;
+				msgstr_found = true;
+
+			if(!encoding_found) {
+				int pos = msgstr.pos("charset");
+				if(pos>0) {
+					pos += 8;
+					int pos2 = msgstr.pos("\\n", pos);
+					encoding = msgstr.sub_str(pos, pos2-pos);
+					encoding_found = true;
+				}
+			}
+
             continue;
         }
 
         if(msgid_found && msgstr_found) {
             TranslateItem *i = new TranslateItem();
             i->orig(msgid);
-            i->tr(msgstr);
+            i->tr(Fl_String::from_codeset(encoding, msgstr.c_str(), msgstr.length()));
             i->comment(comment);
             i->finished(msgstr.length()>0);
             msgid_found = false;
             msgstr_found = false;
             comment.clear();
         }
-
+		
         c=0;
     }
 

@@ -1275,7 +1275,7 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
                 if (Fl::handle(FL_KEYUP, window)) return 0;
                 break;
             }
-            // if same as last key, increment repeat count:
+            // if same as last key, increment repeat count:			
             if (lParam & (1<<30)) {
                 Fl::e_clicks++;
                 Fl::e_is_click = 0;
@@ -1745,9 +1745,8 @@ HINSTANCE fl_display = GetModuleHandle(NULL);
 
 void Fl_Window::size_range_()
 {
-    m_size_range = 1;
+    m_size_range = true;
 }
-
 
 void Fl_X::set_minmax(LPMINMAXINFO minmax)
 {
