@@ -35,6 +35,16 @@ Fl_XmlNode::~Fl_XmlNode()
     clear();
 }
 
+Fl_String Fl_XmlNode::text()
+{
+    Fl_String ret = cdata();
+    for(uint n=0; n<nodelist_.size(); n++) {
+        Fl_XmlNode *np = nodelist_.item(n);
+        ret += np->text();
+    }
+    return ret;
+}
+
 bool Fl_XmlNode::has_attribute(Fl_String attr)
 {
     Fl_String *ret = attributes_.get_value(attr);

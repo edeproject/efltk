@@ -83,6 +83,9 @@ public:
     Fl_String &cdata() { return chardata_; }
     // Sets char data
     void cdata(Fl_String cdata) { chardata_ = cdata; }
+    // Returns cdatas combined from children.
+    // e.g. "Some <tag>text</tag> here" becomes: "Some text here"
+    Fl_String text();
 
     // Removes node 'ptr'
     void remove_node(Fl_XmlNode *ptr);
