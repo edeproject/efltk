@@ -566,18 +566,15 @@ void Fl_Config::remove_sec(const char *section)
 }
 
 #include "fl_internal.h"
-static lconv *locale_conv = 0;
-static char decimal = '.';
 
 // Converts locale decimal to '.' e.g. "1,5" to "1.5"
 char *double_to_str(double v)
 {
     static char ret[128];
     snprintf(ret, sizeof(ret)-1, "%g", v);
-    if(!locale_conv) {
-        locale_conv = localeconv();
-        decimal = locale_conv->decimal_point[0];
-    }
+
+    lconv *locale_conv = localeconv();
+    char decimal = locale_conv->decimal_point[0];
     if(decimal=='.') return ret;
 
     char *ptr = ret;
@@ -588,10 +585,8 @@ char *double_to_str(double v)
 // Reads double with '.' as decimal pointer
 double str_to_double(const char *v)
 {
-    if(!locale_conv) {
-        locale_conv = localeconv();
-        decimal = locale_conv->decimal_point[0];
-    }
+    lconv *locale_conv = localeconv();
+    char decimal = locale_conv->decimal_point[0];
     if(decimal=='.') return atof(v);
 
     static char ret[128];
