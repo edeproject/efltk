@@ -36,18 +36,6 @@
 #include <config.h>
 #include <stdio.h>
 
-#ifdef _WIN32
-# include <winsock.h>
-#else
-# include <unistd.h>
-# include <sys/time.h>
-# define Sleep(x) {\
-        timeval t; \
-        t.tv_sec = 0; \
-        t.tv_usec = 1000*(x); \
-        ::select(1,0,0,0,&t); }
-#endif
-
 Fl_Menu_Window::Fl_Menu_Window(int W, int H, const char *l)
     : Fl_Single_Window(W,H,l)
 {
@@ -243,7 +231,7 @@ void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
         } else
             error=true;
 
-        Sleep(15);
+        Fl::sleep_ms(15);
     }
 
     delete []screen_data;
@@ -324,7 +312,7 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
             // Make drop down slower at begining
             if((slow_down_to_h<0 || H<slow_down_to_h) ||
                (slow_down_to_w<0 || W<slow_down_to_w))
-                Sleep(1);
+                Fl::sleep_ms(1);
             // Make sure we copy to this window!
             make_current();
 #ifdef _WIN32

@@ -45,6 +45,12 @@ public:
     void realloc(int cols);
     void copy(Fl_Colormap *map);
 
+    // Calculate an 8-bit (3 red, 3 green, 2 blue) dithered palette of colors
+    void dither_colors(int bitspp);
+
+    // Match an RGB value to a particular palette index
+    uint8 find_color(uint8 R, uint8 G, uint8 B);
+
     Fl_Colormap_Color *colors;
     int ncolors;
 };
@@ -58,6 +64,12 @@ public:
     void init(int bits_pp, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask);
     void realloc(int bits_pp, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask);
     void copy(Fl_PixelFormat *fmt);
+
+    uint32 map_rgb(uint8 r, uint8 g, uint8 b);
+    uint32 map_rgba(uint8 r, uint8 g, uint8 b, uint8 a);
+
+    void get_rgb(uint32 pixel, uint8 &r, uint8 &g, uint8 &b);
+    void get_rgba(uint32 pixel, uint8 &r, uint8 &g, uint8 &b, uint8 &a);
 
     Fl_Colormap *palette;
     uint8  bitspp;
@@ -75,7 +87,7 @@ public:
     uint32 colorkey;
     /* Alpha value information (per-surface alpha) */
     uint8  alpha;
-	/* Mask type */
+    /* Mask type */
     int masktype;
 
     // Mapping

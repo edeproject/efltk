@@ -36,10 +36,10 @@ void fl_register_imageio(Fl_Image_IO *io) {
 }
 
 Fl_Image_IO *fl_find_imageio(const char *name, const char *extension) {
-	for(Fl_Image_IO *item=imageio_list.first(); item!=0; item=imageio_list.next()) {
-		if(name) if(!strcmp(item->name, name)) return item;		
-		if(extension) if(strstr(item->extensions, extension)) return item;		
-	}
+    for(Fl_Image_IO *item=imageio_list.first(); item!=0; item=imageio_list.next()) {
+        if(name) if(!strcasecmp(item->name, name)) return item;
+        if(extension) if(strstr(item->extensions, extension)) return item;
+    }
     return 0;
 }
 
@@ -310,8 +310,6 @@ Fl_Image *Fl_Image::scale(int W, int H)
     return ret;
 }
 
-extern uint8 FindColor(Fl_Colormap *pal, uint8 R, uint8 G, uint8 B);
-
 uint8 *render_box(int w, int h, int bitspp, uint color, Fl_Colormap *pal, uint8 *buffer=0)
 {
     int bpp = (bitspp+7)/8;
@@ -326,7 +324,7 @@ uint8 *render_box(int w, int h, int bitspp, uint color, Fl_Colormap *pal, uint8 
     case 32: fl_rgb888_from_rgb(fill_color ,r,g,b); break;
     case 16: fl_rgb565_from_rgb((uint16&)fill_color ,r,g,b); break;
     case 15: fl_rgb555_from_rgb((uint16&)fill_color ,r,g,b); break;
-    case 8:  fill_color = FindColor(pal, r,g,b); break;
+    case 8:  fill_color = pal->find_color(r,g,b); break;
     default: break;
     }
 
@@ -467,21 +465,13 @@ Fl_Image *Fl_Image::blend(Fl_Image *back, Fl_Rect *back_rect, Fl_PixelFormat *ne
     if(back_rect->w() < 1 || back_rect->h() < 1)
         return 0;
 
-    Fl_Image *ret = new Fl_Image(W, H, new_format->bitspp);
-    ret->fmt.realloc(new_format->bitspp,
-                     new_format->Rmask,
-                     new_format->Gmask,
-                     new_format->Bmask,
-                     new_format->Amask);
-    if(new_format->palette) {
-        if(!ret->fmt.palette) ret->fmt.palette = new Fl_Colormap();
-        ret->fmt.palette->copy(new_format->palette);
-    }
+    Fl_Image *ret = new Fl_Image(W, H, new_format);
+    ret->fmt.copy(new_format);
 
     Fl_Rect tmp_r(0, 0, W, H);
     back->fmt.map_this(new_format);
     Fl_Renderer::blit(back->data(), back_rect, back->format(), back->pitch(),
-                       ret->data(), &tmp_r, new_format, ret->pitch(), 0);
+                      ret->data(), &tmp_r, new_format, ret->pitch(), 0);
 
     // Be sure that blit map is valid for 'ret' image
     check_map(new_format);
@@ -983,44 +973,40 @@ bool Fl_Image::read_image(const char *filename, const uint8 *data, uint32 data_s
 
 bool Fl_Image::write_image(const char *filename, const char *io_name)
 {
-	return write_image(filename, fl_find_imageio(io_name, 0));
+    return write_image(filename, fl_find_imageio(io_name, 0));
 }
 
 bool Fl_Image::write_image(const char *filename, Fl_Image_IO *io)
 {
-	if(!io || !filename) return false;
+    if(!filename || !io || !io->write_file) return false;
 
-	bool ret = false;
+    fl_register_imageio(&xpm_reader);
+    fl_register_imageio(&bmp_reader);
+    fl_register_imageio(&gif_reader);
 
-    FILE *fp = fopen(filename, "rb");
-    if(!fp) return ret;
-    
-	for(Fl_Image_IO *r=imageio_list.first(); r!=0; r=imageio_list.next()) {
-		if(r->write_file)
-			ret = r->write_file(fp, quality_, _data, fmt, w, h);
-	}
+    FILE *fp = fopen(filename, "wb");
+    if(!fp) return false;
 
-	if(fp) fclose(fp);
-	return ret;
+    bool ret = io->write_file(fp, quality_, _data, fmt, w, h);
+
+    if(fp) fclose(fp);
+    return ret;
 }
 
 bool Fl_Image::write_image(uint8 *&data, int &data_size, const char *io_name) 
 {
-	return write_image(data, data_size, fl_find_imageio(io_name, 0));
+    return write_image(data, data_size, fl_find_imageio(io_name, 0));
 }
 
 bool Fl_Image::write_image(uint8 *&data, int &data_size, Fl_Image_IO *io)
 {
-	if(!io) return false;
+    if(!io || !io->write_mem) return false;
 
-	bool ret = false;
+    fl_register_imageio(&xpm_reader);
+    fl_register_imageio(&bmp_reader);
+    fl_register_imageio(&gif_reader);
 
-	for(Fl_Image_IO *r=imageio_list.first(); r!=0; r=imageio_list.next()) {
-		if(r->write_mem)
-			ret = r->write_mem(data, data_size, quality_, _data, fmt, w, h);
-	}
-
-	return ret;
+    return io->write_mem(data, data_size, quality_, _data, fmt, w, h);
 }
 
 

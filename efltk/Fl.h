@@ -83,6 +83,9 @@ public:
   // Initializes library, i.e. locale and widget defaults.
   static void init();
 
+  // Sleep milliseconds.
+  static void sleep_ms(int ms);
+
   // argument parsers:
   static int arg(int, char**, int&);
   static int args(int, char**, int&, int (*)(int,char**,int&) = 0);

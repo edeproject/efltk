@@ -43,6 +43,12 @@
 #include "fl_utf8_x.h"
 #endif
 
+void Fl::sleep_ms(int ms) {
+    timeval t;
+    t.tv_sec = int(ms/1000);
+    t.tv_usec = 1000*ms;
+    ::select(1,0,0,0,&t);
+}
 
 ////////////////////////////////////////////////////////////////
 // interface to poll/select call:

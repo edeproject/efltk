@@ -486,7 +486,7 @@ static void BlitARGBto565PixelAlpha(BlitInfo *info)
                 s = ((s & 0xfc00) << 11) + (s >> 8 & 0xf800)
                     + (s >> 3 & 0x1f);
                 d = (d | (d << 16)) & 0x07e0f81f;
-				d += (((s - d) * alpha) >> 5) & 0x07e0f81f;
+                d += (((s - d) * alpha) >> 5) & 0x07e0f81f;
                 //d += (s - d) * alpha >> 5;
                 //d &= 0x07e0f81f;
                 *dstp = d | d >> 16;
@@ -663,8 +663,13 @@ static void BlitNtoNPixelAlpha(BlitInfo *info)
     }
 }
 
+#ifdef _DEBUG
 #include <stdio.h>
 #define once(t) { static bool once=true; if(once) { printf("Using '%s' alpha blitter\n", t); once=false; } }
+#else
+#define once(t) (t)
+#endif
+
 Blit_Function get_blit_a(Fl_PixelFormat *src_fmt, Fl_PixelFormat *dst_fmt, int flags)
 {
     Fl_PixelFormat *sf = src_fmt;

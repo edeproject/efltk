@@ -4,18 +4,16 @@
 #include <stdio.h>
 
 // Calculate an 8-bit (3 red, 3 green, 2 blue) dithered palette of colors
-void DitherColors(Fl_Colormap_Color *colors, int bitspp)
-{    
+void Fl_Colormap::dither_colors(int bitspp)
+{
     if(bitspp != 8)
         return;		/* only 8bpp supported right now */
 
-    uint i;
-
-    for(i = 0; i < 256; i++) {
+    for(uint i = 0; i < 256; i++) {
         int r, g, b;
         // map each bit field to the full [0, 255] interval,
         // so 0 is mapped to (0, 0, 0) and 255 to (255, 255, 255)
-        
+
         r = i & 0xe0;
         r |= r >> 3 | r >> 6;
         colors[i].r = r;
@@ -30,9 +28,9 @@ void DitherColors(Fl_Colormap_Color *colors, int bitspp)
 }
 
 // Match an RGB value to a particular palette index
-uint8 FindColor(Fl_Colormap *pal, uint8 R, uint8 G, uint8 B)
+uint8 Fl_Colormap::find_color(uint8 R, uint8 G, uint8 B)
 {
-    /* Do colorspace distance matching */
+    // Do colorspace distance matching
     unsigned int smallest;
     unsigned int distance;
     int rd, gd, bd;
@@ -40,10 +38,10 @@ uint8 FindColor(Fl_Colormap *pal, uint8 R, uint8 G, uint8 B)
     uint8 pixel=0;
 
     smallest = ~0;
-    for ( i=0; i<pal->ncolors; ++i ) {
-        rd = pal->colors[i].r - R;
-        gd = pal->colors[i].g - G;
-        bd = pal->colors[i].b - B;
+    for ( i=0; i<ncolors; ++i ) {
+        rd = colors[i].r - R;
+        gd = colors[i].g - G;
+        bd = colors[i].b - B;
         distance = (rd*rd)+(gd*gd)+(bd*bd);
         if ( distance < smallest ) {
             pixel = i;
@@ -76,7 +74,7 @@ static uint8 *Map1to1(Fl_Colormap *src, Fl_Colormap *dst, bool &identical)
 
     map = new uint8[src->ncolors];
     for ( i=0; i<src->ncolors; i++ ) {
-        map[i] = FindColor(dst, src->colors[i].r, src->colors[i].g, src->colors[i].b);
+        map[i] = dst->find_color(src->colors[i].r, src->colors[i].g, src->colors[i].b);
     }
     return map;
 }
@@ -107,7 +105,7 @@ static uint8 *MapNto1(Fl_PixelFormat *src, Fl_Colormap *dst, bool &identical)
 {
     /* Generate a 256 color dither palette */
     Fl_Colormap dithered(256);
-    DitherColors(dithered.colors, 8);
+    dithered.dither_colors(8);
 
     return Map1to1(&dithered, dst, identical);
 }
@@ -183,5 +181,81 @@ bool Fl_PixelFormat::map_this(Fl_PixelFormat *dstfmt)
     format_version = dstfmt->format_version;
 
     return true;
+}
+
+/* Find the opaque pixel value corresponding to an RGB triple */
+uint32 Fl_PixelFormat::map_rgb(uint8 r, uint8 g, uint8 b)
+{
+    if(!palette) {
+        return (r >> Rloss) << Rshift
+            | (g >> Gloss) << Gshift
+            | (b >> Bloss) << Bshift
+            | Amask;
+    }
+
+    return palette->find_color(r, g, b);
+}
+
+/* Find the pixel value corresponding to an RGBA quadruple */
+uint32 Fl_PixelFormat::map_rgba(uint8 r, uint8 g, uint8 b, uint8 a)
+{
+    if(!palette) {
+        return (r >> Rloss) << Rshift
+            | (g >> Gloss) << Gshift
+            | (b >> Bloss) << Bshift
+            | ((a >> Aloss) << Ashift & Amask);
+    }
+
+    return palette->find_color(r, g, b);
+}
+
+void Fl_PixelFormat::get_rgba(uint32 pixel, uint8 &r, uint8 &g, uint8 &b, uint8 &a)
+{
+    if(!palette) {
+        /*
+         * This makes sure that the result is mapped to the
+         * interval [0..255], and the maximum value for each
+         * component is 255. This is important to make sure
+         * that white is indeed reported as (255, 255, 255),
+         * and that opaque alpha is 255.
+         * This only works for RGB bit fields at least 4 bit
+         * wide, which is almost always the case.
+         */
+        unsigned rv, gv, bv, av;
+        rv = (pixel & Rmask) >> Rshift;
+        r = (rv << Rloss) + (rv >> (8 - Rloss));
+        gv = (pixel & Gmask) >> Gshift;
+        g = (gv << Gloss) + (gv >> (8 - Gloss));
+        bv = (pixel & Bmask) >> Bshift;
+        b = (bv << Bloss) + (bv >> (8 - Bloss));
+        if(Amask) {
+            av = (pixel & Amask) >> Ashift;
+            a = (av << Aloss) + (av >> (8 - Aloss));
+        } else
+            a = 255;
+    } else {
+        r = palette->colors[pixel].r;
+        g = palette->colors[pixel].g;
+        b = palette->colors[pixel].b;
+        a = 255;
+    }
+}
+
+void Fl_PixelFormat::get_rgb(uint32 pixel, uint8 &r, uint8 &g, uint8 &b)
+{
+    if(!palette) {
+        /* the note for SDL_GetRGBA above applies here too */
+        unsigned rv, gv, bv;
+        rv = (pixel & Rmask) >> Rshift;
+        r = (rv << Rloss) + (rv >> (8 - Rloss));
+        gv = (pixel & Gmask) >> Gshift;
+        g = (gv << Gloss) + (gv >> (8 - Gloss));
+        bv = (pixel & Bmask) >> Bshift;
+        b = (bv << Bloss) + (bv >> (8 - Bloss));
+    } else {
+        r = palette->colors[pixel].r;
+        g = palette->colors[pixel].g;
+        b = palette->colors[pixel].b;
+    }
 }
 

@@ -1,13 +1,11 @@
 #include <efltk/Fl.h>
 #include <efltk/fl_draw.h>
 #include <efltk/Fl_Image.h>
-#include <efltk/Fl_Images.h>
 #include <efltk/Fl_Window.h>
 #include <efltk/Fl_Double_Window.h>
+#include <efltk/math.h>
 
 #include <stdio.h>
-
-#include <config.h>
 
 static int X = 10, Y=100;
 static int oX=0, oY=0;
@@ -65,14 +63,16 @@ public:
             fl_copy_offscreen(tX, tY, tW, int(fl_height()), id, tX, tY);
 
             // Erase only area affected, by moving ball!
+            int DX = dX>0?dX:-dX;
+            int DY = dY>0?dY:-dY;
 
             // X axis
-            if(dX>0) fl_copy_offscreen(oX, Y, dX, bH, id, oX, Y);
-            else fl_copy_offscreen(X+bW, Y, -dX, bH, id, X+bW, Y);
+            if(dX>0) fl_copy_offscreen(oX, Y-DY, dX, bH+DY, id, oX, Y);
+            else fl_copy_offscreen(X+bW, Y, -dX, bH+DY, id, X+bW, Y);
 
             // Y axis
-            if(dY>0) fl_copy_offscreen(X, oY, bW, dY, id, X, oY);
-            else fl_copy_offscreen(X, Y+bH, bW, -dY, id, X, Y+bH);
+            if(dY>0) fl_copy_offscreen(oX, oY, bW+DX, dY, id, oX, oY);
+            else fl_copy_offscreen(oX, Y+bH, bW, -dY, id, oX, Y+bH);
         }
 
         if(blended) delete blended;
@@ -120,49 +120,129 @@ void bb_timeout(void *data)
     Fl::repeat_timeout(.01f, bb_timeout, data);
 }
 
-#define WIDTH 200
-#define HEIGHT 200
-uchar* make_image()
+// Generate 16 bit images
+// #define GENERATE_16BIT
+
+Fl_Image *make_ball(int radius)
 {
+    uint8  trans, alphamask;
+    int    range, addition;
+    int    xdist, ydist;
+    uint16 x, y;
+    uint16 skip;
+    uint32 pixel;
+    Fl_Image *light;
+
+#ifdef GENERATE_16BIT
+    uint16 *buf;
+    /* Create a 16 (4/4/4/4) bpp square with a full 4-bit alpha channel */
+    /* Note: this isn't any faster than a 32 bit alpha surface */
+    alphamask = 0x0000000F;
+    light = new Fl_Image(2*radius, 2*radius, 16, 0,
+                         0x0000F000, 0x00000F00, 0x000000F0, alphamask);
+#else
+    uint32 *buf;
+    /* Create a 32 (8/8/8/8) bpp square with a full 8-bit alpha channel */
+    alphamask = 0x000000FF;
+    light = new Fl_Image(2*radius, 2*radius, 32, 0,
+                         0xFF000000, 0x00FF0000, 0x0000FF00, alphamask);
+#endif
+
+    /* Fill with a light yellow-orange color */
+    skip = light->pitch()-(light->width()*light->format()->bytespp);
+#ifdef GENERATE_16BIT
+    buf = (uint16 *)light->data();
+#else
+    buf = (uint32 *)light->data();
+#endif
+    /* Get a tranparent pixel value - we'll add alpha later */
+    pixel = light->format()->map_rgba(0xFF, 0xDD, 0x88, 0);
+    for ( y=0; y<light->height(); ++y ) {
+        for ( x=0; x<light->width(); ++x ) {
+            *buf++ = pixel;
+        }
+        buf += skip;	/* Almost always 0, but just in case... */
+    }
+
+    /* Calculate alpha values for the surface. */
+#ifdef GENERATE_16BIT
+    buf = (uint16 *)light->data();
+#else
+    buf = (uint32 *)light->data();
+#endif
+    for ( y=0; y<light->height(); ++y ) {
+        for ( x=0; x<light->width(); ++x ) {
+            /* Slow distance formula (from center of light) */
+            xdist = x-(light->width()/2);
+            ydist = y-(light->height()/2);
+            range = (int)sqrt(xdist*xdist+ydist*ydist);
+
+            /* Scale distance to range of transparency (0-255) */
+            if ( range > radius ) {
+                trans = alphamask;
+            } else {
+                /* Increasing transparency with distance */
+                trans = (uint8)((range*alphamask)/radius);
+
+                /* Lights are very transparent */
+                addition = (alphamask+1)/8;
+                if ( (int)trans+addition > alphamask ) {
+                    trans = alphamask;
+                } else {
+                    trans += addition;
+                }
+            }
+            /* We set the alpha component as the right N bits */
+            *buf++ |= (255-trans);
+        }
+        buf += skip;	/* Almost always 0, but just in case... */
+    }
+
+    return light;
+}
+
+Fl_Image *make_bg(int w, int h)
+{
+#ifdef GENERATE_16BIT
+    Fl_Image *ret = new Fl_Image(w,h,16);
+#else
+    Fl_Image *ret = new Fl_Image(w,h,24);
+#endif
+
     // pitch = WORD alignment bits per line
-    int pitch=Fl_Renderer::calc_pitch(3, WIDTH);
-    int skip = pitch - WIDTH * 3;
+    int pitch=Fl_Renderer::calc_pitch(ret->format()->bytespp, w);
+    int skip = pitch - w * ret->format()->bytespp;
 
-    uchar *image = new uchar[HEIGHT*pitch];
-    uchar *p = image;
+    uint8 *p = ret->data();
+    uint8 r,g,b;
 
-    for (int y = 0; y < HEIGHT; y++) {
-        double Y = double(y)/(HEIGHT-1);
-        for (int x = 0; x < WIDTH; x++) {
-            double X = double(x)/(WIDTH-1);
-            *p++ = uchar(255*((1-X)*(1-Y))); // red in upper-left
-            *p++ = uchar(255*((1-X)*Y));	// green in lower-left
-            *p++ = uchar(255*(X*Y));	// blue in lower-right
+    for (int y = 0; y < h; y++) {
+        double Y = double(y)/(h-1);
+        for (int x = 0; x < w; x++) {
+            double X = double(x)/(w-1);
+            r = uchar(255*((1-X)*(1-Y))); // red in upper-left
+            g = uchar(255*((1-X)*Y));	// green in lower-left
+            b = uchar(255*(X*Y));	// blue in lower-right
+            fl_assemble_rgb(p,
+                            ret->format()->bytespp, ret->format(),
+                            r, g, b);
+            p+=ret->format()->bytespp;
         }
         p+=skip;
     }
-    return image;
+    return ret;
 }
 
 int main(int argc, char *argv[])
 {
     Fl_Renderer::system_init();
-
-    Fl_Rect rect(0,0,Fl::w(),Fl::h());
-    int bpp=0;
-    uint8 *data = Fl_Renderer::data_from_window(Fl_Renderer::root_window(), rect, bpp);
-    Fl_Image *screen = new Fl_Image(Fl::w(),Fl::h(), Fl_Renderer::system_format(), data);
-
-#if HAVE_PNG
-    // Initialize extension for PNG
-    fl_init_images_lib();
     Fl::args(argc, argv);
 
     //////////////////////////////
     // Bouncing ball...
     Fl_Image *bb_bg, *bb;
-    bb_bg = screen;//new Fl_Image(WIDTH, HEIGHT, 24, make_image(), 0x0000FF, 0x00FF00, 0xFF0000, 0 ,0);
-    bb = Fl_Image::read("bb.png");
+    bb_bg = make_bg(200,200);
+    bb = make_ball(30);
 
     if(bb_bg && bb) {
         // Speed up things
@@ -182,8 +262,5 @@ int main(int argc, char *argv[])
         delete bb_bg;
         delete bb;
     }
-#else
-    Fl::warning("This test works only with PNG lib support");
-#endif
     return 0;
 }

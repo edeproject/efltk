@@ -27,14 +27,15 @@
 #include <config.h>
 
 #if HAVE_PTHREAD || defined(WIN32)
-#  include <efltk/Fl.h>
-#  include <efltk/Fl_Window.h>
-#  include <efltk/Fl_Browser.h>
-#  include <efltk/Fl_Value_Output.h>
-#  include <efltk/Fl_Thread.h>
-#  include <stdio.h>
+#include <efltk/Fl.h>
+#include <efltk/Fl_Window.h>
+#include <efltk/Fl_Browser.h>
+#include <efltk/Fl_Value_Output.h>
+#include <efltk/Fl_Thread.h>
+#include <stdio.h>
 
 Fl_Thread prime_thread;
+Fl_Thread prime_thread2[5];
 
 Fl_Browser *browser1, *browser2;
 Fl_Value_Output *value1, *value2;
@@ -64,15 +65,17 @@ int prime_func(void* p)
     int hn = (int)sqrt(n);
     for (p=3; p<=hn; p+=2) if ( n%p == 0 ) break;
     if (p >= hn) {
-      char s[128];
-      sprintf(s, "%d", n);
-      Fl::lock();
-      browser->add(s);
-      browser->bottomline(browser->size());
-      if (n > value->value()) value->value(n);
-      Fl::unlock();
-      Fl::awake((void*) (browser == browser1? p:0));	// Cause the browser to redraw ...
+
+        Fl::lock();
+        char s[128];
+        sprintf(s, "%d", n);
+        browser->add(s);
+        browser->bottomline(browser->size());
+        if (n > value->value()) value->value(n);
+        Fl::unlock();
+        Fl::awake((void*)(browser == browser1? p:0));	// Cause the browser to redraw ...
     }
+    Fl::sleep_ms(10);
   }
   return 0;
 }
@@ -85,7 +88,7 @@ int main()
   value1 = new Fl_Value_Output(100, 175, 200, 25, "Max Prime:");
   w->end();
   w->show();
-  w = new Fl_Window(200, 200, "Six Threads");
+  w = new Fl_Window(200, 200, "5 Threads");
   browser2 = new Fl_Browser(0, 0, 200, 175);
   w->resizable(browser2);
   value2 = new Fl_Value_Output(100, 175, 200, 25, "Max Prime:");
@@ -100,12 +103,11 @@ int main()
   // One thread displaying in one browser
   fl_create_thread(prime_thread, prime_func, browser1);
   // Several threads displaying in another browser
-  fl_create_thread(prime_thread, prime_func, browser2);
-  fl_create_thread(prime_thread, prime_func, browser2);
-  fl_create_thread(prime_thread, prime_func, browser2);
-  fl_create_thread(prime_thread, prime_func, browser2);
-  fl_create_thread(prime_thread, prime_func, browser2);
-  fl_create_thread(prime_thread, prime_func, browser2);
+  fl_create_thread(prime_thread2[0], prime_func, browser2);
+  fl_create_thread(prime_thread2[1], prime_func, browser2);
+  fl_create_thread(prime_thread2[2], prime_func, browser2);
+  fl_create_thread(prime_thread2[3], prime_func, browser2);
+  fl_create_thread(prime_thread2[4], prime_func, browser2);
 
   //  Fl::run();
   while (w->visible()) {

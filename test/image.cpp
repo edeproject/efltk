@@ -226,6 +226,7 @@ int main(int argc, char **argv)
     window.resizable(box);
     window.end();
     window.show(argc, argv);
+
     return Fl::run();
 }
 
