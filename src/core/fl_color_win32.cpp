@@ -122,7 +122,7 @@ void Fl_Device::line_style(int style, int width, char* dashes)
 	if(width<=0) width = 1;
 	line_width = (width > 0 ? width : 1);
 
-	styled = (!cap_style && !pen_style);
+	styled = (cap_style || pen_style);
 
 	// Reset pens
 	if (fl_pen) { DeleteObject(fl_pen); fl_pen = 0; }
