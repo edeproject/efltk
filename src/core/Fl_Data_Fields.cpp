@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include <efltk/Fl_Data_Fields.h>
+#include <efltk/Fl_Exception.h>
 #include <stdio.h>
 
 const Fl_Variant Fl_Data_Fields::m_fieldNotFound;
@@ -90,6 +91,16 @@ void Fl_Data_Fields::clear() {
    }
 }
 
+Fl_Data_Field& Fl_Data_Fields::add(const char *fname) {
+   int index = field_index(fname);
+   if (index < 0) {
+      Fl_Data_Field *field = new Fl_Data_Field(fname);
+      m_list.append(field);
+      return *field;
+   }
+   throw Fl_Exception("Attempt to duplicate field name",__FILE__,__LINE__);
+}
+
 int Fl_Data_Fields::field_index(const char *fname) const {
    unsigned cnt = m_list.count();
    for (unsigned i = 0; i < cnt; i++) {
@@ -114,8 +125,9 @@ Fl_Variant& Fl_Data_Fields::operator [] (const char *fname) {
    Fl_Data_Field *field;
    int index = field_index(fname);
    if (index < 0) {
-      field = new Fl_Data_Field(fname);
-      m_list.append(field);
+      throw Fl_Exception("Field name not found",__FILE__,__LINE__);
+      //field = new Fl_Data_Field(fname);
+      //m_list.append(field);
    } else {
       field = (Fl_Data_Field *)m_list[index];
    }
@@ -125,7 +137,8 @@ Fl_Variant& Fl_Data_Fields::operator [] (const char *fname) {
 const Fl_Variant& Fl_Data_Fields::operator [] (const char *fname) const {
    int index = field_index(fname);
    if (index < 0) {
-      return m_fieldNotFound;
+      throw Fl_Exception("Field name not found",__FILE__,__LINE__);
+      //return m_fieldNotFound;
    } else {
       Fl_Data_Field *field = (Fl_Data_Field *)m_list[index];
       return field->value;
@@ -139,3 +152,4 @@ const Fl_Data_Field& Fl_Data_Fields::field(unsigned index) const {
 Fl_Data_Field& Fl_Data_Fields::field(unsigned index) {
    return *(Fl_Data_Field *)m_list[index];
 }
+
