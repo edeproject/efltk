@@ -38,7 +38,7 @@ int Fl_Data_Field::as_int() const {
         case VAR_FLOAT:      return (int)value.get_float();
         case VAR_STRING:
         case VAR_TEXT:
-        case VAR_BUFFER:     return atoi(value.get_string());
+        case VAR_BUFFER:     return strtol(value.get_string(),0,10);
         case VAR_DATE:       return int(value.get_date());
         case VAR_DATETIME:   return int(value.get_datetime());
         case VAR_IMAGEPTR:   fl_throw("Can't convert image field");
@@ -55,7 +55,7 @@ bool Fl_Data_Field::as_bool() const {
         case VAR_STRING:
         case VAR_TEXT:
         case VAR_BUFFER:     ch = value.get_string()[0];
-            return (strchr("YyTt",ch)!=0);
+            return (strchr("YyTt1",ch)!=0);
         case VAR_DATE:       return bool(value.get_date()!=0);
         case VAR_DATETIME:   return bool(value.get_datetime()!=0);
         case VAR_IMAGEPTR:   fl_throw("Can't convert image field");
@@ -70,7 +70,7 @@ double Fl_Data_Field::as_float() const {
         case VAR_FLOAT:      return value.get_float();
         case VAR_STRING:
         case VAR_TEXT:
-        case VAR_BUFFER:     return atof(value.get_string());
+        case VAR_BUFFER:     return strtod(value.get_string(), 0);
         case VAR_DATE:       return double(value.get_date());
         case VAR_DATETIME:   return double(value.get_datetime());
         case VAR_IMAGEPTR:   fl_throw("Can't convert image field");
@@ -95,12 +95,12 @@ Fl_String Fl_Data_Field::as_string() const {
                 }
                 if (prec > 9) prec = 9;
                 formatString[3] = '0' + prec;
-                sprintf(print_buffer,formatString,value.get_float());
+                sprintf(print_buffer,formatString,value.get_float());				
                 return Fl_String(print_buffer);
             }
         case VAR_STRING:
         case VAR_TEXT:
-        case VAR_BUFFER:     return Fl_String(value.get_string());
+        case VAR_BUFFER:     return Fl_String(value.get_string(), m_dataSize);
         case VAR_DATE:       return value.get_date().date_string();
         case VAR_DATETIME:   return value.get_date().date_string() + " " + value.get_date().time_string();
         case VAR_IMAGEPTR:   fl_throw("Can't convert image field");

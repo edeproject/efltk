@@ -55,7 +55,8 @@ Fl_ODBC_Field::Fl_ODBC_Field(const char *name,short number,short type,short leng
     m_columnNumber = number;
     m_columnType = type;
     m_columnLength = length;
-    this->precision = precision;
+    this->precision = precision; //This doesnt work? atleast it seems to be always 0..
+	
     switch (m_columnType) {
         case SQL_C_SLONG:
             value.set_int(0);
@@ -395,33 +396,41 @@ static short ODBCtypeToCType(int odbcType) {
         case SQL_BIGINT:
         case SQL_TINYINT:
         case SQL_SMALLINT:
-        case SQL_INTEGER:    return SQL_C_SLONG;
+        case SQL_INTEGER:    			
+			return SQL_C_SLONG;
 
         case SQL_NUMERIC:
         case SQL_REAL:
         case SQL_DECIMAL:
         case SQL_DOUBLE:
-        case SQL_FLOAT:      return SQL_C_DOUBLE;
+        case SQL_FLOAT:      			
+			return SQL_C_DOUBLE;
 
         case SQL_LONGVARCHAR:
         case SQL_VARCHAR:
-        case SQL_CHAR:       return SQL_C_CHAR;
+        case SQL_CHAR:       			
+			return SQL_C_CHAR;
 
    /** ODBC 3.0 only */
         case SQL_TYPE_TIME:
-        case SQL_TYPE_TIMESTAMP: return SQL_C_TIMESTAMP;
+        case SQL_TYPE_TIMESTAMP: 			
+			return SQL_C_TIMESTAMP;
 
         case SQL_DATE:
-        case SQL_TYPE_DATE: return SQL_C_DATE;
+        case SQL_TYPE_DATE: 			
+			return SQL_C_DATE;
 
         case SQL_TIME:
-        case SQL_TIMESTAMP: return SQL_C_TIMESTAMP;
+        case SQL_TIMESTAMP: 			
+			return SQL_C_TIMESTAMP;
 
         case SQL_BINARY:
         case SQL_LONGVARBINARY:
-        case SQL_VARBINARY: return SQL_C_BINARY;
+        case SQL_VARBINARY: 			
+			return SQL_C_BINARY;
 
-        case SQL_BIT:           return SQL_C_BIT;
+        case SQL_BIT:           			
+			return SQL_C_BIT;
     }
     return VAR_NONE;
 }
@@ -552,11 +561,11 @@ void Fl_ODBC_Database::fetch_query(Fl_Query *query)
 
         switch (fieldType) {
 
-            case SQL_C_SLONG:
-            case SQL_C_DOUBLE:
-                buffer = (char *)field->value.data();
-                rc = SQLGetData(stmt,column,fieldType,buffer,0,&dataLength);
-                break;
+			case SQL_C_DOUBLE:
+			case SQL_C_SLONG:
+				buffer = (char *)field->value.data();
+				rc = SQLGetData(stmt,column,fieldType,buffer,0,&dataLength);
+				break;
 
             case SQL_C_DATE: {
                     DATE_STRUCT t;
@@ -566,11 +575,11 @@ void Fl_ODBC_Database::fetch_query(Fl_Query *query)
                     break;
                 }
 
-            case SQL_C_TIMESTAMP: {
+            case SQL_C_TIMESTAMP: {					
                     TIMESTAMP_STRUCT t;
-                    rc = SQLGetData(stmt,column,fieldType,&t,0,&dataLength);
+                    rc = SQLGetData(stmt,column,fieldType,&t,0,&dataLength);					
                     Fl_Date_Time dt(t.year,t.month,t.day,t.hour,t.minute,t.second);
-                    field->value.set_datetime(dt);
+                    field->value.set_datetime(dt);					
                     break;
                 }
 
@@ -578,34 +587,37 @@ void Fl_ODBC_Database::fetch_query(Fl_Query *query)
             case SQL_C_CHAR:
                 buffer = (char *)field->value.get_buffer();
                 SQLGetData(stmt,column,fieldType,buffer,readSize,&dataLength);
+				// I think this should be loop? There may be data left after this "if block", right?
                 if (dataLength > readSize) { // continue to fetch BLOB data
                     buffer = field->check_buffer(dataLength);
                     char *offset = buffer + readSize - 1;
                     readSize = dataLength - readSize + 1;
                     rc = SQLGetData(stmt,column,fieldType,offset,readSize,NULL);
-                }
+                }				
                 break;
 
-            case SQL_BIT:
-                buffer = (char *)field->value.data();
-                SQLGetData(stmt,column,fieldType,buffer,1,&dataLength);
+            case SQL_BIT: //IMHO we need field type VAR_BIT!		
+				// This was bugging.. Since field type id VAR_BUFFER, we must use get_buffer() not data()
+                buffer = (char *)field->value.get_buffer();//.data();
+                SQLGetData(stmt,column,fieldType,buffer,1,&dataLength);		
                 break;
 
             default:
                 dataLength = 0;
                 break;
         }
-
+		
         if (fieldType == SQL_C_CHAR && dataLength > 0) {
             if (fetchError) dataLength = strlen(buffer);
             dataLength = trim_field(buffer,dataLength);
         }
-        if (dataLength <= 0) {
-            memset(buffer, 0, field->value.size());
-            field->data_size(0);
-        } else {
-            field->data_size(dataLength);
-        }
+        if (dataLength <= 0) {			
+			if(buffer) // This was bugging pretty much :) It tried to memset NULL buffer..
+				memset(buffer, 0, field->value.size());			
+			field->data_size(0);
+        } else {			
+            field->data_size(dataLength);			
+        }						
     }
 }
 

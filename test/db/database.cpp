@@ -13,7 +13,8 @@
 #ifdef ODBC_DRIVER
 #include <efltk/db/Fl_ODBC_Database.h>
 #define DATABASE Fl_ODBC_Database		
-#define CONSTR_TEMPLATE "DSN=odbc_dsn;UID=user;PWD=passwd"
+//#define CONSTR_TEMPLATE "DSN=odbc_dsn;UID=user;PWD=passwd"
+#define CONSTR_TEMPLATE "DSN=eweline;UID=ewe;PWD=line"
 #endif
 
 #ifdef MYSQL_DRIVER
@@ -91,7 +92,7 @@ int fetch_function(void* p)
 		Fl::warning("Error occured: %s\n", e.text().c_str());
 	}
 
-	sql_input->value("");
+	sql_input->position(0, sql_input->size());//value("");
 	sql_input->activate();
 	send_btn->activate();
 
@@ -136,6 +137,9 @@ void connect_cb(Fl_Widget *, void *)
 		send_btn->deactivate();
 	}
 
+	con_btn->parent()->relayout();
+	con_btn->parent()->redraw();
+
 	} catch(Fl_Exception &e) {
 		Fl::warning("Error occured: %s\n", e.text().c_str());
 	}
@@ -169,6 +173,7 @@ void run_test(Fl_Widget *, void *)
 	Fl_ListView lv(0,0,300,280);
 	lv.add_column("#", 20);
 	lv.add_column("Test steps", 260);
+	lv.end();
 
 	Fl_ProgressBar bar(0,280,300,20);
 	bar.range(0, 20);
@@ -191,7 +196,8 @@ void run_test(Fl_Widget *, void *)
 
 		printStepName ("Creating the temp table");		
 		try {			
-			query.sql("CREATE TABLE _test_ (id int, name char(40))");
+			//query.sql("CREATE TABLE _test_ (id int, name char(40))");
+			query.sql("CREATE TABLE _test_ (id int, name char(40), modified datetime)");
 			query.exec ();
 			printStepName ("Ok");
 		} catch(Fl_Exception &e) {
@@ -201,8 +207,9 @@ void run_test(Fl_Widget *, void *)
 
 		printStepName ("Filling in the temp table");
 
-		query.sql ("INSERT INTO _test_ (id,name) VALUES (:var_id,:var_name)");		
-		//query.param ("var_date") = Fl_Date_Time::Now();		
+		query.sql ("INSERT INTO _test_ (id,name,modified) VALUES (:var_id,:var_name,:var_date)");		
+		query.param ("var_date") = Fl_Date_Time::Now();		
+
 		for(int a=0;a<10;) {
 			query.param ("var_id") = a++;
 			query.param ("var_name") = "Alex";
@@ -279,6 +286,7 @@ void build_window()
 {
 	results = new Fl_ListView(0,0,100,100);	
 	results->layout_align(FL_ALIGN_CLIENT);
+	results->end();	
 
 	Fl_Group *g = new Fl_Group(0,0,100,30);
 	g->begin();
@@ -357,9 +365,11 @@ int main (int argc, char *argv[])
 {
 	lock(); // you must do this before creating any threads!
 	
-	setup_styles();
+	//setup_styles();
 
 	Fl_Window win(400, 400, "Database test");	
+	win.box(FL_FLAT_BOX);
+	win.color(FL_GRAY);
 	win.resizable(win);
 	win.begin();
 	
