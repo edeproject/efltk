@@ -14,7 +14,7 @@ Fl_Text_Buffer	*textbuf;
 
 void go_callback(Fl_Widget *,void *) {
 	Fl_Socket	s;
-	Fl_Buffer	buffer;
+	Fl_Buffer	read_buffer, page_buffer;
 	Fl_String	host_name = input->value();
 	Fl_String	page_name = "/index.html";
 
@@ -27,24 +27,30 @@ void go_callback(Fl_Widget *,void *) {
 	fl_try {
 		s.open(host_name,80);
 
-		buffer.check_size(128*1024);
-      //buffer.fill(0);
+		read_buffer.check_size(32*1024);
 
 		char host_header[256];
 		sprintf(host_header,"GET %s HTTP/1.0\nHost: %s:80\n\n",page_name.c_str(),host_name.c_str());
-		buffer.set(host_header,strlen(host_header)+1);
+		s.write(host_header,strlen(host_header)+1);
 
-		s.write(buffer);
-
-		if (s.ready_to_read(1000)) {
-			int bytes = s.read(buffer);
-			buffer.data()[bytes] = 0;
-			printf("Read %i bytes\n\n",bytes);
-			puts(buffer.data());
-		} else {
-			puts("Timeout!");
+		int bytes = -1;
+		int total = 0;
+		while (bytes) {
+			if (s.ready_to_read(1000)) {
+				bytes = s.read(read_buffer);
+				total += bytes;
+				page_buffer.append(read_buffer);
+				//printf("read %i bytes, read_buffer: %i, page_buffer: %i\n",bytes,read_buffer.bytes(),page_buffer.bytes());
+				puts("-----------------------------------------------");
+				puts(page_buffer.data());
+				if (strstr(read_buffer.data(),"</html>"))
+					break;
+				if (strstr(read_buffer.data(),"</HTML>"))
+					break;
+			} else {
+				puts("Timeout!");
+			}
 		}
-
 		s.close();
 	}
 	fl_catch(exception) 
@@ -53,7 +59,7 @@ void go_callback(Fl_Widget *,void *) {
 	return;
 }
 //view->value(buffer.data());
-textbuf->text(buffer.data());
+textbuf->text(page_buffer.data());
 }
 
 int main(int argc,char *argv[]) {

@@ -22,28 +22,30 @@
 
 class FL_API Fl_Buffer {
 protected:
-   unsigned m_size;
-   unsigned m_bytes;
-   char *   m_buffer;
+	unsigned m_size;
+	unsigned m_bytes;
+	char *   m_buffer;
 public:
-   Fl_Buffer(unsigned sz=16);
-   ~Fl_Buffer();
-   char *data() const { return m_buffer; }
-   bool check_size(unsigned sz);
-   void set(const char *data,unsigned sz);
-   bool append(const char *data,unsigned sz);
-   void reset(unsigned sz=0);
-   void fill(char c);
+	Fl_Buffer(unsigned sz=16);
+	~Fl_Buffer();
+	char *data() const { return m_buffer; }
+	bool check_size(unsigned sz);
+	void set(const char *data,unsigned sz);
+	void set(const Fl_Buffer& buffer);
+	bool append(const char *data,unsigned sz);
+	bool append(const Fl_Buffer& buffer);
+	void reset(unsigned sz=0);
+	void fill(char c);
 
-   unsigned size()  const { return m_size; }
-   unsigned bytes() const { return m_bytes; }
-   void bytes(unsigned b) { set(NULL,b); }
+	unsigned size()  const { return m_size; }
+	unsigned bytes() const { return m_bytes; }
+	void bytes(unsigned b) { set(0L,b); }
 };
 
 class FL_API Fl_String_Buffer : public Fl_Buffer {
 public:
-   Fl_String_Buffer(unsigned sz=16) : Fl_Buffer(sz) {}
-   char& operator [] (int ndx) { return m_buffer[ndx]; }
+	Fl_String_Buffer(unsigned sz=16) : Fl_Buffer(sz) {}
+	char& operator [] (int ndx) { return m_buffer[ndx]; }
 };
 
 #endif

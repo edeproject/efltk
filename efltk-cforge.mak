@@ -11,16 +11,16 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x40033c
+# %FirstUniqueId:	0x400344
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
 
 MAKE = make
 
-IDE_BLIND_INCLUDES = -I- -I./ -Iefltk -Isrc -Isrc/images -Isrc/xml -Isrc/db/odbc -Itest
+IDE_BLIND_INCLUDES = -I- -I./ -Iefltk -Isrc -Isrc/images -Isrc/xml -Isrc/db/odbc -Itest -Itest/net
 
-DEPEND_INCLUDES = -I- -I./ -Iefltk -Isrc -Isrc/images -Isrc/xml -Isrc/db/odbc -Itest
+DEPEND_INCLUDES = -I- -I./ -Iefltk -Isrc -Isrc/images -Isrc/xml -Isrc/db/odbc -Itest -Itest/net
 
 ALLDEFINES = $(ALLINCLUDES)
 
@@ -56,7 +56,7 @@ INCLUDES = -I./ -DFL_SHARED -DHAVE_CONFIG_H
 
 CXXWARNFLAGS = -Wall
 
-CXXDEBUGFLAGS = 
+CXXDEBUGFLAGS = -g
 
 CXXOPTIMIZEFLAGS = -O2
 
@@ -80,7 +80,7 @@ CFLAGS = $(INCLUDES) $(CWARNFLAGS) $(CDEBUGFLAGS) $(COPTIMIZEFLAGS) $(CLANGFLAGS
 
 CWARNFLAGS = -Wall
 
-CDEBUGFLAGS = 
+CDEBUGFLAGS = -g
 
 COPTIMIZEFLAGS = -O2
 
@@ -483,8 +483,32 @@ test/editor ::	test/editor.o
 # %IncDir:	test
 # %ObjsDir:	test
 test/sockets ::	test/socket.o\
-	test/Fl_Socket.o
+	test/Fl_Socket.o\
+	test/Fl_Buffer.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+# %UniqueId:	0x40033c
+# %TargetType:	DLL
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	src
+# %IncDir:	efltk
+# %ObjsDir:	lib
+lib/libefltk_net.so ::	lib/Fl_FTP_Socket.o
+	rm -f $@
+	$(LD) -shared -o $@ $^ $(LDOPTIONS)
+
+# %UniqueId:	0x40033f
+# %TargetType:	C++_EXE
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	test/net
+# %IncDir:	test/net
+# %ObjsDir:	test/net
+test/net/ftp_socket ::	test/net/ftp_socket.o\
+	test/net/Fl_FTP_Socket.o\
+	test/net/Fl_Socket.o
+	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %ObjectFilesLinking
 # %TargetType:	C++_OBJ
@@ -1884,6 +1908,41 @@ test/socket.o : test/socket.cpp
 # %ParentTarget:	0x40033a
 # %SourceTarget:	0x400338
 test/Fl_Socket.o : src/core/Fl_Socket.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40033c
+# %SourceTarget:	0x40033d
+lib/Fl_FTP_Socket.o : src/net/Fl_FTP_Socket.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40033f
+# %SourceTarget:	0x400340
+test/net/ftp_socket.o : /distr/develop/CVS/efltk/test/net/ftp_socket.cpp
+	$(CXX) -c -o $@ $< -Itest/net -Itest/net $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40033f
+# %SourceTarget:	0x400341
+test/net/Fl_FTP_Socket.o : /distr/develop/CVS/efltk/src/net/Fl_FTP_Socket.cpp
+	$(CXX) -c -o $@ $< -Itest/net -Itest/net $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40033f
+# %SourceTarget:	0x400342
+test/net/Fl_Socket.o : /distr/develop/CVS/efltk/src/core/Fl_Socket.cpp
+	$(CXX) -c -o $@ $< -Itest/net -Itest/net $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40033a
+# %SourceTarget:	0x400343
+test/Fl_Buffer.o : /distr/develop/CVS/efltk/src/core/Fl_Buffer.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
@@ -6211,6 +6270,38 @@ test/Fl_Socket.o :	efltk/Fl_Exception.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Socket.h\
 	efltk/Fl_Buffer.h
+lib/Fl_FTP_Socket.o :	efltk/net/Fl_FTP_Socket.h\
+	efltk/Fl_Socket.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Exception.h
+test/net/ftp_socket.o :	efltk/net/Fl_FTP_Socket.h\
+	efltk/Fl_Socket.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Exception.h
+test/net/Fl_FTP_Socket.o :	efltk/net/Fl_FTP_Socket.h\
+	efltk/Fl_Socket.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Exception.h
+test/net/Fl_Socket.o :	efltk/Fl_Exception.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Socket.h\
+	efltk/Fl_Buffer.h
+test/Fl_Buffer.o :	efltk/Fl_Exception.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Buffer.h
 
 
 # %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x4
@@ -6412,6 +6503,7 @@ test/Fl_Socket.o :	efltk/Fl_Exception.h\
 # %TargetInfo src/db/Fl_Query.cpp	SourceOrHeader,	UniqueId=0x400334,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_Socket.cpp	SourceOrHeader,	UniqueId=0x400338,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/socket.cpp	SourceOrHeader,	UniqueId=0x40033b,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/net/Fl_FTP_Socket.cpp	SourceOrHeader,	UniqueId=0x40033d,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x4
@@ -6627,6 +6719,11 @@ test/Fl_Socket.o :	efltk/Fl_Exception.h\
 # %TargetInfo efltk/db/Fl_Params.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400336,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/db/Fl_Database.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400337,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Socket.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400339,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/net/Fl_FTP_Socket.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40033e,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo /distr/develop/CVS/efltk/test/net/ftp_socket.cpp	SourceOrHeader,	UniqueId=0x400340,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo /distr/develop/CVS/efltk/src/net/Fl_FTP_Socket.cpp	SourceOrHeader,	UniqueId=0x400341,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo /distr/develop/CVS/efltk/src/core/Fl_Socket.cpp	SourceOrHeader,	UniqueId=0x400342,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo /distr/develop/CVS/efltk/src/core/Fl_Buffer.cpp	SourceOrHeader,	UniqueId=0x400343,	TargetType=C++,	IDEFlags=0x4
 
 
 # %UniqueId:	0x400001
@@ -6652,6 +6749,7 @@ test/Fl_Socket.o :	efltk/Fl_Exception.h\
 #	0x4000f2
 #	0x40026b
 #	0x4000f8
+#	0x40033c
 #
 # %UniqueId:	0x400183
 # %IDEFlags:	0
@@ -6672,4 +6770,5 @@ test/Fl_Socket.o :	efltk/Fl_Exception.h\
 #	0x400272
 #	0x400284
 #	0x40033a
+#	0x40033f
 #
