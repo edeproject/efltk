@@ -20,14 +20,16 @@ enum {
     FL_XML_TYPE_DOC = 0,
     //Normal node, can contain subnodes
     FL_XML_TYPE_NODE,
-    //Leaf node, cannot contain further nodes, e.g. <img/>
-    FL_XML_TYPE_LEAF,
-    //Cdata node, which only contains char data
-    FL_XML_TYPE_CDATA,
-    //Fixed cdata node, which only contains preformatted char data. e.g. <[CDATA[text]]>
-    FL_XML_TYPE_FIXED_CDATA,
     //Comment node
     FL_XML_TYPE_COMMENT
+};
+
+// CDATA types
+enum {
+    //Cdata where all default entities MUST be encoded
+    FL_XML_CDATA_NORMAL = 0,
+    //Fixed cdata, which can contain preformatted char data. e.g. <[CDATA[ <my text> ]]>
+    FL_XML_CDATA_FIXED
 };
 
 class Fl_XmlNode
@@ -48,6 +50,24 @@ public:
     // Copy node 'node' to this
     void copy(const Fl_XmlNode &node);
 
+    // Returns node type
+    int type() { return nodetype_; }
+    void type(int type) { nodetype_ = (char)type; }
+
+	// Shortcuts to types
+	bool is_normal()  { return (nodetype_==FL_XML_TYPE_NODE); }
+	bool is_leaf()    { return (chardata_.length()==0 && children()==0); }
+	bool is_doc()     { return (nodetype_==FL_XML_TYPE_DOC); }
+	bool is_comment() { return (nodetype_==FL_XML_TYPE_COMMENT); }
+
+    // Returns node type
+    int cdatatype() { return cdatatype_; }
+    void cdatatype(int type) { cdatatype_ = (char)type; }
+
+	// Shortcuts to cdata	
+	bool is_fixed_cdata() { return (cdatatype_==FL_XML_CDATA_FIXED); }
+	bool has_cdata() { return (chardata_.length()>0); }
+
     // Returns reference to attribute map
     AttrMap &attributes() { return attributes_; }
     // Sets new attribute map
@@ -58,20 +78,15 @@ public:
     // Sets new value to attribute 'attr'
     void attribute(Fl_String attr, Fl_String value);
 
-    // Returns node type
-    int type() { return nodetype_; }
-    // Sets node type
-    void type(int type) { nodetype_ = (char)type; }
-
     // Returns the node name
     Fl_String name();
     // Sets node name
     void name(Fl_String name);
 
     // Returns char data of node
-    Fl_String &cdata() { return cdata_; }
+    Fl_String &cdata() { return chardata_; }
     // Sets char data
-    void cdata(Fl_String &ncdata) { cdata_ = ncdata; }
+    void cdata(Fl_String &cdata) { chardata_ = cdata; }
 
     // Removes node 'ptr'
     void remove_node(Fl_XmlNode *ptr);
@@ -126,7 +141,7 @@ protected:
     unsigned short nodenamehandle_;
 
     // Nodetype
-    char nodetype_;
+    char nodetype_, cdatatype_;
 
     // Attributes of the tag
     AttrMap attributes_;
@@ -134,8 +149,8 @@ protected:
     // List of subnodes
     NodeList nodelist_;
 
-    // Char data
-    Fl_String cdata_;
+    // Char data. Used by CDATA or COMMENT
+    Fl_String chardata_;
 };
 
 #endif

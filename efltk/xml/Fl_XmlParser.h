@@ -27,7 +27,8 @@ public:
     bool parse_document( Fl_XmlDoc &doc, Fl_XmlContext *ctxptr );
 
     // Parses a node, without processing instructions. i.e. normal XML node
-    bool parse_node( Fl_XmlNode &node, Fl_XmlContext *ctxptr );
+	// Return values: 0=failed, 1=success, 2=parsed parent node cdata
+    int parse_node( Fl_XmlNode &node, Fl_XmlContext *ctxptr );
 
     // Parses an xml node attributes to list
     bool parse_attributes( AttrMap *attr, Fl_XmlContext *ctxptr );

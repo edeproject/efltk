@@ -42,7 +42,7 @@ public:
     // Stream access
     virtual Fl_String peek(int length) = 0;
     virtual Fl_String read(int length) = 0;
-    virtual char getchar() = 0;
+    virtual char _getchar() = 0;
 
 protected:
 
@@ -91,7 +91,7 @@ public:
     // Reads length bytes from stream, removed from stream
     Fl_String read(int length);
     // Gets one character from stream, removed from stream
-    char getchar();
+    char _getchar();
 
 protected:
     void *io_ctx;
