@@ -42,6 +42,15 @@ Fl_Box::Fl_Box(int x, int y, int w, int h, const char *l)
     style(default_style);
 }
 
+Fl_Box::Fl_Box(const char* l,Fl_Align layout_al,int label_w)
+: Fl_Widget(0,0,10,10,l)
+{
+    style(default_style);
+    label_width(label_w);
+    layout_align(layout_al);
+    align(FL_ALIGN_CENTER|FL_ALIGN_INSIDE);
+}
+
 extern Fl_Widget* fl_did_clipping;
 
 void Fl_Box::draw()
@@ -50,8 +59,8 @@ void Fl_Box::draw()
     // area because it will break lots of programs that assumme these
     // can overlap any other widgets:
     if (box()==FL_NO_BOX &&
-        (label().empty() && !image() ||
-        align() != FL_ALIGN_CENTER && !(align()&FL_ALIGN_INSIDE)))
+            (label().empty() && !image() ||
+                align() != FL_ALIGN_CENTER && !(align()&FL_ALIGN_INSIDE)))
     {
         fl_did_clipping = this;
         return;

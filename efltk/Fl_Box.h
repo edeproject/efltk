@@ -34,12 +34,16 @@ class FL_API Fl_Box : public Fl_Widget {
 public:
     static Fl_Named_Style* default_style;
 
-	/**
-	 * The first constructor sets box() to FL_NO_BOX, which means it is invisible. 
-	 * However such widgets are useful as placeholders or Fl_Group::resizable() values. 
-	 * To change the box to something visible, use box(n). 
-	 */
+    /**
+     * The first constructor sets box() to FL_NO_BOX, which means it is invisible. 
+     * However such widgets are useful as placeholders or Fl_Group::resizable() values. 
+     * To change the box to something visible, use box(n). 
+     */
     Fl_Box(int x, int y, int w, int h, const char *label=0);
+   /**
+     * By default, box label has the label inside
+    */
+    Fl_Box(const char* l = 0,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=-1);
 
     virtual void draw();
 };
