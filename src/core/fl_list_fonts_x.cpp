@@ -147,7 +147,10 @@ int fl_list_fonts(Fl_Font*& arrayp)
 {
     static Fl_Font* font_array = 0;
     static int num_fonts = 0;
-    if (font_array) {arrayp = font_array; return num_fonts;}
+    if (font_array) {
+        arrayp = font_array;
+        return num_fonts;
+    }
 
     fl_open_display();
     int xlistsize;
@@ -185,14 +188,13 @@ int fl_list_fonts(Fl_Font*& arrayp)
                 newfont->bold_ = newfont;
                 newfont->italic_ = newfont;
                 newfont->first = 0;
-
+                newfont->xlist_ = new Fl_CString_List();
                 for(int a=0; a<n; a++) {
                     // Add all matching fonts to cache list
-                    newfont->xlist_.append(xlist[i+a]);
+                    newfont->xlist_->append(xlist[i+a]);
                 }
-                newfont->xlist_sizes_.append(newfont->xlist_.size());
+                newfont->xlist_sizes_.append(newfont->xlist_->size());
                 newfont->xlist_offsets_.append(0);
-                newfont->xlist_cached_ = true;
 
                 break;
             }
@@ -201,13 +203,13 @@ int fl_list_fonts(Fl_Font*& arrayp)
             if (!strncmp(skip_foundry, fl_fonts[j].name_+2, length))
             {
                 newfont = fl_fonts+j;
+                if(!newfont->xlist_) newfont->xlist_ = new Fl_CString_List();
                 for(int a=0; a<n; a++) {
                     // Add all matching fonts to cache list
-                    newfont->xlist_.append(xlist[i+a]);
+                    newfont->xlist_->append(xlist[i+a]);
                 }
-                newfont->xlist_sizes_.append(newfont->xlist_.size());
+                newfont->xlist_sizes_.append(newfont->xlist_->size());
                 newfont->xlist_offsets_.append(0);
-                newfont->xlist_cached_ = true;
                 break;
             }
         }
@@ -247,11 +249,11 @@ int fl_list_fonts(Fl_Font*& arrayp)
 int Fl_Font_::encodings(const char**& arrayp) const
 {
     if(((Fl_Font_*)this)->cache_xlist()==0) return 0;
-    int listsize = xlist_.size();
+    int listsize = xlist_->size();
     static const char* array[128];
     int count = 0;
     for (int i = 0; i < listsize; i++) {
-        const char *q = xlist_[i];
+        const char *q = xlist_->item(i);
         const char *c = font_word(q,13);
         if (!*c++ || !*c) continue;
         // insert-sort the new encoding into list:
@@ -278,12 +280,12 @@ int Fl_Font_::encodings(const char**& arrayp) const
 int Fl_Font_::sizes(int*& sizep) const
 {
     if(((Fl_Font_*)this)->cache_xlist()==0) return 0;
+    int listsize = xlist_->size();
 
-    int listsize = xlist_.size();
     static int array[128];
     int count = 0;
     for (int i = 0; i < listsize; i++) {
-        const char *q = xlist_[i];
+        const char *q = xlist_->item(i);
         const char* d = font_word(q,7);
         if (!*d++) continue;
         int s = strtol(d,0,10);

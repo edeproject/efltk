@@ -180,7 +180,7 @@ Fl_Font fl_create_font(const char *system_name)
     f->name_ = system_name;
     f->bold_ = f;
     f->italic_ = f;
-    f->xlist_cached_ = false;
+    f->xlist_ = 0;
     f->first = 0;
     return f;
 }
@@ -248,7 +248,7 @@ static char *find_best_font(Fl_Font_ *f, const char *fname, int size, int index)
 
     cnt = (int)f->xlist_sizes_[index];
     offset = (int)f->xlist_offsets_[index];
-    list = (char**)f->xlist_.data();
+    list = (char**)f->xlist_->data();
 
     if(!list || cnt<=0) return "fixed";
 
@@ -354,7 +354,9 @@ static char *put_font_size(Fl_Font_ *font, int size)
 uint Fl_Font_::cache_xlist()
 {
     fl_open_display();
-    if(xlist_cached_) return xlist_.size();
+    if(xlist_) return xlist_->size();
+
+    xlist_ = new Fl_CString_List();
 
     char **names = fl_split(name_, ",", 255);
     if(!names) return 0;
@@ -363,18 +365,16 @@ uint Fl_Font_::cache_xlist()
         int cnt;
         char **xlist = XListFonts(fl_display, names[n], 255, &cnt);
 
-        xlist_offsets_.append(xlist_.size());
+        xlist_offsets_.append(xlist_->size());
         xlist_sizes_.append(cnt);
         for(int a=0; a<cnt; a++) {
             // Add all matching fonts to cache list
-            xlist_.append(xlist[a]);
+            xlist_->append(xlist[a]);
         }
     }
 
     fl_freev(names);
-    xlist_cached_ = true;
-
-    return xlist_.size();
+    return xlist_->size();
 }
 
 Fl_FontSize *Fl_Font_::load_font(float psize)
@@ -446,22 +446,22 @@ void fl_encoding(const char* f) {
 // The predefined fonts that fltk has:  bold:       italic:
 Fl_Font_
 fl_fonts[] = {
-{"-*-helvetica-medium-r-normal--*",	fl_fonts+1, fl_fonts+2},
-{"-*-helvetica-bold-r-normal--*", 	fl_fonts+1, fl_fonts+3},
-{"-*-helvetica-medium-o-normal--*",	fl_fonts+3, fl_fonts+2},
-{"-*-helvetica-bold-o-normal--*",	fl_fonts+3, fl_fonts+3},
-{"-*-courier-medium-r-normal--*",	fl_fonts+5, fl_fonts+6},
-{"-*-courier-bold-r-normal--*",		fl_fonts+5, fl_fonts+7},
-{"-*-courier-medium-o-normal--*",	fl_fonts+7, fl_fonts+6},
-{"-*-courier-bold-o-normal--*",		fl_fonts+7, fl_fonts+7},
-{"-*-times-medium-r-normal--*",		fl_fonts+9, fl_fonts+10},
-{"-*-times-bold-r-normal--*",		fl_fonts+9, fl_fonts+11},
-{"-*-times-medium-i-normal--*",		fl_fonts+11,fl_fonts+10},
-{"-*-times-bold-i-normal--*",		fl_fonts+11,fl_fonts+11},
-{"-*-symbol-*",				fl_fonts+12,fl_fonts+12},
-{"-*-lucidatypewriter-medium-r-normal-sans-*", fl_fonts+14,fl_fonts+14},
-{"-*-lucidatypewriter-bold-r-normal-sans-*", fl_fonts+14,fl_fonts+14},
-{"-*-*zapf dingbats-*",			fl_fonts+15,fl_fonts+15},
+{"-*-helvetica-medium-r-normal--*",	fl_fonts+1, fl_fonts+2,0},
+{"-*-helvetica-bold-r-normal--*", 	fl_fonts+1, fl_fonts+3,0},
+{"-*-helvetica-medium-o-normal--*",	fl_fonts+3, fl_fonts+2,0},
+{"-*-helvetica-bold-o-normal--*",	fl_fonts+3, fl_fonts+3,0},
+{"-*-courier-medium-r-normal--*",	fl_fonts+5, fl_fonts+6,0},
+{"-*-courier-bold-r-normal--*",		fl_fonts+5, fl_fonts+7,0},
+{"-*-courier-medium-o-normal--*",	fl_fonts+7, fl_fonts+6,0},
+{"-*-courier-bold-o-normal--*",		fl_fonts+7, fl_fonts+7,0},
+{"-*-times-medium-r-normal--*",		fl_fonts+9, fl_fonts+10,0},
+{"-*-times-bold-r-normal--*",		fl_fonts+9, fl_fonts+11,0},
+{"-*-times-medium-i-normal--*",		fl_fonts+11,fl_fonts+10,0},
+{"-*-times-bold-i-normal--*",		fl_fonts+11,fl_fonts+11,0},
+{"-*-symbol-*",				fl_fonts+12,fl_fonts+12,0},
+{"-*-lucidatypewriter-medium-r-normal-sans-*", fl_fonts+14,fl_fonts+14,0},
+{"-*-lucidatypewriter-bold-r-normal-sans-*", fl_fonts+14,fl_fonts+14,0},
+{"-*-*zapf dingbats-*",			fl_fonts+15,fl_fonts+15,0}
 };
 
 //
