@@ -15,7 +15,7 @@ msgstr ""
 "Last-Translator: Martin Pekar <cortex@nextra.sk>\n"
 "Language-Team: Slovak <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso8859-2\n"
+"Content-Type: text/plain; charset=utf-8"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: fl_ask.cpp:174
@@ -24,7 +24,7 @@ msgstr "Nie"
 
 #: fl_ask.cpp:175
 msgid "Yes"
-msgstr "¡no"
+msgstr "√Åno"
 
 #: fl_ask.cpp:176 Fl_File_Dialog.cpp:540
 msgid "OK"
@@ -32,7 +32,7 @@ msgstr "OK"
 
 #: fl_ask.cpp:177
 msgid "Cancel"
-msgstr "Zruπiª"
+msgstr "Zru≈°i≈•"
 
 
 
@@ -50,15 +50,15 @@ msgstr "Mb"
 
 #: Fl_File_Dialog.cpp:80 Fl_File_Dialog.cpp:99
 msgid "Unknown"
-msgstr "Nezn·my"
+msgstr "Nezn√°my"
 
 #: Fl_File_Dialog.cpp:82 Fl_File_Dialog.cpp:496
 msgid "File"
-msgstr "S˙bor"
+msgstr "S√∫bor"
 
 #: Fl_File_Dialog.cpp:83
 msgid "Dir"
-msgstr "Adres·r"
+msgstr "Adres√°r"
 
 #: Fl_File_Dialog.cpp:84
 msgid "Link"
@@ -70,15 +70,15 @@ msgstr "CD-Rom"
 
 #: Fl_File_Dialog.cpp:87
 msgid "Removable"
-msgstr "Prenosn˝"
+msgstr "Prenosn√Ω"
 
 #: Fl_File_Dialog.cpp:88
 msgid "Local Disk"
-msgstr "Lok·lny Disk"
+msgstr "Lok√°lny Disk"
 
 #: Fl_File_Dialog.cpp:89
 msgid "Network Disk"
-msgstr "Sieªov˝ Disk"
+msgstr "Sie≈•ov√Ω Disk"
 
 #: Fl_File_Dialog.cpp:90
 msgid "RAM Disk"
@@ -86,23 +86,23 @@ msgstr "RAM Disk"
 
 #: Fl_File_Dialog.cpp:270
 msgid "Choose Files:"
-msgstr "Zvoliª s˙bory:"
+msgstr "Zvoli≈• s√∫bory:"
 
 #: Fl_File_Dialog.cpp:285
 msgid "Choose File:"
-msgstr "Zvoliª s˙bor:"
+msgstr "Zvoli≈• s√∫bor:"
 
 #: Fl_File_Dialog.cpp:300
 msgid "Choose Directory:"
-msgstr "Zvoliª adres·r:"
+msgstr "Zvoli≈• adres√°r:"
 
 #: Fl_File_Dialog.cpp:309
 msgid "Save File:"
-msgstr "Uloæiª s˙bor:"
+msgstr "Ulo≈æi≈• s√∫bor:"
 
 #: Fl_File_Dialog.cpp:497 Fl_File_Dialog.cpp:843
 msgid "Size"
-msgstr "Veµkosª"
+msgstr "Veƒækos≈•"
 
 #: Fl_File_Dialog.cpp:498 Fl_File_Dialog.cpp:822 Fl_File_Dialog.cpp:844
 msgid "Type"
@@ -110,15 +110,15 @@ msgstr "Typ"
 
 #: Fl_File_Dialog.cpp:499 Fl_File_Dialog.cpp:845
 msgid "Modified"
-msgstr "Modifikovan˝"
+msgstr "Modifikovan√Ω"
 
 #: Fl_File_Dialog.cpp:523
 msgid "Show Preview"
-msgstr "Zobraziª n·hµad"
+msgstr "Zobrazi≈• n√°hƒæad"
 
 #: Fl_File_Dialog.cpp:533
 msgid "Location:"
-msgstr "S˙bor:"
+msgstr "S√∫bor:"
 
 #: Fl_File_Dialog.cpp:549
 msgid "Filter:"
@@ -126,81 +126,81 @@ msgstr "Filter:"
 
 #: Fl_File_Dialog.cpp:555
 msgid "&Cancel"
-msgstr "&Zruπiª"
+msgstr "&Zru≈°i≈•"
 
 #: Fl_File_Dialog.cpp:632
 msgid "All Files (*)"
-msgstr "Vπetky s˙bory (*)"
+msgstr "V≈°etky s√∫bory (*)"
 
 #: Fl_File_Dialog.cpp:664 Fl_File_Dialog.cpp:707 Fl_File_Dialog.cpp:709
 #: Fl_File_Dialog.cpp:711 Fl_File_Dialog.cpp:742 Fl_File_Dialog.cpp:784
 msgid "My Computer"
-msgstr "Tento poËÌtaË"
+msgstr "Tento poƒç√≠taƒç"
 
 #: Fl_File_Dialog.cpp:664 Fl_File_Dialog.cpp:667 Fl_File_Dialog.cpp:693
 #: Fl_File_Dialog.cpp:772
 msgid "My Home"
-msgstr "MÙj domov"
+msgstr "M√¥j domov"
 
 #: Fl_File_Dialog.cpp:707 Fl_File_Dialog.cpp:710 Fl_File_Dialog.cpp:743
 #: Fl_File_Dialog.cpp:789 Fl_File_Dialog.cpp:1146
 msgid "My Network"
-msgstr "Moja sieª"
+msgstr "Moja sie≈•"
 
 #: Fl_File_Dialog.cpp:823
 msgid "Used Space"
-msgstr "PouæitÈ miesto"
+msgstr "Pou≈æit√© miesto"
 
 #: Fl_File_Dialog.cpp:824
 msgid "Free Space"
-msgstr "VoµnÈ miesto"
+msgstr "Voƒæn√© miesto"
 
 #: Fl_File_Dialog.cpp:920
 msgid "New Directory?"
-msgstr "Nov˝ adres·r?"
+msgstr "Nov√Ω adres√°r?"
 
 #: Fl_File_Dialog.cpp:943
 msgid "Unable to create directory!"
-msgstr "Nemoæno vytvoriª adres·r!"
+msgstr "Nemo≈æno vytvori≈• adres√°r!"
 
 
 #: Fl_File_Dialog.cpp:1434
 msgid "Size:"
-msgstr "Veµkosª:"
+msgstr "Veƒækos≈•:"
 
 #: Fl_File_Dialog.cpp:1434 Fl_File_Dialog.cpp:1476
 msgid "File Size:"
-msgstr "Veµkosª s˙boru:"
+msgstr "Veƒækos≈• s√∫boru:"
 
 
 
 #: Fl_Help_Dialog.cpp:155
 msgid "&File"
-msgstr "&S˙bor"
+msgstr "&S√∫bor"
 
 #: Fl_Help_Dialog.cpp:158 Fl_Help_Dialog.cpp:178
 msgid "Open"
-msgstr "Otvoriª"
+msgstr "Otvori≈•"
 
 #: Fl_Help_Dialog.cpp:162
 msgid "Close"
-msgstr "Zavrieª"
+msgstr "Zavrie≈•"
 
 #: Fl_Help_Dialog.cpp:188
 msgid "Back"
-msgstr "Sp‰ª"
+msgstr "Sp√§≈•"
 
 #: Fl_Help_Dialog.cpp:198
 msgid "Next"
-msgstr "œalej"
+msgstr "ƒéalej"
 
 #: Fl_Help_Dialog.cpp:213
 msgid "Html files, *.{html|htm}, All files, *"
-msgstr "Html s˙bory, *.{html|htm}, Vπetky s˙bory, *"
+msgstr "Html s√∫bory, *.{html|htm}, V≈°etky s√∫bory, *"
 
 #: Fl_Help_Dialog.cpp:213
 msgid "Open Help File"
-msgstr "Otvoriª s˙bor n·povedy"
+msgstr "Otvori≈• s√∫bor n√°povedy"
 
 
 #: Fl_Simple_Html.cpp:2321 Fl_Simple_Html.cpp:2350
@@ -216,8 +216,8 @@ msgstr "Chyba"
 
 #: Fl_Simple_Html.cpp:2327 Fl_Simple_Html.cpp:2356
 msgid "Unable to follow the link"
-msgstr "Nemoæno nasledovaª linku"
+msgstr "Nemo≈æno nasledova≈• linku"
 
 #: Fl_Simple_Html.cpp:2328
 msgid "no handler exists for this URI scheme"
-msgstr "neexistuje æiaden spr·vca pre t˙to URI schÈmu"
+msgstr "neexistuje ≈æiaden spr√°vca pre t√∫to URI sch√©mu"
