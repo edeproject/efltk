@@ -85,7 +85,10 @@ CPPFILES = \
 	fl_vertex.cpp \
 	fl_utf8.cpp \
 	fl_theme.cpp \
-	scandir.cpp
+	scandir.cpp \
+	Fl_Printer.cpp \
+	Fl_PostScript.cpp Fl_Gdi.cpp 
+	
 
 CFILES = \
 	vsnprintf.c
