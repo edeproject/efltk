@@ -58,7 +58,7 @@ void Fl_Menu_Bar::ctor_init() {
     selected_ = last_selected_ = -1;
 
     right_=0;
-    do_layout=true;
+    do_layout = true;
     key_event = false;
 
     value(-1);
@@ -146,12 +146,17 @@ void Fl_Menu_Bar::layout()
         if (!(layout_damage() & FL_LAYOUT_DAMAGE)) return;
     }
 
-    lines=1;
-    if(do_layout) h(0);
+	bool calc_layout = do_layout || (layout_align()!=0);
+
+	int h = this->h();
+
+	if(calc_layout) h = 0;
+
+    lines=1;    
     int X=box()->dx()+leading()/2;
     int Y=box()->dy()+leading()/2;
     int W = w()-box()->dw();
-    int H = h()-box()->dh();
+    int H = h - box()->dh();
 
     for(int i = 0; i < children(); i++) {
         Fl_Widget *w = child(i);
@@ -163,15 +168,15 @@ void Fl_Menu_Bar::layout()
         w->w(w->w()+leading());
         w->h(w->h()+leading());
 
-        if(w->w()+X > W && do_layout) {
+        if(w->w()+X > W && calc_layout) {
             Y+=w->h()+leading()/2;
             X=box()->dx()+leading()/2;
             lines++;
         }
 
-        if(Y+w->h() > H && do_layout) {
-            h(Y+w->h()+leading()/2);
-            H = h();
+        if(Y+w->h() > H && calc_layout) {
+            h = Y+w->h()+leading()/2;
+            H = h;
         }
 
         w->position(X,Y);
@@ -185,15 +190,15 @@ void Fl_Menu_Bar::layout()
         w->w(w->w()+leading());
         w->h(w->h()+leading());
 
-        if(w->w()+X > W && do_layout) {
+        if(w->w()+X > W && calc_layout) {
             Y+=w->h()+leading()/2;
             X=box()->dx()+leading()/2;
             lines++;
         }
 
-        if(Y+w->h() > H && do_layout) {
-            h(Y+w->h()+leading()/2);
-            H=h();
+        if(Y+w->h() > H && calc_layout) {
+            h = Y+w->h()+leading()/2;
+            H = h;
         }
 
         if(lines==1)
@@ -202,9 +207,17 @@ void Fl_Menu_Bar::layout()
         w->position(X,Y);
     }
 
-    if(do_layout)
-        Fl_Widget::size(W,H);
+    if(calc_layout) {
+		if(h < 18) h = 18;
+		this->h(h);
+	}
+
     Fl_Widget::layout();
+}
+
+void Fl_Menu_Bar::preferred_size(int w, int h) const
+{
+	h = this->h();
 }
 
 int Fl_Menu_Bar::handle(int event)
