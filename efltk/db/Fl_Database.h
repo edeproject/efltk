@@ -67,7 +67,7 @@ public:
    bool in_transaction() const                     { return m_inTransaction; }
 
    // These methods should be implemented in actual database class
-   virtual Fl_Database_Capabilities capabilities() { return  FL_DB_UNKNOWN; }
+   virtual unsigned capabilities()                 { return  FL_DB_UNKNOWN; }
    virtual void begin_transaction()                { fl_throw("Transactions are not supported"); }
    virtual void commit_transaction()               { fl_throw("Transactions are not supported"); }
    virtual void rollback_transaction()             { fl_throw("Transactions are not supported"); }
