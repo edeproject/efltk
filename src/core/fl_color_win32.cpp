@@ -72,7 +72,7 @@ static int line_width = 0;
 
 void fl_line_style(int style, int width, char* dashes)
 {
-    static DWORD Cap[4]= {PS_ENDCAP_ROUND, PS_ENDCAP_FLAT, PS_ENDCAP_ROUND, PS_ENDCAP_SQUARE};
+    /*static DWORD Cap[4]= {PS_ENDCAP_ROUND, PS_ENDCAP_FLAT, PS_ENDCAP_ROUND, PS_ENDCAP_SQUARE};
     static DWORD Join[4]={PS_JOIN_ROUND, PS_JOIN_MITER, PS_JOIN_ROUND, PS_JOIN_BEVEL};
     line_style = PS_GEOMETRIC | Cap[(style>>8)&3] | Join[(style>>12)&3];
     if (dashes && dashes[0])
@@ -90,15 +90,17 @@ void fl_line_style(int style, int width, char* dashes)
     line_width = width;
     // fix cards that ignore dash pattern for zero width:
     if (!width && (line_style || dash_pattern_size)) line_width = 1;
-    fl_pen = fl_create_pen();
+    */
+	fl_pen = fl_create_pen();
     HPEN oldpen = (HPEN)SelectObject(fl_gc, fl_pen);
     if (oldpen) DeleteObject(oldpen);
+	
 }
 
 
 HPEN fl_create_pen()
 {
-    if (line_style || line_width || dash_pattern_size)
+/*    if (line_style || line_width || dash_pattern_size)
     {
         LOGBRUSH penbrush =      // can this be fl_brush?
         {
@@ -108,9 +110,9 @@ HPEN fl_create_pen()
             dash_pattern_size, dash_pattern_size?dash_pattern:0);
     }
     else
-    {
+    {*/
         return CreatePen(PS_SOLID, 1, fl_colorref);
-    }
+    //}
 }
 
 

@@ -34,8 +34,8 @@
 #include <wince.h>
 #else
 #include <windows.h>
-#include <winuser.h>
 #endif
+#include <winuser.h>
 
 
 // In some of the distributions, the gcc header files are missing some stuff:

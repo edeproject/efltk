@@ -31,6 +31,9 @@
 #include <efltk/math.h>
 #include <config.h>
 #include <efltk/fl_draw.h>
+#ifdef _WIN32_WCE
+#include <wince.h>
+#endif
 
 void fl_arc(float l, float b, float w, float h, float start, float end) {
 

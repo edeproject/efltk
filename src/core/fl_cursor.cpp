@@ -55,7 +55,11 @@ void Fl_Window::cursor(Fl_Cursor c, Fl_Color, Fl_Color)
     }
     else
     {
+#ifdef _WIN32_WCE
+        LPWSTR n;
+#else
         LPSTR n;
+#endif
         switch (c)
         {
             case FL_CURSOR_ARROW:   n = IDC_ARROW; break;

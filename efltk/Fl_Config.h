@@ -12,7 +12,9 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+#ifdef _WIN32_WCE
+#include <wince.h>
+#endif
 /* error defines */
 enum {
     CONF_SUCCESS = 0,  /* successful return */

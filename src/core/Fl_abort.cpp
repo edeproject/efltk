@@ -57,6 +57,36 @@ static void error(const char *format, ...)
 }
 
 
+#elif defined(_WIN32_WCE)
+#include <wince.h>
+
+static void warning(const char *format, ...)
+{
+    va_list args;
+    char buf[1024];
+	static wchar_t wbuf[1024];
+    va_start(args, format);
+    vsnprintf(buf, 1024, format, args);
+    va_end(args);
+    fl_utf2unicode((const unsigned char*)buf,strlen(buf) * sizeof(wchar_t),wbuf);
+	MessageBox(0,wbuf,L"Warning",MB_ICONEXCLAMATION|MB_OK);
+}
+
+
+static void error(const char *format, ...)
+{
+    va_list args;
+    char buf[1024];
+	static wchar_t wbuf[1024];
+    va_start(args, format);
+    vsnprintf(buf, 1024, format, args);
+    va_end(args);
+    fl_utf2unicode((const unsigned char*)buf,strlen(buf) * sizeof(wchar_t),wbuf);
+    MessageBox(0,wbuf,L"Error",MB_ICONSTOP);
+    exit(1);
+}
+
+
 #else
 
 #include <windows.h>

@@ -24,7 +24,7 @@
 #include <stdlib.h>
 
 #ifndef _WIN32
-//# include <sys/time.h>
+# include <sys/time.h>
 #else
 # include <windows.h>
 #endif
@@ -606,7 +606,7 @@ short Fl_Date_Time::day_of_year( void ) const {
 }
 
 Fl_Date_Time Fl_Date_Time::convert(const long tt) {
-   struct tm *t = localtime(&tt);
+   struct tm *t = localtime((time_t*)&tt);
    double dat,tim;
    encode_date(dat,short(t->tm_year+1900),short(t->tm_mon+1),short(t->tm_mday));
    encode_time(tim,short(t->tm_hour),short(t->tm_min),short(t->tm_sec),short(0));

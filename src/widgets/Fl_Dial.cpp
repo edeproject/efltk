@@ -30,6 +30,9 @@
 #include <efltk/Fl_Group.h>
 #include <efltk/fl_draw.h>
 #include <stdlib.h>
+#ifdef _WIN32_WCE
+#include <wince.h>
+#endif
 
 // All angles are measured with 0 to the right and counter-clockwise
 

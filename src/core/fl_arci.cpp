@@ -42,6 +42,7 @@
 void fl_pie(int x,int y,int w,int h,float a1,float a2, int what) {
   if (w <= 0 || h <= 0) return;
   fl_transform(x,y);
+#ifndef _WIN32_WCE
 #ifdef _WIN32
   if (a1 == a2) return;
   w++; h++; // is this needed to match X?
@@ -77,6 +78,7 @@ void fl_pie(int x,int y,int w,int h,float a1,float a2, int what) {
     break;
   }
 #endif
+#endif //WCE
 }
 
 //

@@ -56,10 +56,15 @@ static Fl_Window *xmousewin;     // which window X thinks has FL_ENTER
 
 void fl_fix_focus();
 
+
 #ifdef _WIN32
-# include "Fl_win32.cpp"
+# ifndef _WIN32_WCE
+#  include "Fl_win32.cpp"
+# elif defined(_WIN32_WCE)
+#  include "Fl_wince.cpp"
+# endif
 #elif defined(__APPLE__)
-# include "Fl_mac.cpp"
+#  include "Fl_mac.cpp"
 #else
 # include "Fl_x.cpp"
 #endif
@@ -414,7 +419,7 @@ void Fl::flush()
         }
     }
     #ifdef _WIN32
-    GdiFlush();
+    //GdiFlush();
     #else
     if (fl_display) XFlush(fl_display);
     #endif
