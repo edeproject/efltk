@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
-#include <malloc.h>
 #include <ctype.h>
 
 #ifdef _WIN32_WCE
