@@ -378,11 +378,8 @@ if test "$enable_duffs" = yes; then
 	AC_DEFINE(USE_DUFFS_LOOP)
 fi
 
-USE_UTF8=no
-AC_ARG_ENABLE(utf8,  [  --disable-utf8          do not use UTF-8 support],, enable_utf8=yes USE_UTF8=yes)
+AC_ARG_ENABLE(utf8,  [  --disable-utf8          do not use UTF-8 support],, enable_utf8=yes)
 if test "$enable_utf8" = yes; then
-dnl#    AC_MSG_RESULT($USE_UTF8)
-dnl#    AC_SUBST(USE_UTF8)
       AC_DEFINE(HAVE_XUTF8)
 fi
 
@@ -511,7 +508,7 @@ AC_DEFINE_UNQUOTED(PREFIX, "${prefix}")
 AC_DEFINE_UNQUOTED(CONFIGDIR, "${prefix}/share/ede")
 
 COMPILE_XUTF=0
-if test "$USE_UTF8" = "yes"; then
+if test "$enable_utf8" = yes; then
 	COMPILE_XUTF=1
 fi
 AC_SUBST(COMPILE_XUTF)
