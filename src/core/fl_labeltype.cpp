@@ -40,17 +40,17 @@ Fl_No_Label fl_no_label("none");
 
 
 void Fl_Labeltype_::draw(const char* label,
-    int X, int Y, int W, int H,
-    Fl_Color color, Fl_Flags flags) const
+	int X, int Y, int W, int H,
+	Fl_Color color, Fl_Flags flags) const
 {
-    if (flags & FL_INACTIVE)
-    {
-        fl_color(FL_LIGHT2);
-        fl_draw(label, X+1, Y+1, W, H, flags);
-        color = fl_inactive(color);
-    }
-    fl_color(color);
-    fl_draw(label, X, Y, W, H, flags);
+	if (flags & FL_INACTIVE)
+	{
+		fl_color(FL_LIGHT2);
+		fl_draw(label, X+1, Y+1, W, H, flags);
+		color = fl_inactive(color);
+	}
+	fl_color(color);
+	fl_draw(label, X, Y, W, H, flags);
 }
 
 
@@ -62,164 +62,164 @@ Fl_Labeltype_ fl_normal_label("normal");
 // widget's box, if the align is set to draw an inside label.
 void Fl_Widget::draw_inside_label() const
 {
-    if (!(flags()&15) || (flags() & FL_ALIGN_INSIDE))
-    {
-        int X=0; int Y=0; int W=w_; int H=h_; box()->inset(X,Y,W,H);
-        if (W > 11 && (flags()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT)) && !(flags()&(FL_ALIGN_TILED|FL_ALIGN_SCALE)) ) {X += 3; W -= 6;}
-        draw_label(X, Y, W, H, flags());
-    }
+	if (!(flags()&15) || (flags() & FL_ALIGN_INSIDE))
+	{
+		int X=0; int Y=0; int W=w_; int H=h_; box()->inset(X,Y,W,H);
+		if (W > 11 && (flags()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT)) && !(flags()&(FL_ALIGN_TILED|FL_ALIGN_SCALE)) ) {X += 3; W -= 6;}
+		draw_label(X, Y, W, H, flags());
+	}
 }
 
 // Draws only inside labels, but allows the caller to specify the box.
 // Also allows the caller to turn on some extra flags.
 void Fl_Widget::draw_inside_label(int X, int Y, int W, int H, Fl_Flags f) const
 {
-    if (!(flags()&15) || (flags() & FL_ALIGN_INSIDE))
-    {
-        if (W > 11 && (flags()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT)) && !(flags()&(FL_ALIGN_TILED|FL_ALIGN_SCALE)) ) {X += 3; W -= 6;}
-        draw_label(X, Y, W, H, f|flags()&FL_ALIGN_MASK);
-    }
+	if (!(flags()&15) || (flags() & FL_ALIGN_INSIDE))
+	{
+		if (W > 11 && (flags()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT)) && !(flags()&(FL_ALIGN_TILED|FL_ALIGN_SCALE)) ) {X += 3; W -= 6;}
+		draw_label(X, Y, W, H, f|flags()&FL_ALIGN_MASK);
+	}
 }
 
 // Anybody can call this to force the label to draw anywhere, this is
 // used by Fl_Group and Fl_Tabs to draw outside labels:
 void Fl_Widget::draw_label(int X, int Y, int W, int H, Fl_Flags flags) const
 {
-    fl_font(label_font(), float(label_size()));
-    if (!active_r()) flags |= FL_INACTIVE;
+	fl_font(label_font(), float(label_size()));
+	if (!active_r()) flags |= FL_INACTIVE;
 
-    Fl_Color color;
+	Fl_Color color;
     // Figure out if alignment puts the label inside the widget:
-    if (!(this->flags()&15) || (this->flags() & FL_ALIGN_INSIDE))
-    {
+	if (!(this->flags()&15) || (this->flags() & FL_ALIGN_INSIDE))
+	{
         // yes, inside label is affected by selection or highlight:
-        if (flags&FL_SELECTED)
-            color = selection_text_color();
-        else if (flags&FL_HIGHLIGHT && (color = highlight_label_color()))
-        ;
-        else
-            color = label_color();
-        if (focused()) flags |= FL_SELECTED;
-    }
-    else
-    {
-        color = label_color();
-    }
+		if (flags&FL_SELECTED)
+			color = selection_text_color();
+		else if (flags&FL_HIGHLIGHT && (color = highlight_label_color()))
+		;
+		else
+			color = label_color();
+		if (focused()) flags |= FL_SELECTED;
+	}
+	else
+	{
+		color = label_color();
+	}
 
-    if (flags & FL_ALIGN_CLIP) fl_push_clip(X, Y, W, H);
+	if (flags & FL_ALIGN_CLIP) fl_push_clip(X, Y, W, H);
 
-    if (label_width_ > 0) {
-        flags |= FL_ALIGN_WRAP;// | FL_ALIGN_TOP;
-        int x_right = X + W;
-        if (W > label_width_) 
-            W = label_width_;
-        if (flags & FL_ALIGN_RIGHT) 
-            X = x_right - W;
-    }
+	if (label_width_ > 0) {
+		flags |= FL_ALIGN_WRAP | FL_ALIGN_TOP;
+		int x_right = X + W;
+		if (W > label_width_) 
+			W = label_width_;
+		if (flags & FL_ALIGN_RIGHT) 
+			X = x_right - W;
+	}
 
-    if (image_)
-    {
-        fl_color(fl_inactive(color, flags));
+	if (image_)
+	{
+		fl_color(fl_inactive(color, flags));
 
-        if(flags & FL_ALIGN_TILED || flags & FL_ALIGN_SCALE) {
-            image_->draw(X, Y, W, H, flags);
-        } else {
+		if(flags & FL_ALIGN_TILED || flags & FL_ALIGN_SCALE) {
+			image_->draw(X, Y, W, H, flags);
+		} else {
 
-            int w = W;
-            int h = H;
-            image_->measure(w, h);
+			int w = W;
+			int h = H;
+			image_->measure(w, h);
 
             // If all the flags are off, draw the image and label centered "nicely"
             // by measuring their total size and centering that rectangle:
-            if (!(flags & (FL_ALIGN_LEFT|FL_ALIGN_RIGHT|FL_ALIGN_TOP|FL_ALIGN_BOTTOM|
-                            FL_ALIGN_INSIDE)) && !label_.empty())
-            {
-                int d = (H-int(h+fl_height()))>>1;
-                if (d >= 0)
-                {
+			if (!(flags & (FL_ALIGN_LEFT|FL_ALIGN_RIGHT|FL_ALIGN_TOP|FL_ALIGN_BOTTOM|
+						FL_ALIGN_INSIDE)) && !label_.empty())
+			{
+				int d = (H-int(h+fl_height()))>>1;
+				if (d >= 0)
+				{
                     // put the image atop the text
-                    Y += d; H -= d; flags |= FL_ALIGN_TOP;
-                }
-                else
-                {
+					Y += d; H -= d; flags |= FL_ALIGN_TOP;
+				}
+				else
+				{
                     // put image to left
-                    int text_w = W; int text_h = H;
-                    fl_measure(label_.c_str(), text_w, text_h, flags);
-                    int d = (W-(h+text_w))>>1;
-                    if (d > 0) {X += d; W -= d;}
-                    flags |= FL_ALIGN_LEFT;
-                }
-            }
+					int text_w = W; int text_h = H;
+					fl_measure(label_.c_str(), text_w, text_h, flags);
+					int d = (W-(h+text_w))>>1;
+					if (d > 0) {X += d; W -= d;}
+					flags |= FL_ALIGN_LEFT;
+				}
+			}
 
-            int cx,cy;               // point in image to put at X,Y
+			int cx,cy;               // point in image to put at X,Y
 
-            if (flags & FL_ALIGN_RIGHT) {
-                cx = w-W;
-                if (flags & FL_ALIGN_LEFT && cx < 0) cx = 0;
-            }
-            else if (flags & FL_ALIGN_LEFT) cx = 0;
-            else cx = w/2-W/2;
+			if (flags & FL_ALIGN_RIGHT) {
+				cx = w-W;
+				if (flags & FL_ALIGN_LEFT && cx < 0) cx = 0;
+			}
+			else if (flags & FL_ALIGN_LEFT) cx = 0;
+			else cx = w/2-W/2;
 
-            if (flags & FL_ALIGN_BOTTOM) {
-                cy = h-H;
-                if (flags & FL_ALIGN_TOP && cy < 0) cy = 0;
-            }
-            else if (flags & FL_ALIGN_TOP) cy = 0;
-            else cy = h/2-H/2;
+			if (flags & FL_ALIGN_BOTTOM) {
+				cy = h-H;
+				if (flags & FL_ALIGN_TOP && cy < 0) cy = 0;
+			}
+			else if (flags & FL_ALIGN_TOP) cy = 0;
+			else cy = h/2-H/2;
 
-            image_->draw(X-cx, Y-cy, W, H, 0,0,0,0,flags);
+			image_->draw(X-cx, Y-cy, W, H, 0,0,0,0,flags);
 
             // figure out the rectangle that remains for text:
-            if (flags & FL_ALIGN_LEFT) { X += (w+2); W -= (w+4); }
-            else if (flags & FL_ALIGN_RIGHT) W -= (w+4);
-            else if (flags & FL_ALIGN_TOP) {Y += h; H -= h;}
-            else if (flags & FL_ALIGN_BOTTOM) H -= h;
-            else { /*flags |= FL_ALIGN_TOP;*/
-                Y += (h-cy); H -= (h-cy);
-            }
-        }
-    }
+			if (flags & FL_ALIGN_LEFT) { X += (w+2); W -= (w+4); }
+			else if (flags & FL_ALIGN_RIGHT) W -= (w+4);
+			else if (flags & FL_ALIGN_TOP) {Y += h; H -= h;}
+			else if (flags & FL_ALIGN_BOTTOM) H -= h;
+			else { /*flags |= FL_ALIGN_TOP;*/
+				Y += (h-cy); H -= (h-cy);
+			}
+		}
+	}
 
-    if(!label_.empty()) {
-        label_type()->draw(label_.c_str(), X, Y, W, H, color, flags);
-    }
+	if(!label_.empty()) {
+		label_type()->draw(label_.c_str(), X, Y, W, H, color, flags);
+	}
 
-    if (flags & FL_ALIGN_CLIP) fl_pop_clip();
+	if (flags & FL_ALIGN_CLIP) fl_pop_clip();
 }
 
 void Fl_Widget::measure_label(int& w, int& h) const
 {
-    fl_font(label_font(), float(label_size()));
-    int flags = this->flags();
-    if (label_width_ < 0)
-        w = h = 300;               // default, rather arbitrary choice for maximum wrap width
-    else if (label_width_ == 0)
-        w = h = 0;                 // no limits at all
-    else {
-        w = label_width_;
-        flags |= FL_ALIGN_WRAP;
-        h = 0;                     // define wrap width
-    }
-    if (label().length()) 
-        fl_measure(label().c_str(), w, h, flags);
-    else {
-        w = 0;
-        h = 0;
-    }
+	fl_font(label_font(), float(label_size()));
+	int flags = this->flags();
+	if (label_width_ < 0)
+		w = h = 300;               // default, rather arbitrary choice for maximum wrap width
+	else if (label_width_ == 0)
+		w = h = 0;                 // no limits at all
+	else {
+		w = label_width_;
+		flags |= FL_ALIGN_WRAP;
+		h = 0;                     // define wrap width
+	}
+	if (label().length()) 
+		fl_measure(label().c_str(), w, h, flags);
+	else {
+		w = 0;
+		h = 0;
+	}
 }
 
 int Fl_Widget::label_height() const {
-    int w, h;
-    measure_label(w,h);
-    return h;
+	int w, h;
+	measure_label(w,h);
+	return h;
 }
 
 
 const Fl_Labeltype_* Fl_Labeltype_::find(const char* name)
 {
-    for (const Fl_Labeltype_* p = Fl_Labeltype_::first; p; p = p->next)
-        if (p->name && !strcasecmp(name, p->name)) return p;
-    return 0;
+	for (const Fl_Labeltype_* p = Fl_Labeltype_::first; p; p = p->next)
+		if (p->name && !strcasecmp(name, p->name)) return p;
+	return 0;
 }
 
 
