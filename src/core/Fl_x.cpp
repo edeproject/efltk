@@ -1132,6 +1132,8 @@ bool fl_handle()
                         Status status;
                         len = XUtf8LookupString(fl_xim_ic, (XKeyPressedEvent *)&fl_xevent.xkey,
                                                 buffer, 255, &keysym, &status);
+                        if(buffer[0] && len < 1) len = 1;
+
                     } else {
                         keysym = XKeycodeToKeysym(fl_display, keycode, 0);
                     }
