@@ -103,7 +103,8 @@ extern FL_API Fl_Font_ fl_fonts[16];
 #define FL_SCREEN_BOLD		(fl_fonts+14)
 #define FL_ZAPF_DINGBATS	(fl_fonts+15)
 
-// Find a font by name + attributes:
+// XWin: Create a fontset, XLFD's separated with comma
+// WIN32: Create single font
 FL_API Fl_Font fl_create_font(const char *system_name);
 
 // Find a font by name + attributes:
