@@ -632,8 +632,8 @@ unsigned Fl_Table_Base::find_safe_top(int ypos, int &y) const
     if(!row_count() || ypos<=0 || m_row_lookup.size()==0) return 0;
 
     // Check this!
-    for(unsigned n=m_row_lookup.size()-1; n>=0; n--) {
-        if(ypos >= m_row_lookup[n]) {
+    for (int n=m_row_lookup.size()-1; n>=0; n--) {
+        if (ypos >= m_row_lookup[n]) {
             y = m_row_lookup[n];
             return (n*1000);
         }

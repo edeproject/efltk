@@ -130,7 +130,7 @@ void Fl_ListView_ItemExt::setup(unsigned row)
             fl_measure(col_label, w, h, a);
         } else {
             // No wrap, check for multi line
-            char *ptr = strchr(col_label, '\n');
+            char *ptr = (char *)strchr(col_label, '\n');
             if(ptr) {
                 // Multi line, calc lines
                 h = (int)fl_height();
