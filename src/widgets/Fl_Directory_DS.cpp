@@ -40,6 +40,13 @@
 
 #endif
 
+#if defined(__linux) && defined(__GNUC__)
+# define S_ISEXEC(m)	  (((m) & S_IFMT) == S_IEXEC)
+# define S_ISREG(m) 	 (((m) & S_IFMT) == S_IFREG) 
+# define S_ISDIR(m) 	 (((m) & S_IFMT) == S_IFDIR) 
+# define S_ISBLK(m) 	 (((m) & S_IFMT) == S_IFBLK)
+#endif
+
 static Fl_Variant    notFound;
 static Fl_Data_Field fieldNotFound("not_found");
 
