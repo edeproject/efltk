@@ -8,7 +8,7 @@
 
 static Fl_Image *im, *bg;
 
-Fl_Button *moveb, *multib, *imb, *stripeb;
+Fl_Button *moveb, *multib, *stripeb;
 
 void callback(Fl_ListView *l, void *)
 {
@@ -44,26 +44,14 @@ void cb_single(Fl_Widget *w, void *d)
 	l->type( l->type() &~ (Fl_ListView::MULTI_SELECTION|Fl_ListView::MOVE_SELECTION) );
 
         l->draw_stripes(false);
-        l->bg_image(0);
 
         multib->value(0);
         moveb->value(0);
-        imb->value(0);
         stripeb->value(0);
 
         l->redraw();
 }
-void cb_image(Fl_Widget *w, void *d)
-{
-    Fl_ListView *l = (Fl_ListView *)d;
-    if(w->value())
-        l->bg_image(bg);
-    else
-        l->bg_image(0);
 
-    l->redraw();
-    l->relayout();
-}
 void cb_stripes(Fl_Widget *w, void *d)
 {
     Fl_ListView *l = (Fl_ListView *)d;
@@ -210,10 +198,6 @@ int main()
     but2.type(Fl_Button::TOGGLE);
     but2.callback(cb_multi, &l);
 
-    Fl_Button but4(130, 265, 50, 20, "Image");
-    but4.type(Fl_Button::TOGGLE);
-    but4.callback(cb_image, &l);
-
     Fl_Button but5(190, 265, 50, 20, "Stripes");
     but5.type(Fl_Button::TOGGLE);
     but5.callback(cb_stripes, &l);
@@ -223,7 +207,6 @@ int main()
 
     moveb = &but;
     multib = &but2;
-    imb = &but4;
     stripeb = &but5;
 
     w.resizable(&l);
