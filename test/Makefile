@@ -62,8 +62,9 @@ include ../makeinclude
 # $(ALL): $(FLLIB) # only true for static library
 
 # FLUID file rules
-.fl.cpp .fl.h:
-	LD_LIBRARY_PATH="$LD_LIBRARY_PATH:../lib" ../fluid/efluid -c $<
+# doesnt work :((
+#.fl.cpp .fl.h:
+#	LD_LIBRARY_PATH="$LD_LIBRARY_PATH:../lib" ../bin/efluid -c $<
 
 # Other programs needing special "help"...
 CubeView: CubeMain.o CubeView.o CubeViewUI.o $(FLGLLIB) $(FLCORELIB) $(FLUILIB)
