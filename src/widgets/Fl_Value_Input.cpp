@@ -94,6 +94,7 @@ void Fl_Value_Input::draw()
 		input.label(label());
 	} else {
 		input.align(0);		
+		input.label("");
 	}
     
     input.box(FL_FLAT_BOX);
