@@ -575,7 +575,9 @@ void Fl_Group::layout()
         if(client) {
             pref_w = ww;
             pref_h = hh;
-            if (!(client->align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM))) {
+            if (client->align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) {
+                pref_h -= client->label_height();
+            } else {
                 label_w = client->label_width();
                 if (label_w < 0) label_w = 0;
                 pref_w -= label_w;
