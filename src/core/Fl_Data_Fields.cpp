@@ -48,13 +48,13 @@ int Fl_Data_Field::as_int() const {
 bool Fl_Data_Field::as_bool() const {
    char ch;
    switch (value.type()) {
-   case VAR_INT:        return value.get_int();              break;
-   case VAR_FLOAT:      return (int)value.get_float();       break;
+   case VAR_INT:        return (value.get_int()>0);              break;
+   case VAR_FLOAT:      return (value.get_float()>.5f);       break;
    case VAR_STRING:
    case VAR_TEXT:
    case VAR_BUFFER:     ch = value.get_string()[0];
-                        return strchr("YyTt",ch);            break;
-   case VAR_DATETIME:   return int(value.get_date());        break;
+                        return (strchr("YyTt",ch)!=0);            break;
+   case VAR_DATETIME:   return bool(value.get_date()!=0);        break;
    case VAR_IMAGEPTR:
    case VAR_NONE:       break;
    }

@@ -280,7 +280,7 @@ bool Fl_Socket::ready_to_read(int wait_msec) {
     FD_SET(m_sockfd,&m_inputs);
 
     select(FD_SETSIZE, &m_inputs, NULL, NULL, &timeout);
-    return FD_ISSET(m_sockfd ,&m_inputs);
+    return (FD_ISSET(m_sockfd ,&m_inputs)>0);
 }
 
 bool Fl_Socket::ready_to_write() {

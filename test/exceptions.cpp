@@ -28,36 +28,36 @@ Fl_Check_Button *check;
 
 void throw_func2()
 {
-    fl_try
+    try
     {
-        fl_try {
+        try {
             //fl_throw("test throw");
-        } fl_catch(exc) {
+        } catch(Fl_Exception &) {
             //fl_rethrow; //re-throw
         }
 
-    } fl_catch(exc) {
+    } catch(Fl_Exception &) {
         //...
     }
 }
 
 void throw_func(bool t)
-{
-    fl_try {
-        fl_try {
+{	
+    try {
+        try {
             if(t) {
                 fl_throw("Error happened");
             }
-        } fl_catch(exc) {
+        } catch(Fl_Exception &exc) {
             fl_alert("INNER TRY STATEMENT:\n%s", exc.text().c_str());
-            fl_rethrow; //Remember re-throw
+            throw; //Remember re-throw
         }
 
         fl_message("NOT THROWED:\nInside try statement, after inner try/catch...");
 
-    } fl_catch(exc) {
+    } catch(Fl_Exception &exc) {
         fl_alert("OUTER TRY STATEMENT:\n%s", exc.text().c_str());
-        fl_rethrow; //Remember re-throw
+        throw; //Remember re-throw
     }
 }
 
@@ -80,7 +80,7 @@ int main (int argc,char *argv[])
     int t2 = Fl::ticks();
     fl_message("Time spend: %d ms", t2-t1);
     */
-    Fl_Window window(170,100);
+    Fl_Window window(170,100);	
 
     Fl_Button button(10, 10, 150, 30, "Create exception");
     button.callback(cb);
