@@ -87,6 +87,8 @@ Fl_ODBC_Field::Fl_ODBC_Field(const char *name,short number,short type,short leng
    }
 }
 
+// Non-driver specific. Checks the allocated data buffer
+// and allocates more memory, if needed
 char *Fl_ODBC_Field::check_buffer(unsigned sz) {
    if ((unsigned)value.size() <= sz) {
       sz = (sz / 16 + 1) * 16;
@@ -96,12 +98,15 @@ char *Fl_ODBC_Field::check_buffer(unsigned sz) {
 }
 
 // Constructor
+// Driver TO DO: put here your connection object initialization
+// w/o establishing a connection.
 Fl_ODBC_Database::Fl_ODBC_Database(const Fl_String connString) 
 : Fl_Database(connString) {
    m_connect = new ODBCConnection;
 }
 
 // Destructor
+// Driver TO DO: cleanup. close() and close_connection() are MUST.
 Fl_ODBC_Database::~Fl_ODBC_Database() {
    close();
    close_connection();
@@ -109,17 +114,22 @@ Fl_ODBC_Database::~Fl_ODBC_Database() {
 }
 
 // Create a database connection
+// Driver TO DO: establish a connection using connect string and other 
+// driver-specific parameters, like server, port number, user name,  etc..
 void Fl_ODBC_Database::open_connection() {
    Fl_String finalConnectionString;
    m_connect->connect(m_connString,finalConnectionString,false);
 }
 
 // Close a database connection
+// Terminate connection with the database
 void Fl_ODBC_Database::close_connection() {
    m_connect->disconnect();
 }
 
 // Begin database transaction
+// Driver TO DO: begin the transaction, if supported by database,
+// otherwise - fl_throw("Transactions are not supported")
 void Fl_ODBC_Database::begin_transaction() {
    if (m_inTransaction)
       fl_throw("Transaction already started.");
@@ -129,6 +139,8 @@ void Fl_ODBC_Database::begin_transaction() {
 }
 
 // Commit database transaction
+// Driver TO DO: commit the transaction, if supported by database,
+// otherwise - fl_throw("Transactions are not supported")
 void Fl_ODBC_Database::commit_transaction() {
    if (!m_inTransaction)
       fl_throw("Transaction isn't started.");
@@ -139,6 +151,8 @@ void Fl_ODBC_Database::commit_transaction() {
 }
 
 // Rollback database transaction
+// Driver TO DO: rollback the transaction, if supported by database,
+// otherwise - fl_throw("Transactions are not supported")
 void Fl_ODBC_Database::rollback_transaction() {
    if (!m_inTransaction)
       fl_throw("Transaction isn't started.");
@@ -148,7 +162,9 @@ void Fl_ODBC_Database::rollback_transaction() {
    m_inTransaction = false;
 }
 
-// Create query handle
+// Create query handle, ODBC-specific
+// Driver TO DO: allocate query object resources, like handle for future
+// query, if applicable. Otherwise, you don't need that method
 void Fl_ODBC_Database::allocate_query(Fl_Query *query) {
    deallocate_query(query);
 
@@ -160,7 +176,9 @@ void Fl_ODBC_Database::allocate_query(Fl_Query *query) {
    query_handle(query,qhandle);
 }
 
-// Release query handle
+// Release query handle, ODBC-specific
+// Driver TO DO: deallocate query object resources, like handle of the
+// query, if applicable. Otherwise, you don't need that method
 void Fl_ODBC_Database::deallocate_query(Fl_Query *query) {
    void *qhandle = query_handle(query);
    if (!qhandle) // Not allocated
@@ -170,7 +188,11 @@ void Fl_ODBC_Database::deallocate_query(Fl_Query *query) {
    query_handle(query,SQL_NULL_HSTMT);
 }
 
-// Get error description for the query
+// Get error description for the query, ODBC-specific
+// Driver TO DO: for the last operation, retrieve the error from
+// the database. Usually, you can use query/statement handle to retrieve
+// the error for that query/statement. It's possible that database returns 
+// a set of errors - from every layer of DB driver
 Fl_String Fl_ODBC_Database::query_error(Fl_Query *query) const {
    char  errorDescription[SQL_MAX_MESSAGE_LENGTH];
    char  errorState[SQL_MAX_MESSAGE_LENGTH];
@@ -188,6 +210,9 @@ Fl_String Fl_ODBC_Database::query_error(Fl_Query *query) const {
 }
 
 // Prepare query handle
+// Driver TO DO: if database supports the 'prepare' conception,
+// prepare the query/handle for the faster execution in the future.
+// Otherwise, do nothing inside the method.
 void Fl_ODBC_Database::prepare_query(Fl_Query *query) {
    if (!successful(SQLPrepare(query_handle(query),(UCHAR FAR *)(LPCSTR)query->sql().c_str(),SQL_NTS))) {
       fl_throw(query_error(query));
