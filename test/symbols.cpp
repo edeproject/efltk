@@ -30,6 +30,7 @@
 #include <efltk/Fl.h>
 #include <efltk/Fl_Single_Window.h>
 #include <efltk/Fl_Box.h>
+#include <efltk/Fl_String.h>
 #include <efltk/Fl_Value_Slider.h>
 #include <efltk/fl_draw.h>
 
@@ -40,49 +41,61 @@ int N = 0;
 #define COLS 5
 
 Fl_Window *window;
+Fl_Slider *scale, *rot;
 
-void slider_cb(Fl_Widget *w, void *data) {
-  static char buf[80];
-  int val = (int)(((Fl_Value_Slider*)w)->value());
-  Fl_Window *win = (Fl_Window*)w->parent();       // get parent window
-  for (int i = win->children(); i--; ) {          // all window children
-    Fl_Widget *wc = win->child(i);
-    const char *l = wc->label();
-    if ( *l == '@' ) {                            // all children with '@'
-      if ( *(++l) == '@' ) {                      // ascii legend?
-        l++;
-	while (isdigit(*l)) { l++; }
-        if (val == 0) { sprintf(buf, "@@%s", l); }
-        else          { sprintf(buf, "@@%d%s", val, l); }
-      } else {                                    // box with symbol
-        while (isdigit(*l)) { l++; }
-        if (val == 0) { sprintf(buf, "@%s", l); }
-	else          { sprintf(buf, "@%d%s", val, l); }
-      }
-      free((void*)(wc->label()));
-      wc->label(strdup(buf));
+void update()
+{
+    int rot_val = (int)rot->value();
+    int scale_val = (int)scale->value();
+    for (int i = window->children(); i--; )
+    {
+        // all window children
+        Fl_Widget *wc = window->child(i);
+
+        if(wc==scale||wc==rot) continue;
+
+        Fl_String str("@");
+        if(scale_val>0) {
+            str+="+"+Fl_String(scale_val);
+        } else if(scale_val<0) {
+            str+=Fl_String(scale_val);
+        }
+        if(rot_val>0) {
+            str+=Fl_String(rot_val);
+        }
+        str+=(char*)wc->user_data();
+        wc->copy_label(str.c_str());
     }
-  }
-  win->redraw();
+    window->redraw();
 }
 
-void bt(const char *name) {
+void slider_cb(Fl_Widget *w, void *data) {
+    update();
+}
+
+void bt(const char *name)
+{
   int x = N%COLS;
   int y = N/COLS;
   N++;
   x = x*W+10;
   y = y*H+10;
-  Fl_Box *a = new Fl_Box(FL_NO_BOX,x,y,W-20,H-20,strdup(name));
-  a->clear_flag(FL_ALIGN_MASK);
-  a->set_flag(FL_ALIGN_BOTTOM);
+
+  Fl_Box *a = new Fl_Box(x,y,W-20,H-20,name);
+  a->user_data((void*)(name+1));
+  a->align(FL_ALIGN_BOTTOM);
   a->label_size(11);
-  Fl_Box *b = new Fl_Box(FL_UP_BOX,x,y,W-20,H-20,strdup(name));
+
+  Fl_Box *b = new Fl_Box(x,y,W-20,H-20,name);
+  b->user_data((void*)(name+1));
+  b->align(FL_ALIGN_CLIP);
+  b->box(FL_THIN_UP_BOX);
   b->label_type(FL_SYMBOL_LABEL);
   b->label_color(FL_DARK3);
 }
 
 int main(int argc, char ** argv) {
-  window = new Fl_Single_Window(COLS*W,ROWS*H+60);
+  window = new Fl_Single_Window(COLS*W,ROWS*H+90);
 bt("@->");
 bt("@>");
 bt("@>>");
@@ -109,16 +122,32 @@ bt("@menu");
 bt("@UpArrow");
 bt("@DnArrow");
 
-  Fl_Value_Slider slider((int)(window->w()*.10+.5),
-                         window->h()-40,
-                         (int)(window->w()*.80+.5),
+  Fl_Value_Slider slider(80,
+                         window->h()-60,
+                         window->w()-90,
                          16,
                          "Orientation");
+  slider.align(FL_ALIGN_LEFT);
   slider.type(Fl_Slider::HORIZONTAL);
   slider.range(0.0, 9.0);
   slider.value(0.0);
   slider.step(1);
   slider.callback(slider_cb, &slider);
+
+  Fl_Value_Slider slider2(80,
+                          window->h()-30,
+                          window->w()-90,
+                          16,
+                          "Scale");
+  slider2.align(FL_ALIGN_LEFT);
+  slider2.type(Fl_Slider::HORIZONTAL);
+  slider2.range(-9.0, 9.0);
+  slider2.value(0.0);
+  slider2.step(1);
+  slider2.callback(slider_cb, &slider);
+
+  rot = &slider;
+  scale = &slider2;
 
   window->resizable(window);
   window->show(argc,argv);
