@@ -63,6 +63,7 @@ options telling what we are doing :
 	[--use-gl]        use GL
 	[--use-xml]       use XML extension library
 	[--use-odbc]      use ODBC database driver
+	[--use-mysql]     use MySQL database driver
 	[--use-images]    use extra image formats (PNG, Jpeg)
         [--multithread]   build a multithreaded program
 	[--build-plugin]  build a plugin
@@ -74,6 +75,12 @@ options telling what information we request
 	[--ldstaticflags] return flags to link against static FLTK library
                                           even if there are DSOs installed
 	[--libs]          return FLTK libraries full path for dependencies
+
+options compiling and linking an application:
+	[-g]              compile the program with debugging information
+	[--compile program.cpp]
+        [--output program] if output is not set, basename is used as output
+
 "
     exit $1
 }
@@ -82,6 +89,9 @@ if test $# -eq 0; then usage 1
 fi
 
 no_plugins=no
+compile=
+debug=
+output=
 
 # Parse command line options
 while test $# -gt 0 
@@ -123,6 +133,9 @@ do
     --use-odbc)
       use_odbc=yes
       ;;
+    --use-mysql)
+      use_mysql=yes
+      ;;
     --multithread)
       use_threads=yes
       ;;
@@ -143,6 +156,17 @@ do
       ;;
     --libs)
       echo_libs=yes
+      ;;
+    --compile)
+      compile=$2
+      shift
+      ;;
+    -g)
+      debug=-g3
+      ;;
+    -o)
+      output=$2
+      shift
       ;;
     *)
       echo_help=yes
@@ -176,8 +200,15 @@ fi
 
 if test "$use_odbc" = "yes"; then
     LDLIBS="$LDLIBS -lefltk_odbc @UNIXODBCLIB@"
-    LDSTATIC="$LDSTATIC $prefix/lib/libefltk_odbc.a"
+    LDSTATIC="$LDSTATIC $prefix/lib/libefltk_odbc.a @UNIXODBCLIB@"
     LIBS="$LIBS $prefix/lib/libefltk_odbc.a"
+fi
+
+if test "$use_mysql" = "yes"; then
+    LDLIBS="$LDLIBS -lefltk_mysql @MYSQLLIBS@"
+    LDSTATIC="$LDSTATIC $prefix/lib/libefltk_mysql.a @MYSQLLIBS@"
+    LIBS="$LIBS $prefix/lib/libefltk_mysql.a"
+    CXXFLAGS="$CXXFLAGS @MYSQLFLAGS@"
 fi
 
 if test "$build_plugin" = "yes"; then
@@ -196,6 +227,37 @@ fi
 
 # Answer to user requests
 if test -n "$echo_help"; then usage 1
+fi
+
+if test -n "$compile"; then
+
+    if test -n "$output"; then
+	prog=$output
+    else
+    case $compile in
+        *.cxx)
+            prog=`basename $compile .cxx`
+	    ;;
+        *.cpp)
+            prog=`basename $compile .cpp`
+	    ;;
+        *.cc)
+            prog=`basename $compile .cc`
+	    ;;
+        *.C)
+            prog=`basename $compile .C`
+	    ;;
+	*)
+	    echo "ERROR: Unknown/bad C++ source file extension on \"$compile\"!"
+	    exit 1
+	    ;;
+    esac
+    fi
+	    
+    post=$prog
+
+    echo $CXX $CXXFLAGS $debug -o $prog $compile $LDLIBS
+    $CXX $CXXFLAGS $debug -o $prog $compile $LDLIBS
 fi
 
 if test "$echo_prefix" = "yes"; then
