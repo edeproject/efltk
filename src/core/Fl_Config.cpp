@@ -75,18 +75,18 @@ static bool makePathForFile( const char *path )
 
 char *get_sys_dir() {
 #ifndef _WIN32
-	return CONFIGDIR;
+    return CONFIGDIR;
 #else
-	static char path[FL_PATH_MAX];
+    static char path[FL_PATH_MAX];
     HKEY hKey;
     if(RegOpenKeyExW(HKEY_LOCAL_MACHINE, L"Software\\Microsoft\\Windows\\CurrentVersion", 0, KEY_READ, &hKey)==ERROR_SUCCESS)
     {
         DWORD size=4096;
-        LONG result=RegQueryValueExW(hKey, L"CommonFilesDir", NULL, NULL, (LPBYTE)path, &size);		
+        LONG result=RegQueryValueExW(hKey, L"CommonFilesDir", NULL, NULL, (LPBYTE)path, &size);
         RegCloseKey(hKey);
         return path;
     }
-	return "C:\\EFLTK\\";
+    return "C:\\EFLTK\\";
 #endif
 }
 
@@ -138,10 +138,10 @@ Fl_Config::Fl_Config(const char *vendor, const char *application, ConfMode mode)
         const char *file=0;
         char tmp[FL_PATH_MAX];
 #ifdef _WIN32
-		if(mode==SYSTEM) snprintf(tmp, sizeof(tmp)-1, "%s%c%s.conf", app_, slash, app_);
-		else
+        if(mode==SYSTEM) snprintf(tmp, sizeof(tmp)-1, "%s%c%s.conf", app_, slash, app_);
+        else
 #endif
-        snprintf(tmp, sizeof(tmp)-1, "apps%c%s%c%s.conf", slash, app_, slash, app_);
+            snprintf(tmp, sizeof(tmp)-1, "apps%c%s%c%s.conf", slash, app_, slash, app_);
         file = find_config_file(tmp, true, mode);
         if(file) {
             bool ret = makePathForFile(file);
@@ -177,10 +177,14 @@ Fl_Config::~Fl_Config()
 {
     flush();
     uint n;
-    for(n=0; n<lines.size(); n++)
-        delete (Line*)lines[n];
-    for(n=0; n<sections.size(); n++)
-        delete (Section*)sections[n];
+    for(n=0; n<lines.size(); n++) {
+        Line *l=(Line *)lines[n];
+        delete l;
+    }
+    for(n=0; n<sections.size(); n++) {
+        Section *s=(Section *)sections[n];
+        delete s;
+    }
     if(filename_) delete []filename_;
 }
 
@@ -570,52 +574,34 @@ void Fl_Config::remove_sec(const char *section)
 
 #include "fl_internal.h"
 
-// Converts locale decimal to '.' e.g. "1,5" to "1.5"
-
-char *double_to_str(double v)
+// returns "C" locale string of double
+const char *double_to_str(double v)
 {
+    char *locale = setlocale(LC_ALL, "");
+    char *restore_locale = locale ? strdup(locale) : strdup("C");
+
+    setlocale(LC_ALL, "C");
     static char ret[128];
     snprintf(ret, sizeof(ret)-1, "%g", v);
 
-    lconv *locale_conv = localeconv();
-    char decimal = locale_conv->decimal_point[0];
-    if(decimal=='.') return ret;
-
-    char *ptr = ret;
-    while(*ptr++) if(*ptr==decimal) *ptr = '.';
+    setlocale(LC_ALL, restore_locale);
+    free(restore_locale);
     return ret;
 }
 
-// Reads double with '.' as decimal pointer
+// Reads "C" locale double from string v
 double str_to_double(const char *v)
 {
-    lconv *locale_conv = localeconv();
-    char decimal = locale_conv->decimal_point[0];
-    if(decimal=='.') return atof(v);
+    char *locale = setlocale(LC_ALL, "");
+    char *restore_locale = locale ? strdup(locale) : strdup("C");
 
-    static char ret[128];
-    double value=0;
-    const char *ptr = v;
-    char *ret_ptr = ret;
+    setlocale(LC_ALL, "C");
+    double ret = strtod(v, 0);
 
-    while(*ptr) {
-        char c = *ptr++;
-        if(c=='.') {
-            break;
-        }
-        *ret_ptr++ = c;
-    }
-    *ret_ptr = '\0';
-    value=double(atoi(ret));
+    setlocale(LC_ALL, restore_locale);
+    free(restore_locale);
 
-    ret_ptr = ret;
-    while(*ptr) {
-        char c = *ptr++;
-        *ret_ptr++ = c;
-    }
-    *ret_ptr = '\0';
-
-    return value+double(atoi(ret))/10;
+    return ret;
 }
 
 /*
@@ -771,15 +757,13 @@ int Fl_Config::_write_string(Section *s, const char *key, const char *value)
 
 int Fl_Config::_write_long(Section *s, const char *key, const long value)
 {
-    char tmp[128];
-    snprintf(tmp, sizeof(tmp)-1, "%ld", value);
+    char tmp[128]; snprintf(tmp, sizeof(tmp)-1, "%ld", value);
     return _write_string(s, key, tmp);
 }
 
 int Fl_Config::_write_int(Section *s, const char *key, const int value)
 {
-    char tmp[128];
-    snprintf(tmp, sizeof(tmp)-1, "%d", value);
+    char tmp[128]; snprintf(tmp, sizeof(tmp)-1, "%d", value);
     return _write_string(s, key, tmp);
 }
 

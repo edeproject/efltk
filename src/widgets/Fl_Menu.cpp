@@ -48,10 +48,12 @@
 # define isnan(x) false
 #endif
 
+class MenuWindow;
+
 enum {
-	INITIAL_STATE = 0,// no mouse up or down since popup() called
-	PUSH_STATE,	// mouse has been pushed on a normal item
-	DONE_STATE	// execute the selected item
+    INITIAL_STATE = 0,// no mouse up or down since popup() called
+    PUSH_STATE,	// mouse has been pushed on a normal item
+    DONE_STATE	// execute the selected item
 };
 
 typedef struct menustate_
@@ -60,6 +62,12 @@ typedef struct menustate_
   int indexes[MAX_LEVELS]; // index in each level of selected item  
   bool menubar; // if true menus[0] is a menubar
   int state; // one of the enumeration below
+
+  // timeout stuff:
+  MenuWindow *open_window, *close_window;
+  Fl_Widget *open_widget;
+  int open_index;
+
 } MenuState;
 
 ///////////////////////
@@ -95,7 +103,7 @@ public:
     }
     // return the widget at a given level:
     Fl_Widget* current_widget(int level) {
-        if(!indexes_) return 0;
+        if(!indexes_ || level<0) return 0;
         return menu_->child(indexes_, level);
     }
 
@@ -132,7 +140,7 @@ public:
     bool add_items;
     bool empty;
 
-	int ox,oy,ow,oh;
+    int ox,oy,ow,oh;
     int Wp, Hp;
 
     int effect;
@@ -145,14 +153,10 @@ public:
 
 bool MenuWindow::key_event = false;
 
-static MenuState *state;
+static MenuState *state = 0;
 
 static MenuWindow *first_menu = 0; //First popped up menuwindow
 static MenuWindow *current_menu = 0; //Current subwindow
-
-static MenuWindow *the_window=0;
-static Fl_Widget *the_widget=0;
-static int the_index=0;
 
 #define TXT_OFFSET  3
 #define TXT_OFFSET2 6
@@ -183,7 +187,7 @@ MenuWindow::MenuWindow(MenuWindow *parent, Fl_Widget *widget, int widget_index, 
     child_win = 0;
     add_items = false;
     widget_ = widget;
-	widget_index_ = widget_index;
+    widget_index_ = widget_index;
     menu_ = menu;
     empty = true;
 
@@ -192,7 +196,7 @@ MenuWindow::MenuWindow(MenuWindow *parent, Fl_Widget *widget, int widget_index, 
     this->Wp=Wp;
     this->Hp=Hp;
 
-    relayout(indexes, level);	
+    relayout(indexes, level);
 }
 
 void timeout_open_childwin(void *arg);
@@ -200,20 +204,16 @@ void timeout_close_childwin(void *arg);
 
 MenuWindow::~MenuWindow()
 {
-    Fl::remove_timeout(timeout_open_childwin, this);	
-	Fl::remove_timeout(timeout_close_childwin, this);	
-
     animating = false;
 
     if(child_win) {
-		delete child_win;
-		child_win = 0;
-	}
+        close_childwin();
+    }
 
-    if(the_window==this) {
-        the_widget = 0;
-        the_index = -1;
-        the_window = 0;
+    if(state->open_window==this) {
+        state->open_widget = 0;
+        state->open_index = -1;
+        state->open_window = 0;
     }
 
     current_menu = parent;
@@ -231,6 +231,10 @@ void MenuWindow::relayout(int *indexes, int level)
 
     empty = true;
     add_items = true;
+
+    Fl_Menu_ *menu = (Fl_Menu_*)current_widget(level_-1);
+    if(menu && menu->about_to_show)
+        menu->about_to_show(menu, menu->user_data());
 
     layout();
     redraw();
@@ -396,15 +400,9 @@ void MenuWindow::fix_indexes()
         win=win->parent;
     }
 
-    /*win = child_win;
-     while(win) {
-     win->set_selected(0);
-     win=win->child_win;
-     }*/
-
     win = this;
-    while(win) {		
-		if(win->level_<=0) break;
+    while(win) {
+        if(win->level_<=0) break;
         state->indexes[win->level_-1] = win->widget_index_;
         win = win->parent;
     }
@@ -559,28 +557,33 @@ int MenuWindow::forward(int menu)
 
 void MenuWindow::close_childwin()
 {
-	if(child_win) {
-		child_win->hide();
-		if(!child_win->animating) {
-			delete child_win;
-			child_win=0;
-		}
-	}
+    if(child_win) {
+        child_win->animating = false;
+
+        Fl_Menu_ *menu = (Fl_Menu_*)current_widget(level_-1);
+        if(menu && menu->about_to_hide)
+            menu->about_to_hide(menu, menu->user_data());
+
+        child_win->hide();
+        delete child_win;
+        child_win=0;
+    }
 }
 
 void MenuWindow::open_childwin(Fl_Widget *widget, int index)
 {	
     if(child_win && child_win->widget_!=widget) {
-        child_win->hide();
-        if(child_win->animating) return;
-        delete child_win; child_win = 0;
-        child_win = new MenuWindow(this, widget, index, menu_, state->indexes, level_+1);        
-        child_win->effect = effect;
-    } else
-    if(!child_win) {
 
-        child_win = new MenuWindow(this, widget, index, menu_, state->indexes, level_+1);        
+        close_childwin();
+        child_win = new MenuWindow(this, widget, index, menu_, state->indexes, level_+1);
         child_win->effect = effect;
+
+    }
+    else if(!child_win) {
+
+        child_win = new MenuWindow(this, widget, index, menu_, state->indexes, level_+1);
+        child_win->effect = effect;
+
     } else
         return;
 
@@ -610,19 +613,26 @@ void MenuWindow::open_childwin(Fl_Widget *widget, int index)
     if(key_event) child_win->forward(level_+1);
 }
 
-void timeout_open_childwin(void *arg) {
-    if(the_window && the_widget && the_index>=0 && arg==the_window)
-        the_window->open_childwin(the_widget, the_index);
+void timeout_open_childwin(void *arg)
+{
+    if(state->open_window && state->open_widget && state->open_index>=0) {
+        state->open_window->open_childwin(state->open_widget, state->open_index);
+    }
+    state->open_widget = 0;
+    state->open_index = -1;
+    state->open_window = 0;
 }
 
-static MenuWindow *close_window=0;
-void timeout_close_childwin(void *arg) {
-	if(close_window && close_window==arg)
-		close_window->close_childwin();        
+void timeout_close_childwin(void *arg)
+{
+    if(state->close_window) {
+        state->close_window->close_childwin();
+    }
+    state->close_window = 0;
 }
 
 void timeout_initial(void *) {
-	state->state = PUSH_STATE;    
+    state->state = PUSH_STATE;
 }
 
 int MenuWindow::handle(int event)
@@ -675,8 +685,7 @@ int MenuWindow::handle(int event)
         if(child_win) {
             int ret = child_win->handle(event);
             if(ret) return 1;
-            delete child_win;
-            child_win = 0;
+            close_childwin();
             return 1;
         }
 
@@ -780,31 +789,30 @@ int MenuWindow::handle(int event)
             // Send events widgets, so sub-classed items can get them.
             // FIXME: Fl::e_x and Fl::e_y is WRONG!
             if(widget->takesevents())
-                if(widget->send(event))
+                if(widget->send(event)) {
                     return 1;
+                }
         }
     JUMP_OPEN:
         if(widget) set_item(level_, index);
 
-        if(widget!=the_widget && the_window==this) {
-            // Remove timeout, if sub-menu widget we are pointing changes
-            Fl::remove_timeout(timeout_open_childwin, this);
-            Fl::remove_timeout(timeout_close_childwin, this);
-        } else if(the_window && the_window!=this) {
-            Fl::remove_timeout(timeout_open_childwin, ::the_window);
+        if(state->open_window && widget && state->open_widget!=widget) {
+            state->open_widget = 0;
+            state->open_index = -1;
+            state->open_window = 0;
+            Fl::remove_timeout(timeout_open_childwin, state);
         }
 
-        Fl::remove_timeout(timeout_close_childwin, ::close_window);
-        ::close_window = 0;
-        ::the_widget = 0;
-        ::the_index = -1;
-        ::the_window = 0;
+        if(child_win && child_win->widget_==widget && state->close_window==this) {
+            Fl::remove_timeout(timeout_close_childwin, state);
+            state->close_window = 0;
+        }
 
         float delay = (menu_->delay()==-1)?Fl_Menu_::default_delay():menu_->delay();
 
         //if(indexes_ && is_parent(index)) {
-        if(indexes_ && widget && widget->is_group() ) {
-
+        if(indexes_ && widget && widget->is_group() )
+        {
             if(child_win && child_win->widget_==widget) return 1;
 
             if(widget && !widget->takesevents() && !widget->active()) {
@@ -812,30 +820,37 @@ int MenuWindow::handle(int event)
                 goto CLOSE_JUMP;
             }
 
-            if(delay>0 && (widget!=::the_widget && ::the_window!=this) ) {
+            if(delay>0 && state->open_widget!=widget) {
                 // Add only, if not already added to this widget timeout
-                ::the_widget = widget;
-                ::the_index = index;
-                ::the_window = this;
-                Fl::add_timeout(delay, timeout_open_childwin, this);
+                state->open_widget = widget;
+                state->open_index = index;
+                state->open_window = this;
+                Fl::add_timeout(delay, timeout_open_childwin, state);
             } else if(delay<=0) {
                 // Open with NO timeout
                 open_childwin(widget, index);
             }
             return 1;
         }
-    CLOSE_JUMP:
 
-        if(widget && child_win) {			
-            if(delay>0) {
-                ::close_window = this;
-                Fl::add_timeout(delay, timeout_close_childwin, this);
-            } else {
-                close_childwin();
+    CLOSE_JUMP:
+        if(widget) {
+
+            if(child_win) {
+                if(delay>0) {
+                    if(state->close_window!=this) {
+                        if(state->close_window) Fl::remove_timeout(timeout_close_childwin, state);
+                        state->close_window = this;
+                        Fl::add_timeout(delay, timeout_close_childwin, state);
+                    }
+                } else {
+                    close_childwin();
+                }
             }
         }
-        if (event == FL_PUSH) {			
-			state->state = PUSH_STATE;
+
+        if (event == FL_PUSH) {
+            state->state = PUSH_STATE;
             // redraw checkboxes so they preview the state they will be in:
             Fl_Widget* widget = get_widget(index);
             if(widget && checkmark(widget)) redraw(FL_DAMAGE_CHILD);
@@ -859,7 +874,7 @@ int MenuWindow::handle(int event)
         // Allow menus to be "clicked-up".  Without this a single click will
         // pick whatever item the mouse is pointing at in a pop-up menu:
         if(state->state==INITIAL_STATE && Fl::event_is_click()) {			
-			return 1;            
+            return 1;
         }
 
         Fl_Widget *widget = 0;
@@ -870,9 +885,9 @@ int MenuWindow::handle(int event)
         }
 
         // Open child window on RELEASE, if we are still waiting timeout
-        if(widget && the_widget==widget && the_index>-1 && (!child_win || child_win->widget_!=widget) ) {
-            Fl::remove_timeout(timeout_open_childwin, this);
-            open_childwin(the_widget, the_index);
+        if(widget && state->open_window==this) {
+            Fl::remove_timeout(timeout_open_childwin, state);
+            open_childwin(state->open_widget, state->open_index);
             return 1;
         }
 
@@ -889,18 +904,19 @@ int MenuWindow::handle(int event)
             }
         }
 
-        if(!widget) {			
+        if(!widget) {
             Fl::exit_modal(); return 1;
         }
         if(!widget->takesevents()) return 1;
 
         if(widget && widget->takesevents()) {
             // Send FL_RELEASE to item
-            if(widget->send(event))
+            if(widget->send(event)) {
                 return 1;
+            }
         }
 
-		state->state = DONE_STATE;        
+        state->state = DONE_STATE;
         Fl::exit_modal();
         return 1;
     }
@@ -993,33 +1009,6 @@ void MenuWindow::show(Fl_Window *w)
     show();
 }
 
-void Fl_Menu_::relayout_current_menu()
-{
-    if(!current_menu) return;
-
-    current_menu->add_items = true;
-    current_menu->layout();
-
-    // Force menu on screen
-    bool need_layout=false;
-
-    int nX=current_menu->ox, nY=current_menu->oy;
-    if(nX+current_menu->ow > Fl::w()) {
-        nX = Fl::w()-current_menu->ow;
-        need_layout=true;
-    }
-    if(nY+current_menu->oh > Fl::h()) {
-        nY = Fl::h()-current_menu->oh;
-        if(nY<0) nY=0;
-        need_layout=true;
-    }
-
-    current_menu->position(nX, nY);
-
-    current_menu->Fl_Menu_Window::layout();
-    current_menu->show();
-}
-
 //#define DEBUG_MENUS
 
 #ifdef DEBUG_MENUS
@@ -1030,13 +1019,22 @@ void Fl_Menu_::relayout_current_menu()
 
 int Fl_Menu_::popup(int X, int Y, int W, int H)
 {
-	MenuState menustate;
-	menustate.state = INITIAL_STATE;
+    MenuState *saved_state = state;
+    MenuWindow *saved_first = first_menu;
+    MenuWindow *saved_current = current_menu;
+
+    MenuState menustate;
+    // reset sub-window delay stuff...
+    menustate.open_widget = 0;
+    menustate.open_index = -1;
+    menustate.open_window = 0;
+    menustate.close_window = 0;
+    menustate.state = INITIAL_STATE;
     menustate.level=0;
     menustate.indexes[0] = value();
     menustate.indexes[1] = -1;
-	menustate.menubar = false;
-	state = &menustate;
+    menustate.menubar = false;
+    state = &menustate;
 
     // fix possible programmer error...
     Fl_Group::current(0);
@@ -1061,9 +1059,6 @@ int Fl_Menu_::popup(int X, int Y, int W, int H)
 
     float speed = (anim_speed()==-1||isnan(anim_speed()))?Fl_Menu_::default_anim_speed():anim_speed();
     int effect = (effect_type()==-1)?Fl_Menu_::default_effect_type():effect_type();
-
-    MenuWindow *saved_first = first_menu;
-    MenuWindow *saved_current = current_menu;
 
     first_menu = new MenuWindow(0, 0, value(), this, menustate.indexes, menustate.level, W, H);
     first_menu->child_of(Fl::first_window());
@@ -1101,14 +1096,13 @@ int Fl_Menu_::popup(int X, int Y, int W, int H)
     delete first_menu;
 
     Fl::modal(saved_modal, saved_grab);
+    Fl::remove_timeout(timeout_open_childwin, state);
+    Fl::remove_timeout(timeout_close_childwin, state);
+    Fl::remove_timeout(timeout_initial);
 
+    state = saved_state;
     first_menu = saved_first;
     current_menu = saved_current;
-
-    // reset sub-window delay stuff...
-    the_widget = 0;
-    the_index = -1;
-    the_window = 0;
 
     if(menustate.state != DONE_STATE) return false;
 
@@ -1121,12 +1115,21 @@ int Fl_Menu_::popup(int X, int Y, int W, int H)
 
 int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
 {
-	MenuState menustate;
-	menustate.state = INITIAL_STATE;
+    MenuState *saved_state = state;
+    MenuWindow *saved_first = first_menu;
+    MenuWindow *saved_current = current_menu;
+
+    MenuState menustate;
+    // reset sub-window delay stuff...
+    menustate.open_widget = 0;
+    menustate.open_index = -1;
+    menustate.open_window = 0;
+    menustate.close_window = 0;
+    menustate.state = INITIAL_STATE;
     menustate.level=-1;
     menustate.indexes[0] = -1;
-	menustate.menubar = true;
-	state = &menustate;
+    menustate.menubar = true;
+    state = &menustate;
 
     int WX = x(); int WY = y();
     for (Fl_Widget *o = parent(); o; o = o->parent()) {
@@ -1140,9 +1143,6 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
 
     float speed = (anim_speed()==-1||isnan(anim_speed()))?Fl_Menu_::default_anim_speed():anim_speed();
     int effect = (effect_type()==-1)?Fl_Menu_::default_effect_type():effect_type();
-
-    MenuWindow *saved_first = first_menu;
-    MenuWindow *saved_current = current_menu;
 
     first_menu = new MenuWindow(0, this, value(), this, 0, -1);
     first_menu->effect = effect;
@@ -1203,8 +1203,7 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
 
             first_menu->widget_ = inside;
             if(first_menu->child_win) {
-                delete first_menu->child_win;
-                first_menu->child_win=0;
+                first_menu->close_childwin();
             }
 
             int nX = inside->x()+WX;
@@ -1245,14 +1244,13 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
     delete first_menu;
 
     Fl::modal(saved_modal, saved_grab);
+    Fl::remove_timeout(timeout_open_childwin, state);
+    Fl::remove_timeout(timeout_close_childwin, state);
+    Fl::remove_timeout(timeout_initial);
 
+    state = saved_state;
     first_menu = saved_first;
     current_menu = saved_current;
-
-    // reset sub-window delay stuff...
-    the_widget = 0;
-    the_index = -1;
-    the_window = 0;
 
     selected_ = -1;
     if(menustate.level>0) highlight_ = -1;
@@ -1272,13 +1270,22 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
 
 int Fl_Choice::popup(int X, int Y, int W, int H)
 {
-	MenuState menustate;
-	menustate.state = INITIAL_STATE;
+    MenuState *saved_state = state;
+    MenuWindow *saved_first = first_menu;
+    MenuWindow *saved_current = current_menu;
+
+    MenuState menustate;
+    // reset sub-window delay stuff...
+    menustate.open_widget = 0;
+    menustate.open_index = -1;
+    menustate.open_window = 0;
+    menustate.close_window = 0;
+    menustate.state = INITIAL_STATE;
     menustate.level=0;
     menustate.indexes[0] = value();
     menustate.indexes[1] = -1;
-	menustate.menubar = false;
-	state = &menustate;
+    menustate.menubar = false;
+    state = &menustate;
 
     // fix possible programmer error...
     Fl_Group::current(0);
@@ -1299,9 +1306,6 @@ int Fl_Choice::popup(int X, int Y, int W, int H)
     float speed = (anim_speed()==-1||isnan(anim_speed()))?Fl_Menu_::default_anim_speed():anim_speed();
     int effect = (effect_type()==-1)?Fl_Menu_::default_effect_type():effect_type();
     if(effect==FL_EFFECT_ANIM) effect = FL_EFFECT_NONE;
-
-    MenuWindow *saved_first = first_menu;
-    MenuWindow *saved_current = current_menu;
 
     first_menu = new MenuWindow(0, this, value(), this, menustate.indexes, menustate.level, W, H);
     first_menu->child_of(Fl::first_window());
@@ -1373,14 +1377,13 @@ int Fl_Choice::popup(int X, int Y, int W, int H)
     delete first_menu;
 
     Fl::modal(saved_modal, saved_grab);
+    Fl::remove_timeout(timeout_open_childwin, state);
+    Fl::remove_timeout(timeout_close_childwin, state);
+    Fl::remove_timeout(timeout_initial);
 
+    state = saved_state;
     first_menu = saved_first;
     current_menu = saved_current;
-
-    // reset sub-window delay stuff...
-    the_widget = 0;
-    the_index = -1;
-    the_window = 0;
 
     if(menustate.state != DONE_STATE) return false;
 

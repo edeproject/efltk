@@ -258,8 +258,8 @@ static char *build_xpm(char **stream, uint32 &size)
     int lines=ncol+h;
 
     char head[] = "{\n";
-    size=sizeof(head)-1;
-    char *buf=new char[size+3];	
+    size=2;
+    char *buf = (char*)malloc(6);
     memcpy(buf, head, size);
 
     int curline=0;
@@ -491,13 +491,13 @@ done:
     free(keystrings);
     free_colorhash(colors);
 
-    return (error==false && data!=0);
+    return (data!=0);
 }
 
 static bool xpm_read_file(FILE *fp, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h)
 {
-	xpm_io.init_io(fp, 0, 0);
-	return xpm_create(data, format, w, h);
+    xpm_io.init_io(fp, 0, 0);
+    return xpm_create(data, format, w, h);
 }
 
 static bool xpm_read_mem(uint8 *stream, uint32 size, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h)
@@ -509,7 +509,7 @@ static bool xpm_read_mem(uint8 *stream, uint32 size, int quality, uint8 *&data, 
     xpm_io.init_io(0, (uint8*)file_buffer, size);
     bool ret = xpm_create(data, format, w, h);
 
-    delete []file_buffer;
+    free((char*)file_buffer);
     return ret;
 }
 

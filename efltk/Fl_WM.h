@@ -39,6 +39,8 @@ public:
     static bool get_window_icon(Window xid, Fl_Image *&icon, int w, int h);
     static bool get_window_title(Window xid, char *&title);
     static bool get_window_icontitle(Window xid, char *&title);
+    // Returns: -2=ERROR, -1=STICKY, Otherwise desktop
+    static int get_window_desktop(Window xid);
 
     static bool get_geometry(int &width, int &height);
     static bool get_workarea(int &x, int &y, int &width, int &height);
@@ -68,10 +70,18 @@ public:
         WINDOW_NAME_VISIBLE  = 0x0010000,
         WINDOW_DESKTOP       = 0x0020000
     };
+
     // Set callback and action mask, callback is only done, when receiving action defined in mask.
-    static void callback(Fl_Callback *cb, void *user_data, int action_mask);
+    static void add_callback(Fl_Callback *cb, void *user_data, int action_mask);
+    static void remove_callback(Fl_Callback *cb, void *user_data);
+
     static int action();
     static Window window();
+
+    //compatibility:
+    static void callback(Fl_Callback *cb, void *user_data, int action_mask) {
+        add_callback(cb, user_data, action_mask);
+    }
 };
 
 #endif

@@ -68,8 +68,8 @@ uchar* getProperty(Window w, Atom a, Atom type, unsigned long *np=0, int *ret=0)
     return prop;
 }
 
-int getIntProperty(Window w, Atom a, Atom type, int deflt) {
-    void* prop = getProperty(w, a, type);
+int getIntProperty(Window w, Atom a, Atom type, int deflt, int *ret=0) {
+    void* prop = getProperty(w, a, type, 0, ret);
     if(!prop) return deflt;
     int r = int(*(long*)prop);
     XFree(prop);
@@ -512,6 +512,25 @@ bool Fl_WM::get_window_icontitle(Window xid, char *&title)
     return (title!=0);
 }
 
+// Returns: -2=ERROR, -1=STICKY, Otherwise desktop
+int Fl_WM::get_window_desktop(Window xid)
+{
+    init_atoms();
+    if(fl_netwm_supports(_XA_NET_WM_DESKTOP)) {
+        int status=0;
+        unsigned long desk;
+        desk = getIntProperty(xid, _XA_NET_WM_DESKTOP, XA_CARDINAL, 100000, &status);
+        if(status!=Success || desk==100000) {
+            return -2;
+        }
+        if(desk==0xFFFFFFFF || desk==0xFFFFFFFE) {
+            return -1;
+        }
+        return desk;
+    }
+    return -2;
+}
+
 bool Fl_WM::get_geometry(int &width, int &height)
 {
     init_atoms();
@@ -621,10 +640,23 @@ int Fl_WM::get_workspace_names(char **&names)
 
 ///////////////////////////////////////////////
 
+#include <efltk/Fl_Callback_List.h>
+
 static Window action_window=0;
-static int action=0, action_mask=0;
-static Fl_Callback *callback=0;
-static void *user_data=0;
+static int action=0;
+
+static Fl_Int_List action_masks;
+static Fl_Callback_List callbacks;
+
+static void do_callback(int mask)
+{
+    for(uint n=0; n<action_masks.size(); n++) {
+        if(action_masks[n]&action) {
+            CallbackData *d = callbacks[n];
+            if(d->cb) d->cb(0, d->arg);
+        }
+    }
+}
 
 static int wm_event_handler(int e)
 {
@@ -657,8 +689,7 @@ static int wm_event_handler(int e)
         else if(fl_xevent.xproperty.atom==_XA_NET_WM_DESKTOP)
             action = Fl_WM::WINDOW_DESKTOP;
 
-        if(action_mask&action)
-            callback(0, user_data);
+        do_callback(action);
 
         // Reset after callback
         action=0;
@@ -667,7 +698,7 @@ static int wm_event_handler(int e)
     return 0;
 }
 
-void Fl_WM::callback(Fl_Callback *cb, void *user_data, int mask)
+void Fl_WM::add_callback(Fl_Callback *cb, void *user_data, int mask)
 {
     static bool inited=false;
     if(!inited) {
@@ -676,10 +707,19 @@ void Fl_WM::callback(Fl_Callback *cb, void *user_data, int mask)
         Fl::add_handler(wm_event_handler);
         inited=true;
     }
-    ::callback = cb;
-    ::user_data = user_data;
-    ::action_mask = mask;
+    action_masks.append(mask);
+    callbacks.append(cb, user_data);
 }
+
+void Fl_WM::remove_callback(Fl_Callback *cb, void *user_data)
+{
+    int index = callbacks.index_of(cb, user_data);
+    if(index>=0) {
+        callbacks.remove(index);
+        action_masks.remove(index);
+    }
+}
+
 
 int Fl_WM::action() {
     return ::action;
@@ -714,7 +754,10 @@ int Fl_WM::get_current_workspace() { return -1; }
 
 int Fl_WM::get_workspace_names(char **&names) { return -1; }
 
-void Fl_WM::callback(Fl_Callback *cb, void *user_data, int mask) { }
+void Fl_WM::add_callback(Fl_Callback *cb, void *user_data, int mask) { }
+
+void Fl_WM::remove_callback(Fl_Callback *cb, void *user_data) { }
+
 int Fl_WM::action() { return 0; }
 Window Fl_WM::window() { return 0; }
 

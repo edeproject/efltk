@@ -79,6 +79,10 @@ void Fl_Menu_Button::draw()
     draw_glyph(FL_GLYPH_DOWN, x+w-w1, y, w1, h, flags);
 }
 
+int Fl_Menu_Button::popup(int X, int Y, int W, int H)
+{
+    return Fl_Menu_::popup(X,Y,W,H);
+}
 
 int Fl_Menu_Button::popup()
 {
@@ -94,19 +98,18 @@ int Fl_Menu_Button::popup()
         else*/
         {
             if(anim_flags_==TOP_TO_BOTTOM) anim_flags_ = TOP_TO_BOTTOM|LEFT_TO_RIGHT;
-            return Fl_Menu_::popup(Fl::event_x(), Fl::event_y());
+            return popup(Fl::event_x(), Fl::event_y());
         }
     }
     else
     {
-        return Fl_Menu_::popup(0, 0, w(), h());
+        return popup(0, 0, w(), h());
     }
 }
 
 
 int Fl_Menu_Button::handle(int e)
 {
-    if (!children()) return 0;
     switch (e)
     {
 

@@ -88,6 +88,7 @@ bool Fl_Menu_::subwindow_effect_ = false;
 Fl_Menu_::Fl_Menu_()
     : Fl_Group(0,0,0,0,0), list_(&default_list), item_(0)
 {
+    about_to_show = about_to_hide = 0;
     delay_ = -1;
     effect_type_ = -1;
     anim_speed_ = -1;
@@ -101,6 +102,7 @@ Fl_Menu_::Fl_Menu_()
 Fl_Menu_::Fl_Menu_(int x,int y,int w, int h,const char* l)
     : Fl_Group(x,y,w,h,l), list_(&default_list), item_(0)
 {
+    about_to_show = about_to_hide = 0;
     delay_ = -1;
     effect_type_ = -1;
     anim_speed_ = -1;

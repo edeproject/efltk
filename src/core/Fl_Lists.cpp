@@ -376,3 +376,49 @@ void Fl_Ptr_Stack::free_item(void *item)
 {
     free(item);
 }
+
+//////////////////////////////////////
+// FL_CALLBACK_LIST IMPLEMENTATION: //
+//////////////////////////////////////
+
+#include <efltk/Fl_Callback_List.h>
+
+bool Fl_Callback_List::remove(Fl_Callback *cb, void *arg)
+{
+    for(uint n=0; n<size(); n++) {
+        CallbackData *d = (CallbackData *)Fl_Ptr_List::item(n);
+        if(d->cb==cb && d->arg==arg) {
+            return Fl_Ptr_List::remove((void*)d);
+        }
+    }
+    return false;
+}
+
+int Fl_Callback_List::index_of(const Fl_Callback *cb, const void *arg) const
+{
+    for(uint n=0; n<size(); n++) {
+        CallbackData *d = (CallbackData *)Fl_Ptr_List::item(n);
+        if(d->cb==cb && d->arg==arg) {
+            return n;
+        }
+    }
+    return -1;
+}
+
+void Fl_Callback_List::do_callback(Fl_Widget *w)
+{
+    for(uint n=0; n<size(); n++) {
+        CallbackData *d = (CallbackData *)Fl_Ptr_List::item(n);
+        if(d->cb) d->cb(w, d->arg);
+    }
+}
+
+void Fl_Callback_List::do_callback(Fl_Widget *w, void *arg)
+{
+    for(uint n=0; n<size(); n++) {
+        CallbackData *d = (CallbackData *)Fl_Ptr_List::item(n);
+        if(d->cb) d->cb(w, arg);
+    }
+}
+
+

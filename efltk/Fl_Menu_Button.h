@@ -32,14 +32,16 @@ class FL_API Fl_Menu_Button : public Fl_Menu_ {
 public:
   // values for type:
   enum {NORMAL = GROUP_TYPE, POPUP1, POPUP2, POPUP12, POPUP3, POPUP13, POPUP23, POPUP123};
-  int handle(int);
-  int popup();
-  Fl_Menu_Button(int,int,int,int,const char * =0);
+
   static Fl_Named_Style* default_style;
 
-protected:
-  void draw();
+  Fl_Menu_Button(int,int,int,int,const char * =0);
 
+  virtual int handle(int);
+  virtual void draw();
+
+  virtual int popup();
+  virtual int popup(int X, int Y, int W=0, int H=0);
 };
 
 #endif
