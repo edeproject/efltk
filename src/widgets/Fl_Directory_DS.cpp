@@ -278,85 +278,83 @@ Fl_String Fl_Directory_DS::get_file_type(struct stat &st, const Fl_String &filen
 // read the directory() and move item into the first entry
 bool Fl_Directory_DS::open() 
 {
-	clear();
+    clear();
 
-	int dlen = m_directory.length()-1;
-	if(dlen) {
-		if (m_directory[dlen] != '\\' && m_directory[dlen] != '/')
-			m_directory += slash;
-	}
+    int dlen = m_directory.length()-1;
+    if(dlen) {
+        if (m_directory[dlen] != '\\' && m_directory[dlen] != '/')
+            m_directory += slash;
+    }
 
-	unsigned num_files = 0;
+    dirent **files;
+    int num_files = fl_filename_list(m_directory.c_str(), &files);
 
-	dirent **files;
-	num_files = fl_filename_list(m_directory.c_str(), &files);
+    if(num_files>0)
+    {
+        struct stat st;
+        int again = 2;
+        if(showpolicy() & NO_SORT || showpolicy() & HIDE_FILES) again--;
+        do
+        {
+            for(int n=0; n < num_files; n++)
+            {
+                if(!files[n]) continue;
 
-	if(num_files>0) 
-	{
-		struct stat st;
-		int again = 2;
-		if(showpolicy() & NO_SORT || showpolicy() & HIDE_FILES) again--;
-		do 
-		{		
-			for(unsigned n=0; n < num_files; n++) 
-			{
-				if(!files[n]) continue;
+                if(!strcmp(files[n]->d_name, "..") || !strcmp(files[n]->d_name, ".")) continue;
 
-				if(!strcmp(files[n]->d_name, "..") || !strcmp(files[n]->d_name, ".")) continue;
+                Fl_Data_Fields   *df = new Fl_Data_Fields;
+                char			 *file = files[n]->d_name;
 
-				Fl_Data_Fields   *df = new Fl_Data_Fields;
-				char			 *file = files[n]->d_name;
+                if((showpolicy()&HIDE_DOT_FILES) && file[0]=='.') continue;
 
-				if((showpolicy()&HIDE_DOT_FILES) && file[0]=='.') continue;
+                Fl_String        fullName = m_directory + file;
 
-				Fl_String        fullName = m_directory + file;
+                lstat(fullName.c_str(), &st);
 
-				lstat(fullName.c_str(), &st);
+                if(!S_ISDIR(st.st_mode) && !m_pattern.empty() && !fl_file_match(files[n]->d_name, m_pattern)) continue;
+                if(!(showpolicy()&NO_SORT) && !S_ISDIR(st.st_mode) && again==2) continue;
+                if((showpolicy()&HIDE_FILES) && !S_ISDIR(st.st_mode)) continue;
+                if((showpolicy()&HIDE_DIRECTORIES) && S_ISDIR(st.st_mode)) continue;
 
-				if(!S_ISDIR(st.st_mode) && !m_pattern.empty() && !fl_file_match(files[n]->d_name, m_pattern)) continue;
-				if(!(showpolicy()&NO_SORT) && !S_ISDIR(st.st_mode) && again==2) continue;
-				if((showpolicy()&HIDE_FILES) && !S_ISDIR(st.st_mode)) continue;
-				if((showpolicy()&HIDE_DIRECTORIES) && S_ISDIR(st.st_mode)) continue;
+                const Fl_Image *pixmapPtr = 0;
+                Fl_String modeName = get_file_type(st, fullName, pixmapPtr);
 
-				const Fl_Image *pixmapPtr = 0;
-				Fl_String modeName = get_file_type(st, fullName, pixmapPtr);
+                df->add("")				= pixmapPtr;
+                df->add(N_("Name"))		= file;
+                df->add(N_("Size"))		= (int)st.st_size;
+                df->add(N_("Type"))		= modeName;
+                df->add(N_("Modified"))	= Fl_Date_Time::convert(st.st_mtime);
 
-				df->add("")				= pixmapPtr;
-				df->add(N_("Name"))		= file;
-				df->add(N_("Size"))		= (int)st.st_size;
-				df->add(N_("Type"))		= modeName;
-				df->add(N_("Modified"))	= Fl_Date_Time::convert(st.st_mtime);
+                if(access(fullName, R_OK)!=0) {
+                    df->field(0).flags = FL_INACTIVE | FL_ALIGN_LEFT;
+                    df->field(1).flags = FL_INACTIVE | FL_ALIGN_LEFT;
+                }
 
-				if(access(fullName, R_OK)!=0) {
-					df->field(0).flags = FL_INACTIVE | FL_ALIGN_LEFT;
-					df->field(1).flags = FL_INACTIVE | FL_ALIGN_LEFT;
-				}
+                m_list.append(df);
 
-				m_list.append(df);
+                free((struct dirent*)files[n]);
+                files[n] = 0;
+            }
+        } while(--again);
 
-				free((struct dirent*)files[n]);
-				files[n] = 0;
-			}
-		} while(--again);
+        first();
+        if(m_current) {
+            field(0).flags = FL_ALIGN_LEFT;
+            field(0).width = 3;
+            field(1).flags = FL_ALIGN_LEFT;
+            field(1).width = 30;
+            field(2).flags = FL_ALIGN_LEFT;
+            field(2).width = 10;
+            field(3).flags = FL_ALIGN_LEFT;
+            field(3).width = 10;
+            field(4).flags = FL_ALIGN_LEFT;
+            field(4).width = 16;
+        }
 
-		first();
-		if(m_current) {
-			field(0).flags = FL_ALIGN_LEFT;
-			field(0).width = 3;
-			field(1).flags = FL_ALIGN_LEFT;
-			field(1).width = 30;
-			field(2).flags = FL_ALIGN_LEFT;	
-			field(2).width = 10;
-			field(3).flags = FL_ALIGN_LEFT;
-			field(3).width = 10;
-			field(4).flags = FL_ALIGN_LEFT;
-			field(4).width = 16;
-		}
+        free((struct dirent**)files);
+    }
 
-		free((struct dirent**)files);
-   }
-      
-   return (m_list.count()>0);
+    return (m_list.count()>0);
 }
 
 bool Fl_Directory_DS::close() 

@@ -3,7 +3,6 @@
 #include <efltk/Fl_File_Dialog.h>
 #include <efltk/Fl_Divider.h>
 #include <efltk/Fl_Pixmap.h>
-#include <efltk/vsnprintf.h>
 #include <efltk/fl_ask.h>
 #include <efltk/fl_draw.h>
 #include <efltk/fl_utf8.h>
@@ -131,7 +130,7 @@ static char **select_files(const char *m_path_input, const char *filters, const 
         int pos = read_path.rpos('/');
         if(pos==-1) pos = read_path.rpos('\\');
 
-        if(pos>0) {
+        if(pos>=0) {
             pos++;
             def_file = read_path.sub_str(pos, read_path.length()-pos);
             read_path.sub_delete(pos, read_path.length()-pos);
@@ -918,37 +917,36 @@ void Fl_File_Chooser::get_filepath(Fl_String path, Fl_String &buf)
     check='/'; checkp=0;
 #endif	
     
-	buf = fl_file_expand(path);
+    buf = fl_file_expand(path);
 
     if(buf[checkp]!=check && !directory().empty())
-	{
-		buf = directory();
+    {
+        buf = directory();
         buf += path;
     }
 
-	int pos = buf.rpos(slash);
-	if(pos>0) {
-		pos++;
-		buf.sub_delete(pos, buf.length()-pos);
-	}
+    int pos = buf.rpos(slash);
+    if(pos>0) {
+        pos++;
+        buf.sub_delete(pos, buf.length()-pos);
+    }
 
     if(fl_is_dir(buf)) {
-		if(buf[buf.length()-1] != slash) buf += slash;	    
+        if(buf[buf.length()-1] != slash) buf += slash;
     }
-	else if(fl_is_dir(path)) {
-		buf = path;
-		if(buf[buf.length()-1] != slash) buf += slash;
-    }
-
-	buf.clear();
+    else if(fl_is_dir(path)) {
+        buf = path;
+        if(buf[buf.length()-1] != slash) buf += slash;
+    } else
+        buf.clear();
 }
 
 void Fl_File_Chooser::cb_location(Fl_Widget *w, void *d)
 {
     Fl_Input_Browser *loc = (Fl_Input_Browser *)w;
 
-	Fl_String filename;
-	static Fl_String dirpath;
+    Fl_String filename;
+    static Fl_String dirpath;
 
     if(!strcmp(loc->value(),"")) {
         if(FD->ok_button()) FD->ok_button()->deactivate();
@@ -959,36 +957,36 @@ void Fl_File_Chooser::cb_location(Fl_Widget *w, void *d)
     if(FD->mode()==_SAVE)
         if(FD->ok_button()) FD->ok_button()->activate();
 
-	int key = Fl::event_key();
+    int key = Fl::event_key();
 
     if(key == FL_Enter) {
 
         if(!strcmp(loc->value(), "..")) {
             FD->cb_up(w, d);
-			loc->value("");
+            loc->value("");
             return;
         }
 
-		filename = dirpath;
-		filename += loc->value();
+        filename = dirpath;
+        filename += loc->value();
 
         if(fl_is_dir(filename)
 #if 0//def _WIN32
-			|| !strncmp(filename, "\\\\", 2) //Check for network path..
+           || !strncmp(filename, "\\\\", 2) //Check for network path..
 #endif
-			) {
+          ) {
             FD->directory(filename);
-			loc->value("");
-        } 
-		else if(FD->mode()<=Fl_File_Chooser::_SAVE)  {
+            loc->value("");
+        }
+        else if(FD->mode()<=Fl_File_Chooser::_SAVE)  {
             if(!fl_is_dir(filename) && (FD->mode()==Fl_File_Chooser::_DEFAULT ? fl_file_exists(filename) : true)) {
-				
-				if(Fl::modal()==FD) {
-					if(FD->ok_button()) FD->ok_button()->do_callback();
-				}
-				else 
-					FD->directory(dirpath);
-				
+
+                if(Fl::modal()==FD) {
+                    if(FD->ok_button()) FD->ok_button()->do_callback();
+                }
+                else
+                    FD->directory(dirpath);
+
             } else {
                 if(FD->ok_button()) FD->ok_button()->deactivate();
                 FD->clear_value();
@@ -1002,22 +1000,22 @@ void Fl_File_Chooser::cb_location(Fl_Widget *w, void *d)
         FD->get_filename(loc->value(), filename);
         FD->get_filepath(loc->value(), dirpath);
 
-		normalize_path(filename);
-		normalize_path(dirpath);
+        normalize_path(filename);
+        normalize_path(dirpath);
 
         if(FD->mode()!=Fl_File_Chooser::_SAVE && FD->ok_button()) {
-			if(fl_file_exists(filename)) FD->ok_button()->activate();
+            if(fl_file_exists(filename)) FD->ok_button()->activate();
             else FD->ok_button()->deactivate();
         }
 
-		Fl_String pattern(loc->value());
-		int pos = pattern.rpos('/');
-		if(pos==-1) pos = pattern.rpos('\\');
+        Fl_String pattern(loc->value());
+        int pos = pattern.rpos('/');
+        if(pos==-1) pos = pattern.rpos('\\');
         if(pos>=0) {
             pos++;
-            pattern = pattern.sub_str(pos, pattern.length()-pos);			
+            pattern = pattern.sub_str(pos, pattern.length()-pos);
         }
-		pattern += '*';
+        pattern += '*';
 
         loc->clear();
 
