@@ -76,6 +76,7 @@ Fl_ListView_Item::~Fl_ListView_Item()
 
 void Fl_ListView_Item::copy_label(int col, const char *txt)
 {
+	if(col>columns()) columns(col);
 	attr *a = (attr*)attr_list[col];
     if(a->flags&FL_COPIED_LABEL) free((void*)a->label);
     if(txt) {
@@ -231,6 +232,7 @@ const char *Fl_ListView_Item::label()
 
 const char *Fl_ListView_Item::label(int col)
 { 
+	if(col>columns()) columns(col);
 	if((uint)col>=attr_list.size()) return 0;
 	attr *a = (attr*)attr_list[col];
 	return a->label;
@@ -238,6 +240,7 @@ const char *Fl_ListView_Item::label(int col)
 
 void Fl_ListView_Item::label(int col, const char *text)
 { 
+	if(col>columns()) columns(col);
 	if((uint)col>=attr_list.size()) return;
 	attr *a = (attr*)attr_list[col];
 	a->label = text; 

@@ -141,6 +141,19 @@ const char *Fl_ListHeader::label(int col)
 	return a->label;
 }
 
+void Fl_ListHeader::copy_label(int col, const char *txt)
+{
+	attr *a = (attr*)attr_list[col];
+    if(a->flags&FL_COPIED_LABEL) free((void*)a->label);
+    if(txt) {
+        a->label = strdup(txt);
+        a->flags |= FL_COPIED_LABEL;
+    } else {
+        a->label = 0;
+        a->flags &= ~FL_COPIED_LABEL;
+    }
+}
+
 void Fl_ListHeader::label(int col, const char *text)
 { 
 	if((uint)col>=attr_list.size()) return;
@@ -525,6 +538,7 @@ bool Fl_ListView::show_item(Fl_Widget *w)
 Fl_Widget* Fl_ListView::item_at(int Y)
 {
     if(Y < 0) Y = 0;
+	if(!children()) return 0;
 
 	// THIS IS LAME!!! :)
 	int avg_h = int(total_height/children());
@@ -1355,6 +1369,7 @@ void Fl_ListView::clear()
 {    
     item_ = 0;
     total_height = 0;
+	selection.clear();
 	Fl_Group::clear();
 }
 

@@ -100,7 +100,7 @@ static const char *types[] = {
 
 Fl_FileItem::Fl_FileItem(const char *filename, Fl_FileAttr *a)
 : Fl_ListView_Item(0, 0, 0, 0)
-{
+{	
     strcpy(fname, filename?filename:_("Unknown"));
     label(0, fname);
 
@@ -960,6 +960,7 @@ void Fl_File_Dialog::read_dir(const char *_path)
 	}
 
 	default_filename_ = 0;	
+	listview_->redraw();
 }
 
 bool Fl_File_Dialog::new_dir()
