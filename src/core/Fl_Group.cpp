@@ -61,7 +61,7 @@ Fl_Group::Fl_Group(int X,int Y,int W,int H,const char *l)
     begin();
 }
 
-Fl_Group::Fl_Group(const char* l,Fl_Align layout_al,int layout_size=30,int label_w=100) 
+Fl_Group::Fl_Group(const char* l,Fl_Align layout_al,int layout_size,int label_w)
 : Fl_Widget(l,layout_al,layout_size,label_w), m_layout_spacing(1), m_focus(-1), m_resizable(0), m_data_source(0)
 {
     widget_type(GROUP_TYPE);
