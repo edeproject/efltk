@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x4003c4
+# %FirstUniqueId:	0x4003c6
 PROJECT_DIR = /develop/CVS/efltk/
 
 IDE_WORKING_DIR = /develop/CVS/efltk/
@@ -272,7 +272,8 @@ lib/libefltk.so ::	lib/Fl.o\
 	lib/fl_symbols.o\
 	lib/Fl_Database.o\
 	lib/Fl_Params.o\
-	lib/Fl_Query.o
+	lib/Fl_Query.o\
+	lib/Fl_Combo_Box.o
 	rm -f $@
 	$(LD) -shared -o $@ $^ $(LDOPTIONS)
 
@@ -1493,6 +1494,10 @@ tools/etranslate/main_ui.o : tools/etranslate/main_ui.cpp
 
 tools/etranslate/modify_info.o : tools/etranslate/modify_info.cpp
 	$(CXX) -c -o $@ $< -Itools/etranslate -Itools/etranslate $(CXXFLAGS)
+
+
+lib/Fl_Combo_Box.o : src/widgets/Fl_Combo_Box.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
 
 
 # DO NOT DELETE
@@ -8329,3 +8334,49 @@ tools/etranslate/modify_info.o :	tools/etranslate/etranslate.h\
 	efltk/xml/Fl_XmlNode.h\
 	efltk/xml/Fl_XmlNode_List.h\
 	efltk/Fl_Map.h
+lib/Fl_Combo_Box.o :	efltk/Fl_Combo_Box.h\
+	efltk/Fl_ListView.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_ListView_Item.h\
+	efltk/Fl_Image_List.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl.h\
+	efltk/Fl_ListView_Header.h\
+	efltk/fl_draw.h\
+	efltk/Fl_Pixmap.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Popup_Window.h\
+	efltk/Fl_Menu_Window.h\
+	efltk/Fl_Single_Window.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Button.h

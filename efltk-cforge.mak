@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x4003c4
+# %FirstUniqueId:	0x4003c6
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -279,7 +279,8 @@ lib/libefltk.so ::	lib/Fl.o\
 	lib/fl_symbols.o\
 	lib/Fl_Database.o\
 	lib/Fl_Params.o\
-	lib/Fl_Query.o
+	lib/Fl_Query.o\
+	lib/Fl_Combo_Box.o
 	rm -f $@
 	$(LD) -shared -o $@ $^ $(LDOPTIONS)
 
@@ -2563,6 +2564,13 @@ tools/etranslate/main_ui.o : tools/etranslate/main_ui.cpp
 # %SourceTarget:	0x4003c2
 tools/etranslate/modify_info.o : tools/etranslate/modify_info.cpp
 	$(CXX) -c -o $@ $< -Itools/etranslate -Itools/etranslate $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x400002
+# %SourceTarget:	0x4003c4
+lib/Fl_Combo_Box.o : src/widgets/Fl_Combo_Box.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
 
 
 # DO NOT DELETE
@@ -9399,6 +9407,52 @@ tools/etranslate/modify_info.o :	tools/etranslate/etranslate.h\
 	efltk/xml/Fl_XmlNode.h\
 	efltk/xml/Fl_XmlNode_List.h\
 	efltk/Fl_Map.h
+lib/Fl_Combo_Box.o :	efltk/Fl_Combo_Box.h\
+	efltk/Fl_ListView.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_ListView_Item.h\
+	efltk/Fl_Image_List.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl.h\
+	efltk/Fl_ListView_Header.h\
+	efltk/fl_draw.h\
+	efltk/Fl_Pixmap.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Popup_Window.h\
+	efltk/Fl_Menu_Window.h\
+	efltk/Fl_Single_Window.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Button.h
 
 
 # %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x4
@@ -9629,6 +9683,32 @@ tools/etranslate/modify_info.o :	tools/etranslate/etranslate.h\
 # %TargetInfo test/fullscreen.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400385,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/progress.cpp	SourceOrHeader,	UniqueId=0x400389,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/menubar.cpp	SourceOrHeader,	UniqueId=0x40038b,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/Fl_Function_Type.cpp	SourceOrHeader,	UniqueId=0x40038e,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/Fl_Group_Type.cpp	SourceOrHeader,	UniqueId=0x40038f,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/Fl_Menu_Type.cpp	SourceOrHeader,	UniqueId=0x400390,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/Fl_Type.cpp	SourceOrHeader,	UniqueId=0x400391,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/Fl_Widget_Type.cpp	SourceOrHeader,	UniqueId=0x400392,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/Fl_Window_Type.cpp	SourceOrHeader,	UniqueId=0x400393,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/Fluid_Image.cpp	SourceOrHeader,	UniqueId=0x400394,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/Fluid_Plugins.cpp	SourceOrHeader,	UniqueId=0x400395,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/about_panel.cpp	SourceOrHeader,	UniqueId=0x400396,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/alignment_panel.cpp	SourceOrHeader,	UniqueId=0x400397,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/code.cpp	SourceOrHeader,	UniqueId=0x400398,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/coding_style.cpp	SourceOrHeader,	UniqueId=0x400399,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/coding_style_func.cpp	SourceOrHeader,	UniqueId=0x40039a,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/factory.cpp	SourceOrHeader,	UniqueId=0x40039b,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/file.cpp	SourceOrHeader,	UniqueId=0x40039c,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/fluid.cpp	SourceOrHeader,	UniqueId=0x40039d,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/function_panel.cpp	SourceOrHeader,	UniqueId=0x40039e,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/widget_panel.cpp	SourceOrHeader,	UniqueId=0x4003a0,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/etranslate/compile.cpp	SourceOrHeader,	UniqueId=0x4003af,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/etranslate/etranslate.cpp	SourceOrHeader,	UniqueId=0x4003b0,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/etranslate/extract.cpp	SourceOrHeader,	UniqueId=0x4003bd,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/etranslate/load_etm.cpp	SourceOrHeader,	UniqueId=0x4003be,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/etranslate/load_pot.cpp	SourceOrHeader,	UniqueId=0x4003bf,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/etranslate/main.cpp	SourceOrHeader,	UniqueId=0x4003c0,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/etranslate/main_ui.cpp	SourceOrHeader,	UniqueId=0x4003c1,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/etranslate/modify_info.cpp	SourceOrHeader,	UniqueId=0x4003c2,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x4
@@ -9866,25 +9946,7 @@ tools/etranslate/modify_info.o :	tools/etranslate/etranslate.h\
 # %TargetInfo efltk/net/Fl_Base64.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40037d,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Toggle_Light_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400386,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Hor_Slider.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400387,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo tools/efluid/Fl_Function_Type.cpp	SourceOrHeader,	UniqueId=0x40038e,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/Fl_Group_Type.cpp	SourceOrHeader,	UniqueId=0x40038f,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/Fl_Menu_Type.cpp	SourceOrHeader,	UniqueId=0x400390,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/Fl_Type.cpp	SourceOrHeader,	UniqueId=0x400391,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/Fl_Widget_Type.cpp	SourceOrHeader,	UniqueId=0x400392,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/Fl_Window_Type.cpp	SourceOrHeader,	UniqueId=0x400393,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/Fluid_Image.cpp	SourceOrHeader,	UniqueId=0x400394,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/Fluid_Plugins.cpp	SourceOrHeader,	UniqueId=0x400395,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/about_panel.cpp	SourceOrHeader,	UniqueId=0x400396,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/alignment_panel.cpp	SourceOrHeader,	UniqueId=0x400397,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/code.cpp	SourceOrHeader,	UniqueId=0x400398,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/coding_style.cpp	SourceOrHeader,	UniqueId=0x400399,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/coding_style_func.cpp	SourceOrHeader,	UniqueId=0x40039a,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/factory.cpp	SourceOrHeader,	UniqueId=0x40039b,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/file.cpp	SourceOrHeader,	UniqueId=0x40039c,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/fluid.cpp	SourceOrHeader,	UniqueId=0x40039d,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/function_panel.cpp	SourceOrHeader,	UniqueId=0x40039e,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo tools/efluid/image_file_panel.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40039f,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/widget_panel.cpp	SourceOrHeader,	UniqueId=0x4003a0,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo tools/efluid/function_panel.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003a1,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Locale.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003a2,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo tools/efluid/coding_style.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003a3,	TargetType=INC,	IDEFlags=0xe
@@ -9898,8 +9960,6 @@ tools/etranslate/modify_info.o :	tools/etranslate/etranslate.h\
 # %TargetInfo tools/efluid/alignment_panel.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003ab,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo tools/efluid/image_file_panel.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003ac,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo tools/efluid/about_panel.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003ad,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo tools/etranslate/compile.cpp	SourceOrHeader,	UniqueId=0x4003af,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/etranslate/etranslate.cpp	SourceOrHeader,	UniqueId=0x4003b0,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo tools/etranslate/compile.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003b1,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo tools/etranslate/etranslate.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003b2,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo tools/etranslate/main_ui.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003b3,	TargetType=INC,	IDEFlags=0xe
@@ -9912,13 +9972,9 @@ tools/etranslate/modify_info.o :	tools/etranslate/etranslate.h\
 # %TargetInfo efltk/xml/Fl_XmlDoc.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003ba,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/xml/Fl_XmlNode.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003bb,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/xml/Fl_XmlNode_List.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003bc,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo tools/etranslate/extract.cpp	SourceOrHeader,	UniqueId=0x4003bd,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/etranslate/load_etm.cpp	SourceOrHeader,	UniqueId=0x4003be,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/etranslate/load_pot.cpp	SourceOrHeader,	UniqueId=0x4003bf,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/etranslate/main.cpp	SourceOrHeader,	UniqueId=0x4003c0,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/etranslate/main_ui.cpp	SourceOrHeader,	UniqueId=0x4003c1,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/etranslate/modify_info.cpp	SourceOrHeader,	UniqueId=0x4003c2,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo tools/etranslate/extract.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003c3,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo src/widgets/Fl_Combo_Box.cpp	SourceOrHeader,	UniqueId=0x4003c4,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo efltk/Fl_Combo_Box.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003c5,	TargetType=INC,	IDEFlags=0xe
 
 
 # %UniqueId:	0x400001
