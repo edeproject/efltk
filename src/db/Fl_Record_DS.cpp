@@ -1,6 +1,5 @@
 #include <efltk/Fl_Group.h>
-
-#include "Fl_Record_DS.h"
+#include <efltk/db/Fl_Record_DS.h>
 
 // Constructor
 Fl_Record_DS::Fl_Record_DS(Fl_Group *group,Fl_Database *db,Fl_String tableName="",Fl_String keyField="") 

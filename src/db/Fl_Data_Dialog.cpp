@@ -1,8 +1,7 @@
 #include <efltk/db/Fl_Database.h>
 #include <efltk/db/Fl_Query.h>
 #include <efltk/Fl_Tabs.h>
-
-#include "Fl_Data_Dialog.h"
+#include <efltk/db/Fl_Data_Dialog.h>
 
 // Constructor
 // Fake (Fl_Data_Source *)0x1 blocks the default internal
