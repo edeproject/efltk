@@ -3,13 +3,13 @@
 #include <efltk/Fl.h>
 
 Fl_Split::Fl_Split(Fl_Widget * _ref_,int layout_size)
-    :Fl_Box("",layout_size,(FlagsEnum)_ref_->layout_align()),ref_(_ref_)
+:Fl_Box("",layout_size,(FlagsEnum)_ref_->layout_align()),ref_(_ref_)
 {
     box(FL_UP_BOX);
     // dir_ is set to 1 when the splitter is vertical and is set to 0 when horizontal
     dir_=(layout_align()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT));
 }
-    
+
 int Fl_Split::handle(int ev)
 {
     static int ox=0,oy=0; // old x and y
@@ -61,6 +61,7 @@ int Fl_Split::handle(int ev)
                         case FL_ALIGN_BOTTOM: if (ch+dy<0) dy=-ch; break;
                         case FL_ALIGN_LEFT:   if (cw-dx<0) dx=cw; break;
                         case FL_ALIGN_RIGHT:  if (cw+dx<0) dx=-cw; break;
+                        default: break;
                     }
                 }
                 // na dnow finally resize the widget
@@ -86,4 +87,3 @@ int Fl_Split::handle(int ev)
     }
     return Fl_Box::handle(ev);
 }
-
