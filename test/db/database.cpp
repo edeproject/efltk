@@ -367,8 +367,6 @@ int main (int argc, char *argv[])
 	//setup_styles();
 
 	Fl_Window win(400, 400, "Database test");	
-	win.box(FL_FLAT_BOX);
-	win.color(FL_GRAY);
 	win.resizable(win);
 	win.begin();
 	
