@@ -1,7 +1,7 @@
 #ifndef _FL_SPLIT_H_
 #define _FL_SPLIT_H_
 
-#include <efltk/Fl_Box.h>
+#include "Fl_Box.h"
 
 //****************************************************************************
 /** \class Fl_Split
@@ -32,6 +32,8 @@ class Fl_Split: public Fl_Box
 	Fl_Widget * ref_;
     int dir_;
 public:
+	static Fl_Named_Style* default_style;
+
 	/// This constructor should be used, when you use the old style widget positioning
     Fl_Split(int x,int y,int w,int h);
 

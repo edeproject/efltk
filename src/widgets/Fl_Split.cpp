@@ -2,17 +2,26 @@
 #include <efltk/fl_draw.h>
 #include <efltk/Fl.h>
 
+static void revert(Fl_Style* s)
+{
+    s->color = FL_DARK1;
+    s->box = FL_THIN_UP_BOX;
+}
+
+static Fl_Named_Style style("Split", revert, &Fl_Split::default_style);
+Fl_Named_Style* Fl_Split::default_style = &::style;
+
 Fl_Split::Fl_Split(int x,int y,int w,int h)
     :Fl_Box(x,y,w,h),ref_(NULL)
 {
-    box(FL_UP_BOX);
+	style(default_style);    
     dir_=(w<h);
 }
 
 Fl_Split::Fl_Split(Fl_Widget * _ref_,int layout_size)
     :Fl_Box("",layout_size,(FlagsEnum)_ref_->layout_align()),ref_(_ref_)
 {
-    box(FL_UP_BOX);
+    style(default_style);
     // dir_ is set to 1 when the splitter is vertical and is set to 0 when horizontal
     dir_=(layout_align()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT));
 }
@@ -142,7 +151,7 @@ int Fl_Split::handle(int ev)
                     }
 					
 					// If resizable is set, clear cached sizes. otherwise widgets won't resize at all.
-					if(parent()->resizable()
+					if(parent()->resizable())
 						parent()->init_sizes();
 
                     // second pass: resize
