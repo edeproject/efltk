@@ -42,14 +42,19 @@ int main(int argc, char *argv[]) {
     Fl_Window       window(400,300,"Combo Box test");
     window.layout_spacing(4);
 
-    Fl_Combo_Box    cb1("Regular combo box");
+    Fl_Combo_Box    cb1("Combo box");
     fill_list(&cb1);
     cb1.callback(cb_callback);
 
-    Fl_Combo_Box    cb2("CB with all buttons");
+    Fl_Combo_Box    cb2("CB with all the operation buttons shown");
     fill_list(&cb2);
     cb2.buttons(FL_CBB_INSERT|FL_CBB_EDIT|FL_CBB_DELETE|FL_CBB_REFRESH);
     cb2.callback(cb_callback);
+
+    Fl_Combo_Box    cb3("CB with some of the operation buttons shown");
+    fill_list(&cb3);
+    cb3.buttons(FL_CBB_EDIT|FL_CBB_DELETE);
+    cb3.callback(cb_callback);
 
     window.end();
 
