@@ -38,6 +38,7 @@ public:
     // attributes
     int      width;
     Fl_Align align;
+    bool     visible;
 
     const char *name()     const                  { return m_name.c_str();   }
     int type()             const                  { return value.type();     }

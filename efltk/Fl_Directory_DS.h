@@ -69,7 +69,7 @@ protected:
     virtual bool              load_data() { return true; }
     virtual bool              save_data() { return true; }
 
-private:
+protected:
     Fl_Ptr_List     m_list;
     Fl_Data_Fields *m_current;
     int             m_currentIndex;

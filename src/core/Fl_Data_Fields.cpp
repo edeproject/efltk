@@ -27,6 +27,7 @@ Fl_Data_Field::Fl_Data_Field(const char *name) {
    width = -1;
    align = FL_ALIGN_LEFT;
    m_dataSize = 0;
+   visible = true;
 }
 
 // convertors
