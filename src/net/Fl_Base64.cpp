@@ -116,7 +116,7 @@ void Fl_Base64::encode(Fl_String& strDest, const Fl_Buffer& bufSource)
 
 int Fl_Base64::decode(Fl_Buffer &bufDest, const Fl_Buffer& bufSource)
 {
-    unsigned char *current, *result;
+    unsigned char *current;
     unsigned char c;
     int ch, j=0;
 
@@ -124,9 +124,10 @@ int Fl_Base64::decode(Fl_Buffer &bufDest, const Fl_Buffer& bufSource)
         return -1;                      /* If source buffer is empty return -1  */
     if ((bufSource.bytes() % 4) != 0)   /* Source buffer MUST be dividable by 4 */
         return -1;                      /* (no reminders)                       */
-    bufDest.reset();
+    
+	bufDest.reset();
     current = (unsigned char *)bufSource.data();
-    result  = (unsigned char *)bufDest.data();
+
     for (unsigned i=0; i < bufSource.bytes(); i++)
     {
         ch = current[i];
@@ -177,7 +178,7 @@ int Fl_Base64::decode(Fl_Buffer &bufDest, const Fl_Buffer& bufSource)
 int Fl_Base64::decode(Fl_Buffer &bufDest, const Fl_String& strSource)
 {
     Fl_Buffer bufIn;
-    bufIn.set(strSource);
+    bufIn.set(strSource, strSource.length());	
     return decode(bufDest, bufIn);
 } /* decode(Fl_Buffer &bufDest, const Fl_String &strSource) */
 /* ------------------------------------------------------------------------- */
