@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x40036b
+# %FirstUniqueId:	0x400373
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -596,6 +596,36 @@ test/imap_connect ::	test/imap_connect.o\
 	test/Fl_IMAP_Connect.o\
 	test/Fl_IMAP_DS.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+# %UniqueId:	0x40036b
+# %TargetType:	C++_EXE
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	test
+# %IncDir:	test
+# %ObjsDir:	test
+test/exceptions ::	test/exceptions.o
+	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+# %UniqueId:	0x40036d
+# %TargetType:	C++_EXE
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	test
+# %IncDir:	test
+# %ObjsDir:	test
+test/fast_slow ::	test/fast_slow.o
+	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+# %UniqueId:	0x400370
+# %TargetType:	C++_EXE
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	test
+# %IncDir:	test
+# %ObjsDir:	test
+test/file_chooser ::	test/file_chooser.o
+	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk -lefltk_images -ljpeg -lpng
 
 # %ObjectFilesLinking
 # %TargetType:	C++_OBJ
@@ -2135,6 +2165,27 @@ lib/Fl_Memory_DS.o : src/widgets/Fl_Memory_DS.cpp
 # %ParentTarget:	0x400364
 # %SourceTarget:	0x400369
 test/Fl_IMAP_DS.o : src/net/Fl_IMAP_DS.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40036b
+# %SourceTarget:	0x40036c
+test/exceptions.o : test/exceptions.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40036d
+# %SourceTarget:	0x40036e
+test/fast_slow.o : test/fast_slow.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x400370
+# %SourceTarget:	0x400371
+test/file_chooser.o : test/file_chooser.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
@@ -6849,8 +6900,11 @@ lib/Fl_FTP_Connect.o :	efltk/net/Fl_FTP_Connect.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
 	efltk/Fl_String_List.h
-test/imap_connect.o :	efltk/net/Fl_IMAP_DS.h\
-	efltk/net/Fl_IMAP_Connect.h\
+test/imap_connect.o :	efltk/Fl_Choice.h\
+	efltk/Fl_Menu_.h\
+	efltk/Fl_Menu_Item.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
 	efltk/Fl_Data_Fields.h\
 	efltk/Fl_Flags.h\
 	efltk/Fl_Ptr_List.h\
@@ -6859,12 +6913,47 @@ test/imap_connect.o :	efltk/net/Fl_IMAP_DS.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
 	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
 	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Config.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl_ProgressBar.h\
+	efltk/fl_draw.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Bitmap.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Pixmap.h\
+	efltk/Fl.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Secret_Input.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_ListView.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_ListView_Item.h\
+	efltk/Fl_Image_List.h\
+	efltk/Fl_ListView_Header.h\
+	efltk/Fl_Window.h\
+	efltk/net/Fl_IMAP_DS.h\
+	efltk/net/Fl_IMAP_Connect.h\
 	efltk/Fl_Socket.h\
 	efltk/Fl_Buffer.h\
-	efltk/Fl_Exception.h\
-	efltk/Fl_Memory_DS.h\
-	efltk/Fl_Data_Source.h
+	efltk/Fl_Memory_DS.h
 test/Fl_IMAP_Connect.o :	efltk/net/Fl_IMAP_Connect.h\
 	efltk/Fl_Data_Fields.h\
 	efltk/Fl_Flags.h\
@@ -6919,6 +7008,112 @@ test/Fl_IMAP_DS.o :	efltk/Fl_Pixmap.h\
 	efltk/Fl_String.h\
 	efltk/Fl_Exception.h\
 	config.h
+test/exceptions.o :	efltk/Fl_Exception.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Check_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl.h\
+	efltk/fl_ask.h
+test/fast_slow.o :	test/fast_slow.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl.h
+test/file_chooser.o :	efltk/Fl_FileBrowser.h\
+	efltk/Fl_Directory_DS.h\
+	efltk/Fl_Memory_DS.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_ListView_Item.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Image_List.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl.h\
+	efltk/Fl_ListView.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_ListView_Header.h\
+	efltk/Fl_File_Dialog.h\
+	efltk/Fl_Highlight_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Check_Button.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Item.h\
+	efltk/Fl_Input_Browser.h\
+	efltk/Fl_Menu_Window.h\
+	efltk/Fl_Single_Window.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Menu_.h\
+	efltk/Fl_Menu_Item.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Image_Cache.h\
+	efltk/Fl_Images.h\
+	efltk/Fl_Browser.h\
+	efltk/Fl_Menu_Button.h
 
 
 # %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x4
@@ -7118,9 +7313,9 @@ test/Fl_IMAP_DS.o :	efltk/Fl_Pixmap.h\
 # %TargetInfo src/db/Fl_Database.cpp	SourceOrHeader,	UniqueId=0x400332,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/db/Fl_Params.cpp	SourceOrHeader,	UniqueId=0x400333,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/db/Fl_Query.cpp	SourceOrHeader,	UniqueId=0x400334,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Socket.cpp	SourceOrHeader,	UniqueId=0x400342,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/core/Fl_Socket.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400342,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/socket.cpp	SourceOrHeader,	UniqueId=0x40033b,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/net/ftp_socket.cpp	SourceOrHeader,	UniqueId=0x400340,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/net/ftp_socket.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400340,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/db/db_odbc.cpp	SourceOrHeader,	UniqueId=0x400346,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_Gdi.cpp	SourceOrHeader,	UniqueId=0x400347,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_PostScript.cpp	SourceOrHeader,	UniqueId=0x40034b,	TargetType=C++,	IDEFlags=0x4
@@ -7129,12 +7324,16 @@ test/Fl_IMAP_DS.o :	efltk/Fl_Pixmap.h\
 # %TargetInfo test/dialog.cpp	SourceOrHeader,	UniqueId=0x400351,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/directory.cpp	SourceOrHeader,	UniqueId=0x400353,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/doublebuffer.cpp	SourceOrHeader,	UniqueId=0x400355,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/net/Fl_FTP_Connect.cpp	SourceOrHeader,	UniqueId=0x400356,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/net/Fl_FTP_Connect.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400356,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/multitabs2.cpp	SourceOrHeader,	UniqueId=0x40035b,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/multitabs1.cpp	SourceOrHeader,	UniqueId=0x400362,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/net/Fl_IMAP_Connect.cpp	SourceOrHeader,	UniqueId=0x400363,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/net/imap_connect.cpp	SourceOrHeader,	UniqueId=0x400365,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/net/Fl_IMAP_Connect.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400363,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/net/imap_connect.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400365,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Memory_DS.cpp	SourceOrHeader,	UniqueId=0x400367,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/net/Fl_IMAP_DS.cpp	SourceOrHeader,	UniqueId=0x400369,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/exceptions.cpp	SourceOrHeader,	UniqueId=0x40036c,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/fast_slow.cpp	SourceOrHeader,	UniqueId=0x40036e,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/file_chooser.cpp	SourceOrHeader,	UniqueId=0x400371,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x4
@@ -7349,7 +7548,7 @@ test/Fl_IMAP_DS.o :	efltk/Fl_Pixmap.h\
 # %TargetInfo efltk/db/Fl_Query.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400335,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/db/Fl_Params.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400336,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/db/Fl_Database.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400337,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Socket.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400339,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Socket.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400339,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/db/Fl_ODBC_Database.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400344,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Printer.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400348,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Gdi.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400349,	TargetType=INC,	IDEFlags=0xe
@@ -7361,10 +7560,11 @@ test/Fl_IMAP_DS.o :	efltk/Fl_Pixmap.h\
 # %TargetInfo test/multitabs_glyph1.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x40035e,	TargetType=XPM,	IDEFlags=0xe
 # %TargetInfo test/tabs.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40035f,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Wordwrap_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400360,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/net/Fl_IMAP_Connect.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400366,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/net/Fl_IMAP_Connect.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400366,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Memory_DS.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400368,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo src/net/Fl_IMAP_DS.cpp	SourceOrHeader,	UniqueId=0x400369,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo efltk/net/Fl_IMAP_DS.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40036a,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo test/fast_slow.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40036f,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Images.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400372,	TargetType=INC,	IDEFlags=0xe
 
 
 # %UniqueId:	0x400001
@@ -7410,14 +7610,17 @@ test/Fl_IMAP_DS.o :	efltk/Fl_Pixmap.h\
 #	0x400266
 #	0x400272
 #	0x40034e
-#	0x400350
-#	0x400284
-#	0x40033a
-#	0x400354
-#	0x400352
 #	0x400345
+#	0x400350
+#	0x400352
+#	0x400354
+#	0x400284
+#	0x40036b
+#	0x40036d
+#	0x400370
 #	0x40033f
+#	0x400364
 #	0x400361
 #	0x40035a
-#	0x400364
+#	0x40033a
 #
