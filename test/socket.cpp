@@ -94,4 +94,6 @@ int main(int argc,char *argv[]) {
 	main_window.show(argc,argv);
 
 	Fl::run();
+
+	return 0;
 }
