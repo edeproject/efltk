@@ -160,19 +160,23 @@ Fl_Dialog::Fl_Dialog(int ww, int hh, const char *label, Fl_Data_Source *ds)
     m_tabs->show_tabs(false);
     m_tabs->layout_align(FL_ALIGN_CLIENT);
     m_modalResult = 0;
-    m_externalDataSource = (ds != NULL);
 
-    if (ds) m_dataSource = ds;
-    else    m_dataSource = new Fl_Dialog_DS();
-
-    m_dataSource->parent(m_tabs);
+    if (ds) {
+		data_source(ds);
+		m_alloc_ds = false;
+	} else {
+		data_source(new Fl_Dialog_DS());
+		m_alloc_ds = true;
+	}
 
     callback((Fl_Callback*)escape_callback);
 }
 
 Fl_Dialog::~Fl_Dialog() {
-    if (!m_externalDataSource)
-        delete m_dataSource;
+    if(m_alloc_ds) {
+		Fl_Data_Source *ds = data_source();
+		delete ds;
+	}
     clear_buttons();
 }
 
@@ -221,11 +225,11 @@ Fl_Widget *Fl_Dialog::find_widget(const char *field_name) const
 }
 
 const Fl_Variant& Fl_Dialog::operator [] (const char *field_name) const {
-    return (*m_dataSource)[field_name];
+    return (*data_source())[field_name];
 }
 
 Fl_Variant& Fl_Dialog::operator [] (const char *field_name) {
-    return (*m_dataSource)[field_name];
+    return (*data_source())[field_name];
 }
 
 void Fl_Dialog::clear_buttons() 
@@ -358,7 +362,8 @@ Fl_Group *Fl_Dialog::new_group(const char *lbl,bool autoColor)
 bool Fl_Dialog::load_data(Fl_Data_Source *ds) 
 {
     try {
-        if (!ds) ds = m_dataSource;
+        if (!ds) ds = data_source();
+		ds->parent(m_tabs);
 
         // Clean the widgets data before loading. 
         // Useful if we have incomplete information in datasource
@@ -373,8 +378,9 @@ bool Fl_Dialog::load_data(Fl_Data_Source *ds)
 }
 
 bool Fl_Dialog::save_data(Fl_Data_Source *ds) {
-    try {
-        if (!ds) ds = m_dataSource;
+    try {		
+        if (!ds) ds = data_source();
+		ds->parent(m_tabs);
         return ds->save();
     }
     catch (Fl_Exception& e) {

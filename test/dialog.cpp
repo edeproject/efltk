@@ -140,7 +140,7 @@ int main(int argc, char **argv) {
     Fl_Config my_config("dialog.ini");
 
     // Second, define a config datasource as a config file and a section
-    Fl_Config_Dialog_DS my_config_ds(&my_config,"Config dialog");
+    Fl_Config_Dialog_DS my_config_ds(&my_config);
 
     // Third, create the dialog with the datasource
     config_dlg = new Fl_Dialog(400,300,"Config dialog",&my_config_ds);

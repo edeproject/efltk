@@ -197,7 +197,6 @@ protected:
     static void buttons_callback(Fl_Button *btn, long id);
 
     Fl_Tabs        *m_tabs;
-    Fl_Data_Source *m_dataSource;
 
 private:
     typedef Fl_Window inherited;
@@ -209,7 +208,7 @@ private:
     Fl_Widget_List  m_buttonList;
     int             m_buttons;
     int             m_modalResult;
-    bool            m_externalDataSource;
+	bool			m_alloc_ds;
 };
 
 // Backward compatible defines
