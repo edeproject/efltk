@@ -82,14 +82,6 @@ static const char compose_pairs[] =
     "*A"
     "AE"
     ",C"
-    
-//    "^C"//
-//    "`C"
-    "'C"
-//    "~C"
-//    ":C"
-//    "*C"//
-    
     "`E"
     "'E"
     "^E"
