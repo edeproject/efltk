@@ -36,6 +36,8 @@ VPATH		=@srcdir@
 
 SYSTYPE		=@SYSTYPE@
 
+COMPILE_XUTF	=@COMPILE_XUTF@
+
 # compiler names:
 CXX		=@CXX@
 CC		=@CC@

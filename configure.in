@@ -387,6 +387,12 @@ if test "$enable_threads" = yes; then
   )
 fi
 
+dnl# libiconv check
+HAVE_LIBC_ICONV=0
+AC_CHECK_LIB(c,iconv,HAVE_LIBC_ICONV=1,)
+AC_SUBST(HAVE_LIBC_ICONV)
+
+USE_UTF8=0
 AC_DEFUN([AC_WITH_UTF8],
 [   AC_MSG_CHECKING([whether UTF8 is requested])
     dnl UTF8 is enabled by default
@@ -518,6 +524,11 @@ AC_WITH_UTF8
 AC_DEFINE_UNQUOTED(PREFIX, "${prefix}")
 AC_DEFINE_UNQUOTED(CONFIGDIR, "${prefix}/share/ede")
 
+COMPILE_XUTF=0
+if test "$USE_UTF8" = "yes"; then
+	COMPILE_XUTF=1
+fi
+AC_SUBST(COMPILE_XUTF)
 AC_SUBST(DSOEXT)
 AC_SUBST(DSOSHORTEXT)
 AC_SUBST(DSOCOMMAND)

@@ -45,7 +45,7 @@ extern FL_API int fl_utf2unicode(const unsigned char *str, int len, unsigned sho
 extern FL_API int fl_unicode2utf(unsigned short *str, int len, char *buf);
 extern FL_API int fl_utf2latin1(const unsigned char *str, int len, char *buf);
 extern FL_API int fl_latin12utf(const unsigned char *str, int len, char *buf);
-extern FL_API unsigned int fl_nonspacing(unsigned int ucs);
+extern FL_API unsigned short fl_nonspacing(unsigned int ucs);
 extern FL_API char* fl_utf2mbcs(const char * s);
 extern FL_API char* fl_mbcs2utf(const char *s);
 

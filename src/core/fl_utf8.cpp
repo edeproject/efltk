@@ -31,21 +31,23 @@
 
 #if HAVE_XUTF8
 
-#ifndef _WIN32
-#include "fl_utf8_x.h"
-#endif
-
-#include "../../headers/spacing.h"
 #include <efltk/fl_utf8.h>
 
 #ifdef _WIN32
-#include <io.h>
-#include <direct.h>
-#include <windows.h>
-#include <winbase.h>
+
+# include "../xutf/headers/spacing.h"
+# include "../xutf/headers/case.h"
+
+# include <io.h>
+# include <direct.h>
+# include <windows.h>
+# include <winbase.h>
 #else
-#include <fcntl.h>
-#include <unistd.h>
+
+# include "../xutf/Xutf8.h"
+# include <fcntl.h>
+# include <unistd.h>
+
 #endif //WIN32
 
 #include <sys/types.h>
@@ -57,31 +59,8 @@
 /*** NOTE : all functions are LIMITED to 24 bits Unicode values !!! ***/
 /***        but only 16 bits are realy used under Linux and win32  ***/
 
-// Returns charlen, 0 if inside char
-int fl_utf_charlen(char c)
-{
-  if (!(c & 0x80)) return 1;
-  if (c & 0x40) {
-    if (c & 0x20) {
-      if (c & 0x10) {
-        if (c & 0x08) {
-	  if (c & 0x04) {
-            return 6;
-          }
-          return 5;
-        }
-        return 4;
-      }
-      return 3;
-    }
-    return 2;
-  }
-  return 0;
-}
-
-static int 
-Tolower(
-	int ucs)
+#ifdef _WIN32
+static int  Tolower(int ucs)
 {
 	int ret;
 
@@ -152,9 +131,7 @@ Tolower(
 	return ucs;
 }
 
-static int 
-Toupper(
-	int ucs)
+static int Toupper(int ucs)
 {
 	int i;
 	static unsigned short *table = NULL;
@@ -173,6 +150,49 @@ Toupper(
 	}
 	if (ucs >= 0x10000 || ucs < 0) return ucs;
 	return table[ucs];
+}
+
+#define XUtf8Tolower Tolower
+#define XUtf8Toupper Toupper
+
+#endif /* _WIN32 */
+
+/*
+ * return the Unicode lower case value of ucs
+ */
+int fl_tolower(unsigned int ucs)
+{
+    return XUtf8Tolower(ucs);
+}
+
+/*
+ * return the Unicode upper case value of ucs
+ */
+int fl_toupper(unsigned int ucs)
+{
+    return XUtf8Toupper(ucs);
+}
+
+// Returns charlen, 0 if inside char
+int fl_utf_charlen(char c)
+{
+  if (!(c & 0x80)) return 1;
+  if (c & 0x40) {
+    if (c & 0x20) {
+      if (c & 0x10) {
+        if (c & 0x08) {
+	  if (c & 0x04) {
+            return 6;
+          }
+          return 5;
+        }
+        return 4;
+      }
+      return 3;
+    }
+    return 2;
+  }
+  return 0;
 }
 
 /*** converts the first char UTF-8 string to an Unicode value ***/
@@ -364,7 +384,7 @@ int fl_utf_strncasecmp(const char *s1, const char *s2, int n)
         l1 = fl_utf2ucs((unsigned char*)s1 + i, n - i, &u1);
         l2 = fl_utf2ucs((unsigned char*)s2 + i, n - i, &u2);
         if (l1 - l2 != 0) return l1 - l2;
-        res = Tolower(u1) - Tolower(u2);
+        res = fl_tolower(u1) - fl_tolower(u2);
         if (res != 0) return res;
         if (l1 < 1)
         {
@@ -400,25 +420,6 @@ int fl_utf_strcasecmp(const char *s1, const char *s2)
     return fl_utf_strncasecmp(s1, s2, s1_l);
 }
 
-
-/*
- * return the Unicode lower case value of ucs
- */
-int fl_tolower(unsigned int ucs)
-{
-    return Tolower(ucs);
-}
-
-
-/*
- * return the Unicode upper case value of ucs
- */
-int fl_toupper(unsigned int ucs)
-{
-    return Toupper(ucs);
-}
-
-
 /*
  * converts the str string to the lower case equivalent into buf.
  * Warning: to be safe buf length must be at least 3 * len
@@ -432,7 +433,7 @@ int fl_utf_tolower(const unsigned char *str, int len, char *buf)
                 unsigned int u1;
 
                 l1 = fl_utf2ucs((unsigned char*)str + i, len - i, &u1);
-                l2 = fl_ucs2utf((unsigned int) Tolower(u1), buf + l);
+                l2 = fl_ucs2utf((unsigned int) fl_tolower(u1), buf + l);
                 if (l1 < 1) {
                         i += 1;
                 } else {
@@ -461,7 +462,7 @@ int fl_utf_toupper(const unsigned char *str, int len, char *buf)
                 unsigned int u1;
 
                 l1 = fl_utf2ucs((unsigned char*)str + i, len - i, &u1);
-                l2 = fl_ucs2utf((unsigned int) Toupper(u1), buf + l);
+                l2 = fl_ucs2utf((unsigned int) fl_toupper(u1), buf + l);
                 if (l1 < 1) {
                         i += 1;
                 } else {
@@ -570,59 +571,53 @@ int fl_latin12utf(const unsigned char *str, int len, char *buf)
 	return l;
 }
 
-unsigned int fl_nonspacing(unsigned int ucs)
+unsigned short fl_nonspacing(unsigned int ucs)
 {
-        if (ucs <= 0x0361) {
-                if (ucs >= 0x0300) return ucs_table_0300[ucs - 0x0300];
-                return 0;
-        }
-
-        if (ucs <= 0x0486) {
-                if (ucs >= 0x0483) return ucs_table_0483[ucs - 0x0483];
-                return 0;
-        }
-
-        if (ucs <= 0x05C4) {
-                if (ucs >= 0x0591) return ucs_table_0591[ucs - 0x0591];
-                return 0;
-        }
-
-        if (ucs <= 0x06ED) {
-                if (ucs >= 0x064B) return ucs_table_064B[ucs - 0x064B];
-                return 0;
-        }
-
-        if (ucs <= 0x0D4D) {
-                if (ucs >= 0x0901) return ucs_table_0901[ucs - 0x0901];
-                return 0;
-        }
-
-        if (ucs <= 0x0FB9) {
-                if (ucs >= 0x0E31) return ucs_table_0E31[ucs - 0x0E31];
-                return 0;
-        }
-
-        if (ucs <= 0x20E1) {
-                if (ucs >= 0x20D0) return ucs_table_20D0[ucs - 0x20D0];
-                return 0;
-        }
-
-        if (ucs <= 0x309A) {
-                if (ucs >= 0x302A) return ucs_table_302A[ucs - 0x302A];
-                return 0;
-        }
-
-        if (ucs <= 0xFB1E) {
-                if (ucs >= 0xFB1E) return ucs_table_FB1E[ucs - 0xFB1E];
-                return 0;
-        }
-
-        if (ucs <= 0xFE23) {
-                if (ucs >= 0xFE20) return ucs_table_FE20[ucs - 0xFE20];
-                return 0;
-        }
-
+#ifndef _WIN32
+    return XUtf8IsNonSpacing(ucs);
+#else
+    if (ucs <= 0x0361) {
+        if (ucs >= 0x0300) return ucs_table_0300[ucs - 0x0300];
         return 0;
+    }
+    if (ucs <= 0x0486) {
+        if (ucs >= 0x0483) return ucs_table_0483[ucs - 0x0483];
+        return 0;
+    }
+    if (ucs <= 0x05C4) {
+        if (ucs >= 0x0591) return ucs_table_0591[ucs - 0x0591];
+        return 0;
+    }
+    if (ucs <= 0x06ED) {
+        if (ucs >= 0x064B) return ucs_table_064B[ucs - 0x064B];
+        return 0;
+    }
+    if (ucs <= 0x0D4D) {
+        if (ucs >= 0x0901) return ucs_table_0901[ucs - 0x0901];
+        return 0;
+    }
+    if (ucs <= 0x0FB9) {
+        if (ucs >= 0x0E31) return ucs_table_0E31[ucs - 0x0E31];
+        return 0;
+    }
+    if (ucs <= 0x20E1) {
+        if (ucs >= 0x20D0) return ucs_table_20D0[ucs - 0x20D0];
+        return 0;
+    }
+    if (ucs <= 0x309A) {
+        if (ucs >= 0x302A) return ucs_table_302A[ucs - 0x302A];
+        return 0;
+    }
+    if (ucs <= 0xFB1E) {
+        if (ucs >= 0xFB1E) return ucs_table_FB1E[ucs - 0xFB1E];
+        return 0;
+    }
+    if (ucs <= 0xFE23) {
+        if (ucs >= 0xFE20) return ucs_table_FE20[ucs - 0xFE20];
+        return 0;
+    }
+    return 0;
+#endif /* _WIN32 */
 }
 
 char * fl_utf2mbcs(const char *s)

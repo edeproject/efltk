@@ -202,6 +202,9 @@
 /* Does libintl have bind_textdomain_codeset */
 #define HAVE_TEXTDOMAIN_CODESET 0
 
+/* Does C library contain iconv */
+#define HAVE_LIBC_ICONV 0
+
 #if !HAVE_FLOAT_FUNCTIONS
 # define floorf(a)	float(floor(float(a)))
 # define ceilf(a)	float(ceil(float(a)))
