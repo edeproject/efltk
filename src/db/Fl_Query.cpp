@@ -100,7 +100,7 @@ void Fl_Query::prepare() {
             m_database->allocate_query(this);
         m_database->prepare_query(this);
     }
-    catch (exception) {
+    catch (...) {
         m_database->unlock();
         throw;
     }
