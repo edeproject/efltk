@@ -25,9 +25,15 @@
 
 #include <efltk/Fl.h>
 #include <efltk/Fl_Menu_Window.h>
+#include <efltk/math.h>
 #include <efltk/x.h>
 #include <efltk/fl_draw.h>
+#include <efltk/Fl_Util.h>
+#include <efltk/Fl_Image.h>
+#include <efltk/Fl_Renderer.h>
+
 #include <config.h>
+#include <stdio.h>
 
 #ifdef _WIN32
 # include <winsock.h>
@@ -151,6 +157,91 @@ void Fl_Menu_Window::layout()
 #endif
 }
 
+void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
+{
+    Fl_Rect rect(x, y, w, h);
+    int bpp=0;
+    uint8 *data = Fl_Renderer::data_from_window(Fl_Renderer::root_window(), rect, bpp);
+    if(!data) {
+        //printf("data_from_window(1) FAILED\n");
+        return;
+    }
+
+    // Make sure that fl_gc is NOT NULL!
+    make_current();
+
+    Pixmap pm = fl_create_offscreen(w, h);
+    fl_begin_offscreen(pm);
+    set_damage(FL_DAMAGE_ALL);
+    draw();
+    fl_end_offscreen();
+
+    Fl_Window::show();
+
+    animating=true;
+
+    Fl_Rect rect2(0,0,w,h);
+    int bpp2=0;
+    uint8 *data2 = Fl_Renderer::data_from_pixmap(pm, rect2, bpp2);
+    if(!data2) {
+        delete []data;
+        //printf("data_from_pixmap(2) FAILED\n");
+        animating=false;
+        return;
+    }
+
+    Fl_Renderer::system_init();
+
+    int pitch = Fl_Renderer::calc_pitch(Fl_Renderer::system_format()->bytespp, w);
+    Fl_PixelFormat fmt;
+    fmt.copy(Fl_Renderer::system_format());
+
+    XMoveResizeWindow(fl_display, fl_xid(this), x, y, w, h);
+
+    int step = 10;
+    if(anim_speed()>0) { step=int(floor((step*anim_speed())+.5f)); }
+    int alpha=10;
+    bool error=false;
+    while(!error && alpha<opacity)
+    {
+        if(!animating || !shown() || !visible()) {
+            break;
+        }
+
+        fmt.alpha = alpha;
+        alpha+=step;
+
+        Sleep(1);
+
+        if(Fl_Renderer::alpha_blit(data2, &rect2, &fmt, pitch,
+                                   data, &rect2, Fl_Renderer::system_format(), pitch, 0))
+        {
+            make_current();
+            if(!Fl_Renderer::render_to_pixmap(data, &rect2, Fl_Renderer::system_format(), pitch,
+                                              fl_xid(this), &rect2, fl_gc, 0))
+                error=true;
+        } else
+            error=true;
+
+        Fl::check();
+    }
+
+    delete []data;
+    delete []data2;
+
+    if(opacity==255) {
+#ifdef _WIN32
+        make_current();
+        fl_copy_offscreen(0, 0, w, h, pm, 0, 0);
+#else
+        XCopyArea(fl_display, pm, fl_xid(this), fl_gc, 0, 0, w, h, 0, 0);
+#endif
+    }
+
+    animating=false;
+    fl_delete_offscreen(pm);
+}
+
 void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
                              int tx, int ty, int tw, int th)
 {
@@ -216,6 +307,7 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
             // Make sure we copy to this window!
             make_current();
 #ifdef _WIN32
+            make_current();
             SetWindowPos(fl_xid(this), HWND_TOPMOST, X, Y, W, H, (SWP_NOSENDCHANGING | SWP_NOZORDER | SWP_NOACTIVATE));
             fl_copy_offscreen(0, 0, W, H, pm, tw-W, th-H);
 
@@ -224,7 +316,7 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
 #else
             XMoveResizeWindow(fl_display, fl_xid(this), X, Y, W, H);
             fl_copy_offscreen(0, 0, W, H, pm, tw-W, th-H);
-            //XCopyArea(fl_display, pm, fl_xid(this), fl_gc, 0, 0, W, H, 0, 0);
+            //XCopyArea(fl_display, pm, fl_xid(this), fl_gc, 0, 0, W, H, tw-W, th-H); //This is a bit too fast :)) If we use this we dont need to call make_current()
             XFlush(fl_display);
 #endif
             Fl::check();

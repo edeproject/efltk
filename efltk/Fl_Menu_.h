@@ -134,8 +134,8 @@ public:
 	const char *text() const {Fl_Widget* w = item(); return w ? w->label() : 0;}
 #endif
 	
-	// Set/Get default delay of all menus
-	static float default_delay() { return default_delay_; }
+        // Set/Get default delay of all menus
+        static float default_delay() { return default_delay_; }
 	static void  default_delay(float v) { default_delay_ = v; }
 
 	// Set/Get delay ONLY for this menu
@@ -146,11 +146,14 @@ public:
 	float anim_speed() { return anim_speed_; }
 	void anim_speed(float v) { anim_speed_ = v; }
 
-    static bool animate() { return animate_; }
-    static void animate(bool v) { animate_ = v; }
+        static bool effects() { return effects_; }
+        static void effects(bool v) { effects_ = v; }
 
-    static bool subwindow_animate() { return subwindow_animate_; }
-    static void subwindow_animate(bool v) { subwindow_animate_ = v; }
+        static int effect_type() { return effect_type_; }
+        static void effect_type(int v) { effect_type_ = v; }
+
+        static bool subwindow_effect() { return subwindow_effect_; }
+        static void subwindow_effect(bool v) { subwindow_effect_ = v; }
 
 private:
     friend class MenuWindow;
@@ -159,13 +162,14 @@ private:
     static float default_delay_;
     float delay_;
 
-    static bool animate_;
-    static bool subwindow_animate_;
+    static bool effects_;
+    static bool subwindow_effect_;
+    static int effect_type_;
 
     float anim_speed_;
 
 protected:
-		
+
     static bool key_event;
 
     int indexes[MAX_LEVELS];

@@ -80,8 +80,10 @@ bool Fl_Menu_::key_event = false;
 
 float Fl_Menu_::default_delay_ = 0.2f;
 
-bool Fl_Menu_::animate_ = true;
-bool Fl_Menu_::subwindow_animate_ = true;
+bool Fl_Menu_::effects_ = true;
+bool Fl_Menu_::subwindow_effect_ = true;
+
+int Fl_Menu_::effect_type_ = FL_EFFECT_ANIM;
 
 Fl_Menu_::Fl_Menu_()
     : Fl_Group(0,0,0,0,0), list_(&default_list), item_(0)

@@ -32,7 +32,9 @@
 
 float Fl_Tooltip::delay_ = 1.0f;
 bool  Fl_Tooltip::enabled_ = true;
-bool  Fl_Tooltip::animate_ = true;
+
+bool Fl_Tooltip::effects_ = true;
+int  Fl_Tooltip::effect_type_ = FL_EFFECT_FADE;
 
 static Fl_Tooltip::Generator generator;
 static void* argument;
@@ -126,7 +128,7 @@ void Fl_TooltipBox::draw()
 
 static void recent_timeout(void*)
 {
-    recent_tooltip = false;	
+    recent_tooltip = false;
 }
 
 static void tooltip_timeout(void*)
@@ -150,13 +152,24 @@ static void tooltip_timeout(void*)
         window->no_layout = true;
         window->layout();
 
-        if(!recent_tooltip && Fl_Tooltip::animate()) {
+        if(!recent_tooltip && Fl_Tooltip::effects()) {
             if(!window->shown()) window->create();
 
             window->anim_speed(2);
-            // Roll from top.
-            window->animate(window->x(), window->y()+(window->h()/2), window->w(), 1,
-                            window->x(), window->y(), window->w(), window->h());
+
+            switch(int(Fl_Tooltip::effect_type()))
+            {
+            case FL_EFFECT_FADE:
+                window->fade(window->x(), window->y(), window->w(), window->h());
+                break;
+            case FL_EFFECT_ANIM:
+                window->animate(window->x(), window->y()+(window->h()/2), window->w(), 1,
+                                window->x(), window->y(), window->w(), window->h());
+                break;
+            case FL_EFFECT_NONE:
+            default:
+                break;
+            }
         }
         window->no_layout = false;
 

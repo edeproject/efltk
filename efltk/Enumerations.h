@@ -250,6 +250,13 @@ enum {
   FL_LAYOUT_DAMAGE	= 0x80
 };
 
+// effect types for menus/tooltips
+enum {
+  FL_EFFECT_NONE = 0,
+  FL_EFFECT_ANIM,
+  FL_EFFECT_FADE
+};
+
 #endif
 
 //

@@ -235,7 +235,7 @@ void MenuWindow::layout()
         add_items = false;
 
         if(parent) {
-            if(Fl_Menu_::subwindow_animate()) {
+            if(Fl_Menu_::subwindow_effect()) {
                 anim_flags = Fl_Menu_::LEFT_TO_RIGHT;
                 slow_down_to_w = 15;
             }
@@ -829,7 +829,7 @@ void MenuWindow::show()
         return;
     }
 
-    if(!Fl_Menu_::animate()) {
+    if(!Fl_Menu_::effects() || (!Fl_Menu_::subwindow_effect()&&parent)) {
         Fl_Menu_Window::show();
         return;
     }
@@ -844,28 +844,39 @@ void MenuWindow::show()
         H = th = Fl::h()-ty;
     }
 
-    if(anim_flags&Fl_Menu_::TOP_TO_BOTTOM) {
-        Y=y();
-        H=1;
-    }
-    else if(anim_flags&Fl_Menu_::BOTTOM_TO_TOP) {
-        Y=y()+h();
-        H=1;
-    }
-    if(anim_flags&Fl_Menu_::LEFT_TO_RIGHT) {
-        X=x();
-        W=1;
-    }
-    else if(anim_flags&Fl_Menu_::RIGHT_TO_LEFT) {
-        X=x()+w();
-        W=1;
-    }	
+    switch(int(Fl_Menu_::effect_type()))
+    {
+    case FL_EFFECT_FADE:
+        fade(tx,ty,tw,th);
+        break;
+    case FL_EFFECT_ANIM:
+    {
+        if(anim_flags&Fl_Menu_::TOP_TO_BOTTOM) {
+            Y=y();
+            H=1;
+        }
+        else if(anim_flags&Fl_Menu_::BOTTOM_TO_TOP) {
+            Y=y()+h();
+            H=1;
+        }
+        if(anim_flags&Fl_Menu_::LEFT_TO_RIGHT) {
+            X=x();
+            W=1;
+        }
+        else if(anim_flags&Fl_Menu_::RIGHT_TO_LEFT) {
+            X=x()+w();
+            W=1;
+        }
 
-    if(W!=tw || H!=th) {
-        Fl_Menu_Window::animate(X,Y,W,H,
-                                tx,ty,tw,th);
-    } else
-        Fl_Menu_Window::show();
+        if(W!=tw || H!=th)
+            Fl_Menu_Window::animate(X,Y,W,H, tx,ty,tw,th);
+        else
+            Fl_Menu_Window::show();
+    }
+    case FL_EFFECT_NONE:
+    default:
+        break;
+    }
 
     resize(tx, ty, ow, oh);
     Fl_Menu_Window::layout();

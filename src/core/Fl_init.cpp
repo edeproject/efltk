@@ -48,16 +48,19 @@ void Fl::init()
 
         bool b_val;
         float f_val;
+        int i_val;
 
         // Read Fl_Image defaults:
         cfg.get("Images", "State Effects", b_val, true);
         Fl_Image::state_effect_all(b_val);
 
         // Read Fl_Menu_Window defaults:
-        cfg.get("Menus", "Animate", b_val, true);
-        Fl_Menu_::animate(b_val);
-		cfg.get("Menus", "Subwindow Animate", b_val, true);
-        Fl_Menu_::subwindow_animate(b_val);
+        cfg.get("Menus", "Effects", b_val, true);
+        Fl_Menu_::effects(b_val);
+        cfg.get("Menus", "Subwindow Effect", b_val, true);
+        Fl_Menu_::subwindow_effect(b_val);
+        cfg.get("Menus", "Effect type", i_val, 1);
+        Fl_Menu_::effect_type(i_val);
         cfg.get("Menus", "Speed", f_val, 1.5f);
         Fl_Menu_Window::default_anim_speed(f_val);
         cfg.get("Menus", "Delay", f_val, 0.2f);
@@ -65,8 +68,10 @@ void Fl::init()
 
 
         // Read Fl_Tooltip defaults:
-        cfg.get("Tooltips", "Animate", b_val, true);
-        Fl_Tooltip::animate(b_val);
+        cfg.get("Tooltips", "Effects", b_val, true);
+        Fl_Tooltip::effects(b_val);
+        cfg.get("Tooltips", "Effect type", i_val, 1);
+        Fl_Tooltip::effect_type(i_val);
         cfg.get("Tooltips", "Enabled", b_val, true);
         Fl_Tooltip::enable(b_val);
         cfg.get("Tooltips", "Delay", f_val, 1.0f);

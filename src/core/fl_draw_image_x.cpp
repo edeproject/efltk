@@ -325,6 +325,7 @@ uint8 *Fl_Renderer::data_from_window(Window src, Fl_Rect &rect, int &bitspp)
 	return im_pixels;
 }
 
+#include <stdio.h>
 uint8 *Fl_Renderer::data_from_pixmap(Pixmap src, Fl_Rect &rect, int &bitspp)
 {
     XImage *im = ximage_from_pixmap(src, rect);

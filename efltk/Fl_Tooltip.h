@@ -39,13 +39,16 @@ public:
   static void enable(bool b = true) { enabled_ = b; }
   static void disable() { enabled_ = false; }
 
-  static bool animate() { return animate_; }
-  static void animate(bool v) { animate_ = v; }
+  static bool effects() { return effects_; }
+  static void effects(bool v) { effects_ = v; }
+
+  static int effect_type() { return effect_type_; }
+  static void effect_type(int v) { effect_type_ = v; }
 
   typedef const char* (*Generator)(Fl_Widget*, void*);
   static void enter(Fl_Widget* w, int X, int Y, int W, int H, Generator, void* = 0);
   static void enter(Fl_Widget* w, int X, int Y, int W, int H, const char* t)
-    { enter(w, X, Y, W, H, 0, (void*)t); }
+  { enter(w, X, Y, W, H, 0, (void*)t); }
   static void enter(Fl_Widget* w);
   static void exit();
   static Fl_Widget* current() {return widget;}
@@ -65,7 +68,8 @@ public:
 
 private:
   static float delay_;
-  static bool enabled_, animate_;
+  static bool enabled_, effects_;
+  static int effect_type_;
 };
 
 #endif

@@ -36,27 +36,29 @@ public:
     virtual void create();
     virtual void flush();
     virtual void destroy();
-	virtual void layout();
+    virtual void layout();
 
     int overlay() {return !(flags()&NO_OVERLAY);}
     void set_overlay() {clear_flag(NO_OVERLAY);}
     void clear_overlay() {set_flag(NO_OVERLAY);}
 
-    ~Fl_Menu_Window();
-
     Fl_Menu_Window(int W, int H, const char *l = 0);
     Fl_Menu_Window(int X, int Y, int W, int H, const char *l = 0);
+
+    ~Fl_Menu_Window();
+
+    void fade(int x, int y, int w, int h, uchar opacity=255);
 
     void animate(int fx, int fy, int fw, int fh,
                  int tx, int ty, int tw, int th);
 
-	// Set/Get default animate speed
-	static float default_anim_speed() { return default_anim_speed_; }
-	static void  default_anim_speed(float v) { default_anim_speed_ = v; }
+    // Set/Get default animate speed
+    static float default_anim_speed() { return default_anim_speed_; }
+    static void  default_anim_speed(float v) { default_anim_speed_ = v; }
 
     // Set/Get animate speed, ONLY for this window
-	float anim_speed() { return anim_speed_; }
-	void anim_speed(float v) { anim_speed_ = v; }
+    float anim_speed() { return anim_speed_; }
+    void anim_speed(float v) { anim_speed_ = v; }
 
 protected:
     static float default_anim_speed_;
@@ -64,8 +66,8 @@ protected:
 
     bool animating; //set true, while animating
 
-	int slow_down_to_h;
-	int slow_down_to_w;
+    int slow_down_to_h;
+    int slow_down_to_w;
 };
 
 #endif
