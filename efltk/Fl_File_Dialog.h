@@ -44,7 +44,7 @@ public:
     };
 
     Fl_FileAttr *attr;
-    char fname[4096];
+    char fname[FL_PATH_MAX];
     char size[32];
     char free[32]; //used in device
 };

@@ -184,7 +184,7 @@ static char **select_files(const char *path_, Filter **filters, const char *cap,
 
     d.listview()->type(d.listview()->type()|Fl_ListView::MULTI_SELECTION);
 
-    char read_path[4096]={0};
+    char read_path[FL_PATH_MAX]={0};
     if(path_ && fl_is_dir(path_))
         strncpy(read_path, path_, sizeof(read_path));
     else if(path_) {
@@ -209,7 +209,7 @@ static char **select_files(const char *path_, Filter **filters, const char *cap,
     // Theres no selection, lets try to get filename from location box
     if(!tmp) {
         const char *file = d.location();
-        char path[4096];
+        char path[FL_PATH_MAX];
         if(d.get_filename(file, path)) {
             tmp = new char*[2];
             len = strlen(path)+1;
@@ -227,7 +227,7 @@ static char *select_file(const char *path_, Filter **filters, const char *cap, i
 {
     Fl_File_Dialog d(Fl_File_Dialog::initial_w ,Fl_File_Dialog::initial_h , cap, mode);
 
-    char read_path[4096]={0};
+    char read_path[FL_PATH_MAX]={0};
     if(path_ && fl_is_dir(path_))
         strncpy(read_path, path_, sizeof(read_path));
     else if(path_) {
@@ -247,7 +247,7 @@ static char *select_file(const char *path_, Filter **filters, const char *cap, i
 
     if(d.cancelled()) return 0;
 
-    char path[4096];
+    char path[FL_PATH_MAX];
     if(d.get_filename(d.location(), path)) {
         len = strlen(path)+1;
         ret = new char[len];
@@ -388,7 +388,7 @@ bool Fl_File_Dialog::initial_preview = false;
 char *normalize_path(const char *path, char *buf)
 {
 #ifdef _WIN32
-	strncpy(buf, path, 4096);	
+    strncpy(buf, path, FL_PATH_MAX);
 #else
 
     char ch=0;
@@ -570,7 +570,7 @@ char **Fl_File_Dialog::get_selected()
 		if(w->type()==Fl_FileItem::DEVICE) continue;
 
 		tmp = (char **)realloc(tmp, (sel+1)*sizeof(char *)+sizeof(char *));
-		char filepath[4096];
+		char filepath[FL_PATH_MAX];
 		snprintf(filepath, sizeof(filepath)-1, "%s%c%s", fullpath(), slash, w->label());
 		tmp[sel] = strdup(filepath);
 		sel++;
@@ -668,7 +668,7 @@ void Fl_File_Dialog::parse_dirs(const char *fp)
     }
 
     int i;
-    char buf[4096];
+    char buf[FL_PATH_MAX];
     char *ptr = normalize_path(fp, buf);
 
     path_->begin();
@@ -752,17 +752,17 @@ void Fl_File_Dialog::read_dir(const char *_path)
     image_cache.clear();
     update_preview(0);
 
-    static char read_path[4096];
+    char read_path[FL_PATH_MAX];
     if(_path && *_path) {
         normalize_path(_path, read_path);
-        //strncpy(read_path, _path, 4096);
+        //strncpy(read_path, _path, FL_PATH_MAX);
     } else read_path[0] = '\0';
 
 #ifndef _WIN32
     if(!*read_path) { _path = "/"; }
     if(!strcmp(read_path, "My Home")) {
         char *home = fl_get_homedir();
-        strncpy(read_path, home, 4096);
+        strncpy(read_path, home, FL_PATH_MAX);
         delete []home;
         _path = read_path;
     }
@@ -835,7 +835,7 @@ void Fl_File_Dialog::read_dir(const char *_path)
         listview_->column_name(1, "Size");
         listview_->column_name(2, "Type");
         listview_->column_name(3, "Modified");
-        static char filename[4096];
+        char filename[FL_PATH_MAX];
         char **files = fl_get_files((char *)fullpath());
 
         int n = 0;
@@ -901,7 +901,7 @@ void Fl_File_Dialog::read_dir(const char *_path)
 bool Fl_File_Dialog::new_dir()
 {
     const char	*dir;		// New directory name
-    char pathname[4096];	// Full path_ of directory
+    char pathname[FL_PATH_MAX];	// Full path_ of directory
 
     // Get a directory name from the user
     if ((dir = fl_input("New Directory?")) == NULL)
@@ -982,39 +982,39 @@ void Fl_File_Dialog::file_clicked(Fl_FileItem *i)
 		location_->value(i->label());
 	}
 
-	if(Fl::event_clicks())
-	  close(CLOSE_OK);
-	else {
-		item = (Fl_ListView_Item *)listview_->item();
-		if(item && preview()) {
-			char tmp[4096];
-			snprintf(tmp, sizeof(tmp)-1, "%s%c%s", fullpath(), slash, item->label());
-			update_preview(tmp);
-		}
-	}
+        if(Fl::event_clicks())
+            close(CLOSE_OK);
+        else {
+            item = (Fl_ListView_Item *)listview_->item();
+            if(item && preview()) {
+                char tmp[FL_PATH_MAX];
+                snprintf(tmp, sizeof(tmp)-1, "%s%c%s", fullpath(), slash, item->label());
+                update_preview(tmp);
+            }
+        }
 }
 
 void Fl_File_Dialog::folder_clicked(Fl_FileItem *i)
 {
-	ok_->activate();
+    ok_->activate();
 
-	if(Fl::event_clicks()) {
-		char tmp[4096];
-		if(fullpath()) {
-			if(!strcmp(fullpath(), "/"))
-				sprintf(tmp, "%s%s", fullpath(), i->label());
-			else
-				sprintf(tmp, "%s%c%s", fullpath(), slash, i->label());
-		}
+    if(Fl::event_clicks()) {
+        char tmp[FL_PATH_MAX];
+        if(fullpath()) {
+            if(!strcmp(fullpath(), "/"))
+                sprintf(tmp, "%s%s", fullpath(), i->label());
+            else
+                sprintf(tmp, "%s%c%s", fullpath(), slash, i->label());
+        }
 #ifdef _WIN32
-		else if(i->type()==Fl_FileItem::NETWORK)
-			sprintf(tmp, "\\\\%s", i->label());
+        else if(i->type()==Fl_FileItem::NETWORK)
+            sprintf(tmp, "\\\\%s", i->label());
 #endif
-		else
-			sprintf(tmp, "%s", i->label());
+        else
+            sprintf(tmp, "%s", i->label());
 
-		read_dir(tmp);
-	}
+        read_dir(tmp);
+    }
 }
 
 
@@ -1042,7 +1042,7 @@ void Fl_File_Dialog::cb_ok(Fl_Widget *, void *d)
     }
 
     Fl_FileItem *i = (Fl_FileItem *)FD->listview()->item();
-    char file[4096];
+    char file[FL_PATH_MAX];
 
     if(FD->mode()==SAVE) {
         if(strlen(FD->location())>0) {
@@ -1167,15 +1167,15 @@ char *Fl_File_Dialog::get_filename(const char *path, char *buf)
 #else
     check='/'; checkp=0;
 #endif
-    char tmp[4096];
+    char tmp[FL_PATH_MAX];
     if(fl_file_expand(tmp, path)) path = tmp;
 
     if(path[checkp]==check || !fullpath())
-        snprintf(buf, 4096, "%s", path);
+        snprintf(buf, FL_PATH_MAX, "%s", path);
     else if(fullpath()[strlen(fullpath())-1]==slash)
-        snprintf(buf, 4096, "%s%s", fullpath(), path);
+        snprintf(buf, FL_PATH_MAX, "%s%s", fullpath(), path);
     else
-        snprintf(buf, 4096, "%s%c%s", fullpath(), slash, path);
+        snprintf(buf, FL_PATH_MAX, "%s%c%s", fullpath(), slash, path);
 
     return buf;
 }
@@ -1188,14 +1188,14 @@ char *Fl_File_Dialog::get_filepath(const char *path, char *buf)
 #else
     check='/'; checkp=0;
 #endif
-    char tmp_path[4096];
+    char tmp_path[FL_PATH_MAX];
     if(path[checkp]!=check && fullpath()) {
-        strncpy(tmp_path, fullpath(), 4096);
+        strncpy(tmp_path, fullpath(), FL_PATH_MAX);
         if(tmp_path[strlen(tmp_path)-1]!=slash && path[0]!=slash) { strcat(tmp_path, "/"); }
         strcat(tmp_path, path);
         path = tmp_path;
     }
-    char tmp[4096];
+    char tmp[FL_PATH_MAX];
     if(fl_file_expand(tmp, path)) path = tmp;
 
     char *p = strrchr(path, slash);
@@ -1215,7 +1215,7 @@ char *Fl_File_Dialog::get_filepath(const char *path, char *buf)
     }
 
     if(fl_is_dir(path)) {
-        snprintf(buf, 4096, "%s", path);
+        snprintf(buf, FL_PATH_MAX, "%s", path);
         return buf;
     }
 
@@ -1226,8 +1226,8 @@ void Fl_File_Dialog::cb_location(Fl_Widget *w, void *d)
 {
     Fl_Input_Browser *loc = (Fl_Input_Browser *)w;
 
-    char tmp[4096] = {0};
-    char tmp2[4096]= {0};
+    char tmp[FL_PATH_MAX] = {0};
+    char tmp2[FL_PATH_MAX]= {0};
 
     if(!strcmp(loc->value(),"")) {
         FD->ok_->deactivate();
@@ -1370,7 +1370,7 @@ void Fl_File_Dialog::preview(bool show)
 		
 		Fl_ListView_Item *item = (Fl_ListView_Item *)listview_->item();
 		if(item && item->label() && fullpath()) {
-			char tmp[4096];
+			char tmp[FL_PATH_MAX];
 			snprintf(tmp, sizeof(tmp)-1, "%s%c%s", fullpath(), slash, item->label());
 			update_preview(tmp);
 		}
