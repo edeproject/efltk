@@ -421,6 +421,7 @@ void Fl_Group::layout()
         }
         int xx = 0, yy = 0;
         int ww = w(), hh = h();
+        box()->inset(xx,yy,ww,hh);
 
         Fl_Widget*const* a = array_.data();
         Fl_Widget*const* e = a+children();
