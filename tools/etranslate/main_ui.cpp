@@ -92,6 +92,7 @@ Fl_Main_Window* main_window() {
       }
        {Fl_Divider* o = new Fl_Divider(40, 6, 10, 30, _("label"));
         o->type(Fl_Divider::VERTICAL);
+        o->color((Fl_Color)0xfffffffe);
       }
        {Fl_Button* o = tb_load = new Fl_Button(55, 5, 32, 32, _("Load"));
         o->label_size(10);
@@ -103,19 +104,20 @@ Fl_Main_Window* main_window() {
         o->align(FL_ALIGN_CLIP);
         o->tooltip(_("Save file"));
       }
-       {Fl_Button* o = tb_saveas = new Fl_Button(135, 5, 32, 32, _("Save As"));
+       {Fl_Button* o = tb_saveas = new Fl_Button(135, 5, 40, 32, _("Save As"));
         o->label_size(10);
-        o->align(192);
+        o->align(FL_ALIGN_CLIP);
       }
-       {Fl_Divider* o = new Fl_Divider(170, 6, 10, 30, _("label"));
+       {Fl_Divider* o = new Fl_Divider(175, 6, 10, 30, _("label"));
         o->type(Fl_Divider::VERTICAL);
+        o->color((Fl_Color)0xfffffffe);
       }
-       {Fl_Button* o = tb_comp = new Fl_Button(185, 5, 32, 32, _("Com pile"));
+       {Fl_Button* o = tb_comp = new Fl_Button(190, 5, 45, 32, _("Compile"));
         o->label_size(10);
-        o->align(192);
+        o->align(FL_ALIGN_CLIP);
         o->tooltip(_("Compile to binary format"));
       }
-       {Fl_Button* o = tb_extract = new Fl_Button(225, 5, 32, 32, _("Ext ract"));
+       {Fl_Button* o = tb_extract = new Fl_Button(240, 5, 45, 32, _("Extract"));
         o->label_size(11);
         o->align(192);
       }

@@ -73,7 +73,7 @@ o->spacing(3);}
       }
       Fl_Divider {} {
         label label
-        xywh {40 6 10 30} type VERTICAL
+        xywh {40 6 10 30} type VERTICAL color 0xfffffffe
       }
       Fl_Button tb_load {
         label Load
@@ -87,20 +87,20 @@ o->spacing(3);}
       }
       Fl_Button tb_saveas {
         label {Save As} selected
-        xywh {135 5 32 32} align 192 label_size 10
+        xywh {135 5 40 32} align 64 label_size 10
       }
       Fl_Divider {} {
         label label
-        xywh {170 6 10 30} type VERTICAL
+        xywh {175 6 10 30} type VERTICAL color 0xfffffffe
       }
       Fl_Button tb_comp {
-        label {Com pile}
+        label Compile
         tooltip {Compile to binary format}
-        xywh {185 5 32 32} align 192 label_size 10
+        xywh {190 5 45 32} align 64 label_size 10
       }
       Fl_Button tb_extract {
-        label {Ext ract}
-        xywh {225 5 32 32} align 192 label_size 11
+        label Extract
+        xywh {240 5 45 32} align 192 label_size 11
       }
     }
     Fl_Group maingroup {open
