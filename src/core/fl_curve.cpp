@@ -33,7 +33,7 @@
 #include <config.h>
 #include <efltk/fl_draw.h>
 
-void fl_curve(float x0, float y0,
+void Fl_Device::curve(float x0, float y0,
 	      float x1, float y1,
 	      float x2, float y2,
 	      float x3, float y3) {

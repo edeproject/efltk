@@ -83,7 +83,7 @@ void fl_clip_region(Region r)
 }
 
 // Intersect & push a new clip rectangle:
-void fl_push_clip(int x, int y, int w, int h)
+void Fl_Device::push_clip(int x, int y, int w, int h)
 {
     Region r;
     if (w > 0 && h > 0)
@@ -116,7 +116,7 @@ void fl_push_clip(int x, int y, int w, int h)
 }
 
 // Replace top of stack with top of stack minus this rectangle:
-void fl_clip_out(int x, int y, int w, int h)
+void Fl_Device::clip_out(int x, int y, int w, int h)
 {
     if (w <= 0 || h <= 0) return;
     Region current = rstack[rstackptr];
@@ -140,7 +140,7 @@ void fl_clip_out(int x, int y, int w, int h)
 
 
 // make there be no clip (used by fl_begin_offscreen() only!)
-void fl_push_no_clip()
+void Fl_Device::push_no_clip()
 {
     // this does not test maximum so that this is guaranteed to work,
     // there is one extra slot at the top of the stack.
@@ -150,7 +150,7 @@ void fl_push_no_clip()
 
 
 // pop back to previous clip:
-void fl_pop_clip()
+void Fl_Device::pop_clip()
 {
     if (rstackptr > 0)
     {
@@ -167,7 +167,7 @@ void fl_pop_clip()
 #include <efltk/Fl_Window.h>
 
 // does this rectangle intersect current clip?
-int fl_not_clipped(int x, int y, int w, int h)
+int Fl_Device::not_clipped(int x, int y, int w, int h)
 {
     fl_transform(x,y);
     // first check against the window so we get rid of coordinates
@@ -176,9 +176,9 @@ int fl_not_clipped(int x, int y, int w, int h)
         || y >= Fl_Window::current()->h()) return 0;
     Region r = rstack[rstackptr];
     if (!r) return 1;
-    #ifndef _WIN32
+#ifndef _WIN32
     return XRectInRegion(r, x, y, w, h);
-    #else
+#else
     //RECT rect;
     //rect.left = x; rect.top = y; rect.right = x+w; rect.bottom = y+h;
     //return RectInRegion(r,&rect);
@@ -203,12 +203,12 @@ int fl_not_clipped(int x, int y, int w, int h)
     DeleteObject(temp);
     DeleteObject(rr);
     return ret;
-    #endif
+#endif
 }
 
 
 // return rectangle surrounding intersection of this rectangle and clip,
-int fl_clip_box(int x, int y, int w, int h, int& X, int& Y, int& W, int& H)
+int Fl_Device::clip_box(int x, int y, int w, int h, int& X, int& Y, int& W, int& H)
 {
     Region r = rstack[rstackptr];
     if (!r) {X = x; Y = y; W = w; H = h; return 0;}
@@ -222,7 +222,7 @@ int fl_clip_box(int x, int y, int w, int h, int& X, int& Y, int& W, int& H)
     t = Fl_Window::current()->h(); if (y+h > t) {h = t-y; ret = 2;}
     // check for total clip (or for empty rectangle):
     if (w <= 0 || h <= 0) {W = H = 0; return 0;}
-    #ifndef _WIN32
+#ifndef _WIN32
     switch (XRectInRegion(r, x, y, w, h))
     {
         case 0:                  // completely outside
@@ -277,7 +277,7 @@ int fl_clip_box(int x, int y, int w, int h, int& X, int& Y, int& W, int& H)
     DeleteObject(temp);
     DeleteObject(rr);
     return ret;
-    #endif
+#endif
 }
 
 

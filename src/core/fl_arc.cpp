@@ -37,7 +37,7 @@
 #include <wince.h>
 #endif
 
-void fl_arc(float l, float b, float w, float h, float start, float end) {
+void Fl_Device::arc(float l, float b, float w, float h, float start, float end) {
 
   const float x = l+w/2;
   const float y = b+h/2;

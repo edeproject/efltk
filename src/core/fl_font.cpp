@@ -46,24 +46,24 @@ const char *fl_encoding_ = "iso8859-1";
 # endif
 #endif
 
-void fl_draw(const char* str, float x, float y) {
+void Fl_Device::draw(const char* str, float x, float y) {
     fl_draw(str, strlen(str), x, y);
 }
 
-void fl_draw(const Fl_String &str, float x, float y) {
+void Fl_Device::draw(const Fl_String &str, float x, float y) {
     fl_draw(str.c_str(), str.length(), x, y);
 }
 
-void fl_draw(const char* str, int n, float x, float y) {
+void Fl_Device::draw(const char* str, int n, float x, float y) {
   fl_transform(x,y);
   fl_transformed_draw(str, n, x, y);
 }
 
-float fl_width(const char* str) {
+float Fl_Device::width(const char* str) {
     return fl_width(str, strlen(str));
 }
 
-float fl_width(const Fl_String &str) {
+float Fl_Device::width(const Fl_String &str) {
     return fl_width(str.c_str(), str.length());
 }
 

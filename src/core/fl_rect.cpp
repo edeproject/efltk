@@ -29,7 +29,7 @@
 #include <efltk/fl_draw.h>
 #include <efltk/x.h>
 
-void fl_rect(int x, int y, int w, int h)
+void Fl_Device::rect(int x, int y, int w, int h)
 {
     if (w<=0 || h<=0) return;
     fl_transform(x,y);
@@ -44,7 +44,7 @@ void fl_rect(int x, int y, int w, int h)
 #endif
 }
 
-void fl_rectf(int x, int y, int w, int h)
+void Fl_Device::rectf(int x, int y, int w, int h)
 {
     if (w<=0 || h<=0) return;
     fl_transform(x,y);
@@ -59,14 +59,14 @@ void fl_rectf(int x, int y, int w, int h)
 }
 
 #ifdef _WIN32
-void fl_rectf(int x, int y, int w, int h, Fl_Color C)
+void Fl_Device::rectf(int x, int y, int w, int h, Fl_Color C)
 {
     fl_color(C);
     fl_rectf(x,y,w,h);
 }
 #endif
 
-void fl_line(int x, int y, int x1, int y1)
+void Fl_Device::line(int x, int y, int x1, int y1)
 {
     fl_transform(x,y);
     fl_transform(x1,y1);
@@ -82,7 +82,7 @@ void fl_line(int x, int y, int x1, int y1)
 }
 
 
-void fl_point(int x, int y)
+void Fl_Device::point(int x, int y)
 {
     fl_transform(x,y);
 #ifdef _WIN32

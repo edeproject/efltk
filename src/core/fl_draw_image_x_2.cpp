@@ -523,7 +523,7 @@ static void innards(const uchar *buf, int X, int Y, int W, int H,
   }
 }
 
-void fl_rectf(int x, int y, int w, int h, Fl_Color C) {
+void Fl_Device::rectf(int x, int y, int w, int h, Fl_Color C) {
     if (fl_visual->depth >= 15) {
         fl_color(C);
         fl_rectf(x,y,w,h);

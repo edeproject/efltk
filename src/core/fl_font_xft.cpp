@@ -90,11 +90,11 @@ static Fl_FontSize *fl_fontsize;
 #define current_font (fl_fontsize->font)
 
 // Change the encoding to use for the next font selection.
-void fl_encoding(const char* f) {
+void Fl_Device::encoding(const char* f) {
     fl_encoding_ = f;
 }
 
-void fl_font(Fl_Font font, float size)
+void Fl_Device::font(Fl_Font font, float size)
 {
     // Reduce the number of sizes by rounding to various multiples:
     size = rint(10*size)/10;
@@ -174,21 +174,21 @@ Fl_FontSize::~Fl_FontSize() {
 #if 1
 // Some of the line spacings these return are insanely big!
 //int fl_height() { return current_font->height; }
-float fl_height() { return current_font->ascent + current_font->descent; }
-float fl_descent() { return current_font->descent; }
+float Fl_Device::height() { return current_font->ascent + current_font->descent; }
+float Fl_Device::descent() { return current_font->descent; }
 #else
-float fl_height() { return fl_size_;}
-float fl_descent() { return fl_size_/4;}
+float Fl_Device::height() { return fl_size_;}
+float Fl_Device::descent() { return fl_size_/4;}
 #endif
 
-float fl_width(const char *str, int n)
+float Fl_Device::width(const char *str, int n)
 {
     XGlyphInfo i;
     XftTextExtents8(fl_display, current_font, (XftChar8 *)str, n, &i);
     return i.xOff;
 }
 
-float fl_width(uchar c) {
+float Fl_Device::width(uchar c) {
     return fl_width((const char *)(&c), 1);
 }
 
@@ -215,7 +215,7 @@ void Fl_Drawable::free_gc()
     }
 };
 
-void fl_transformed_draw(const char *str, int n, float x, float y)
+void Fl_Device::transformed_draw(const char *str, int n, float x, float y)
 {
     XftDraw* draw = fl_drawable->draw;
 

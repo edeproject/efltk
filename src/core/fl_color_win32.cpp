@@ -70,7 +70,7 @@ static DWORD dash_pattern[16];
 static int dash_pattern_size = 0;
 static int line_width = 0;
 
-void fl_line_style(int style, int width, char* dashes)
+void Fl_Device::line_style(int style, int width, char* dashes)
 {
 #ifndef _WIN32_WCE
 	static DWORD Cap[4]= {PS_ENDCAP_ROUND, PS_ENDCAP_FLAT, PS_ENDCAP_ROUND, PS_ENDCAP_SQUARE};
@@ -109,7 +109,7 @@ HPEN fl_create_pen()
 }
 
 
-void fl_color(Fl_Color i)
+void Fl_Device::color(Fl_Color i)
 {
     fl_color_ = i;
     fl_colorref = fl_wincolor(i);

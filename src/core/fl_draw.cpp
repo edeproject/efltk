@@ -40,6 +40,16 @@
 #include <efltk/fl_math.h>
 #include <efltk/fl_draw.h>
 #include <string.h>
+#include <efltk/Fl_Device.h>
+
+Fl_Device fl_fltk_dev;
+Fl_Device *fl_current_dev = &fl_fltk_dev;
+
+#warning Where are they?
+void Fl_Device::font(const char* s, float size){puts("font 1");};
+void Fl_Device::font(const char* s, int attributes, float size){puts("font 2");};
+const char* Fl_Device::fontname(Fl_Font, int *){puts("font 3"); return 0;};	
+//
 
 // Any string longer than this does not get &x underscore processing.
 #define MAX_LENGTH_FOR_UNDERSCORE 128
@@ -273,6 +283,38 @@ void fl_measure(const Fl_String &str, int& w, int& h, Fl_Flags flags)
 //  void fl_measure(const char* str, int& w, int& h) {
 //    fl_measure(str, w, h, w ? FL_ALIGN_WRAP : 0);
 //  }
+
+/*void Fl_Device::draw_Bitmap(Fl_Bitmap * im, int X, int Y, int W, int H, int cx, int cy)
+{
+	im->draw_screen(X, Y, W, H, cx, cy);
+}
+
+void Fl_Device::draw_Pixmap(Fl_Pixmap * im, int X, int Y, int W, int H, int cx, int cy)
+{
+	im->draw_screen(X, Y, W, H, cx, cy);
+}
+
+void Fl_Device::draw_RGB(Fl_RGB_Image * im, int X, int Y, int W, int H, int cx, int cy)
+{
+	im->draw_screen(X, Y, W, H, cx, cy);
+}
+
+void Fl_Bitmap::draw(int X, int Y, int W, int H, int cx, int cy)
+{
+	fl->draw_Bitmap(this, X, Y, W, H, cx, cy);
+}
+
+void Fl_Pixmap::draw(int X, int Y, int W, int H, int cx, int cy)
+{
+	fl->draw_Pixmap(this, X, Y, W, H, cx, cy);
+}
+
+void Fl_RGB_Image::draw(int X, int Y, int W, int H, int cx, int cy)
+{
+	fl->draw_RGB(this, X, Y, W, H, cx, cy);
+}
+*/
+
 
 //
 // End of "$Id$".

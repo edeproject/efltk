@@ -95,7 +95,7 @@ Fl_FontSize::~Fl_FontSize()
 // Placeholder function, Xft version needs to free something:
 void Fl_Drawable::free_gc() { draw = 0; }
 
-void fl_transformed_draw(const char *str, int n, float x, float y)
+void Fl_Device::transformed_draw(const char *str, int n, float x, float y)
 {
     if (font_gc != fl_gc) {
         font_gc = fl_gc;
@@ -150,7 +150,7 @@ void fl_transformed_draw(const char *str, int n, float x, float y)
         XDrawString16(fl_display, fl_window, fl_gc, X, Y, buf, pos);
 }
 
-void fl_rtl_draw(const char *str, int n, float x, float y) {
+void Fl_Device::rtl_draw(const char *str, int n, float x, float y) {
     if (font_gc != fl_gc) {
         font_gc = fl_gc;
         XSetFont(fl_display, fl_gc, ((XFontStruct*)fl_xfont())->fid);
@@ -159,10 +159,10 @@ void fl_rtl_draw(const char *str, int n, float x, float y) {
     ///
 }
 
-float fl_height() { return (current_font->ascent + current_font->descent); }
-float fl_descent() { return current_font->descent; }
+float Fl_Device::height() { return (current_font->ascent + current_font->descent); }
+float Fl_Device::descent() { return current_font->descent; }
 
-float fl_width(const char *str, int n)
+float Fl_Device::width(const char *str, int n)
 {
     char glyph[2];       // byte1 and byte2 value of the UTF-8 char
     XChar2b buf[128];    // measure buffer
@@ -208,7 +208,7 @@ float fl_width(const char *str, int n)
     return W;
 }
 
-float fl_width(unsigned int c)
+float Fl_Device::width(unsigned int c)
 {
     unsigned int ucs;
     unsigned int ulen = fl_fast_utf2ucs((unsigned char*)&c, 1, &ucs);
@@ -396,7 +396,7 @@ Fl_FontSize *Fl_Font_::load_font(float psize)
     return f;
 }
 
-void fl_font(Fl_Font font, float psize)
+void Fl_Device::font(Fl_Font font, float psize)
 {
     Fl_FontSize* f = fl_fontsize;
 
@@ -429,7 +429,7 @@ void fl_font(Fl_Font font, float psize)
 }
 
 // Change the encoding to use for the next font selection.
-void fl_encoding(const char* f) {
+void Fl_Device::encoding(const char* f) {
     fl_encoding_ = f;
 }
 

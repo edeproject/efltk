@@ -187,7 +187,7 @@ TEXTMETRIC *fl_textmetric() { return &(fl_fontsize->metr); }
 // we need to decode the encoding somehow!
 static int fl_charset = DEFAULT_CHARSET;
 
-void fl_font(Fl_Font font, float psize) 
+void Fl_Device::font(Fl_Font font, float psize) 
 {
   fl_charset = str_to_charset(fl_encoding_);
 
@@ -215,8 +215,8 @@ void fl_font(Fl_Font font, float psize)
   fl_fontsize = f;
 }
 
-float fl_height()  { return float(fl_fontsize->metr.tmAscent + fl_fontsize->metr.tmDescent); }
-float fl_descent() { return float(fl_fontsize->metr.tmDescent); }
+float Fl_Device::height()  { return float(fl_fontsize->metr.tmAscent + fl_fontsize->metr.tmDescent); }
+float Fl_Device::descent() { return float(fl_fontsize->metr.tmDescent); }
 
 // Unicode string buffer
 static unsigned short *wstr = NULL;
@@ -228,7 +228,7 @@ if(len > wstr_len) { \
 		wstr_len = len; \
 }
 
-float fl_width(const char* c, int n) 
+float Fl_Device::width(const char* c, int n) 
 {
   int i = 0;
   float w = 0;
@@ -244,7 +244,7 @@ float fl_width(const char* c, int n)
   return w;
 }
 
-float fl_width(unsigned int ucs) 
+float Fl_Device::width(unsigned int ucs) 
 {
 	unsigned int r = (ucs & 0xFC00)>>10;
 	if(!fl_fontsize->width[r]) 
@@ -270,7 +270,7 @@ static inline int wchar_width(WCHAR *wc, int len) {
 
 }
 
-void fl_transformed_draw(const char *str, int n, float x, float y) 
+void Fl_Device::transformed_draw(const char *str, int n, float x, float y) 
 {
 	SetTextColor(fl_gc, fl_colorref);
 	SelectObject(fl_gc, current_font);
@@ -332,7 +332,7 @@ void fl_transformed_draw(const char *str, int n, float x, float y)
 #endif
 }
 
-void fl_rtl_draw(const char *str, int n, float x, float y)
+void Fl_Device::rtl_draw(const char *str, int n, float x, float y)
 {
 	// USE BUFFER HERE ALSO
 	SetTextColor(fl_gc, fl_colorref);
@@ -362,7 +362,7 @@ void fl_rtl_draw(const char *str, int n, float x, float y)
 }
 
 // Change the encoding to use for the next font selection.
-void fl_encoding(const char* f) {
+void Fl_Device::encoding(const char* f) {
     fl_encoding_ = f;
 }
 

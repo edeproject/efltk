@@ -253,7 +253,7 @@ void fl_allocate_xpixel(Fl_XColor& xmap, uchar r, uchar g, uchar b)
 Fl_Color fl_color_;
 ulong fl_pixel;
 
-void fl_color(Fl_Color i)
+void Fl_Device::color(Fl_Color i)
 {
     fl_color_ = i;
     fl_pixel = fl_xpixel(i);
@@ -286,7 +286,7 @@ void fl_free_color(Fl_Color i)
 // This is here because Win32 makes it impossible to seperately set
 // the color and line style:
 
-void fl_line_style(int style, int width, char* dashes)
+void Fl_Device::line_style(int style, int width, char* dashes)
 {
     char buf[7];
     int ndashes = dashes ? strlen(dashes) : 0;

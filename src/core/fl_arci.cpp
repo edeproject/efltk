@@ -42,7 +42,7 @@
 #include <efltk/fl_draw.h>
 #include <efltk/x.h>
 
-void fl_pie(int x,int y,int w,int h,float a1,float a2, int what) {
+void Fl_Device::pie(int x,int y,int w,int h,float a1,float a2, int what) {
   if (w <= 0 || h <= 0) return;
   fl_transform(x,y);
 #ifndef _WIN32_WCE
