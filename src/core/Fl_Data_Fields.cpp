@@ -16,8 +16,71 @@
  ***************************************************************************/
 
 #include <efltk/Fl_Data_Fields.h>
+#include <stdio.h>
 
 const Fl_Variant Fl_Data_Fields::m_fieldNotFound;
+
+// convertors
+int Fl_Data_Field::as_int() const {
+   switch (value.type()) {
+   case VAR_INT:        return value.get_int();              break;
+   case VAR_FLOAT:      return (int)value.get_float();       break;
+   case VAR_STRING:
+   case VAR_TEXT:
+   case VAR_BUFFER:     return atoi(value.get_string());     break;
+   case VAR_DATETIME:   return int(value.get_date());        break;
+   case VAR_NONE:       break;
+   }
+   return 0;
+}
+
+double Fl_Data_Field::as_float() const {
+   switch (value.type()) {
+   case VAR_INT:        return value.get_int();              break;
+   case VAR_FLOAT:      return value.get_float();            break;
+   case VAR_STRING:
+   case VAR_TEXT:
+   case VAR_BUFFER:     return atof(value.get_string());     break;
+   case VAR_DATETIME:   return double(value.get_date());     break;
+   case VAR_NONE:       break;
+   }
+   return 0;
+}
+
+Fl_String Fl_Data_Field::as_string() const {
+   char print_buffer[32];
+   switch (value.type()) {
+   case VAR_INT:        sprintf(print_buffer,"%i",value.get_int());
+                        return Fl_String(print_buffer);
+   case VAR_FLOAT:      sprintf(print_buffer,"%0.4f",value.get_float());
+                        return Fl_String(print_buffer);
+   case VAR_STRING:
+   case VAR_TEXT:
+   case VAR_BUFFER:     return Fl_String(value.get_string());
+   case VAR_DATETIME:   return value.get_date().date_string() + " " + value.get_date().time_string();
+   case VAR_NONE:       break;
+   }
+   return "";
+}
+
+Fl_Date_Time Fl_Data_Field::as_date() const {
+   Fl_Date_Time   result;
+   switch (value.type()) {
+   case VAR_INT:        result = value.get_int();
+                        break;
+   case VAR_FLOAT:      result = value.get_float();
+                        break;
+   case VAR_STRING:
+   case VAR_TEXT:
+   case VAR_BUFFER:     result = value.get_string();
+                        break;
+   case VAR_DATETIME:   result = value.get_date();
+                        break;
+   case VAR_NONE:
+                        break;
+   }
+   return result;
+}
 
 void Fl_Data_Fields::clear() {
    unsigned cnt = m_list.count();

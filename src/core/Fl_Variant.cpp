@@ -122,13 +122,13 @@ Fl_Date_Time Fl_Variant::get_date() const {
 //---------------------------------------------------------------------------
 void Fl_Variant::set_data(const Fl_Variant &C) {
    switch (C.m_type) {
-   case VAR_INT:     	set_int(C.get_int());                break;
-   case VAR_FLOAT:   	set_float(C.get_float());            break;
-   case VAR_STRING:  	set_string(C.get_string());          break;
-   case VAR_TEXT:  	   set_buffer(C.get_buffer(),C.size()); break;
-   case VAR_BUFFER:  	set_buffer(C.get_buffer(),C.size()); break;
+   case VAR_INT:        set_int(C.get_int());                break;
+   case VAR_FLOAT:      set_float(C.get_float());            break;
+   case VAR_STRING:     set_string(C.get_string());          break;
+   case VAR_TEXT:       set_buffer(C.get_buffer(),C.size()); break;
+   case VAR_BUFFER:     set_buffer(C.get_buffer(),C.size()); break;
    case VAR_DATETIME:   set_date(C.get_date());              break;
-   case VAR_NONE:    	break;
+   case VAR_NONE:       break;
    }
 }
 //---------------------------------------------------------------------------
