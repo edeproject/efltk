@@ -365,7 +365,7 @@ void Fl_Image::to_screen_tiled(int XP, int YP, int WP, int HP, int, int)
     fl_pop_clip();
 }
 
-uint8 *Fl_Renderer::data_from_pixmap(Pixmap src, Fl_Rect &rect, int &bitspp)
+uint8 *Fl_Renderer::data_from_pixmap(Pixmap src, Fl_Rect &rect, Fl_PixelFormat *desired)
 {
     Fl_Renderer::system_init();
 
@@ -421,7 +421,7 @@ uint8 *Fl_Renderer::data_from_pixmap(Pixmap src, Fl_Rect &rect, int &bitspp)
     w = width;
     h = height;
 
-    bitspp = dib_hdr->biBitCount;
+    //bitspp = ;
     dib_hdr->biHeight = -h;//DIB images are upside/down...
     dib_hdr->biWidth = w;
 
@@ -438,10 +438,26 @@ uint8 *Fl_Renderer::data_from_pixmap(Pixmap src, Fl_Rect &rect, int &bitspp)
         //NYI!
     }
 
-    return lpvBits;
+	Fl_PixelFormat srcfmt;
+	srcfmt.init(dib_hdr->biBitCount, 0,0,0,0);
+	
+	uint8 *ret=0;
+	if(!fl_format_equal(&srcfmt, desired)) {
+		Fl_Rect r(0,0,w,h);
+		int srcpitch = Fl_Renderer::calc_pitch(srcfmt.bytespp, w);
+		int dstpitch = Fl_Renderer::calc_pitch(desired->bytespp, w);
+		ret = new uint8[h*dstpitch];
+		if(!Fl_Renderer::blit(lpvBits, &r, &srcfmt, srcpitch, ret, &r, desired, dstpitch, 0)) {
+			delete []ret;
+			ret=0;
+		}
+	} else
+		ret = lpvBits;
+
+    return ret;
 }
 
-uint8 *Fl_Renderer::data_from_window(Window src, Fl_Rect &rect, int &bitspp)
+uint8 *Fl_Renderer::data_from_window(Window src, Fl_Rect &rect, Fl_PixelFormat *desired)
 {
     Fl_Renderer::system_init();
     int ww=0, wh=0;
@@ -479,7 +495,7 @@ uint8 *Fl_Renderer::data_from_window(Window src, Fl_Rect &rect, int &bitspp)
     fl_gc = dst_dc;
 
     Fl_Rect r(0, 0, pw, ph);
-    uint8 *data = data_from_pixmap(pixmap, r, bitspp);
+    uint8 *data = data_from_pixmap(pixmap, r, desired);
 
     fl_gc = saved;
     DeleteDC(dst_dc);

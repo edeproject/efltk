@@ -638,7 +638,7 @@ SOURCE=..\src\widgets\Fl_Tooltip.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\core\fl_utf8.cpp
+SOURCE=..\src\core\fl_utf8.c
 # End Source File
 # Begin Source File
 
