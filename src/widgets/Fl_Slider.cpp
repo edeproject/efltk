@@ -269,15 +269,23 @@ void Fl_Slider::draw()
         if (belowmouse()) flags |= FL_HIGHLIGHT;
     }
 
+    if(!(fl_current_dev->capabilities() & Fl_Device::CAN_CLIPOUT)) {
+        // draw the box or the visible parts of the window
+        if (!box->fills_rectangle()) parent()->draw_group_box();
+        box->draw(0, 0, w(), h(), color(), flags);
+    }
+
     // minimal-update the slider, if it indicates the background needs
     // to be drawn, draw that. We draw the slot if the current box type
     // has no border:
     if (draw(sx, sy, sw, sh, flags, iy==0))
     {
 
-        // draw the box or the visible parts of the window
-        if (!box->fills_rectangle()) parent()->draw_group_box();
-        box->draw(0, 0, w(), h(), color(), flags);
+        if(fl_current_dev->capabilities() & Fl_Device::CAN_CLIPOUT) {
+            // draw the box or the visible parts of the window
+            if (!box->fills_rectangle()) parent()->draw_group_box();
+            box->draw(0, 0, w(), h(), color(), flags);
+        }
 
         // draw the focus indicator inside the box:
         if (focused())
@@ -349,11 +357,10 @@ bool Fl_Slider::draw(int ix, int iy, int iw, int ih, Fl_Flags flags, bool slot)
 
     if (damage()&FL_DAMAGE_ALL)
     {
-
         fl_push_clip(0, 0, w(), h());
-                                 // draw the slider
+        // draw the slider
         draw_glyph(0, sx, sy, sw, sh, flags);
-                                 // clip out the area of the slider
+        // clip out the area of the slider
         fl_clip_out(sx, sy, sw, sh);
 
     }
@@ -361,7 +368,7 @@ bool Fl_Slider::draw(int ix, int iy, int iw, int ih, Fl_Flags flags, bool slot)
     {
 
         // update a moving slider:
-                                 // draw slider in new position
+        // draw slider in new position
         draw_glyph(0, sx, sy, sw, sh, flags);
         // clip to the region the old slider was in:
         if (horizontal())
@@ -374,18 +381,15 @@ bool Fl_Slider::draw(int ix, int iy, int iw, int ih, Fl_Flags flags, bool slot)
             if (slider_size_) fl_push_clip(sx, old_position, sw, sh);
             else fl_push_clip(ix, old_position, iw, iy+ih-old_position);
         }
-                                 // don't erase new slider
+        // don't erase new slider
         fl_clip_out(sx, sy, sw, sh);
-
     }
     else
     {
-
         // update for the highlight turning on/off
         if (damage() & FL_DAMAGE_HIGHLIGHT) draw_glyph(0, sx, sy, sw, sh, flags);
         // otherwise no changes
         return false;
-
     }
     old_position = sp;
 
@@ -412,7 +416,7 @@ bool Fl_Slider::draw(int ix, int iy, int iw, int ih, Fl_Flags flags, bool slot)
             slw = slot_size_;
         }
         button_box()->draw(slx, sly, slw, slh, FL_BLACK,
-            flags&FL_INACTIVE|FL_VALUE);
+                           flags&FL_INACTIVE|FL_VALUE);
         fl_clip_out(slx, sly, slw, slh);
     }
     return true;

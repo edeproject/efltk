@@ -30,30 +30,6 @@ int my_fprintf(FILE *fp, const char *fmt, ...)
     return ret;
 }
 
-struct Matrix1 {
-    float a, b, c, d, x, y;
-    int ix, iy; // x & y rounded to nearest integer
-    bool trivial; // true if no rotation or scale
-};
-
-static Matrix1 m = {1, 0, 0, 1, 0, 0, 0, 0, true};
-
-// ADDED COMPAT
-double fl_transform_x(double x, double y)  { return x*m.a + y*m.c + m.x; }
-double fl_transform_y(double x, double y)  { return x*m.b + y*m.d + m.y; }
-double fl_transform_dx(double x, double y) { return x*m.a + y*m.c; }
-double fl_transform_dy(double x, double y) { return x*m.b + y*m.d; }
-
-inline void fl_matrix(double& a, double& b, double& c, double& d, double &x, double& y)
-{
-    a=fl_transform_dx(1,0);
-    c=fl_transform_dx(0,1);
-    b=fl_transform_dy(1,0);
-    d=fl_transform_dy(0,1);
-    x=fl_transform_x(0,0);
-    y=fl_transform_y(0,0);
-}
-
 static char Dashes[5][7]={
     {0,0,0,0,0,0,0},
     {8,8,0,0,0,0,0},
@@ -83,7 +59,6 @@ static const char * prolog =
 "  /x exch def\n"
 "  newpath\n"
 "  x y moveto\n"
-"  x y lineto\n"
 "  stroke\n"
 "} bind def\n\n"
 
@@ -319,22 +294,6 @@ static const char * prolog =
 
 ////////////////////// end prolog ////////////////////////
 
-//////////////////////  fonts   ////////////////////////////////////
-
-///////////////////////// Implementations : matrix ////////////////////////////////////////
-
-void Fl_PostScript::concat(){
-    double a,b,c,d,x,y;
-    fl_matrix(a,b,c,d,x,y);
-    my_fprintf(output,"[%g %g %g %g %g %g] CT\n", a , b , c , d , x , y);
-}
-
-void Fl_PostScript::reconcat(){
-    double a,b,c,d,x,y;
-    fl_matrix(a,b,c,d,x,y);
-    my_fprintf(output, "[%g %g %g %g %g %g] RCT\n" , a , b , c , d , x , y);
-}
-
 //////////////// for language level <3 ///////////////////////
 
 void Fl_PostScript::recover()
@@ -351,8 +310,6 @@ void Fl_PostScript::recover()
 
 void Fl_PostScript::reset()
 {
-    gap_=1;
-    clip_=0;
     cr_=cg_=cb_=0;
     font_=FL_HELVETICA;
     size_=12;
@@ -366,6 +323,7 @@ void Fl_PostScript::reset()
         c=clip_;
     }
 
+    clip_=0;
     colored_=1;
     line_styled_=1;
     fonted_=1;
@@ -373,13 +331,17 @@ void Fl_PostScript::reset()
 
 void Fl_PostScript::draw(Fl_Widget * w)
 {
-    Fl_Device *t = fl_current_dev;
     Fl::flush();
+
+    Fl_Device *saved = fl_current_dev;
     fl_current_dev = this;
-    w->redraw();
+
+    w->set_damage(FL_DAMAGE_ALL|FL_DAMAGE_EXPOSE);
     w->draw();
-    fl_current_dev = t;
-    //w->redraw();
+
+    fl_current_dev = saved;
+
+    Fl::redraw();
 }
 
 ///////////////// destructor, finishes postscript, closes FILE  ///////////////
@@ -438,6 +400,8 @@ Fl_PostScript::Fl_PostScript(FILE *o, int lang_level, double pw, double ph, int 
 
     reset();
     nPages=0;
+
+    load_identity();
 }
 
 /////////////////////////////////////////////////////
@@ -477,6 +441,8 @@ Fl_PostScript::Fl_PostScript(FILE *o, int lang_level, int format, int orientatio
 
     reset();
     nPages=0;
+
+    load_identity();
 }
 
 ///////////////////  eps constructor ////////////////////////////////////
@@ -517,6 +483,8 @@ Fl_PostScript::Fl_PostScript(FILE *o, int lang_level, double x, double y, double
     my_fprintf(output, "GS\nCS\n");
 
     nPages=0;  //must be 0 also for eps!
+
+    load_identity();
 }
 
 ////////////////////// paging //////////////////////////////////////////
@@ -579,24 +547,25 @@ void Fl_PostScript::margins(double left, double top, double right, double bottom
 
 void Fl_PostScript::fit(double x, double y, double w, double h, int align)
 {
-    double dx=0;
-    double s=double(width_)/w;
-    double dy=(height_ - s*h)/2;
+    double s  = double(width_)/w;
+    double dy = (height_ - s*h)/2;
+    double dx = (width_- s*w)/2;
+
     if((height_/h)<s){
         s=height_/h;
         dy=0;
-        dx=(width_- s*w)/2;
+        dx=0;
     }
-    if(align & 3)
-        if(align & FL_ALIGN_TOP)
-            dy=0;
-        else
-            dy *=2;
-    if(align & 12)
-        if(align & FL_ALIGN_LEFT)
-            dx=0;
-        else
-            dx *=2;
+
+    if(align & (FL_ALIGN_BOTTOM|FL_ALIGN_TOP)) {
+        if(align & FL_ALIGN_TOP) dy=0;
+        else                     dy *=2;
+    }
+
+    if(align & (FL_ALIGN_LEFT|FL_ALIGN_RIGHT)) {
+        if(align & FL_ALIGN_LEFT) dx=0;
+        else                      dx *=2;
+    }
 
     my_fprintf(output, "CR\nGR\nGS\n");
     reset();
@@ -611,16 +580,15 @@ void Fl_PostScript::fit(double x, double y, double w, double h, double dpi, int 
     double dy=(height_ - s*h)/2;
     double dx=(width_- s*w)/2;
 
-    if(align & 3)
-        if(align & FL_ALIGN_TOP)
-            dy=0;
-        else
-            dy *=2;
-    if(align & 12)
-        if(align & FL_ALIGN_LEFT)
-            dx=0;
-        else
-            dx *=2;
+    if(align & (FL_ALIGN_BOTTOM|FL_ALIGN_TOP)) {
+        if(align & FL_ALIGN_TOP) dy=0;
+        else                     dy *=2;
+    }
+
+    if(align & (FL_ALIGN_LEFT|FL_ALIGN_RIGHT)) {
+        if(align & FL_ALIGN_LEFT) dx=0;
+        else                      dx *=2;
+    }
 
     my_fprintf(output, "CR\nGR\nGS\n");
     reset();
@@ -855,6 +823,8 @@ static const char *get_font_face(Fl_Font f)
     return fontfaces[index];
 }
 
+//////////////////////  fonts   ////////////////////////////////////
+
 void Fl_PostScript::font(Fl_Font f, float s) 
 {
     fonted_=1;
@@ -905,45 +875,46 @@ void Fl_PostScript::line_style(int style, int width, char* dashes){
     }
     my_fprintf(output, "] 0 setdash\n");
     style>>=8;
-    if(int i=style&0xf)
+    int i=style&0xf;
+    if(i)
         my_fprintf(output,"%i setlinecap\n", i-1);
     else
         my_fprintf(output, "1 setlinecap\n"); //standard cap
 
     style>>=4;
-    int i=style&0xf;
+    i=style&0xf;
     if(i)
         my_fprintf(output, "%i setlinejoin\n", i-1) ;
     else
         my_fprintf(output, "1 setlinejoin\n");
 };
 
-float Fl_PostScript::width(const char* s)
+float Fl_PostScript::width(const char* s) const
 {
     return fl_fltk_dev.width(s); //Dirty...
 }
 
-float Fl_PostScript::width(const Fl_String& s)
+float Fl_PostScript::width(const Fl_String& s) const
 {
     return fl_fltk_dev.width(s);
 }
 
-float Fl_PostScript::width(unsigned int unc)
+float Fl_PostScript::width(unsigned int ucs) const
 {
-    return fl_fltk_dev.width(unc);
+    return fl_fltk_dev.width(ucs);
 }
 
-float Fl_PostScript::width(const char* s, int n)
+float Fl_PostScript::width(const char* s, int n) const
 {
-    return fl_fltk_dev.width(s,n); //Very Dirty...
+    return fl_fltk_dev.width(s, n); //Very Dirty...
 }
 
-float Fl_PostScript::descent()
+float Fl_PostScript::descent() const
 {
     return fl_fltk_dev.descent(); //A bit Dirty...
 }
 
-float Fl_PostScript::height()
+float Fl_PostScript::height() const
 {
     return fl_fltk_dev.height(); //Still Dirty...
 }
@@ -955,15 +926,19 @@ void Fl_PostScript::rtl_draw(const char *s, int n, float x, float y)
 
 ///////////////////////////////  text ////////////////////////////////////
 
-void Fl_PostScript::transformed_draw(const char* str, int n, float x, float y){
-
+void Fl_PostScript::transformed_draw(const char* str, int n, float x, float y)
+{
     if (!n || !str || !*str) return;
+
     my_fprintf(output, "GS\n");
-    my_fprintf(output,"%g %g moveto\n", x , y);
+
+    my_fprintf(output,"%g %g moveto\n", x, y);
     my_fprintf(output, "[1 0 0 -1 0 0] concat\n");
+
     int i=1;
-    my_fprintf(output, "\n(");
-    for(int j=0;j<n;j++){
+    my_fprintf(output, "(");
+    for(int j=0;j<n;j++)
+    {
         if(i>240){
             my_fprintf(output, "\\\n");
             i=0;
@@ -975,12 +950,561 @@ void Fl_PostScript::transformed_draw(const char* str, int n, float x, float y){
             break;
         default:
             my_fprintf(output, "%c", *str);
+            break;
         }
         str++;
     }
     my_fprintf(output, ") show\n");
     my_fprintf(output, "GR\n");
 }
+
+///////////////
+// Verticies //
+///////////////
+
+////////////////////////////////////////////////////////////////
+// Transformation:
+
+struct Matrix {
+  float a, b, c, d, x, y;
+  int ix, iy; // x & y rounded to nearest integer
+  bool trivial; // true if no rotation or scale
+};
+
+static Matrix m = {1, 0, 0, 1, 0, 0, 0, 0, true};
+static Matrix stack[64];
+static int sptr = 0;
+
+//fl_vertex.cpp current transformation:
+void Fl_PostScript::push_matrix()
+{
+    stack[sptr++] = m;
+}
+
+void Fl_PostScript::pop_matrix()
+{
+    m = stack[--sptr];
+}
+
+void Fl_PostScript::scale(float x, float y)
+{
+    if(x != 1.0 && y != 1.0)
+        mult_matrix(x,0,0,y,0,0);
+}
+
+void Fl_PostScript::scale(float x)
+{
+    if(x != 1.0)
+        mult_matrix(x,0,0,x,0,0);
+}
+
+void Fl_PostScript::translate(float x, float y)
+{
+    if (m.trivial) {
+        m.x += x; m.ix = int(floor(m.x+.5f));
+        m.y += y; m.iy = int(floor(m.y+.5f));
+        m.trivial = m.ix==m.x && m.iy==m.y;
+    } else {
+        mult_matrix(1,0,0,1,x,y);
+    }
+}
+
+void Fl_PostScript::translate(int x, int y)
+{
+    if (m.trivial) {
+        m.ix += x; m.x = float(m.ix);
+        m.iy += y; m.y = float(m.iy);
+    } else {
+        mult_matrix(1,0,0,1, float(x), float(y));
+    }
+}
+
+void Fl_PostScript::rotate(float d)
+{
+    if (d) {
+        float s, c;
+        if (d == 0) {s = 0; c = 1;}
+        else if (d == 90) {s = 1; c = 0;}
+        else if (d == 180) {s = 0; c = -1;}
+        else if (d == 270 || d == -90) {s = -1; c = 0;}
+        else {s = sin(d*float(M_PI/180)); c = cos(d*float(M_PI/180));}
+        mult_matrix(c,-s,s,c,0,0);
+    }
+}
+
+void Fl_PostScript::mult_matrix(float a, float b, float c, float d, float x, float y)
+{
+    if (m.trivial) {
+        m.a = a; m.b = b; m.c = c; m.d = d;
+        m.x += x; m.ix = int(floor(m.x+.5f));
+        m.y += y; m.iy = int(floor(m.y+.5f));
+        m.trivial = false;
+    } else {
+        Matrix o;
+        o.a = a*m.a + b*m.c;
+        o.b = a*m.b + b*m.d;
+        o.c = c*m.a + d*m.c;
+        o.d = c*m.b + d*m.d;
+        o.x = x*m.a + y*m.c + m.x; o.ix = int(floor(o.x+.5f));
+        o.y = x*m.b + y*m.d + m.y; o.iy = int(floor(o.y+.5f));
+        o.trivial = false;
+        m = o;
+    }
+}
+
+void Fl_PostScript::load_identity()
+{
+    m.a = 1; m.b = 0; m.c = 0; m.d = 1;
+    m.x = 0; m.y = 0;
+    m.ix = 0; m.iy = 0;
+    m.trivial = true;
+}
+
+// get and use transformed positions:
+void Fl_PostScript::transform(float& x, float& y)
+{
+    if (!m.trivial) {
+        float t = x*m.a + y*m.c + m.x;
+        y = x*m.b + y*m.d + m.y;
+        x = t;
+    } else {
+        x += m.x;
+        y += m.y;
+    }
+}
+
+void Fl_PostScript::transform(int& x, int& y)
+{
+    if (!m.trivial) {
+        int t = int(floor(x*m.a + y*m.c + m.x + .5f));
+        y = int(floor(x*m.b + y*m.d + m.y + .5f));
+        x = t;
+    } else {
+        x += m.ix;
+        y += m.iy;
+    }
+}
+
+void Fl_PostScript::transform_distance(float& x, float& y)
+{
+    if (!m.trivial) {
+        float t = x*m.a + y*m.c;
+        y = x*m.b + y*m.d;
+        x = t;
+    }
+}
+
+
+////////////////////////////////////////////////////////////////
+// Path construction:
+
+#include <efltk/fl_draw.h>
+#include <efltk/x.h>
+#include <stdlib.h>
+
+// typedef what the x,y fields in a point are:
+typedef int COORD_T;
+
+// Storage of the current path:
+
+// Points:
+static XPoint *point_; // all the points
+static int point_array_size;
+static int points_; // number of points
+
+// Loop:
+static int loop_start; // point at start of current loop
+static int* loop; // number of points in each loop
+static int loops; // number of loops
+static int loop_array_size;
+
+static void add_n_points(int n)
+{
+    point_array_size = (point_array_size>0) ? 2*point_array_size : 16;
+    if(points_+n >= point_array_size) point_array_size = n;
+    point_ = (XPoint*)realloc((void*)point_, (point_array_size+1)*sizeof(XPoint));
+}
+
+void Fl_PostScript::vertex(float X, float Y)
+{
+    COORD_T x = COORD_T(floor(X*m.a + Y*m.c + m.x + .5f));
+    COORD_T y = COORD_T(floor(X*m.b + Y*m.d + m.y + .5f));
+    if (!points_ || x != point_[points_-1].x || y != point_[points_-1].y) {
+        if (points_+1 >= point_array_size) add_n_points(1);
+        point_[points_].x = x;
+        point_[points_].y = y;
+        points_++;
+    }
+}
+
+void Fl_PostScript::vertex(int X, int Y)
+{
+    COORD_T x,y;
+    if (m.trivial) {
+        x = COORD_T(X+m.ix);
+        y = COORD_T(Y+m.iy);
+    } else {
+        x = COORD_T(floor(X*m.a + Y*m.c + m.x + .5f));
+        y = COORD_T(floor(X*m.b + Y*m.d + m.y + .5f));
+    }
+    if (!points_ || x != point_[points_-1].x || y != point_[points_-1].y) {
+        if (points_+1 >= point_array_size) add_n_points(1);
+        point_[points_].x = x;
+        point_[points_].y = y;
+        points_++;
+    }
+}
+
+void Fl_PostScript::vertices(int n, const float array[][2])
+{
+    if (points_+n >= point_array_size) add_n_points(n);
+    const float* a = array[0];
+    const float* e = a+2*n;
+    int pn = points_;
+    if (m.trivial) {
+        for (; a < e; a += 2) {
+            COORD_T x = COORD_T(floor(a[0] + m.x + .5f));
+            COORD_T y = COORD_T(floor(a[1] + m.y + .5f));
+            if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
+                point_[pn].x = x;
+                point_[pn].y = y;
+                pn++;
+            }
+        }
+    } else {
+        for (; a < e; a += 2) {
+            COORD_T x = COORD_T(floor(a[0]*m.a + a[1]*m.c + m.x + .5f));
+            COORD_T y = COORD_T(floor(a[0]*m.b + a[1]*m.d + m.y + .5f));
+            if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
+                point_[pn].x = x;
+                point_[pn].y = y;
+                pn++;
+            }
+        }
+    }
+    points_ = pn;
+}
+
+void Fl_PostScript::vertices(int n, const int array[][2])
+{
+    if (points_+n >= point_array_size) add_n_points(n);
+    const int* a = array[0];
+    const int* e = a+2*n;
+    int pn = points_;
+    if (m.trivial) {
+        for (; a < e; a += 2) {
+            COORD_T x = COORD_T(a[0]+m.ix);
+            COORD_T y = COORD_T(a[1]+m.iy);
+            if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
+                point_[pn].x = x;
+                point_[pn].y = y;
+                pn++;
+            }
+        }
+    } else {
+        for (; a < e; a += 2) {
+            COORD_T x = COORD_T(floor(a[0]*m.a + a[1]*m.c + m.x + .5f));
+            COORD_T y = COORD_T(floor(a[0]*m.b + a[1]*m.d + m.y + .5f));
+            if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
+                point_[pn].x = x;
+                point_[pn].y = y;
+                pn++;
+            }
+        }
+    }
+    points_ = pn;
+}
+
+void Fl_PostScript::transformed_vertices(int n, const float array[][2])
+{
+    if (points_+n >= point_array_size) add_n_points(n);
+    const float* a = array[0];
+    const float* e = a+2*n;
+    int pn = points_;
+    for (; a < e; a += 2) {
+        COORD_T x = COORD_T(floor(a[0] + .5f));
+        COORD_T y = COORD_T(floor(a[1] + .5f));
+        if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
+            point_[pn].x = x;
+            point_[pn].y = y;
+            pn++;
+        }
+    }
+    points_ = pn;
+}
+
+void Fl_PostScript::closepath()
+{
+    if (points_ > loop_start+2) {
+        // close the shape by duplicating first point_:
+        XPoint& q = point_[loop_start];
+        // the array always has one extra point_ so we don't need to check
+        XPoint& p = point_[points_-1];
+        if (p.x != q.x || p.y != q.y) point_[points_++] = q;
+        // remember the new loop:
+        if (loops >= loop_array_size) {
+            loop_array_size = loop_array_size ? 2*loop_array_size : 16;
+            loop = (int*)realloc((void*)loop, loop_array_size*sizeof(int));
+        }
+        loop[loops++] = points_-loop_start;
+        loop_start = points_;
+    } else {
+        points_ = loop_start;
+    }
+}
+
+////////////////////////////////////////////////////////////////
+// Enormous kludge to add arcs to a path but try to take advantage
+// of primitive arc-drawing functions provided by the OS. This mess
+// should not be needed on newer systems...
+//
+// We keep track of exactly one "nice" circle:
+
+static int circle_x, circle_y, circle_w, circle_h;
+
+// Add a circle to the path. It is always a circle, irregardless of
+// the transform. Currently only one per path is supported, this uses
+// commands on the server to draw a nicer circle than the path mechanism
+// can make.
+void Fl_PostScript::circle(float x, float y, float r)
+{
+    transform(x,y);
+    float rt = r * sqrt(fabs(m.a*m.d-m.b*m.c));
+    circle_w = circle_h = int(rt*2 + .5);
+    circle_x = int(floor(x - circle_w*.5f + .5f));
+    circle_y = int(floor(y - circle_h*.5f + .5f));
+}
+
+void Fl_PostScript::curve(float x0, float y0,
+                          float x1, float y1,
+                          float x2, float y2,
+                          float x3, float y3)
+{
+    Fl_Device::curve(x0,y0,
+                     x1,y1,
+                     x2,y2,
+                     x3,y3);
+}
+
+void Fl_PostScript::arc(float l, float b, float w, float h, float start, float end)
+{
+    Fl_Device::arc(l, b, w, h, start, end);
+}
+// Add an ellipse to the path. On X/Win32 this only works for 90 degree
+// rotations and only one ellipse (or cirlce) per path is supported.
+void Fl_PostScript::ellipse(float x, float y, float w, float h)
+{
+    // This produces the correct image, but not as nice as using circles
+    // produced by the server:
+    closepath();
+    arc(x, y, w, h, 0, 360);
+    closepath();
+}
+
+////////////////////////////////////////////////////////////////
+// Draw the path:
+
+static inline void inline_newpath() {
+    points_ = loop_start = loops = circle_w = 0;
+}
+void Fl_PostScript::newpath() { inline_newpath(); }
+
+void lines_out(FILE *output, XPoint *ps, int size)
+{
+    my_fprintf(output,"%i %i MT\n", ps[0].x , ps[0].y);
+    for(int n=1; n<size; n++)
+        my_fprintf(output,"%i %i LT\n", ps[n].x, ps[n].y);
+}
+
+
+void Fl_PostScript::points()
+{
+    my_fprintf(output, "GS\n");
+    my_fprintf(output, "BP\n");
+
+    lines_out(output, point_, points_);
+
+    my_fprintf(output, "ECP\n");
+    my_fprintf(output, "GR\n");
+
+    inline_newpath();
+}
+
+void Fl_PostScript::stroke()
+{
+    my_fprintf(output, "GS\n");
+    my_fprintf(output, "BP\n");
+
+    if (circle_w > 0) {
+        puts("DRAW CIRCLE\n");
+    }
+    int loop_start = 0;
+    for (int n = 0; n < loops; n++) {
+        int loop_size = loop[n];
+
+        lines_out(output,point_+loop_start, loop_size);
+        loop_start += loop_size;
+    }
+    int loop_size = points_-loop_start;
+    if (loop_size > 1)
+        lines_out(output,point_+loop_start, loop_size);
+
+    my_fprintf(output, "ECP\n");
+    my_fprintf(output, "GR\n");
+
+    inline_newpath();
+}
+
+// Warning: result is different on X and Win32! Use fl_fill_stroke().
+// There may be a way to tell Win32 to do what X does, perhaps by making
+// the current pen invisible?
+void Fl_PostScript::fill()
+{
+    my_fprintf(output, "GS\n");
+    my_fprintf(output, "BP\n");
+
+    if (circle_w > 0) {
+        puts("DRAW CIRCLE\n");
+    }
+
+    if (loops) closepath();
+    if (points_ > 2) {
+        if (loops > 2) {
+            // back-trace the lines between each "disconnected" part so they
+            // are actually connected:
+            if (points_+loops-2 >= point_array_size) add_n_points(loops-2);
+            int n = points_-1;
+            for (int i = loops; --i > 1;) {
+                n -= loop[i];
+                point_[points_++] = point_[n];
+            }
+        }
+
+        lines_out(output,point_, points_);
+    }
+
+    my_fprintf(output, "EFP\n");
+    my_fprintf(output, "GR\n");
+
+    inline_newpath();
+}
+
+// This seems to produce very similar results on X and Win32. Also
+// should be faster than seperate fill & stroke on Win32 and on
+// PostScript/PDF style systems.
+void Fl_PostScript::fill_stroke(Fl_Color color)
+{
+    my_fprintf(output, "GS\n");
+    my_fprintf(output, "BP\n");
+
+    if (circle_w > 0) {
+        puts("DRAW CIRCLE\n");
+    }
+
+    closepath();
+    if (points_ > 2) {
+        int saved_points = points_;
+        if (loops > 2) {
+            // back-trace the lines between each "disconnected" part so they
+            // are actually connected:
+            if (points_+loops-2 >= point_array_size) add_n_points(loops-2);
+            int n = saved_points-1;
+            for (int i = loops; --i > 1;) {
+                n -= loop[i];
+                point_[points_++] = point_[n];
+            }
+        }
+
+        lines_out(output,point_, points_);
+        points_ = saved_points; // throw away the extra points
+    }
+
+    my_fprintf(output, "EFP\n");
+    my_fprintf(output, "GR\n");
+
+    Fl_Color saved = this->color();
+    this->color(color);
+    stroke();
+    this->color(saved);
+}
+
+//////////////////////////
+
+void Fl_PostScript::pie(int x,int y,int w,int h,float a1,float a2, int what)
+{
+    if (w <= 0 || h <= 0) return;
+    transform(x,y);
+
+    my_fprintf(output, "GS\n");
+    my_fprintf(output, "%g %g TR\n", x + w/2.0 , y + h/2.0);
+    my_fprintf(output, "%g %g SC\n", w/2.0 , h/2.0 );
+
+    arc(0.0,0.0, w, h, a1, a2);
+
+    my_fprintf(output, "EFP\n");
+    my_fprintf(output, "GR\n");
+}
+
+void Fl_PostScript::rect(int x, int y, int w, int h)
+{
+    if (w<=0 || h<=0) return;
+    transform(x,y);
+
+    my_fprintf(output, "GS\n");
+    my_fprintf(output, "%i, %i, %i, %i R\n", x-1, y-1, w, h);
+    my_fprintf(output, "GR\n");
+}
+
+void Fl_PostScript::rectf(int x, int y, int w, int h)
+{
+    if (w<=0 || h<=0) return;
+    transform(x,y);
+
+    my_fprintf(output, "GS\n");
+    my_fprintf(output, "%i %i %i %i FR\n", x-1, y-1, w, h);
+    my_fprintf(output, "GR\n");
+}
+void Fl_PostScript::rectf(int x, int y, int w, int h, uchar r,  uchar g, uchar b)
+{
+    if (w<=0 || h<=0) return;
+    transform(x,y);
+
+    my_fprintf(output, "GS\n");
+    double fr = r/255.0;
+    double fg = g/255.0;
+    double fb = b/255.0;
+    my_fprintf(output, "%g %g %g SRGB\n",fr , fg , fb);
+    my_fprintf(output, "%i %i %i %i FR\n", x-1, y-1, w  , h );
+    my_fprintf(output, "GR\n");
+}
+
+void Fl_PostScript::line(int x, int y, int x1, int y1)
+{
+    transform(x,y);
+    transform(x1,y1);
+
+    my_fprintf(output, "GS\n");
+    my_fprintf(output, "%i %i %i %i L\n", x , y, x1 ,y1);
+    my_fprintf(output, "GR\n");
+}
+
+void Fl_PostScript::point(int x, int y)
+{
+    transform(x,y);
+
+    my_fprintf(output, "GS\n");
+    my_fprintf(output, "%i %i P\n", x , y);
+    my_fprintf(output, "GR\n");
+}
+
+
+
+
+
+
+
+
+
 
 ////////////////////////////      Images      /////////////////////////////////////
 
@@ -1216,362 +1740,4 @@ void Fl_PostScript::draw_scalled_image_mono(Fl_Draw_Image_Cb call, void *data, d
     my_fprintf(output,">\n");
     my_fprintf(output,"restore\n");
     delete[] rgbdata;
-}
-
-///////////////
-// Verticies //
-///////////////
-
-////////////////////////////////////////////////////////////////
-// Path construction:
-
-#include <efltk/fl_draw.h>
-#include <efltk/x.h>
-#include <stdlib.h>
-
-// typedef what the x,y fields in a point are:
-typedef int COORD_T;
-
-// Storage of the current path:
-
-// Points:
-static XPoint *point_; // all the points
-static int point_array_size;
-static int points_; // number of points
-
-// Loop:
-static int loop_start; // point at start of current loop
-static int* loop; // number of points in each loop
-static int loops; // number of loops
-static int loop_array_size;
-
-static void add_n_points(int n)
-{
-    point_array_size = (point_array_size>0) ? 2*point_array_size : 16;
-    if(points_+n >= point_array_size) point_array_size = n;
-    point_ = (XPoint*)realloc((void*)point_, (point_array_size+1)*sizeof(XPoint));
-}
-
-void Fl_PostScript::vertex(float X, float Y)
-{
-    COORD_T x = COORD_T(floor(X*m.a + Y*m.c + m.x + .5f));
-    COORD_T y = COORD_T(floor(X*m.b + Y*m.d + m.y + .5f));
-    if (!points_ || x != point_[points_-1].x || y != point_[points_-1].y) {
-        if (points_+1 >= point_array_size) add_n_points(1);
-        point_[points_].x = x;
-        point_[points_].y = y;
-        points_++;
-    }
-}
-
-void Fl_PostScript::vertex(int X, int Y)
-{
-    COORD_T x,y;
-    if (m.trivial) {
-        x = COORD_T(X+m.ix);
-        y = COORD_T(Y+m.iy);
-    } else {
-        x = COORD_T(floor(X*m.a + Y*m.c + m.x + .5f));
-        y = COORD_T(floor(X*m.b + Y*m.d + m.y + .5f));
-    }
-    if (!points_ || x != point_[points_-1].x || y != point_[points_-1].y) {
-        if (points_+1 >= point_array_size) add_n_points(1);
-        point_[points_].x = x;
-        point_[points_].y = y;
-        points_++;
-    }
-}
-
-void Fl_PostScript::vertices(int n, const float array[][2])
-{
-    if (points_+n >= point_array_size) add_n_points(n);
-    const float* a = array[0];
-    const float* e = a+2*n;
-    int pn = points_;
-    if (m.trivial) {
-        for (; a < e; a += 2) {
-            COORD_T x = COORD_T(floor(a[0] + m.x + .5f));
-            COORD_T y = COORD_T(floor(a[1] + m.y + .5f));
-            if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
-                point_[pn].x = x;
-                point_[pn].y = y;
-                pn++;
-            }
-        }
-    } else {
-        for (; a < e; a += 2) {
-            COORD_T x = COORD_T(floor(a[0]*m.a + a[1]*m.c + m.x + .5f));
-            COORD_T y = COORD_T(floor(a[0]*m.b + a[1]*m.d + m.y + .5f));
-            if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
-                point_[pn].x = x;
-                point_[pn].y = y;
-                pn++;
-            }
-        }
-    }
-    points_ = pn;
-}
-
-void Fl_PostScript::vertices(int n, const int array[][2])
-{
-    if (points_+n >= point_array_size) add_n_points(n);
-    const int* a = array[0];
-    const int* e = a+2*n;
-    int pn = points_;
-    if (m.trivial) {
-        for (; a < e; a += 2) {
-            COORD_T x = COORD_T(a[0]+m.ix);
-            COORD_T y = COORD_T(a[1]+m.iy);
-            if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
-                point_[pn].x = x;
-                point_[pn].y = y;
-                pn++;
-            }
-        }
-    } else {
-        for (; a < e; a += 2) {
-            COORD_T x = COORD_T(floor(a[0]*m.a + a[1]*m.c + m.x + .5f));
-            COORD_T y = COORD_T(floor(a[0]*m.b + a[1]*m.d + m.y + .5f));
-            if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
-                point_[pn].x = x;
-                point_[pn].y = y;
-                pn++;
-            }
-        }
-    }
-    points_ = pn;
-}
-
-void Fl_PostScript::transformed_vertices(int n, const float array[][2])
-{
-    if (points_+n >= point_array_size) add_n_points(n);
-    const float* a = array[0];
-    const float* e = a+2*n;
-    int pn = points_;
-    for (; a < e; a += 2) {
-        COORD_T x = COORD_T(floor(a[0] + .5f));
-        COORD_T y = COORD_T(floor(a[1] + .5f));
-        if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
-            point_[pn].x = x;
-            point_[pn].y = y;
-            pn++;
-        }
-    }
-    points_ = pn;
-}
-
-void Fl_PostScript::closepath()
-{
-    if (points_ > loop_start+2) {
-        // close the shape by duplicating first point_:
-        XPoint& q = point_[loop_start];
-        // the array always has one extra point_ so we don't need to check
-        XPoint& p = point_[points_-1];
-        if (p.x != q.x || p.y != q.y) point_[points_++] = q;
-        // remember the new loop:
-        if (loops >= loop_array_size) {
-            loop_array_size = loop_array_size ? 2*loop_array_size : 16;
-            loop = (int*)realloc((void*)loop, loop_array_size*sizeof(int));
-        }
-        loop[loops++] = points_-loop_start;
-        loop_start = points_;
-    } else {
-        points_ = loop_start;
-    }
-}
-
-////////////////////////////////////////////////////////////////
-// Enormous kludge to add arcs to a path but try to take advantage
-// of primitive arc-drawing functions provided by the OS. This mess
-// should not be needed on newer systems...
-//
-// We keep track of exactly one "nice" circle:
-
-static int circle_x, circle_y, circle_w, circle_h;
-
-// Add a circle to the path. It is always a circle, irregardless of
-// the transform. Currently only one per path is supported, this uses
-// commands on the server to draw a nicer circle than the path mechanism
-// can make.
-void Fl_PostScript::circle(float x, float y, float r)
-{
-    fl_transform(x,y);
-    float rt = r * sqrt(fabs(m.a*m.d-m.b*m.c));
-    circle_w = circle_h = int(rt*2 + .5);
-    circle_x = int(floor(x - circle_w*.5f + .5f));
-    circle_y = int(floor(y - circle_h*.5f + .5f));
-}
-
-// Add an ellipse to the path. On X/Win32 this only works for 90 degree
-// rotations and only one ellipse (or cirlce) per path is supported.
-void Fl_PostScript::ellipse(float x, float y, float w, float h)
-{
-    // This produces the correct image, but not as nice as using circles
-    // produced by the server:
-    fl_closepath();
-    fl_arc(x, y, w, h, 0, 360);
-    fl_closepath();
-}
-
-////////////////////////////////////////////////////////////////
-// Draw the path:
-
-static inline void inline_newpath() {
-    points_ = loop_start = loops = circle_w = 0;
-}
-void Fl_PostScript::newpath() { inline_newpath(); }
-
-void Fl_PostScript::points()
-{
-    my_fprintf(output, "GS\n");
-    concat();
-    my_fprintf(output, "BP\n");
-
-    for(int i=0; i<points_; i++)
-        my_fprintf(output,"%d %d MT\n", point_[i].x, point_[i].y);
-
-    inline_newpath();
-}
-
-void Fl_PostScript::stroke()
-{
-    fl_closepath();
-    inline_newpath();
-    return;
-
-    if (circle_w > 0)
-        XDrawArc(fl_display, fl_window, fl_gc,
-                 circle_x, circle_y, circle_w, circle_h, 0, 360*64);
-    int loop_start = 0;
-    for (int n = 0; n < loops; n++) {
-        int loop_size = loop[n];
-        XDrawLines(fl_display, fl_window, fl_gc, point_+loop_start, loop_size, 0);
-        loop_start += loop_size;
-    }
-    int loop_size = points_-loop_start;
-    if (loop_size > 1)
-        XDrawLines(fl_display, fl_window, fl_gc, point_+loop_start, loop_size, 0);
-
-    inline_newpath();
-}
-
-// Warning: result is different on X and Win32! Use fl_fill_stroke().
-// There may be a way to tell Win32 to do what X does, perhaps by making
-// the current pen invisible?
-void Fl_PostScript::fill()
-{
-    fl_closepath();
-    inline_newpath();
-
-    return;
-    my_fprintf(output, "GS\n");
-    concat();
-
-    if (circle_w > 0) {
-        puts("DRAW CIRCLE");
-    }
-    if (loops) fl_closepath();
-    if (points_ > 2) {
-        if (loops > 2) {
-            // back-trace the lines between each "disconnected" part so they
-            // are actually connected:
-            if (points_+loops-2 >= point_array_size) add_n_points(loops-2);
-            int n = points_-1;
-            for (int i = loops; --i > 1;) {
-                n -= loop[i];
-                point_[points_++] = point_[n];
-            }
-        }
-
-        XFillPolygon(fl_display, fl_window, fl_gc, point_, points_, 0, 0);
-    }
-
-    reconcat();
-    my_fprintf(output, "GR\n");
-
-    inline_newpath();
-}
-
-// This seems to produce very similar results on X and Win32. Also
-// should be faster than seperate fill & stroke on Win32 and on
-// PostScript/PDF style systems.
-void Fl_PostScript::fill_stroke(Fl_Color color)
-{
-    fl_closepath();
-    return;
-
-    if (circle_w > 0)
-        XFillArc(fl_display, fl_window, fl_gc,
-                 circle_x, circle_y, circle_w, circle_h, 0, 64*360);
-    fl_closepath();
-    if (points_ > 2) {
-        int saved_points = points_;
-        if (loops > 2) {
-            // back-trace the lines between each "disconnected" part so they
-            // are actually connected:
-            if (points_+loops-2 >= point_array_size) add_n_points(loops-2);
-            int n = saved_points-1;
-            for (int i = loops; --i > 1;) {
-                n -= loop[i];
-                point_[points_++] = point_[n];
-            }
-        }
-        XFillPolygon(fl_display, fl_window, fl_gc, point_, points_, 0, 0);
-        points_ = saved_points; // throw away the extra points
-    }
-    Fl_Color saved = fl_color();
-    fl_color(color);
-    fl_stroke();
-    fl_color(saved);
-}
-
-//////////////////////////
-
-void Fl_PostScript::arc(float l, float b, float w, float h, float start, float end)
-{
-    return;
-}
-void Fl_PostScript::pie(int x,int y,int w,int h,float a1,float a2)
-{
-    return;
-}
-void Fl_PostScript::curve(float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3)
-{
-    return;
-}
-
-void Fl_PostScript::rect(int x, int y, int w, int h)
-{
-    fprintf(output, "GS\n");
-    fprintf(output, "%i, %i, %i, %i R\n", x , y , w, h);
-    fprintf(output, "GR\n");
-}
-
-void Fl_PostScript::rectf(int x, int y, int w, int h)
-{
-    fprintf(output, "%i %i %i %i FR\n", x, y, w, h);
-}
-void Fl_PostScript::rectf(int x, int y, int w, int h, uchar r,  uchar g, uchar b)
-{
-    fprintf(output, "GS\n");
-    double fr = r/255.0;
-    double fg = g/255.0;
-    double fb = b/255.0;
-    fprintf(output, "%g %g %g SRGB\n",fr , fg , fb);
-    fprintf(output, "%i %i %i %i FR\n", x , y , w  , h );
-    fprintf(output, "GR\n");
-}
-
-void Fl_PostScript::line(int x, int y, int x1, int y1)
-{
-    fprintf(output, "GS\n");
-    fprintf(output, "%i %i %i %i L\n", x , y, x1 ,y1);
-    fprintf(output, "GR\n");
-}
-
-void Fl_PostScript::point(int x, int y)
-{
-    fprintf(output, "GS\n");
-    fprintf(output, "%i %i P\n", x , y);
-    fprintf(output, "GR\n");
 }

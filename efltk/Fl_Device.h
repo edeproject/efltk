@@ -35,11 +35,18 @@ typedef void (*Fl_Draw_Image_Cb)(void*,int,int,int,uchar*);
 class FL_API Fl_Device
 {
 public:
-    virtual ~Fl_Device(){};
+    virtual ~Fl_Device() { }
+
+    // Capabilities enum
+    enum {
+        CAN_CLIPOUT = 1
+        // More to come..
+    };
+    virtual int capabilities() { return CAN_CLIPOUT; }
 
     virtual void color(Fl_Color color);
     virtual void color(uchar r, uchar g, uchar b) { color(fl_rgb(r,g,b)); }
-    virtual Fl_Color color() { return fl_color_; }
+    virtual Fl_Color color() const { return fl_color_; }
 
     // Clipping:
     virtual void push_clip(int x, int y, int w, int h);
@@ -115,19 +122,19 @@ public:
     virtual const char* fontname(Fl_Font, int * = 0);
 
     virtual void 	encoding(const char*);
-    virtual const char* encoding() { return fl_encoding_; }
+    virtual const char* encoding() const { return fl_encoding_; }
 
-    virtual Fl_Font font() { return fl_font_; }
-    virtual float   size() { return fl_size_; }
+    virtual Fl_Font font() const { return fl_font_; }
+    virtual float   size() const { return fl_size_; }
 
     // measure things in the current font:
-    virtual float width(unsigned int ucs);
-    virtual float width(const char* s);
-    virtual float width(const Fl_String& s);
-    virtual float width(const char* s, int n);
+    virtual float width(unsigned int ucs) const;
+    virtual float width(const char* s) const;
+    virtual float width(const Fl_String& s) const;
+    virtual float width(const char* s, int n) const;
 
-    virtual float height();
-    virtual float descent();
+    virtual float height() const;
+    virtual float descent() const;
 
     // draw using current font:
     virtual void transformed_draw(const char* s, int n, float x, float y);

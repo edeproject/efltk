@@ -215,8 +215,8 @@ void Fl_Device::font(Fl_Font font, float psize)
   fl_fontsize = f;
 }
 
-float Fl_Device::height()  { return float(fl_fontsize->metr.tmAscent + fl_fontsize->metr.tmDescent); }
-float Fl_Device::descent() { return float(fl_fontsize->metr.tmDescent); }
+float Fl_Device::height()  const { return float(fl_fontsize->metr.tmAscent + fl_fontsize->metr.tmDescent); }
+float Fl_Device::descent() const { return float(fl_fontsize->metr.tmDescent); }
 
 // Unicode string buffer
 static unsigned short *wstr = NULL;
@@ -228,7 +228,7 @@ if(len > wstr_len) { \
 		wstr_len = len; \
 }
 
-float Fl_Device::width(const char* c, int n) 
+float Fl_Device::width(const char* c, int n) const
 {
   int i = 0;
   float w = 0;
@@ -244,7 +244,7 @@ float Fl_Device::width(const char* c, int n)
   return w;
 }
 
-float Fl_Device::width(unsigned int ucs) 
+float Fl_Device::width(unsigned int ucs) const
 {
 	unsigned int r = (ucs & 0xFC00)>>10;
 	if(!fl_fontsize->width[r]) 

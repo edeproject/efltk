@@ -367,9 +367,14 @@ public:
         box()->inset(X,Y,W,H);
         fl_push_clip(X,Y,W,H);
 
-		int prevH = int(h()*0.60f);
+        int prevH = int(h()*0.60f);
 
         if(image()) {
+
+            if(!(fl_current_dev->capabilities() & Fl_Device::CAN_CLIPOUT)) {
+                fl_color(color());
+                fl_rectf(X,Y,W,H);
+            }
 
             Fl_Image *im = image();
 
@@ -393,13 +398,13 @@ public:
             im->mask_type(MASK_NONE);
             im->draw(X,Y,W,H,FL_ALIGN_SCALE);
 
-            fl_clip_out(X,Y,W,H);
-
-            X=0,Y=0,W=w(),H=h();
-            box()->inset(X,Y,W,H);
-
-            fl_color(color());
-            fl_rectf(X,Y,W,H);
+            if(fl_current_dev->capabilities() & Fl_Device::CAN_CLIPOUT) {
+                fl_clip_out(X,Y,W,H);
+                X=0,Y=0,W=w(),H=h();
+                box()->inset(X,Y,W,H);
+                fl_color(color());
+                fl_rectf(X,Y,W,H);
+            }
 
         } else {
 

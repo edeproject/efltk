@@ -369,6 +369,10 @@ void Fl_Tabs::draw()
         if (v) update_child(*v);
     }
 
+    if(!(fl_current_dev->capabilities() & Fl_Device::CAN_CLIPOUT)) {
+        set_damage(FL_DAMAGE_ALL);
+    }
+
     // draw the tabs if needed:
     if (damage() & (FL_DAMAGE_VALUE|FL_DAMAGE_ALL))
     {		        

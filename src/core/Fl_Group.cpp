@@ -523,25 +523,27 @@ void Fl_Group::draw()
     int numchildren = children();
     if (damage() & ~FL_DAMAGE_CHILD)
     {
-#if 0
-        // blinky-draw:
-        draw_box();
-        draw_inside_label();
-        int n; for (n = 0; n < numchildren; n++)
-        {
-            Fl_Widget& w = *child(n);
-            w.set_damage(FL_DAMAGE_ALL|FL_DAMAGE_EXPOSE);
-            update_child(w);
+        int n; 
+        if(!(fl_current_dev->capabilities() & Fl_Device::CAN_CLIPOUT)) {
+            // blinky-draw:
+            draw_box();
+            draw_inside_label();
+            for (n = 0; n < numchildren; n++)
+            {
+                Fl_Widget& w = *child(n);
+                w.set_damage(FL_DAMAGE_ALL|FL_DAMAGE_EXPOSE);
+                update_child(w);
+            }
+        } else {
+            // Non-blinky draw, draw the inside widgets first, clip their areas
+            // out, and then draw the background:
+            fl_push_clip(0, 0, w(), h());
+            for (n = numchildren; n--;) draw_child(*child(n));
+            draw_box();
+            draw_inside_label();
+            fl_pop_clip();
         }
-#else
-        // Non-blinky draw, draw the inside widgets first, clip their areas
-        // out, and then draw the background:
-        fl_push_clip(0, 0, w(), h());
-        int n; for (n = numchildren; n--;) draw_child(*child(n));
-        draw_box();
-        draw_inside_label();
-        fl_pop_clip();
-#endif
+
         // labels are drawn without the clip for back compatability so they
         // can draw atop sibling widgets:
         for (n = 0; n < numchildren; n++) draw_outside_label(*child(n));
@@ -630,7 +632,7 @@ void Fl_Group::draw_child(Fl_Widget& w) const
         w.set_damage(FL_DAMAGE_ALL|FL_DAMAGE_EXPOSE);
         w.draw();
         w.set_damage(0);
-        if (fl_did_clipping != &w) {
+        if(fl_did_clipping != &w && fl_current_dev->capabilities() & Fl_Device::CAN_CLIPOUT) {
             fl_clip_out(0,0,w.w(),w.h());
         }
         fl_pop_matrix();

@@ -59,11 +59,11 @@ void Fl_Device::draw(const char* str, int n, float x, float y) {
   fl_transformed_draw(str, n, x, y);
 }
 
-float Fl_Device::width(const char* str) {
+float Fl_Device::width(const char* str) const {
     return fl_width(str, strlen(str));
 }
 
-float Fl_Device::width(const Fl_String &str) {
+float Fl_Device::width(const Fl_String &str) const {
     return fl_width(str.c_str(), str.length());
 }
 

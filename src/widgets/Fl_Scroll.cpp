@@ -29,8 +29,13 @@
 
 void Fl_Scroll::draw_clip(void* v,int X, int Y, int W, int H)
 {
-    fl_push_clip(X,Y,W,H);
     Fl_Scroll* s = (Fl_Scroll*)v;
+    fl_push_clip(X,Y,W,H);
+
+    if(!(fl_current_dev->capabilities() & Fl_Device::CAN_CLIPOUT)) {
+        fl_color(s->color()); fl_rectf(X,Y,W,H);
+    }
+
     // draw all the children, clipping them out of the region:
     int numchildren = s->children(); int i;
     for (i = numchildren; i--;)
@@ -49,10 +54,13 @@ void Fl_Scroll::draw_clip(void* v,int X, int Y, int W, int H)
         w.set_damage(save);
     }
     // fill the rest of the region with color:
-    fl_color(s->color()); fl_rectf(X,Y,W,H);
+    if(fl_current_dev->capabilities() & Fl_Device::CAN_CLIPOUT) {
+        fl_color(s->color()); fl_rectf(X,Y,W,H);
+    }
     // draw the outside labels:
     for (i = numchildren; i--;)
         s->draw_outside_label(*s->child(i));
+
     fl_pop_clip();
 }
 
@@ -72,15 +80,32 @@ void Fl_Scroll::bbox(int& X, int& Y, int& W, int& H)
 void Fl_Scroll::draw()
 {
     int X,Y,W,H; bbox(X,Y,W,H);
-
     uchar d = damage();
-    if (d & FL_DAMAGE_ALL)       // full redraw
+
+    if (d & FL_DAMAGE_ALL)
     {
+        // draw the scrollbars:
+        scrollbar.set_damage(FL_DAMAGE_ALL);
+        hscrollbar.set_damage(FL_DAMAGE_ALL);
+        if (scrollbar.visible() && hscrollbar.visible())
+        {
+            // fill in the little box in the corner
+            fl_color(button_color());
+            fl_rectf(scrollbar.x(),hscrollbar.y(),scrollbar.w(),hscrollbar.h());
+        }
+        update_child(scrollbar);
+        update_child(hscrollbar);
+
+        // full redraw
         draw_frame();
         draw_clip(this, X, Y, W, H);
+
     }
     else
     {
+        update_child(scrollbar);
+        update_child(hscrollbar);
+
         if (scrolldx || scrolldy) {
             fl_scroll(X, Y, W, H, scrolldx, scrolldy, draw_clip, this);
         }
@@ -99,21 +124,6 @@ void Fl_Scroll::draw()
         }
     }
     scrolldx = scrolldy = 0;
-
-    // draw the scrollbars:
-    if (d & FL_DAMAGE_ALL)
-    {
-        scrollbar.set_damage(FL_DAMAGE_ALL);
-        hscrollbar.set_damage(FL_DAMAGE_ALL);
-        if (scrollbar.visible() && hscrollbar.visible())
-        {
-            // fill in the little box in the corner
-            fl_color(button_color());
-            fl_rectf(scrollbar.x(),hscrollbar.y(),scrollbar.w(),hscrollbar.h());
-        }
-    }
-    update_child(scrollbar);
-    update_child(hscrollbar);
 }
 
 // Calculates extra size needed for widgets outside label

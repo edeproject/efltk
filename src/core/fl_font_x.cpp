@@ -159,10 +159,10 @@ void Fl_Device::rtl_draw(const char *str, int n, float x, float y) {
     ///
 }
 
-float Fl_Device::height() { return (current_font->ascent + current_font->descent); }
-float Fl_Device::descent() { return current_font->descent; }
+float Fl_Device::height() const { return (current_font->ascent + current_font->descent); }
+float Fl_Device::descent() const { return current_font->descent; }
 
-float Fl_Device::width(const char *str, int n)
+float Fl_Device::width(const char *str, int n) const
 {
     char glyph[2];       // byte1 and byte2 value of the UTF-8 char
     XChar2b buf[128];    // measure buffer
@@ -208,7 +208,7 @@ float Fl_Device::width(const char *str, int n)
     return W;
 }
 
-float Fl_Device::width(unsigned int c)
+float Fl_Device::width(unsigned int c) const
 {
     unsigned int ucs;
     unsigned int ulen = fl_fast_utf2ucs((unsigned char*)&c, 1, &ucs);

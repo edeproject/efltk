@@ -44,14 +44,9 @@ class FL_API Fl_PostScript : public Fl_Printer
     float size_;
     Fl_Color color_;
     FILE *output;
-    //int nPages;
-    int gap_;
 
     double width_;
     double height_;
-    //double g_pw_, g_ph_,
-    //double lm_, tm_, rm_, bm_;
-    //int g_orientation_,
 
     int shape_;
     int linewidth_;// need for clipping, lang level 1-2
@@ -59,8 +54,7 @@ class FL_API Fl_PostScript : public Fl_Printer
     int interpolate_; //interpolation of images
     unsigned char cr_,cg_,cb_;
     char  linedash_[256];//should be enought
-    void concat();  // transform ror scalable dradings...
-    void reconcat(); //invert
+
     void recover(); //recovers the state afrer grestore
     void reset();
 
@@ -91,6 +85,9 @@ public:
     Fl_PostScript(FILE *o, int lang_level, int format = A4, int orientation = PORTRAIT); // ps (aslo multi-page) constructor
     Fl_PostScript(FILE *o, int lang_level, double x, double y, double w, double h); //eps constructor
     virtual ~Fl_PostScript();
+
+    int capabilities() { return 0; }
+
     void interpolate(int i) { interpolate_=i; }
     int interpolate() const { return interpolate_; }
 
@@ -121,8 +118,25 @@ public:
 
     void line_style(int style, int width, char* dashes);
 
+    //fl_vertex.cpp current transformation:
+    void push_matrix();
+    void pop_matrix();
+    void scale(float x, float y);
+    void scale(float x);
+    void translate(float x, float y);
+    void translate(int x, int y);
+    void rotate(float d);
+    void mult_matrix(float a, float b, float c, float d, float e, float f);
+    void load_identity();
+
+    // get and use transformed positions:
+    void transform(float& x, float& y);
+    void transform(int& x, int& y);
+    void transform_distance(float& x, float& y);
+
     void curve(float x, float y, float x1, float y1, float x2, float y2, float x3, float y3);
     void arc(float x, float y, float w, float h, float start, float end);
+    void pie(int x, int y, int w, int h, float a1, float a2, int what);
     void circle(float x, float y, float r);
     void ellipse(float x, float y, float w, float h);
 
@@ -130,8 +144,6 @@ public:
     void rectf(int x, int y, int w, int h);
     void point(int x, int y);
     void line(int x1, int y1, int x2, int y2);
-
-    void pie(int x, int y, int w, int h, float a1, float a2);
 
     void points();
     void stroke();
@@ -158,20 +170,18 @@ public:
 
     const char* fontname(Fl_Font, int * = 0);
 
-    float width(unsigned int ucs);
-    float width(const char* s);
-    float width(const Fl_String& s);
-    float width(const char* s, int n);
+    float width(unsigned int ucs) const;
+    float width(const char* s) const;
+    float width(const Fl_String& s) const;
+    float width(const char* s, int n) const;
 
-    float height();
-    float descent();
+    float height() const;
+    float descent() const;
 
-    //	void transformed_draw(const char* s, int n, float x, float y);
     void rtl_draw(const char *s, int n, float x, float y);
-
-    void draw(const char* s, int n, float x, float y){transformed_draw(s,n,x,y);}
-    void draw(const Fl_String &s, float x, float y){draw(s.c_str(), s.length(), x, y);}
-    void draw(const char* s, float x, float y){draw(s,strlen(s),x,y);};
+    void draw(const char* s, int n, float x, float y) { transformed_draw(s,n,x,y); }
+    void draw(const Fl_String &s, float x, float y) { draw(s.c_str(), s.length(), x, y); }
+    void draw(const char* s, float x, float y) { draw(s,strlen(s),x,y); }
 
     void draw_image(const uchar* d, int x,int y,int w,int h, int delta=3, int ldelta=0){draw_scalled_image(d,x,y,w,h,w,h,delta,ldelta);}
     void draw_image_mono(const uchar* d, int x,int y,int w,int h, int delta=1, int ld=0){draw_scalled_image_mono(d,x,y,w,h,w,h,delta,ld);}
@@ -179,9 +189,7 @@ public:
     void draw_image_mono(Fl_Draw_Image_Cb call, void* data, int x,int y, int w, int h, int delta=1){draw_scalled_image_mono(call, data, x, y, w, h, w, h, delta);}
 
     void rectf(int x, int y, int w, int h, uchar r,  uchar g, uchar b);
-    void rectf(int x, int y, int w, int h, Fl_Color c) {
-        uchar r, g, b; fl_get_color(c, r, g, b); rectf(x, y, w, h, r, g, b);
-    }
+    void rectf(int x, int y, int w, int h, Fl_Color c) { uchar r, g, b; fl_get_color(c, r, g, b); rectf(x, y, w, h, r, g, b); }
 
     /////////////////////////////////////////////////
 

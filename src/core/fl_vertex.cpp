@@ -46,9 +46,13 @@ static Matrix m = {1, 0, 0, 1, 0, 0, 0, 0, true};
 static Matrix stack[64];
 static int sptr = 0;
 
-void Fl_Device::push_matrix() {stack[sptr++] = m;}
+void Fl_Device::push_matrix() {
+    stack[sptr++] = m;
+}
 
-void Fl_Device::pop_matrix() {m = stack[--sptr];}
+void Fl_Device::pop_matrix() {
+    m = stack[--sptr];
+}
 
 void Fl_Device::mult_matrix(float a, float b, float c, float d, float x, float y) {
   if (m.trivial) {
@@ -74,7 +78,7 @@ void Fl_Device::scale(float x,float y) {
 }
 
 void Fl_Device::scale(float x) {
-  if (x != 1.0) fl_mult_matrix(x,0,0,x,0,0);
+    if (x != 1.0) fl_mult_matrix(x,0,0,x,0,0);
 }
 
 void Fl_Device::translate(float x,float y) {
