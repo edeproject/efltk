@@ -1117,7 +1117,7 @@ void Fl_ListView::find_default_sizes()
     find_def = false;
 }
 
-void Fl_ListView::fill(Fl_Data_Source &ds,int user_data_column) 
+void Fl_ListView::fill(Fl_Data_Source &ds,Fl_String user_data_column_name) 
 {
     // Final version should replace the existing rows (truncate them,if necessary).
     clear();
@@ -1127,13 +1127,19 @@ void Fl_ListView::fill(Fl_Data_Source &ds,int user_data_column)
     // First version is very primitive.
     // Final version should replace the existing columns, if necessary.
 
+    int user_data_column = -1;
+
     unsigned columnCount = ds.field_count();
     if (!columnCount) return;
     unsigned actualColumn = 0;
     for (unsigned col = 0; col < columnCount; col++) {
         Fl_Data_Field& df = ds.field(col);
 
-        if (!df.visible || int(col) == user_data_column) continue;
+        if (!df.visible) continue;
+        if (df.name() == user_data_column_name) {
+            user_data_column = col;
+            continue;
+        }
 
         // Check if the column of that name/type exists already.
         // If exists, leave it intact. This way user may resize
