@@ -17,17 +17,17 @@ bool setup_png_transformations(png_structp png_ptr, png_infop info_ptr, png_colo
 
 static void my_png_warning(png_structp png_ptr, png_const_charp message)
 {
-    char *name = "PNG: Unknown (WARNING!)";
+    const char *name = "PNG: Unknown (WARNING!)";
     if (png_ptr != NULL && png_ptr->error_ptr != NULL)
-        name = (char *)png_ptr->error_ptr;
+        name = (const char *)png_ptr->error_ptr;
     Fl::warning("%s: libpng warning: %s", name, message);
 }
 
 static void my_png_error(png_structp png_ptr, png_const_charp message)
 {
-    png_last_error =(volatile char*)"PNG: Unknown (ERROR!)";
+    png_last_error = (volatile char*)"PNG: Unknown (ERROR!)";
     if (png_ptr != NULL && png_ptr->error_ptr != NULL)
-        png_last_error = (char*)message;
+        png_last_error = (volatile char*)message;
     longjmp(png_ptr->jmpbuf, 0);
 }
 
