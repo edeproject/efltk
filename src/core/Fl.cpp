@@ -450,8 +450,8 @@ void Fl::focus(Fl_Widget *o)
     {
         Fl::compose_reset();
         focus_ = o;
-        for (; p && !p->contains(o); p = p->parent()) p->handle(FL_UNFOCUS);
-        for (; o; o = o->parent()) o->handle(FL_FOCUS);
+        for (; p && !p->contains(o); p = p->parent()) p->dispatch_event(FL_UNFOCUS);
+        for (; o; o = o->parent()) o->dispatch_event(FL_FOCUS);
     }
 }
 
@@ -465,7 +465,7 @@ void Fl::belowmouse(Fl_Widget *o)
     {
         belowmouse_ = o;
         for (; p && !p->contains(o); p = p->parent())
-            p->handle(dnd_flag ? FL_DND_LEAVE : FL_LEAVE);
+            p->dispatch_event(dnd_flag ? FL_DND_LEAVE : FL_LEAVE);
     }
 }
 

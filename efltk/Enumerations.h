@@ -97,6 +97,8 @@ enum {  // events
     FL_DND_LEAVE        = 20,
     FL_DND_RELEASE      = 21,
 
+    FL_CALLBACK         = 22, // fake event, used only for emit_signal
+
      // back compatability values:
     FL_KEYBOARD         = FL_KEY
 };

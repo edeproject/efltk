@@ -92,7 +92,7 @@ int Fl_Button::handle(int event)
                 newval = oldval;
             }
             if (value(newval) && when()&FL_WHEN_CHANGED)
-                do_callback();
+                do_callback((void*)value());
             return 1;
 
         case FL_RELEASE:
@@ -108,10 +108,10 @@ int Fl_Button::handle(int event)
             {
                 value(oldval);
                 if (when() & FL_WHEN_CHANGED)
-                    do_callback();
+                    do_callback((void*)value());
             }
             if (when() & FL_WHEN_RELEASE)
-                do_callback();
+                do_callback((void*)value());
             else
                 set_changed();
             return 1;
@@ -133,15 +133,15 @@ int Fl_Button::handle(int event)
             if (type() == RADIO/* && !value()*/)
             {
                 setonly();
-                if (when() & FL_WHEN_CHANGED) do_callback();
+                if (when() & FL_WHEN_CHANGED) do_callback((void*)value());
             }                    // TOGGLE
             else if (type())
             {
                 value(!value());
-                if (when() & FL_WHEN_CHANGED) do_callback();
+                if (when() & FL_WHEN_CHANGED) do_callback((void*)value());
             }
             if (when() & FL_WHEN_RELEASE)
-                do_callback();
+                do_callback((void*)value());
             else
                 set_changed();
             return 1;

@@ -25,6 +25,7 @@
 
 #include <efltk/Fl.h>
 #include <efltk/Fl_Widget.h>
+#include <efltk/Fl_Signal.h>
 #include <efltk/Fl_Window.h>
 #include <efltk/Fl_Image.h>
 #include <efltk/fl_draw.h>
@@ -32,17 +33,33 @@
 #include <stdlib.h>              // free
 #include <config.h>
 
-void Fl_Widget::do_callback(Fl_Widget* o, void* arg)
+void Fl_Widget::do_callback_(Fl_Widget* o, void* arg)
 {
     if (callback_) callback_(o,(void*)arg);
 }
 
-void Fl_Widget::do_callback(Fl_Widget* o, long arg)
+void Fl_Widget::do_callback_(Fl_Widget* o, long arg)
 {       
     if (callback_) callback_(o,(void*)arg);
 }
 
 void Fl_Widget::default_callback(Fl_Widget* w, void*) {w->set_changed();}
+
+void Fl_Widget::connect(int event, void * obj, Fl_Signal_Callback *cb)
+{
+    signal_.connect(cb, obj, event);
+}
+
+void Fl_Widget::connect(int event, Fl_Signal_Callback *cb)
+{
+    signal_.connect(cb, 0, event);
+}
+
+void Fl_Widget::emit_signal(int event, void *opt_data)
+{
+    signal_.emit(event, this, user_data_, opt_data);
+}
+        
 
 void Fl_Widget::ctor_init(int X, int Y, int W, int H, const char* L)
 {
@@ -303,7 +320,7 @@ int Fl_Widget::send(int event)
 
         case FL_FOCUS:
             if (!takesevents()) break;
-            ret = handle(event);
+            ret = dispatch_event(event);
             if (ret)
             {
                 // If it returns true then this is the focus() widget, but only
@@ -317,7 +334,7 @@ int Fl_Widget::send(int event)
             if (!visible()) break;
             // figure out correct type of event:
             event = (contains(Fl::belowmouse())) ? FL_MOVE : FL_ENTER;
-            ret = handle(event);
+            ret = dispatch_event(event);
             if (ret)
             {
                 // If return value is true then this is the belowmouse widget,
@@ -332,7 +349,7 @@ int Fl_Widget::send(int event)
             // figure out correct type of event:
             event = (contains(Fl::belowmouse())) ? FL_DND_DRAG : FL_DND_ENTER;
             // see if it wants the event:
-            ret = handle(event);
+            ret = dispatch_event(event);
             if (ret)
             {
                 // If return value is true then this is the belowmouse widget,
@@ -344,7 +361,7 @@ int Fl_Widget::send(int event)
         case FL_PUSH:
             if (!takesevents()) break;
             // see if it wants the event:
-            ret = handle(event);
+            ret = dispatch_event(event);
             if (ret)
             {
                 // If it returns true then this is the pushed() widget. But we
@@ -362,19 +379,19 @@ int Fl_Widget::send(int event)
 
         case FL_SHOW:
         case FL_HIDE:
-            if (visible()) handle(event);
+            if (visible()) dispatch_event(event);
             // we always return zero as we want this event sent to every child
             break;
 
         case FL_ACTIVATE:
         case FL_DEACTIVATE:
-            if (takesevents()) handle(event);
+            if (takesevents()) dispatch_event(event);
             // we always return zero as we want this event sent to every child
             break;
 
         default:
             if (!takesevents()) break;
-            ret = handle(event);
+            ret = dispatch_event(event);
             break;
     }
 
@@ -382,6 +399,12 @@ int Fl_Widget::send(int event)
     return ret;
 }
 
+int Fl_Widget::dispatch_event(int event)
+{
+    int ret = handle(event);
+    emit_signal(event, 0);
+    return ret;
+}
 
 // Very similar to send(FL_FOCUS) except it does not send it if it already
 // has the focus.
@@ -394,7 +417,6 @@ bool Fl_Widget::take_focus()
     return true;
 }
 
-
 void Fl_Widget::activate()
 {
     if (!active())
@@ -403,7 +425,7 @@ void Fl_Widget::activate()
         if (active_r())
         {
             redraw_label(); redraw();
-            handle(FL_ACTIVATE);
+            dispatch_event(FL_ACTIVATE);
             if (inside(Fl::focus())) Fl::focus()->take_focus();
         }
     }
@@ -416,7 +438,7 @@ void Fl_Widget::deactivate()
     {
         set_flag(FL_INACTIVE);
         redraw_label(); redraw();
-        handle(FL_DEACTIVATE);
+        dispatch_event(FL_DEACTIVATE);
     }
     else
     {
@@ -441,7 +463,7 @@ void Fl_Widget::show()
         if (visible_r())
         {
             redraw_label(); redraw();
-            handle(FL_SHOW);
+            dispatch_event(FL_SHOW);
         }
     }
 }
@@ -455,7 +477,7 @@ void Fl_Widget::hide()
         // we must redraw the enclosing group that has an opaque box:
         for (Fl_Widget *p = parent(); p; p = p->parent())
             if (p->box() != FL_NO_BOX || !p->parent()) {p->redraw(); break;}
-        handle(FL_HIDE);
+        dispatch_event(FL_HIDE);
     }
     else
     {

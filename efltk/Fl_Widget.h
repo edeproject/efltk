@@ -37,6 +37,13 @@ typedef Fl_Callback* Fl_Callback_p; // needed for BORLAND
 typedef void (Fl_Callback0)(Fl_Widget*);
 typedef void (Fl_Callback1)(Fl_Widget*, long);
 
+// Callback
+//typedef void (Fl_Signal_Callback)(void*, void*, int);
+//void *caller, void *user_data, int event, void *opt_data, void *receiver 
+typedef void (Fl_Signal_Callback)(void *, void *, int, void *, void *);
+
+#include "Fl_Signal.h"
+
 /** 
  * Fl_Widget is the base class for all widgets in FLTK. You can't create one 
  * of these because the constructor is not public. However you can subclass it.
@@ -66,6 +73,7 @@ public:
     void    type(uchar t)        { type_ = t; }
 
     virtual void draw();
+    int dispatch_event(int event);
     virtual int  handle(int event);
     virtual void layout();
     virtual void preferred_size(int& w, int& h) const;
@@ -153,9 +161,18 @@ public:
     uchar when() const        { return when_; }
     void  when(uchar i)       { when_ = i; }
 
-    void do_callback() { do_callback(this, user_data()); }
-    void do_callback(Fl_Widget *o, void *arg);
-    void do_callback(Fl_Widget *o, long arg);
+    void do_callback(Fl_Widget *o, void *arg, void * widget_data = 0)
+        { emit_signal(FL_CALLBACK, widget_data); do_callback_(); }
+    void do_callback(Fl_Widget *o, long arg, void * widget_data = 0)
+        { emit_signal(FL_CALLBACK, widget_data); do_callback_(); }
+    void do_callback(void * widget_data = 0)
+        { emit_signal(FL_CALLBACK, widget_data); do_callback_(); }
+
+    void connect(int event, void * obj, Fl_Signal_Callback *cb);
+    void connect(int event, Fl_Signal_Callback *cb);
+    void emit_signal(int event, void *opt_data=0);
+
+    Fl_Signal *signal() { return &signal_; }
 
     bool contains(const Fl_Widget*) const;
     bool inside(const Fl_Widget* o) const { return o && o->contains(this); }
@@ -319,6 +336,10 @@ private:
 
     void ctor_init(int X, int Y, int W, int H, const char *L);
 
+    void do_callback_() { do_callback_(this, user_data()); }
+    void do_callback_(Fl_Widget *o, void *arg);
+    void do_callback_(Fl_Widget *o, long arg);
+
     Fl_Flags        flags_;
     int             shortcut_; // encode in the label?
     int             x_,y_,w_,h_;
@@ -337,6 +358,17 @@ private:
 
     Fl_Callback *callback_;
     void *user_data_;  
+    Fl_Signal signal_;
+
+public:
+    // default slots
+    DEFSLOT_O(Fl_Widget, Fl_Widget, set_label, const char *);
+    DEFSLOT_O(Fl_Widget, Fl_Widget, set_active, int);
+    DEFSLOT_O(Fl_Widget, Fl_Widget, set_visibility, int);
+
+    void set_label(const char * s) { label(s); redraw_label(); redraw(); }
+    void set_active(int value) { if (value) activate(); else deactivate(); }
+    void set_visibility(int value) { if (value) show(); else hide(); }
 };
 
 #endif
