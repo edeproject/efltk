@@ -10,7 +10,6 @@
 #include <efltk/Fl.h>
 #include <efltk/Fl_String_List.h>
 #include <efltk/Fl_Int_List.h>
-#include <efltk/Fl_String_Hash.h>
 
 #include "main_ui.h"
 
