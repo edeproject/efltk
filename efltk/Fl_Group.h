@@ -25,6 +25,7 @@
 #include "Fl_Widget.h"
 #include "Fl_Data_Source.h"
 #include "Fl_Widget_List.h"
+#include "Fl_Int_List.h"
 
 class FL_API Fl_Group : public Fl_Widget {
 public:
@@ -85,12 +86,12 @@ protected:
 
 private:
     Fl_Widget_List array_;
-    int focus_;
+    Fl_Int_List sizes_; // remembered initial sizes of children
 
     Fl_Widget* resizable_;
-    int *sizes_; // remembered initial sizes of children
-
     Fl_Data_Source* data_source_;
+
+    int focus_;
 
     static Fl_Group *current_;
 };

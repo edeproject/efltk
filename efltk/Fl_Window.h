@@ -75,8 +75,6 @@ public:
     void hotspot(int x, int y, bool offscreen = false);
     void hotspot(const Fl_Widget*, bool offscreen = false);
     void hotspot(const Fl_Widget& p, bool offscrn = false) { hotspot(&p,offscrn); }
-    void size_range(int a, int b, int c=0, int d=0, int e=0, int f=0)
-    { minw=a; minh=b; maxw=c; maxh=d; dw=e; dh=f; size_range_(); }
 
     bool shown() const { return i != 0; }
 
@@ -105,6 +103,12 @@ public:
     virtual void flush();
     virtual void draw();
 
+    virtual void size_range(int minw, int minh, int maxw=0, int maxh=0);
+    void size_range(int minw, int minh, int maxw, int maxh, int dw, int dh) { m_dw=dw; m_dh=dh; size_range(minw,minh,maxw,maxh); }
+
+    int dw() { return m_dw; }
+    int dh() { return m_dh; }
+
 protected:
     virtual void create();
     static const Fl_Window *current_;
@@ -120,9 +124,7 @@ private:
     Fl_String iconlabel_;
     const void* icon_;
 
-    // size_range stuff:
-    short minw, minh, maxw, maxh;
-    unsigned char dw, dh, size_range_set;
+    unsigned char m_dw, m_dh;
     void size_range_();
 
     // values for flags():

@@ -43,6 +43,7 @@ public:
     GROUP_TYPE		= 0xe0,
     WINDOW_TYPE		= 0xf0
   };
+
   uchar widget_type()           {return widget_type_; }
   void	widget_type(uchar t)	{widget_type_ = t;}
   bool	is_group() const	{return widget_type_ >= GROUP_TYPE;}
@@ -127,6 +128,9 @@ public:
   bool	pushed() const		;
   bool	focused() const		;
   bool	belowmouse() const	;
+
+  Fl_Flags layout_align() { return layout_flags_; }
+  void layout_align(Fl_Flags f) { layout_flags_ = f; }
 
   Fl_Flags flags() const	{return flags_;}
   Fl_Flags flags(Fl_Flags f)	{return flags_ = f;}
@@ -235,8 +239,19 @@ public:
   virtual bool load_data(Fl_Data_Source *ds) { return true; }
   virtual bool save_data(Fl_Data_Source *ds) const { return true; }
 
+  virtual void size_range(int minw, int minh, int maxw=0, int maxh=0);
+  bool has_size_range() { return m_size_range; }
+  int minw() { return m_minw; }
+  int minh() { return m_minh; }
+  int maxw() { return m_maxw; }
+  int maxh() { return m_maxh; }
+
 protected:
   Fl_Widget(int,int,int,int,const char* =0);
+
+  // size_range stuff:
+  short m_minw, m_minh, m_maxw, m_maxh;
+  bool m_size_range;
 
 private:
   // disable the copy assignment/constructors:
@@ -248,7 +263,7 @@ private:
   int			x_,y_,w_,h_;
   uchar			type_, widget_type_;
   uchar			damage_;
-  uchar			layout_damage_;
+  uchar			layout_damage_, layout_flags_;
   uchar			when_;
 
   Fl_String field_name_; // data source support
