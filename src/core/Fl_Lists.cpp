@@ -303,8 +303,12 @@ void Fl_String_List::from_string(const char *str, const char *separator)
 		unsigned separator_len = strlen(separator);
 		do {
 			unsigned len = s - str;
-			Fl_String string(str, len);
-			append(string);
+			if (len) {
+			    Fl_String string(str, len);
+			    append(string);
+			} else {
+			    append("");
+			}
 
 			str = s + separator_len;
 			s = strstr(str, separator);
@@ -314,7 +318,9 @@ void Fl_String_List::from_string(const char *str, const char *separator)
 		if(*str) {
 			append(str);
 		}
-	}
+	} else {
+        append(str);
+    }
 }
 
 void Fl_String_List::free_item(Fl_Ptr_List_Item item)
@@ -456,6 +462,7 @@ void Fl_Ptr_Stack::check_size()
 void Fl_Ptr_Stack::free_item(void *item)
 {
 	free(item);
+
 }
 
 //////////////////////////////////////
