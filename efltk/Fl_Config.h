@@ -78,8 +78,18 @@ public:
     ~Fl_Config();
 
     const char *filename() { return filename_; }
+    void filename(const char *filename) { if(filename_) delete []filename_; if(filename) filename_=strdup(filename); }
+
     const char *vendor() { return vendor_; }
+    void vendor(const char *vendor) { if(vendor_) delete []vendor_; if(vendor) vendor_=strdup(vendor); }
+
     const char *application() { return app_; }
+    void application(const char *app) { if(app_) delete []app_; if(app) app_=strdup(app); }
+
+    // Finds config file, depending on mode.
+    // USER mode finds from ~/.ede/$filename and SYSTEM from $PREFIX/share/ede/$filename
+    // if "create" flag is true, path is returned even if file is not found.
+    static char *find_config_file(const char *filename, bool create=true, ConfMode mode=USER);
 
     // This returns true, if data changed.
     // call flush() to sync changes to file
@@ -173,7 +183,9 @@ private:
 };
 
 FL_API int conf_is_path_rooted(const char *path);
-FL_API const char* fl_find_config_file(const char *filename, bool create=true);
+static inline const char* fl_find_config_file(const char *filename, bool create=true) {
+    return Fl_Config::find_config_file(filename, create, Fl_Config::USER);
+}
 
 #endif // !defined(AFX_INI_CONFIG_H__A9AF989B_9D44_48ED_B56F_187FCAC49818__INCLUDED_)
 

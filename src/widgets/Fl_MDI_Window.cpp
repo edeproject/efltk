@@ -17,6 +17,55 @@
 
 #endif
 
+static int px,py,pw,ph;
+#ifdef _WIN32
+static int old_f;
+#else
+static GC invertGc=0, saved;
+#endif
+void set_overlay_func() {
+#ifdef _WIN32
+    old_f = SetROP2(fl_gc, R2_NOT);
+#else
+    if(!invertGc) {
+        XGCValues v;
+        v.subwindow_mode = IncludeInferiors;
+        v.foreground = 0xffffffff;
+        v.function = GXxor;
+        v.line_width = 2;
+        v.graphics_exposures = False;
+        int mask = GCForeground|GCSubwindowMode|GCFunction|GCLineWidth|GCGraphicsExposures;
+        invertGc = XCreateGC(fl_display, RootWindow(fl_display, fl_screen), mask, &v);
+    }
+    saved=fl_gc;
+    fl_gc=invertGc;
+#endif
+}
+void set_def_func() {
+#ifdef _WIN32
+    SetROP2(fl_gc, old_f);
+#else
+    fl_gc=saved;
+#endif
+}
+static void draw_current_rect() {
+    fl_rect(px, py, pw, ph);
+}
+void overlay_clear() { if (pw > 0) { draw_current_rect(); pw = 0; } }
+void overlay_rect(int x, int y, int w, int h) {
+    set_overlay_func();
+    fl_transform(x,y);
+    if (w < 0) {x += w; w = -w;} else if (!w) w = 1;
+    if (h < 0) {y += h; h = -h;} else if (!h) h = 1;
+    if (pw > 0) {
+        if (x==px && y==py && w==pw && h==ph) return;
+        draw_current_rect();
+    }
+    px = x; py = y; pw = w; ph = h;
+    draw_current_rect();
+    set_def_func();
+}
+
 static void closeMdiWin(Fl_Widget *, void *d)
 {
     ((Fl_MDI_Window*)d)->close_callback();	
@@ -210,7 +259,7 @@ int Fl_MDI_Titlebar::ey=0;
 int Fl_MDI_Titlebar::old_rx=0;
 int Fl_MDI_Titlebar::old_ry=0;
 
-int Fl_MDI_Titlebar::handle(int event) 
+int Fl_MDI_Titlebar::handle(int event)
 {
     static int xx,yy,rx,ry;
     static bool moving=false;
@@ -282,6 +331,9 @@ int Fl_MDI_Titlebar::handle(int event)
     }
 }
 
+bool Fl_MDI_Window::anim_opaque_ = false;
+bool Fl_MDI_Window::animate_ = true;
+
 static void revert(Fl_Style* s) {
     s->box = FL_THICK_UP_BOX;
 }
@@ -301,9 +353,6 @@ Fl_MDI_Window::Fl_MDI_Window(int x, int y, int w, int h, const char *label)
 
     memset(_cap, 0, 4096);
     caption(label);
-
-    _anim_opaque = false;
-    //_anim_opaque = true;
 
     _titlebar.align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
     _titlebar.parent(this);
@@ -330,7 +379,6 @@ Fl_MDI_Window::Fl_MDI_Window(int x, int y, int w, int h, const char *label)
     w+=box()->dw();
 
     _maximized = false;
-    _animate   = false;
     _active    = false;
 
     _resize_where = NO_RESIZE;
@@ -509,6 +557,10 @@ void Fl_MDI_Window::_resize(int x, int y, int w, int h)
     if(x==this->x()&&y==this->y()&&w==this->w()&&h==this->h())
         return;
 
+    //resize(x,y,w,h);
+    this->x(x); this->y(y);
+    this->w(w); this->h(h);
+
     resize(x,y,w,h);
     layout_damage(FL_LAYOUT_DAMAGE|FL_LAYOUT_XYWH);
 }
@@ -522,12 +574,7 @@ void Fl_MDI_Window::_position(int x, int y)
     if(x==this->x()&&y==this->y())
         return;
 
-    //this->x(x);
-    //this->y(y);
     position(x,y);
-    //layout_damage(FL_LAYOUT_DAMAGE|FL_LAYOUT_XY);
-    //layout();
-    //_owner->relayout();
 }
 
 void Fl_MDI_Window::check_size_boundary(int &w, int &h)
@@ -694,8 +741,6 @@ void Fl_MDI_Window::handle_resize(int where)
         }
     }
 }
-
-#include <stdio.h>
 
 int Fl_MDI_Window::handle(int event)
 {
@@ -965,57 +1010,6 @@ void Fl_MDI_Window::attach(Fl_MDI_Viewport *ws)
     setTop();
 }
 
-static int px,py,pw,ph;
-#ifdef _WIN32
-static int old_f;
-#else
-static GC invertGc=0, saved;
-#endif
-void set_overlay_func() {
-#ifdef _WIN32
-    old_f = SetROP2(fl_gc, R2_NOT);
-#else
-    if(!invertGc) {
-        XGCValues v;
-        v.subwindow_mode = IncludeInferiors;
-        v.function = GXinvert;
-        v.line_width = 2;
-        v.line_style = LineSolid;
-        v.fill_style = FillSolid;
-        v.join_style = JoinRound;
-        int mask = GCSubwindowMode|GCFunction|GCLineWidth|GCLineWidth;
-        //invertGc = XCreateGC(fl_display, RootWindow(fl_display, fl_screen), mask, &v);
-        invertGc = XCreateGC(fl_display, fl_window, mask, &v);
-    }
-    saved=fl_gc;
-    fl_gc=invertGc;
-#endif
-}
-void set_def_func() {
-#ifdef _WIN32
-    SetROP2(fl_gc, old_f);
-#else
-    fl_gc=saved;
-#endif
-}
-static void draw_current_rect() {
-    fl_rect(px, py, pw, ph);
-}
-void overlay_clear() { if (pw > 0) { draw_current_rect(); pw = 0; } }
-void overlay_rect(int x, int y, int w, int h) {
-    set_overlay_func();
-    fl_transform(x,y);
-    if (w < 0) {x += w; w = -w;} else if (!w) w = 1;
-    if (h < 0) {y += h; h = -h;} else if (!h) h = 1;
-    if (pw > 0) {
-        if (x==px && y==py && w==pw && h==ph) return;
-        draw_current_rect();
-    }
-    px = x; py = y; pw = w; ph = h;
-    draw_current_rect();
-    set_def_func();
-}
-
 #define STEP_DIV 15
 void Fl_MDI_Window::animate(int fx, int fy, int fw, int fh,
                             int tx, int ty, int tw, int th)
@@ -1046,7 +1040,7 @@ void Fl_MDI_Window::animate(int fx, int fy, int fw, int fh,
         rw+=(sw*winc);
         rh+=(sh*hinc);
 
-        if(_anim_opaque) {
+        if(anim_opaque_) {
             resize((int)rx, (int)ry, (int)rw, (int)rh);
             layout();
         } else {
@@ -1060,7 +1054,7 @@ void Fl_MDI_Window::animate(int fx, int fy, int fw, int fh,
         XSync(fl_display, false);
         Fl::check();
     }
-    if(!_anim_opaque) overlay_clear();
+    if(!anim_opaque_) overlay_clear();
     resize(tx,ty,tw,th);
 }
 
@@ -1070,7 +1064,7 @@ void Fl_MDI_Window::minmax()
         int _W,_H;
         _W=_owner->w(); _H=_owner->h();
 
-        if(_animate)
+        if(animate())
             animate(x(), y(), w(), h(), 0, 0, _W, _H);
         else
             resize(0, 0, _W, _H);
@@ -1093,7 +1087,7 @@ void Fl_MDI_Window::minmax()
             _ox=_ox-((_ox+_ow)-_owner->w());
         if(_oy+_oh > _owner->h())
             _oy=_oy-((_oy+_oh)-_owner->h());
-        if(_animate) {
+        if(animate()) {
             animate(x(), y(), w(), h(), _ox, _oy, _ow, _oh);
         } else
             resize(_ox, _oy, _ow, _oh);
@@ -1138,7 +1132,7 @@ void Fl_MDI_Window::minimize(bool val)
         _minimized = false;
         _maximized = false;
 
-        if(_animate) {
+        if(animate()) {
             animate(x(), y(), w(), h(), _hox, _hoy, _how, _hoh);
         } else
             resize(_hox,_hoy,_how,_hoh);
@@ -1152,8 +1146,7 @@ void Fl_MDI_Window::minimize(bool val)
         h_oldsize(w(), h());
         h_oldpos(x(),y());
 
-        if(_animate)
-        {
+        if(animate()) {
             animate(x(), y(), w(), h(),
                     0,_owner->h()-_titlebar.h()+4, 100, _titlebar.h()+4);
         } else

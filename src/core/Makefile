@@ -54,6 +54,7 @@ CPPFILES = \
 	Fl_compose.cpp \
 	Fl_display.cpp \
 	Fl_get_key.cpp \
+        Fl_init.cpp \
 	Fl_key_name.cpp \
 	Fl_lock.cpp \
 	Fl_own_colormap.cpp \

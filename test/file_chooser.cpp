@@ -74,10 +74,8 @@ void save(Fl_Widget *, void *)
     }
 }
 
-#include <config.h>
-int main()
+int main(int argc, char **argv)
 {
-    fl_init_locale_support("efltk", PREFIX"/share/locale");
     fl_init_images_lib();
 
     Fl_Window w(300,300,"FileDialog Test");
@@ -99,8 +97,9 @@ int main()
     list->end();
 
     w.resizable(list);
-    w.show();
     w.end();
+
+    w.show(argc,argv);
 
     return Fl::run();
 }

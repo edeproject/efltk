@@ -96,10 +96,10 @@ public:
     void maximize(bool val);
     bool maximized() { return _maximized; }
 
-    void animate_mode(bool o) { _anim_opaque = o; }
-    bool animate_mode() { return _anim_opaque; }
-    void animate(bool val) { _animate = val; }
-    bool animate() { return _animate; }
+    static void animate_opaque(bool o) { anim_opaque_ = o; }
+    static bool animate_opaque()       { return anim_opaque_; }
+    static void animate(bool val)      { animate_ = val; }
+    static bool animate()              { return animate_; }
 
     void boundary_check(bool val) { _boundaries = val; }
     bool boundary_check() { return _boundaries; }
@@ -147,7 +147,6 @@ private:
     int _ox, _oy, _oh, _ow;
 
     bool _boundaries;
-    bool _animate;
     bool _maximized;
     bool _minimized;
 
@@ -168,7 +167,8 @@ private:
     Fl_Rect lbcorn;
     Fl_Rect rbcorn;
 
-    bool _anim_opaque;
+    static bool anim_opaque_;
+    static bool animate_;
 
     short _minw, _minh;
     short _maxw, _maxh;

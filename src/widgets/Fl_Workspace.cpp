@@ -187,19 +187,23 @@ void Fl_MDI_Viewport::draw()
     int X=0,Y=0,W=w(),H=h();
     box()->inset(X,Y,W,H);
 
-    uchar d = damage();
-    if(d & FL_DAMAGE_ALL) { // full redraw
+    //uchar d = damage();
+    //if(d & FL_DAMAGE_ALL)
+    {
         draw_frame();
         draw_clip(X, Y, W, H);
-    } else {
-        draw_box();
+    }
+    // This is not possible, if viewport has some other widgets than MDI windows...
+    /*else {
         if(_scrolldx || _scrolldy) {
             fl_scroll(X, Y, W, H, _scrolldx, _scrolldy, cb_draw_clip, this);
         }
         if (d & FL_DAMAGE_CHILD) { // draw damaged children
             fl_push_clip(X, Y, W, H);
+            //draw_box();
             for(int i = children(); i--;) {
                 Fl_Widget& w = *child(i);
+                if(w.visible() && w.is_window()) { w.show(); continue; }
                 if(w.damage() & FL_DAMAGE_CHILD_LABEL) {
                     draw_outside_label(w);
                     w.set_damage(w.damage() & ~FL_DAMAGE_CHILD_LABEL);
@@ -208,7 +212,7 @@ void Fl_MDI_Viewport::draw()
             }
             fl_pop_clip();
         }
-    }
+    }   */
     _scrolldx = _scrolldy = 0;
 }
 

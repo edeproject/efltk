@@ -66,10 +66,6 @@ install_shared:
 install_programs:
 
 depend:
-	$(MAKEDEPEND) -I.. $(CXXFLAGS) $(CPPFILES) $(CFILES) > makedepend
-	sed -e "s'\.o'\.shared\.o'" makedepend > foo
-	cat foo >> makedepend
-	rm foo
 
 include makedepend
 

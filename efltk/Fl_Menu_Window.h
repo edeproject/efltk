@@ -53,6 +53,9 @@ public:
     void step_divider(double div) { step_div_ = div; }
     double step_divider() { return step_div_; }
 
+    static bool animate() { return animate_; }
+    static void animate(bool v) { animate_ = v; }
+
     void animate(int fx, int fy, int fw, int fh,
                  int tx, int ty, int tw, int th);
 

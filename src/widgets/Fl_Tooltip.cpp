@@ -29,6 +29,7 @@
 
 double      Fl_Tooltip::delay_ = 1.0f;
 bool        Fl_Tooltip::enabled_ = true;
+bool        Fl_Tooltip::animate_ = true;
 
 #define MAX_WIDTH 400
 
@@ -119,7 +120,7 @@ static void tooltip_timeout(void*)
 
     window->layout();
 
-    if(no_anim) {
+    if(no_anim || !Fl_Tooltip::animate()) {
         window->show();
     } else {
         if(!window->shown()) window->create();

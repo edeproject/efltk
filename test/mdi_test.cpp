@@ -135,20 +135,18 @@ void test_cb(Fl_Widget* w, void*) {
 
 void cb_anim(Fl_Widget *w, void *data)
 {
-    Fl_MDI_Window *m = (Fl_MDI_Window *)data;
     if(w->value())
-        m->animate(true);
+        Fl_MDI_Window::animate(true);
     else
-        m->animate(false);
+        Fl_MDI_Window::animate(false);
 }
 
 void cb_opaq(Fl_Widget *w, void *data)
 {
-    Fl_MDI_Window *m = (Fl_MDI_Window *)data;
     if(w->value())
-        m->animate_mode(true);
+        Fl_MDI_Window::animate_opaque(true);
     else
-        m->animate_mode(false);
+        Fl_MDI_Window::animate_opaque(false);
 }
 
 void cb_detach(Fl_Widget *, void *data)
@@ -196,12 +194,6 @@ Fl_MDI_Window *add_win(Fl_MDI_Viewport *s, bool doublebuf, const char *n)
     b->tooltip("Detach window!");
     b->callback(cb_detach, w);
 
-    new Fl_Box(10,80,130,20,"Min / Max:");
-    b = new Fl_Check_Button(10,100,130,20,"Animate");
-    b->callback(cb_anim, w);
-    b = new Fl_Check_Button(10,120,130,20,"Opaque");
-    b->callback(cb_opaq, w);
-
     Fl_Input *in = new Fl_Input(10,150, 130, 60);
     in->tooltip("Click right mouse button!");
     in->type(Fl_Input::WORDWRAP);
@@ -213,7 +205,7 @@ Fl_MDI_Window *add_win(Fl_MDI_Viewport *s, bool doublebuf, const char *n)
     return w;
 }
 
-int main()
+int main(int argc, char **argv)
 {
     for (int i=0; i<99; i++) {
         char buf[100];
@@ -221,9 +213,8 @@ int main()
         hugemenu[i].text = strdup(buf);
     }
 
-#if 1
     //Fl_Window w(400,400,"MDI TEST");
-    Fl_Main_Window mainwin(600,400);
+    Fl_Main_Window mainwin(600,400, "MDI TEST");
 
     // Add menu and change fonts
     mainwin.menu()->menu(menutable);
@@ -277,6 +268,19 @@ int main()
     // Viewport doesnt...
     //Fl_MDI_Viewport s(10,30,380,360);
 
+    s.viewport()->begin();
+
+    Fl_Button *b;
+    new Fl_Box(10,10,130,20,"Min / Max:");
+    b = new Fl_Check_Button(10,30,130,20,"Animate");
+    b->value(Fl_MDI_Window::animate());
+    b->callback(cb_anim);
+    b = new Fl_Check_Button(10,50,130,20,"Opaque");
+    b->value(Fl_MDI_Window::animate_opaque());
+    b->callback(cb_opaq);
+
+    s.viewport()->end();
+
     // Set MDI workspace to mainwindow's central widget
     mainwin.view(&s);
 
@@ -288,7 +292,8 @@ int main()
     //c->detach();
 
     c = add_win(s.viewport(), true, "Double Buffered");
-    c->animate(true); c->animate_mode(true);
+    //c->animate(true);
+    //c->animate_mode(true);
     c->resizable(c->view());
     c->minh(100);
 
@@ -296,26 +301,12 @@ int main()
     mainwin.status()->label("This is status bar...");
 
     mainwin.end();
-    mainwin.show();
+
+    //Read defaults, init locale and show the window
+    mainwin.show(argc, argv);
 
     s.redraw_all();
-#else
 
-    Fl_Window w(500,500,"testi");
-
-    Fl_Menu_Bar b(10,400,100,20,"bar");
-    b.menu(menutable);
-
-    Fl_Workspace s(10,30,380,360, "testi2");
-    w.show();
-
-    Fl_MDI_Window *c;
-    c = add_win(s.viewport(), false,"non-resizable");
-    c->position(20,10);
-    //c->detach();
-
-
-#endif
     return Fl::run();
 }
 

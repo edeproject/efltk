@@ -23,7 +23,7 @@
 
 #endif /* _WIN32 */
 
-int conf_is_path_rooted(const char *fn)
+static int is_path_rooted(const char *fn)
 {
     /* see if an absolute name was given: */
 #ifdef _WIN32
@@ -33,29 +33,6 @@ int conf_is_path_rooted(const char *fn)
 #endif
         return 1;
     return 0;
-}
-
-// This should stay public so that programs can locate their config files easily.
-const char* fl_find_config_file(const char *filename, bool create)
-{
-    static char path[4096];
-
-    if(conf_is_path_rooted(filename)) {
-        strncpy(path, filename, sizeof(path));
-        return (create || !access(path, R_OK)) ? path : 0;
-    }
-    char *cptr = fl_get_homedir();
-    if(cptr) {
-        snprintf(path, sizeof(path)-1, "%s%s%s", cptr, "/.ede/", filename);
-        if(create || !access(path, R_OK)) {
-            delete []cptr;
-            return path;
-        }
-        delete []cptr;
-    }
-
-    snprintf(path, sizeof(path)-1, CONFIGDIR "/%s", filename);
-    return (create || !access(path, R_OK)) ? path : 0;
 }
 
 // recursively create a path in the file system
@@ -92,6 +69,35 @@ static bool makePathForFile( const char *path )
     return ret;
 }
 
+char *Fl_Config::find_config_file(const char *filename, bool create, ConfMode mode)
+{
+    static char path[4096];
+
+    if(is_path_rooted(filename)) {
+        strncpy(path, filename, sizeof(path));
+        return (create || !access(path, R_OK)) ? path : 0;
+    }
+    if(mode==USER) {
+        char *cptr = fl_get_homedir();
+        char *ret=0;
+        if(cptr) {
+            snprintf(path, sizeof(path)-1, "%s%s%s", cptr, "/.ede/", filename);
+            if(create || !access(path, R_OK)) {
+                ret = path;
+            }
+            delete []cptr;
+            return ret;
+        }
+    } else {
+        snprintf(path, sizeof(path)-1, CONFIGDIR"/%s", filename);
+        return (create || !access(path, R_OK)) ? path : 0;
+    }
+
+    snprintf(path, sizeof(path)-1, CONFIGDIR "/%s", filename);
+    return (create || !access(path, R_OK)) ? path : 0;
+
+}
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -108,19 +114,19 @@ Fl_Config::Fl_Config(const char *vendor, const char *application, ConfMode mode)
     if(app_) {
         const char *file=0;
         char tmp[FL_PATH_MAX];
-        if(mode==USER) {
-            snprintf(tmp, sizeof(tmp)-1, "apps/%s/%s.conf", app_, app_);
-            file = fl_find_config_file(tmp);
-        } else {
-            snprintf(tmp, sizeof(tmp)-1, CONFIGDIR"/apps/%s/%s.conf", app_, app_);
-            file = tmp;
-        }
-        bool ret = makePathForFile(file);
-        if(ret) {
-            filename_ = strdup(file);
-            read_file(true);
-        }
-    }
+        snprintf(tmp, sizeof(tmp)-1, "apps/%s/%s.conf", app_, app_);
+        file = find_config_file(tmp, true, mode);
+        if(file) {
+            bool ret = makePathForFile(file);
+            if(ret) {
+                filename_ = strdup(file);
+                read_file(true);
+            } else
+                _error = CONF_ERR_FILE;
+        } else
+            _error = CONF_ERR_FILE;
+    } else
+        _error = CONF_ERR_FILE;
 }
 
 Fl_Config::Fl_Config(const char *filename, bool read, bool create)

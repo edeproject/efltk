@@ -33,9 +33,13 @@ class FL_API Fl_Tooltip {
 public:
   static double delay() { return delay_; }
   static void delay(double f) { delay_ = f; }
+
   static bool enabled() { return enabled_; }
   static void enable(bool b = true) { enabled_ = b; }
   static void disable() { enabled_ = false; }
+
+  static bool animate() { return animate_; }
+  static void animate(bool v) { animate_ = v; }
 
   // This is called when the pointer enters a widget,
   // Also enter(0) gets rid of any displayed or pending tooltip:
@@ -61,7 +65,7 @@ public:
 
 private:
   static double delay_;
-  static bool enabled_;
+  static bool enabled_, animate_;
 };
 
 #endif

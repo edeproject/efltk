@@ -84,9 +84,6 @@ public:
     void show();
     void show(Fl_Window *w);
 
-    static bool animate() { return animate_; }
-    static void animate(bool v) { animate_ = v; }
-
     bool menubar;
 
 private:
@@ -709,7 +706,7 @@ int MenuWindow::handle(int event)
 
 void MenuWindow::show()
 {
-    if(!animate() || !indexes_) {
+    if(!Fl_Menu_Window::animate() || !indexes_) {
         Fl_Window::show();
         return;
     }
