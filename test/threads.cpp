@@ -32,7 +32,10 @@
 #  include <efltk/Fl_Value_Output.h>
 #  include <efltk/Fl_Thread.h>
 #  include <stdio.h>
-#  include <math.h>
+
+#  ifndef __linux
+#   include <math.h>
+#  endif
 
 Fl_Thread prime_thread;
 
