@@ -76,7 +76,6 @@ public:
    bool active() const                             { return m_active; }
    bool in_transaction() const                     { return m_inTransaction; }
 
-   void thread_safe(bool threadSafe);
    bool thread_safe() const                        { return m_mutex; }
    void lock()                                     { if (m_mutex) m_mutex->lock(); }
    void unlock()                                   { if (m_mutex) m_mutex->unlock(); }

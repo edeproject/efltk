@@ -31,14 +31,6 @@ Fl_Database::~Fl_Database() {
       delete m_mutex;
 }
 
-void Fl_Database::thread_safe(bool threadSafe) {
-   bool isSafe = m_mutex;
-   if (isSafe == threadSafe) return;   // Already Ok
-   if (threadSafe)
-         m_mutex = new Fl_Mutex();
-   else  m_mutex = 0L;
-}
-
 void Fl_Database::open(const Fl_String connString) {
    if (connString.length() && connString != m_connString) {
       close();
