@@ -23,6 +23,7 @@
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 //
 
+#include <math.h>
 #include <config.h>
 
 #if HAVE_PTHREAD || defined(WIN32)
@@ -32,10 +33,6 @@
 #  include <efltk/Fl_Value_Output.h>
 #  include <efltk/Fl_Thread.h>
 #  include <stdio.h>
-
-#  ifndef __linux
-#   include <math.h>
-#  endif
 
 Fl_Thread prime_thread;
 
