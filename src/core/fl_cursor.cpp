@@ -55,7 +55,7 @@ void Fl_Window::cursor(Fl_Cursor c, Fl_Color, Fl_Color)
     }
     else
     {
-#ifdef _WIN32_WCE
+#if defined(_WIN32_WCE) || UNICODE==1
         LPWSTR n;
 #else
         LPSTR n;

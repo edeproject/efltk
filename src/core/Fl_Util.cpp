@@ -69,10 +69,10 @@ bool Fl_FileAttr::parse(const char *filename)
 
         // Don't even try to read floppy, etc...
         // We all know how fast this is in windoze... =)
-        uint type = GetDriveType(nbuf);
+        uint type = GetDriveTypeA(nbuf);
         if(type==DRIVE_CDROM||type==DRIVE_FIXED) {
             uint64 ign;
-            GetDiskFreeSpaceEx(nbuf, (PULARGE_INTEGER)&ign, (PULARGE_INTEGER)&capacity, (PULARGE_INTEGER)&free);
+            GetDiskFreeSpaceExA(nbuf, (PULARGE_INTEGER)&ign, (PULARGE_INTEGER)&capacity, (PULARGE_INTEGER)&free);
         }
         flags |= FL_DEVICE;
         return true;
@@ -116,6 +116,7 @@ Fl_FileAttr *fl_file_attr(const char *name)
     return a;
 }
 
+#include <efltk/fl_utf8.h>
 char *fl_get_homedir()
 {
     char *path = new char[4096];
@@ -123,33 +124,38 @@ char *fl_get_homedir()
 	const char *str1;
 
 #ifdef _WIN32
-	const char *str2;
+	TCHAR w32path[4096];
     HKEY hKey;
-#ifndef _WIN32_WCE
-    if(RegOpenKeyEx(HKEY_CURRENT_USER,"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders",0,KEY_READ,&hKey)==ERROR_SUCCESS)
+    if(RegOpenKeyEx(HKEY_CURRENT_USER, TEXT("Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders"), 0, KEY_READ, &hKey)==ERROR_SUCCESS)
     {
         DWORD size=4096;
-		LONG result=RegQueryValueEx(hKey, "Local AppData", NULL, NULL, (LPBYTE)path, &size);  // Change "Personal" to "Desktop" if you want...
+		// Change "Personal" to "Desktop" if you want...
+		if(RegQueryValueEx(hKey, TEXT("Local AppData"), NULL, NULL, (LPBYTE)w32path, &size)==ERROR_SUCCESS)
+		{
+			RegCloseKey(hKey);			
+#if UNICODE
+			int len = wcslen(w32path);			
+			fl_unicode2utf(w32path, len, path);
 #else
-    if(RegOpenKeyEx(HKEY_CURRENT_USER,L"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders",0,KEY_READ,&hKey)==ERROR_SUCCESS)
-    {
-        DWORD size=4096;
-		LONG result=RegQueryValueEx(hKey, L"Local AppData", NULL, NULL, (LPBYTE)path, &size);  // Change "Personal" to "Desktop" if you want...
+			strncpy(path, w32path, 4095);			
 #endif
-        RegCloseKey(hKey);
-        return path;
+			return path;
+		}		
     }
 
-    if((str2=getenv("HOMEPATH"))!=NULL) {      // This should be good for WinNT, Win2K according to MSDN
-        if((str1=getenv("HOMEDRIVE"))==NULL)
-            str1="c:";
+	// This should be good for WinNT, Win2K according to MSDN
+	const char *str3;
+    if((str3=fl_getenv("HOMEPATH"))!=NULL) 
+	{
+        if((str1=fl_getenv("HOMEDRIVE"))==NULL)
+            str1="c:\\";
         strcat(path, str1);
-        strcat(path+strlen(str1), str2);
+        strcat(path+strlen(str1), str3);
         return path;
     }
-#endif
+#endif /* _WIN32 */
 
-    if((str1=getenv("HOME"))!=NULL) {
+    if((str1=fl_getenv("HOME"))!=NULL) {
         strcpy(path, str1);
         return path;
     }

@@ -83,6 +83,8 @@ static DWORD str_to_charset(const char *str)
 	return DEFAULT_CHARSET;	
 }
 
+extern char *fl_utf82locale(const char *s, UINT codepage = 0);
+
 Fl_FontSize::Fl_FontSize(const char* name, int size, int charset) 
 {	
   fl_fontsize = this;
@@ -99,12 +101,8 @@ Fl_FontSize::Fl_FontSize(const char* name, int size, int charset)
   default: name--;
   }  
 
-  static WCHAR ucsbuf[LF_FACESIZE*2];
-  ucsbuf[fl_utf2unicode((uchar *)name, LF_FACESIZE, (unsigned short*)ucsbuf)] = '\0';
-  WCHAR *unicode_name = ucsbuf;	
-
   HFONT font;
-  LOGFONTW lFont;
+  LOGFONT lFont;
 
   lFont.lfHeight         = -size; // use "char size"
   lFont.lfWidth          = 0L;
@@ -126,9 +124,19 @@ Fl_FontSize::Fl_FontSize(const char* name, int size, int charset)
   lFont.lfQuality        = PROOF_QUALITY;       // CE doesn't understand
 #endif
 
-  ::wcscpy(lFont.lfFaceName, unicode_name);
+  TCHAR *family_name;
+#if UNICODE
+  int len = fl_utf_nb_char((unsigned char*)name, strlen(name));
+  family_name = (TCHAR*)malloc((len + 1) * sizeof(TCHAR));
+  fl_utf2unicode((unsigned char*)name, len, (unsigned short*)family_name);
+  family_name[len] = 0;
+  wcsncpy(lFont.lfFaceName, family_name, LF_FACESIZE);
+#else
+  family_name = fl_utf82locale(name);
+  strncpy(lFont.lfFaceName, family_name, LF_FACESIZE);
+#endif  
 
-  font = ::CreateFontIndirectW( &lFont );
+  font = ::CreateFontIndirect( &lFont );
 
   HDC dc = fl_getDC();
   SelectObject(dc, font);
@@ -240,14 +248,15 @@ float fl_width(const char* c, int n)
 float fl_width(unsigned int ucs) 
 {
 	unsigned int r = (ucs & 0xFC00)>>10;
-	if(!fl_fontsize->width[r]) {
+	if(!fl_fontsize->width[r]) 
+	{
 		SIZE s;
 		HDC dc = fl_getDC();
 		SelectObject(dc, current_font);
      	fl_fontsize->width[r] = new int[0x0400];        
 		unsigned short i=0, ii = r * 0x400;
 		for (; i < 0x400; i++) {
-			GetTextExtentPoint32W(dc, (const WCHAR*)&ii, 1, &s);
+			GetTextExtentPoint32(dc, (const TCHAR*)&ii, 1, &s);
 			fl_fontsize->width[r][i] = s.cx;
 			ii++;
 		}		

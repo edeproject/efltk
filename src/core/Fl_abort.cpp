@@ -58,6 +58,7 @@ static void error(const char *format, ...)
 
 
 #elif defined(_WIN32_WCE)
+
 #include <wince.h>
 #include <efltk/fl_utf8.h>
 
@@ -91,6 +92,9 @@ static void error(const char *format, ...)
 #else
 
 #include <windows.h>
+#include <efltk/fl_utf8.h>
+
+extern char *fl_utf82locale(const char *s, UINT codepage=0);
 
 static void warning(const char *format, ...)
 {
@@ -99,7 +103,22 @@ static void warning(const char *format, ...)
     va_start(args, format);
     vsnprintf(buf, 1024, format, args);
     va_end(args);
-    MessageBox(0,buf,"Warning",MB_ICONEXCLAMATION|MB_OK);
+
+	TCHAR *text;
+#if UNICODE
+    int len = fl_utf_nb_char((unsigned char*)buf, strlen(buf));
+    text = (TCHAR*)malloc((len + 1) * sizeof(TCHAR));
+    fl_utf2unicode((unsigned char*)buf, len, (unsigned short*)text);
+	text[len] = 0;
+#else
+	text = fl_utf82locale(buf);
+#endif
+
+    MessageBox(0, text, TEXT("Warning"), MB_ICONEXCLAMATION|MB_OK);
+
+#if UNICODE
+	free(text);
+#endif
 }
 
 
@@ -110,7 +129,24 @@ static void error(const char *format, ...)
     va_start(args, format);
     vsnprintf(buf, 1024, format, args);
     va_end(args);
-    MessageBox(0,buf,"Error",MB_ICONSTOP|MB_SYSTEMMODAL);
+
+	TCHAR *text;
+#if UNICODE
+    int len = fl_utf_nb_char((unsigned char*)buf, strlen(buf));
+    text = (TCHAR*)malloc((len + 1) * sizeof(TCHAR));
+    fl_utf2unicode((unsigned char*)buf, len, (unsigned short*)text);
+	text[len] = 0;
+#else
+	text = fl_utf82locale(buf);
+#endif
+
+    
+	MessageBox(0, text, TEXT("Error"), MB_ICONSTOP|MB_SYSTEMMODAL);
+
+#if UNICODE
+	free(text);
+#endif
+
     exit(1);
 }
 #endif

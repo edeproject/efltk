@@ -23,8 +23,6 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
-#define UNICODE 1
-
 #include <efltk/Fl.h>
 #include <efltk/win32.h>
 #include <ctype.h>
@@ -88,8 +86,8 @@ static const char *charset_to_str(DWORD ch)
 }
 
 static Fl_Font_ *enc_font=0;
-static int CALLBACK encoding_enumcb(CONST LOGFONTW* lplf,
-			CONST TEXTMETRICW* lpntm,
+static int CALLBACK encoding_enumcb(CONST LOGFONT* lplf,
+			CONST TEXTMETRIC* lpntm,
 			DWORD fontType,
 			LPARAM p)
 {
@@ -101,6 +99,8 @@ static int CALLBACK encoding_enumcb(CONST LOGFONTW* lplf,
 	enc_font->charsets_->append(c);
 	return 1;
 }
+
+extern char *fl_utf82locale(const char *s, UINT codepage = 0);
 
 int Fl_Font_::encodings(const char**& arrayp) const
 {
@@ -114,15 +114,28 @@ int Fl_Font_::encodings(const char**& arrayp) const
 	enc_font = (Fl_Font_*)this;
 
     HDC dc = fl_getDC();
-    LOGFONTW lf;
+    LOGFONT lf;
     memset(&lf, 0, sizeof(lf));
-	fl_utf2unicode((const uchar*)name_+1, 32, (unsigned short*)lf.lfFaceName);
+	
+	const char *name = name_+1;
+	TCHAR *family_name;
+#if UNICODE
+	int len = fl_utf_nb_char((unsigned char*)name, strlen(name));
+	family_name = (TCHAR*)malloc((len + 1) * sizeof(TCHAR));
+	fl_utf2unicode((unsigned char*)name, len, (unsigned short*)family_name);
+	family_name[len] = 0;
+	wcsncpy(lf.lfFaceName, family_name, LF_FACESIZE);
+#else
+	family_name = fl_utf82locale(name);
+	strncpy(lf.lfFaceName, family_name, LF_FACESIZE);
+#endif  
+	
 	lf.lfCharSet = DEFAULT_CHARSET;
 
 #ifndef _WIN32_WCE
-    EnumFontFamiliesExW(dc, &lf, (FONTENUMPROC)encoding_enumcb, 0, 0);
+    EnumFontFamiliesEx(dc, &lf, (FONTENUMPROC)encoding_enumcb, 0, 0);
 #else
-	EnumFontFamiliesW(dc, NULL, (FONTENUMPROC)encoding_enumcb, 0);
+	EnumFontFamilies(dc, NULL, (FONTENUMPROC)encoding_enumcb, 0);
 #endif
 
 	if(charsets_->size()==0) charsets_->append("Unknown");
@@ -143,8 +156,8 @@ int Fl_Font_::encodings(const char**& arrayp) const
 
 static Fl_Font_ *size_font=0;
 static int CALLBACK size_enumcb(
-	CONST LOGFONTW* lpelf,
-	CONST TEXTMETRICW* lpntm,
+	CONST LOGFONT* lpelf,
+	CONST TEXTMETRIC* lpntm,
 	DWORD fontType,
 	LPARAM p)
 {
@@ -170,14 +183,26 @@ int Fl_Font_::sizes(int*& sizep) const
 	size_font = (Fl_Font_*)this;
 
     HDC dc = fl_getDC();
-	LOGFONTW lf;
+	LOGFONT lf;
 	memset(&lf, 0, sizeof(lf));
-	fl_utf2unicode((const uchar*)name_+1, 32, (unsigned short*)lf.lfFaceName);
+
+	const char *name = name_+1;
+	TCHAR *family_name;
+#if UNICODE
+	int len = fl_utf_nb_char((unsigned char*)name, strlen(name));
+	family_name = (TCHAR*)malloc((len + 1) * sizeof(TCHAR));
+	fl_utf2unicode((unsigned char*)name, len, (unsigned short*)family_name);
+	family_name[len] = 0;
+	wcsncpy(lf.lfFaceName, family_name, LF_FACESIZE);
+#else
+	family_name = fl_utf82locale(name);
+	strncpy(lf.lfFaceName, family_name, LF_FACESIZE);
+#endif  
 
 	lf.lfCharSet = DEFAULT_CHARSET;
 
 #ifndef _WIN32_WCE	
-	EnumFontFamiliesExW(dc, &lf, (FONTENUMPROC)size_enumcb, 0, 0);    
+	EnumFontFamiliesEx(dc, &lf, (FONTENUMPROC)size_enumcb, 0, 0);    
 #else
 	EnumFontFamilies(dc, lf.lfFaceName, (FONTENUMPROC)size_enumcb,0);    
 #endif
@@ -241,8 +266,8 @@ static int num_fonts = 0;
 static int array_size = 0;
 
 static int CALLBACK enumcb(
-	CONST LOGFONTW *lplf,
-	CONST TEXTMETRICW *lpntm,
+	CONST LOGFONT *lplf,
+	CONST TEXTMETRIC *lpntm,
 	DWORD fontType,
 	LPARAM p)
 {
@@ -252,7 +277,7 @@ static int CALLBACK enumcb(
     if(lplf->lfCharSet != ANSI_CHARSET) return 1;	
 
 	static char utf8buf[LF_FULLFACESIZE*6];
-	utf8buf[fl_unicode2utf((unsigned short*)((ENUMLOGFONTW*)lplf)->elfFullName, LF_FULLFACESIZE, utf8buf)];
+	utf8buf[fl_unicode2utf((unsigned short*)((ENUMLOGFONT*)lplf)->elfFullName, LF_FULLFACESIZE, utf8buf)];
 	const char *name = utf8buf;	
 
     bool bNeedBold = (lplf->lfWeight <= FW_NORMAL);
@@ -291,16 +316,16 @@ int fl_list_fonts(Fl_Font*& arrayp)
 		return num_fonts;
 	}
     HDC dc = fl_getDC();
-    LOGFONTW lf;
+    LOGFONT lf;
     memset(&lf, 0, sizeof(lf));
 	
 	// According to MSDN:
 	// to enumerate all styles and charsets of all fonts:
-	lf.lfFaceName[0] = '\0';
+	lf.lfFaceName[0] = 0;
 	lf.lfCharSet = DEFAULT_CHARSET;
 
 #ifndef _WIN32_WCE
-    EnumFontFamiliesExW(dc, &lf, (FONTENUMPROC)enumcb, 0, 0);
+    EnumFontFamiliesEx(dc, &lf, (FONTENUMPROC)enumcb, 0, 0);
 #else
     EnumFontFamilies(dc, NULL, (FONTENUMPROC)enumcb, 0);
 #endif

@@ -118,8 +118,10 @@ Fl_FileItem::Fl_FileItem(const char *filename, Fl_FileAttr *a)
 #ifdef _WIN32
         this->type(DEVICE);
 
-        char nbuf[4];nbuf[0] = filename[0];nbuf[1]=':';nbuf[2]='\\';nbuf[3]='\0';
-        uint type = GetDriveType(nbuf);
+        char nbuf[4];
+		nbuf[0] = filename[0]; nbuf[1]=':'; nbuf[2]='\\'; nbuf[3]='\0';
+        uint type = GetDriveTypeA(nbuf);
+
         if(type==DRIVE_CDROM) {
             typestr=_(types[4]);
 		} else
@@ -903,10 +905,18 @@ void Fl_File_Dialog::read_dir(const char *_path)
         if(!p) {
 		    //Network path, w/o share name. Try to read all shares
             NETRESOURCE net;
-            memset(&net, 0, sizeof(net));
-            net.lpRemoteName = strdup(read_path);
+            memset(&net, 0, sizeof(net));    
             netres = &net;
             read_net = true;
+#if UNICODE
+			int len = fl_utf_nb_char((unsigned char*)read_path, strlen(read_path));
+			net.lpRemoteName = (TCHAR*)malloc((len + 1) * sizeof(TCHAR));
+			fl_utf2unicode((unsigned char*)read_path, len, (unsigned short*)net.lpRemoteName);
+			net.lpRemoteName[len] = 0;
+#else
+			net.lpRemoteName = strdup(read_path);
+#endif
+
         }
     }
     if(mode_!=Fl_File_Dialog::DIRECTORY || (mode_==Fl_File_Dialog::DIRECTORY && !fullpath_))
@@ -1740,17 +1750,32 @@ void Fl_File_Dialog::add_netitem(LPNETRESOURCE net)
 
 	listview_->begin();
 
-	char *tmp = strdup(net->lpRemoteName);
+	char *remote_name;
+	
+#if UNICODE
+	int len = wcslen(net->lpRemoteName);
+	remote_name = (char*)malloc(len*5+1);
+	fl_unicode2utf(net->lpRemoteName, len, remote_name);
+#else
+	remote_name = net->lpRemoteName;
+#endif
+
+	char *tmp = strdup(remote_name);
 	char *p = strrchr(tmp, '\\');
 	tmp+=(p-tmp)+1;
 
 	Fl_FileItem *i = new Fl_FileItem(tmp, 0);
-        i->type(Fl_FileItem::NETWORK);
+    i->type(Fl_FileItem::NETWORK);
 	if(scope==RESOURCE_GLOBALNET)
 		i->image(0, fold_pix);		
 	else
 		i->image(0, hd_pix);
 	listview_->end();
+
+	free(tmp);
+#if UNICODE
+	free(remote_name);
+#endif
 }
 
 void Fl_File_Dialog::read_network(LPNETRESOURCE net)

@@ -471,11 +471,23 @@ char *fl_locale2utf8(const char *s, UINT codepage = 0)
 	return buf;	
 }
 
+int fl_atol(TCHAR *buf)
+{
+#if UNICODE
+	CHAR strTmp[128];
+	wcstombs(strTmp, (const wchar_t *)buf, sizeof(strTmp)); 
+	return atoi(strTmp); 
+#else
+	return atoi(buf);
+#endif
+}
+
 UINT fl_get_lcid_codepage(LCID id)
 {
-	char buf[8];
+	TCHAR buf[8];
 	buf[GetLocaleInfo(id, LOCALE_IDEFAULTANSICODEPAGE, buf, 8)] = 0;
-	return atol(buf);
+	
+	return fl_atol(buf);
 }
 
 // call this when you create a selection:
@@ -596,8 +608,8 @@ void fl_get_codepage()
 	HKL hkl = GetKeyboardLayout(0);
 	TCHAR ld[8];
 	
-	GetLocaleInfo (LOWORD(hkl), LOCALE_IDEFAULTANSICODEPAGE, ld, 6);
-	DWORD ccp = atol(ld);
+	GetLocaleInfo(LOWORD(hkl), LOCALE_IDEFAULTANSICODEPAGE, ld, 6);
+	DWORD ccp = fl_atol(ld);
 	fl_is_ime = false;
 	
 	fl_codepage = ccp;
@@ -943,7 +955,7 @@ WPARAM wParam, LPARAM lParam)
             if (!_TrackMouseEvent)
             {
                 /* Get the version of TrackMouseEvent() we use */
-                HMODULE handle = GetModuleHandle("USER32.DLL");
+                HMODULE handle = GetModuleHandle(TEXT("USER32.DLL"));
                 if (handle) _TrackMouseEvent =
                         (BOOL(WINAPI*)(_TRACKMOUSEEVENT*))GetProcAddress(handle, "TrackMouseEvent");
                 if (!_TrackMouseEvent) _TrackMouseEvent = WIN_TrackMouseEvent;
@@ -1556,49 +1568,38 @@ HCURSOR fl_default_cursor;
 
 void Fl_X::create(Fl_Window* window)
 {
-	static unsigned short class_namew[1024] = {0};
+	static TCHAR class_name[1024];
     static bool registered = false;
+	int len;
 
     if (!registered)
     {
         registered = true;
-		if (!fl_default_cursor) fl_default_cursor = LoadCursor(NULL, IDC_ARROW);
-		/*if(fl_is_nt4()) {
-			fl_utf2unicode((const uchar*)Fl_Window::xclass(), strlen(Fl_Window::xclass()), class_namew);
 
-			static WNDCLASSEXW wcw;
-			wcw.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS;
-			wcw.lpfnWndProc = (WNDPROC)WndProc;
-			wcw.cbClsExtra = wcw.cbWndExtra = 0;
-			wcw.hInstance = fl_display;
-			if(!window->icon()) window->icon((void *)LoadIcon(NULL, IDI_APPLICATION));
-			wcw.hIcon = wcw.hIconSm = (HICON)window->icon();
-			wcw.hCursor = fl_default_cursor;			
-			//uchar r,g,b; Fl::get_color(FL_GRAY,r,g,b);
-			//wc.hbrBackground = (HBRUSH)CreateSolidBrush(RGB(r,g,b));
-			wcw.hbrBackground = NULL;
-			wcw.lpszMenuName = NULL;
-			wcw.lpszClassName = class_namew;
-			wcw.cbSize = sizeof(WNDCLASSEXW);
-			RegisterClassExW(&wcw);		
-		} else */
-		{
-			static WNDCLASSEX wc;
-			wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS;
-			wc.lpfnWndProc = (WNDPROC)WndProc;
-			wc.cbClsExtra = wc.cbWndExtra = 0;
-			wc.hInstance = fl_display;
-			if(!window->icon()) window->icon((void *)LoadIcon(NULL, IDI_APPLICATION));
-			wc.hIcon = wc.hIconSm = (HICON)window->icon();			
-			wc.hCursor = fl_default_cursor;
-			//uchar r,g,b; Fl::get_color(FL_GRAY,r,g,b);
-			//wc.hbrBackground = (HBRUSH)CreateSolidBrush(RGB(r,g,b));
-			wc.hbrBackground = NULL;
-			wc.lpszMenuName = NULL;
-			wc.lpszClassName = Fl_Window::xclass();
-			wc.cbSize = sizeof(WNDCLASSEX);
-			RegisterClassEx(&wc);
-		}	
+#if UNICODE
+		len = fl_utf2unicode((const uchar*)Fl_Window::xclass(), strlen(Fl_Window::xclass()), (unsigned short*)class_name);		
+#else
+		len = strlen(Fl_Window::xclass());
+		strncpy(class_name, Fl_Window::xclass(), len);
+#endif
+		class_name[len] = 0;
+
+		if (!fl_default_cursor) fl_default_cursor = LoadCursor(NULL, IDC_ARROW);
+		static WNDCLASSEX wc;
+		wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS;
+		wc.lpfnWndProc = (WNDPROC)WndProc;
+		wc.cbClsExtra = wc.cbWndExtra = 0;
+		wc.hInstance = fl_display;
+		if(!window->icon()) window->icon((void *)LoadIcon(NULL, IDI_APPLICATION));
+		wc.hIcon = wc.hIconSm = (HICON)window->icon();			
+		wc.hCursor = fl_default_cursor;
+		//uchar r,g,b; Fl::get_color(FL_GRAY,r,g,b);
+		//wc.hbrBackground = (HBRUSH)CreateSolidBrush(RGB(r,g,b));
+		wc.hbrBackground = NULL;
+		wc.lpszMenuName = NULL;
+		wc.lpszClassName = class_name;
+		wc.cbSize = sizeof(WNDCLASSEX);
+		RegisterClassEx(&wc);
 	}
 
     HWND parent;
@@ -1682,16 +1683,29 @@ void Fl_X::create(Fl_Window* window)
 		if (lab) free(lab);
 	} else 
 	*/{
-		char *lab = fl_utf82locale(window->label());
+		TCHAR *label = NULL;
+#if UNICODE
+		if(window->label()) {
+			len = fl_utf_nb_char((unsigned char*)window->label(), strlen(window->label()));
+			label = (TCHAR*)malloc((len + 1) * sizeof(TCHAR));
+			fl_utf2unicode((unsigned char*)window->label(), len, (unsigned short*)label);
+			label[len] = 0;			
+		}
+#else
+		label = fl_utf82locale(window->label());
+#endif
 		x->xid = CreateWindowEx(
 			styleEx,
-			Fl_Window::xclass(), lab, style,
+			class_name, label, style,
 			xp, yp, window->w()+dw, window->h()+dh,
 			parent,
 			NULL, // menu
 			fl_display,
 			NULL // creation parameters
 		);
+#if UNICODE
+		if(label) free(label);
+#endif
 	}	
 	
     x->dc = GetDC(x->xid);
@@ -1775,18 +1789,19 @@ void set_label(Fl_Window *win, const char *name, const char *iname)
 {
     if(win->shown() && !win->parent()) {
         if (!name) name = "";
-        if (fl_is_nt4()) {
-            int l = fl_utf_nb_char((unsigned char*)name, strlen(name));
-            WCHAR *lab = (WCHAR*) malloc((l + 1) * sizeof(short));
-            fl_utf2unicode((unsigned char*)name, l, (unsigned short*)lab);
-            lab[l] = 0;
-            SetWindowTextW(fl_xid(win), lab);
-            free(lab);
-        } else {
-            SetWindowText(fl_xid(win), fl_utf82locale(name));
-            //if (!iname) iname = fl_file_filename(name);
-            // should do something with iname here...
-        }
+		TCHAR *text;
+#if UNICODE
+        int len = fl_utf_nb_char((unsigned char*)name, strlen(name));
+        text = (TCHAR*)malloc((len + 1) * sizeof(TCHAR));
+        fl_utf2unicode((unsigned char*)name, len, (unsigned short*)text);
+		text[len] = 0;
+#else
+		text = fl_utf82locale(name);
+#endif
+        SetWindowText(fl_xid(win), text);
+#if UNICODE
+        free(text);
+#endif
     }
 }
 
