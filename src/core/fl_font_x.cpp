@@ -78,6 +78,7 @@ Fl_FontSize::Fl_FontSize(const char* name)
         font = XLoadQueryFont(fl_display, "fixed");
     }
     encoding = 0;
+    encoding_num = -1;
 }
 
 #if 0 // this is never called!
@@ -301,13 +302,11 @@ static char *find_best_font(Fl_Font_ *f, const char *fname, int size)
     int cnt = f->xlist_n_;
 
     if(!list) return "fixed";
-
     if(cnt<0) cnt = -cnt;
 
     // search for largest <= font size:
     char* name = list[0];
     int ptsize = 0; // best one found so far
-    int matchedlength = 32767;
     static char namebuffer[1024]; // holds scalable font name
     bool found_encoding = false;
 
@@ -320,42 +319,38 @@ static char *find_best_font(Fl_Font_ *f, const char *fname, int size)
         } else {
             if (found_encoding) continue;
         }
-        char* c = (char*)fl_find_fontsize(thisname);
-        int thissize = c ? atoi(c) : MAXSIZE;
-        int thislength = strlen(thisname);
-        if (thissize == size && thislength < matchedlength) {
+
+        char *c = (char*)fl_find_fontsize(thisname);
+        int thissize = c ? strtol(c,NULL,10) : MAXSIZE;
+
+        if (thissize == size) {
+
             // exact match, use it:
             name = thisname;
             ptsize = size;
-            matchedlength = thislength;
+            break;
+
         } else if (!thissize && ptsize!=size) {
-            // whoa!  A scalable font!  Use unless exact match found:
+
+            // Use a scalable font if no exact match found:
             int l = c-thisname;
             memcpy(namebuffer,thisname,l);
-            l += sprintf(namebuffer+l,"%d",size);
+            // print the pointsize into it:
+            if (size>=100) namebuffer[l++] = size/100+'0';
+            if (size>=10) namebuffer[l++] = (size/10)%10+'0';
+            namebuffer[l++] = (size%10)+'0';
             while (*c == '0') c++;
             strcpy(namebuffer+l,c);
             name = namebuffer;
             ptsize = size;
+            break;
+
         } else if (!ptsize ||       // no fonts yet
                    thissize < ptsize && ptsize > size || // current font too big
                    thissize > ptsize && thissize <= size // current too small
                   ) {
-            /*
-            if (size > 24) {
-                int l = c-thisname;
-                memcpy(namebuffer,thisname,l);
-                l += sprintf(namebuffer+l,"%d",size);
-                while (*c != '-') c++;
-                strcpy(namebuffer+l,c);
-                name = namebuffer;
-                ptsize = size;
-            } else {
-            */
-                name = thisname;
-                ptsize = thissize;
-            //}
-            matchedlength = thislength;
+            name = thisname;
+            ptsize = thissize;
         }
     }
     return name;
@@ -372,26 +367,32 @@ uint Fl_Font_::cache_xlist()
 
 Fl_FontSize *Fl_Font_::load_font(float psize)
 {
-    if(cache_xlist()==0) return 0;
+    Fl_FontSize *f;
+    if(cache_xlist()==0) {
+        // use variable if no matching font...
+        f = new Fl_FontSize("variable");
+        f->minsize = 0;
+        f->maxsize = 32767;
+    } else {
+        unsigned size = unsigned(psize);
+        char *name = find_best_font(this, name_, size);
+        // okay, make the font:
+        f = new Fl_FontSize(name);
+        const char *enc = font_word(name, 13);
+        if(enc && *enc++) {
+            f->encoding_num = fl_encoding_number(enc);
+        }
+        f->minsize = size;
+        f->maxsize = size;
+    }
 
-    unsigned size = unsigned(psize);
-    char *name = find_best_font(this, name_, size);
-
-    // okay, make the font:
-    Fl_FontSize* f = new Fl_FontSize(name);
-    const char *enc = font_word(name, 13);
-    if(*enc++) {
-        f->encoding_num = fl_encoding_number(enc);
-    } else
+    if(f->encoding_num==-1)
         f->encoding_num = 1; //ISO8859-1
 
     f->encoding = fl_encoding_;
-    f->minsize = size;
-    f->maxsize = size;
 
     f->next = first;
     first = f;
-
     return f;
 }
 
@@ -404,19 +405,18 @@ void fl_font(Fl_Font font, float psize)
     unsigned size = unsigned(psize);
 
     // See if the current font is correct:
-    if(fl_font_ && font==fl_font_ && psize == fl_size_
-       && (!f->encoding || !strcmp(f->encoding, fl_encoding_))
-      )
+    if(font == fl_font_ && psize == fl_size_ &&
+       (f->encoding==fl_encoding_ || !strcmp(f->encoding, fl_encoding_)))
         return;
 
     fl_font_ = font;
     fl_size_ = psize;
 
     // search the FontSize we have generated already:
-    for (f = font->first; f; f = f->next) {
-        if(f->minsize <= size && f->maxsize >= size
-           && (!f->encoding || !strcmp(f->encoding, fl_encoding_))
-          )
+    for(f = font->first; f; f = f->next) {
+        if (f->minsize <= size && f->maxsize >= size
+            && (f->encoding==fl_encoding_ ||
+                !f->encoding || !strcmp(f->encoding, fl_encoding_)))
         {
             set_current_fontsize(f);
             return;
@@ -436,8 +436,7 @@ void fl_encoding(const char* f) {
 ////////////////////////////////////////////////////////////////
 
 // The predefined fonts that fltk has:  bold:       italic:
-Fl_Font_
-fl_fonts[] = {
+Fl_Font_ fl_fonts[] = {
 {"-*-helvetica-medium-r-normal--*",	fl_fonts+1, fl_fonts+2,0},
 {"-*-helvetica-bold-r-normal--*", 	fl_fonts+1, fl_fonts+3,0},
 {"-*-helvetica-medium-o-normal--*",	fl_fonts+3, fl_fonts+2,0},

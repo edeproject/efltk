@@ -45,15 +45,7 @@
 #include <config.h>
 
 // return dash number N, or pointer to ending null if none:
-static const char* font_word(const char* p, int n)
-{
-    //  while (*p) {if (*p=='-') {if (!--n) break;} p++;}
-                                 // simpler to follow logic?
-    for (; *p; p++) if (*p == '-' && !--n) break;
-
-    return p;
-}
-
+extern const char *font_word(const char* p, int n);
 
 // turn word N of a X font name into either some attribute bits
 // (right now 0, FL_BOLD, or FL_ITALIC), or into -1 indicating that
