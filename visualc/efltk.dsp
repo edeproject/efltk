@@ -778,6 +778,10 @@ SOURCE=..\src\core\Fl_Xpm.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\widgets\layout_sizes.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\core\scandir.cpp
 # End Source File
 # Begin Source File
@@ -870,6 +874,10 @@ SOURCE=..\efltk\Fl_Check_Button.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\efltk\Fl_Check_Buttons.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\efltk\Fl_Choice.h
 # End Source File
 # Begin Source File
@@ -887,6 +895,10 @@ SOURCE=..\efltk\Fl_Color.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_Color_Chooser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Combo_Box.h
 # End Source File
 # Begin Source File
 
@@ -982,6 +994,10 @@ SOURCE=..\efltk\Fl_Gdi.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\efltk\Fl_Gl_Window.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\efltk\Fl_Group.h
 # End Source File
 # Begin Source File
@@ -1071,6 +1087,10 @@ SOURCE=..\efltk\Fl_Line_Dial.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_ListView.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_ListView_Column.h
 # End Source File
 # Begin Source File
 
@@ -1190,6 +1210,10 @@ SOURCE=..\efltk\Fl_Pixmap.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\efltk\Fl_Point.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\efltk\Fl_Popup_Window.h
 # End Source File
 # Begin Source File
@@ -1239,6 +1263,10 @@ SOURCE=..\efltk\Fl_Radio_Light_Button.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_Radio_Round_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Rect.h
 # End Source File
 # Begin Source File
 
@@ -1299,6 +1327,10 @@ SOURCE=..\efltk\Fl_Simple_Html.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_Single_Window.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Size.h
 # End Source File
 # Begin Source File
 
@@ -1491,6 +1523,10 @@ SOURCE=..\efltk\gl2opengl.h
 # Begin Source File
 
 SOURCE=..\efltk\gl_draw.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\layout_sizes.h
 # End Source File
 # Begin Source File
 

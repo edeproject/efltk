@@ -85,10 +85,6 @@ LIB32=link.exe -lib
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\src\xml\Fl_XmlCtx.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\xml\Fl_XmlDoc.cpp
 # End Source File
 # Begin Source File
@@ -110,10 +106,6 @@ SOURCE=..\src\xml\Fl_XmlTokenizer.cpp
 # Begin Source File
 
 SOURCE=..\efltk\xml\Fl_Xml.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\efltk\xml\Fl_XmlCtx.h
 # End Source File
 # Begin Source File
 
