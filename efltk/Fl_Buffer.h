@@ -29,7 +29,7 @@ public:
    Fl_Buffer(unsigned sz=16);
    ~Fl_Buffer();
    char *data() const { return m_buffer; }
-   bool checkSize(unsigned sz);
+   bool check_size(unsigned sz);
    void set(const char *data,unsigned sz);
    bool append(const char *data,unsigned sz);
    void reset(unsigned sz=0);
@@ -37,6 +37,7 @@ public:
 
    unsigned size()  const { return m_size; }
    unsigned bytes() const { return m_bytes; }
+   void bytes(unsigned b) { set(NULL,b); }
 };
 
 #endif

@@ -34,7 +34,7 @@ Fl_Buffer::~Fl_Buffer() {
    m_buffer = NULL;
 }
 
-bool Fl_Buffer::checkSize(unsigned sz) {
+bool Fl_Buffer::check_size(unsigned sz) {
    if (sz > m_size) {
       unsigned newSize = sz * 5 / 4 + 1;
       char *p = (char *)realloc(m_buffer,newSize + 1);
