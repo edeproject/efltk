@@ -209,12 +209,25 @@ bool Fl_Renderer::render_to_pixmap(uint8 *src, Fl_Rect *src_rect, Fl_PixelFormat
     }
     else
     {
-        s_image.width  = src_rect->w();
-        s_image.height = src_rect->h();
-        s_image.data = (char *)src;
-        s_image.bytes_per_line = ((src_rect->w() * sys_fmt.bytespp + _scanline_add) & _scanline_mask);
+        int X=src_rect->x(), Y=src_rect->y();
+        int W=src_rect->w(), H=src_rect->h();
 
-        XPutImage(fl_display, dst, dst_gc, &s_image, 0, 0, dst_rect->x(), dst_rect->y(), src_rect->w(), src_rect->h());
+        s_image.bytes_per_line = ((W * sys_fmt.bytespp + _scanline_add) & _scanline_mask);
+        s_image.width  = W;
+        s_image.height = H;
+
+        if(X>0 || Y>0) {
+            // We need to draw 1 pixel height lines, since we need to change
+            // data buffer pointer to correct place in image buffer...
+            for(int y=0; y<H; y++) {
+                s_image.data = (char *)src + ((Y+y)*src_pitch)+(X*sys_fmt.bytespp);
+                XPutImage(fl_display, dst, dst_gc, &s_image, 0, 0, dst_rect->x(), dst_rect->y()+y, W, 1);
+            }
+        } else {
+            s_image.data = (char *)src;
+            s_image.bytes_per_line = ((src_rect->w() * sys_fmt.bytespp + _scanline_add) & _scanline_mask);
+            XPutImage(fl_display, dst, dst_gc, &s_image, 0, 0, dst_rect->x(), dst_rect->y(), src_rect->w(), src_rect->h());
+        }
     }
 
     return true;

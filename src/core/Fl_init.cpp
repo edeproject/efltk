@@ -19,6 +19,8 @@
 #include <efltk/Fl_Config.h>
 #include "fl_internal.h"
 
+#include <stdlib.h>
+
 #ifdef _WIN32
 # include <winsock.h>
 #endif
@@ -42,12 +44,16 @@ extern void fl_init_locale_support(const char *, const char *);
 
 void clean_up()
 {
-	printf("CLEAN!\n");
+#ifdef _WIN32
+    WSACleanup();
+#endif
+    // TODO:
+    // Call some cleanup handlers!
 }
 
 void Fl::init()
 {
-	atexit(clean_up);
+    atexit(clean_up);
 
     fl_init_locale_support("efltk", PREFIX"/share/locale");
 

@@ -1056,13 +1056,16 @@ void Fl_MDI_Window::animate(int fx, int fy, int fw, int fh,
             resize((int)rx, (int)ry, (int)rw, (int)rh);
             layout();
         } else {
-#ifdef _WIN32
+#ifndef _WIN32
             _owner->make_current();
 #else
-			fl_gc = new_gc;
+            fl_gc = new_gc;
 #endif
             overlay_rect((int)rx, (int)ry, (int)rw, (int)rh);			
         }
+        t.tv_sec = 0;
+        t.tv_usec = 1000;
+        ::select(0,0,0,0, &t);
 
         XFlush(fl_display);
         Fl::check();

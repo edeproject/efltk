@@ -711,8 +711,6 @@ void Fl_Image::draw(int dx, int dy, int dw, int dh,
         Fl_Renderer::system_init();
     }
 
-    //printf("draw %d %d %d %d\n", dx,dy,dw,dh);
-
     if(sw<=0) sw=w;
     if(sh<=0) sh=h;
 
@@ -828,6 +826,8 @@ void Fl_Image::draw(int dx, int dy, int dw, int dh,
             Fl_Size size(w, h);
             system_fmt = Fl_Renderer::system_convert(draw_fmt, &size, draw_data, HW_PALETTE);
 
+            //printf("draw %d %d %d %d -> %d %d %d %d\n", sx,sy,sw,sh, dx,dy,dw,dh);
+
             Fl_Renderer::render_to_pixmap(system_fmt, &srcr, draw_fmt, draw_pitch,
                                           (Pixmap)id, &dstr, fl_gc, draw_flags);
             if(system_fmt) delete []system_fmt;
@@ -846,7 +846,8 @@ void Fl_Image::draw(int dx, int dy, int dw, int dh,
 
     if(no_screen_) return;
 
-    if(!draw_flags && (f&FL_ALIGN_TILED)!=FL_ALIGN_TILED) { dw=w; dh=h; }
+    if((!draw_flags && (f&FL_ALIGN_TILED)!=FL_ALIGN_TILED)
+      && (!sx && !sy)) { dw=w; dh=h; }
 
     if( (f&FL_ALIGN_TILED)==FL_ALIGN_TILED) {
         to_screen_tiled(dx, dy, dw, dh, 0, 0);

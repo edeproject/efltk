@@ -155,10 +155,9 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
     int hinc = fh < th ? 1 : -1;
     double rx=fx,ry=fy,rw=fw,rh=fh;
 	
-	// Make sure we copy to this window!
-	make_current();
+    // Make sure we copy to this window!
+    make_current();
 
-	timeval t;
     while(steps-- > 0) {
 
         if(!visible()) {
@@ -170,18 +169,19 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
         rh+=(sh*hinc);
 
 #ifdef _WIN32
-		SetWindowPos(fl_xid(this), HWND_TOPMOST, (int)rx, (int)ry, (int)rw, (int)rh, (SWP_SHOWWINDOW|SWP_NOACTIVATE));
-		fl_copy_offscreen(0, 0, (int)rw, (int)rh, pm, 0, 0);
-		GdiFlush();
+        SetWindowPos(fl_xid(this), HWND_TOPMOST, (int)rx, (int)ry, (int)rw, (int)rh, (SWP_SHOWWINDOW|SWP_NOACTIVATE));
+        fl_copy_offscreen(0, 0, (int)rw, (int)rh, pm, 0, 0);
+        GdiFlush();
+        timeval t;
+        t.tv_sec = 0;
+        t.tv_usec = 1000;
+        ::select(0,0,0,0, &t);
 #else
         XMoveResizeWindow(fl_display, fl_xid(this), (int)rx, (int)ry, (int)rw, (int)rh);
         XCopyArea(fl_display, pm, fl_xid(this), fl_gc, 0, 0, (int)rw, (int)rh, 0, 0);
         XFlush(fl_display);
 #endif
-		t.tv_sec = 0;
-        t.tv_usec = 1000;
-		::select(0,0,0,0, &t);		
-	}
+    }
 
     fl_delete_offscreen(pm);
 
