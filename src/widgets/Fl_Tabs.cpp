@@ -421,8 +421,8 @@ void Fl_Tabs::draw()
 void Fl_Tabs::draw_tab(int x1, int x2, int W, int H, Fl_Widget* o, int what)
 {	
   int sel = (what == SELECTED);
-  int dh = button_box()->dh();
-  int dy = button_box()->dy();
+  int dh = box()->dh();
+  int dy = box()->dy();
 
   if ((x2 < x1+W) && what == RIGHT) x1 = x2 - W;
   
@@ -435,7 +435,7 @@ void Fl_Tabs::draw_tab(int x1, int x2, int W, int H, Fl_Widget* o, int what)
 
     H += dh;
 
-    button_box()->draw(x1, 0, W, H, c, 0);
+    box()->draw(x1, 0, W, H, c, 0);
     o->draw_label(x1, 0, W, H, FL_ALIGN_CENTER);
     if (focused() && o->visible())
 		focus_box()->draw(x1, 0, W, H, FL_BLACK, FL_INVISIBLE);        
@@ -449,7 +449,7 @@ void Fl_Tabs::draw_tab(int x1, int x2, int W, int H, Fl_Widget* o, int what)
 
     H += dh;
 
-    button_box()->draw(x1, h() - H, W, H, c, 0);
+    box()->draw(x1, h() - H, W, H, c, 0);
     o->draw_label(x1, h() - H, W, H, FL_ALIGN_CENTER);
     if(focused() && o->visible())
       focus_box()->draw(x1, h() - H, W, H, FL_BLACK, FL_INVISIBLE);
@@ -544,9 +544,8 @@ void Fl_Tabs::draw_tab(int x1, int x2, int W, int H, Fl_Widget* o, int what)
 static void revert(Fl_Style* s)
 {
     s->box = FL_UP_BOX;
-	s->button_box = FL_UP_BOX;
     s->color = FL_GRAY;
-	s->selection_color = FL_GRAY;
+    s->selection_color = FL_GRAY;
 }
 
 
