@@ -40,7 +40,7 @@ FL_API Fl_Group* Fl_Group::m_current;
 
 static void revert(Fl_Style* s)
 {
-    s->color = FL_GRAY;
+    s->color = FL_INVALID_COLOR;//FL_GRAY;
     s->box = FL_NO_BOX;
 }
 

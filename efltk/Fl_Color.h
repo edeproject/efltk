@@ -61,7 +61,9 @@ enum Colors {
     FL_SELECTION_COLOR	= FL_GRAY, // older selection color
     FL_FREE_COLOR      	= 16,
 #endif
-    FL_BLUE_SELECTION_COLOR = 0x88 ///< WIN32-like selection color
+    FL_BLUE_SELECTION_COLOR = 0x88, ///< WIN32-like selection color
+
+    FL_INVALID_COLOR    = 0xFFFFFFFE ///< Fl_Group default color, it means dont draw background.
 };
 
 /** Number of colors in gray ramp. */

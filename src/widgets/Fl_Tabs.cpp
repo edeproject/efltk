@@ -772,9 +772,10 @@ void Fl_Tabs::draw() {
 void Fl_Tabs::draw_tab(Fl_Tab_Info *tab,Fl_Flags flags) {
     if (!m_showTabs) return;
 
-    Fl_Color tabColor = ! (flags & FL_SELECTED) ? fl_color_average(tab->m_widget->color(),FL_BLACK,0.85f) : tab->m_widget->color();
+    Fl_Color widgetColor = tab->m_widget->color()==FL_INVALID_COLOR ? parent()->color() : tab->m_widget->color();
+    Fl_Color tabColor = ! (flags & FL_SELECTED) ? fl_color_average(widgetColor, FL_BLACK, 0.85f) : widgetColor;
 
-   // Draw the background of the tab
+    // Draw the background of the tab
     int x1 = tab->m_x;
     int y1 = tab->m_y;
     int y2 = m_tabsHeight;
@@ -886,7 +887,7 @@ void Fl_Tabs::layout()
     fl_font(label_font(),label_size());
     m_tabsWidth = 0;
     int max_wt = 0;
-    int max_ht = int(fl_height()+10);
+    int max_ht = int(fl_height()+4);
     for (i=0; i<children(); i++) {
         Fl_Widget * group = child(i);
         Fl_Tab_Info *tab = old_tabsMatrix->tab_for(group);

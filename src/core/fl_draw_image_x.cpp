@@ -17,20 +17,13 @@ void Fl_Image::to_screen(int XP, int YP, int WP, int HP, int, int)
     int X,Y,W,H;
     fl_clip_box(XP, YP, WP, HP, X, Y, W, H);
 
-    int cx = X-XP;
-    int cy = Y-YP;
+    int cx = X-XP, cy = Y-YP;
 
-    if(cx+W > WP)
-        W = WP-cx;
+    if(cx+W > WP) W = WP-cx;
+    if(W <= 0) return;
 
-    if(W <= 0)
-        return;
-
-    if(cy+H > HP)
-        H = HP-cy;
-
-    if(H <= 0)
-        return;
+    if(cy+H > HP) H = HP-cy;
+    if(H <= 0) return;
 
     // convert to Xlib coordinates:
     fl_transform(X,Y);
@@ -75,23 +68,21 @@ void Fl_Image::to_screen_tiled(int XP, int YP, int WP, int HP, int, int)
     fl_clip_box(XP, YP, WP, HP, X, Y, W, H);
 
     if (W <= 0 || H <= 0) return;
-    int cx = X-XP;
-    int cy = Y-YP;
 
-    if(cx+W > WP)
-        W = WP-cx;
+    int cx = X-XP, cy = Y-YP;
 
-    if(W <= 0)
-        return;
+    if(cx+W > WP) W = WP-cx;
+    if(W <= 0) return;
 
-    if(cy+H > HP)
-        H = HP-cy;
-
-    if(H <= 0)
-        return;
+    if(cy+H > HP) H = HP-cy;
+    if(H <= 0) return;
 
     if(mask)
     {
+        // Draw tiled with mask.
+        // We must put each image to server. I cannot find way to
+        // set clipmask for tiling operation..
+
         fl_push_clip(X, Y, W, H);
 
         int temp = -cx % width();
@@ -110,36 +101,32 @@ void Fl_Image::to_screen_tiled(int XP, int YP, int WP, int HP, int, int)
         }
 
         fl_pop_clip();
+
     }
     else if(id) {
+
+        // Draw tiled without mask.
+        // We optimize this by making server to do all work :)
 
         fl_transform(X,Y);
 
         XGCValues xgcval, xgcsave;
         xgcval.fill_style = FillTiled;
         xgcval.tile = (Pixmap)id;
-        //XSetTSOrigin(fl_display, fl_gc, X, Y);
+        xgcval.ts_x_origin = X-cx;
+        xgcval.ts_y_origin = Y-cy;
 
-        XGetGCValues(fl_display, fl_gc, GCTile|GCFillStyle, &xgcsave);
-        XChangeGC(fl_display, fl_gc, GCTile|GCFillStyle, &xgcval);
-        XSetTSOrigin(fl_display, fl_gc, X, Y);
+        int gcmask = GCTile|GCFillStyle|GCTileStipXOrigin|GCTileStipYOrigin;
 
-        if(mask) {
-            XSetClipMask(fl_display, fl_gc, (Pixmap)mask);
-            XSetClipOrigin(fl_display, fl_gc, X-cx, Y-cy);
-        }
+        XGetGCValues(fl_display, fl_gc, gcmask, &xgcsave);
+        XChangeGC(fl_display, fl_gc, gcmask, &xgcval);
 
         XFillRectangle(fl_display, fl_window, fl_gc, X, Y, W, H);
 
-        if(mask) {
-            fl_restore_clip();
-            XSetClipOrigin(fl_display, fl_gc, 0, 0);
-        }
-
         if( (xgcsave.tile & 0xe0000000) || (xgcsave.fill_style != FillTiled) )
-            XChangeGC(fl_display, fl_gc, GCFillStyle, &xgcsave);
+            XChangeGC(fl_display, fl_gc, GCFillStyle|GCTileStipXOrigin|GCTileStipYOrigin, &xgcsave);
         else
-            XChangeGC(fl_display, fl_gc, GCTile|GCFillStyle, &xgcsave);
+            XChangeGC(fl_display, fl_gc, gcmask, &xgcsave);
     }
 }
 

@@ -33,6 +33,7 @@ endif
 
 THEMES = \
 	essai.theme \
+	motif.theme \
         eblue.theme
 
 ################################################################
@@ -57,6 +58,10 @@ essai.theme : $(ESSAI_OBJ)
 EBLUE_OBJ = eblue.shared.o
 eblue.theme : $(EBLUE_OBJ)
 	$(THEMECOMMAND) $@ $(EBLUE_OBJ) $(DSOLIBS)
+
+MOTIF_OBJ = motif.shared.o
+motif.theme : $(MOTIF_OBJ)
+	$(THEMECOMMAND) $@ $(MOTIF_OBJ) $(DSOLIBS)
 
 clean :
 	-@ rm -f *.o $(LIBRARY)$(LIBEXT) $(THEMES) core *~ makedepend

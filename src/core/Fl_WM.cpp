@@ -461,7 +461,7 @@ bool Fl_WM::get_window_icon(Window xid, Fl_Image *&icon, int w, int h)
     if(wm_hints) delete wm_hints;
 
     icon = image;
-    if(image->width()!=w || image->height()!=h) {
+    if((w>0 && h>0) && image->width()!=w || image->height()!=h) {
         icon = image->scale(w,h);
         delete image;
     }

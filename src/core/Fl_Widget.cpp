@@ -553,27 +553,28 @@ void Fl_Widget::draw_box() const
     if(image() && !image()->get_mask()) {
         if((align()&FL_ALIGN_TILED || align()&FL_ALIGN_SCALE) &&
                 ( !(align()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT|FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) || (align()&FL_ALIGN_INSIDE) )
-            ) {
-            // We can draw only frame, if drawing image tiled or scale
-            // And no mask defined to image...
+          ) {
+            // We can draw only frame, if there's no mask and drawing image in tiled or scaled mode
             draw_frame();
             return;
         }
     }
 
     Fl_Boxtype box = this->box();
-    if (damage()&FL_DAMAGE_EXPOSE && !box->fills_rectangle() && parent())
+    Fl_Flags flags = this->flags();
+    Fl_Color color = this->color();
+
+    if(parent() && (color==FL_INVALID_COLOR || (damage()&FL_DAMAGE_EXPOSE && !box->fills_rectangle())) )
     {
         fl_push_clip(0, 0, w(), h());
         parent()->draw_group_box();
         fl_pop_clip();
     }
-    Fl_Flags flags = this->flags();
-    Fl_Color color = this->color();
 
-    if (!active_r()) flags |= FL_INACTIVE;
-    if (focused()) flags |= FL_SELECTED;
+    if (!active_r())        flags |= FL_INACTIVE;
+    if (focused())          flags |= FL_SELECTED;
     if (flags&FL_HIGHLIGHT) color = highlight_color();
+    if (color==FL_INVALID_COLOR) flags |= FL_INVISIBLE;
 
     box->draw(0, 0, w(), h(), color, flags);
 }
