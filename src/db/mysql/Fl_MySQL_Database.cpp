@@ -66,7 +66,52 @@ Fl_MySQL_Field::Fl_MySQL_Field(const char *name, short type)
 
 Fl_Date_Time timestamp_to_date(const char *date)
 {
-	return Fl_Date_Time();
+	short year=0, mon=0, day=0;
+	short hour=0, min=0, sec=0;
+
+	int len = strlen(date);
+
+	switch(len) {
+		case 14:
+			if(sscanf(date, "%04d%02d%02d%02d%02d%02d", &year, &mon, &day, &hour, &min, &sec) != 6) 
+				return Fl_Date_Time();
+			break;
+		case 12:
+			if(sscanf(date, "%02d%02d%02d%02d%02d%02d", &year, &mon, &day, &hour, &min, &sec) != 6) 
+				return Fl_Date_Time();
+			break;
+		case 10:
+			if(sscanf(date, "%02d%02d%02d%02d%02d", &year, &mon, &day, &hour, &min) != 5) 
+				return Fl_Date_Time();
+			break;
+		case 8:
+			if(sscanf(date, "%02d%02d%02d%02d", &year, &mon, &day, &hour) != 4) 
+				return Fl_Date_Time();
+			break;
+		case 6:
+			if(sscanf(date, "%02d%02d%02d", &year, &mon, &day) != 3) 
+				return Fl_Date_Time();
+			break;
+		case 4:
+			if(sscanf(date, "%02d%02d", &year, &mon) != 2) 
+				return Fl_Date_Time();
+			break;
+		case 2:
+			if(sscanf(date, "%02d", &year) != 1) 
+				return Fl_Date_Time();
+			break;
+	}
+
+	if(year < 100) {
+		if(year<40)		year += 2000;
+		else			year += 1900;
+	}
+	
+	double encoded_date, encoded_time;
+	Fl_Date_Time::encode_date(encoded_date, year, mon, day);
+	Fl_Date_Time::encode_time(encoded_time, hour, min, sec);
+
+	return Fl_Date_Time(encoded_date + encoded_time);
 }
 
 Fl_Date_Time str_to_date(const char *date, short col_type)
