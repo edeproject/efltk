@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <config.h>
 #include <efltk/Fl_Exception.h>
 
 #if __FL_EXCEPTIONS__
