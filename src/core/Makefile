@@ -93,27 +93,27 @@ CPPFILES = \
 	fl_labeltype.cpp \
 	fl_list_fonts.cpp \
 	fl_load_plugin.cpp \
-        fl_locale.cpp \
-        fl_map.cpp \
+	fl_locale.cpp \
+	fl_map.cpp \
 	fl_overlay.cpp \
 	fl_overlay_visual.cpp \
 	fl_rect.cpp \
 	fl_rgb.cpp \
 	fl_scroll_area.cpp \
-      fl_stretch.cpp \
-	fl_utf8.cpp
-	fl_utf8_ucs2fmap.c
-	fl_utf8_x.c
-	fl_utf8_x_input.c
-	fl_utf8_x_utils.c
-	fl_utf_keysym2ucs.c
+	fl_stretch.cpp \
+	fl_utf8.cpp \
 	fl_vertex.cpp \
 	fl_theme.cpp
 
 CFILES = \
 	scandir.c \
         numericsort.c \
-	vsnprintf.c
+	vsnprintf.c \
+	fl_utf8_ucs2fmap.c \
+	fl_utf8_x.c \
+	fl_utf8_x_input.c \
+	fl_utf8_x_utils.c \
+	fl_utf_keysym2ucs.c 
 
 ################################################################
 
