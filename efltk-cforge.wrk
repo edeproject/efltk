@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x4003f0
+# %FirstUniqueId:	0x4003f1
 PROJECT_DIR = /develop/CVS/efltk/
 
 IDE_WORKING_DIR = /develop/CVS/efltk/
@@ -6060,7 +6060,8 @@ lib/Fl_Text_Display.o :	efltk/fl_draw.h\
 	efltk/Fl_Renderer.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h\
-	efltk/Fl.h
+	efltk/Fl.h\
+	config.h
 lib/Fl_Text_Editor.o :	efltk/Fl_Menu_Button.h\
 	efltk/Fl_Menu_.h\
 	efltk/Fl_Menu_Item.h\
@@ -6094,7 +6095,8 @@ lib/Fl_Text_Editor.o :	efltk/Fl_Menu_Button.h\
 	efltk/Fl_Valuator.h\
 	efltk/fl_draw.h\
 	efltk/Fl_Device.h\
-	efltk/Fl.h
+	efltk/Fl.h\
+	config.h
 lib/Fl_Tile.o :	efltk/Fl_Window.h\
 	efltk/Fl_Group.h\
 	efltk/Fl_Int_List.h\
@@ -6293,7 +6295,8 @@ lib/Fl_Workspace.o :	efltk/Fl_MDI_Bar.h\
 	efltk/Fl_Menu_Item.h\
 	efltk/Fl_Scrollbar.h\
 	efltk/Fl_Slider.h\
-	efltk/Fl_Valuator.h
+	efltk/Fl_Valuator.h\
+	config.h
 lib/fl_ask.o :	efltk/x.h\
 	efltk/win32.h\
 	efltk/Fl_Color.h\

@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x4003f0
+# %FirstUniqueId:	0x4003f1
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -7457,7 +7457,8 @@ lib/Fl_Workspace.o :	efltk/Fl_MDI_Bar.h\
 	efltk/Fl_Menu_Item.h\
 	efltk/Fl_Scrollbar.h\
 	efltk/Fl_Slider.h\
-	efltk/Fl_Valuator.h
+	efltk/Fl_Valuator.h\
+	config.h
 lib/fl_ask.o :	efltk/x.h\
 	efltk/win32.h\
 	efltk/Fl_Color.h\
@@ -10742,7 +10743,7 @@ lib/Fl_Split.o :	efltk/Fl.h\
 # %TargetInfo src/widgets/Fl_Valuator.cpp	SourceOrHeader,	UniqueId=0x40032a,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Value_Input.cpp	SourceOrHeader,	UniqueId=0x40032b,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Value_Slider.cpp	SourceOrHeader,	UniqueId=0x40032c,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/widgets/Fl_Workspace.cpp	SourceOrHeader,	UniqueId=0x40032d,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Workspace.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x40032d,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/fl_ask.cpp	SourceOrHeader,	UniqueId=0x40032e,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/fl_engraved_label.cpp	SourceOrHeader,	UniqueId=0x40032f,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/fl_show_colormap.cpp	SourceOrHeader,	UniqueId=0x400330,	TargetType=C++,	IDEFlags=0x6
@@ -10818,6 +10819,7 @@ lib/Fl_Split.o :	efltk/Fl.h\
 # %TargetInfo test/input.cpp	SourceOrHeader,	UniqueId=0x4003e7,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/input_browser.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4003ea,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/split.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4003ee,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Split.cpp	SourceOrHeader,	UniqueId=0x4003ef,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x6
@@ -10898,7 +10900,7 @@ lib/Fl_Split.o :	efltk/Fl.h\
 # %TargetInfo efltk/Fl_Menu_Item.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000ab,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Scrollbar.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000ac,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Slider.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000ad,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Valuator.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000ae,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Valuator.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4000ae,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo src/core/Fl_XColor.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000af,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo src/core/fl_cmap.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000b0,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo src/core/headers/dingbats_.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000b1,	TargetType=INC,	IDEFlags=0xe
@@ -10947,7 +10949,7 @@ lib/Fl_Split.o :	efltk/Fl.h\
 # %TargetInfo efltk/Fl_Clock.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400151,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Item.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400152,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Color_Chooser.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400153,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Value_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400154,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Value_Input.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400154,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Float_Input.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400155,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Numeric_Input.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400156,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Input.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400157,	TargetType=INC,	IDEFlags=0xe
@@ -10974,7 +10976,7 @@ lib/Fl_Split.o :	efltk/Fl.h\
 # %TargetInfo efltk/Fl_Simple_Html.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40016d,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Item_Group.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40016e,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Main_Window.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40016f,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Tool_Bar.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400170,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Tool_Bar.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400170,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Menu_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400171,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Pack.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400172,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_MDI_Bar.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400173,	TargetType=INC,	IDEFlags=0xe
@@ -10987,18 +10989,18 @@ lib/Fl_Split.o :	efltk/Fl.h\
 # %TargetInfo efltk/Fl_Shaped_Window.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40017a,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Tabs.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40017b,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Text_Buffer.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40017c,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Text_Display.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40017d,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Text_Editor.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40017e,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Tile.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40017f,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Value_Slider.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400180,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Text_Display.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40017d,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Text_Editor.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40017e,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Tile.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40017f,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Value_Slider.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400180,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Secret_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400181,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/fl_show_colormap.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400182,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Toggle_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40018a,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Toggle_Button.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40018a,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo test/file_small.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x400373,	TargetType=XPM,	IDEFlags=0xe
 # %TargetInfo test/folder_small.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x400374,	TargetType=XPM,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Buffer.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400198,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/fl_math.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4001fb,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Value_Output.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40024d,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Value_Output.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40024d,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo test/whiteking_4.xbm	SourceOrHeader,	IncludeFile,	UniqueId=0x40024e,	TargetType=XBM,	IDEFlags=0xe
 # %TargetInfo test/whiteking_3.xbm	SourceOrHeader,	IncludeFile,	UniqueId=0x40024f,	TargetType=XBM,	IDEFlags=0xe
 # %TargetInfo test/whiteking_2.xbm	SourceOrHeader,	IncludeFile,	UniqueId=0x400250,	TargetType=XBM,	IDEFlags=0xe
@@ -11037,7 +11039,7 @@ lib/Fl_Split.o :	efltk/Fl.h\
 # %TargetInfo test/multitabs_glyph2.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x40035d,	TargetType=XPM,	IDEFlags=0xe
 # %TargetInfo test/multitabs_glyph1.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x40035e,	TargetType=XPM,	IDEFlags=0xe
 # %TargetInfo test/tabs.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40035f,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Wordwrap_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400360,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Wordwrap_Input.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400360,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/net/Fl_IMAP_Connect.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400366,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Memory_DS.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400368,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/net/Fl_IMAP_DS.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40036a,	TargetType=INC,	IDEFlags=0xe
@@ -11084,7 +11086,7 @@ lib/Fl_Split.o :	efltk/Fl.h\
 # %TargetInfo efltk/Fl_Radio_Buttons.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4003d3,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Int_Input.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4003e8,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Split.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4003ec,	TargetType=INC,	IDEFlags=0x6
-# %TargetInfo src/widgets/Fl_Split.cpp	SourceOrHeader,	UniqueId=0x4003ef,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo config.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003f0,	TargetType=INC,	IDEFlags=0xc
 
 
 # %UniqueId:	0x400001
