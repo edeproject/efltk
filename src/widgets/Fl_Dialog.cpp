@@ -552,16 +552,28 @@ Fl_Group *Fl_Dialog::new_group(const char *lbl,bool autoColor)
 
 bool Fl_Dialog::load_data(Fl_Data_Source *ds) 
 {
-    if (!ds) ds = m_dataSource;
+    try {
+        if (!ds) ds = m_dataSource;
 
     // Clean the widgets data before loading. 
     // Useful if we have incomplete information in datasource
-    m_tabs->reset();
+        m_tabs->reset();
 
-    return ds->load();
+        return ds->load();
+    }
+    catch (Fl_Exception& e) {
+        fl_alert("Can't open "+label()+".\n"+e.text());
+        return false;
+    }
 }
 
 bool Fl_Dialog::save_data(Fl_Data_Source *ds) {
-    if (!ds) ds = m_dataSource;
-    return ds->save();
+    try {
+        if (!ds) ds = m_dataSource;
+        return ds->save();
+    }
+    catch (Fl_Exception& e) {
+        fl_alert("Can't open "+label()+".\n"+e.text());
+        return false;
+    }
 }

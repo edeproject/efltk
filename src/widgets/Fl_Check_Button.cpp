@@ -95,3 +95,39 @@ Fl_Check_Button::Fl_Check_Button(const char* l,int layout_size,Fl_Align layout_a
     type(TOGGLE);
     set_flag(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
 }
+
+// Data source support
+// loading data from DS
+bool Fl_Check_Button::load_data(Fl_Data_Source *ds)
+{
+    if (field_name().empty())
+        return false;
+
+    Fl_Variant fld_value;
+    if (ds->read_field(field_name().c_str(), fld_value)) {
+        Fl_String v = fld_value.get_string();
+        if (strchr("YyTt1",v[0]))
+            value(1);
+        else value(0);
+        return true;
+    }
+    return false;
+}
+
+// saving data to DS
+bool Fl_Check_Button::save_data(Fl_Data_Source *ds)
+{
+    if(field_name().empty())
+        return false;
+
+    Fl_Variant  fld_value;
+    if (value())
+        fld_value.set_string("Y");
+    else fld_value.set_string("N");
+    return ds->write_field(field_name().c_str(), fld_value);
+}
+
+// Dialog support
+void Fl_Check_Button::reset() { 
+    value(0); 
+}

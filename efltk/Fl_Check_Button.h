@@ -42,7 +42,13 @@ public:
 
     virtual void preferred_size(int& w, int& h) const;
     virtual void draw();
-    virtual void reset() { value(0); }
+
+    // Data source support
+    virtual bool load_data(Fl_Data_Source *ds);
+    virtual bool save_data(Fl_Data_Source *ds);
+
+    // Dialog support
+    virtual void reset();
 };
 
 #endif
