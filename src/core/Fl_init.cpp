@@ -13,6 +13,7 @@
 
 #include <efltk/Fl_Image.h>
 #include <efltk/Fl_Menu_Window.h>
+#include <efltk/Fl_Menu_.h>
 #include <efltk/Fl_Tooltip.h>
 #include <efltk/Fl_MDI_Window.h>
 
@@ -62,6 +63,8 @@ void Fl::init()
         Fl_Menu_Window::animate(b_val);
         cfg.get("Menus", "Speed", i_val, 4);
         Fl_Menu_Window::default_step_div = i_val;
+		cfg.get("Menus", "Delay", f_val, 0.3f);
+		Fl_Menu_::default_delay(f_val);
 
         // Read Fl_Tooltip defaults:
         cfg.get("Tooltips", "Animate", b_val, true);

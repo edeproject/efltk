@@ -75,15 +75,19 @@ Fl_Widget* Fl_List::child(const Fl_Menu_* menu, const int* indexes,int level)
 void Fl_List::flags_changed(const Fl_Menu_*, Fl_Widget*) {}
 
 static Fl_List default_list;
+
 bool Fl_Menu_::key_event = false;
 MenuWindow *Fl_Menu_::first_menu = 0;
+float Fl_Menu_::default_delay_ = 0.3f;
 
 Fl_Menu_::Fl_Menu_()
     : Fl_Group(0,0,0,0,0), list_(&default_list), item_(0)
 {
-    anim_flags_ = TOP_TO_BOTTOM|LEFT_TO_RIGHT;
-    anim_speed_ = Fl_Menu_Window::default_step_div;
+	delay_ = -1;
+	anim_speed_ = -1;
 
+    anim_flags_ = TOP_TO_BOTTOM|LEFT_TO_RIGHT;
+    
     callback(default_callback);
     end();
 }
@@ -91,9 +95,11 @@ Fl_Menu_::Fl_Menu_()
 Fl_Menu_::Fl_Menu_(int x,int y,int w, int h,const char* l)
     : Fl_Group(x,y,w,h,l), list_(&default_list), item_(0)
 {
-    anim_flags_ = TOP_TO_BOTTOM|LEFT_TO_RIGHT;
-    anim_speed_ = Fl_Menu_Window::default_step_div;
+	delay_ = -1;
+	anim_speed_ = -1;
 
+    anim_flags_ = TOP_TO_BOTTOM|LEFT_TO_RIGHT;
+    
     callback(default_callback);
     end();
 }

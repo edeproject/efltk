@@ -151,11 +151,15 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
     set_damage(FL_DAMAGE_ALL);
     draw();
     fl_end_offscreen();
-
+	
     Fl_Window::resize(fx,fy,fw,fh);
     Fl_Window::show();
+	
+#ifndef _WIN32
+	// FIXME: Check does XWindows needs these
     Fl_Window::layout();
     Fl::check();
+#endif
 
     float max_steps = max( (tw-fw), (th-fh) );
     float min_steps = max( (fw-tw), (fh-th) );
@@ -187,7 +191,7 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
         rh+=(sh*hinc);
 
 #ifdef _WIN32
-        SetWindowPos(fl_xid(this), HWND_TOPMOST, (int)rx, (int)ry, (int)rw, (int)rh, (SWP_SHOWWINDOW|SWP_NOACTIVATE));
+        SetWindowPos(fl_xid(this), HWND_TOPMOST, (int)rx, (int)ry, (int)rw, (int)rh, (SWP_NOSENDCHANGING | SWP_NOZORDER | SWP_NOACTIVATE));
         fl_copy_offscreen(0, 0, (int)rw, (int)rh, pm, 0, 0);
         GdiFlush();		
 #else

@@ -30,7 +30,7 @@
 #include <config.h>
 
 static void revert_menubar(Fl_Style* s) {
-    s->leading = 4;
+    s->leading = 5;
     s->color = FL_GRAY;
     s->box = FL_FLAT_BOX;
 #if 0
@@ -82,7 +82,7 @@ void Fl_Menu_Bar::draw()
         Fl_Widget* widget = child(i);
         if (!widget->visible()) continue;
 
-        Fl_Flags f=widget->flags();
+        Fl_Flags f=0;
 
         if(i==selected_) f|=FL_VALUE;
         else if(i==highlight_) f|=FL_HIGHLIGHT;
@@ -98,6 +98,7 @@ void Fl_Menu_Bar::draw()
             //update_child(*widget);
             fl_push_matrix();
             fl_translate(widget->x(), widget->y());
+			Fl_Flags saved_flags=widget->flags();
             widget->draw();
             fl_pop_matrix();
 
@@ -183,18 +184,23 @@ void Fl_Menu_Bar::layout()
 
 int Fl_Menu_Bar::handle(int event)
 {
+	static bool menu_up=false;
     switch(event) {
 
-    case FL_LEAVE:
-        highlight_ = -1;
-        selected_ = -1;
+    case FL_LEAVE:		
+		if(menu_up) return 0;
+        highlight_ = selected_ = -1;
         redraw(FL_DAMAGE_HIGHLIGHT);
         return 1;
 
     case FL_PUSH: {
         value(-1);
         key_event = false;
-        if(highlight_>=0) popup(0,0,0,0);
+        if(highlight_>=0) {
+			menu_up=true;
+			popup(0,0,0,0);
+			menu_up=false;
+		}
         return 1;
     }
     case FL_ENTER:

@@ -204,6 +204,7 @@ int main(int argc, char **argv) {
   menubar.find("&Font/BoldItalic")->label_font(FL_HELVETICA_BOLD_ITALIC);
   menubar.find("&Font/Small")->label_size(10);
   menubar.find("&Font/Large")->label_size(24);
+  menubar.find("&Font/Large")->tooltip("LARGE TOOLTIP");
   menubar.find("&Font/Emboss")->label_type(FL_EMBOSSED_LABEL);
   menubar.find("&Font/Engrave")->label_type(FL_ENGRAVED_LABEL);
   menubar.find("&Font/Shadow")->label_type(FL_SHADOW_LABEL);
@@ -252,7 +253,7 @@ int main(int argc, char **argv) {
   //window.resizable(&mb);
   window.size_range(300,20);
   window.end();
-  window.show(argc, argv);
+  window.show(argc, argv);    
 
   return Fl::run();
 }
