@@ -64,14 +64,67 @@ Fl_MySQL_Field::Fl_MySQL_Field(const char *name, short type)
     }
 }
 
-Fl_Date_Time str_to_date(const char *date, short col_type)
+Fl_Date_Time timestamp_to_date(const char *date)
 {
 	return Fl_Date_Time();
 }
 
+Fl_Date_Time str_to_date(const char *date, short col_type)
+{
+	short year=0, mon=0, day=0;
+	short hour=0, min=0, sec=0;
+
+	switch(col_type) {
+	    case FIELD_TYPE_TIMESTAMP:
+			return timestamp_to_date(date);
+
+		case FIELD_TYPE_DATETIME:
+			if(sscanf(date, "%04d-%02d-%02d %02d:%02d:%02d", &year, &mon, &day, &hour, &min, &sec) != 6) 
+				return Fl_Date_Time();
+			break;
+
+		case FIELD_TYPE_DATE:
+			if(sscanf(date, "%04d-%02d-%02d", &year, &mon, &day) != 3) 
+				return Fl_Date_Time();
+			break;
+
+		case FIELD_TYPE_TIME:
+			if(sscanf(date, "%02d:%02d:%02d", &hour, &min, &sec) != 3) 
+				return Fl_Date_Time();
+			break;
+
+		case FIELD_TYPE_YEAR:
+			year = strtol(date, 0, 10);
+			break;
+
+		default:
+			return Fl_Date_Time();
+	}
+	
+	double encoded_date, encoded_time;
+	Fl_Date_Time::encode_date(encoded_date, year, mon, day);
+	Fl_Date_Time::encode_time(encoded_time, hour, min, sec);
+
+	return Fl_Date_Time(encoded_date + encoded_time);
+}
+
+// MySQL retrieves and displays DATETIME values in 'YYYY-MM-DD HH:MM:SS' format.
+// The supported range is '1000-01-01 00:00:00' to '9999-12-31 23:59:59'. 
 Fl_String date_to_string(Fl_Date_Time date)
 {
-	return Fl_String::null_object;
+	short year, mon, day;
+	short hour, min, sec;
+	short ms;
+
+	Fl_Date_Time::decode_date((double)date, year, mon, day);
+	Fl_Date_Time::decode_time((double)date, hour, min, sec, ms);
+
+	char tmp[32];
+	sprintf(tmp, "%04d-%02d-%02d %02d:%02d:%02d", 
+		year, mon, day,
+		hour, min, sec);
+
+	return Fl_String(tmp);
 }
 
 /////////////////////////////////////
@@ -95,6 +148,11 @@ Fl_MySQL_Database::~Fl_MySQL_Database()
 {
     close();
     close_connection();
+    for (unsigned i = 0; i < m_queryList.count(); i++) {
+        Fl_Query *q = (Fl_Query *)m_queryList[i];
+        q->database(NULL);
+    }
+    m_queryList.clear();
 }
 
 void Fl_MySQL_Database::allocate_query(Fl_Query *query)
