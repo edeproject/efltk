@@ -451,3 +451,29 @@ void Fl_Combo_Box::preferred_size(int& w, int& h) const
     fl_font(text_font(), float(text_size()));
     h = int(fl_height()+fl_descent()) + box()->dh() + 2;
 }
+
+// Data source support
+// loading data from DS
+bool Fl_Combo_Box::load_data(Fl_Data_Source *ds)
+{
+    if (field_name().empty())
+        return false;
+
+    Fl_Variant fld_value;
+    if (ds->read_field(field_name().c_str(), fld_value)) {
+        value(fld_value.get_int());
+        return true;
+    }
+    return false;
+}
+
+// saving data to DS
+bool Fl_Combo_Box::save_data(Fl_Data_Source *ds) const
+{
+    if (field_name().empty())
+        return false;
+
+    Fl_Variant  fld_value;
+    fld_value.set_int(value());
+    return ds->write_field(field_name().c_str(), fld_value);
+}

@@ -43,11 +43,15 @@ public:
     const char *value();
 
     void date_value(Fl_Date_Time);
-    Fl_Date_Time date_value();
+    Fl_Date_Time date_value() const;
 
     virtual void draw();
     virtual void preferred_size(int& w,int &h) const;
     virtual void reset() { value(""); }
+
+    // Data source support
+    virtual bool load_data(Fl_Data_Source *ds);
+    virtual bool save_data(Fl_Data_Source *ds) const;
 
 protected:
     static void input_callback(Fl_Widget *,void *);
@@ -73,15 +77,19 @@ public:
     const char *value();
 
     void date_time_value(Fl_Date_Time);
-    Fl_Date_Time date_time_value();
+    Fl_Date_Time date_time_value() const;
 
     virtual void reset() { value(""); }
     virtual void draw();
     virtual void preferred_size(int& w,int &h) const;
 
+    /** Data source support */
+    virtual bool load_data(Fl_Data_Source *ds);
+    virtual bool save_data(Fl_Data_Source *ds) const;
+
 protected:
     Fl_Masked_Input  *m_timeInput;
-    char                     m_buffer[20];
+    char              m_buffer[20];
 
     void ctor_init();
 };
@@ -99,14 +107,23 @@ public:
     void value2(const char *);
     const char *value2();
 
-    void date2_value(Fl_Date_Time);
-    Fl_Date_Time date2_value();
+    void field_name2(const char *f) { m_fieldName2 = f; }
+    const Fl_String& field_name2() const { return m_fieldName2; }
+
+    void date_value2(Fl_Date_Time);
+    Fl_Date_Time date_value2() const;
 
     virtual void reset() { value(""); value2(""); }
     virtual void draw();
     virtual void preferred_size(int& w,int &h) const;
 
+    // Data source support
+    virtual bool load_data(Fl_Data_Source *ds);
+    virtual bool save_data(Fl_Data_Source *ds) const;
+
 protected:
+
+    Fl_String                m_fieldName2;
     Fl_Masked_Input     *m_input2;
     Fl_Calendar_Button  *m_button2;
 

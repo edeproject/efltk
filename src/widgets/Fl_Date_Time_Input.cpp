@@ -162,6 +162,32 @@ void Fl_Date_Input::preferred_size(int& w,int &h) const {
     w += m_button->w() + box()->dw();
 }
 
+// Data source support
+// loading data from DS
+bool Fl_Date_Input::load_data(Fl_Data_Source *ds)
+{
+    if(field_name().empty())
+        return false;
+
+    Fl_Variant fld_value;
+    if (ds->read_field(field_name().c_str(), fld_value)) {
+        date_value(fld_value.get_date());
+        return true;
+    }
+    return false;
+}
+
+// saving data to DS
+bool Fl_Date_Input::save_data(Fl_Data_Source *ds) const
+{
+    if(field_name().empty())
+        return false;
+
+    Fl_Variant  fld_value;
+    fld_value.set_date(date_value());
+    return ds->write_field(field_name().c_str(), fld_value);
+}
+
 void Fl_Date_Input::draw()
 {
     //Set style. NOTE:  this part MUST be in draw()
@@ -187,7 +213,7 @@ void Fl_Date_Input::date_value(Fl_Date_Time dt) {
     m_input->value(dt.date_string().c_str());
 }
 
-Fl_Date_Time Fl_Date_Input::date_value() {
+Fl_Date_Time Fl_Date_Input::date_value() const {
     return Fl_Date_Time(m_input->value());
 }
 
@@ -227,6 +253,32 @@ Fl_Date_Time_Input::Fl_Date_Time_Input(const char* l,int layout_size,Fl_Align la
     ctor_init();
 }
 
+// Data source support
+// loading data from DS
+bool Fl_Date_Time_Input::load_data(Fl_Data_Source *ds)
+{
+    if(field_name().empty())
+        return false;
+
+    Fl_Variant fld_value;
+    if (ds->read_field(field_name().c_str(), fld_value)) {
+        date_time_value(fld_value.get_datetime());
+        return true;
+    }
+    return false;
+}
+
+// saving data to DS
+bool Fl_Date_Time_Input::save_data(Fl_Data_Source *ds) const
+{
+    if(field_name().empty())
+        return false;
+
+    Fl_Variant  fld_value;
+    fld_value.set_datetime(date_time_value());
+    return ds->write_field(field_name().c_str(), fld_value);
+}
+
 void Fl_Date_Time_Input::draw()
 {
     // Set style
@@ -258,7 +310,7 @@ void Fl_Date_Time_Input::date_time_value(Fl_Date_Time dt) {
     m_timeInput->value(dt.time_string());
 }
 
-Fl_Date_Time Fl_Date_Time_Input::date_time_value() {
+Fl_Date_Time Fl_Date_Time_Input::date_time_value() const {
     double d = Fl_Date_Time(m_input->value());
     double t = Fl_Date_Time(m_timeInput->value());
     return d + t;
@@ -304,6 +356,48 @@ Fl_Date_Interval_Input::Fl_Date_Interval_Input(const char* l,int layout_size,Fl_
     ctor_init();
 }
 
+// Data source support
+// loading data from DS
+bool Fl_Date_Interval_Input::load_data(Fl_Data_Source *ds)
+{
+    Fl_Variant fld_value;
+
+    if (!field_name().empty()) {
+        if (ds->read_field(field_name().c_str(), fld_value)) 
+            date_value(fld_value.get_datetime());
+        else return false;
+    }
+
+    if (!field_name2().empty()) {
+        if (ds->read_field(field_name2().c_str(), fld_value)) 
+            date_value2(fld_value.get_datetime());
+        else return false;
+    }
+
+    return true;
+}
+
+// saving data to DS
+bool Fl_Date_Interval_Input::save_data(Fl_Data_Source *ds) const
+{
+    Fl_Variant fld_value;
+
+    if (!field_name().empty()) {
+        Fl_Variant  fld_value;
+        fld_value.set_datetime(date_value());
+        if (!ds->write_field(field_name().c_str(), fld_value))
+            return false;
+    }
+
+    if (!field_name2().empty()) {
+        Fl_Variant  fld_value;
+        fld_value.set_datetime(date_value2());
+        if (!ds->write_field(field_name2().c_str(), fld_value))
+            return false;
+    }
+    return true;
+}
+
 void Fl_Date_Interval_Input::draw()
 {
     // Set style
@@ -329,11 +423,11 @@ const char *Fl_Date_Interval_Input::value2() {
     return m_input2->value();
 }
 
-void Fl_Date_Interval_Input::date2_value(Fl_Date_Time dt) {
+void Fl_Date_Interval_Input::date_value2(Fl_Date_Time dt) {
     m_input2->value(dt.date_string());
 }
 
-Fl_Date_Time Fl_Date_Interval_Input::date2_value() {
+Fl_Date_Time Fl_Date_Interval_Input::date_value2() const {
     return Fl_Date_Time(m_input2->value());
 }
 
