@@ -1069,13 +1069,6 @@ static Fl_Window* resize_from_system;
 
 static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	// When programming for Windows, it is important to remember that 
-	// exceptions cannot cross the boundary of a "callback." 
-	// In other words, if an exception occurs within the scope 
-	// of a message or command handler, it must be caught there, 
-	// before the next message is processed.
-	try {
-
     // Copy the message to fl_msg so add_handler code can see it, it is
     // already there if this is called by DispatchMessage, but not if
     // Windows calls this directly.
@@ -1508,18 +1501,6 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
             if (Fl::handle(0,0)) return 0;
             break;
     }
-
-	} catch(Fl_Exception &e) {
-		Fl::warning(e.text());
-	} catch(...) {
-		// When programming for Windows, it is important to remember that
-		// exceptions cannot cross the boundary of a "callback."
-		// In other words, if an exception occurs within the scope
-		// of a message or command handler, it must be caught there,
-		// before the next message is processed.
-		abort();
-	}
-
     return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 

@@ -29,8 +29,63 @@
 
 #include <config.h>
 
+#include <efltk/Fl_Window.h>
 #include <efltk/x.h>
 #include <efltk/fl_draw.h>
+#include <efltk/fl_utf8.h>
+
+#ifdef _WIN32
+
+#ifndef SYSRGN
+// Missing declaration in old WIN32 API headers.
+// However, GDI32.dll exports this function since Windows 95
+extern "C" {
+	WINGDIAPI int WINAPI GetRandomRgn(
+		HDC  hdc,    // handle to DC
+		HRGN hrgn,   // handle to region
+		INT  iNum    // must be SYSRGN
+	);
+}
+#define SYSRGN 4
+
+#endif /* SYSRGN */
+
+// Return true if rect is completely visible on screen.
+bool is_visible(int x, int y, int w, int h) 
+{
+	// Get visible region of window
+	HRGN rgn0 = CreateRectRgn (0, 0, 0, 0);
+	GetRandomRgn (fl_gc, rgn0, SYSRGN);
+
+	if(fl_is_nt4()) {
+		// Windows 9x operating systems the region is returned in window coordinates, 
+		// and on Windows NT machines the region is in screen coordinates.. SIGH!
+		POINT pt = { 0, 0 };
+		ClientToScreen(fl_xid(Fl_Window::current()), &pt);
+		OffsetRgn(rgn0, -pt.x, -pt.y);
+	}
+
+	Region rect	= CreateRectRgn(x,y,x+w,y+h);
+	Region temp = CreateRectRgn(0,0,0,0);
+
+	bool ret;
+
+	if(CombineRgn(temp, rect, rgn0, RGN_AND) == NULLREGION)
+		ret = false;
+	else if (EqualRgn(temp, rect)) {
+		ret = true;
+	} else
+		ret = false;
+
+	// Free resources
+	DeleteObject(rect);
+	DeleteObject(temp);
+	DeleteObject(rgn0);
+	
+	return ret;
+}
+
+#endif /* _WIN32 */
 
 // scroll a rectangle and redraw the newly exposed portions:
 void fl_scroll(int X, int Y, int W, int H, int dx, int dy,
@@ -78,16 +133,20 @@ void (*draw_area)(void*, int,int,int,int), void* data)
         clip_h = H-src_h;
     }
     int ox = 0; int oy = 0; fl_transform(ox, oy);
-    #ifdef _WIN32
-    BitBlt(fl_gc, dest_x+ox, dest_y+oy, src_w, src_h,
-        fl_gc, src_x+ox, src_y+oy, SRCCOPY);
-    // NYI: need to redraw areas that the source of BitBlt was bad due to
-    // overlapped windows, somehow similar to what X does.
-    #else
-    XCopyArea(fl_display, fl_window, fl_window, fl_gc,
-        src_x+ox, src_y+oy, src_w, src_h,
-        dest_x+ox, dest_y+oy);
-    // Synchronous update by waiting for graphics expose events:
+#ifdef _WIN32
+	if(is_visible(src_x+ox, src_y+oy, src_w, src_h)) {
+	    BitBlt(	fl_gc, dest_x+ox, dest_y+oy, src_w, src_h,
+				fl_gc, src_x+ox, src_y+oy, SRCCOPY);
+	} else {
+		draw_area(data, X, Y, W, H);
+		return;
+	}
+#else
+    XCopyArea(	fl_display, fl_window, fl_window, fl_gc,
+				src_x+ox, src_y+oy, src_w, src_h,
+				dest_x+ox, dest_y+oy);
+    
+	// Synchronous update by waiting for graphics expose events:
     for (;;)
     {
         XEvent e; XWindowEvent(fl_display, fl_window, ExposureMask, &e);
@@ -97,11 +156,10 @@ void (*draw_area)(void*, int,int,int,int), void* data)
             e.xexpose.width, e.xexpose.height);
         if (!e.xgraphicsexpose.count) break;
     }
-    #endif
+#endif
     if (dx) draw_area(data, clip_x, dest_y, clip_w, src_h);
     if (dy) draw_area(data, X, clip_y, W, clip_h);
 }
-
 
 //
 // End of "$Id$".
