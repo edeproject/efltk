@@ -15,7 +15,7 @@ void build_tree(Fl_XmlNode *n)
 
     Fl_Widget *w=0;
     Fl_Item_Group *g=0;
-    if(n->children()>0 || n->has_cdata()) {
+    if(n->children()>0) {
         g = new Fl_Item_Group();
         g->begin();
         g->set_flag(FL_VALUE);
@@ -28,16 +28,15 @@ void build_tree(Fl_XmlNode *n)
     Fl_String label;
     uint a;
 
-    label = n->name();
-    AttrMap &attr_map = n->attributes();
-    for(a=0; a<attr_map.size(); a++) {
-        AttrMap_Pair *p = attr_map.item(a);
-        label += " " + p->id + "=\"" + p->val + "\"";
-    }
-
     if(n->has_cdata()) {
-        Fl_Item *i = new Fl_Item();
-        i->copy_label(n->context()->unXMLize(n->cdata()));
+        label = n->context()->unXMLize(n->cdata());
+    } else {
+        label = n->name();
+        AttrMap &attr_map = n->attributes();
+        for(a=0; a<attr_map.size(); a++) {
+            AttrMap_Pair *p = attr_map.item(a);
+            label += " " + p->id + "=\"" + p->val + "\"";
+        }
     }
 
     w->copy_label(label.c_str());

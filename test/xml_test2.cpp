@@ -28,19 +28,19 @@ public:
         Fl_Browser *tree = new Fl_Browser(10,10,280,280);
         tree->indented(1);
         tree->begin();
-//        printf("start_document\n");
+        //printf("start_document\n");
     }
 
     // Called when parsing a document finished
     virtual void end_document() {
         win->end();
         win->show();
-//        printf("end_document\n");
+        //printf("end_document\n");
     }
 
     // Called when parsing a processing instruction
     virtual void processing_instruction(Fl_XmlNode &/*pinode*/) {
-//        printf("processing_instruction\n");
+        //printf("processing_instruction\n");
     }
 
     // Called when start parsing a node
@@ -49,7 +49,7 @@ public:
         g->set_flag(FL_VALUE);
         g->copy_label(nodename.c_str());
         g->begin();
-//        printf("start_node(%s)\n", nodename.c_str());
+        //printf("start_node(%s)\n", nodename.c_str());
     }
 
     // Called when an attribute list was parsed
@@ -61,20 +61,20 @@ public:
             label += " " + p->id + "=\"" + p->val + "\"";
         }
         g->copy_label(label.c_str());
-//        printf("parsed_attributes\n");
+        //printf("parsed_attributes\n");
     }
 
     // Called when parsing of a node was finished
     virtual void end_node(Fl_String &nodename) {
         Fl_Group::current()->end();
-//        printf("end_node(%s)\n", nodename.c_str());
+        //printf("end_node(%s)\n", nodename.c_str());
     }
 
     // Called when a cdata section ended
     virtual void cdata(Fl_String &cdata) {
         Fl_Item *i = new Fl_Item();
         i->copy_label(cdata.c_str());
-//        printf("cdata(%s)\n", cdata.c_str());
+        //printf("cdata(%s)\n", cdata.c_str());
     }
 
     // Called when a comment section ended
@@ -84,7 +84,7 @@ public:
         Fl_Item *i = new Fl_Item();
         i->copy_label(comment.c_str());
         g->end();
-//        printf("comment(%s)\n", comment.c_str());
+        //printf("comment(%s)\n", comment.c_str());
     }
 };
 
