@@ -8,6 +8,33 @@
 #include <efltk/Fl_Date_Time.h>
 #include <efltk/x.h>
 
+static char * blue_ball_xpm[] = {
+"16 16 8 1",
+" 	c None",
+".	c #FFECEC",
+"+	c #B9D0F7",
+"@	c #FFD9D9",
+"#	c #A4BEEA",
+"$	c #7AA2E8",
+"%	c #1549A3",
+"&	c #FFC1C1",
+"                ",
+"    .++++++.    ",
+"   @#$$%%$$+@   ",
+"  @++%%%%%%$+@  ",
+" .+$%%%%%%%%$+. ",
+" +$%%%%%%%%%%$& ",
+" +$%%%%%%%%%%$+ ",
+" +%%%%%%%%%%%%+ ",
+" +%%%%%%%%%%%%+ ",
+" +$%%%%%%%%%%$+ ",
+" +$%%%%%%%%%%$& ",
+" .+$%%%%%%%%$+. ",
+"  @$$%%%%%%$+@  ",
+"   @+$$%%$$+@   ",
+"    .+++++&+    ",
+"                "};
+
 static char * ball_xpm[] = {
 "16 16 13 1",
 " 	c None",
@@ -40,7 +67,8 @@ static char * ball_xpm[] = {
 "    .+@##@+.    ",
 "                "};
 
-static Fl_Image *im;
+static Fl_Image *im1;
+static Fl_Image *im2;
 
 void callback(Fl_ListView *l, void *)
 {
@@ -104,10 +132,10 @@ void make_listview_ext()
     l->header()->column_label_color(1, FL_RED);
 
     // Add images for cols
-    l->column_image(0, im);
-    l->column_image(1, im);
+    l->column_image(0, im1);
+    l->column_image(1, im1);
     //l->image(2, im);
-    l->column_image(3, im);
+    l->column_image(3, im1);
 
     // Set alignment flags
     l->column_flags(0, FL_ALIGN_LEFT);
@@ -153,9 +181,9 @@ void make_listview_ext()
         i->label_size(2, 16);
 
         // Images for cols 1,2,3
-        i->image(0, im);
-        i->image(1, im);
-        i->image(2, im);
+        i->image(0, im2);
+        i->image(1, im2);
+        i->image(2, im2);
     }
 
     Fl_Date_Time end = Fl_Date_Time::Now();
@@ -201,14 +229,14 @@ void make_listview()
     l->column_flags(1, FL_ALIGN_CENTER);
     l->column_flags(2, FL_ALIGN_CENTER);
 
-    l->column_image(0, im);
+    l->column_image(0, im1);
 
     Fl_Date_Time start = Fl_Date_Time::Now();
 
     // Add 1000 items
     for(int a=0; a<1000; a++) {
         Fl_ListView_Item *i = new Fl_ListView_Item(0, "Some Text", "COL 3", "-----------Long column-----------");
-        i->image(im);
+        i->image(im2);
 
         char tmp[32];
         sprintf(tmp, "Column1: (%d)", a);
@@ -242,14 +270,16 @@ void make_listview()
 
 int main()
 {
-    im = Fl_Image::read_xpm(0, ball_xpm);
+    im1 = Fl_Image::read_xpm(0, ball_xpm);
+    im2 = Fl_Image::read_xpm(0, blue_ball_xpm);
 
     make_listview();
     make_listview_ext();
 
     Fl::run();
 
-    delete im;
+    delete im1;
+    delete im2;
 
     return 0;
 }

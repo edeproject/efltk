@@ -37,9 +37,8 @@ int main(int argc, char *argv[]) {
       dds.open();
       while (!dds.eof()) {
          Fl_Date_Time d = dds["modified"].get_date();
-         printf("%20s %s %15s %10i %10s \n",
+         printf("%20s %15s %10i %10s \n",
              dds["name"].get_string(),
-             dds["executable"].get_string(),
              dds["type"].get_string(),
              dds["size"].get_int(),
              (d.date_string() + " " + d.time_string()).c_str());
