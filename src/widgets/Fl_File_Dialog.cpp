@@ -500,6 +500,7 @@ void Fl_File_Chooser::make_group()
 {
     {
         Fl_Group* o = new Fl_Group(0, 5, 100, 31);
+		o->layout_settings(false, false);
         o->layout_align(FL_ALIGN_TOP);
         o->layout_spacing(2);
 
@@ -537,6 +538,7 @@ void Fl_File_Chooser::make_group()
 
     {
         Fl_Group* o = new Fl_Group(0, 0, 100, 100);
+		o->layout_settings(false, false);
         o->layout_align(FL_ALIGN_CLIENT);
         o->layout_spacing(2);
 
@@ -564,6 +566,7 @@ void Fl_File_Chooser::make_group()
 
     {
         Fl_Group* o = new Fl_Group(0, 0, 100, 60);
+		o->layout_settings(false, false);
         o->layout_align(FL_ALIGN_BOTTOM);
         o->layout_spacing(2);
 
