@@ -287,10 +287,8 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
     float max_steps = max( (tw-fw), (th-fh) );
     float min_steps = max( (fw-tw), (fh-th) );
     float steps = max(max_steps, min_steps);
-    if(anim_speed()>0) {
-        steps/=anim_speed();
-    }
-
+    if(anim_speed()>0) { steps/=anim_speed(); }
+    
     float sx = max( ((float)(fx-tx)/steps), ((float)(tx-fx)/steps) );
     float sy = max( ((float)(fy-ty)/steps), ((float)(ty-fy)/steps) );
     float sw = max( ((float)(fw-tw)/steps), ((float)(tw-fw)/steps) );
@@ -305,11 +303,16 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
     int X=fx,Y=fy,W=fw,H=fh;
     int ox=fx,oy=fy,ow=fw,oh=fh;
 
-    while(steps-- > 0) {
+	int anim_time = 200; //milliseconds
+
+    if(anim_speed()>0) { anim_time = int(floor((anim_time*anim_speed())+.5f)); }
+    bool error=false;
+
+	while(anim_time>0 && steps-->0) {    
 
         if(!animating || !shown() || !visible()) {
             break;
-        }
+        }		
 
         rx+=(sx*xinc);
         ry+=(sy*yinc);
@@ -319,38 +322,36 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
         X=(int)rx;
         Y=(int)ry;
         W=(int)rw;
-        H=(int)rh;
+        H=(int)rh;		
 
-        if(X!=ox || Y!=oy || W!=ow || H!=oh) {
-            // Make drop down slower at begining
-            if((slow_down_to_h<0 || H<slow_down_to_h) ||
-               (slow_down_to_w<0 || W<slow_down_to_w))
-                Fl::sleep_ms(1);
+        if(X!=ox || Y!=oy || W!=ow || H!=oh) 
+		{
+			int time1 = GetMs();
+			Fl::check();			
+
             // Make sure we copy to this window!
             make_current();
-#ifdef _WIN32
-            make_current();
+#ifdef _WIN32            
             SetWindowPos(fl_xid(this), HWND_TOPMOST, X, Y, W, H, (SWP_NOSENDCHANGING | SWP_NOACTIVATE));
             fl_copy_offscreen(0, 0, W, H, pm, tw-W, th-H);
 #else
             XMoveResizeWindow(fl_display, fl_xid(this), X, Y, W, H);
             fl_copy_offscreen(0, 0, W, H, pm, tw-W, th-H);
             //XCopyArea(fl_display, pm, fl_xid(this), fl_gc, 0, 0, W, H, tw-W, th-H); //This is a bit too fast :)) If we use this we dont need to call make_current()
-#endif
-            Flush();
-            Fl::check();
-        }
+#endif            			
+			int time2 = GetMs();
+			anim_time -= (time2-time1);			
+		}
 
         ox=X;
         oy=Y;
         ow=W;
-        oh=H;
+        oh=H;		
     }
 
     fl_delete_offscreen(pm);
     animating=false;
 }
-
 
 //
 // End of "$Id$".

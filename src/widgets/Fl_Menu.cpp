@@ -853,6 +853,7 @@ int MenuWindow::handle(int event)
 
         // If clicked check button in menubar...
         if(menubar && widget_ && checkmark(widget_)) {
+			menu_picked=true;
             menu_level=0;
             Fl::exit_modal();
             return 1;
@@ -934,7 +935,13 @@ void MenuWindow::show()
         return;
     }
 
-    if(!shown()) create();
+	// If shown, no effect..
+    if(shown()) {
+		Fl_Menu_Window::show();
+		return;
+	} 
+		
+	create(); //We need system handle for window (xid)!
 
     int X=x(), Y=y(), W=ow, H=oh;
 
@@ -949,6 +956,7 @@ void MenuWindow::show()
     case FL_EFFECT_FADE:
         fade(tx,ty,tw,th);
         break;
+
     case FL_EFFECT_ANIM:
         {
         if(anim_flags&Fl_Menu_::TOP_TO_BOTTOM) {
@@ -973,6 +981,7 @@ void MenuWindow::show()
         else
             Fl_Menu_Window::show();
     }
+
     case FL_EFFECT_NONE:
     default:
         Fl_Menu_Window::show();
@@ -1016,9 +1025,9 @@ void Fl_Menu_::relayout_current_menu()
     current_menu->show();
 }
 
-//#define DEBUG
+//#define DEBUG_MENUS
 
-#ifdef DEBUG
+#ifdef DEBUG_MENUS
 # define MODAL false
 #else
 # define MODAL true
