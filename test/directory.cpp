@@ -19,7 +19,7 @@
 #include <config.h>
 #endif
 
-#include <iostream.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #include <efltk/Fl_Directory_DS.h>
@@ -31,17 +31,13 @@ int main(int argc, char *argv[])
    dds.directory("/usr/lib");
    dds.open();
    while (!dds.eof()) {
-      cout.width(20);
-      cout << dds["name"].get_string() << " ";
-      cout << dds["executable"].get_string() << " ";
-      cout.width(15);
-      cout << dds["type"].get_string() << " ";
-      cout.width(10);
-      cout << dds["size"].get_int() << " ";
-      cout.width(10);
       Fl_Date_Time d = dds["modified"].get_date();
-      cout << d.date_string().c_str() << " " << d.time_string().c_str();
-      cout << endl;
+      printf("%20s %s %15s %10i %10s \n",
+          dds["name"].get_string(),
+          dds["executable"].get_string(),
+          dds["type"].get_string(),
+          dds["size"].get_int(),
+          (d.date_string() + " " + d.time_string()).c_str());
       dds.next();
    }
    dds.close();
