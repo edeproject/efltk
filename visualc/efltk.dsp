@@ -178,6 +178,10 @@ SOURCE=..\src\widgets\Fl_Browser.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\core\Fl_Buffer.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\widgets\Fl_Button.cpp
 # End Source File
 # Begin Source File
@@ -255,10 +259,6 @@ SOURCE=..\src\widgets\Fl_Dial.cpp
 # Begin Source File
 
 SOURCE=..\src\widgets\Fl_Dialog.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\widgets\Fl_Dialog_Data_Source.cpp
 # End Source File
 # Begin Source File
 
@@ -786,6 +786,10 @@ SOURCE=..\efltk\Fl_Browser.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\efltk\Fl_Buffer.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\efltk\Fl_Button.h
 # End Source File
 # Begin Source File
@@ -847,10 +851,6 @@ SOURCE=..\efltk\Fl_Dial.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_Dialog.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\efltk\Fl_Dialog_Data_Source.h
 # End Source File
 # Begin Source File
 
