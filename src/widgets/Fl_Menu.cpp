@@ -1019,7 +1019,7 @@ void MenuWindow::show(Fl_Window *w)
     show();
 }
 
-#define DEBUG_MENUS
+//#define DEBUG_MENUS
 
 #ifdef DEBUG_MENUS
 # define MODAL false
