@@ -54,7 +54,7 @@ to develop programs that use the eFLTK libraries.
 
 %build
 autoconf
-CFLAGS="%optflags -DNDEBUG=1" CXXFLAGS="%optflags -DNDEBUG=1" ./configure --prefix=%{_prefix} --enable-opengl --enable-utf8 --disable-xft --enable-plugins
+CFLAGS="%optflags -DNDEBUG=1" CXXFLAGS="%optflags -DNDEBUG=1" ./configure --prefix=%{_prefix} --enable-opengl --enable-utf8 --enable-xft --enable-plugins
 
 # Setup for parallel builds
 numprocs=`egrep -c ^cpu[0-9]+ /proc/stat || :`
