@@ -261,10 +261,10 @@
     <FILE type="override" value="..\src\core\numericsort.c" translator="Auto">
       <CFLAG1 value=" -P-"/>
     </FILE>
-    <FILE type="override" value="..\src\core\vsnprintf.c" translator="Auto">
+    <FILE type="override" value="..\src\core\scandir.c" translator="Auto">
       <CFLAG1 value=" -P-"/>
     </FILE>
-    <FILE type="override" value="..\src\core\scandir.c" translator="Auto">
+    <FILE type="override" value="..\src\core\vsnprintf.c" translator="Auto">
       <CFLAG1 value=" -P-"/>
     </FILE>
     <FILE type="override" value="..\src\core\fl_utf8.c" translator="Auto">
