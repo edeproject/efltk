@@ -376,6 +376,11 @@ static void figure_out_visual()
     int gs = fl_greenshift;
     int bs = fl_blueshift;
 
+    printf("Shifts2: %d %d %d\n",
+           fl_redshift,
+           fl_greenshift,
+           fl_blueshift);
+
     switch (fl_bytes_per_pixel) {
 
     case 2:

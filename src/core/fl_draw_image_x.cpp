@@ -180,6 +180,17 @@ void Fl_Renderer::system_init()
                  fl_visual->visual->blue_mask,
                  0);
 
+    printf("Masks1: 0x%x 0x%x 0x%x\n",
+           sys_fmt.Rmask,
+           sys_fmt.Gmask,
+           sys_fmt.Bmask);
+
+    printf("Shifts1: %d %d %d\n",
+           sys_fmt.Rshift,
+           sys_fmt.Gshift,
+           sys_fmt.Bshift);
+
+
 #if USE_COLORMAP
     if(pfv->bits_per_pixel<=8) {
         extern void copy_palette(Fl_Colormap *map);
