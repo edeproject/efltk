@@ -73,7 +73,6 @@ protected:
  * Tested on VCPP6.0 under Win2000. Compiled release mode.
  */
 #include <setjmp.h>
-#include <efltk/Fl_Ptr_Stack.h>
 
 ////////////////////////////////////////////
 // BEGIN OF EFLTK EXCEPTIONS PRIVATE STUFF
@@ -99,7 +98,7 @@ extern Fl_JmpBuf_Stack fl_jmpbuf_stack;
 //////////////////////////////////////////
 
 #define fl_try fl_exception_was_throwed=false; if(!setjmp(fl_jmpbuf_stack.push()))
-#define fl_catch(exception_variable) fl_jmpbuf_stack.pop(); Fl_Exception exception_variable=fl_last_throwed_exception; if(fl_exception_was_throwed)
+#define fl_catch(exception_variable) fl_jmpbuf_stack.pop(); Fl_Exception exception_variable=fl_last_throwed_exception; ((void)(exception_variable)); if(fl_exception_was_throwed)
 #define fl_throw_exception(e) { fl_last_throwed_exception=e; fl_exception_was_throwed=true; jmp_buf *jmp=fl_jmpbuf_stack.peek(); if(jmp) longjmp(*jmp, 0); else fl_exception_handler(e); }
 #define fl_rethrow fl_throw_exception(fl_last_throwed_exception)
 #define fl_throw_(text, file, line) { Fl_Exception e(text, file, line); fl_throw_exception(e); }
@@ -120,4 +119,3 @@ extern Fl_JmpBuf_Stack fl_jmpbuf_stack;
 #define fl_throw(a) fl_throw_(a, __FILE__, __LINE__)
 
 #endif
-
