@@ -1,5 +1,5 @@
 # data file for the FLTK User Interface Designer (FLUID)
-version 2,0003 
+version 2.0003 
 header_name {.h} 
 code_name {.cpp} 
 gridx 5 
@@ -7,49 +7,54 @@ gridy 5
 snap 3
 decl {\#include <efltk/Fl_Images.h>} {} 
 
+decl {\#include <efltk/Fl_Image_Filter.h>} {} 
+
 decl {Fl_Image *image=0;} {} 
+
+decl {Fl_Image *show_image=0;} {} 
+
+decl {Fl_Image_Filter *cur_effect;} {} 
 
 Function {make_window()} {open
 } {
   Fl_Window {} {open
-    xywh {62 77 560 489} type Double resizable visible
+    xywh {376 145 560 489} type Double resizable visible
   } {
     Fl_Box imbox {
-      xywh {5 30 385 455} resizable box BORDER_BOX
+      xywh {5 30 385 455} align 64 resizable box ENGRAVED_BOX
     }
     Fl_Box filename_box {
       label {No file loaded...}
-      xywh {5 5 385 20} box THIN_UP_BOX
+      xywh {5 5 385 20} align 20 box THIN_DOWN_BOX
     }
     Fl_Group {} {open
-      xywh {395 5 160 480} box BORDER_BOX
+      xywh {395 5 160 480} box THIN_DOWN_BOX
     } {
       Fl_Button {} {
         label {Load File}
-        callback {const char *f = fl_select_file(0, "Image Files, *.{bmp|png|jpg|jpeg|xpm|gif}", "Select File");
+        callback {const char *f = fl_select_file(filename_box->label(), "Image Files, *.{bmp|png|jpg|jpeg|xpm|gif}", "Select File");
 if(f) {
 	if(image) {
 		delete image;
 	}
 	image = Fl_Image::read(f);
-	imbox->image(image);
-	imbox->redraw();
 	filename_box->label(f);
 } else {
 	filename_box->label("No file loaded...");
 }
-filename_box->redraw();}
-        xywh {5 5 150 25}
+filename_box->redraw();
+apply_cur_effect();} selected
+        xywh {10 10 140 25} box THIN_UP_BOX
         extra_code {\#include <efltk/Fl_File_Dialog.h>}
       }
       Fl_Button {} {
         label Exit
         callback {o->window()->hide();}
-        xywh {5 35 150 25}
+        xywh {10 40 140 25} box THIN_UP_BOX
       }
       Fl_Divider {} {
         label label
-        xywh {5 70 150 15}
+        xywh {10 75 140 15} color 49
       }
       Fl_Button {} {
         label {Fit To Box}
@@ -59,7 +64,7 @@ filename_box->redraw();}
 	imbox->align(imbox->align()&~FL_ALIGN_SCALE);
 }
 imbox->redraw();}
-        xywh {5 95 150 25} type TOGGLE
+        xywh {10 100 140 25} type TOGGLE box THIN_UP_BOX
       }
       Fl_Button {} {
         label Tile
@@ -69,7 +74,73 @@ imbox->redraw();}
 	imbox->align(imbox->align()&~FL_ALIGN_TILED);
 }
 imbox->redraw();}
-        xywh {5 125 150 25} type TOGGLE
+        xywh {10 130 140 25} type TOGGLE box THIN_UP_BOX
+      }
+      Fl_Choice filter_choice {
+        label {Filter:} open
+        tooltip {Choose filter}
+        xywh {10 335 140 25} align 5
+      } {
+        Fl_Item {} {
+          label None
+          user_data 0
+          }
+        Fl_Item {} {
+          label Brightness
+          user_data FILTER_BRIGHTNESS
+          }
+        Fl_Item {} {
+          label Contrast
+          user_data FILTER_CONTRAST
+          }
+        Fl_Item {} {
+          label Desaturate
+          user_data FILTER_DESATURATE
+          }
+        Fl_Item {} {
+          label Gamma
+          user_data FILTER_GAMMA
+          }
+      }
+      Fl_Box {} {
+        xywh {10 160 140 160}
+        extra_code {o->parent()->resizable(o);}
+      }
+      Fl_Value_Slider Rslider {
+        label R
+        tooltip {Red value for filter}
+        xywh {25 380 125 15} type HORIZONTAL align 4 label_size 10 text_size 10 minimum -3 maximum 3 value 1 slider_size 5
+      }
+      Fl_Value_Slider Gslider {
+        label G
+        tooltip {Green value for filter}
+        xywh {25 400 125 15} type HORIZONTAL align 4 label_size 10 text_size 10 minimum -3 maximum 3 value 1 slider_size 5
+      }
+      Fl_Value_Slider Bslider {
+        label B
+        tooltip {Blue value for filter}
+        xywh {25 420 125 15} type HORIZONTAL align 4 label_size 10 text_size 10 minimum -3 maximum 3 value 1 slider_size 5
+      }
+      Fl_Button {} {
+        label Apply
+        callback {Fl_Widget *item = filter_choice->item();
+cur_effect =  (Fl_Image_Filter*)item->user_data();
+apply_cur_effect();}
+        tooltip {Apply current selected filter}
+        xywh {10 445 140 25} box THIN_UP_BOX
+      }
+      Fl_Check_Button lock {
+        label {Lock sliders}
+        callback {if(o->value()) {
+	Gslider->deactivate();
+	Bslider->deactivate();
+} else {
+	Gslider->activate();
+	Bslider->activate();
+}
+o->parent()->redraw();}
+        tooltip {Lock slider, RGB values taken from R slider }
+        xywh {10 365 140 15} label_size 10
       }
     }
   }
@@ -81,6 +152,22 @@ Function {main(int argc, char *argv[])} {open return_type int
 Fl_Window *w = make_window();
 w->show();
 
-return Fl::run();} {selected
-  }
+return Fl::run();} {}
+} 
+
+Function {apply_cur_effect()} {open return_type void
+} {
+  code {if(show_image && show_image!=image) 
+	delete show_image;
+if(cur_effect && image) {
+	if(lock->value())
+		show_image = Fl_Image_Filter::apply_to_new(image, 0, cur_effect, Rslider->value(), Rslider->value(), Rslider->value());
+	else
+		show_image = Fl_Image_Filter::apply_to_new(image, 0, cur_effect, Rslider->value(), Gslider->value(), Bslider->value());
+	if(!show_image) show_image = image;
+} else {
+	show_image=image;
+}
+imbox->image(show_image);
+imbox->redraw();} {}
 } 
