@@ -77,7 +77,7 @@ void callback(Fl_ListView *l, void *)
         if(Fl::event_clicks()) printf("Double ");
         printf("Clicked: ");
         for(int a=0; a<l->columns(); a++)
-            printf("'%s' ", i->label(a).c_str());
+            printf("'%s' ", i->label(a));
         printf("\n");
     }
 }
@@ -89,7 +89,7 @@ void cb_multi(Fl_Widget *w, Fl_ListView *l)
 
 void cb_move(Fl_Widget *w, Fl_ListView *l)
 {
-    l->move(w->value());
+    //l->move(w->value());
 }
 
 void cb_stripes(Fl_Widget *w, Fl_ListView *l)
