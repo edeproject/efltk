@@ -58,8 +58,9 @@ Fl_Item::Fl_Item(const char* l) : Fl_Widget(0,0,0,0,l)
         default_style->glyph = Fl_Check_Button::default_style->glyph;
     style(default_style);
     set_flag(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
-}
 
+    x_offset_ = 0;
+}
 
 void Fl_Item::draw()
 {
@@ -68,7 +69,7 @@ void Fl_Item::draw()
     int x = 0; int y = 0; int w = this->w(); int h = this->h();
     box()->inset(x,y,w,h);
 
-    if (type())
+    if (type() == TOGGLE || type() == RADIO)
     {
         // if pushed, preview the resulting state:
         int lflags = flags();
@@ -81,6 +82,7 @@ void Fl_Item::draw()
         draw_glyph(0, x+3, y+((h-gw)>>1), gw, gw, lflags);
         x += gw+3; w -= gw+3;
     }
+    x+=x_offset();
     draw_label(x+3, y, w-6, h, flags());
 }
 
@@ -93,7 +95,8 @@ void Fl_Item::layout()
     int dx=0; int dy=0; int dw=0; int dh=0; box()->inset(dx,dy,dw,dh);
     fl_font(label_font(), float(label_size()));
     int w = 250, h = 250; fl_measure(label(), w, h, flags());
-    if (type()) w += 15;
+    if (type() == TOGGLE || type() == RADIO) w += 15;
+    w+=x_offset();
     if (image())
     {
         int W, H;
