@@ -3,9 +3,9 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
-    <PROJECT value="\efltk\hello.exe"/>
-    <OBJFILES value="obj\hello.obj"/>
-    <RESFILES value="hello.res"/>
+    <PROJECT value="\efltk\bitmap.exe"/>
+    <OBJFILES value="obj\bitmap.obj"/>
+    <RESFILES value="bitmap.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
@@ -29,7 +29,7 @@
     <LINKER value="ilink32"/>
     <USERDEFINES value="_DEBUG;_WIN32"/>
     <SYSDEFINES value="NO_STRICT;_NO_VCL;_RTLDLL;USEPACKAGES"/>
-    <MAINSOURCE value="hello.bpf"/>
+    <MAINSOURCE value="bitmap.bpf"/>
     <INCLUDEPATH value="..\test;$(BCB)\include;$(BCB)\include\vcl;\efltk"/>
     <LIBPATH value="..\test;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
@@ -53,10 +53,10 @@
     <OTHERFILES value=""/>
   </LINKER>
   <FILELIST>
-      <FILE FILENAME="hello.res" FORMNAME="" UNITNAME="hello.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="hello.bpf" FORMNAME="" UNITNAME="hello" CONTAINERID="BPF" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\test\hello.cpp" FORMNAME="" UNITNAME="hello" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="bitmap.res" FORMNAME="" UNITNAME="bitmap.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="bitmap.bpf" FORMNAME="" UNITNAME="bitmap" CONTAINERID="BPF" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\lib\libefltk.lib" FORMNAME="" UNITNAME="libefltk.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\test\bitmap.cpp" FORMNAME="" UNITNAME="bitmap" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>

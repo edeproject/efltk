@@ -3,9 +3,9 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
-    <PROJECT value="\efltk\hello.exe"/>
-    <OBJFILES value="obj\hello.obj"/>
-    <RESFILES value="hello.res"/>
+    <PROJECT value="\efltk\arc.exe"/>
+    <OBJFILES value="obj\arc.obj"/>
+    <RESFILES value="arc.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
@@ -29,7 +29,7 @@
     <LINKER value="ilink32"/>
     <USERDEFINES value="_DEBUG;_WIN32"/>
     <SYSDEFINES value="NO_STRICT;_NO_VCL;_RTLDLL;USEPACKAGES"/>
-    <MAINSOURCE value="hello.bpf"/>
+    <MAINSOURCE value="arc.bpf"/>
     <INCLUDEPATH value="..\test;$(BCB)\include;$(BCB)\include\vcl;\efltk"/>
     <LIBPATH value="..\test;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
@@ -53,10 +53,10 @@
     <OTHERFILES value=""/>
   </LINKER>
   <FILELIST>
-      <FILE FILENAME="hello.res" FORMNAME="" UNITNAME="hello.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="hello.bpf" FORMNAME="" UNITNAME="hello" CONTAINERID="BPF" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\test\hello.cpp" FORMNAME="" UNITNAME="hello" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="arc.res" FORMNAME="" UNITNAME="arc.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="arc.bpf" FORMNAME="" UNITNAME="arc" CONTAINERID="BPF" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\lib\libefltk.lib" FORMNAME="" UNITNAME="libefltk.lib" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\test\arc.cpp" FORMNAME="" UNITNAME="arc" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>

@@ -78,8 +78,8 @@
   <OPTIONS>
     <IDLCFLAGS value="-I..\src\widgets -I..\src\core -I$(BCB)\include -I$(BCB)\include\vcl -I. 
       -I\efltk -src_suffix cpp -D_DEBUG -D_WIN32 -boa"/>
-    <CFLAG1 value="-vGc -vGt -vGd -Od -H=$(BCB)\lib\vcl60.csm -Hc -P -Vx -Ve -X- -r- -a4 -5 
-      -b -d -k -y -v -vi- -c -tW -tWM"/>
+    <CFLAG1 value="-vGc -vGt -vGd -Od -H=d:\efltk.csm -Hc -P -Vx -Ve -X- -r- -a4 -5 -b -d -k 
+      -y -v -vi- -c -tW -tWM"/>
     <PFLAGS value="-N2\efltk\bcb6\obj -N0\efltk\bcb6\obj -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
     <AFLAGS value="/mx /w2 /zi"/>
     <LFLAGS value="-l\efltk\lib /P128"/>
