@@ -868,16 +868,16 @@ Fl_Image* Fl_Image::read_xpm(const char *filename, const char * const *data)
     Fl_Image *ret=0;
     if(filename && fl_file_exists(filename)) {
         Fl_FileAttr a;
-        if(!a.parse(filename)) return false;
+        if(!a.parse(filename)) return ret;
         FILE *file = fopen(filename, "rb");
-        if(!file) return false;
+        if(!file) return ret;
         void *buffer = malloc(a.size);
         uint readed = fread(buffer, 1, a.size, file);
         if(readed!=a.size) {
             printf("Could not read XPM file: %s\n", filename);
             free(buffer);
             fclose(file);
-            return false;
+            return ret;
         }
         if(xpm_reader.is_valid(buffer, true)) {
             ret = xpm_reader.create(buffer, a.size, true);
@@ -905,17 +905,17 @@ Fl_Image* Fl_Image::read(const char *filename, const uint8 *data)
     if(filename && fl_file_exists(filename)) {
         Fl_FileAttr a;
         if(!a.parse(filename))
-            return false;
+            return ret;
         buffer_size = a.size;
         FILE *file = fopen(filename, "rb");
-        if (!file) return false;
+        if (!file) return ret;
         buffer = malloc(buffer_size);
         uint readed = fread(buffer, 1, buffer_size, file);
         if(readed!=a.size) {
             printf("Could not read file: %s\n", filename);
             free(buffer);
             fclose(file);
-            return false;
+            return ret;
         }
         from_file = true;
         fclose(file);
@@ -924,7 +924,7 @@ Fl_Image* Fl_Image::read(const char *filename, const uint8 *data)
         buffer = (void *)data;
         buffer_size = sizeof(data);
     } else {
-        return false;
+        return ret;
     }
 
     for(ImageReader *r=readers.first(); r!=0; r=readers.next()) {
