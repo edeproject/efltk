@@ -418,7 +418,6 @@ void Fl_Text_Display::layout()
     for (int again = 0; again<2; again++)
     {
         //printf("Again %d\n", again);
-
         /* In continuous wrap mode, a change in width affects the total number of
          lines in the buffer, and can leave the top line number incorrect, and
          the top character no longer pointing at a valid line start */
@@ -428,8 +427,8 @@ void Fl_Text_Display::layout()
             mFirstChar = line_start(mFirstChar);
             mTopLineNum = count_lines(0, mFirstChar, true)+1;
             absolute_top_line_number(oldFirstChar);
-        } else
-            again++;
+        } //else
+            //again++;
 
         // FIXME: We have to this only text_area.h is changed.
         // horz scrollbar changes that always...
@@ -443,9 +442,7 @@ void Fl_Text_Display::layout()
              size and / or contents.  */
             if(old_vlines != new_vlines)
             {
-                //delete []mLineStarts;
-                //mLineStarts = new int[new_vlines+1];
-				mLineStarts = (int *)realloc(mLineStarts, (new_vlines+1)*sizeof(int));
+                mLineStarts = (int *)realloc(mLineStarts, (new_vlines+1)*sizeof(int));
                 mNVisibleLines = new_vlines;
                 calc_line_starts(0, mNVisibleLines);
                 calc_last_char();
@@ -516,7 +513,7 @@ void Fl_Text_Display::layout()
         {
             if(!mHScrollBar->visible()) {
                 mHScrollBar->set_visible();
-                again--; // loop again to see if we now need vert. & recalc sizes
+                //again--; // loop again to see if we now need vert. & recalc sizes
             }
 
             if (scrollbar_align() & FL_ALIGN_TOP) {
