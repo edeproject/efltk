@@ -35,6 +35,8 @@ private:
    void query_col_attributes(Fl_Query *query,short column,short descType,char *buff,int len);
 
 protected:
+   void bind_parameters(Fl_Query *);
+
    // Operations over query handle
    virtual void allocate_query(Fl_Query *);
    virtual void deallocate_query(Fl_Query *);
@@ -42,7 +44,6 @@ protected:
    virtual void open_query(Fl_Query *);
    virtual void fetch_query(Fl_Query *);
    virtual void close_query(Fl_Query *);
-   virtual void bind_parameters(Fl_Query *);
 
 protected:
    // Connection manipulations
@@ -57,7 +58,7 @@ public:
    ~Fl_ODBC_Database();
 
    // Database capabilities
-   virtual unsigned capabilities() { return FL_DB_TRANSACTIONS|FL_DB_STMT_PREPARE|FL_DB_STMT_BINDING; }
+   virtual unsigned capabilities() { return FL_DB_TRANSACTIONS|FL_DB_STMT_PREPARE; }
    
    // Transcation support
    virtual void begin_transaction();
