@@ -145,6 +145,11 @@ private:
     void shift_position(int p);
     void shift_up_down_position(int p);
 
+public:
+    // default slots
+    DEFSLOT_O(Fl_Widget, Fl_Input, slot_value, char *);
+    
+    void slot_value(char * s) { value(s); }
 };
 
 #endif
