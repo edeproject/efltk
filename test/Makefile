@@ -32,7 +32,8 @@ CPPFILES = demo.cpp hello.cpp resizable.cpp scroll.cpp image.cpp file_chooser.cp
            fonts.cpp fullscreen.cpp gl_overlay.cpp iconize.cpp input.cpp navigation.cpp \
            output.cpp overlay.cpp pack.cpp radio.cpp shape.cpp tile.cpp CubeMain.cpp CubeView.cpp \
            preferences.cpp image_manip.cpp listview.cpp alphablend.cpp callback.cpp \
-           thread_ball.cpp images.cpp image_loader.cpp multitabs1.cpp multitabs2.cpp
+           thread_ball.cpp images.cpp image_loader.cpp multitabs1.cpp multitabs2.cpp \
+	   popup_window.cpp
 
 ALL =   demo hello resizable scroll image file_chooser menubar browser \
 	threads progress editor inactive checkers valuators glpuzzle boxtype \
@@ -41,7 +42,7 @@ ALL =   demo hello resizable scroll image file_chooser menubar browser \
         cursor curve fast_slow fonts fullscreen gl_overlay iconize input navigation \
         output overlay pack radio shape tile CubeView preferences image_manip \
         listview alphablend callback thread_ball images image_loader \
-	multitabs1 multitabs2
+	multitabs1 multitabs2 popup_window
 
 all: demos
 

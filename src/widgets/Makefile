@@ -67,6 +67,7 @@ CPPFILES = \
 	Fl_Output.cpp \
 	Fl_Overlay_Window.cpp \
 	Fl_Pack.cpp \
+	Fl_Popup_Window.cpp \
 	Fl_ProgressBar.cpp \
 	Fl_Radio_Button.cpp \
 	Fl_Repeat_Button.cpp \
