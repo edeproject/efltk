@@ -430,11 +430,19 @@ SOURCE=..\src\core\Fl_Maps.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\widgets\Fl_Masked_Input.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\widgets\Fl_MDI_Bar.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\widgets\Fl_MDI_Window.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Memory_DS.cpp
 # End Source File
 # Begin Source File
 
@@ -519,6 +527,14 @@ SOURCE=..\src\core\fl_plastic_box.cpp
 # Begin Source File
 
 SOURCE=..\src\widgets\Fl_Popup_Window.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_PostScript.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Printer.cpp
 # End Source File
 # Begin Source File
 
@@ -850,6 +866,10 @@ SOURCE=..\efltk\Fl_Date_Time_Input.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\efltk\Fl_Device.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\efltk\Fl_Dial.h
 # End Source File
 # Begin Source File
@@ -906,7 +926,7 @@ SOURCE=..\efltk\Fl_Font.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\efltk\Fl_Gl_Window.h
+SOURCE=..\efltk\Fl_Gdi.h
 # End Source File
 # Begin Source File
 
@@ -1030,11 +1050,19 @@ SOURCE=..\efltk\Fl_Masked_Input.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\efltk\fl_math.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\efltk\Fl_MDI_Bar.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\efltk\Fl_MDI_Window.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Memory_DS.h
 # End Source File
 # Begin Source File
 
@@ -1107,6 +1135,14 @@ SOURCE=..\efltk\Fl_Pixmap.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_Popup_Window.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_PostScript.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Printer.h
 # End Source File
 # Begin Source File
 

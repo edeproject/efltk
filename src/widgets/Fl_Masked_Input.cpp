@@ -38,20 +38,24 @@ void Fl_Masked_Input::mask(const char *m) {
    m_mask = m;
    m_inputMask = m;
    m_backgroundMask = m;
+   
+   char *bg_mask_ptr = m_backgroundMask;
+   char *input_mask_ptr = m_inputMask;
+
    unsigned l = m_mask.length();
    unsigned j = 0;
    for (unsigned i = 0; i < l; i++,j++) {
       if (m[i] == '\\' || !strchr(maskControlCharacters,m[i])) {   // background char
          i++;
-         m_backgroundMask[j] = m[i];
-         m_inputMask[j] = ' ';
+         bg_mask_ptr[j] = m[i];
+         input_mask_ptr[j] = ' ';
       } else {
-         m_backgroundMask[j] = ' ';
-         m_inputMask[j] = m[i];
+         bg_mask_ptr[j] = ' ';
+         input_mask_ptr[j] = m[i];
       }
    }
-   m_backgroundMask[j] = 0;
-   m_inputMask[j] = 0;
+   bg_mask_ptr[j] = 0;
+   input_mask_ptr[j] = 0;
 }
 
 int Fl_Masked_Input::handle(int event) {
@@ -136,7 +140,7 @@ bool Fl_Masked_Input::checkCharacter(int pos,char& key) {
          if (checkCharacterAtPos(pos,key)) {
             et[0] = key;
             rc = replace(pos, pos+1, et, 1);
-            return rc;
+            return (rc>0);
          }
          return 1;
       }

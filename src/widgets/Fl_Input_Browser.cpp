@@ -7,8 +7,6 @@
 
 #define SIZE_GRIP 6
 
-static bool was_up = false;
-
 //////////////////////////////////////////////
 //////////////////////////////////////////////
 
@@ -69,7 +67,7 @@ int ComboBrowser::handle(int event)
            (Fl::event_key()!=FL_Up) &&
            (Fl::event_key()!=FL_Down) &&
            !(Fl::event_key()==FL_Enter && item()) )
-            return combo->input_->handle(FL_KEY);
+            return combo->input()->handle(FL_KEY);
     }
 	
     static bool was_wheel=false;
@@ -88,7 +86,6 @@ int ComboBrowser::handle(int event)
 	case FL_SHORTCUT:
         if(Fl::event_key() == FL_Escape) {
             combo->hide_popup();
-            was_up = false;
             return 1;
         }
 		break;
@@ -114,8 +111,10 @@ int ComboBrowser::handle(int event)
         // this causes a drag-in to the widget to work:
         if (Fl::event_inside(0, 0, w(), h()))
             Fl::pushed(this);
-        else
-            return 0;
+        else {
+			Fl::pushed(0);
+			return 0;
+		}
 
     default:
         break;
@@ -142,7 +141,6 @@ void ComboBrowser::browser_cb(Fl_Widget *w, void *data)
     combo->value(item->label().c_str());
     combo->redraw(FL_DAMAGE_VALUE);
     combo->hide_popup();
-    was_up = false;
 
     combo->do_callback();
 }
@@ -158,10 +156,12 @@ int ComboWindow::handle(int event)
     case FL_PUSH: {
         Fl_Rect size_grip(w()-SIZE_GRIP, h()-SIZE_GRIP, SIZE_GRIP, SIZE_GRIP);
         if(size_grip.posInRect(Fl::event_x(), Fl::event_y())) {
-            resizing = true;
-            return 1;
-        }
+            resizing = true;            
+			return 1;
+        }		
+		break;
     }
+
     case FL_DRAG:
         if(resizing) {
             int W=Fl::event_x(), H=Fl::event_y();
@@ -171,16 +171,22 @@ int ComboWindow::handle(int event)
             combo->list->Fl_Group::size(W-box()->dw(), H-SIZE_GRIP-box()->dh());
             return 1;
         }
+		break;
+
     case FL_RELEASE:
         if(resizing) {
             resizing=false;
             return 1;
         }
+		break;
 
     case FL_KEY:
     case FL_MOVE:
         if(combo->list) combo->list->handle(event);
         return 1;
+
+	default:
+		break;
     }
     return Fl_Menu_Window::handle(event);
 }
@@ -202,27 +208,26 @@ void ComboWindow::draw()
 static Fl_Named_Style style("Input_Browser", 0, &Fl_Input_Browser::default_style);
 Fl_Named_Style* Fl_Input_Browser::default_style = &::style;
 
-void Fl_Input_Browser::input_cb(Fl_Input *in, void *data) {
-    ((Fl_Input_Browser *)data)->do_callback();
+void Fl_Input_Browser::input_cb(Fl_Input *in, Fl_Input_Browser *data) {
+    data->do_callback();
 }
 
 #define popup_minw 100
-#define popup_minh 30
+#define popup_minh 40
 #define popup_maxw 600
 #define popup_maxh 400
 
 Fl_Input_Browser::Fl_Input_Browser(int x, int y, int w, int h, const char *l)
-: Fl_Menu_(x, y, w, h, l)
+: Fl_Menu_(x, y, w, h, l), m_input(x,y,w,h)
 {
     callback(Fl_Widget::default_callback);
     align(FL_ALIGN_LEFT);
     style(default_style);
 
-    input_ = new Fl_Input(x, y, w, h);
-    if(input_->parent()) input_->parent()->remove(input_);
-    input_->parent(this);
-    input_->when(FL_WHEN_CHANGED | FL_WHEN_ENTER_KEY_ALWAYS);
-    input_->callback((Fl_Callback *)input_cb, this);
+    if(input()->parent()) input()->parent()->remove(input());
+    input()->parent(this);
+    input()->when(FL_WHEN_CHANGED | FL_WHEN_ENTER_KEY_ALWAYS);
+    input()->callback((Fl_Callback *)input_cb, this);
 
     over_now = 0; over_last = 1;
 
@@ -231,8 +236,8 @@ Fl_Input_Browser::Fl_Input_Browser(int x, int y, int w, int h, const char *l)
 
 Fl_Input_Browser::~Fl_Input_Browser()
 {
-    input_->parent(0);
-    delete input_;
+    input()->parent(0);    
+	if(win) delete win;
 }
 
 int Fl_Input_Browser::handle(int e)
@@ -242,8 +247,8 @@ int Fl_Input_Browser::handle(int e)
         TX = 0;
         TW = w();
     } else {
-        TX = input_->x()+input_->w();
-        TW = w()-(input_->x()+input_->w());
+        TX = input()->x()+input()->w();
+        TW = w()-(input()->x()+input()->w());
     }
     if (Fl::event_inside(TX, TY, TW, TH))
         over_now = 1;
@@ -252,27 +257,28 @@ int Fl_Input_Browser::handle(int e)
     if(over_now != over_last)
         redraw(FL_DAMAGE_HIGHLIGHT);
 
-    if(e == FL_FOCUS) Fl::focus(input_);
+    if(e == FL_FOCUS) Fl::focus(input());
 
-    if((Fl::event_inside(input_->x(), input_->y(), input_->w(), input_->h()) || e == FL_KEY) && !(type()&NONEDITABLE) && Fl::pushed() != this)
+    if((Fl::event_inside(input()->x(), input()->y(), input()->w(), input()->h()) || e == FL_KEY) && !(type()&NONEDITABLE) && Fl::pushed() != this)
     {
         if(e == FL_PUSH) {
-            Fl::pushed(input_);
-            Fl::focus(input_);
+            Fl::pushed(input());
+            Fl::focus(input());
         }
-        return input_->send(e);//handle(e);
+        return input()->send(e);//handle(e);
     }
 
     switch (e) {
     case FL_PUSH: {
-        if(!was_up) popup(); else was_up = false;
+		if(!win || !win->visible())
+			popup();
         return 1;
     }
 
     case FL_FOCUS:
     case FL_UNFOCUS:
         if (type()&NONEDITABLE) break;
-        return input_->handle(e);
+        return input()->handle(e);
 
     case FL_ENTER: case FL_MOVE: return 1;
     }
@@ -288,19 +294,19 @@ void Fl_Input_Browser::draw()
     int X = 0, Y = 0, W = w(), H = h(); box()->inset(X, Y, W, H);
     int W1 = H*4/5;
     if (damage()&(FL_DAMAGE_ALL|FL_DAMAGE_CHILD)) {
-        input_->resize(X, Y, W-W1, H);
-        input_->set_damage(FL_DAMAGE_ALL);
-        input_->copy_style(style()); // force it to use this style
-        input_->box(FL_FLAT_BOX);
+        input()->resize(X, Y, W-W1, H);
+        input()->set_damage(FL_DAMAGE_ALL);
+        input()->copy_style(style()); // force it to use this style
+        input()->box(FL_FLAT_BOX);
 
         // fix for relative coordinates
         fl_push_matrix();
         fl_translate(X,Y);
 
-        input_->draw();
+        input()->draw();
 
         fl_pop_matrix();
-        input_->set_damage(0);
+        input()->set_damage(0);
     }
     if(damage()&(FL_DAMAGE_ALL|FL_DAMAGE_VALUE|FL_DAMAGE_HIGHLIGHT))
     {
@@ -316,7 +322,6 @@ void Fl_Input_Browser::draw()
 void Fl_Input_Browser::hide_popup()
 {
     if(win) {
-        was_up = true;
         Fl::exit_modal();
     }
 }
@@ -325,27 +330,34 @@ void Fl_Input_Browser::popup()
 {
     bool resize_only = false;
 
-    if(!win) {
+    if(!win || !win->visible()) 
+	{
         Fl_Group::current(0);
-        win = new ComboWindow(0,0,0,0);
-        win->set_override();
-        win->begin();
+		
+		if(!win) {
+			win = new ComboWindow(0,0,0,0);
+			win->set_override();
 
-        list = new ComboBrowser(0,0,0,0);
-        list->box(FL_FLAT_BOX);
-        list->indented((type()&INDENTED) != 0);
-        share_list.other = this;
+			win->begin();
+			list = new ComboBrowser(0,0,0,0);
+			list->box(FL_FLAT_BOX);
+			list->callback(ComboBrowser::browser_cb, this);
+	        list->when(FL_WHEN_CHANGED | FL_WHEN_RELEASE_ALWAYS | FL_WHEN_ENTER_KEY_ALWAYS);        
+			list->end();
+
+			win->end();
+			win->box(FL_BORDER_BOX);
+        
+			win->combo = this;
+	        list->combo = this;
+		}        
+      
+		share_list.other = this;
         list->list(&share_list);
-        list->when(FL_WHEN_CHANGED | FL_WHEN_RELEASE_ALWAYS | FL_WHEN_ENTER_KEY_ALWAYS);
-        list->callback(ComboBrowser::browser_cb, this);
-        list->end();
 
-        win->combo = this;
-        list->combo = this;
-
-        win->end();
-        win->box(FL_BORDER_BOX);
+		list->indented((type()&INDENTED) != 0);
         win->color(list->color());
+
     } else
         resize_only = true;
 
@@ -385,36 +397,22 @@ void Fl_Input_Browser::popup()
     }
 
     win->resize(X,Y,W,H);
+	win->layout();
     //int winW=W, winH=H;
     X=0,Y=0;
     win->box()->inset(X,Y,W,H);
     list->resize(X,Y,W,H-SIZE_GRIP);
 
-    list->value(item() ? list->Fl_Group::find(item()) : -1);
-    list->Fl_Group::focus(item() ? list->Fl_Group::find(item()) : -1);
-    list->make_item_visible();
-
     if(resize_only) return;
-
-    /*
-    list->layout();
-    if(!win->shown()) win->create();
-    win->step_divider(0.1);
-    win->animate(win->x(), win->y(), winW, 1,
-                 win->x(), win->y(), winW, winH);
-    win->resize(win->x(), win->y(), winW, winH);
-    */
 
     set_value();
     redraw(FL_DAMAGE_VALUE);
 
     win->exec(0, true);
-
-    delete win;
-    win=0;
+    win->hide();
 
     if(type()&NONEDITABLE) throw_focus();
-    else Fl::focus(input_);
+    else Fl::focus(input());
 
     clear_value();
     redraw(FL_DAMAGE_VALUE);

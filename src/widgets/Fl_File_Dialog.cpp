@@ -981,10 +981,11 @@ void Fl_File_Chooser::cb_location(Fl_Widget *w, void *d)
             FD->directory(filename);
             loc->value("");
         }
-        else if(FD->mode()<=Fl_File_Chooser::_SAVE)  {
+        else if(FD->mode()<=Fl_File_Chooser::_SAVE)  
+		{
             if(!fl_is_dir(filename) && (FD->mode()==Fl_File_Chooser::_DEFAULT ? fl_file_exists(filename) : true)) {
 
-                if(Fl::modal()==FD) {
+                if(Fl::modal()==FD->window()) {
                     if(FD->ok_button()) FD->ok_button()->do_callback();
                 }
                 else

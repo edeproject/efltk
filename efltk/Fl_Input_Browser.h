@@ -46,28 +46,27 @@ public:
     void hide_popup();
     virtual int popup(int x, int y, int w, int h) { Fl_Input_Browser::popup(); return Fl_Menu_::popup(x,y,w,h); }
 
+    virtual void draw();
     virtual int handle(int);
 
     void clear() { Fl_Menu_::clear(); item(0); }
 
-    void value(const char *v) { input_->value(v); }
-    const char *value() { return input_->value(); }
+    void value(const char *v) { input()->value(v); }
+    const char *value() { return input()->value(); }
 
-    Fl_Input *input() { return input_; }
-
-protected:
-    virtual void draw();
-
-    friend class ComboWindow;
-    friend class ComboBrowser;
+    Fl_Input *input() { return &m_input; }
+    
+private:
+	Fl_Input m_input;
 
     ComboWindow *win;
     ComboBrowser *list;
 
-    Fl_Input *input_;
-    bool over_now, over_last;
+    friend class ComboWindow;
+    friend class ComboBrowser;
 
-    static void input_cb(Fl_Input *in, void *d);
+    bool over_now, over_last;
+    static void input_cb(Fl_Input *in, Fl_Input_Browser *d);
 };
 
 #endif
