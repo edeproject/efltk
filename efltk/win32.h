@@ -58,8 +58,8 @@ inline Region XRectangleRegion(int x, int y, int w, int h) {
     return CreateRectRgn(x, y, x+w, y+h);
 }
 inline void XDestroyRegion(Region r) { DeleteObject(r); }
-inline int XOffsetRegion(Region r, int dx, int dy) { OffsetRgn(r, dx, dy); }
-inline int XSubtractRegion(Region a, Region b, Region ret) { CombineRgn(ret, a, b, RGN_DIFF); }
+inline int XOffsetRegion(Region r, int dx, int dy) { return OffsetRgn(r, dx, dy); }
+inline int XSubtractRegion(Region a, Region b, Region ret) { return CombineRgn(ret, a, b, RGN_DIFF); }
 inline void XClipBox(Region r, XRectangle* rect) {
     RECT win_rect; GetRgnBox(r, &win_rect);
     rect->x = win_rect.left;
