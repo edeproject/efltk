@@ -78,6 +78,9 @@ public:
     virtual bool load_data(Fl_Data_Source *ds);
     virtual bool save_data(Fl_Data_Source *ds) const;
 
+    uchar layout_spacing() { return m_layout_spacing; }
+    void layout_spacing(uchar offset) { m_layout_spacing = offset; }
+
 protected:
     void draw_child(Fl_Widget&) const;
     void update_child(Fl_Widget&) const;
@@ -85,6 +88,7 @@ protected:
     int* sizes();
 
 private:
+    uchar m_layout_spacing;
     int focus_;
 
     Fl_Widget_List array_;

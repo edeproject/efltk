@@ -52,9 +52,10 @@ Fl_Named_Style* group_style = &the_style;
 
 Fl_Group::Fl_Group(int X,int Y,int W,int H,const char *l)
 : Fl_Widget(X,Y,W,H,l),
-focus_(-1),
-resizable_(0),                   // fltk 1.0 used (this)
-data_source_(0L)
+    m_layout_spacing(1),
+    focus_(-1),
+    resizable_(0),                   // fltk 1.0 used (this)
+    data_source_(0L)
 {
     widget_type(GROUP_TYPE);
     style(::group_style);
@@ -423,6 +424,10 @@ void Fl_Group::layout()
         int ww = w(), hh = h();
         box()->inset(xx,yy,ww,hh);
 
+        int offset = m_layout_spacing;
+        xx+=offset; yy+=offset;
+        ww-=offset*2; hh-=offset*2;
+
         Fl_Widget*const* a = array_.data();
         Fl_Widget*const* e = a+children();
         while (a < e)
@@ -453,21 +458,21 @@ void Fl_Group::layout()
 
             case FL_ALIGN_LEFT:
                 o->resize(xx,yy,o->w(),hh);
-                xx += o->w();
-                ww -= o->w();
+                xx += o->w()+offset*2;
+                ww -= o->w()+offset*2;
                 break;
             case FL_ALIGN_RIGHT:
                 o->resize(xx+ww-o->w(),yy,o->w(),hh);
-                ww -= o->w();
+                ww -= o->w()+offset*2;
                 break;
             case FL_ALIGN_TOP:
                 o->resize(xx,yy,ww,o->h());
-                yy += o->h();
-                hh -= o->h();
+                yy += o->h()+offset*2;
+                hh -= o->h()+offset*2;
                 break;
             case FL_ALIGN_BOTTOM:
                 o->resize(xx,yy+hh-o->h(),ww,o->h());
-                hh -= o->h();
+                hh -= o->h()+offset*2;
                 break;
             case FL_ALIGN_CLIENT:
                 client = o;
