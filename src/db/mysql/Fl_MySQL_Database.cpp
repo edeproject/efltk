@@ -51,15 +51,13 @@ Fl_MySQL_Field::Fl_MySQL_Field(const char *name, short type)
             value.set_date(Fl_Date_Time(0.0));
             break;
 
-		case FIELD_TYPE_NULL:
-        case FIELD_TYPE_BLOB:
-            value.set_buffer(NULL,0);
+        case FIELD_TYPE_BLOB:			
+            value.set_buffer(NULL,0);			
             break;
 
 		default:
-		case FIELD_TYPE_STRING:
-            value.set_string("");
-            value.resize_buffer(256);
+		case FIELD_TYPE_STRING:			
+            value.set_string("");            
             break;        
     }
 }
@@ -271,9 +269,8 @@ void Fl_MySQL_Database::fetch_query(Fl_Query *query)
         fl_throw("Dataset isn't open");
 
     Fl_Data_Fields& fields = query_fields(query); 
-    unsigned    fieldCount = fields.count();
-
-    if (!fieldCount) {
+    unsigned fieldCount = fields.count();
+    if(!fieldCount) {
 		return;
 	}
 
@@ -305,14 +302,15 @@ void Fl_MySQL_Database::fetch_query(Fl_Query *query)
 			value.set_int(strtod(row[column], 0));
 			break;
 		
-		case VAR_BUFFER:
-			value.set_buffer(row[column], lengths[column]);
-			break;
-
 		case VAR_DATETIME:
 			value.set_date(str_to_date(row[column], field->col_type));
 			break;
 		
+		case VAR_BUFFER:
+			value.set_buffer(row[column], lengths[column]);
+			((char*)value.data())[lengths[column]] = '\0';
+			break;
+
 		case VAR_STRING:			
 		case VAR_TEXT:
 		default:
@@ -329,6 +327,7 @@ void Fl_MySQL_Database::fetch_query(Fl_Query *query)
 void Fl_MySQL_Database::close_query(Fl_Query *query)
 {
 	if(!query_active(query)) return;
+	printf("CLOSE %d\n", query_active(query));
 
 	MYSQL_RES *res = (MYSQL_RES *)query_handle(query);
 	if(res) mysql_free_result(res);		
@@ -483,3 +482,4 @@ void Fl_MySQL_Database::get_param(const Fl_Params &params, unsigned param_num, F
 		break;
     }
 }
+
