@@ -74,7 +74,7 @@ int Fl_ListView_Item::compare(Fl_ListView_Item *other, int column, int sort_type
     default:
         break;
     }
-    return abs_index()-other->abs_index();
+    return index()-other->index();
 }
 
 bool Fl_ListView_Item::selected() const
@@ -121,7 +121,7 @@ void Fl_ListView_Item::draw_cell(int col, int w, bool sel)
     Fl_Boxtype box = parent()->button_box();
     box->draw(0, 0, W, H, fl_inactive(parent()->button_color(), f), FL_INVISIBLE);
 
-    box->inset(X,Y,W,H);
+    box->inset(X, Y, W, H);
     fl_push_clip(X, Y, W, H);
 
     Fl_ListItem_Attr *a = (Fl_ListItem_Attr*)attr_list[col];
@@ -143,7 +143,7 @@ void Fl_ListView_Item::draw_cell(int col, int w, bool sel)
         //if(strchr(txt, '\n')) txt = fl_cut_multiline(txt, w-iw-6);
         //else txt = fl_cut_line(txt, w-iw-6);
 
-        fl_draw(txt, X, int(y-parent()->leading()-fl_height()/2), W-X, H, f&FL_ALIGN_MASK);
+		fl_draw(txt, X, 0, W-X, H, (f & FL_ALIGN_MASK) );
     }
     fl_pop_clip();
 }

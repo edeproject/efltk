@@ -81,9 +81,11 @@ public:
     void copy_label(int col, const char *txt) { label(col, txt); }
 
     void image(Fl_Image *im) { image_ = im; }
+    void image(Fl_Image &im) { image_ = &im; }
     Fl_Image *image() { return image_; }
     const Fl_Image *image() const { return image_; }
-    void image(int col, Fl_Image &im) { image(&im); }
+    void image(int col, Fl_Image &im) { image(im); }
+	void image(int col, Fl_Image *im) { image(im); }
 
     int y() const { return y_; }
     void y(int Y) { y_ = Y; }
@@ -93,10 +95,6 @@ public:
 	// Current index on the list
     void index(int i) { index_ = i; }
     int index() const { return index_; }
-
-    // Returns absolute index, i.e. adding order
-    void abs_index(int i) { abs_index_ = i; }
-    int abs_index() const { return abs_index_; }
 
     virtual int compare(Fl_ListView_Item *other, int column, int sort_type);
 
@@ -109,7 +107,8 @@ protected:
 
 private:
     int y_, h_;
-    int index_, abs_index_;
+
+    unsigned index_;
     uchar damage_;
     Fl_Image *image_;
     void *user_data_;

@@ -188,19 +188,16 @@ void Fl_ListView::draw_row(int x, int y, int w, int h, Fl_ListView_Item *widget,
     } else if(draw_stripes_) {
 
         Fl_Color c0 = color();
-        Fl_Color c1 = button_color();
-        int XX=1;
-        int widget_n = widget->index();;
-        for (int j=0; j<=widget_n; j++) XX ^= widget_n+1;
-        if (XX & 1 && c1 != c0) {
+        Fl_Color c1 = button_color();        
+        if(widget->index() & 1 && c1 != c0) {
             // draw odd-numbered items with a dark stripe, plus contrast-enhancing
             // pixel rows on top and bottom:
             fl_color(c1);
             fl_rectf(x, y, w, h);
-            fl_color(c0 <= FL_LIGHT1 ? c1 : Fl_Color(FL_LIGHT1));
-            //fl_color(fl_color_average(c1, c0, 1.9));
-            fl_line(x, y, w, y);
-            fl_line(x, h-1, w, h-1);
+            			
+            fl_color(fl_lighter(button_color()));
+            fl_line(x, y, w, y);			
+            fl_line(x, y+h-1, w, y+h-1);
         } else {
             fl_color(c0);
             fl_rectf(x, y, w, h);
@@ -258,6 +255,7 @@ void Fl_ListView::draw_clip(int x, int y, int w, int h) const
     for(uint n=find_safe_top(); n < children(); n++)
     {
         widget = child(n);
+
         if(widget->y()-yposition_ < -widget->h()) continue;
         if(widget->y()-yposition_ > y+h) break;
 
@@ -415,28 +413,20 @@ void Fl_ListView::layout_scrollbars()
     if(children()>0) hscrollbar.linesize(child(0)->h());
 }
 
-void Fl_ListView::calc_index() const
+unsigned Fl_ListView::find_safe_top() const
 {
-    // THIS IS SLOW!!!!
-    // only multi-moving calls this
-    uint a; int wy=0;
-    Fl_ListView_Item *widget = 0;
-    for(a=0; a < children(); a++) {
-        widget = (Fl_ListView_Item *)child(a);
-        widget->index(a);
-        widget->y(wy);
-        wy+=widget->h();
-    }
-}
+    if(!children() || yposition_<=0) return 0;
 
-uint Fl_ListView::find_safe_top() const
-{
-    // THIS IS LAME!!! :) but fast...
-    if(!children() || yposition_<100) return 0;
-    uint avg_h = int(total_height/children());
-    int n = yposition_/avg_h-100;
-    if(n<0) n=0;
-    return (uint)n;
+	unsigned idx = 0;
+	for(unsigned n=m_ypos_lookup.size()-1; n>=0; n--) {
+		Fl_ListView_Item *i = child(m_ypos_lookup[n]);
+		if(i->y() < yposition_) {
+			idx = m_ypos_lookup[n];
+			break;
+		}
+	}
+	
+	return idx;
 }
 
 void Fl_ListView::layout()
@@ -468,32 +458,29 @@ void Fl_ListView::layout()
         }
     }    
 
-    if(children()>0) {
-        uint a;
-        int widgety;
-        // count all the items scrolled off the top:
-        if(calc_total_h) {
-            a = 0;
-            widgety=0;
-        } else {
-            a = find_safe_top();
-            widgety=child(a)->y();
-        }
+    if(children()>0 && calc_total_h) {
+        
+        int widgety=0;
         Fl_ListView_Item *widget = 0;
-        for(; a < children(); a++)
+
+		m_ypos_lookup.clear();
+		m_ypos_lookup.append(0);
+
+        for(uint a=0; a < children(); a++)
         {
+			if(a%1000 == 0) {				
+				m_ypos_lookup.append(a);
+			}
             widget = (Fl_ListView_Item *)child(a);
             widget->y(widgety);
             widget->layout();
 
             widgety+=widget->h();
 
-            if(calc_total_h) widget->index(a);
-            if(!calc_total_h && widgety>Y+H+yposition_) break;
+            widget->index(a);
         }	
 
-        if(calc_total_h) 
-            total_height = widgety;
+        total_height = widgety;
         calc_total_h = false;
 
         if(find_def) find_default_sizes();
@@ -637,31 +624,23 @@ int Fl_ListView::handle(int event)
                     {
                         if(sel_item)
                         {
-                        /*if(selection.size() == 1) //Move one
-                        {
-                            //OPTIMIZE THIS!!!
-                        } else
-                        */
-                        //if(selection.size() > 1) //Move many
                             if(selection.size() > 0) //Move many
-                            {
-                            //OPTIMIZE THIS ALSO!!!
-                                if(my < sel_item->y()-2) //UP
+                            {								
+								int offset = i->h()-sel_item->h()/2;
+                                if(my < sel_item->y()-offset) //UP
                                 {
-                                    int cnt = sel_item->index() - i->index();
-                                    if(selection.item(selection.size()-1)->index()-cnt >= 0) {
-                                        moveselection_up(cnt);
-                                        calc_index();
+                                    int cnt = sel_item->index() - i->index();										
+                                    if(selection.item(selection.size()-1)->index()-cnt >= 0) {										
+                                        moveselection_up(cnt);                                        
                                         show_item(sel_item);
                                         redraw(FL_DAMAGE_CONTENTS);
                                     }
                                 }
-                                else if(my > sel_item->y()+sel_item->h()+2) //DOWN
+                                else if(my > sel_item->y()+sel_item->h()+offset) //DOWN
                                 {
-                                    int cnt = i->index() - sel_item->index();
+                                    int cnt = i->index() - sel_item->index();									
                                     if(selection.item(0)->index()+cnt < (int)children()) {
-                                        moveselection_down(cnt);
-                                        calc_index();
+                                        moveselection_down(cnt);                                        
                                         show_item(sel_item);
                                         redraw(FL_DAMAGE_CONTENTS);
                                     }
@@ -928,22 +907,71 @@ void Fl_ListView::sort_selection() {
 }
 
 void Fl_ListView::moveselection_up(int dy)
-{
-    uint n=selection.size();
+{	
+    uint n=selection.size();	
+	Fl_ListView_Item *i;
+
     while(n--)
     {
-        Fl_ListView_Item *i = (Fl_ListView_Item *)selection.item(n);
-        insert(*i, i->index()-dy);
+		i = selection[n];
+		items.remove(i->index());
+		items.insert(i->index()-dy, i);
     }
+
+	// Update Y positions and indexes for safe range, after move.
+	// -10 and +10, only to be sure everything is correct
+	int range_start = selection[selection.size()-1]->index()-10;
+	int range_end	= selection[0]->index()+10;
+	int y, idx;
+
+	if(range_start<0) {
+		range_start=0;
+		y = 0; idx = 0;
+	} else {
+		y = child(range_start)->y();
+		idx = child(range_start)->index();
+	}
+	if((unsigned)range_end>items.size()) range_end=items.size();
+			
+	for(n=range_start; n<(unsigned)range_end; n++) {		
+		child(n)->y(y);
+		child(n)->index(idx);
+		y += child(n)->h();
+		idx++;
+	}
 }
 
 void Fl_ListView::moveselection_down(int dy)
 {
+	Fl_ListView_Item *i;
     for(uint n=0; n<selection.size(); n++)
-    {
-        Fl_ListView_Item *i = (Fl_ListView_Item *)selection.item(n);
-        insert(*i, i->index()+dy+1);
+    {		
+		i = selection[n];
+		items.remove(i->index());
+		items.insert(i->index()+dy, i);
     }
+
+	// Update Y positions and indexes for safe range, after move.
+	// -10 and +10, only to be sure everything is correct
+	int range_start = selection[selection.size()-1]->index()-10;
+	int range_end	= selection[0]->index()+10;
+	int y, idx;
+
+	if(range_start<=0) {
+		range_start=0;
+		y = 0; idx = 0;
+	} else {
+		y = child(range_start)->y();
+		idx = child(range_start)->index();
+	}
+	if((unsigned)range_end>items.size()) range_end=items.size();
+		
+	for(n=range_start; n<(unsigned)range_end; n++) {		
+		child(n)->y(y);
+		child(n)->index(idx);
+		y += child(n)->h();
+		idx++;
+	}
 }
 
 void Fl_ListView::remove_selection()
@@ -1010,7 +1038,6 @@ void Fl_ListView::remove(int index)
     Fl_ListView_Item *w = child(index);
     if(w==item_) item_ = 0;
 
-    w->abs_index(-1);
     w->parent(0);
     items.remove(index);
 
@@ -1028,7 +1055,6 @@ void Fl_ListView::insert(Fl_ListView_Item  &o, uint index)
         o.parent()->remove(n);
     }
     o.parent(this);
-    o.abs_index(children());
     if(children() == 0) {
         // allocate for 1 child
         items.append(&o);

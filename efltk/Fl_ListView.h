@@ -33,15 +33,15 @@ public:
     static Fl_ListView *current;
 
     enum { // values for type()
-        HORIZONTAL = 1,
-        VERTICAL = 2,
-        BOTH = 3,
-        ALWAYS_ON = 4,
-        HORIZONTAL_ALWAYS = 5,
-        VERTICAL_ALWAYS = 6,
-        BOTH_ALWAYS = 7,
-        MULTI_SELECTION = 8,
-        MOVE_SELECTION  = 16
+        HORIZONTAL			= 1,
+        VERTICAL			= 2,
+        BOTH				= 3,
+        ALWAYS_ON			= 4,
+        HORIZONTAL_ALWAYS	= 5,
+        VERTICAL_ALWAYS		= 6,
+        BOTH_ALWAYS			= 7,
+        MULTI_SELECTION		= 8,
+        MOVE_SELECTION		= 16
     };
 
     enum {
@@ -90,11 +90,13 @@ public:
     void column_image(int c, Fl_Image *im) { _header->column_image(c, im); }
     void column_image(int c, Fl_Image &im) { _header->column_image(c, im); }
 
-    bool move()   const { return ((type() & MOVE_SELECTION)==MOVE_SELECTION);  }
-    bool multi()  const { return ((type() & MULTI_SELECTION)==MULTI_SELECTION); }
-    bool single() const { return !(type() & MULTI_SELECTION);}
+    bool multi() const { return ((type() & MULTI_SELECTION)==MULTI_SELECTION); }
+    void multi(bool val) { if(val) type(type()|MULTI_SELECTION); else type(type()&~MULTI_SELECTION); }
 
-    void calc_totalheight() { calc_total_h = true; }
+    bool move() const { return ((type() & MOVE_SELECTION)==MOVE_SELECTION); }
+    void move(bool val) { if(val) type(type()|MOVE_SELECTION); else type(type()&~MOVE_SELECTION); }
+
+    void recalc_totalheight() { calc_total_h = true; relayout(); }
     int totalheight() const { return total_height; }
 
     int	yposition() const {return yposition_;}
@@ -162,9 +164,6 @@ protected:
     static void hscrollbar_cb(Fl_Widget*, void*);
     static void vscrollbar_cb(Fl_Widget*, void*);
 
-    void calc_index() const;
-    uint find_safe_top() const;
-
     Fl_ListItem_List items;
     Fl_ListItem_List selection;
 
@@ -193,6 +192,9 @@ protected:
     bool find_def; // Set when needs to find default colmn sizes (called by layout)
 
     int sort_type_;
+    
+    uint find_safe_top() const;
+	Fl_Int_List m_ypos_lookup;
 };
 
 #endif

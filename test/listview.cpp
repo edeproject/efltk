@@ -4,7 +4,7 @@
 #include <efltk/Fl_Button.h>
 #include <efltk/Fl_ListView.h>
 #include <efltk/Fl_ListView_Item.h>
-#include <efltk/Fl_Image.h>
+#include <efltk/Fl_Pixmap.h>
 #include <efltk/Fl_Date_Time.h>
 #include <efltk/x.h>
 
@@ -67,8 +67,8 @@ static char * ball_xpm[] = {
 "    .+@##@+.    ",
 "                "};
 
-static Fl_Image *im1;
-static Fl_Image *im2;
+static Fl_Pixmap im1(ball_xpm);
+static Fl_Pixmap im2(blue_ball_xpm);
 
 void callback(Fl_ListView *l, void *)
 {
@@ -82,32 +82,19 @@ void callback(Fl_ListView *l, void *)
     }
 }
 
-void cb_multi(Fl_Widget *w, void *d)
+void cb_multi(Fl_Widget *w, Fl_ListView *l)
 {
-    Fl_ListView *l = (Fl_ListView *)d;
-    if(w->value())
-        l->type(l->type() | Fl_ListView::MULTI_SELECTION);
-    else
-        l->type(l->type() &~ Fl_ListView::MULTI_SELECTION);
+	l->multi(w->value());
 }
 
-void cb_move(Fl_Widget *w, void *d)
+void cb_move(Fl_Widget *w, Fl_ListView *l)
 {
-    Fl_ListView *l = (Fl_ListView *)d;
-    if(w->value())
-        l->type(l->type() | Fl_ListView::MOVE_SELECTION);
-    else
-        l->type(l->type() &~ Fl_ListView::MOVE_SELECTION);
+	l->move(w->value());
 }
 
-void cb_stripes(Fl_Widget *w, void *d)
+void cb_stripes(Fl_Widget *w, Fl_ListView *l)
 {
-    Fl_ListView *l = (Fl_ListView *)d;
-    if(w->value())
-        l->draw_stripes(true);
-    else
-        l->draw_stripes(false);
-
+    l->draw_stripes(w->value());
     l->redraw();
 }
 
@@ -143,16 +130,15 @@ void make_listview_ext()
     l->column_flags(2, FL_ALIGN_CENTER);
     l->column_flags(3, FL_ALIGN_RIGHT);
 
-    Fl_Date_Time start = Fl_Date_Time::Now();
+    long start = Fl::ticks();
 
     // Add 1000 items
     for(int a=0; a<1000; a++) {
         Fl_ListView_ItemExt *i = new Fl_ListView_ItemExt(0, "Some Text", "COL 3", "-----------Long column-----------");
 
         char tmp[32];
-        sprintf(tmp, "Column1: (%d)", a);
-        // Copy tmp to column one, ListView will deallocate it.
-        i->copy_label(0, tmp);
+        sprintf(tmp, "Column1: (%d)", a);        
+        i->label(0, tmp);
 
         // Set some alignment flags
         i->flags(0, FL_ALIGN_CENTER);
@@ -186,23 +172,22 @@ void make_listview_ext()
         i->image(2, im2);
     }
 
-    Fl_Date_Time end = Fl_Date_Time::Now();
-    double t = double(end - start) * 24 * 3600;
-    printf("Fl_ListView with extended 1000 items: Duration: %f\n", t);
+    long end = Fl::ticks();    
+    printf("Fl_ListView with extended 1000 items: Duration: %d ms\n", end-start);
 
     l->end();
 
     Fl_Button *but = new Fl_Button(10, 265, 50, 20, "Move");
     but->type(Fl_Button::TOGGLE);
-    but->callback(cb_move, l);
+    but->callback((Fl_Callback*)cb_move, l);
 
     but = new Fl_Button(70, 265, 50, 20, "Multi");
     but->type(Fl_Button::TOGGLE);
-    but->callback(cb_multi, l);
+    but->callback((Fl_Callback*)cb_multi, l);
 
     but = new Fl_Button(190, 265, 50, 20, "Stripes");
     but->type(Fl_Button::TOGGLE);
-    but->callback(cb_stripes, l);
+    but->callback((Fl_Callback*)cb_stripes, l);
 
     w->resizable(l);
     w->end();
@@ -216,6 +201,7 @@ void make_listview()
 
     Fl_ListView *l = new Fl_ListView(10,20,280,240, "LIST VIEW: Normal items");
     //l->header()->hide();
+	//l->header()->h(30);
     l->callback((Fl_Callback*)callback);
 
     // Add 4 cols
@@ -231,36 +217,33 @@ void make_listview()
 
     l->column_image(0, im1);
 
-    Fl_Date_Time start = Fl_Date_Time::Now();
+    long start = Fl::ticks();
 
     // Add 1000 items
     for(int a=0; a<1000; a++) {
         Fl_ListView_Item *i = new Fl_ListView_Item(0, "Some Text", "COL 3", "-----------Long column-----------");
         i->image(im2);
-
         char tmp[32];
-        sprintf(tmp, "Column1: (%d)", a);
-        // Copy tmp to column one, ListView will deallocate it.
-        i->copy_label(0, tmp);
+        sprintf(tmp, "Column1: (%d)", a);        
+        i->label(0, tmp);
     }
 
-    Fl_Date_Time end = Fl_Date_Time::Now();
-    double t = double(end - start) * 24 * 3600;
-    printf("Fl_ListView with normal 1000 items: Duration: %f\n", t);
+	long end = Fl::ticks();    
+    printf("Fl_ListView with normal 1000 items: Duration: %d ms\n", end-start);
  
     l->end();
 
     Fl_Button *but = new Fl_Button(10, 265, 50, 20, "Move");
     but->type(Fl_Button::TOGGLE);
-    but->callback(cb_move, l);
+    but->callback((Fl_Callback*)cb_move, l);
 
     but = new Fl_Button(70, 265, 50, 20, "Multi");
     but->type(Fl_Button::TOGGLE);
-    but->callback(cb_multi, l);
+    but->callback((Fl_Callback*)cb_multi, l);
 
     but = new Fl_Button(190, 265, 50, 20, "Stripes");
     but->type(Fl_Button::TOGGLE);
-    but->callback(cb_stripes, l);
+    but->callback((Fl_Callback*)cb_stripes, l);
 
     w->resizable(l);
     w->end();
@@ -270,16 +253,8 @@ void make_listview()
 
 int main()
 {
-    im1 = Fl_Image::read_xpm(0, ball_xpm);
-    im2 = Fl_Image::read_xpm(0, blue_ball_xpm);
-
     make_listview();
     make_listview_ext();
 
-    Fl::run();
-
-    delete im1;
-    delete im2;
-
-    return 0;
+    return Fl::run();
 }
