@@ -74,8 +74,8 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "emulatorDbg"
-# PROP Intermediate_Dir "emulatorDbg"
+# PROP Output_Dir "emulatormenuDbg"
+# PROP Intermediate_Dir "emulatormenuDbg"
 # PROP CPU_ID "{32E52003-403E-442D-BE48-DE10F8C6131D}"
 # PROP Platform_ID "{8A9A2F80-6887-11D3-842E-005004848CBA}"
 # PROP Ignore_Export_Lib 0
@@ -248,7 +248,6 @@ DEP_CPP_MENUB=\
 	"..\efltk\Fl_Box.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Choice.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -296,6 +295,7 @@ DEP_CPP_MENUB=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_MENUB=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 

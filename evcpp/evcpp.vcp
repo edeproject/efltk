@@ -203,6 +203,7 @@ DEP_CPP_FILEN=\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
 	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Debug"
@@ -267,6 +268,7 @@ DEP_CPP_FILENA=\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
 	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Debug"
@@ -589,6 +591,7 @@ DEP_CPP_FL_CP=\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -606,6 +609,7 @@ DEP_CPP_FL_CP=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\Fl_Window.h"\
+	"..\efltk\Fl_WM.h"\
 	"..\efltk\win32.h"\
 	"..\efltk\x.h"\
 	"..\efltk\Xutf8.h"\
@@ -630,7 +634,6 @@ DEP_CPP_FL_CP=\
 	"..\efltk\filename.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -665,6 +668,7 @@ DEP_CPP_FL_CP=\
 	".\config.h"\
 	
 NODEP_CPP_FL_CP=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	"..\src\core\Fl_mac.cpp"\
 	"..\src\wcelib\include\sys\time.h"\
@@ -724,6 +728,7 @@ DEP_CPP_FL_AB=\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
 	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Debug"
@@ -837,6 +842,7 @@ DEP_CPP_FL_ADJ=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -874,7 +880,6 @@ DEP_CPP_FL_ADJ=\
 	"..\efltk\Fl_Adjuster.h"\
 	"..\efltk\Fl_Bitmap.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -906,6 +911,7 @@ DEP_CPP_FL_ADJ=\
 	"..\src\widgets\slowarrow.h"\
 	
 NODEP_CPP_FL_ADJ=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -930,7 +936,6 @@ DEP_CPP_FL_AL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Align_Group.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -950,6 +955,9 @@ DEP_CPP_FL_AL=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	
+NODEP_CPP_FL_AL=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -962,6 +970,7 @@ DEP_CPP_FL_AL=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -983,7 +992,6 @@ DEP_CPP_FL_AL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Align_Group.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -1003,6 +1011,9 @@ DEP_CPP_FL_AL=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	
+NODEP_CPP_FL_AL=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -1010,7 +1021,6 @@ DEP_CPP_FL_AL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Align_Group.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -1029,6 +1039,9 @@ DEP_CPP_FL_AL=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
+	
+NODEP_CPP_FL_AL=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -1168,6 +1181,7 @@ DEP_CPP_FL_ARC=\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
 	
 NODEP_CPP_FL_ARC=\
 	"..\efltk\mac.h"\
@@ -1235,7 +1249,6 @@ DEP_CPP_FL_ARG=\
 	"..\efltk\filename.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -1263,6 +1276,7 @@ DEP_CPP_FL_ARG=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_ARG=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -1278,6 +1292,7 @@ DEP_CPP_FL_ARG=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -1298,6 +1313,7 @@ DEP_CPP_FL_ARG=\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
 	
 NODEP_CPP_FL_ARG=\
 	"..\efltk\mac.h"\
@@ -1310,7 +1326,6 @@ DEP_CPP_FL_ARG=\
 	"..\efltk\filename.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -1338,6 +1353,7 @@ DEP_CPP_FL_ARG=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_ARG=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -1348,7 +1364,6 @@ DEP_CPP_FL_ARG=\
 	"..\efltk\filename.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -1376,6 +1391,7 @@ DEP_CPP_FL_ARG=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_ARG=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -1406,6 +1422,7 @@ DEP_CPP_FL_AS=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -1449,7 +1466,6 @@ DEP_CPP_FL_AS=\
 	"..\efltk\Fl_Box.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -1486,6 +1502,7 @@ DEP_CPP_FL_AS=\
 	".\config.h"\
 	
 NODEP_CPP_FL_AS=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -1515,7 +1532,6 @@ DEP_CPP_FL_BA=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Bar.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -1534,6 +1550,9 @@ DEP_CPP_FL_BA=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	
+NODEP_CPP_FL_BA=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -1546,6 +1565,7 @@ DEP_CPP_FL_BA=\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -1568,7 +1588,6 @@ DEP_CPP_FL_BA=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Bar.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -1587,6 +1606,9 @@ DEP_CPP_FL_BA=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	
+NODEP_CPP_FL_BA=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -1595,7 +1617,6 @@ DEP_CPP_FL_BA=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Bar.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -1613,6 +1634,9 @@ DEP_CPP_FL_BA=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
+	
+NODEP_CPP_FL_BA=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -1677,6 +1701,7 @@ DEP_CPP_FL_BI=\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
 	
 NODEP_CPP_FL_BI=\
 	"..\efltk\mac.h"\
@@ -2116,7 +2141,6 @@ DEP_CPP_FL_BO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Box.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -2133,6 +2157,9 @@ DEP_CPP_FL_BO=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	
+NODEP_CPP_FL_BO=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -2144,6 +2171,7 @@ DEP_CPP_FL_BO=\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -2163,7 +2191,6 @@ DEP_CPP_FL_BO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Box.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -2180,6 +2207,9 @@ DEP_CPP_FL_BO=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	
+NODEP_CPP_FL_BO=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -2187,7 +2217,6 @@ DEP_CPP_FL_BO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Box.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -2203,6 +2232,9 @@ DEP_CPP_FL_BO=\
 	"..\efltk\Fl_Style.h"\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
+	
+NODEP_CPP_FL_BO=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -2217,7 +2249,6 @@ SOURCE=..\src\core\Fl_Boxtype.cpp
 DEP_CPP_FL_BOX=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -2242,6 +2273,7 @@ DEP_CPP_FL_BOX=\
 	".\config.h"\
 	
 NODEP_CPP_FL_BOX=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -2255,6 +2287,7 @@ DEP_CPP_FL_BOX=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -2282,7 +2315,6 @@ NODEP_CPP_FL_BOX=\
 DEP_CPP_FL_BOX=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -2307,6 +2339,7 @@ DEP_CPP_FL_BOX=\
 	".\config.h"\
 	
 NODEP_CPP_FL_BOX=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -2315,7 +2348,6 @@ NODEP_CPP_FL_BOX=\
 DEP_CPP_FL_BOX=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -2340,6 +2372,7 @@ DEP_CPP_FL_BOX=\
 	".\config.h"\
 	
 NODEP_CPP_FL_BOX=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -2358,7 +2391,6 @@ DEP_CPP_FL_BR=\
 	"..\efltk\Fl_Bitmap.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Browser.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -2393,6 +2425,7 @@ DEP_CPP_FL_BR=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_BR=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -2409,6 +2442,7 @@ DEP_CPP_FL_BR=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -2449,7 +2483,6 @@ DEP_CPP_FL_BR=\
 	"..\efltk\Fl_Bitmap.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Browser.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -2484,6 +2517,7 @@ DEP_CPP_FL_BR=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_BR=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -2495,7 +2529,6 @@ DEP_CPP_FL_BR=\
 	"..\efltk\Fl_Bitmap.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Browser.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -2530,6 +2563,7 @@ DEP_CPP_FL_BR=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_BR=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -2547,7 +2581,6 @@ DEP_CPP_FL_BU=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -2577,6 +2610,7 @@ DEP_CPP_FL_BU=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_BU=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -2592,6 +2626,7 @@ DEP_CPP_FL_BU=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -2626,7 +2661,6 @@ DEP_CPP_FL_BU=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -2656,6 +2690,7 @@ DEP_CPP_FL_BU=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_BU=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -2666,7 +2701,6 @@ DEP_CPP_FL_BU=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -2696,6 +2730,7 @@ DEP_CPP_FL_BU=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_BU=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -2725,6 +2760,7 @@ DEP_CPP_FL_CA=\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -2755,7 +2791,6 @@ DEP_CPP_FL_CA=\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
 	"..\efltk\Fl_Calendar.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -2780,6 +2815,9 @@ DEP_CPP_FL_CA=\
 	"..\src\core\fl_internal.h"\
 	".\config.h"\
 	
+NODEP_CPP_FL_CA=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -2802,11 +2840,27 @@ SOURCE=..\src\core\fl_call_main.c
 
 !IF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Release"
 
+DEP_CPP_FL_CAL=\
+	".\config.h"\
+	
+
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
+
+DEP_CPP_FL_CAL=\
+	".\config.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Debug"
 
+DEP_CPP_FL_CAL=\
+	".\config.h"\
+	
+
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
+
+DEP_CPP_FL_CAL=\
+	".\config.h"\
+	
 
 !ENDIF 
 
@@ -2822,7 +2876,6 @@ DEP_CPP_FL_CH=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Check_Button.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -2843,6 +2896,9 @@ DEP_CPP_FL_CH=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	
+NODEP_CPP_FL_CH=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -2857,6 +2913,7 @@ DEP_CPP_FL_CH=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -2879,7 +2936,6 @@ DEP_CPP_FL_CH=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Check_Button.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -2900,6 +2956,9 @@ DEP_CPP_FL_CH=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	
+NODEP_CPP_FL_CH=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -2908,7 +2967,6 @@ DEP_CPP_FL_CH=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Check_Button.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -2928,6 +2986,9 @@ DEP_CPP_FL_CH=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
+	
+NODEP_CPP_FL_CH=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -2943,7 +3004,6 @@ DEP_CPP_FL_CHO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Choice.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -2966,6 +3026,9 @@ DEP_CPP_FL_CHO=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	
+NODEP_CPP_FL_CHO=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -2979,6 +3042,7 @@ DEP_CPP_FL_CHO=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -3002,7 +3066,6 @@ DEP_CPP_FL_CHO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Choice.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -3025,6 +3088,9 @@ DEP_CPP_FL_CHO=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	
+NODEP_CPP_FL_CHO=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -3032,7 +3098,6 @@ DEP_CPP_FL_CHO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Choice.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -3054,6 +3119,9 @@ DEP_CPP_FL_CHO=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
+	
+NODEP_CPP_FL_CHO=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -3068,7 +3136,6 @@ SOURCE=..\src\core\fl_clip.cpp
 DEP_CPP_FL_CL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -3095,6 +3162,7 @@ DEP_CPP_FL_CL=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_CL=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -3108,6 +3176,7 @@ DEP_CPP_FL_CL=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -3127,6 +3196,7 @@ DEP_CPP_FL_CL=\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
 	
 NODEP_CPP_FL_CL=\
 	"..\efltk\mac.h"\
@@ -3137,7 +3207,6 @@ NODEP_CPP_FL_CL=\
 DEP_CPP_FL_CL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -3164,6 +3233,7 @@ DEP_CPP_FL_CL=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_CL=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -3172,7 +3242,6 @@ NODEP_CPP_FL_CL=\
 DEP_CPP_FL_CL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -3199,6 +3268,7 @@ DEP_CPP_FL_CL=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_CL=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -3215,7 +3285,6 @@ DEP_CPP_FL_CLO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Clock.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -3235,6 +3304,7 @@ DEP_CPP_FL_CLO=\
 	"..\efltk\Fl_Widget.h"\
 	
 NODEP_CPP_FL_CLO=\
+	"..\efltk\Fl_Callback.h"\
 	"..\src\wcelib\include\sys\time.h"\
 	
 
@@ -3250,6 +3320,7 @@ DEP_CPP_FL_CLO=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -3261,6 +3332,8 @@ DEP_CPP_FL_CLO=\
 	"..\efltk\Fl_Style.h"\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
+	"..\efltk\math.h"\
+	".\config.h"\
 	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Debug"
@@ -3269,7 +3342,6 @@ DEP_CPP_FL_CLO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Clock.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -3289,6 +3361,7 @@ DEP_CPP_FL_CLO=\
 	"..\efltk\Fl_Widget.h"\
 	
 NODEP_CPP_FL_CLO=\
+	"..\efltk\Fl_Callback.h"\
 	"..\src\wcelib\include\sys\time.h"\
 	
 
@@ -3298,7 +3371,6 @@ DEP_CPP_FL_CLO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Clock.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -3318,6 +3390,7 @@ DEP_CPP_FL_CLO=\
 	"..\efltk\Fl_Widget.h"\
 	
 NODEP_CPP_FL_CLO=\
+	"..\efltk\Fl_Callback.h"\
 	"..\src\wcelib\include\sys\time.h"\
 	
 
@@ -3450,6 +3523,7 @@ DEP_CPP_FL_COL=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Float_Input.h"\
@@ -3486,7 +3560,6 @@ DEP_CPP_FL_COL=\
 	"..\efltk\Fl_Box.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Choice.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Color_Chooser.h"\
@@ -3520,6 +3593,9 @@ DEP_CPP_FL_COL=\
 	"..\efltk\math.h"\
 	"..\src\core\fl_internal.h"\
 	".\config.h"\
+	
+NODEP_CPP_FL_COL=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
@@ -3672,7 +3748,6 @@ DEP_CPP_FL_CU=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -3699,6 +3774,7 @@ DEP_CPP_FL_CU=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_CU=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -3713,6 +3789,7 @@ DEP_CPP_FL_CU=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -3732,6 +3809,7 @@ DEP_CPP_FL_CU=\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
 	
 NODEP_CPP_FL_CU=\
 	"..\efltk\mac.h"\
@@ -3743,7 +3821,6 @@ DEP_CPP_FL_CU=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -3770,6 +3847,7 @@ DEP_CPP_FL_CU=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_CU=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -3779,7 +3857,6 @@ DEP_CPP_FL_CU=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -3806,6 +3883,7 @@ DEP_CPP_FL_CU=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_CU=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -3910,6 +3988,7 @@ DEP_CPP_FL_DA=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Ptr_List.h"\
@@ -3955,7 +4034,6 @@ SOURCE=..\src\core\Fl_Data_Source.cpp
 DEP_CPP_FL_DAT=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -3974,6 +4052,9 @@ DEP_CPP_FL_DAT=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	
+NODEP_CPP_FL_DAT=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -3984,6 +4065,7 @@ DEP_CPP_FL_DAT=\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -4004,7 +4086,6 @@ DEP_CPP_FL_DAT=\
 DEP_CPP_FL_DAT=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -4023,13 +4104,15 @@ DEP_CPP_FL_DAT=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	
+NODEP_CPP_FL_DAT=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
 DEP_CPP_FL_DAT=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -4047,6 +4130,88 @@ DEP_CPP_FL_DAT=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
+	
+NODEP_CPP_FL_DAT=\
+	"..\efltk\Fl_Callback.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\db\Fl_Database.cpp
+
+!IF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Release"
+
+DEP_CPP_FL_DATA=\
+	"..\efltk\db\Fl_Database.h"\
+	"..\efltk\db\Fl_Params.h"\
+	"..\efltk\db\Fl_Query.h"\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_Variant.h"\
+	
+
+!ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
+
+DEP_CPP_FL_DATA=\
+	"..\efltk\db\Fl_Database.h"\
+	"..\efltk\db\Fl_Params.h"\
+	"..\efltk\db\Fl_Query.h"\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_Variant.h"\
+	
+
+!ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Debug"
+
+DEP_CPP_FL_DATA=\
+	"..\efltk\db\Fl_Database.h"\
+	"..\efltk\db\Fl_Params.h"\
+	"..\efltk\db\Fl_Query.h"\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_Variant.h"\
+	
+
+!ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
+
+DEP_CPP_FL_DATA=\
+	"..\efltk\db\Fl_Database.h"\
+	"..\efltk\db\Fl_Params.h"\
+	"..\efltk\db\Fl_Query.h"\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_Variant.h"\
 	
 
 !ENDIF 
@@ -4120,7 +4285,6 @@ DEP_CPP_FL_DATE_=\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
 	"..\efltk\Fl_Calendar.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -4158,6 +4322,7 @@ DEP_CPP_FL_DATE_=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_DATE_=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -4175,6 +4340,7 @@ DEP_CPP_FL_DATE_=\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\Fl_Date_Time_Input.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -4217,7 +4383,6 @@ DEP_CPP_FL_DATE_=\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
 	"..\efltk\Fl_Calendar.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -4255,6 +4420,7 @@ DEP_CPP_FL_DATE_=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_DATE_=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -4266,7 +4432,6 @@ DEP_CPP_FL_DATE_=\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
 	"..\efltk\Fl_Calendar.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -4304,6 +4469,7 @@ DEP_CPP_FL_DATE_=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_DATE_=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -4320,7 +4486,6 @@ DEP_CPP_FL_DI=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -4347,6 +4512,9 @@ DEP_CPP_FL_DI=\
 	"..\src\wcelib\include\wince.h"\
 	".\config.h"\
 	
+NODEP_CPP_FL_DI=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -4360,6 +4528,7 @@ DEP_CPP_FL_DI=\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\Fl_Dial.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -4387,7 +4556,6 @@ DEP_CPP_FL_DI=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -4414,6 +4582,9 @@ DEP_CPP_FL_DI=\
 	"..\src\wcelib\include\wince.h"\
 	".\config.h"\
 	
+NODEP_CPP_FL_DI=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -4421,7 +4592,6 @@ DEP_CPP_FL_DI=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -4447,6 +4617,9 @@ DEP_CPP_FL_DI=\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
 	".\config.h"\
+	
+NODEP_CPP_FL_DI=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -4464,7 +4637,6 @@ DEP_CPP_FL_DIA=\
 	"..\efltk\fl_ask.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -4501,6 +4673,7 @@ DEP_CPP_FL_DIA=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_DIA=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -4520,6 +4693,7 @@ DEP_CPP_FL_DIA=\
 	"..\efltk\Fl_Dialog_Data_Source.h"\
 	"..\efltk\Fl_Double_Window.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -4559,7 +4733,6 @@ DEP_CPP_FL_DIA=\
 	"..\efltk\fl_ask.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -4596,6 +4769,7 @@ DEP_CPP_FL_DIA=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_DIA=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -4607,7 +4781,6 @@ DEP_CPP_FL_DIA=\
 	"..\efltk\fl_ask.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -4644,6 +4817,7 @@ DEP_CPP_FL_DIA=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_DIA=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -4726,7 +4900,6 @@ SOURCE=..\src\core\fl_diamond_box.cpp
 DEP_CPP_FL_DIAM=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -4744,6 +4917,9 @@ DEP_CPP_FL_DIAM=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	
+NODEP_CPP_FL_DIAM=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -4755,6 +4931,7 @@ DEP_CPP_FL_DIAM=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -4773,7 +4950,6 @@ DEP_CPP_FL_DIAM=\
 DEP_CPP_FL_DIAM=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -4791,13 +4967,15 @@ DEP_CPP_FL_DIAM=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	
+NODEP_CPP_FL_DIAM=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
 DEP_CPP_FL_DIAM=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -4814,6 +4992,9 @@ DEP_CPP_FL_DIAM=\
 	"..\efltk\Fl_Style.h"\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
+	
+NODEP_CPP_FL_DIAM=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -4845,16 +5026,31 @@ DEP_CPP_FL_DIR=\
 DEP_CPP_FL_DIR=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\filename.h"\
+	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\Fl_Directory_DS.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Pixmap.h"\
 	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
 	"..\efltk\Fl_String.h"\
 	"..\efltk\Fl_Util.h"\
 	"..\efltk\Fl_Variant.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_DIR=\
+	"..\efltk\mac.h"\
 	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Debug"
@@ -4918,6 +5114,7 @@ DEP_CPP_FL_DIS=\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
+	".\config.h"\
 	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Debug"
@@ -4969,6 +5166,7 @@ DEP_CPP_FL_DN=\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -4990,6 +5188,7 @@ DEP_CPP_FL_DN=\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
 	
 NODEP_CPP_FL_DN=\
 	"..\efltk\mac.h"\
@@ -5002,7 +5201,6 @@ DEP_CPP_FL_DN=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -5030,6 +5228,7 @@ DEP_CPP_FL_DN=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_DN=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	"..\src\core\fl_dnd_mac.cpp"\
 	
@@ -5057,7 +5256,6 @@ DEP_CPP_FL_DO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -5086,6 +5284,7 @@ DEP_CPP_FL_DO=\
 	".\config.h"\
 	
 NODEP_CPP_FL_DO=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -5101,6 +5300,7 @@ DEP_CPP_FL_DO=\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\Fl_Double_Window.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -5132,7 +5332,6 @@ DEP_CPP_FL_DO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -5161,6 +5360,7 @@ DEP_CPP_FL_DO=\
 	".\config.h"\
 	
 NODEP_CPP_FL_DO=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -5170,7 +5370,6 @@ DEP_CPP_FL_DO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -5199,6 +5398,7 @@ DEP_CPP_FL_DO=\
 	".\config.h"\
 	
 NODEP_CPP_FL_DO=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -5459,7 +5659,6 @@ SOURCE=..\src\widgets\fl_engraved_label.cpp
 DEP_CPP_FL_EN=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -5477,6 +5676,9 @@ DEP_CPP_FL_EN=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	
+NODEP_CPP_FL_EN=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -5488,6 +5690,7 @@ DEP_CPP_FL_EN=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -5506,7 +5709,6 @@ DEP_CPP_FL_EN=\
 DEP_CPP_FL_EN=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -5524,13 +5726,15 @@ DEP_CPP_FL_EN=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	
+NODEP_CPP_FL_EN=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
 DEP_CPP_FL_EN=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -5547,6 +5751,9 @@ DEP_CPP_FL_EN=\
 	"..\efltk\Fl_Style.h"\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
+	
+NODEP_CPP_FL_EN=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -5563,7 +5770,6 @@ DEP_CPP_FL_FL=\
 	"..\efltk\Fl.h"\
 	"..\efltk\fl_ask.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -5583,6 +5789,9 @@ DEP_CPP_FL_FL=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	
+NODEP_CPP_FL_FL=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -5595,6 +5804,7 @@ DEP_CPP_FL_FL=\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Float_Input.h"\
@@ -5618,7 +5828,6 @@ DEP_CPP_FL_FL=\
 	"..\efltk\Fl.h"\
 	"..\efltk\fl_ask.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -5638,6 +5847,9 @@ DEP_CPP_FL_FL=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	
+NODEP_CPP_FL_FL=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -5646,7 +5858,6 @@ DEP_CPP_FL_FL=\
 	"..\efltk\Fl.h"\
 	"..\efltk\fl_ask.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -5665,6 +5876,9 @@ DEP_CPP_FL_FL=\
 	"..\efltk\Fl_Style.h"\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
+	
+NODEP_CPP_FL_FL=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -5799,6 +6013,7 @@ DEP_CPP_FL_GE=\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
 	
 NODEP_CPP_FL_GE=\
 	"..\efltk\mac.h"\
@@ -5924,7 +6139,6 @@ SOURCE=..\src\core\fl_glyph.cpp
 DEP_CPP_FL_GL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -5942,6 +6156,9 @@ DEP_CPP_FL_GL=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	
+NODEP_CPP_FL_GL=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -5953,6 +6170,7 @@ DEP_CPP_FL_GL=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -5971,7 +6189,6 @@ DEP_CPP_FL_GL=\
 DEP_CPP_FL_GL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -5989,13 +6206,15 @@ DEP_CPP_FL_GL=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	
+NODEP_CPP_FL_GL=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
 DEP_CPP_FL_GL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -6012,6 +6231,9 @@ DEP_CPP_FL_GL=\
 	"..\efltk\Fl_Style.h"\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
+	
+NODEP_CPP_FL_GL=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -6027,7 +6249,6 @@ DEP_CPP_FL_GR=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -6049,6 +6270,9 @@ DEP_CPP_FL_GR=\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\Fl_Window.h"\
 	
+NODEP_CPP_FL_GR=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -6061,6 +6285,7 @@ DEP_CPP_FL_GR=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -6084,7 +6309,6 @@ DEP_CPP_FL_GR=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -6106,6 +6330,9 @@ DEP_CPP_FL_GR=\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\Fl_Window.h"\
 	
+NODEP_CPP_FL_GR=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -6113,7 +6340,6 @@ DEP_CPP_FL_GR=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -6134,6 +6360,9 @@ DEP_CPP_FL_GR=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\Fl_Window.h"\
+	
+NODEP_CPP_FL_GR=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -6166,6 +6395,7 @@ DEP_CPP_FL_HE=\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\Fl_Double_Window.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_File_Dialog.h"\
 	"..\efltk\Fl_FileInput.h"\
@@ -6233,7 +6463,6 @@ DEP_CPP_FL_HE=\
 	"..\efltk\Fl_Box.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Check_Button.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -6295,6 +6524,7 @@ DEP_CPP_FL_HE=\
 	".\config.h"\
 	
 NODEP_CPP_FL_HE=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -6324,7 +6554,6 @@ DEP_CPP_FL_HI=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -6342,6 +6571,9 @@ DEP_CPP_FL_HI=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	
+NODEP_CPP_FL_HI=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -6354,6 +6586,7 @@ DEP_CPP_FL_HI=\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -6375,7 +6608,6 @@ DEP_CPP_FL_HI=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -6393,6 +6625,9 @@ DEP_CPP_FL_HI=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	
+NODEP_CPP_FL_HI=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -6401,7 +6636,6 @@ DEP_CPP_FL_HI=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -6418,6 +6652,9 @@ DEP_CPP_FL_HI=\
 	"..\efltk\Fl_Style.h"\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
+	
+NODEP_CPP_FL_HI=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -6444,6 +6681,7 @@ DEP_CPP_FL_IM=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -6482,7 +6720,6 @@ DEP_CPP_FL_IM=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -6517,6 +6754,7 @@ DEP_CPP_FL_IM=\
 	".\config.h"\
 	
 NODEP_CPP_FL_IM=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -6636,6 +6874,7 @@ DEP_CPP_FL_IN=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -6685,7 +6924,6 @@ DEP_CPP_FL_IN=\
 	"..\efltk\Fl_Box.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Config.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -6730,6 +6968,7 @@ DEP_CPP_FL_IN=\
 	".\config.h"\
 	
 NODEP_CPP_FL_IN=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -6770,6 +7009,7 @@ DEP_CPP_FL_INP=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -6800,7 +7040,6 @@ DEP_CPP_FL_INP=\
 	"..\efltk\Fl.h"\
 	"..\efltk\fl_ask.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -6827,6 +7066,9 @@ DEP_CPP_FL_INP=\
 	"..\efltk\math.h"\
 	"..\src\core\fl_internal.h"\
 	".\config.h"\
+	
+NODEP_CPP_FL_INP=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
@@ -6855,7 +7097,6 @@ DEP_CPP_FL_INPU=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Browser.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -6892,6 +7133,7 @@ DEP_CPP_FL_INPU=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_INPU=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -6907,6 +7149,7 @@ DEP_CPP_FL_INPU=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -6948,7 +7191,6 @@ DEP_CPP_FL_INPU=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Browser.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -6985,6 +7227,7 @@ DEP_CPP_FL_INPU=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_INPU=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -6995,7 +7238,6 @@ DEP_CPP_FL_INPU=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Browser.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -7032,6 +7274,7 @@ DEP_CPP_FL_INPU=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_INPU=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -7048,7 +7291,6 @@ DEP_CPP_FL_IT=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Check_Button.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -7084,6 +7326,7 @@ DEP_CPP_FL_IT=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_IT=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -7100,6 +7343,7 @@ DEP_CPP_FL_IT=\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\Fl_Divider.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -7137,7 +7381,6 @@ DEP_CPP_FL_IT=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Check_Button.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -7173,6 +7416,7 @@ DEP_CPP_FL_IT=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_IT=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -7182,7 +7426,6 @@ DEP_CPP_FL_IT=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Check_Button.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -7218,6 +7461,7 @@ DEP_CPP_FL_IT=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_IT=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -7234,7 +7478,6 @@ DEP_CPP_FL_KE=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -7258,6 +7501,7 @@ DEP_CPP_FL_KE=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_KE=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -7272,6 +7516,7 @@ DEP_CPP_FL_KE=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -7288,6 +7533,7 @@ DEP_CPP_FL_KE=\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
 	
 NODEP_CPP_FL_KE=\
 	"..\efltk\mac.h"\
@@ -7299,7 +7545,6 @@ DEP_CPP_FL_KE=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -7323,6 +7568,7 @@ DEP_CPP_FL_KE=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_KE=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -7332,7 +7578,6 @@ DEP_CPP_FL_KE=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -7356,6 +7601,7 @@ DEP_CPP_FL_KE=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_KE=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -7371,7 +7617,6 @@ SOURCE=..\src\core\fl_labeltype.cpp
 DEP_CPP_FL_LA=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -7400,6 +7645,7 @@ DEP_CPP_FL_LA=\
 	".\config.h"\
 	
 NODEP_CPP_FL_LA=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -7413,6 +7659,7 @@ DEP_CPP_FL_LA=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -7444,7 +7691,6 @@ NODEP_CPP_FL_LA=\
 DEP_CPP_FL_LA=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -7473,6 +7719,7 @@ DEP_CPP_FL_LA=\
 	".\config.h"\
 	
 NODEP_CPP_FL_LA=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -7481,7 +7728,6 @@ NODEP_CPP_FL_LA=\
 DEP_CPP_FL_LA=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -7510,6 +7756,7 @@ DEP_CPP_FL_LA=\
 	".\config.h"\
 	
 NODEP_CPP_FL_LA=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -7527,7 +7774,6 @@ DEP_CPP_FL_LI=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Check_Button.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -7546,6 +7792,9 @@ DEP_CPP_FL_LI=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	
+NODEP_CPP_FL_LI=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -7559,6 +7808,7 @@ DEP_CPP_FL_LI=\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -7580,7 +7830,6 @@ DEP_CPP_FL_LI=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Check_Button.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -7599,6 +7848,9 @@ DEP_CPP_FL_LI=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	
+NODEP_CPP_FL_LI=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -7607,7 +7859,6 @@ DEP_CPP_FL_LI=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Check_Button.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -7625,6 +7876,9 @@ DEP_CPP_FL_LI=\
 	"..\efltk\Fl_Style.h"\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
+	
+NODEP_CPP_FL_LI=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -7745,16 +7999,31 @@ DEP_CPP_FL_LIST=\
 
 DEP_CPP_FL_LIST=\
 	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback_List.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
 	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
 	"..\efltk\Fl_Ptr_List.h"\
 	"..\efltk\Fl_Ptr_Stack.h"\
 	"..\efltk\Fl_String.h"\
 	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_String_Stack.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
 	"..\efltk\vsnprintf.h"\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
 	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Debug"
@@ -7802,7 +8071,6 @@ DEP_CPP_FL_LISTV=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -7839,6 +8107,7 @@ DEP_CPP_FL_LISTV=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_LISTV=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -7853,6 +8122,7 @@ DEP_CPP_FL_LISTV=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -7893,7 +8163,6 @@ DEP_CPP_FL_LISTV=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -7930,6 +8199,7 @@ DEP_CPP_FL_LISTV=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_LISTV=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -7939,7 +8209,6 @@ DEP_CPP_FL_LISTV=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -7976,6 +8245,7 @@ DEP_CPP_FL_LISTV=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_LISTV=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -7992,7 +8262,6 @@ DEP_CPP_FL_LISTVI=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -8029,6 +8298,7 @@ DEP_CPP_FL_LISTVI=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_LISTVI=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -8043,6 +8313,7 @@ DEP_CPP_FL_LISTVI=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -8083,7 +8354,6 @@ DEP_CPP_FL_LISTVI=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -8120,6 +8390,7 @@ DEP_CPP_FL_LISTVI=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_LISTVI=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -8129,7 +8400,6 @@ DEP_CPP_FL_LISTVI=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -8166,6 +8436,7 @@ DEP_CPP_FL_LISTVI=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_LISTVI=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -8182,7 +8453,6 @@ DEP_CPP_FL_LISTVIE=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -8219,6 +8489,7 @@ DEP_CPP_FL_LISTVIE=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_LISTVIE=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -8233,6 +8504,7 @@ DEP_CPP_FL_LISTVIE=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -8273,7 +8545,6 @@ DEP_CPP_FL_LISTVIE=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -8310,6 +8581,7 @@ DEP_CPP_FL_LISTVIE=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_LISTVIE=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -8319,7 +8591,6 @@ DEP_CPP_FL_LISTVIE=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -8356,6 +8627,7 @@ DEP_CPP_FL_LISTVIE=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_LISTVIE=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -8562,7 +8834,6 @@ DEP_CPP_FL_MA=\
 	"..\efltk\Fl_Box.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -8592,6 +8863,9 @@ DEP_CPP_FL_MA=\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\Fl_Window.h"\
 	
+NODEP_CPP_FL_MA=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -8607,6 +8881,7 @@ DEP_CPP_FL_MA=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\Fl_Double_Window.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -8641,7 +8916,6 @@ DEP_CPP_FL_MA=\
 	"..\efltk\Fl_Box.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -8671,6 +8945,9 @@ DEP_CPP_FL_MA=\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\Fl_Window.h"\
 	
+NODEP_CPP_FL_MA=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -8681,7 +8958,6 @@ DEP_CPP_FL_MA=\
 	"..\efltk\Fl_Box.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -8710,6 +8986,9 @@ DEP_CPP_FL_MA=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\Fl_Window.h"\
+	
+NODEP_CPP_FL_MA=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -8808,7 +9087,6 @@ DEP_CPP_FL_ME=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Choice.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -8848,6 +9126,7 @@ DEP_CPP_FL_ME=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_ME=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -8863,6 +9142,7 @@ DEP_CPP_FL_ME=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -8894,6 +9174,7 @@ DEP_CPP_FL_ME=\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
 	
 NODEP_CPP_FL_ME=\
 	"..\efltk\mac.h"\
@@ -8905,7 +9186,6 @@ DEP_CPP_FL_ME=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Choice.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -8945,6 +9225,7 @@ DEP_CPP_FL_ME=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_ME=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -8954,7 +9235,6 @@ DEP_CPP_FL_ME=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Choice.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -8994,6 +9274,7 @@ DEP_CPP_FL_ME=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_ME=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -9010,7 +9291,6 @@ DEP_CPP_FL_MEN=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -9035,6 +9315,9 @@ DEP_CPP_FL_MEN=\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\Fl_Window.h"\
 	
+NODEP_CPP_FL_MEN=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -9046,6 +9329,7 @@ DEP_CPP_FL_MEN=\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -9073,7 +9357,6 @@ DEP_CPP_FL_MEN=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -9098,6 +9381,9 @@ DEP_CPP_FL_MEN=\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\Fl_Window.h"\
 	
+NODEP_CPP_FL_MEN=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -9105,7 +9391,6 @@ DEP_CPP_FL_MEN=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -9129,6 +9414,9 @@ DEP_CPP_FL_MEN=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\Fl_Window.h"\
+	
+NODEP_CPP_FL_MEN=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -9154,6 +9442,7 @@ DEP_CPP_FL_MENU=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\Fl_Divider.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -9179,7 +9468,6 @@ DEP_CPP_FL_MENU=\
 DEP_CPP_FL_MENU=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -9203,6 +9491,9 @@ DEP_CPP_FL_MENU=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\src\core\ARRAY.h"\
+	
+NODEP_CPP_FL_MENU=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
@@ -9230,7 +9521,6 @@ DEP_CPP_FL_MENU_=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -9259,6 +9549,9 @@ DEP_CPP_FL_MENU_=\
 	"..\efltk\Fl_Window.h"\
 	".\config.h"\
 	
+NODEP_CPP_FL_MENU_=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -9271,6 +9564,7 @@ DEP_CPP_FL_MENU_=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -9301,7 +9595,6 @@ DEP_CPP_FL_MENU_=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -9330,6 +9623,9 @@ DEP_CPP_FL_MENU_=\
 	"..\efltk\Fl_Window.h"\
 	".\config.h"\
 	
+NODEP_CPP_FL_MENU_=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -9337,7 +9633,6 @@ DEP_CPP_FL_MENU_=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -9365,6 +9660,9 @@ DEP_CPP_FL_MENU_=\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\Fl_Window.h"\
 	".\config.h"\
+	
+NODEP_CPP_FL_MENU_=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -9380,7 +9678,6 @@ DEP_CPP_FL_MENU_B=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -9404,6 +9701,9 @@ DEP_CPP_FL_MENU_B=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	
+NODEP_CPP_FL_MENU_B=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -9416,6 +9716,7 @@ DEP_CPP_FL_MENU_B=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -9441,7 +9742,6 @@ DEP_CPP_FL_MENU_B=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -9465,6 +9765,9 @@ DEP_CPP_FL_MENU_B=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	
+NODEP_CPP_FL_MENU_B=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -9472,7 +9775,6 @@ DEP_CPP_FL_MENU_B=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -9495,6 +9797,9 @@ DEP_CPP_FL_MENU_B=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
+	
+NODEP_CPP_FL_MENU_B=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -9510,7 +9815,6 @@ DEP_CPP_FL_MENU_G=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -9531,6 +9835,9 @@ DEP_CPP_FL_MENU_G=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	
+NODEP_CPP_FL_MENU_G=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -9542,6 +9849,7 @@ DEP_CPP_FL_MENU_G=\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -9565,7 +9873,6 @@ DEP_CPP_FL_MENU_G=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -9586,6 +9893,9 @@ DEP_CPP_FL_MENU_G=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	
+NODEP_CPP_FL_MENU_G=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -9593,7 +9903,6 @@ DEP_CPP_FL_MENU_G=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -9613,6 +9922,9 @@ DEP_CPP_FL_MENU_G=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
+	
+NODEP_CPP_FL_MENU_G=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -9628,7 +9940,6 @@ DEP_CPP_FL_MENU_I=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -9657,6 +9968,9 @@ DEP_CPP_FL_MENU_I=\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\Fl_Window.h"\
 	
+NODEP_CPP_FL_MENU_I=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -9669,6 +9983,7 @@ DEP_CPP_FL_MENU_I=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\Fl_Divider.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -9699,7 +10014,6 @@ DEP_CPP_FL_MENU_I=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -9728,6 +10042,9 @@ DEP_CPP_FL_MENU_I=\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\Fl_Window.h"\
 	
+NODEP_CPP_FL_MENU_I=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -9735,7 +10052,6 @@ DEP_CPP_FL_MENU_I=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -9763,6 +10079,9 @@ DEP_CPP_FL_MENU_I=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\Fl_Window.h"\
+	
+NODEP_CPP_FL_MENU_I=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -9778,7 +10097,6 @@ DEP_CPP_FL_MENU_W=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -9815,6 +10133,7 @@ DEP_CPP_FL_MENU_W=\
 	".\config.h"\
 	
 NODEP_CPP_FL_MENU_W=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -9829,6 +10148,7 @@ DEP_CPP_FL_MENU_W=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -9869,7 +10189,6 @@ DEP_CPP_FL_MENU_W=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -9906,6 +10225,7 @@ DEP_CPP_FL_MENU_W=\
 	".\config.h"\
 	
 NODEP_CPP_FL_MENU_W=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -9915,7 +10235,6 @@ DEP_CPP_FL_MENU_W=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -9952,6 +10271,7 @@ DEP_CPP_FL_MENU_W=\
 	".\config.h"\
 	
 NODEP_CPP_FL_MENU_W=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -10067,7 +10387,6 @@ DEP_CPP_FL_MUL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -10102,6 +10421,7 @@ DEP_CPP_FL_MUL=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_MUL=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -10116,6 +10436,7 @@ DEP_CPP_FL_MUL=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -10138,6 +10459,7 @@ DEP_CPP_FL_MUL=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\math.h"\
 	"..\efltk\win32.h"\
 	"..\efltk\x.h"\
 	"..\src\wcelib\include\drawacp.h"\
@@ -10154,7 +10476,6 @@ DEP_CPP_FL_MUL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -10189,6 +10510,7 @@ DEP_CPP_FL_MUL=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_MUL=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -10198,7 +10520,6 @@ DEP_CPP_FL_MUL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -10233,6 +10554,7 @@ DEP_CPP_FL_MUL=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_MUL=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -10260,6 +10582,7 @@ DEP_CPP_FL_NU=\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -10284,7 +10607,6 @@ DEP_CPP_FL_NU=\
 	"..\efltk\Fl.h"\
 	"..\efltk\fl_ask.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -10304,6 +10626,9 @@ DEP_CPP_FL_NU=\
 	"..\efltk\Fl_Widget.h"\
 	"..\src\core\fl_internal.h"\
 	".\config.h"\
+	
+NODEP_CPP_FL_NU=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
@@ -10331,7 +10656,6 @@ DEP_CPP_FL_OU=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -10351,6 +10675,9 @@ DEP_CPP_FL_OU=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	
+NODEP_CPP_FL_OU=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -10363,6 +10690,7 @@ DEP_CPP_FL_OU=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -10384,7 +10712,6 @@ DEP_CPP_FL_OU=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -10404,6 +10731,9 @@ DEP_CPP_FL_OU=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	
+NODEP_CPP_FL_OU=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -10411,7 +10741,6 @@ DEP_CPP_FL_OU=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -10430,6 +10759,9 @@ DEP_CPP_FL_OU=\
 	"..\efltk\Fl_Style.h"\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
+	
+NODEP_CPP_FL_OU=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -10551,6 +10883,7 @@ DEP_CPP_FL_OVE=\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
 	
 NODEP_CPP_FL_OVE=\
 	"..\efltk\mac.h"\
@@ -10702,7 +11035,6 @@ DEP_CPP_FL_OVERL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -10732,6 +11064,7 @@ DEP_CPP_FL_OVERL=\
 	".\config.h"\
 	
 NODEP_CPP_FL_OVERL=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -10747,6 +11080,7 @@ DEP_CPP_FL_OVERL=\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\Fl_Double_Window.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -10779,7 +11113,6 @@ DEP_CPP_FL_OVERL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -10809,6 +11142,7 @@ DEP_CPP_FL_OVERL=\
 	".\config.h"\
 	
 NODEP_CPP_FL_OVERL=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -10818,7 +11152,6 @@ DEP_CPP_FL_OVERL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -10848,6 +11181,7 @@ DEP_CPP_FL_OVERL=\
 	".\config.h"\
 	
 NODEP_CPP_FL_OVERL=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -10950,7 +11284,6 @@ SOURCE=..\src\widgets\Fl_Pack.cpp
 DEP_CPP_FL_PA=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -10970,6 +11303,9 @@ DEP_CPP_FL_PA=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	
+NODEP_CPP_FL_PA=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -10980,6 +11316,7 @@ DEP_CPP_FL_PA=\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -11001,7 +11338,6 @@ DEP_CPP_FL_PA=\
 DEP_CPP_FL_PA=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -11021,13 +11357,15 @@ DEP_CPP_FL_PA=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	
+NODEP_CPP_FL_PA=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
 DEP_CPP_FL_PA=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -11046,6 +11384,68 @@ DEP_CPP_FL_PA=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
+	
+NODEP_CPP_FL_PA=\
+	"..\efltk\Fl_Callback.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\db\Fl_Params.cpp
+
+!IF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Release"
+
+DEP_CPP_FL_PAR=\
+	"..\efltk\db\Fl_Params.h"\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_Variant.h"\
+	
+
+!ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
+
+DEP_CPP_FL_PAR=\
+	"..\efltk\db\Fl_Params.h"\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_Variant.h"\
+	
+
+!ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Debug"
+
+DEP_CPP_FL_PAR=\
+	"..\efltk\db\Fl_Params.h"\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_Variant.h"\
+	
+
+!ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
+
+DEP_CPP_FL_PAR=\
+	"..\efltk\db\Fl_Params.h"\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_Variant.h"\
 	
 
 !ENDIF 
@@ -11155,7 +11555,6 @@ DEP_CPP_FL_PO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -11179,6 +11578,9 @@ DEP_CPP_FL_PO=\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\Fl_Window.h"\
 	
+NODEP_CPP_FL_PO=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -11191,6 +11593,7 @@ DEP_CPP_FL_PO=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -11216,7 +11619,6 @@ DEP_CPP_FL_PO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -11240,6 +11642,9 @@ DEP_CPP_FL_PO=\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\Fl_Window.h"\
 	
+NODEP_CPP_FL_PO=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -11247,7 +11652,6 @@ DEP_CPP_FL_PO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -11270,6 +11674,9 @@ DEP_CPP_FL_PO=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\Fl_Window.h"\
+	
+NODEP_CPP_FL_PO=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -11285,7 +11692,6 @@ DEP_CPP_FL_PR=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -11304,6 +11710,9 @@ DEP_CPP_FL_PR=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	
+NODEP_CPP_FL_PR=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -11316,6 +11725,7 @@ DEP_CPP_FL_PR=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -11336,7 +11746,6 @@ DEP_CPP_FL_PR=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -11355,6 +11764,9 @@ DEP_CPP_FL_PR=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	
+NODEP_CPP_FL_PR=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -11362,7 +11774,6 @@ DEP_CPP_FL_PR=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -11380,6 +11791,92 @@ DEP_CPP_FL_PR=\
 	"..\efltk\Fl_Style.h"\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
+	
+NODEP_CPP_FL_PR=\
+	"..\efltk\Fl_Callback.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\db\Fl_Query.cpp
+
+!IF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Release"
+
+DEP_CPP_FL_QU=\
+	"..\efltk\db\Fl_Database.h"\
+	"..\efltk\db\Fl_Params.h"\
+	"..\efltk\db\Fl_Query.h"\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	
+
+!ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
+
+DEP_CPP_FL_QU=\
+	"..\efltk\db\Fl_Database.h"\
+	"..\efltk\db\Fl_Params.h"\
+	"..\efltk\db\Fl_Query.h"\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	
+
+!ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Debug"
+
+DEP_CPP_FL_QU=\
+	"..\efltk\db\Fl_Database.h"\
+	"..\efltk\db\Fl_Params.h"\
+	"..\efltk\db\Fl_Query.h"\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	
+
+!ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
+
+DEP_CPP_FL_QU=\
+	"..\efltk\db\Fl_Database.h"\
+	"..\efltk\db\Fl_Params.h"\
+	"..\efltk\db\Fl_Query.h"\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\src\wcelib\include\stdlibx.h"\
 	
 
 !ENDIF 
@@ -11396,7 +11893,6 @@ DEP_CPP_FL_RA=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Check_Button.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -11418,6 +11914,9 @@ DEP_CPP_FL_RA=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	
+NODEP_CPP_FL_RA=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -11432,6 +11931,7 @@ DEP_CPP_FL_RA=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -11455,7 +11955,6 @@ DEP_CPP_FL_RA=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Check_Button.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -11477,6 +11976,9 @@ DEP_CPP_FL_RA=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	
+NODEP_CPP_FL_RA=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -11485,7 +11987,6 @@ DEP_CPP_FL_RA=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Check_Button.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -11506,6 +12007,9 @@ DEP_CPP_FL_RA=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
+	
+NODEP_CPP_FL_RA=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -11556,6 +12060,7 @@ DEP_CPP_FL_RE=\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
 	
 NODEP_CPP_FL_RE=\
 	"..\efltk\mac.h"\
@@ -11708,7 +12213,6 @@ DEP_CPP_FL_REP=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -11726,6 +12230,9 @@ DEP_CPP_FL_REP=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	
+NODEP_CPP_FL_REP=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -11738,6 +12245,7 @@ DEP_CPP_FL_REP=\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -11759,7 +12267,6 @@ DEP_CPP_FL_REP=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -11777,6 +12284,9 @@ DEP_CPP_FL_REP=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	
+NODEP_CPP_FL_REP=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -11785,7 +12295,6 @@ DEP_CPP_FL_REP=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -11802,6 +12311,9 @@ DEP_CPP_FL_REP=\
 	"..\efltk\Fl_Style.h"\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
+	
+NODEP_CPP_FL_REP=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -11818,7 +12330,6 @@ DEP_CPP_FL_RET=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -11837,6 +12348,9 @@ DEP_CPP_FL_RET=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	
+NODEP_CPP_FL_RET=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -11850,6 +12364,7 @@ DEP_CPP_FL_RET=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -11871,7 +12386,6 @@ DEP_CPP_FL_RET=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -11890,6 +12404,9 @@ DEP_CPP_FL_RET=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	
+NODEP_CPP_FL_RET=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -11898,7 +12415,6 @@ DEP_CPP_FL_RET=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -11916,6 +12432,9 @@ DEP_CPP_FL_RET=\
 	"..\efltk\Fl_Style.h"\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
+	
+NODEP_CPP_FL_RET=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -11954,6 +12473,7 @@ DEP_CPP_FL_RG=\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
 	
 NODEP_CPP_FL_RG=\
 	"..\efltk\mac.h"\
@@ -12006,7 +12526,6 @@ DEP_CPP_FL_RO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -12025,6 +12544,9 @@ DEP_CPP_FL_RO=\
 	"..\efltk\Fl_Valuator.h"\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
+	
+NODEP_CPP_FL_RO=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
@@ -12038,6 +12560,7 @@ DEP_CPP_FL_RO=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -12051,6 +12574,7 @@ DEP_CPP_FL_RO=\
 	"..\efltk\Fl_Valuator.h"\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
+	"..\efltk\math.h"\
 	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Debug"
@@ -12059,7 +12583,6 @@ DEP_CPP_FL_RO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -12079,6 +12602,9 @@ DEP_CPP_FL_RO=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	
+NODEP_CPP_FL_RO=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -12086,7 +12612,6 @@ DEP_CPP_FL_RO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -12105,6 +12630,9 @@ DEP_CPP_FL_RO=\
 	"..\efltk\Fl_Valuator.h"\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
+	
+NODEP_CPP_FL_RO=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -12270,7 +12798,6 @@ DEP_CPP_FL_SC=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -12294,6 +12821,9 @@ DEP_CPP_FL_SC=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	
+NODEP_CPP_FL_SC=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -12306,6 +12836,7 @@ DEP_CPP_FL_SC=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -12331,7 +12862,6 @@ DEP_CPP_FL_SC=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -12355,6 +12885,9 @@ DEP_CPP_FL_SC=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	
+NODEP_CPP_FL_SC=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -12362,7 +12895,6 @@ DEP_CPP_FL_SC=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -12385,6 +12917,9 @@ DEP_CPP_FL_SC=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
+	
+NODEP_CPP_FL_SC=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -12435,6 +12970,7 @@ DEP_CPP_FL_SCR=\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
 	
 NODEP_CPP_FL_SCR=\
 	"..\efltk\mac.h"\
@@ -12499,7 +13035,6 @@ DEP_CPP_FL_SCRO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -12522,6 +13057,9 @@ DEP_CPP_FL_SCRO=\
 	"..\efltk\math.h"\
 	".\config.h"\
 	
+NODEP_CPP_FL_SCRO=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -12534,6 +13072,7 @@ DEP_CPP_FL_SCRO=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -12561,7 +13100,6 @@ DEP_CPP_FL_SCRO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -12587,6 +13125,9 @@ DEP_CPP_FL_SCRO=\
 	"..\src\wcelib\include\wince.h"\
 	".\config.h"\
 	
+NODEP_CPP_FL_SCRO=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -12594,7 +13135,6 @@ DEP_CPP_FL_SCRO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -12616,6 +13156,9 @@ DEP_CPP_FL_SCRO=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\math.h"\
 	".\config.h"\
+	
+NODEP_CPP_FL_SCRO=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -12702,7 +13245,6 @@ DEP_CPP_FL_SHA=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Bitmap.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -12734,6 +13276,7 @@ DEP_CPP_FL_SHA=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_SHA=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -12748,6 +13291,7 @@ DEP_CPP_FL_SHA=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\Fl_Double_Window.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -12772,6 +13316,7 @@ DEP_CPP_FL_SHA=\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
 	
 NODEP_CPP_FL_SHA=\
 	"..\efltk\mac.h"\
@@ -12783,7 +13328,6 @@ DEP_CPP_FL_SHA=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Bitmap.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -12815,6 +13359,7 @@ DEP_CPP_FL_SHA=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_SHA=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -12824,7 +13369,6 @@ DEP_CPP_FL_SHA=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Bitmap.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -12856,6 +13400,7 @@ DEP_CPP_FL_SHA=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_SHA=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -12872,7 +13417,6 @@ DEP_CPP_FL_SHO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -12896,6 +13440,9 @@ DEP_CPP_FL_SHO=\
 	"..\efltk\Fl_Window.h"\
 	".\config.h"\
 	
+NODEP_CPP_FL_SHO=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -12908,6 +13455,7 @@ DEP_CPP_FL_SHO=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -12933,7 +13481,6 @@ DEP_CPP_FL_SHO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -12957,6 +13504,9 @@ DEP_CPP_FL_SHO=\
 	"..\efltk\Fl_Window.h"\
 	".\config.h"\
 	
+NODEP_CPP_FL_SHO=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -12964,7 +13514,6 @@ DEP_CPP_FL_SHO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -12987,6 +13536,9 @@ DEP_CPP_FL_SHO=\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\Fl_Window.h"\
 	".\config.h"\
+	
+NODEP_CPP_FL_SHO=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -13013,6 +13565,7 @@ DEP_CPP_FL_SI=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -13055,7 +13608,6 @@ DEP_CPP_FL_SI=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -13094,6 +13646,7 @@ DEP_CPP_FL_SI=\
 	".\config.h"\
 	
 NODEP_CPP_FL_SI=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -13122,7 +13675,6 @@ SOURCE=..\src\widgets\Fl_Single_Window.cpp
 DEP_CPP_FL_SIN=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -13143,6 +13695,9 @@ DEP_CPP_FL_SIN=\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\Fl_Window.h"\
 	
+NODEP_CPP_FL_SIN=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -13153,6 +13708,7 @@ DEP_CPP_FL_SIN=\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -13175,7 +13731,6 @@ DEP_CPP_FL_SIN=\
 DEP_CPP_FL_SIN=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -13196,13 +13751,15 @@ DEP_CPP_FL_SIN=\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\Fl_Window.h"\
 	
+NODEP_CPP_FL_SIN=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
 DEP_CPP_FL_SIN=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -13222,6 +13779,9 @@ DEP_CPP_FL_SIN=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\Fl_Window.h"\
+	
+NODEP_CPP_FL_SIN=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -13237,7 +13797,6 @@ DEP_CPP_FL_SL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -13260,6 +13819,9 @@ DEP_CPP_FL_SL=\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\math.h"\
 	".\config.h"\
+	
+NODEP_CPP_FL_SL=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
@@ -13273,6 +13835,7 @@ DEP_CPP_FL_SL=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -13289,6 +13852,7 @@ DEP_CPP_FL_SL=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\math.h"\
+	"..\efltk\vsnprintf.h"\
 	".\config.h"\
 	
 
@@ -13298,7 +13862,6 @@ DEP_CPP_FL_SL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -13322,6 +13885,9 @@ DEP_CPP_FL_SL=\
 	"..\efltk\math.h"\
 	".\config.h"\
 	
+NODEP_CPP_FL_SL=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -13329,7 +13895,6 @@ DEP_CPP_FL_SL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -13352,6 +13917,9 @@ DEP_CPP_FL_SL=\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\math.h"\
 	".\config.h"\
+	
+NODEP_CPP_FL_SL=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -13398,6 +13966,7 @@ DEP_CPP_FL_ST=\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
 	
 NODEP_CPP_FL_ST=\
 	"..\efltk\mac.h"\
@@ -13530,108 +14099,6 @@ DEP_CPP_FL_STY=\
 	"..\efltk\filename.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
-	"..\efltk\Fl_Color.h"\
-	"..\efltk\Fl_Config.h"\
-	"..\efltk\Fl_Data_Fields.h"\
-	"..\efltk\Fl_Data_Source.h"\
-	"..\efltk\Fl_Date_Time.h"\
-	"..\efltk\Fl_Export.h"\
-	"..\efltk\Fl_Flags.h"\
-	"..\efltk\Fl_Font.h"\
-	"..\efltk\Fl_Int_List.h"\
-	"..\efltk\Fl_Labeltype.h"\
-	"..\efltk\fl_load_plugin.h"\
-	"..\efltk\Fl_Ptr_List.h"\
-	"..\efltk\Fl_String.h"\
-	"..\efltk\Fl_String_List.h"\
-	"..\efltk\Fl_Style.h"\
-	"..\efltk\Fl_Util.h"\
-	"..\efltk\Fl_Variant.h"\
-	"..\efltk\Fl_Widget.h"\
-	"..\efltk\math.h"\
-	"..\efltk\vsnprintf.h"\
-	"..\src\wcelib\include\drawacp.h"\
-	"..\src\wcelib\include\stdlibx.h"\
-	"..\src\wcelib\include\wince.h"\
-	".\config.h"\
-	
-
-!ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
-
-DEP_CPP_FL_STY=\
-	"..\efltk\Enumerations.h"\
-	"..\efltk\filename.h"\
-	"..\efltk\Fl.h"\
-	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Color.h"\
-	"..\efltk\Fl_Config.h"\
-	"..\efltk\Fl_Data_Fields.h"\
-	"..\efltk\Fl_Data_Source.h"\
-	"..\efltk\Fl_Date_Time.h"\
-	"..\efltk\Fl_Export.h"\
-	"..\efltk\Fl_Flags.h"\
-	"..\efltk\Fl_Font.h"\
-	"..\efltk\Fl_Int_List.h"\
-	"..\efltk\Fl_Labeltype.h"\
-	"..\efltk\fl_load_plugin.h"\
-	"..\efltk\Fl_Ptr_List.h"\
-	"..\efltk\Fl_String.h"\
-	"..\efltk\Fl_String_List.h"\
-	"..\efltk\Fl_Style.h"\
-	"..\efltk\Fl_Util.h"\
-	"..\efltk\Fl_Variant.h"\
-	"..\efltk\Fl_Widget.h"\
-	"..\efltk\math.h"\
-	"..\efltk\vsnprintf.h"\
-	"..\src\wcelib\include\drawacp.h"\
-	"..\src\wcelib\include\stdlibx.h"\
-	"..\src\wcelib\include\wince.h"\
-	".\config.h"\
-	
-
-!ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Debug"
-
-DEP_CPP_FL_STY=\
-	"..\efltk\Enumerations.h"\
-	"..\efltk\filename.h"\
-	"..\efltk\Fl.h"\
-	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
-	"..\efltk\Fl_Color.h"\
-	"..\efltk\Fl_Config.h"\
-	"..\efltk\Fl_Data_Fields.h"\
-	"..\efltk\Fl_Data_Source.h"\
-	"..\efltk\Fl_Date_Time.h"\
-	"..\efltk\Fl_Export.h"\
-	"..\efltk\Fl_Flags.h"\
-	"..\efltk\Fl_Font.h"\
-	"..\efltk\Fl_Int_List.h"\
-	"..\efltk\Fl_Labeltype.h"\
-	"..\efltk\fl_load_plugin.h"\
-	"..\efltk\Fl_Ptr_List.h"\
-	"..\efltk\Fl_String.h"\
-	"..\efltk\Fl_String_List.h"\
-	"..\efltk\Fl_Style.h"\
-	"..\efltk\Fl_Util.h"\
-	"..\efltk\Fl_Variant.h"\
-	"..\efltk\Fl_Widget.h"\
-	"..\efltk\math.h"\
-	"..\efltk\vsnprintf.h"\
-	"..\src\wcelib\include\drawacp.h"\
-	"..\src\wcelib\include\stdlibx.h"\
-	"..\src\wcelib\include\wince.h"\
-	".\config.h"\
-	
-
-!ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
-
-DEP_CPP_FL_STY=\
-	"..\efltk\Enumerations.h"\
-	"..\efltk\filename.h"\
-	"..\efltk\Fl.h"\
-	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Config.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -13658,6 +14125,113 @@ DEP_CPP_FL_STY=\
 	".\config.h"\
 	
 NODEP_CPP_FL_STY=\
+	"..\efltk\Fl_Callback.h"\
+	
+
+!ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
+
+DEP_CPP_FL_STY=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\filename.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Config.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\fl_load_plugin.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\math.h"\
+	"..\efltk\vsnprintf.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+
+!ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Debug"
+
+DEP_CPP_FL_STY=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\filename.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Config.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\fl_load_plugin.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\math.h"\
+	"..\efltk\vsnprintf.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_STY=\
+	"..\efltk\Fl_Callback.h"\
+	
+
+!ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
+
+DEP_CPP_FL_STY=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\filename.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Config.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\fl_load_plugin.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\math.h"\
+	"..\efltk\vsnprintf.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_STY=\
+	"..\efltk\Fl_Callback.h"\
 	".\nistd.h"\
 	
 
@@ -13673,7 +14247,6 @@ SOURCE=..\src\core\Fl_Style_Set.cpp
 DEP_CPP_FL_STYL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -13691,6 +14264,9 @@ DEP_CPP_FL_STYL=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	
+NODEP_CPP_FL_STYL=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -13701,6 +14277,7 @@ DEP_CPP_FL_STYL=\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -13720,7 +14297,6 @@ DEP_CPP_FL_STYL=\
 DEP_CPP_FL_STYL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -13738,13 +14314,15 @@ DEP_CPP_FL_STYL=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	
+NODEP_CPP_FL_STYL=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
 DEP_CPP_FL_STYL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -13761,6 +14339,9 @@ DEP_CPP_FL_STYL=\
 	"..\efltk\Fl_Style_Set.h"\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
+	
+NODEP_CPP_FL_STYL=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -13776,7 +14357,6 @@ DEP_CPP_FL_SY=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -13794,6 +14374,9 @@ DEP_CPP_FL_SY=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	
+NODEP_CPP_FL_SY=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -13806,6 +14389,7 @@ DEP_CPP_FL_SY=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -13825,7 +14409,6 @@ DEP_CPP_FL_SY=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -13843,6 +14426,9 @@ DEP_CPP_FL_SY=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	
+NODEP_CPP_FL_SY=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -13850,7 +14436,6 @@ DEP_CPP_FL_SY=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -13867,6 +14452,9 @@ DEP_CPP_FL_SY=\
 	"..\efltk\Fl_Style.h"\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
+	
+NODEP_CPP_FL_SY=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -13882,7 +14470,6 @@ DEP_CPP_FL_TA=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -13904,6 +14491,9 @@ DEP_CPP_FL_TA=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	
+NODEP_CPP_FL_TA=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -13916,6 +14506,7 @@ DEP_CPP_FL_TA=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -13939,7 +14530,6 @@ DEP_CPP_FL_TA=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -13961,6 +14551,9 @@ DEP_CPP_FL_TA=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	
+NODEP_CPP_FL_TA=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -13968,7 +14561,6 @@ DEP_CPP_FL_TA=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -13989,6 +14581,9 @@ DEP_CPP_FL_TA=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
+	
+NODEP_CPP_FL_TA=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -14059,7 +14654,6 @@ DEP_CPP_FL_TEX=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -14094,6 +14688,7 @@ DEP_CPP_FL_TEX=\
 	".\config.h"\
 	
 NODEP_CPP_FL_TEX=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -14108,6 +14703,7 @@ DEP_CPP_FL_TEX=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -14150,7 +14746,6 @@ DEP_CPP_FL_TEX=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -14185,6 +14780,7 @@ DEP_CPP_FL_TEX=\
 	".\config.h"\
 	
 NODEP_CPP_FL_TEX=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -14194,7 +14790,6 @@ DEP_CPP_FL_TEX=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -14229,6 +14824,7 @@ DEP_CPP_FL_TEX=\
 	".\config.h"\
 	
 NODEP_CPP_FL_TEX=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -14245,7 +14841,6 @@ DEP_CPP_FL_TEXT=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -14276,6 +14871,9 @@ DEP_CPP_FL_TEXT=\
 	"..\efltk\Fl_Widget_List.h"\
 	".\config.h"\
 	
+NODEP_CPP_FL_TEXT=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -14288,6 +14886,7 @@ DEP_CPP_FL_TEXT=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -14320,7 +14919,6 @@ DEP_CPP_FL_TEXT=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -14351,6 +14949,9 @@ DEP_CPP_FL_TEXT=\
 	"..\efltk\Fl_Widget_List.h"\
 	".\config.h"\
 	
+NODEP_CPP_FL_TEXT=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -14358,7 +14959,6 @@ DEP_CPP_FL_TEXT=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -14388,6 +14988,9 @@ DEP_CPP_FL_TEXT=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	".\config.h"\
+	
+NODEP_CPP_FL_TEXT=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -14404,7 +15007,6 @@ DEP_CPP_FL_TH=\
 	"..\efltk\filename.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Config.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -14432,6 +15034,7 @@ DEP_CPP_FL_TH=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_TH=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -14448,6 +15051,7 @@ DEP_CPP_FL_TH=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -14467,6 +15071,7 @@ DEP_CPP_FL_TH=\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
 	
 NODEP_CPP_FL_TH=\
 	"..\efltk\mac.h"\
@@ -14479,7 +15084,6 @@ DEP_CPP_FL_TH=\
 	"..\efltk\filename.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Config.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -14507,6 +15111,7 @@ DEP_CPP_FL_TH=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_TH=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -14517,7 +15122,6 @@ DEP_CPP_FL_TH=\
 	"..\efltk\filename.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Config.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -14545,6 +15149,7 @@ DEP_CPP_FL_TH=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_TH=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	".\nistd.h"\
 	
@@ -14574,6 +15179,7 @@ DEP_CPP_FL_THR=\
 	"..\efltk\Fl_Thread.h"\
 	"..\efltk\Fl_Thread_Linux.h"\
 	"..\efltk\Fl_Thread_w32.h"\
+	".\config.h"\
 	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Debug"
@@ -14612,7 +15218,6 @@ DEP_CPP_FL_TI=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -14633,6 +15238,9 @@ DEP_CPP_FL_TI=\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\Fl_Window.h"\
 	
+NODEP_CPP_FL_TI=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -14644,6 +15252,7 @@ DEP_CPP_FL_TI=\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -14667,7 +15276,6 @@ DEP_CPP_FL_TI=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -14688,6 +15296,9 @@ DEP_CPP_FL_TI=\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\Fl_Window.h"\
 	
+NODEP_CPP_FL_TI=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -14695,7 +15306,6 @@ DEP_CPP_FL_TI=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -14715,6 +15325,9 @@ DEP_CPP_FL_TI=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\Fl_Window.h"\
+	
+NODEP_CPP_FL_TI=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -14732,7 +15345,6 @@ DEP_CPP_FL_TO=\
 	"..\efltk\Fl_Bar.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -14759,6 +15371,9 @@ DEP_CPP_FL_TO=\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\math.h"\
 	
+NODEP_CPP_FL_TO=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -14774,6 +15389,7 @@ DEP_CPP_FL_TO=\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\Fl_Divider.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -14803,7 +15419,6 @@ DEP_CPP_FL_TO=\
 	"..\efltk\Fl_Bar.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -14830,6 +15445,9 @@ DEP_CPP_FL_TO=\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\math.h"\
 	
+NODEP_CPP_FL_TO=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -14839,7 +15457,6 @@ DEP_CPP_FL_TO=\
 	"..\efltk\Fl_Bar.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -14865,6 +15482,9 @@ DEP_CPP_FL_TO=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\math.h"\
+	
+NODEP_CPP_FL_TO=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -14880,7 +15500,6 @@ DEP_CPP_FL_TOO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -14904,6 +15523,9 @@ DEP_CPP_FL_TOO=\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\Fl_Window.h"\
 	
+NODEP_CPP_FL_TOO=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -14916,6 +15538,7 @@ DEP_CPP_FL_TOO=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -14941,7 +15564,6 @@ DEP_CPP_FL_TOO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -14965,6 +15587,9 @@ DEP_CPP_FL_TOO=\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\Fl_Window.h"\
 	
+NODEP_CPP_FL_TOO=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -14972,7 +15597,6 @@ DEP_CPP_FL_TOO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -14995,6 +15619,9 @@ DEP_CPP_FL_TOO=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\Fl_Window.h"\
+	
+NODEP_CPP_FL_TOO=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -15084,10 +15711,12 @@ DEP_CPP_FL_UTI=\
 	"..\efltk\Fl_Ptr_List.h"\
 	"..\efltk\Fl_String.h"\
 	"..\efltk\Fl_String_List.h"\
+	"..\efltk\fl_utf8.h"\
 	"..\efltk\Fl_Util.h"\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
 	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Debug"
@@ -15146,7 +15775,6 @@ DEP_CPP_FL_VA=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -15165,6 +15793,9 @@ DEP_CPP_FL_VA=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\math.h"\
 	
+NODEP_CPP_FL_VA=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -15176,6 +15807,7 @@ DEP_CPP_FL_VA=\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -15197,7 +15829,6 @@ DEP_CPP_FL_VA=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -15216,6 +15847,9 @@ DEP_CPP_FL_VA=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\math.h"\
 	
+NODEP_CPP_FL_VA=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -15223,7 +15857,6 @@ DEP_CPP_FL_VA=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -15241,6 +15874,9 @@ DEP_CPP_FL_VA=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\math.h"\
+	
+NODEP_CPP_FL_VA=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -15256,7 +15892,6 @@ DEP_CPP_FL_VAL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -15281,6 +15916,9 @@ DEP_CPP_FL_VAL=\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\math.h"\
 	
+NODEP_CPP_FL_VAL=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -15292,6 +15930,7 @@ DEP_CPP_FL_VAL=\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Float_Input.h"\
@@ -15319,7 +15958,6 @@ DEP_CPP_FL_VAL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -15344,6 +15982,9 @@ DEP_CPP_FL_VAL=\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\math.h"\
 	
+NODEP_CPP_FL_VAL=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -15351,7 +15992,6 @@ DEP_CPP_FL_VAL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -15375,6 +16015,9 @@ DEP_CPP_FL_VAL=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	"..\efltk\math.h"\
+	
+NODEP_CPP_FL_VAL=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -15390,7 +16033,6 @@ DEP_CPP_FL_VALU=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -15415,6 +16057,9 @@ DEP_CPP_FL_VALU=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	
+NODEP_CPP_FL_VALU=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
 
@@ -15427,6 +16072,7 @@ DEP_CPP_FL_VALU=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -15453,7 +16099,6 @@ DEP_CPP_FL_VALU=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -15478,6 +16123,9 @@ DEP_CPP_FL_VALU=\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
 	
+NODEP_CPP_FL_VALU=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -15485,7 +16133,6 @@ DEP_CPP_FL_VALU=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -15509,6 +16156,9 @@ DEP_CPP_FL_VALU=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\Fl_Widget_List.h"\
+	
+NODEP_CPP_FL_VALU=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -15542,6 +16192,7 @@ DEP_CPP_FL_VAR=\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
 	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Debug"
@@ -15777,7 +16428,6 @@ DEP_CPP_FL_WI=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -15809,6 +16459,7 @@ DEP_CPP_FL_WI=\
 	".\config.h"\
 	
 NODEP_CPP_FL_WI=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -15823,6 +16474,7 @@ DEP_CPP_FL_WI=\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
 	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -15858,7 +16510,6 @@ DEP_CPP_FL_WI=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -15890,6 +16541,7 @@ DEP_CPP_FL_WI=\
 	".\config.h"\
 	
 NODEP_CPP_FL_WI=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -15899,7 +16551,6 @@ DEP_CPP_FL_WI=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -15931,6 +16582,7 @@ DEP_CPP_FL_WI=\
 	".\config.h"\
 	
 NODEP_CPP_FL_WI=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -15947,7 +16599,6 @@ DEP_CPP_FL_WIN=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -15975,6 +16626,7 @@ DEP_CPP_FL_WIN=\
 	".\config.h"\
 	
 NODEP_CPP_FL_WIN=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -15988,6 +16640,7 @@ DEP_CPP_FL_WIN=\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -16020,7 +16673,6 @@ DEP_CPP_FL_WIN=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -16048,6 +16700,7 @@ DEP_CPP_FL_WIN=\
 	".\config.h"\
 	
 NODEP_CPP_FL_WIN=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -16057,7 +16710,6 @@ DEP_CPP_FL_WIN=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -16085,6 +16737,7 @@ DEP_CPP_FL_WIN=\
 	".\config.h"\
 	
 NODEP_CPP_FL_WIN=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -16101,7 +16754,6 @@ DEP_CPP_FL_WIND=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -16127,6 +16779,7 @@ DEP_CPP_FL_WIND=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_WIND=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -16140,6 +16793,7 @@ DEP_CPP_FL_WIND=\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -16159,6 +16813,7 @@ DEP_CPP_FL_WIND=\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
 	
 NODEP_CPP_FL_WIND=\
 	"..\efltk\mac.h"\
@@ -16170,7 +16825,6 @@ DEP_CPP_FL_WIND=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -16196,6 +16850,7 @@ DEP_CPP_FL_WIND=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_WIND=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -16205,7 +16860,6 @@ DEP_CPP_FL_WIND=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -16231,6 +16885,7 @@ DEP_CPP_FL_WIND=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_WIND=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -16247,7 +16902,6 @@ DEP_CPP_FL_WINDO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -16270,6 +16924,9 @@ DEP_CPP_FL_WINDO=\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_WINDO=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
@@ -16282,6 +16939,7 @@ DEP_CPP_FL_WINDO=\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -16300,6 +16958,7 @@ DEP_CPP_FL_WINDO=\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
 	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Debug"
@@ -16308,7 +16967,6 @@ DEP_CPP_FL_WINDO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -16332,6 +16990,9 @@ DEP_CPP_FL_WINDO=\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
 	
+NODEP_CPP_FL_WINDO=\
+	"..\efltk\Fl_Callback.h"\
+	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
 
@@ -16339,7 +17000,6 @@ DEP_CPP_FL_WINDO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -16362,6 +17022,9 @@ DEP_CPP_FL_WINDO=\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_WINDO=\
+	"..\efltk\Fl_Callback.h"\
 	
 
 !ENDIF 
@@ -16376,7 +17039,6 @@ SOURCE=..\src\core\Fl_Window_iconize.cpp
 DEP_CPP_FL_WINDOW=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -16402,6 +17064,7 @@ DEP_CPP_FL_WINDOW=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_WINDOW=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -16414,6 +17077,7 @@ DEP_CPP_FL_WINDOW=\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -16433,6 +17097,7 @@ DEP_CPP_FL_WINDOW=\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
 	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
 	
 NODEP_CPP_FL_WINDOW=\
 	"..\efltk\mac.h"\
@@ -16443,7 +17108,6 @@ NODEP_CPP_FL_WINDOW=\
 DEP_CPP_FL_WINDOW=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -16469,6 +17133,7 @@ DEP_CPP_FL_WINDOW=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_WINDOW=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -16477,7 +17142,6 @@ NODEP_CPP_FL_WINDOW=\
 DEP_CPP_FL_WINDOW=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -16503,6 +17167,7 @@ DEP_CPP_FL_WINDOW=\
 	"..\src\wcelib\include\wince.h"\
 	
 NODEP_CPP_FL_WINDOW=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -16519,7 +17184,6 @@ DEP_CPP_FL_WM=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -16548,6 +17212,7 @@ DEP_CPP_FL_WM=\
 	".\config.h"\
 	
 NODEP_CPP_FL_WM=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -16557,10 +17222,12 @@ DEP_CPP_FL_WM=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback_List.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
 	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Exception.h"\
 	"..\efltk\Fl_Export.h"\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
@@ -16573,6 +17240,7 @@ DEP_CPP_FL_WM=\
 	"..\efltk\Fl_String.h"\
 	"..\efltk\Fl_String_List.h"\
 	"..\efltk\Fl_Style.h"\
+	"..\efltk\fl_utf8.h"\
 	"..\efltk\Fl_Util.h"\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
@@ -16594,7 +17262,6 @@ DEP_CPP_FL_WM=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -16623,6 +17290,7 @@ DEP_CPP_FL_WM=\
 	".\config.h"\
 	
 NODEP_CPP_FL_WM=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
@@ -16632,7 +17300,6 @@ DEP_CPP_FL_WM=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -16661,6 +17328,7 @@ DEP_CPP_FL_WM=\
 	".\config.h"\
 	
 NODEP_CPP_FL_WM=\
+	"..\efltk\Fl_Callback.h"\
 	"..\efltk\mac.h"\
 	
 
