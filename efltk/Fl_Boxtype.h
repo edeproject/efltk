@@ -25,7 +25,14 @@
 #include "Fl_Color.h"
 #include "Fl_Flags.h"
 
-// the abstract base class:
+/**
+ * The abstract base Boxtype class.
+ * 
+ * This widget is the same as an plain Fl_Widget except if the box is set 
+ * to FL_NO_BOX it is completely invisible and attemps to draw it do absolutely 
+ * nothing. This can be used as the resizable() of a group or window to get 
+ * more complex resize effects.
+ */
 class FL_API Fl_Boxtype_
 {
 public:
