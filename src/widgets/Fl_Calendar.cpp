@@ -87,8 +87,6 @@ Fl_Calendar::Fl_Calendar(int x,int y,int w,int h,const char *lbl)
 {
    style(default_style);
 
-   m_activeButtonIndex = -1;
-
    // Header box
    m_headerBox = new Fl_Group(x,y,w,32);
    m_monthNameBox = new Fl_Box(x,0,w-64,16);
@@ -113,13 +111,12 @@ Fl_Calendar::Fl_Calendar(int x,int y,int w,int h,const char *lbl)
    // Switch buttons, correct positions are set by resize()
    for (unsigned i = 0; i < 4; i++) {
       m_switchButtons[i] = new Fl_Button(x,y,16,16,switchLabels[i]);
-      m_switchButtons[i]->label_color(fl_darker(FL_GREEN));
       m_switchButtons[i]->connect(this, &Fl_Calendar::cbSwitchButtonClicked, (void *)monthChanges[i]);
       m_switchButtons[i]->label_type(FL_SYMBOL_LABEL);
    }
 
    end();
-   m_date = (int) Fl_Date_Time::Now();
+   date(Fl_Date_Time::Now());
 }
 
 void Fl_Calendar::layout() {
@@ -208,6 +205,7 @@ void Fl_Calendar::draw() {
    for (unsigned i = 0; i < 4; i++) {
        m_switchButtons[i]->box(button_box());
        m_switchButtons[i]->color(btn_color);
+       m_switchButtons[i]->label_color(button_color());
        m_switchButtons[i]->highlight_color(btn_color_hl);
    }
 
@@ -236,6 +234,13 @@ void Fl_Calendar::measure(int& ww,int& hh) const {
 
 void Fl_Calendar::date(Fl_Date_Time dt) {
     m_date = dt;
+
+    short year, month, day;
+    m_date.decode_date(&year,&month,&day);
+    m_activeButtonIndex = day-1;
+
+    Fl::focus(m_dayButtons[m_activeButtonIndex]);
+
     relayout();
     redraw();
 }
