@@ -131,7 +131,7 @@ public:
     static bool key_event;
 };
 
-static bool menu_picked = false;
+static int menu_picked = false;
 static int menu_indexes[MAX_LEVELS] = {-1};
 static int menu_level = 0;
 
