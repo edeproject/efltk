@@ -82,9 +82,9 @@ public:
     void value(Fl_Color);
 
     int mode() { return choice.value(); }
-    float h() const {return hue_;}
-    float s() const {return saturation_;}
-    float v() const {return value_;}
+    float hue() const {return hue_;}
+    float saturation() const {return saturation_;}
+    float value() const {return value_;}
     float r() const {return r_;}
     float g() const {return g_;}
     float b() const {return b_;}
