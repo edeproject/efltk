@@ -36,7 +36,7 @@ Fl_Line_Drawer fl_line_drawer;
 
 #ifdef _WIN32_WINNT
  #if _WIN32_WINNT >= 0x0500
-  #define _USE_FAST_BRUSH_
+  //#define _USE_FAST_BRUSH_
  #endif
 #endif
 
@@ -147,6 +147,10 @@ HPEN fl_set_geometric_pen()
 		return stockpen;
 	}
 #endif
+	if(!styled) {
+		return fl_set_cosmetic_pen();
+	}
+
 	if(!fl_pen || pen_colorref != fl_colorref) 
 	{
 		if(styled) {			
@@ -207,19 +211,18 @@ HBRUSH fl_setbrush()
 	SetDCBrushColor(fl_gc, fl_colorref);
 	fl_brush = stockbrush;
 #else
-	bool need_select = false;
     if(!fl_brush || brush_colorref != fl_colorref || brush_dc != fl_gc) 
 	{
         fl_brush = CreateSolidBrush(fl_colorref);
         brush_colorref = fl_colorref;
 		brush_dc = fl_gc;
-		need_select = true;
-    }
-
-	if(need_select) {
-		HBRUSH oldb = (HBRUSH)SelectObject(fl_gc, fl_brush);
-		DeleteObject(oldb);
+    } else {
+		SelectObject(fl_gc, fl_brush);
+		return fl_brush;
 	}
+
+	HBRUSH oldb = (HBRUSH)SelectObject(fl_gc, fl_brush);
+	DeleteObject(oldb);
 #endif
     return fl_brush;
 }

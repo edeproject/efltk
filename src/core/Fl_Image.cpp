@@ -749,39 +749,8 @@ bool fl_check_pixel(const Fl_Image *i, uint8 *buf)
     return false;
 }
 
-////////////////////
-
-#ifdef _WIN32
-
-#define begin_mask() \
-    maskbitmap = CreateCompatibleBitmap(fl_getDC(), width(), height()); \
-    fl_begin_offscreen(maskbitmap)
-
-#define end_mask() fl_end_offscreen()
-
-#else
-// X window seems to need some more stuff here :)
-#define begin_mask() \
-    fl_push_matrix(); \
-    maskbitmap = XCreatePixmap(fl_display, Fl_Renderer::root_window(), width(), height(), 1); \
-    Fl_Drawable *_sd = fl_drawable; \
-    Fl_Drawable _nd(maskbitmap); \
-    _nd.make_current(); \
-    if(fl_gc) fl_push_no_clip(); \
-    GC gc = fl_gc;  \
-    XGCValues xv; xv.foreground = XBlackPixel(fl_display, fl_screen); \
-    fl_gc = XCreateGC(fl_display, maskbitmap, GCForeground, &xv)
-
-#define end_mask() \
-    XFree(fl_gc); \
-    fl_gc = gc; \
-    _nd.free_gc(); \
-    if(_sd) _sd->make_current(); \
-    else fl_drawable=0; \
-    if(fl_gc) fl_pop_clip(); \
-    fl_pop_matrix()
-
-#endif
+//////////////////////////////////////////////////////
+//////////////////////////////////////////////////////
 
 Pixmap Fl_Image::create_bitmap_mask(check_mask_pixel *func) const
 {
@@ -789,52 +758,50 @@ Pixmap Fl_Image::create_bitmap_mask(check_mask_pixel *func) const
 
     if(!func) func = fl_check_pixel;
 
-    bool mask_found=false;
+	bool mask_found=false;
 
-    Pixmap maskbitmap;
-    begin_mask();
-
-    // Fill with white...
-    fl_color(fl_rgb(255,255,255));
-    fl_rectf(0, 0, width(), height());
-
-    // Set color to black...
-    fl_color(fl_rgb(0,0,0));
+	int bmw = (width() + 7) / 8;
+	uint8 *bitmap = new uchar[bmw * height()];
+	memset(bitmap, 0, bmw * height());
 
     int width = this->width();
     int height = this->height();
-    int srcskip = pitch() - width * bytespp();
+
+    int skip = pitch() - width * bytespp();
 
     uint8 *ptr = m_data;
-    int y = 0, x = 0;
+	uint8 *bitptr, bit;
+
+	int y=0;
     while ( height-- ) {
-        x=0;
+		bitptr = bitmap + (y++ * bmw);
+		bit = 1;
         DUFFS_LOOP4(
-        {
-            if(func(this, ptr)) {
-                fl_line(x, y, x, y);
+		{
+			if(func(this, ptr)) {
+				*bitptr |= bit;
                 mask_found = true;
-            }
+			}
 
+			if(bit < 128) 
+      			bit <<= 1;
+      		else {
+				bit = 1;
+				bitptr++;
+      		}
             ptr += bytespp();
-            x++;
+
         }, width);
-        ptr += srcskip;
-        y++;
+        ptr += skip;
     }
 
-    end_mask();
-
-    if(!mask_found) {
-        fl_delete_offscreen(maskbitmap);
-        maskbitmap=0;
-    }
-
-    return maskbitmap;
+	Pixmap mask = 0;
+	if(mask_found)
+		mask = fl_create_bitmap(bitmap, this->width(), this->height());
+	
+	delete []bitmap; // Free created data
+	return mask;
 }
-
-
-//////////////////////////////////////////////////////
 
 Region Fl_Image::create_region_mask(check_mask_pixel *func) const
 {

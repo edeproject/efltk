@@ -249,19 +249,6 @@ bool Fl_Renderer::render_to_pixmap(uint8 *src, Fl_Rect *src_rect, Fl_PixelFormat
     return ret;
 }
 
-//make device context from pixmap and palette
-static HDC make_DC(HDC dc, HBITMAP pixmap, HPALETTE pal)
-{
-    HDC new_gc = CreateCompatibleDC(dc);
-    SetTextAlign(new_gc, TA_BASELINE|TA_LEFT);
-    SetBkMode(new_gc, TRANSPARENT);
-
-    if(pal) SelectPalette(new_gc, pal, FALSE);
-
-    SelectObject(new_gc, pixmap);
-    return new_gc;
-}
-
 void Fl_Image::to_screen(int XP, int YP, int WP, int HP, int, int)
 {
     int X,Y,W,H;
@@ -285,66 +272,51 @@ void Fl_Image::to_screen(int XP, int YP, int WP, int HP, int, int)
     // convert to Xlib coordinates:
     fl_transform(X,Y);
 
+	HDC dst_dc = fl_getDC();
+
     if(mask) {
+		COLORREF white_ref = RGB(255,255,255);
+		COLORREF black_ref = RGB(0,0,0);
         if(id) {
             // both color and mask:
+			
+			COLORREF text_color = SetTextColor(dst_dc, black_ref); // This is needed cause we use SRCPAINT
+			SetBkColor(dst_dc, white_ref); // Transparent color in mask is white..
 
-#if 0 // For some reason!? This (TransparentBlt) is unresolved under W2k/XP! MSDN says it should be included in >NT4
-            HDC new_gc = make_DC(fl_gc, (Pixmap)id, fl_palette);
+			HDC mask_dc = fl_makeDC((Pixmap)mask);
+            HDC id_dc = fl_makeDC((Pixmap)id);
 
-            if(mask_type() == MASK_ALPHA)
-            {
-                TransparentBlt(
-                               fl_gc,
-                               X, Y, W, H,
-                               new_gc,
-                               cx, cy, W, H,
-                               0 );
-            } else if(mask_type() == MASK_COLORKEY)
-            {
-                TransparentBlt(
-                               fl_gc,
-                               X, Y, W, H,
-                               new_gc,
-                               cx, cy, W, H,
-                               format()->colorkey );
-            } else {
-                BitBlt(fl_gc, X, Y, W, H, new_gc, cx, cy, SRCCOPY);
-            }
+			BitBlt(dst_dc, X, Y, W, H, mask_dc, cx, cy, SRCAND);
+			BitBlt(dst_dc, X, Y, W, H, id_dc, cx, cy, SRCPAINT);
 
-            DeleteDC(new_gc);
-# else
-            fl_color(0);
-			fl_setbrush();			
-            SetTextColor(fl_gc, 0);
-            HDC new_gc = make_DC(fl_gc, (Pixmap)mask, fl_palette);
-            HDC new_gc2= make_DC(fl_gc, (Pixmap)id, fl_palette);
+            DeleteDC(mask_dc);
+            DeleteDC(id_dc);
+			
+			// Restore old text color
+			SetTextColor(dst_dc, text_color);			
 
-            BitBlt(new_gc2, 0, 0, m_width, m_height, new_gc, 0, 0, SRCAND); // This should be done only once for performance
-            // secret bitblt code found in old MSWindows reference manual:
-            BitBlt(fl_gc, X, Y, W, H, new_gc, cx, cy, 0xE20746L);
-            BitBlt(fl_gc, X, Y, W, H, new_gc2, cx, cy, SRCPAINT);
-            DeleteDC(new_gc);
-            DeleteDC(new_gc2);
-# endif
-        } else {
+        } else {					
             // mask only
-            HDC tempdc = CreateCompatibleDC(fl_gc);
-            SelectObject(tempdc, (HGDIOBJ)mask);
-            SetTextColor(fl_gc, 0); // VP : seems necessary at least under win95
-			fl_setbrush();
-            //SelectObject(fl_gc, fl_brush);
+			HDC mask_dc = CreateCompatibleDC(fl_gc);
+            SelectObject(mask_dc, (HGDIOBJ)mask);
+
+            COLORREF old_color = SetTextColor(dst_dc, black_ref);
+			SetBkColor(dst_dc, white_ref); // Transparent color in mask is white..
+			fl_setbrush(); // mask is drawed using brush color
+			
             // secret bitblt code found in old MSWindows reference manual:
-            BitBlt(fl_gc, X, Y, W, H, tempdc, cx, cy, 0xE20746L);
-            DeleteDC(tempdc);
+			BitBlt(dst_dc, X, Y, W, H, mask_dc, cx, cy, 0xE20746L);
+			
+			// Restore old values
+			SetTextColor(dst_dc, old_color);
+			DeleteDC(mask_dc);
         }
     }
     else if (id) {
         // pix only, no mask
-        //fl_copy_offscreen(X, Y, W, H, (Pixmap)id, cx, cy);
-        HDC new_gc = make_DC(fl_gc, (Pixmap)id, fl_palette);
-        BitBlt(fl_gc, X, Y, W, H, new_gc, cx, cy, SRCCOPY);
-        DeleteDC(new_gc);
+		HDC id_dc = fl_makeDC((Pixmap)id);
+        BitBlt(dst_dc, X, Y, W, H, id_dc, cx, cy, SRCCOPY);
+		DeleteDC(id_dc);
 
     } // else { no mask or id, probably an error... }
 }
