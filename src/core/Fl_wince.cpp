@@ -371,7 +371,6 @@ const Fl_Screen_Info& Fl::info()
 
 //        DEVMODE mode;
         //EnumDisplaySettings(0, ENUM_CURRENT_SETTINGS, &mode);
-		int w = 
 
         info.width = GetSystemMetrics(SM_CXSCREEN); //mode.dmPelsWidth;
         info.height = GetSystemMetrics(SM_CYSCREEN);//mode.dmPelsHeight;
@@ -380,6 +379,8 @@ const Fl_Screen_Info& Fl::info()
         HDC screen = GetDC(0);
         info.width_mm = GetDeviceCaps(screen, HORZSIZE);
         info.height_mm = GetDeviceCaps(screen, VERTSIZE);
+		printf("X %d\r\n",info.width);
+		printf("Y %d\r\n",info.height);
         //info.dpi_x = GetDeviceCaps(screen, LOGPIXELSX);
         //info.dpi_y = GetDeviceCaps(screen, LOGPIXELSY);
     }
@@ -427,6 +428,22 @@ wchar_t *fl_utf2locale(const char *s, UINT codepage = 0)
 	return buf;	*/
 	return wbuf;
 }
+wchar_t *fl_utf82locale(const char *s, UINT codepage = 0)
+{
+	if (!s) return L"";
+	int len, l = 0;
+	len = strlen(s);
+	if (buf_len < len * 2 + 1) {
+		buf_len = len * 2 + 1;
+		buf = (char*) realloc(buf, buf_len);
+		wbuf = (unsigned short*) realloc(wbuf, buf_len * sizeof(short));
+	}
+	if (codepage < 1) codepage = fl_codepage;
+	l = fl_utf2unicode((const unsigned char *)s, len, wbuf);
+	wbuf[l] = 0;
+	return wbuf;	
+}
+
 
 char *fl_locale2utf8(const char *s, UINT codepage = 0)
 {
