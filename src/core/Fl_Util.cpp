@@ -213,8 +213,8 @@ char **fl_get_files(char *path, int *files_count)
 }
 
 #define append_num(ftype, fmt, type) \
-    type_##ftype = va_arg(ap, type); \
-    sprintf(tmpnum, fmt, type_##ftype); \
+    ftype = va_arg(ap, type); \
+    sprintf(tmpnum, fmt, ftype); \
     len += strlen(tmpnum);
 
 int fl_va_len(char *format, va_list ap)
@@ -250,16 +250,16 @@ int fl_va_len(char *format, va_list ap)
             case 'd':
             case 'o':
             case 'x':
-                append_num(d, fmt, int);
+                append_num(type_d, fmt, int);
                 break;
             case 'f':
             case 'e':
             case 'g':
-                append_num(g, fmt, double);
+                append_num(type_g, fmt, double);
                 break;
             case 'l':
                 *fmtptr++ = *ptr++;
-                append_num(ld, fmt, long int);
+                append_num(type_ld, fmt, long int);
                 break;
 
             case '%':
