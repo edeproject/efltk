@@ -22,11 +22,15 @@ install: install_headers install_fltk_config
 install_headers:
 	@echo "Installing include files..."
 	@mkdir -p $(includedir)
-	@rm -rf $(includedir)/efltk $(includedir)/efltk
+	@rm -rf $(includedir)/efltk
 	@mkdir -p $(includedir)/efltk
 	@cp *.h  $(includedir)/efltk
+	@mkdir -p $(includedir)/efltk/xml
+	@cp xml/*.h  $(includedir)/efltk/xml
 	@-chmod 755 $(includedir)/efltk
+	@-chmod 755 $(includedir)/efltk/xml
 	@-chmod 644 $(includedir)/efltk/*
+	@-chmod 644 $(includedir)/efltk/xml/*
 
 install_fltk_config:
 	@echo "Installing efltk-config..."
