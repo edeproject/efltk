@@ -61,6 +61,7 @@ Options:
 
 options telling what we are doing :
 	[--use-gl]        use GL
+	[--use-xml]       use XML extension library
 	[--use-images]    use extra image formats (PNG, Jpeg)
         [--multithread]   build a multithreaded program
 	[--build-plugin]  build a plugin
@@ -115,6 +116,9 @@ do
     --use-images)
       use_images=yes
       ;;
+    --use-xml)
+      use_xml=yes
+      ;;
     --multithread)
       use_threads=yes
       ;;
@@ -158,6 +162,12 @@ if test "$use_images" = "yes"; then
     LDLIBS="$LDLIBS -lefltk_images $IMAGELIBS"
     LDSTATIC="$LDSTATIC $prefix/lib/libefltk_images.a $IMAGELIBS"
     LIBS="$LIBS $prefix/lib/libefltk_images.a"
+fi
+
+if test "$use_xml" = "yes"; then
+    LDLIBS="$LDLIBS -lefltk_xml"
+    LDSTATIC="$LDSTATIC $prefix/lib/libefltk_xml.a"
+    LIBS="$LIBS $prefix/lib/libefltk_xml.a"
 fi
 
 if test "$build_plugin" = "yes"; then
