@@ -1944,8 +1944,6 @@ int Fl_Text_Display::position_style( int lineStartPos,
 */
 int Fl_Text_Display::string_width( const char *string, int length, int style ) 
 {
-    Fl_Font font;
-    int size;
     int mask = style & STYLE_LOOKUP_MASK;
 
     if (mask) {
@@ -1955,9 +1953,7 @@ int Fl_Text_Display::string_width( const char *string, int length, int style )
          else if (si >= mNStyles) si = mNStyles - 1;
 
          Style_Table_Entry *style = mStyleTable + si;
-         font  = style->font;
-         size = style->size;
-
+         
          if(style->attr == ATTR_IMAGE && style->image) {
             int iW=0;
             for(int n=0; n<length; n++) {
@@ -1965,14 +1961,12 @@ int Fl_Text_Display::string_width( const char *string, int length, int style )
             }
             return iW;
          }
+			
+		 fl_font(style->font, style->size);
       }
     } else {
-        font = text_font();
-        size = text_size();
+		fl_font(text_font(), text_size());
     }
-
-    fl_font( font, size );
-
     return (int)fl_width( string, length );
 }
 
