@@ -360,14 +360,16 @@ Fl_Dialog::~Fl_Dialog() {
     clear_buttons();
 }
 
-Fl_Button *Fl_Dialog::button(int button_mask) const
+void Fl_Dialog::enable_button(int button_mask,bool enabled)
 {
     for(unsigned i = 0; i < m_buttonList.size(); i++) {
-        Fl_Widget *btn = m_buttonList[i];
-        if(button_mask & btn->argument())
-            return (Fl_Button*)btn;
+        Fl_Button *btn = (Fl_Button*)m_buttonList[i];
+        if(button_mask & btn->argument()) {
+	    if (enabled)
+	       btn->activate();
+            btn->deactivate();
+	}
     }
-    return (Fl_Button*)0;
 }
 
 Fl_Widget *Fl_Dialog::find_widget(const char *field_name) const 

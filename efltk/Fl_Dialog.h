@@ -127,7 +127,7 @@ public:
      *
      * @param button_id for button, e.g. button(Fl_Dialog::BTN_HELP)
      */
-    void enable_button(int button_id,bool enable=true) const;
+    void enable_button(int button_id,bool enable=true);
 
     /**
      * Removes all buttons from dialog button group.
