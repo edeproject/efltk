@@ -72,6 +72,21 @@ Package=<4>
 
 ###############################################################################
 
+Project: "efltk_xml"=.\efltk_xml.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name efltk
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "efluid"=.\efluid.dsp - Package Owner=<4>
 
 Package=<5>
@@ -180,7 +195,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "listview_ds"=.\listview_ds.dsp - Package Owner=<4>
+Project: "listview_ds"=..\test\listview_ds.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -322,6 +337,42 @@ Package=<4>
 {{{
     Begin Project Dependency
     Project_Dep_Name efltk
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "xml_test"=.\xml_test.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name efltk
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name efltk_xml
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "xml_test2"=.\xml_test2.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name efltk
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name efltk_xml
     End Project Dependency
 }}}
 

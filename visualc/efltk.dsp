@@ -431,6 +431,10 @@ SOURCE=..\src\core\fl_map.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\core\Fl_Maps.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\widgets\Fl_MDI_Bar.cpp
 # End Source File
 # Begin Source File
