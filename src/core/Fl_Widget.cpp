@@ -48,6 +48,10 @@ void Fl_Widget::default_callback(Fl_Widget* w, void*) {w->set_changed();}
 
 Fl_Widget::Fl_Widget(int X, int Y, int W, int H, const char* L)
 {
+    m_minw = m_minh = m_maxw = m_maxh = 0;
+    m_size_range = false;
+
+    layout_flags_ = 0;
     style_    = default_style;
     parent_   = 0;
     callback_ = default_callback;
@@ -80,8 +84,13 @@ Fl_Widget::~Fl_Widget()
         // When a widget is destroyed it can destroy unique styles:
         delete (Fl_Style*)style_;// cast away const
     }
-    //if (flags_&FL_COPIED_LABEL) free((void*)label_);
-    //if (field_name_) free((void *)field_name_);
+}
+
+void Fl_Widget::size_range(int minw, int minh, int maxw, int maxh)
+{
+    m_minw=minw; m_minh=minh;
+    m_maxw=maxw; m_maxh=maxh;
+    m_size_range = true;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -116,6 +125,22 @@ bool Fl_Widget::resize(int X, int Y, int W, int H)
     if (flags)
     {
         x_ = X; y_ = Y; w_ = W; h_ = H;
+
+        if(m_size_range) {
+            if(minw() != maxw() || minh() != maxh()) {
+                if(minw()>0 && w_<minw()) w_ = minw();
+                if(maxw()>0 && w_>maxw()) w_ = maxw();
+
+                if(minh()>0 && h_<minh()) h_ = minh();
+                if(maxh()>0 && h_>maxh()) h_ = maxh();
+
+            } else if(minw()==minh() && maxw()==maxh()) {
+                // Fixed size..
+                w_ = minw();
+                h_ = minh();
+            }
+        }
+
         // parent must get FL_LAYOUT_DAMAGE as well as FL_LAYOUT_CHILD:
         if(parent())
         {

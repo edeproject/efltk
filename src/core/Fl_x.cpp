@@ -1336,8 +1336,8 @@ void Fl_Window::layout()
     {
         // prevent echoing changes back to the server
         resize_from_system = 0;
-    }                            // only for shown windows
-    else if ((layout_damage()&FL_LAYOUT_XYWH) && i)
+    }
+    else if ((layout_damage()&FL_LAYOUT_XYWH) && i) // only for shown windows
     {
         // figure out where the window should be in it's parent:
         int x = this->x(); int y = this->y();
@@ -1349,9 +1349,9 @@ void Fl_Window::layout()
         {
             // Some window managers refuse to allow resizes unless the resize
             // information allows it:
-            if (minw == maxw && minh == maxh) size_range(w(), h(), w(), h());
+            if(!parent() && (minw() == maxw() && minh() == maxh())) size_range(w(), h(), w(), h());
             XMoveResizeWindow(fl_display, i->xid, x, y,
-                w()>0 ? w() : 1, h()>0 ? h() : 1);
+                              w()>0 ? w() : 1, h()>0 ? h() : 1);
             // Wait for echo (relies on window having StaticGravity!!!)
             i->wait_for_expose = true;
         }
@@ -1510,17 +1510,17 @@ int background)
 
 void Fl_X::sendxjunk()
 {
-                                 // it's not a window manager window!
+    // it's not a window manager window!
     if (window->parent() || window->override()) return;
 
     XSizeHints hints;
     // memset(&hints, 0, sizeof(hints)); jreiser suggestion to fix purify?
-    hints.min_width = window->minw;
-    hints.min_height = window->minh;
-    hints.max_width = window->maxw;
-    hints.max_height = window->maxh;
-    hints.width_inc = window->dw;
-    hints.height_inc = window->dh;
+    hints.min_width = window->minw();
+    hints.min_height = window->minh();
+    hints.max_width = window->maxw();
+    hints.max_height = window->maxh();
+    hints.width_inc = window->dw();
+    hints.height_inc = window->dh();
     hints.win_gravity = StaticGravity;
 
     // see the file /usr/include/X11/Xm/MwmUtil.h:
@@ -1529,12 +1529,11 @@ void Fl_X::sendxjunk()
     long prop[5] = {0, 1, 1, 0, 0};
 
     if (hints.min_width != hints.max_width ||
-                                 // resizable
         hints.min_height != hints.max_height)
     {
+        // resizable
         hints.flags = PMinSize|PWinGravity;
-        if (hints.max_width >= hints.min_width ||
-            hints.max_height >= hints.min_height)
+        if (hints.max_width >= hints.min_width || hints.max_height >= hints.min_height)
         {
             hints.flags = PMinSize|PMaxSize|PWinGravity;
             // unfortunately we can't set just one maximum size.  Guess a
@@ -1581,7 +1580,7 @@ void Fl_X::sendxjunk()
 
 void Fl_Window::size_range_()
 {
-    size_range_set = 1;
+    m_size_range = 1;
     if (i) i->sendxjunk();
 }
 

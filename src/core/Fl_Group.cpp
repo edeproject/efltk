@@ -54,7 +54,6 @@ Fl_Group::Fl_Group(int X,int Y,int W,int H,const char *l)
 : Fl_Widget(X,Y,W,H,l),
 focus_(-1),
 resizable_(0),                   // fltk 1.0 used (this)
-sizes_(0),
 data_source_(0L)
 {
     widget_type(GROUP_TYPE);
@@ -353,51 +352,48 @@ int Fl_Group::handle(int event)
 
 void Fl_Group::init_sizes()
 {
-    delete[] sizes_; sizes_ = 0;
+    sizes_.clear();
     relayout();
 }
 
 
 int* Fl_Group::sizes()
 {
-    if (!sizes_)
-    {
-        int* p = sizes_ = new int[4*(children()+2)];
+    if(sizes_.size()<=0) {
         // first thing in sizes array is the group's size:
-        p[0] = x();
-        p[1] = w();
-        p[2] = y();
-        p[3] = h();
+        sizes_.append(x());
+        sizes_.append(w());
+        sizes_.append(y());
+        sizes_.append(h());
         // next is the resizable's size:
-        p[4] = 0;                // init to the group's size
-        p[5] = p[1];
-        p[6] = 0;
-        p[7] = p[3];
+        sizes_.append(0);                // init to the group's size
+        sizes_.append(w());
+        sizes_.append(0);
+        sizes_.append(h());
+
         Fl_Widget* r = resizable();
         if (r && r != this)      // then clip the resizable to it
         {
             int t;
-            t = r->x(); if (t > 0) p[4] = t;
-            t +=r->w(); if (t < p[1]) p[5] = t;
-            t = r->y(); if (t > 0) p[6] = t;
-            t +=r->h(); if (t < p[3]) p[7] = t;
+            t = r->x(); if (t > 0) sizes_[4] = t;
+            t +=r->w(); if (t < sizes_[1]) sizes_[5] = t;
+            t = r->y(); if (t > 0) sizes_[6] = t;
+            t +=r->h(); if (t < sizes_[3]) sizes_[7] = t;
         }
         // next is all the children's sizes:
-        p += 8;
-        Fl_Widget*const* a = array_.data();
-        Fl_Widget*const* e = a+children();
-        while (a < e)
-        {
-            Fl_Widget* o = *a++;
-            *p++ = o->x();
-            *p++ = o->x()+o->w();
-            *p++ = o->y();
-            *p++ = o->y()+o->h();
+
+        for(uint n=0; n<array_.size(); n++) {
+            Fl_Widget *widget = array_[n];
+            if(!widget->layout_align()) {
+                sizes_.append(widget->x());
+                sizes_.append(widget->x()+widget->w());
+                sizes_.append(widget->y());
+                sizes_.append(widget->y()+widget->h());
+            }
         }
     }
-    return sizes_;
+    return (int*)sizes_.data();
 }
-
 
 void Fl_Group::layout()
 {
@@ -406,18 +402,20 @@ void Fl_Group::layout()
     int layout_damage = this->layout_damage();
     Fl_Widget::layout();
 
-    if (resizable() && children())
-    {
+    if(children() && resizable()) {
         int* p = sizes();        // initialize the size array
 
-        if (layout_damage&FL_LAYOUT_WH)
+        if(layout_damage&FL_LAYOUT_WH)
         {
-
             // get changes in size from the initial size:
             int dw = w()-p[1];
             int dh = h()-p[3];
-
             p+=4;
+
+            int xx = 0, yy = 0;
+            int ww = w(), hh = h();
+
+            Fl_Widget *client = NULL;
 
             // Calculate a new size & position for every child widget:
             // get initial size of resizable():
@@ -426,27 +424,57 @@ void Fl_Group::layout()
             int IY = *p++;
             int IB = *p++;
 
-            Fl_Widget*const* a = array_.data();
-            Fl_Widget*const* e = a+children();
-            while (a < e)
-            {
-                Fl_Widget* o = *a++;
-                int X = *p++;
-                if (X >= IR) X += dw;
-                else if (X > IX) X = X + dw * (X-IX)/(IR-IX);
-                int R = *p++;
-                if (R >= IR) R += dw;
-                else if (R > IX) R = R + dw * (R-IX)/(IR-IX);
+            for (int i = 0; i < children(); i++) {
 
-                int Y = *p++;
-                if (Y >= IB) Y += dh;
-                else if (Y > IY) Y = Y + dh*(Y-IY)/(IB-IY);
-                int B = *p++;
-                if (B >= IB) B += dh;
-                else if (B > IY) B = B + dh*(B-IY)/(IB-IY);
+                Fl_Widget* o = child(i);
+                switch (o->layout_align()) {
+                case 0: {
+                    if(!resizable()) break;
 
-                o->resize(X, Y, R-X, B-Y);
+                    int X = p[0];
+                    if (X >= IR) X += dw;
+                    else if (X > IX) X = X + dw * (X-IX)/(IR-IX);
+                    int R = p[1];
+                    if (R >= IR) R += dw;
+                    else if (R > IX) R = R + dw * (R-IX)/(IR-IX);
+
+                    int Y = p[2];
+                    if (Y >= IB) Y += dh;
+                    else if (Y > IY) Y = Y + dh*(Y-IY)/(IB-IY);
+                    int B = p[3];
+                    if (B >= IB) B += dh;
+                    else if (B > IY) B = B + dh*(B-IY)/(IB-IY);
+
+                    o->resize(X, Y, R-X, B-Y);
+                    p += 4;
+                }
+                break;
+
+                case FL_ALIGN_LEFT:
+                    o->resize(xx,yy,o->w(),hh);
+                    xx += o->w();
+                    ww -= o->w();
+                    break;
+                case FL_ALIGN_RIGHT:
+                    o->resize(xx+ww-o->w(),yy,o->w(),hh);
+                    ww -= o->w();
+                    break;
+                case FL_ALIGN_TOP:
+                    o->resize(xx,yy,ww,o->h());
+                    yy += o->h();
+                    hh -= o->h();
+                    break;
+                case FL_ALIGN_BOTTOM:
+                    o->resize(xx,yy+hh-o->h(),ww,o->h());
+                    hh -= o->h();
+                    break;
+                case FL_ALIGN_CLIENT:
+                    client = o;
+                    break;
+                }
             }
+            // use the remaining space for the only client-size widget, if any
+            if(client) client->resize(xx,yy,ww,hh);
         }
     }
 

@@ -75,11 +75,9 @@ void Fl_Window::_Fl_Window()
     icon_ = 0;
     iconlabel_ = 0;
     //resizable(0); // new default for group
-    size_range_set = 0;
     child_of_ = 0;
     
-	//connect(&Fl_Widget::hide, (void*)0);
-	callback((Fl_Callback*)default_callback);
+    callback((Fl_Callback*)default_callback);
 }
 
 
@@ -115,6 +113,16 @@ extern void fl_fix_focus();
 
 bool fl_show_iconic;             // set by iconize() or by -i Fl::arg switch
 
+#include <stdio.h>
+
+void Fl_Window::size_range(int minw, int minh, int maxw, int maxh)
+{
+    m_dw = m_dh = 0;
+    m_minw=minw; m_minh=minh;
+    m_maxw=maxw; m_maxh=maxh;
+    size_range_();
+}
+
 int Fl_Window::handle(int event)
 {
     switch (event)
@@ -130,8 +138,11 @@ int Fl_Window::handle(int event)
             }
             Fl_Style::load_theme();
             fl_open_display();
+
+            for(int n = 0; n < children(); n++) child(n)->layout_damage(child(n)->layout_damage()|FL_LAYOUT_XYWH);
             layout();
-            if (!parent() && !size_range_set)
+
+            if (!parent() && !has_size_range())
             {
                 if (resizable())
                 {
