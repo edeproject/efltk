@@ -1,3 +1,602 @@
+2002-09-30 17:19  laza2000
+
+	* src/widgets/: Fl_Menu_Window.cpp, Fl_Tooltip.cpp: Made changes
+	for tooltips and menus, work undex XWindows also...
+
+2002-09-30 17:00  laza2000
+
+	* efltk/Fl_Menu_.h, efltk/Fl_Menu_Window.h, src/core/Fl.cpp,
+	src/core/Fl_init.cpp, src/widgets/Fl_Menu.cpp,
+	src/widgets/Fl_Menu_.cpp, src/widgets/Fl_Menu_Bar.cpp,
+	src/widgets/Fl_Menu_Button.cpp, src/widgets/Fl_Menu_Window.cpp,
+	src/widgets/Fl_Tooltip.cpp, test/menubar.cpp, visualc/editor.dsp,
+	visualc/mdi.dsp, visualc/menubar.dsp, visualc/preferences.dsp: Menu
+	and tooltip animate fixes.
+	
+	Made tooltips work more like MS Windows. Now if mousepointer moves
+	top of visible tooltip, it will disappear and pops up when
+	mousepointer stops moving.
+
+2002-09-27 17:33  laza2000
+
+	* efltk/Enumerations.h, src/core/Fl_Util.cpp,
+	src/core/fl_stretch.cpp, src/core/fl_theme.cpp,
+	src/widgets/Fl_File_Dialog.cpp:  - Fixes for MinGW, win32
+	environment
+	 - Added MinGW makefiles
+	
+	This has been tested with mingw2.0 distribution:  GCC3.2 + MSys
+
+2002-09-27 14:45  laza2000
+
+	* src/widgets/Fl_MDI_Window.cpp:  - Fixed MDI menubuttons in WIN32
+	 - When MDI windows non-resizable show also minimize button
+	 - Fixed MDI titlebar buttons layouting
+
+2002-09-27 08:34  laza2000
+
+	* test/editor.cpp: Removed note about slowness in WIN32, since it's
+	very fast in WIN32 now, also :)
+
+2002-09-27 01:13  laza2000
+
+	* efltk/Fl_Button.h, efltk/Fl_MDI_Window.h, efltk/Fl_Workspace.h,
+	src/widgets/Fl_MDI_Window.cpp, src/widgets/Fl_Menu.cpp,
+	src/widgets/Fl_Menu_Bar.cpp, src/widgets/Fl_Text_Display.cpp,
+	src/widgets/Fl_Workspace.cpp, test/mdi_test.cpp, test/menubar.cpp: 
+	- Added MDI Window support for buttons in menubar, when window
+	maximized.
+	 - Fixed Fl_Text_Display, when loading file on non-continuos wrap
+	mode.
+
+2002-09-26 22:27  laza2000
+
+	* src/widgets/Fl_Text_Display.cpp: Fixed linenumber draw in
+	continuous wrap mode.
+
+2002-09-26 22:19  laza2000
+
+	* src/widgets/Fl_Text_Display.cpp: Dont try to find wrap_range in
+	buffer_modified_cb if widget is not realized yet.
+
+2002-09-26 16:31  laza2000
+
+	* src/core/fl_font_x.cpp: Dooh! Dont compare font names...
+
+2002-09-26 16:24  laza2000
+
+	* src/core/fl_font_x.cpp: Speed up...
+
+2002-09-26 15:58  laza2000
+
+	* src/widgets/Fl_Text_Display.cpp: The speed is back! :)
+	
+	Problem was in font changes, it seems core tries always change
+	font, even its same!? looking into this!
+
+2002-09-26 12:22  laza2000
+
+	* src/widgets/Fl_Text_Display.cpp: Fix infinite loop, if widget is
+	smaller than one line of text
+
+2002-09-26 12:18  laza2000
+
+	* src/widgets/Fl_MDI_Window.cpp: Don't delete view widget at
+	destructor, if its deleted already
+
+2002-09-26 12:11  laza2000
+
+	* efltk/fl_draw.h, src/core/Fl_Config.cpp,
+	src/core/fl_font_win32.cpp, src/core/fl_font_x.cpp,
+	src/widgets/Fl_MDI_Window.cpp, src/widgets/Fl_Text_Display.cpp,
+	test/editor.cpp:  - Added fl_width(uchar) for measuring one char
+	 - Fl_MDI_Window set layout_damage() for its view widget
+	
+	Still trying to figure out the slownes of Fl_Text_Display...  Now
+	its reasonably fast, but still not fast enought.  It seems that
+	fl_width becomes very slow for some reason in Fl_Text_Display,
+	other widgets its fast?!
+
+2002-09-25 20:49  laza2000
+
+	* src/widgets/Fl_Text_Display.cpp: Fixed segfault when typing
+	without stylebuffer.
+
+2002-09-25 16:01  laza2000
+
+	* src/: core/Fl_init.cpp, widgets/Fl_Menu.cpp,
+	widgets/Fl_Menu_.cpp, widgets/Fl_Menu_Bar.cpp,
+	widgets/Fl_Menu_Window.cpp:  - Fixed menu redraw bug
+	 - Minor changes in menu
+
+2002-09-25 00:52  laza2000
+
+	* efltk/Fl_Menu_.h, src/core/Fl_init.cpp, src/widgets/Fl_Menu.cpp,
+	src/widgets/Fl_Menu_.cpp, src/widgets/Fl_Menu_Bar.cpp,
+	src/widgets/Fl_Menu_Window.cpp, test/menubar.cpp:  - Added timeout
+	support for submenus  Fl_Menu_::default_delay and Fl_Menu_::delay
+	 - Fixed Fl_Menu_Bar drawing bug
+	 - Fixed that menu windows doesnt activate under WIN32
+	 - Added tooltip support for menu items
+
+2002-09-24 15:58  ravne2000
+
+	* efltk/Fl_Menu_.h, fluid/locale/Makefile, locale/Makefile,
+	src/widgets/Fl_Menu.cpp, src/widgets/Fl_Menu_.cpp,
+	test/fast_slow.cpp, test/fast_slow.h, test/inactive.cpp,
+	test/inactive.h, test/radio.cpp, test/radio.h, test/resizable.cpp,
+	test/resizable.h, test/valuators.cpp, test/valuators.h:  - Added
+	relayout_current_menu() to Fl_Menu_, this allows to add items to
+	empty menuitem and then relayout it.   - Fl_Menu_ sends events to
+	menu items, in case you want to sub-class  item.   - Disabled
+	locales install from fluid
+
+2002-09-24 12:01  laza2000
+
+	* src/widgets/Fl_Text_Display.cpp: puuh... Trying to figure out the
+	slowness of drawing...
+
+2002-09-24 11:59  laza2000
+
+	* src/core/fl_font_x.cpp: fl_width from FLTK1.1 (faster)
+
+2002-09-24 11:37  laza2000
+
+	* src/widgets/Fl_Text_Display.cpp: Removed debug messages..
+
+2002-09-24 11:12  laza2000
+
+	* src/: core/Fl.cpp, core/Fl_win32.cpp, core/Fl_x.cpp,
+	widgets/Fl_Item.cpp, widgets/Fl_Menu_add.cpp,
+	widgets/Fl_Text_Display.cpp: More FLTK2 core merging...
+	
+	<SNIP from="Bill Spitzak">
+	
+	More fixes so tooltips don't reappear when a menu is dismissed.
+	
+	</SNIP>
+
+2002-09-24 10:43  laza2000
+
+	* src/widgets/Fl_Menu_.cpp: put end() back on contructor.. Breaks
+	too many existing apps...
+
+2002-09-24 02:53  laza2000
+
+	* src/widgets/Fl_Text_Display.cpp: Added pre-check for hscrollbar.
+
+2002-09-24 02:35  laza2000
+
+	* src/widgets/Fl_Text_Display.cpp: Speed up layout by checking if
+	hsvrollbar was already visible, then we don't need to iterate
+	again.
+
+2002-09-24 02:26  laza2000
+
+	* test/editor.cpp: Added note about slowness only under WIN32 :))
+
+2002-09-24 02:18  laza2000
+
+	* src/core/Fl_x.cpp: Removed compiler warning.
+
+2002-09-24 02:15  laza2000
+
+	* efltk/Fl_Menu_.h, src/core/Fl_x.cpp, src/widgets/Fl_Input.cpp,
+	src/widgets/Fl_Input_Browser.cpp, src/widgets/Fl_Menu_.cpp,
+	src/widgets/Fl_Menu_Item.cpp, src/widgets/Fl_Text_Display.cpp,
+	src/widgets/Fl_Tool_Bar.cpp: Added Fl_Menu_() contructor, cause
+	update from Bill removed end() function from Fl_Menu_(...), That
+	was cause Fl_Item_Group is now inherited from Fl_Menu_ and thats
+	Groups normal behaviour.
+	
+	But... It caused problems, cause we couple of static menus, like in
+	Fl_Text_Editor, that set Fl_Group::current() before any window was
+	created. So this broke most of the programs...
+	
+	Fl_Menu_() contructs 0x0 menu, and does end() there. So it can be
+	used as compiled-in static menu.
+
+2002-09-24 01:28  laza2000
+
+	* efltk/Fl_Item_Group.h, efltk/Fl_Tooltip.h, efltk/Fl_Widget.h,
+	src/core/Fl.cpp, src/core/Fl_Group.cpp, src/core/Fl_Widget.cpp,
+	src/core/Fl_x.cpp, src/widgets/Fl_File_Dialog.cpp,
+	src/widgets/Fl_Item.cpp, src/widgets/Fl_Menu_.cpp,
+	src/widgets/Fl_Tabs.cpp, src/widgets/Fl_Tooltip.cpp: Merged with
+	FLTK2 core changes.
+	
+	<SNIP from="Bill Spitzak">
+	
+	Fl_Tooltip::enter() now takes a "generate" function and a void*
+	argument. This allows the text to be deferred until the tooltip
+	pops up, which may save time if the text is expensive to make.
+	
+	Fl_Tooltip::current(widget) added, it acts like the tooltip is
+	already set for the given widget. This may be useful for preventing
+	tooltips from popping up when the mouse moves back into a widget.
+	Unfortunately fltk cannot call this itself because it has to allow
+	the callbacks to destroy the widgets.
+	
+	Instead I did other fixes so that when you click and release a
+	mouse button, the tooltip does not pop back up. I fixed 3 cases:
+	dragging off a button so you are pointing at another, a pop-up menu
+	disappearing so the cursor lands in a widget, and a modal window
+	disappearing so the cursor lands in a widget. This was a big PITA
+	but it should get rid of the biggest problems with fltk's
+	over-exuberance for showing tooltips.
+	
+	The glut emulation pop-up menus have been fixed.  Fl_Item_Group is
+	now a subclass of Fl_Menu_.
+	
+	</SNIP>
+
+2002-09-23 23:11  laza2000
+
+	* src/widgets/: Fl_File_Dialog.cpp, Fl_Input_Browser.cpp,
+	Fl_Menu.cpp, Fl_Menu_Window.cpp:  - Disabled animate from
+	Fl_Input_Browser (for now, have to fix this)
+	 - Fixed Fl_File_Dialog read_dir, when passing NULL
+	 - Fl_Menu_Window don't animate, if animate_ variable is false
+	(forgot...)
+
+2002-09-23 22:06  laza2000
+
+	* src/widgets/Fl_Text_Editor.cpp: Fixed compile warning.
+
+2002-09-23 19:29  laza2000
+
+	* src/core/fl_load_plugin.cpp, src/widgets/Fl_File_Dialog.cpp,
+	src/widgets/Fl_Text_Display.cpp, test/editor.cpp:  - Fixed
+	Fl_FileDialog, when set path as empty string.
+	 - Fixed Fl_Text_Display under Linux
+
+2002-09-23 19:14  laza2000
+
+	* test/editor.cpp: Added note about slowness of wrapping :)
+
+2002-09-23 19:09  laza2000
+
+	* efltk/Fl_Text_Buffer.h, efltk/Fl_Text_Display.h,
+	src/widgets/Fl_Text_Buffer.cpp, src/widgets/Fl_Text_Display.cpp,
+	src/widgets/Fl_Text_Editor.cpp, test/editor.cpp:  - Fl_Text_Editor
+	wraps text, applied George Garvey's patch from FLTK1.1 CVS,
+	with many modifications based on NEdit 5.3 source and my head :)! 
+	- Added linenumbers  - Fixed blockcursor draw  - Added
+	cursor_color() functions.
+
+2002-09-22 12:08  laza2000
+
+	* src/widgets/Fl_Input.cpp: Removed debug messages...
+
+2002-09-22 12:07  laza2000
+
+	* efltk/Fl_Double_Window.h, efltk/Fl_Menu_Window.h,
+	src/core/Fl_Image.cpp, src/core/Fl_Window.cpp,
+	src/core/Fl_init.cpp, src/widgets/Fl_Double_Window.cpp,
+	src/widgets/Fl_Input.cpp, src/widgets/Fl_MDI_Window.cpp,
+	src/widgets/Fl_Menu.cpp, src/widgets/Fl_Menu_Window.cpp,
+	src/widgets/Fl_Pack.cpp, src/widgets/Fl_Tooltip.cpp,
+	visualc/editor.dsp, visualc/efltk.dsp, visualc/efltk.dsw:  - Fixed
+	infinite loop in menu animate
+	 - Set Fl_Pack default box to FL_FLAT
+	 - Some minor WIN32 related fixes
+
+2002-09-21 23:22  laza2000
+
+	* src/widgets/Fl_Menu.cpp: Fixes bug, when needed doubleclick
+	sometimes item to get menu disappear.
+
+2002-09-21 22:11  laza2000
+
+	* src/widgets/Fl_Main_Window.cpp: Do view->layout() after set new
+	mainview widget.
+
+2002-09-21 17:05  laza2000
+
+	* src/widgets/: Fl_Input_Browser.cpp, Fl_MDI_Window.cpp,
+	Fl_Numeric_Input.cpp:  - Fixed input_browser popup pos, when inside
+	subwindow
+	 - MDI_Window default titlebar height to 18
+	 - Numeric input reflects mouse move, when ALT/CTRL down. (from
+	Bill
+	Spitzak)
+
+2002-09-21 12:27  laza2000
+
+	* src/: core/Fl_Image.cpp, core/Fl_init.cpp,
+	core/fl_draw_image_x.cpp, widgets/Fl_MDI_Window.cpp,
+	widgets/Fl_Menu_Window.cpp:  - Fixed Linux compile
+	 - Fixed Linux menu/mdi animate
+
+2002-09-21 12:04  laza2000
+
+	* src/core/Fl_Util.cpp, src/core/Fl_Window.cpp,
+	src/core/filename_expand.cpp, src/core/fl_font_win32.cpp,
+	src/widgets/Fl_File_Dialog.cpp, src/widgets/Fl_ListView.cpp,
+	src/widgets/Fl_ListView_Item.cpp, src/widgets/Fl_MDI_Window.cpp,
+	visualc/alphablend.dsp, visualc/efltk.dsp,
+	visualc/efltk_images.dsp, visualc/file_chooser.dsp,
+	visualc/hello.dsp, visualc/image_layout.dsp, visualc/mdi.dsp,
+	visualc/menubar.dsp, visualc/preferences.dsp:  - Fixed WIN32
+	network path reading
+	 - Changed fl_cut_line to not allocate always buffer.
+	 - Removed last reference to fltk header files :)
+	 - Added RELEASE setup to project files
+
+2002-09-21 09:55  laza2000
+
+	* efltk/Fl_Config.h, src/core/Fl.cpp, src/core/Fl_Config.cpp,
+	src/core/Fl_Image.cpp, src/core/Fl_Util.cpp, src/core/Fl_Xpm.cpp,
+	src/core/Fl_init.cpp, src/core/Fl_win32.cpp,
+	src/core/fl_draw_image_win32.cpp, src/core/scandir_win32.c,
+	src/widgets/Fl_File_Dialog.cpp, src/widgets/Fl_MDI_Window.cpp,
+	src/widgets/Fl_Menu_Window.cpp, test/mdi_test.cpp,
+	test/preferences.cpp, visualc/alphablend.dsp, visualc/efltk.dsw,
+	visualc/efltk_images.dsp, visualc/file_chooser.dsp,
+	visualc/hello.dsp, visualc/image_layout.dsp, visualc/mdi.dsp,
+	visualc/preferences.dsp:  - Fixed WIN32 file dialog
+	 - Fixed WIN32 menu animate
+	 - Fixed WIN32 Fl_Config
+	 - Added new project files
+
+2002-09-20 15:19  laza2000
+
+	* efltk/Fl_MDI_Window.h, efltk/Fl_Renderer.h, efltk/Fl_Util.h,
+	src/core/Fl.cpp, src/core/Fl_Bitmap.cpp, src/core/Fl_Config.cpp,
+	src/core/Fl_Image.cpp, src/core/Fl_Image_Filter.cpp,
+	src/core/Fl_Util.cpp, src/core/Fl_WM.cpp, src/core/Fl_get_key.cpp,
+	src/core/Fl_init.cpp, src/core/filename_list.cpp,
+	src/core/fl_draw.cpp, src/core/fl_draw_image_win32.cpp,
+	src/core/fl_font_win32.cpp, src/core/fl_internal.h,
+	src/core/fl_labeltype.cpp, src/core/fl_locale.cpp,
+	src/core/fl_oval_box.cpp, src/core/fl_round_box.cpp,
+	src/core/fl_rounded_box.cpp, src/core/fl_theme.cpp,
+	src/core/fl_vertex.cpp, src/core/numericsort.c,
+	src/core/scandir_win32.c, src/images/Fl_Images.cpp,
+	src/images/Fl_Jpeg.cpp, src/images/Fl_Png.cpp,
+	src/widgets/Fl_Align_Group.cpp, src/widgets/Fl_Color_Chooser.cpp,
+	src/widgets/Fl_Dial.cpp, src/widgets/Fl_FileBrowser.cpp,
+	src/widgets/Fl_File_Dialog.cpp, src/widgets/Fl_Input.cpp,
+	src/widgets/Fl_Item.cpp, src/widgets/Fl_ListView.cpp,
+	src/widgets/Fl_ListView_Item.cpp, src/widgets/Fl_MDI_Window.cpp,
+	src/widgets/Fl_Menu.cpp, src/widgets/Fl_Menu_Window.cpp,
+	src/widgets/Fl_ProgressBar.cpp, src/widgets/Fl_Shaped_Window.cpp,
+	src/widgets/Fl_Text_Display.cpp, src/widgets/Fl_Tooltip.cpp,
+	src/widgets/Fl_Valuator.cpp, test/bb.png, visualc/alphablend.dsp,
+	visualc/bb.png, visualc/config.h, visualc/efltk.dsp,
+	visualc/efltk.dsw, visualc/efltk_images.dsp, visualc/hello.dsp,
+	visualc/menubar.dsp:  - Made compile under WIN32 vcpp
+	 - Added WIN32 vcpp project files (some of them)
+	 - Some float->int conversion fixes
+
+2002-09-20 15:17  laza2000
+
+	* test/: alphablend.cpp, bb.png: WIN32 changes
+
+2002-09-19 20:53  laza2000
+
+	* efltk/Fl_PtrList.h:  - Fixed simple, but serious bug! This fixes
+	edewm, and all apps which
+	calls list.prepend() function and then iterate trought list. It
+	caused infinite loop...
+
+2002-09-18 01:11  laza2000
+
+	* src/core/Fl_init.cpp: Menus animate by default
+
+2002-09-18 00:59  laza2000
+
+	* test/alphablend.cpp: Optimized ~100 times faster! No need for
+	doublebuffered window anymore
+
+2002-09-17 22:19  laza2000
+
+	* themes/README.themes: Added README file
+
+2002-09-17 22:18  laza2000
+
+	* src/: core/Fl_Boxtype.cpp, core/fl_diamond_box.cpp,
+	core/fl_oval_box.cpp, core/fl_plastic_box.cpp,
+	core/fl_round_box.cpp, core/fl_rounded_box.cpp,
+	core/fl_shadow_box.cpp, widgets/Fl_Boxtype.cpp,
+	widgets/fl_diamond_box.cpp, widgets/fl_oval_box.cpp,
+	widgets/fl_plastic_box.cpp, widgets/fl_round_box.cpp,
+	widgets/fl_rounded_box.cpp, widgets/fl_shadow_box.cpp: Moved
+	Fl_BoxType_ under core, this allow link applications statically
+	also...
+
+2002-09-17 22:15  laza2000
+
+	* configure.in, src/core/Fl_Image.cpp, src/core/Fl_init.cpp,
+	src/core/Makefile, src/core/fl_font_xft.cpp,
+	src/widgets/Fl_MDI_Window.cpp, src/widgets/Fl_Menu_Window.cpp,
+	src/widgets/Fl_Tooltip.cpp, src/widgets/Makefile, test/Makefile,
+	test/alphablend.cpp, test/file_chooser.cpp: Fixed XFT
+
+2002-09-17 16:25  laza2000
+
+	* efltk/Enumerations.h, efltk/Fl.h, efltk/Fl_Button.h,
+	efltk/Fl_Color_Chooser.h, efltk/Fl_Image_Filter.h,
+	efltk/Fl_Input.h, efltk/Fl_Menu_Window.h, efltk/Fl_ProgressBar.h,
+	efltk/Fl_Tool_Bar.h, efltk/Fl_Tooltip.h, efltk/filename.h,
+	efltk/fl_draw.h, efltk/gl.h, src/core/Fl.cpp,
+	src/core/Fl_Image_Filter.cpp, src/core/Fl_win32.cpp,
+	src/core/Fl_x.cpp, src/core/fl_arc.cpp, src/core/fl_arci.cpp,
+	src/core/fl_curve.cpp, src/core/fl_draw.cpp, src/core/fl_font.cpp,
+	src/core/fl_font_win32.cpp, src/core/fl_font_x.cpp,
+	src/core/fl_font_xft.cpp, src/core/fl_glyph.cpp,
+	src/core/fl_vertex.cpp, src/opengl/gl_draw.cpp,
+	src/widgets/Fl_Button.cpp, src/widgets/Fl_Clock.cpp,
+	src/widgets/Fl_Color_Chooser.cpp, src/widgets/Fl_Dial.cpp,
+	src/widgets/Fl_Input.cpp, src/widgets/Fl_Item.cpp,
+	src/widgets/Fl_ListView.cpp, src/widgets/Fl_MDI_Window.cpp,
+	src/widgets/Fl_Menu.cpp, src/widgets/Fl_Numeric_Input.cpp,
+	src/widgets/Fl_ProgressBar.cpp, src/widgets/Fl_Repeat_Button.cpp,
+	src/widgets/Fl_Scrollbar.cpp, src/widgets/Fl_Slider.cpp,
+	src/widgets/Fl_Tooltip.cpp, src/widgets/Fl_Valuator.cpp,
+	src/widgets/Fl_Value_Input.cpp, src/widgets/Fl_Value_Slider.cpp,
+	src/widgets/fl_rounded_box.cpp, src/widgets/fl_symbols.cpp,
+	test/arc.cpp, test/checkers.cpp, test/curve.cpp,
+	test/doublebuffer.cpp, test/mdi_test.cpp, test/scroll.cpp:  -
+	Merged with FLTK2 core updates, below Bill's log message.
+	 - Changed function space -> spacing in Fl_Tool_Bar
+	
+	<SNIP from="Bill Spitzak">
+	
+	Vertical scrollbars and Fl_Numeric_Input did mousewheel movement
+	backwards.
+	
+	Changed the arguments for drawing and time from double to float.
+	This seems to be more popular for drawing libraries and is faster.
+	Big problem is that C++ will not resolve foo(int,int) and
+	foo(float,float) unless you identify both arguments as floats or
+	both are integers. Also VC++ warns about the int->float
+	conversions. Both of these can be fixed with casts but I have not
+	gotten all the VC++ warnings out yet (I don't turn them off because
+	the double->float warning is also turned off and I want that one).
+	
+	</SNIP>
+
+2002-09-17 11:21  laza2000
+
+	* configure.in, efltk/Fl_File_Dialog.h, efltk/Fl_Util.h,
+	src/core/Fl_Config.cpp, src/core/Fl_Style.cpp,
+	src/core/fl_draw_image_x_2.cpp, src/core/fl_stretch.cpp,
+	src/core/fl_theme.cpp, src/widgets/Fl_File_Dialog.cpp,
+	test/file_chooser.cpp, test/mdi_test.cpp:  - Fixes for GCC3.2
+	 - Removed multiple define of FL_PATH_MAX
+
+2002-09-16 22:02  laza2000
+
+	* test/editor.cpp:  - Optimized editor demo highlighting
+	 - editor demo highlights also function names
+
+2002-09-16 18:07  laza2000
+
+	* efltk/Fl_Text_Buffer.h, efltk/Fl_Text_Display.h,
+	src/widgets/Fl_Text_Buffer.cpp, src/widgets/Fl_Text_Display.cpp,
+	src/widgets/Fl_Text_Editor.cpp, test/CubeMain.cpp, test/editor.cpp:
+	 - Fixed unfinished_cb in Fl_Text_Display
+	 - Fixed editor demo to handle reparsing correctly
+	 - Added static_text() to Fl_Text_Buffer
+	 - Fixed insert/delete keyfunc defs in Fl_Text_Editor
+
+2002-09-16 15:02  laza2000
+
+	* test/bb.png: Added bouncing ball image for alphablend test
+
+2002-09-16 15:01  laza2000
+
+	* src/widgets/Fl_ListView.cpp, src/widgets/Fl_Text_Display.cpp,
+	test/Makefile, test/alphablend.cpp, test/editor.cpp,
+	test/image_manip.cpp, test/listview.cpp:  - Fixed Fl_Text_Editor
+	ATTR_UNDERLINE draw
+	 - Added 3 more tests
+	 - fixed Fl_ListView keyboard events, when none of items are
+	selected.
+
+2002-09-16 00:34  laza2000
+
+	* src/widgets/Fl_Text_Display.cpp: Fixed compiler warning
+
+2002-09-16 00:30  laza2000
+
+	* test/editor.cpp: Oops, removed not implement attr :)
+
+2002-09-16 00:29  laza2000
+
+	* efltk/Fl_Color.h, efltk/Fl_Locale.h, efltk/Fl_PtrList.h,
+	efltk/Fl_Text_Display.h, efltk/Fl_Text_Editor.h, fluid/fluid.cxx,
+	fluid/widget_panel.cxx, fluid/widget_panel.fl,
+	src/core/Fl_Config.cpp, src/core/Fl_init.cpp,
+	src/core/fl_color.cpp, src/core/fl_internal.h,
+	src/core/fl_locale.cpp, src/widgets/Fl_File_Dialog.cpp,
+	src/widgets/Fl_Help_Dialog.cpp, src/widgets/Fl_Input_Browser.cpp,
+	src/widgets/Fl_ListView.cpp, src/widgets/Fl_ListView_Item.cpp,
+	src/widgets/Fl_Numeric_Input.cpp, src/widgets/Fl_Simple_Html.cpp,
+	src/widgets/Fl_Text_Display.cpp, src/widgets/Fl_Text_Editor.cpp,
+	src/widgets/Fl_Valuator.cpp, src/widgets/Fl_Value_Input.cpp,
+	src/widgets/Fl_Value_Slider.cpp, src/widgets/fl_ask.cpp,
+	test/editor.cpp, test/hello.cpp, test/preferences.cpp,
+	test/preferences.fl, test/preferences.h:  - new Fl_PtrList remove
+	code, bit faster
+	 - added fl_invert(Fl_Color) function
+	 - Various fixes in Fl_Text_Display
+	 - Fixed Value_Slider, when locale has different decimal pointer
+	than '.'
+	 - Some minor File Dialog fixes
+
+2002-09-15 11:41  laza2000
+
+	* fluid/locale/: Makefile, makedepend: Added locale dir, for fluids
+	.po files. (none yet)
+
+2002-09-15 11:39  laza2000
+
+	* Makefile, fluid/Fl_Function_Type.cxx, fluid/Fl_Type.cxx,
+	fluid/Fl_Type.h, fluid/Fl_Widget_Type.cxx,
+	fluid/Fl_Window_Type.cxx, fluid/about_panel.cxx,
+	fluid/about_panel.fl, fluid/about_panel.h,
+	fluid/alignment_panel.cxx, fluid/alignment_panel.fl,
+	fluid/alignment_panel.h, fluid/code.cxx, fluid/coding_style.cxx,
+	fluid/coding_style.fl, fluid/coding_style.h, fluid/file.cxx,
+	fluid/fluid.cxx, fluid/function_panel.cxx, fluid/function_panel.fl,
+	fluid/function_panel.h, fluid/image_file_panel.cxx,
+	fluid/image_file_panel.fl, fluid/image_file_panel.h,
+	fluid/widget_panel.cxx, fluid/widget_panel.fl,
+	fluid/widget_panel.h, src/core/Fl_Group.cpp,
+	src/widgets/Fl_Text_Display.cpp:  - Added simple localization
+	support for efluid (see preferences)
+	 - Changed fluid use Fl_Text_Editor in all of code areas
+	 - Fixed some bugs, which caused bug in Fl_Text_Editor
+
+2002-09-14 15:57  laza2000
+
+	* efltk/Fl.h, efltk/Fl_Config.h, efltk/Fl_MDI_Window.h,
+	efltk/Fl_Menu_Window.h, efltk/Fl_Tooltip.h, src/core/Fl_Config.cpp,
+	src/core/Fl_arg.cpp, src/core/Fl_init.cpp, src/core/Makefile,
+	src/widgets/Fl_MDI_Window.cpp, src/widgets/Fl_Menu.cpp,
+	src/widgets/Fl_Tooltip.cpp, src/widgets/Fl_Workspace.cpp,
+	test/file_chooser.cpp, test/mdi_test.cpp, themes/Makefile: Added
+	Fl::init() for initializing locale and reading widgets default
+	values from file.  This is called by Fl_Window::show(argc,argv),
+	Fl::args(argc, argv) or then You have to call it at application
+	startup Fl::init(); This allows many existing programs work also,
+	when Fl::args call this also :)
+
+2002-09-14 13:57  laza2000
+
+	* src/core/: fl_errordiff.h, fl_internal.h: Removed fl_errordiff.h
+	and moved its contents to fl_internal.h among other stuff there.
+	Now config.h is NOT included from any header files...
+
+2002-09-14 13:55  laza2000
+
+	* Makefile, configh.in, configure.in, makeinclude.in,
+	efltk/Fl_Bar.h, efltk/Fl_Locale.h, efltk/Fl_Main_Window.h,
+	efltk/Fl_Renderer.h, efltk/Fl_Window.h, locale/Makefile,
+	locale/README.locale, locale/fi.po, locale/makedepend,
+	locale/messages.po.default, src/core/Fl_Image.cpp,
+	src/core/Fl_Image_Filter.cpp, src/core/fl_blit_1.cpp,
+	src/core/fl_blit_a.cpp, src/core/fl_blit_n.cpp,
+	src/core/fl_errordiff.h, src/core/fl_locale.cpp,
+	src/widgets/Fl_Bar.cpp, src/widgets/Fl_File_Dialog.cpp,
+	src/widgets/Fl_Help_Dialog.cpp, src/widgets/Fl_Main_Window.cpp,
+	src/widgets/Fl_Simple_Html.cpp, src/widgets/Fl_Tool_Bar.cpp,
+	src/widgets/fl_ask.cpp, test/file_chooser.cpp, test/help.cpp,
+	themes/essai.cpp:  - Added support for translations
+	 - Added Finnish translation
+	 - Fixed mainwindow styles
+	 - Fixed Fl_ToolBar glyph draw
+
+2002-09-14 08:24  laza2000
+
+	* README: Added note for documentation...
+
+2002-09-14 08:22  laza2000
+
+	* CHANGES, ChangeLog, README: Added some doc files..
+
 2002-09-13 18:39  laza2000
 
 	* efltk-config.in: Bumped version up to 2.0.3, which matches header
