@@ -114,6 +114,7 @@ endif
 
 install_shared: shared
 	@echo "Installing shared libraries..."
+	@mkdir -p $(libdir)
 	@rm -f $(libdir)/$(DLLIMPORTNAME)
 	@rm -f $(libdir)/$(DSOLIBNAME)$(DSOEXT)
 	@if [ "$(DSOSHORTEXT)" ]; then rm -f $(libdir)/$(DSOLIBNAME)$(DSOSHORTEXT); fi
