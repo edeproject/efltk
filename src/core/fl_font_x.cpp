@@ -161,7 +161,8 @@ float fl_width(const char *c, int n) {
 
 float fl_width(uchar c) {
 #if HAVE_XUTF8
-  return (float) XUtf8UcsWidth(current_font, c);
+    return (float) XUtf8UcsWidth(current_font, c);
+    //return fl_width((const char*)&(c), 1);
 #else
     XCharStruct* p = current_font->per_char;
     if (p) {

@@ -94,6 +94,34 @@ static int utf_len(char c)
 }
 #endif
 
+class UndoNode
+{
+public:
+    UndoNode(const char *s, int p, int length, bool inserted, bool replaced) {
+        len=length;
+        str=0; pos = p;
+        rep = replaced;
+        ins = inserted;
+        if(s && len) {
+            str = new char[len];
+            strncpy(str, s, len);
+            str[len]='\0';
+        }
+    }
+    ~UndoNode() { if(str) delete []str; }
+    char *str;
+    int pos;
+    int len;
+    bool rep, ins;
+};
+
+class Fl_UndoNode_Stack : public Fl_Ptr_Stack
+{
+public:
+    Fl_UndoNode_Stack(int size) : Fl_Ptr_Stack(size) { }
+    void free_item(void *i) { delete (UndoNode*)(i); }
+};
+
 /*
  ** Create an empty text buffer of a pre-determined size (use this to
  ** avoid unnecessary re-allocation if you know exactly how much the buffer
@@ -126,15 +154,22 @@ Fl_Text_Buffer::Fl_Text_Buffer( int requestedSize )
 #ifdef PURIFY
     { int i; for (i = mGapStart; i < mGapEnd; i++) mBuf[ i ] = '.'; }
 #endif
+    undo_stack = new Fl_UndoNode_Stack(50);
 }
-
 
 /*
  ** Free a text buffer
  */
 Fl_Text_Buffer::~Fl_Text_Buffer()
 {
-    free( mBuf );
+    UndoNode *n=(UndoNode *)undo_stack->pop();
+    while(n) {
+        delete n;
+        n=(UndoNode *)undo_stack->pop();
+    }
+    delete undo_stack;
+
+    delete []mBuf;
     if ( mNModifyProcs != 0 )
     {
         free( ( void * ) mNodifyProcs );
@@ -146,43 +181,30 @@ Fl_Text_Buffer::~Fl_Text_Buffer()
 	} 
 }
 
+// Undo stack size: (default 50)
+int Fl_Text_Buffer::undo_size() {
+    return undo_stack->max_size();
+}
+
+void Fl_Text_Buffer::undo_size(int newsize) {
+    undo_stack->max_size(newsize);
+}
+
 char * Fl_Text_Buffer::static_buffer() {
     return mBuf;
 }
 
-class Undo_node
-{
-public:
-    Undo_node() { pos=-1; str=0; ins=0; rep=false; }
-    Undo_node(const char *s, int p, int length, bool inserted, bool replaced) {
-        len=length;
-        str=0; pos = p;
-        rep = replaced;
-        ins = inserted;
-        if(s && len) {
-            str = new char[len];
-            strncpy(str, s, len);
-            str[len]='\0';
-        }
-    }
-    ~Undo_node() { if(str) delete []str; }
-    char *str;
-    int pos;
-    int len;
-    bool rep, ins;
-};
-
 void Fl_Text_Buffer::add_undo(const char *str, int pos, int len, bool inserted, bool replaced)
 {
-    Undo_node *n = new Undo_node(str, pos, len, inserted, replaced);
-    undo_stack.push(n);
+    UndoNode *n = new UndoNode(str, pos, len, inserted, replaced);
+    undo_stack->push(n);
 }
 
 int Fl_Text_Buffer::undo()
 {
-    if(undo_stack.size() > 0)
+    if(undo_stack->size() > 0)
     {
-        Undo_node *n = (Undo_node *)undo_stack.pop();
+        UndoNode *n = (UndoNode *)undo_stack->pop();
         int pos=n->pos;
         //printf("UNDO '%s' at '%d' %d %d\n", n->str, n->pos, n->len, n->rep);
         if(n->rep) {

@@ -308,7 +308,7 @@ void Fl_Text_Display::set_font()
             }
         }
     }
-#else    
+#else
     XFontStruct *fontStruct = fl_xfont(), *styleFont;
     mMaxFontBound = fontStruct->max_bounds.width;
     mMinFontBound = fontStruct->min_bounds.width;
@@ -915,14 +915,14 @@ int Fl_Text_Display::position_to_xy( int pos, int* X, int* Y )
       int i, ii = 0;;
       i = utf_len(lineStr[ charIndex ]);
       while (i > 1) {
-        i--;
-        ii++;
-        expandedChar[ii] = lineStr[ charIndex + ii];
+          i--;
+          ii++;
+          expandedChar[ii] = lineStr[ charIndex + ii];
       }
     }
-#endif	      
+#endif
     charStyle = position_style( lineStartPos, lineLen, charIndex,
-                                outIndex );
+                               outIndex );
     xStep += string_width( expandedChar, charLen, charStyle );
     outIndex += charLen;
   }
@@ -1704,16 +1704,16 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
             Fl_Text_Buffer::expand_character( lineStr[ charIndex ], outIndex,
                                              expandedChar, buf->tab_distance(), buf->null_substitution_character() );
 #if HAVE_XUTF8
-	if (charIndex < lineLen && charLen > 1 && (lineStr[ charIndex ] & 0x80)) {
-    	    int i, ii = 0;;
-	    i = utf_len(lineStr[ charIndex ]);
-	    while (i > 1) {
-    		i--;
-	        ii++;
-    		expandedChar[ii] = lineStr[ charIndex + ii];
-    	    }
+        if (charIndex < lineLen && charLen > 1 && (lineStr[ charIndex ] & 0x80)) {
+            int i, ii = 0;;
+            i = utf_len(lineStr[ charIndex ]);
+            while (i > 1) {
+                i--;
+                ii++;
+                expandedChar[ii] = lineStr[ charIndex + ii];
+            }
 	}
-#endif					     
+#endif
         style = position_style( lineStartPos, lineLen, charIndex,
                                outIndex + dispIndexOffset );
         charWidth = charIndex >= lineLen ? stdCharWidth :
@@ -1741,16 +1741,16 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
             Fl_Text_Buffer::expand_character( lineStr[ charIndex ], outIndex, expandedChar,
                                              buf->tab_distance(), buf->null_substitution_character() );
 #if HAVE_XUTF8
-       if (charIndex < lineLen && charLen > 1 && (lineStr[ charIndex ] & 0x80)) {
-          int i, ii = 0;;
-	  i = utf_len(lineStr[ charIndex ]);
-    	    while (i > 1) {
-    		i--;
-    		ii++;
-		expandedChar[ii] = lineStr[ charIndex + ii];
-    	    }
-	}
-#endif					     
+        if (charIndex < lineLen && charLen > 1 && (lineStr[ charIndex ] & 0x80)) {
+            int i, ii = 0;;
+            i = utf_len(lineStr[ charIndex ]);
+            while (i > 1) {
+                i--;
+                ii++;
+                expandedChar[ii] = lineStr[ charIndex + ii];
+            }
+        }
+#endif
         charStyle = position_style( lineStartPos, lineLen, charIndex,
                                    outIndex + dispIndexOffset );
         for ( i = 0; i < charLen; i++ )
@@ -1772,12 +1772,15 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
             if ( charIndex < lineLen ) {
                 *outPtr = expandedChar[ i ];
 #if HAVE_XUTF8
-		int l = 1;
-	        if (*outPtr & 0x80) {
-    		    l = utf_len(*outPtr);
-    		}
-    		charWidth = string_width( expandedChar + i, l, charStyle );
-#endif		
+                int l = 1;
+                if (*outPtr & 0x80) {
+                    l = utf_len(*outPtr);
+                    while(l > 1) {
+                        *outPtr++ = expandedChar[ i++ ];
+                        l--;
+                    }
+                }
+#endif
                 //charWidth = string_width( &expandedChar[ i ], 1, charStyle );
             } else {
                 charWidth = stdCharWidth;
@@ -1886,7 +1889,12 @@ void Fl_Text_Display::draw_string( int style, int X, int Y, int toX,
     }
 
     fl_color( background );
-    fl_rectf( X, Y, toX - X, mMaxsize );
+    //Fixes cursor-erases-italic-font bug :)
+    if (damage() & FL_DAMAGE_SCROLL && X>text_area.x) {
+        fl_rectf( X+1, Y, toX-X-1, mMaxsize );
+    } else {
+        fl_rectf( X, Y, toX - X, mMaxsize );
+    }
     fl_color( foreground );
     set_fl_font( font, size );
     fl_draw( string, nChars, X, Y + mMaxsize - fl_descent());

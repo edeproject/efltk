@@ -334,26 +334,41 @@ void Fl_Int_List::from_string(const char *s, const char *separator)
 
 void Fl_Ptr_Stack::push(void *data)
 {
-	items.append(data);
+    items.append(data);
+    check_size();
 }
 
 void *Fl_Ptr_Stack::pop()
 {
-	if(empty()) return 0;
-	uint pos = items.size()-1;
-	void *ptr = items[pos];
-	items.remove(pos);
-	return ptr;
+    if(empty()) return 0;
+    uint pos = items.size()-1;
+    void *ptr = items[pos];
+    items.remove(pos);
+    return ptr;
 }
 
 void Fl_Ptr_Stack::clear()
 {
-	items.clear();
+    items.clear();
 }
 
 void *Fl_Ptr_Stack::peek() 
 {
-	if(empty()) return 0;
-	return items[items.size()-1];
+    if(empty()) return 0;
+    return items[items.size()-1];
 }
 
+void Fl_Ptr_Stack::check_size()
+{
+    if(max_size_>0 && items.size() > max_size_) {
+        void *i = items[0];
+        items.remove(i);
+        free_item(i);
+        items.resize(max_size_);
+    }
+}
+
+void Fl_Ptr_Stack::free_item(void *item)
+{
+    free(item);
+}
