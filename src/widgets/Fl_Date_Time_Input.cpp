@@ -47,6 +47,12 @@ static const char * calendar_xpm[] = {
     "     .+@+@+@+@.",
     "     .........."};
 
+class Fl_Calendar_Button : public Fl_Button {
+public:
+    Fl_Calendar_Button(int w) : Fl_Button (0,0,10,w) {}
+    void preferred_size(int& w,int& h) const { }
+};
+
 void Fl_Date_Input::input_callback(Fl_Widget *di,void *) {
     Fl_Group *parent = (Fl_Group *) di->parent();
     if (parent)
@@ -65,17 +71,22 @@ static Fl_Pixmap buttonPixmap(calendar_xpm);
 
 Fl_Date_Input::Fl_Date_Input(int xx,int yy,int ww,int hh,const char *lbl)
 : Fl_Group(xx,yy,ww,hh,lbl) {
-    box(FL_NO_BOX);
+    align(FL_ALIGN_LEFT);
+    box(FL_DOWN_BOX);
     m_input = new Fl_Masked_Input(0,0,10,10);
+    m_input->box(FL_FLAT_BOX);
     m_input->callback(Fl_Date_Input::input_callback);
     m_input->mask(Fl_Date_Time::dateInputFormat);
-    m_button = new Fl_Button(0,0,10,10);
+    m_input->layout_align(FL_ALIGN_LEFT);
+    m_button = new Fl_Calendar_Button(19);
+    m_button->box(FL_UP_BOX);
     m_button->callback(Fl_Date_Input::button_callback);
     m_button->image(&buttonPixmap);
+    m_button->layout_align(FL_ALIGN_LEFT);
     end();
 }
 
-void Fl_Date_Input::layout() {
+void Fl_Date_Input::prepare_layout() {
     Fl_Boxtype ibt = m_input->box();
     Fl_Boxtype bbt = m_button->box();
     m_input->copy_style(style());
@@ -84,10 +95,21 @@ void Fl_Date_Input::layout() {
     m_button->copy_style(style());
     m_button->box(bbt);
 
-    int border = box()->dx();
-    int buttonSize = h() - box()->dh();
-    m_input->resize(box()->dx(),box()->dy(),w()-box()->dw()-buttonSize,buttonSize);
-    m_button->resize(w()-border-buttonSize,border,buttonSize,buttonSize);
+    // We only need to set width for m_input
+    int ww, hh;
+    preferred_size(ww,hh);
+    m_input->resize(m_input->h(),m_input->y(),ww-m_button->w()-box()->dw() - 2,hh);
+}
+
+void Fl_Date_Input::preferred_size(int& w,int &h) const {
+    fl_font(text_font(), float(text_size()));
+    h = int(fl_height()+fl_descent()) + box()->dh() + 2;
+    w = (int)fl_width("00/00/0000 ") + m_button->w() + box()->dw() + 2;
+}
+
+void Fl_Date_Input::layout() {
+    prepare_layout();
+    Fl_Group::layout();
 }
 
 void Fl_Date_Input::value(const char *v) {

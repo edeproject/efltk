@@ -40,6 +40,8 @@ public:
     Fl_Date_Time date_value();
 
     virtual void layout();
+    virtual void prepare_layout();
+    virtual void preferred_size(int& w,int &h) const;
 
 protected:
     static void input_callback(Fl_Widget *,void *);
