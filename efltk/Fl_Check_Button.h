@@ -34,9 +34,13 @@ class FL_API Fl_Check_Button : public Fl_Button {
 public:
     static Fl_Named_Style* default_style;
 
+    /** The traditional constructor creates the check button using the position, size, and label. */
     Fl_Check_Button(int x,int y,int w,int h,const char *l = 0);
-	
-	virtual void preferred_size(int& w, int& h) const;
+
+    /** The new style constructor creates the check button using the label, size, alignment, and label_width. */
+    Fl_Check_Button(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP);
+
+    virtual void preferred_size(int& w, int& h) const;
     virtual void draw();
 };
 

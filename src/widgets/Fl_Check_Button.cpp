@@ -29,7 +29,7 @@
 #include <efltk/Fl_Group.h>
 
 static void default_glyph(const Fl_Widget* widget, int glyph,
-int x,int y,int w,int h, Fl_Flags flags)
+    int x,int y,int w,int h, Fl_Flags flags)
 {
     Fl_Boxtype box = widget->button_box();
     box->draw(x, y, w, h, widget->button_color(), flags);
@@ -53,10 +53,10 @@ int x,int y,int w,int h, Fl_Flags flags)
 }
 
 void Fl_Check_Button::preferred_size(int& w, int& h) const
-{	
-	Fl_Button::preferred_size(w,h);
-	w += text_size()+8;
-	h += 2;
+{   
+    Fl_Button::preferred_size(w,h);
+    w += text_size()+8;
+    h += 2;
 }
 
 void Fl_Check_Button::draw()
@@ -78,8 +78,18 @@ static void revert(Fl_Style* s)
 static Fl_Named_Style style("Check_Button", revert, &Fl_Check_Button::default_style);
 Fl_Named_Style* Fl_Check_Button::default_style = &::style;
 
+// Traditional ctor
 Fl_Check_Button::Fl_Check_Button(int x, int y, int w, int h, const char *l)
 : Fl_Button(x, y, w, h, l)
+{
+    style(default_style);
+    type(TOGGLE);
+    set_flag(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
+}
+
+// New style ctor
+Fl_Check_Button::Fl_Check_Button(const char* l,int layout_size,Fl_Align layout_al)
+: Fl_Button(l,layout_size,layout_al)
 {
     style(default_style);
     type(TOGGLE);
