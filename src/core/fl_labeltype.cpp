@@ -193,9 +193,9 @@ void Fl_Widget::measure_label(int& w, int& h) const
     int flags = this->flags();
     if (label_width_ < 0)
         w = h = 300;               // default, rather arbitrary choice for maximum wrap width
-    if (label_width_ == 0)
+    else if (label_width_ == 0)
         w = h = 0;                 // no limits at all
-    if (label_width_ > 0) {
+    else {
         w = label_width_;
         flags |= FL_ALIGN_WRAP;
         h = 0;                     // define wrap width
