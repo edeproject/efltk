@@ -30,6 +30,7 @@
 #include <efltk/Fl_Style.h>
 #include <efltk/x.h>
 #include <efltk/fl_utf8.h>
+#include <efltk/fl_draw.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -511,13 +512,13 @@ void Fl_Text_Display::draw_text( int left, int top, int width, int height )
     fontHeight = mMaxsize;
     firstLine = ( top - text_area.y - fontHeight + 1 ) / fontHeight;
     lastLine = ( top + height - text_area.y ) / fontHeight;
-	lastLine++;
+	 lastLine++;
     fl_push_clip( left, top, width, height );
 
     /* draw the lines */
     for ( line = firstLine; line <= lastLine; line++ ) {
-		draw_vline( line, left, left + width, 0, INT_MAX );
-	}
+		 draw_vline( line, left, left + width, 0, INT_MAX );
+	 }
 
     /* draw the line numbers if exposed area includes them */
     //if (mLineNumWidth != 0 && left <= mLineNumLeft + mLineNumWidth)
@@ -1640,8 +1641,9 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
                                            charIndex, outIndex + dispIndexOffset );
             if ( charStyle != style ) {
                 draw_string( style, startX, Y, X, outStr, outPtr - outStr );
-                outPtr = outStr;
+                //printf("cw=%i style=%u startX=%i Y=%i, X=%i, %s\n",charWidth,style, startX, Y, X, outStr);
                 startX = X;
+                outPtr = outStr;
                 style = charStyle;
             }
             if ( charIndex < lineLen ) {
@@ -1666,7 +1668,8 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
     }
 
     /* Draw the remaining style segment */
-    draw_string( style, startX, Y, X, outStr, outPtr - outStr );	
+    draw_string( style, startX, Y, X, outStr, outPtr - outStr );
+    //printf("> style=%u startX=%i Y=%i, X=%i, %s\n",style, startX, Y, X, outStr);
 
     /* Draw the cursor if part of it appeared on the redisplayed part of
      this line.  Also check for the cases which are not caught as the
@@ -1757,7 +1760,7 @@ void Fl_Text_Display::draw_string( int style, int X, int Y, int toX,
         background = color();
     }
 
-    fl_color( background );
+    fl_color(background);
     //Fixes cursor-erases-italic-font bug :) No it doesnt :(
     /*if (damage() & FL_DAMAGE_SCROLL && X>text_area.x) {
         fl_rectf( X+1, Y, toX-X-1, mMaxsize );
@@ -1963,7 +1966,7 @@ int Fl_Text_Display::string_width( const char *string, int length, int style )
 
     fl_font( font, size );
 
-    if(length==1) return (int)fl_width(uchar( string[0]) );
+    //if(length==1) return (int)fl_width(uchar( string[0]) );
     return (int)fl_width( string, length );
 }
 
@@ -3028,10 +3031,10 @@ void Fl_Text_Display::extend_range_for_styles( int *start, int *end ) {
 }
 
 // The draw() method.  It tries to minimize what is draw as much as possible.
-void Fl_Text_Display::draw() 
-{
+void Fl_Text_Display::draw() {
+
     // don't even try if there is no associated text buffer!
-    if(!buffer()) { draw_box(); return; }
+    if (!buffer()) { draw_box(); return; }
 
     // draw the non-text, non-scrollbar areas.
     if (damage() & FL_DAMAGE_ALL) {
@@ -3095,8 +3098,7 @@ void Fl_Text_Display::draw()
     update_child(*mHScrollBar);
 
     // draw all of the text
-    if (damage() & (FL_DAMAGE_ALL | FL_DAMAGE_VALUE))
-    {
+    if (damage() & (FL_DAMAGE_ALL | FL_DAMAGE_VALUE)) {
         //printf("drawing all text\n");
         int X, Y, W, H;
         if (fl_clip_box(text_area.x, text_area.y, text_area.w, text_area.h,
@@ -3111,9 +3113,9 @@ void Fl_Text_Display::draw()
     }
     else if (damage() & FL_DAMAGE_SCROLL) {
         // draw some lines of text
+        //puts("draw some lines of text");
 
-        fl_push_clip(text_area.x, text_area.y,
-                     text_area.w, text_area.h);
+        fl_push_clip(text_area.x, text_area.y, text_area.w, text_area.h);
         //printf("drawing text from %d to %d\n", damage_range1_start, damage_range1_end);
         draw_range(damage_range1_start, damage_range1_end);
         if (damage_range2_end != -1) {

@@ -307,7 +307,7 @@ const char * Fl_Text_Buffer::text_range( int start, int end )
  */
 char Fl_Text_Buffer::character( int pos )
 {
-    if ( pos < 0 || pos > mLength )
+    if ( unsigned(pos) > (unsigned)mLength )
         return '\0';
     if ( pos < mGapStart )
         return mBuf[ pos ];
@@ -1124,22 +1124,25 @@ int Fl_Text_Buffer::expand_character( char c, int indent, char *outStr, int tabD
 int Fl_Text_Buffer::character_width( char c, int indent, int tabDist, char nullSubsChar )
 {
     /* Note, this code must parallel that in Fl_Text_Buffer::ExpandCharacter */
-    if ( c == '\t' )
+    switch (c) {
+    case '\t':
         return tabDist - ( indent % tabDist );
-    else if ( ( ( unsigned char ) c ) <= 31 )
-        return strlen( ControlCodeTable[ c ] ) + 2;
-    else if ( c == 127 )
+    case 127:
         return 5;
-    else if ( c == nullSubsChar )
-        return 5;
+    default:
+         if ( ( ( unsigned char ) c ) <= 31 )
+            return strlen( ControlCodeTable[ c ] ) + 2;
+         if ( c == nullSubsChar )
+            return 5;
 #if HAVE_XUTF8
-    else if ((c & 0x80) && !(c & 0x40))
-        return 0;
-    else if (c & 0x80) {
-        return fl_utf_charlen(c);
-    }
+         if (c & 0x80) {
+            if (c & 0x40)
+                  return fl_utf_charlen(c);
+            else  return 0;
+         }
 #endif	
-    return 1;
+         return 1;
+    }
 }
 
 
