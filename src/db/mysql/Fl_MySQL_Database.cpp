@@ -248,7 +248,7 @@ void Fl_MySQL_Database::open_query(Fl_Query *query)
 	Fl_String real_sql;
 	parse_parameters(query, real_sql);	
 
-	printf("REAL: (%s)\n", real_sql.c_str());
+	//printf("REAL: (%s)\n", real_sql.c_str());
 
 	if(mysql_real_query(m_connection, real_sql, real_sql.length()) != 0) {        
         fl_throw(mysql_error(m_connection));
