@@ -61,6 +61,7 @@ public: // should be private!
     static int e_keysym;
     static int e_length;
     static char* e_text;
+    static void* e_data;
     static int compose_state;
     static Fl_Widget* belowmouse_;
     static Fl_Widget* pushed_;
@@ -157,6 +158,7 @@ public:
     static int event_key()  {return e_keysym;}
     static bool event_key_state(int);
     static const char* event_text() {return e_text;}
+    static const void* event_data() {return e_data;}
     static int event_length() {return e_length;}
 
     static bool event_inside(int,int,int,int);
