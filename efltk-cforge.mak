@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x400284
+# %FirstUniqueId:	0x400286
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -466,6 +466,16 @@ lib/libefltk_gl.so ::	lib/Fl_Gl_Choice.o\
 # %IncDir:	test
 # %ObjsDir:	test
 test/cursor ::	test/cursor.o
+	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+# %UniqueId:	0x400284
+# %TargetType:	C++_EXE
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	test
+# %IncDir:	test
+# %ObjsDir:	test
+test/editor ::	test/editor.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %ObjectFilesLinking
@@ -1839,6 +1849,13 @@ lib/gl_draw.o : src/opengl/gl_draw.cpp
 # %SourceTarget:	0x400283
 lib/gl_start.o : src/opengl/gl_start.cpp
 	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x400284
+# %SourceTarget:	0x400285
+test/editor.o : test/editor.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
 # DO NOT DELETE
@@ -6039,6 +6056,68 @@ lib/gl_start.o :	efltk/fl_draw.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl.h\
 	config.h
+test/editor.o :	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Text_Editor.h\
+	efltk/Fl_Text_Display.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Fl_Text_Buffer.h\
+	efltk/Fl_Ptr_Stack.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/fl_draw.h\
+	efltk/Fl_Return_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Menu_Bar.h\
+	efltk/Fl_Menu_Window.h\
+	efltk/Fl_Single_Window.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Menu_.h\
+	efltk/Fl_Menu_Item.h\
+	efltk/Fl_File_Dialog.h\
+	efltk/Fl_FileBrowser.h\
+	efltk/Fl_Directory_DS.h\
+	efltk/Fl_ListView_Item.h\
+	efltk/Fl_Image_List.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl.h\
+	efltk/Fl_ListView.h\
+	efltk/Fl_ListView_Header.h\
+	efltk/Fl_Highlight_Button.h\
+	efltk/Fl_Check_Button.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Item.h\
+	efltk/Fl_Input_Browser.h\
+	efltk/Fl_Image_Cache.h\
+	efltk/fl_ask.h\
+	efltk/Fl_Double_Window.h\
+	efltk/Fl_Pack.h\
+	config.h
 
 
 # %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x4
@@ -6212,8 +6291,8 @@ lib/gl_start.o :	efltk/fl_draw.h\
 # %TargetInfo src/widgets/Fl_Single_Window.cpp	SourceOrHeader,	UniqueId=0x400238,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Slider.cpp	SourceOrHeader,	UniqueId=0x400239,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Tabs.cpp	SourceOrHeader,	UniqueId=0x40023a,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Text_Buffer.cpp	SourceOrHeader,	UniqueId=0x40023b,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Text_Display.cpp	SourceOrHeader,	UniqueId=0x40023c,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/widgets/Fl_Text_Buffer.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x40023b,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/widgets/Fl_Text_Display.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x40023c,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Text_Editor.cpp	SourceOrHeader,	UniqueId=0x40023d,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Tile.cpp	SourceOrHeader,	UniqueId=0x40023e,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Tool_Bar.cpp	SourceOrHeader,	UniqueId=0x40023f,	TargetType=C++,	IDEFlags=0x4
@@ -6232,6 +6311,11 @@ lib/gl_start.o :	efltk/fl_draw.h\
 # %TargetInfo test/color_chooser.cpp	SourceOrHeader,	UniqueId=0x400263,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/cube.cpp	SourceOrHeader,	UniqueId=0x400267,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo /distr/develop/CVS/efltk/test/cursor.cpp	SourceOrHeader,	UniqueId=0x400273,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/opengl/Fl_Gl_Choice.cpp	SourceOrHeader,	UniqueId=0x40027f,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/opengl/Fl_Gl_Overlay.cpp	SourceOrHeader,	UniqueId=0x400280,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/opengl/Fl_Gl_Window.cpp	SourceOrHeader,	UniqueId=0x400281,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/opengl/gl_draw.cpp	SourceOrHeader,	UniqueId=0x400282,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/opengl/gl_start.cpp	SourceOrHeader,	UniqueId=0x400283,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400056,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x4
@@ -6443,11 +6527,7 @@ lib/gl_start.o :	efltk/fl_draw.h\
 # %TargetInfo efltk/Fl_Radio_Light_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40026a,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo src/opengl/Fl_Gl_Choice.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400271,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Hor_Value_Slider.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400274,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo src/opengl/Fl_Gl_Choice.cpp	SourceOrHeader,	UniqueId=0x40027f,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/opengl/Fl_Gl_Overlay.cpp	SourceOrHeader,	UniqueId=0x400280,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/opengl/Fl_Gl_Window.cpp	SourceOrHeader,	UniqueId=0x400281,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/opengl/gl_draw.cpp	SourceOrHeader,	UniqueId=0x400282,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/opengl/gl_start.cpp	SourceOrHeader,	UniqueId=0x400283,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/editor.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400285,	TargetType=C++,	IDEFlags=0x4
 
 
 # %UniqueId:	0x400001
@@ -6490,5 +6570,6 @@ lib/gl_start.o :	efltk/fl_draw.h\
 #	0x40025e
 #	0x400262
 #	0x400266
+#	0x400284
 #	0x400272
 #
