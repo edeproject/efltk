@@ -482,7 +482,8 @@ test/editor ::	test/editor.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/sockets ::	test/socket.o
+test/sockets ::	test/socket.o\
+	test/Fl_Socket.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %ObjectFilesLinking
@@ -1876,6 +1877,13 @@ lib/Fl_Socket.o : src/core/Fl_Socket.cpp
 # %ParentTarget:	0x40033a
 # %SourceTarget:	0x40033b
 test/socket.o : test/socket.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40033a
+# %SourceTarget:	0x400338
+test/Fl_Socket.o : src/core/Fl_Socket.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
@@ -6150,26 +6158,31 @@ lib/Fl_Socket.o :	efltk/Fl_Exception.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_String.h\
 	efltk/Enumerations.h\
-	efltk/Fl_Socket.h
-test/socket.o :	efltk/Fl_Simple_Html.h\
-	efltk/Fl_Image_Cache.h\
+	efltk/Fl_Socket.h\
+	efltk/Fl_Buffer.h
+test/socket.o :	efltk/fl_ask.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Export.h\
-	efltk/Fl_Image.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Labeltype.h\
 	efltk/Fl_Flags.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Simple_Html.h\
+	efltk/Fl_Image_Cache.h\
+	efltk/Fl_Image.h\
 	efltk/Fl_PtrList.h\
 	efltk/Fl_Renderer.h\
 	efltk/x.h\
 	efltk/win32.h\
-	efltk/Fl_Color.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h\
-	efltk/Fl_String.h\
 	efltk/fl_draw.h\
-	efltk/Fl_Font.h\
-	efltk/Fl_Int_List.h\
-	efltk/Fl_String_List.h\
 	efltk/Fl_Scrollbar.h\
 	efltk/Fl_Slider.h\
 	efltk/Fl_Valuator.h\
@@ -6179,12 +6192,25 @@ test/socket.o :	efltk/Fl_Simple_Html.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
 	efltk/Fl_Exception.h\
-	efltk/Fl_Style.h\
-	efltk/Fl_Labeltype.h\
-	efltk/Fl_Boxtype.h\
 	efltk/Fl_Group.h\
 	efltk/Fl_Widget_List.h\
-	efltk/Fl.h
+	efltk/Fl.h\
+	efltk/Fl_Text_Editor.h\
+	efltk/Fl_Text_Display.h\
+	efltk/Fl_Text_Buffer.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_Ptr_Stack.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Socket.h
+test/Fl_Socket.o :	efltk/Fl_Exception.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Socket.h\
+	efltk/Fl_Buffer.h
 
 
 # %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x4
@@ -6385,6 +6411,7 @@ test/socket.o :	efltk/Fl_Simple_Html.h\
 # %TargetInfo src/db/Fl_Params.cpp	SourceOrHeader,	UniqueId=0x400333,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/db/Fl_Query.cpp	SourceOrHeader,	UniqueId=0x400334,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_Socket.cpp	SourceOrHeader,	UniqueId=0x400338,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/socket.cpp	SourceOrHeader,	UniqueId=0x40033b,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x4
@@ -6599,8 +6626,7 @@ test/socket.o :	efltk/Fl_Simple_Html.h\
 # %TargetInfo efltk/db/Fl_Query.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400335,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/db/Fl_Params.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400336,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/db/Fl_Database.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400337,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Socket.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400339,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo test/socket.cpp	SourceOrHeader,	UniqueId=0x40033b,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo efltk/Fl_Socket.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400339,	TargetType=INC,	IDEFlags=0xe
 
 
 # %UniqueId:	0x400001
