@@ -290,10 +290,10 @@ char *Fl_Translator::bindtextdomain(const char *domainname, const char *dirname)
     catalog *cat=0;
     if(file.length()>0) {
         cat = load_binary_file(domainname, file.c_str(), loc);
-        if(!cat) {
-            delete loc;
-            return 0;
-        }
+    } 
+    if(!cat) {
+        delete loc;
+        return 0;
     }
     catalogs_.prepend(cat);
     return (char*)cat->path.c_str();
@@ -316,12 +316,12 @@ const char *Fl_Translator::load_translation(const char *domainname)
         if(file.length()==0) continue;
 
         cat = load_binary_file(domainname, file.c_str(), loc);
-        if(!cat) {
-            delete loc;
-            return 0;
-        }
+        break;
     }
-
+    if(!cat) {
+        delete loc;
+        return 0;
+    }
     catalogs_.prepend(cat);
     return cat->path.c_str();
 }
