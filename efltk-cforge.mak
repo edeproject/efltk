@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x4003eb
+# %FirstUniqueId:	0x4003f0
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -277,7 +277,8 @@ lib/libefltk.so ::	lib/Fl.o\
 	lib/fl_show_colormap.o\
 	lib/fl_symbols.o\
 	lib/scandir.o\
-	lib/vsnprintf.o
+	lib/vsnprintf.o\
+	lib/Fl_Split.o
 	rm -f $@
 	$(LD) -shared -o $@ $^ $(LDOPTIONS)
 
@@ -824,15 +825,15 @@ test/input ::	test/input.o
 test/input_browser ::	test/input_browser.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
-# %UniqueId:	0x4000f1
-# %TargetType:	ANY
-# %IDEFlags:	0xc
+# %UniqueId:	0x4003ed
+# %TargetType:	C_EXE
+# %IDEFlags:	0x8
 # %ComplexTarget
-# %SrcDir:	
-# %IncDir:	
-# %ObjsDir:	
-config.h ::
-	./build.g++
+# %SrcDir:	test
+# %IncDir:	test
+# %ObjsDir:	test
+test/split ::	test/split.o
+	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %ObjectFilesLinking
 # %TargetType:	C++_OBJ
@@ -2704,6 +2705,20 @@ test/input_browser.o : test/input_browser.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x4003ed
+# %SourceTarget:	0x4003ee
+test/split.o : test/split.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x400002
+# %SourceTarget:	0x4003ef
+lib/Fl_Split.o : src/widgets/Fl_Split.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
 # DO NOT DELETE
 
 lib/Fl_ODBC_Database.o :	src/db/odbc/fl_odbc.h\
@@ -2744,8 +2759,7 @@ lib/Fl_XmlParser.o :	efltk/xml/Fl_XmlNode.h\
 	efltk/xml/Fl_XmlParser.h\
 	efltk/xml/Fl_XmlHandler.h\
 	efltk/xml/Fl_Xml.h\
-	efltk/Fl_Exception.h\
-	config.h
+	efltk/Fl_Exception.h
 lib/Fl_XmlTokenizer.o :	src/core/fl_internal.h\
 	efltk/Fl_Translator.h\
 	efltk/Fl_Ptr_List.h\
@@ -2755,7 +2769,6 @@ lib/Fl_XmlTokenizer.o :	src/core/fl_internal.h\
 	efltk/Fl_String.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Flags.h\
-	config.h\
 	efltk/xml/Fl_XmlTokenizer.h\
 	efltk/Fl_String_Stack.h\
 	efltk/xml/Fl_Xml.h\
@@ -2793,8 +2806,7 @@ lib/Fl_Images.o :	efltk/Fl_Image.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl_Util.h\
-	efltk/filename.h\
-	config.h
+	efltk/filename.h
 lib/Fl_Jpeg.o :	src/core/fl_internal.h\
 	efltk/Fl_Translator.h\
 	efltk/Fl_Ptr_List.h\
@@ -2804,7 +2816,6 @@ lib/Fl_Jpeg.o :	src/core/fl_internal.h\
 	efltk/Fl_String.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Flags.h\
-	config.h\
 	efltk/Fl.h\
 	efltk/Fl_Exception.h\
 	efltk/Fl_Image.h\
@@ -2836,7 +2847,6 @@ lib/Fl_Png.o :	src/core/fl_internal.h\
 	efltk/Fl_String.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Flags.h\
-	config.h\
 	efltk/Fl.h\
 	efltk/Fl_Exception.h\
 	efltk/Fl_Image.h\
@@ -3271,8 +3281,7 @@ test/cube.o :	efltk/gl.h\
 	efltk/Fl_Check_Button.h\
 	efltk/Fl_Button.h\
 	efltk/Fl_Box.h\
-	efltk/Fl.h\
-	config.h
+	efltk/Fl.h
 test/editor.o :	efltk/Fl_Date_Time.h\
 	efltk/Fl_String.h\
 	efltk/Enumerations.h\
@@ -3336,8 +3345,7 @@ test/editor.o :	efltk/Fl_Date_Time.h\
 	efltk/Fl_Image_Cache.h\
 	efltk/fl_ask.h\
 	efltk/Fl_Double_Window.h\
-	efltk/Fl_Pack.h\
-	config.h
+	efltk/Fl_Pack.h
 test/cursor.o :	efltk/Fl_Box.h\
 	efltk/Fl_Widget.h\
 	efltk/Fl_Data_Source.h\
@@ -3397,7 +3405,6 @@ lib/Fl.o :	src/core/Fl_x.cpp\
 	efltk/x.h\
 	efltk/win32.h\
 	efltk/Fl_Device.h\
-	config.h\
 	src/core/Fl_wince.cpp\
 	src/core/aimm.h\
 	efltk/filename.h\
@@ -3435,8 +3442,7 @@ lib/Fl_Bitmap.o :	efltk/Fl_Bitmap.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h\
 	efltk/fl_draw.h\
-	efltk/Fl.h\
-	config.h
+	efltk/Fl.h
 lib/Fl_Bmp.o :	efltk/Fl.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Export.h\
@@ -3467,8 +3473,7 @@ lib/Fl_Bmp.o :	efltk/Fl.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h\
 	src/core/fl_internal.h\
-	efltk/Fl_Translator.h\
-	config.h
+	efltk/Fl_Translator.h
 lib/Fl_Boxtype.o :	efltk/x.h\
 	efltk/win32.h\
 	efltk/Fl_Color.h\
@@ -3492,15 +3497,13 @@ lib/Fl_Boxtype.o :	efltk/x.h\
 	efltk/Fl_String_List.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Boxtype.h\
-	efltk/fl_draw.h\
-	config.h
+	efltk/fl_draw.h
 lib/Fl_Buffer.o :	efltk/Fl_Exception.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_String.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Buffer.h
-lib/Fl_Config.o :	config.h\
-	efltk/fl_utf8.h\
+lib/Fl_Config.o :	efltk/fl_utf8.h\
 	efltk/Fl_Export.h\
 	efltk/filename.h\
 	efltk/Fl_Util.h\
@@ -3553,7 +3556,6 @@ lib/Fl_Date_Time.o :	src/core/fl_internal.h\
 	efltk/Fl_String.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Flags.h\
-	config.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h\
 	efltk/Fl_Date_Time.h
@@ -3575,7 +3577,6 @@ lib/Fl_Gif.o :	src/core/fl_internal.h\
 	efltk/Fl_String.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Flags.h\
-	config.h\
 	efltk/Fl.h\
 	efltk/Fl_Exception.h\
 	efltk/Fl_Image.h\
@@ -3632,7 +3633,6 @@ lib/Fl_Image.o :	src/core/fl_internal.h\
 	efltk/Fl_String.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Flags.h\
-	config.h\
 	efltk/fl_utf8.h\
 	efltk/x.h\
 	efltk/win32.h\
@@ -3668,7 +3668,6 @@ lib/Fl_Image_Filter.o :	src/core/fl_internal.h\
 	efltk/Fl_String.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Flags.h\
-	config.h\
 	efltk/Fl_Image.h\
 	efltk/Fl_PtrList.h\
 	efltk/Fl_Renderer.h\
@@ -3713,8 +3712,7 @@ lib/Fl_Lists.o :	efltk/Fl_String_Stack.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl_Ptr_Stack.h\
-	efltk/vsnprintf.h\
-	config.h
+	efltk/vsnprintf.h
 lib/Fl_Maps.o :	efltk/Fl_Map.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Enumerations.h\
@@ -3750,8 +3748,7 @@ lib/Fl_Pixmap.o :	efltk/fl_draw.h\
 	efltk/win32.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h
-lib/Fl_Renderer.o :	config.h\
-	efltk/x.h\
+lib/Fl_Renderer.o :	efltk/x.h\
 	efltk/win32.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Flags.h\
@@ -3785,7 +3782,6 @@ lib/Fl_String.o :	efltk/Fl_Util.h\
 	efltk/Fl_Flags.h\
 	efltk/vsnprintf.h\
 	efltk/fl_utf8.h\
-	config.h\
 	efltk/fl_math.h
 lib/Fl_Style.o :	efltk/vsnprintf.h\
 	efltk/fl_load_plugin.h\
@@ -3811,7 +3807,6 @@ lib/Fl_Style.o :	efltk/vsnprintf.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl.h\
-	config.h\
 	efltk/fl_math.h
 lib/Fl_Style_Set.o :	efltk/Fl_Widget.h\
 	efltk/Fl_Data_Source.h\
@@ -3836,8 +3831,7 @@ lib/Fl_Thread.o :	efltk/Fl_Thread.h\
 	efltk/Fl_Thread_Linux.h\
 	efltk/Fl_Thread_w32.h\
 	efltk/Enumerations.h\
-	efltk/Fl_Export.h\
-	config.h
+	efltk/Fl_Export.h
 lib/Fl_Translator.o :	efltk/fl_utf8.h\
 	efltk/Fl_Export.h\
 	efltk/vsnprintf.h\
@@ -3891,14 +3885,12 @@ lib/Fl_Util.o :	efltk/fl_draw.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h\
 	efltk/filename.h\
-	efltk/Fl_Util.h\
-	config.h
+	efltk/Fl_Util.h
 lib/Fl_Variant.o :	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
 	efltk/Fl_String.h\
 	efltk/Enumerations.h\
-	efltk/Fl_Export.h\
-	config.h
+	efltk/Fl_Export.h
 lib/Fl_WM.o :	efltk/Fl_Callback_List.h\
 	efltk/Fl_Widget.h\
 	efltk/Fl_Data_Source.h\
@@ -3930,10 +3922,8 @@ lib/Fl_WM.o :	efltk/Fl_Callback_List.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h\
 	efltk/Fl.h\
-	efltk/Fl_WM.h\
-	config.h
-lib/Fl_Widget.o :	config.h\
-	efltk/fl_draw.h\
+	efltk/Fl_WM.h
+lib/Fl_Widget.o :	efltk/fl_draw.h\
 	efltk/Fl_Device.h\
 	efltk/Fl_Group.h\
 	efltk/Fl_Int_List.h\
@@ -3989,8 +3979,7 @@ lib/Fl_Window.o :	efltk/Fl_WM.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl_Window.h\
-	efltk/Fl.h\
-	config.h
+	efltk/Fl.h
 lib/Fl_Window_fullscreen.o :	efltk/x.h\
 	efltk/win32.h\
 	efltk/Fl_Color.h\
@@ -4015,8 +4004,7 @@ lib/Fl_Window_fullscreen.o :	efltk/x.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl_Window.h\
-	efltk/Fl.h\
-	config.h
+	efltk/Fl.h
 lib/Fl_Window_hotspot.o :	efltk/x.h\
 	efltk/win32.h\
 	efltk/Fl_Color.h\
@@ -4041,8 +4029,7 @@ lib/Fl_Window_hotspot.o :	efltk/x.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl_Window.h\
-	efltk/Fl.h\
-	config.h
+	efltk/Fl.h
 lib/Fl_Window_iconize.o :	efltk/x.h\
 	efltk/win32.h\
 	efltk/Fl_Color.h\
@@ -4066,8 +4053,7 @@ lib/Fl_Window_iconize.o :	efltk/x.h\
 	efltk/Fl_String_List.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Boxtype.h\
-	efltk/Fl_Window.h\
-	config.h
+	efltk/Fl_Window.h
 lib/Fl_Xpm.o :	src/core/fl_internal.h\
 	efltk/Fl_Translator.h\
 	efltk/Fl_Ptr_List.h\
@@ -4077,7 +4063,6 @@ lib/Fl_Xpm.o :	src/core/fl_internal.h\
 	efltk/Fl_String.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Flags.h\
-	config.h\
 	efltk/Fl.h\
 	efltk/Fl_Exception.h\
 	efltk/Fl_Image.h\
@@ -4104,8 +4089,7 @@ lib/Fl_abort.o :	efltk/fl_utf8.h\
 	efltk/Fl_Export.h\
 	efltk/vsnprintf.h\
 	efltk/Fl.h\
-	efltk/Enumerations.h\
-	config.h
+	efltk/Enumerations.h
 lib/Fl_add_idle.o :	efltk/Fl.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Export.h
@@ -4136,17 +4120,14 @@ lib/Fl_arg.o :	efltk/x.h\
 	efltk/filename.h\
 	efltk/Fl_Util.h\
 	efltk/Fl_Window.h\
-	efltk/Fl.h\
-	config.h
+	efltk/Fl.h
 lib/Fl_compose.o :	efltk/fl_utf8.h\
 	efltk/Fl_Export.h\
 	efltk/Fl.h\
-	efltk/Enumerations.h\
-	config.h
+	efltk/Enumerations.h
 lib/Fl_display.o :	efltk/Fl.h\
 	efltk/Enumerations.h\
-	efltk/Fl_Export.h\
-	config.h
+	efltk/Fl_Export.h
 lib/Fl_get_key.o :	efltk/x.h\
 	efltk/win32.h\
 	efltk/Fl_Color.h\
@@ -4171,8 +4152,7 @@ lib/Fl_get_key.o :	efltk/x.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl.h\
-	src/core/Fl_get_key_win32.cpp\
-	config.h
+	src/core/Fl_get_key_win32.cpp
 lib/Fl_init.o :	src/core/fl_internal.h\
 	efltk/Fl_Translator.h\
 	efltk/Fl_Ptr_List.h\
@@ -4182,7 +4162,6 @@ lib/Fl_init.o :	src/core/fl_internal.h\
 	efltk/Fl_String.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Flags.h\
-	config.h\
 	efltk/Fl_Config.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h\
@@ -4245,12 +4224,10 @@ lib/Fl_key_name.o :	efltk/x.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Boxtype.h\
 	efltk/fl_draw.h\
-	efltk/Fl.h\
-	config.h
+	efltk/Fl.h
 lib/Fl_lock.o :	efltk/Fl.h\
 	efltk/Enumerations.h\
-	efltk/Fl_Export.h\
-	config.h
+	efltk/Fl_Export.h
 lib/Fl_own_colormap.o :	efltk/x.h\
 	efltk/win32.h\
 	efltk/Fl_Color.h\
@@ -4274,8 +4251,7 @@ lib/Fl_own_colormap.o :	efltk/x.h\
 	efltk/Fl_String_List.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Boxtype.h\
-	efltk/Fl.h\
-	config.h
+	efltk/Fl.h
 lib/Fl_visual.o :	efltk/x.h\
 	efltk/win32.h\
 	efltk/Fl_Color.h\
@@ -4299,8 +4275,7 @@ lib/Fl_visual.o :	efltk/x.h\
 	efltk/Fl_String_List.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Boxtype.h\
-	efltk/Fl.h\
-	config.h
+	efltk/Fl.h
 lib/KStoUCS.o :	efltk/x.h\
 	efltk/win32.h\
 	efltk/Fl_Color.h\
@@ -4330,15 +4305,13 @@ lib/filename.o :	efltk/fl_utf8.h\
 	efltk/Fl_Util.h\
 	efltk/Fl_String.h\
 	efltk/Enumerations.h\
-	efltk/Fl_Flags.h\
-	config.h
+	efltk/Fl_Flags.h
 lib/filename_list.o :	efltk/Fl_String.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Export.h\
 	efltk/filename.h\
 	efltk/Fl_Util.h\
-	efltk/Fl_Flags.h\
-	config.h
+	efltk/Fl_Flags.h
 lib/filename_match.o :	efltk/filename.h\
 	efltk/Fl_Util.h\
 	efltk/Fl_String.h\
@@ -4367,7 +4340,6 @@ lib/fl_arc.o :	efltk/fl_draw.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h\
-	config.h\
 	efltk/fl_math.h
 lib/fl_arci.o :	efltk/x.h\
 	efltk/win32.h\
@@ -4393,7 +4365,6 @@ lib/fl_arci.o :	efltk/x.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Boxtype.h\
 	efltk/fl_draw.h\
-	config.h\
 	efltk/fl_math.h
 lib/fl_blit.o :	efltk/Fl_Renderer.h\
 	efltk/x.h\
@@ -4430,7 +4401,6 @@ lib/fl_blit_1.o :	src/core/fl_internal.h\
 	efltk/Fl_String.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Flags.h\
-	config.h\
 	efltk/Fl_Renderer.h\
 	efltk/x.h\
 	efltk/win32.h\
@@ -4459,7 +4429,6 @@ lib/fl_blit_a.o :	src/core/fl_internal.h\
 	efltk/Fl_String.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Flags.h\
-	config.h\
 	efltk/Fl_Renderer.h\
 	efltk/x.h\
 	efltk/win32.h\
@@ -4488,7 +4457,6 @@ lib/fl_blit_n.o :	src/core/fl_internal.h\
 	efltk/Fl_String.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Flags.h\
-	config.h\
 	efltk/Fl_Renderer.h\
 	efltk/x.h\
 	efltk/win32.h\
@@ -4508,7 +4476,7 @@ lib/fl_blit_n.o :	src/core/fl_internal.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h
-lib/fl_call_main.o :	config.h
+lib/fl_call_main.o :
 lib/fl_clip.o :	efltk/Fl_Window.h\
 	efltk/Fl_Group.h\
 	efltk/Fl_Int_List.h\
@@ -4533,13 +4501,11 @@ lib/fl_clip.o :	efltk/Fl_Window.h\
 	efltk/x.h\
 	efltk/win32.h\
 	efltk/Fl_Device.h\
-	efltk/fl_draw.h\
-	config.h
+	efltk/fl_draw.h
 lib/fl_color.o :	src/core/fl_color_x.cpp\
 	src/core/Fl_XColor.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Export.h\
-	config.h\
 	efltk/x.h\
 	efltk/win32.h\
 	efltk/Fl_Color.h\
@@ -4592,8 +4558,7 @@ lib/fl_converters.o :	src/core/headers/dingbats_.h\
 	efltk/Fl_String.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Export.h\
-	efltk/fl_utf8.h\
-	config.h
+	efltk/fl_utf8.h
 lib/fl_cursor.o :	efltk/fl_draw.h\
 	efltk/Fl_Device.h\
 	efltk/Fl_Group.h\
@@ -4619,8 +4584,7 @@ lib/fl_cursor.o :	efltk/fl_draw.h\
 	efltk/x.h\
 	efltk/win32.h\
 	efltk/Fl_Window.h\
-	efltk/Fl.h\
-	config.h
+	efltk/Fl.h
 lib/fl_curve.o :	efltk/fl_draw.h\
 	efltk/Fl_Device.h\
 	efltk/Fl_Group.h\
@@ -4643,7 +4607,6 @@ lib/fl_curve.o :	efltk/fl_draw.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h\
-	config.h\
 	efltk/fl_math.h
 lib/fl_diamond_box.o :	efltk/fl_draw.h\
 	efltk/Fl_Device.h\
@@ -4693,8 +4656,7 @@ lib/fl_dnd.o :	src/core/fl_dnd_x.cpp\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl_Window.h\
 	efltk/Fl.h\
-	src/core/fl_dnd_win32.cpp\
-	config.h
+	src/core/fl_dnd_win32.cpp
 lib/fl_draw.o :	efltk/Fl_Device.h\
 	efltk/Fl_Group.h\
 	efltk/Fl_Int_List.h\
@@ -4722,7 +4684,6 @@ lib/fl_draw_image.o :	src/core/fl_draw_image_x_2.cpp\
 	src/core/Fl_XColor.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Export.h\
-	config.h\
 	src/core/fl_draw_image_x.cpp\
 	efltk/x.h\
 	efltk/win32.h\
@@ -4775,8 +4736,7 @@ lib/fl_draw_pixmap.o :	efltk/fl_draw.h\
 	efltk/Fl_String_List.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Color.h\
-	efltk/Fl_Boxtype.h\
-	config.h
+	efltk/Fl_Boxtype.h
 lib/fl_font.o :	src/core/fl_font_x.cpp\
 	efltk/fl_utf8.h\
 	efltk/Fl_Export.h\
@@ -4808,7 +4768,6 @@ lib/fl_font.o :	src/core/fl_font_x.cpp\
 	efltk/Fl.h\
 	src/core/fl_font_xft.cpp\
 	src/core/fl_font_win32.cpp\
-	config.h\
 	efltk/fl_math.h
 lib/fl_glyph.o :	efltk/fl_draw.h\
 	efltk/Fl_Device.h\
@@ -4832,8 +4791,7 @@ lib/fl_glyph.o :	efltk/fl_draw.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h
-lib/fl_labeltype.o :	config.h\
-	efltk/Fl_Image.h\
+lib/fl_labeltype.o :	efltk/Fl_Image.h\
 	efltk/Fl_Flags.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_PtrList.h\
@@ -4863,7 +4821,6 @@ lib/fl_labeltype.o :	config.h\
 	efltk/filename.h\
 	efltk/fl_draw.h
 lib/fl_list_fonts.o :	src/core/fl_list_fonts_x.cpp\
-	config.h\
 	efltk/x.h\
 	efltk/win32.h\
 	efltk/Fl_Color.h\
@@ -4898,8 +4855,7 @@ lib/fl_load_plugin.o :	efltk/fl_utf8.h\
 	efltk/Fl_String.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Flags.h\
-	efltk/fl_load_plugin.h\
-	config.h
+	efltk/fl_load_plugin.h
 lib/fl_locale.o :	src/core/fl_internal.h\
 	efltk/Fl_Translator.h\
 	efltk/Fl_Ptr_List.h\
@@ -4909,7 +4865,6 @@ lib/fl_locale.o :	src/core/fl_internal.h\
 	efltk/Fl_String.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Flags.h\
-	config.h\
 	efltk/x.h\
 	efltk/win32.h\
 	efltk/Fl_Device.h\
@@ -4998,8 +4953,7 @@ lib/fl_overlay.o :	efltk/fl_draw.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h\
 	efltk/x.h\
-	efltk/win32.h\
-	config.h
+	efltk/win32.h
 lib/fl_overlay_visual.o :	efltk/x.h\
 	efltk/win32.h\
 	efltk/Fl_Color.h\
@@ -5023,8 +4977,7 @@ lib/fl_overlay_visual.o :	efltk/x.h\
 	efltk/Fl_String_List.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Boxtype.h\
-	efltk/Fl.h\
-	config.h
+	efltk/Fl.h
 lib/fl_plastic_box.o :	efltk/fl_draw.h\
 	efltk/Fl_Device.h\
 	efltk/Fl_Group.h\
@@ -5070,8 +5023,7 @@ lib/fl_rect.o :	efltk/x.h\
 	efltk/Fl_String_List.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Boxtype.h\
-	efltk/fl_draw.h\
-	config.h
+	efltk/fl_draw.h
 lib/fl_rgb.o :	efltk/Fl_Color.h\
 	efltk/Fl_Flags.h\
 	efltk/Enumerations.h\
@@ -5094,8 +5046,7 @@ lib/fl_rgb.o :	efltk/Fl_Color.h\
 	efltk/Fl_Font.h\
 	efltk/Fl_String_List.h\
 	efltk/Fl_Labeltype.h\
-	efltk/Fl_Boxtype.h\
-	config.h
+	efltk/Fl_Boxtype.h
 lib/fl_round_box.o :	efltk/fl_draw.h\
 	efltk/Fl_Device.h\
 	efltk/Fl_Group.h\
@@ -5163,8 +5114,7 @@ lib/fl_scroll_area.o :	efltk/fl_draw.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h\
 	efltk/x.h\
-	efltk/win32.h\
-	config.h
+	efltk/win32.h
 lib/fl_shadow_box.o :	efltk/fl_draw.h\
 	efltk/Fl_Device.h\
 	efltk/Fl_Group.h\
@@ -5213,8 +5163,7 @@ lib/fl_stretch.o :	efltk/Fl.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl_Util.h\
-	efltk/filename.h\
-	config.h
+	efltk/filename.h
 lib/fl_theme.o :	efltk/Fl_Config.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Flags.h\
@@ -5244,11 +5193,9 @@ lib/fl_theme.o :	efltk/Fl_Config.h\
 	efltk/fl_draw.h\
 	efltk/fl_load_plugin.h\
 	efltk/vsnprintf.h\
-	efltk/Fl.h\
-	config.h
+	efltk/Fl.h
 lib/fl_utf8.o :	src/core/headers/case.h\
-	src/core/headers/spacing.h\
-	config.h
+	src/core/headers/spacing.h
 lib/fl_vertex.o :	efltk/x.h\
 	efltk/win32.h\
 	efltk/Fl_Color.h\
@@ -5273,7 +5220,6 @@ lib/fl_vertex.o :	efltk/x.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Boxtype.h\
 	efltk/fl_draw.h\
-	config.h\
 	efltk/fl_math.h
 lib/scandir.o :	src/core/scandir_win32.cpp\
 	efltk/filename.h\
@@ -5283,10 +5229,8 @@ lib/scandir.o :	src/core/scandir_win32.cpp\
 	efltk/Fl_Export.h\
 	efltk/Fl_Flags.h\
 	efltk/Fl_Exception.h\
-	efltk/fl_utf8.h\
-	config.h
-lib/vsnprintf.o :	efltk/vsnprintf.h\
-	config.h
+	efltk/fl_utf8.h
+lib/vsnprintf.o :	efltk/vsnprintf.h
 lib/Fl_Gl_Choice.o :	src/opengl/Fl_Gl_Choice.h\
 	efltk/gl.h\
 	efltk/Fl_Font.h\
@@ -5313,8 +5257,7 @@ lib/Fl_Gl_Choice.o :	src/opengl/Fl_Gl_Choice.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl_Window.h\
-	efltk/Fl.h\
-	config.h
+	efltk/Fl.h
 lib/Fl_Gl_Overlay.o :	efltk/Fl_Gl_Window.h\
 	efltk/Fl_Window.h\
 	efltk/Fl_Group.h\
@@ -5342,8 +5285,7 @@ lib/Fl_Gl_Overlay.o :	efltk/Fl_Gl_Window.h\
 	efltk/x.h\
 	efltk/win32.h\
 	efltk/Fl_Device.h\
-	efltk/Fl.h\
-	config.h
+	efltk/Fl.h
 lib/Fl_Gl_Window.o :	efltk/Fl_Gl_Window.h\
 	efltk/Fl_Window.h\
 	efltk/Fl_Group.h\
@@ -5371,8 +5313,7 @@ lib/Fl_Gl_Window.o :	efltk/Fl_Gl_Window.h\
 	efltk/x.h\
 	efltk/win32.h\
 	efltk/Fl_Device.h\
-	efltk/Fl.h\
-	config.h
+	efltk/Fl.h
 lib/gl_draw.o :	src/opengl/Fl_Gl_Choice.h\
 	efltk/gl.h\
 	efltk/Fl_Font.h\
@@ -5399,8 +5340,7 @@ lib/gl_draw.o :	src/opengl/Fl_Gl_Choice.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl_Window.h\
-	efltk/fl_draw.h\
-	config.h
+	efltk/fl_draw.h
 lib/gl_start.o :	efltk/fl_draw.h\
 	efltk/Fl_Device.h\
 	efltk/Fl_Group.h\
@@ -5428,8 +5368,7 @@ lib/gl_start.o :	efltk/fl_draw.h\
 	efltk/x.h\
 	efltk/win32.h\
 	efltk/Fl_Window.h\
-	efltk/Fl.h\
-	config.h
+	efltk/Fl.h
 lib/Fl_Align_Group.o :	efltk/Fl_Align_Group.h\
 	efltk/Fl_Group.h\
 	efltk/Fl_Int_List.h\
@@ -5571,7 +5510,6 @@ lib/Fl_Calendar.o :	src/core/fl_internal.h\
 	efltk/Fl_String.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Flags.h\
-	config.h\
 	efltk/Fl.h\
 	efltk/Fl_Calendar.h\
 	efltk/Fl_Button.h\
@@ -5668,7 +5606,6 @@ lib/Fl_Clock.o :	efltk/fl_draw.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl_Clock.h\
 	efltk/Fl.h\
-	config.h\
 	efltk/fl_math.h
 lib/Fl_Color_Chooser.o :	efltk/Fl_Return_Button.h\
 	efltk/Fl_Button.h\
@@ -5695,7 +5632,6 @@ lib/Fl_Color_Chooser.o :	efltk/Fl_Return_Button.h\
 	efltk/Fl_Widget_List.h\
 	src/core/fl_internal.h\
 	efltk/Fl_Translator.h\
-	config.h\
 	efltk/Fl_Image.h\
 	efltk/Fl_PtrList.h\
 	efltk/Fl_Renderer.h\
@@ -5783,7 +5719,6 @@ lib/Fl_Dial.o :	efltk/fl_draw.h\
 	efltk/Fl_Dial.h\
 	efltk/Fl_Valuator.h\
 	efltk/Fl.h\
-	config.h\
 	efltk/fl_math.h
 lib/Fl_Dialog.o :	efltk/Fl_Dialog.h\
 	efltk/Fl_Variant.h\
@@ -5828,8 +5763,7 @@ lib/Fl_Dialog.o :	efltk/Fl_Dialog.h\
 	efltk/Fl_Button.h\
 	efltk/Fl.h\
 	src/core/fl_internal.h\
-	efltk/Fl_Translator.h\
-	config.h
+	efltk/Fl_Translator.h
 lib/Fl_Directory_DS.o :	efltk/Fl_Pixmap.h\
 	efltk/Fl_Image.h\
 	efltk/Fl_Flags.h\
@@ -5862,8 +5796,7 @@ lib/Fl_Directory_DS.o :	efltk/Fl_Pixmap.h\
 	efltk/Fl_Directory_DS.h\
 	efltk/Fl_Memory_DS.h\
 	src/core/fl_internal.h\
-	efltk/Fl_Translator.h\
-	config.h
+	efltk/Fl_Translator.h
 lib/Fl_Double_Window.o :	efltk/fl_draw.h\
 	efltk/Fl_Device.h\
 	efltk/Fl_Group.h\
@@ -5890,8 +5823,7 @@ lib/Fl_Double_Window.o :	efltk/fl_draw.h\
 	efltk/win32.h\
 	efltk/Fl_Double_Window.h\
 	efltk/Fl_Window.h\
-	efltk/Fl.h\
-	config.h
+	efltk/Fl.h
 lib/Fl_FileBrowser.o :	efltk/fl_utf8.h\
 	efltk/Fl_Export.h\
 	efltk/filename.h\
@@ -5937,8 +5869,7 @@ lib/Fl_FileBrowser.o :	efltk/fl_utf8.h\
 	efltk/Fl_ListView_Header.h\
 	efltk/vsnprintf.h\
 	src/core/fl_internal.h\
-	efltk/Fl_Translator.h\
-	config.h
+	efltk/Fl_Translator.h
 lib/Fl_FileInput.o :	efltk/Fl_FileInput.h\
 	efltk/Fl_Input.h\
 	efltk/Fl_Widget.h\
@@ -5970,7 +5901,6 @@ lib/Fl_File_Dialog.o :	src/widgets/Pixmaps.h\
 	efltk/Fl_String.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Flags.h\
-	config.h\
 	efltk/Fl_Dialog.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
@@ -6056,7 +5986,6 @@ lib/Fl_Help_Dialog.o :	src/core/fl_internal.h\
 	efltk/Fl_String.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Flags.h\
-	config.h\
 	efltk/Fl_Pixmap.h\
 	efltk/Fl_Image.h\
 	efltk/Fl_PtrList.h\
@@ -6161,7 +6090,6 @@ lib/Fl_Input.o :	efltk/Fl_Menu_Button.h\
 	efltk/Fl_Widget_List.h\
 	src/core/fl_internal.h\
 	efltk/Fl_Translator.h\
-	config.h\
 	efltk/fl_utf8.h\
 	efltk/fl_ask.h\
 	efltk/fl_draw.h\
@@ -6461,8 +6389,7 @@ lib/Fl_MDI_Window.o :	efltk/Fl_Item.h\
 	efltk/Fl_Menu_Item.h\
 	efltk/Fl_Scrollbar.h\
 	efltk/Fl_Slider.h\
-	efltk/Fl_Valuator.h\
-	config.h
+	efltk/Fl_Valuator.h
 lib/Fl_Main_Window.o :	efltk/Fl_Main_Window.h\
 	efltk/Fl_Tool_Bar.h\
 	efltk/Fl_Menu_Button.h\
@@ -6563,7 +6490,6 @@ lib/Fl_Menu.o :	efltk/Fl_Image.h\
 	efltk/Fl_Menu_Window.h\
 	efltk/Fl_Single_Window.h\
 	efltk/Fl_Window.h\
-	config.h\
 	efltk/fl_math.h
 lib/Fl_Menu_.o :	efltk/Fl_Item.h\
 	efltk/Fl_Widget.h\
@@ -6592,8 +6518,7 @@ lib/Fl_Menu_.o :	efltk/Fl_Item.h\
 	efltk/Fl_Menu_.h\
 	efltk/Fl_Menu_Item.h\
 	efltk/Fl.h
-lib/Fl_Menu_Bar.o :	config.h\
-	efltk/fl_draw.h\
+lib/Fl_Menu_Bar.o :	efltk/fl_draw.h\
 	efltk/Fl_Device.h\
 	efltk/Fl_Group.h\
 	efltk/Fl_Int_List.h\
@@ -6718,7 +6643,6 @@ lib/Fl_Menu_Window.o :	efltk/Fl_Renderer.h\
 	efltk/Fl_Single_Window.h\
 	efltk/Fl_Window.h\
 	efltk/Fl.h\
-	config.h\
 	efltk/fl_math.h
 lib/Fl_Menu_add.o :	src/core/ARRAY.h\
 	efltk/Fl_Menu_Item.h\
@@ -6807,7 +6731,6 @@ lib/Fl_Numeric_Input.o :	src/core/fl_internal.h\
 	efltk/Fl_String.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Flags.h\
-	config.h\
 	efltk/Fl_Numeric_Input.h\
 	efltk/Fl_Input.h\
 	efltk/Fl_Widget.h\
@@ -6875,8 +6798,7 @@ lib/Fl_Overlay_Window.o :	efltk/x.h\
 	efltk/Fl_Overlay_Window.h\
 	efltk/Fl_Double_Window.h\
 	efltk/Fl_Window.h\
-	efltk/Fl.h\
-	config.h
+	efltk/Fl.h
 lib/Fl_Pack.o :	efltk/Fl_Pack.h\
 	efltk/Fl_Group.h\
 	efltk/Fl_Int_List.h\
@@ -7100,7 +7022,6 @@ lib/Fl_Scrollbar.o :	efltk/fl_draw.h\
 	efltk/Fl_Slider.h\
 	efltk/Fl_Valuator.h\
 	efltk/Fl.h\
-	config.h\
 	efltk/fl_math.h
 lib/Fl_Shaped_Window.o :	efltk/x.h\
 	efltk/win32.h\
@@ -7133,8 +7054,7 @@ lib/Fl_Shaped_Window.o :	efltk/x.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h\
 	efltk/Fl_Double_Window.h\
-	efltk/Fl_Window.h\
-	config.h
+	efltk/Fl_Window.h
 lib/Fl_Simple_Html.o :	src/core/fl_internal.h\
 	efltk/Fl_Translator.h\
 	efltk/Fl_Ptr_List.h\
@@ -7144,7 +7064,6 @@ lib/Fl_Simple_Html.o :	src/core/fl_internal.h\
 	efltk/Fl_String.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Flags.h\
-	config.h\
 	efltk/fl_utf8.h\
 	efltk/vsnprintf.h\
 	efltk/Fl_Image.h\
@@ -7197,8 +7116,7 @@ lib/Fl_Single_Window.o :	efltk/Fl_Single_Window.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h
-lib/Fl_Slider.o :	config.h\
-	efltk/vsnprintf.h\
+lib/Fl_Slider.o :	efltk/vsnprintf.h\
 	efltk/fl_draw.h\
 	efltk/Fl_Device.h\
 	efltk/Fl_Group.h\
@@ -7268,8 +7186,7 @@ lib/Fl_Text_Buffer.o :	efltk/fl_utf8.h\
 	efltk/Fl_String.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Ptr_Stack.h\
-	efltk/Fl_Ptr_List.h\
-	config.h
+	efltk/Fl_Ptr_List.h
 lib/Fl_Text_Display.o :	efltk/fl_draw.h\
 	efltk/Fl_Device.h\
 	efltk/Fl_Group.h\
@@ -7307,8 +7224,7 @@ lib/Fl_Text_Display.o :	efltk/fl_draw.h\
 	efltk/Fl_Renderer.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h\
-	efltk/Fl.h\
-	config.h
+	efltk/Fl.h
 lib/Fl_Text_Editor.o :	efltk/Fl_Menu_Button.h\
 	efltk/Fl_Menu_.h\
 	efltk/Fl_Menu_Item.h\
@@ -7342,8 +7258,7 @@ lib/Fl_Text_Editor.o :	efltk/Fl_Menu_Button.h\
 	efltk/Fl_Valuator.h\
 	efltk/fl_draw.h\
 	efltk/Fl_Device.h\
-	efltk/Fl.h\
-	config.h
+	efltk/Fl.h
 lib/Fl_Tile.o :	efltk/Fl_Window.h\
 	efltk/Fl_Group.h\
 	efltk/Fl_Int_List.h\
@@ -7542,8 +7457,7 @@ lib/Fl_Workspace.o :	efltk/Fl_MDI_Bar.h\
 	efltk/Fl_Menu_Item.h\
 	efltk/Fl_Scrollbar.h\
 	efltk/Fl_Slider.h\
-	efltk/Fl_Valuator.h\
-	config.h
+	efltk/Fl_Valuator.h
 lib/fl_ask.o :	efltk/x.h\
 	efltk/win32.h\
 	efltk/Fl_Color.h\
@@ -7569,7 +7483,6 @@ lib/fl_ask.o :	efltk/x.h\
 	efltk/Fl_Boxtype.h\
 	src/core/fl_internal.h\
 	efltk/Fl_Translator.h\
-	config.h\
 	efltk/vsnprintf.h\
 	efltk/Fl_Pixmap.h\
 	efltk/Fl_Image.h\
@@ -7608,8 +7521,7 @@ lib/fl_engraved_label.o :	efltk/fl_draw.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h
-lib/fl_show_colormap.o :	config.h\
-	efltk/fl_show_colormap.h\
+lib/fl_show_colormap.o :	efltk/fl_show_colormap.h\
 	efltk/fl_draw.h\
 	efltk/Fl_Device.h\
 	efltk/Fl_Group.h\
@@ -7924,8 +7836,7 @@ test/directory.o :	efltk/Fl_Directory_DS.h\
 	efltk/Fl_Flags.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Fl_Variant.h\
-	efltk/Fl_Date_Time.h\
-	config.h
+	efltk/Fl_Date_Time.h
 test/doublebuffer.o :	efltk/Fl_Slider.h\
 	efltk/Fl_Valuator.h\
 	efltk/Fl_Widget.h\
@@ -7955,7 +7866,6 @@ test/doublebuffer.o :	efltk/Fl_Slider.h\
 	efltk/Fl_Window.h\
 	efltk/Fl_Single_Window.h\
 	efltk/Fl.h\
-	config.h\
 	efltk/fl_math.h
 test/net/Fl_FTP_Connect.o :	efltk/net/Fl_FTP_Connect.h\
 	efltk/Fl_Socket.h\
@@ -8088,8 +7998,7 @@ lib/Fl_Memory_DS.o :	efltk/Fl_Memory_DS.h\
 	efltk/Fl_Flags.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Fl_Variant.h\
-	efltk/Fl_Date_Time.h\
-	config.h
+	efltk/Fl_Date_Time.h
 test/Fl_IMAP_DS.o :	efltk/Fl_Pixmap.h\
 	efltk/Fl_Image.h\
 	efltk/Fl_Flags.h\
@@ -8123,8 +8032,7 @@ test/Fl_IMAP_DS.o :	efltk/Fl_Pixmap.h\
 	efltk/net/Fl_IMAP_Connect.h\
 	efltk/Fl_Socket.h\
 	efltk/Fl_Buffer.h\
-	efltk/Fl_Memory_DS.h\
-	config.h
+	efltk/Fl_Memory_DS.h
 test/exceptions.o :	efltk/Fl_Exception.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_String.h\
@@ -8265,8 +8173,7 @@ lib/Fl_IMAP_DS.o :	efltk/Fl_Pixmap.h\
 	efltk/net/Fl_IMAP_Connect.h\
 	efltk/Fl_Socket.h\
 	efltk/Fl_Buffer.h\
-	efltk/Fl_Memory_DS.h\
-	config.h
+	efltk/Fl_Memory_DS.h
 lib/Fl_FTP_DS.o :	efltk/Fl_Pixmap.h\
 	efltk/Fl_Image.h\
 	efltk/Fl_Flags.h\
@@ -8300,8 +8207,7 @@ lib/Fl_FTP_DS.o :	efltk/Fl_Pixmap.h\
 	efltk/net/Fl_FTP_Connect.h\
 	efltk/Fl_Socket.h\
 	efltk/Fl_Buffer.h\
-	efltk/Fl_Memory_DS.h\
-	config.h
+	efltk/Fl_Memory_DS.h
 test/net/Fl_FTP_DS.o :	efltk/Fl_Pixmap.h\
 	efltk/Fl_Image.h\
 	efltk/Fl_Flags.h\
@@ -8335,8 +8241,7 @@ test/net/Fl_FTP_DS.o :	efltk/Fl_Pixmap.h\
 	efltk/net/Fl_FTP_Connect.h\
 	efltk/Fl_Socket.h\
 	efltk/Fl_Buffer.h\
-	efltk/Fl_Memory_DS.h\
-	config.h
+	efltk/Fl_Memory_DS.h
 test/net/ftp_connect.o :	efltk/net/Fl_FTP_DS.h\
 	efltk/net/Fl_FTP_Connect.h\
 	efltk/Fl_Socket.h\
@@ -8519,8 +8424,7 @@ test/listview_ds.o :	efltk/Fl_Directory_DS.h\
 	efltk/filename.h\
 	efltk/Fl.h\
 	efltk/Fl_ListView_Header.h\
-	efltk/Fl_Window.h\
-	config.h
+	efltk/Fl_Window.h
 test/fonts.o :	efltk/fl_ask.h\
 	efltk/Fl_Style.h\
 	efltk/Fl_Font.h\
@@ -8556,8 +8460,7 @@ test/fonts.o :	efltk/fl_ask.h\
 	efltk/Fl_Menu_Item.h\
 	efltk/Fl_Double_Window.h\
 	efltk/Fl_Window.h\
-	efltk/Fl.h\
-	config.h
+	efltk/Fl.h
 test/fullscreen.o :	efltk/fl_draw.h\
 	efltk/Fl_Device.h\
 	efltk/Fl_Group.h\
@@ -8592,7 +8495,6 @@ test/fullscreen.o :	efltk/fl_draw.h\
 	efltk/Fl_Valuator.h\
 	efltk/Fl_Single_Window.h\
 	efltk/Fl.h\
-	config.h\
 	efltk/fl_math.h
 test/progress.o :	efltk/Fl_ProgressBar.h\
 	efltk/fl_draw.h\
@@ -8832,7 +8734,6 @@ tools/efluid/Fl_Type.o :	tools/efluid/Fluid_Image.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h\
-	config.h\
 	efltk/fl_draw.h\
 	efltk/Fl_Device.h\
 	efltk/Fl_Group.h\
@@ -9035,7 +8936,6 @@ tools/efluid/Fluid_Image.o :	tools/efluid/image_file_panel.cpp\
 	efltk/Fl_Menu_Item.h\
 	efltk/Fl_Image_Cache.h\
 	efltk/Fl_Bitmap.h\
-	config.h\
 	tools/efluid/Fluid_Image.h\
 	tools/efluid/Fluid_Plugins.h\
 	tools/efluid/Fl_Type.h\
@@ -9048,7 +8948,6 @@ tools/efluid/Fluid_Plugins.o :	efltk/filename.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_Flags.h\
-	config.h\
 	efltk/fl_load_plugin.h\
 	efltk/Fl_Menu_Item.h\
 	efltk/Fl_Widget.h\
@@ -9213,8 +9112,7 @@ tools/efluid/coding_style.o :	tools/efluid/coding_style.h\
 	efltk/Fl_Locale.h\
 	efltk/Fl_Translator.h\
 	efltk/Fl.h
-tools/efluid/coding_style_func.o :	config.h\
-	tools/efluid/Fl_Type.h\
+tools/efluid/coding_style_func.o :	tools/efluid/Fl_Type.h\
 	tools/efluid/Fluid_Image.h\
 	tools/efluid/Fluid_Plugins.h\
 	efltk/Fl_Text_Buffer.h\
@@ -9311,8 +9209,7 @@ tools/efluid/factory.o :	efltk/Fl_Browser.h\
 	efltk/Fl_ProgressBar.h\
 	tools/efluid/Fl_Type.h\
 	tools/efluid/Fluid_Image.h\
-	tools/efluid/Fluid_Plugins.h\
-	config.h
+	tools/efluid/Fluid_Plugins.h
 tools/efluid/file.o :	efltk/Fl_Group.h\
 	efltk/Fl_Int_List.h\
 	efltk/Fl_Ptr_List.h\
@@ -9405,7 +9302,6 @@ tools/efluid/fluid.o :	efltk/Fl_Images.h\
 	efltk/Fl_Return_Button.h\
 	efltk/Fl_Double_Window.h\
 	efltk/win32.h\
-	config.h\
 	efltk/vsnprintf.h\
 	efltk/filename.h\
 	efltk/Fl_Util.h\
@@ -10610,6 +10506,55 @@ test/input_browser.o :	efltk/Fl_Input_Browser.h\
 	efltk/Fl_Menu_Item.h\
 	efltk/Fl_Input.h\
 	efltk/Fl.h
+test/split.o :	efltk/Fl_Split.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl.h
+lib/Fl_Split.o :	efltk/Fl.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/fl_draw.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Split.h\
+	efltk/Fl_Box.h
 
 
 # %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x6
@@ -10646,7 +10591,7 @@ test/input_browser.o :	efltk/Fl_Input_Browser.h\
 # %TargetInfo src/core/Fl_Date_Time.cpp	SourceOrHeader,	UniqueId=0x400290,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Exception.cpp	SourceOrHeader,	UniqueId=0x400291,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Gif.cpp	SourceOrHeader,	UniqueId=0x400292,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/core/Fl_Group.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400293,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Group.cpp	SourceOrHeader,	UniqueId=0x400293,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Image.cpp	SourceOrHeader,	UniqueId=0x400295,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Image_Filter.cpp	SourceOrHeader,	UniqueId=0x400296,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Lists.cpp	SourceOrHeader,	UniqueId=0x400297,	TargetType=C++,	IDEFlags=0x6
@@ -10872,6 +10817,7 @@ test/input_browser.o :	efltk/Fl_Input_Browser.h\
 # %TargetInfo test/maskedinput.cpp	SourceOrHeader,	UniqueId=0x4003e5,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/input.cpp	SourceOrHeader,	UniqueId=0x4003e7,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/input_browser.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4003ea,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/split.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4003ee,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x6
@@ -11137,6 +11083,8 @@ test/input_browser.o :	efltk/Fl_Input_Browser.h\
 # %TargetInfo efltk/Fl_Check_Buttons.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d2,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Radio_Buttons.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4003d3,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Int_Input.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4003e8,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Split.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4003ec,	TargetType=INC,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Split.cpp	SourceOrHeader,	UniqueId=0x4003ef,	TargetType=C++,	IDEFlags=0x6
 
 
 # %UniqueId:	0x400001
@@ -11158,7 +11106,6 @@ test/input_browser.o :	efltk/Fl_Input_Browser.h\
 # %IDEFlags:	0
 # %Folder
 # "efltk" : 
-#	0x4000f1
 #	0x400002
 #	0x4000ed
 #	0x4000f2
@@ -11212,6 +11159,7 @@ test/input_browser.o :	efltk/Fl_Input_Browser.h\
 #	0x40033a
 #	0x400388
 #	0x4003e9
+#	0x4003ed
 #
 # %UniqueId:	0x40038c
 # %IDEFlags:	0
