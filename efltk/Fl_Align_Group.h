@@ -29,18 +29,18 @@ class FL_API Fl_Align_Group : public Fl_Group {
 public:
     void layout();
 
-    Fl_Align_Group(int X, int Y, int W, int H, const char* L = 0) : Fl_Group(X,Y,W,H,L) {
+    Fl_Align_Group(int X, int Y, int W, int H, const char* L = 0) 
+    : Fl_Group(X,Y,W,H,L) {
         n_to_break_ = 0; vertical_ = 1;
         align_ = FL_ALIGN_LEFT;
         dw_ = dh_ = 0;
     }
 
-    Fl_Align_Group(const char* L = 0,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100) : Fl_Group(0,0,10,10,L) {
+    Fl_Align_Group(const char* L = 0,Fl_Align layout_al=FL_ALIGN_TOP,int layout_size=30,int label_w=100) 
+    : Fl_Group(L,layout_al,layout_size,label_w) {
         n_to_break_ = 0; vertical_ = 1;
         align_ = FL_ALIGN_LEFT;
         dw_ = dh_ = 0;
-        label_width(label_w);
-        layout_align(layout_al);
     }
 
     bool vertical() const {return vertical_;}

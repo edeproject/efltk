@@ -42,17 +42,16 @@ Fl_Named_Style* Fl_Bar::default_style = &::style;
 Fl_Bar::Fl_Bar(int x, int y, int w, int h, const char* l)
 : Fl_Group(x, y, w, h, l)
 {
-    initialize(h);
+    ctor_init(h);
 }
 
-Fl_Bar::Fl_Bar(const char* l,Fl_Align layout_al,int label_w) : Fl_Group(0,0,10,10,l)
+Fl_Bar::Fl_Bar(const char* l,Fl_Align layout_al,int layout_size,int label_w) 
+: Fl_Group(l,layout_al,layout_size,label_w)
 {
-    initialize(10);
-    label_width(label_w);
-    layout_align(layout_al);
+    ctor_init(h());
 }
 
-void Fl_Bar::initialize(int hh) 
+void Fl_Bar::ctor_init(int hh) 
 {
     style(default_style);
 

@@ -30,7 +30,7 @@ public:
     static Fl_Named_Style* default_style;
 
     Fl_Bar(int x,int y,int w ,int h,const char *l = 0);
-    Fl_Bar(const char* l = 0,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
+    Fl_Bar(const char* l = 0,Fl_Align layout_al=FL_ALIGN_TOP,int layout_size=30,int label_w=100);
 
     // values for type(int)
     enum {
@@ -53,7 +53,7 @@ protected:
     bool pushed;
 
 private:
-    void initialize(int h);
+    void ctor_init(int h);
 
     bool open_;
     int glyph_size_;
