@@ -725,19 +725,18 @@ void Fl_Table_Base::recalc_dimensions()
                 tiy += hscrollbar->h();
             tih -= hscrollbar->h();
         }
+        
+		if(!m_scrolled) {
+			// Clamp vertical scrollbar
+			if(vscrollbar->value() > table_h-tih && table_h>tih) vscrollbar->Fl_Slider::value(table_h-tih);
+			else if(vscrollbar->value()<0 || table_h<tih) vscrollbar->Fl_Slider::value(0);
 
-        // Clamp vertical scrollbar
-        if(vscrollbar->value() > table_h-tih && table_h>tih) vscrollbar->Fl_Slider::value(table_h-tih);
-        else if(vscrollbar->value()<0 || table_h<tih) vscrollbar->Fl_Slider::value(0);
-
-        // Clamp horizontal scrollbar
-        if(hscrollbar->value() > table_w-tiw && table_w>tiw) hscrollbar->Fl_Slider::value(table_w-tiw);
-        else if(hscrollbar->value()<0 || table_w<tiw) hscrollbar->Fl_Slider::value(0);
+			// Clamp horizontal scrollbar
+			if(hscrollbar->value() > table_w-tiw && table_w>tiw) hscrollbar->Fl_Slider::value(table_w-tiw);
+			else if(hscrollbar->value()<0 || table_w<tiw) hscrollbar->Fl_Slider::value(0);
+		}
 
         // Recalc scrollbar sizes:
-        // Vertical
-        //vscrollbar->resize(wix+wiw-vscrollbar->w(), wiy,
-        //vscrollbar->w(), wih - (hscrollbar->visible()?hscrollbar->h():0));
 
         int hor_y = wiy+wih-hscrollbar->h();
         int hor_x = wix;
