@@ -1375,9 +1375,6 @@ void Fl_Text_Display::buffer_modified_cb( int pos, int nInserted, int nDeleted,
   int scrolled, origCursorPos = textD->mCursorPos;
   int wrapModStart, wrapModEnd;
 
-  // refigure scrollbars & stuff
-  textD->relayout();
-
   // don't need to do anything else if not visible?
   if(!textD->visible_r() && textD->mContinuousWrap) return;
 
@@ -1440,9 +1437,12 @@ void Fl_Text_Display::buffer_modified_cb( int pos, int nInserted, int nDeleted,
   // don't need to do anything else if not visible?
   if (!textD->visible_r()) return;
 
+  // refigure scrollbars & stuff
+  textD->relayout();
+
   /* If the changes caused scrolling, re-paint everything and we're done. */
   if ( scrolled ) {
-      textD->redraw(FL_DAMAGE_VALUE);
+      textD->redraw();
       if ( textD->mStyleBuffer )   /* See comments in extendRangeForStyleMods */
           textD->mStyleBuffer->primary_selection()->selected(0);
       return;
@@ -1801,7 +1801,11 @@ void Fl_Text_Display::draw_string( int style, int X, int Y, int toX,
 
 	if(styleRec && styleRec->attr==ATTR_IMAGE && styleRec->image) {
 		
-		styleRec->image->draw(X, Y + mMaxsize - styleRec->image->height(), toX-X, mMaxsize, (style&PRIMARY_MASK)?FL_SELECTED:0);
+		int iX = X;
+		for(int n=0; n<nChars; n++) {
+			styleRec->image->draw(iX, Y + mMaxsize - styleRec->image->height(), styleRec->image->width(), mMaxsize, (style&PRIMARY_MASK)?FL_SELECTED:0);
+			iX += styleRec->image->width();
+		}
 		
 	} else {
 		fl_color( foreground );
