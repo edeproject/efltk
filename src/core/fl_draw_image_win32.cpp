@@ -288,10 +288,11 @@ void Fl_Image::to_screen(int XP, int YP, int WP, int HP, int, int)
     if(mask) {
         if(id) {
             // both color and mask:
-#if 0
-            HDC new_gc = make_DC((Pixmap)id, fl_palette);
 
-            if(_masktype == ALPHA)
+#if 0 // For some reason!? This (TransparentBlt) is unresolved under W2k/XP! MSDN says it should be included in >NT4
+            HDC new_gc = make_DC(fl_gc, (Pixmap)id, fl_palette);
+
+            if(mask_type() == MASK_ALPHA)
             {
                 TransparentBlt(
                                fl_gc,
@@ -299,14 +300,14 @@ void Fl_Image::to_screen(int XP, int YP, int WP, int HP, int, int)
                                new_gc,
                                cx, cy, W, H,
                                0 );
-            } else if(_masktype == COLOR_KEY)
+            } else if(mask_type() == MASK_COLORKEY)
             {
                 TransparentBlt(
                                fl_gc,
                                X, Y, W, H,
                                new_gc,
                                cx, cy, W, H,
-                               fmt.colorkey );
+                               format()->colorkey );
             } else {
                 BitBlt(fl_gc, X, Y, W, H, new_gc, cx, cy, SRCCOPY);
             }
