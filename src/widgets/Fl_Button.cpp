@@ -212,13 +212,12 @@ void Fl_Button::draw(int glyph, int glyph_width) const
     else
     {
         bool drawed = false;
-        if(image()) {
-            if(!image()->get_mask() &&
-               ( ((align()&FL_ALIGN_TILED) || (align()&FL_ALIGN_SCALE)) &&
-                ( !(align()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT|FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) ||
-                 (align()&FL_ALIGN_INSIDE) )
-               ) ) {
-                // We can draw only frame, if drawing image tiled or scale. If no mask found...
+        if(image() && !image()->get_mask()) {
+            if((align()&FL_ALIGN_TILED || align()&FL_ALIGN_SCALE) &&
+               ( !(align()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT|FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) || (align()&FL_ALIGN_INSIDE) )
+              ) {
+                // We can draw only frame, if drawing image tiled or scale
+                // And no mask defined to image...
                 draw_frame();
                 drawed = true;
             }

@@ -40,9 +40,6 @@ static Fl_Pixmap new_pix(datas_new);
 static Fl_Pixmap up_pix(datas_up);
 static Fl_Pixmap refresh_pix(datas_refresh);
 
-static Fl_Pixmap file_pix(datas_file);
-static Fl_Pixmap fold_pix(datas_filefolder);
-
 #ifndef S_ISDIR
 # define S_ISDIR(m) (((m) & S_IFMT) == S_IFDIR)
 #endif
