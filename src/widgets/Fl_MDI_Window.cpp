@@ -1215,8 +1215,7 @@ void Fl_MDI_Window::animate(int fx, int fy, int fw, int fh,
 	HDC saved = fl_gc, new_gc;
 	fl_gc = new_gc = GetDCEx(fl_xid(_owner), NULL, DCX_LOCKWINDOWUPDATE); //Draws top of child windows...
 #endif
-
-    timeval t;
+    
     while(steps-- > 0) {
 
         rx+=(sx*xinc);
@@ -1235,9 +1234,6 @@ void Fl_MDI_Window::animate(int fx, int fy, int fw, int fh,
 #endif
             overlay_rect((int)rx, (int)ry, (int)rw, (int)rh);			
         }
-        t.tv_sec = 0;
-        t.tv_usec = 1000;
-        ::select(0,0,0,0, &t);
 
         XFlush(fl_display);
         Fl::check();
