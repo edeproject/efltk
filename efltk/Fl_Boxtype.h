@@ -276,9 +276,9 @@ extern FL_API const Fl_Hor_Shade_Box hor_flat_shade_box;
 #define FL_VERT_SHADE_FLAT_BOX (&vert_flat_shade_box)
 #define FL_HOR_SHADE_FLAT_BOX (&hor_flat_shade_box)
 
+// Used in MDI
 extern FL_API const Fl_Frame_Box thick_up_box;
 #define FL_THICK_UP_BOX (&thick_up_box)
-
 
 #endif
 

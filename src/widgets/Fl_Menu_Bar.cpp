@@ -56,10 +56,9 @@ Fl_Menu_Bar::Fl_Menu_Bar(int x,int y,int w,int h,const char *l)
     highlight_ = last_highlight_ = -1;
     selected_ = last_selected_ = -1;
 
-    first_menu=0;
-    executed_=0;
     right_=0;
     do_layout=true;
+    key_event = false;
 
     value(-1);
 }
@@ -69,42 +68,27 @@ void Fl_Menu_Bar::draw()
     if(damage()&(~FL_DAMAGE_HIGHLIGHT))
         draw_box();
 
+    if(!children()) { last_highlight_ = last_selected_ = -1; return; }
+
     int X=0, Y=0, W=w(), H=h();
     box()->inset(X,Y,W,H);
     fl_push_clip(X,Y,W,H);
 
-    if(!children()) { last_highlight_ = last_selected_ = -1; return; }
     for (int i = 0; i < children(); i++)
     {
         Fl_Widget* widget = child(i);
         if (!widget->visible()) continue;
 
-        if(( damage()&(~FL_DAMAGE_HIGHLIGHT) || selected_==i || last_selected_==i) && (selected_!=-1||last_selected_!=-1))
+        Fl_Flags f=widget->flags();
+
+        if(i==selected_) f|=FL_VALUE;
+        else if(i==highlight_) f|=FL_HIGHLIGHT;
+
+        if( (damage()&(~FL_DAMAGE_HIGHLIGHT)) ||
+           (selected_==i || last_selected_==i) ||
+           (highlight_==i || last_highlight_==i) )
         {
-            widget->clear_flag(FL_HIGHLIGHT);
-            if(selected_==i)
-                button_box()->draw(widget->x(), widget->y(), widget->w(), widget->h(), button_color(), FL_VALUE);
-            else
-                button_box()->draw(widget->x(), widget->y(), widget->w(), widget->h(), button_color(), widget->flags()&~FL_VALUE);
-
-            fl_push_matrix();
-            fl_translate(widget->x(), widget->y());
-            widget->draw();
-            fl_pop_matrix();
-        }
-
-        if((damage()&(~FL_DAMAGE_HIGHLIGHT) || highlight_ == i || last_highlight_ == i) && selected_==-1)
-        {
-            // If you change how the items are drawn, you probably need to
-            // change MenuTitle::draw and the functions find_selected and
-            // titlex in Fl_Menu.cxx.
-            if(i == highlight_ && takesevents() && widget->active_r())
-                widget->set_flag(FL_HIGHLIGHT);
-            else
-                widget->clear_flag(FL_HIGHLIGHT);
-            widget->clear_flag(FL_SELECTED);
-
-            button_box()->draw(widget->x(), widget->y(), widget->w(), widget->h(), button_color(), widget->flags()&~FL_VALUE);
+            button_box()->draw(widget->x(), widget->y(), widget->w(), widget->h(), button_color(), f);
             fl_push_matrix();
             fl_translate(widget->x(), widget->y());
             widget->draw();
@@ -144,8 +128,9 @@ void Fl_Menu_Bar::layout()
         }
 
         if(Y+w->h() > H && do_layout) {
-            h(Y+w->h()+leading());
-        }
+            h(Y+w->h()+leading()/2);
+        } else
+            w->h(h()-box()->dw()-leading());
 
         w->position(X,Y);
         X += w->w();
@@ -165,8 +150,9 @@ void Fl_Menu_Bar::layout()
         }
 
         if(Y+w->h() > H && do_layout) {
-            h(Y+w->h()+leading());
-        }
+            h(Y+w->h()+leading()/2);
+        } else
+            w->h(h()-box()->dw()-leading());
 
         if(lines==1)
             X=W-w->w();
@@ -180,10 +166,6 @@ void Fl_Menu_Bar::layout()
 int Fl_Menu_Bar::handle(int event)
 {
     switch(event) {
-    case FL_PUSH: {
-        popup(0,0,0,0);
-        return 1;
-    }
 
     case FL_LEAVE:
         highlight_ = -1;
@@ -191,6 +173,12 @@ int Fl_Menu_Bar::handle(int event)
         redraw(FL_DAMAGE_HIGHLIGHT);
         return 1;
 
+    case FL_PUSH: {
+        value(-1);
+        key_event = false;
+        if(highlight_>=0) popup(0,0,0,0);
+        return 1;
+    }
     case FL_ENTER:
     case FL_MOVE: {
         int index = -1;
@@ -215,13 +203,13 @@ int Fl_Menu_Bar::handle(int event)
             if(w->is_group() && w->active() && w->test_shortcut()) {
                 value(i);
                 popup(0,0,0,0);
+                return 1;
             }
         }
         if(handle_shortcut()) return 1;
         return 0;
     }
     case FL_KEYUP: {
-        key_event = true;
         // In the future maybe any shortcut() will work, but for now
         // only the Alt key does. Setting the shortcut to zero will disable
         // the alt key shortcut.
@@ -233,12 +221,14 @@ int Fl_Menu_Bar::handle(int event)
         // for a long time, too:
         if (!Fl::event_is_click()) break;
 
+        key_event = true;
         // okay we got the shortcut, find first menu and pop it up:
         for(int i = 0; i < children(); i++) {
             Fl_Widget* w = child(i);
             if(w->active()) {
                 value(i);
                 popup(0,0,0,0);
+                return 1;
             }
         }
         break;

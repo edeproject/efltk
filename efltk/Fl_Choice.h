@@ -30,13 +30,15 @@
 
 class FL_API Fl_Choice : public Fl_Menu_ {
 public:
-  int handle(int);
-  Fl_Choice(int,int,int,int,const char * = 0);
-  static Fl_Named_Style* default_style;
-  int value(int v);
-  int value() const {return Fl_Menu_::value();}
-protected:
-  void draw();
+    Fl_Choice(int,int,int,int,const char * = 0);
+    static Fl_Named_Style* default_style;
+
+    int value(int v);
+    int value() const {return Fl_Menu_::value();}
+
+    int popup(int X, int Y, int W, int H);
+    int handle(int);
+    void draw();
 };
 
 #endif

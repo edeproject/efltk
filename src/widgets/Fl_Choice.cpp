@@ -199,10 +199,11 @@ int x,int y,int w,int h, Fl_Flags)
 }
 #endif
 
-#define MAC_STYLE 0
+#define MAC_STYLE 1
 #if MAC_STYLE
 // Attempt to draw an up/down arrow like the Mac uses, since the
 // popup menu is more like how the Mac works:
+#include <stdio.h>
 static void glyph(const Fl_Widget* widget, int,
 int x,int y,int w,int h, Fl_Flags flags)
 {
@@ -211,8 +212,9 @@ int x,int y,int w,int h, Fl_Flags flags)
     w -= 4;
     y = y+h/2;
     h = (w+1)/2;
-    Fl_Widget::default_style->glyph(widget, FL_GLYPH_UP, x, y-h-1, w, h, flags);
-    Fl_Widget::default_style->glyph(widget, FL_GLYPH_DOWN, x, y+1, w, h, flags);
+    if(h<=4) h++;
+    Fl_Widget::default_style->glyph(widget, FL_GLYPH_UP, x+1, y-h, w-1, h, flags);
+    Fl_Widget::default_style->glyph(widget, FL_GLYPH_DOWN, x+1, y, w-1, h, flags);
 }
 #endif
 

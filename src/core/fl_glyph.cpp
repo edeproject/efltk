@@ -72,7 +72,8 @@ int x,int y,int w,int h, Fl_Flags flags)
     {
         fl_color(i ? Fl_Color(FL_LIGHT3) : color);
 
-        int w1 = (w+2)/3; int x1,y1;
+        int w1 = (w+2)/3;
+        double x1,y1;
         switch(glyph)
         {
 
