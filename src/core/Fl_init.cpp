@@ -59,8 +59,7 @@ bool gettext_converts = false;
 
 void Fl::init()
 {
-    atexit(clean_up);
-
+#if ENABLE_NLS
     // Initialize the i18n stuff
     setlocale(LC_ALL, "");
     bindtextdomain("efltk", PREFIX"/share/locale");
@@ -68,6 +67,9 @@ void Fl::init()
     if(!strcmp(charset, "UTF-8")) {
         gettext_converts = true;
     }
+#endif
+
+    atexit(clean_up);
 
     char *file = 0;
     file = Fl_Config::find_config_file("efltk.conf", false, Fl_Config::USER);
