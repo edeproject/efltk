@@ -31,7 +31,7 @@
 static void cb_test(Fl_Widget*, void*) {
    Fl_Dialog dlg(200,100);
    dlg.buttons(FL_DLG_OK|FL_DLG_CANCEL,FL_DLG_OK);
-   dlg.show_modal();
+   dlg.exec(0, false);
 }
 
 int main(int argc, char **argv) {
