@@ -107,7 +107,7 @@ fi])
 
 case $uname in
     SunOS* | UNIX_S*)
-	  DSOCOMMAND="\${CXX} -Wl,-h,\${DSONAME} -G $DEBUGFLAG -o"
+	  DSOCOMMAND="\${CXX} -Wl,-rpath,\${EFLTK_LIBDIR} -Wl,-h,\${DSONAME} -G $DEBUGFLAG -o"
 	  THEMECOMMAND="\${CXX} -G $DEBUGFLAG -o"
 	  DSOCFLAGS="-fPIC"
 	  ;;
@@ -123,7 +123,7 @@ case $uname in
 	  CXXFLAGS="$CXXFLAGS -D_WIN32"
 	  LDLIBS="-lgdi32 -luser32 -lmsvcrt -lwsock32 -lws2_32 -lcomdlg32"
 	  SYSTYPE="WIN32"
-          DSOCOMMAND="\${CXX} -Wl,--out-implib,\$@.import -shared $DEBUGFLAG -o"
+          DSOCOMMAND="\${CXX} -Wl,-rpath,\${EFLTK_LIBDIR} -Wl,--out-implib,\$@.import -shared $DEBUGFLAG -o"
           THEMECOMMAND="\${CXX} -shared $DEBUGFLAG -o"
 	  DSOLIBS="-lgdi32 -luser32 -lmsvcrt -lwsock32 -lws2_32 -lcomdlg32"
 	  THEMELIBS="-L \${EFLTK_BUILDDIR}/lib -lefltk.2.dll"
@@ -140,7 +140,7 @@ case $uname in
           THEMECOMMAND="\${CXX} $DEBUGFLAG -o"
 	  ;;
     *)
-          DSOCOMMAND="\${CXX} -Wl,-soname,\${DSONAME} -shared $DEBUGFLAG -o"
+          DSOCOMMAND="\${CXX} -Wl,-rpath,\${EFLTK_LIBDIR} -shared $DEBUGFLAG -o"
           THEMECOMMAND="\${CXX} -shared $DEBUGFLAG -o"
           DSOCFLAGS="-fPIC"
 	  ;;
