@@ -238,7 +238,7 @@ static int sortf(const void *w1, const void *w2) {
 void ETranslate::sort_strings()
 {
     browser->array().sort(sortf);
-    browser->calc_totalheight();
+    browser->recalc_totalheight();
 
     browser->redraw();
     browser->layout();

@@ -33,6 +33,7 @@
 #define _Fl_X_H_
 
 #include "Fl_Color.h"
+#include "Fl_Device.h"
 
 #ifdef _WIN32_WCE
 #include <wince.h>
@@ -130,8 +131,6 @@ extern FL_API Region	XRectangleRegion(int x, int y, int w, int h);
 // the desire to have the id have a longer lifetime than this object,
 // intelligent constructors and destructors are not implemented.
 
-FL_API void fl_load_identity();
-
 class FL_API Fl_Drawable {
  public:
   Window xid;
@@ -148,7 +147,7 @@ class FL_API Fl_Drawable {
   void destroy() {
     if (xid) {free_gc(); XFreePixmap(fl_display, xid); xid = 0;}
   }
-  void make_current() {fl_drawable = this; fl_window=xid; fl_load_identity();}
+  void make_current() {fl_drawable = this; fl_window=xid; fl_current_dev->load_identity(); }
 };
 
 ////////////////////////////////////////////////////////////////

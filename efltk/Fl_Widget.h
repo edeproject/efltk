@@ -252,24 +252,13 @@ public:
   virtual bool load_data(Fl_Data_Source *ds) { return true; }
   virtual bool save_data(Fl_Data_Source *ds) const { return true; }
 
-  virtual void size_range(int minw, int minh, int maxw=0, int maxh=0);
-  bool has_size_range() { return m_size_range; }
-  int minw() { return m_minw; }
-  int minh() { return m_minh; }
-  int maxw() { return m_maxw; }
-  int maxh() { return m_maxh; }
-
-protected:	
-	/**
-	 * This is the protected constructor for an Fl_Widget, but all derived 
-	 * widgets have a matching public constructor. It takes a value for  
-	 * x(), y(), w() , h(), and an optional value for  label().
-	 */
-	Fl_Widget(int,int,int,int,const char* =0);
-
-	/// size_range stuff:
-	short m_minw, m_minh, m_maxw, m_maxh;
-	bool m_size_range;
+protected:
+    /**
+     * This is the protected constructor for an Fl_Widget, but all derived
+     * widgets have a matching public constructor. It takes a value for
+     * x(), y(), w() , h(), and an optional value for  label().
+     */
+    Fl_Widget(int,int,int,int,const char* =0);
 
 private:
   // disable the copy assignment/constructors:

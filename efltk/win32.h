@@ -108,7 +108,6 @@ extern FL_API Region	fl_clip_region();
 // intelligent constructors and destructors are not implemented.
 
 FL_API HDC fl_makeDC(HBITMAP);
-FL_API void fl_load_identity();
 
 class FL_API Fl_Drawable {
  public:
@@ -130,7 +129,7 @@ class FL_API Fl_Drawable {
   void destroy() {
     if (xid) {free_gc(); DeleteObject((HBITMAP)xid); xid = 0;}
   }
-  void make_current() {fl_gc = dc; fl_load_identity();}
+  void make_current() { fl_gc = dc; fl_current_dev->load_identity(); }
 };
 
 ////////////////////////////////////////////////////////////////

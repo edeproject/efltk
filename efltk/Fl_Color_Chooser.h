@@ -34,20 +34,30 @@
 
 class FL_API Flcc_HueBox : public Fl_Widget {
 public:
-    Flcc_HueBox(int X, int Y, int W, int H) : Fl_Widget(X,Y,W,H) { px = py = 0; }
+    Flcc_HueBox(int X, int Y, int W, int H);
+    virtual ~Flcc_HueBox();
 
+    virtual void layout();
     virtual void draw();
     virtual int handle(int);
+
 private:
+    void generate();
+    Fl_Image *bg;
     int px, py;
 };
 
 class FL_API Flcc_ValueBox : public Fl_Widget {
 public:
-    Flcc_ValueBox(int X, int Y, int W, int H) : Fl_Widget(X,Y,W,H) { py = 0; }
+    Flcc_ValueBox(int X, int Y, int W, int H);
+    ~Flcc_ValueBox();
+
+    virtual void layout();
     virtual void draw();
     virtual int handle(int);
 private:
+    void generate();
+    Fl_Image *bg;
     int py;
 };
 
@@ -90,8 +100,9 @@ private:
     float hue_, saturation_, value_;
     float r_, g_, b_;
     void set_valuators();
-    static void rgb_cb(Fl_Widget*, void*);
-    static void mode_cb(Fl_Widget*, void*);
+
+    static void rgb_cb(Fl_Widget*, Fl_Color_Chooser*);
+    static void mode_cb(Fl_Widget*, Fl_Color_Chooser*);
 };
 
 FL_API int fl_color_chooser(const char*name, float& r,float& g,float& b);

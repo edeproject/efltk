@@ -103,9 +103,13 @@ public:
     virtual void flush();
     virtual void draw();
 
-    virtual void size_range(int minw, int minh, int maxw=0, int maxh=0);
-    void size_range(int minw, int minh, int maxw, int maxh, int dw, int dh) { m_dw=dw; m_dh=dh; size_range(minw,minh,maxw,maxh); }
+    void size_range(int minw, int minh, int maxw=0, int maxh=0, int dw=0, int dh=0);
+    bool has_size_range() { return m_size_range; }
 
+    int minw() { return m_minw; }
+    int minh() { return m_minh; }
+    int maxw() { return m_maxw; }
+    int maxh() { return m_maxh; }
     int dw() { return m_dw; }
     int dh() { return m_dh; }
 
@@ -114,6 +118,11 @@ protected:
     static const Fl_Window *current_;
 
 private:
+    /// size_range stuff:
+    short m_minw, m_minh, m_maxw, m_maxh;
+    unsigned char m_dw, m_dh;
+    bool m_size_range;
+
     int window_type_;
 
     friend class Fl_X;
@@ -124,7 +133,6 @@ private:
     Fl_String iconlabel_;
     const void* icon_;
 
-    unsigned char m_dw, m_dh;
     void size_range_();
 
     // values for flags():
