@@ -122,9 +122,8 @@ static void date_revert(Fl_Style* s)
 static Fl_Named_Style date_style("Date_Input", date_revert, &Fl_Date_Input::default_style);
 Fl_Named_Style* Fl_Date_Input::default_style = &::date_style;
 
-Fl_Date_Input::Fl_Date_Input(int xx,int yy,int ww,int hh,const char *lbl)
-: Fl_Group(xx,yy,ww,hh,lbl)
-{
+// ctor initializer - used in both ctors
+void Fl_Date_Input::ctor_init() {
     style(date_style);
     layout_spacing(0);
     align(FL_ALIGN_LEFT);
@@ -141,6 +140,20 @@ Fl_Date_Input::Fl_Date_Input(int xx,int yy,int ww,int hh,const char *lbl)
     m_button->image(&buttonPixmap);
     m_button->layout_align(FL_ALIGN_RIGHT);
     end();
+}
+
+// Traditional ctor
+Fl_Date_Input::Fl_Date_Input(int xx,int yy,int ww,int hh,const char *lbl)
+: Fl_Group(xx,yy,ww,hh,lbl)
+{
+    ctor_init();
+}
+
+// New style ctor
+Fl_Date_Input::Fl_Date_Input(const char* l,int layout_size,Fl_Align layout_al,int label_w)
+: Fl_Group(l,layout_size,layout_al,label_w)
+{
+    ctor_init();
 }
 
 void Fl_Date_Input::preferred_size(int& w,int &h) const {
@@ -189,17 +202,29 @@ static void datetime_revert(Fl_Style* s)
 static Fl_Named_Style datetime_style("Date_Time_Input", datetime_revert, &Fl_Date_Input::default_style);
 Fl_Named_Style* Fl_Date_Time_Input::default_style = &::datetime_style;
 
-Fl_Date_Time_Input::Fl_Date_Time_Input(int xx,int yy,int ww,int hh,const char *lbl)
-: Fl_Date_Input(xx,yy,ww,hh,lbl)
-{
+// ctor initializer - used in both ctors
+void Fl_Date_Time_Input::ctor_init() {
     style(datetime_style);
-
     begin();
     m_timeInput = new Fl_Calendar_Time_Input();
     m_timeInput->callback(Fl_Date_Input::input_callback);
     m_timeInput->mask(Fl_Date_Time::timeInputFormat);
     m_timeInput->layout_align(FL_ALIGN_RIGHT);
     end();
+}
+
+// Traditional ctor
+Fl_Date_Time_Input::Fl_Date_Time_Input(int xx,int yy,int ww,int hh,const char *lbl)
+: Fl_Date_Input(xx,yy,ww,hh,lbl)
+{
+    ctor_init();
+}
+
+// New style ctor
+Fl_Date_Time_Input::Fl_Date_Time_Input(const char* l,int layout_size,Fl_Align layout_al,int label_w)
+: Fl_Date_Input(l,layout_size,layout_al,label_w)
+{
+    ctor_init();
 }
 
 void Fl_Date_Time_Input::draw()
@@ -241,9 +266,8 @@ Fl_Date_Time Fl_Date_Time_Input::date_time_value() {
 
 //-----------------------------------------------------------------------------------------------
 
-Fl_Date_Interval_Input::Fl_Date_Interval_Input(int xx,int yy,int ww,int hh,const char *lbl)
-: Fl_Date_Input(xx,yy,ww,hh,lbl)
-{
+// ctor initializer - used in both ctors
+void Fl_Date_Interval_Input::ctor_init() {
     style(datetime_style);
 
     m_button->layout_align(FL_ALIGN_LEFT);
@@ -264,6 +288,20 @@ Fl_Date_Interval_Input::Fl_Date_Interval_Input(int xx,int yy,int ww,int hh,const
     end();
 
     m_button2->input(m_input2);
+}
+
+// Traditional ctor
+Fl_Date_Interval_Input::Fl_Date_Interval_Input(int xx,int yy,int ww,int hh,const char *lbl)
+: Fl_Date_Input(xx,yy,ww,hh,lbl)
+{
+    ctor_init();
+}
+
+// New style ctor
+Fl_Date_Interval_Input::Fl_Date_Interval_Input(const char* l,int layout_size,Fl_Align layout_al,int label_w)
+: Fl_Date_Input(l,layout_size,layout_al,label_w)
+{
+    ctor_init();
 }
 
 void Fl_Date_Interval_Input::draw()

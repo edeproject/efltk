@@ -33,7 +33,11 @@ class FL_API Fl_Date_Input : public Fl_Group {
 public:
     static Fl_Named_Style* default_style;
 
+    /** Creates a new date input widget using the given position, size, and label. */
     Fl_Date_Input(int,int,int,int,const char * = 0);
+
+    /** Creates the date input widget using the label, size, alignment, and label_width. */
+    Fl_Date_Input(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
 
     void value(const char *);
     const char *value();
@@ -48,6 +52,8 @@ protected:
     static void input_callback(Fl_Widget *,void *);
     static void button_callback(Fl_Widget *,void *);
 
+    void ctor_init();
+
     Fl_Masked_Input     *m_input;
     Fl_Calendar_Button  *m_button;
 };
@@ -56,7 +62,11 @@ class FL_API Fl_Date_Time_Input : public Fl_Date_Input {
 public:
     static Fl_Named_Style* default_style;
 
+    /** Creates a new date time input widget using the given position, size, and label. */
     Fl_Date_Time_Input(int,int,int,int,const char * = 0);
+
+    /** Creates the date time input widget using the label, size, alignment, and label_width. */
+    Fl_Date_Time_Input(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
 
     void value(const char *);
     const char *value();
@@ -70,13 +80,19 @@ public:
 protected:
     Fl_Masked_Input  *m_timeInput;
     char                     m_buffer[20];
+
+    void ctor_init();
 };
 
 class FL_API Fl_Date_Interval_Input : public Fl_Date_Input {
 public:
     static Fl_Named_Style* default_style;
 
+    /** Creates a new date interval input widget using the given position, size, and label. */
     Fl_Date_Interval_Input(int,int,int,int,const char * = 0);
+
+    /** Creates the date interval input widget using the label, size, alignment, and label_width. */
+    Fl_Date_Interval_Input(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
 
     void value2(const char *);
     const char *value2();
@@ -90,6 +106,8 @@ public:
 protected:
     Fl_Masked_Input     *m_input2;
     Fl_Calendar_Button  *m_button2;
+
+    void ctor_init();
 };
 
 #endif
