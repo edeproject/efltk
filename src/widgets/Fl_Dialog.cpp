@@ -26,17 +26,6 @@
 #include <efltk/Fl_Dialog.h>
 #include <efltk/Fl_Dialog_Data_Source.h>
 
-int Fl_Dialog_Button::handle(int event) {
-   // Making dialog button to take 'Enter'
-   if (event == FL_KEYBOARD) {
-      if (Fl::event_key() == FL_Enter) {
-         do_callback();
-         return 1;
-      }
-   }
-   return Fl_Button::handle(event);
-}
-
 /* XPM */
 static char * cancel_xpm[] = {
 "20 20 67 1",
@@ -400,12 +389,12 @@ void Fl_Dialog::buttons(int buttons_mask,int default_button) {
             Fl_Group *default_box = new Fl_Group(0,0,10,10);
             default_box->color(FL_BLACK);
             default_box->box(FL_THIN_DOWN_BOX);
-            btn = new Fl_Dialog_Button(0,0,10,10,buttonTemplate.label);
+            btn = new Fl_Button(0,0,10,10,buttonTemplate.label);
             default_box->end();
             default_box->user_data((void *)id);
             m_defaultButton = btn;
          } else
-            btn = new Fl_Dialog_Button(0,0,10,10,buttonTemplate.label);
+            btn = new Fl_Button(0,0,10,10,buttonTemplate.label);
          if (id == FL_DLG_HELP)
                btn->callback(Fl_Dialog::help_callback);
          else  btn->callback(Fl_Dialog::buttons_callback);
