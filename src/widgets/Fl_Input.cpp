@@ -149,7 +149,7 @@ const char* Fl_Input::expand(const char* p, char* buf,int wordwrap) const
 
 // After filling in such a buffer, find the width to e:
 float Fl_Input::expandpos(
-        const char* p,                   // real string
+    const char* p,                   // real string
     const char* e,                   // pointer into real string
     const char* buf,                 // conversion of real string by expand()
     int* returnn                     // return offset into buf here
@@ -538,10 +538,10 @@ void Fl_Input::draw(int X, int Y, int W, int H)
 
         if (!ALL) fl_pop_clip();
 
-    CONTINUE2:
+CONTINUE2:
         // draw the cursor:
         if ((this==dnd_target || focused() && selstart == selend) &&
-                cursor_position >= p-value() && cursor_position <= e-value() && active_r())
+            cursor_position >= p-value() && cursor_position <= e-value() && active_r())
         {
             fl_color(button_color());
             if (readonly()) {
@@ -552,7 +552,7 @@ void Fl_Input::draw(int X, int Y, int W, int H)
             }
         }
 
-    CONTINUE:
+CONTINUE:
         ypos += height;
         if (e >= value_+size_) break;
         if (*e == '\n' || *e == ' ') e++;
@@ -561,7 +561,7 @@ void Fl_Input::draw(int X, int Y, int W, int H)
 
     // for minimal update, erase all lines below last one if necessary:
     if (!ALL && input_type() == MULTILINE && ypos<H
-            && (!erase_cursor_only || p <= value()+mu_p))
+        && (!erase_cursor_only || p <= value()+mu_p))
     {
         if (ypos < 0) ypos = 0;
         fl_push_clip(X, Y+ypos, W, H-ypos);
@@ -689,7 +689,7 @@ int Fl_Input::mouse_position(int X, int Y, int W, int ) const
 
     // Do a binary search for the character that starts before this position:
     int xpos = X-xscroll_; if (W > 12) xpos += 3;
-    
+
     if (!(text_align()&FL_ALIGN_LEFT)){
         int len=(int)fl_width(p,e-p);
         int diff = (W - 6) - len;
@@ -697,7 +697,7 @@ int Fl_Input::mouse_position(int X, int Y, int W, int ) const
             diff /= 2;
         if (diff > 0) xpos += diff;
     }
-    
+
     const char *l, *r, *t; float f0 = float(Fl::event_x()-xpos);
     for (l = p, r = e; l<r; )
     {
@@ -744,7 +744,7 @@ void Fl_Input::position(int p, int m)
 
 #if HAVE_XUTF8
     while (p < position_ && p > 0 && (size() - p) > 0 && 
-            (fl_utflen((unsigned char *)value() + p, size() - p) < 1)) { p--; }
+        (fl_utflen((unsigned char *)value() + p, size() - p) < 1)) { p--; }
     int ul = fl_utflen((unsigned char *)value() + p, size() - p);
     while (p < size() && p > position_ && ul < 0) { 
         ul = fl_utflen((unsigned char *)value() + p - 1, size() - p + 1); 
@@ -752,7 +752,7 @@ void Fl_Input::position(int p, int m)
     }
 
     while (m < mark_ && m > 0 && (size() - m) > 0 && 
-            (fl_utflen((unsigned char *)value() + m, size() - m) < 1)) { m--; }
+        (fl_utflen((unsigned char *)value() + m, size() - m) < 1)) { m--; }
     ul = fl_utflen((unsigned char *)value() + m, size() - m);
     while (m < size() && m > mark_ && ul < 0) { 
         ul = fl_utflen((unsigned char *)value() + m - 1, size() - m + 1); 
@@ -859,7 +859,7 @@ bool Fl_Input::replace(int b, int e, const char* text, int ilen)
 #if HAVE_XUTF8
     int ul;
     while (b != e && b > 0 && (size_ - b) > 0 && 
-            (fl_utflen((unsigned char *)value_ + b, size_ - b) < 1)) { b--; }
+        (fl_utflen((unsigned char *)value_ + b, size_ - b) < 1)) { b--; }
     ul = fl_utflen((unsigned char *)value_ + e, size_ - e);
     while (e < size_ && e > 0 && ul < 1) { 
         ul = fl_utflen((unsigned char *)value_ + e - 1, size_ - e + 1); 
@@ -1571,8 +1571,8 @@ int Fl_Input::handle(int event, int X, int Y, int W, int H)
 #if DND_OUT
         // detect if the user tries to grab the selected text:
             if (focused() && input_type()!=SECRET &&
-                    (newpos >= mark() && newpos < position() ||
-                        newpos >= position() && newpos < mark()))
+                (newpos >= mark() && newpos < position() ||
+                    newpos >= position() && newpos < mark()))
             {
                 drag_start = newpos;
             // Wait to see if they move the mouse much before dragging:
@@ -1599,7 +1599,7 @@ int Fl_Input::handle(int event, int X, int Y, int W, int H)
 #endif
                 newmark = mark();
             newpos = mouse_position(X, Y, W, H);
-        HANDLE_MOUSE:
+HANDLE_MOUSE:
             if (Fl::event_clicks())
             {
             // Multiple clicks, expand the selection to word/line boundaries:
@@ -1638,8 +1638,8 @@ int Fl_Input::handle(int event, int X, int Y, int W, int H)
             // If the multiple click does not increase the selection, revert
             // to single-click behavior:
                 if (event != FL_DRAG && (mark() > position() ?
-                            (newmark >= position() && newpos <= mark()) :
-                            (newmark >= mark() && newpos <= position())))
+                        (newmark >= position() && newpos <= mark()) :
+                        (newmark >= mark() && newpos <= position())))
                 {
                     Fl::event_clicks(0);
                     newmark = newpos = savepos;
@@ -1679,7 +1679,7 @@ int Fl_Input::handle(int event, int X, int Y, int W, int H)
 #if 0                //DND_OUT
             // detect if they are dropping atop the original selection:
                 if (focused() &&
-                        (p >= position() && p < mark() || p >= mark() && p < position()))
+                    (p >= position() && p < mark() || p >= mark() && p < position()))
                 {
                     if (dnd_target == this)
                     {
@@ -1811,8 +1811,10 @@ void Fl_Input::preferred_size(int& w, int& h) const
 {
     fl_font(text_font(), float(text_size()));
     h = int(fl_height()+fl_descent()) + box()->dh() + 2;
-    if(maximum_size()>0)
-        w = maximum_size() * (int)fl_width((unsigned int)'W');
+    if(maximum_size()>0) {
+        int maxw = maximum_size() * fl_width("W") + 4;
+        if (maxw < w) w = maxw;
+    }
 }
 
 //
