@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x4003f3
+# %FirstUniqueId:	0x4003f4
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -609,7 +609,9 @@ test/file_chooser  :: 	test/file_chooser.o
 # %SrcDir:	test
 # %IncDir:	test
 # %ObjsDir:	test
-test/dialog  :: 	test/dialog.o
+test/dialog  :: 	test/dialog.o\
+	test/Fl_Dialog.o\
+	test/Fl_Dialog_DS.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x40037e
@@ -2722,9 +2724,23 @@ lib/Fl_Split.o : src/widgets/Fl_Split.cpp
 
 # %TargetType:	C++_OBJ
 # %ParentTarget:	0x400002
-# %SourceTarget:	0x4003f2
-lib/Fl_Dialog_DS.o : src/Fl_Dialog_DS.cpp
+# %SourceTarget:	0x4003f3
+lib/Fl_Dialog_DS.o : src/widgets/Fl_Dialog_DS.cpp
 	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40037b
+# %SourceTarget:	0x4002f5
+test/Fl_Dialog.o : src/widgets/Fl_Dialog.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40037b
+# %SourceTarget:	0x4003f3
+test/Fl_Dialog_DS.o : src/widgets/Fl_Dialog_DS.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
 # DO NOT DELETE
@@ -5730,17 +5746,17 @@ lib/Fl_Dial.o :	efltk/fl_draw.h\
 	efltk/fl_math.h
 lib/Fl_Dialog.o :	efltk/Fl_Dialog.h\
 	efltk/Fl_Dialog_DS.h\
-	efltk/Fl_Variant.h\
-	efltk/Fl_Date_Time.h\
-	efltk/Fl_String.h\
-	efltk/Enumerations.h\
-	efltk/Fl_Export.h\
-	efltk/Fl_Widget_List.h\
-	efltk/Fl_Widget.h\
 	efltk/Fl_Data_Source.h\
 	efltk/Fl_Data_Fields.h\
 	efltk/Fl_Flags.h\
 	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
 	efltk/Fl_Exception.h\
 	efltk/Fl_Style.h\
 	efltk/Fl_Font.h\
@@ -7822,6 +7838,7 @@ test/dialog.o :	efltk/fl_ask.h\
 	efltk/Fl_Date_Time.h\
 	efltk/Fl_Exception.h\
 	efltk/Fl_Dialog.h\
+	efltk/Fl_Dialog_DS.h\
 	efltk/Fl_Widget_List.h\
 	efltk/Fl_Scroll.h\
 	efltk/Fl_Scrollbar.h\
@@ -10566,7 +10583,94 @@ lib/Fl_Split.o :	efltk/Fl.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl_Split.h\
 	efltk/Fl_Box.h
-lib/Fl_Dialog_DS.o :	efltk/Fl_Dialog_DS.h
+lib/Fl_Dialog_DS.o :	efltk/Fl_Exception.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Dialog_DS.h
+test/Fl_Dialog.o :	efltk/Fl_Dialog.h\
+	efltk/Fl_Dialog_DS.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Scroll.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Window.h\
+	efltk/fl_draw.h\
+	efltk/Fl_Device.h\
+	efltk/fl_ask.h\
+	efltk/Fl_Pixmap.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl_Tabs.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Button.h\
+	efltk/Fl.h\
+	src/core/fl_internal.h\
+	efltk/Fl_Translator.h\
+	config.h
+test/Fl_Dialog_DS.o :	efltk/Fl_Exception.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Dialog_DS.h
 
 
 # %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x6
@@ -10599,11 +10703,11 @@ lib/Fl_Dialog_DS.o :	efltk/Fl_Dialog_DS.h
 # %TargetInfo src/core/Fl_Buffer.cpp	SourceOrHeader,	UniqueId=0x400343,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Config.cpp	SourceOrHeader,	UniqueId=0x40028d,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Data_Fields.cpp	SourceOrHeader,	UniqueId=0x40028e,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/core/Fl_Data_Source.cpp	SourceOrHeader,	UniqueId=0x40028f,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Data_Source.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x40028f,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Date_Time.cpp	SourceOrHeader,	UniqueId=0x400290,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Exception.cpp	SourceOrHeader,	UniqueId=0x400291,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Gif.cpp	SourceOrHeader,	UniqueId=0x400292,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/core/Fl_Group.cpp	SourceOrHeader,	UniqueId=0x400293,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Group.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400293,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Image.cpp	SourceOrHeader,	UniqueId=0x400295,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Image_Filter.cpp	SourceOrHeader,	UniqueId=0x400296,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Lists.cpp	SourceOrHeader,	UniqueId=0x400297,	TargetType=C++,	IDEFlags=0x6
@@ -10699,7 +10803,7 @@ lib/Fl_Dialog_DS.o :	efltk/Fl_Dialog_DS.h
 # %TargetInfo src/widgets/Fl_Color_Chooser.cpp	SourceOrHeader,	UniqueId=0x4002f2,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Date_Time_Input.cpp	SourceOrHeader,	UniqueId=0x4002f3,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Dial.cpp	SourceOrHeader,	UniqueId=0x4002f4,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/widgets/Fl_Dialog.cpp	SourceOrHeader,	UniqueId=0x4002f5,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Dialog.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4002f5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Directory_DS.cpp	SourceOrHeader,	UniqueId=0x4002f6,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Double_Window.cpp	SourceOrHeader,	UniqueId=0x4002f7,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_FileBrowser.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4002f8,	TargetType=C++,	IDEFlags=0x6
@@ -10769,7 +10873,7 @@ lib/Fl_Dialog_DS.o :	efltk/Fl_Dialog_DS.h
 # %TargetInfo src/core/Fl_PostScript.cpp	SourceOrHeader,	UniqueId=0x40034b,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Printer.cpp	SourceOrHeader,	UniqueId=0x40034d,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/curve.cpp	SourceOrHeader,	UniqueId=0x40034f,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo test/dialog.cpp	SourceOrHeader,	UniqueId=0x400351,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/dialog.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400351,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/directory.cpp	SourceOrHeader,	UniqueId=0x400353,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/doublebuffer.cpp	SourceOrHeader,	UniqueId=0x400355,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/net/Fl_FTP_Connect.cpp	SourceOrHeader,	UniqueId=0x400356,	TargetType=C++,	IDEFlags=0x6
@@ -10830,7 +10934,8 @@ lib/Fl_Dialog_DS.o :	efltk/Fl_Dialog_DS.h
 # %TargetInfo test/input.cpp	SourceOrHeader,	UniqueId=0x4003e7,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/input_browser.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4003ea,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/split.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4003ee,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/widgets/Fl_Split.cpp	SourceOrHeader,	UniqueId=0x4003ef,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Split.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4003ef,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Dialog_DS.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4003f3,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x6
@@ -10866,7 +10971,7 @@ lib/Fl_Dialog_DS.o :	efltk/Fl_Dialog_DS.h
 # %TargetInfo efltk/Fl_Group.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40007c,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Widget_List.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40007d,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Widget.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40007e,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Data_Source.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40007f,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Data_Source.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40007f,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Data_Fields.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400080,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Variant.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400081,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Date_Time.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400082,	TargetType=INC,	IDEFlags=0xe
@@ -10967,7 +11072,7 @@ lib/Fl_Dialog_DS.o :	efltk/Fl_Dialog_DS.h
 # %TargetInfo efltk/Fl_Masked_Input.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400158,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Date_Time_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400159,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Dial.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40015a,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Dialog.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40015b,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Dialog.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40015b,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Scroll.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40015c,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/fl_ask.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40015d,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Directory_DS.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40015f,	TargetType=INC,	IDEFlags=0xe
@@ -11098,8 +11203,7 @@ lib/Fl_Dialog_DS.o :	efltk/Fl_Dialog_DS.h
 # %TargetInfo efltk/Fl_Int_Input.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4003e8,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Split.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4003ec,	TargetType=INC,	IDEFlags=0x6
 # %TargetInfo config.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003f0,	TargetType=INC,	IDEFlags=0xc
-# %TargetInfo efltk/Fl_Dialog_DS.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003f1,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo src/Fl_Dialog_DS.cpp	SourceOrHeader,	UniqueId=0x4003f2,	TargetType=C++,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Dialog_DS.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4003f1,	TargetType=INC,	IDEFlags=0xe
 
 
 # %UniqueId:	0x400001

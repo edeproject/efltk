@@ -66,21 +66,6 @@ public:
     };
 
     /**
-     * Default callback for buttons.
-     * You can override button callback with:
-     * <PRE>
-     Fl_Button *ok_button = button(Fl_Dialog::BTN_HELP);
-     ok_button->callback(my_help_cb);
-     </PRE>
-     * <b>NOTE:</b> It's highly recommended to call Fl_Dialog::buttons_callback(btn, id)
-     * from your own callback. If you don't dialog won't close, if you override e.g. BTN_OK callback.
-     *
-     * @param btn button which made callback
-     * @param id button ID, e.g. Fl_Dialog::BTN_HELP
-     */
-    static void buttons_callback(Fl_Button *btn, long id);
-
-    /**
      * Load dialog widget values from datasource.
      *
      * @param ds as external datasource. If ds is NULL, dialog default datasource is used.
@@ -142,7 +127,7 @@ public:
      *
      * @param button_id for button, e.g. button(Fl_Dialog::BTN_HELP)
      */
-    Fl_Button *button(int button_id) const;
+    void enable_button(int button_id,bool enable=true) const;
 
     /**
      * Removes all buttons from dialog button group.
@@ -185,6 +170,9 @@ protected:
      * Returns widget for given field_name, returns NULL if not found.
      */
     Fl_Widget *find_widget(const char *field_name) const;
+
+    /** Internal callback for default dialog buttons */ 
+    static void buttons_callback(Fl_Button *btn, long id);
 
     Fl_Tabs        *m_tabs;
 
