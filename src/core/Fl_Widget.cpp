@@ -171,7 +171,8 @@ bool Fl_Widget::resize(int X, int Y, int W, int H)
 
 void Fl_Widget::relayout()
 {
-    relayout(FL_LAYOUT_DAMAGE|FL_LAYOUT_XYWH);
+    if(is_window()) relayout(FL_LAYOUT_DAMAGE);//|FL_LAYOUT_XYWH);
+    else relayout(FL_LAYOUT_DAMAGE|FL_LAYOUT_XYWH);
 }
 
 void Fl_Widget::relayout(uchar flags)
