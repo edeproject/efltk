@@ -674,7 +674,7 @@ void Fl_Group::layout()
             if (extend_h) 
                 extend_h = max( h() / 5, extend_h + offset * 2 ); // grow by necessary extend, or +20%
 
-            if (extend_w || extend_h && m_auto_grow!=FL_GROUP_NO_GROW) {
+            if((extend_w || extend_h) && m_auto_grow!=FL_GROUP_NO_GROW) {
                 int W=w(),H=h();
                 switch (m_auto_grow) {
                 case FL_GROUP_NO_GROW:
