@@ -235,14 +235,15 @@ static void glyph(const Fl_Widget* widget, int,
 
 static void revert(Fl_Style* s)
 {
-    #if MOTIF_STYLE
+#if MOTIF_STYLE
     s->color = FL_GRAY;
     s->box = s->button_box = Fl_Widget::default_style->button_box;
     s->glyph = ::glyph;
-    #endif
+#endif
     #if MAC_STYLE
     s->glyph = ::glyph;
-    #endif
+#endif
+    s->color = FL_WHITE;
 }
 
 

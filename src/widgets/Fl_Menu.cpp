@@ -91,13 +91,12 @@ public:
 
     bool menubar;
 
-	void set_selected(Fl_Widget *w) {
-		last_selected_ = selected_;
-		if(w!=selected_) {
-			selected_ = w;
-			redraw(FL_DAMAGE_CHILD);
-		}
-	}	
+    void set_selected(int index) {
+        if(index!=selected_) {
+            selected_ = index;
+            redraw(FL_DAMAGE_CHILD);
+        }
+    }
 
 //private:
     friend class Fl_Menu_;
@@ -108,9 +107,9 @@ public:
     Fl_Menu_ *menu_;
 
     Fl_Widget *widget_;
-	int widget_index_;
+    int widget_index_;
 
-    Fl_Widget *selected_, *last_selected_;
+    int selected_, last_selected_;
 
     int *indexes_;
     int level_;
@@ -209,7 +208,7 @@ void MenuWindow::relayout(int *indexes, int level)
     indexes_ = indexes;
     level_ = level;
 
-    selected_ = last_selected_ = 0;
+    selected_ = last_selected_ = -1;
     child_win = 0;
 
     animating = false;
@@ -304,11 +303,11 @@ void MenuWindow::draw()
         int itemh = widget->height()+leading();
 
         // Minimal update if FL_DAMAGE_CHILD is set on
-        if (damage() != FL_DAMAGE_CHILD || widget==selected_ || widget==last_selected_)
+        if (damage() != FL_DAMAGE_CHILD || i==selected_ || i==last_selected_)
         {
             Fl_Flags flags = widget->flags();
 
-            if(selected_==widget && !(flags & (FL_OUTPUT|FL_INACTIVE)) )
+            if(selected_==i && !(flags & (FL_OUTPUT|FL_INACTIVE)) )
             {
                 flags |= FL_SELECTED;
                 if (Fl::event_state(FL_BUTTONS) && widget->takesevents())
@@ -372,27 +371,27 @@ void MenuWindow::draw()
 
 void MenuWindow::fix_indexes()
 {
-	if(!indexes_) return;
+    if(!indexes_) return;
 
-	MenuWindow *win=parent;
-	Fl_Widget *sel = widget_;
+    MenuWindow *win=parent;
+    int sel = widget_index_;
     while(win) {
-		win->set_selected(sel);
-		sel = win->widget_;
-	    win=win->parent;			
+        win->set_selected(sel);
+        sel = win->widget_index_;
+        win=win->parent;
     }
-	
-	/*win = child_win;
+
+    /*win = child_win;
+     while(win) {
+     win->set_selected(0);
+     win=win->child_win;
+     }*/
+
+    win = this;
     while(win) {
-		win->set_selected(0);		
-	    win=win->child_win;			
-    }*/
-	
-	win = this;
-	while(win) {
-		menu_->indexes[win->level_-1] = win->widget_index_;
-		win = win->parent;
-	}
+        menu_->indexes[win->level_-1] = win->widget_index_;
+        win = win->parent;
+    }
 }
 
 Fl_Widget *MenuWindow::find_widget(int x, int y, int *index)
@@ -514,8 +513,8 @@ int MenuWindow::backward(int menu)
         if(!widget) return 0;
         if(widget->takesevents()) {
             set_item(menu, item);
-            if(selected_!=widget) {
-                selected_=widget;
+            if(selected_!=item) {
+                selected_=item;
                 redraw(FL_DAMAGE_CHILD);
             }
             return 1;
@@ -532,8 +531,8 @@ int MenuWindow::forward(int menu)
         if (!widget) return 0;
         if (widget->takesevents()) {
             set_item(menu, item);
-            if(selected_!=widget) {
-                selected_=widget;
+            if(selected_!=item) {
+                selected_=item;
                 redraw(FL_DAMAGE_CHILD);
             }
             return 1;
@@ -741,7 +740,7 @@ int MenuWindow::handle(int event)
             if(selected_) {
                 tooltip(0);
                 Fl_Tooltip::exit();
-                selected_=0;
+                selected_=-1;
                 redraw(FL_DAMAGE_CHILD);
             }
             return 1;
@@ -749,10 +748,10 @@ int MenuWindow::handle(int event)
 
         index=-1;
         widget = find_widget(Fl::event_x(), Fl::event_y(), &index);
-        if( (widget!=selected_ && index!=-1) || (is_parent(index)&&widget!=selected_) ) {
+        if( (index!=selected_ && index!=-1) || (is_parent(index)&&index!=selected_) ) {
             tooltip(0);
             Fl_Tooltip::exit();
-            selected_=widget;
+            selected_=index;
             redraw(FL_DAMAGE_CHILD);
         }
 
@@ -1027,7 +1026,7 @@ int Fl_Menu_::popup(int X, int Y, int W, int H)
     indexes[0] = value();
     indexes[1] = -1;
 
-    //MenuWindow::default_style->color = color();
+    MenuWindow::default_style->color = color();
 
     float speed = (anim_speed()==-1||isnan(anim_speed()))?Fl_Menu_::default_anim_speed():anim_speed();
     int effect = (effect_type()==-1)?Fl_Menu_::default_effect_type():effect_type();
@@ -1110,7 +1109,7 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
     // fix possible programmer error...
     Fl_Group::current(0);
 
-    //MenuWindow::default_style->color = color();
+    MenuWindow::default_style->color = color();
 
     float speed = (anim_speed()==-1||isnan(anim_speed()))?Fl_Menu_::default_anim_speed():anim_speed();
     int effect = (effect_type()==-1)?Fl_Menu_::default_effect_type():effect_type();
@@ -1268,7 +1267,7 @@ int Fl_Choice::popup(int X, int Y, int W, int H)
     indexes[0] = value();
     indexes[1] = -1;
 
-    //MenuWindow::default_style->color = color();
+    MenuWindow::default_style->color = color();
 
     float speed = (anim_speed()==-1||isnan(anim_speed()))?Fl_Menu_::default_anim_speed():anim_speed();
     int effect = (effect_type()==-1)?Fl_Menu_::default_effect_type():effect_type();
@@ -1288,7 +1287,7 @@ int Fl_Choice::popup(int X, int Y, int W, int H)
     int oY = Y-win->ypos(indexes[level])+win->ypos(0);
     first_menu->ox = X; first_menu->oy = oY;
     win->position(X, oY);
-    win->selected_ = win->get_widget(indexes[level]);
+    win->selected_ = indexes[level];
 
     // create submenus until we locate the one with selected item
     // in it, positioning them so that one is selected:
@@ -1310,7 +1309,7 @@ int Fl_Choice::popup(int X, int Y, int W, int H)
 
         MenuWindow *sub_win = new MenuWindow(win, widget, item, this, indexes, level);
         sub_win->position(X, Y-sub_win->ypos(indexes[level])+sub_win->ypos(0));
-        sub_win->selected_ = sub_win->get_widget(indexes[level]);
+        sub_win->selected_ = indexes[level];
 
         // move all earlier menus to line up with this new one:
         int dy = sub_win->y()-nY;
