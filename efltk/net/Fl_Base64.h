@@ -22,7 +22,7 @@ class FL_API Fl_Base64
 		Fl_Base64(); 			/** Default constructor */
 		virtual ~Fl_Base64(); 	/** Default destructor */
 		void encode(Fl_Buffer* bufDest, Fl_Buffer* bufSource);
-		Fl_String encode(Fl_Buffer bufSource);
+		Fl_String encode(Fl_Buffer* bufSource);
 		/** Decodes base64 encoded buffer "string" into buffer "bufDest" */
 		int decode(Fl_Buffer* bufDest, Fl_Buffer* bufSource);
 		/** Decodes base64 encoded string "sArg" into buffer "bufDest" */
