@@ -63,6 +63,8 @@ Fl_Translator::~Fl_Translator()
 
 char *Fl_Translator::tr(const char *string)
 {
+    if(!string) return 0;
+
     for(uint n=0; n<catalogs_.size(); n++) {
         struct catalog *cat = (struct catalog*)catalogs_[n];
         Fl_String &ret = cat->hash.get_value(string);
@@ -73,6 +75,8 @@ char *Fl_Translator::tr(const char *string)
 
 char *Fl_Translator::dtr(const char *domain, const char *string)
 {
+    if(!string) return 0;
+
     for(uint n=0; n<catalogs_.size(); n++) {
         struct catalog *cat = (struct catalog*)catalogs_[n];
         if(cat->domain==domain) {

@@ -169,6 +169,8 @@ bool Fl_Map::remove_pair(int Y, void *pair)
 
 unsigned Fl_Map::hash_string( const char *key, int table_size )
 {
+    if(!key) return 0;
+
     int hval=0;
 
     const char *ptr = key;
