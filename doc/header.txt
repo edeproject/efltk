@@ -1,0 +1,16 @@
+/** 
+  * Fl_Class_Here.
+  * Some explanation about file here.
+  * 
+  * The source below is under LGPL license.
+  *     Information about GNU LGPL: http://www.gnu.org/copyleft/lesser.html
+  *
+  * Copyright (c) EDE Team. More information about project: http://ede.sf.net
+  *
+  * Authors (sorted by time they worked on this source file):
+  * 	Fname Sname, example§fltk.net
+  *
+  * Contributors (ie. people that have sent patches, ideas, suggestions):
+  * 	Fname2 Sname2, example2§fltk.net
+  * 
+  ****************************************************************************/
