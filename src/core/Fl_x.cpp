@@ -550,11 +550,10 @@ void Fl::paste(Fl_Widget &receiver, bool clipboard)
     // otherwise get the window server to return it:
     fl_selection_requestor = &receiver;
     Atom property = clipboard ? CLIPBOARD : XA_PRIMARY;
+    XConvertSelection(fl_display, property, XA_STRING, property,
+                      fl_xid(Fl::first_window()), fl_event_time);
 #if HAVE_XUTF8
     XConvertSelection(fl_display, property, fl_XaUtf8String, property,
-                      fl_xid(Fl::first_window()), fl_event_time);
-#else
-    XConvertSelection(fl_display, property, XA_STRING, property,
                       fl_xid(Fl::first_window()), fl_event_time);
 #endif
 }
@@ -1255,26 +1254,22 @@ bool fl_handle()
             e.target = fl_xevent.xselectionrequest.target;
             e.time = fl_xevent.xselectionrequest.time;
             e.property = fl_xevent.xselectionrequest.property;
-            if (e.target == TARGETS)
-            {
+            if (e.target == TARGETS) {
 #if HAVE_XUTF8
                 Atom a = fl_XaUtf8String; //XA_STRING;
 #else
                 Atom a = XA_STRING;
 #endif
                 XChangeProperty(fl_display, e.requestor, e.property,
-                    XA_ATOM, sizeof(Atom)*8, 0, (unsigned char*)&a,
-                    sizeof(Atom));
-            }                    /*e.target == XA_STRING &&*/
-            else if ( selection_length[clipboard])
-            {
-                XChangeProperty(fl_display, e.requestor, e.property,
-                    e.target, 8, 0,
-                    (unsigned char *)selection_buffer[clipboard],
-                    selection_length[clipboard]);
+                                XA_ATOM, sizeof(Atom)*8, 0, (unsigned char*)&a,
+                                sizeof(Atom));
             }
-            else
-            {
+            else if(/*e.target == XA_STRING &&*/selection_length[clipboard]) {
+                XChangeProperty(fl_display, e.requestor, e.property,
+                                e.target, 8, 0,
+                                (unsigned char *)selection_buffer[clipboard],
+                                selection_length[clipboard]);
+            } else {
                 //    char* x = XGetAtomName(fl_display,e.target);
                 //    fprintf(stderr,"selection request of %s\n",x);
                 //    XFree(x);
