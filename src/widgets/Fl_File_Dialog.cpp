@@ -444,6 +444,11 @@ Fl_File_Chooser::~Fl_File_Chooser()
 
 void Fl_File_Chooser::cb_ok_button(Fl_Button *btn, Fl_File_Chooser *ch)
 {
+    if(ch->mode() == _DIRECTORY) {
+        Fl_Dialog::buttons_callback(btn, (long)Fl_Dialog::BTN_OK);
+        return;
+    }
+
     Fl_String path;
     ch->get_filename(ch->filebrowser()->item()->label(1), path);
     if(!path.empty() && fl_is_dir(path)) {
