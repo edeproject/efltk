@@ -31,86 +31,85 @@
 Fl_Align_Group* lower_half;
 
 void align_cb(Fl_Choice* c,long w) {
-  switch (w) {
-    case 0: lower_half->vertical(!c->value()); break;
-    case 1: 
-    case 2: {
-      Fl_Align new_align = lower_half->align();
-      new_align &= (w == 1) ?
-                   (FL_ALIGN_TOP | FL_ALIGN_BOTTOM) :
-                   (FL_ALIGN_LEFT | FL_ALIGN_RIGHT);
-      if (c->value()) {
-      	if (w == 1) 
-	  new_align |= c->value() > 1 ? FL_ALIGN_RIGHT : FL_ALIGN_LEFT;
-       	  else new_align |= c->value() > 1 ? FL_ALIGN_BOTTOM : FL_ALIGN_TOP;
-      }
-      lower_half->align(new_align);
+    switch (w) {
+        case 0: lower_half->vertical(!c->value()); break;
+        case 1: 
+        case 2: {
+                int new_align = lower_half->align();
+                new_align &= (w == 1) ?
+                    (FL_ALIGN_TOP | FL_ALIGN_BOTTOM) :
+                    (FL_ALIGN_LEFT | FL_ALIGN_RIGHT);
+                if (c->value()) {
+                    if (w == 1) 
+                        new_align |= c->value() > 1 ? FL_ALIGN_RIGHT : FL_ALIGN_LEFT;
+                    else new_align |= c->value() > 1 ? FL_ALIGN_BOTTOM : FL_ALIGN_TOP;
+                }
+                lower_half->align(Fl_Align(new_align));
+            }
+        default: break;
     }
-    default: break;
-  }
-  lower_half->layout();
-  lower_half->redraw();
+    lower_half->layout();
+    lower_half->redraw();
 }
 
 int main(int argc, char ** argv) {
-  Fl_Window *window = new Fl_Window(600,400);
+    Fl_Window *window = new Fl_Window(600,400);
 
-  Fl_Align_Group main_group(0,0,600,400,0);
-  main_group.n_to_break(2);
-  main_group.dw(5); main_group.dh(5);
+    Fl_Align_Group main_group(0,0,600,400,0);
+    main_group.n_to_break(2);
+    main_group.dw(5); main_group.dh(5);
 
-  Fl_Align_Group* o = new Fl_Align_Group(0,0,0,0,0);
-  o->n_to_break(2);
-  o->vertical(false);
-  o->align(FL_ALIGN_TOP | FL_ALIGN_LEFT);
-  {
-      Fl_Align_Group* o = new Fl_Align_Group(0,0,0,0,"Tiled Buttons");
-      o->n_to_break(3); o->dw(10); o->dh(10);
+    Fl_Align_Group* o = new Fl_Align_Group(0,0,0,0,0);
+    o->n_to_break(2);
+    o->vertical(false);
+    o->align(Fl_Align(FL_ALIGN_TOP | FL_ALIGN_LEFT));
+    {
+        Fl_Align_Group* o = new Fl_Align_Group(0,0,0,0,"Tiled Buttons");
+        o->n_to_break(3); o->dw(10); o->dh(10);
+        o->box(FL_DOWN_BOX);
+        char *l,labels[18];
+        l=labels;
+        for (int i=1;i<=9;i++) {
+            sprintf(l,"%1d",i);
+            (void) new Fl_Button(0,0,0,0,l);
+            l+=2;
+        }
+        o->end();
+    }
+    {
+        Fl_Align_Group* o=new Fl_Align_Group(0,0,0,0,"Fl_Align_Group options");
+        o->n_to_break(3); o->vertical(true); o->dw(10); o->dh(10);
+        o->box(FL_DOWN_BOX);
+        static const char* labels[3][3]={{"Vertical","Horizontal",""},
+            {"Center","Left","Right"},
+            {"Center","Top","Bottom"}};
+        Fl_Choice* c;
+        for (int i=0;i<3;i++) {
+            c = new Fl_Choice(0,0,0,0);
+            for (int j=0;j<3;j++) {c->add(labels[i][j]);if (i==0 && j==1) break;}
+            c->callback((Fl_Callback*)align_cb);
+            c->user_data((void*)i);
+            c->value(0);
+        }
+        o->end();
+    }
+    o->end();
+    o = lower_half = new Fl_Align_Group(0,0,0,0,0);
+    o->n_to_break(4); 
+    o->dw(5); o->dh(5);
     o->box(FL_DOWN_BOX);
-    char *l,labels[18];
-    l=labels;
-    for (int i=1;i<=9;i++) {
-      sprintf(l,"%1d",i);
-      (void) new Fl_Button(0,0,0,0,l);
-      l+=2;
-    }
+    static const char* labels[24]={"Although","these","labels","have",
+        "different","lengths",",","the",
+        "widgets","they","belong","to",
+        "are","properly","aligned",".",
+        "Variable","lenghts\nare","respected\n,",
+        "as\nseen","h","e","r","e"};
+    for (int i=0;i<24;i++) (void) new Fl_Button(0,0,0,0,labels[i]);
     o->end();
-  }
-  {
-      Fl_Align_Group* o=new Fl_Align_Group(0,0,0,0,"Fl_Align_Group options");
-      o->n_to_break(3); o->vertical(true); o->dw(10); o->dh(10);
-      o->box(FL_DOWN_BOX);
-    static const char* labels[3][3]={{"Vertical","Horizontal",""},
-				     {"Center","Left","Right"},
-				     {"Center","Top","Bottom"}};
-    Fl_Choice* c;
-    for (int i=0;i<3;i++) {
-      c = new Fl_Choice(0,0,0,0);
-      for (int j=0;j<3;j++) {c->add(labels[i][j]);if (i==0 && j==1) break;}
-      c->callback((Fl_Callback*)align_cb);
-      c->user_data((void*)i);
-      c->value(0);
-    }
-    o->end();
-  }
-  o->end();
-  o = lower_half = new Fl_Align_Group(0,0,0,0,0);
-  o->n_to_break(4); 
-  o->dw(5); o->dh(5);
-  o->box(FL_DOWN_BOX);
-  static const char* labels[24]={"Although","these","labels","have",
-				 "different","lengths",",","the",
-				 "widgets","they","belong","to",
-				 "are","properly","aligned",".",
-				 "Variable","lenghts\nare","respected\n,",
-				 "as\nseen","h","e","r","e"};
-  for (int i=0;i<24;i++) (void) new Fl_Button(0,0,0,0,labels[i]);
-  o->end();
 
-  main_group.end();
-  window->resizable(main_group);
-  window->end();
-  window->show(argc,argv);
-  return Fl::run();
+    main_group.end();
+    window->resizable(main_group);
+    window->end();
+    window->show(argc,argv);
+    return Fl::run();
 }
-

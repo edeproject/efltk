@@ -311,6 +311,24 @@ void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
                     paramType = SQL_C_BINARY;
                     sqlType   = SQL_LONGVARBINARY;
                     break;
+                case VAR_DATE:
+                    {
+                        paramType = SQL_C_TIMESTAMP;
+                        sqlType   = SQL_TIMESTAMP;
+                        len = sizeof(TIMESTAMP_STRUCT);
+                        TIMESTAMP_STRUCT *t = &param->m_timeData;
+                        Fl_Date_Time dt = param->get_date();
+                        buff = t;
+                        if (dt) {
+                            dt.decode_date((short *)&t->year,(short *)&t->month,(short *)&t->day);
+                            t->hour = t->minute = t->second = t->fraction = 0;
+                        } else {
+                            paramType = SQL_C_CHAR;
+                            sqlType   = SQL_CHAR;
+                            *(char *)buff = 0;
+                        }
+                    }
+                    break;
                 case VAR_DATETIME:
                     {
                         paramType = SQL_C_TIMESTAMP;

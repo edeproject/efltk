@@ -70,6 +70,7 @@ public:
     Fl_String as_string() const;
     bool as_bool() const;
     Fl_Date_Time as_date() const;
+    Fl_Date_Time as_datetime() const;
     const Fl_Image *as_image() const;
 
 protected:

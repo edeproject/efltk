@@ -127,6 +127,12 @@ static int fl_listview_sort_dates(const void *w1, const void *w2) {
     return i1->compare_dates(i2, scol, stype);    
 }
 
+static int fl_listview_sort_datetimes(const void *w1, const void *w2) {
+    Fl_ListView_Item *i1 = *(Fl_ListView_Item **)w1;
+    Fl_ListView_Item *i2 = *(Fl_ListView_Item **)w2;
+    return i1->compare_datetimes(i2, scol, stype);    
+}
+
 // Returns sort type: ASC, DESC, ABSOLUTE
 int Fl_ListView::sort(int column)
 {
@@ -145,8 +151,11 @@ int Fl_ListView::sort(int column)
         case VAR_FLOAT:
             items.sort(fl_listview_sort_floats);
             break;
-        case VAR_DATETIME:
+        case VAR_DATE:
             items.sort(fl_listview_sort_dates);
+            break;
+        case VAR_DATETIME:
+            items.sort(fl_listview_sort_datetimes);
             break;
         default:
             items.sort(fl_listview_sort_strings);

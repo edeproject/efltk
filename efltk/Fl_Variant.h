@@ -35,8 +35,9 @@ enum FL_VAR_TYPES {
     VAR_STRING   = 4,
     VAR_TEXT     = 8,
     VAR_BUFFER   = 16,
-    VAR_DATETIME = 32,
-    VAR_IMAGEPTR = 64
+    VAR_DATE     = 32,
+    VAR_DATETIME = 64,
+    VAR_IMAGEPTR = 128
 };
 
 typedef FL_VAR_TYPES Fl_Variant_Type;
@@ -58,6 +59,7 @@ public:
     void set_buffer(const void * value,int sz);
     void set_image_ptr(const Fl_Image * value);
     void set_date(Fl_Date_Time value);
+    void set_datetime(Fl_Date_Time value);
 
     void resize_buffer(int sz);
 
@@ -67,6 +69,7 @@ public:
     const void *get_buffer() const;
     const Fl_Image *get_image_ptr() const;
     Fl_Date_Time get_date() const;
+    Fl_Date_Time get_datetime() const;
 
     Fl_Variant_Type type() const { return m_type; }
     int size() const { return m_size; }

@@ -14,7 +14,7 @@ int main(int argc,char *argv[]) {
     listView.add_column("Strings",100,VAR_STRING);
     listView.add_column("Integers",80,VAR_INT);
     listView.add_column("Floats",100,VAR_FLOAT);
-    listView.add_column("Dates",100,VAR_DATETIME);
+    listView.add_column("Dates",100,VAR_DATE);
     listView.add_column("Dates with time",130,VAR_DATETIME);
 
     Fl_Date_Time today((int)Fl_Date_Time::Now());
