@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x4003c6
+# %FirstUniqueId:	0x4003c8
 PROJECT_DIR = /develop/CVS/efltk/
 
 IDE_WORKING_DIR = /develop/CVS/efltk/
@@ -101,34 +101,108 @@ IDE_CXX_PARSER_FLAGS = $(IDE_CXX_PARSER_OPTIONS)
 IDE_CXX_PARSER_OPTIONS = -I/usr/local/lib/gcc-lib/sparc-sun-solaris2.8/2.95.3/../../../../include/g++-3 -I/usr/local/include -I/usr/local/lib/gcc-lib/sparc-sun-solaris2.8/2.95.3/../../../../sparc-sun-solaris2.8/include -I/usr/local/lib/gcc-lib/sparc-sun-solaris2.8/2.95.3/include -I/usr/include -D__EXCEPTIONS='1' -D__GCC_NEW_VARARGS__='1' -D__sparc='1' -D__cplusplus='1' -D__svr4__='1' -D__GNUC_MINOR__='95' -D__sun='1' -Dsparc='1' -D__sun__='1' -D__unix='1' -D__unix__='1' -D__SVR4='1' -Dsun='1' -D__GNUC__='2' -D__sparc__='1' -D__GNUG__='2' -Dunix='1'
 
 lib/libefltk.so ::	lib/Fl.o\
+	lib/Fl_Adjuster.o\
+	lib/Fl_Align_Group.o\
+	lib/Fl_Bar.o\
 	lib/Fl_Bitmap.o\
 	lib/Fl_Bmp.o\
+	lib/Fl_Box.o\
 	lib/Fl_Boxtype.o\
+	lib/Fl_Browser.o\
+	lib/Fl_Button.o\
 	lib/Fl_Buffer.o\
+	lib/Fl_Calendar.o\
+	lib/Fl_Check_Button.o\
+	lib/Fl_Choice.o\
+	lib/Fl_Clock.o\
+	lib/Fl_Color_Chooser.o\
+	lib/Fl_Combo_Box.o\
 	lib/Fl_Config.o\
 	lib/Fl_Data_Fields.o\
 	lib/Fl_Data_Source.o\
+	lib/Fl_Database.o\
 	lib/Fl_Date_Time.o\
+	lib/Fl_Date_Time_Input.o\
+	lib/Fl_Dial.o\
+	lib/Fl_Dialog.o\
+	lib/Fl_Directory_DS.o\
+	lib/Fl_Double_Window.o\
 	lib/Fl_Exception.o\
+	lib/Fl_FileBrowser.o\
+	lib/Fl_FileInput.o\
+	lib/Fl_File_Dialog.o\
+	lib/Fl_Float_Input.o\
+	lib/Fl_Help_Dialog.o\
+	lib/Fl_Highlight_Button.o\
+	lib/Fl_Input.o\
+	lib/Fl_Input_Browser.o\
+	lib/Fl_Item.o\
 	lib/Fl_Gdi.o\
 	lib/Fl_Gif.o\
 	lib/Fl_Group.o\
 	lib/Fl_Hashs.o\
 	lib/Fl_Image.o\
 	lib/Fl_Image_Filter.o\
+	lib/Fl_Light_Button.o\
+	lib/Fl_ListView.o\
+	lib/Fl_ListView_Header.o\
+	lib/Fl_ListView_Item.o\
 	lib/Fl_Lists.o\
+	lib/Fl_MDI_Bar.o\
+	lib/Fl_MDI_Window.o\
+	lib/Fl_Main_Window.o\
+	lib/Fl_Masked_Input.o\
 	lib/Fl_Maps.o\
+	lib/Fl_Memory_DS.o\
+	lib/Fl_Menu.o\
+	lib/Fl_Menu_.o\
+	lib/Fl_Menu_Bar.o\
+	lib/Fl_Menu_Button.o\
+	lib/Fl_Menu_Item.o\
+	lib/Fl_Menu_Window.o\
+	lib/Fl_Menu_add.o\
+	lib/Fl_Menu_global.o\
+	lib/Fl_Multi_Image.o\
+	lib/Fl_Multi_Tabs.o\
+	lib/Fl_Numeric_Input.o\
+	lib/Fl_Output.o\
+	lib/Fl_Overlay_Window.o\
+	lib/Fl_Pack.o\
+	lib/Fl_Params.o\
 	lib/Fl_Pixmap.o\
 	lib/Fl_PostScript.o\
+	lib/Fl_Popup_Window.o\
 	lib/Fl_Printer.o\
+	lib/Fl_ProgressBar.o\
+	lib/Fl_Query.o\
+	lib/Fl_Radio_Button.o\
 	lib/Fl_Renderer.o\
+	lib/Fl_Repeat_Button.o\
+	lib/Fl_Return_Button.o\
+	lib/Fl_Roller.o\
+	lib/Fl_Scroll.o\
+	lib/Fl_Scrollbar.o\
+	lib/Fl_Shaped_Window.o\
+	lib/Fl_Simple_Html.o\
+	lib/Fl_Single_Window.o\
+	lib/Fl_Slider.o\
 	lib/Fl_Socket.o\
 	lib/Fl_String.o\
 	lib/Fl_Style.o\
 	lib/Fl_Style_Set.o\
+	lib/Fl_Tabs.o\
+	lib/Fl_Text_Buffer.o\
+	lib/Fl_Text_Display.o\
+	lib/Fl_Text_Editor.o\
 	lib/Fl_Thread.o\
+	lib/Fl_Tile.o\
+	lib/Fl_Tool_Bar.o\
+	lib/Fl_Tooltip.o\
 	lib/Fl_Translator.o\
 	lib/Fl_Util.o\
+	lib/Fl_Valuator.o\
+	lib/Fl_Value_Input.o\
+	lib/Fl_Value_Slider.o\
 	lib/Fl_Variant.o\
 	lib/Fl_WM.o\
 	lib/Fl_Widget.o\
@@ -136,6 +210,7 @@ lib/libefltk.so ::	lib/Fl.o\
 	lib/Fl_Window_fullscreen.o\
 	lib/Fl_Window_hotspot.o\
 	lib/Fl_Window_iconize.o\
+	lib/Fl_Workspace.o\
 	lib/Fl_Xpm.o\
 	lib/Fl_abort.o\
 	lib/Fl_add_idle.o\
@@ -193,87 +268,12 @@ lib/libefltk.so ::	lib/Fl.o\
 	lib/fl_theme.o\
 	lib/fl_utf8.o\
 	lib/fl_vertex.o\
-	lib/scandir.o\
-	lib/vsnprintf.o\
-	lib/Fl_Adjuster.o\
-	lib/Fl_Align_Group.o\
-	lib/Fl_Bar.o\
-	lib/Fl_Box.o\
-	lib/Fl_Browser.o\
-	lib/Fl_Button.o\
-	lib/Fl_Calendar.o\
-	lib/Fl_Check_Button.o\
-	lib/Fl_Choice.o\
-	lib/Fl_Clock.o\
-	lib/Fl_Color_Chooser.o\
-	lib/Fl_Date_Time_Input.o\
-	lib/Fl_Dial.o\
-	lib/Fl_Dialog.o\
-	lib/Fl_Directory_DS.o\
-	lib/Fl_Double_Window.o\
-	lib/Fl_FileBrowser.o\
-	lib/Fl_FileInput.o\
-	lib/Fl_File_Dialog.o\
-	lib/Fl_Float_Input.o\
-	lib/Fl_Help_Dialog.o\
-	lib/Fl_Highlight_Button.o\
-	lib/Fl_Input.o\
-	lib/Fl_Input_Browser.o\
-	lib/Fl_Item.o\
-	lib/Fl_Light_Button.o\
-	lib/Fl_ListView.o\
-	lib/Fl_ListView_Header.o\
-	lib/Fl_ListView_Item.o\
-	lib/Fl_MDI_Bar.o\
-	lib/Fl_MDI_Window.o\
-	lib/Fl_Main_Window.o\
-	lib/Fl_Masked_Input.o\
-	lib/Fl_Memory_DS.o\
-	lib/Fl_Menu.o\
-	lib/Fl_Menu_.o\
-	lib/Fl_Menu_Bar.o\
-	lib/Fl_Menu_Button.o\
-	lib/Fl_Menu_Item.o\
-	lib/Fl_Menu_Window.o\
-	lib/Fl_Menu_add.o\
-	lib/Fl_Menu_global.o\
-	lib/Fl_Multi_Image.o\
-	lib/Fl_Multi_Tabs.o\
-	lib/Fl_Numeric_Input.o\
-	lib/Fl_Output.o\
-	lib/Fl_Overlay_Window.o\
-	lib/Fl_Pack.o\
-	lib/Fl_Popup_Window.o\
-	lib/Fl_ProgressBar.o\
-	lib/Fl_Radio_Button.o\
-	lib/Fl_Repeat_Button.o\
-	lib/Fl_Return_Button.o\
-	lib/Fl_Roller.o\
-	lib/Fl_Scroll.o\
-	lib/Fl_Scrollbar.o\
-	lib/Fl_Shaped_Window.o\
-	lib/Fl_Simple_Html.o\
-	lib/Fl_Single_Window.o\
-	lib/Fl_Slider.o\
-	lib/Fl_Tabs.o\
-	lib/Fl_Text_Buffer.o\
-	lib/Fl_Text_Display.o\
-	lib/Fl_Text_Editor.o\
-	lib/Fl_Tile.o\
-	lib/Fl_Tool_Bar.o\
-	lib/Fl_Tooltip.o\
-	lib/Fl_Valuator.o\
-	lib/Fl_Value_Input.o\
-	lib/Fl_Value_Slider.o\
-	lib/Fl_Workspace.o\
 	lib/fl_ask.o\
 	lib/fl_engraved_label.o\
 	lib/fl_show_colormap.o\
 	lib/fl_symbols.o\
-	lib/Fl_Database.o\
-	lib/Fl_Params.o\
-	lib/Fl_Query.o\
-	lib/Fl_Combo_Box.o
+	lib/scandir.o\
+	lib/vsnprintf.o
 	rm -f $@
 	$(LD) -shared -o $@ $^ $(LDOPTIONS)
 
@@ -450,6 +450,9 @@ tools/etranslate/etranslate ::	tools/etranslate/compile.o\
 	tools/etranslate/main_ui.o\
 	tools/etranslate/modify_info.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk -lefltk_xml
+
+test/combobox ::	test/combobox.o
+	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %ObjectFilesLinking
 lib/Fl_ODBC_Database.o : src/db/odbc/Fl_ODBC_Database.cpp
@@ -1498,6 +1501,10 @@ tools/etranslate/modify_info.o : tools/etranslate/modify_info.cpp
 
 lib/Fl_Combo_Box.o : src/widgets/Fl_Combo_Box.cpp
 	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+test/combobox.o : test/combobox.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
 # DO NOT DELETE
@@ -8380,3 +8387,42 @@ lib/Fl_Combo_Box.o :	efltk/Fl_Combo_Box.h\
 	efltk/Fl_Single_Window.h\
 	efltk/Fl_Window.h\
 	efltk/Fl_Button.h
+test/combobox.o :	efltk/fl_ask.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Combo_Box.h\
+	efltk/Fl_ListView.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_ListView_Item.h\
+	efltk/Fl_Image_List.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl.h\
+	efltk/Fl_ListView_Header.h\
+	efltk/Fl_Window.h

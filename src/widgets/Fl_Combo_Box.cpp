@@ -165,11 +165,8 @@ void Fl_Popup_ListView::cb_clicked(Fl_Widget *w, void *d) {
 }
 
 Fl_Popup_ListView::Fl_Popup_ListView(Fl_Widget *editControl)
-    : Fl_Popup_Window(150,150,"ListView")
-{
+: Fl_Popup_Window(150,150,"ListView") {
     m_editControl = editControl;
-    //box(FL_UP_BOX);
-
     m_listView = new Fl_ListView(0,0,w(),h());
     m_listView->callback(Fl_Popup_ListView::cb_clicked);
     m_listView->box(FL_NO_BOX);
@@ -177,8 +174,7 @@ Fl_Popup_ListView::Fl_Popup_ListView(Fl_Widget *editControl)
     end();
 }
 
-void Fl_Popup_ListView::draw()
-{
+void Fl_Popup_ListView::draw() {
     Fl_Popup_Window::draw();
 }
 
@@ -208,7 +204,7 @@ bool Fl_Popup_ListView::popup() {
 }
 
 bool Fl_Popup_ListView::popup(Fl_Widget *editControl, int X, int Y, int W, int H) {
-    if(editControl) {
+    if (editControl) {
         m_editControl = editControl;
         int width = (W>0) ? W : editControl->w();
         if (width < 175) width = 175;
@@ -257,21 +253,28 @@ void Fl_Combo_Box_Panel::draw() {
     Fl_Color clr = fl_lighter(fl_lighter(parent()->color()));
     box()->draw(0, 0, w(), h(), clr);
 
-    Fl_ListView_ItemExt *item = (Fl_ListView_ItemExt *)m_listView->item();
-    if (!item)
-        return;
-
-    //fl_push_clip(2, 2, w()-combo->m_buttonSpace-2, h()-4);
     int dd = 2;
     int xx = 0;
     int yy = dd * 2;
     int hh = h()- dd * 3;
+
+    Fl_ListView_Item    *item = (Fl_ListView_ItemExt *)m_listView->item();
+    if (!item) return;
+
+    Fl_ListView_ItemExt *item_ext = dynamic_cast<Fl_ListView_ItemExt *>(item);
+
+    if (!item_ext) {
+        fl_font(text_font(),text_size());
+        fl_color(text_color());
+    }
+
     for (unsigned c = 0; c < item->columns(); c++) {
         int ww = m_listView->column_width(c);
         fl_push_clip(xx+dd,yy,ww-dd,hh);
-
-        fl_font(item->label_font(c),item->label_size(c));
-        fl_color(item->label_color(c));
+        if (item_ext) {
+            fl_font(item_ext->label_font(c),item_ext->label_size(c));
+            fl_color(item_ext->label_color(c));
+        }
         fl_draw(item->label(c),xx+dd,yy,ww-dd,hh,FL_ALIGN_LEFT);
 
         fl_pop_clip();
@@ -280,7 +283,6 @@ void Fl_Combo_Box_Panel::draw() {
 
         xx += ww;
     }
-    //fl_pop_clip();
 }
 
 int Fl_Combo_Box_Panel::handle(int event) {
@@ -416,4 +418,3 @@ void Fl_Combo_Box::buttons(int buttons_set) {
     }
     relayout();
 }
-
