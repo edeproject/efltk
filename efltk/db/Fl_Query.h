@@ -42,6 +42,9 @@ protected:
    void alloc_stmt();
    void free_stmt();
 
+   void connect(Fl_Database *db);
+   void disconnect();
+
    // Copy constructor isn't supported
    Fl_Query(const Fl_Query& ) : Fl_Data_Source(0L) {};
 
@@ -49,7 +52,7 @@ public:
    // ctor, dtor
    Fl_Query(Fl_Database *db,const Fl_String& sql);
    Fl_Query(Fl_Database *db=0L,const char *sql="");
-   ~Fl_Query() { close(); free_stmt(); }
+   ~Fl_Query();
 public:
    void prepare();
    bool open();
@@ -71,7 +74,7 @@ public:
    void             sql(const char * _sql);
 
    Fl_Database     *database() const    { return m_database; }
-   void             database(Fl_Database *db) { if (m_database != db) { close(); m_database = db;} }
+   void             database(Fl_Database *db);
 
    bool             active() const      { return m_active; }
 

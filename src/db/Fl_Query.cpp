@@ -35,8 +35,9 @@ Fl_Query::Fl_Query(Fl_Database *db,const Fl_String& _sql)
     m_prepared = false;
     m_active = false;
     m_eof = false;
-    m_database = db;
+    m_database = NULL;
     m_stmt = 0L;
+    database(db);
     sql(_sql);
 }
 
@@ -45,9 +46,16 @@ Fl_Query::Fl_Query(Fl_Database *db,const char *_sql)
     m_prepared = false;
     m_active = false;
     m_eof = false;
-    m_database = db;
+    m_database = NULL;
     m_stmt = 0L;
+    database(db);
     sql(_sql);
+}
+
+Fl_Query::~Fl_Query() {
+    close();
+    free_stmt();
+    disconnect();
 }
 
 void Fl_Query::checkDatabaseState() {
@@ -63,7 +71,7 @@ void Fl_Query::alloc_stmt() {
             m_database->lock();
             m_database->allocate_query(this);
         }
-        catch (Fl_Exception &) {
+        catch (Fl_Exception &exception) {
             m_database->unlock();
             throw;
         }
@@ -73,7 +81,6 @@ void Fl_Query::alloc_stmt() {
 
 void Fl_Query::free_stmt() {
     m_active = false;
-    m_stmt = 0L;
     m_prepared = false;
 
     if (m_stmt && m_database) {
@@ -81,12 +88,14 @@ void Fl_Query::free_stmt() {
             m_database->lock();
             m_database->deallocate_query(this);
         }
-        catch (Fl_Exception &) {
+        catch (Fl_Exception &exception) {
             m_database->unlock();
             throw;
         }
         m_database->unlock();
     }
+
+    m_stmt = 0L;
 }
 
 void Fl_Query::prepare() {
@@ -118,7 +127,7 @@ bool Fl_Query::open() {
             alloc_stmt();
         m_database->open_query(this);
     }
-    catch (Fl_Exception &) {
+    catch (Fl_Exception &exception) {
         m_database->unlock();
         throw;
     }
@@ -126,7 +135,6 @@ bool Fl_Query::open() {
     m_database->unlock();
 
     m_active = true;
-    m_eof = false;
     return true;
 }
 
@@ -141,7 +149,7 @@ void Fl_Query::fetch() {
         m_database->lock();
         m_database->fetch_query(this);
     }
-    catch (Fl_Exception &) {
+    catch (Fl_Exception &exception) {
         m_database->unlock();
         throw;
     }
@@ -155,7 +163,7 @@ bool Fl_Query::close() {
             m_database->lock();
             m_database->close_query(this);
         }
-        catch (Fl_Exception &) {
+        catch (Fl_Exception &exception) {
             m_database->unlock();
             throw;
         }
@@ -164,6 +172,30 @@ bool Fl_Query::close() {
     }
     m_eof = true;
     return true;
+}
+
+void Fl_Query::connect(Fl_Database *db) {
+    disconnect();
+    if (db) {
+        db->m_queryList.append(this);
+        m_database = db;
+    }
+}
+
+void Fl_Query::disconnect() {
+    if (m_database) {
+        close();
+        free_stmt();
+        m_database->m_queryList.remove(this);
+        m_database = NULL;
+    }
+}
+
+void Fl_Query::database(Fl_Database *db) {
+    if (m_database != db) {
+        close();
+        connect(db);
+    }
 }
 
 void Fl_Query::sql(const char *_sql) {
@@ -281,5 +313,4 @@ void Fl_Query::sql(const Fl_String& _sql) {
 
 unsigned Fl_Query::record_count() const {
     fl_throw("Record count is not supported for Fl_Query");
-    return 0; // Just to block warning
 }

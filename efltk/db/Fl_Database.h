@@ -61,7 +61,7 @@ protected:
    // These methods provide access to protected data of Fl_Query
    void *query_handle(const Fl_Query *q) const     { return q->m_stmt; }
    void  query_handle(Fl_Query *q,void *handle)    { q->m_stmt = handle; } 
-
+   bool  query_active(Fl_Query *q)                 { return q->m_active; }
    void  query_active(Fl_Query *q,bool active)     { q->m_active = active; }
    void  query_eof(Fl_Query *q,bool eof)           { q->m_eof = eof; }
    Fl_Data_Fields& query_fields(Fl_Query *q)       { return q->m_fields; }
@@ -76,7 +76,7 @@ public:
    bool active() const                             { return m_active; }
    bool in_transaction() const                     { return m_inTransaction; }
 
-   bool thread_safe() const                        { return (m_mutex!=0); }
+   bool thread_safe() const                        { return m_mutex; }
    void lock()                                     { if (m_mutex) m_mutex->lock(); }
    void unlock()                                   { if (m_mutex) m_mutex->unlock(); }
 

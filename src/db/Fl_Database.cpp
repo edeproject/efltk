@@ -18,8 +18,8 @@
 #include <efltk/db/Fl_Database.h>
 #include <efltk/db/Fl_Query.h>
 
-Fl_Database::Fl_Database(const Fl_String connString,bool threadSafe) { 
-   m_inTransaction = m_active = false; 
+Fl_Database::Fl_Database(const Fl_String connString,bool threadSafe) {
+   m_inTransaction = m_active = false;
    m_connString = connString;
    if (threadSafe)
          m_mutex = new Fl_Mutex();
@@ -27,8 +27,8 @@ Fl_Database::Fl_Database(const Fl_String connString,bool threadSafe) {
 }
 
 Fl_Database::~Fl_Database() {
-   if (m_mutex)
-      delete m_mutex;
+    if (m_mutex)
+        delete m_mutex;
 }
 
 void Fl_Database::open(const Fl_String connString) {
@@ -49,11 +49,10 @@ void Fl_Database::open(const Fl_String connString) {
 void Fl_Database::close() {
    unsigned cnt = m_queryList.count();
    for (unsigned i = 0; i < cnt; i++) {
-      ((Fl_Query *)m_queryList[i])->close();
+      Fl_Query *q = (Fl_Query *)m_queryList[i];
+      q->close();
+      q->free_stmt();
    }
-   lock();
-   close_connection();
-   unlock();
    m_active = false;
    m_inTransaction = false;
 }

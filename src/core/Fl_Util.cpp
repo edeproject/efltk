@@ -186,17 +186,23 @@ char *fl_trimleft(char *string)
 
 char *fl_trimright(char *string)
 {
-    char *s;
-
     if(string == NULL )
         return NULL;
 
-    if (!*string)
-        return string;
+    if (*string) {
+        int len = strlen(string);
+        if (len) {
+            char *p = string + len;
+            do {
+                p--;
+                if ( !isspace(*p) ) break;
+            }
+            while ( p != string );
+            if ( !isspace(*p) ) p++;
+            *p = 0;
+        }
+    }
 
-    for (s = string + strlen (string) - 1; s >= string && isspace((unsigned char)*s); s--)
-        *s = '\0';
-     
     return string;
 }
 
