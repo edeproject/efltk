@@ -42,7 +42,7 @@
 
 Fl_Window *window;
 
-Fl_Menu_* menus[4];
+Fl_Menu_* menus[3];
 
 void test_cb(Fl_Widget* w, void*) {
     Fl_Menu_* mw = (Fl_Menu_*)w;
@@ -263,15 +263,8 @@ int main(int argc, char **argv)
   menus[2] = ch;
   ch->end();
 
-  Fl_Menu_Button mb(0, 0, window.view()->w(), window.view()->h());
-  mb.type(Fl_Menu_Button::POPUP3);
-  mb.menu(menutable);
-  mb.callback(test_cb);
-  menus[3] = &mb;
-
   window.view()->end();
 
-  //window.resizable(&mb);
   window.size_range(300,20);
   window.end();
   window.show(argc, argv);    
