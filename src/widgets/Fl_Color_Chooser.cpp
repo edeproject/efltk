@@ -196,7 +196,7 @@ int Flcc_HueBox::handle(int e)
     Fl_Color_Chooser* c = (Fl_Color_Chooser*)parent();
     switch (e) {
         case FL_PUSH:
-            is = c->s();
+            is = c->saturation();
         case FL_DRAG: {
                 float Xf, Yf, H, S;
                 int ix = 0; int iy = 0; int iw = w(); int ih = h();
@@ -277,11 +277,11 @@ void Flcc_HueBox::draw()
     Fl_Color_Chooser* c = (Fl_Color_Chooser*)parent();
 
 #ifdef CIRCLE
-    int X = int(.5f*(cos(c->h()*float(M_PI/3.0))*c->s()+1) * (w1-BUTTON_SIZE));
-    int Y = int(.5f*(1-sin(c->h()*float(M_PI/3.0))*c->s()) * (h1-BUTTON_SIZE));
+    int X = int(.5f*(cos(c->hue()*float(M_PI/3.0))*c->saturation()+1) * (w1-BUTTON_SIZE));
+    int Y = int(.5f*(1-sin(c->hue()*float(M_PI/3.0))*c->saturation()) * (h1-BUTTON_SIZE));
 #else
-    int X = int(c->h()/6.0f*(w1-BUTTON_SIZE));
-    int Y = int((1-c->s())*(h1-BUTTON_SIZE));
+    int X = int(c->hue()/6.0f*(w1-BUTTON_SIZE));
+    int Y = int((1-c->saturation())*(h1-BUTTON_SIZE));
 #endif
 
     if (X < 0) X = 0; else if (X > w1-BUTTON_SIZE) X = w1-BUTTON_SIZE;
@@ -307,7 +307,7 @@ int Flcc_ValueBox::handle(int e)
                 box()->inset(x1,y1,w1,h1);
                 Yf = 1-(Fl::event_y()-y1)/float(h1);
                 if (fabs(Yf-iv)<(3*1.0f/h())) Yf = iv;
-                if (c->hsv(c->h(),c->s(),Yf)) c->do_callback(FL_DATA_CHANGE);
+                if (c->hsv(c->h(),c->saturation(),Yf)) c->do_callback(FL_DATA_CHANGE);
             }
             return 1;
         default:
@@ -371,7 +371,7 @@ void Flcc_ValueBox::draw()
     box()->inset(x1,y1,w1,h1);
 
     Fl_Color_Chooser* c = (Fl_Color_Chooser*)parent();
-    c->hsv2rgb(c->h(), c->s(), 1.0f, tr, tg, tb);
+    c->hsv2rgb(c->hue(), c->saturation(), 1.0f, tr, tg, tb);
 
     if(d & FL_DAMAGE_ALL) {
         draw_frame();
