@@ -119,7 +119,7 @@ int main()
   return 0;
 }
 #else
-#  include <FL/fl_ask.H>
+#  include <efltk/fl_ask.h>
 
 int main() {
   fl_alert("Sorry, threading not supported on this platform!");
