@@ -876,12 +876,14 @@ Fl_Image* Fl_Image::read_xpm(const char *filename, const char * const *data)
         if(readed!=a.size) {
             printf("Could not read XPM file: %s\n", filename);
             free(buffer);
+            fclose(file);
             return false;
         }
         if(xpm_reader.is_valid(buffer, true)) {
             ret = xpm_reader.create(buffer, a.size, true);
         }
         free(buffer);
+        fclose(file);
     } else if(data) {
         if(!xpm_reader.is_valid2((void**)data)) return 0;
         ret = xpm_reader.create((void*)data, 1, false);
@@ -912,6 +914,7 @@ Fl_Image* Fl_Image::read(const char *filename, const uint8 *data)
         if(readed!=a.size) {
             printf("Could not read file: %s\n", filename);
             free(buffer);
+            fclose(file);
             return false;
         }
         from_file = true;
