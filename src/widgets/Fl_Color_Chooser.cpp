@@ -48,7 +48,7 @@
 #define CIRCLE 1
 // And the "hue box" can auto-update when the value changes
 // you get this by defining this:
-#define UPDATE_HUE_BOX 1
+//#define UPDATE_HUE_BOX 1
 
 void Fl_Color_Chooser::hsv2rgb(float H, float S, float V, float& r, float& g, float& b)
 {
@@ -323,6 +323,7 @@ void Fl_Color_Chooser::mode_cb(Fl_Widget* o, void*) {
 ////////////////////////////////////////////////////////////////
 
 static void revert(Fl_Style* s) {
+    s->color = FL_GRAY;
     s->button_box = FL_ROUND_UP_BOX;
 }
 
@@ -330,7 +331,7 @@ static Fl_Named_Style style("Color_Chooser", revert, &Fl_Color_Chooser::default_
 Fl_Named_Style* Fl_Color_Chooser::default_style = &::style;
 
 Fl_Color_Chooser::Fl_Color_Chooser(int X, int Y, int W, int H, const char* L)
-  : Fl_Group(0,0,180,100,L),
+    : Fl_Group(0,0,180,100,L),
     huebox(0,0,100,100),
     valuebox(100,0,20,100),
     nrgroup(120,0, 60, 100),
@@ -340,7 +341,11 @@ Fl_Color_Chooser::Fl_Color_Chooser(int X, int Y, int W, int H, const char* L)
     bvalue(0,66,60,21)
 {
   style(Fl_Color_Chooser::default_style);
-  huebox.copy_style(style());
+  huebox.box(box());
+  huebox.button_box(button_box());
+  valuebox.box(box());
+
+  box(FL_FLAT_BOX);
 
   nrgroup.end();
   choice.begin();
@@ -403,30 +408,30 @@ static void chooser_cb(Fl_Widget*, void*) {
 #define ROWS 4
 #define COLS 16
 
-FL_API Fl_Color fl_color_cells[ROWS*COLS] = {
-// first the 16 assignable fltk color indexes:
-0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,
-16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,
-// then the closest gray ramps to 0,1/4,1/3,1/2,2/3,3/4,1:
-32,32,32,37,37,39,39,43,43,47,47,49,49,55,55,55,
-// repeat it twice:
-32,32,32,37,37,39,39,43,43,47,47,49,49,55,55,55};
-
 class CellBox : public Fl_Widget {
 public:
-  CellBox(int X, int Y, int W, int H) : Fl_Widget(X,Y,W,H) {}
-  void draw();
-  int handle(int);
+    CellBox(int X, int Y, int W, int H) : Fl_Widget(X,Y,W,H) {}
+
+    void draw();
+    int handle(int);
+
+    void set(Fl_Color *cp, int r, int c) {
+        colors = cp;
+        rows = r; cols = c;
+    }
+
+    Fl_Color *colors;
+    int rows, cols;
 };
 
 void CellBox::draw() {
-  for (int Y = 0; Y < ROWS; Y++) {
-    int yy = Y*h()/ROWS;
-    int hh = (Y+1)*h()/ROWS - yy;
-    for (int X = 0; X < COLS; X++) {
-      int xx = X*w()/COLS;
-      int ww = (X+1)*w()/COLS - xx;
-      FL_THIN_DOWN_BOX->draw(xx,yy,ww,hh,fl_color_cells[Y*COLS+X]);
+  for (int Y = 0; Y < rows; Y++) {
+    int yy = Y*h()/rows;
+    int hh = (Y+1)*h()/rows - yy;
+    for (int X = 0; X < cols; X++) {
+      int xx = X*w()/cols;
+      int ww = (X+1)*w()/cols - xx;
+      FL_THIN_DOWN_BOX->draw(xx,yy,ww,hh,colors[Y*cols+X]);
     }
   }
 }
@@ -436,87 +441,105 @@ int CellBox::handle(int e) {
   case FL_PUSH: return 1;
   case FL_DRAG: return 1;
   case FL_RELEASE: {
-    int X = Fl::event_x()*COLS/w();
-    if (X < 0 || X >= COLS) return 1;
-    int Y = Fl::event_y()*ROWS/h();
-    if (Y < 0 || Y >= ROWS) return 1;
-    X = X+Y*COLS;
-    if (Fl::event_button() > 1) {
-      fl_color_cells[X] = picked_color;
-      redraw();
+    int X = Fl::event_x()*cols/w();
+    if (X < 0 || X >= cols) return 1;
+    int Y = Fl::event_y()*rows/h();
+    if (Y < 0 || Y >= rows) return 1;
+    X = X+Y*cols;
+    if(Fl::event_button() > 1) {
+        colors[X] = picked_color;
+        redraw();
     } else {
-      chooser->value(picked_color = fl_color_cells[X]);
-      ok_color->color(picked_color);
-      ok_color->redraw();
+        chooser->value(picked_color = colors[X]);
+        ok_color->color(picked_color);
+        ok_color->redraw();
     }
     return 1;}
   }
   return Fl_Widget::handle(e);
 }
 
+FL_API Fl_Color fl_color_cells[ROWS*COLS] = {
+    // first the 16 assignable fltk color indexes:
+    0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,
+    16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,
+    // then the closest gray ramps to 0,1/4,1/3,1/2,2/3,3/4,1:
+    32,32,32,37,37,39,39,43,43,47,47,49,49,55,55,55,
+    32,32,32,37,37,39,39,43,43,47,47,49,49,55,55,55
+};
+
 static void ok_cb(Fl_Widget* w, void*) {
-  w->window()->set_value();
-  w->window()->hide();
+    w->window()->set_value();
+    w->window()->hide();
 }
 
 static void cancel_cb(Fl_Widget* w, void*) {
-  w->window()->hide();
+    w->window()->hide();
 }
 
-static void make_it() {
+static void make_it()
+{
+    int W=250;
+    int H=260;
+
     if (window) return;
-    window = new Fl_Window(210,212);
-    chooser = new Fl_Color_Chooser(5, 5, 200, 100);
+    window = new Fl_Window(W, H);
+    window->size_range(W,H);
+    chooser = new Fl_Color_Chooser(5, 5, W-10, H-130);
     chooser->callback(chooser_cb);
-    new CellBox(5,110,200,52);
-    ok_color = new Fl_Box(5, 165, 95, 21);
+
+    CellBox *colors = new CellBox(5, H-120, W-10, 60);
+    colors->set(fl_color_cells, ROWS, COLS);
+
+    ok_color = new Fl_Box(5, H-55, W/2-10, 21);
     ok_color->box(FL_ENGRAVED_BOX);
-    ok_button = new Fl_Return_Button(5, 186, 95, 21, _("&OK"));
-    ok_button->callback(ok_cb);
-    cancel_color = new Fl_Box(110, 165, 95, 21);
+    cancel_color = new Fl_Box(W/2+5, H-55, W/2-10, 21);
     cancel_color->box(FL_ENGRAVED_BOX);
-    cancel_button = new Fl_Button(110, 186, 95, 21, _("&Cancel"));
+
+    ok_button = new Fl_Return_Button(5, H-30, W/2-10, 21, _("&OK"));
+    ok_button->callback(ok_cb);
+    cancel_button = new Fl_Button(W/2+5, H-30, W/2-10, 21, _("&Cancel"));
     cancel_button->callback(cancel_cb);
-    // window->size_range(210, 240); // minimum usable size?
+
     window->resizable(chooser);
     window->end();
 }
 
 static int run_it(const char* name) {
-  window->label(name);
-  ok_color->color(chooser->value());
-  cancel_color->color(chooser->value());
-  window->hotspot(window);
-  return window->exec();
+    window->label(name);
+    ok_color->color(chooser->value());
+    cancel_color->color(chooser->value());
+    window->hotspot(window);
+    return window->exec();
 }
 
 int fl_color_chooser(const char* name, float& r, float& g, float& b) {
-  make_it();
-  chooser->rgb(r,g,b);
-  if (!run_it(name)) return 0;
-  r = chooser->r();
-  g = chooser->g();
-  b = chooser->b();
-  return 1;
+    make_it();
+    chooser->rgb(r,g,b);
+    if (!run_it(name)) return 0;
+    r = chooser->r();
+    g = chooser->g();
+    b = chooser->b();
+    return 1;
 }
 
 int fl_color_chooser(const char* name, uchar& r, uchar& g, uchar& b) {
-  make_it();
-  chooser->rgb(r/255.0f, g/255.0f, b/255.0f);
-  if (!run_it(name)) return 0;
-  r = uchar(255*chooser->r()+.5f);
-  g = uchar(255*chooser->g()+.5f);
-  b = uchar(255*chooser->b()+.5f);
-  return 1;
+    make_it();
+    chooser->rgb(r/255.0f, g/255.0f, b/255.0f);
+    if (!run_it(name)) return 0;
+    r = uchar(255*chooser->r()+.5f);
+    g = uchar(255*chooser->g()+.5f);
+    b = uchar(255*chooser->b()+.5f);
+    return 1;
 }
 
 int fl_color_chooser(const char* name, Fl_Color& c) {
-  make_it();
-  chooser->value(c);
-  picked_color = c;
-  if (!run_it(name)) return 0;
-  c = picked_color;
-  return 1;
+    make_it();
+    chooser->value(c);
+    picked_color = c;
+    if (!run_it(name)) return 0;
+    c = picked_color;
+    return 1;
 }
 
 //
