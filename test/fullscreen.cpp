@@ -112,7 +112,7 @@ Fl_Window(x,y,w,h,l) {
 void shape_window::draw() {
   fl_color(0);
   fl_rectf(0,0,w(),h());
-  fl_font(0,20);
+  fl_font((Fl_Font_ *)0,20);
   fl_color(7);
   fl_draw("This requires GL",0,0,w(),h(),FL_ALIGN_CENTER);
 }
