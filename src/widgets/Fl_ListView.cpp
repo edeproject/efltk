@@ -1018,7 +1018,9 @@ void Fl_ListView::insert(Fl_ListView_Item  &o, uint index)
     } else {
         items.insert(index, &o);
     }
+
     calc_total_h = true;
+    relayout();
 }
 
 void Fl_ListView::add(Fl_ListView_Item &w)
