@@ -123,11 +123,10 @@ Fl_ODBC_Database::Fl_ODBC_Database(const Fl_String connString)
 Fl_ODBC_Database::~Fl_ODBC_Database() {
     close();
     close_connection();
-    for (unsigned i = 0; i < m_queryList.count(); i++) {
-        Fl_Query *q = (Fl_Query *)m_queryList[i];
+    while (m_queryList.count()) {
+        Fl_Query *q = (Fl_Query *)m_queryList[0];
         q->database(NULL);
     }
-    m_queryList.clear();
     delete m_connect;
 }
 
