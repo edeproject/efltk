@@ -24,7 +24,7 @@
 
 SHELL=/bin/sh
 
-DIRS = src/core src/widgets src/images src/opengl fluid efltk
+DIRS = src/core src/widgets src/images src/opengl fluid themes test efltk
 
 GENERATED = makeinclude efltk-config
 
@@ -108,10 +108,10 @@ configure: configure.in
 	autoconf
 
 portable-dist:
-	epm -v fltk
+	epm -v efltk
 
 native-dist:
-	epm -v -f native fltk
+	epm -v -f native efltk
 
 #
 # End of "$Id$".

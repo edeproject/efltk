@@ -22,13 +22,9 @@ int main(int argc, char **argv)
     w = new Fl_Window(400, 100);
 
     Fl_ProgressBar* pbar = new Fl_ProgressBar(25, 25, 330, 25, "Simple Progress Bar");
-    pbar->label_font(pbar->label_font()+1);
-    pbar->box(FL_ENGRAVED_BOX);
+    pbar->text_font(pbar->text_font()+1);
     pbar->clear_flag(FL_ALIGN_MASK);
     pbar->set_flag(FL_ALIGN_BOTTOM);
-    pbar->selection_color(FL_BLUE);
-    pbar->color(FL_WHITE);
-    pbar->textcolor(FL_RED);
 
     w->end();
 

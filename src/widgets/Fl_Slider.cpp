@@ -130,7 +130,7 @@ double Fl_Slider::position_value(int X, int w)
         for (i = -1; i >= l; i--) denom *= 10;
         if (l-w > 0.69897) denom *= 5;
         else if (l-w > 0.30103) denom *= 2;
-        return rint(value*denom/num)*num/denom;
+        return floor(value*denom/num+.5)*num/denom;
     }
     return value;
 }

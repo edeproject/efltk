@@ -98,7 +98,9 @@ void fl_transformed_draw(const char *str, int n, double x, double y)
         font_gc = fl_gc;
         XSetFont(fl_display, fl_gc, current_font->fid);
     }
-    XDrawString(fl_display, fl_window, fl_gc, int(rint(x)),int(rint(y)), str, n);
+    XDrawString(fl_display, fl_window, fl_gc,
+                int(floor(x+.5)),
+                int(floor(y+.5)), str, n);
 }
 
 
@@ -159,7 +161,7 @@ void fl_font(Fl_Font font, double psize)
     Fl_FontSize* f = fl_fontsize;
 
     // only integers supported right now (this can be improved):
-    psize = rint(psize);
+    psize = int(psize+.5);
     unsigned size = unsigned(psize);
 
     // See if the current font is correct:

@@ -200,7 +200,7 @@ void Fl_Input::draw()
 
 
 #if 1
-#define line_height() int(rint(fl_height()+leading()))
+#define line_height() int(fl_height()+leading()+.5)
 #else
 #define line_height() (text_size()+leading())
 #endif
@@ -224,7 +224,7 @@ void Fl_Input::draw(int X, int Y, int W, int H)
             Fl_Color color = label_color();
             if (!active_r()) color = fl_inactive(color);
             fl_color(color);
-            double y = Y+(H+height+1)/2-height+desc;
+            double y = Y+((H-height)>>1)+desc;
             fl_draw(label(), X+2, y);
             fl_draw(":", X+2+width, y);
             setfont();
@@ -320,10 +320,8 @@ void Fl_Input::draw(int X, int Y, int W, int H)
             mu_p = 0;
             erase_cursor_only = false;
         }
-    }
-    else
-    {
-        yscroll_ = -((H+height+1)/2-height);
+    } else {
+        yscroll_ = -((H-height)>>1);
     }
 
     // if we are not doing minimal update a single erase is done,

@@ -236,16 +236,15 @@ void Fl_Button::draw(int glyph, int glyph_width) const
         box()->inset(x,y,w,h);
     }
 
-    if (glyph_width < 0)
-    {
+    if (glyph_width < 0) {
         int g = -glyph_width;
-        draw_glyph(glyph, x+w-g-3, y+(h-g)/2, g, g, glyph_flags);
+        draw_glyph(glyph, x+w-g-3, y+((h-g)>>1), g, g, glyph_flags);
         if (draw_label) draw_inside_label(x, y, w-g-3, h, flags);
     }
     else if (glyph_width > 0)
     {
         int g = glyph_width;
-        draw_glyph(glyph, x+3, y+(h-g)/2, g, g, glyph_flags);
+        draw_glyph(glyph, x+3, y+((h-g)>>1), g, g, glyph_flags);
         if (draw_label) draw_inside_label(x+g+3, y, w-g-3, h, flags);
     }
     else

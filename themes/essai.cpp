@@ -212,6 +212,11 @@ extern "C" bool fltk_theme()
         s->button_box = up;
         s->focus_box = FL_NO_BOX;
     }
+    if ((s = Fl_Style::find("value slider"))) {
+        s->box = FL_NO_BOX;
+        s->button_box = up;
+        s->focus_box = FL_NO_BOX;
+    }
     if ((s = Fl_Style::find("listheader"))) {
         s->button_box = up;
     }

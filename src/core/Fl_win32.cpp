@@ -1340,13 +1340,7 @@ void Fl_Window::layout()
 ////////////////////////////////////////////////////////////////
 // Innards of Fl_Window::create():
 
-void Fl_Window::create()
-{
-    Fl_X::create(this);
-}
-
-
-                                 // set by show_inside()
+// set by show_inside()
 const Fl_Window* fl_mdi_window = 0;
 HCURSOR fl_default_cursor;
 

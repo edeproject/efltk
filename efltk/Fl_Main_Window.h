@@ -14,6 +14,7 @@
 class Fl_Main_Window : public Fl_Double_Window
 {
 public:
+    Fl_Main_Window(int x, int y, int w, int h, const char *l=0);
     Fl_Main_Window(int w, int h, const char *l=0);
     ~Fl_Main_Window();
 

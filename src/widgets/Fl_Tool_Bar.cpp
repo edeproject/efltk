@@ -231,7 +231,7 @@ Fl_Widget *Fl_Tool_Bar::add_button(const char *label, const char *tip, Fl_Image 
     b->tooltip(tip);
     b->image(image);
     b->callback(cb ? cb : Fl_Widget::default_callback);
-    b->box(FL_THIN_UP_BOX);
+    //b->box(FL_THIN_UP_BOX);
     end();
     return b;
 }

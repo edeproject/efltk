@@ -63,7 +63,7 @@ void Fl_Choice::draw()
         else o->clear_flag(FL_SELECTED);
         fl_push_clip(X+2, Y, W-w1-2, H);
         fl_push_matrix();
-        fl_translate(X, Y+(H-o->height())/2);
+        fl_translate(X, Y+((H-o->height())>>1));
         int save_w = o->w(); o->w(W-w1);
         fl_hide_shortcut = true;
         o->draw();

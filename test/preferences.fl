@@ -51,7 +51,7 @@ Function {} {open return_type int
     }
     Fl_Group {} {
       label {Get Up:} open
-      xywh {20 30 115 225} align 5 box BORDER_BOX
+      xywh {20 30 115 225} align 5 box BORDER_FRAME color 37
     } {
       Fl_Input wAlarm {
         label {Alarm at:}
@@ -72,7 +72,7 @@ Function {} {open return_type int
         xywh {5 70 105 20} align 5
       } {
         Fl_Item {} {
-          label shoes selected
+          label shoes
           }
         Fl_Item {} {
           label sandals
@@ -114,8 +114,8 @@ Function {} {open return_type int
       }
     }
     Fl_Group {} {
-      label {Breakfast::} open
-      xywh {160 30 115 225} align 5 box BORDER_BOX
+      label {Breakfast::} open selected
+      xywh {160 30 115 225} align 5 box BORDER_FRAME color 37
     } {
       Fl_Choice wDrink {
         label {Drink:} open

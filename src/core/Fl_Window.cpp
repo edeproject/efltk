@@ -31,6 +31,7 @@
 #include <efltk/Fl.h>
 #include <efltk/Fl_Window.h>
 #include <efltk/x.h>
+#include <efltk/Fl_WM.h>
 //#include <stdlib.h>
 #include <config.h>
 
@@ -72,6 +73,7 @@ void Fl_Window::_Fl_Window()
 {
     style(default_style);
     type(WINDOW_TYPE);
+    window_type_ = 0;
     i = 0;
     icon_ = 0;
     iconlabel_ = 0;
@@ -123,41 +125,40 @@ int Fl_Window::handle(int event)
             // Emulate the undocumented back-compatability modal() stuff:
             if (flags()&(FL_MODAL|FL_NON_MODAL))
             {
-                                 // this may unmap window if it changes
+                // this may unmap window if it changes
                 child_of(Fl::first_window());
                 if (flags()&FL_MODAL) Fl::modal(this, false);
             }
-            if (!shown())
+            Fl_Style::load_theme();
+            fl_open_display();
+            layout();
+            if (!parent() && !size_range_set)
             {
-                Fl_Style::load_theme();
-                fl_open_display();
-                layout();
-                // back-compatability automatic size_range() based on resizable():
-                if (!parent() && !size_range_set)
+                if (resizable())
                 {
-                    if (resizable())
+                    // find the innermost nested resizable():
+                    Fl_Widget *o = resizable();
+                    while (o->is_group())
                     {
-                        // find the innermost nested resizable():
-                        Fl_Widget *o = resizable();
-                        while (o->is_group())
-                        {
-                            Fl_Widget* p = ((Fl_Group*)o)->resizable();
-                            if (!p || p == o) break;
-                            o = p;
-                        }
-                        int minw = w(); if (o->w() > 72) minw -= (o->w()-72);
-                        int minh = h(); if (o->h() > 72) minh -= (o->h()-72);
-                        size_range(minw, minh, 0, 0);
+                        Fl_Widget* p = ((Fl_Group*)o)->resizable();
+                        if (!p || p == o) break;
+                        o = p;
                     }
-                    else
-                    {
-                        size_range(w(), h(), w(), h());
-                    }
+                    int minw = w(); if (o->w() > 72) minw -= (o->w()-72);
+                    int minh = h(); if (o->h() > 72) minh -= (o->h()-72);
+                    size_range(minw, minh, 0, 0);
                 }
-                create();
+                else
+                {
+                    size_range(w(), h(), w(), h());
+                }
             }
 
-                                 // make the child windows map first
+            if (!shown()) {
+                create();
+                if(window_type_) Fl_WM::set_window_type(i->xid, window_type_);
+            }
+            // make the child windows map first
             Fl_Group::handle(event);
 
 #ifdef _WIN32
@@ -222,12 +223,12 @@ void Fl_Window::show()
     else if (!parent())
     {
         // raise/deiconize windows already-visible windows
-        #ifdef _WIN32
+#ifdef _WIN32
         if (IsIconic(i->xid)) OpenIcon(i->xid);
         if (!Fl::grab() && !override()) BringWindowToTop(i->xid);
-        #else
+#else
         XMapRaised(fl_display, i->xid);
-        #endif
+#endif
     }
     // Otherwise all the work is done by handle(FL_SHOW):
     Fl_Widget::show();
@@ -361,6 +362,15 @@ void Fl_Window::flush()
 
 
 ////////////////////////////////////////////////////////////////
+
+void Fl_Window::create()
+{
+#ifdef _WIN32
+    Fl_X::create(this);
+#else
+    Fl_X::create(this, fl_visual, fl_colormap, -1);
+#endif
+}
 
 void Fl_Window::destroy()
 {

@@ -1118,12 +1118,6 @@ void Fl_Window::layout()
 
 extern bool fl_show_iconic;      // In Fl_Window.cxx, set by iconize() or -i switch
 
-void Fl_Window::create()
-{
-    Fl_X::create(this, fl_visual, fl_colormap, -1);
-}
-
-
 void Fl_X::create(Fl_Window* window,
 XVisualInfo *visual, Colormap colormap,
 int background)

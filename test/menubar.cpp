@@ -191,7 +191,6 @@ int main(int argc, char **argv) {
   }
   
   Fl_Main_Window window(WIDTH,400);
-  window.set_override();
 
   window.view()->tooltip("Press right button\nfor a pop-up menu");
   window.view()->color(FL_WHITE);

@@ -259,7 +259,8 @@ void fl_transformed_draw(const char *str, int n, double x, double y)
     color.color.alpha = 0xffff;
 
     XftDrawString8(draw, &color, current_font,
-        int(rint(x)), int(rint(y)), (XftChar8 *)str, n);
+                   int(floor(x+.5)), int(floor(y+.5)),
+                   (XftChar8 *)str, n);
 }
 
 

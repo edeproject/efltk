@@ -127,7 +127,7 @@ void Fl_Widget::draw_label(int X, int Y, int W, int H, Fl_Flags flags) const
             if (!(flags & (FL_ALIGN_LEFT|FL_ALIGN_RIGHT|FL_ALIGN_TOP|FL_ALIGN_BOTTOM|
                            FL_ALIGN_INSIDE)) && label_)
             {
-                int d = (H-int(h+fl_height()))/2;
+                int d = (H-int(h+fl_height()))>>1;
                 if (d >= 0)
                 {
                     // put the image atop the text
@@ -138,7 +138,7 @@ void Fl_Widget::draw_label(int X, int Y, int W, int H, Fl_Flags flags) const
                     // put image to left
                     int text_w = W; int text_h = H;
                     fl_measure(label_, text_w, text_h, flags);
-                    int d = (W-(h+text_w))/2;
+                    int d = (W-(h+text_w))>>1;
                     if (d > 0) {X += d; W -= d;}
                     flags |= FL_ALIGN_LEFT;
                 }

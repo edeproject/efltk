@@ -78,11 +78,16 @@ void Fl_Valuator::handle_drag(double v)
     // round to nearest multiple of step:
     if (step_ >= 1)
     {
-        double is = rint(step_); v = rint(v/is)*is;
+        v = rint(v/step_)*step_;
     }
     else if (step_ > 0)
     {
-        double is = rint(1/step_); v = rint(v*is)/is;
+        // Try to detect fractions like .1 which are actually stored as
+        // .9999999 and thus would round to unexpected values. This is done
+        // by seeing if 1/N is close to an integer:
+        double is = rint(1/step_);
+        if (fabs(is*step_-1) < .001) v = rint(v*is)/is;
+        else v = rint(v/step_)*step_;
     }
 
     // If original value was in-range, clamp the new value:
@@ -116,37 +121,13 @@ void Fl_Valuator::handle_release()
     }
 }
 
-
-#if 0
-double Fl_Valuator::increment(double v, int n) const
-{
-    if (minimum_ > maximum_) n = -n;
-    if (step_ >= 1)
-    {
-        double is = rint(step_);
-        return rint(v/is+n)*is;
-    }
-    else if (step_ > 0)
-    {
-        double is = rint(1/step_);
-        return rint(v*is+n)/is;
-    }
-    else
-    {
-        int is = int(100/fabs(maximum_-minimum_));
-        if (!is) is = 1;
-        return rint(v*is+n)/is;
-    }
-}
-#endif
-
 int Fl_Valuator::format(char* buffer)
 {
     double v = value();
-    if (step_ >= 1) return sprintf(buffer, "%ld", long(v));
-    else if (step_ <= 0) return sprintf(buffer, "%g", v);
+    if (step_ <= 0) return sprintf(buffer, "%g", v);
+    else if (rint(step_) == step_) return sprintf(buffer, "%ld", long(v));
     int i, x;
-    int istep_ = int(rint(1/step_));
+    int istep_ = int(1/(step_-floor(step_)));
     for (x = 10, i = 2; x < istep_; x *= 10) i++;
     if (x == istep_) i--;
     return sprintf(buffer, "%.*f", i, v);

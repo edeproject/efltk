@@ -234,7 +234,7 @@ static char in_idle;
 
 int Fl::run()
 {
-    while(first_window() && first_window()->shown()) wait(FOREVER);
+    while(first_window()) wait(FOREVER);
 
     // We could add here "EXIT" handlers... for cleanup!
 

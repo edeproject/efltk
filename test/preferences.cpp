@@ -60,7 +60,8 @@ int main (int argc, char **argv) {
       o->callback((Fl_Callback*)saveAndCloseWindowCB);
     }
      {Fl_Group* o = new Fl_Group(20, 30, 115, 225, "Get Up:");
-      o->box(FL_BORDER_BOX);
+      o->box(FL_BORDER_FRAME);
+      o->color((Fl_Color)37);
       o->align(FL_ALIGN_TOP | FL_ALIGN_LEFT);
        {Fl_Input* o = wAlarm = new Fl_Input(5, 25, 45, 20, "Alarm at:");
         o->align(FL_ALIGN_TOP | FL_ALIGN_LEFT);
@@ -96,7 +97,8 @@ int main (int argc, char **argv) {
       o->end();
     }
      {Fl_Group* o = new Fl_Group(160, 30, 115, 225, "Breakfast::");
-      o->box(FL_BORDER_BOX);
+      o->box(FL_BORDER_FRAME);
+      o->color((Fl_Color)37);
       o->align(FL_ALIGN_TOP | FL_ALIGN_LEFT);
        {Fl_Choice* o = wDrink = new Fl_Choice(5, 20, 105, 20, "Drink:"); o->begin();
         o->align(FL_ALIGN_TOP | FL_ALIGN_LEFT);

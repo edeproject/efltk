@@ -17,6 +17,8 @@ protected:
     void draw();
 
 public:
+    static Fl_Named_Style* default_style;
+
     Fl_ProgressBar(int x, int y, int w, int h, const char *lbl = 0);
 
     void range(double min, double max, double step = 1)  { mMin = min; mMax = max; mStep = step; };

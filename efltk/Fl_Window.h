@@ -39,6 +39,11 @@ public:
   static Fl_Named_Style* default_style;
   virtual ~Fl_Window();
 
+  // Types from Fl_WM.h
+  // Type is set before first map, straight after creating xid.
+  void window_type(int type) { window_type_ = type; }
+  int window_type() { return window_type_; }
+
   const char* label() const	{return Fl_Widget::label();}
   const char* iconlabel() const	{return iconlabel_;}
   void label(const char*);
@@ -94,6 +99,7 @@ protected:
   static const Fl_Window *current_;
 
 private:
+  int window_type_;
 
   friend class Fl_X; Fl_X *i; // points at the system-specific stuff
   const Fl_Window* child_of_;

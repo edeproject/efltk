@@ -1,5 +1,19 @@
 #include <efltk/Fl_Main_Window.h>
 
+Fl_Main_Window::Fl_Main_Window(int x, int y, int w, int h, const char *l)
+    : Fl_Double_Window(x,y,w,h,l)
+{
+    pack_ = new Fl_Pack(0,0,w,h);
+    pack_->end();
+
+    menu_ = 0;
+    toolbar_ = 0;
+    view_ = 0;
+    status_ = 0;
+
+    resizable(pack_);
+}
+
 Fl_Main_Window::Fl_Main_Window(int w, int h, const char *l)
     : Fl_Double_Window(w,h,l)
 {
@@ -54,7 +68,7 @@ Fl_Tool_Bar *Fl_Main_Window::toolbar()
 {
     if(!toolbar_) {
         Fl_Tool_Bar *b = new Fl_Tool_Bar(0,0,0,10);
-        b->box(FL_THIN_UP_BOX);
+        //b->box(FL_THIN_UP_BOX);
         b->end();
         toolbar(b);
     }
@@ -79,7 +93,7 @@ Fl_Group *Fl_Main_Window::view()
 {
     if(!view_) {
         Fl_Group *g = new Fl_Group(0,0,w(),h());
-        g->box(FL_THIN_DOWN_BOX);
+        //g->box(FL_THIN_DOWN_BOX);
         g->end();
         view(g);
     }
@@ -98,7 +112,7 @@ Fl_Group *Fl_Main_Window::status()
 {
     if(!status_) {
         Fl_Group *g = new Fl_Group(0,0,0,23);
-        g->box(FL_THIN_UP_BOX);
+        //g->box(FL_THIN_UP_BOX);
         g->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
         status(g);
     }

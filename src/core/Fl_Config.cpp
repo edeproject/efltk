@@ -58,10 +58,6 @@ const char* fl_find_config_file(const char *filename, bool create)
     return (create || !access(path, R_OK)) ? path : 0;
 }
 
-#ifdef BACKWARD_COMPATIBLE
-Fl_Config *current_config=0;
-#endif
-
 // recursively create a path in the file system
 static bool makePath( const char *path ) {
     if(access(path, 0)) {
@@ -153,10 +149,6 @@ Fl_Config::~Fl_Config()
         if(s) delete s;
 
     if(filename_) delete []filename_;
-
-#ifdef BACKWARD_COMPATIBLE
-    if(current_config==this) current_config=0;
-#endif
 }
 
 /* get error string associated with error number */
@@ -170,13 +162,6 @@ const char *Fl_Config::strerror(int error)
     case CONF_ERR_KEY: return "key not found in section";
     case CONF_ERR_MEMORY: return "could not allocate memory";
     case CONF_ERR_NOVALUE: return "invalid value associated with key";
-
-#ifdef BACKWARD_COMPATIBLE
-    case CONF_ERR_AGAIN: return "try operation again (lockfile exists?)";
-    case CONF_ERR_ARGUMENT: return "invalid argument";
-    case CONF_ERR_DEPTH: return "section or include nesting too deep";
-#endif
-
     default: return "unknown error";
     }
 }
@@ -512,9 +497,6 @@ void Fl_Config::remove_key(const char *section, const char *key)
                 delete line;
                 _error = 0;
                 changed = true;
-#ifdef BACKWARD_COMPATIBLE
-                current_config=this;
-#endif
                 return;
             }
         }
@@ -535,9 +517,6 @@ void Fl_Config::remove_sec(const char *section)
             delete sect;
             _error = 0;
             changed = true;
-#ifdef BACKWARD_COMPATIBLE
-            current_config=this;
-#endif
             return;
         }
     }
@@ -693,9 +672,6 @@ int Fl_Config::_write_string(Section *s, const char *key, const char *value)
 
     changed=true;
 
-#ifdef BACKWARD_COMPATIBLE
-    current_config=this;
-#endif
     return (_error=CONF_SUCCESS);
 }
 

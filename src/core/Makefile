@@ -41,6 +41,7 @@ CPPFILES = \
 	Fl_Style_Set.cpp \
 	Fl_Thread.cpp \
         Fl_Util.cpp \
+        Fl_WM.cpp \
 	Fl_Widget.cpp \
 	Fl_Window.cpp \
 	Fl_Window_fullscreen.cpp \

@@ -2,7 +2,7 @@
 #define FL_HELP_DIALOG_H_
 
 #include "Fl.h"
-#include "Fl_Double_Window.h"
+#include "Fl_Main_Window.h"
 #include "Fl_Menu_Bar.h"
 #include "Fl_Item_Group.h"
 #include "Fl_Item.h"
@@ -11,7 +11,7 @@
 #include "Fl_File_Dialog.h"
 #include "Fl_Simple_Html.h"
 
-class Fl_Help_Dialog : public Fl_Double_Window
+class Fl_Help_Dialog : public Fl_Main_Window
 {
 public:
     Fl_Help_Dialog(int x, int y, int w, int h, const char *l);
@@ -47,8 +47,6 @@ private:
     char *next_hist[10];
 
     Fl_Button *back, *next;
-
-    Fl_Menu_Bar *menubar_;
 };
 
 #endif

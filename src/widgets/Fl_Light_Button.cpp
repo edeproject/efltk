@@ -52,7 +52,7 @@ int x,int y,int w,int h, Fl_Flags f)
         f = f&FL_INACTIVE | FL_INVISIBLE;
         color = widget->color();
     }
-    FL_THIN_DOWN_BOX->draw(x+(w-ww)/2, y, ww, h, color, f);
+    FL_THIN_DOWN_BOX->draw(x+((w-ww)>>1), y, ww, h, color, f);
 }
 
 

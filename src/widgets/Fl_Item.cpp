@@ -78,7 +78,7 @@ void Fl_Item::draw()
             else lflags |= FL_VALUE;
         }
         int gw = text_size()+2;
-        draw_glyph(0, x+3, y+(h-gw)/2, gw, gw, lflags);
+        draw_glyph(0, x+3, y+((h-gw)>>1), gw, gw, lflags);
         x += gw+3; w -= gw+3;
     }
     draw_label(x+3, y, w-6, h, flags());

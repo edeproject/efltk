@@ -402,10 +402,10 @@ Fl_Color fill, Fl_Flags align) const
         if (w1 < h1) h1 = w1; else w1 = h1;
         if (align & FL_ALIGN_LEFT) ;
         else if (align & FL_ALIGN_RIGHT) x1 = X+W-w1;
-        else x1 = X+(W-w1)/2;
+        else x1 = X+((W-w1)>>1);
         if (align & FL_ALIGN_TOP) ;
         else if (align & FL_ALIGN_BOTTOM) y1 = Y+H-h1;
-        else y1 = Y+(H-h1)/2;
+        else y1 = Y+((H-h1)>>1);
     }
     if (!fl_draw_symbol(label, x1, y1, w1, h1, fill))
     {

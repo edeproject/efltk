@@ -315,7 +315,7 @@ void MenuWindow::draw()
 
                 // Use the item's fontsize for the size of the arrow, rather than h:
                 int nh = widget->text_size();
-                draw_glyph(FL_GLYPH_RIGHT, x+w-nh, y+(itemh-nh)/2, nh, nh, flags);
+                draw_glyph(FL_GLYPH_RIGHT, x+w-nh, y+((itemh-nh)>>1), nh, nh, flags);
 
             } else if (widget->shortcut()) {
 
@@ -498,7 +498,7 @@ int MenuWindow::handle(int event)
 
     static bool key_event = false;
     int index=0;
-    Fl_Widget *widget;
+    Fl_Widget *widget=0;
 
     switch(event)
     {
@@ -580,12 +580,11 @@ int MenuWindow::handle(int event)
 
         index=-1;
         widget = find_widget(Fl::event_x(), Fl::event_y(), &index);
-        if(index!=selected_) {
+        if( (index!=selected_ && index!=-1) || is_parent(index) ) {
             selected_=index;
             redraw(FL_DAMAGE_CHILD);
         }
         if(widget) set_item(level_, index);
-
     JUMP_OPEN:
 
         if(indexes_ && is_parent(index)) {

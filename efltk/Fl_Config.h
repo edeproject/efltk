@@ -4,11 +4,6 @@
 #ifndef _FL_CONFIG_H_
 #define _FL_CONFIG_H_
 
-// This is defined to include
-// backward compatible funtions and behaviour with
-// old Fl_Config
-//#define BACKWARD_COMPATIBLE 1
-
 #include "Enumerations.h"
 #include "Fl_PtrList.h"
 #include "Fl_Util.h"
@@ -25,12 +20,6 @@ enum {
     CONF_ERR_KEY,       /* requested key was not found */
     CONF_ERR_MEMORY,    /* memory allocation error */
     CONF_ERR_NOVALUE,   /* key found, but invalid value associated with it */
-
-#ifdef BACKWARD_COMPATIBLE
-    CONF_ERR_AGAIN,     /* try operation again (lockfile existed?) */
-    CONF_ERR_DEPTH,     /* nested sections or includes in config file too deep */
-    CONF_ERR_ARGUMENT   /* argument invalid (NULL?) */
-#endif
 };
 
 // Classes to iterate throught the config file
@@ -181,126 +170,10 @@ private:
     int _write_double(Section *s, const char *key, const double value);
     int _write_bool  (Section *s, const char *key, const bool value);
     int _write_color (Section *s, const char *key, const Fl_Color value);
-
-public:
-#ifdef BACKWARD_COMPATIBLE
-    ////////////////////////////////////
-    // BACKWARD COMPATIBILITY SECTION //
-    ////////////////////////////////////
-
-    // Functions below are backward compatible with
-    // old Fl_Config functions, so no old apps code
-    // changes needed
-
-    inline void __get_section_and_key(const char *str, char *section, char *key)
-    {
-        int len=strlen(str);
-        const char *strptr = str+len-1;
-        char ch=0; int pos=0;
-        while((ch=*strptr--)) {
-            if(ch=='/') {
-                strncpy(section, str, len-pos-1);
-                strncpy(key, str+(len-pos), pos);
-                return;
-            }
-            pos++;
-        }
-        strncpy(key, str, 256);
-    }
-
-    // get the string value of a key from the config file
-    int get(const char *key, char *value, int value_length) {
-        char s[1024]={0}, k[256]={0}; __get_section_and_key(key, s, k);
-        char *readed = _read_string(find_section(s), k);
-        if(readed) { strncpy(value, readed, value_length); delete []readed; }
-        return error();
-    }
-
-    // get the long value of a key from the config file
-    int get(const char *key, long &lvalue) {
-        char s[1024]={0}, k[256]={0}; __get_section_and_key(key, s, k);
-        lvalue = _read_long(find_section(s), k);
-        return error();
-    }
-
-    // get the int value of a key from the config file
-    int get(const char *key, int &ivalue) {
-        char s[1024]={0}, k[256]={0}; __get_section_and_key(key, s, k);
-        ivalue = _read_int(find_section(s), k);
-        return error();
-    }
-
-    // get the uchar value of a key from the config file
-    int get(const char *key, uchar &ucvalue) {
-        char s[1024]={0}, k[256]={0}; __get_section_and_key(key, s, k);
-        int v = _read_int(find_section(s), k);
-        ucvalue = (uchar)v;
-        return error();
-    }
-
-    // get the boolean value of a key from the config file
-    int get_boolean(const char *key, int &bvalue) {
-        char s[1024]={0}, k[256]={0}; __get_section_and_key(key, s, k);
-        bvalue = _read_bool(find_section(s), k);
-        return error();
-    }
-
-    // set the string value of a key in the config file
-    int set(const char *key, const char *value = "") {
-        char s[1024]={0}, k[256]={0}; __get_section_and_key(key, s, k);
-        _write_string(find_section(s), k, value);
-        return error();
-    }
-
-    // clear the string value of a key in the config file
-    int clear(const char *key)  {
-        char s[1024]={0}, k[256]={0}; __get_section_and_key(key, s, k);
-        _write_string(find_section(s), k, "");
-        return error();
-    }
-
-    // set the long value of a key in the config file
-    int set(const char *key, long lvalue) {
-        char s[1024]={0}, k[256]={0}; __get_section_and_key(key, s, k);
-        _write_long(find_section(s), k, lvalue);
-        return error();
-    }
-
-    // set the int value of a key in the config file
-    int set(const char *key, int ivalue) {
-        char s[1024]={0}, k[256]={0}; __get_section_and_key(key, s, k);
-        _write_int(find_section(s), k, ivalue);
-        return error();
-    }
-
-    // set the boolean value of a key in the config file
-    int set_boolean(const char *key, int bvalue) {
-        char s[1024]={0}, k[256]={0}; __get_section_and_key(key, s, k);
-        _write_bool(find_section(s), k, bvalue>1?true:false);
-        return error();
-    }
-
-    // delete a key/value from the config file
-    int del(const char *key) {
-        char s[1024]={0}, k[256]={0}; __get_section_and_key(key, s, k);
-        remove_key(s, k);
-        return error();
-    }
-
-    static void clear_cache() { void conf_clear_cache(); conf_clear_cache();}
-
-    ///////////////////////////////////////////
-    // END OF BACKWARD COMPATIBILITY SECTION //
-    ///////////////////////////////////////////
-#endif
 };
 
 FL_API int conf_is_path_rooted(const char *path);
 FL_API const char* fl_find_config_file(const char *filename, bool create=true);
-#ifdef BACKWARD_COMPATIBLE
-extern Fl_Config *current_config;
-inline void conf_clear_cache(void) { if(current_config) current_config->flush(); }
-#endif
 
 #endif // !defined(AFX_INI_CONFIG_H__A9AF989B_9D44_48ED_B56F_187FCAC49818__INCLUDED_)
 

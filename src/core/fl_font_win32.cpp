@@ -152,7 +152,7 @@ void fl_font(Fl_Font font, double psize)
 
     // only integers supported right now, I think there is a newer
     // interface that takes arbitrary sizes, though...
-    psize = rint(psize);
+    psize = int(psize+.5);
     unsigned size = unsigned(psize);
 
     if (font == fl_font_ && psize == fl_size_ &&
@@ -196,7 +196,7 @@ void fl_transformed_draw(const char *str, int n, double x, double y)
 {
     SetTextColor(fl_gc, fl_colorref);
     HGDIOBJ oldfont = SelectObject(fl_gc, current_font);
-    TextOut(fl_gc, int(rint(x)), int(rint(y)), str, n);
+    TextOut(fl_gc, int(floor(x+.5)), int(floor(y+.5)), str, n);
     SelectObject(fl_gc, oldfont);
 }
 

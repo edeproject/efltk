@@ -34,7 +34,7 @@ int x,int y,int w,int h, Fl_Flags)
     int size = w; if (h<size) size = h;
     int d = (size+2)/4; if (d<3) d = 3;
     int t = (size+9)/12; if (t<1) t = 1;
-    int x0 = x+(w-2*d-2*t-1)/2;
+    int x0 = x+((w-2*d-2*t-1)>>1);
     int x1 = x0+d;
     int y0 = y+h/2;
     #if 1

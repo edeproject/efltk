@@ -73,6 +73,7 @@
 #endif // WIN32
 
 #define MAX_COLUMNS	200
+#define SLIDER_WIDTH scrollbar_width()
 
 //
 // Typedef the C API sort function type the only way I know how...
@@ -328,18 +329,18 @@ void Fl_Simple_Html::draw()
 	if (hscrollbar_.visible()) {
 		draw_child(hscrollbar_);
 		//update_child(hscrollbar_);
-		hh -= 17;
+		hh -= SLIDER_WIDTH;
 		i ++;
 	}
 	if (scrollbar_.visible()) {
 		draw_child(scrollbar_);
 		//update_child(scrollbar_);
-		ww -= 17;
+		ww -= SLIDER_WIDTH;
 		i ++;
 	}
 	if(i == 2) {
 		fl_color(parent()->color());
-		fl_rectf(ww, hh, 17, 17);
+		fl_rectf(ww, hh, SLIDER_WIDTH, SLIDER_WIDTH);
 	}
 
 	//draw_box();
@@ -1422,26 +1423,25 @@ void Fl_Simple_Html::format()
 	if (ntargets_ > 1)
 		qsort(targets_, ntargets_, sizeof(Fl_Help_Target), (compare_func_t)compare_targets);
 
-	if (hsize_ > (w() - 24)) {
-		hscrollbar_.show();
-	
-		if (size_ < (h() - 24)) {
-			scrollbar_.hide();
-			hscrollbar_.resize(0,  h() - 17, w(), 17);
-		} else {
-			scrollbar_.show();
-			scrollbar_.resize(w() - 17, 0, 17, h() - 17);
-			hscrollbar_.resize(0, h() - 17, w() - 17, 17);
-		}
+        if (hsize_ > (w() - 24)) {
+            hscrollbar_.show();
+            if (size_ < (h() - 24)) {
+                scrollbar_.hide();
+                hscrollbar_.resize(0,  h() - SLIDER_WIDTH, w(), SLIDER_WIDTH);
+            } else {
+                scrollbar_.show();
+                scrollbar_.resize(w() - SLIDER_WIDTH, 0, SLIDER_WIDTH, h() - SLIDER_WIDTH);
+                hscrollbar_.resize(0, h() - SLIDER_WIDTH, w() - SLIDER_WIDTH, SLIDER_WIDTH);
+            }
 	} else {
-		hscrollbar_.hide();
-	
-		if (size_ < (h() - 8)) 
-			scrollbar_.hide();
-		else {
-			scrollbar_.resize(w() - 17, 0, 17, h());
-			scrollbar_.show();
-		}
+            hscrollbar_.hide();
+
+            if (size_ < (h() - 8))
+                scrollbar_.hide();
+            else {
+                scrollbar_.resize(w() - SLIDER_WIDTH, 0, SLIDER_WIDTH, h());
+                scrollbar_.show();
+            }
 	}
 	
 	topline(topline_);
@@ -2193,8 +2193,8 @@ Fl_Simple_Html::Fl_Simple_Html(int        xx,	// I - Left position
                                int        hh,	// I - Height in pixels
                                const char *l)
     : Fl_Group(xx, yy, ww, hh, l),
-scrollbar_(ww - 17, yy, 17, hh - 17),
-hscrollbar_(xx, hh - 17, ww - 17, 17)
+scrollbar_(ww - SLIDER_WIDTH, yy, SLIDER_WIDTH, hh - SLIDER_WIDTH),
+hscrollbar_(xx, hh - SLIDER_WIDTH, ww - SLIDER_WIDTH, SLIDER_WIDTH)
 {
     box(FL_DOWN_BOX);
 
@@ -2370,12 +2370,12 @@ int	Fl_Simple_Html::load(const char *f)// I - Filename to load (may also have ta
 //
 void Fl_Simple_Html::layout()
 {
-	scrollbar_.resize(w() - 17, 0, 17, h() - 17);
-	hscrollbar_.resize(0, h() - 17, w() - 17, 17);
-  
-	format();
+    //scrollbar_.resize(w() - SLIDER_WIDTH, 0, SLIDER_WIDTH, h() - SLIDER_WIDTH);
+    //hscrollbar_.resize(0, h() - SLIDER_WIDTH, w() - SLIDER_WIDTH, SLIDER_WIDTH);
 
-	Fl_Widget::layout();
+    format();
+
+    Fl_Widget::layout();
 }
 
 

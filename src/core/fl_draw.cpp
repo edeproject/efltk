@@ -93,7 +93,7 @@ Fl_Flags flags
         if (flags & FL_ALIGN_LEFT && s.x > x) s.x = x;
     }
     else if (flags & FL_ALIGN_LEFT) s.x = x;
-    else s.x = x+w/2-width/2;
+    else s.x = x+(w-width)/2;
     s.y = y+fl_height()-fl_descent();
 }
 
@@ -264,7 +264,7 @@ Fl_Flags flags
     if (!str || !*str) return;
     char tempbuf[MAX_LENGTH_FOR_UNDERSCORE];
     int index = 0;
-    int h = int(rint(split(str, W, H, flags, index, tempbuf)));
+    int h = int(split(str, W, H, flags, index, tempbuf)+.5);
     fl_transform(X,Y);
     int dy;
     if (flags & FL_ALIGN_BOTTOM)
@@ -275,13 +275,10 @@ Fl_Flags flags
     else if (flags & FL_ALIGN_TOP)
     {
         dy = Y;
+    } else {
+        dy = Y+((H-h)>>1);
     }
-    else
-    {
-        dy = Y+(H+h+1)/2-h;
-    }
-    for (int i = 0; i < index; i++)
-    {
+    for (int i = 0; i < index; i++) {
         Segment& s = segments[i];
         fl_transformed_draw(s.start, s.end-s.start, s.x+X, s.y+dy);
     }
@@ -293,7 +290,7 @@ void fl_measure(const char* str, int& w, int& h, Fl_Flags flags)
     if (!str || !*str) {w = 0; h = int(fl_height()); return;}
     char tempbuf[MAX_LENGTH_FOR_UNDERSCORE];
     int index = 0;
-    h = int(rint(split(str, w, h, flags, index, tempbuf)));
+    h = int(split(str, w, h, flags, index, tempbuf)+.5);
     w = int(max_x+.5);
 }
 
