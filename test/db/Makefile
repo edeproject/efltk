@@ -10,7 +10,7 @@ ODBCCPP = database.cpp
 ODBC = db_odbc
 endif
 
-ifneq ($(MYSQLCONFIG), )
+ifneq ($(MYSQLLIBS), )
 # Add MySQL, if not disabled..
 MYSQLCPP = database.cpp
 MYSQL = db_mysql
