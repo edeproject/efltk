@@ -546,9 +546,8 @@ int MenuWindow::handle(int event)
 {
     Fl_Rect rect;
 
-    if(animating && (event==FL_MOVE||event==FL_DRAG||event==FL_KEY)) {
+    if(animating && (event==FL_PUSH||event==FL_MOVE||event==FL_DRAG||event==FL_KEY)) {
         // Stop animating if moving or dragging...
-        //rect.set(x(), y(), w(), h());
         animating = false;
         return 0;
     }
@@ -781,6 +780,7 @@ int MenuWindow::handle(int event)
         // Allow menus to be "clicked-up".  Without this a single click will
         // pick whatever item the mouse is pointing at in a pop-up menu:
         if(initial_ && Fl::event_is_click()) {
+            printf("initial\n");
             initial_ = false;
             return 1;
         }
@@ -921,7 +921,7 @@ void Fl_Menu_::relayout_current_menu()
     current_menu->show();
 }
 
-#define DEBUG
+//#define DEBUG
 
 #ifdef DEBUG
 # define MODAL false
@@ -986,11 +986,14 @@ int Fl_Menu_::popup(int X, int Y, int W, int H)
 
     Fl_Widget* saved_modal = Fl::modal();
     bool saved_grab = Fl::grab();
-    first_menu->show(Fl::first_window());
 
     Fl::add_timeout(0.5f, timeout_initial);
 
-    for(Fl::modal(first_menu, MODAL); !Fl::exit_modal_flag(); Fl::wait());
+    for(Fl::modal(first_menu, MODAL); !Fl::exit_modal_flag(); Fl::wait())
+    {
+        //Show window, after entered MODAL loop, so window can events while animating
+        if(!first_menu->shown()) first_menu->show(Fl::first_window());
+    }
 
     delete first_menu;
 
@@ -1242,11 +1245,14 @@ int Fl_Choice::popup(int X, int Y, int W, int H)
 
     Fl_Widget* saved_modal = Fl::modal();
     bool saved_grab = Fl::grab();
-    first_menu->show(Fl::first_window());
 
     Fl::add_timeout(0.5f, timeout_initial);
 
-    for(Fl::modal(first_menu, MODAL); !Fl::exit_modal_flag(); Fl::wait());
+    for(Fl::modal(first_menu, MODAL); !Fl::exit_modal_flag(); Fl::wait())
+    {
+        //Show window, after entered MODAL loop, so window can events while animating
+        if(!first_menu->shown()) first_menu->show(Fl::first_window());
+    }
 
     delete first_menu;
 
