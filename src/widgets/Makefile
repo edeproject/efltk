@@ -5,8 +5,10 @@ CPPFILES = \
 	Fl_Browser.cpp \
 	Fl_Box.cpp \
 	Fl_Button.cpp \
+	Fl_Button_Group.cpp \
 	Fl_Calendar.cpp \
 	Fl_Check_Button.cpp \
+	Fl_Check_Buttons.cpp \
 	Fl_Choice.cpp \
 	Fl_Clock.cpp \
 	Fl_Color_Chooser.cpp \
@@ -50,6 +52,7 @@ CPPFILES = \
 	Fl_Popup_Window.cpp \
 	Fl_ProgressBar.cpp \
 	Fl_Radio_Button.cpp \
+	Fl_Radio_Buttons.cpp \
 	Fl_Repeat_Button.cpp \
 	Fl_Return_Button.cpp \
 	Fl_Roller.cpp \
