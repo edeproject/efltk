@@ -57,7 +57,7 @@ void Fl_ListView_Header::add_attr(int col)
 void Fl_ListView_Header::add_column(const char *name, int w)
 {
     columns(columns()+1);
-    column_label(columns()-1, name);
+    column_copy_label(columns()-1, name);
     column_width(columns()-1, w);
 }
 

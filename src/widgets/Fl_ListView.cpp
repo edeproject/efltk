@@ -1062,10 +1062,28 @@ void Fl_ListView::find_default_sizes()
 void Fl_ListView::fill(Fl_Data_Source &ds) {
    if (!ds.open()) return;
 
+   // First version is very primitive.
+   // Final version should replace the existing columns, if necessary.
+   header()->clear();
+   // Final version should replace the existing rows (truncate them,if necessary).
    clear();
    header()->button_box(FL_VERT_SHADE_UP_BOX);
 
-   for (unsigned col = 0; col < ds.field_count(); col++) {
-      //add_column("First", 100);
+   unsigned columnCount = ds.field_count();
+   if (!columnCount) return;
+   for (unsigned col = 0; col < columnCount; col++) {
+      Fl_Data_Field& df = ds.field(col);
+      int width = 100;
+      if (df.width >= 0)
+         width = df.width;
+      add_column(df.name(),width);
+   }
+
+   while (!ds.eof()) {
+      Fl_ListView_Item *item = new Fl_ListView_Item;
+      item->columns(columnCount);
+      for (unsigned col = 0; col < columnCount; col++) {
+         //item->copy_label(col, tmp);
+      }
    }
 }
