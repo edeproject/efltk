@@ -95,7 +95,7 @@ static uint8 *Map1toN(Fl_Colormap *src, Fl_PixelFormat *dst)
     alpha = dst->Amask ? 255 : 0;
     /* We memory copy to the pixel map so the endianness is preserved */
     for ( i=0; i<src->ncolors; ++i ) {
-        ASSEMBLE_RGBA(&map[i*bpp], dst->bytespp, dst,
+        fl_assemble_rgba(&map[i*bpp], dst->bytespp, dst,
                       src->colors[i].r, src->colors[i].g,
                       src->colors[i].b, alpha);
     }
@@ -173,7 +173,7 @@ bool Fl_PixelFormat::map_this(Fl_PixelFormat *dstfmt)
             break;
         default:
             /* BitField --> BitField */
-            if(FORMAT_EQUAL(this, dstfmt) )
+            if(fl_format_equal(this, dstfmt) )
                 identity = 1;
             break;
         }

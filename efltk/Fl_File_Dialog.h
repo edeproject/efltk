@@ -74,7 +74,6 @@ public:
     ~Fl_File_Dialog();
 
     void close(bool cancel);
-	bool cancelled() { return cancelled_; }
 
 	// read_dir tries to find this filename ("filename.ext") and select that file by default
 	// this is set to 0, always after read_dir()
@@ -108,14 +107,6 @@ public:
     void preview(bool show);
     void update_preview(const char *filename);
 
-#ifdef _WIN32
-    // Windoze network stuff:
-    bool enum_netresources(Fl_Callback *cb, LPNETRESOURCE lpnr, DWORD scope);
-    void read_network(LPNETRESOURCE net=0);
-    void add_netitem(LPNETRESOURCE net);
-    DWORD scope;
-#endif
-
     // Returns full path to file including filename, path could be e.g. 'filename.ext' or c:\filename.ext
     char *get_filename(const char *path, char *buf);
     // Returns full path to directory w/o filename, path could be e.g. 'c:\dir\somef' is returned c:\dir
@@ -123,9 +114,16 @@ public:
 
     virtual int handle(int e);
 
+#ifdef _WIN32
+    // MS Windows network stuff:
+    bool enum_netresources(Fl_Callback *cb, LPNETRESOURCE lpnr, DWORD scope);
+    void read_network(LPNETRESOURCE net=0);
+    void add_netitem(LPNETRESOURCE net);
+    DWORD scope;
+#endif
+
 private:
     Fl_ListView *listview_;
-    bool cancelled_;
 
     Fl_Image_Cache image_cache;
     PreviewBox *preview_;

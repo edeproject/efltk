@@ -196,8 +196,8 @@ bool Fl::dnd()
             // Windows that don't support DnD are reported as ok because
             // we are going to try the middle-mouse click on them:
             drop_ok = types[0]==fl_textplain;
-        }
-        Fl_Cursor cursor = Fl_Cursor(drop_ok ? 21 : 1);
+        }        
+		Fl_Cursor cursor = Fl_Cursor(drop_ok ? 21 : FL_CURSOR_NO);
         if (cursor != oldcursor)
         {
             oldcursor = cursor;

@@ -62,7 +62,7 @@ int ComboBrowser::handle(int event)
     if(Fl::event_key()==FL_Down && (!item() || children()==1)) {
         item(child(0));
         Fl_Group::focus(item());
-    }
+    }	
 
     if((event==FL_SHORTCUT||event==FL_KEY) && !(combo->type()&Fl_Input_Browser::NONEDITABLE)) {
         if( (Fl::event_key()!=FL_Escape) &&
@@ -71,7 +71,7 @@ int ComboBrowser::handle(int event)
            !(Fl::event_key()==FL_Enter && item()) )
             return combo->input_->handle(FL_KEY);
     }
-
+	
     static bool was_wheel=false;
     if(was_wheel) {
         was_wheel=false;
@@ -85,11 +85,13 @@ int ComboBrowser::handle(int event)
     }
 
     case FL_KEY:
+	case FL_SHORTCUT:
         if(Fl::event_key() == FL_Escape) {
             combo->hide_popup();
             was_up = false;
             return 1;
         }
+		break;
 
     case FL_PUSH: {
         Fl_Rect size_grip(w()-SIZE_GRIP, h(), SIZE_GRIP, SIZE_GRIP);

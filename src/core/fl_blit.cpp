@@ -43,13 +43,13 @@ bool Fl_Renderer::blit(uint8 *src, Fl_Rect *src_rect, Fl_PixelFormat *src_fmt, i
     info.table = src_fmt->table;
     info.dst = dst_fmt;
 
-    if(flags&HW_PALETTE) info.hw_surface=true;
+    if(flags&FL_BLIT_HW_PALETTE) info.hw_surface=true;
     else info.hw_surface=false;
 
     Blit_Function blit_f = 0;
 
     int index = 0;
-    index |= (!!(flags & COLOR_KEY)) << 0;
+    index |= (!!(flags & FL_BLIT_COLOR_KEY)) << 0;
     if((src_fmt->alpha != 255 || src_fmt->Amask)) {
         index |= 2;
     }
@@ -102,11 +102,11 @@ bool Fl_Renderer::alpha_blit(uint8 *src, Fl_Rect *src_rect, Fl_PixelFormat *src_
     info.table = src_fmt->table;
     info.dst = dst_fmt;
 
-    if(flags&HW_PALETTE) info.hw_surface=true;
+    if(flags&FL_BLIT_HW_PALETTE) info.hw_surface=true;
     else info.hw_surface=false;
 
     int index = 0;
-    index |= (flags & COLOR_KEY) ? 1 : 0;
+    index |= (flags & FL_BLIT_COLOR_KEY) ? 1 : 0;
 
     Blit_Function blit_f = 0;
 

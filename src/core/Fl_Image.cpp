@@ -13,36 +13,84 @@
 
 #include "fl_internal.h"
 
-Fl_PtrList<ImageReader> readers;
+////////////////////////////////////
+// EFLTK IMAGE IO METHODS
 
-ImageReader *Fl_Image::find_reader(ImageReader *reader)
-{
-    for(ImageReader *r=readers.first(); r!=0; r=readers.next())
-        if(reader==r) return r;
+static Fl_PtrList<Fl_Image_IO> imageio_list;
+
+Fl_Image_IO *fl_find_imageio(Fl_Image_IO *io) {
+    for(Fl_Image_IO *item=imageio_list.first(); item!=0; item=imageio_list.next())
+        if(io==item) return item;
     return 0;
 }
 
-void Fl_Image::unregister_reader(ImageReader *reader)
-{
-    ImageReader *r = find_reader(reader);
-    if(!r) return;
-    readers.remove(reader);
+void fl_unregister_imageio(Fl_Image_IO *io) {
+    Fl_Image_IO *item = fl_find_imageio(io);
+    if(!item) return;
+    imageio_list.remove(io);
 }
 
-void Fl_Image::register_reader(ImageReader *reader)
-{
-    if(find_reader(reader)) return;
-    readers.append(reader);
+void fl_register_imageio(Fl_Image_IO *io) {
+    if(fl_find_imageio(io)) return;	
+    imageio_list.append(io);
 }
+
+Fl_Image_IO *fl_find_imageio(const char *name, const char *extension) {
+	for(Fl_Image_IO *item=imageio_list.first(); item!=0; item=imageio_list.next()) {
+		if(name) if(!strcmp(item->name, name)) return item;		
+		if(extension) if(strstr(item->extensions, extension)) return item;		
+	}
+    return 0;
+}
+
+Fl_Image_IO *fl_find_imageio(int index) {
+	return imageio_list.item(index);
+}
+
+uint fl_count_imageio() {
+	return imageio_list.count();
+}
+
+Fl_PtrList<Fl_Image_IO> &fl_list_imageio() {
+	return imageio_list;
+}
+
+//////////////////////////////////////
 
 bool Fl_Image::_state_effect_all = true;
 
-Fl_Image::Fl_Image(int W, int H, Fl_PixelFormat *fmt, uint8 *data, int flags)
-{
-    init(W, H, fmt->bitspp, data, fmt->Rmask, fmt->Gmask, fmt->Bmask, fmt->Amask, flags);
+Fl_Image::Fl_Image() 
+{ 
+	init(0,0,0,0,0,0,0,0); 
 }
 
-Fl_Image::Fl_Image(int W, int H, int bits_pp, int flags)
+Fl_Image::Fl_Image(const char *filename, int quality)
+{
+	init(0,0,0,0,0,0,0,0);
+	quality_ = quality;
+	read_image(filename);
+}
+
+Fl_Image::Fl_Image(const uint8 *data, uint32 data_size, int quality)
+{
+	init(0,0,0,0,0,0,0,0);
+	quality_ = quality;
+	read_image(0, data, data_size);
+}
+
+Fl_Image::Fl_Image(const char * const *data, int quality)
+{
+	init(0,0,0,0,0,0,0,0);
+	quality_ = quality;
+	read_image(0, data);
+}
+
+Fl_Image::Fl_Image(int W, int H, Fl_PixelFormat *fmt, uint8 *data)
+{
+    init(W, H, fmt->bitspp, data, fmt->Rmask, fmt->Gmask, fmt->Bmask, fmt->Amask);
+}
+
+Fl_Image::Fl_Image(int W, int H, int bits_pp)
 {
     uint32 Rmask=0, Gmask=0, Bmask=0, Amask=0;
     switch(bits_pp)
@@ -61,45 +109,38 @@ Fl_Image::Fl_Image(int W, int H, int bits_pp, int flags)
         Bmask = 0x001F;
         break;
     }
-    init(W, H, bits_pp, 0, Rmask, Gmask, Bmask, Amask, flags);
+    init(W, H, bits_pp, 0, Rmask, Gmask, Bmask, Amask);
 }
 
-Fl_Image::Fl_Image(int W, int H, int bits_pp, uint8 *data, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask, int flags)
+Fl_Image::Fl_Image(int W, int H, int bits_pp, uint8 *data, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask)
 {
-    init(W, H, bits_pp, data, Rmask, Gmask, Bmask, Amask, flags);
+    init(W, H, bits_pp, data, Rmask, Gmask, Bmask, Amask);
 }
 
 Fl_Image::Fl_Image(Fl_Image &i)
 {
     copy(i, *this);
-
-    /*init(i.w, i.h, i.bitspp(), 0, i.format()->Rmask, i.format()->Gmask, i.format()->Bmask, i.format()->Amask, i._flags);
-    if(i.format()->palette)
-        fmt.palette->copy(i.format()->palette);
-
-    _masktype = i.mask_type();
-
-    fmt.colorkey = i.colorkey();
-    fmt.alpha = i.alpha();
-
-    memcpy(_data, i.data(), h*_pitch);*/
 }
 
 void Fl_Image::copy(Fl_Image &src, Fl_Image &dst)
 {
-    dst.init(src.w, src.h, src.bitspp(), 0, src.format()->Rmask, src.format()->Gmask, src.format()->Bmask, src.format()->Amask, src._flags);
-    if(src.format()->palette)
-        dst.fmt.palette->copy(src.format()->palette);
+	dst.clear();
 
-    dst._masktype = src.mask_type();
+	dst.w = src.w;
+	dst.h = src.h;
+	dst._pitch = src._pitch;
+	dst._threshold = src._threshold;
+	dst.quality_ = src.quality_;
+	dst._state_effect = src._state_effect;
+	dst._data_alloc = true;
 
-    dst.fmt.colorkey = src.colorkey();
-    dst.fmt.alpha = src.alpha();
+	dst.fmt.copy(&src.fmt);
 
-    memcpy(dst._data, src.data(), src.h*src._pitch);
+	dst._data = new uint8[src.h*src._pitch];
+    memcpy(dst._data, src._data, src.h*src._pitch);
 }
 
-void Fl_Image::init(int W, int H, int bits_pp, uint8 *data, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask, int flags)
+void Fl_Image::init(int W, int H, int bits_pp, uint8 *data, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask)
 {
     _state_effect = true;
 
@@ -113,26 +154,24 @@ void Fl_Image::init(int W, int H, int bits_pp, uint8 *data, uint32 Rmask, uint32
 
     fmt.init(bits_pp, Rmask, Gmask, Bmask, Amask);
 
+	quality_ = FL_QUALITY_NORMAL;
     draw_flags = 0;
-    _flags = 0;
-    if(flags) _flags  = flags;
-
     _data_alloc = false;
     _data = data;
-
     _pitch = 0;
 
-    if(W>0 && H>0) {
+    if(W>0 && H>0 && bits_pp>0) {
         _pitch = Fl_Renderer::calc_pitch(fmt.bytespp, w);
         if(!_data) {
             _data_alloc = true;
-            // Create uint8 array and initialize it to 0
+            // Allocate uint8 data array and initialize it to 0
             _data = new uint8[H*_pitch];
             memset(_data, 0, H*_pitch);
         }
     }
 
-    _masktype = MASK_NONE;
+	// Masking:
+	_threshold = 128;
     id = mask = 0;
 
     no_screen_ = false;
@@ -150,7 +189,7 @@ bool Fl_Image::check_map(Fl_PixelFormat *new_map)
 
 bool Fl_Image::check_map(Fl_PixelFormat *cur_fmt, Fl_PixelFormat *new_fmt)
 {
-    if(FORMAT_EQUAL(cur_fmt, new_fmt) && !cur_fmt->palette) {
+    if(fl_format_equal(cur_fmt, new_fmt) && !cur_fmt->palette) {
         return false;
     }
     return cur_fmt->map_this(new_fmt);
@@ -163,7 +202,7 @@ void Fl_Image::system_convert()
 
     Fl_PixelFormat *format = Fl_Renderer::system_format();
 
-    if( FORMAT_EQUAL((&fmt), format) ) {
+    if( fl_format_equal((&fmt), format) ) {
         return;
     }
 
@@ -172,7 +211,7 @@ void Fl_Image::system_convert()
     check_map(format);
 
     Fl_Size s(w,h);
-    uint8 *system_fmt = Fl_Renderer::system_convert(&fmt, &s, _data, HW_PALETTE);
+    uint8 *system_fmt = Fl_Renderer::system_convert(&fmt, &s, _data, FL_BLIT_HW_PALETTE);
     if(_data_alloc) delete []_data;
 
     _data = system_fmt;
@@ -225,8 +264,9 @@ void Fl_Image::clear()
     invalidate();
     if(_data && _data_alloc) {
         delete []_data;
-        _data = 0;
     }
+	_data = 0;
+	_data_alloc = false;
 }
 
 Fl_Image *Fl_Image::grayscale(Fl_PixelFormat *new_format)
@@ -282,9 +322,9 @@ uint8 *render_box(int w, int h, int bitspp, uint color, Fl_Colormap *pal, uint8 
     fl_get_color(color, r, g, b);
     uint32 fill_color=0;
     switch(bitspp) {
-    case 32: RGB888_FROM_RGB(fill_color ,r,g,b); break;
-    case 16: RGB565_FROM_RGB(fill_color ,r,g,b); break;
-    case 15: RGB555_FROM_RGB(fill_color ,r,g,b); break;
+    case 32: fl_rgb888_from_rgb(fill_color ,r,g,b); break;
+    case 16: fl_rgb565_from_rgb((uint16&)fill_color ,r,g,b); break;
+    case 15: fl_rgb555_from_rgb((uint16&)fill_color ,r,g,b); break;
     case 8:  fill_color = FindColor(pal, r,g,b); break;
     default: break;
     }
@@ -354,13 +394,13 @@ Fl_Image *Fl_Image::fore_blend(uint color, Fl_PixelFormat *new_format)
     while ( height-- ) {
         DUFFS_LOOP4(
         {
-            DISEMBLE_RGB(src, srcbpp, srcfmt, pixel, sR, sG, sB);
+            fl_disemble_rgb(src, srcbpp, srcfmt, pixel, sR, sG, sB);
 
-            ALPHA_BLEND(dR, dG, dB, sA, sR, sG, sB);
+            fl_alpha_blend(dR, dG, dB, sA, sR, sG, sB);
             if(dstbpp==1) {
                 ERROR_DIFF(sR,sG,sB,*dst);
             } else
-                ASSEMBLE_RGBA(dst, dstbpp, dstfmt, sR, sG, sB, dA);
+                fl_assemble_rgba(dst, dstbpp, dstfmt, sR, sG, sB, dA);
 
             src += srcbpp;
             dst += dstbpp;
@@ -394,7 +434,7 @@ Fl_Image *Fl_Image::back_blend(uint color, Fl_PixelFormat *new_format)
     Fl_Rect R(0,0,w,h);
     Fl_Renderer::alpha_blit(_data, &R, &fmt, _pitch,
                             ret->data(), &R, ret->format(), ret->pitch(),
-                            _flags|HW_PALETTE);
+                            FL_BLIT_HW_PALETTE);
     return ret;
 }
 
@@ -448,7 +488,7 @@ Fl_Image *Fl_Image::blend(Fl_Image *back, Fl_Rect *back_rect, Fl_PixelFormat *ne
     Fl_Rect tmp_r2(X, Y, W, H);
     Fl_Renderer::alpha_blit(_data, &tmp_r2, &fmt, _pitch,
                              ret->data(), &tmp_r, ret->format(), ret->pitch(),
-                             _flags|HW_PALETTE);
+                             FL_BLIT_HW_PALETTE);
 
     return ret;
 }
@@ -525,7 +565,7 @@ Pixmap Fl_Image::create_alpha_mask(Fl_Rect &rect, uint8 *data, int pitch, Fl_Pix
         {
             uint8 r,g,b, alpha;
             uint32 pixel;
-            DISEMBLE_RGBA(ptr, format->bytespp, (format), pixel, r, g, b, alpha);
+            fl_disemble_rgba(ptr, format->bytespp, (format), pixel, r, g, b, alpha);
 
             if(alpha < threshold) {
                 mask_found = true;
@@ -574,8 +614,8 @@ Pixmap Fl_Image::create_color_mask(Fl_Rect &rect, uint8 *data, int pitch, Fl_Pix
 
     uint32 pixel;
     uint8 cr,cg,cb,ca,r=0,g=0,b=0;
-    //RGB_FROM_RGB888(color, cr, cg, cb);
-    RGBA_FROM_RGBA8888(color, cr, cg, cb, ca);	
+    //fl_rgb_from_rgb888(color, cr, cg, cb);
+    fl_rgba_from_rgba8888(color, cr, cg, cb, ca);	
 
     bool is_xpm = (color==0xFFFFFFFF);
 
@@ -585,7 +625,7 @@ Pixmap Fl_Image::create_color_mask(Fl_Rect &rect, uint8 *data, int pitch, Fl_Pix
         ptr = (data + (y * pitch) + (rect.x() * format->bytespp));
         for(int x = 0; x < rect.w(); x++)
         {
-            DISEMBLE_RGB(ptr, format->bytespp, (format), pixel, r, g, b);
+            fl_disemble_rgb(ptr, format->bytespp, (format), pixel, r, g, b);
             if(fmt.bytespp==1) {
                 if(is_xpm && format->palette->colors[*ptr].a) {
                     // Fixes indexed XPM's
@@ -660,7 +700,7 @@ Pixmap Fl_Image::create_pixel_mask(Fl_Rect &rect, uint8 *data, int pitch, Fl_Pix
 
 Pixmap Fl_Image::create_mask(int W, int H)
 {
-    if(_masktype==MASK_NONE) return 0;
+    if(mask_type()==FL_MASK_NONE) return 0;
 
     Fl_Rect rect1(0,0,w,h);
     Fl_Rect rect2(0,0,W,H);
@@ -680,17 +720,17 @@ Pixmap Fl_Image::create_mask(int W, int H)
         dataptr = data();
     }
 
-    if(_masktype == MASK_ALPHA) {
+    if(mask_type() == FL_MASK_ALPHA) {
         bitmap = create_alpha_mask(rect2, dataptr, newpitch, format(), threshold());
     }
-    else if(_masktype == MASK_COLORKEY) {
+    else if(mask_type() == FL_MASK_COLORKEY) {
         bitmap = create_color_mask(rect2, dataptr, newpitch, format(), colorkey());
     }
-    else if(_masktype == MASK_PIXELKEY) {
+    else if(mask_type() == FL_MASK_PIXELKEY) {
         bitmap = create_pixel_mask(rect2, dataptr, newpitch, format(), colorkey());
     }
     if(!bitmap) {
-        _masktype = MASK_NONE;
+        mask_type(FL_MASK_NONE);
     }
 
     if(alloc) delete []alloc;
@@ -823,7 +863,7 @@ void Fl_Image::draw(int dx, int dy, int dw, int dh,
             // before draw it!
             uint8 *system_fmt = 0;
             Fl_Size size(w, h);
-            system_fmt = Fl_Renderer::system_convert(draw_fmt, &size, draw_data, HW_PALETTE);
+            system_fmt = Fl_Renderer::system_convert(draw_fmt, &size, draw_data, FL_BLIT_HW_PALETTE);
 
             //printf("draw %d %d %d %d -> %d %d %d %d\n", sx,sy,sw,sh, dx,dy,dw,dh);
 
@@ -855,88 +895,131 @@ void Fl_Image::draw(int dx, int dy, int dw, int dh,
     }
 }
 
-extern ImageReader xpm_reader;
-extern ImageReader bmp_reader;
-extern ImageReader gif_reader;
+extern Fl_Image_IO xpm_reader;
+extern Fl_Image_IO bmp_reader;
+extern Fl_Image_IO gif_reader;
+
+static bool xpm_data=false;
 
 Fl_Image* Fl_Image::read_xpm(const char *filename, const char * const *data)
-{
-    register_reader(&xpm_reader);
-    register_reader(&bmp_reader);
-    register_reader(&gif_reader);
-
-    Fl_Image *ret=0;
-    if(filename && fl_file_exists(filename)) {
-        Fl_FileAttr a;
-        if(!a.parse(filename)) return ret;
-        FILE *file = fopen(filename, "rb");
-        if(!file) return ret;
-        void *buffer = malloc(a.size);
-        uint readed = fread(buffer, 1, a.size, file);
-        if(readed!=a.size) {
-            printf("Could not read XPM file: %s\n", filename);
-            free(buffer);
-            fclose(file);
-            return ret;
-        }
-        if(xpm_reader.is_valid(buffer, true)) {
-            ret = xpm_reader.create(buffer, true);
-        }
-        free(buffer);
-        fclose(file);
-    } else if(data) {
-        if(!xpm_reader.is_valid_xpm((void**)data)) return 0;
-        ret = xpm_reader.create((void*)data, false);
-    }
-    return ret;
+{	
+	xpm_data=true;
+	Fl_Image *ret = new Fl_Image();	
+	if(ret->read_image(filename, (const uint8 *)data, sizeof(data)))
+		return ret;
+	delete ret;
+	return 0;
 }
 
-Fl_Image* Fl_Image::read(const char *filename, const uint8 *data)
-{
-    register_reader(&xpm_reader);
-    register_reader(&bmp_reader);
-    register_reader(&gif_reader);
+Fl_Image* Fl_Image::read(const char *filename, const uint8 *data, uint32 data_size)
+{	
+	xpm_data=false;
+	Fl_Image *ret = new Fl_Image();
+	if(ret->read_image(filename, data, data_size))
+		return ret;
+	delete ret;
+	return 0;
+}
 
-    Fl_Image *ret = 0;
-    void *buffer=0;
-    bool from_file=false;
+bool Fl_Image::read_image(const char *filename, const char * const *data)
+{
+	xpm_data=true;	
+	return read_image(filename, (const uint8 *)data, sizeof(data));
+}
+
+bool Fl_Image::read_image(const char *filename, const uint8 *data, uint32 data_size)
+{
+	fl_register_imageio(&xpm_reader);
+	fl_register_imageio(&bmp_reader);
+	fl_register_imageio(&gif_reader);
+
+	clear();
+	
+    bool ret = false;
+	FILE *fp = 0;
 
     if(filename && fl_file_exists(filename)) {
-        Fl_FileAttr a;
-        if(!a.parse(filename))
-            return ret;
-        FILE *file = fopen(filename, "rb");
-        if (!file) return ret;
-        buffer = malloc(a.size);
-        uint readed = fread(buffer, 1, a.size, file);
-        if(readed!=a.size) {
-            printf("Could not read file: %s\n", filename);
-            free(buffer);
-            fclose(file);
-            return ret;
-        }
-        from_file = true;
-        fclose(file);
-
-    } else if(data) {
-        buffer = (void *)data;
-    } else {
+        fp = fopen(filename, "rb");
+        if(!fp) return ret;
+    } else if(!data && data_size<=0) {
         return ret;
     }
 
-    for(ImageReader *r=readers.first(); r!=0; r=readers.next()) {
-        if(r->is_valid && r->is_valid(buffer, from_file)) {			
-            ret = r->create(buffer, from_file);			
-            break;
-        }
-    }
+	if(xpm_data && !fp) {
 
-    if(ret && ret->bitspp() >= 32 && ret->format()->Amask) {
-        // Default for images with alpha mask
-        ret->mask_type(MASK_ALPHA);		
-    }
+		// ONLY XPM DATA READ:
+		Fl_Image_IO *r = &xpm_reader;
+		if(r->is_valid_xpm && r->read_mem && r->is_valid_xpm((const uint8**)data))
+			ret = r->read_mem((uint8*)data, data_size, quality_, _data, fmt, w, h);			
 
-    if(from_file && buffer) free(buffer);
+	} else {
+
+		for(Fl_Image_IO *r=imageio_list.first(); r!=0; r=imageio_list.next()) {
+			if(fp) {
+				if(r->is_valid_file && r->read_file && r->is_valid_file(filename, fp))
+					ret = r->read_file(fp, 0, _data, fmt, w, h);									
+			} else {
+				if(r->is_valid_mem && r->is_valid_mem(data, data_size))
+					ret = r->read_mem((uint8*)data, data_size, quality_, _data, fmt, w, h);				
+			}
+		}
+	}
+
+    if(ret && format()->Amask) {
+        // Default mask for images with alpha mask
+        mask_type(FL_MASK_ALPHA);
+    }    
+	
+	if(ret && _data) {
+		_data_alloc = true;
+		_pitch = Fl_Renderer::calc_pitch(bytespp(), width());		
+	}
+	
+	xpm_data=false;
+    if(fp) fclose(fp);
     return ret;
 }
+
+bool Fl_Image::write_image(const char *filename, const char *io_name)
+{
+	return write_image(filename, fl_find_imageio(io_name, 0));
+}
+
+bool Fl_Image::write_image(const char *filename, Fl_Image_IO *io)
+{
+	if(!io || !filename) return false;
+
+	bool ret = false;
+
+    FILE *fp = fopen(filename, "rb");
+    if(!fp) return ret;
+    
+	for(Fl_Image_IO *r=imageio_list.first(); r!=0; r=imageio_list.next()) {
+		if(r->write_file)
+			ret = r->write_file(fp, quality_, _data, fmt, w, h);
+	}
+
+	if(fp) fclose(fp);
+	return ret;
+}
+
+bool Fl_Image::write_image(uint8 *&data, int &data_size, const char *io_name) 
+{
+	return write_image(data, data_size, fl_find_imageio(io_name, 0));
+}
+
+bool Fl_Image::write_image(uint8 *&data, int &data_size, Fl_Image_IO *io)
+{
+	if(!io) return false;
+
+	bool ret = false;
+
+	for(Fl_Image_IO *r=imageio_list.first(); r!=0; r=imageio_list.next()) {
+		if(r->write_mem)
+			ret = r->write_mem(data, data_size, quality_, _data, fmt, w, h);
+	}
+
+	return ret;
+}
+
 

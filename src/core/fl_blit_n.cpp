@@ -31,7 +31,7 @@ static void Blit_RGB888_index8(BlitInfo *info)
 
     Fl_PixelFormat *srcfmt = info->src;
 
-    int R,G,B;
+    uint8 R,G,B;
 
     ERROR_DIFF_START();
 
@@ -50,7 +50,7 @@ static void Blit_RGB888_index8(BlitInfo *info)
                        //RGB888_RGB332(pixel, *src);
                        //*dst++ = map[pixel];
 
-                       RGB_FROM_RGB888(*src, R, G, B)
+                       fl_rgb_from_rgb888(*src, R, G, B);
                        ERROR_DIFF(R,G,B,*dst++);
                        ++src;
                        , width);
@@ -115,7 +115,7 @@ static void Blit_RGB888_RGB565(BlitInfo *info)
 
     while ( height-- ) {
         DUFFS_LOOP(
-                   RGB888_RGB565(dst, src);
+                   RGB888_RGB555(dst, src);
                    ++src;
                    ++dst;
                    , width);
@@ -125,7 +125,7 @@ static void Blit_RGB888_RGB565(BlitInfo *info)
 }
 
 /* Special optimized blit for RGB 5-6-5 --> 32-bit RGB surfaces */
-#if ( __BYTE_ORDER == __LITTLE_ENDIAN )
+#if !WORDS_BIGENDIAN
 #define RGB565_32(dst, src, map) (map[src[0]*2] + map[src[1]*2+1])
 #else
 #define RGB565_32(dst, src, map) (map[src[1]*2] + map[src[0]*2+1])
@@ -190,7 +190,7 @@ static void BlitNto1(BlitInfo *info)
     int srcskip, dstskip;
     int srcbpp;
     uint32 pixel;
-    uint sR=0, sG=0, sB=0;
+    uint8 sR=0, sG=0, sB=0;
     Fl_PixelFormat *srcfmt;
 
     /* Set up some basic variables */
@@ -210,7 +210,7 @@ static void BlitNto1(BlitInfo *info)
     if(map == NULL) {
         while ( height-- ) {
             DUFFS_LOOP(
-                       DISEMBLE_RGB(src, srcbpp, srcfmt, pixel,
+                       fl_disemble_rgb(src, srcbpp, srcfmt, pixel,
                                     sR, sG, sB);
                        /* Pack RGB into 8bit pixel */
                        if(hw) { ERROR_DIFF(sR, sG, sB, *dst); }
@@ -226,7 +226,7 @@ static void BlitNto1(BlitInfo *info)
     } else {
         while ( height-- ) {
             DUFFS_LOOP(
-                       DISEMBLE_RGB(src, srcbpp, srcfmt, pixel,
+                       fl_disemble_rgb(src, srcbpp, srcfmt, pixel,
                                     sR, sG, sB);
                        if(hw) {
                            ERROR_DIFF(sR, sG, sB, *dst);
@@ -258,13 +258,13 @@ static void BlitNtoN(BlitInfo *info)
     unsigned alpha = dstfmt->Amask ? 255 : 0;
 
     uint32 pixel;
-    uint sR=0, sG=0, sB=0;
+    uint8 sR=0, sG=0, sB=0;
 
     while ( height-- ) {
         DUFFS_LOOP(
                    {
-                       DISEMBLE_RGB(src, srcbpp, srcfmt, pixel, sR, sG, sB);
-                       ASSEMBLE_RGBA(dst, dstbpp, dstfmt, sR, sG, sB, alpha);
+                       fl_disemble_rgb(src, srcbpp, srcfmt, pixel, sR, sG, sB);
+                       fl_assemble_rgba(dst, dstbpp, dstfmt, sR, sG, sB, alpha);
                        dst += dstbpp;
                        src += srcbpp;
                    },
@@ -288,14 +288,15 @@ static void BlitNtoNCopyAlpha(BlitInfo *info)
     int dstbpp = dstfmt->bytespp;
     int c;
 
+	uint8 sR, sG, sB, sA;
+
     /* FIXME: should map alpha to [0..255] correctly! */
     while ( height-- ) {
         for ( c=width; c; --c ) {
-            uint32 pixel;
-            unsigned sR, sG, sB, sA;
-            DISEMBLE_RGBA(src, srcbpp, srcfmt, pixel,
+            uint32 pixel;            
+            fl_disemble_rgba(src, srcbpp, srcfmt, pixel,
                           sR, sG, sB, sA);
-            ASSEMBLE_RGBA(dst, dstbpp, dstfmt,
+            fl_assemble_rgba(dst, dstbpp, dstfmt,
                           sR, sG, sB, sA);
             dst += dstbpp;
             src += srcbpp;
@@ -320,7 +321,7 @@ static void BlitNto1Key(BlitInfo *info)
     int srcbpp;
 
     uint32 pixel;
-    uint sR=0, sG=0, sB=0;
+    uint8 sR=0, sG=0, sB=0;
 
     /* Set up some basic variables */
     srcbpp = srcfmt->bytespp;
@@ -330,7 +331,7 @@ static void BlitNto1Key(BlitInfo *info)
         while ( height-- ) {
             DUFFS_LOOP(
                        {
-                           DISEMBLE_RGB(src, srcbpp, srcfmt, pixel,
+                           fl_disemble_rgb(src, srcbpp, srcfmt, pixel,
                                         sR, sG, sB);
                            if ( (pixel & rgbmask) != ckey ) {
                                /* Pack RGB into 8bit pixel */
@@ -349,7 +350,7 @@ static void BlitNto1Key(BlitInfo *info)
         while ( height-- ) {
             DUFFS_LOOP(
                        {
-                           DISEMBLE_RGB(src, srcbpp, srcfmt, pixel,
+                           fl_disemble_rgb(src, srcbpp, srcfmt, pixel,
                                         sR, sG, sB);
                            if ( (pixel & rgbmask) != ckey ) {
                                /* Pack RGB into 8bit pixel */
@@ -413,17 +414,16 @@ static void BlitNtoNKey(BlitInfo *info)
     int dstbpp = dstfmt->bytespp;
     unsigned alpha = dstfmt->Amask ? 255 : 0;
 
+	uint8 sR, sG, sB;
+
     while ( height-- ) {
         DUFFS_LOOP(
                    {
-                       uint32 pixel;
-                       unsigned sR;
-                       unsigned sG;
-                       unsigned sB;
-                       RETRIEVE_RGB_PIXEL(src, srcbpp, pixel);
+                       uint32 pixel;                       
+                       fl_retrieve_rgb_pixel(src, srcbpp, pixel);
                        if ( pixel != ckey ) {
-                           RGB_FROM_PIXEL(pixel, srcfmt, sR, sG, sB);
-                           ASSEMBLE_RGBA(dst, dstbpp, dstfmt,
+                           fl_rgb_from_pixel(pixel, srcfmt, sR, sG, sB);
+                           fl_assemble_rgba(dst, dstbpp, dstfmt,
                                          sR, sG, sB, alpha);
                        }
                        dst += dstbpp;
@@ -462,10 +462,10 @@ static void BlitNtoNKeyCopyAlpha(BlitInfo *info)
     while ( height-- ) {
         DUFFS_LOOP(
                    {
-                       DISEMBLE_RGBA(src, srcbpp, srcfmt, pixel,
+                       fl_disemble_rgba(src, srcbpp, srcfmt, pixel,
                                      sR, sG, sB, sA);
                        if ( (pixel & rgbmask) != ckey ) {
-                           ASSEMBLE_RGBA(dst, dstbpp, dstfmt,
+                           fl_assemble_rgba(dst, dstbpp, dstfmt,
                                          sR, sG, sB, sA);
                        }
                        dst += dstbpp;
@@ -532,7 +532,7 @@ Blit_Function get_blit_n(Fl_PixelFormat *srcfmt, Fl_PixelFormat *dstfmt, int fla
         return 0;
     }
 
-    if((flags & COLOR_KEY)) {
+    if((flags & FL_BLIT_COLOR_KEY)) {
         /* colorkey blit: Here we don't have too many options, mostly
          because RLE is the preferred fast way to deal with this.
          If a particular case turns out to be useful we'll add it. */

@@ -105,7 +105,7 @@ void Fl::init()
 
 		// Get system defaults, if efltk configfile NOT found
 
-		BOOL menu_anim=false, menu_fade=false, tooltip_anim=false, tooltip_fade=false;
+		bool menu_anim=false, menu_fade=false, tooltip_anim=false, tooltip_fade=false;
 	
 		SystemParametersInfo(SPI_GETMENUANIMATION, 0, (PVOID)&menu_anim, 0);		
 		if(menu_anim) {

@@ -46,6 +46,7 @@ public:
     void color(int col, Fl_Color color) { colors[col] = color; }
 
     void image(int col, Fl_Image *im) { images[col] = im; }
+    void image(int col, Fl_Image &im) { images[col] = &im; }
     Fl_Image *image(int col) { return images[col]; }
 
     static char *get_multiline(const char *buf, int maxwidth);
@@ -57,14 +58,10 @@ private:
 
     const char *labels[MAX_COLUMNS];
     int widths[MAX_COLUMNS];
-
     Fl_Font fonts[MAX_COLUMNS];
     int font_sizes[MAX_COLUMNS];
-
     int colflags[MAX_COLUMNS];
-
     Fl_Color colors[MAX_COLUMNS];
-
     Fl_Image *images[MAX_COLUMNS];
 };
 

@@ -28,18 +28,8 @@
 
 #include "Fl_Image.h"
 
-class FL_API Fl_Pixmap : public Fl_Image {
-public:
-    const char * const * data;
-    Fl_Pixmap(const char * const * d) : data(d) {w = -1;}
-    Fl_Pixmap(const unsigned char* const * d) : data((char**)d) {w = -1;}
-    // some compilers with bugs may need this one: (?)
-    Fl_Pixmap(char ** d)		    : data(d) {w = -1;}
-
-    void measure(int&,int&);
-    void draw(int, int, int, int, Fl_Flags = 0);
-    void draw(int x, int y, Fl_Flags f = 0) {draw(x,y,w,h,f);}
-};
+// Backward compatibility
+typedef Fl_Image Fl_Pixmap;
 
 #endif
 

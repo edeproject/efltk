@@ -1,49 +1,39 @@
-#include <efltk/Fl_Image.h>
-
 /* This is an XPM image file loading framework */
+#include <efltk/Fl_Image.h>
+#include <efltk/Fl.h>
 
-#include <config.h>
-
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <ctype.h>
 
-static uint8 *read_ptr = 0;
-static int Read(void *buf, int len)
+#include "fl_internal.h"
+static Fl_IO xpm_io;
+
+#define XPM_BYTES_TO_CHECK 10
+static bool xpm_is_valid_file(const char *filename, FILE *fp) 
 {
-    memcpy(buf, read_ptr, len);
-    read_ptr+=len;
-    return len;
+	char type[XPM_BYTES_TO_CHECK];
+	uint32 pos = ftell(fp);
+	fread(type, XPM_BYTES_TO_CHECK, 1, fp);    
+	fseek(fp, pos, SEEK_SET); //return position in file
+	
+    return (memcmp(type, "/* XPM */", 9) == 0);
 }
 
-bool xpm_is_valid_xpm(void **stream)
+static bool xpm_is_valid_mem(const uint8 *stream, uint32 size)
 {
-    if(stream) {
-        // The header string of an XPMv3 image has the format
-        // <width> <height> <ncolors> <cpp> [ <hotspot_x> <hotspot_y> ]
-        char *ptr = ((char **)stream)[0];
-        if(!ptr) return false;
-
-        int w, h, ncol, cpp;
-        if(sscanf(ptr, "%d %d %d %d", &w, &h, &ncol, &cpp) != 4)
-            return false;
-        return true;
-    }
-    return false;
+	return size>=XPM_BYTES_TO_CHECK && (memcmp(stream, "/* XPM */", 9) == 0);	
 }
 
-/* See if an image is contained in a data source */
-bool xpm_is_valid(void *stream, bool file)
+static bool xpm_is_valid_xpm(const uint8 **stream)
 {
-    if(stream && file) {
-        uint8 type[10];
-        memcpy(type, stream, 10);
-        if(memcmp(type, "/* XPM */", 9) == 0) {
-            return true;
-        }
-    }
-    return false;
+	// The header string of an XPMv3 image has the format
+    // <width> <height> <ncolors> <cpp> [ <hotspot_x> <hotspot_y> ]
+    char *ptr = ((char **)stream)[0];
+    if(!ptr) return false;
+    int w, h, ncol, cpp;
+    if(sscanf(ptr, "%d %d %d %d", &w, &h, &ncol, &cpp) != 4) 
+		return false;
+    return true;
 }
 
 static char *xpm_gets(char *string, int maxlen)
@@ -51,7 +41,7 @@ static char *xpm_gets(char *string, int maxlen)
     int i;
 
     for ( i=0; i<(maxlen-1); ++i ) {
-        if(Read(&string[i], 1) <= 0 )
+        if(xpm_io.read(&string[i], 1) <= 0 )
         {
             /* EOF or error */
             if(i == 0) {
@@ -254,7 +244,7 @@ static char *skipnonspace(char *p)
 
 // This is somewhat STUPID :)) but i do this anyway,
 // Convert static xpm array to char buffer what looks like a file :)
-static char *build_xpm(char **stream)
+static char *build_xpm(char **stream, uint32 &size)
 {
 	// <width> <height> <ncolors> <cpp> [ <hotspot_x> <hotspot_y> ]
 	char *check = (char *)stream[0];
@@ -265,7 +255,7 @@ static char *build_xpm(char **stream)
 	int lines=ncol+h;
 
     char head[] = "{\n";
-    int size=sizeof(head)-1;
+    size=sizeof(head)-1;
     char *buf=new char[size+3];	
     memcpy(buf, head, size);
 	
@@ -292,25 +282,13 @@ static char *build_xpm(char **stream)
 }
 
 /* Load a XPM type image from stream */
-static Fl_Image *xpm_create(void *stream, bool file)
+static bool xpm_create(uint8 *&data, Fl_PixelFormat &fmt, int &w, int &h)
 {
-    char *file_buffer=0;
-
-    if(!file) {
-        file_buffer = build_xpm((char **)stream);
-        if(!file_buffer) return 0;
-        read_ptr = (uint8 *)file_buffer;        
-
-    } else {
-        read_ptr = (uint8 *)stream;                
-    }
-
-    Fl_Image *image;
     char line[1024];
     char *here;
     int index;
     int x, y;
-    int w, h, ncolors, cpp;
+    int ncolors, cpp;
     int pixels_len;
     char *pixels = NULL;
     int indexed;
@@ -355,19 +333,17 @@ static Fl_Image *xpm_create(void *stream, bool file)
     /* Create the new surface */
     if(ncolors <= 256) {
         indexed = 1;
-        image = new Fl_Image(w, h, 8,0,0,0,0,0,0);
-        im_colors = image->format()->palette->colors;
-        image->format()->palette->ncolors = ncolors;
+        //image = new Fl_Image(w, h, 8,0,0,0,0,0,0);
+		fmt.realloc(8, 0,0,0,0);
+        im_colors = fmt.palette->colors;
+        fmt.palette->ncolors = ncolors;
     } else {
         indexed = 0;
-        image = new Fl_Image(w, h, 32, 0,
-                              0xff0000, 0x00ff00, 0x0000ff, 0, 0);
+		fmt.realloc(32, 0xFF0000, 0x00FF00, 0x0000FF, 0);        
     }
-    if(!image) {
-        /* Hmm, some SDL error (out of memory?) */
-        free(pixels);
-        return 0;
-    }
+
+	int pitch = Fl_Renderer::calc_pitch(fmt.bytespp, w);
+	data = new uint8[h*pitch];
 
     /* Read the colors */
     colors = create_colorhash(ncolors);
@@ -441,8 +417,8 @@ static Fl_Image *xpm_create(void *stream, bool file)
                 add_colorhash(colors, nextkey, cpp, rgb);
             nextkey += cpp;
             if(rgb == 0xffffffff) {
-                image->mask_type(MASK_COLORKEY);
-                image->colorkey(rgb);
+                fmt.masktype = FL_MASK_COLORKEY;
+                fmt.colorkey = rgb;
             }
             break;
         }
@@ -455,12 +431,12 @@ static Fl_Image *xpm_create(void *stream, bool file)
         error = "Out of memory";
         goto done;
     }
-    dst = image->data();
+    dst = data;
     for (y = 0; y < h; ) {
         char *s;
         char c;
         do {
-            if(Read(&c, 1) <= 0)
+            if(xpm_io.read(&c, 1) <= 0)
             {
                 error = "Premature end of data 3";
                 goto done;
@@ -469,25 +445,27 @@ static Fl_Image *xpm_create(void *stream, bool file)
         if(c != '"') {
             /* comment or empty line, skip it */
             while(c != '\n' && c != '\r') {
-                if(Read(&c, 1) <= 0) {
+                if(xpm_io.read(&c, 1) <= 0) {
                     error = "Premature end of data 4";
                     goto done;
                 }
             }
             continue;
         }
-        if(Read(pixels, pixels_len + 3) <= 0) {
+        if(xpm_io.read(pixels, pixels_len + 3) <= 0) {
             error = "Premature end of data 5";
             goto done;
         }
         s = pixels;
         if(indexed) {
-            /* optimization for some common cases */
-            /*if(cpp == 1)
+#if 0
+            /* optimization for some common cases - DOESNT WORK */
+            if(cpp == 1)
                 for(x = 0; x < w; x++)
                     dst[x] = QUICK_COLORHASH(colors,
                                              s + x);
-            else*/
+            else
+#endif
                 for(x = 0; x < w; x++)
                     dst[x] = get_colorhash(colors,
                                            s + x * cpp,
@@ -498,30 +476,60 @@ static Fl_Image *xpm_create(void *stream, bool file)
                                                   s + x * cpp,
                                                   cpp);
         }
-        dst += image->pitch();
+        dst += pitch;
         y++;
     }
 
 done:
     if(error) {
-        if(image)
-            delete image;
-        image = NULL;
-        printf("%s\n", error);
+        if(data) delete []data;
+		data = 0;        
+		Fl::warning("Error reading XPM: %s\n", error);
     }
     free(pixels);
     free(keystrings);
-    free_colorhash(colors);
-    if(file_buffer) free(file_buffer);
+    free_colorhash(colors);    
 
-    return image;
+    return (error==false && data!=0);
 }
 
-ImageReader xpm_reader =
+static bool xpm_read_file(FILE *fp, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h)
 {
-    xpm_is_valid,
-    xpm_is_valid_xpm,
-    xpm_create
+	xpm_io.init_io(fp, 0, 0);
+	return xpm_create(data, format, w, h);
+}
+
+static bool xpm_read_mem(uint8 *stream, uint32 size, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h)
+{
+    char *file_buffer=0;
+    file_buffer = build_xpm((char **)stream, size);
+    if(!file_buffer) return false;
+	
+	xpm_io.init_io(0, (uint8*)file_buffer, size);
+	bool ret = xpm_create(data, format, w, h);
+	
+	delete []file_buffer;
+	return ret;
+}
+
+Fl_Image_IO xpm_reader =
+{
+	/* GENERAL: */
+	"XPM", //name
+	"xpm", //filename extension
+
+	/* VALIDATE FUNCTIONS: */
+    xpm_is_valid_file, //bool (*is_valid_file)(const char *filename, FILE *fp);
+    xpm_is_valid_mem, //bool (*is_valid_mem)(uint8 *stream, uint32 size);
+    xpm_is_valid_xpm, //bool (*is_valid_xpm)(uint8 **stream);
+
+	/* READ FUNCTIONS: */
+	xpm_read_file, //bool (*read_file)(FILE *fp, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h);
+    xpm_read_mem, //bool (*read_mem)(uint8 *stream, uint32 size, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h);
+
+	/* WRITE FUNCTIONS: */
+	NULL, //bool (*write_mem)(uint8 *&stream, int &size, int quality, uint8 *data, Fl_PixelFormat &data_format, int w, int h);
+	NULL //bool (*write_file)(FILE *fp, int quality, uint8 *data, Fl_PixelFormat &format, int w, int h);
 };
 
 

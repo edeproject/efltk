@@ -1,20 +1,23 @@
-#include <efltk/Fl_Image.h>
 #include <config.h>
+#include <efltk/Fl_Image.h>
 
 #if HAVE_PNG
-extern ImageReader png_reader;
+extern Fl_Image_IO png_reader;
 #endif
 #if HAVE_JPEG
-extern ImageReader jpeg_reader;
+extern Fl_Image_IO jpeg_reader;
 #endif
-extern ImageReader bmp_reader;
 
 void fl_init_images_lib()
 {
+	static bool registered = false;
+	if(!registered) {
 #if HAVE_PNG
-    Fl_Image::register_reader(&png_reader);
+	    fl_register_imageio(&png_reader);
 #endif
 #if HAVE_JPEG
-    Fl_Image::register_reader(&jpeg_reader);
+		fl_register_imageio(&jpeg_reader);
 #endif
+		registered = true;
+	}
 }

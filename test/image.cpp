@@ -78,7 +78,7 @@ uchar* make_image()
 }
 
 // Make RGB image
-Fl_Image rgb_image(WIDTH, HEIGHT, 24, make_image(), 0x0000FF, 0x00FF00, 0xFF0000, 0 ,0);
+Fl_Image rgb_image(WIDTH, HEIGHT, 24, make_image(), 0x0000FF, 0x00FF00, 0xFF0000, 0);
 
 ////////////////////////////////////////////////////////////////
 

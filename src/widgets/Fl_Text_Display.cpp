@@ -273,7 +273,7 @@ void Fl_Text_Display::set_font()
     } else {
         for (i=0; i<mNStyles; i++)
         {
-            int size = mStyleTable[i].size;
+            unsigned int size = mStyleTable[i].size;
             if(text_size()!=size) { fontWidth = -1; break; }
             set_fl_font(mStyleTable[i].font, mStyleTable[i].size);
             styleFont = fl_textmetric();

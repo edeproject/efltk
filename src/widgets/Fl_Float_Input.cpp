@@ -46,7 +46,7 @@ bool Fl_Float_Input::replace(int b, int e, const char* text, int ilen)
         return false;
     }
 
-    int ret=0;
+    bool ret=false;
     if (readonly()) fl_beep();
     else ret=Fl_Input::replace(b,e,text,ilen);
 

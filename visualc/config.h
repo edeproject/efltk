@@ -138,7 +138,7 @@
 #define HAVE_PNG 1
 
 /* Do we have libjpeg ? (for reading .jpg images) */
-#define HAVE_JPEG 0
+#define HAVE_JPEG 1
 
 /* Enables Fl::lock() and Fl::unlock() on Unix */
 #define HAVE_PTHREAD 0

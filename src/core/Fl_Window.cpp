@@ -191,18 +191,30 @@ int Fl_Window::handle(int event)
 
     int ret = Fl_Group::handle(event); if (ret) return ret;
 
-    if (!parent())
-    {
-        // Make the Escape key close windows:
-        if (event == FL_SHORTCUT && !Fl::event_clicks() && test_shortcut()) {
-            do_callback();
-            return 1;
-        }
+	// unused events can close windows or raise them:
+	if (!parent()) {
+		switch (event) {
+		case FL_KEY:
+		case FL_SHORTCUT:
+			if(Fl::event_clicks()) break; // make repeating key not close everything 
+			if(test_shortcut()) { do_callback(); return 1; } 
+			break; 
+		/*case FL_PUSH: 
+			THIS MUST BE AN OPTION
+			// clicks outside windows exit the modal state. I give a bit of border 
+			// so if they are trying to resize the modal window an miss they don't 
+			// exit: 
+			if (Fl::event_x() < -4 || Fl::event_x() > w()+4 || 
+				Fl::event_y() < -4 || Fl::event_y() > h()+4) { 
+				if (Fl::modal()) Fl::exit_modal(); */
 #ifndef _WIN32
-        // Unused clicks raise windows:
-        if (event == FL_PUSH) XMapRaised(fl_display, i->xid);
+				// Unused clicks raise windows:        
+				//else XMapRaised(fl_display, i->xid);
+				if (event == FL_PUSH) XMapRaised(fl_display, i->xid);
 #endif
-    }
+			//}
+		}
+	}
     return 0;
 }
 

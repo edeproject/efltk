@@ -188,7 +188,7 @@ float fl_width(const char* c, int n) {
 }
 
 float fl_width(uchar c) {
-    return fl_fontsize->width[c];
+    return float(fl_fontsize->width[c]);
 }
 
 void fl_transformed_draw(const char *str, int n, float x, float y) {

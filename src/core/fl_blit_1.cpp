@@ -265,8 +265,8 @@ static void Blit1toNAlpha(BlitInfo *info)
 
     /* Set up some basic variables */
     dstbpp = dstfmt->bytespp;
-    int sR=0, sG=0, sB=0;
-    int dR=0, dG=0, dB=0;
+    uint8 sR=0, sG=0, sB=0;
+    uint8 dR=0, dG=0, dB=0;
 
     while ( height-- ) {
         DUFFS_LOOP4(
@@ -275,10 +275,10 @@ static void Blit1toNAlpha(BlitInfo *info)
                         sR = srcpal[*src].r;
                         sG = srcpal[*src].g;
                         sB = srcpal[*src].b;
-                        DISEMBLE_RGB(dst, dstbpp, dstfmt,
+                        fl_disemble_rgb(dst, dstbpp, dstfmt,
                                      pixel, dR, dG, dB);
-                        ALPHA_BLEND(sR, sG, sB, A, dR, dG, dB);
-                        ASSEMBLE_RGB(dst, dstbpp, dstfmt, dR, dG, dB);
+                        fl_alpha_blend(sR, sG, sB, A, dR, dG, dB);
+                        fl_assemble_rgb(dst, dstbpp, dstfmt, dR, dG, dB);
                         src++;
                         dst += dstbpp;
                     },
@@ -306,8 +306,8 @@ static void Blit1toNAlphaKey(BlitInfo *info)
     /* Set up some basic variables */
     dstbpp = dstfmt->bytespp;
 
-    int sR=0, sG=0, sB=0;
-    int dR=0, dG=0, dB=0;
+    uint8 sR=0, sG=0, sB=0;
+    uint8 dR=0, dG=0, dB=0;
 
     while ( height-- ) {
         DUFFS_LOOP(
@@ -317,10 +317,10 @@ static void Blit1toNAlphaKey(BlitInfo *info)
                            sR = srcpal[*src].r;
                            sG = srcpal[*src].g;
                            sB = srcpal[*src].b;
-                           DISEMBLE_RGB(dst, dstbpp, dstfmt,
+                           fl_disemble_rgb(dst, dstbpp, dstfmt,
                                         pixel, dR, dG, dB);
-                           ALPHA_BLEND(sR, sG, sB, A, dR, dG, dB);
-                           ASSEMBLE_RGB(dst, dstbpp, dstfmt, dR, dG, dB);
+                           fl_alpha_blend(sR, sG, sB, A, dR, dG, dB);
+                           fl_assemble_rgb(dst, dstbpp, dstfmt, dR, dG, dB);
                        }
                        src++;
                        dst += dstbpp;

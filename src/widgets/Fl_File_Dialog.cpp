@@ -24,24 +24,23 @@
 
 #include <config.h>
 
-
 #ifndef EEXIST
 # define EEXIST 17
 #endif
 
 #include "Pixmaps.h"
 
-static Fl_Image *home_pix    = Fl_Image::read_xpm(0, datas_home);
-static Fl_Image *new_pix     = Fl_Image::read_xpm(0, datas_new);
-static Fl_Image *up_pix      = Fl_Image::read_xpm(0, datas_up);
-static Fl_Image *refresh_pix = Fl_Image::read_xpm(0, datas_refresh);
+static Fl_Image home_pix(datas_home);
+static Fl_Image new_pix(datas_new);
+static Fl_Image up_pix(datas_up);
+static Fl_Image refresh_pix(datas_refresh);
 
-static Fl_Image *file_pix  = Fl_Image::read_xpm(0, datas_file);
-static Fl_Image *fold_pix  = Fl_Image::read_xpm(0, datas_filefolder);
+static Fl_Image file_pix(datas_file);
+static Fl_Image fold_pix(datas_filefolder);
 #ifdef _WIN32
-static Fl_Image *cd_pix    = Fl_Image::read_xpm(0, datas_cd);
-static Fl_Image *flop_pix  = Fl_Image::read_xpm(0, datas_floppy);
-static Fl_Image *hd_pix    = Fl_Image::read_xpm(0, datas_harddisk);
+static Fl_Image cd_pix(datas_cd);
+static Fl_Image flop_pix(datas_floppy);
+static Fl_Image hd_pix(datas_harddisk);
 #endif
 
 ////////////////////////////
@@ -184,12 +183,8 @@ Fl_FileItem::~Fl_FileItem()
 ///////////////////////////////
 // Static select functions:
 
-#define DEBUG
-#ifdef DEBUG
-# define MODAL false
-#else
-# define MODAL true
-#endif
+#define MODAL false
+//#define MODAL true
 
 static char **select_files(const char *path_, Filter **filters, const char *cap, int mode=0)
 {
@@ -215,12 +210,11 @@ static char **select_files(const char *path_, Filter **filters, const char *cap,
 	d.default_filename(def_file);
     d.filters(filters);
     d.read_dir(read_path);
-    d.exec(0, MODAL);
+    if(!d.exec(0, MODAL))
+		return 0;
 
     char **tmp = 0;
     int len;
-
-    if(d.cancelled()) return 0;
 
     tmp = d.get_selected();
 
@@ -264,12 +258,11 @@ static char *select_file(const char *path_, Filter **filters, const char *cap, i
 	d.default_filename(def_file);
     d.filters(filters);
     d.read_dir(read_path);
-    d.exec(0, MODAL);
+    if(!d.exec(0, MODAL))
+		return 0;
 
     char *ret = 0;
     int len = 0;
-
-    if(d.cancelled()) return 0;
 
     char path[FL_PATH_MAX];
     if(d.get_filename(d.location(), path)) {
@@ -406,8 +399,8 @@ public:
 
 #define FD ((Fl_File_Dialog *)d)
 
-int Fl_File_Dialog::initial_w = 370;
-int Fl_File_Dialog::initial_h = 320;
+int Fl_File_Dialog::initial_w = 400;//370;
+int Fl_File_Dialog::initial_h = 350;//320;
 bool Fl_File_Dialog::initial_preview = false;
 
 char *normalize_path(const char *path, char *buf)
@@ -549,7 +542,7 @@ void Fl_File_Dialog::make_group(int w, int h)
         preview_info_->label(preview_info);
         preview_info_->hide();
         preview_info_->box(FL_FLAT_BOX);
-        preview_info_->label_size(11);
+        preview_info_->label_size(10);
         preview_info_->label_font(FL_HELVETICA);
         preview_info_->align(FL_ALIGN_CLIP|FL_ALIGN_INSIDE|FL_ALIGN_LEFT|FL_ALIGN_TOP);
 
@@ -631,14 +624,13 @@ char **Fl_File_Dialog::get_selected()
 
 void Fl_File_Dialog::close(bool cancel)
 {
-    cancelled_ = cancel;
+	if(!cancel) set_value();
     location_->hide_popup();
     hide();
 }
 
 void Fl_File_Dialog::init()
 {
-	cancelled_ = false;
 	fullpath_ = 0;
 	default_filename_ = 0;
 	size_range(300, 200);
@@ -1317,7 +1309,9 @@ void Fl_File_Dialog::cb_location(Fl_Widget *w, void *d)
     if(FD->mode()==SAVE)
         FD->ok_->activate();
 
-    if(Fl::event_key() == FL_Enter) {
+	int key = Fl::event_key();
+
+    if(key == FL_Enter) {
 
         if(!strcmp(loc->value(), "..")) {
             FD->cb_up(w, d);
@@ -1335,19 +1329,19 @@ void Fl_File_Dialog::cb_location(Fl_Widget *w, void *d)
         } else if(FD->mode()<=Fl_File_Dialog::SAVE) {
             if(!fl_is_dir(tmp) && (FD->mode()==Fl_File_Dialog::DEFAULT?fl_file_exists(tmp):true)) {
                 FD->ok_->activate();
-                FD->cancelled_ = false;
+				FD->close(false);
                 //FD->location_->hide_popup();
                 //FD->ok_->do_callback();
                 return;
             } else {
                 FD->ok_->deactivate();
-                FD->cancelled_ = true;
+                FD->clear_value();
             }
         }
 
         loc->hide_popup();
 
-    } else {
+    } else if(Fl::compose(key)) {		
 
         char *filename = FD->get_filename(loc->value(), tmp);
         char *dirpath = FD->get_filepath(loc->value(), tmp2);

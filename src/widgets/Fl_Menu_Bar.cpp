@@ -181,7 +181,8 @@ void Fl_Menu_Bar::layout()
         w->position(X,Y);
     }
 
-    Fl_Widget::size(W,H);
+	if(do_layout)
+		Fl_Widget::size(W,H);
     Fl_Widget::layout();
 }
 

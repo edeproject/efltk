@@ -22,17 +22,17 @@ static void BlitNto1SurfaceAlpha(BlitInfo *info)
     const unsigned A = srcfmt->alpha;
 
     uint32 pixel;
-    uint sR=0, sG=0, sB=0;
-    uint dR=0, dG=0, dB=0;
+    uint8 sR=0, sG=0, sB=0;
+    uint8 dR=0, dG=0, dB=0;
 
     while ( height-- ) {
         DUFFS_LOOP4(
         {
-            DISEMBLE_RGB(src, srcbpp, srcfmt, pixel, sR, sG, sB);
+            fl_disemble_rgb(src, srcbpp, srcfmt, pixel, sR, sG, sB);
             dR = dstfmt->palette->colors[*dst].r;
             dG = dstfmt->palette->colors[*dst].g;
             dB = dstfmt->palette->colors[*dst].b;
-            ALPHA_BLEND(sR, sG, sB, A, dR, dG, dB);
+            fl_alpha_blend(sR, sG, sB, A, dR, dG, dB);
             dR &= 0xff;
             dG &= 0xff;
             dB &= 0xff;
@@ -68,24 +68,25 @@ static void BlitNto1PixelAlpha(BlitInfo *info)
     int srcbpp = srcfmt->bytespp;
     bool hw=info->hw_surface;
 
+    uint8 sR;
+    uint8 sG;
+    uint8 sB;
+    uint8 sA;
+    uint8 dR;
+    uint8 dG;
+    uint8 dB;
+
     /* FIXME: fix alpha bit field expansion here too? */
     while ( height-- ) {
         DUFFS_LOOP4(
         {
             uint32 pixel;
-            unsigned sR;
-            unsigned sG;
-            unsigned sB;
-            unsigned sA;
-            unsigned dR;
-            unsigned dG;
-            unsigned dB;
-            DISEMBLE_RGBA(src,srcbpp,srcfmt,pixel,sR,sG,sB,sA);
+            fl_disemble_rgba(src,srcbpp,srcfmt,pixel,sR,sG,sB,sA);
 
             dR = dstfmt->palette->colors[*dst].r;
             dG = dstfmt->palette->colors[*dst].g;
             dB = dstfmt->palette->colors[*dst].b;
-            ALPHA_BLEND(sR, sG, sB, sA, dR, dG, dB);
+            fl_alpha_blend(sR, sG, sB, sA, dR, dG, dB);
             dR &= 0xff;
             dG &= 0xff;
             dB &= 0xff;
@@ -125,18 +126,18 @@ static void BlitNto1SurfaceAlphaKey(BlitInfo *info)
     const int A = srcfmt->alpha;
 
     uint32 pixel;
-    uint sR=0, sG=0, sB=0;
-    uint dR=0, dG=0, dB=0;
+    uint8 sR=0, sG=0, sB=0;
+    uint8 dR=0, dG=0, dB=0;
 
     while ( height-- ) {
         DUFFS_LOOP(
         {
-            DISEMBLE_RGB(src, srcbpp, srcfmt, pixel, sR, sG, sB);
+            fl_disemble_rgb(src, srcbpp, srcfmt, pixel, sR, sG, sB);
             if ( pixel != ckey ) {
                 dR = dstfmt->palette->colors[*dst].r;
                 dG = dstfmt->palette->colors[*dst].g;
                 dB = dstfmt->palette->colors[*dst].b;
-                ALPHA_BLEND(sR, sG, sB, A, dR, dG, dB);
+                fl_alpha_blend(sR, sG, sB, A, dR, dG, dB);
                 dR &= 0xff;
                 dG &= 0xff;
                 dB &= 0xff;
@@ -316,10 +317,11 @@ static void Blit16to16SurfaceAlpha128(BlitInfo *info, uint16 mask)
                 uint32 sw, dw, s;
                 sw = *(uint32 *)srcp;
                 dw = *(uint32 *)dstp;
-                if(__BYTE_ORDER == __BIG_ENDIAN)
+#if WORDS_BIGENDIAN
                     s = (prev_sw << 16) + (sw >> 16);
-                else
+#else
                     s = (prev_sw >> 16) + (sw << 16);
+#endif
                 prev_sw = sw;
                 *(uint32 *)dstp = BLEND2x16_50(dw, s, mask);
                 dstp += 2;
@@ -330,10 +332,11 @@ static void Blit16to16SurfaceAlpha128(BlitInfo *info, uint16 mask)
             /* final pixel if any */
             if(w) {
                 uint16 d = *dstp, s;
-                if(__BYTE_ORDER == __BIG_ENDIAN)
+#if WORDS_BIGENDIAN
                     s = prev_sw;
-                else
+#else
                     s = prev_sw >> 16;
+#endif
                 *dstp = BLEND16_50(d, s, mask);
                 srcp++;
                 dstp++;
@@ -557,16 +560,16 @@ static void BlitNtoNSurfaceAlpha(BlitInfo *info)
     unsigned dA = dstfmt->Amask ? 255 : 0;
 
     uint32 pixel;
-    uint sR=0, sG=0, sB=0;
-    uint dR=0, dG=0, dB=0;
+    uint8 sR=0, sG=0, sB=0;
+    uint8 dR=0, dG=0, dB=0;
 
     while ( height-- ) {
         DUFFS_LOOP4(
         {
-            DISEMBLE_RGB(src, srcbpp, srcfmt, pixel, sR, sG, sB);
-            DISEMBLE_RGB(dst, dstbpp, dstfmt, pixel, dR, dG, dB);
-            ALPHA_BLEND(sR, sG, sB, sA, dR, dG, dB);
-            ASSEMBLE_RGBA(dst, dstbpp, dstfmt, dR, dG, dB, dA);
+            fl_disemble_rgb(src, srcbpp, srcfmt, pixel, sR, sG, sB);
+            fl_disemble_rgb(dst, dstbpp, dstfmt, pixel, dR, dG, dB);
+            fl_alpha_blend(sR, sG, sB, sA, dR, dG, dB);
+            fl_assemble_rgba(dst, dstbpp, dstfmt, dR, dG, dB, dA);
             src += srcbpp;
             dst += dstbpp;
         },
@@ -594,18 +597,18 @@ static void BlitNtoNSurfaceAlphaKey(BlitInfo *info)
     unsigned dA = dstfmt->Amask ? 255 : 0;
 
     uint32 pixel;
-    uint sR=0, sG=0, sB=0;
-    uint dR=0, dG=0, dB=0;
+    uint8 sR=0, sG=0, sB=0;
+    uint8 dR=0, dG=0, dB=0;
 
     while ( height-- ) {
         DUFFS_LOOP4(
         {
-            RETRIEVE_RGB_PIXEL(src, srcbpp, pixel);
+            fl_retrieve_rgb_pixel(src, srcbpp, pixel);
             if(pixel != ckey) {
-                RGB_FROM_PIXEL(pixel, srcfmt, sR, sG, sB);
-                DISEMBLE_RGB(dst, dstbpp, dstfmt, pixel, dR, dG, dB);
-                ALPHA_BLEND(sR, sG, sB, sA, dR, dG, dB);
-                ASSEMBLE_RGBA(dst, dstbpp, dstfmt, dR, dG, dB, dA);
+                fl_rgb_from_pixel(pixel, srcfmt, sR, sG, sB);
+                fl_disemble_rgb(dst, dstbpp, dstfmt, pixel, dR, dG, dB);
+                fl_alpha_blend(sR, sG, sB, sA, dR, dG, dB);
+                fl_assemble_rgba(dst, dstbpp, dstfmt, dR, dG, dB, dA);
             }
             src += srcbpp;
             dst += dstbpp;
@@ -635,6 +638,9 @@ static void BlitNtoNPixelAlpha(BlitInfo *info)
     srcbpp = srcfmt->bytespp;
     dstbpp = dstfmt->bytespp;
 
+	uint8 sR, sG, sB, sA;
+	uint8 dR, dG, dB, dA;
+
     /* FIXME: for 8bpp source alpha, this doesn't get opaque values
      quite right. for <8bpp source alpha, it gets them very wrong
      (check all macros!)
@@ -644,18 +650,10 @@ static void BlitNtoNPixelAlpha(BlitInfo *info)
         DUFFS_LOOP4(
         {
             uint32 pixel;
-            unsigned sR;
-            unsigned sG;
-            unsigned sB;
-            unsigned dR;
-            unsigned dG;
-            unsigned dB;
-            unsigned sA;
-            unsigned dA;
-            DISEMBLE_RGBA(src, srcbpp, srcfmt, pixel, sR, sG, sB, sA);
-            DISEMBLE_RGBA(dst, dstbpp, dstfmt, pixel, dR, dG, dB, dA);
-            ALPHA_BLEND(sR, sG, sB, sA, dR, dG, dB);
-            ASSEMBLE_RGBA(dst, dstbpp, dstfmt, dR, dG, dB, dA);
+            fl_disemble_rgba(src, srcbpp, srcfmt, pixel, sR, sG, sB, sA);
+            fl_disemble_rgba(dst, dstbpp, dstfmt, pixel, dR, dG, dB, dA);
+            fl_alpha_blend(sR, sG, sB, sA, dR, dG, dB);
+            fl_assemble_rgba(dst, dstbpp, dstfmt, dR, dG, dB, dA);
             src += srcbpp;
             dst += dstbpp;
         },
@@ -673,7 +671,7 @@ Blit_Function get_blit_a(Fl_PixelFormat *src_fmt, Fl_PixelFormat *dst_fmt, int f
     Fl_PixelFormat *df = dst_fmt;
 
     if(sf->Amask == 0) {
-        if((flags & COLOR_KEY)) {
+        if((flags & FL_BLIT_COLOR_KEY)) {
             if(df->bytespp == 1) {
                 once("BlitNto1SurfaceAlphaKey");
                 return BlitNto1SurfaceAlphaKey;

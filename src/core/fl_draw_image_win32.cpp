@@ -383,7 +383,8 @@ uint8 *Fl_Renderer::data_from_pixmap(Pixmap src, Fl_Rect &rect, int &bitspp)
     int w = rect.w();
     int h = rect.h();
     int	width, height, clipx, clipy;
-    int	src_x, src_y, src_w, src_h;
+    //int src_x, src_y; //NYI
+	int src_w, src_h;
 	LPBITMAPINFOHEADER dib_hdr;
 	int dib_size;
 

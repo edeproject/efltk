@@ -258,6 +258,12 @@ enum {
   FL_EFFECT_FADE
 };
 
+/* Prevent Visual C++ 6.0 from printing out stupid warnings */
+#if defined(_MSC_VER) && (_MSC_VER >= 600)
+	#pragma warning(disable: 4550)
+	#pragma warning(disable: 4244)
+#endif
+
 #endif
 
 //

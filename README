@@ -1,37 +1,44 @@
-EFLTK - Extended Fast Light Toolkit Version 2.0.3
+EFLTK - Extended Fast Light Toolkit Version 2.0.4
 
 -------------------------------------------------
 
 WHAT IS EFLTK?
 	EFltk is a LGPL'd C++ graphical user interface toolkit for 
-        X (UNIX(r)), OpenGL(r), and Microsoft(r) Windows(r). 
-        It is based on FLTK2 (see README.fltk) and is currently
-        developed Equinox Desktop Environment Team (ede.sf.net)
+	X (UNIX(r)), OpenGL(r), and Microsoft(r) Windows(r). 
+	It is based on FLTK2 (see README.fltk) and is currently
+	developed by Equinox Desktop Environment Team (ede.sf.net)
 
 CHANGES BETWEEN FLTK2 AND EFLTK
-	See 'CHANGES' file for description of changes.
+	See 'ChangeLog' file for description of changes.
 
 DOCUMENTATION
 	Sorry, no API documentation yet.
-        Please see header files and/or FLTK2 documentation
-        at http://www.fltk.org/documentation.html
+  Please see header files and/or FLTK2 documentation
+  at http://www.fltk.org/documentation.html
 
 BUILDING AND INSTALLING EFLTK
-	Currently there's only support Unix style machines,
-        althrought it should complie in MS Windows(r) also.
 
-        Simple instruction:
-        type: ./build.gcc --'options'
-        Where 'options' can be e.g. --enable-gl
-        type: su -c "make install"
-        
+	EFltk is developed and tested with following machines:
+	- MS Windows 98, 2000, XP
+	- Redhat Linux 7.3/GCC 3.2
+	- Solaris 8/GCC 3.2 (Sparc)	
+
+	Unix style machines:
+		type: ./build.gcc --'options'
+		Where 'options' can be e.g. --enable-gl
+		type: su -c "make install"
+
+	Windows:
+		MSVC++ is supported 'efltk/visualc'
+		MINGW 2.0 is also supported 'elfkt/MinGW'
+
 INTERNET RESOURCES
 
 	EFLTK is available on the 'net in a bunch of locations:
 
 	- WWW:   http://ede.sourceforge.net
 
-	- CVS:	 http://fltk.sourceforge.net
+	- CVS:	 http://www.sourceforge.net/projects/ede
 
 	- EMail: Laza@Flashmail.com
 
@@ -45,41 +52,33 @@ REPORTING BUGS
 	For general support and questions, please use the EFLTK mailing
 	list at "ede-users@lists.sourceforge.net".
 
-THANKS TO:
+THANKS TO
 	- Whole FLTK team for great work! <www.fltk.org>
-        - SDL <www.libsdl.org>
+	- SDL <www.libsdl.org>
         
-TRADEMARKS
-
-	Microsoft and Windows are registered trademarks of Microsoft
-	Corportation. UNIX is a registered trademark of the X/Open Group,
-	Inc.  OpenGL is a registered trademark of Silicon Graphics, Inc.
-
 COPYRIGHT
 
-	FLTK is copyright (C) 1998-2002 by the following individuals:
+	EFLTK is copyright (C) 2002 by the following individuals:
+	Mikko Lahteenmaki <Laza@Flashmail.com>
 
+	Bo Henriksen
+	Alexey Parshin
+	Dejan Lekic
+
+	UTF-8:
+	Jean-Marc Lienher
+	Martin Pekar
+
+	FLTK is copyright (C) 1998-2002 by the following individuals:
 	Bill Spitzak <spitzak@cinenet.net>
-        Craig P. Earls <cpearls@mit.edu>
+	Craig P. Earls <cpearls@mit.edu>
 	Curtis Edwards <curtise@fa.disney.com>
 	Gustavo Hime <hime@centroin.com.br>
 	Robert Kesterson <robertk@robertk.com>
 	Matthias Melcher <matthias@mediaone.net>
 	Vincent Penne <vincent.penne@wanadoo.fr>
-        Michael Sweet <mike@easysw.com>
+	Michael Sweet <mike@easysw.com>
 	Carl Thompson <cet@carlthompson.net>
-
-	EFLTK is copyright (C) 2002 by the following individuals:
-	
-	Mikko Lahteenmaki <Laza@Flashmail.com>
-
-        Bo Henriksen
-        Alexey Parshin
-        Dejan Lekic
-        
-        UTF-8:
-        Jean-Marc Lienher
-	Martin Pekar
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Library General Public License
@@ -98,3 +97,9 @@ COPYRIGHT
 	License along with this library; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 	USA.
+
+TRADEMARKS
+
+	Microsoft and Windows are registered trademarks of Microsoft
+	Corportation. UNIX is a registered trademark of the X/Open Group,
+	Inc.  OpenGL is a registered trademark of Silicon Graphics, Inc.

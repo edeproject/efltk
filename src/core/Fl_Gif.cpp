@@ -1,8 +1,4 @@
 /* This is a GIF image file loading framework */
-
-#include <string.h>
-#include <stdio.h>
-
 #include <efltk/Fl_Image.h>
 #include <efltk/Fl.h>
 
@@ -20,28 +16,27 @@
 
 /* and SDL: */
 /*    Copyright (C) 1999, 2000, 2001  Sam Lantinga */
-/* */
 /*    This library is free software; you can redistribute it and/or		*/
 /*    modify it under the terms of the GNU Library General Public		*/
 /*    License as published by the Free Software Foundation; either		*/
 /*    version 2 of the License, or (at your option) any later version.	*/
 
-static uint8 *read_ptr = 0;
-static int GifRead(void *buf, int len)
-{
-    memcpy(buf, read_ptr, len);
-    read_ptr+=len;
-    return len;
-}
+/* and EFLTK: */
+/*    Copyright (C) 1999, 2000, 2001 Mikko Lahteenmaki */
+/*    This library is free software; you can redistribute it and/or		*/
+/*    modify it under the terms of the GNU Library General Public		*/
+/*    License as published by the Free Software Foundation; either		*/
+/*    version 2 of the License, or (at your option) any later version.	*/
+
+#include "fl_internal.h"
+static Fl_IO gif_io;
 
 #define RWSetMsg		Fl::warning
 
-#define Image			Fl_Image
-#define ImageNewCmap(w, h, s)	new Fl_Image(w,h,8,0,0,0,0,0,0)
-#define ImageSetCmap(s, i, R, G, B) do { \
-				s->format()->palette->colors[i].r = R; \
-				s->format()->palette->colors[i].g = G; \
-				s->format()->palette->colors[i].b = B; \
+#define SetCmap(i, R, G, B) do { \
+				fmt.palette->colors[i].r = R; \
+				fmt.palette->colors[i].g = G; \
+				fmt.palette->colors[i].b = B; \
 			} while (0)
 /* * * * * */
 
@@ -59,8 +54,6 @@ static int GifRead(void *buf, int len)
 #define INTERLACE		0x40
 #define LOCALCOLORMAP	0x80
 #define BitSet(byte, bit)	(((byte) & (bit)) == (bit))
-
-#define	ReadOK(file,buffer,len)	GifRead(buffer, len)
 
 #define LM_to_uint(a,b)			(((b)<<8)|(a))
 
@@ -82,37 +75,40 @@ static struct {
     int GrayScale2;
 } GifScreen;
 
-static int ReadColorMap(uint8 *src, int number, unsigned char buffer[3][MAXCOLORMAPSIZE], int *flag);
-static int DoExtension(uint8 *src, int label);
-static int GetDataBlock(uint8 *src, unsigned char *buf);
-static int GetCode(uint8 *src, int code_size, int flag);
-static int LWZReadByte(uint8 *src, int flag, int input_code_size);
-static Image *ReadImage(uint8 *src, int len, int height, int,
+static int ReadColorMap(int number, unsigned char buffer[3][MAXCOLORMAPSIZE], int *flag);
+static int DoExtension(int label);
+static int GetDataBlock(unsigned char *buf);
+static int GetCode(int code_size, int flag);
+static int LWZReadByte(int flag, int input_code_size);
+static uint8 *ReadImage(int len, int height, int,
 			unsigned char cmap[3][MAXCOLORMAPSIZE],
-			int gray, int interlace, int ignore);
+			int gray, int interlace, int ignore, Fl_PixelFormat &fmt, int &im_w, int &im_h);
 
 /* See if an image is contained in a data source */
-static bool gif_is_valid(void *stream, bool file)
-{
-	bool is_GIF = false;
-	char magic[6];
-	memcpy(magic, stream, 6);
+#define GIF_BYTES_TO_CHECK 6
+
+static bool gif_is_valid_file(const char *filename, FILE *fp)
+{	
+	char type[GIF_BYTES_TO_CHECK];
+	uint32 pos = ftell(fp);
+	fread(type, GIF_BYTES_TO_CHECK, 1, fp);    
+	fseek(fp, pos, SEEK_SET); //return position in file
 	
-	if ( (strncmp(magic, "GIF", 3) == 0) && 
-			((memcmp(magic + 3, "87a", 3) == 0) ||
-		    (memcmp(magic + 3, "89a", 3) == 0)) ) 
-	{
-		is_GIF = true;
-	}	
-	return is_GIF;
+	return (strncmp(type, "GIF", 3) == 0) && 
+			((memcmp(type + 3, "87a", 3) == 0) ||
+			(memcmp(type + 3, "89a", 3) == 0));
+}
+       
+static bool gif_is_valid_mem(const uint8 *stream, uint32 size)
+{	
+    return size>=GIF_BYTES_TO_CHECK && (strncmp((const char*)stream, "GIF", 3) == 0) && 
+										((memcmp(stream + 3, "87a", 3) == 0) ||
+										(memcmp(stream + 3, "89a", 3) == 0));
 }
 
-Image *gif_create(void *stream, bool file)
+static bool gif_create(uint8 *&data, Fl_PixelFormat &fmt, int &w, int &h)
 {
-	read_ptr = (uint8 *)stream;
-
-	uint8 *src = (uint8*)stream;
-
+	data = 0;
     unsigned char buf[16];
     unsigned char c;
     unsigned char localColorMap[3][MAXCOLORMAPSIZE];
@@ -122,12 +118,8 @@ Image *gif_create(void *stream, bool file)
     int imageCount = 0;
     char version[4];
     int imageNumber = 1;
-    Image *image = NULL;
-
-    if(src == NULL ) {
-        goto done;
-    }
-    if (!ReadOK(src, buf, 6)) {
+	
+    if(!gif_io.read(buf, 6)) {
 		RWSetMsg("Error reading GIF, reason: can't read magic number");
         goto done;
     }
@@ -137,7 +129,7 @@ Image *gif_create(void *stream, bool file)
     }
     strncpy(version, (char *) buf + 3, 3);
     version[3] = '\0';
-
+	
     if ((strcmp(version, "87a") != 0) && (strcmp(version, "89a") != 0)) {
 		RWSetMsg("Error reading GIF, reason: bad version number, not '87a' or '89a'");
         goto done;
@@ -146,8 +138,8 @@ Image *gif_create(void *stream, bool file)
     Gif89.delayTime = -1;
     Gif89.inputFlag = -1;
     Gif89.disposal = 0;
-
-    if (!ReadOK(src, buf, 7)) {
+	
+    if (!gif_io.read(buf, 7)) {
 		RWSetMsg("Error reading GIF, reason: failed to read screen descriptor");
         goto done;
     }
@@ -157,77 +149,77 @@ Image *gif_create(void *stream, bool file)
     GifScreen.ColorResolution = (((buf[4] & 0x70) >> 3) + 1);
     GifScreen.Background = buf[5];
     GifScreen.AspectRatio = buf[6];
-
+	
     if (BitSet(buf[4], LOCALCOLORMAP)) {	/* Global Colormap */
-	if (ReadColorMap(src, GifScreen.BitPixel, GifScreen.ColorMap,
-			 &GifScreen.GrayScale2)) {
-	    RWSetMsg("Error reading GIF, reason: error reading global colormap");
+		if (ReadColorMap(GifScreen.BitPixel, GifScreen.ColorMap,
+			&GifScreen.GrayScale2)) {
+			RWSetMsg("Error reading GIF, reason: error reading global colormap");
             goto done;
-	}
+		}
     }
     do {
-	if (!ReadOK(src, &c, 1)) {
-	    RWSetMsg("Error reading GIF, reason: EOF / read error on image data");
+		if (!gif_io.read(&c, 1)) {
+			RWSetMsg("Error reading GIF, reason: EOF / read error on image data");
             goto done;
-	}
-	if (c == ';') {		/* GIF terminator */
-	    if (imageCount < imageNumber) {
-		RWSetMsg("Error reading GIF, reason: only %d image%s found in file",
-			 imageCount, imageCount > 1 ? "s" : "");
+		}
+		if (c == ';') {		/* GIF terminator */
+			if (imageCount < imageNumber) {
+				RWSetMsg("Error reading GIF, reason: only %d image%s found in file",
+					imageCount, imageCount > 1 ? "s" : "");
                 goto done;
-	    }
-	}
-	if (c == '!') {		/* Extension */
-	    if (!ReadOK(src, &c, 1)) {
-		RWSetMsg("Error reading GIF, reason: EOF / read error on extention function code");
+			}
+		}
+		if (c == '!') {		/* Extension */
+			if (!gif_io.read(&c, 1)) {
+				RWSetMsg("Error reading GIF, reason: EOF / read error on extention function code");
                 goto done;
-	    }
-	    DoExtension(src, c);
-	    continue;
-	}
-	if (c != ',') {		/* Not a valid start character */
-	    continue;
-	}
-	++imageCount;
-
-	if (!ReadOK(src, buf, 9)) {
-	    RWSetMsg("Error reading GIF, reason: couldn't read left/top/width/height");
+			}
+			DoExtension(c);
+			continue;
+		}
+		if (c != ',') {		/* Not a valid start character */
+			continue;
+		}
+		++imageCount;
+		
+		if (!gif_io.read(buf, 9)) {
+			RWSetMsg("Error reading GIF, reason: couldn't read left/top/width/height");
             goto done;
-	}
-	useGlobalColormap = !BitSet(buf[8], LOCALCOLORMAP);
-
-	bitPixel = 1 << ((buf[8] & 0x07) + 1);
-
-	if (!useGlobalColormap) {
-	    if (ReadColorMap(src, bitPixel, localColorMap, &grayScale)) {
-		RWSetMsg("Error reading GIF, reason: error reading local colormap");
+		}
+		useGlobalColormap = !BitSet(buf[8], LOCALCOLORMAP);
+		
+		bitPixel = 1 << ((buf[8] & 0x07) + 1);
+		
+		if (!useGlobalColormap) {
+			if (ReadColorMap(bitPixel, localColorMap, &grayScale)) {
+				RWSetMsg("Error reading GIF, reason: error reading local colormap");
                 goto done;
-	    }
-	    image = ReadImage(src, LM_to_uint(buf[4], buf[5]),
-			      LM_to_uint(buf[6], buf[7]),
-			      bitPixel, localColorMap, grayScale,
-			      BitSet(buf[8], INTERLACE),
-			      imageCount != imageNumber);
-	} else {
-	    image = ReadImage(src, LM_to_uint(buf[4], buf[5]),
-			      LM_to_uint(buf[6], buf[7]),
-			      GifScreen.BitPixel, GifScreen.ColorMap,
-			      GifScreen.GrayScale2, BitSet(buf[8], INTERLACE),
-			      imageCount != imageNumber);
-	}
-    } while (image == NULL);
-
+			}
+			data = ReadImage(LM_to_uint(buf[4], buf[5]),
+				LM_to_uint(buf[6], buf[7]),
+				bitPixel, localColorMap, grayScale,
+				BitSet(buf[8], INTERLACE),
+				imageCount != imageNumber, fmt, w, h);
+		} else {
+			data = ReadImage(LM_to_uint(buf[4], buf[5]),
+				LM_to_uint(buf[6], buf[7]),
+				GifScreen.BitPixel, GifScreen.ColorMap,
+				GifScreen.GrayScale2, BitSet(buf[8], INTERLACE),
+				imageCount != imageNumber, fmt, w, h);
+		}
+    } while(!data);
+	
     if ( Gif89.transparent >= 0 ) {
-		//hack to get some gifs transparent working, thus some doesnt then :)
-		image->colorkey(Gif89.transparent==1?0:Gif89.transparent);
-		image->mask_type(MASK_PIXELKEY);
+		//Try to get some gifs transparent working, thus some doesnt then...
+		fmt.colorkey = Gif89.transparent==-1?0:Gif89.transparent;
+		fmt.masktype = FL_MASK_PIXELKEY;
     }
 
 done:
-    return image;
+    return (data!=0);
 }
 
-static int ReadColorMap(uint8 *src, int number, unsigned char buffer[3][MAXCOLORMAPSIZE], int *gray)
+static int ReadColorMap(int number, unsigned char buffer[3][MAXCOLORMAPSIZE], int *gray)
 {
     int i;
     unsigned char rgb[3];
@@ -236,7 +228,7 @@ static int ReadColorMap(uint8 *src, int number, unsigned char buffer[3][MAXCOLOR
     flag = TRUE;
 
     for (i = 0; i < number; ++i) {
-	if (!ReadOK(src, rgb, sizeof(rgb))) {
+	if (!gif_io.read(rgb, sizeof(rgb))) {
 	    RWSetMsg("bad colormap");
 	    return 1;
 	}
@@ -258,7 +250,7 @@ static int ReadColorMap(uint8 *src, int number, unsigned char buffer[3][MAXCOLOR
     return FALSE;
 }
 
-static int DoExtension(uint8 *src, int label)
+static int DoExtension(int label)
 {
     static unsigned char buf[256];
     char *str;
@@ -272,18 +264,18 @@ static int DoExtension(uint8 *src, int label)
 	break;
     case 0xfe:			/* Comment Extension */
 	str = "Comment Extension";
-	while (GetDataBlock(src, (unsigned char *) buf) != 0);
+	while (GetDataBlock((unsigned char *) buf) != 0);
 	return FALSE;
     case 0xf9:			/* Graphic Control Extension */
 	str = "Graphic Control Extension";
-	(void) GetDataBlock(src, (unsigned char *) buf);
+	(void) GetDataBlock((unsigned char *) buf);
 	Gif89.disposal = (buf[0] >> 2) & 0x7;
 	Gif89.inputFlag = (buf[0] >> 1) & 0x1;
 	Gif89.delayTime = LM_to_uint(buf[1], buf[2]);
 	if ((buf[0] & 0x1) != 0)
 	    Gif89.transparent = buf[3];
 
-	while (GetDataBlock(src, (unsigned char *) buf) != 0);
+	while (GetDataBlock((unsigned char *) buf) != 0);
 	return FALSE;
     default:
 	str = (char *)buf;
@@ -291,31 +283,31 @@ static int DoExtension(uint8 *src, int label)
 	break;
     }
 
-    while (GetDataBlock(src, (unsigned char *) buf) != 0);
+    while (GetDataBlock((unsigned char *) buf) != 0);
 
     return FALSE;
 }
 
 static int ZeroDataBlock = FALSE;
 
-static int GetDataBlock(uint8 *src, unsigned char *buf)
+static int GetDataBlock(unsigned char *buf)
 {
     unsigned char count;
 
-    if (!ReadOK(src, &count, 1)) {
+    if (!gif_io.read(&count, 1)) {
 	/* pm_message("error in getting DataBlock size" ); */
 	return -1;
     }
     ZeroDataBlock = count == 0;
 
-    if ((count != 0) && (!ReadOK(src, buf, count))) {
+    if ((count != 0) && (!gif_io.read(buf, count))) {
 	/* pm_message("error in reading DataBlock" ); */
 	return -1;
     }
     return count;
 }
 
-static int GetCode(uint8 *src, int code_size, int flag)
+static int GetCode(int code_size, int flag)
 {
     static unsigned char buf[280];
     static int curbit, lastbit, done, last_byte;
@@ -337,7 +329,7 @@ static int GetCode(uint8 *src, int code_size, int flag)
 	buf[0] = buf[last_byte - 2];
 	buf[1] = buf[last_byte - 1];
 
-	if ((count = GetDataBlock(src, &buf[2])) == 0)
+	if ((count = GetDataBlock(&buf[2])) == 0)
 	    done = TRUE;
 
 	last_byte = 2 + count;
@@ -353,7 +345,7 @@ static int GetCode(uint8 *src, int code_size, int flag)
     return ret;
 }
 
-static int LWZReadByte(uint8 *src, int flag, int input_code_size)
+static int LWZReadByte(int flag, int input_code_size)
 {
     static int fresh = FALSE;
     int code, incode;
@@ -373,7 +365,7 @@ static int LWZReadByte(uint8 *src, int flag, int input_code_size)
 	max_code_size = 2 * clear_code;
 	max_code = clear_code + 2;
 
-	GetCode(src, 0, TRUE);
+	GetCode(0, TRUE);
 
 	fresh = TRUE;
 
@@ -390,14 +382,14 @@ static int LWZReadByte(uint8 *src, int flag, int input_code_size)
     } else if (fresh) {
 	fresh = FALSE;
 	do {
-	    firstcode = oldcode = GetCode(src, code_size, FALSE);
+	    firstcode = oldcode = GetCode(code_size, FALSE);
 	} while (firstcode == clear_code);
 	return firstcode;
     }
     if (sp > stack)
 	return *--sp;
 
-    while ((code = GetCode(src, code_size, FALSE)) >= 0) {
+    while ((code = GetCode(code_size, FALSE)) >= 0) {
 	if (code == clear_code) {
 	    for (i = 0; i < clear_code; ++i) {
 		table[0][i] = 0;
@@ -409,7 +401,7 @@ static int LWZReadByte(uint8 *src, int flag, int input_code_size)
 	    max_code_size = 2 * clear_code;
 	    max_code = clear_code + 2;
 	    sp = stack;
-	    firstcode = oldcode = GetCode(src, code_size, FALSE);
+	    firstcode = oldcode = GetCode(code_size, FALSE);
 	    return firstcode;
 	} else if (code == end_code) {
 	    int count;
@@ -418,7 +410,7 @@ static int LWZReadByte(uint8 *src, int flag, int input_code_size)
 	    if (ZeroDataBlock)
 		return -2;
 
-	    while ((count = GetDataBlock(src, buf)) > 0);
+	    while ((count = GetDataBlock(buf)) > 0);
 
 	    if (count != 0) {
 		/*
@@ -460,92 +452,120 @@ static int LWZReadByte(uint8 *src, int flag, int input_code_size)
     return code;
 }
 
-static Image *ReadImage(uint8 * src, int len, int height, int cmapSize,
+static uint8 *ReadImage(int len, int height, int cmapSize,
 	  unsigned char cmap[3][MAXCOLORMAPSIZE],
-	  int gray, int interlace, int ignore)
+	  int gray, int interlace, int ignore, Fl_PixelFormat &fmt, int &im_w, int &im_h)
 {
-    Image *image;
+    uint8 *data=0;
     unsigned char c;
     int i, v;
     int xpos = 0, ypos = 0, pass = 0;
-
+	
     /*
     **	Initialize the compression routines
-     */
-    if (!ReadOK(src, &c, 1)) {
-	RWSetMsg("EOF / read error on image data");
-	return NULL;
+	*/
+    if (!gif_io.read(&c, 1)) {
+		RWSetMsg("EOF / read error on image data");
+		return NULL;
     }
-    if (LWZReadByte(src, TRUE, c) < 0) {
-	RWSetMsg("error reading image");
-	return NULL;
+    if (LWZReadByte(TRUE, c) < 0) {
+		RWSetMsg("error reading image");
+		return NULL;
     }
     /*
     **	If this is an "uninteresting picture" ignore it.
-     */
+	*/
     if (ignore) {
-	while (LWZReadByte(src, FALSE, c) >= 0);
-	return NULL;
+		while (LWZReadByte(FALSE, c) >= 0);
+		return NULL;
     }
-    image = ImageNewCmap(len, height, cmapSize);
-
-    for (i = 0; i < cmapSize; i++)
-	ImageSetCmap(image, i, cmap[CM_RED][i],
-		     cmap[CM_GREEN][i], cmap[CM_BLUE][i]);
-
-    while ((v = LWZReadByte(src, FALSE, c)) >= 0) {
+	int pitch = Fl_Renderer::calc_pitch(1, len);
+	fmt.realloc(8, 0,0,0,0);
+    im_w = len;
+	im_h = height;
+	data = new uint8[im_h*pitch];
 	
-	((uint8 *)image->data())[xpos + ypos * image->pitch()] = v;
-
-	++xpos;
-	if (xpos == len) {
-	    xpos = 0;
-	    if (interlace) {
-		switch (pass) {
-		case 0:
-		case 1:
-		    ypos += 8;
-		    break;
-		case 2:
-		    ypos += 4;
-		    break;
-		case 3:
-		    ypos += 2;
-		    break;
+    for (i = 0; i < cmapSize; i++)
+		SetCmap(i, cmap[CM_RED][i],
+		cmap[CM_GREEN][i], cmap[CM_BLUE][i]);
+	
+    while ((v = LWZReadByte(FALSE, c)) >= 0) {
+		
+		data[xpos + ypos * pitch] = v;
+		
+		++xpos;
+		if (xpos == len) {
+			xpos = 0;
+			if (interlace) {
+				switch (pass) {
+				case 0:
+				case 1:
+					ypos += 8;
+					break;
+				case 2:
+					ypos += 4;
+					break;
+				case 3:
+					ypos += 2;
+					break;
+				}
+				
+				if (ypos >= height) {
+					++pass;
+					switch (pass) {
+					case 1:
+						ypos = 4;
+						break;
+					case 2:
+						ypos = 2;
+						break;
+					case 3:
+						ypos = 1;
+						break;
+					default:
+						goto fini;
+					}
+				}
+			} else {
+				++ypos;
+			}
 		}
-
-		if (ypos >= height) {
-		    ++pass;
-		    switch (pass) {
-		    case 1:
-			ypos = 4;
+		if (ypos >= height)
 			break;
-		    case 2:
-			ypos = 2;
-			break;
-		    case 3:
-			ypos = 1;
-			break;
-		    default:
-			goto fini;
-		    }
-		}
-	    } else {
-		++ypos;
-	    }
-	}
-	if (ypos >= height)
-	    break;
     }
-
-  fini:
-
-    return image;
+	
+fini:
+    return data;
 }
 
-ImageReader gif_reader =
+static bool gif_read_file(FILE *fp, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h)
 {
-    gif_is_valid,
-    0, //is_valid2
-    gif_create
+	gif_io.init_io(fp, 0, 0);
+	return gif_create(data, format, w, h);
+}
+
+static bool gif_read_mem(uint8 *stream, uint32 size, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h)
+{
+	gif_io.init_io(0, stream, size);
+	return gif_create(data, format, w, h);
+}
+
+Fl_Image_IO gif_reader =
+{
+	/* GENERAL: */
+	"GIF", //name
+	"gif", //filename extension
+
+	/* VALIDATE FUNCTIONS: */
+    gif_is_valid_file, //bool (*is_valid_file)(const char *filename, FILE *fp);
+    gif_is_valid_mem, //bool (*is_valid_mem)(uint8 *stream, uint32 size);
+    NULL, //bool (*is_valid_xpm)(uint8 **stream);
+
+	/* READ FUNCTIONS: */
+	gif_read_file, //bool (*read_file)(FILE *fp, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h);
+    gif_read_mem, //bool (*read_mem)(uint8 *stream, uint32 size, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h);
+
+	/* WRITE FUNCTIONS: */
+	NULL, //bool (*write_mem)(uint8 *&stream, int &size, int quality, uint8 *data, Fl_PixelFormat &data_format, int w, int h);
+	NULL //bool (*write_file)(FILE *fp, int quality, uint8 *data, Fl_PixelFormat &format, int w, int h);
 };
