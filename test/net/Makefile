@@ -4,8 +4,8 @@
 
 include ../../makeinclude
 
-CPPFILES = ftp_socket.cpp imap_connect.cpp
-ALL = ftp_socket imap_connect
+CPPFILES = ftp_connect.cpp imap_connect.cpp
+ALL = ftp_connect imap_connect
 
 all: demos
 
@@ -18,7 +18,7 @@ demos: $(ALL)
 programs: demos
 
 # NET programs needing special "help"...
-ftp_socket: ftp_socket.cpp $(FLNETLIB) $(FLLIB)
+ftp_connect: ftp_connect.cpp $(FLNETLIB) $(FLLIB)
 	$(CXX) -I../.. $(CXXFLAGS) $<  $(FLNETLIB) $(LDLIBS) -o $@
 
 imap_connect: imap_connect.cpp  $(FLNETLIB) $(FLLIB)

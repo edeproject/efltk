@@ -1,19 +1,10 @@
 /***************************************************************************
-                                                                                                                                                                                                                                                                                                                        Fl_FTP_DS.cpp  -  description
-                                                                                                                                                                                                                                                                                                                                                            -------------------
-                                                begin                : Thu Nov 28 2002
-                                                copyright            : (C) 2002 by Alexey Parshin
-                                                email                : alexeyp@m7.tts-sf.com
-            ***************************************************************************/
-
-/***************************************************************************
-            *                                                                         *
-            *   This program is free software; you can redistribute it and/or modify  *
-            *   it under the terms of the GNU General Public License as published by  *
-            *   the Free Software Foundation; either version 2 of the License, or     *
-            *   (at your option) any later version.                                   *
-            *                                                                         *
-            ***************************************************************************/
+            Fl_FTP_DS.cpp  -  description
+                                                                                                                                                                                                                                                                                                                                                           -------------------
+            begin                : Thu Nov 28 2002
+            copyright            : (C) 2002 by Alexey Parshin
+            email                : alexeyp@m7.tts-sf.com
+***************************************************************************/
 
 #include <config.h>
 
@@ -21,6 +12,7 @@
 #include <efltk/Fl_Exception.h>
 #include <efltk/Fl_Pixmap.h>
 
+#include <ctype.h>
 #include <stdlib.h>
 
 // REPLACE WITH XPM, now it's GIF
@@ -104,9 +96,103 @@ static const Fl_Image executablePixmap(exec_xpm, sizeof(exec_xpm));
 static const Fl_Pixmap folderPixmap(folder_xpm);
 static const Fl_Pixmap documentPixmap(document_xpm);
 
-static Fl_Data_Fields *parse_file_info_string(const Fl_String& file_info) {
-    return NULL;
-    //Fl_Data_Fields *df = new Fl_Data_Fields;
+static char *next_dir_item(char *p,char **result) {
+    char *start = p;
+    for (; *start == ' '; start++);
+    *result = start;
+    start = (char *) strchr(start,' ');
+    *start = 0;
+    return start + 1;
+}
+
+static const Fl_String_List
+month_names("Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Nov|Dec","|");
+
+static Fl_Data_Fields *parse_file_info_string(Fl_String& file_info) {
+    char *ptr = (char *) file_info.c_str();
+
+    char *permissions = 0L;
+    char *refcount = 0L;
+    char *user_name = 0L;
+    char *group_name = 0L;
+    char *size = 0L;
+    char *month = 0L, *day = 0L, *year = 0L, *date = 0L, *time = 0L;
+    char *file_name = 0L;
+    bool  is_directory = false;
+    bool  is_executable = false;
+
+    Fl_Date_Time dt;
+    const Fl_Image *pixmapPtr = &documentPixmap;
+
+    ptr = next_dir_item(ptr,&permissions);
+
+    if (isdigit(*ptr)) {
+        // MS Dos style
+        date = ptr;
+        ptr = next_dir_item(ptr,&time);
+        ptr = next_dir_item(ptr,&size);
+        if (strstr(size,"DIR"))
+            is_directory = true;
+        time[2] = 0;
+        time[5] = 0;
+        int month = atoi(time);
+        int day = atoi(time+3);
+        int year = atoi(time+6);
+        fl_try {
+            Fl_Date_Time dosDate(year,month,day);
+            dt = dosDate;
+        }
+        fl_catch(exc) {
+        }
+    } else {
+        // Unix style
+        if (permissions[0] == 'd')
+            is_directory = true;
+        else if (strchr(permissions,'x'))
+            is_executable = true;
+        ptr = next_dir_item(ptr,&refcount);
+        ptr = next_dir_item(ptr,&user_name);
+        ptr = next_dir_item(ptr,&group_name);
+        ptr = next_dir_item(ptr,&size);
+        ptr = next_dir_item(ptr,&month);
+        ptr = next_dir_item(ptr,&day);
+        ptr = next_dir_item(ptr,&year);
+        int m = month_names.index_of(month) + 1;
+        if (m >= 0) {
+            int d = atoi(day);
+            int y = atoi(year);
+            fl_try {
+                Fl_Date_Time unixDate(y,m,d);
+                dt = unixDate;
+            }
+            fl_catch(exc) {
+            }
+        }
+    }
+
+    if (is_directory)
+        pixmapPtr = &folderPixmap;
+    else if (is_executable)
+        pixmapPtr = &executablePixmap;
+
+    // skip to the file name
+    for (; *ptr == ' '; ptr++);
+    file_name = ptr;
+
+    Fl_Data_Fields *df = new Fl_Data_Fields;
+
+    df->add("")         = pixmapPtr;
+    df->add("Name")     = file_name;
+    df->add("Size")     = atoi(size);
+    df->add("Modified") = dt;
+
+    df->field(0).width = 3;
+    df->field(1).width = 30;
+    df->field(2).width = 10;
+    df->field(2).flags = FL_ALIGN_RIGHT;
+    df->field(3).width = 16;
+
+    return df;
 }
 
 // read the folder() and move item into the first entry
@@ -125,13 +211,13 @@ bool Fl_FTP_DS::open() {
 
     Fl_String_List dirlist;
     m_ftp.cmd_list(dirlist);
-    dirlist.print();
+    //dirlist.print();
 
     if (dirlist.count()) {
         unsigned cnt = dirlist.count();
         if (m_callback)
             m_callback(cnt,0);
-        for (unsigned i = 0; i <= cnt; i++) {
+        for (unsigned i = 0; i < cnt; i++) {
             Fl_Data_Fields *df = parse_file_info_string(dirlist[i]);
             if (df)
                 m_list.append(df);

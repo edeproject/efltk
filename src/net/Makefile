@@ -1,5 +1,6 @@
 CPPFILES = \
 	Fl_FTP_Connect.cpp \
+	Fl_FTP_DS.cpp \
 	Fl_IMAP_Connect.cpp \
 	Fl_IMAP_DS.cpp
 
