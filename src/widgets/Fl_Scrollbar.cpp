@@ -297,6 +297,7 @@ static void revert(Fl_Style* s)
 {
     //s->highlight_color = FL_WHITE;
     s->box = FL_FLAT_BOX;
+    s->button_box = FL_DIV_UP_BOX;    
     s->color = FL_DARK2;
     s->glyph = ::glyph;
 }

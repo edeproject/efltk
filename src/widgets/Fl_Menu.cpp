@@ -312,8 +312,8 @@ void MenuWindow::draw()
         box()->draw(0, 0, w(), h(), color(), 0);
     }
 
-    int x=0; int y=0;
-    int w=this->w(); int h=0;
+    int x=1; int y=0;
+    int w=this->w()-2; int h=0;
     box()->inset(x,y,w,h);
 
     for (int i = 0; ; i++) {

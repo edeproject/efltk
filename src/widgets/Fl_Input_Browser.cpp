@@ -269,7 +269,7 @@ int Fl_Input_Browser::handle(int e)
         over_now = 1;
     else
         over_now = 0;
-    if(over_now != over_last)
+    if((over_now != over_last) && highlight_color())
         redraw(FL_DAMAGE_HIGHLIGHT);
 
     if(e == FL_FOCUS) Fl::focus(input());
@@ -328,6 +328,7 @@ void Fl_Input_Browser::draw()
         if(over_now) f |= FL_HIGHLIGHT;
         X += W-W1;
         W = W1;
+	button_box(FL_DIV_UP_BOX);
         // draw the little mark at the right:
         draw_glyph(FL_GLYPH_DOWN_BUTTON, X, Y, W, H, f);
         over_last = over_now;

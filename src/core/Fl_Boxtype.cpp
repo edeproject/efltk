@@ -182,13 +182,19 @@ Fl_Frame_Box::Fl_Frame_Box(const char* n, const char* s, const Fl_Frame_Box* d)
     i /= 2;
     dx_ = dy_ = i;
 }
-
-const Fl_Frame_Box fl_down_box("down", "2WWMMPPAA");
-const Fl_Frame_Box fl_up_box("up", "2AAWWIIRR", &fl_down_box);
+//const Fl_Frame_Box fl_down_box("down", "2WWMMPPAA");
+const Fl_Frame_Box fl_down_box("down", "AAXXLLUU");
+//const Fl_Frame_Box fl_up_box("up", "2AAWWIIRR", &fl_down_box);
 //const Fl_Frame_Box fl_up_box("up", "2AAWWMMTT", &fl_down_box);
+//const Fl_Frame_Box fl_up_box("up", "ZZAAUULL", &fl_down_box);
+const Fl_Frame_Box fl_up_box("up", "XXAAUULL", &fl_down_box);
 
-const Fl_Frame_Box fl_thin_down_box("thin down", "2WWHH");
-const Fl_Frame_Box fl_thin_up_box("thin up", "2HHWW", &fl_thin_down_box);
+const Fl_Frame_Box fl_div_up_box("div up", "UUAAXXLL", &fl_down_box);
+
+//const Fl_Frame_Box fl_thin_down_box("thin down", "2WWHH");
+const Fl_Frame_Box fl_thin_down_box("thin down", "LLXX");
+//const Fl_Frame_Box fl_thin_up_box("thin up", "2HHWW", &fl_thin_down_box);
+const Fl_Frame_Box fl_thin_up_box("thin up", "XXLL", &fl_thin_down_box);
 
 // in fltk 1.0 these used to point at each other as a "down" version:
 const Fl_Frame_Box fl_engraved_box("engraved", "HHWWWWHH");

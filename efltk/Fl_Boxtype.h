@@ -73,6 +73,9 @@ extern FL_API const Fl_Frame_Box fl_up_box;
 #define FL_UP_BOX (&fl_up_box)
 #define FL_NORMAL_BOX (&fl_up_box)
 
+extern FL_API const Fl_Frame_Box fl_div_up_box;
+#define FL_DIV_UP_BOX (&fl_div_up_box)
+
 extern FL_API const Fl_Frame_Box fl_down_box;
 #define FL_DOWN_BOX (&fl_down_box)
 
