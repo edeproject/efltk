@@ -1234,7 +1234,7 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         {
 			UINT cp = fl_codepage;
 			static char buffer[1024];
-			static unsigned char lead[2] = {0, 0};
+			static unsigned char lead[4] = {0, 0, 0, 0};
 			if (!fl_is_nt4() && uMsg == WM_CHAR) {
 				if (!lead[0] && IsDBCSLeadByteEx(cp, (unsigned char)wParam)) 
 				{
