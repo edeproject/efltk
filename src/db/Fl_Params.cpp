@@ -25,9 +25,11 @@ Fl_Param::Fl_Param(const char *name) : Fl_Variant() {
     m_name = name;
     m_name = m_name.lower_case();
     m_null = false;
+    m_conversionBuffer = new char[32];
 }
 //---------------------------------------------------------------------------
 Fl_Param::~Fl_Param() {
+    delete m_conversionBuffer;
 }
 //---------------------------------------------------------------------------
 /*
