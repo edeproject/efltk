@@ -230,6 +230,10 @@ SOURCE=..\src\core\Fl_Config.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\widgets\Fl_Config_Dialog_DS.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\core\fl_converters.cpp
 # End Source File
 # Begin Source File
@@ -907,6 +911,10 @@ SOURCE=..\efltk\Fl_Combo_Box.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_Config.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Config_Dialog_DS.h
 # End Source File
 # Begin Source File
 
