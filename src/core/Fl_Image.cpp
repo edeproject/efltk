@@ -35,7 +35,8 @@ void Fl_Image::register_reader(ImageReader *reader)
     readers.append(reader);
 }
 
-bool Fl_Image::_state_effect_all = true;
+extern bool im_state_effects;
+bool Fl_Image::_state_effect_all = im_state_effects;
 
 Fl_Image::Fl_Image(int W, int H, Fl_PixelFormat *fmt, uint8 *data, int flags)
 {

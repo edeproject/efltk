@@ -29,7 +29,11 @@
 #include <efltk/fl_draw.h>
 #include <config.h>
 
-float Fl_Menu_Window::default_step_div = 4.0;
+extern bool menu_anim;
+extern float menu_speed;
+
+float Fl_Menu_Window::default_step_div = menu_speed;
+bool Fl_Menu_Window::animate_ = menu_anim;
 
 // This is the window type used by Fl_Menu to make the pop-ups, and for
 // tooltip popups.
@@ -52,8 +56,6 @@ extern unsigned long fl_transparent_pixel;
 static GC gc;                    // the GC used by all X windows
 extern uchar fl_overlay;         // changes how fl_color(x) works
 #endif
-
-bool Fl_Menu_Window::animate_ = true;
 
 void Fl_Menu_Window::create()
 {

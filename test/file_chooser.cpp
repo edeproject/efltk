@@ -8,8 +8,6 @@
 #include <efltk/Fl_Images.h>
 #include <efltk/Fl_File_Dialog.h>
 
-#include <efltk/Fl_Locale.h>
-
 Fl_Browser *list;
 
 char file_types[] = "All Files, *, C++ Files, *.{cpp|cxx|C}, Header Files, *.{h|H|hpp}, Text Files, *.txt";

@@ -1,15 +1,11 @@
-#include <stdlib.h>
-#include <stdio.h>
-
 #include <efltk/Fl.h>
-#include <efltk/Fl_Double_Window.h>
-#include <efltk/Fl_Window.h>
-#include <efltk/Fl_Button.h>
 #include <efltk/fl_draw.h>
-#include <efltk/x.h>
-#include <efltk/Fl_Color.h>
 #include <efltk/Fl_Image.h>
 #include <efltk/Fl_Images.h>
+#include <efltk/Fl_Window.h>
+#include <efltk/Fl_Double_Window.h>
+
+#include <stdio.h>
 
 #include <config.h>
 

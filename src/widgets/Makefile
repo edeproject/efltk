@@ -31,7 +31,6 @@ CPPFILES = \
 	Fl_Bar.cpp \
 	Fl_Browser.cpp \
 	Fl_Box.cpp \
-	Fl_Boxtype.cpp \
 	Fl_Button.cpp \
 	Fl_Check_Button.cpp \
 	Fl_Choice.cpp \
@@ -90,12 +89,6 @@ CPPFILES = \
         Fl_Workspace.cpp \
 	fl_ask.cpp \
 	fl_engraved_label.cpp \
-	fl_oval_box.cpp \
-	fl_plastic_box.cpp \
-	fl_round_box.cpp \
-	fl_rounded_box.cpp \
-	fl_shadow_box.cpp \
-	fl_diamond_box.cpp \
 	fl_show_colormap.cpp \
 	fl_symbols.cpp
 

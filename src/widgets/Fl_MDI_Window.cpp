@@ -331,8 +331,11 @@ int Fl_MDI_Titlebar::handle(int event)
     }
 }
 
-bool Fl_MDI_Window::anim_opaque_ = false;
-bool Fl_MDI_Window::animate_ = true;
+extern bool mdi_anim;
+extern bool mdi_anim_opaque;
+
+bool Fl_MDI_Window::anim_opaque_ = mdi_anim_opaque;
+bool Fl_MDI_Window::animate_ = mdi_anim;
 
 static void revert(Fl_Style* s) {
     s->box = FL_THICK_UP_BOX;

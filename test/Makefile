@@ -81,10 +81,10 @@ shape: shape.cpp $(FLGLLIB) $(FLCORELIB) $(FLUILIB)
 image_file: image_file.cpp $(FLIMAGESLIB) $(FLLIB)
 	$(CXX) -I.. $(CXXFLAGS) $< $(IMAGELIBS) $(PNGLIBS) $(JPEGLIBS) $(LDLIBS) -o $@
 
-alphablend: alphablend.cpp $(FLCORELIB) $(FLUILIB)
+file_chooser: file_chooser.cpp $(FLCORELIB) $(FLUILIB)
 	$(CXX) -I.. $(CXXFLAGS) $< $(LDLIBS) $(FLIMAGESLIB) $(PNGLIBS) $(JPEGLIBS) -o $@
 
-file_chooser: file_chooser.cpp $(FLCORELIB) $(FLUILIB)
+alphablend: alphablend.cpp $(FLCORELIB) $(FLUILIB)
 	$(CXX) -I.. $(CXXFLAGS) $< $(LDLIBS) $(FLIMAGESLIB) $(PNGLIBS) $(JPEGLIBS) -o $@
 
 help: help.cpp $(FLCORELIB) $(FLUILIB)

@@ -76,6 +76,7 @@ fi])
 
 AC_ARG_ENABLE(xft, [  --enable-xft            enable XWindow XFT extension],[if eval "test x$enable_xft = xyes"; then
 	AC_DEFINE(USE_XFT)
+	LDLIBS="-lXft $LDLIBS"
 fi])
 
 AC_ARG_ENABLE(cmap, [  --enable-cmap           enable support for 8bit displays],[if eval "test x$enable_cmap = xyes"; then

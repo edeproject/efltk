@@ -29,6 +29,7 @@ CPPFILES = \
 	Fl.cpp \
 	Fl_Bitmap.cpp \
 	Fl_Bmp.cpp \
+	Fl_Boxtype.cpp \
         Fl_Config.cpp \
 	Fl_Gif.cpp \
 	Fl_Group.cpp \
@@ -68,6 +69,12 @@ CPPFILES = \
 	filename_setext.cpp \
 	fl_arc.cpp \
 	fl_arci.cpp \
+	fl_oval_box.cpp \
+	fl_plastic_box.cpp \
+	fl_round_box.cpp \
+	fl_rounded_box.cpp \
+	fl_shadow_box.cpp \
+	fl_diamond_box.cpp \
         fl_blit.cpp \
         fl_blit_1.cpp \
         fl_blit_a.cpp \
