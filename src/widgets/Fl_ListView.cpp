@@ -1237,7 +1237,7 @@ void Fl_ListView::remove(int index)
 
 void Fl_ListView::find_def_sizes()
 {
-    int max_col_w[10] = {0};
+    int max_col_w[MAX_COLUMNS] = {0};
 
     for(int a=0; a<children(); a++)
     {
@@ -1247,7 +1247,7 @@ void Fl_ListView::find_def_sizes()
 
         for(int i=0; i<columns(); i++) {
             if(column_width(i) > 0) continue;
-            if(max_col_w[i] < ITEM(widget)->width(i))
+            if(max_col_w[i] < ITEM(widget)->width(i)+20)
                 max_col_w[i] = ITEM(widget)->width(i)+20;
         }
     }

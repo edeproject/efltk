@@ -25,9 +25,9 @@
 #include "Fl_Highlight_Button.h"
 #include "filename.h"
 
-typedef struct {
-    const char *type_str;
-    const char *pattern;
+typedef struct {	
+    const char *type_str; // e.g. "All Files"
+    const char *pattern;  // e.g. "*.{cpp|cxx}"
 } Filter;
 
 class Fl_FileItem : public Fl_ListView_Item
@@ -69,29 +69,37 @@ public:
     static int initial_w, initial_h;
     static bool initial_preview;
 
+    Fl_File_Dialog(int x, int y, int w, int h, const char *label=0, int mode=0);
     Fl_File_Dialog(int w, int h, const char *label=0, int mode=0);
     ~Fl_File_Dialog();
 
     void close(bool cancel);
+	bool cancelled() { return cancelled_; }
+
+	// read_dir tries to find this filename ("filename.ext") and select that file by default
+	// this is set to 0, always after read_dir()
+	void default_filename(const char *f) { default_filename_ = f; }
 
     void fullpath(const char *p) { char *tmp=0; if(p)tmp=strdup(p); if(fullpath_)delete []fullpath_; fullpath_ = tmp; }
-    char *fullpath() { return fullpath_; }
+    const char *fullpath() { return fullpath_; }
 
     const char *location() { return location_->value(); }
+	void location(const char *v) { location_->value(v); }
+
     int mode() { return mode_; }
 
+	// Returns NULL terminated list of selected files.
     char **get_selected();
 
     Fl_ListView *listview() { return listview_; }
-    bool cancelled() { return cancelled_; }
+	void multi_selection(bool v) { if(v) listview_->type(listview_->type()|Fl_ListView::MULTI_SELECTION); else listview_->type(listview_->type()&~Fl_ListView::MULTI_SELECTION); }
+	bool multi_selection() { return listview_->multi(); }    
 
     void read_dir(const char *_path);
     bool new_dir();
 
     void set_filter(Filter *f) { _cur_filter = f; }
-    void filters(Filter **filters);
-
-    void parse_dirs(const char *fp);
+    void filters(Filter **filters);    
 
     // Builds filter array, takes format e.g. "All Files, *, C++ Files, *.{cpp|cxx}"
     static Filter **build_filters(char *ptr);
@@ -113,9 +121,9 @@ public:
     // Returns full path to directory w/o filename, path could be e.g. 'c:\dir\somef' is returned c:\dir
     char *get_filepath(const char *path, char *buf);
 
-    int handle(int e);
-private:
+    virtual int handle(int e);
 
+private:
     Fl_ListView *listview_;
     bool cancelled_;
 
@@ -133,7 +141,6 @@ private:
 
     Fl_Input_Browser *path_;
     Fl_Input_Browser *filter_;
-
     Fl_Input_Browser *location_;
 
     Fl_Return_Button *ok_;
@@ -142,6 +149,10 @@ private:
     char files[4096]; //Files buffer for location (multisel)
     char *fullpath_;
 
+	// read_dir tries to find this filename ("filename.ext") and select that file by default
+	// this is set to 0, always after read_dir()
+	const char *default_filename_; 
+
     Filter **_filters;
     Filter *_cur_filter;
 
@@ -149,6 +160,8 @@ private:
 
     void init();
     void make_group(int w, int h);
+
+	void parse_dirs(const char *fp);
 
     void file_clicked(Fl_FileItem *i);
     void folder_clicked(Fl_FileItem *i);

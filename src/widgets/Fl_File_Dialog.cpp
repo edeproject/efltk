@@ -193,11 +193,11 @@ Fl_FileItem::~Fl_FileItem()
 
 static char **select_files(const char *path_, Filter **filters, const char *cap, int mode=0)
 {
-    Fl_File_Dialog d(Fl_File_Dialog::initial_w ,Fl_File_Dialog::initial_h , cap, mode);
+    Fl_File_Dialog d(Fl_File_Dialog::initial_w ,Fl_File_Dialog::initial_h , cap, mode);    
 
-    d.listview()->type(d.listview()->type()|Fl_ListView::MULTI_SELECTION);
-
+	const char *def_file=0;
     char read_path[FL_PATH_MAX]={0};
+
     if(path_ && fl_is_dir(path_))
         strncpy(read_path, path_, sizeof(read_path));
     else if(path_ && *path_ && strchr(path_, slash)) {
@@ -205,11 +205,14 @@ static char **select_files(const char *path_, Filter **filters, const char *cap,
         while(len--) if(path_[len]==slash) break;
         if(len>0) {
             strncpy(read_path, path_, len);
+			def_file = (path_+(len+1));
         }
     } else {
         getcwd(read_path, FL_PATH_MAX);
     }
 
+	d.multi_selection(true);
+	d.default_filename(def_file);
     d.filters(filters);
     d.read_dir(read_path);
     d.exec(0, MODAL);
@@ -242,7 +245,9 @@ static char *select_file(const char *path_, Filter **filters, const char *cap, i
 {
     Fl_File_Dialog d(Fl_File_Dialog::initial_w ,Fl_File_Dialog::initial_h , cap, mode);
 
+	const char *def_file=0;
     char read_path[FL_PATH_MAX]={0};
+
     if(path_ && fl_is_dir(path_))
         strncpy(read_path, path_, sizeof(read_path));
     else if(path_ && *path_ && strchr(path_, slash)) {
@@ -250,11 +255,13 @@ static char *select_file(const char *path_, Filter **filters, const char *cap, i
         while(len--) if(path_[len]==slash) break;
         if(len>0) {
             strncpy(read_path, path_, len);
+			def_file = (path_+(len+1));
         }
     } else {
         getcwd(read_path, FL_PATH_MAX);
     }
 
+	d.default_filename(def_file);
     d.filters(filters);
     d.read_dir(read_path);
     d.exec(0, MODAL);
@@ -336,7 +343,7 @@ class PreviewBox : public Fl_Widget
 public:
     PreviewBox(int x, int y, int w, int h) : Fl_Widget(x,y,w,h,0) { color(FL_WHITE); }
     void draw() {
-        if(!(damage()&FL_DAMAGE_ALL)) return;
+        if(!(damage()&(FL_DAMAGE_ALL|FL_DAMAGE_EXPOSE))) return;
 
         int X=0,Y=0,W=w(),H=h();
         box()->inset(X,Y,W,H);
@@ -382,11 +389,11 @@ public:
             draw_box();
 
             if(w()<=120) label_size(8);
-            if(w()>120) label_size(10);
-            if(w()>180) label_size(12);
-            if(w()>250) label_size(14);
+            else if(w()>120) label_size(10);
+            else if(w()>180) label_size(12);
+            else if(w()>250) label_size(14);
 
-            if(label()[0]=='?'&&label()[1]=='\0') label_size(100);
+            if(label()[0]=='?'&&label()[1]=='\0') label_size(96);
 
             draw_label(X, Y, W, H, align());
         }
@@ -408,6 +415,7 @@ char *normalize_path(const char *path, char *buf)
     strncpy(buf, path, FL_PATH_MAX);
 	char *d = buf;
 	for(; *d; d++) if(*d=='/') *d='\\'; //Convert slashes..
+
 #else
 
     char ch=0;
@@ -433,7 +441,19 @@ void cb_file_dialog(Fl_Widget *w, void *d)
 }
 
 Fl_File_Dialog::Fl_File_Dialog(int w, int h, const char *label, int mode)
-: FileDialogType(w,h,label)
+	: FileDialogType(w, h, label)
+{
+    callback(cb_file_dialog, this);
+    image_cache.size(10);
+    image_cache.autodelete(true);
+
+    mode_ = mode;
+    make_group(w, h);
+    init();
+}
+
+Fl_File_Dialog::Fl_File_Dialog(int x, int y, int w, int h, const char *label, int mode)
+	: FileDialogType(x, y, w, h, label)
 {
     callback(cb_file_dialog, this);
     image_cache.size(10);
@@ -467,9 +487,9 @@ Filter **Fl_File_Dialog::build_filters(char *ptr)
         filter->type_str = strdup(name);
         filter->pattern  = strdup(pattern);
         filters[filter_cnt] = filter;
-
-        filters = (Filter **)realloc(filters, sizeof(Filter *)*(filter_cnt+2));
+        
         filter_cnt++;
+		filters = (Filter **)realloc(filters, sizeof(Filter*) * (filter_cnt+1));
     }
 
     if(filter_cnt==0) { delete []filters; filters=0; }
@@ -618,6 +638,7 @@ void Fl_File_Dialog::init()
 {
 	cancelled_ = false;
 	fullpath_ = 0;
+	default_filename_ = 0;
 	size_range(300, 200);
 
 	up_->callback(cb_up, this);
@@ -771,6 +792,7 @@ void Fl_File_Dialog::parse_dirs(const char *fp)
 
 void Fl_File_Dialog::read_dir(const char *_path)
 {
+	Fl_Widget *selected=0;
     image_cache.clear();
     update_preview(0);
 
@@ -890,18 +912,24 @@ void Fl_File_Dialog::read_dir(const char *_path)
             {
                 if((strcmp(files[n]->d_name, ".") && strcmp(files[n]->d_name, "..") != 0) && mode() != Fl_File_Dialog::DIRECTORY)
                 {
+					bool sel = false;
                     snprintf(filename, sizeof(filename)-1, "%s%c%s", fullpath(), slash, files[n]->d_name);
                     Fl_FileAttr *attr = fl_file_attr(filename);
                     if(!(attr->flags & FL_DIR)) {
+						Fl_FileItem *item=0;
+						if(default_filename_) sel = !strcmp(default_filename_, files[n]->d_name);
                         if(_cur_filter) {
-                            if(fl_file_match(filename, _cur_filter->pattern)) {
-                                Fl_FileItem *it = new Fl_FileItem(files[n]->d_name, attr);
-                                it->image(0, file_pix);
-                            }
+                            if(fl_file_match(filename, _cur_filter->pattern))
+								item = new Fl_FileItem(files[n]->d_name, attr);
                         } else {
-                            Fl_FileItem *it = new Fl_FileItem(files[n]->d_name, attr);
-                            it->image(0, file_pix);
+                            item = new Fl_FileItem(files[n]->d_name, attr);                            
                         }
+						if(item) {
+							item->image(0, file_pix);
+							if(sel) {								
+								selected = item;
+							}
+						}
                     } else
                         delete attr;
                 }
@@ -923,8 +951,19 @@ void Fl_File_Dialog::read_dir(const char *_path)
         listview_->relayout();
     }
 
-    if(mode()!=DIRECTORY) ok_->deactivate();
-    else ok_->activate();
+    if(mode()!=DIRECTORY) {
+		ok_->deactivate();    
+		if(selected) {
+			listview_->select_only(selected);	
+			listview_->show_item(selected);
+			ok_->activate();
+		}
+		if(default_filename_) location(default_filename_);
+	} else {
+		ok_->activate();
+	}
+
+	default_filename_ = 0;	
 }
 
 bool Fl_File_Dialog::new_dir()

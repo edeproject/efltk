@@ -14,7 +14,9 @@ char file_types[] = "All Files, *, C++ Files, *.{cpp|cxx|C}, Header Files, *.{h|
 
 void sel(Fl_Widget *, void *)
 {
-    char **files = (char **)fl_select_files(0, file_types);
+	const char *last_selected=0;
+	if(list->children()) last_selected = list->child(0)->label();
+    char **files = (char **)fl_select_files(last_selected, file_types);
     if(files) {
         list->clear();
         list->begin();
@@ -33,7 +35,9 @@ void sel(Fl_Widget *, void *)
 
 void sel1(Fl_Widget *, void *)
 {
-    char *file = (char *)fl_select_file(0, file_types);
+	const char *last_selected=0;
+	if(list->children()) last_selected = list->child(0)->label();
+    char *file = (char *)fl_select_file(last_selected, file_types);
     if(file) {
         list->clear();
         list->begin();
@@ -47,7 +51,9 @@ void sel1(Fl_Widget *, void *)
 
 void dir(Fl_Widget *, void *)
 {
-    char *dir = (char *)fl_select_dir();
+    const char *last_selected=0;
+	if(list->children()) last_selected = list->child(0)->label();
+    char *dir = (char *)fl_select_dir(last_selected);
     if(dir) {
         list->clear();
         list->begin();
@@ -61,7 +67,9 @@ void dir(Fl_Widget *, void *)
 
 void save(Fl_Widget *, void *)
 {
-	char *file = (char *)fl_save_file(0, file_types);
+    const char *last_selected=0;
+	if(list->children()) last_selected = list->child(0)->label();
+	char *file = (char *)fl_save_file(last_selected, file_types);
     if(file) {
         list->clear();
         list->begin();
