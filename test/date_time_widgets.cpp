@@ -35,17 +35,17 @@ int main() {
 
     Fl_Date_Input   dateInput(0,0,10,10,"Date Input:");
     dateInput.layout_align(FL_ALIGN_TOP);
-    dateInput.label_width(100);
+//    dateInput.label_width(100);
     dateInput.callback(datetime_cb);
 
     Fl_Date_Time_Input dateTimeInput(0,0,10,10,"Date Time Input:");
     dateTimeInput.layout_align(FL_ALIGN_TOP);
-    dateTimeInput.label_width(100);
+//    dateTimeInput.label_width(100);
     dateTimeInput.callback(datetime_cb);
 
     Fl_Date_Interval_Input dateIntervalInput(0,0,10,10,"Date Interval Input:");
     dateIntervalInput.layout_align(FL_ALIGN_TOP);
-    dateIntervalInput.label_width(100);
+//    dateIntervalInput.label_width(100);
     dateIntervalInput.callback(datetime_cb);
 
     statusBox = new Fl_Box(0,0,10,22);

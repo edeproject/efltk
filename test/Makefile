@@ -48,8 +48,8 @@ CPPFILES = demo.cpp sizes.cpp hello.cpp resizable.cpp scroll.cpp image.cpp file_
 	thread_ball.cpp images.cpp image_loader.cpp \
 	popup_window.cpp symbols.cpp calendar.cpp maskedinput.cpp utf8.cpp \
 	dialog.cpp directory.cpp listview_ds.cpp xml_test.cpp xml_test2.cpp \
-	exceptions.cpp layout2.cpp socket.cpp combobox.cpp labelwidth.cpp \
-	labelwidth2.cpp button_groups.cpp date_time_widgets.cpp input_browser.cpp \
+	exceptions.cpp layout2.cpp socket.cpp combobox.cpp\
+	button_groups.cpp date_time_widgets.cpp input_browser.cpp \
 	split.cpp group_grow.cpp main_window.cpp signals.cpp
 
 ALL =   demo sizes hello resizable scroll image file_chooser menubar browser \
@@ -57,8 +57,8 @@ ALL =   demo sizes hello resizable scroll image file_chooser menubar browser \
 	multi_image help mdi_test resize tabs line_style doublebuffer subwindow \
 	keyboard label layout arc ask buttons clock color_chooser \
 	cursor curve fast_slow fonts iconize input navigation input_browser \
-	output overlay pack radio tile preferences image_manip labelwidth \
-	labelwidth2 button_groups listview_sort date_time_widgets \
+	output overlay pack radio tile preferences image_manip \
+	button_groups listview_sort date_time_widgets \
 	listview alphablend thread_ball images image_loader layout2 split \
 	popup_window symbols calendar maskedinput utf8 \
 	dialog directory listview_ds xml_test xml_test2 exceptions socket combobox \
