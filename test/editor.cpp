@@ -829,7 +829,13 @@ Fl_Window* new_view() {
 	w->editor->text_size(12);
 	//w->editor->cursor_style(Fl_Text_Editor::BLOCK_CURSOR);
 	//w->editor->cursor_color(FL_RED);
+	
+	// NOTE: This is slow! Do not use dynamic wrapping if styletable different
+	// fonts, it will result, e.g. very slow loading of files. It is ok, for 
+	// Textdisplays where you start typing, but not when loading big amount of text.
+	// If need to load, please use character wrapping... (code editors don't need wrap :) )
 	//w->editor->wrap_mode(1, 0);
+
 	w->editor->set_linenumber_area(0, 40);
     w->editor->buffer(textbuf);
     w->editor->highlight_data(stylebuf, styletable,
