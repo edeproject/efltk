@@ -526,7 +526,7 @@ void Fl_Device::encoding(const char* f) {
 
 // The predefined fonts that fltk has:  bold:       italic:
 Fl_Font_ fl_fonts[] = {
-{"-*-helvetica-medium-r-normal--*",	fl_fonts+1, fl_fonts+1,0},
+{"-*-helvetica-medium-r-normal--*",	fl_fonts+1, fl_fonts+2,0},
 {"-*-helvetica-bold-r-normal--*", 	fl_fonts+1, fl_fonts+3,0},
 {"-*-helvetica-medium-o-normal--*",	fl_fonts+3, fl_fonts+2,0},
 {"-*-helvetica-bold-o-normal--*",	fl_fonts+3, fl_fonts+3,0},
