@@ -101,6 +101,7 @@ void Fl_Main_Window::view(Fl_Group *w)
 
     pack_->insert(*view_, index);
     pack_->resizable(view_);
+    view_->layout();
 }
 
 Fl_Group *Fl_Main_Window::view()
