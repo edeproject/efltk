@@ -63,7 +63,7 @@ void Fl_Query::alloc_stmt() {
             m_database->lock();
             m_database->allocate_query(this);
         }
-        catch (Fl_Exception &exception) {
+        catch (Fl_Exception &) {
             m_database->unlock();
             throw;
         }
@@ -81,7 +81,7 @@ void Fl_Query::free_stmt() {
             m_database->lock();
             m_database->deallocate_query(this);
         }
-        catch (Fl_Exception &exception) {
+        catch (Fl_Exception &) {
             m_database->unlock();
             throw;
         }
@@ -118,7 +118,7 @@ bool Fl_Query::open() {
             alloc_stmt();
         m_database->open_query(this);
     }
-    catch (Fl_Exception &exception) {
+    catch (Fl_Exception &) {
         m_database->unlock();
         throw;
     }
@@ -141,7 +141,7 @@ void Fl_Query::fetch() {
         m_database->lock();
         m_database->fetch_query(this);
     }
-    catch (Fl_Exception &exception) {
+    catch (Fl_Exception &) {
         m_database->unlock();
         throw;
     }
@@ -155,7 +155,7 @@ bool Fl_Query::close() {
             m_database->lock();
             m_database->close_query(this);
         }
-        catch (Fl_Exception &exception) {
+        catch (Fl_Exception &) {
             m_database->unlock();
             throw;
         }
