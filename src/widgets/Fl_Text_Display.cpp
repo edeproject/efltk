@@ -1985,7 +1985,11 @@ int Fl_Text_Display::string_width( const char *string, int length, int style )
         size = mStyleTable[si].size;
 
 		if(mStyleTable[si].attr == ATTR_IMAGE && mStyleTable[si].image) {
-			return mStyleTable[si].image->width();
+			int iW=0;
+			for(int n=0; n<length; n++) {				
+				iW += mStyleTable[si].image->width();
+			}
+			return iW;
 		}
 
     } else {
