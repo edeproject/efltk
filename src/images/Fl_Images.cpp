@@ -10,14 +10,14 @@ extern Fl_Image_IO jpeg_reader;
 
 void fl_init_images_lib()
 {
-	static bool registered = false;
-	if(!registered) {
+    static bool registered = false;
+    if(!registered) {
 #if HAVE_PNG
-	    fl_register_imageio(&png_reader);
+        fl_register_imageio(&png_reader);
 #endif
 #if HAVE_JPEG
-		fl_register_imageio(&jpeg_reader);
+        fl_register_imageio(&jpeg_reader);
 #endif
-		registered = true;
-	}
+        registered = true;
+    }
 }
