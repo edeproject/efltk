@@ -137,6 +137,7 @@ Fl_Menu_Window::~Fl_Menu_Window()
 void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
                              int tx, int ty, int tw, int th)
 {
+    if(!animate()) return;
 #undef max
 #define max(a,b) (a) > (b) ? (a) : (b)
 
@@ -159,8 +160,7 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
     float max_steps = max( (tw-fw), (th-fh) );
     float min_steps = max( (fw-tw), (fh-th) );
     float steps = max(max_steps, min_steps);
-	
-	steps/=step_div_;	
+    steps/=step_div_;
 
     float sx = max( ((float)(fx-tx)/steps), ((float)(tx-fx)/steps) );
     float sy = max( ((float)(fy-ty)/steps), ((float)(ty-fy)/steps) );

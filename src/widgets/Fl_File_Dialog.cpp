@@ -775,13 +775,13 @@ void Fl_File_Dialog::read_dir(const char *_path)
     char read_path[FL_PATH_MAX];
     if(_path && *_path) {
         normalize_path(_path, read_path);
-        //strncpy(read_path, _path, FL_PATH_MAX);
     } else {
         read_path[0] = '\0';
     }
 
 #ifndef _WIN32
     if(!*read_path) {
+        strncpy(read_path, "/", sizeof(read_path));
         _path = "/";
         ok_->deactivate();
     }
@@ -1141,27 +1141,27 @@ void Fl_File_Dialog::cb_refresh(Fl_Widget *, void *d) {
 
 void Fl_File_Dialog::cb_up(Fl_Widget *, void *d) 
 {
-	if(!FD->fullpath()) {
-		FD->read_dir(0);
-		return;
-	}
+    if(!FD->fullpath()) {
+        FD->read_dir(0);
+        return;
+    }
 
-	char *buf = strdup( FD->fullpath() );
+    char *buf = strdup( FD->fullpath() );
 
-	char *slash_ = strrchr(buf, slash);
-	
-	if(slash_) {		
-		*slash_ = '\0';
+    char *slash_ = strrchr(buf, slash);
+
+    if(slash_) {
+        *slash_ = '\0';
 #ifdef _WIN32
-		if(*(slash_-1)=='\\') 
-			FD->read_dir(_("My Network"));
-		else
+        if(*(slash_-1)=='\\')
+            FD->read_dir(_("My Network"));
+        else
 #endif
-			FD->read_dir(buf);
-	} else {		
-		FD->read_dir(0);
-	}
-	delete []buf;
+            FD->read_dir(buf);
+    } else {
+        FD->read_dir(0);
+    }
+    delete []buf;
 }
 
 void Fl_File_Dialog::cb_dirc(Fl_Widget *w, void *d) {
@@ -1525,21 +1525,14 @@ void Fl_File_Dialog::update_preview(const char *filename)
 
 int Fl_File_Dialog::handle(int e)
 {
-    static bool clicked_once=false;
     if(e==FL_KEYUP && Fl::event_key()==FL_BackSpace) {
-        if(( Fl::focus()==location_->input() && !strcmp(location_->input()->value(),"")) ||
-           Fl::focus()!=location_->input()) {
-            if(clicked_once) {
-                cb_up(0, this);
-                return 1;
-            }
-            clicked_once=true;
-        } else
-            clicked_once = false;
+        if(Fl::focus()==listview_) {
+            cb_up(0, this);
+            return 1;
+        }
     }
     return Fl_Window::handle(e);
 }
-
 
 ////////////////////////////
 // WIN32 NETWORK

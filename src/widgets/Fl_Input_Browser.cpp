@@ -16,16 +16,9 @@ class ComboWindow : public Fl_Menu_Window {
 public:
     int handle(int);
     void draw();
-    void layout() {
-#ifdef _WIN32
-        if(shown())
-            SetWindowPos(fl_xid(this), HWND_TOPMOST, x(), y(), w(), h(), 0);
-        Fl_Group::layout();
-#else
-        Fl_Menu_Window::layout();
-#endif
+    ComboWindow(int x, int y, int w, int h) : Fl_Menu_Window(x, y, w, h) {
+        combo=0;
     }
-    ComboWindow(int x, int y, int w, int h) : Fl_Menu_Window(x, y, w, h) { combo=0; }
 
     Fl_Input_Browser *combo;
 };
@@ -330,12 +323,11 @@ void Fl_Input_Browser::popup()
 
     if(!win) {
         Fl_Group::current(0);
-        win = new ComboWindow(0,0,200,400);
+        win = new ComboWindow(0,0,0,0);
         win->set_override();
         win->begin();
 
-        // dummy W,H used -- will be replaced.
-        list = new ComboBrowser(0,0,200,400);
+        list = new ComboBrowser(0,0,0,0);
         list->box(FL_FLAT_BOX);
         list->indented((type()&INDENTED) != 0);
         share_list.other = this;
@@ -386,7 +378,7 @@ void Fl_Input_Browser::popup()
     }
 
     win->resize(X,Y,W,H);
-    int winW=W, winH=H;
+    //int winW=W, winH=H;
     X=0,Y=0;
     win->box()->inset(X,Y,W,H);
     list->resize(X,Y,W,H-SIZE_GRIP);
@@ -397,14 +389,14 @@ void Fl_Input_Browser::popup()
 
     if(resize_only) return;
 
+    /*
+    list->layout();
     if(!win->shown()) win->create();
+    win->step_divider(0.1);
     win->animate(win->x(), win->y(), winW, 1,
                  win->x(), win->y(), winW, winH);
-
     win->resize(win->x(), win->y(), winW, winH);
-    win->layout();
-
-    win->show();
+    */
 
     set_value();
     redraw(FL_DAMAGE_VALUE);

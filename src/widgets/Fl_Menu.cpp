@@ -812,7 +812,7 @@ int Fl_Menu_::popup(int X, int Y, int W, int H)
     bool saved_grab = Fl::grab();
     w.show(Fl::first_window());
 
-    Fl::add_timeout(0.25f, timeout_initial);
+    Fl::add_timeout(0.5f, timeout_initial);
 
     Fl::modal(&w, MODAL);
     while(Fl::modal() && !Fl::exit_modal_flag()) Fl::wait();
@@ -864,7 +864,7 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
     bool saved_grab = Fl::grab();
     int cur_index = -1;
 
-    Fl::add_timeout(0.25f, timeout_initial);
+    Fl::add_timeout(0.5f, timeout_initial);
 
     for(Fl::modal(&w, MODAL); !Fl::exit_modal_flag(); Fl::wait())
     {
@@ -1050,7 +1050,7 @@ int Fl_Choice::popup(int X, int Y, int W, int H)
     w.show(Fl::first_window());
     Fl::modal(&w, MODAL);
 
-    Fl::add_timeout(0.25f, timeout_initial);
+    Fl::add_timeout(0.5f, timeout_initial);
 
     while(Fl::modal() && !Fl::exit_modal_flag()) Fl::wait();
 
