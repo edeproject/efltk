@@ -136,7 +136,9 @@ public:
     void resizable(Fl_Widget* o) { m_resizable = o; }
     Fl_Widget* resizable() const { return m_resizable; }
     void add_resizable(Fl_Widget& o) { m_resizable = &o; add(o); }
-    void init_sizes();
+    
+	void init_sizes();
+	int *store_sizes();
 
     void focus(int i) { m_focus = i; }
     void focus(Fl_Widget* w) { focus(find(w)); }
@@ -155,8 +157,7 @@ public:
 protected:
     void draw_child(Fl_Widget&) const;
     void update_child(Fl_Widget&) const;
-    void draw_outside_label(Fl_Widget&) const;
-    int* sizes();
+    void draw_outside_label(Fl_Widget&) const;    
 
 private:
     uchar m_layout_spacing;
