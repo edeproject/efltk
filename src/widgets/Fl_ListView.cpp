@@ -15,6 +15,8 @@ Fl_ListView *Fl_ListView::current=0;
 
 void Fl_ListView::ctor_init()
 {
+    when(FL_WHEN_NOT_CHANGED|FL_DATA_CHANGE);
+
     style(default_style);
     set_click_to_focus();
 
@@ -77,9 +79,9 @@ void Fl_ListView::draw_row(unsigned row, int w, int h) const
 {
     if(selected_row(row)) {
 
-		Fl_Color c = selection_color();
-		// If not focused, make color grayed
-		if(!focused()) c = fl_color_average(c, FL_GRAY, 0.40);
+        Fl_Color c = selection_color();
+        // If not focused, make color grayed
+        if(!focused()) c = fl_color_average(c, FL_GRAY, 0.40);
 
         fl_color(c);
         fl_rectf(0, 0, w, h);
@@ -240,7 +242,7 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
     static bool on_drag = false;
 
     static int sel_item = 0;
-	static int last_dragged = 0;
+    static int last_dragged = 0;
     int current_item = 0;
 
     int ret = 0;
@@ -259,12 +261,12 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
         case FL_FOCUS:
             reset_search();
         case FL_UNFOCUS:
-			if(!selection.empty()) {
-				for(unsigned n=0; n<selection.size(); n++) {
-					items[selection[n]]->set_damage(FL_DAMAGE_ALL);					
-				}	
-				redraw();
-			}
+            if(!selection.empty()) {
+                for(unsigned n=0; n<selection.size(); n++) {
+                    items[selection[n]]->set_damage(FL_DAMAGE_ALL);                 
+                }   
+                redraw();
+            }
             return 1; //Keyboard focus
 
         case FL_MOVE:
@@ -278,8 +280,8 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
             {
                 last_dragged = current_item = R;
 
-				// Handle selection in table.
-				// Select cell under cursor, and enable drag selection mode.
+                // Handle selection in table.
+                // Select cell under cursor, and enable drag selection mode.
 
                 cur_row = current_item;
                 on_drag = true;
@@ -287,34 +289,34 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
                 if(Fl::event_button() == FL_LEFT_MOUSE && multi())
                 {
                     switch(shiftstate) {
-						case FL_CTRL: {
-							// start a new selection block without changing state
-                            select_row(current_item, 2);
-                            sel_item = current_item;
-                            show_row(current_item);
-                            ret = 1;
-                        }
-                        break;
+                        case FL_CTRL: {
+                            // start a new selection block without changing state
+                                select_row(current_item, 2);
+                                sel_item = current_item;
+                                show_row(current_item);
+                                ret = 1;
+                            }
+                            break;
 
                         case FL_SHIFT: {
-							// We want to change the selection between
-							// the top most selected item and the just clicked item.
-							// start a new selection block without changing state
-                            select_items(sel_item, current_item);
-                            sel_item = current_item;
-                            Fl::event_clicks(0);
-                            show_row(current_item);
-                            ret = 1;
-						}
-                        break;
+                            // We want to change the selection between
+                            // the top most selected item and the just clicked item.
+                            // start a new selection block without changing state
+                                select_items(sel_item, current_item);
+                                sel_item = current_item;
+                                Fl::event_clicks(0);
+                                show_row(current_item);
+                                ret = 1;
+                            }
+                            break;
 
                         default: {
-							select_only_row(current_item);
-                            sel_item = current_item;
-                            show_row(current_item);
-                            ret = 1;
-						}
-                        break;
+                                select_only_row(current_item);
+                                sel_item = current_item;
+                                show_row(current_item);
+                                ret = 1;
+                            }
+                            break;
                     } //switch(shiftstate)
 
                 } else { // LEFT_MOUSE && multi()
@@ -325,7 +327,7 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
                     ret = 1;
                 }
 
-                if(when() & FL_WHEN_CHANGED) do_callback(FL_DATA_CHANGE);
+                if (when() & FL_WHEN_CHANGED) do_callback(FL_DATA_CHANGE);
                 else set_changed();
             }
             break;
@@ -335,12 +337,12 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
 
                 if(context==CONTEXT_CELL) current_item = R;
                 else                      current_item = row_at(yposition()+Fl::event_y()-tiy);
-                if(current_item==-1) return 0;				
+                if(current_item==-1) return 0;              
 
                 if(multi())
-                {					
-					// Mark items selected
-					select_items(last_dragged, current_item);
+                {                   
+                    // Mark items selected
+                    select_items(last_dragged, current_item);
                     show_row( (cur_row = current_item) );
 
                     if(sel_item!=current_item) {
@@ -350,12 +352,12 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
 
                 } else { // end multi
 
-					if(!selected_row(current_item) || selected()>1) {
-						select_only_row(current_item);
-					}                    
+                    if(!selected_row(current_item) || selected()>1) {
+                        select_only_row(current_item);
+                    }                    
                     show_row( (cur_row = current_item) );
                 }
-				last_dragged = current_item;
+                last_dragged = current_item;
                 return 1;
             }
 
@@ -849,10 +851,13 @@ bool Fl_ListView::select_row(unsigned row, int value)
 bool Fl_ListView::select_only_row(unsigned row)
 {   
     unselect_all();
-    if(set_select_flag(row, 1)) {
+    if (set_select_flag(row, 1)) {
         selection.append(row);
         items[row]->redraw();
-        set_changed();
+        cur_row = row;
+        if (when() & (FL_WHEN_CHANGED|FL_DATA_CHANGE)) 
+            do_callback(FL_DATA_CHANGE);
+        else set_changed();
     }
     cur_row = row;
     return true;
@@ -876,7 +881,8 @@ void Fl_ListView::select_items(unsigned from, unsigned to)
             selection.append(n);
         }
     }
-    set_changed();
+    if (when() & FL_WHEN_CHANGED) do_callback(FL_DATA_CHANGE);
+    else set_changed();
 }
 
 bool Fl_ListView::unselect_all()
@@ -990,8 +996,8 @@ void Fl_ListView::remove(int index)
 
     w->parent(0);
     items.remove(index);
-	
-	row_count(items.size());
+
+    row_count(items.size());
 
     // Relayout
     m_needsetup = true;
