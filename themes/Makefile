@@ -27,6 +27,7 @@
 #   and breaks the build on some platforms
 THEMES = \
 	essai.theme \
+        eblue.theme
 
 ################################################################
 
@@ -48,6 +49,10 @@ $(LIBRARY).a: $(OBJECTS)
 ESSAI_OBJ = essai.shared.o
 essai.theme : $(ESSAI_OBJ)
 	$(THEMECOMMAND) $@ $(ESSAI_OBJ) $(DSOLIBS)
+
+EBLUE_OBJ = eblue.shared.o
+eblue.theme : $(EBLUE_OBJ)
+	$(THEMECOMMAND) $@ $(EBLUE_OBJ) $(DSOLIBS)
 
 clean :
 	-@ rm -f *.shared.o $(LIBRARY)$(LIBEXT) $(THEMES) core *~ makedepend
