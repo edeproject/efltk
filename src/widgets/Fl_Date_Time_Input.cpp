@@ -409,7 +409,7 @@ void Fl_Date_Interval_Input::preferred_size(int& w,int &h) const {
     m_input->preferred_size(w,h);
     h += box()->dh();
     w += m_button->w();
-    w = w + w + box()->dw();
+    w = w + w + box()->dw()*2;
 }
 
 void Fl_Date_Interval_Input::value2(const char *v) {
