@@ -30,6 +30,9 @@
 #include <efltk/math.h>
 #include <stdio.h>
 
+// For NLS stuff
+#include "../core/fl_internal.h"
+
 // Besides being a useful object on it's own, the Fl_Color_Chooser was
 // an attempt to make a complex composite object that could be easily
 // imbedded into a user interface.  If you wish to make complex objects
@@ -381,9 +384,6 @@ void Fl_Color_Chooser::value(Fl_Color c) {
 #include <efltk/Fl_Window.h>
 #include <efltk/Fl_Return_Button.h>
 
-extern const char* fl_ok;
-extern const char* fl_cancel;
-
 static Fl_Window* window;
 static Fl_Color_Chooser* chooser;
 static Fl_Box* ok_color;
@@ -470,11 +470,11 @@ static void make_it() {
     new CellBox(5,110,200,52);
     ok_color = new Fl_Box(5, 165, 95, 21);
     ok_color->box(FL_ENGRAVED_BOX);
-    ok_button = new Fl_Return_Button(5, 186, 95, 21, fl_ok);
+    ok_button = new Fl_Return_Button(5, 186, 95, 21, _("&OK"));
     ok_button->callback(ok_cb);
     cancel_color = new Fl_Box(110, 165, 95, 21);
     cancel_color->box(FL_ENGRAVED_BOX);
-    cancel_button = new Fl_Button(110, 186, 95, 21, fl_cancel);
+    cancel_button = new Fl_Button(110, 186, 95, 21, _("&Cancel"));
     cancel_button->callback(cancel_cb);
     // window->size_range(210, 240); // minimum usable size?
     window->resizable(chooser);

@@ -37,33 +37,102 @@
 #include <efltk/Fl_Window.h>
 #include <efltk/Fl_Input.h>
 #include <efltk/Fl_Secret_Input.h>
+#include <efltk/Fl_Image.h>
 #include <efltk/vsnprintf.h>
 
 #include "../core/fl_internal.h"
 
 #include <string.h>
 
+static const char * const information_xpm[]={
+"32 32 5 1",
+". c None",
+"c c #000000",
+"* c #999999",
+"a c #ffffff",
+"b c #0000ff",
+"...........********.............",
+"........***aaaaaaaa***..........",
+"......**aaaaaaaaaaaaaa**........",
+".....*aaaaaaaaaaaaaaaaaa*.......",
+"....*aaaaaaaabbbbaaaaaaaac......",
+"...*aaaaaaaabbbbbbaaaaaaaac.....",
+"..*aaaaaaaaabbbbbbaaaaaaaaac....",
+".*aaaaaaaaaaabbbbaaaaaaaaaaac...",
+".*aaaaaaaaaaaaaaaaaaaaaaaaaac*..",
+"*aaaaaaaaaaaaaaaaaaaaaaaaaaaac*.",
+"*aaaaaaaaaabbbbbbbaaaaaaaaaaac*.",
+"*aaaaaaaaaaaabbbbbaaaaaaaaaaac**",
+"*aaaaaaaaaaaabbbbbaaaaaaaaaaac**",
+"*aaaaaaaaaaaabbbbbaaaaaaaaaaac**",
+"*aaaaaaaaaaaabbbbbaaaaaaaaaaac**",
+"*aaaaaaaaaaaabbbbbaaaaaaaaaaac**",
+".*aaaaaaaaaaabbbbbaaaaaaaaaac***",
+".*aaaaaaaaaaabbbbbaaaaaaaaaac***",
+"..*aaaaaaaaaabbbbbaaaaaaaaac***.",
+"...caaaaaaabbbbbbbbbaaaaaac****.",
+"....caaaaaaaaaaaaaaaaaaaac****..",
+".....caaaaaaaaaaaaaaaaaac****...",
+"......ccaaaaaaaaaaaaaacc****....",
+".......*cccaaaaaaaaccc*****.....",
+"........***cccaaaac*******......",
+"..........****caaac*****........",
+".............*caaac**...........",
+"...............caac**...........",
+"................cac**...........",
+".................cc**...........",
+"..................***...........",
+"...................**..........."};
+
+static const char* const warning_xpm[]={
+"32 32 4 1",
+". c None",
+"a c #ffff00",
+"* c #000000",
+"b c #999999",
+".............***................",
+"............*aaa*...............",
+"...........*aaaaa*b.............",
+"...........*aaaaa*bb............",
+"..........*aaaaaaa*bb...........",
+"..........*aaaaaaa*bb...........",
+".........*aaaaaaaaa*bb..........",
+".........*aaaaaaaaa*bb..........",
+"........*aaaaaaaaaaa*bb.........",
+"........*aaaa***aaaa*bb.........",
+".......*aaaa*****aaaa*bb........",
+".......*aaaa*****aaaa*bb........",
+"......*aaaaa*****aaaaa*bb.......",
+"......*aaaaa*****aaaaa*bb.......",
+".....*aaaaaa*****aaaaaa*bb......",
+".....*aaaaaa*****aaaaaa*bb......",
+"....*aaaaaaaa***aaaaaaaa*bb.....",
+"....*aaaaaaaa***aaaaaaaa*bb.....",
+"...*aaaaaaaaa***aaaaaaaaa*bb....",
+"...*aaaaaaaaaa*aaaaaaaaaa*bb....",
+"..*aaaaaaaaaaa*aaaaaaaaaaa*bb...",
+"..*aaaaaaaaaaaaaaaaaaaaaaa*bb...",
+".*aaaaaaaaaaaa**aaaaaaaaaaa*bb..",
+".*aaaaaaaaaaa****aaaaaaaaaa*bb..",
+"*aaaaaaaaaaaa****aaaaaaaaaaa*bb.",
+"*aaaaaaaaaaaaa**aaaaaaaaaaaa*bb.",
+"*aaaaaaaaaaaaaaaaaaaaaaaaaaa*bbb",
+"*aaaaaaaaaaaaaaaaaaaaaaaaaaa*bbb",
+".*aaaaaaaaaaaaaaaaaaaaaaaaa*bbbb",
+"..*************************bbbbb",
+"....bbbbbbbbbbbbbbbbbbbbbbbbbbb.",
+".....bbbbbbbbbbbbbbbbbbbbbbbbb.."};
+
+static Fl_Image information_pix = *Fl_Image::read_xpm(0, (const char **)information_xpm);
+static Fl_Image warning_pix = *Fl_Image::read_xpm(0, (const char **)warning_xpm);
+
 static void m_revert(Fl_Style* s)
 {
     s->box = FL_NO_BOX;
 }
 
-
 static Fl_Named_Style m_style("Message", m_revert, &fl_message_style);
 Fl_Named_Style* fl_message_style = &m_style;
-
-static void i_revert(Fl_Style* s)
-{
-    s->box = FL_THIN_UP_BOX;
-    s->label_font = FL_TIMES_BOLD;
-    s->label_size = 34;
-    s->color = FL_WHITE;
-    s->label_color = FL_BLUE;
-}
-
-
-static Fl_Named_Style i_style("Icon", i_revert, &fl_icon_style);
-Fl_Named_Style* fl_icon_style = &i_style;
 
 static int button_number;
 static void set_button_number(Fl_Widget* w, long a)
@@ -72,24 +141,19 @@ static void set_button_number(Fl_Widget* w, long a)
     w->window()->hide();
 }
 
-
 #define ICON_W 50
 #define ICON_H 50
 #define BORDER_W 10
 #define BORDER_H 10
 #define INPUT_W 270
-#define BUTTON_W 75
-#define BUTTON_H 21
+#define BUTTON_W 80
+#define BUTTON_H 23
 
 static Fl_Input *input;
 
-static int innards(
-const char* iconlabel,
-const char *istr, int itype,
-const char* fmt, va_list ap,
-const char *b0,
-const char *b1,
-const char *b2)
+static int innards(int iconlabel, const char *istr, int itype,
+		   const char* fmt, va_list ap,
+		   const char *b0, const char *b1, const char *b2)
 {
     Fl_Window window(3*BORDER_W+ICON_W+INPUT_W, 3*BORDER_H+ICON_H+BUTTON_H);
 
@@ -97,9 +161,18 @@ const char *b2)
     Fl_Group ig(BORDER_W, BORDER_H, ICON_W, ICON_H);
 
     Fl_Box icon(0, 0, ICON_W, ICON_H);
-    icon.style(fl_icon_style);
-    icon.label(iconlabel);
-
+    if (iconlabel==0) {
+	icon.image(information_pix);
+	window.label(_("Information"));
+    }	
+    else if (iconlabel==1) {
+	icon.image(warning_pix);
+	window.label(_("Warning"));
+    }
+    else { 
+	icon.image(information_pix);
+	window.label(_("Question"));
+    }	
     ig.end();
 
     Fl_Box message(2*BORDER_W+ICON_W, 0, INPUT_W, 2*BORDER_H+ICON_H);
@@ -166,18 +239,11 @@ const char *b2)
 
     button_number = 0;
     window.exec();
-                                 // don't destroy it yet
+    
+     // don't destroy it yet
     if (input) input->parent()->remove(input);
     return button_number;
 }
-
-
-// pointers you can use to change fltk to a foreign language:
-// These localized now...
-const char* fl_no = "No";
-const char* fl_yes= "Yes";
-const char* fl_ok = "OK";
-const char* fl_cancel= "Cancel";
 
 // fltk functions:
 
@@ -185,7 +251,7 @@ void fl_message(const char *fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);
-    innards("i", 0, 0, fmt, ap, _(fl_ok), 0, 0);
+    innards(0, 0, 0, fmt, ap, _("&OK"), 0, 0);
     va_end(ap);
 }
 
@@ -194,7 +260,7 @@ void fl_alert(const char *fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);
-    innards("!", 0, 0, fmt, ap, _(fl_ok), 0, 0);
+    innards(1, 0, 0, fmt, ap, _("&OK"), 0, 0);
     va_end(ap);
 }
 
@@ -203,7 +269,7 @@ int fl_ask(const char *fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);
-    int r = innards("?", 0, 0, fmt, ap, _(fl_no), _(fl_yes), 0);
+    int r = innards(2, 0, 0, fmt, ap, _("&No"), _("&Yes"), 0);
     va_end(ap);
     return r;
 }
@@ -213,17 +279,17 @@ int fl_choice(const char*fmt,const char *b0,const char *b1,const char *b2,...)
 {
     va_list ap;
     va_start(ap, b2);
-    int r = innards("?", 0, 0, fmt, ap, b0, b1, b2);
+    int r = innards(2, 0, 0, fmt, ap, b0, b1, b2);
     va_end(ap);
     return r;
 }
 
 
 static const char* input_innards(const char* fmt, va_list ap,
-const char* defstr, uchar type)
+			         const char* defstr, uchar type)
 {
-    int r = innards("?", defstr ? defstr : "", type,
-        fmt, ap, _(fl_cancel), _(fl_ok), 0);
+    int r = innards(2, defstr ? defstr : "", type,
+        fmt, ap, _("&Cancel"), _("&OK"), 0);
     return r ? input->value() : 0;
 }
 

@@ -18,8 +18,11 @@
 #include <efltk/Fl_Calendar.h>
 #include <efltk/Fl.h>
 
+// For NLS stuff
+#include "../core/fl_internal.h"
+
 static const char *weekDayLabels[7] = {
-   "S","M","T","W","T","F","S"
+   "Su","Mo","Tu","We","Th","Fr","Sa"
 };
 
 static const char *monthDayLabels[31] = {
@@ -92,6 +95,9 @@ Fl_Calendar::Fl_Calendar(int x,int y,int w,int h,const char *lbl)
    m_monthNameBox = new Fl_Box(x,0,w-64,16);
    m_monthNameBox->box(FL_NO_BOX);
 
+   // NLS stuff
+   for (int i=0; i<7;i++) weekDayLabels[i]=_(weekDayLabels[i]);
+   
    // Weekday headers
    for (i = 0; i < 7; i++) {
       m_dayNameBoxes[i] = new Fl_Box(x+i*16,y+16,16,16,weekDayLabels[i]);
@@ -217,7 +223,8 @@ void Fl_Calendar::draw() {
        m_dayNameBoxes[i]->color(button_color());
        m_dayNameBoxes[i]->label_color(label_color());
        m_dayNameBoxes[i]->label_size(label_size());
-       if(weekDayLabels[i][0] == 'S')
+//       if(weekDayLabels[i][0] == 'S')
+       if(i==0 || i==6)       
            m_dayNameBoxes[i]->label_color(FL_RED);
    }
 

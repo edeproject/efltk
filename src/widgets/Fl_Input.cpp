@@ -38,6 +38,9 @@
 #include <efltk/fl_ask.h>
 #include <efltk/fl_utf8.h>
 
+// For NLS stuff
+#include "../core/fl_internal.h"
+
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -990,9 +993,9 @@ Fl_Input::Fl_Input(int x, int y, int w, int h, const char* l)
     static bool menuinit=false;
     if(!menuinit) {
         menu_->type(Fl_Menu_Button::POPUP3); //HACK! :)
-        menu_->add("Cut", 0, cb_menu, (void *)CUT);
-        menu_->add("Copy", 0, cb_menu, (void *)COPY);
-        menu_->add("Paste", 0, cb_menu, (void *)PASTE);
+        menu_->add(_("Cut"), 0, cb_menu, (void *)CUT);
+        menu_->add(_("Copy"), 0, cb_menu, (void *)COPY);
+        menu_->add(_("Paste"), 0, cb_menu, (void *)PASTE);
         menuinit=true;
     }
 
@@ -1491,23 +1494,26 @@ int Fl_Input::handle(int event, int X, int Y, int W, int H)
 
     case FL_PUSH:
         if(Fl::event_button()==3) {
-            if(position()==mark()) {
-                menu_->find("Cut")->deactivate();
-                menu_->find("Copy")->deactivate();
+            if(position()==mark()) 
+	    {
+//                menu_->find("Cut")->deactivate();
+//                menu_->find("Copy")->deactivate();
+                menu_->child(0)->deactivate();
+                menu_->child(1)->deactivate();
             } else {
-                menu_->find("Cut")->activate();
-                menu_->find("Copy")->activate();
+                menu_->child(0)->activate();
+                menu_->child(1)->activate();
             }
             if(readonly()) {
-                menu_->find("Cut")->deactivate();
-                menu_->find("Paste")->deactivate();
+                menu_->child(0)->deactivate();
+                menu_->child(2)->deactivate();
             } else {
-				menu_->find("Paste")->activate();
-			}
+		menu_->child(2)->activate();
+	    }
             menu_widget = this;
             menu_->popup(Fl::event_x(), Fl::event_y());
             menu_widget = 0;
-			redraw(FL_DAMAGE_EXPOSE);
+    	    redraw(FL_DAMAGE_EXPOSE);
             return 1;
         }
 
