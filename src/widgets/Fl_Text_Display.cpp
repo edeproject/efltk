@@ -64,7 +64,7 @@ static int max( int i1, int i2 );
 static int min( int i1, int i2 );
 static int countlines( const char *string );
 
-static Fl_Menu_ menu_(0,0,0,0,0);
+static Fl_Menu_ menu_;
 static bool menu_inited=false;
 static Fl_Text_Display *menu_widget=0;
 

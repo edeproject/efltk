@@ -1132,7 +1132,7 @@ int background)
     {
         // locate the surrounding window and adjust window position for
         // any intermediate group widgets:
-        for (Fl_Widget *o = window->parent(); ; o = o->parent())
+        for (Fl_Widget *o = window->parent(); o; o = o->parent())
         {
             if (o->is_window()) {root = ((Fl_Window*)o)->i->xid; break;}
             X += o->x();

@@ -47,6 +47,9 @@ class FL_API Fl_Menu_ : public Fl_Group {
 
 public:
 
+    // Contructs 0x0 size menu, does end() in contructor
+    Fl_Menu_();
+
   Fl_Menu_(int,int,int,int, const char* l=0);
   Fl_List* list() const {return list_;}
   void list(Fl_List* l) {list_ = l;}

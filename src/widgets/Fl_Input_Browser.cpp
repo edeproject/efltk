@@ -334,6 +334,7 @@ void Fl_Input_Browser::popup()
         list->list(&share_list);
         list->when(FL_WHEN_CHANGED | FL_WHEN_RELEASE_ALWAYS | FL_WHEN_ENTER_KEY_ALWAYS);
         list->callback(ComboBrowser::browser_cb, this);
+        list->end();
 
         win->combo = this;
         list->combo = this;

@@ -141,6 +141,7 @@ const Fl_Menu_Item* Fl_Menu_Item::pulldown(int X, int Y, int W, int H,
     Fl_Group::current(0);
     Fl_Item dummy(title);
     Fl_Menu_Button menu(0,0,0,0);
+    menu.end();
     add_to(&menu);
     //menu.user_data(data);
     if (picked) menu.value(picked-this);
@@ -155,6 +156,7 @@ Fl_Menu_Item::test_shortcut() const
 {
     Fl_Group::current(0);
     Fl_Menu_ menu(0,0,0,0);
+    menu.end();
     add_to(&menu);
     //menu.user_data(data);
     if (menu.handle_shortcut()) return this + menu.value();

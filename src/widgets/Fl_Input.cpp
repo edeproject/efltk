@@ -39,7 +39,7 @@
 
 #include <efltk/Fl_Menu_.h>
 
-static Fl_Menu_ menu_(0,0,0,0,0);
+static Fl_Menu_ menu_;
 static bool menu_inited=false;
 static Fl_Input *menu_widget=0;
 

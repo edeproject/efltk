@@ -77,6 +77,16 @@ void Fl_List::flags_changed(const Fl_Menu_*, Fl_Widget*) {}
 static Fl_List default_list;
 bool Fl_Menu_::key_event = false;
 
+Fl_Menu_::Fl_Menu_()
+    : Fl_Group(0,0,0,0,0), list_(&default_list), item_(0)
+{
+    anim_flags_ = TOP_TO_BOTTOM|LEFT_TO_RIGHT;
+    anim_speed_ = Fl_Menu_Window::default_step_div;
+
+    callback(default_callback);
+    end();
+}
+
 Fl_Menu_::Fl_Menu_(int x,int y,int w, int h,const char* l)
     : Fl_Group(x,y,w,h,l), list_(&default_list), item_(0)
 {

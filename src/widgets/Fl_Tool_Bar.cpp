@@ -66,7 +66,7 @@ Fl_Tool_Bar::Fl_Tool_Bar(int x, int y, int w, int h, const char *label)
 {
     style(default_style);
 
-    menu_ = new Fl_Menu_(0,0,0,0,0);
+    menu_ = new Fl_Menu_();
     menu_->callback(cb_menu, this);
 
     menu_but = new ToolMenuButton();
