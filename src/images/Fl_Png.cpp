@@ -25,7 +25,7 @@ static void my_png_warning(png_structp png_ptr, png_const_charp message)
 
 static void my_png_error(png_structp png_ptr, png_const_charp message)
 {
-    png_last_error ="PNG: Unknown (ERROR!)";
+    png_last_error =(volatile char*)"PNG: Unknown (ERROR!)";
     if (png_ptr != NULL && png_ptr->error_ptr != NULL)
         png_last_error = (char*)message;
     longjmp(png_ptr->jmpbuf, 0);
