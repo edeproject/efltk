@@ -28,6 +28,7 @@
 
 #include "Fl_Style.h"
 #include "Fl_Callback.h"
+#include "Fl_Data_Source.h"
 
 class FL_API Fl_Callback_;
 class FL_API Fl_Widget;
@@ -86,6 +87,9 @@ public:
   const char* label() const	{return label_;}
   void	label(const char* a);
   void	copy_label(const char* a);
+
+  const char* field_name() const { return field_name_; }
+  void  field_name(const char * f);
 
   Fl_Image* image() const	{return image_;}
   void	image(Fl_Image* a)	{image_ = a;}
@@ -310,7 +314,9 @@ private:
 
   Fl_Callback *callback_;
   void *user_data_;  
-
+  
+  const char*           field_name_; // data source support
+  
   Fl_Callback_Signal *signal_;  
 };
 

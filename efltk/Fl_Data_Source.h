@@ -2,6 +2,8 @@
 #ifndef __FL_DATA_SOURCE_H__
 #define __FL_DATA_SOURCE_H__
 
+class Fl_Group;
+
 class Fl_Data_Source {
    Fl_Group *m_parent;
 protected:
@@ -11,7 +13,7 @@ protected:
 public:
    // ctor, dtor
    Fl_Data_Source(Fl_Group *group) { m_parent = group; }
-   virtual ~Fl_Data_Source(Fl_Group *) {}
+   virtual ~Fl_Data_Source() {}
    
    // load data into widgets
    bool load() { return loadData(); }
