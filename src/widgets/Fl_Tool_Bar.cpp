@@ -41,8 +41,10 @@ void Fl_Tool_Bar::cb_menu(Fl_Widget *w, void *data)
     Fl_Menu_Button *m = (Fl_Menu_Button *)w;
     Fl_Widget *item = m->item();
     if(item && item->user_data()) {
-        Fl_Widget *w = (Fl_Widget *)item->user_data();
-        w->do_callback();
+        Fl_Widget *toolw = (Fl_Widget *)item->user_data();
+        if(item->value()) toolw->set_value();
+        else toolw->clear_value();
+        toolw->do_callback();
     }
 }
 
@@ -139,6 +141,9 @@ void Fl_Tool_Bar::layout()
                 i->image(w->image());
                 i->user_data(w);
                 i->activate(w->active());
+                i->type(w->type());
+                if(w->value()) i->set_value();
+                else i->clear_value();
             }
         }
         menu_->end();
