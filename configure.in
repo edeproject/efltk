@@ -345,7 +345,23 @@ dnl# Do we have libiconv in libc
 dnl# NOT WORKING CORRECTLY!
 dnl# AC_CHECK_LIB(c, iconv, AC_DEFINE(HAVE_LIBC_ICONV), )
 
-AC_CHECK_LIB(c, bind_textdomain_codeset, AC_DEFINE(HAVE_TEXTDOMAIN_CODESET), )
+
+bind_textdomain_found=no
+AC_CHECK_LIB(c, bind_textdomain_codeset, AC_DEFINE(HAVE_TEXTDOMAIN_CODESET) bind_textdomain_found=yes, )
+
+dnl #Check for missing bind_textdomain_codeset declaration (Solaris9)
+if test "$bind_textdomain_found" = yes; then
+  AC_MSG_CHECKING(for bind_textdomain_codeset declaration)
+  AC_TRY_COMPILE([#include <libintl.h>], [
+    bind_textdomain_codeset((char*)0, (char*)0);
+  ], have_declaration=yes, have_declaration=no)
+  if test $have_declaration = no; then
+    AC_MSG_RESULT(missing)
+    AC_DEFINE(NO_BIND_TEXTDOMAIN_CODESET_DECLARATION)
+  else
+    AC_MSG_RESULT(found)
+  fi
+fi
 
 AC_MSG_CHECKING([for math emulation])
 AC_TRY_LINK([#include <math.h>],[ floorf(1.0f); fabsf(1.0f); ],

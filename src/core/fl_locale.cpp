@@ -8,6 +8,13 @@
 # include <X11/Xlocale.h>
 #endif
 
+#if NO_BIND_TEXTDOMAIN_CODESET_DECLARATION
+extern "C" {
+    extern char *bind_textdomain_codeset(const char *__domainname,
+                                         const char *__codeset);
+};
+#endif
+
 // This is used on future...
 bool fl_gettext_utf8 = false;
 
