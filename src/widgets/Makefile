@@ -60,7 +60,8 @@ CPPFILES = \
 	Fl_Menu_Item.cpp \
 	Fl_Menu_Window.cpp \
 	Fl_Menu_global.cpp \
-        Fl_Multi_Image.cpp \
+	Fl_Multi_Image.cpp \
+	Fl_Multi_Tabs.cpp \
 	Fl_Numeric_Input.cpp \
 	Fl_Output.cpp \
 	Fl_Overlay_Window.cpp \
