@@ -297,7 +297,7 @@ void Fl_Input::draw(int X, int Y, int W, int H)
             fl_font(label_font(), float(label_size()));
             float width = fl_width(label());
 
-            inside_label_width = int(width+fl_width(":")+2.5f);
+            inside_label_width = int(width+fl_width(':')+2.5f);
 
             fl_push_clip(X, Y, inside_label_width, H);
             if(!box()->fills_rectangle() && parent()) 
@@ -336,7 +336,7 @@ void Fl_Input::draw(int X, int Y, int W, int H)
     // has to be adjusted
     int ra_delta = 0;
     if (type()&RIGHT_ALIGNED){
-        float width = fl_width(value());
+        float width = fl_width(value(), size());
 	if (W>width){
 	    ra_delta=int(W-width-6);
 	    if (ra_delta < 0)
