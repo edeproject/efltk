@@ -55,7 +55,7 @@ int x,int y,int w,int h, Fl_Flags flags)
 void Fl_Check_Button::preferred_size(int& w, int& h) const
 {	
 	Fl_Button::preferred_size(w,h);
-	w += text_size()+2;
+	w += text_size()+8;
 	h += 2;
 }
 

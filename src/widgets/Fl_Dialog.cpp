@@ -335,37 +335,29 @@ Fl_Variant& Fl_Dialog_Data_Source::operator [] (const char *field_name) {
     return m_fields[field_name];
 }
 
-void Fl_Dialog::escape_callback(Fl_Widget *window,void *) {
-    Fl_Dialog *dialog = (Fl_Dialog *)window;
+void Fl_Dialog::escape_callback(Fl_Dialog *dialog, void *) {
     if (dialog->m_buttons & Fl_Dialog::BTN_CANCEL) {
         Fl::exit_modal();
         dialog->m_modalResult = Fl_Dialog::BTN_CANCEL;
     }
 }
 
-void Fl_Dialog::buttons_callback(Fl_Widget *btn,void *id) {
-    Fl::exit_modal();
-    Fl_Widget *buttonPanel = btn->parent();
-    if (buttonPanel->user_data() == btn->user_data()) {
-      // for default button parent is a black down group box
-        buttonPanel = buttonPanel->parent();
-    }
-    Fl_Dialog *dialog = (Fl_Dialog *)buttonPanel->parent();
-    dialog->m_modalResult = (int)id;
-}
+void Fl_Dialog::buttons_callback(Fl_Button *btn, long id)
+{
+    // HELP doesn't close window
+    if(id==BTN_HELP) return;
 
-void Fl_Dialog::help_callback(Fl_Widget *btn,void *id) {
-/*
-   Fl_Widget *buttonPanel = btn->parent();
-   Fl_Dialog *dialog = (Fl_Dialog *)buttonPanel->parent();
-*/
-    fl_alert("Here we should show some help");
+    Fl::exit_modal();
+
+    Fl_Dialog *dialog = (Fl_Dialog *)btn->window();
+    dialog->m_modalResult = (int)id;
 }
 
 Fl_Dialog::Fl_Dialog(int ww, int hh, const char *label, Fl_Data_Source *ds) 
 : Fl_Window(ww,hh,label) 
 {
     m_defaultButton = 0;
+
     m_buttonPanel = new Fl_Group(0,0,10,10);
     Fl_Box *resize = new Fl_Box(0,-1,10,1);
     resize->hide();
@@ -383,12 +375,13 @@ Fl_Dialog::Fl_Dialog(int ww, int hh, const char *label, Fl_Data_Source *ds)
     if (ds) m_dataSource = ds;
     else    m_dataSource = new Fl_Dialog_Data_Source(m_tabs);
 
-    callback(escape_callback);
+    callback((Fl_Callback*)escape_callback);
 }
 
 Fl_Dialog::~Fl_Dialog() {
     if (!m_externalDataSource)
         delete m_dataSource;
+    clear_buttons();
 }
 
 Fl_Button *Fl_Dialog::button(int button_mask) const
@@ -430,10 +423,6 @@ Fl_Variant& Fl_Dialog::operator [] (const char *field_name) {
     return (*m_dataSource)[field_name];
 }
 
-bool Fl_Dialog::valid() {
-    return true;
-}
-
 void Fl_Dialog::clear_buttons() 
 {
     unsigned cnt = m_buttonList.count();
@@ -460,7 +449,7 @@ void Fl_Dialog::buttons(int buttons_mask,int default_button)
     for(i = 0; buttonTemplates[i].id; i++) 
     {
         const Fl_Dialog_Button_Template& buttonTemplate = buttonTemplates[i];
-        int id = buttonTemplate.id;
+        long id = buttonTemplate.id;
         if (buttons_mask & id) 
         {
             if (id == default_button) {
@@ -475,13 +464,9 @@ void Fl_Dialog::buttons(int buttons_mask,int default_button)
                 btn = new Fl_Button(0,0,10,10, _(buttonTemplate.label));
             }
 
-            if (id == Fl_Dialog::BTN_HELP)
-                btn->callback(Fl_Dialog::help_callback);
-            else
-                btn->callback(Fl_Dialog::buttons_callback);
-
-            btn->argument(id);
+            btn->callback((Fl_Callback1*)Fl_Dialog::buttons_callback, id);
             btn->image(buttonTemplate.pixmap);
+
             m_buttonList.append(btn);
 
             fl_font(btn->label_font(), btn->label_size());

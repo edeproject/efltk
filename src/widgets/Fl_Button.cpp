@@ -274,6 +274,13 @@ void Fl_Button::draw()
 void Fl_Button::preferred_size(int& w, int& h) const
 {
     measure_label(w, h);
+
+    if(image()) {
+        w += image()->width();
+        if(h < image()->height())
+            h = image()->height();
+    }
+
     w += box()->dw() + 4;
     h += box()->dh() + 4;
 }

@@ -104,15 +104,7 @@ bool fc_initial_preview = false;
 
 static char **select_files(const char *m_path_input, const char *filters, const char *cap, int mode=0)
 {
-    Fl_Dialog w(fc_initial_w, fc_initial_h, cap);
-    w.size_range(320, 300);
-    w.buttons(Fl_Dialog::BTN_OK|Fl_Dialog::BTN_CANCEL, Fl_Dialog::BTN_OK);
-    w.resizable(w);
-
-    Fl_File_Chooser *chooser = new Fl_File_Chooser(0,0, 100,100, 0, mode);
-    chooser->ok_button(w.button(Fl_Dialog::BTN_OK));
-
-    w.end();
+    Fl_File_Chooser chooser(0,0, fc_initial_w, fc_initial_w, 0, mode);
 
     Fl_String def_file;
     Fl_String read_path(m_path_input);
@@ -134,44 +126,32 @@ static char **select_files(const char *m_path_input, const char *filters, const 
         }
     }
 
-    chooser->multi_selection(true);
-    chooser->default_filename(def_file);
-    chooser->filters(filters);
-    chooser->directory(read_path);
+    chooser.multi_selection(true);
+    chooser.default_filename(def_file);
+    chooser.filters(filters);
+    chooser.directory(read_path);
 
-    switch(w.show_modal())
-    {
-        case Fl_Dialog::BTN_OK:
-            break;
-        default:
-            return 0;
-    }
-
-    char **tmp = chooser->get_selected();
-    if(!tmp) {
-        tmp = new char*[2];
-        Fl_String path;
-        chooser->get_filename(chooser->file_input(), path);
-        if(!path.empty()) {
-            tmp[0] = new char[path.length()+1];
-            memcpy(tmp[0], path.c_str(), path.length()+1);
+    if(chooser.show_dialog(cap)) {
+        char **tmp = chooser.get_selected();
+        if(!tmp) {
+            tmp = new char*[2];
+            Fl_String path;
+            chooser.get_filename(chooser.file_input(), path);
+            if(!path.empty()) {
+                tmp[0] = new char[path.length()+1];
+                memcpy(tmp[0], path.c_str(), path.length()+1);
+            }
+            tmp[1] = 0;
         }
-        tmp[1] = 0;
+        return tmp;
     }
-    return tmp;
+
+    return 0;
 }
 
 static char *select_file(const char *m_path_input, const char *filters, const char *cap, int mode=0)
 {
-    Fl_Dialog w(fc_initial_w, fc_initial_h, cap);
-    w.size_range(320, 300);
-    w.buttons(Fl_Dialog::BTN_OK|Fl_Dialog::BTN_CANCEL,Fl_Dialog::BTN_OK);
-    w.resizable(w);
-
-    Fl_File_Chooser *chooser = new Fl_File_Chooser(0,0, 100,100, 0, mode);
-    chooser->ok_button(w.button(Fl_Dialog::BTN_OK));
-
-    w.end();
+    Fl_File_Chooser chooser(0,0, fc_initial_w, fc_initial_w, 0, mode);
 
     Fl_String def_file;
     Fl_String read_path(m_path_input);
@@ -193,24 +173,18 @@ static char *select_file(const char *m_path_input, const char *filters, const ch
         }
     }
 
-    chooser->default_filename(def_file);
-    chooser->filters(filters);
-    chooser->directory(read_path);
+    chooser.default_filename(def_file);
+    chooser.filters(filters);
+    chooser.directory(read_path);
 
-    switch(w.show_modal())
-    {
-        case Fl_Dialog::BTN_OK:
-            break;
-        default:
-            return 0;
-    }
-
-    Fl_String path;
-    chooser->get_filename(chooser->file_input(), path);
-    if(!path.empty()) {
-        char *ret = new char[path.length()+1];
-        memcpy(ret, path.c_str(), path.length()+1);
-        return ret;
+    if(chooser.show_dialog(cap)) {
+        Fl_String path;
+        chooser.get_filename(chooser.file_input(), path);
+        if(!path.empty()) {
+            char *ret = new char[path.length()+1];
+            memcpy(ret, path.c_str(), path.length()+1);
+            return ret;
+        }
     }
 
     return 0;
@@ -434,8 +408,6 @@ public:
 ///////////////////////////
 // FILE DIALOG CLASS
 
-#define FD ((Fl_File_Chooser *)d)
-
 void normalize_path(Fl_String &path)
 {
     Fl_String ret;
@@ -470,6 +442,21 @@ Fl_File_Chooser::~Fl_File_Chooser()
     }   
 }
 
+void Fl_File_Chooser::cb_ok_button(Fl_Button *btn, Fl_File_Chooser *ch)
+{
+    Fl_String path;
+    ch->get_filename(ch->filebrowser()->item()->label(1), path);
+    if(!path.empty() && fl_is_dir(path)) {
+
+        Fl::event_clicks(1);
+        ch->folder_clicked(ch->filebrowser()->item());
+
+    } else {
+
+        Fl_Dialog::buttons_callback(btn, (long)Fl_Dialog::BTN_OK);
+    }
+}
+
 bool Fl_File_Chooser::show_dialog(const char *caption)
 {
     Fl_Button *saved_ok = ok_button();
@@ -481,7 +468,9 @@ bool Fl_File_Chooser::show_dialog(const char *caption)
     w.resizable(w);
 
     Fl_Group::current()->add(this);
-    ok_button(w.button(Fl_Dialog::BTN_OK));
+    Fl_Button *ok_btn = w.button(Fl_Dialog::BTN_OK);
+    ok_btn->callback((Fl_Callback*)cb_ok_button, this);
+    ok_button(ok_btn);
 
     w.end();
 
@@ -500,32 +489,31 @@ void Fl_File_Chooser::make_group()
 {
     {
         Fl_Group* o = new Fl_Group(0, 5, 100, 31);
-		o->layout_settings(false, false);
         o->layout_align(FL_ALIGN_TOP);
         o->layout_spacing(2);
 
         m_up = new Fl_Highlight_Button(0, 0, 25, 25);
-        m_up->callback(cb_up, this);
+        m_up->callback((Fl_Callback*)cb_up, this);
         m_up->image(up_pix);
         m_up->layout_align(FL_ALIGN_LEFT);
 
         m_home = new Fl_Highlight_Button(0, 0, 25, 25);
-        m_home->callback(cb_home, this);
+        m_home->callback((Fl_Callback*)cb_home, this);
         m_home->image(m_homepix);
         m_home->layout_align(FL_ALIGN_LEFT);
 
         m_refresh = new Fl_Highlight_Button(0, 0, 25, 25);
-        m_refresh->callback(cb_refresh, this);
+        m_refresh->callback((Fl_Callback*)cb_refresh, this);
         m_refresh->image(refresh_pix);
         m_refresh->layout_align(FL_ALIGN_LEFT);
 
         m_new_folder = new Fl_Highlight_Button(0, 0, 25, 25);
-        m_new_folder->callback(cb_new, this);
+        m_new_folder->callback((Fl_Callback*)cb_new, this);
         m_new_folder->image(new_pix);
         m_new_folder->layout_align(FL_ALIGN_LEFT);
 
         m_path_input = new Fl_Input_Browser(0, 0, 100, 25);
-        m_path_input->callback(cb_dirc, this);
+        m_path_input->callback((Fl_Callback*)cb_dirc, this);
         m_path_input->layout_align(FL_ALIGN_CLIENT);
         m_path_input->type(Fl_Input_Browser::NONEDITABLE);
         m_path_input->end();
@@ -538,18 +526,17 @@ void Fl_File_Chooser::make_group()
 
     {
         Fl_Group* o = new Fl_Group(0, 0, 100, 100);
-		o->layout_settings(false, false);
         o->layout_align(FL_ALIGN_CLIENT);
         o->layout_spacing(2);
 
         m_filebrowser = new Fl_File_Browser(0, 0, 100, 100);
-        m_filebrowser->callback(cb_list, this);
+        m_filebrowser->callback((Fl_Callback*)cb_list, this);
         m_filebrowser->add_up_item(false);
         m_filebrowser->end();
         m_filebrowser->layout_align(FL_ALIGN_CLIENT);
 
         m_preview = new Fl_Check_Button(0, 0, 100, 10, _("Show Preview"));
-        m_preview->callback(cb_preview, this);
+        m_preview->callback((Fl_Callback*)cb_preview, this);
         m_preview->h(m_preview->label_size()+8);
         m_preview->value(false);
         m_preview->layout_align(FL_ALIGN_BOTTOM);
@@ -566,16 +553,12 @@ void Fl_File_Chooser::make_group()
 
     {
         Fl_Group* o = new Fl_Group(0, 0, 100, 60);
-		o->layout_settings(false, false);
         o->layout_align(FL_ALIGN_BOTTOM);
         o->layout_spacing(2);
 
-        Fl_Box *box = new Fl_Box(0,0,100,60);
-        box->layout_align(FL_ALIGN_LEFT);
-
         m_file_input = new Fl_Input_Browser(60, 0, 100, 0, _("Location:"));
         m_file_input->h(m_file_input->text_size()+12);
-        m_file_input->callback(cb_location, this);
+        m_file_input->callback((Fl_Callback*)cb_location, this);
         m_file_input->when(FL_WHEN_CHANGED | FL_WHEN_ENTER_KEY_ALWAYS);
         m_file_input->end();
         m_file_input->layout_align(FL_ALIGN_TOP);
@@ -585,16 +568,18 @@ void Fl_File_Chooser::make_group()
         m_filter_input->type(Fl_Input_Browser::NONEDITABLE);
         m_filter_input->end();
         m_filter_input->layout_align(FL_ALIGN_TOP);
-        m_filter_input->callback(cb_filter, this);
+        m_filter_input->callback((Fl_Callback*)cb_filter, this);
 
-
+        // Find nice width for labels
         fl_font(m_file_input->label_font(), m_file_input->label_size());
         int file_label_w = int(fl_width(m_file_input->label()));
 
         fl_font(m_filter_input->label_font(), m_filter_input->label_size());
         int filter_label_w = int(fl_width(m_filter_input->label()));
 
-        box->w(10 + ( (filter_label_w>file_label_w) ? filter_label_w : file_label_w) );
+        int label_w = 10 + ( (filter_label_w>file_label_w) ? filter_label_w : file_label_w);
+        m_file_input->label_width(label_w);
+        m_filter_input->label_width(label_w);
 
         int H = m_file_input->h()+m_filter_input->h()+12;
         if(H > o->h()) o->h(H);
@@ -602,8 +587,6 @@ void Fl_File_Chooser::make_group()
         o->relayout();
         o->end();
     }
-
-    layout_damage(FL_LAYOUT_XYWH);
 }
 
 char **Fl_File_Chooser::get_selected()
@@ -869,26 +852,25 @@ void Fl_File_Chooser::folder_clicked(Fl_ListView_Item *i)
 }
 
 //CALLBACKS!!
-void Fl_File_Chooser::cb_list(Fl_Widget *w, void *d)
+void Fl_File_Chooser::cb_list(Fl_File_Browser *w, Fl_File_Chooser *d)
 {
-    Fl_File_Browser *l = (Fl_File_Browser*)w;
-    Fl_ListView_Item *item = (Fl_ListView_Item *)l->item();
+    Fl_ListView_Item *item = w->item();
 
 #ifdef _WIN32
     // Lame way to prevent device status, if not clickking it..
     if(item->label(1)[1] == ':' && (!Fl::event_clicks() && Fl::event_key()!=FL_Enter))
-        return; 
+        return;
 #endif
 
-    if(item == l->up_item()) {
-        if(Fl::event_clicks() || Fl::event_key()==FL_Enter) FD->up();
+    if(item == w->up_item()) {
+        if(Fl::event_clicks() || Fl::event_key()==FL_Enter) d->up();
     } else if(item) {
-        Fl_String path(FD->directory()+item->label(1));     
+        Fl_String path(d->directory()+item->label(1));
 
         if(access(path, 04)!=0) return;
 
-        if(fl_is_dir(path)) FD->folder_clicked(item);
-        else FD->file_clicked(item);
+        if(fl_is_dir(path)) d->folder_clicked(item);
+        else d->file_clicked(item);
     }
 }
 
@@ -947,75 +929,73 @@ void Fl_File_Chooser::get_filepath(Fl_String path, Fl_String &buf)
         buf.clear();
 }
 
-void Fl_File_Chooser::cb_location(Fl_Widget *w, void *d)
+void Fl_File_Chooser::cb_location(Fl_Input_Browser *w, Fl_File_Chooser *d)
 {
-    Fl_Input_Browser *loc = (Fl_Input_Browser *)w;
-
     Fl_String filename;
     static Fl_String dirpath;
 
-    if(!strcmp(loc->value(),"")) {
-        if(FD->ok_button()) FD->ok_button()->deactivate();
-        loc->hide_popup();
+    if(!strcmp(w->value(),"")) {
+        if(d->ok_button()) d->ok_button()->deactivate();
+        w->hide_popup();
         return;
     }
 
-    if(FD->mode()==_SAVE)
-        if(FD->ok_button()) FD->ok_button()->activate();
+    if(d->mode()==_SAVE)
+        if(d->ok_button()) d->ok_button()->activate();
 
     int key = Fl::event_key();
 
     if(key == FL_Enter) {
 
-        if(!strcmp(loc->value(), "..")) {
-            FD->cb_up(w, d);
-            loc->value("");
+        if(!strcmp(w->value(), "..")) {
+            d->cb_up(w, d);
+            w->value("");
             return;
         }
 
         filename = dirpath;
-        filename += loc->value();
+        filename += w->value();
 
         if(fl_is_dir(filename)
 #if 0//def _WIN32
                 || !strncmp(filename, "\\\\", 2) //Check for network path..
 #endif
             ) {
-            FD->directory(filename);
-            loc->value("");
+            d->directory(filename);
+            w->value("");
         }
-        else if(FD->mode()<=Fl_File_Chooser::_SAVE)  
+        else if(d->mode()<=Fl_File_Chooser::_SAVE)  
         {
-            if(!fl_is_dir(filename) && (FD->mode()==Fl_File_Chooser::_DEFAULT ? fl_file_exists(filename) : true)) {
+            if(!fl_is_dir(filename) && (d->mode()==Fl_File_Chooser::_DEFAULT ? fl_file_exists(filename) : true)) {
 
-                if(Fl::modal()==FD->window()) {
-                    if(FD->ok_button()) FD->ok_button()->do_callback(FL_DIALOG_BTN);
+                if(Fl::modal()==d->window()) {
+                    if(d->ok_button()) d->ok_button()->do_callback(FL_DIALOG_BTN);
                 }
                 else
-                    FD->directory(dirpath);
+                    d->directory(dirpath);
 
             } else {
-                if(FD->ok_button()) FD->ok_button()->deactivate();
-                FD->clear_value();
+                if(d->ok_button()) d->ok_button()->deactivate();
+                d->clear_value();
             }
         }
 
-        loc->hide_popup();
+        w->hide_popup();
 
     } else {
 
-        FD->get_filename(loc->value(), filename);
-        FD->get_filepath(loc->value(), dirpath);
+        d->get_filename(w->value(), filename);
+        d->get_filepath(w->value(), dirpath);
 
         normalize_path(filename);
         normalize_path(dirpath);
 
-        if(FD->mode()!=Fl_File_Chooser::_SAVE && FD->ok_button()) {
-            if(fl_file_exists(filename)) FD->ok_button()->activate();
-            else FD->ok_button()->deactivate();
+        if(d->mode()!=Fl_File_Chooser::_SAVE && d->ok_button()) {
+            if(fl_file_exists(filename)) d->ok_button()->activate();
+            else d->ok_button()->deactivate();
         }
 
-        Fl_String pattern(loc->value());
+        Fl_String pattern(w->value());
         int pos = pattern.rpos('/');
         if(pos==-1) pos = pattern.rpos('\\');
         if(pos>=0) {
@@ -1024,11 +1004,11 @@ void Fl_File_Chooser::cb_location(Fl_Widget *w, void *d)
         }
         pattern += '*';
 
-        loc->clear();
+        w->clear();
 
         if(!dirpath.empty()) 
         {
-            loc->begin();
+            w->begin();
 
             bool match = false;
 
@@ -1040,7 +1020,7 @@ void Fl_File_Chooser::cb_location(Fl_Widget *w, void *d)
                 if(strcmp(file, ".") && strcmp(file, "..") && fl_file_match(file, pattern)) {
 
                     Fl_String filen(dirpath + file);
-                    if(FD->mode()==Fl_File_Chooser::_DIRECTORY && !fl_is_dir(filen)) {
+                    if(d->mode()==Fl_File_Chooser::_DIRECTORY && !fl_is_dir(filen)) {
                         continue;
                     }
                     Fl_Widget *w = new Fl_Item();
@@ -1051,15 +1031,15 @@ void Fl_File_Chooser::cb_location(Fl_Widget *w, void *d)
             }
             if(count>0 && files) free(files);
 
-            loc->end();
-            loc->item(0);
+            w->end();
+            w->item(0);
             if(match) {
-                loc->popup();
+                w->popup();
             } else {
-                loc->hide_popup();
+                w->hide_popup();
             }
         } else {
-            loc->hide_popup();
+            w->hide_popup();
         }
     }
 }
