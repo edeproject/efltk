@@ -3,12 +3,13 @@
 #if HAVE_JPEG
 
 #include <efltk/Fl_Image.h>
+#include <efltk/Fl_Exception.h>
 #include <efltk/Fl.h>
 
-extern "C" {
-#include <jpeglib.h>
-}
 #include <setjmp.h>
+extern "C" {
+# include <jpeglib.h>
+}
 
 #include "../core/fl_internal.h"
 static int jpeg_quality;
@@ -194,9 +195,9 @@ static bool jpeg_create(Fl_IO &jpeg_io, uint8 *&data, Fl_PixelFormat &fmt, int &
     if(setjmp(jerr.escape)) {
         /* If we get here, libjpeg found an error */
         jpeg_destroy_decompress(&cinfo);
-        Fl::warning("Error loading JPEG");
         if(data) free(data);
         if(data) free(data);
+        fl_throw("JPEG: Error loading JPEG");
         return false;
     }
 

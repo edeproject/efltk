@@ -1,24 +1,34 @@
 #include <config.h>
 #if HAVE_PNG
 
-#include <efltk/Fl_Image.h>
-#include <efltk/Fl.h>
-
 #include <png.h>
 #include <stdlib.h>
 
+#include <efltk/Fl_Image.h>
+#include <efltk/Fl_Exception.h>
+#include <efltk/Fl.h>
+
 #include "../core/fl_internal.h"
 static int png_quality;
+static char *png_last_error;
 
 #define PNG_BYTES_TO_CHECK 4
 bool setup_png_transformations(png_structp png_ptr, png_infop info_ptr, png_color_16 *transv,int &col_type, int &ckey, int &bitspp, int &w, int &h);
 
 static void my_png_warning(png_structp png_ptr, png_const_charp message)
 {
-    char *name = "UNKNOWN (ERROR!)";
+    char *name = "PNG: Unknown (WARNING!)";
     if (png_ptr != NULL && png_ptr->error_ptr != NULL)
         name = (char *)png_ptr->error_ptr;
     Fl::warning("%s: libpng warning: %s", name, message);
+}
+
+static void my_png_error(png_structp png_ptr, png_const_charp message)
+{
+    png_last_error ="PNG: Unknown (ERROR!)";
+    if (png_ptr != NULL && png_ptr->error_ptr != NULL)
+        png_last_error = (char*)message;
+    longjmp(png_ptr->jmpbuf, 0);
 }
 
 static bool png_is_valid_file(const char *filename, FILE *fp)
@@ -44,13 +54,33 @@ static void read_data_fn(png_structp png_ptr, png_bytep d, png_size_t length) {
     ((Fl_IO*)png_ptr->io_ptr)->read(d, length);
 }
 
+#define return_error() \
+    if(png_ptr) png_destroy_read_struct (&png_ptr, &info_ptr, &end_info_ptr);\
+    return false
+
 static bool png_create(Fl_IO &png_io, uint8 *&data, Fl_PixelFormat &fmt, int &w, int &h)
 {
     w=0, h=0;
 
     png_structp png_ptr = 0;
     png_infop info_ptr = 0, end_info_ptr = 0;
+
+    png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    if(!png_ptr) { return_error(); }
+
+    info_ptr = png_create_info_struct(png_ptr);
+    if(!info_ptr) { return_error(); }
+
+    end_info_ptr = png_create_info_struct(png_ptr);
+    if(!end_info_ptr) { return_error(); }
+
     png_bytepp rows = 0;
+    if(setjmp(png_ptr->jmpbuf)) {
+        if(rows) free(rows);
+        if(png_ptr) png_destroy_read_struct (&png_ptr, &info_ptr, &end_info_ptr);
+        fl_throw(png_last_error);
+        return false;
+    }
 
     int ctype = 0;
     int pitch=0, bitspp=0;
@@ -60,22 +90,7 @@ static bool png_create(Fl_IO &png_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
     png_color_16 *transv=0;
     Fl_Colormap *palette=0;
 
-    png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-    if(!png_ptr) goto error;
-
-    info_ptr = png_create_info_struct(png_ptr);
-    if(!info_ptr) goto error;
-
-    end_info_ptr = png_create_info_struct(png_ptr);
-    if(!end_info_ptr) goto error;
-
-    if(setjmp (png_ptr->jmpbuf)) {
-        if(rows) free(rows);
-        if(png_ptr) png_destroy_read_struct (&png_ptr, &info_ptr, &end_info_ptr);
-        return false;
-    }
-
-    png_set_error_fn(png_ptr, (png_voidp)0, my_png_warning, my_png_warning);
+    png_set_error_fn(png_ptr, (png_voidp)0, my_png_error, my_png_warning);
     png_set_read_fn(png_ptr, (png_voidp)&png_io, read_data_fn);
 
     png_read_info(png_ptr, info_ptr);
