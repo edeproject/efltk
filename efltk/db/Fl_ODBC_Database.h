@@ -21,9 +21,13 @@
 #include <efltk/db/Fl_Database.h>
 
 class Fl_Query;
+class ODBCConnection;
 
 class Fl_ODBC_Database : public Fl_Database {
    friend class   Fl_Query;
+
+private:
+   ODBCConnection	*m_connect;
 
 protected:
    // Operations over query handle
@@ -36,14 +40,19 @@ protected:
    virtual void bind_parameters(Fl_Query *);
 
 protected:
+   // Connection manipulations
    virtual void open_connection();
    virtual void close_connection();
 
 public:
-   Fl_ODBC_Database(const Fl_String connString) : Fl_Database(connString) {}
+   // ctor, dtor
+   Fl_ODBC_Database(const Fl_String connString);
+   ~Fl_ODBC_Database();
 
+   // Database capabilities
    virtual unsigned capabilities() { return FL_DB_TRANSACTIONS|FL_DB_STMT_PREPARE|FL_DB_STMT_BINDING; }
    
+   // Transcation support
    virtual void begin_transaction();
    virtual void commit_transaction();
    virtual void rollback_transaction();
