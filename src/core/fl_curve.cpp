@@ -29,6 +29,7 @@
 // I very much doubt this is optimal!  From Foley/vanDam page 511.
 // If anybody has a better algorithim, please send it!
 
+#include <config.h>
 #include <efltk/fl_draw.h>
 #include <efltk/math.h>
 

@@ -28,6 +28,7 @@
 
 // Based on code donated by Jim Wilson
 
+#include <config.h>
 #include <efltk/fl_draw.h>
 #include <efltk/math.h>
 
