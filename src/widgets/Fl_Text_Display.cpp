@@ -399,8 +399,11 @@ void Fl_Text_Display::layout()
   mVScrollBar->clear_visible();
   mHScrollBar->clear_visible();
 
+//  printf("Layout\n");
   for (int again = 0; again<2; again++) 
   {
+      //printf("Again %d\n", again);
+
       /* In continuous wrap mode, a change in width affects the total number of
        lines in the buffer, and can leave the top line number incorrect, and
        the top character no longer pointing at a valid line start */
@@ -485,7 +488,6 @@ void Fl_Text_Display::layout()
           {
               if(!mHScrollBar->visible()) {
                   mHScrollBar->set_visible();
-                  //if(!hscrollbarvisible)
                   again--; // loop again to see if we now need vert. & recalc sizes
               }
 
@@ -495,12 +497,18 @@ void Fl_Text_Display::layout()
                   mHScrollBar->resize(text_area.x-LEFT_MARGIN, Y,
                                       text_area.w+LEFT_MARGIN+RIGHT_MARGIN, scrollbar_width());
 
+                  mVScrollBar->resize(X+W-scrollbar_width(), text_area.y-TOP_MARGIN,
+                                      scrollbar_width(), text_area.h+TOP_MARGIN+BOTTOM_MARGIN);
+
               } else {
 
                   text_area.y = Y+TOP_MARGIN;
                   text_area.h = H - TOP_MARGIN-BOTTOM_MARGIN-scrollbar_width();
                   mHScrollBar->resize(text_area.x-LEFT_MARGIN, Y+H-scrollbar_width(),
                                       text_area.w+LEFT_MARGIN+RIGHT_MARGIN, scrollbar_width());
+
+                  mVScrollBar->resize(X+W-scrollbar_width(), text_area.y-TOP_MARGIN,
+                                      scrollbar_width(), text_area.h+TOP_MARGIN+BOTTOM_MARGIN);
               }
           }
       mOldWidth = W;
@@ -565,9 +573,8 @@ void Fl_Text_Display::draw_text( int left, int top, int width, int height )
     draw_vline( line, left, left + width, 0, INT_MAX );
 
   /* draw the line numbers if exposed area includes them */ 
-  if (mLineNumWidth != 0 && left <= mLineNumLeft + mLineNumWidth) 
-	draw_line_numbers(false); 
-
+  //if (mLineNumWidth != 0 && left <= mLineNumLeft + mLineNumWidth)
+  //      draw_line_numbers(false);
 
   fl_pop_clip();
 }
@@ -1846,11 +1853,15 @@ int Fl_Text_Display::string_width( const char *string, int length, int style )
   int size;
 
   if ( style & STYLE_LOOKUP_MASK && ( style & STYLE_LOOKUP_MASK ) - 'A' < mNStyles) {
-    font = mStyleTable[ ( style & STYLE_LOOKUP_MASK ) - 'A' ].font;
-    size = mStyleTable[ ( style & STYLE_LOOKUP_MASK ) - 'A' ].size;
+      int si = (style & STYLE_LOOKUP_MASK) - 'A';
+      if (si < 0) si = 0;
+      else if (si >= mNStyles) si = mNStyles - 1;
+
+      font  = mStyleTable[si].font;
+      size = mStyleTable[si].size;
   } else {
-    font = text_font();
-    size = text_size();
+      font = text_font();
+      size = text_size();
   }
   
   fl_font( font, size );
@@ -2276,61 +2287,60 @@ static int countlines( const char *string ) {
 /*
 ** Return the width in pixels of the displayed line pointed to by "visLineNum"
 */
-int Fl_Text_Display::measure_vline( int visLineNum ) 
-{	
-  int i, width = 0, charlen, charCount = 0;
-  int lineLen = vline_length( visLineNum );
-  int lineStartPos = mLineStarts[ visLineNum ];
-  char expandedChar[ FL_TEXT_MAX_EXP_CHAR_LEN ];
- 
-  char buffer[4096];	
-  char *bufptr = buffer;
-  int bufpos = 0;
-  
-  int last_style = -1, style = -1;
+int Fl_Text_Display::measure_vline( int visLineNum )
+{
+    int i, width = 0, charlen, charCount = 0;
+    int lineLen = vline_length( visLineNum );
+    int lineStartPos = mLineStarts[ visLineNum ];
+    char expandedChar[ FL_TEXT_MAX_EXP_CHAR_LEN ];
 
-	for(i = 0; i < lineLen; i++ ) 
-	{
-      charlen = mBuffer->expand_character( lineStartPos + i,
-				                          charCount, expandedChar );
-	
-	  if(mStyleBuffer) {
-		style = ( unsigned char ) mStyleBuffer->character(lineStartPos + i) - 'A';
-		if(last_style==-1) last_style=style;
-	  }
+    char buffer[4096];
+    char *bufptr = buffer;
+    int bufpos = 0;
 
-	  Fl_Font font = mStyleTable[ style ].font;
-	  int size = mStyleTable[ style ].size;
+    int last_style = -1, style = -1;
 
-	  if(style!=last_style && (font!=fl_font() || size!=int(fl_size())) ) {
-		fl_font(font, size);
-        width += int(fl_width( buffer, bufpos ));	  
-		bufpos = 0;
-	  }
+    for(i = 0; i < lineLen; i++ )
+    {
+        charlen = mBuffer->expand_character( lineStartPos + i,
+                                            charCount, expandedChar );
 
-	  if( unsigned(bufpos+charlen) >= sizeof(buffer)) {
-		if(mStyleBuffer) fl_font( mStyleTable[ style ].font, mStyleTable[ style ].size );
-		else fl_font( text_font(), text_size() );		
-        width += int(fl_width( buffer, bufpos ));	  
-		bufpos = 0;
-	  }	  
+        if(mStyleBuffer) {
+            style = ( unsigned char ) mStyleBuffer->character(lineStartPos + i) - 'A';
+            if(last_style==-1) last_style=style;
+        }
 
-	  if(charlen==1) bufptr[bufpos] = expandedChar[0];
-	  else strncpy(bufptr+bufpos, expandedChar, charlen);	  
+        Fl_Font font = mStyleTable[ style ].font;
+        int size = mStyleTable[ style ].size;
 
-      charCount += charlen;
-	  bufpos += charlen;
+        if(style!=last_style && (font!=fl_font() || size!=int(fl_size())) ) {
+            fl_font(font, size);
+            width += int(fl_width( buffer, bufpos ));
+            bufpos = 0;
+        }
 
-	  last_style = style;
+        if( unsigned(bufpos+charlen) >= sizeof(buffer)) {
+            if(mStyleBuffer) fl_font( mStyleTable[ style ].font, mStyleTable[ style ].size );
+            else fl_font( text_font(), text_size() );
+            width += int(fl_width( buffer, bufpos ));
+            bufpos = 0;
+        }
+
+        if(charlen==1) bufptr[bufpos] = expandedChar[0];
+        else strncpy(bufptr+bufpos, expandedChar, charlen);
+
+        charCount += charlen;
+        bufpos += charlen;
+
+        last_style = style;
     }
-	  
-	if(bufpos) {
-		if(mStyleBuffer) fl_font( mStyleTable[ style ].font, mStyleTable[ style ].size );
-		else fl_font( text_font(), text_size() );		
-		width += int(fl_width( buffer, bufpos ));
-	}	
 
-	return width;
+    if(bufpos) {
+        if(mStyleBuffer) fl_font( mStyleTable[ style ].font, mStyleTable[ style ].size );
+        else fl_font( text_font(), text_size() );
+        width += int(fl_width( buffer, bufpos ));
+    }
+    return width;
 }
 
 /*
@@ -2757,23 +2767,21 @@ int Fl_Text_Display::measure_proportional_character(char c, int colNum, int pos)
 	int charLen, style; 
 	char expChar[ FL_TEXT_MAX_EXP_CHAR_LEN ]; 
 	Fl_Text_Buffer *styleBuf = mStyleBuffer; 
-	   
-	charLen = Fl_Text_Buffer::expand_character(c, colNum, expChar, 
-		buffer()->tab_distance(), buffer()->null_substitution_character()); 
-	if(styleBuf && styleBuf->length()>0 ) 
-	{ 
-		style = (unsigned char)styleBuf->character(pos); 
-		if (style == mUnfinishedStyle) { 
-			/* encountered "unfinished" style, trigger parsing */ 
-			(mUnfinishedHighlightCB)(this, pos, mHighlightCBArg); 
-			style = (unsigned char)styleBuf->character(pos); 
-		} 
-	} else {
-		style = 0; 
-	}
 
-	return string_width(expChar, charLen, style); 
-} 
+        charLen = Fl_Text_Buffer::expand_character(c, colNum, expChar,
+                                                   buffer()->tab_distance(), buffer()->null_substitution_character());
+        if (styleBuf == 0) {
+            style = 0;
+        } else {
+            style = (unsigned char)styleBuf->character(pos);
+            if (style == mUnfinishedStyle) {
+                /* encountered "unfinished" style, trigger parsing */
+                (mUnfinishedHighlightCB)(this, pos, mHighlightCBArg);
+                style = (unsigned char)styleBuf->character(pos);
+            }
+        }
+        return string_width(expChar, charLen, style);
+}
 
 /* 
 ** Finds both the end of the current line and the start of the next line.  Why? 
@@ -3166,10 +3174,10 @@ int Fl_Text_Display::handle(int event) {
 ** left from before a resize or font change. 
 */ 
 void Fl_Text_Display::draw_line_numbers(bool clearAll) 
-{ 
-	/* Don't draw if mLineNumWidth == 0 (line numbers are hidden), or widget is not yet realized */ 
-	if (mLineNumWidth == 0 || !visible_r()) 
-		return; 
+{
+    /* Don't draw if mLineNumWidth == 0 (line numbers are hidden), or widget is not yet realized */
+    if (mLineNumWidth == 0 || !visible_r())
+        return;
 
 	int X = mLineNumLeft+box()->dx();
 	int Y = box()->dy();
