@@ -10,7 +10,7 @@
 
 void build_tree(Fl_XmlNode *n)
 {
-	if(!n) return;
+    if(!n) return;
 
     Fl_Widget *w=0;
     Fl_Item_Group *g=0;
@@ -24,20 +24,20 @@ void build_tree(Fl_XmlNode *n)
         w = (Fl_Widget*)i;
     }
 
-	Fl_String label;
-	uint a;
+    Fl_String label;
+    uint a;
 
-	label = n->name();
+    label = n->name();
     AttrMap &attr_map = n->attributes();
     for(a=0; a<attr_map.size(); a++) {
-	    AttrMap_Pair *p = attr_map.item(a);
+        AttrMap_Pair *p = attr_map.item(a);
         label += " " + p->id + "=\"" + p->val + "\"";
     }
 
-	if(n->has_cdata()) {
-		Fl_Item *i = new Fl_Item();
-		i->copy_label(n->context()->unXMLize(n->cdata()));
-	}
+    if(n->has_cdata()) {
+        Fl_Item *i = new Fl_Item();
+        i->copy_label(n->context()->unXMLize(n->cdata()));
+    }
 
     w->copy_label(label.c_str());
 
@@ -46,31 +46,31 @@ void build_tree(Fl_XmlNode *n)
         build_tree(node);
     }
 
-    if(w->is_group()) 
-		((Fl_Group*)w)->end();
+    if(w->is_group())
+        ((Fl_Group*)w)->end();
 }
 
 int main(int argc, char **argv)
 {
-    const char *f = fl_select_file(0, "XML files, *.xml");
+    const char *f = argc>1 ? argv[1] : fl_select_file(0, "XML files, *.xml");
     if(!f) return -1;
 
     FILE *fp = fopen(f, "r");
     if(!fp) return -1;
 
     Fl_XmlDoc doc;
-	int time1 = Fl::ticks();
+    int time1 = Fl::ticks();
     bool ret = doc.load(fp);
-	int time2 = Fl::ticks();
+    int time2 = Fl::ticks();
 
     fclose(fp);
 
-	Fl_String label;
-	label.printf("XML Test - loaded file in %d ms", time2-time1);
+    Fl_String label;
+    label.printf("XML Test - loaded file in %d ms", time2-time1);
 
-	//Fl_Group::current(0); //hmmm
+    printf("%s\n", label.c_str());
     Fl_Window *window = new Fl_Window(20,20,300,300);
-	window->copy_label(label.c_str());
+    window->copy_label(label.c_str());
     window->begin();
 
     if(!ret) {
@@ -90,7 +90,7 @@ int main(int argc, char **argv)
         tree->indented(1);
         tree->begin();
 		
-        build_tree(doc.root_node());		
+        build_tree(doc.root_node());
 
         tree->end();
         tree->relayout();
@@ -102,6 +102,5 @@ int main(int argc, char **argv)
     Fl::run();
 
     delete window;
-
     return 0;
 }

@@ -27,7 +27,6 @@ public:
         Fl_Browser *tree = new Fl_Browser(10,10,280,280);
         tree->indented(1);
         tree->begin();
-
 //        printf("start_document\n");
     }
 
@@ -101,16 +100,18 @@ int main(int argc, char *argv[])
 
     ExampleHandler h;
     Fl_XmlDoc d;
-    d.context()->handler(&h);
+    d.context()->handler(&h, false);
 
-	int time1 = Fl::ticks();
+    int time1 = Fl::ticks();
     d.load(fp);
-	int time2 = Fl::ticks();
+    int time2 = Fl::ticks();
     fclose(fp);
 
-	Fl_String label;
-	label.printf("XML Test - loaded file in %d ms", time2-time1);
-	h.win->copy_label(label.c_str());
+    Fl_String label;
+    label.printf("XML Test - loaded file in %d ms", time2-time1);
+    printf("%s\n", label.c_str());
+    if(h.win)
+        h.win->copy_label(label.c_str());
 
     return Fl::run();
 }
