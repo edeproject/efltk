@@ -264,8 +264,8 @@ void Fl_Tool_Bar::draw()
         if (damage() & (FL_DAMAGE_EXPOSE|FL_DAMAGE_HIGHLIGHT|FL_DAMAGE_ALL))
         {
             Fl_Flags f = 0;
-            if (pushed) f |= FL_VALUE;
-            if (highlighted) f |= FL_HIGHLIGHT;
+            if (pushed) f.set(FL_VALUE);
+            if (highlighted) f.set(FL_HIGHLIGHT);
             draw_glyph(0, 0, 0, glyph_size(), h(), f);
         }
 
@@ -355,6 +355,7 @@ Fl_Named_Style* Fl_Tool_Button::default_style = &::but_style;
 Fl_Tool_Button::Fl_Tool_Button(Fl_Tool_Bar *bar)
     : Fl_Button(0,0,0,0), m_bar(bar)
 {
+    accept_focus(false);
     style(Fl_Tool_Button::default_style);
 
     m_showmode = SHOW_DEFAULT;

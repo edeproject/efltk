@@ -79,12 +79,12 @@ void Fl_Value_Slider::draw()
     Fl_Flags flags = 0;
     if (!active_r())
     {
-        flags |= FL_INACTIVE;
+        flags.set(FL_INACTIVE);
     }
     else
     {
-        if (Fl::pushed() == this) flags |= FL_VALUE;
-        if (belowmouse()) flags |= FL_HIGHLIGHT;
+        if (Fl::pushed() == this) flags.set(FL_VALUE);
+        if (belowmouse()) flags.set(FL_HIGHLIGHT);
     }
 
     // minimal-update the slider, if it indicates the background needs

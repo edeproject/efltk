@@ -261,12 +261,12 @@ void Fl_Slider::draw()
     Fl_Flags flags = 0;
     if (!active_r())
     {
-        flags |= FL_INACTIVE;
+        flags.set(FL_INACTIVE);
     }
     else
     {
-        if (Fl::pushed() == this) flags |= FL_VALUE;
-        if (belowmouse()) flags |= FL_HIGHLIGHT;
+        if (Fl::pushed() == this) flags.set(FL_VALUE);
+        if (belowmouse()) flags.set(FL_HIGHLIGHT);
     }
 
     if(!(fl_current_dev->capabilities() & Fl_Device::CAN_CLIPOUT)) {
@@ -334,7 +334,7 @@ bool Fl_Slider::draw(int ix, int iy, int iw, int ih, Fl_Flags flags, bool slot)
     if (type()&FILL) slider_size(0);
 
     // if user directly set selected_color we use it:
-    if (style()->selection_color) flags |= FL_SELECTED;
+    if (style()->selection_color) flags.set(FL_SELECTED);
 
     // figure out where the slider should be:
     int sx = ix, sy = iy, sw = iw, sh = ih;
@@ -523,7 +523,7 @@ int Fl_Slider::handle(int event) {return handle(event,0,0,w(),h());}
 static void glyph(const Fl_Widget* widget, int glyph,
     int x,int y,int w,int h, Fl_Flags flags)
 {
-    if (!glyph) flags &= ~FL_VALUE;
+    if (!glyph) flags.clear(FL_VALUE);
     Fl_Widget::default_glyph(widget, glyph, x, y, w, h, flags);
     // draw the divider line into slider:
     if (!glyph)

@@ -163,9 +163,9 @@ void Fl_ListView_ItemExt::draw_cell(unsigned row, unsigned col, int width, int h
     if(!(damage() & FL_DAMAGE_ALL|FL_DAMAGE_EXPOSE))
         return;    
 
-	Fl_Flags f = (col>=columns()) ? 0 : flags(col);
-    if(parent()->selected_row(row)) f |= FL_SELECTED;
-    if(parent()->inactive_row(row) || !parent()->active()) f |= FL_INACTIVE;
+    Fl_Flags f = (col>=columns()) ? Fl_Flags(0) : flags(col);
+    if(parent()->selected_row(row)) f.set(FL_SELECTED);
+    if(parent()->inactive_row(row) || !parent()->active()) f.set(FL_INACTIVE);
 
     int X=0, Y=0, W=width, H=height;
     // Draw user defined border
@@ -221,7 +221,9 @@ void Fl_ListView_ItemExt::draw_label(unsigned col, const char *label, int X, int
                 if (d >= 0)
                 {
                     // put the image atop the text
-                    Y += d; H -= d; flags |= FL_ALIGN_TOP;
+                    Y += d;
+                    H -= d;
+                    flags.set(FL_ALIGN_TOP);
                 }
                 else
                 {
@@ -230,7 +232,7 @@ void Fl_ListView_ItemExt::draw_label(unsigned col, const char *label, int X, int
                     fl_measure(label, text_w, text_h, flags);
                     int d = (W-(h+text_w))>>1;
                     if (d > 0) {X += d; W -= d;}
-                    flags |= FL_ALIGN_LEFT;
+                    flags.set(FL_ALIGN_LEFT);
                 }
             }
 
@@ -371,19 +373,19 @@ Fl_Flags Fl_ListView_ItemExt::set_flag(unsigned col, Fl_Flags f)
 {
     if(col>=columns()) columns(col+1);
     ColAttr *a = (ColAttr*)col_attrs[col];
-    return a->flags |= f;
+    return a->flags.set(f);
 }
 
 Fl_Flags Fl_ListView_ItemExt::clear_flag(unsigned col, Fl_Flags f)
 {
     if(col>=columns()) columns(col+1);
     ColAttr *a = (ColAttr*)col_attrs[col];
-    return a->flags &= ~f;
+    return a->flags.clear(f);
 }
 
 Fl_Flags Fl_ListView_ItemExt::invert_flag(unsigned col, Fl_Flags f)
 {
     if(col>=columns()) columns(col+1);
     ColAttr *a = (ColAttr*)col_attrs[col];
-    return a->flags ^= f;
+    return a->flags.invert(f);
 }

@@ -174,8 +174,8 @@ void Fl_Bar::draw()
     if (damage() & (FL_DAMAGE_EXPOSE|FL_DAMAGE_HIGHLIGHT))
     {
         Fl_Flags f = 0;
-        if (pushed) f |= FL_VALUE;
-        if (highlighted) f |= FL_HIGHLIGHT;
+        if (pushed) f.set(FL_VALUE);
+        if (highlighted) f.set(FL_HIGHLIGHT);
         int x,y,w,h; glyph_box(x,y,w,h);
         draw_glyph(0, x, y, w, h, f);
     }

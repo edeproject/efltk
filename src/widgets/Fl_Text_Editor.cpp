@@ -82,7 +82,8 @@ Fl_Named_Style* Fl_Text_Editor::default_style = &::style;
 
 
 // ctor initializer - used in both ctors
-void Fl_Text_Editor::ctor_init() {
+void Fl_Text_Editor::ctor_init()
+{
     static bool menuinit=false;
     if(!menuinit) {
         if(menu_->parent()) menu_->parent()->remove(menu_);
@@ -92,6 +93,8 @@ void Fl_Text_Editor::ctor_init() {
         menu_->add("Paste", 0, cb_menu, (void *)PASTE);
         menuinit=true;
     }
+
+    accept_focus(true);
 
     style(default_style);
     mCursorOn = 1;

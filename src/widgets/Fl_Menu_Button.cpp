@@ -138,7 +138,7 @@ int Fl_Menu_Button::handle(int e)
             }
             else
             {
-                if (click_to_focus()) take_focus();
+                if (focus_on_click()) take_focus();
             }
         EXECUTE:
             //if (!(type()&7)) value(-1); // make it pull down below the button...

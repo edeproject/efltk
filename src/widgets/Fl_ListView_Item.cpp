@@ -168,8 +168,8 @@ void Fl_ListView_Item::draw_cell(unsigned row, unsigned col, int width, int heig
         return;    
 
     Fl_Flags f = 0;
-    if(parent()->selected_row(row)) f |= FL_SELECTED;
-    if(parent()->inactive_row(row) || !parent()->active()) f |= FL_INACTIVE;
+    if(parent()->selected_row(row)) f.set(FL_SELECTED);
+    if(parent()->inactive_row(row) || !parent()->active()) f.set(FL_INACTIVE);
 
     int X=0, Y=0, W=width, H=height;
     // Draw user defined border

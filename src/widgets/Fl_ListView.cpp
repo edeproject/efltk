@@ -15,10 +15,9 @@ Fl_ListView *Fl_ListView::current=0;
 
 void Fl_ListView::ctor_init()
 {
+    accept_focus(true);
     when(FL_WHEN_NOT_CHANGED|FL_DATA_CHANGE);
-
     style(default_style);
-    set_click_to_focus();
 
     m_header = new Fl_ListView_Header(this);
     m_type_in_mode = TYPE_IN_SELECT;

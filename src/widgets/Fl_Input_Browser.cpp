@@ -302,7 +302,7 @@ int Fl_Input_Browser::handle(int e)
 void Fl_Input_Browser::draw()
 {
     Fl_Flags f = flags();
-    if (!active_r()) f |= FL_INACTIVE;
+    if (!active_r()) f.set(FL_INACTIVE);
     //minw_ = w();
     if (damage()&FL_DAMAGE_ALL) draw_frame();
     int X = 0, Y = 0, W = w(), H = h(); box()->inset(X, Y, W, H);
@@ -324,7 +324,7 @@ void Fl_Input_Browser::draw()
     }
     if(damage()&(FL_DAMAGE_ALL|FL_DAMAGE_VALUE|FL_DAMAGE_HIGHLIGHT))
     {
-        if(over_now) f |= FL_HIGHLIGHT;
+        if(over_now) f.set(FL_HIGHLIGHT);
         X += W-W1;
         W = W1;
 	button_box(FL_DIV_UP_BOX);

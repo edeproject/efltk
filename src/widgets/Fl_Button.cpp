@@ -182,18 +182,18 @@ void Fl_Button::draw(int glyph, int glyph_width) const
     Fl_Flags glyph_flags = flags;
     if (glyph_width)
     {
-        if (this == held_down) flags |= FL_VALUE;
-        if (value()) glyph_flags |= FL_VALUE;
+        if (this == held_down) flags.set(FL_VALUE);
+        if (value()) glyph_flags.set(FL_VALUE);
     }
     else if (value())
     {
-        flags |= FL_VALUE;
+        flags.set(FL_VALUE);
         // Use the pushed-in color if the user has explicitly set it
         // on this widget:
         if (style()->selection_color)
         {
             color = style()->selection_color;
-            flags |= FL_SELECTED;// this makes label use selected_text_color()
+            flags.set(FL_SELECTED); // this makes label use selected_text_color()
         }
     }
 

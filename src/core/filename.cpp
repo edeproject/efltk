@@ -98,10 +98,10 @@ bool Fl_File_Attr::parse(const char *filename)
     if(lstat(file, &s) < 0)
         return false;
 
-    if(S_ISDIR(s.st_mode)) flags |= DIR;
-    if(S_ISREG(s.st_mode)) flags |= FILE;
+    if(S_ISDIR(s.st_mode)) flags.set(DIR);
+    if(S_ISREG(s.st_mode)) flags.set(FILE);
 #ifndef _WIN32
-    if(S_ISLNK(s.st_mode)) flags |= LINK;
+    if(S_ISLNK(s.st_mode)) flags.set(LINK);
 #endif
 
     size = (ulong)s.st_size;

@@ -43,9 +43,9 @@ void Fl_Choice::draw()
         // draw the little mark at the right:
         Fl_Flags flags = this->flags();
         if (!active_r())
-            flags |= FL_INACTIVE;
+            flags.set(FL_INACTIVE);
         else if (belowmouse())
-            flags |= FL_HIGHLIGHT;
+            flags.set(FL_HIGHLIGHT);
         draw_glyph(FL_GLYPH_DOWN_BUTTON, X+W-w1, Y, w1, H, flags);
     }
     fl_color(color());
@@ -143,7 +143,7 @@ int Fl_Choice::handle(int e)
             // Depending on the size and usage of the menu this may be more
             // user-friendly.
             //  Fl::event_is_click(0);
-            if (click_to_focus()) take_focus();
+            if (focus_on_click()) take_focus();
         EXECUTE:
             if (popup(0, 0, w(), h())) {
                 take_focus();
@@ -257,7 +257,6 @@ void Fl_Choice::ctor_init()
     style(default_style);
     clear_flag(FL_ALIGN_MASK);
     set_flag(FL_ALIGN_LEFT);
-    set_click_to_focus();
     when(FL_WHEN_RELEASE);
 
     anim_flags(TOP_TO_BOTTOM);

@@ -416,7 +416,7 @@ void Fl::flush()
                 if (window->damage() || x->region)
                 {
                     window->flush();
-                    window->set_damage(0);
+                    window->clear_damage();
                 }
             }
             // destroy damage regions for windows that don't use them:

@@ -63,9 +63,9 @@ public:
     static void xclass(const Fl_String &v) { xclass_ = v; }
 
     void clear_border()	{ set_flag(FL_NOBORDER); }
-    bool border() const	{ return !(flags() & FL_NOBORDER); }
+    bool border() const	{ return !flags().is_set(FL_NOBORDER); }
     void set_override()	{ set_flag(FL_NOBORDER|FL_OVERRIDE); }
-    bool override() const { return (flags()&FL_OVERRIDE)!=0; }
+    bool override() const { return flags().is_set(FL_OVERRIDE); }
     const Fl_Window* child_of() const { return child_of_; }
     void child_of(const Fl_Window* w);
 

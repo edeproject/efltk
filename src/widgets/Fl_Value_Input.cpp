@@ -256,7 +256,6 @@ void Fl_Value_Input::ctor_init() {
     input.callback(input_cb, this);
     clear_flag(FL_ALIGN_MASK);
     set_flag(FL_ALIGN_LEFT);
-    set_click_to_focus();
 }
 
 // Traditional ctor

@@ -101,8 +101,8 @@ void Fl_Menu_Bar::draw()
 
         Fl_Flags f=widget->flags();
 
-        if(i==selected_) f|=FL_VALUE|FL_SELECTED;
-        else if(i==highlight_) f|=FL_HIGHLIGHT;
+        if(i==selected_) f.set(FL_VALUE|FL_SELECTED);
+        else if(i==highlight_) f.set(FL_HIGHLIGHT);
 
         if( (damage()&(~FL_DAMAGE_HIGHLIGHT)) ||
             (selected_==i || last_selected_==i) ||

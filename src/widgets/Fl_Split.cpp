@@ -20,7 +20,7 @@ Fl_Split::Fl_Split(int x,int y,int w,int h,const char *l)
 }
 
 Fl_Split::Fl_Split(Fl_Widget * _ref_,int layout_size)
-    : Fl_Widget("",layout_size, (FlagsEnum)_ref_->layout_align()), ref_(_ref_), list_(NULL)
+    : Fl_Widget("",layout_size, _ref_->layout_align()), ref_(_ref_), list_(NULL)
 {
     style(default_style);
     // dir_ is set to 1 when the splitter is vertical and is set to 0 when horizontal

@@ -102,7 +102,7 @@ void Fl_Main_Window::status(Fl_Widget *w)
 Fl_Widget* Fl_Main_Window::status()
 {
     if(!m_status) {
-        Fl_Box *b = new Fl_Box();
+        Fl_Box *b = new Fl_Box(0,0,0,20);
         b->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
         status(b);
     }

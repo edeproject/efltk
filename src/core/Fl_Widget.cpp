@@ -50,7 +50,8 @@ void Fl_Widget::do_callback(Fl_Widget* o, long arg, int event,int event_argument
 
 void Fl_Widget::default_callback(Fl_Widget* w, void*) {w->set_changed();}
 
-void Fl_Widget::ctor_init(int X, int Y, int W, int H, const char* L) {
+void Fl_Widget::ctor_init(int X, int Y, int W, int H, const char* L)
+{
     style_    = default_style;
     parent_   = 0;
     callback_ = default_callback;
@@ -59,7 +60,7 @@ void Fl_Widget::ctor_init(int X, int Y, int W, int H, const char* L) {
     tooltip_  = 0;
     shortcut_ = 0;
 #if CLICK_MOVES_FOCUS
-    flags_    = FL_CLICK_TO_FOCUS;
+    flags_    = FL_FOCUS_ON_CLICK;
 #else
     flags_    = 0;
 #endif
@@ -360,7 +361,7 @@ int Fl_Widget::send(int event)
                 if (Fl::event_state(0x0f000000) && !contains(Fl::pushed()))
                 {
                     Fl::pushed(this);
-                    if (click_to_focus()) take_focus();
+                    if(focus_on_click()) take_focus();
                 }
             }
             break;
@@ -392,9 +393,10 @@ int Fl_Widget::send(int event)
 // has the focus.
 bool Fl_Widget::take_focus()
 {
-    if (focused()) return true;
-    if (!takesevents() || !handle(FL_FOCUS)) return false;
-    if (!contains(Fl::focus())) Fl::focus(this);
+    if(focused()) return true;
+    if(!accept_focus()) return 0;
+    if(!takesevents() || !handle(FL_FOCUS)) return false;
+    if(!contains(Fl::focus())) Fl::focus(this);
     return true;
 }
 
@@ -570,8 +572,10 @@ int Fl_Widget::test_shortcut() const
 void Fl_Widget::draw_frame() const
 {
     Fl_Flags flags = this->flags();
-    if (!active_r()) flags |= FL_INACTIVE;
-    if (focused()) flags |= FL_SELECTED;
+
+    if(!active_r()) flags.set(FL_INACTIVE);
+    if(focused()) flags.set(FL_SELECTED);
+
     box()->draw(0, 0, w(), h(), color(), flags|FL_INVISIBLE);
 }
 
@@ -599,10 +603,10 @@ void Fl_Widget::draw_box() const
         fl_pop_clip();
     }
 
-    if (!active_r())        flags |= FL_INACTIVE;
-    if (focused())          flags |= FL_SELECTED;
+    if (!active_r())        flags.set(FL_INACTIVE);
+    if (focused())          flags.set(FL_SELECTED);
     if (flags&FL_HIGHLIGHT) color = highlight_color();
-    if (color==FL_INVALID_COLOR) flags |= FL_INVISIBLE;
+    if (color==FL_INVALID_COLOR) flags.set(FL_INVISIBLE);
 
     box->draw(0, 0, w(), h(), color, flags);
 }

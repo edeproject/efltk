@@ -15,11 +15,11 @@ public:
     void type(Fl_Variant_Type t) { m_type = t; }
     Fl_Variant_Type type() const { return m_type; }
 
-    Fl_Flags flags(Fl_Flags f)  { return (m_flags = f); }
+    Fl_Flags flags(Fl_Flags f)  { return m_flags.flags(f); }
     Fl_Flags flags() const      { return m_flags; }
-    Fl_Flags set_flag(int f)    { return (m_flags |= f); }
-    Fl_Flags clear_flag(int f)  { return (m_flags &= ~f); }
-    Fl_Flags invert_flag(int f) { return (m_flags ^= f); }
+    Fl_Flags set_flag(int f)    { return m_flags.set(f); }
+    Fl_Flags clear_flag(int f)  { return m_flags.clear(f); }
+    Fl_Flags invert_flag(int f) { return m_flags.invert(f); }
 
     int label_size() const { return m_font_size; }
     void label_size(int size) { m_font_size = size; }

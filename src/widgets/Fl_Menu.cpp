@@ -330,14 +330,14 @@ void MenuWindow::draw()
 
             if(selected_==i && !(flags & (FL_OUTPUT|FL_INACTIVE)) )
             {
-                flags |= FL_SELECTED;
+                flags.set(FL_SELECTED);
                 if (Fl::event_state(FL_BUTTONS) && widget->takesevents())
                     Fl::pushed_ = widget;
                 button_box()->draw(x,y,w,itemh,selection_color(),flags);
 
             } else {
 
-                flags &= ~FL_SELECTED;
+                flags.clear(FL_SELECTED);
                 if (damage() == FL_DAMAGE_CHILD) {
                     fl_push_clip(x,y,w,itemh);
                     box()->draw(0, 0, this->w(), this->h(), color(), 0);
@@ -360,7 +360,7 @@ void MenuWindow::draw()
             Fl::pushed_ = 0;
             fl_pop_matrix();
 
-            flags &= ~(FL_VALUE|FL_ALIGN_MASK);
+            flags.clear(FL_VALUE|FL_ALIGN_MASK);
 
             if (is_parent(i)) {
 

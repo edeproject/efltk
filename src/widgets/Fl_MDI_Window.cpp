@@ -196,9 +196,11 @@ Fl_MDI_Titlebar::Fl_MDI_Titlebar(int x,int y,int w,int h,const char *l)
     _min.show();
     _max.show();
 
+    /*
     _close.clear_click_to_focus();
     _min.clear_click_to_focus();
     _max.clear_click_to_focus();
+    */
 
     end();
 

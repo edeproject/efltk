@@ -288,7 +288,7 @@ void Fl_Scrollbar::draw()
 static void glyph(const Fl_Widget* widget, int glyph,
     int x,int y,int w,int h, Fl_Flags flags)
 {
-    if (!glyph) flags &= ~FL_VALUE;
+    if (!glyph) flags.clear(FL_VALUE);
     Fl_Widget::default_glyph(widget, glyph, x, y, w, h, flags);
 }
 

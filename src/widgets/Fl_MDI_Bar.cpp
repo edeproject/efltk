@@ -46,7 +46,7 @@ void Fl_MDI_Bar::add_task(Fl_MDI_Window *win)
 
     Fl_Button *b = new Fl_Button(0, 0, 0, 0, win->label());
     b->callback((Fl_Callback*)fl_mdi_bar_button_cb, win);
-    b->clear_click_to_focus();
+    //b->clear_click_to_focus();
     b->align(FL_ALIGN_INSIDE|FL_ALIGN_LEFT|FL_ALIGN_CLIP);
     b->color(button_color());
 

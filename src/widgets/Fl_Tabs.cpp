@@ -747,14 +747,14 @@ void Fl_Tabs::draw() {
     Fl_Flags button_box_flags = m_tabsMode;
     Fl_Flags tab_flags = 0L;
     if ( box() == FL_THIN_UP_BOX || box() == FL_UP_BOX ) {
-        button_box_flags |= FL_TAB_BOX_UP;
+        button_box_flags.set(FL_TAB_BOX_UP);
         if (box() == FL_UP_BOX)
-            button_box_flags |= FL_TAB_BOX_THICK;
+            button_box_flags.set(FL_TAB_BOX_THICK);
     } else
         if ( box() == FL_THIN_DOWN_BOX || box() == FL_DOWN_BOX ) {
-            button_box_flags |= FL_TAB_BOX_DOWN;
+            button_box_flags.set(FL_TAB_BOX_DOWN);
             if (box() == FL_DOWN_BOX)
-                button_box_flags |= FL_TAB_BOX_THICK;
+                button_box_flags.set(FL_TAB_BOX_THICK);
         }
 
     if (damage() & (FL_DAMAGE_EXPOSE|FL_DAMAGE_ALL)) {
@@ -767,7 +767,7 @@ void Fl_Tabs::draw() {
                     Fl_Tab_Info *tab = row[t];
                     tab_flags = button_box_flags;
                     if (row.active()==t)
-                        tab_flags |= FL_SELECTED;
+                        tab_flags.set(FL_SELECTED);
                     draw_tab(tab,tab_flags);
                 }
             }
@@ -779,7 +779,7 @@ void Fl_Tabs::draw() {
                     Fl_Tab_Info *tab = row[t];
                     tab_flags = button_box_flags;
                     if (row.active()==t)
-                        tab_flags |= FL_SELECTED;
+                        tab_flags.set(FL_SELECTED);
                     draw_tab(tab,tab_flags);
                 }
             }

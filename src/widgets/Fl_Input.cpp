@@ -1023,7 +1023,8 @@ static Fl_Named_Style style("Input", revert, &Fl_Input::default_style);
 Fl_Named_Style* Fl_Input::default_style = &::style;
 
 // ctor initialized - used in both ctors
-void Fl_Input::ctor_init() {
+void Fl_Input::ctor_init()
+{
     static bool menuinit=false;
     if(!menuinit) {
         menu_->type(Fl_Menu_Button::POPUP3); //HACK! :)
@@ -1033,9 +1034,9 @@ void Fl_Input::ctor_init() {
         menuinit=true;
     }
 
-    clear_flag(FL_ALIGN_MASK);
-    set_flag(FL_ALIGN_LEFT);
-    set_click_to_focus();
+    accept_focus(true);
+    align(FL_ALIGN_LEFT);
+
     maximum_size_ = -1;
     mark_ = position_ = size_ = 0;
     bufsize = 0;
@@ -1045,7 +1046,7 @@ void Fl_Input::ctor_init() {
     inside_label_width = 0;
     text_align_ = FL_ALIGN_LEFT;
 
-    style(default_style);   
+    style(default_style);
 }
 
 // Traditional ctor

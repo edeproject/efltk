@@ -1277,8 +1277,10 @@ static Fl_Named_Style style("Browser", revert, &Fl_Browser::default_style);
 Fl_Named_Style* Fl_Browser::default_style = &::style;
 
 // ctor initializer - used in both ctors
-void Fl_Browser::ctor_init() {
-    set_click_to_focus();
+void Fl_Browser::ctor_init()
+{
+    accept_focus(true);
+
     style(default_style);
     xposition_ = 0;
     yposition_ = 0;

@@ -86,7 +86,7 @@ void Fl_Widget::draw_inside_label(int X, int Y, int W, int H, Fl_Flags f) const
 void Fl_Widget::draw_label(int X, int Y, int W, int H, Fl_Flags flags) const
 {
 	fl_font(label_font(), float(label_size()));
-	if (!active_r()) flags |= FL_INACTIVE;
+	if (!active_r()) flags.set(FL_INACTIVE);
 
 	Fl_Color color;
     // Figure out if alignment puts the label inside the widget:
@@ -99,7 +99,7 @@ void Fl_Widget::draw_label(int X, int Y, int W, int H, Fl_Flags flags) const
 		    color = highlight_label_color();
 		else
 			color = label_color();
-		if (focused()) flags |= FL_SELECTED;
+		if (focused()) flags.set(FL_SELECTED);
 	}
 	else
 	{
@@ -109,7 +109,7 @@ void Fl_Widget::draw_label(int X, int Y, int W, int H, Fl_Flags flags) const
 	if (flags & FL_ALIGN_CLIP) fl_push_clip(X, Y, W, H);
 
 	if (label_width_ > 0) {
-		flags |= FL_ALIGN_WRAP/* | FL_ALIGN_TOP*/; // <- why was FL_ALIGN_TOP here ?
+		flags.set(FL_ALIGN_WRAP);/* | FL_ALIGN_TOP*/; // <- why was FL_ALIGN_TOP here ?
 		int x_right = X + W;
 		if (W > label_width_) 
 			W = label_width_;
@@ -138,7 +138,9 @@ void Fl_Widget::draw_label(int X, int Y, int W, int H, Fl_Flags flags) const
 				if (d >= 0)
 				{
                     // put the image atop the text
-					Y += d; H -= d; flags |= FL_ALIGN_TOP;
+                                    Y += d;
+                                    H -= d;
+                                    flags.set(FL_ALIGN_TOP);
 				}
 				else
 				{
@@ -147,7 +149,7 @@ void Fl_Widget::draw_label(int X, int Y, int W, int H, Fl_Flags flags) const
 					fl_measure(label_.c_str(), text_w, text_h, flags);
 					int d = (W-(h+text_w))>>1;
 					if (d > 0) {X += d; W -= d;}
-					flags |= FL_ALIGN_LEFT;
+					flags.set(FL_ALIGN_LEFT);
 				}
 			}
 
