@@ -10,8 +10,8 @@ snap 3
 Function {make_alignment_window()} {open
 } {
   Fl_Window alignment_window {
-    label {fluid Preferences} open
-    xywh {396 199 300 275} non_modal visible
+    label {eFluid Preferences} open selected
+    xywh {508 183 300 275} visible
   } {
     Fl_Button {} {
       label Close
@@ -22,51 +22,54 @@ Function {make_alignment_window()} {open
       xywh {0 0 300 235} color 0xfffffffe
     } {
       Fl_Group {} {
-        label Alignment selected
+        label Alignment open
         xywh {1 24 298 210} align FL_ALIGN_TOP|FL_ALIGN_LEFT
       } {
+        Fl_Box {} {
+          xywh {9 15 280 101} box ENGRAVED_BOX label_type NO_LABEL
+        }
         Fl_Value_Input horizontal_input {
           label {Horizontal:}
           user_data 1 user_data_type long
           callback alignment_cb
-          xywh {90 42 100 23} maximum 10 step 1
+          xywh {179 23 100 23} maximum 20 step 1
         }
         Fl_Value_Input vertical_input {
           label {Vertical:}
           user_data 2 user_data_type long
           callback alignment_cb
-          xywh {90 72 100 23} maximum 10 step 1
+          xywh {179 53 100 23} maximum 20 step 1
         }
         Fl_Value_Input snap_input {
           label {Snap:}
           user_data 3 user_data_type long
           callback alignment_cb
-          xywh {90 102 100 23} maximum 10 step 1
+          xywh {179 83 100 23} maximum 20 step 1
         }
         Fl_Box {} {
-          label {Grid size and snapping.}
-          xywh {5 5 290 30} align FL_ALIGN_TOP|FL_ALIGN_LEFT|FL_ALIGN_INSIDE label_size 10
+          label {Grid size and snapping:}
+          xywh {14 8 119 16} align FL_ALIGN_TOP|FL_ALIGN_LEFT|FL_ALIGN_INSIDE label_size 10
         }
       }
       Fl_Group {} {
-        label {Output File Names}
+        label {Output File Names} open
         xywh {1 24 298 210} align FL_ALIGN_TOP|FL_ALIGN_LEFT hide
       } {
         Fl_Box {} {
           label {Use "name.ext" to set name or just ".ext" to set only extension.}
-          xywh {10 10 280 30} align FL_ALIGN_LEFT|FL_ALIGN_WRAP|FL_ALIGN_INSIDE label_size 10
+          xywh {10 10 280 30} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE|FL_ALIGN_WRAP label_size 10
         }
         Fl_Input header_file_input {
           label {Header File:}
           user_data 1 user_data_type {void*}
           callback header_input_cb
-          xywh {100 45 90 23} when CHANGED
+          xywh {100 45 189 23} when CHANGED
         }
         Fl_Input code_file_input {
           label {Code File:}
           user_data 1 user_data_type {void*}
           callback code_input_cb
-          xywh {100 72 90 23} when CHANGED
+          xywh {100 72 189 23} when CHANGED
         }
         Fl_Check_Button include_H_from_C_button {
           label {\#include "header" in code}
@@ -80,7 +83,7 @@ Function {make_alignment_window()} {open
       } {
         Fl_Box {} {
           label {Use i18n. You can use GNU gettext .mo files or EFLTK .etb translation files. Using .etb is recommended.}
-          xywh {10 10 280 40} align FL_ALIGN_TOP|FL_ALIGN_LEFT|FL_ALIGN_WRAP|FL_ALIGN_INSIDE label_size 10
+          xywh {10 10 280 40} align FL_ALIGN_TOP|FL_ALIGN_LEFT|FL_ALIGN_INSIDE|FL_ALIGN_WRAP label_size 10
         }
         Fl_Check_Button locale {
           label {Use i18n}

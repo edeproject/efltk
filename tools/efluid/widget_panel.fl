@@ -10,20 +10,20 @@ snap 2
 Function {make_widget_panel()} {open
 } {
   Fl_Window {} {open
-    xywh {531 140 380 405}
+    xywh {531 140 380 405} layout_spacing 1 resizable
     extra_code {\#include <efltk/Fl_WM.h>
 o->window_type(Fl_WM::UTIL);
 o->size_range(o->w(), o->h());} visible
   } {
     Fl_Tabs panel_tabs {
       callback propagate_tabs open
-      xywh {0 3 380 353} color 0xfffffffe
+      xywh {0 3 380 353} layout_spacing 1 color 0xfffffffe
       extra_code {o->parent()->resizable(o);}
     } {
       Fl_Group {} {
         label GUI
         callback propagate_group open
-        xywh {1 24 378 328}
+        xywh {1 24 378 328} layout_spacing 1
         extra_code {o->parent()->resizable(o);}
       } {
         Fl_Input {} {
@@ -36,7 +36,7 @@ o->size_range(o->w(), o->h());} visible
         Fl_Choice {} {
           callback subtype_cb
           tooltip {Selects a value for type() for this widget}
-          xywh {256 8 109 22}
+          xywh {256 8 109 22} layout_spacing 1
         } {}
         Fl_Input {} {
           label Label
@@ -59,7 +59,7 @@ o->size_range(o->w(), o->h());} visible
           label inline
           callback image_inlined_cb
           tooltip {The image data is inserted as inline data into the output C++ code, rather than generating code to read the image file.}
-          xywh {300 54 72 22} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE label_size 10
+          xywh {300 54 72 22} label_size 10
         }
         Fl_Box {} {
           label Alignment
@@ -205,31 +205,31 @@ Increment/decrement for arrow keys.}
         Fl_Group {} {
           label Attributes
           callback propagate_group open
-          xywh {75 202 300 40} align FL_ALIGN_LEFT
+          xywh {75 202 300 40} align FL_ALIGN_LEFT layout_spacing 1
         } {
           Fl_Check_Button {} {
             label Resizable
             callback resizable_cb
             tooltip {If on, this widget and all it's parents are resizable.  When the parent resizes it moves/resizes all it's children so that this widget's edges remain the same distance from all four sides of the parent.  If this is off this widget will not resize, unless it overlaps a resizable sibling.}
-            xywh {0 0 145 20} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE
+            xywh {0 0 145 20}
           }
           Fl_Check_Button {} {
             label Hotspot
             callback hotspot_cb
             tooltip {Positions the window so this widget is under the mouse.  This is done when show() is called.}
-            xywh {170 0 120 20} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE
+            xywh {170 0 120 20}
           }
           Fl_Check_Button {} {
             label Visible
             callback visible_cb
             tooltip {If unchecked the widget is initially invisible.}
-            xywh {0 20 150 20} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE
+            xywh {0 20 150 20}
           }
           Fl_Check_Button {} {
             label Active
             callback active_cb
             tooltip {If unchecked the widget is initially inactive (disabled, grayed out).}
-            xywh {170 20 120 20} align FL_ALIGN_LEFT|FL_ALIGN_INSIDE
+            xywh {170 20 120 20}
           }
         }
         Fl_Button {} {
@@ -278,24 +278,24 @@ To get out of shortcut-setting mode:
           label Layout
           callback layoutalign_cb open
           tooltip {Change the layout align}
-          xywh {80 101 175 22}
+          xywh {80 101 175 22} layout_spacing 1
         } {}
         Fl_Value_Input {} {
           label Spacing
           callback layoutspacing_cb selected
-          xywh {315 101 55 22}
+          xywh {315 101 55 22} maximum 50 step 1 value 1
         }
       }
       Fl_Group {} {
         label Style
         callback propagate_group open
-        xywh {1 24 378 328} hide
+        xywh {1 24 378 328} layout_spacing 1 hide
       } {
         Fl_Choice {} {
           label box
           callback box_cb open
           tooltip {Type of box to draw around the widget.}
-          xywh {100 10 250 23}
+          xywh {100 10 250 23} layout_spacing 1
         } {}
         Fl_Light_Button {} {
           label Color
@@ -315,7 +315,7 @@ To get out of shortcut-setting mode:
           label {Button box}
           callback button_box_cb open
           tooltip {Type of box to draw around buttons that are in the widget.}
-          xywh {100 63 250 23}
+          xywh {100 63 250 23} layout_spacing 1
         } {}
         Fl_Light_Button {} {
           label {Button Color}
@@ -335,19 +335,19 @@ To get out of shortcut-setting mode:
           label {Focus box}
           callback focus_box_cb open
           tooltip {Type of box to draw around widget that are focused}
-          xywh {100 117 250 22}
+          xywh {100 117 250 22} layout_spacing 1
         } {}
         Fl_Choice {} {
           label {Label Type}
           callback label_type_cb open
           tooltip {How to draw the label}
-          xywh {100 147 250 23}
+          xywh {100 147 250 23} layout_spacing 1
         } {}
         Fl_Choice {} {
           label {Label Font}
           callback label_font_cb open
           tooltip {Font to use for the label}
-          xywh {100 170 190 23}
+          xywh {100 170 190 23} layout_spacing 1
         } {}
         Fl_Value_Input {} {
           callback label_size_cb
@@ -372,7 +372,7 @@ To get out of shortcut-setting mode:
           label {Text Font}
           callback text_font_cb open
           tooltip {Font to use for text displayed inside the widget}
-          xywh {100 227 190 23}
+          xywh {100 227 190 23} layout_spacing 1
         } {}
         Fl_Value_Input {} {
           callback text_size_cb
@@ -407,7 +407,7 @@ To get out of shortcut-setting mode:
       Fl_Group {} {
         label {C++}
         callback propagate_group open
-        xywh {1 24 378 328} hide
+        xywh {1 24 378 328} layout_spacing 1 hide
       } {
         Fl_Input {} {
           label Name
@@ -451,7 +451,7 @@ o->align(FL_ALIGN_LEFT);}
           label When
           callback when_cb
           tooltip {What actions cause the callback to be called.}
-          xywh {275 271 90 22} when NEVER
+          xywh {275 271 90 22} layout_spacing 1 when NEVER
         } {}
         Fl_Input {} {
           label Type
@@ -467,7 +467,7 @@ o->align(FL_ALIGN_LEFT);}
       }
     }
     Fl_Group {} {open
-      xywh {0 373 380 32}
+      xywh {0 373 380 32} layout_spacing 1
     } {
       Fl_Check_Button overlaybutton {
         label {&Overlays}

@@ -356,7 +356,6 @@ void Fl_Function_Type::write_code()
 					write_h("%s", attr.c_str());
 				write_h("%s;\n", s);
 				write_c("%s::%s%s", k, strip_default_args(name()), get_opening_brace(1));
-				printf("%s::%s%s\n", k, strip_default_args(name()), get_opening_brace(1));
 
 			} else {
 

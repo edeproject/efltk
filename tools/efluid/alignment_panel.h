@@ -9,8 +9,8 @@
 #include <efltk/Fl_Button.h>
 #include <efltk/Fl_Tabs.h>
 #include <efltk/Fl_Group.h>
-#include <efltk/Fl_Value_Input.h>
 #include <efltk/Fl_Box.h>
+#include <efltk/Fl_Value_Input.h>
 #include <efltk/Fl_Input.h>
 #include <efltk/Fl_Check_Button.h>
 #include <efltk/Fl_Divider.h>

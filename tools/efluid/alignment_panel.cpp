@@ -21,7 +21,7 @@ static void cb_locale(Fl_Check_Button*, void*) {
 
 Fl_Window* make_alignment_window() {
   Fl_Window* w;
-   {Fl_Window* o = alignment_window = new Fl_Window(300, 275, _("fluid Preferences"));
+   {Fl_Window* o = alignment_window = new Fl_Window(300, 275, _("eFluid Preferences"));
     w = o;
     o->shortcut(0xff1b);
      {Fl_Button* o = new Fl_Button(210, 248, 85, 22, _("Close"));
@@ -31,22 +31,26 @@ Fl_Window* make_alignment_window() {
       o->color((Fl_Color)0xfffffffe);
        {Fl_Group* o = new Fl_Group(1, 24, 298, 210, _("Alignment"));
         o->align(FL_ALIGN_TOP|FL_ALIGN_LEFT);
-         {Fl_Value_Input* o = horizontal_input = new Fl_Value_Input(90, 42, 100, 23, _("Horizontal:"));
-          o->maximum(10);
+         {Fl_Box* o = new Fl_Box(9, 15, 280, 101);
+          o->box(FL_ENGRAVED_BOX);
+          o->label_type(FL_NO_LABEL);
+        }
+         {Fl_Value_Input* o = horizontal_input = new Fl_Value_Input(179, 23, 100, 23, _("Horizontal:"));
+          o->maximum(20);
           o->step(1);
           o->callback((Fl_Callback*)alignment_cb, (void*)(1));
         }
-         {Fl_Value_Input* o = vertical_input = new Fl_Value_Input(90, 72, 100, 23, _("Vertical:"));
-          o->maximum(10);
+         {Fl_Value_Input* o = vertical_input = new Fl_Value_Input(179, 53, 100, 23, _("Vertical:"));
+          o->maximum(20);
           o->step(1);
           o->callback((Fl_Callback*)alignment_cb, (void*)(2));
         }
-         {Fl_Value_Input* o = snap_input = new Fl_Value_Input(90, 102, 100, 23, _("Snap:"));
-          o->maximum(10);
+         {Fl_Value_Input* o = snap_input = new Fl_Value_Input(179, 83, 100, 23, _("Snap:"));
+          o->maximum(20);
           o->step(1);
           o->callback((Fl_Callback*)alignment_cb, (void*)(3));
         }
-         {Fl_Box* o = new Fl_Box(5, 5, 290, 30, _("Grid size and snapping."));
+         {Fl_Box* o = new Fl_Box(14, 8, 119, 16, _("Grid size and snapping:"));
           o->label_size(10);
           o->align(FL_ALIGN_TOP|FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
         }
@@ -57,13 +61,13 @@ Fl_Window* make_alignment_window() {
         o->hide();
          {Fl_Box* o = new Fl_Box(10, 10, 280, 30, _("Use \"name.ext\" to set name or just \".ext\" to set only extension."));
           o->label_size(10);
-          o->align(FL_ALIGN_LEFT|FL_ALIGN_WRAP|FL_ALIGN_INSIDE);
+          o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE|FL_ALIGN_WRAP);
         }
-         {Fl_Input* o = header_file_input = new Fl_Input(100, 45, 90, 23, _("Header File:"));
+         {Fl_Input* o = header_file_input = new Fl_Input(100, 45, 189, 23, _("Header File:"));
           o->callback((Fl_Callback*)header_input_cb, (void*)(1));
           o->when(FL_WHEN_CHANGED);
         }
-         {Fl_Input* o = code_file_input = new Fl_Input(100, 72, 90, 23, _("Code File:"));
+         {Fl_Input* o = code_file_input = new Fl_Input(100, 72, 189, 23, _("Code File:"));
           o->callback((Fl_Callback*)code_input_cb, (void*)(1));
           o->when(FL_WHEN_CHANGED);
         }
@@ -78,7 +82,7 @@ Fl_Window* make_alignment_window() {
          {Fl_Box* o = new Fl_Box(10, 10, 280, 40, _("Use i18n. You can use GNU gettext .mo files or EFLTK .etb translation files. \
 Using .etb is recommended."));
           o->label_size(10);
-          o->align(FL_ALIGN_TOP|FL_ALIGN_LEFT|FL_ALIGN_WRAP|FL_ALIGN_INSIDE);
+          o->align(FL_ALIGN_TOP|FL_ALIGN_LEFT|FL_ALIGN_INSIDE|FL_ALIGN_WRAP);
         }
          {Fl_Check_Button* o = locale = new Fl_Check_Button(10, 55, 220, 20, _("Use i18n"));
           o->callback((Fl_Callback*)cb_locale);
@@ -91,7 +95,6 @@ Using .etb is recommended."));
      {Fl_Divider* o = new Fl_Divider(5, 235, 290, 10, _("label"));
       o->color((Fl_Color)49);
     }
-    o->set_non_modal();
     o->end();
   }
   return w;

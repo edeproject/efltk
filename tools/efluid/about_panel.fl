@@ -1,5 +1,5 @@
-# data file for the FLTK User Interface Designer (FLUID)
-version 2,0003 
+# data file for the eFLTK User Interface Designer (eFLUID)
+version 2.0003 
 images_dir ./ 
 i18n 
 header_name {.h} 
@@ -10,53 +10,37 @@ snap 3
 Function {make_about_panel(const char *copyright)} {open
 } {
   Fl_Window about_panel {
-    label {about fluid} open
-    xywh {740 111 330 300} type Double resizable hotspot color 97 selection_color 47
-    extra_code {o->size_range(o->w(), o->h());} non_modal visible
+    label {About eFluid} open
+    xywh {664 45 330 276} type Single selection_color 47 visible
   } {
     Fl_Group display_group {open
-      xywh {0 0 330 300} resizable
-      extra_code {o->resizable(o);}
+      xywh {0 0 330 240}
     } {
-      Fl_Group {} {open
-        xywh {5 145 150 150} align 16 box ROUND_UP_BOX label_font 1 label_type SHADOW_LABEL color 14 label_color 6 selection_color 47 label_size 40
-        extra_code {o->resizable(o);}
-      } {
-        Fl_Box {} {
-          label eFluid
-          xywh {10 10 130 130} align 80 box ROUND_DOWN_BOX label_font 1 label_type EMBOSSED_LABEL color 12 label_size 34
-          extra_code {o->parent()->resizable(o);}
-        }
-      }
-      Fl_Group {} {open
-        xywh {175 5 150 150} box ROUND_UP_BOX label_font 1 color 14 label_color 7 selection_color 47 label_size 18
-        extra_code {o->resizable(o);}
-      } {
-        Fl_Box {} {
-          label {EFLTK User
-Interface
-Designer
-Version 2.0.3}
-          xywh {10 10 130 130} box ROUND_DOWN_BOX label_font 1 label_type SHADOW_LABEL color 12 label_color 7 selection_color 47 label_size 16
-          extra_code {o->parent()->resizable(o);}
-        }
-      }
+      Fl_Group {} {
+        label eFluid open
+        xywh {5 5 320 55} align FL_ALIGN_INSIDE box ENGRAVED_BOX label_font 1 label_type EMBOSSED_LABEL color 0xb3b3be00 label_color 32 selection_color 47 label_size 40
+      } {}
       Fl_Button {} {
         label {©2002-2003
 Click here for more information}
         callback {display_group->hide();
-copyright_box->show();} selected
-        xywh {10 10 135 105} align 128 box BORDER_BOX label_font 1 color 136 label_color 6 highlight_color 0xcc00 highlight_label_color 6
+copyright_box->show();}
+        xywh {5 165 320 70} align FL_ALIGN_WRAP box ENGRAVED_BOX label_font 1 color 0xb3b3be00 label_color 32 highlight_color 0x9d9da700 highlight_label_color 55 label_size 14
+      }
+      Fl_Box {} {
+        label {EFLTK User Interface Designer
+Version 2.0.3}
+        xywh {5 60 320 105} box ENGRAVED_BOX label_font 1 label_type EMBOSSED_LABEL color 0xb3b3be00 label_color 32 selection_color 47 label_size 18
       }
     }
     Fl_Box copyright_box {
-      xywh {0 0 330 300} align 213 hide label_color 6 label_size 10
+      xywh {0 0 330 240} align FL_ALIGN_TOP|FL_ALIGN_LEFT|FL_ALIGN_INSIDE|FL_ALIGN_CLIP|FL_ALIGN_WRAP hide label_size 10
       extra_code {o->label(copyright);}
     }
     Fl_Return_Button {} {
       label OK
-      callback {o->window()->hide();}
-      xywh {250 265 70 25} label_size 10 shortcut 0xff0d
+      callback {o->window()->hide();} selected
+      xywh {5 245 320 25} label_size 10 shortcut 0xff0d
     }
   }
 } 

@@ -5,17 +5,17 @@
 
 #include <efltk/Fl.h>
 #include <efltk/Fl_Locale.h>
-#include <efltk/Fl_Double_Window.h>
+#include <efltk/Fl_Window.h>
 #include <efltk/Fl_Group.h>
-#include <efltk/Fl_Box.h>
 #include <efltk/Fl_Button.h>
+#include <efltk/Fl_Box.h>
 #include <efltk/Fl_Return_Button.h>
 
 
-extern Fl_Double_Window* about_panel;
+extern Fl_Window* about_panel;
 extern Fl_Group* display_group;
 extern Fl_Box* copyright_box;
 
-Fl_Double_Window* make_about_panel(const char *copyright);
+Fl_Window* make_about_panel(const char *copyright);
 
 #endif

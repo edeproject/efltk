@@ -51,8 +51,9 @@ static const char *align2str(Fl_Align align) {
 	if(align & FL_ALIGN_LEFT)		str += "FL_ALIGN_LEFT|";
 	if(align & FL_ALIGN_RIGHT)		str += "FL_ALIGN_RIGHT|";
 
-	if(align & FL_ALIGN_WRAP)		str += "FL_ALIGN_WRAP|";
 	if(align & FL_ALIGN_INSIDE)		str += "FL_ALIGN_INSIDE|";
+	if(align & FL_ALIGN_CLIP)		str += "FL_ALIGN_CLIP|";
+	if(align & FL_ALIGN_WRAP)		str += "FL_ALIGN_WRAP|";
 	if(align & FL_ALIGN_SCALE)		str += "FL_ALIGN_SCALE|";
 	if(align & FL_ALIGN_TILED)		str += "FL_ALIGN_TILED|";
 
@@ -69,6 +70,8 @@ static Fl_Align str2align(const Fl_String &s) {
 	if(s.pos("FL_ALIGN_RIGHT")>-1)	ret |= FL_ALIGN_RIGHT;
 
 	if(s.pos("FL_ALIGN_WRAP")>-1)	ret |= FL_ALIGN_WRAP;
+	if(s.pos("FL_ALIGN_CLIP")>-1)	ret |= FL_ALIGN_CLIP;
+	if(s.pos("FL_ALIGN_CLIENT")>-1)	ret |= FL_ALIGN_CLIENT;
 	if(s.pos("FL_ALIGN_INSIDE")>-1)	ret |= FL_ALIGN_INSIDE;
 	if(s.pos("FL_ALIGN_SCALE")>-1)	ret |= FL_ALIGN_SCALE;
 	if(s.pos("FL_ALIGN_TILED")>-1)	ret |= FL_ALIGN_TILED;
@@ -605,61 +608,60 @@ void when_cb(Fl_Choice* i, void *v) {
     i->redraw();
 }
 
-void when_button_cb(Fl_Check_Button*, void *) {} // delete this!
+void when_button_cb(Fl_Check_Button*, void *) { } // delete this!
 
-uchar Fl_Widget_Type::resizable() const {
-    if (is_group()) if (!((Fl_Group*)o)->resizable()) return false;
-    Fl_Group* group = o->parent();
+uchar Fl_Widget_Type::resizable() const 
+{
+	Fl_Group* group = o->parent();
     if (group && group->resizable() != o) return false;
     return true;
 }
 
-void Fl_Widget_Type::resizable(uchar value) {
+void Fl_Widget_Type::resizable(uchar value) 
+{
     if (value) {
         Fl_Widget* child = o;
-        Fl_Group* group = is_group() ? (Fl_Group*)o : o->parent();
-        while (group) {
-            if (group->resizable() != child) {
-                group->resizable(child);
-                group->init_sizes();
-            }
-            child = group;
-            group = group->parent();
-        }
+        Fl_Group* group = o->parent(); 
+		if(!group) group = (Fl_Group*)o;
+        if (group->resizable() != child) {
+			group->resizable(child);
+            group->init_sizes();
+		}
     } else {
-        Fl_Group* group = is_group() ? (Fl_Group*)o : o->parent();
-        while (group) {
-            group->resizable(0);
-            group = group->parent();
-        }
+        Fl_Group* group = o->parent(); 
+		if(!group) group = (Fl_Group*)o;
+        group->resizable(0);
     }
 }
 
-void resizable_cb(Fl_Check_Button* i,void* v) {
+void resizable_cb(Fl_Check_Button* i,void* v) 
+{
     if (v == LOAD) {
-        if (current_widget->is_menu_item()) {i->hide(); return;}
-        if (numselected > 1) {i->hide(); return;}
+        if (current_widget->is_menu_item()) { i->hide(); return; }
+        if (numselected > 1) { i->hide(); return; }
         i->show();
         i->value(current_widget->resizable());
     } else {
         current_widget->resizable(i->value());
         modflag = 1;
     }
-    if (current_widget->resizable()) i->label_color(FL_RED);
-    else i->label_color(FL_BLACK);
-    i->redraw();
+
+	Fl_Color c = FL_BLACK;
+    if(current_widget->resizable()) c = FL_RED;
+    if(i->label_color()!=c) { i->label_color(c); i->redraw_label(); }
 }
 
-void hotspot_cb(Fl_Check_Button* i,void* v) {
+void hotspot_cb(Fl_Check_Button* i,void* v) 
+{
     if (v == LOAD) {
-        if (numselected > 1 || current_widget->is_menu_item()) {i->hide(); return;}
+        if (numselected > 1 || current_widget->is_menu_item()) { i->hide(); return; }
         i->show();
         i->value(current_widget->hotspot());
     } else {
         modflag = 1;
         current_widget->hotspot(i->value());
         if (i->value()) {
-      // turn off hotspot in all siblings
+			// turn off hotspot in all siblings
             for (Fl_Type *p = current_widget->parent; p; p = p->parent) {
                 if (!p->is_widget()) continue;
                 for (Fl_Type* o = p->first_child; o; o = o->walk())
@@ -668,9 +670,10 @@ void hotspot_cb(Fl_Check_Button* i,void* v) {
             }
         }
     }
-    if (current_widget->hotspot()) i->label_color(FL_RED);
-    else i->label_color(FL_BLACK);  
-    i->redraw();
+    
+	Fl_Color c = FL_BLACK;
+    if(current_widget->hotspot()) c = FL_RED;
+    if(i->label_color()!=c) { i->label_color(c); i->redraw_label(); }
 }
 
 void visible_cb(Fl_Check_Button* i, void* v) 
@@ -686,9 +689,10 @@ void visible_cb(Fl_Check_Button* i, void* v)
             q->redraw();
         }
     }
-    if (!i->value()) i->label_color(FL_RED);
-    else i->label_color(FL_BLACK);
-    i->redraw();
+
+	Fl_Color c = FL_BLACK;
+    if(!i->value()) c = FL_RED;
+    if(i->label_color()!=c) { i->label_color(c); i->redraw_label(); }
 }
 
 void active_cb(Fl_Check_Button* i, void* v) 
@@ -704,10 +708,10 @@ void active_cb(Fl_Check_Button* i, void* v)
             q->redraw();
         }
     }
-    
-	if (!i->value()) i->label_color(FL_RED);
-    else i->label_color(FL_BLACK);  
-    i->redraw();
+
+	Fl_Color c = FL_BLACK;
+    if(!i->value()) c = FL_RED;
+    if(i->label_color()!=c) { i->label_color(c); i->redraw_label(); }
 }
 
 ////////////////////////////////////////////////////////////////
@@ -750,6 +754,7 @@ void label_font_cb(Fl_Choice* i, void *v)
             q->redraw();
         }
     }
+
     Fl_Color c = FL_BLACK;
     if (NOT_DEFAULT(current_widget, label_font)) c = FL_RED;
     if (i->label_color() != c) { i->label_color(c); i->redraw_label(); }
@@ -1152,7 +1157,6 @@ void layoutspacing_cb(Fl_Value_Input* i, void *v)
 			if(new_spc != old_spc) { 
 				g->layout_spacing(new_spc); 
 				g->relayout();
-				if(g->parent()) g->parent()->relayout();
 				modflag = 1; 
 			}
         }
@@ -1163,7 +1167,7 @@ void layoutspacing_cb(Fl_Value_Input* i, void *v)
 
 	Fl_Color c = FL_BLACK;
 	if(g->layout_spacing()!=factory->layout_spacing()) { c = FL_RED; }
-    if(i->label_color() != c) { i->label_color(c); i->redraw(); }
+    if(i->label_color() != c) { i->label_color(c); i->redraw_label(); }
 }
 
 static const Enumeration layoutalignmenu[] = {
@@ -1652,14 +1656,15 @@ static void load_panel() {
 }
 
 // This is called when user double-clicks an item, open or update the panel:
-void Fl_Widget_Type::open() {
+void Fl_Widget_Type::open() 
+{
     if (!the_panel) {
         the_panel = make_widget_panel();
         Fluid_Plugin *p, **pp;
         for(pp = next_panel(plugins, p); pp-plugins<nbplugins; pp = next_panel(pp+1, p))
         {
             p->make_panel();
-      // All plugin panels are initially not mapped in the main pannel
+			// All plugin panels are initially not mapped in the main pannel
             p->panel_is_orphan = 1; 
             p->panel->position(panel_tabs->child(0)->x(), panel_tabs->child(0)->y());
             p->panel->layout();
@@ -1910,9 +1915,15 @@ void Fl_Widget_Type::write_code1()
     if (is_menu_button()) write_c("); o->begin();\n");
     else write_c(");\n");
     indentation += 2;
-    if (o->layout_align())
-        write_c("o->layout_align((Fl_AlignEnum)%d);\n", o->layout_align());
-    if (this == last_group) write_c("%sw = o;\n",indent());
+    
+	if (o->layout_align())
+        write_c("o->layout_align(%s);\n", number_to_text(o->layout_align(), layoutalignmenu));
+
+	Fl_Group *g = o->is_group() ? (Fl_Group*)o : 0;
+	if(g && g->layout_spacing())
+        write_c("o->layout_spacing(%d);\n", g->layout_spacing());
+    
+	if (this == last_group) write_c("%sw = o;\n",indent());
     if (varused) write_widget_code();
 }
 
@@ -2160,6 +2171,10 @@ void Fl_Widget_Type::write_properties()
 
     if (o->layout_align())
         write_string("layout_align %s", number_to_text(o->layout_align(), layoutalignmenu));
+
+	Fl_Group *g = o->is_group() ? (Fl_Group*)o : 0;
+    if(g && g->layout_spacing())
+        write_string("layout_spacing %d", g->layout_spacing());
 		
     if (o->when() != tplate->when())
         write_string("when %s", number_to_text(o->when(), whenmenu));
@@ -2305,6 +2320,10 @@ void Fl_Widget_Type::read_property(const Fl_String &c)
 	else if(c=="layout_align") {
         o->layout_align(str2align(read_word()));
     } 
+	else if(c=="layout_spacing") {
+		Fl_Group *g = o->is_group() ? (Fl_Group*)o : 0;
+        if(g) g->layout_spacing(strtol(read_word(),0,10));
+    } 
 	else if(c=="when") {
         o->when(number_from_text(read_word(), whenmenu));
     } 
@@ -2315,7 +2334,7 @@ void Fl_Widget_Type::read_property(const Fl_String &c)
         o->deactivate();
     } 
 	else if(c=="resizable") {
-        resizable(1);
+		resizable(1);
     }
 	else if(c=="hotspot") {
         hotspot(1);
