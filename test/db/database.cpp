@@ -281,6 +281,7 @@ void build_window()
 	results->layout_align(FL_ALIGN_CLIENT);
 
 	Fl_Group *g = new Fl_Group(0,0,30,60);
+	g->layout_settings(false, false);
 	g->begin();
 
 		sql_input = new Fl_Input(0,0,10,10);
@@ -299,6 +300,7 @@ void build_window()
 	g->begin();
 
 	Fl_Group *g2 = new Fl_Group(0,0,10,g->h()/2);
+	g2->layout_settings(false, false);
 		
 		Fl_Box *empty = new Fl_Box(0,0,90,23);
 		empty->layout_align(FL_ALIGN_LEFT);
@@ -311,6 +313,7 @@ void build_window()
 	g2->layout_align(FL_ALIGN_CLIENT);
 		
 	g2 = new Fl_Group(0,0,10,g->h()/2);
+	g2->layout_settings(false, false);
 	g2->begin();
 		
 		con_btn = new Fl_Button(0,0,90,20,"Connect");
