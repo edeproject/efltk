@@ -1203,7 +1203,7 @@ void Fl_ListView::fill(Fl_Data_Source &ds, const char *user_data_column_name_)
 		m_columns[actualColumn]->flags(df.flags);
 		actualColumn++;
 	}
-	m_columns.resize(actualColumn);
+	columns(actualColumn);
 
 	begin();
 
