@@ -30,20 +30,20 @@ CPPFILES = \
 	Fl_Bitmap.cpp \
 	Fl_Bmp.cpp \
 	Fl_Boxtype.cpp \
-        Fl_Callback.cpp \
-        Fl_Config.cpp \
+	Fl_Callback.cpp \
+	Fl_Config.cpp \
 	Fl_Gif.cpp \
 	Fl_Group.cpp \
 	Fl_Image.cpp \
 	Fl_Image_Filter.cpp \
-        Fl_Pixmap.cpp \
-        Fl_Renderer.cpp \
-        Fl_String.cpp \
+	Fl_Pixmap.cpp \
+	Fl_Renderer.cpp \
+	Fl_String.cpp \
 	Fl_Style.cpp \
 	Fl_Style_Set.cpp \
-	Fl_Thread.cpp \	
-        Fl_Util.cpp \
-        Fl_WM.cpp \
+	Fl_Thread.cpp \
+	Fl_Util.cpp \
+	Fl_WM.cpp \
 	Fl_Widget.cpp \
 	Fl_Window.cpp \
 	Fl_Window_fullscreen.cpp \
@@ -56,7 +56,7 @@ CPPFILES = \
 	Fl_compose.cpp \
 	Fl_display.cpp \
 	Fl_get_key.cpp \
-        Fl_init.cpp \
+	Fl_init.cpp \
 	Fl_key_name.cpp \
 	Fl_lock.cpp \
 	Fl_own_colormap.cpp \
@@ -76,10 +76,10 @@ CPPFILES = \
 	fl_rounded_box.cpp \
 	fl_shadow_box.cpp \
 	fl_diamond_box.cpp \
-        fl_blit.cpp \
-        fl_blit_1.cpp \
-        fl_blit_a.cpp \
-        fl_blit_n.cpp \
+	fl_blit.cpp \
+	fl_blit_1.cpp \
+	fl_blit_a.cpp \
+	fl_blit_n.cpp \
 	fl_clip.cpp \
 	fl_color.cpp \
 	fl_cursor.cpp \
@@ -87,7 +87,7 @@ CPPFILES = \
 	fl_dnd.cpp \
 	fl_draw.cpp \
 	fl_draw_image.cpp \
-        fl_draw_pixmap.cpp \
+	fl_draw_pixmap.cpp \
 	fl_font.cpp \
 	fl_glyph.cpp \
 	fl_labeltype.cpp \
@@ -107,7 +107,7 @@ CPPFILES = \
 
 CFILES = \
 	scandir.c \
-        numericsort.c \
+	numericsort.c \
 	vsnprintf.c \
 	fl_utf8_ucs2fmap.c \
 	fl_utf8_x.c \
