@@ -16,6 +16,15 @@
 #include "images/stock_right.xpm"
 #include "images/stock_save.xpm"
 
+#include "images/stock_next.xpm"
+#include "images/stock_prior.xpm"
+#include "images/stock_refresh.xpm"
+#include "images/stock_search.xpm"
+#include "images/stock_send.xpm"
+#include "images/stock_stepleft.xpm"
+#include "images/stock_stepright.xpm"
+#include "images/stock_calendar.xpm"
+
 static Fl_Pixmap cancel_pixmap(stock_cancel_xpm);
 static Fl_Pixmap delete_pixmap(stock_delete_xpm);
 static Fl_Pixmap edit_pixmap(stock_edit_xpm);
@@ -30,6 +39,15 @@ static Fl_Pixmap print_pixmap(stock_print_xpm);
 static Fl_Pixmap printer_pixmap(stock_printer_xpm);
 static Fl_Pixmap right_pixmap(stock_right_xpm);
 static Fl_Pixmap save_pixmap(stock_save_xpm);
+
+static Fl_Pixmap next_pixmap(stock_next_xpm);
+static Fl_Pixmap prior_pixmap(stock_prior_xpm);
+static Fl_Pixmap refresh_pixmap(stock_refresh_xpm);
+static Fl_Pixmap search_pixmap(stock_search_xpm);
+static Fl_Pixmap send_pixmap(stock_send_xpm);
+static Fl_Pixmap stepleft_pixmap(stock_stepleft_xpm);
+static Fl_Pixmap stepright_pixmap(stock_stepright_xpm);
+static Fl_Pixmap calendar_pixmap(stock_calendar_xpm);
 
 class Fl_Stock_Image : public Fl_Image
 {
@@ -76,23 +94,23 @@ static void fl_init_stock_images()
     fl_stock_images[Fl_Stock_Images::SI_SAVE].set_default(&save_pixmap);
     fl_stock_images[Fl_Stock_Images::SI_BROWSE].set_default(&help_pixmap);
     fl_stock_images[Fl_Stock_Images::SI_HELP].set_default(&help_pixmap);
-    fl_stock_images[Fl_Stock_Images::SI_NEXT].set_default(&right_pixmap);
-    fl_stock_images[Fl_Stock_Images::SI_PREV].set_default(&left_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_NEXT].set_default(&next_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_PREV].set_default(&prior_pixmap);
     fl_stock_images[Fl_Stock_Images::SI_LEFT].set_default(&left_pixmap);
     fl_stock_images[Fl_Stock_Images::SI_RIGHT].set_default(&right_pixmap);
     fl_stock_images[Fl_Stock_Images::SI_ADD].set_default(&insert_pixmap);
     fl_stock_images[Fl_Stock_Images::SI_DELETE].set_default(&delete_pixmap);
     fl_stock_images[Fl_Stock_Images::SI_EDIT].set_default(&edit_pixmap);
-    fl_stock_images[Fl_Stock_Images::SI_REFRESH].set_default(&new_pixmap);
-    fl_stock_images[Fl_Stock_Images::SI_CALENDAR].set_default(&new_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_REFRESH].set_default(&refresh_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_CALENDAR].set_default(&calendar_pixmap);
     fl_stock_images[Fl_Stock_Images::SI_PRINT].set_default(&print_pixmap);
     fl_stock_images[Fl_Stock_Images::SI_PRINTER].set_default(&printer_pixmap);
     fl_stock_images[Fl_Stock_Images::SI_INSERT].set_default(&insert_pixmap);
     fl_stock_images[Fl_Stock_Images::SI_NEW].set_default(&new_pixmap);
-    fl_stock_images[Fl_Stock_Images::SI_SEARCH].set_default(&new_pixmap);
-    fl_stock_images[Fl_Stock_Images::SI_SEND].set_default(&new_pixmap);
-    fl_stock_images[Fl_Stock_Images::SI_STEPLEFT].set_default(&left_pixmap);
-    fl_stock_images[Fl_Stock_Images::SI_STEPRIGHT].set_default(&right_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_SEARCH].set_default(&search_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_SEND].set_default(&send_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_STEPLEFT].set_default(&stepleft_pixmap);
+    fl_stock_images[Fl_Stock_Images::SI_STEPRIGHT].set_default(&stepright_pixmap);
     fl_stock_images[Fl_Stock_Images::SI_VIEW].set_default(&new_pixmap);
 }
 
