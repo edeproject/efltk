@@ -34,6 +34,7 @@ CPPFILES = \
         Fl_MDI_Window.cpp \
         Fl_Main_Window.cpp \
         Fl_Masked_Input.cpp \
+	Fl_MDI_Bar.cpp \
 	Fl_Menu.cpp \
 	Fl_Menu_.cpp \
 	Fl_Menu_add.cpp \
