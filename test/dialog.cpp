@@ -33,13 +33,14 @@
 #include <stdio.h>
 
 Fl_Dialog *dlg;
+Fl_Input *input1, *input2;
 
 static void cb_test(Fl_Widget*, void*) {
    char buffer[128];
    Fl_Dialog& dialog = *dlg;
    // define widgets contents
-   dialog["first_name"] = "Jonh";
-   dialog["last_name"]  = "Doe";
+   dialog["first_name"] = input1->value();
+   dialog["last_name"]  = input2->value();
    // show modal dialog, and get results after it's closed
    Fl_String fname, lname;
    switch (dialog.show_modal()) {
@@ -49,6 +50,8 @@ static void cb_test(Fl_Widget*, void*) {
                            fname.c_str(), lname.c_str()
                         );
                         fl_alert(buffer);
+                        input1->value(fname);
+                        input2->value(lname);
                         break;
    case FL_DLG_CANCEL:  fl_alert("Cancel pressed");
                         break;
@@ -59,7 +62,13 @@ int main(int argc, char **argv) {
    Fl_Window *window = new Fl_Window(300,180);
 
    Fl_Button *btn = new Fl_Button(170,70,70,25,"Test dialog");
+   input1 = new Fl_Input(100,10,70,22,"First Name");
+   input2 = new Fl_Input(100,35,70,22,"Last Name");
    btn->callback(cb_test);
+
+   input1->value("Jonh");
+   input2->value("Doe");
+
    window->end();
    window->show(argc, argv);
 
