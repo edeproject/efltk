@@ -75,7 +75,7 @@ int sendClientMessage(Window w, Atom a, long x)
     xev.xclient.send_event = True;
     xev.xclient.window = w;
     xev.xclient.display = fl_display;
-    xev.xclient.message_type = _XA_NET_ACTIVE_WINDOW;
+    xev.xclient.message_type = a;
     xev.xclient.format = 32;
     xev.xclient.data.l[0] = x;
     xev.xclient.data.l[1] = CurrentTime;
