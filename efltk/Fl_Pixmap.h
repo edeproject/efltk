@@ -28,8 +28,29 @@
 
 #include "Fl_Image.h"
 
-// Backward compatibility
-typedef Fl_Image Fl_Pixmap;
+/*
+ * Fl_Pixmap is good for static XPM's
+ * like built-in images, It parses image only
+ * when it's needed. i.e. just before first draw.
+ * This allows applications run w/o X11 running. (e.g. efluid -c)
+ */
+
+class FL_API Fl_Pixmap : public Fl_Image
+{
+public:
+    const char * const * data; //XPM data
+
+    Fl_Pixmap(char * const *d) : Fl_Image() { data = (const char **)d; measure(w,h); }
+    Fl_Pixmap(uchar* const *d) : Fl_Image() { data = (const char **)d; measure(w,h); }
+    Fl_Pixmap(const char * const *d) : Fl_Image() { data = (const char **)d; measure(w,h); }
+    Fl_Pixmap(const uchar* const *d) : Fl_Image() { data = (const char **)d; measure(w,h); }
+    virtual ~Fl_Pixmap() { }
+
+    virtual void measure(int &w, int &h);
+    virtual void draw(int dx, int dy, int dw, int dh,
+                      int sx, int sy, int sw, int sh,
+                      Fl_Flags f);
+};
 
 #endif
 
