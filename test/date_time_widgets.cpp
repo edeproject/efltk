@@ -13,6 +13,11 @@ int main() {
 
     Fl_Date_Input   dateInput(0,0,10,10,"Date Input:");
     dateInput.layout_align(FL_ALIGN_TOP);
+    dateInput.label_width(100);
+
+    Fl_Date_Time_Input dateTimeInput(0,0,10,10,"Date Time Input:");
+    dateTimeInput.layout_align(FL_ALIGN_TOP);
+    dateTimeInput.label_width(100);
 
     window.end();
     window.show();

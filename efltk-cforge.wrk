@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x4003e4
+# %FirstUniqueId:	0x4003e6
 PROJECT_DIR = /develop/CVS/efltk/
 
 IDE_WORKING_DIR = /develop/CVS/efltk/
@@ -467,6 +467,9 @@ test/listview_sort ::	test/listview_sort.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 test/date_time_widgets ::	test/date_time_widgets.o
+	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+test/masked_input ::	test/maskedinput.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %ObjectFilesLinking
@@ -1539,6 +1542,10 @@ test/listview_sort.o : test/listview_sort.cpp
 
 
 test/date_time_widgets.o : test/date_time_widgets.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+test/maskedinput.o : test/maskedinput.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
@@ -9420,5 +9427,30 @@ test/date_time_widgets.o :	efltk/Fl_Date_Time_Input.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl_Button.h\
+	efltk/Fl_Window.h\
+	efltk/Fl.h
+test/maskedinput.o :	efltk/Fl_Date_Time_Input.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Masked_Input.h\
+	efltk/Fl_Input.h\
 	efltk/Fl_Window.h\
 	efltk/Fl.h

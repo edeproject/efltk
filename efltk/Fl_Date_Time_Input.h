@@ -47,9 +47,29 @@ protected:
     static void input_callback(Fl_Widget *,void *);
     static void button_callback(Fl_Widget *,void *);
 
-private:
+    int dateInputWidth(bool set_font) const;
+
     Fl_Masked_Input  *m_input;
     Fl_Button        *m_button;
+};
+
+class FL_API Fl_Date_Time_Input : public Fl_Date_Input {
+public:
+    Fl_Date_Time_Input(int,int,int,int,const char * = 0);
+
+    void value(const char *);
+    const char *value();
+
+    void date_value(Fl_Date_Time);
+    Fl_Date_Time date_value();
+
+    virtual void prepare_layout();
+    virtual void preferred_size(int& w,int &h) const;
+
+protected:
+    int timeInputWidth(bool set_font) const;
+
+    Fl_Masked_Input  *m_timeInput;
 };
 
 #endif
