@@ -278,6 +278,7 @@ static char latin1buf[4096];
 
 bool Fl_WM::set_window_title(Window xid, const char *title, int title_len)
 {
+    init_atoms();
     XChangeProperty(fl_display, xid, _XA_NET_WM_NAME, fl_XaUtf8String, 8, PropModeReplace, (uchar*)title, title_len);
 
     if(title_len>4096) title_len=4096;
@@ -289,6 +290,7 @@ bool Fl_WM::set_window_title(Window xid, const char *title, int title_len)
 
 bool Fl_WM::set_window_icontitle(Window xid, const char *title, int title_len)
 {
+    init_atoms();
     XChangeProperty (fl_display, xid, _XA_NET_WM_ICON_NAME, fl_XaUtf8String, 8, PropModeReplace, (uchar*)title, title_len);
 
     if(title_len>4096) title_len=4096;
