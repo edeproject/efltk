@@ -762,10 +762,10 @@ int Fl_MDI_Window::handle(int event)
 
     switch(event)
     {
-    case FL_MOUSEWHEEL: {		
+    /*case FL_MOUSEWHEEL: {		
         prv->send(event);
         break;
-    }
+    }*/
     case FL_SHOW: {
         Fl_Window::handle(event);
         if(_toplevel) return 1;		
@@ -782,14 +782,16 @@ int Fl_MDI_Window::handle(int event)
 		Fl::flush();
         return 1;
     }
-    case FL_FOCUS: {
+    /*case FL_FOCUS: {
+		prv->take_focus();
         return 0; // We do not need keyboard focus, for now...
-    }
-    case FL_PUSH: {
+    }*/
+    case FL_PUSH: {		
+		//Fl::pushed(this);
         if(_toplevel)
             return Fl_Window::handle(event);
 
-        if(!minimized()) setTop();
+        if(!minimized()) setTop();				
 
         // Send event to widgets...
         for(int i = children(); i--;) {
@@ -803,8 +805,8 @@ int Fl_MDI_Window::handle(int event)
             if(child->send(event)) return true;
             // quit when we reach a widget that claims mouse points at it,
             // so we don't pass the events to widgets "hidden" behind that one.
-            if(event != FL_ENTER && event != FL_MOVE && child->contains(Fl::belowmouse())) return false;
-        }
+            //if(event != FL_ENTER && event != FL_MOVE && child->contains(Fl::belowmouse())) return false;
+        }		
 
         button = Fl::event_button();
         if(button == FL_LEFT_MOUSE && state_==NORMAL && prv->resizable() ) {
@@ -850,11 +852,13 @@ int Fl_MDI_Window::handle(int event)
 			}
         }
 
-        return 0;
+		break;
+        //return 0;
     }// Fl_PUSH
 
     case FL_LEAVE:
         fl_cursor(FL_CURSOR_DEFAULT, 0, 255);
+		break;
 
     case FL_ENTER:
     case FL_MOVE: {

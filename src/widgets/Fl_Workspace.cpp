@@ -35,7 +35,7 @@ void Fl_MDI_Viewport::top(Fl_MDI_Window *win)
 	}
 
     if(win && win!=_top) {
-
+		
         // Insert new top to last of the stack
         insert(*win, children());
 
@@ -76,9 +76,11 @@ void Fl_MDI_Viewport::top(Fl_MDI_Window *win)
         // Set new top, and redraw it
         _top = win;
         _top->active(true);
-        _top->redraw();
+        _top->redraw();		
 
 		if(_aot) insert(*win,_aot);
+
+		focus(win);
 
         do_callback();
     }
