@@ -23,11 +23,11 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
+#include <efltk/math.h>
 #include <config.h>
 #include <efltk/Fl.h>
 #include <efltk/Fl_Scrollbar.h>
 #include <efltk/fl_draw.h>
-#include <math.h>
 #include <stdlib.h>
 
 #define vertical() (!(type()&1))
