@@ -63,10 +63,13 @@ void Fl::init()
     // Initialize the i18n stuff
     setlocale(LC_ALL, "");
     bindtextdomain("efltk", PREFIX"/share/locale");
+#if HAVE_TEXTDOMAIN_CODESET
     char *charset = bind_textdomain_codeset("efltk", "UTF-8");
     if(!strcmp(charset, "UTF-8")) {
         gettext_converts = true;
     }
+#endif
+
 #endif
 
     atexit(clean_up);

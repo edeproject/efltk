@@ -9,9 +9,12 @@ void fl_init_locale_support(const char *package, const char *locale_prefix)
     bindtextdomain(package, locale_prefix);
     textdomain(package);
 
+#if HAVE_TEXTDOMAIN_CODESET
     // Try to bind gettext to convert .po files automaticly to UTF-8
     // capabilities are checked in Fl::init();
     bind_textdomain_codeset(package, "UTF-8");
+#endif
+
 #endif
 }
 
