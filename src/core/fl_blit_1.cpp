@@ -125,7 +125,7 @@ static void Blit1to1Key(BlitInfo *info)
     uint8 *dst = info->d_pixels;
     int dstskip = info->d_skip;
     uint8 *palmap = info->table;
-    uint32 ckey = info->src->colorkey;
+    uint8 ckey = (uint8)info->src->colorkey;
     bool hw=info->hw_surface;
 
     if ( palmap ) {
@@ -170,7 +170,7 @@ static void Blit1to2Key(BlitInfo *info)
 	uint16 *dstp = (uint16 *)info->d_pixels;
 	int dstskip = info->d_skip;
 	uint16 *palmap = (uint16 *)info->table;
-	uint32 ckey = info->src->colorkey;
+	uint8 ckey = (uint8)info->src->colorkey;
 
 	/* Set up some basic variables */
 	dstskip /= 2;
@@ -199,7 +199,7 @@ static void Blit1to3Key(BlitInfo *info)
 	uint8 *dst = info->d_pixels;
 	int dstskip = info->d_skip;
 	uint8 *palmap = info->table;
-	uint32 ckey = info->src->colorkey;
+	uint8 ckey = (uint8)info->src->colorkey;
 	int o;
 
 	while ( height-- ) {
@@ -229,7 +229,7 @@ static void Blit1to4Key(BlitInfo *info)
 	uint32 *dstp = (uint32 *)info->d_pixels;
 	int dstskip = info->d_skip;
 	uint32 *palmap = (uint32 *)info->table;
-	uint32 ckey = info->src->colorkey;
+	uint8 ckey = (uint8)info->src->colorkey;
 
 	/* Set up some basic variables */
 	dstskip /= 4;
@@ -299,7 +299,7 @@ static void Blit1toNAlphaKey(BlitInfo *info)
     Fl_PixelFormat *srcfmt = info->src;
     Fl_PixelFormat *dstfmt = info->dst;
     const Fl_Colormap_Color *srcpal	= info->src->palette->colors;
-    uint32 ckey = srcfmt->colorkey;
+    uint8 ckey = (uint8)srcfmt->colorkey;
     int dstbpp;
     const int A = srcfmt->alpha;
 
