@@ -76,6 +76,7 @@ void callback(Fl_ListView *l, void *)
     if(i) {
         if (Fl::event() == FL_DATA_CHANGE)
             printf("Changed ");
+        else printf("Event %i ",Fl::event());
         if(Fl::event_clicks())
             printf("Double ");
         printf("Clicked: ");
