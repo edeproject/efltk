@@ -9189,7 +9189,6 @@ lib/Fl_Button_Group.o :	efltk/db/Fl_Query.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl_Input.h\
-	efltk/Fl_Box.h\
 	efltk/Fl_Group.h\
 	efltk/Fl_Widget_List.h\
 	efltk/fl_draw.h\

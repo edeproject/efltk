@@ -254,7 +254,7 @@ Fl_Clock_Output::Fl_Clock_Output(int x, int y, int w, int h, const char *l)
 
 // New style ctor
 Fl_Clock_Output::Fl_Clock_Output(const char* l,int layout_size,Fl_Align layout_al,int label_w)
-: Fl_Widget(l,layout_size,layout_al,label_w)
+: Fl_Widget(l, layout_size, layout_al, label_w)
 {
     ctor_init();
 }

@@ -10329,7 +10329,6 @@ lib/Fl_Button_Group.o :	efltk/db/Fl_Query.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl_Input.h\
-	efltk/Fl_Box.h\
 	efltk/Fl_Group.h\
 	efltk/Fl_Widget_List.h\
 	efltk/fl_draw.h\
@@ -11119,8 +11118,8 @@ test/maskedinput.o :	efltk/Fl_Date_Time_Input.h\
 # %TargetInfo test/net/file_small.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x4003cf,	TargetType=XPM,	IDEFlags=0xe
 # %TargetInfo test/net/folder_small.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d0,	TargetType=XPM,	IDEFlags=0xe
 # %TargetInfo efltk/xml/Fl_XmlCtx.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d1,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Check_Buttons.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d2,	TargetType=INC,	IDEFlags=0xc
-# %TargetInfo efltk/Fl_Radio_Buttons.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d3,	TargetType=INC,	IDEFlags=0xc
+# %TargetInfo efltk/Fl_Check_Buttons.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d2,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Radio_Buttons.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4003d3,	TargetType=INC,	IDEFlags=0xe
 
 
 # %UniqueId:	0x400001
