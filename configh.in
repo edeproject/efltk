@@ -8,6 +8,9 @@
  * If this file is "configh.in" it is the input to ./configure.
  */
 
+#ifndef EFLTK_CONFIG_FILE_INCLUDED
+#define EFLTK_CONFIG_FILE_INCLUDED
+
 /* The fltk libraries are compiled as shared libraries ("dlls"). Due
    to stupid Windoze stuff, this is passed as a compile-time option,
    to avoid having *every* file depend on config.h, and because the
@@ -213,6 +216,8 @@
 # define log10f(a)	float(log10(float(a)))
 # define sqrtf(a)	float(sqrt(float(a)))
 #endif
+
+#endif /*EFLTK_CONFIG_FILE_INCLUDED*/
 
 /*
  * End of "$Id$".
