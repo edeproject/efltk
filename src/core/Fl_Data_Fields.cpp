@@ -108,6 +108,7 @@ void Fl_Data_Fields::clear() {
       Fl_Data_Field *field = (Fl_Data_Field *)m_list[i];
       delete field;
    }
+   m_list.clear();
 }
 
 static Fl_Data_Field error("");
