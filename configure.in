@@ -350,6 +350,13 @@ fi
 dnl# Do we have libiconv installed
 iconv_found=no
 AC_CHECK_LIB(iconv, iconv_open, AC_DEFINE(HAVE_ICONV) LDLIBS="$LDLIBS -liconv" iconv_found=yes,)
+if test x$iconv_found = xyes; then
+
+AC_MSG_CHECKING([for iconv declaration])
+AC_TRY_LINK([#include <iconv.h>],[ char **tmp; const char **tmp2; iconv(NULL, tmp, NULL, tmp, NULL); ],
+[AC_DEFINE(ICONV_CONST, const) AC_MSG_RESULT(const)], [AC_DEFINE(ICONV_CONST, ) AC_MSG_RESULT(non-const)])]
+
+fi
 
 AC_MSG_CHECKING([for math emulation])
 AC_TRY_LINK([#include <math.h>],[ floorf(1.0f); fabsf(1.0f); ],

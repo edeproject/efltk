@@ -201,6 +201,7 @@
 
 /* Do we have iconv installed */
 #define HAVE_ICONV 0
+#define ICONV_CONST const
 
 /* Do we have Xutf functions in XLib */
 #define HAVE_X11_UTF_TEXT_PROP 0
