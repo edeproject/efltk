@@ -108,7 +108,6 @@ IDE_CXX_PARSER_OPTIONS = -I/usr/local/lib/gcc-lib/sparc-sun-solaris2.8/2.95.3/..
 # %IncDir:	efltk
 # %ObjsDir:	lib
 lib/libefltk.so ::	lib/Fl.o\
-	lib/Fl_Adjuster.o\
 	lib/Fl_Align_Group.o\
 	lib/Fl_Bar.o\
 	lib/Fl_Bitmap.o\
@@ -1646,13 +1645,6 @@ lib/gl_draw.o : src/opengl/gl_draw.cpp
 # %ParentTarget:	0x40026b
 # %SourceTarget:	0x4002e7
 lib/gl_start.o : src/opengl/gl_start.cpp
-	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
-
-
-# %TargetType:	C++_OBJ
-# %ParentTarget:	0x400002
-# %SourceTarget:	0x4002e8
-lib/Fl_Adjuster.o : src/widgets/Fl_Adjuster.cpp
 	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
 
 
@@ -10634,7 +10626,7 @@ test/maskedinput.o :	efltk/Fl_Date_Time_Input.h\
 # %TargetInfo src/core/Fl_Date_Time.cpp	SourceOrHeader,	UniqueId=0x400290,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Exception.cpp	SourceOrHeader,	UniqueId=0x400291,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Gif.cpp	SourceOrHeader,	UniqueId=0x400292,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/core/Fl_Group.cpp	SourceOrHeader,	UniqueId=0x400293,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Group.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400293,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Hashs.cpp	SourceOrHeader,	UniqueId=0x400294,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Image.cpp	SourceOrHeader,	UniqueId=0x400295,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Image_Filter.cpp	SourceOrHeader,	UniqueId=0x400296,	TargetType=C++,	IDEFlags=0x6
@@ -10650,7 +10642,7 @@ test/maskedinput.o :	efltk/Fl_Date_Time_Input.h\
 # %TargetInfo src/core/Fl_Util.cpp	SourceOrHeader,	UniqueId=0x4002a0,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Variant.cpp	SourceOrHeader,	UniqueId=0x4002a1,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_WM.cpp	SourceOrHeader,	UniqueId=0x4002a2,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/core/Fl_Widget.cpp	SourceOrHeader,	UniqueId=0x4002a3,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Widget.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4002a3,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Window.cpp	SourceOrHeader,	UniqueId=0x4002a4,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Window_fullscreen.cpp	SourceOrHeader,	UniqueId=0x4002a5,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Window_hotspot.cpp	SourceOrHeader,	UniqueId=0x4002a6,	TargetType=C++,	IDEFlags=0x6
@@ -10719,10 +10711,9 @@ test/maskedinput.o :	efltk/Fl_Date_Time_Input.h\
 # %TargetInfo src/opengl/Fl_Gl_Window.cpp	SourceOrHeader,	UniqueId=0x4002e5,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/opengl/gl_draw.cpp	SourceOrHeader,	UniqueId=0x4002e6,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/opengl/gl_start.cpp	SourceOrHeader,	UniqueId=0x4002e7,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/widgets/Fl_Adjuster.cpp	SourceOrHeader,	UniqueId=0x4002e8,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Align_Group.cpp	SourceOrHeader,	UniqueId=0x4002e9,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/widgets/Fl_Bar.cpp	SourceOrHeader,	UniqueId=0x4002ea,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/widgets/Fl_Box.cpp	SourceOrHeader,	UniqueId=0x4002eb,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Bar.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4002ea,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Box.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4002eb,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Browser.cpp	SourceOrHeader,	UniqueId=0x4002ec,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Button.cpp	SourceOrHeader,	UniqueId=0x4002ed,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Calendar.cpp	SourceOrHeader,	UniqueId=0x4002ee,	TargetType=C++,	IDEFlags=0x6
@@ -10856,10 +10847,11 @@ test/maskedinput.o :	efltk/Fl_Date_Time_Input.h\
 # %TargetInfo src/widgets/Fl_Button_Group.cpp	SourceOrHeader,	UniqueId=0x4003ca,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/labelwidth2.cpp	SourceOrHeader,	UniqueId=0x4003d9,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/layout.cpp	SourceOrHeader,	UniqueId=0x4003db,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo test/layout2.cpp	SourceOrHeader,	UniqueId=0x4003dd,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/layout2.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4003dd,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/button_groups.cpp	SourceOrHeader,	UniqueId=0x4003df,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/listview_sort.cpp	SourceOrHeader,	UniqueId=0x4003e1,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/date_time_widgets.cpp	SourceOrHeader,	UniqueId=0x4003e3,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/maskedinput.cpp	SourceOrHeader,	UniqueId=0x4003e5,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x6
@@ -10892,9 +10884,9 @@ test/maskedinput.o :	efltk/Fl_Date_Time_Input.h\
 # %TargetInfo efltk/Fl_Color.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400079,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Boxtype.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40007a,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Window.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40007b,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Group.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40007c,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Group.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40007c,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Widget_List.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40007d,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Widget.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40007e,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Widget.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40007e,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Data_Source.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40007f,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Data_Fields.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400080,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Variant.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400081,	TargetType=INC,	IDEFlags=0xe
@@ -10984,8 +10976,8 @@ test/maskedinput.o :	efltk/Fl_Date_Time_Input.h\
 # %TargetInfo efltk/Fl_Repeat_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000e8,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Return_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000e9,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo config.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000f1,	TargetType=INC,	IDEFlags=0xc
-# %TargetInfo efltk/Fl_Align_Group.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40014b,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Bar.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40014c,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Align_Group.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40014b,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Bar.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40014c,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Browser.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40014d,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Calendar.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40014e,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Popup_Window.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40014f,	TargetType=INC,	IDEFlags=0xe
@@ -11129,7 +11121,6 @@ test/maskedinput.o :	efltk/Fl_Date_Time_Input.h\
 # %TargetInfo efltk/xml/Fl_XmlCtx.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d1,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Check_Buttons.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d2,	TargetType=INC,	IDEFlags=0xc
 # %TargetInfo efltk/Fl_Radio_Buttons.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d3,	TargetType=INC,	IDEFlags=0xc
-# %TargetInfo test/maskedinput.cpp	SourceOrHeader,	UniqueId=0x4003e5,	TargetType=C++,	IDEFlags=0x6
 
 
 # %UniqueId:	0x400001
@@ -11189,13 +11180,13 @@ test/maskedinput.o :	efltk/Fl_Date_Time_Input.h\
 #	0x400370
 #	0x400384
 #	0x400382
+#	0x4003da
+#	0x4003dc
 #	0x400380
 #	0x4003e0
 #	0x40037e
 #	0x40033f
 #	0x400364
-#	0x4003da
-#	0x4003dc
 #	0x4003c8
 #	0x4003d8
 #	0x4003e4

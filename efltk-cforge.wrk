@@ -101,7 +101,6 @@ IDE_CXX_PARSER_FLAGS = $(IDE_CXX_PARSER_OPTIONS)
 IDE_CXX_PARSER_OPTIONS = -I/usr/local/lib/gcc-lib/sparc-sun-solaris2.8/2.95.3/../../../../include/g++-3 -I/usr/local/include -I/usr/local/lib/gcc-lib/sparc-sun-solaris2.8/2.95.3/../../../../sparc-sun-solaris2.8/include -I/usr/local/lib/gcc-lib/sparc-sun-solaris2.8/2.95.3/include -I/usr/include -D__EXCEPTIONS='1' -D__GCC_NEW_VARARGS__='1' -D__sparc='1' -D__cplusplus='1' -D__svr4__='1' -D__GNUC_MINOR__='95' -D__sun='1' -Dsparc='1' -D__sun__='1' -D__unix='1' -D__unix__='1' -D__SVR4='1' -Dsun='1' -D__GNUC__='2' -D__sparc__='1' -D__GNUG__='2' -Dunix='1'
 
 lib/libefltk.so ::	lib/Fl.o\
-	lib/Fl_Adjuster.o\
 	lib/Fl_Align_Group.o\
 	lib/Fl_Bar.o\
 	lib/Fl_Bitmap.o\
@@ -950,10 +949,6 @@ lib/gl_draw.o : src/opengl/gl_draw.cpp
 
 
 lib/gl_start.o : src/opengl/gl_start.cpp
-	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
-
-
-lib/Fl_Adjuster.o : src/widgets/Fl_Adjuster.cpp
 	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
 
 
