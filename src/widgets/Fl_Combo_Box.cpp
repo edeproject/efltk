@@ -139,7 +139,16 @@ static Fl_Pixmap   refresh_pixmap(refresh_small_xpm);
 class Fl_Combo_Box_Button : public Fl_Button {
 public:
     Fl_Combo_Box_Button() : Fl_Button (0,0,10,10) {}
-    void preferred_size(int& w,int& h) const { w = h - 2; }
+    void preferred_size(int& w,int& h) const { 
+        fl_font(parent()->text_font(),parent()->text_size());
+        h = int(fl_height()+fl_descent()) + 2;
+        w = 15 + box()->dw(); 
+    }
+    int handle(int event) { // button should never take focus
+        if (event == FL_FOCUS)
+            return false;
+        return Fl_Button::handle(event);
+    }
 };
 
 class Fl_Popup_ListView : public Fl_Popup_Window {
@@ -185,13 +194,7 @@ Fl_Popup_ListView::Fl_Popup_ListView(Fl_Widget *editControl)
 void Fl_Popup_ListView::draw() {
     Fl_Popup_Window::draw();
 }
-/*
-void Fl_Popup_ListView::layout() {
-    m_listView->resize(box()->dx(),box()->dy(),w()-box()->dw(),h()-box()->dh());
-    m_listView->layout();
-    Fl_Popup_Window::layout();
-}
-*/
+
 bool Fl_Popup_ListView::popup() {
     if (m_editControl) {
         int width = m_editControl->w();

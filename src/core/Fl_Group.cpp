@@ -464,6 +464,10 @@ void Fl_Group::layout()
         while (a < e)
         {
             Fl_Widget *o = *a++;
+
+            //if (o->layout_align())
+            //printf("%s: wants pos/size x,y = %i:%i, w,h = %i,%i\n",o->label().c_str(),xx,yy,pref_w,pref_h);
+
             switch (o->layout_align()) {
                 case 0: {
                         if(!p || !resizable()) break;
@@ -508,6 +512,7 @@ void Fl_Group::layout()
 
                     pref_w = o->w();
                     pref_h = hh;
+
                     o->preferred_size(pref_w,pref_h);
 
                     total_w = widget_total_width(o,pref_w);
@@ -525,8 +530,6 @@ void Fl_Group::layout()
                     pref_w = ww;
                     pref_h = o->h();
 
-                    //printf("Wants size w,h = %i,%i\n",pref_w,pref_h);
-
                     if (!(o->align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM))) {
                         label_w = o->label_width();
                         if (label_w < 0) label_w = 0;
@@ -534,8 +537,6 @@ void Fl_Group::layout()
                     }
 
                     o->preferred_size(pref_w,pref_h);
-
-                    //printf("Preferred size w,h = %ix%i\n",pref_w,pref_h);
 
                     widget_position(o,xx,yy,pref_x,pref_y);
 
@@ -574,6 +575,8 @@ void Fl_Group::layout()
                     client = o;
                     break;
             }
+            //if (o->layout_align())
+            //printf("%s: Preferred size w,h = %ix%i\n",o->label().c_str(),pref_w,pref_h);
         }
         // use the remaining space for the only client-size widget, if any
         if(client) {

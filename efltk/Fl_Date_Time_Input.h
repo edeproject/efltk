@@ -26,7 +26,7 @@
 #include "Fl_Date_Time.h"
 
 class Fl_Masked_Input;
-class Fl_Button;
+class Fl_Calendar_Button;
 
 /** Fl_Date_Input */
 class FL_API Fl_Date_Input : public Fl_Group {
@@ -41,7 +41,6 @@ public:
     void date_value(Fl_Date_Time);
     Fl_Date_Time date_value();
 
-    virtual void layout();
     virtual void draw();
     virtual void preferred_size(int& w,int &h) const;
 
@@ -49,10 +48,8 @@ protected:
     static void input_callback(Fl_Widget *,void *);
     static void button_callback(Fl_Widget *,void *);
 
-    int dateInputWidth(bool set_font) const;
-
-    Fl_Masked_Input  *m_input;
-    Fl_Button        *m_button;
+    Fl_Masked_Input     *m_input;
+    Fl_Calendar_Button  *m_button;
 };
 
 class FL_API Fl_Date_Time_Input : public Fl_Date_Input {
@@ -64,17 +61,35 @@ public:
     void value(const char *);
     const char *value();
 
-    void date_value(Fl_Date_Time);
-    Fl_Date_Time date_value();
+    void date_time_value(Fl_Date_Time);
+    Fl_Date_Time date_time_value();
 
-    virtual void layout();
     virtual void draw();
     virtual void preferred_size(int& w,int &h) const;
 
 protected:
-    int timeInputWidth(bool set_font) const;
-
     Fl_Masked_Input  *m_timeInput;
+    char                     m_buffer[20];
+};
+
+class FL_API Fl_Date_Interval_Input : public Fl_Date_Input {
+public:
+    static Fl_Named_Style* default_style;
+
+    Fl_Date_Interval_Input(int,int,int,int,const char * = 0);
+
+    void value2(const char *);
+    const char *value2();
+
+    void date2_value(Fl_Date_Time);
+    Fl_Date_Time date2_value();
+
+    virtual void draw();
+    virtual void preferred_size(int& w,int &h) const;
+
+protected:
+    Fl_Masked_Input     *m_input2;
+    Fl_Calendar_Button  *m_button2;
 };
 
 #endif
