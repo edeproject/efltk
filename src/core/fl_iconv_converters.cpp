@@ -212,7 +212,7 @@ public:
 			size_t outbytesleft = outlen+1; // + 1, for null len == 1
 			char *obuf = outbuf;
 			size_t err = iconv((iconv_t)cached->conv,
-					(const char**)&inbuf, inbytesleft,
+					(char**)&inbuf, inbytesleft,
 					(char **)&obuf, &outbytesleft);
 			if(err == (size_t)-1) {
 				return -1;

@@ -198,7 +198,7 @@ void Fl_PixelFormat::init(int bits_pp, uint32 R_mask, uint32 G_mask, uint32 B_ma
       Bmask = ((0xFF>>Bloss)<<Bshift);
   }
 }
-#include <stdio.h>
+
 uint8 *Fl_Renderer::system_convert(Fl_PixelFormat *src_fmt, Fl_Size *src_size, uint8 *src, bool hw_surface)
 {
     // Init renderer before first convert
@@ -212,7 +212,7 @@ uint8 *Fl_Renderer::system_convert(Fl_PixelFormat *src_fmt, Fl_Size *src_size, u
 
     uint8 *converted = (uint8*)malloc(sizeof(uint8) * (dst_pitch*src_size->h()));
 
-    int flags=9;
+    int flags=0;
     if(hw_surface) {
         flags = FL_BLIT_HW_PALETTE;
     }
