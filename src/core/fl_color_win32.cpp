@@ -39,7 +39,8 @@ HPEN        fl_pen;
 static COLORREF	brush_for;
 static COLORREF	pen_for;
 
-COLORREF fl_wincolor(Fl_Color i) {
+COLORREF fl_wincolor(Fl_Color i) 
+{
 	int index = i;
 	COLORREF rgb;
 	// this is the same as nearest_color(i) but it also sets rgb:
@@ -154,6 +155,9 @@ J1:
 
 void Fl_Device::color(Fl_Color i)
 {
+	if(i==fl_color_) 
+		return;
+
 	fl_color_ = i;
 	fl_colorref = fl_wincolor(i);
 }
