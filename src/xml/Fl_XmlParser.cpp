@@ -80,7 +80,8 @@ bool Fl_XmlParser::parse_document( Fl_XmlDoc &doc, Fl_XmlContext *ctxptr)
         return false;
 
     // start parsing the content of file
-    if (handle) ctxptr->handler()->start_document();
+    if(handle)
+        ctxptr->handler()->start_document(doc.dtd_type(), doc.dtd_location(), doc.dtd_uri());
 
     // parse the only one subnode
     Fl_XmlNode *subnode = new Fl_XmlNode(ctxptr);
@@ -350,6 +351,9 @@ bool Fl_XmlParser::parse_node( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
                     token1 = tokenizer.peek(7); // Read check
                     if(!strncmp(token1.c_str(), "[CDATA[", 7))
                     {
+                        // parse cdata section(s) and return
+                        node.cdata_.clear();
+
                         token1 = tokenizer.read(7); // Read [CDATA away
                         tokenizer.cdata_mode(true);
                         while(!tokenizer.eos()) {
@@ -364,6 +368,8 @@ bool Fl_XmlParser::parse_node( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
                         Fl_String cdataname("cdata");
                         node.nodenamehandle_ = ctxptr->insert_tagname( cdataname );
                         node.nodetype_ = FL_XML_TYPE_FIXED_CDATA;
+
+                        if (handle) ctxptr->handler()->cdata(node.cdata());
                         return true;
                     }
 
@@ -495,6 +501,8 @@ bool Fl_XmlParser::parse_node( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
         return false;
     }
 
+    if(handle) ctxptr->handler()->end_node(token1);
+
     return true;
 }
 
@@ -550,6 +558,8 @@ bool Fl_XmlParser::parse_attributes( AttrMap *attr, Fl_XmlContext *ctxptr )
 
 bool Fl_XmlParser::parse_comment( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
 {
+    bool handle = ctxptr->handle_events();
+
     Fl_String part;
     Fl_String comment;
 
@@ -584,6 +594,9 @@ bool Fl_XmlParser::parse_comment( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
     Fl_String tagname("comment");
     node.nodenamehandle_ = ctxptr->insert_tagname( tagname );
     node.type(FL_XML_TYPE_COMMENT);
+
+    if(handle)
+        ctxptr->handler()->comment(node.cdata_);
 
     return true;
 }
