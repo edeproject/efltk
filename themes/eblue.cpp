@@ -56,7 +56,7 @@ public:
         dw_ = fr->dw();
         dh_ = fr->dh();
     }
-    void draw(const int,int,int,int, Fl_Color, Fl_Flags) const;
+    void draw(int,int,int,int, Fl_Color, Fl_Flags) const;
 };
 
 void Fl_Shaded_Box::draw(int x, int y, int w, int h,
