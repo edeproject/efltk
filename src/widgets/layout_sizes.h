@@ -26,7 +26,7 @@
 
 int widget_layout_width(const Fl_Widget *w,int pref_w=-1);
 int widget_layout_height(const Fl_Widget *w,int pref_h=-1);
-bool widget_layout_resize(Fl_Widget *w,int x,int y,int& w,int& h);
+bool widget_layout_resize(Fl_Widget *widget,int x,int y,int& w,int& h);
 void widget_layout_position(Fl_Widget *w,int x,int y,int& wx,int& wy);
 
 #endif
