@@ -66,7 +66,6 @@ void Fl_Tile::position(int oix, int oiy, int newx, int newy)
     }
 }
 
-
 // resizing is equivalent to moving  the lower-right corner (sort of):
 void Fl_Tile::layout()
 {
