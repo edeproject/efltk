@@ -858,7 +858,7 @@ Fl_Image* Fl_Image::read(const char *filename, const uint8 *data, uint data_size
     void *buffer=0;
     bool from_file=false;
 
-    if(filename) {
+    if(filename && fl_file_exists(filename)) {
         Fl_FileAttr a;
         if(!a.parse(filename))
             return false;
@@ -874,12 +874,14 @@ Fl_Image* Fl_Image::read(const char *filename, const uint8 *data, uint data_size
         }
         from_file = true;
 
-    } else {
+    } else if(data) {
         buffer = (void *)data;
         if(data_size<1)
             buffer_size = sizeof(data);
         else
             buffer_size = data_size;
+    } else {
+        return 0;
     }
 
     if(!buffer || buffer_size < 1) {
