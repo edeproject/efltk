@@ -34,20 +34,19 @@
 
 void Fl_Widget::do_callback(Fl_Widget* o, void* arg, int event,int event_argument,const void *event_data)
 {
-    Fl::e_type = event;
-    Fl::e_argument = event_argument;
-    Fl::e_data = event_data;
-    // Call callback_ only if NO slots connected!
-    if (callback_) callback_(o,(void*)arg);
+    if(!callback_) return;
+    int event_class = (event&FL_EVENTS_MASK);
+    if(event_class & when()) {
+        Fl::e_type = event;
+        Fl::e_argument = event_argument;
+        Fl::e_data = event_data;
+        callback_(o, arg);
+    }
 }
 
 void Fl_Widget::do_callback(Fl_Widget* o, long arg, int event,int event_argument,const void *event_data)
-{       
-    Fl::e_type = event;
-    Fl::e_argument = event_argument;
-    Fl::e_data = event_data;
-    // Call callback_ only if NO slots connected!
-    if (callback_) callback_(o,(void*)arg);
+{
+    do_callback(o, (void*)arg, event, event_argument, event_data);
 }
 
 void Fl_Widget::default_callback(Fl_Widget* w, void*) {w->set_changed();}
