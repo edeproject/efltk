@@ -681,7 +681,7 @@ int Fl_ListView::handle(int event)
                             redraw(FL_DAMAGE_CHILD);
                         }
                     }
-                    return 1;
+                    //return 1;
 
                 } else { // end multi
 
@@ -689,9 +689,16 @@ int Fl_ListView::handle(int event)
                     item(i);
                     show_item(i);
                     redraw(FL_DAMAGE_CHILD);
-                    return 1;
+                    //return 1;
 
                 }
+
+				if(sel_item!=i) {
+					if(when() & FL_WHEN_CHANGED) do_callback();
+					else set_changed();
+				}
+				return 1;
+
             } // end if( event != FL_PUSH )
             else if(event == FL_PUSH) {
 
@@ -702,8 +709,8 @@ int Fl_ListView::handle(int event)
                 damage_item(i);                
                 show_item(i);
 
-                if(when() & FL_WHEN_CHANGED)
-                    do_callback();
+                if(when() & FL_WHEN_CHANGED) do_callback();
+				else set_changed();
 
                 if(Fl::event_button() == FL_LEFT_MOUSE && multi())
                 {
