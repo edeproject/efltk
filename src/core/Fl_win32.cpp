@@ -41,6 +41,7 @@
 #include <time.h>
 #include <winsock.h>
 #include <ctype.h>
+#include <stdio.h>
 
 // The following include files require GCC 3.x or a non-GNU compiler...
 #if !defined(__GNUC__) || __GNUC__ >= 3
@@ -99,19 +100,38 @@
 
 #define WM_FLSELECT (WM_USER+0x0400)
 
-void Fl::sleep_ms(int ms) {
+static DWORD start;
+#define TIME_WRAP_VALUE	(~(DWORD)0)
+
+void fl_start_ticks() {
+    /* Set first ticks value */
+    start = GetTickCount();
+}
+
+uint32 Fl::ticks()
+{
+    DWORD now, ticks;
+    now = GetTickCount();
+    if ( now < start ) ticks = (TIME_WRAP_VALUE-start) + now;
+    else ticks = (now - start);
+    return ticks;
+}
+
+void Fl::sleep(int ms) {
     Sleep(ms);
 }
-#include <stdio.h>
+
 void fl_open_display()
 {
-	static bool been_here=false;
-	if(been_here) return;
-    
-	extern void fl_private_init();
+    static bool been_here=false;
+    if(been_here) return;
+
+    fl_start_ticks();
+
+    extern void fl_private_init();
     fl_private_init(); //Fl_init.cpp
-	
-	been_here=true;
+
+    been_here=true;
 }
 
 ////////////////////////////////////////////////////////////////

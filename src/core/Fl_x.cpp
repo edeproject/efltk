@@ -45,7 +45,22 @@
 #include <sys/time.h>
 #include <limits.h>
 
-void Fl::sleep_ms(int ms) {
+/* The first ticks value of the application */
+static struct timeval start;
+
+void fl_start_ticks() {
+    /* Set first ticks value */
+    gettimeofday(&start, NULL);
+}
+
+uint32 Fl::ticks()
+{
+    struct timeval now;
+    gettimeofday(&now, NULL);
+    return ((now.tv_sec-start.tv_sec)*1000+(now.tv_usec-start.tv_usec)/1000);
+}
+
+void Fl::sleep(int ms) {
     timeval t;
     t.tv_sec = int(ms/1000);
     t.tv_usec = 1000*ms;
@@ -367,9 +382,6 @@ void fl_open_display()
     Display *d = XOpenDisplay(0);
     if (!d) Fl::fatal("Can't open display \"%s\"",XDisplayName(0));
 
-    extern void fl_private_init();
-    fl_private_init(); //Fl_init.cpp
-
     fl_open_display(d);
 }
 
@@ -377,6 +389,11 @@ void fl_open_display(Display* d)
 {
     fl_display = d;
     Fl::add_fd(ConnectionNumber(d), POLLIN, do_queued_events);
+
+    fl_start_ticks();
+
+    extern void fl_private_init();
+    fl_private_init(); //Fl_init.cpp
 
     WM_DELETE_WINDOW      = XInternAtom(d, "WM_DELETE_WINDOW",    0);
     WM_PROTOCOLS          = XInternAtom(d, "WM_PROTOCOLS",    0);

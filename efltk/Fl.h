@@ -89,7 +89,9 @@ public:
   static bool init_locale(const char *app_domain, const char *directory);
 
   // Sleep milliseconds.
-  static void sleep_ms(int ms);
+  static void sleep(int milliseconds);
+  // Get ticks since EFltk initialize, in milliseconds
+  static uint32 ticks();
 
   // argument parsers:
   static int arg(int, char**, int&);
