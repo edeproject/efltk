@@ -110,9 +110,14 @@ public:
 
     void next_word(void);
     void previous_word(void);
-    void show_cursor(int b = 1);
+    
+	void show_cursor(int b = 1);
     void hide_cursor() { show_cursor(0); }
     void cursor_style(int style);
+
+	Fl_Color cursor_color() const { return mCursorColor; }
+    void cursor_color(Fl_Color c) { mCursorColor = c; }
+
     int word_start(int pos) { return buffer()->word_start(pos); }
     int word_end(int pos) { return buffer()->word_end(pos); }
 
@@ -229,6 +234,8 @@ protected:
 
     int damage_range1_start, damage_range1_end;
     int damage_range2_start, damage_range2_end;
+
+	Fl_Color mCursorColor;
     int mCursorPos, mCursorPosOld;
     int mCursorOn;
     int mCursorToHint;			/* Tells the buffer modified callback

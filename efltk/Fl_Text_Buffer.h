@@ -95,10 +95,11 @@ public:
    void text_range(Fl_String_Buffer& outStr, int start, int end);
    char character(int pos);
    const char* text_in_rectangle(int start, int end, int rectStart, int rectEnd);
-   void insert(int pos, const char* text);
-   void append(const char* text) { insert(length(), text); }
+
+   void insert(int pos, const char* text, int text_len=-1);
+   void append(const char* text, int text_len=-1) { insert(length(), text, text_len); }
    void remove(int start, int end);
-   void replace(int start, int end, const char *text);
+   void replace(int start, int end, const char *text, int text_len=-1);
    void copy(Fl_Text_Buffer* fromBuf, int fromStart, int fromEnd, int toPos);
    int insertfile(const char *file, int pos, int buflen = 128*1024);
    int appendfile(const char *file, int buflen = 128*1024)
@@ -200,21 +201,21 @@ protected:
 
    void call_predelete_callbacks(int pos, int nDeleted);
 
-   int insert_(int pos, const char* text);
+   int insert_(int pos, const char* text, int text_len);
    void remove_(int start, int end);
 
    void remove_rectangular_(int start, int end, int rectStart, int rectEnd,
-      int* replaceLen, int* endPos);
+							int* replaceLen, int* endPos);
 
-   void insert_column_(int column, int startPos, const char* insText,
-      int* nDeleted, int* nInserted, int* endPos);
+   void insert_column_( int column, int startPos, const char* insText,
+						int* nDeleted, int* nInserted, int* endPos);
 
    void overlay_rectangular_(int startPos, int rectStart, int rectEnd,
-      const char* insText, int* nDeleted,
-      int* nInserted, int* endPos);
+							 const char* insText, int* nDeleted,
+							 int* nInserted, int* endPos);
 
    void redisplay_selection(Fl_Text_Selection* oldSelection,
-      Fl_Text_Selection* newSelection);
+							Fl_Text_Selection* newSelection);
 
    void move_gap(int pos);
    void reallocate_with_gap(int newGapStart, int newGapLen);
@@ -223,8 +224,8 @@ protected:
    void replace_selection_(Fl_Text_Selection* sel, const char* text);
 
    void rectangular_selection_boundaries(int lineStartPos, int rectStart,
-      int rectEnd, int* selStart,
-      int* selEnd);
+										 int rectEnd, int* selStart,
+										 int* selEnd);
 
    void update_selections(int pos, int nDeleted, int nInserted);
 
