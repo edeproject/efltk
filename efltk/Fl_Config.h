@@ -34,7 +34,8 @@ public:
         if(k&&*k!='\0') key = strdup(k); else key=0;
         if(v&&*v!='\0') value = strdup(v); else value=0;
     }
-    ~Line() { if(key) delete []key; if(value) delete []value; }
+    ~Line() {
+        if(key) delete []key; if(value) delete []value; }
     char *key;
     char *value;
 };
@@ -44,8 +45,8 @@ class FL_API Section
 public:
     Section(const char *_name, const char *_path, Section *par) { if(_name) name = strdup(_name); else name=0; if(_path) path = strdup(_path); else path=0; parent = par;}
     ~Section() {
-        uint n; for(n=0; n<sections.size(); n++) free(sections[n]);
-        for(n=0; n<lines.size(); n++) free(lines[n]);
+        uint n; for(n=0; n<sections.size(); n++) delete (Section*)sections[n];
+        for(n=0; n<lines.size(); n++) delete (Line*)lines[n];
         if(name) delete []name; if(path) delete []path;
     }
     char *name, *path;

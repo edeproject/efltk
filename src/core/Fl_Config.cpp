@@ -172,10 +172,8 @@ Fl_Config::Fl_Config(const char *filename, bool read, bool create)
 Fl_Config::~Fl_Config()
 {
     flush();
-
     for(uint n=0; n<sections.size(); n++)
-        free(sections[n]);
-
+        delete (Section*)sections[n];
     if(filename_) delete []filename_;
 }
 
@@ -217,7 +215,7 @@ bool Fl_Config::read_file(bool create)
     // If somebody calls this function two times, we
     // need to clean earlier section list...
     for(uint n=0; n<sections.size(); n++)
-        free(sections[n]);
+        delete (Section*)sections[n];
     sections.clear();
 
     /////
@@ -244,8 +242,8 @@ bool Fl_Config::read_file(bool create)
     }
 
     unsigned int readed = fread(buffer, 1, size, fp);
-    if(readed <= 0)
-    {
+    if(readed <= 0) {
+        delete []buffer;
         fclose(fp);
         _error = CONF_ERR_FILE;
         return false;
