@@ -68,9 +68,18 @@ enum FGENTRYFLAGS {
 
 class Fl_Dialog_Data_Source;
 
+class Fl_Dialog_Button : public Fl_Button {
+public:
+   Fl_Dialog_Button(int x,int y,int w,int h,const char *lbl=NULL)
+   : Fl_Button(x,y,w,h,lbl) {}
+
+   int handle(int event);
+};
+
 class FL_API Fl_Dialog : public Fl_Window {
    typedef Fl_Window inherited;
 
+   static void escape_callback(Fl_Widget *,void *);
    static void buttons_callback(Fl_Widget *,void *);
    static void help_callback(Fl_Widget *,void *);
 

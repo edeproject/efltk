@@ -26,6 +26,17 @@
 #include <efltk/Fl_Dialog.h>
 #include <efltk/Fl_Dialog_Data_Source.h>
 
+int Fl_Dialog_Button::handle(int event) {
+   // Making dialog button to take 'Enter'
+   if (event == FL_KEYBOARD) {
+      if (Fl::event_key() == FL_Enter) {
+         do_callback();
+         return 1;
+      }
+   }
+   return Fl_Button::handle(event);
+}
+
 /* XPM */
 static char * cancel_xpm[] = {
 "20 20 67 1",
@@ -295,6 +306,14 @@ static const Fl_Dialog_Button_Template buttonTemplates[] = {
    { 0,             "",       &pixmap_help }
 };
 
+void Fl_Dialog::escape_callback(Fl_Widget *window,void *) {
+   Fl_Dialog *dialog = (Fl_Dialog *)window;
+   if (dialog->m_buttons & FL_DLG_CANCEL) {
+      Fl::exit_modal();
+      dialog->m_modalResult = FL_DLG_CANCEL;
+   }
+}
+
 void Fl_Dialog::buttons_callback(Fl_Widget *btn,void *id) {
    Fl::exit_modal();
    Fl_Widget *buttonPanel = btn->parent();
@@ -324,6 +343,7 @@ Fl_Dialog::Fl_Dialog(int ww,int hh,Fl_Data_Source *ds) : Fl_Window(ww,hh) {
    if (ds)
          m_dataSource = ds;
    else  m_dataSource = new Fl_Dialog_Data_Source(m_tabs);
+   callback(escape_callback);
 }
 
 Fl_Dialog::~Fl_Dialog() {
@@ -380,12 +400,12 @@ void Fl_Dialog::buttons(int buttons_mask,int default_button) {
             Fl_Group *default_box = new Fl_Group(0,0,10,10);
             default_box->color(FL_BLACK);
             default_box->box(FL_THIN_DOWN_BOX);
-            btn = new Fl_Button(0,0,10,10,buttonTemplate.label);
+            btn = new Fl_Dialog_Button(0,0,10,10,buttonTemplate.label);
             default_box->end();
             default_box->user_data((void *)id);
             m_defaultButton = btn;
          } else
-            btn = new Fl_Button(0,0,10,10,buttonTemplate.label);
+            btn = new Fl_Dialog_Button(0,0,10,10,buttonTemplate.label);
          if (id == FL_DLG_HELP)
                btn->callback(Fl_Dialog::help_callback);
          else  btn->callback(Fl_Dialog::buttons_callback);
@@ -450,7 +470,24 @@ void Fl_Dialog::layout() {
 }
 
 int Fl_Dialog::handle(int event) {
-   return inherited::handle(event);
+   int rc = inherited::handle(event);
+   if (rc)
+      return rc;
+   if (event == FL_KEY) {
+      switch(Fl::event_key()) {
+      case FL_Escape:
+         clear_value();
+         m_modalResult = (int)FL_DLG_CANCEL;
+         Fl::exit_modal();
+         return 1;
+      case FL_Enter:
+         if (m_defaultButton) {
+            m_defaultButton->do_callback();
+            return 1;
+         }
+      }
+   }
+   return 0;
 }
 
 int Fl_Dialog::show_modal() {
