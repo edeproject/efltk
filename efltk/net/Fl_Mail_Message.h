@@ -1,3 +1,23 @@
+/** 
+  * Fl_Mail_Message.h
+  * This file contains interface to Fl_Mail_Message class .
+  * 
+  * The source below is under LGPL license.
+  *     Information about GNU LGPL: http://www.gnu.org/copyleft/lesser.html
+  *
+  * Copyright (c) EDE Team. More information about project: http://ede.sf.net
+  *
+  * Authors (sorted by time they worked on this source file):
+  * 	Alexey Parshin, alexey§fltk.net
+  * 	Dejan Lekic, dejan§nu6.org
+  *
+  * Contributors (ie. people that have sent patches, ideas, suggestions):
+  *     Mikko Lahteenmaki, mikko§fltk.net
+  *
+  * PLEASE report any bug, bugfix, improvement or suggestion to 
+  * 	efltk-bugs@fltk.net
+  ****************************************************************************/
+  
 #ifndef __FL_MAIL_MESSAGE_H__
 #define __FL_MAIL_MESSAGE_H__
 
@@ -7,7 +27,11 @@
 
 class Fl_Mail_Message_Part;
 
-class Fl_Mail_Message_Part_List {
+/**
+ * This class is used by Fl_Mail_Message to hold all eventuall message parts
+ */
+class Fl_Mail_Message_Part_List 
+{
     Fl_Ptr_List     m_messageParts;
 public:
     Fl_Mail_Message_Part_List() {}
@@ -22,11 +46,15 @@ public:
     const Fl_Mail_Message_Part& operator [] (unsigned i) const  { return *(Fl_Mail_Message_Part *)m_messageParts[i]; }
 };
 
-class Fl_Mail_Message_Part {
-    Fl_String_List              m_messageText;
-    Fl_Mail_Message_Part_List   m_messageParts;
-    Fl_String                       m_contentType;
-    Fl_String                       m_contentTransferEncoding;
+/**
+ * This class is used for working with parts of Mail messages...
+ */
+class Fl_Mail_Message_Part 
+{
+	Fl_String_List              m_messageText;
+	Fl_Mail_Message_Part_List   m_messageParts;
+	Fl_String 					m_contentType;
+	Fl_String 					m_contentTransferEncoding;
 protected:
     virtual void parse_headers(unsigned start,unsigned end);
     virtual void parse_part();
@@ -35,7 +63,11 @@ public:
     virtual ~Fl_Mail_Message_Part() {}
 };
 
-class Fl_Mail_Message : Fl_Mail_Message_Part {
+/**
+ * Main class for sending/receiving mails.
+ */
+class Fl_Mail_Message : Fl_Mail_Message_Part 
+{
     Fl_String                       m_returnPath;
     Fl_String                       m_from;
     Fl_String                       m_to;
@@ -50,3 +82,9 @@ public:
 };
 
 #endif
+
+/***** $Id$
+ *     Project: eFLTK
+ ***   This source code is released under GNU LGPL License
+ *     Copyright (c) EDE Team, 2000-DWYRT  (DWYRT = Date When You Read This)
+ ***** Equinox Desktop Environment, http://ede.sf.net */
