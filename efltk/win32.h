@@ -163,7 +163,7 @@ extern FL_API Pixmap fl_create_bitmap(const uchar* bitmap, int w, int h);
 #define fl_delete_bitmap(bitmap) DeleteObject((HBITMAP)(bitmap));
 
 ////////////////////////////////////////////////////////////////
-#ifdef Fl_Window_H // only include this if <fltk/Fl_Window.h> was included
+#ifdef _FL_WINDOW_H_ // only include this if <efltk/Fl_Window.h> was included
 
 // When fltk tells X about a window, one of these objects is created.
 // Warning: this object is highly subject to change!  It's definition
@@ -191,7 +191,7 @@ FL_API Fl_Window* fl_find(Window xid);
 
 extern FL_API HCURSOR fl_default_cursor;
 
-#endif //Fl_Window_H
+#endif //_FL_WINDOW_H_
 ////////////////////////////////////////////////////////////////
 
 #endif

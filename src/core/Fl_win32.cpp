@@ -1500,7 +1500,7 @@ int Fl_X::borders(const Fl_Window* window, int& dx,int& dy,int& dw,int& dh)
         dx = dy = dw = dh = 0;
         return WS_POPUP;
     }                            // resizable
-    else if (window->maxw != window->minw || window->maxh != window->minh)
+    else if (window->m_maxw != window->m_minw || window->m_maxh != window->m_minh)
     {
         dx = GetSystemMetrics(SM_CXSIZEFRAME);
         dw = 2*dx;
@@ -1741,7 +1741,7 @@ HINSTANCE fl_display = GetModuleHandle(NULL);
 
 void Fl_Window::size_range_()
 {
-    size_range_set = 1;
+    m_size_range = 1;
 }
 
 
@@ -1749,17 +1749,17 @@ void Fl_X::set_minmax(LPMINMAXINFO minmax)
 {
     int dx, dy, dw, dh; borders(window, dx, dy, dw, dh);
 
-    minmax->ptMinTrackSize.x = window->minw + dw;
-    minmax->ptMinTrackSize.y = window->minh + dh;
-    if (window->maxw)
+    minmax->ptMinTrackSize.x = window->m_minw + dw;
+    minmax->ptMinTrackSize.y = window->m_minh + dh;
+    if (window->m_maxw)
     {
-        minmax->ptMaxTrackSize.x = window->maxw + dw;
-        minmax->ptMaxSize.x = window->maxw + dw;
+        minmax->ptMaxTrackSize.x = window->m_maxw + dw;
+        minmax->ptMaxSize.x = window->m_maxw + dw;
     }
-    if (window->maxh)
+    if (window->m_maxh)
     {
-        minmax->ptMaxTrackSize.y = window->maxh + dw;
-        minmax->ptMaxSize.y = window->maxh + dw;
+        minmax->ptMaxTrackSize.y = window->m_maxh + dw;
+        minmax->ptMaxSize.y = window->m_maxh + dw;
     }
 }
 
@@ -1804,22 +1804,12 @@ void set_label(Fl_Window *win, const char *name, const char *iname)
     }
 }
 
+// The implementation of label() is very different for win32 from X
+// Please, verify it
 void Fl_Window::label(const char* label, const char* iconlabel)
 {
-    this->label(label);
-    this->iconlabel(iconlabel);
-}
-void Fl_Window::copy_label(const char* name) {
-    Fl_Widget::copy_label(name);
-    set_label(this, name, iconlabel_);
-}
-void Fl_Window::label(const char *name) {
-    Fl_Widget::label(name);
-    set_label(this, name, iconlabel_);
-}
-void Fl_Window::iconlabel(const char *iname) {
-    iconlabel_ = iname;
-    set_label(this, label(), iname);
+    Fl_Widget::label(label);
+    iconlabel_ = iconlabel;
 }
 
 ////////////////////////////////////////////////////////////////

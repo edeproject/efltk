@@ -471,16 +471,16 @@ static const Fl_Pixmap documentPixmap(document_xpm);
 # include <dirent.h>
 
 #ifndef S_ISEXEC
-# define S_ISEXEC(m)	  (((m) & S_IEXEC) == S_IEXEC)
+# define S_ISEXEC(m)  (((m) & S_IEXEC) == S_IEXEC)
 #endif
 #ifndef S_ISREG
-# define S_ISREG(m) 	 (((m) & S_IFMT) == S_IFREG)
+# define S_ISREG(m)   (((m) & S_IFMT) == S_IFREG)
 #endif
 #ifndef S_ISDIR
-# define S_ISDIR(m) 	 (((m) & S_IFMT) == S_IFDIR)
+# define S_ISDIR(m)   (((m) & S_IFMT) == S_IFDIR)
 #endif
 #ifndef S_ISBLK
-# define S_ISBLK(m) 	 (((m) & S_IFMT) == S_IFBLK)
+# define S_ISBLK(m)   (((m) & S_IFMT) == S_IFBLK)
 #endif
 
 #endif /* _WIN32 */
@@ -717,7 +717,7 @@ bool Fl_Directory_DS::find(Fl_Variant position) {
                   name = position.get_string();
                   for (i = 0; i < cnt; i++) {
                      Fl_Data_Fields& entry = *(Fl_Data_Fields *)m_list[i];
-                     if (entry["name"] == name.c_str()) {
+                     if (entry["name"] == name) {
                         m_currentIndex = i;
                         m_current = (Fl_Data_Fields *)m_list[m_currentIndex];
                         return true;

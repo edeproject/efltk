@@ -27,7 +27,7 @@
 
 class Fl_Image;
 
-typedef enum {
+enum FL_VAR_TYPES {
     VAR_NONE     = 0,
     VAR_INT      = 1,
     VAR_FLOAT    = 2,

@@ -381,7 +381,7 @@ const int fl_encoding_number(const char *enc)
 ///////////////////////////////////////////////
 ///////////////////////////////////////////////
 
-typedef struct builtin_converter {
+struct builtin_converter {
     int (*xxx_mbtowc)(conv_t conv, ucs4_t *pwc, unsigned char const *s, int n);
     const char *name[2];
 };

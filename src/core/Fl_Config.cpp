@@ -618,7 +618,7 @@ int Fl_Config::_read_string(Section *s, const char *key, char *ret, const char *
     Line *l = find_string(s, key);
     if(l && !l->value.empty())
     {
-        char *tmp = strchr(l->value.c_str(), '#');
+        char *tmp = (char *)strchr(l->value.c_str(), '#');
         if(tmp) *tmp = '\0';
         strncpy(ret, l->value.c_str(), size);
         return (_error = CONF_SUCCESS);
@@ -639,7 +639,7 @@ int Fl_Config::_read_string(Section *s, const char *key, char *&ret, const char 
     Line *l = find_string(s, key);
     if(l && !l->value.empty())
     {
-        char *tmp = strchr(l->value.c_str(), '#');
+        char *tmp = (char *)strchr(l->value.c_str(), '#');
         if(tmp) *tmp = '\0';
         ret = strdup(l->value.c_str());
         return (_error = CONF_SUCCESS);

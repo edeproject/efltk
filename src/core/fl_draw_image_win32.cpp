@@ -318,7 +318,7 @@ void Fl_Image::to_screen(int XP, int YP, int WP, int HP, int, int)
             HDC new_gc = make_DC(fl_gc, (Pixmap)mask, fl_palette);
             HDC new_gc2= make_DC(fl_gc, (Pixmap)id, fl_palette);
 
-            BitBlt(new_gc2, 0, 0, w, h, new_gc, 0, 0, SRCAND); // This should be done only once for performance
+            BitBlt(new_gc2, 0, 0, m_width, m_height, new_gc, 0, 0, SRCAND); // This should be done only once for performance
             // secret bitblt code found in old MSWindows reference manual:
             BitBlt(fl_gc, X, Y, W, H, new_gc, cx, cy, 0xE20746L);
             BitBlt(fl_gc, X, Y, W, H, new_gc2, cx, cy, SRCPAINT);
@@ -356,18 +356,18 @@ void Fl_Image::to_screen_tiled(int XP, int YP, int WP, int HP, int, int)
     cx += X-XP; cy += Y-YP;
     fl_push_clip(X, Y, W, H);
 
-    int temp = -cx % w;
-    cx = (temp>0 ? w : 0) - temp;
-    temp = -cy % h;
-    cy = (temp>0 ? h : 0) - temp;
+    int temp = -cx % m_width;
+    cx = (temp>0 ? m_width : 0) - temp;
+    temp = -cy % m_height;
+    cy = (temp>0 ? m_height : 0) - temp;
 
     int ccx=cx;
     while (-cy < H) {
         while (-cx < W) {
-            to_screen(X-cx, Y-cy, w, h, 0,0);
-            cx -= w;
+            to_screen(X-cx, Y-cy, m_width, m_height, 0,0);
+            cx -= m_width;
         }
-        cy -= h;
+        cy -= m_height;
         cx = ccx;
     }
 
