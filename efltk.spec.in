@@ -1,0 +1,85 @@
+%define name efltk
+%define version 2.0
+%define release @EFLTK_BUILD@
+%define pakdir %{name}-%{version}-%{release}
+%define date %(echo `LC_ALL="C" date +"%a %b %d %Y"`)
+
+Name: %{name}
+Summary: eFLTK is stable, small and fast cross-platform GUI ToolKit
+Summary(sr): eFLTK je skup malih, stabilnih i brzih multiplatformskih GUI alata i biblioteka.
+Version: %{version}
+Release: %{release}
+Source: %{name}-%{version}-%{release}.src.tgz
+Group: X11/EDE/Development/Tools
+URL: http://ede.sf.net
+License: GNU GPL
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+Requires: %{name}-devel >= %{version}-%{release}-%{release}
+
+%description
+eFLTK is a cross-platform C++ GUI toolkit for UNIX®/Linux® (X11), Microsoft® Windows®,
+and MacOS® X. eFLTK provides modern GUI functionality without the bloat and supports
+3D graphics via OpenGL® and its built-in GLUT emulation. It is currently maintained by
+a small group of developers across the world with a central repository on SourceForge.
+
+%description -l sr
+eFLTK je skup multiplatformskih alata i biblioteka za razvoj UNIX/Linux
+(X11), Microsoft Windows i MacOS X aplikacija. eFLTK nudi modernu GUI
+funkcionalnost bez muke i podrsku 3D grafike preko OpenGL-a. GLUT emulacija
+je ugradjena u eFLTK. Trenutno na eFLTK radi malena grupa programera iz
+raznih krajeva sveta koja ima centralno CVS skladiste na SourceForge-u.
+
+%package -n %{name}-devel
+Summary: Header files and libraries for developing apps which will eFLTK
+Group: X11/EDE/Libraries
+#Requires: %{name} = %{version}-%{release}
+
+%description -n %{name}-devel
+The efltk-devel package contains the header files and libraries needed
+to develop programs that use the eFLTK libraries.
+
+%prep
+%setup -q -n %{pakdir}
+
+%build
+autoconf
+CFLAGS="%optflags -DNDEBUG=1" CXXFLAGS="%optflags -DNDEBUG=1" ./configure --prefix=%{_prefix} --enable-opengl --enable-utf8 --disable-xft --enable-plugins
+
+# Setup for parallel builds
+numprocs=`egrep -c ^cpu[0-9]+ /proc/stat || :`
+if [ "$numprocs" = "0" ]; then
+	numprocs=1
+fi
+#make -j$numprocs 
+make
+make static
+
+%install
+install -d $RPM_BUILD_ROOT/%{_prefix}
+install -d $RPM_BUILD_ROOT/%{_prefix}/bin
+install -d $RPM_BUILD_ROOT/%{_prefix}/include
+install -d $RPM_BUILD_ROOT/%{_prefix}/lib
+make install prefix=$RPM_BUILD_ROOT/%{_prefix}
+
+%clean
+rm -fr $RPM_BUILD_ROOT
+
+%post -p /sbin/ldconfig
+
+%postun -p /sbin/ldconfig
+
+%files
+%defattr(-, root, root)
+%{_bindir}/*
+
+%files -n %{name}-devel
+%defattr(-, root, root)
+%{_libdir}/*.so*
+#%{_libdir}/*.a
+#%{_libdir}/*.la
+%{_includedir}/*
+%doc doc/*
+
+%changelog
+* %{date} Just entered something here... :)
+Blabla
