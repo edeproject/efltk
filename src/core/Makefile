@@ -5,7 +5,6 @@ CPPFILES = \
 	Fl_Bitmap.cpp \
 	Fl_Bmp.cpp \
 	Fl_Boxtype.cpp \
-	Fl_Callback.cpp \
 	Fl_Config.cpp \
 	Fl_Data_Fields.cpp \
 	Fl_Data_Source.cpp \

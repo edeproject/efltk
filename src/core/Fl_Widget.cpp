@@ -32,29 +32,14 @@
 #include <stdlib.h>              // free
 #include <config.h>
 
-Fl_Callback_Signal *Fl_Widget::signal() {
-	if(!signal_) signal_ = new Fl_Callback_Signal();
-	return signal_;
-}
-
 void Fl_Widget::do_callback(Fl_Widget* o, void* arg)
 {	
-	if(signal_) {
-		signal_->do_callback(o);
-		return;
-	}
-
 	// Call callback_ only if NO slots connected!
 	if(callback_) callback_(o,(void*)arg);
 }
 
 void Fl_Widget::do_callback(Fl_Widget* o, long arg)
 {		
-	if(signal_) {
-		signal_->do_callback(o);	
-		return;
-	}
-
 	// Call callback_ only if NO slots connected!
 	if(callback_) callback_(o,(void*)arg);
 }
@@ -65,7 +50,6 @@ Fl_Widget::Fl_Widget(int X, int Y, int W, int H, const char* L)
 {
     style_    = default_style;
     parent_   = 0;
-    signal_   = 0;
     callback_ = default_callback;
     user_data_    = 0;
     label_    = L;
@@ -96,10 +80,7 @@ Fl_Widget::~Fl_Widget()
         delete (Fl_Style*)style_;// cast away const
     }
     if (flags_&FL_COPIED_LABEL) free((void*)label_);
-	 if(signal_) delete signal_;
-	 signal_=0;
-    if (field_name_)
-	     free((char *)field_name_);
+    if (field_name_) free((void *)field_name_);
 }
 
 void Fl_Widget::label(const char* a)

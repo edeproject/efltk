@@ -1510,9 +1510,14 @@ int Fl_Text_Display::position_to_line( int pos, int *lineNum )
 {
   int i;
 
+  if(pos==0) {
+	*lineNum = 0;
+	return 1;
+  }
+
   if ( pos < mFirstChar )
     return 0;
-  if ( pos > mLastChar ) {
+  if ( pos > mLastChar ) {	  
     if ( empty_vlines() ) {
       if ( mLastChar < mBuffer->length() ) {
         if ( !position_to_line( mLastChar, lineNum ) ) {
@@ -1534,6 +1539,7 @@ int Fl_Text_Display::position_to_line( int pos, int *lineNum )
       return 1;
     }
   }
+  
   return 0;   /* probably never be reached */
 }
 

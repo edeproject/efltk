@@ -31,7 +31,7 @@ CPPFILES = demo.cpp sizes.cpp hello.cpp resizable.cpp scroll.cpp image.cpp file_
            clock.cpp color_chooser.cpp cube.cpp cursor.cpp curve.cpp fast_slow.cpp \
            fonts.cpp fullscreen.cpp gl_overlay.cpp iconize.cpp input.cpp navigation.cpp \
            output.cpp overlay.cpp pack.cpp radio.cpp shape.cpp tile.cpp CubeMain.cpp CubeView.cpp \
-           preferences.cpp image_manip.cpp listview.cpp alphablend.cpp callback.cpp \
+           preferences.cpp image_manip.cpp listview.cpp alphablend.cpp \
 	thread_ball.cpp images.cpp image_loader.cpp multitabs1.cpp multitabs2.cpp \
 	popup_window.cpp symbols.cpp calendar.cpp maskedinput.cpp bitmap.cpp utf8.cpp \
 	dialog.cpp directory.cpp listview_ds.cpp
@@ -42,7 +42,7 @@ ALL =   demo sizes hello resizable scroll image file_chooser menubar browser \
         keyboard label layout arc ask button buttons clock color_chooser cube \
         cursor curve fast_slow fonts fullscreen gl_overlay iconize input navigation \
         output overlay pack radio shape tile CubeView preferences image_manip \
-        listview alphablend callback thread_ball images image_loader \
+        listview alphablend thread_ball images image_loader \
 	multitabs1 multitabs2 popup_window symbols calendar maskedinput bitmap utf8 \
         dialog directory listview_ds
 

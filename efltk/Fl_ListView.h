@@ -36,6 +36,8 @@ public:
     void begin();
     void end();
 
+	Fl_ListItem_List &array() { return items; }
+
     Fl_ListView_Item *find_userdata(void *data, uint start_index=0);
     Fl_ListView_Item *find_text(const char *text, uint column, uint start_index=0);
 
@@ -70,6 +72,7 @@ public:
     bool multi() { return ((type() & MULTI_SELECTION)==MULTI_SELECTION); }
     bool single(){ return !(type() & MULTI_SELECTION);}
 
+	void calc_totalheight() { calc_total_h = true; }
     int totalheight() { return total_height; }
 
     int	yposition() const {return yposition_;}

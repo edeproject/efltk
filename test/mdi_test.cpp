@@ -11,6 +11,7 @@
 #include <efltk/Fl_Input.h>
 #include <efltk/Fl_Workspace.h>
 #include <efltk/Fl_MDI_Window.h>
+#include <efltk/Fl_MDI_Bar.h>
 #include <efltk/Fl_ListView.h>
 #include <efltk/Fl_ListView_Item.h>
 #include <efltk/Fl_File_Dialog.h>
@@ -43,9 +44,6 @@ Fl_Menu_Item menutable[] = {
 Fl_Workspace *workspace;
 Fl_Menu_Bar *menu;
 
-Fl_Callback_Signal hide_windows;
-Fl_Callback_Signal show_windows;
-
 void cb_cascade(Fl_Widget* w, void*) {
 	workspace->cascade();
 }
@@ -72,32 +70,26 @@ void test_cb(Fl_Widget* w, void*) {
     m->do_callback();
 }
 
-// Very simple class, does actually nothing!
-// It just shows that, callbacks can be INSIDE the class!
-class Callbacks : public Fl_Callback_Object
-{
-public:
-	void cb_anim(Fl_Widget *w, void *data) {
-		if(w->value()) Fl_MDI_Window::animate(true);
-		else Fl_MDI_Window::animate(false);
-	}
-	void cb_opaq(Fl_Widget *w, void *data) {
-		if(w->value()) Fl_MDI_Window::animate_opaque(true);
-		else Fl_MDI_Window::animate_opaque(false);
-	}
-	void cb_detach(Fl_Widget *, void *data) {
-		Fl_MDI_Window *m = (Fl_MDI_Window *)data;
-		if(!m->toplevel()) m->detach();
-	}
-	void cb_attach(Fl_Widget *, void *data) {
-		Fl_MDI_Window *m = (Fl_MDI_Window *)data;
-		if(m->toplevel()) m->attach();
-	}
-	void cb_top_window(Fl_Widget *, void *data) {
-		Fl_MDI_Window *m = (Fl_MDI_Window *)data;
-		m->setTop();
-	}
-} cb;
+void cb_anim(Fl_Widget *w, void *data) {
+	if(w->value()) Fl_MDI_Window::animate(true);
+	else Fl_MDI_Window::animate(false);
+}
+void cb_opaq(Fl_Widget *w, void *data) {
+	if(w->value()) Fl_MDI_Window::animate_opaque(true);
+	else Fl_MDI_Window::animate_opaque(false);
+}
+void cb_detach(Fl_Widget *, void *data) {
+	Fl_MDI_Window *m = (Fl_MDI_Window *)data;
+	if(!m->toplevel()) m->detach();
+}
+void cb_attach(Fl_Widget *, void *data) {
+	Fl_MDI_Window *m = (Fl_MDI_Window *)data;
+	if(m->toplevel()) m->attach();
+}
+void cb_top_window(Fl_Widget *, void *data) {
+	Fl_MDI_Window *m = (Fl_MDI_Window *)data;
+	m->setTop();
+}
 
 void close_mdi(Fl_Widget *w, void *)
 {	
@@ -106,14 +98,8 @@ void close_mdi(Fl_Widget *w, void *)
 	char item[64]; 
 	sprintf(item, "Windows/%s", win->label());
 	Fl_Widget *i = menu->find(item);
-	if(i) {
-		// THIS IS NEEDED! This stops callbacks execution in signal,
-		// So it wont seg fault, when callback deleted caller...
-		Fl_Callback_Object::object_deleted(true);
-
-		delete i; //Delete item
-		delete win; //Delete window		
-	}	
+	if(i) delete i; //Delete item	
+	delete win; //Delete window	
 
 }
 
@@ -142,13 +128,11 @@ Fl_MDI_Window *add_win(Fl_MDI_Viewport *s, bool doublebuf, const char *n)
     //b = new Fl_Button(10,10,130,20,"Attach");
     b = new Fl_Button(0,10,w->view()->w(),20,"Attach");
     b->tooltip("Attach window!");
-    //b->callback(cb_attach, w);
-	b->connect(&cb, &Callbacks::cb_attach, w);
+    b->callback(cb_attach, w);
 
     b = new Fl_Button(10,40,130,20,"Detach");
     b->tooltip("Detach window!");
-    //b->callback(cb_detach, w);
-	b->connect(&cb, &Callbacks::cb_detach, w);
+    b->callback(cb_detach, w);
 
     Fl_Input *in = new Fl_Input(10,150, 130, 60);
     in->tooltip("Click right mouse button!");
@@ -162,36 +146,18 @@ Fl_MDI_Window *add_win(Fl_MDI_Viewport *s, bool doublebuf, const char *n)
 
     s->end();
 	
-	// Connect to signals!
-	show_windows.connect(w, &Fl_Widget::show);
-	hide_windows.connect(w, &Fl_Widget::hide);
-
 	Fl_Menu_ *m = (Fl_Menu_ *)menu->find("Windows");
-	m->add(w->label(), w)->connect(&cb, &Callbacks::cb_top_window, w);
+	m->add(w->label(), w)->callback(cb_top_window, w);
 	
-	//Connect to global function
-	w->connect(close_mdi); // connect method, inside class
-	//connect(w->signal(), w, close_mdi, 0); //global connect method
+	w->callback(close_mdi);
 
 	w->show();	
     return w;
 }
 
-void cb_b3(Fl_Widget *w, void *a)
+void cb_add_window(Fl_Widget *w, void *)
 {	
 	add_win(workspace->viewport(), false, "Added");
-}
-
-void cb_b2(Fl_Widget *w, void *a)
-{	
-	// Emit signal, calls all connected slots
-	show_windows.do_callback();
-}
-
-void cb_b(Fl_Widget *w, void *a)
-{
-	// Emit signal, calls all connected slots
-	hide_windows.do_callback();
 }
 
 int main(int argc, char **argv)
@@ -232,20 +198,14 @@ int main(int argc, char **argv)
     new Fl_Box(10,10,130,20,"Min / Max:");
     b = new Fl_Check_Button(10,30,130,20,"Animate");
     b->value(Fl_MDI_Window::animate());
-    //b->callback(cb_anim);
-	b->connect(&cb, &Callbacks::cb_anim);
+    b->callback(cb_anim);
 
     b = new Fl_Check_Button(10,50,130,20,"Opaque");
     b->value(Fl_MDI_Window::animate_opaque());
-    //b->callback(cb_opaq);
-	b->connect(&cb, &Callbacks::cb_opaq);
+    b->callback(cb_opaq);
 
-	b = new Fl_Button(10,100,130,20,"Hide All");
-	b->callback(cb_b);
-	b = new Fl_Button(10,130,130,20,"Show All");
-	b->callback(cb_b2);
-	b = new Fl_Button(10,160,130,20,"Add new");
-	b->callback(cb_b3);
+	b = new Fl_Button(10,100,130,20,"Add new");
+	b->callback(cb_add_window);
 
     workspace->viewport()->end();
 
@@ -267,7 +227,10 @@ int main(int argc, char **argv)
 	workspace->relayout_all();
 
     // Add statusbar and set text there
-    mainwin->status()->label("This is status bar...");
+	Fl_MDI_Bar *tasks = new Fl_MDI_Bar(0,10,600,25);
+	tasks->spacing(5);
+	workspace->viewport()->taskbar(tasks);
+    mainwin->status(tasks);//->label("This is status bar...");
 
     mainwin->end();
 
