@@ -173,7 +173,7 @@ void make_listview_ext()
     }
 
     long end = Fl::ticks();    
-    printf("Fl_ListView with extended 1000 items: Duration: %d ms\n", end-start);
+    printf("Fl_ListView with extended 1000 items: Duration: %ld ms\n", end-start);
 
     l->end();
 
@@ -229,7 +229,7 @@ void make_listview()
     }
 
 	long end = Fl::ticks();    
-    printf("Fl_ListView with normal 1000 items: Duration: %d ms\n", end-start);
+    printf("Fl_ListView with normal 1000 items: Duration: %ld ms\n", end-start);
  
     l->end();
 
