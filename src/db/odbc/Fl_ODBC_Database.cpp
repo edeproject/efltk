@@ -39,24 +39,45 @@ public:
 
 class FL_API Fl_ODBC_Field : public Fl_Data_Field {
    friend class Fl_Data_Fields;
+   friend class Fl_ODBC_Database;
 protected:
    short       m_columnNumber;
    short       m_columnType;
    short       m_columnLength;
    short       m_columnScale;
 public:
-   Fl_ODBC_Field(const char *name,short number,short type,short length,short scale) : Fl_Data_Field(name)   {
-      m_columnNumber = number;
-      m_columnType = type;
-      m_columnLength = length;
-      m_columnScale = scale; 
-   }
+   Fl_ODBC_Field(const char *name,short number,short type,short length,short scale);
    char *check_buffer(unsigned sz);
 };
 
+Fl_ODBC_Field::Fl_ODBC_Field(const char *name,short number,short type,short length,short scale) : Fl_Data_Field(name) {
+   m_columnNumber = number;
+   m_columnType = type;
+   m_columnLength = length;
+   m_columnScale = scale;
+   switch (m_columnType) {
+   case SQL_C_SLONG:
+         value.set_int(0);
+         break;
+   case SQL_C_DOUBLE:
+         value.set_float(0);
+         break;
+   case SQL_C_TIMESTAMP:
+         value.set_date(Fl_Date_Time(0.0));
+         break;
+   case SQL_C_BINARY:
+         value.set_buffer(NULL,0);
+         break;
+   default:
+         value.set_string("");
+         value.resize_buffer(256);
+         break;
+   }
+}
+
 char *Fl_ODBC_Field::check_buffer(unsigned sz) {
    if ((unsigned)value.size() <= sz) {
-      sz = sz * 5 / 4 + 1;
+      sz = (sz / 16 + 1) * 16;
       value.resize_buffer(sz);
    }
    return (char *)value.get_buffer();
@@ -172,12 +193,10 @@ void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
       Fl_ODBC_Param *param = (Fl_ODBC_Param *)&params[i];
       unsigned  pcnt = param->bind_count();
       for (unsigned j = 0; j < pcnt; j++) {
-
          short paramType = 0, sqlType = 0, scale = 0;
          void  *buff = param->data();
          long  len = 0;
          short paramNumber = short(param->bind_index(j) + 1);
-
          short parameterMode = SQL_PARAM_INPUT;
          switch (param->type()) {
          case VAR_INT:
@@ -298,7 +317,6 @@ static short ODBCtypeToCType(int odbcType) {
    case SQL_LONGVARBINARY:
    case SQL_VARBINARY:  return SQL_C_BINARY;
 
-
    case SQL_BIT:        return SQL_C_BIT;
    }
    return VAR_NONE;
@@ -410,9 +428,9 @@ void Fl_ODBC_Database::fetch_query(Fl_Query *query) {
 
    for (unsigned column = 0; column < fieldCount; ) {
       Fl_ODBC_Field *field = (Fl_ODBC_Field *)&fields[column];
-      const short fieldType = (short) field->value.type();
+      const short fieldType = (short) field->m_columnType;
       int         readSize = field->value.size();
-      char       *buffer = (char *)field->value.get_buffer();
+      char       *buffer = NULL;
 
       column++;
 
@@ -423,11 +441,13 @@ void Fl_ODBC_Database::fetch_query(Fl_Query *query) {
       case SQL_C_SLONG:
       case SQL_C_DOUBLE:
       case SQL_C_TIMESTAMP:
+         buffer = (char *)field->value.data();
          rc = SQLGetData(stmt,column,fieldType,buffer,0,&dataLength);
          break;
 
       case SQL_C_BINARY:
       case SQL_C_CHAR:
+         buffer = (char *)field->value.get_buffer();
          rc = SQLGetData(stmt,column,fieldType,buffer,readSize,&dataLength);
          if (dataLength > readSize) { // continue to fetch BLOB data
             buffer = field->check_buffer(dataLength);
@@ -438,6 +458,7 @@ void Fl_ODBC_Database::fetch_query(Fl_Query *query) {
          break;
 
       case SQL_BIT:
+         buffer = (char *)field->value.data();
          rc = SQLGetData(stmt,column,fieldType,buffer,1,&dataLength);
          break;
 

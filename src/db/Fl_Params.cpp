@@ -29,11 +29,13 @@ Fl_Param::Fl_Param(const char *name) : Fl_Variant() {
 Fl_Param::~Fl_Param() {
 }
 //---------------------------------------------------------------------------
+/*
 Fl_Param& Fl_Param::operator = (const Fl_Param& param) {
    this->set_data(param);
    this->m_bindParamIndexes = param.m_bindParamIndexes;
    return *this;
 }
+*/
 //---------------------------------------------------------------------------
 void Fl_Param::bind_add(unsigned bindIndex) {
    m_bindParamIndexes.append((void *)bindIndex);
