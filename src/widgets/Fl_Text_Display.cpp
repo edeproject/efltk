@@ -102,6 +102,12 @@ static void cb_menu(Fl_Widget *w, void *d)
     };
 }
 
+static void set_fl_font(Fl_Font font, unsigned size) {
+    if(fl_font()!=font || fl_size()!=size) {
+        fl_font(font, size);
+    }
+}
+
 Fl_Text_Display::Fl_Text_Display(int X, int Y, int W, int H,  const char* l)
 	: Fl_Group(X, Y, W, H, l)
 {
@@ -266,15 +272,15 @@ void Fl_Text_Display::set_font()
 
     /* If there is a (syntax highlighting) style table in use, find the new
      maximum font height for this text display */
-    fl_font(text_font(), text_size());
+    set_fl_font(text_font(), text_size());
     mMaxsize = int(fl_height()+leading());
     for (i = 0; i < mNStyles; i++) {
-        fl_font(mStyleTable[i].font, mStyleTable[i].size);
+        set_fl_font(mStyleTable[i].font, mStyleTable[i].size);
         mMaxsize = max(mMaxsize, int(fl_height()+leading()));
     }
 
     /* If all of the current fonts are fixed and match in width, compute */
-    fl_font(text_font(), text_size());
+    set_fl_font(text_font(), text_size());
 #ifdef _WIN32
     TEXTMETRIC *fontStruct = fl_textmetric(), *styleFont;
     mMaxFontBound = fontStruct->tmMaxCharWidth;
@@ -287,7 +293,7 @@ void Fl_Text_Display::set_font()
         {
             int size = mStyleTable[i].size;
             if(text_size()!=size) { fontWidth = -1; break; }
-            fl_font(mStyleTable[i].font, mStyleTable[i].size);
+            set_fl_font(mStyleTable[i].font, mStyleTable[i].size);
             styleFont = fl_textmetric();
             if(styleFont != NULL && (styleFont->tmPitchAndFamily&TMPF_FIXED_PITCH) ) {
                 fontWidth = -1;
@@ -307,7 +313,7 @@ void Fl_Text_Display::set_font()
         {
             unsigned size = mStyleTable[i].size;
             if(text_size()!=size) { fontWidth = -1; break; }
-            fl_font(mStyleTable[i].font, mStyleTable[i].size);
+            set_fl_font(mStyleTable[i].font, mStyleTable[i].size);
             styleFont = fl_xfont();
             if(styleFont != NULL && (styleFont->max_bounds.width != fontWidth || styleFont->max_bounds.width != styleFont->min_bounds.width)) {
                 fontWidth = -1;
@@ -380,10 +386,10 @@ void Fl_Text_Display::layout()
     /* Find the new maximum font height for this text display */
     int i;
     // This is done in set_font()
-    fl_font(text_font(), text_size());
+    set_fl_font(text_font(), text_size());
     mMaxsize = int(fl_height()+leading());
     for (i = 0; i < mNStyles; i++) {
-        fl_font(mStyleTable[i].font, mStyleTable[i].size);
+        set_fl_font(mStyleTable[i].font, mStyleTable[i].size);
         mMaxsize = max(mMaxsize, int(fl_height()+leading()));
     }
 #endif
@@ -1708,7 +1714,7 @@ void Fl_Text_Display::draw_string( int style, int X, int Y, int toX,
     fl_color( background );
     fl_rectf( X, Y, toX - X, mMaxsize );
     fl_color( foreground );
-    fl_font( font, size );
+    set_fl_font( font, size );
     fl_draw( string, nChars, X, Y + mMaxsize - fl_descent());
 
     /* Underline if style is UNDERLINE attr is set */
@@ -1886,7 +1892,7 @@ int Fl_Text_Display::string_width( const char *string, int length, int style )
         size = text_size();
     }
 
-    fl_font( font, size );
+    set_fl_font( font, size );
 
     if(length==1) return (int)fl_width(uchar( string[0]) );
     return (int)fl_width( string, length );
@@ -2321,7 +2327,7 @@ int Fl_Text_Display::measure_vline( int visLineNum ) {
       len = mBuffer->expand_character( lineStartPos + i,
                                        charCount, expandedChar );
 
-      fl_font( text_font(), text_size() );
+      set_fl_font( text_font(), text_size() );
 
       width += ( int ) fl_width( expandedChar, len );
 
@@ -2334,7 +2340,7 @@ int Fl_Text_Display::measure_vline( int visLineNum ) {
       style = ( unsigned char ) mStyleBuffer->character(
                 lineStartPos + i ) - 'A';
 
-      fl_font( mStyleTable[ style ].font, mStyleTable[ style ].size );
+      set_fl_font( mStyleTable[ style ].font, mStyleTable[ style ].size );
 
       width += ( int ) fl_width( expandedChar, len );
 
@@ -2373,13 +2379,13 @@ int Fl_Text_Display::measure_vline( int visLineNum )
         }
 
         if(mStyleBuffer && style!=last_style && (font!=fl_font() || size!=int(fl_size())) ) {
-            fl_font(font, size);
+            set_fl_font(font, size);
             width += int(fl_width( buffer, bufpos ));
             bufpos = 0;
         }
 
         if( unsigned(bufpos+charlen) >= sizeof(buffer)) {
-            fl_font(font, size);
+            set_fl_font(font, size);
             width += int(fl_width( buffer, bufpos ));
             bufpos = 0;
         }
@@ -2394,7 +2400,7 @@ int Fl_Text_Display::measure_vline( int visLineNum )
     }
 
     if(bufpos) {
-        fl_font(font, size);
+        set_fl_font(font, size);
         width += int(fl_width( buffer, bufpos ));
     }
     return width;
@@ -3238,7 +3244,7 @@ void Fl_Text_Display::draw_line_numbers(bool clearAll)
     int W = mLineNumWidth;
     int H = h()-box()->dh();
 
-    fl_font(text_font(), text_size());
+    set_fl_font(text_font(), text_size());
 
     int y, line, visLine, nCols, lineStart;
     char lineNumString[12];
