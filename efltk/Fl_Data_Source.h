@@ -10,8 +10,8 @@ private:
    Fl_Group* parent_;
 protected:
    // these methods should be implemented in derived class
-   virtual bool         loadData() = 0;
-   virtual bool         saveData() = 0;
+   virtual bool         load_data() = 0;
+   virtual bool         save_data() = 0;
    virtual const char * read_field(const char *fname) = 0; 
    virtual const char * write_field(const char *fname) = 0; 
 public:
