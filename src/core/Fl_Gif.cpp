@@ -216,7 +216,7 @@ static bool gif_create(Fl_IO &gif_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
         fmt.masktype = FL_MASK_PIXELKEY;
     }
 
-done:
+//done:
     return (data!=0);
 }
 

@@ -20,8 +20,10 @@ Fl_Packed_Strings::Fl_Packed_Strings(int cnt, const char *strings[])
     int offsetsSpace = cnt * sizeof(unsigned);
     int sz = offsetsSpace + sizeof(unsigned);
 
+	int i; //looping var..
+
     // compute buffer size and offsets
-    for (int i = 0; i < cnt; i++) {
+    for(i = 0; i < cnt; i++) {
         register unsigned l = unsigned(strlen(strings[i]) + 1);
         offset[i] = unsigned(sz);
         len[i] = l;
@@ -39,7 +41,7 @@ Fl_Packed_Strings::Fl_Packed_Strings(int cnt, const char *strings[])
     memcpy((unsigned *)m_buffer + 1, offset, offsetsSpace);
 
     // Copy strings
-    for (int i = 0; i < cnt; i++)
+    for(i = 0; i < cnt; i++)
         memcpy(charp(m_buffer)+offset[i], strings[i], len[i]);
 
     delete [] offset;
