@@ -122,8 +122,8 @@ extern "C" bool fltk_theme()
         }
     }
 
-    SectionList *section_list;
-    Section *cent=0;
+    Fl_Config_Sections *section_list;
+    Fl_Config_Section *cent=0;
 
     Fl_Font font;
     Fl_Labeltype labeltype;
@@ -133,8 +133,8 @@ extern "C" bool fltk_theme()
     if(section_list) {
         for(uint n=0; n<section_list->size(); n++)
         {
-            cent = (Section*)section_list->item(n);
-            Fl_Style* style = Fl_Style::find(cent->name.c_str());
+            cent = (Fl_Config_Section*)section_list->item(n);
+            Fl_Style* style = Fl_Style::find(cent->name().c_str());
             if(!style) continue;
 
             conf.set_section(cent);

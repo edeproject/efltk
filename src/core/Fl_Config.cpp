@@ -36,6 +36,15 @@
 
 #endif /* _WIN32 */
 
+#define LOCALE_TO_C() \
+    char *locale = setlocale(LC_ALL, ""); \
+    char *restore_locale = locale ? strdup(locale) : strdup("C"); \
+    setlocale(LC_ALL, "C")
+
+#define RESTORE_LOCALE() \
+    setlocale(LC_ALL, restore_locale); \
+    free(restore_locale)
+
 static int is_path_rooted(const char *fn)
 {
     /* see if an absolute name was given: */
@@ -125,10 +134,10 @@ char *Fl_Config::find_config_file(const char *filename, bool create, int mode)
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-#define L(item) ((Line*)item)
-#define S(item) ((Section*)item)
+#define S(item) ((Fl_Config_Section*)item)
 
 Fl_Config::Fl_Config(const char *vendor, const char *application, int mode)
+: Fl_Config_Section("","",0)
 {
     m_cur_sec = 0;
     m_changed=false;
@@ -161,6 +170,7 @@ Fl_Config::Fl_Config(const char *vendor, const char *application, int mode)
 }
 
 Fl_Config::Fl_Config(const char *filename, bool read, bool create)
+: Fl_Config_Section("","",0)
 {
     if(filename) m_filename = filename;
 
@@ -179,21 +189,6 @@ Fl_Config::~Fl_Config()
 {
     flush();
     clear();
-}
-
-void Fl_Config::clear()
-{
-    uint n;
-    for(n=0; n<lines.size(); n++) {
-        Line *l=(Line *)lines[n];
-        delete l;
-    }
-    for(n=0; n<sections.size(); n++) {
-        Section *s=(Section *)sections[n];
-        delete s;
-    }
-    lines.clear();
-    sections.clear();
 }
 
 /* get error string associated with error number */
@@ -274,7 +269,7 @@ bool Fl_Config::read_file(bool create)
 
     free((char*)buffer);
 
-    Section *section = 0;
+    Fl_Config_Section *section = this;
     for(unsigned n=0; n<strings.size(); n++)
     {
         Fl_String line;
@@ -302,7 +297,7 @@ bool Fl_Config::read_file(bool create)
                 Fl_String key(line.sub_str(0, pos));
                 pos++;
                 Fl_String value(line.sub_str(pos, line.length()-pos));
-                create_string(section, key, value);
+                section->add_entry(key, value);
             }
         }
     }
@@ -312,103 +307,55 @@ bool Fl_Config::read_file(bool create)
     return true;
 }
 
-void Fl_Config::write_section(int indent, FILE *fp, Section *sec) const
-{
-    Section *child;
-    uint n;
-    for(int a=0; a<indent; a++) fprintf(fp, " ");
-
-    fprintf(fp, "[%s%s]\n", sec->path.c_str(), sec->name.c_str());
-
-    for(n=0; n<sec->lines.size(); n++) {
-        Line *l = L(sec->lines[n]);
-        if(l && !l->key.empty()) {
-            for(int a=0; a<indent; a++) fprintf(fp, " ");
-            fprintf(fp, "  %s=%s\n", l->key.c_str(), l->value.c_str());
-        }
-    }
-
-    fprintf(fp, "\n");
-
-    for(n=0; n<sec->sections.size(); n++) {
-        child = S(sec->sections[n]);
-        write_section(indent+2, fp, child);
-    }
-}
-
 bool Fl_Config::flush()
 {
     if(!m_changed) return true;
+    if(m_filename.empty()) return false;
 
-    if(m_filename.empty()) {
-        return false;
-    }
     FILE *file = fl_fopen(m_filename.c_str(), "w+");
     if(!file) {
         fl_throw(::strerror(errno));
         return false;
     }
 
-    fprintf(file, "# EFLTK Configuration - Version %f\n", FL_VERSION);
+    LOCALE_TO_C();
+
+    fprintf(file, "# EFLTK INI Version %f\n", FL_VERSION);
     if(!m_vendor.empty()) fprintf(file, "# Vendor: %s\n", m_vendor.c_str());
     if(!m_app.empty())    fprintf(file, "# Application: %s\n", m_app.c_str());
-    fprintf(file, "\n");
 
-    uint n;
-    for(n=0; n<lines.size(); n++) {
-        Line *l = L(lines[n]);
-        if(l && !l->key.empty()) {
-            fprintf(file, "%s=%s\n", l->key.c_str(), l->value.c_str());
-        }
-    }
-    fprintf(file, "\n");
+    // Flush sections
+    write_section(0, file);
 
-    for(n=0; n<sections.size(); n++) {
-        Section *s = S(sections[n]);
-        write_section(0, file, s);
-    }
+    RESTORE_LOCALE();
 
     fclose(file);
 
     m_error = 0;
     m_changed=false;
-
     return true;
 }
 
-Line *Fl_Config::create_string(Section *section, const Fl_String &key, const Fl_String &value)
+Fl_Config_Section *Fl_Config::create_section(const Fl_String &name)
 {
-    if(key.empty()) return 0;
+    if(name.empty()) return 0;
 
-    Line *line = new Line(key.trim(), value.trim());
-    m_error=0;
-
-    if(section) section->lines.append(line);
-    else lines.append(line);
-    return line;
-}
-
-Section *Fl_Config::create_section(const Fl_String &name)
-{
-    if(!name) return 0;
-
-    Section *section = find_section(name, true);
+    Fl_Config_Section *section = find_section(name, true);
     if(section) return section;
 
     int pos = name.rpos('/');
     if(pos==-1) {
-        section = new Section(name, "", 0);
-        sections.append(section);
+        section = new Fl_Config_Section(name, "", 0);
+        sections().append(section);
         return section;
     }
     pos++;
 
     Fl_String sec_name(name.sub_str(pos, name.length()-pos));
-
     Fl_String sec_path(name.sub_str(0, pos));
 
-    Section *parent = find_section(sec_path, false);
-    SectionList *list = &sections;
+    Fl_Config_Section *parent = find_section(sec_path, false);
+    Fl_Config_Sections *list = &sections();
 
     if(!parent) {
         Fl_String_List sections;
@@ -416,9 +363,9 @@ Section *Fl_Config::create_section(const Fl_String &name)
 
         Fl_String path;
         for(unsigned n=0; n<sections.size(); n++) {
-            if(parent) list = &parent->sections;
+            if(parent) list = &parent->sections();
 
-            parent = new Section(sections[n], path, parent);
+            parent = new Fl_Config_Section(sections[n], path, parent);
             list->append(parent);
 
             path += sections[n];
@@ -426,29 +373,29 @@ Section *Fl_Config::create_section(const Fl_String &name)
         }
     }
 
-    if(parent) list = &parent->sections;
+    if(parent) list = &parent->sections();
 
-    section = new Section(sec_name, sec_path, parent);
+    section = new Fl_Config_Section(sec_name, sec_path, parent);
     list->append(section);
 
     m_error = 0;
     return section;
 }
 
-Section *Fl_Config::find_section(const char *path, bool perfect_match) const
+Fl_Config_Section *Fl_Config::find_section(const char *path, bool perfect_match) const
 {
     if(!path || !*path) return 0;
 
-    Section *section=0;
     Fl_String_List sections;
     sections.from_string(path, "/");
 
     if(sections.size()==0)
-        return find_section(0, path, false);
+        return find_section(path, false);
 
+    Fl_Config_Section *section = (Fl_Config_Section *)this;
     for(unsigned n=0; n<sections.size(); n++) {
 
-        Section *tmp = find_section(section, sections[n], false);
+        Fl_Config_Section *tmp = section->find_section(sections[n], false);
         if(!tmp) {
             if(perfect_match)
                 return 0;
@@ -460,53 +407,14 @@ Section *Fl_Config::find_section(const char *path, bool perfect_match) const
     return section;
 }
 
-Section *Fl_Config::find_section(Section *sec, const char *name, bool recursive) const
-{
-    const SectionList *list = sec ? &sec->sections : &sections;
-    Section *s;
-
-    for(uint n=0; n<list->size(); n++) {
-        s = S(list->item(n));
-        if(s->name == name) {
-            return s;
-        }
-        if(recursive) {
-            s = find_section(s, name, recursive);
-            if(s) return s;
-        }
-    }
-    return 0;
-}
-
-Line *Fl_Config::find_string(Section *section, const char *key)
-{
-    if(key) {
-        for(uint n=0; n<section->lines.size(); n++) {
-            Line *line = L(section->lines[n]);
-            if(!line->key.empty() && line->key==key) {
-                m_error = 0;
-                return line;
-            }
-        }
-    }
-    m_error = CONF_ERR_KEY;
-    return 0;
-}
-
 void Fl_Config::remove_key(const char *section, const char *key)
 {
     if(key) {
-        Section *sect;
-        Line *line;
-
-        if((sect = find_section(section, true)) != 0) {
-            if ((line = find_string(sect, key)) != 0) {
-                sect->lines.remove(line);
-                delete line;
-                m_error = 0;
-                m_changed = true;
-                return;
-            }
+        Fl_Config_Section *sect = find_section(section, true);
+        if(sect->remove_entry(key)) {
+            m_error = 0;
+            m_changed = true;
+            return;
         }
     }
     m_error = CONF_ERR_KEY;
@@ -516,57 +424,26 @@ void Fl_Config::remove_sec(const char *section)
 {
     if(!section) return;
 
-    Section *sect;
+    Fl_Config_Section *sect;
     if((sect = find_section(section, true)) != 0) {
-        if(sect->parent) {
-            sect->parent->sections.remove(sect);
+        if(sect->parent()) {
+            sect->parent()->sections().remove(sect);
         } else {
-            sections.remove(sect);
+            sections().remove(sect);
         }
         delete sect;
         m_error = 0;
         m_changed = true;
         return;
     }
-
     m_error = CONF_ERR_SECTION;
-}
-
-// returns "C" locale string of double
-const char *double_to_str(double v)
-{
-    char *locale = setlocale(LC_ALL, "");
-    char *restore_locale = locale ? strdup(locale) : strdup("C");
-
-    setlocale(LC_ALL, "C");
-    static char ret[128];
-    snprintf(ret, sizeof(ret)-1, "%g", v);
-
-    setlocale(LC_ALL, restore_locale);
-    free(restore_locale);
-    return ret;
-}
-
-// Reads "C" locale double from string v
-double str_to_double(const char *v)
-{
-    char *locale = setlocale(LC_ALL, "");
-    char *restore_locale = locale ? strdup(locale) : strdup("C");
-
-    setlocale(LC_ALL, "C");
-    double ret = strtod(v, 0);
-
-    setlocale(LC_ALL, restore_locale);
-    free(restore_locale);
-
-    return ret;
 }
 
 /*
  *  Read functions
  */
 
-int Fl_Config::_read_string(Section *s, const char *key, char *ret, const char *def_value, int size)
+int Fl_Config::_read_string(Fl_Config_Section *s, const char *key, char *ret, const char *def_value, int size)
 {
     if(!key || !s) {
         if(def_value) strncpy(ret, def_value, size);
@@ -575,10 +452,10 @@ int Fl_Config::_read_string(Section *s, const char *key, char *ret, const char *
         return m_error;
     }
 
-    Line *l = find_string(s, key);
-    if(l) {
-        int len = (l->value.length() < size) ? l->value.length()+1 : size;
-        memcpy(ret, l->value.c_str(), len);
+    Fl_String *val = s->find_entry(key);
+    if(val) {
+        int len = (val->length() < size) ? val->length()+1 : size;
+        memcpy(ret, val->c_str(), len);
         return (m_error = CONF_SUCCESS);
     }
 
@@ -589,7 +466,7 @@ int Fl_Config::_read_string(Section *s, const char *key, char *ret, const char *
     return m_error;
 }
 
-int Fl_Config::_read_string(Section *s, const char *key, char *&ret, const char *def_value)
+int Fl_Config::_read_string(Fl_Config_Section *s, const char *key, char *&ret, const char *def_value)
 {
     if(!key || !s) {
         ret = def_value?strdup(def_value):0;
@@ -597,10 +474,10 @@ int Fl_Config::_read_string(Section *s, const char *key, char *&ret, const char 
         return m_error;
     }
 
-    Line *l = find_string(s, key);
-    if(l && !l->value.empty())
+    Fl_String *val = s->find_entry(key);
+    if(val && !val->empty())
     {
-        ret = strdup(l->value.c_str());
+        ret = strdup(val->c_str());
         return (m_error = CONF_SUCCESS);
     }
 
@@ -609,7 +486,7 @@ int Fl_Config::_read_string(Section *s, const char *key, char *&ret, const char 
     return m_error;
 }
 
-int Fl_Config::_read_string(Section *s, const char *key, Fl_String &ret, const char *def_value)
+int Fl_Config::_read_string(Fl_Config_Section *s, const char *key, Fl_String &ret, const char *def_value)
 {
     if(!key || !s) {
         ret = def_value;
@@ -617,9 +494,9 @@ int Fl_Config::_read_string(Section *s, const char *key, Fl_String &ret, const c
         return m_error;
     }
 
-    Line *l = find_string(s, key);
-    if(l) {
-        ret = l->value;
+    Fl_String *val = s->find_entry(key);
+    if(val) {
+        ret = (*val);
         return (m_error = CONF_SUCCESS);
     }
 
@@ -627,7 +504,7 @@ int Fl_Config::_read_string(Section *s, const char *key, Fl_String &ret, const c
     return (m_error = CONF_ERR_KEY);
 }
 
-int Fl_Config::_read_long(Section *s, const char *key, long &ret, long def_value)
+int Fl_Config::_read_long(Fl_Config_Section *s, const char *key, long &ret, long def_value)
 {
     Fl_String tmp;
     if(!_read_string(s, key, tmp, 0)) {
@@ -637,7 +514,7 @@ int Fl_Config::_read_long(Section *s, const char *key, long &ret, long def_value
     return m_error;
 }
 
-int Fl_Config::_read_int(Section *s, const char *key, int &ret, int def_value)
+int Fl_Config::_read_int(Fl_Config_Section *s, const char *key, int &ret, int def_value)
 {
     Fl_String tmp;
     if(!_read_string(s, key, tmp, 0)) {
@@ -647,27 +524,31 @@ int Fl_Config::_read_int(Section *s, const char *key, int &ret, int def_value)
     return m_error;
 }
 
-int Fl_Config::_read_float (Section *s, const char *key, float &ret, float def_value)
+int Fl_Config::_read_float (Fl_Config_Section *s, const char *key, float &ret, float def_value)
 {
     Fl_String tmp;
     if(!_read_string(s, key, tmp, 0)) {
-        ret = (float)str_to_double(tmp);
+        LOCALE_TO_C();
+        ret = (float)strtod(tmp, 0);
+        RESTORE_LOCALE();
     } else
         ret = def_value;
     return m_error;
 }
 
-int Fl_Config::_read_double(Section *s, const char *key, double &ret, double def_value)
+int Fl_Config::_read_double(Fl_Config_Section *s, const char *key, double &ret, double def_value)
 {
     Fl_String tmp;
     if(!_read_string(s, key, tmp, 0)) {
-        ret = str_to_double(tmp);
+        LOCALE_TO_C();
+        ret = strtod(tmp, 0);
+        RESTORE_LOCALE();
     } else
         ret = def_value;
     return m_error;
 }
 
-int Fl_Config::_read_bool(Section *s, const char *key, bool &ret, bool def_value)
+int Fl_Config::_read_bool(Fl_Config_Section *s, const char *key, bool &ret, bool def_value)
 {
     Fl_String tmp;
     if(_read_string(s, key, tmp, 0)) {
@@ -695,7 +576,7 @@ int Fl_Config::_read_bool(Section *s, const char *key, bool &ret, bool def_value
     return m_error;
 }
 
-int Fl_Config::_read_color(Section *s, const char *key, Fl_Color &ret, Fl_Color def_value)
+int Fl_Config::_read_color(Fl_Config_Section *s, const char *key, Fl_Color &ret, Fl_Color def_value)
 {
     Fl_String tmp;
     if(_read_string(s, key, tmp, 0)) {
@@ -716,60 +597,150 @@ int Fl_Config::_read_color(Section *s, const char *key, Fl_Color &ret, Fl_Color 
  *  Write functions
  */
 
-int Fl_Config::_write_string(Section *s, const char *key, const char *value)
+int Fl_Config::_write_string(Fl_Config_Section *s, const char *key, const char *value)
 {
     Fl_String val(value);
     return _write_string(s, key, val);
 }
 
-int Fl_Config::_write_string(Section *s, const char *key, const Fl_String &value)
+int Fl_Config::_write_string(Fl_Config_Section *s, const char *key, const Fl_String &value)
 {
     if(!s) return (m_error = CONF_ERR_SECTION);
     if(!key) return (m_error = CONF_ERR_KEY);
 
-    Line *line = find_string(s, key);
-    if(line) {
-        line->value = value;
+    Fl_String *val = s->find_entry(key);
+    if(val) {
+        (*val) = value;
     } else
-        create_string(s, key, value);
+        s->add_entry(key, value);
 
     m_changed=true;
     return (m_error=CONF_SUCCESS);
 }
 
-int Fl_Config::_write_long(Section *s, const char *key, const long value)
+int Fl_Config::_write_long(Fl_Config_Section *s, const char *key, const long value)
 {
     char tmp[128]; snprintf(tmp, sizeof(tmp)-1, "%ld", value);
     return _write_string(s, key, tmp);
 }
 
-int Fl_Config::_write_int(Section *s, const char *key, const int value)
+int Fl_Config::_write_int(Fl_Config_Section *s, const char *key, const int value)
 {
     char tmp[128]; snprintf(tmp, sizeof(tmp)-1, "%d", value);
     return _write_string(s, key, tmp);
 }
 
-int Fl_Config::_write_float(Section *s, const char *key, const float value)
+int Fl_Config::_write_float(Fl_Config_Section *s, const char *key, const float value)
 {
-    return _write_string(s, key, double_to_str(value));
+    LOCALE_TO_C();
+    char tmp[32]; snprintf(tmp, sizeof(tmp)-1, "%g", value);
+    RESTORE_LOCALE();
+    return _write_string(s, key, tmp);
 }
 
-int Fl_Config::_write_double(Section *s, const char *key, const double value)
+int Fl_Config::_write_double(Fl_Config_Section *s, const char *key, const double value)
 {
-    return _write_string(s, key, double_to_str(value));
+    LOCALE_TO_C();
+    char tmp[32]; snprintf(tmp, sizeof(tmp)-1, "%g", value);
+    RESTORE_LOCALE();
+    return _write_string(s, key, tmp);
 }
 
-int Fl_Config::_write_bool(Section *s, const char *key, const bool value)
+int Fl_Config::_write_bool(Fl_Config_Section *s, const char *key, const bool value)
 {
     if(value) return _write_string(s, key, "1");
     return _write_string(s, key, "0");
 }
 
-int Fl_Config::_write_color(Section *s, const char *key, const Fl_Color value)
+int Fl_Config::_write_color(Fl_Config_Section *s, const char *key, const Fl_Color value)
 {
     uint8 r,g,b;
     fl_get_color(value, r,g,b);
     char tmp[32];
     snprintf(tmp, sizeof(tmp)-1, "RGB(%d,%d,%d)", r,g,b);
     return _write_string(s, key, tmp);
+}
+
+//////////////////////////////////////
+//////////////////////////////////////
+//////////////////////////////////////
+
+Fl_Config_Section::Fl_Config_Section(const Fl_String &name, const Fl_String &path, Fl_Config_Section *par)
+: m_parent(par), m_name(name), m_path(path)
+{
+
+}
+
+Fl_Config_Section::~Fl_Config_Section()
+{
+    clear();
+}
+
+void Fl_Config_Section::clear()
+{
+    for(unsigned n=0; n<sections().size(); n++) {
+        Fl_Config_Section *s = (Fl_Config_Section *)sections()[n];
+        delete s;
+    }
+    m_lines.clear();
+    m_sections.clear();
+}
+
+void Fl_Config_Section::write_section(int indent, FILE *fp) const
+{
+    for(int a=0; a<indent; a++) fprintf(fp, " ");
+
+    if(!name().empty())
+        fprintf(fp, "[%s%s]\n", path().c_str(), name().c_str());
+
+    for(Fl_Config_Lines::Iterator it(m_lines); it.current(); it++) {
+        if(!it.id().empty()) {
+            for(int a=0; a<indent; a++) fprintf(fp, " ");
+            fprintf(fp, "  %s=%s\n", it.id().c_str(), it.value().c_str());
+        }
+    }
+
+    fprintf(fp, "\n");
+
+    for(unsigned n=0; n<sections().size(); n++) {
+        Fl_Config_Section *child = S(sections()[n]);
+        child->write_section(indent+2, fp);
+    }
+}
+
+void Fl_Config_Section::add_entry(const Fl_String &key, const Fl_String &value)
+{
+    if(key.empty()) return;
+    lines().insert(key.trim(), value.trim());
+}
+
+bool Fl_Config_Section::remove_entry(const Fl_String &key)
+{
+    return lines().remove(key);
+}
+
+Fl_String *Fl_Config_Section::find_entry(const char *key) const
+{
+    if(key) {
+        if(lines().contains(key))
+            return &lines().get_value(key);
+    }
+    return 0;
+}
+
+Fl_Config_Section *Fl_Config_Section::find_section(const char *name, bool recursive) const
+{
+    const Fl_Config_Sections *list = &sections();
+
+    for(uint n=0; n<list->size(); n++) {
+        Fl_Config_Section *s = S(list->item(n));
+        if(s->name() == name) {
+            return s;
+        }
+        if(recursive) {
+            s = s->find_section(name, recursive);
+            if(s) return s;
+        }
+    }
+    return 0;
 }
