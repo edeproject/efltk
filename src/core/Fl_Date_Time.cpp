@@ -21,9 +21,14 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <sys/time.h>
 #include <time.h>
 #include <ctype.h>
+
+#ifndef _WIN32
+# include <sys/time.h>
+#else
+# include <windows.h>
+#endif
 
 static const char *dayname[] = {
     "Sunday", "Monday", "Tuesday", "Wednesday",
@@ -179,6 +184,7 @@ void Fl_Date_Time::encodeDate(double &dt,const char *dat) {
    char     bdat[64];
    short    datePart[7], partNumber = 0;
    char     *ptr = NULL;
+   int i;
 
    memset(datePart,0,sizeof(datePart));
    upperCase(bdat,dat);
@@ -188,7 +194,7 @@ void Fl_Date_Time::encodeDate(double &dt,const char *dat) {
       return;
    } else {
       int len = strlen(bdat);
-      for (int i = 0; i <= len && partNumber < 7; i++) {
+      for(i = 0; i <= len && partNumber < 7; i++) {
          char c = bdat[i];
          if (c == dateSeparator || c == timeSeparator || c == ' ' || c == 0) {
             if (c == timeSeparator && partNumber < 3) partNumber = 3;
@@ -211,7 +217,7 @@ void Fl_Date_Time::encodeDate(double &dt,const char *dat) {
          return;
       }
       short month=0, day=0, year=0;
-      for (int i = 0; i < 3; i++)
+      for(i = 0; i < 3; i++)
       switch (datePartsOrder[i]) {
       case 'M': month = datePart[i]; break;
       case 'D': day   = datePart[i]; break;
@@ -567,15 +573,19 @@ short Fl_Date_Time::dayOfYear( void ) const {
 
 // Get the current system time
 Fl_Date_Time Fl_Date_Time::System() {
-   time_t   tt;
+   time_t tt;
    time(&tt);
    struct tm *t = localtime(&tt);
    double dat,tim;
    encodeDate(dat,short(t->tm_year+1900),short(t->tm_mon+1),short(t->tm_mday));
    encodeTime(tim,short(t->tm_hour),short(t->tm_min),short(t->tm_sec),short(0));
+#ifndef _WIN32
    timeval tp;
    gettimeofday(&tp,0L);
    double mcsec = tp.tv_usec / 1000000.0 / (3600 * 24);
+#else
+   double mcsec = (GetTickCount() % 1000) / 1000 / (3600 * 24);
+#endif
    return dat + tim + mcsec;
 }
 
