@@ -295,6 +295,45 @@ const char * Fl_Text_Buffer::text_range( int start, int end )
    return text;
 }
 
+void Fl_Text_Buffer::text_range(Fl_String_Buffer& text, int start, int end) {
+   int length, part1Length;
+
+    /* Make sure start and end are ok, and allocate memory for returned string.
+       If start is bad, return "", if end is bad, adjust it. */
+   if ( start < 0 || start > mLength || start==end)
+   {
+      text.set("",1);
+      return;
+   }
+   if ( end < start )
+   {
+      int temp = start;
+      start = end;
+      end = temp;
+   }
+   if ( end > mLength )
+      end = mLength;
+   length = end - start;
+   text.check_size(length + 1);
+
+    /* Copy the text from the buffer to the returned string */
+   if ( end <= mGapStart )
+   {
+      text.set(mBuf + start, length + 1);
+   }
+   else if ( start >= mGapStart )
+   {
+      text.set(mBuf + start + ( mGapEnd - mGapStart ), length + 1);
+   }
+   else
+   {
+      part1Length = mGapStart - start;
+      text.set(mBuf + start, part1Length + 1);
+      memcpy( text.data() + part1Length, mBuf + mGapEnd, length - part1Length );
+   }
+   text.bytes(length + 1);
+   text.data()[ length ] = '\0';
+}
 
 /*
  ** Return the character at buffer position "pos".  Positions start at 0.

@@ -40,10 +40,10 @@ public:
    void bytes(unsigned b) { set(NULL,b); }
 };
 
-class FL_API Fl_String_Buffer {
+class FL_API Fl_String_Buffer : public Fl_Buffer {
 public:
    Fl_String_Buffer(unsigned sz=16) : Fl_Buffer(sz) {}
-   char& operator [] (int ndx) { return mbuffer[ndx]; }
+   char& operator [] (int ndx) { return m_buffer[ndx]; }
 };
 
 #endif
