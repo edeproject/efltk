@@ -410,16 +410,16 @@ void Fl_Text_Display::layout()
         if(calc_lines)
         {
             int old_vlines = mNVisibleLines;
-            int new_vlines = (text_area.h + mMaxsize - 1) / mMaxsize;
-
-            if(!new_vlines) new_vlines=1;
+            int new_vlines = (text_area.h + mMaxsize - 1) / mMaxsize;			
+            if(!new_vlines) new_vlines=1;			
 
             /* reallocate and update the line starts array, which may have changed
              size and / or contents.  */
             if(old_vlines != new_vlines)
             {
-                delete[] mLineStarts;
-                mLineStarts = new int [new_vlines];
+                //delete []mLineStarts;
+                //mLineStarts = new int[new_vlines+1];
+				mLineStarts = (int *)realloc(mLineStarts, (new_vlines+1)*sizeof(int));
                 mNVisibleLines = new_vlines;
                 calc_line_starts(0, mNVisibleLines);
                 calc_last_char();
@@ -575,13 +575,14 @@ void Fl_Text_Display::draw_text( int left, int top, int width, int height )
     /* find the line number range of the display */
     fontHeight = mMaxsize;
     firstLine = ( top - text_area.y - fontHeight + 1 ) / fontHeight;
-    lastLine = ( top + height - text_area.y ) / fontHeight + 1;
-
+    lastLine = ( top + height - text_area.y ) / fontHeight;
+	lastLine++;
     fl_push_clip( left, top, width, height );
 
     /* draw the lines */
-    for ( line = firstLine; line <= lastLine; line++ )
-        draw_vline( line, left, left + width, 0, INT_MAX );
+    for ( line = firstLine; line <= lastLine; line++ ) {
+		draw_vline( line, left, left + width, 0, INT_MAX );
+	}
 
     /* draw the line numbers if exposed area includes them */
     //if (mLineNumWidth != 0 && left <= mLineNumLeft + mLineNumWidth)
@@ -1002,7 +1003,9 @@ void Fl_Text_Display::display_insert()
 {
     int hOffset, topLine, X, Y;
     hOffset = mHorizOffset;
-    topLine = mTopLineNum;
+    topLine = mTopLineNum;	
+
+	int mLastChar = mLineStarts[mNVisibleLines-2];
 
     if (insert_position() < mFirstChar) {
 
@@ -1508,13 +1511,13 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
 
     /* Get the text, length, and  buffer position of the line to display */
     lineStartPos = mLineStarts[ visLineNum ];
-    if ( lineStartPos == -1 ) {
+    if ( lineStartPos == -1 ) {		
         lineLen = 0;
         lineStr = NULL;
     } else {
         lineLen = vline_length( visLineNum );
-        lineStr = buf->text_range( lineStartPos, lineStartPos + lineLen );
-    }
+        lineStr = buf->text_range( lineStartPos, lineStartPos + lineLen );		
+    }	
 
     /* Space beyond the end of the line is still counted in units of characters
      of a standardized character width (this is done mostly because style
@@ -1620,7 +1623,7 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
     /* Draw the remaining style segment */
     charWidth = string_width( outStr, outPtr-outStr, style );
     X += charWidth;
-    draw_string( style, startX, Y, X, outStr, outPtr - outStr );
+    draw_string( style, startX, Y, X, outStr, outPtr - outStr );	
 
     /* Draw the cursor if part of it appeared on the redisplayed part of
      this line.  Also check for the cases which are not caught as the
@@ -2159,7 +2162,7 @@ void Fl_Text_Display::calc_line_starts( int startLine, int endLine )
 
   /* Clean up (possibly) messy input parameters */
   if ( endLine < 0 ) endLine = 0;
-  if ( endLine >= nVis ) endLine = nVis - 1;
+  if ( endLine > nVis ) endLine = nVis;
   if ( startLine < 0 ) startLine = 0;
   if ( startLine >= nVis ) startLine = nVis - 1;
   if ( startLine > endLine )
@@ -2187,8 +2190,8 @@ void Fl_Text_Display::calc_line_starts( int startLine, int endLine )
       find_line_end(startPos, true, &lineEnd, &nextLineStart);
       //lineEnd = buffer()->line_end(startPos);
       //nextLineStart = min(buffer()->length(), lineEnd + 1);
-      startPos = nextLineStart;
-
+      startPos = nextLineStart;	  
+	
       if ( startPos >= bufLen ) {
           /* If the buffer ends with a newline or line break, put
            buf->length() in the next line start position (instead of
@@ -2201,7 +2204,7 @@ void Fl_Text_Display::calc_line_starts( int startLine, int endLine )
           }
           break;
       }
-      lineStarts[ line ] = startPos;
+      lineStarts[ line ] = startPos;	  
   }
 
   /* Set any entries beyond the end of the text to -1 */
@@ -3260,14 +3263,19 @@ void Fl_Text_Display::draw_line_numbers(bool clearAll)
         lineStart = mLineStarts[visLine];
         if(lineStart != -1 && (lineStart==0 || buffer()->character(lineStart-1)=='\n'))
         {
-            sprintf(lineNumString, "%*d", nCols, line);
             fl_color(text_color());
-            fl_draw(lineNumString, strlen(lineNumString), X, y);
+
+			sprintf(lineNumString, "%d", line);			
+			fl_draw(lineNumString, strlen(lineNumString), W-int(fl_width(lineNumString)), y);
+			
+			//sprintf(lineNumString, "%*d", nCols, line);
+            //fl_draw(lineNumString, strlen(lineNumString), X, y);            
+			
             line++;
         } else if(!clearAll || mContinuousWrap)
         {
             fl_color(button_color());
-            fl_rectf(X, y, W, int(fl_height()));
+            fl_rectf(X, y, W, int(fl_height()+fl_descent()));
             if (visLine == 0)
                 line++;
         }
