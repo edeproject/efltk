@@ -41,8 +41,8 @@ OUT_MAGIC := $(shell mkdir $(EFLTK_TOPDIR)/lib > /dev/null 2>&1 || :)
 
 ################################################################
 
-FLDIRS = core widgets db
-DIRS = xml images opengl
+FLDIRS = core widgets db 
+DIRS = xml images opengl net
 
 LIBNAME = libefltk
 DSOLIBNAME = $(LIBNAME)

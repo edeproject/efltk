@@ -71,10 +71,8 @@ protected:
     virtual bool save_data() { return true; }
 
     Fl_Ptr_List         m_list;
-    Fl_Data_Fields        *m_current;
+    Fl_Data_Fields     *m_current;
     int                 m_currentIndex;
-
-private:
     bool                m_eof;
 };
 

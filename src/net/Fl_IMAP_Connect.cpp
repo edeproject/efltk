@@ -155,6 +155,11 @@ static void parse_header(const Fl_String& header,Fl_String& header_name,Fl_Strin
     if (header[p-1] == ':') {
         header_name = header.sub_str(0,p-1);
         header_value = header.sub_str(p+1,header.length());
+        int hvlen = header_value.length();
+        if ((unsigned char)header_value[hvlen-1] <= '\n')
+            header_value.set_length(hvlen-1);
+        if ((unsigned char)header_value[hvlen-2] <= '\n')
+            header_value.set_length(hvlen-2);
     }
 }
 

@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x400369
+# %FirstUniqueId:	0x40036b
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -593,7 +593,8 @@ test/multitabs1 ::	test/multitabs1.o
 # %IncDir:	test
 # %ObjsDir:	test
 test/imap_connect ::	test/imap_connect.o\
-	test/Fl_IMAP_Connect.o
+	test/Fl_IMAP_Connect.o\
+	test/Fl_IMAP_DS.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %ObjectFilesLinking
@@ -1991,7 +1992,7 @@ test/socket.o : test/socket.cpp
 
 
 # %TargetType:	C++_OBJ
-# %ParentTarget:	0x400364
+# %ParentTarget:	0x40033a
 # %SourceTarget:	0x400342
 test/Fl_Socket.o : src/core/Fl_Socket.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
@@ -2128,6 +2129,13 @@ test/Fl_IMAP_Connect.o : src/net/Fl_IMAP_Connect.cpp
 # %SourceTarget:	0x400367
 lib/Fl_Memory_DS.o : src/widgets/Fl_Memory_DS.cpp
 	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x400364
+# %SourceTarget:	0x400369
+test/Fl_IMAP_DS.o : src/net/Fl_IMAP_DS.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
 # DO NOT DELETE
@@ -4620,6 +4628,7 @@ lib/Fl_Directory_DS.o :	efltk/Fl_Pixmap.h\
 	efltk/Fl_String.h\
 	efltk/Fl_Exception.h\
 	efltk/Fl_Directory_DS.h\
+	efltk/Fl_Memory_DS.h\
 	efltk/Fl_Data_Source.h\
 	efltk/Fl_Data_Fields.h\
 	efltk/Fl_Variant.h\
@@ -6840,7 +6849,8 @@ lib/Fl_FTP_Connect.o :	efltk/net/Fl_FTP_Connect.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
 	efltk/Fl_String_List.h
-test/imap_connect.o :	efltk/net/Fl_IMAP_Connect.h\
+test/imap_connect.o :	efltk/net/Fl_IMAP_DS.h\
+	efltk/net/Fl_IMAP_Connect.h\
 	efltk/Fl_Data_Fields.h\
 	efltk/Fl_Flags.h\
 	efltk/Fl_Ptr_List.h\
@@ -6852,7 +6862,9 @@ test/imap_connect.o :	efltk/net/Fl_IMAP_Connect.h\
 	efltk/Fl_String_List.h\
 	efltk/Fl_Socket.h\
 	efltk/Fl_Buffer.h\
-	efltk/Fl_Exception.h
+	efltk/Fl_Exception.h\
+	efltk/Fl_Memory_DS.h\
+	efltk/Fl_Data_Source.h
 test/Fl_IMAP_Connect.o :	efltk/net/Fl_IMAP_Connect.h\
 	efltk/Fl_Data_Fields.h\
 	efltk/Fl_Flags.h\
@@ -6879,17 +6891,33 @@ lib/Fl_IMAP_Connect.o :	efltk/net/Fl_IMAP_Connect.h\
 	efltk/Fl_Socket.h\
 	efltk/Fl_Buffer.h\
 	efltk/Fl_Exception.h
-lib/Fl_Memory_DS.o :	efltk/Fl_Exception.h\
+lib/Fl_Memory_DS.o :	efltk/Fl_Memory_DS.h\
+	efltk/Fl_Exception.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_String.h\
 	efltk/Enumerations.h\
-	efltk/Fl_Memory_DS.h\
 	efltk/Fl_Data_Source.h\
 	efltk/Fl_Data_Fields.h\
 	efltk/Fl_Flags.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
+	config.h
+test/Fl_IMAP_DS.o :	efltk/Fl_Pixmap.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
 	config.h
 
 
@@ -7104,8 +7132,9 @@ lib/Fl_Memory_DS.o :	efltk/Fl_Exception.h\
 # %TargetInfo src/net/Fl_FTP_Connect.cpp	SourceOrHeader,	UniqueId=0x400356,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/multitabs2.cpp	SourceOrHeader,	UniqueId=0x40035b,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/multitabs1.cpp	SourceOrHeader,	UniqueId=0x400362,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/net/Fl_IMAP_Connect.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400363,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/net/imap_connect.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400365,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/net/Fl_IMAP_Connect.cpp	SourceOrHeader,	UniqueId=0x400363,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/net/imap_connect.cpp	SourceOrHeader,	UniqueId=0x400365,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/widgets/Fl_Memory_DS.cpp	SourceOrHeader,	UniqueId=0x400367,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x4
@@ -7142,7 +7171,7 @@ lib/Fl_Memory_DS.o :	efltk/Fl_Exception.h\
 # %TargetInfo efltk/Fl_Widget_List.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40007d,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Widget.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40007e,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Data_Source.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40007f,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Data_Fields.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400080,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Data_Fields.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400080,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Variant.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400081,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Date_Time.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400082,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Exception.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400083,	TargetType=INC,	IDEFlags=0xe
@@ -7332,9 +7361,10 @@ lib/Fl_Memory_DS.o :	efltk/Fl_Exception.h\
 # %TargetInfo test/multitabs_glyph1.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x40035e,	TargetType=XPM,	IDEFlags=0xe
 # %TargetInfo test/tabs.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40035f,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Wordwrap_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400360,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/net/Fl_IMAP_Connect.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400366,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo src/widgets/Fl_Memory_DS.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400367,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo efltk/net/Fl_IMAP_Connect.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400366,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Memory_DS.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400368,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo src/net/Fl_IMAP_DS.cpp	SourceOrHeader,	UniqueId=0x400369,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo efltk/net/Fl_IMAP_DS.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40036a,	TargetType=INC,	IDEFlags=0xe
 
 
 # %UniqueId:	0x400001
