@@ -43,7 +43,6 @@
 // into an array and fl_list_fonts can add all the missing ones to the
 // array. This is sufficiently painful that I have not done this yet.
 
-                                 /* = 0 */
 Fl_Font fl_find_font(const char* name, int attributes )
 {
     if (!name || !*name) return 0;
@@ -74,9 +73,9 @@ Fl_Font fl_find_font(const char* name, int attributes )
             int c = (a+b)/2;
             Fl_Font testfont = list[c];
             const char* fontname = testfont->name();
-            int d = strncasecmp(name, fontname, length);
+			int d = strncasecmp(name, fontname, length);
             if (!d)
-            {
+            {				
                 // If we match a prefix of the font return it unless a better match found
                 font = testfont;
                 if (!fontname[length]) goto GOTIT;

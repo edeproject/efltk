@@ -80,7 +80,7 @@ bool Fl_Menu_::key_event = false;
 
 float Fl_Menu_::default_delay_ = 0.2f;
 int Fl_Menu_::default_effect_type_ = FL_EFFECT_ANIM;
-float Fl_Menu_::default_anim_speed_ = 1.0f;
+float Fl_Menu_::default_anim_speed_ = 1.5f;
 
 bool Fl_Menu_::effects_ = true;
 bool Fl_Menu_::subwindow_effect_ = true;

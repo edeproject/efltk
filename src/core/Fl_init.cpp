@@ -23,6 +23,23 @@
 
 #ifdef _WIN32
 # include <winsock.h>
+
+# ifndef SPI_GETMENUANIMATION
+#  define SPI_GETMENUANIMATION                0x1002
+# endif
+# ifndef SPI_GETCOMBOBOXANIMATION
+#  define SPI_GETCOMBOBOXANIMATION            0x1004
+# endif
+# ifndef SPI_GETMENUFADE
+#  define SPI_GETMENUFADE                     0x1012
+# endif
+# ifndef SPI_GETTOOLTIPFADE
+#  define SPI_GETTOOLTIPFADE                  0x1018
+# endif
+# ifndef SPI_GETTOOLTIPANIMATION
+#  define SPI_GETTOOLTIPANIMATION             0x1016
+# endif
+
 #endif
 
 
@@ -61,7 +78,7 @@ void Fl::init()
         Fl_Menu_::subwindow_effect(b_val);
         cfg.get("Menus", "Effect Type", i_val, 1);
         Fl_Menu_::default_effect_type(i_val);
-        cfg.get("Menus", "Speed", f_val, 1.0f);
+        cfg.get("Menus", "Speed", f_val, 1.5f);
         Fl_Menu_::default_anim_speed(f_val);
         cfg.get("Menus", "Delay", f_val, 0.2f);
         Fl_Menu_::default_delay(f_val);
@@ -82,9 +99,35 @@ void Fl::init()
         Fl_MDI_Window::animate(b_val);
         cfg.get("MDI", "Opaque", b_val, false);
         Fl_MDI_Window::animate_opaque(b_val);
-    }
-
+    } 
 #ifdef _WIN32
+	else {
+
+		// Get system defaults, if efltk configfile NOT found
+
+		BOOL menu_anim=false, menu_fade=false, tooltip_anim=false, tooltip_fade=false;
+	
+		SystemParametersInfo(SPI_GETMENUANIMATION, 0, (PVOID)&menu_anim, 0);		
+		if(menu_anim) {
+			SystemParametersInfo(SPI_GETMENUFADE, 0, (PVOID)&menu_fade, 0);
+		}
+		
+		SystemParametersInfo(SPI_GETTOOLTIPANIMATION, 0, (PVOID)&tooltip_anim, 0);
+		if(tooltip_anim) {
+			SystemParametersInfo(SPI_GETTOOLTIPFADE, 0, (PVOID)&tooltip_fade, 0);
+		}
+
+		Fl_Menu_::effects(menu_anim);
+		if(menu_fade) Fl_Menu_::default_effect_type(FL_EFFECT_FADE);
+		else Fl_Menu_::default_effect_type(FL_EFFECT_ANIM);
+
+		Fl_Tooltip::effects(tooltip_anim);
+		if(tooltip_fade) Fl_Tooltip::effect_type(FL_EFFECT_FADE);
+		else Fl_Tooltip::effect_type(FL_EFFECT_ANIM);
+
+
+	}
+
 	// WIN32 needs sockets to be initialized to get select funtion working...
 	WSADATA wsaData;	
 	WORD wVersionRequested = MAKEWORD( 2, 0 );
@@ -92,5 +135,7 @@ void Fl::init()
 	if(err != 0) {
 		Fl::warning("WSAStartup failed!");
 	}
+
+
 #endif
 }

@@ -45,11 +45,15 @@ public:
 static Fl_FontSize* fl_fontsize;
 static Fl_FontSize* all_fonts;
 
-Fl_FontSize::Fl_FontSize(const char* name, int size, int charset) {
+#include <stdio.h>
+
+Fl_FontSize::Fl_FontSize(const char* name, int size, int charset) 
+{	
   fl_fontsize = this;
 
   int weight = FW_NORMAL;
   int italic = 0;
+
   // may be efficient, but this is non-obvious
   switch (*name++) {
   case 'I': italic = 1; break;

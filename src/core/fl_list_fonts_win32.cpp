@@ -117,10 +117,10 @@ int Fl_Font_::sizes(int*& sizep) const
 ////////////////////////////////////////////////////////////////
 // list fonts:
 
-static char *attr_names[] = { " Bold-Italic", " Bold Italic", " Italic", " Bold", NULL};
+//static char *attr_names[] = { " Bold-Italic", " Bold Italic", " Italic", " Bold", NULL};
 static char *attr_letters = "PPIB ";
 
-static Fl_Font_* make_a_font(char attrib, const char* name)
+static Fl_Font_* make_a_font(char attrib, const char* name, CONST LOGFONT *lfont)
 {
     // see if it is one of our built-in fonts and return it:
     for (int j = 0; j < 16; j++)
@@ -135,13 +135,22 @@ static Fl_Font_* make_a_font(char attrib, const char* name)
     strcpy(n+1, name);
 
     // if this is something like "Arial Bold", strip the "Bold" part if not using it
-    char *pEnd = n + strlen(n);
+	// This doesnt work, if different locale than en_US
+	// Windows converts also font names to current locale...
+    /*char *pEnd = n + strlen(n);
     for(int i = 0; attr_names[i]; i++)
     {
         char *pTemp = strstr(n, attr_names[i]);
         if(pTemp == pEnd - strlen(attr_names[i]))
             *pTemp = '\0';
     }
+	*/
+	// This is better, locale independ way:
+	if(lfont->lfWeight>FW_NORMAL || lfont->lfItalic) {
+		char *pTemp = strrchr(n, ' ');
+		if(pTemp) *pTemp = '\0';
+	}
+    
     newfont->name_ = n;
     newfont->bold_ = newfont;
     newfont->italic_ = newfont;
@@ -149,36 +158,36 @@ static Fl_Font_* make_a_font(char attrib, const char* name)
     return newfont;
 }
 
-
 static Fl_Font* font_array = 0;
 static int num_fonts = 0;
 static int array_size = 0;
 
 static int CALLBACK enumcb(CONST LOGFONT* lplf,
-CONST TEXTMETRIC* lpntm,
-DWORD fontType,
-LPARAM p)
+	CONST TEXTMETRIC* lpntm,
+	DWORD fontType,
+	LPARAM p)
 {
     // we need to do something about different encodings of the same font
     // in order to match X!  I can't tell if each different encoding is
     // returned sepeartely or not.  This is what fltk 1.0 did:
-    if (!p && lplf->lfCharSet != ANSI_CHARSET) return 1;
+    if (lplf->lfCharSet != ANSI_CHARSET) return 1;
     //const char *name = (const char*)(lplf->lfFaceName);
-    const char *name = (const char*)(((ENUMLOGFONT *)lplf)->elfFullName);
+    const char *name = (const char*)(((ENUMLOGFONT *)lplf)->elfFullName);	
 
-    bool bNeedBold = (lplf->lfWeight <= 400);
-    if(strstr(name, " Bold") == name + strlen(name) - 5)
-        bNeedBold = true;
-    Fl_Font_* base = make_a_font(' ', name);
-    base->italic_ = make_a_font('I', name);
-    if (bNeedBold)
-    {
-        base->bold_ = make_a_font('B', name);
-        base->italic_->bold_ = base->bold_->italic_ = make_a_font('P', name);
+    bool bNeedBold = (lplf->lfWeight <= FW_NORMAL);
+	
+	// This is not true, if using some other locale than en_US...
+    //if(strstr(name, " Bold") == name + strlen(name) - 5)
+    //    bNeedBold = true;
+
+    Fl_Font_* base = make_a_font(' ', name, lplf);
+    base->italic_ = make_a_font('I', name, lplf);
+    if (bNeedBold) {
+        base->bold_ = make_a_font('B', name, lplf);
+        base->italic_->bold_ = base->bold_->italic_ = make_a_font('P', name, lplf);
     }
 
-    if (num_fonts >= array_size)
-    {
+    if (num_fonts >= array_size) {
         array_size = 2*array_size+128;
         font_array = (Fl_Font*)realloc(font_array, array_size*sizeof(Fl_Font));
     }

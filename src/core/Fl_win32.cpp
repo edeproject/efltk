@@ -1716,12 +1716,14 @@ bool fl_get_system_colors()
     ncm.cbSize = sncm;
     SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sncm, &ncm, SPIF_SENDCHANGE);
 
-    Fl_Font font; int size;
-
+    Fl_Font font=0; int size=0;
     // get font info for regular widgets from LOGFONT structure
     //  font = fl_font((const char*)ncm.lfMessageFont.lfFaceName);
     font = fl_find_font((const char*)ncm.lfMessageFont.lfFaceName);
-    if (ncm.lfMessageFont.lfWeight >= 600) font = font->bold();
+
+	if(!font) font = FL_HELVETICA; //Just to be sure!
+
+    if (ncm.lfMessageFont.lfWeight >= FW_SEMIBOLD) font = font->bold();
     if (ncm.lfMessageFont.lfItalic) font = font->italic();
     size = win_fontsize(ncm.lfMessageFont.lfHeight);
 
@@ -1735,7 +1737,7 @@ bool fl_get_system_colors()
         // get font info for menu items from LOGFONT structure
         //font = fl_font((const char*)ncm.lfMenuFont.lfFaceName);
         font = fl_find_font((const char*)ncm.lfMenuFont.lfFaceName);
-        if (ncm.lfMenuFont.lfWeight >= 600) font = font->bold();
+        if (ncm.lfMenuFont.lfWeight >= FW_SEMIBOLD) font = font->bold();
         if (ncm.lfMenuFont.lfItalic) font = font->italic();
         size = win_fontsize(ncm.lfMenuFont.lfHeight);
 
@@ -1760,7 +1762,7 @@ bool fl_get_system_colors()
         // get font info for tooltips from LOGFONT structure
         //font = fl_font((const char*)ncm.lfStatusFont.lfFaceName);
         font = fl_find_font((const char*)ncm.lfStatusFont.lfFaceName);
-        if (ncm.lfStatusFont.lfWeight >= 600) font = font->bold();
+        if (ncm.lfStatusFont.lfWeight >= FW_SEMIBOLD) font = font->bold();
         if (ncm.lfStatusFont.lfItalic) font = font->italic();
         size = win_fontsize(ncm.lfStatusFont.lfHeight);
 
