@@ -70,7 +70,8 @@ bool FilterBrightness::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelF
     int srcbpp = srcfmt->bytespp;
 
     uint32 pixel=0;
-    int16 R=0, G=0, B=0, A=255;
+    uint8 R=0, G=0, B=0, A=255;
+    int dR,dG,dB;
 
     int val = (int)(val1 * 255);
 
@@ -80,21 +81,18 @@ bool FilterBrightness::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelF
     while ( height-- ) {
         DUFFS_LOOP4(
         {
-            if(srcbpp==1) fl_disemble_rgb(ptr, srcbpp, srcfmt, pixel, (uint8&)R, (uint8&)G, (uint8&)B);
-            else fl_disemble_rgba(ptr, srcbpp, srcfmt, pixel, (uint8&)R, (uint8&)G, (uint8&)B, (uint8&)A);
+            if(srcbpp==1) fl_disemble_rgb(ptr, srcbpp, srcfmt, pixel, R, G, B);
+            else fl_disemble_rgba(ptr, srcbpp, srcfmt, pixel, R, G, B, A);
 
-            R+=val;
-            G+=val;
-            B+=val;
-            if(R > 255) R = 255;
-            if(G > 255) G = 255;
-            if(B > 255) B = 255;
-            if(R < 0) R=0;
-            if(G < 0) G=0;
-            if(B < 0) B=0;
+            dR = R+val;
+            dG = G+val;
+            dB = B+val;
+            if(dR > 255) dR = 255; else if(dR < 0) dR=0;
+            if(dG > 255) dG = 255; else if(dG < 0) dG=0;
+            if(dB > 255) dB = 255; else if(dB < 0) dB=0;
 
-            if(SYSTEM_8BIT) { ERROR_DIFF(R,G,B,*ptr); }
-            else { fl_assemble_rgba(ptr, srcbpp, srcfmt, R, G, B, A); }
+            if(SYSTEM_8BIT) { ERROR_DIFF(dR,dG,dB,*ptr); }
+            else { fl_assemble_rgba(ptr, srcbpp, srcfmt, dR, dG, dB, A); }
 
             ptr+=srcbpp;
         }, width);
@@ -117,7 +115,8 @@ bool FilterContrast::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFor
     int srcbpp = srcfmt->bytespp;
 
     uint32 pixel=0;
-    int16 R=0, G=0, B=0, A=255;
+    uint8 R=0, G=0, B=0, A=255;
+    int dR,dG,dB;
 
     ERROR_DIFF_START();
 
@@ -125,28 +124,24 @@ bool FilterContrast::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFor
     while ( height-- ) {
         DUFFS_LOOP4(
         {
-            if(srcbpp==1) fl_disemble_rgb(ptr, srcbpp, srcfmt, pixel, (uint8&)R, (uint8&)G, (uint8&)B);
-            else fl_disemble_rgba(ptr, srcbpp, srcfmt, pixel, (uint8&)R, (uint8&)G, (uint8&)B, (uint8&)A);
+            if(srcbpp==1) fl_disemble_rgb(ptr, srcbpp, srcfmt, pixel, R, G, B);
+            else fl_disemble_rgba(ptr, srcbpp, srcfmt, pixel, R, G, B, A);
 
-            R = (int((R - 127) * val1)) + 127;
-            G = (int((G - 127) * val2)) + 127;
-            B = (int((B - 127) * val3)) + 127;
-            if(R > 255) R = 255;
-            if(G > 255) G = 255;
-            if(B > 255) B = 255;
-            if(R < 0) R=0;
-            if(G < 0) G=0;
-            if(B < 0) B=0;
+            dR = (int((R - 127) * val1)) + 127;
+            dG = (int((G - 127) * val2)) + 127;
+            dB = (int((B - 127) * val3)) + 127;
+            if(dR > 255) dR = 255; else if(dR < 0) dR=0;
+            if(dG > 255) dG = 255; else if(dG < 0) dG=0;
+            if(dB > 255) dB = 255; else if(dB < 0) dB=0;
 
-            if(SYSTEM_8BIT) { ERROR_DIFF(R,G,B,*ptr); }
-            else { fl_assemble_rgba(ptr, srcbpp, srcfmt, R, G, B, A); }
+            if(SYSTEM_8BIT) { ERROR_DIFF(dR,dG,dB,*ptr); }
+            else { fl_assemble_rgba(ptr, srcbpp, srcfmt, dR, dG, dB, A); }
 
             ptr+=srcbpp;
         }, width);
         ptr += srcskip;
     }
     ERROR_DIFF_END();
-
     return true;
 }
 
@@ -166,35 +161,32 @@ bool FilterGamma::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFormat
     int srcbpp = srcfmt->bytespp;
 
     uint32 pixel=0;
-    int16 R=0, G=0, B=0, A=255;
+    uint8 R=0, G=0, B=0, A=255;
+    int dR,dG,dB;
 
     ERROR_DIFF_START();
 
     uint8 *ptr = (uint8 *)*data + rect.y() * pitch + rect.x() * srcfmt->bytespp;
     while ( height-- ) {
         DUFFS_LOOP4(
-                    {
-                        if(srcbpp==1) fl_disemble_rgb(ptr, srcbpp, srcfmt, pixel, (uint8&)R, (uint8&)G, (uint8&)B);
-                        else fl_disemble_rgba(ptr, srcbpp, srcfmt, pixel, (uint8&)R, (uint8&)G, (uint8&)B, (uint8&)A);
+        {
+            if(srcbpp==1) fl_disemble_rgb(ptr, srcbpp, srcfmt, pixel, R, G, B);
+            else fl_disemble_rgba(ptr, srcbpp, srcfmt, pixel, R, G, B, A);
 
-                        R = (int)(pow(((float)R / 255), (1 / val1)) * 255);
-                        G = (int)(pow(((float)G / 255), (1 / val2)) * 255);
-                        B = (int)(pow(((float)B / 255), (1 / val3)) * 255);
-                        if(R > 255) R = 255;
-                        if(G > 255) G = 255;
-                        if(B > 255) B = 255;
-                        if(R < 0) R=0;
-                        if(G < 0) G=0;
-                        if(B < 0) B=0;
+            dR = (int)(pow(((float)R / 255), (1 / val1)) * 255);
+            dG = (int)(pow(((float)G / 255), (1 / val2)) * 255);
+            dB = (int)(pow(((float)B / 255), (1 / val3)) * 255);
+            if(dR > 255) dR = 255; else if(dR < 0) dR=0;
+            if(dG > 255) dG = 255; else if(dG < 0) dG=0;
+            if(dB > 255) dB = 255; else if(dB < 0) dB=0;
 
-                        if(SYSTEM_8BIT) { ERROR_DIFF(R,G,B,*ptr); }
-                        else { fl_assemble_rgba(ptr, srcbpp, srcfmt, R, G, B, A); }
+            if(SYSTEM_8BIT) { ERROR_DIFF(dR,dG,dB,*ptr); }
+            else { fl_assemble_rgba(ptr, srcbpp, srcfmt, dR, dG, dB, A); }
 
-                        ptr+=srcbpp;
-                    }, width);
+            ptr+=srcbpp;
+        }, width);
         ptr += srcskip;
     }
-
     ERROR_DIFF_END();
     return true;
 }
@@ -211,33 +203,27 @@ bool FilterDesaturate::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelF
     int srcbpp = srcfmt->bytespp;
 
     uint32 pixel=0;
-    int16 R=0, G=0, B=0, A=255;
+    uint8 R=0, G=0, B=0, A=255;
+    int D;
 
     ERROR_DIFF_START();
 
     uint8 *ptr = (uint8 *)*data + rect.y() * pitch + rect.x() * srcfmt->bytespp;
     while ( height-- ) {
         DUFFS_LOOP4(
-                    {
-                        if(srcbpp==1) {
-                            fl_disemble_rgb(ptr, srcbpp, srcfmt, pixel, (uint8&)R, (uint8&)G, (uint8&)B);
-                        } else {
-                            fl_disemble_rgba(ptr, srcbpp, srcfmt, pixel, (uint8&)R, (uint8&)G, (uint8&)B, (uint8&)A);
-                        }
+        {
+            if(srcbpp==1) fl_disemble_rgb(ptr, srcbpp, srcfmt, pixel, R, G, B);
+            else fl_disemble_rgba(ptr, srcbpp, srcfmt, pixel, R, G, B, A);
 
-                        R = G = B = (31 * R + 61 * G + 8 * B) / 100;
+            D = (31 * R + 61 * G + 8 * B) / 100;
+            if(D > 255) D = 255; else if(D < 0) D=0;
 
-                        if(SYSTEM_8BIT) {
-                            ERROR_DIFF(R,G,B,*ptr);
-                        } else {
-                            fl_assemble_rgba(ptr, srcbpp, srcfmt, R, G, B, A);
-                        }
-                        ptr+=srcbpp;
-                    }, width);
+            if(SYSTEM_8BIT) { ERROR_DIFF(D,D,D,*ptr); }
+            else { fl_assemble_rgba(ptr, srcbpp, srcfmt, D, D, D, D); }
+            ptr+=srcbpp;
+        }, width);
         ptr += srcskip;
     }
-
     ERROR_DIFF_END();
-
     return true;
 }

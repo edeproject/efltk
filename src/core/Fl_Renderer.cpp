@@ -226,25 +226,19 @@ bool fl_format_equal(Fl_PixelFormat *A, Fl_PixelFormat *B) {
     return ( A->bitspp==B->bitspp && A->Rmask==B->Rmask && A->Amask==B->Amask );
 }
 
-#define SCALE2UINT8_RGB(R, G, B) \
-    if(R<0) R=0; if(R>255) R=255; \
-    if(G<0) G=0; if(G>255) G=255; \
-    if(B<0) B=0; if(B>255) B=255
-
 #define SCALE_RGB(R, G, B, dR, dG, dB) \
     int SR=R; int SG=G; int SB=B; \
-    SCALE2UINT8_RGB(SR,SG,SB); \
+    if(SR<0) SR=0; else if(SR>255) SR=255; \
+    if(SG<0) SG=0; else if(SG>255) SG=255; \
+    if(SB<0) SB=0; else if(SB>255) SB=255; \
     dR=SR; dG=SG; dB=SB
-
-#define SCALE2UINT8_RGBA(R, G, B, A) \
-    if(R<0) R=0; if(R>255) R=255; \
-    if(G<0) G=0; if(G>255) G=255; \
-    if(B<0) B=0; if(B>255) B=255; \
-    if(A<0) A=0; if(A>255) A=255
 
 #define SCALE_RGBA(R, G, B, A, dR, dG, dB, dA) \
     int SR=R; int SG=G; int SB=B; int SA=A;\
-    SCALE2UINT8_RGBA(SR,SG,SB,SA); \
+    if(SR<0) SR=0; else if(SR>255) SR=255; \
+    if(SG<0) SG=0; else if(SG>255) SG=255; \
+    if(SB<0) SB=0; else if(SB>255) SB=255; \
+    if(SA<0) SA=0; else if(SA>255) SA=255; \
     dR=SR; dG=SG; dB=SB; dA=SA
 
 /* Load pixel of the specified format from a buffer and get its R-G-B values */
