@@ -82,31 +82,6 @@ int Fl_Choice::value(int v)
 }
 
 
-#if 0
-int Fl_Choice::focus(const int* indexes, int level)
-{
-    // rather annoying kludge to try to detect if the item from an Fl_List
-    // has changed by looking for the label and user data to change:
-    Fl_Widget* save_item = item();
-    const char* save_label = 0;
-    void* save_data = 0;
-    if (save_item)
-    {
-        save_label = save_item->label();
-        save_data = save_item->user_data();
-    }
-    Fl_Menu_::focus(indexes, level);
-    if (item() == save_item)
-    {
-        if (!save_item) return 0;
-        if (save_label == save_item->label() && save_data==save_item->user_data())
-            return 0;
-    }
-    redraw();
-    return 1;
-}
-#endif
-
 static bool try_item(Fl_Choice* choice, int i)
 {
     Fl_Widget* w = choice->child(i);
