@@ -424,4 +424,42 @@ void Fl_Callback_List::do_callback(Fl_Widget *w, void *arg)
     }
 }
 
+/////////////////////////////////////
+// FL_STRING_STACK IMPLEMENTATION: //
+/////////////////////////////////////
+
+#include <efltk/Fl_String_Stack.h>
+
+void Fl_String_Stack::push(Fl_String data)
+{
+    items.append(data);
+    check_size();
+}
+
+Fl_String Fl_String_Stack::pop()
+{
+    if(empty()) return 0;
+    uint pos = items.size()-1;
+    Fl_String ret = items[pos];
+    items.remove(pos);
+    return ret;
+}
+
+void Fl_String_Stack::clear() {
+    items.clear();
+}
+
+Fl_String Fl_String_Stack::peek()
+{
+    if(empty()) return 0;
+    return items[items.size()-1];
+}
+
+void Fl_String_Stack::check_size()
+{
+    if(max_size_>0 && items.size() > max_size_) {
+        items.remove(0);
+        items.resize(max_size_);
+    }
+}
 
