@@ -250,6 +250,10 @@ SOURCE=..\src\core\fl_curve.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\core\Fl_Data_Fields.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\core\Fl_Data_Source.cpp
 # End Source File
 # Begin Source File
@@ -258,11 +262,19 @@ SOURCE=..\src\core\Fl_Date_Time.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\widgets\Fl_Date_Time_Input.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\widgets\Fl_Dial.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\widgets\Fl_Dialog.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Dialog_Data_Source.cpp
 # End Source File
 # Begin Source File
 
