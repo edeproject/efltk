@@ -933,7 +933,7 @@ bool fl_handle()
         // So anyway, do a round trip to find the correct x,y:
         // WAS: Actually, TWO round trips! Is X stoopid or what?
         case MapNotify:
-            event = FL_SHOW;
+            //event = FL_SHOW;
         case ConfigureNotify:
             {
             window = fl_find(fl_xevent.xmapping.window);
@@ -973,7 +973,7 @@ bool fl_handle()
             if (window->parent()) break;
             // turning this flag makes iconic() return true:
             Fl_X::i(window)->wait_for_expose = true;
-            event = FL_HIDE;
+            //event = FL_HIDE;
             break;               // allow add_handler to do something too
 
         case Expose:
@@ -1487,9 +1487,6 @@ int background)
         XChangeProperty(fl_display, x->xid, WM_PROTOCOLS,
                         XA_ATOM, 32, 0, (uchar*)&WM_DELETE_WINDOW, 1);
 
-        // send size limits and border:
-        x->sendxjunk();
-
         // Make it receptive to DnD:
         int version = 4;
         XChangeProperty(fl_display, x->xid, fl_XdndAware,
@@ -1515,6 +1512,9 @@ int background)
             hints.flags       |= IconPixmapHint;
         }
         XSetWMHints(fl_display, x->xid, &hints);
+
+        // send size limits and border:
+        x->sendxjunk();
     }
 }
 

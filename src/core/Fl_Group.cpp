@@ -406,7 +406,7 @@ void Fl_Group::layout()
         p = sizes(); // initialize the size array
     }
 
-    if(children() > 0 && layout_damage&FL_LAYOUT_WH)
+    if(children() > 0 && layout_damage&(FL_LAYOUT_DAMAGE|FL_LAYOUT_WH))
     {
         Fl_Widget *client = NULL;
         int dw=0, dh=0, IX=0, IR=0, IY=0, IB=0;
@@ -490,7 +490,7 @@ void Fl_Group::layout()
 
     Fl_Widget*const* a = array().data();
     Fl_Widget*const* e = a+children();
-    if ((layout_damage & FL_LAYOUT_XY) && !is_window())
+    if ((layout_damage & (FL_LAYOUT_DAMAGE|FL_LAYOUT_XY)) && !is_window())
     {
         // If this is not an Fl_Window and the xy position is changed, we must
         // call layout() on every child. This is necessary so that child

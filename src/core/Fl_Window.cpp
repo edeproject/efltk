@@ -129,7 +129,7 @@ int Fl_Window::handle(int event)
     switch (event)
     {
         case FL_SHOW:
-        {
+            {
             // Emulate the undocumented back-compatability modal() stuff:
             if (flags()&(FL_MODAL|FL_NON_MODAL))
             {
@@ -137,20 +137,21 @@ int Fl_Window::handle(int event)
                 child_of(Fl::first_window());
                 if (flags()&FL_MODAL) Fl::modal(this, false);
             }
-            Fl_Style::load_theme();
-            fl_open_display();
 
-            for(int n = 0; n < children(); n++) child(n)->layout_damage(child(n)->layout_damage()|FL_LAYOUT_XYWH);
-            layout_damage(layout_damage()|FL_LAYOUT_XYWH);
-            layout();
+            if(!shown()) {
+                Fl_Style::load_theme();
+                fl_open_display();
+                layout();
 
-            if (!shown()) {
-                create();
-                if(window_type_) Fl_WM::set_window_type(i->xid, window_type_);
+                if (!shown()) {
+                    create();
+                    if(window_type_) Fl_WM::set_window_type(i->xid, window_type_);
+                }
             }
+
             // make the child windows map first
             Fl_Group::handle(event);
-	
+
 #ifdef _WIN32
             int showtype;
             if (parent())
