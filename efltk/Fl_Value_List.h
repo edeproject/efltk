@@ -23,8 +23,6 @@
 
 */
 
-#if 0
-
 template <class T> class Fl_Value_Item {
 public:
     Fl_Value_Item(const T &t) : next(0), prev(0), stor(t) { }
@@ -225,8 +223,6 @@ public:
     inline const int count() { return items; }
     inline const bool empty() { return (count()==0); }
 };
-
-#endif
 
 #endif
 
