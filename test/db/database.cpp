@@ -390,8 +390,7 @@ void build_window()
 	g->begin();
 
 		sql_input = new Fl_Input(0,0,60,30);
-		//sql_input->value("SELECT * FROM _test_");
-		sql_input->value("SELECT * FROM kohde");
+		sql_input->value("SQL query here");
 		g->resizable(sql_input);
 	
 		send_btn = new Fl_Button(60,0,40,30,"SEND");
