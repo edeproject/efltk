@@ -31,6 +31,13 @@
 
 #ifdef _WIN32
 # include <winsock.h>
+#else
+# include <unistd.h>
+# define Sleep(x) {\
+        timeval t; \
+        t.tv_sec = 0; \
+        t.tv_usec = 1000*(x); \
+        ::select(1,0,0,0,&t); }
 #endif
 
 float Fl_Menu_Window::default_anim_speed_ = 1.5f;
@@ -146,7 +153,7 @@ void Fl_Menu_Window::layout()
 
 void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
                              int tx, int ty, int tw, int th)
-{    
+{
 #undef max
 #define max(a,b) (a) > (b) ? (a) : (b)
 
@@ -167,9 +174,9 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
     float max_steps = max( (tw-fw), (th-fh) );
     float min_steps = max( (fw-tw), (fh-th) );
     float steps = max(max_steps, min_steps);
-	if(anim_speed()>0) {
-		steps/=anim_speed();
-	}
+    if(anim_speed()>0) {
+        steps/=anim_speed();
+    }
 
     float sx = max( ((float)(fx-tx)/steps), ((float)(tx-fx)/steps) );
     float sy = max( ((float)(fy-ty)/steps), ((float)(ty-fy)/steps) );
@@ -181,13 +188,13 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
     int winc = fw < tw ? 1 : -1;
     int hinc = fh < th ? 1 : -1;
     float rx=fx,ry=fy,rw=fw,rh=fh;
-		
-	int X=fx,Y=fy,W=fw,H=fh;
-	int ox=fx,oy=fy,ow=fw,oh=fh;    
+
+    int X=fx,Y=fy,W=fw,H=fh;
+    int ox=fx,oy=fy,ow=fw,oh=fh;
 
     while(steps-- > 0) {
 
-		Fl::check();
+        Fl::check();
         if(!visible() || !animating) {
             break;
         }
@@ -195,37 +202,37 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
         ry+=(sy*yinc);
         rw+=(sw*winc);
         rh+=(sh*hinc);
-		
-		X=(int)rx;
-		Y=(int)ry;
-		W=(int)rw;
-		H=(int)rh;
 
-		if(X!=ox || Y!=oy || W!=ow || H!=oh) {
+        X=(int)rx;
+        Y=(int)ry;
+        W=(int)rw;
+        H=(int)rh;
+
+        if(X!=ox || Y!=oy || W!=ow || H!=oh) {
+            // Make drop down slower at begining
+            if((slow_down_to_h<0 || H<slow_down_to_h) ||
+               (slow_down_to_w<0 || W<slow_down_to_w))
+                Sleep(1);
+            // Make sure we copy to this window!
+            make_current();
 #ifdef _WIN32
-			// Make drop down slower at begining
-			if((slow_down_to_h<0 || H<slow_down_to_h) ||
-			   (slow_down_to_w<0 || W<slow_down_to_w)) 
-			   Sleep(1);			
+            SetWindowPos(fl_xid(this), HWND_TOPMOST, X, Y, W, H, (SWP_NOSENDCHANGING | SWP_NOZORDER | SWP_NOACTIVATE));
+            fl_copy_offscreen(0, 0, W, H, pm, tw-W, th-H);
 
-			// Make sure we copy to this window!
-			make_current();
-			SetWindowPos(fl_xid(this), HWND_TOPMOST, X, Y, W, H, (SWP_NOSENDCHANGING | SWP_NOZORDER | SWP_NOACTIVATE));
-			fl_copy_offscreen(0, 0, W, H, pm, tw-W, th-H);
-
-			// Flush the GDI
-			GdiFlush();
+            // Flush the GDI
+            GdiFlush();
 #else
-			XMoveResizeWindow(fl_display, fl_xid(this), X, Y, W, H);
-			XCopyArea(fl_display, pm, fl_xid(this), fl_gc, 0, 0, W, H, 0, 0);
-			XFlush(fl_display);
-#endif		
-		}
+            XMoveResizeWindow(fl_display, fl_xid(this), X, Y, W, H);
+            fl_copy_offscreen(0, 0, W, H, pm, tw-W, th-H);
+            //XCopyArea(fl_display, pm, fl_xid(this), fl_gc, 0, 0, W, H, 0, 0);
+            XFlush(fl_display);
+#endif
+        }
 
-		ox=X;
-		oy=Y;
-		ow=W;
-		oh=H;
+        ox=X;
+        oy=Y;
+        ow=W;
+        oh=H;
     }
 
     fl_delete_offscreen(pm);

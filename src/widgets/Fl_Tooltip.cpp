@@ -47,42 +47,42 @@ static bool recursion;
 class Fl_TooltipBox : public Fl_Menu_Window
 {
 public:
-	bool no_layout;
+    bool no_layout;
 
     Fl_TooltipBox() : Fl_Menu_Window(0, 0)
     {
-		slow_down_to_h=-1;
-		no_layout = false;
+        slow_down_to_h=-1;
+        slow_down_to_w=-1;
+        no_layout = false;
         style(Fl_Tooltip::default_style);
         set_override();
         end();
     }
     void draw();
     void layout();
-#ifdef _WIN32
     // You have to destroy the window or it will not raise next time:
     void hide() {destroy();}
-#endif
-	int handle(int e) {
-		switch(e) {
-		case FL_ENTER:
-			Fl_Tooltip::exit();
-			recent_tooltip = false;
-		}
-		return Fl_Menu_Window::handle(e);
-	}
+
+    int handle(int e) {
+        switch(e) {
+        case FL_ENTER:
+            Fl_Tooltip::exit();
+            recent_tooltip = false;
+        }
+        return Fl_Menu_Window::handle(e);
+    }
 };
 
 static Fl_TooltipBox *window = 0;
 
 void Fl_TooltipBox::layout()
 {
-	// Dont do nothing, if already visible or animating
-	if(animating || visible()) return;
+    // Dont do nothing, if already visible or animating
+    if(animating || visible()) return;
 
     fl_font(label_font(), float(label_size()));
     
-	int ww, hh;
+    int ww, hh;
 
     ww = MAX_WIDTH;
     fl_measure(label(), ww, hh, FL_ALIGN_LEFT|FL_ALIGN_WRAP|FL_ALIGN_INSIDE);
@@ -111,14 +111,14 @@ void Fl_TooltipBox::layout()
 
     resize(ox, oy, ww, hh);	
 
-	if(!no_layout) Fl_Menu_Window::layout();
+    if(!no_layout) Fl_Menu_Window::layout();
 }
 
 
 void Fl_TooltipBox::draw()
 {
-	// Dont draw window, while animating
-	if(animating) return;
+    // Dont draw window, while animating
+    if(animating) return;
 
     box()->draw(0,0,w(),h(),color(),0);
     draw_label(box()->dx()+2, box()->dy()+2, w()-box()->dw()-2, h()-box()->dh()-2, FL_ALIGN_LEFT|FL_ALIGN_WRAP|FL_ALIGN_INSIDE);
@@ -142,13 +142,13 @@ static void tooltip_timeout(void*)
 
         //if (Fl::grab()) return;
         if (!window) window = new Fl_TooltipBox;
-		
-        // this cast bypasses the normal Fl_Window label() code:
-        ((Fl_Widget*)window)->label(tip);        
-		((Fl_Widget*)window)->tooltip(tip);		
 
-		window->no_layout = true;
-		window->layout();		
+        // this cast bypasses the normal Fl_Window label() code:
+        ((Fl_Widget*)window)->label(tip);
+        ((Fl_Widget*)window)->tooltip(tip);
+
+        window->no_layout = true;
+        window->layout();
 
         if(!recent_tooltip && Fl_Tooltip::animate()) {
             if(!window->shown()) window->create();
@@ -156,13 +156,13 @@ static void tooltip_timeout(void*)
             window->anim_speed(2);
             // Roll from top.
             window->animate(window->x(), window->y()+(window->h()/2), window->w(), 1,
-                            window->x(), window->y(), window->w(), window->h());            
+                            window->x(), window->y(), window->w(), window->h());
         }
-		window->no_layout = false;
-		
-		window->show();
-		window->resize(window->x(), window->y(), window->w(), window->h());
-		((Fl_Menu_Window*)window)->layout();
+        window->no_layout = false;
+
+        window->show();
+        window->resize(window->x(), window->y(), window->w(), window->h());
+        ((Fl_Menu_Window*)window)->layout();
     }
 
     Fl::remove_timeout(recent_timeout);
@@ -259,11 +259,9 @@ void Fl_Tooltip::enter(Fl_Widget* wid, int x,int y,int w,int h,
 
   // popup the tooltip immediately if it was recently up:
   if (recent_tooltip || Fl_Tooltip::delay() < .1) {
-#ifdef _WIN32
     // possible fix for the Windows titlebar, it seems to want the
     // window to be destroyed, moving it messes up the parenting:
     if(window) window->hide();
-#endif
     tooltip_timeout(0);
   } else {
     if(window) window->hide();
