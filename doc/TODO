@@ -8,6 +8,10 @@ Before RC1:
 * Remove all code what we cant maintenance,
   Ie. Database, sockets, And some other non-gui stuff.
   This is ONLY due to lack of developers :(
+  - Or atleast moce them to:
+    unstable/db, unstable/net, unstable/......
+  
+* Re-implement menus - totally!
   
 * Complete and test UTF-8 related code for all platforms
 
