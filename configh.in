@@ -228,6 +228,9 @@
 # define sqrtf(a)	float(sqrt(float(a)))
 #endif
 
+/* Defined if exceptions enabled */
+#define __FL_EXCEPTIONS__ 0
+
 #endif /*EFLTK_CONFIG_FILE_INCLUDED*/
 
 /*

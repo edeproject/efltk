@@ -385,6 +385,14 @@ if test x$have_dlopen = xyes; then
     AC_DEFINE(HAVE_DLOPEN)
 fi
 
+AC_ARG_ENABLE(exceptions, [  --disable-exceptions    disable exception handling inside efltk lib],,enable_exceptions=yes)
+if test "$enable_exceptions" = yes; then
+	AC_DEFINE(__FL_EXCEPTIONS__)
+else
+	CFLAGS="$CFLAGS -fno-exceptions"
+        CXXFLAGS="$CXXFLAGS -fno-exceptions"
+fi
+
 AC_ARG_ENABLE(asm, [  --disable-asm           disable all ASM code inside efltk lib],,enable_asm=yes)
 if test "$enable_asm" != yes; then
         AC_DEFINE(DISABLE_ASM)
@@ -445,17 +453,6 @@ if test -n "$GXX"; then
 	#      the code by a few hundred bytes.
         DEBUGFLAG="-Os "
     fi
-
-    # See if GCC supports -fno-exceptions...
-    # WAS: this DOES make a big difference in the code size!
-    echo "Testing if GCC supports -fno-exceptions..."
-    OLDCFLAGS="$CFLAGS"
-    CFLAGS="$CFLAGS -fno-exceptions"
-    AC_TRY_COMPILE(,,
-	CXXFLAGS="$CXXFLAGS -fno-exceptions"
-	echo "Congratulations - your GCC supports exceptions; disabling them for FLTK...",
-	CFLAGS="$OLDCFLAGS"
-	echo "GCC does not support exceptions...")
 
     # See if we are running Solaris; if so, try the -fpermissive option...
     if test $uname = SunOS; then
