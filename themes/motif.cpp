@@ -319,7 +319,12 @@ extern "C" bool fltk_theme()
 
     Fl_Style* s;
 
+    if ((s = Fl_Style::find("listview"))) {
+        s->color = fl_lighter(FL_GRAY);
+    }
+
     if ((s = Fl_Style::find("browser"))) {
+        s->color = fl_lighter(FL_GRAY);
         s->focus_box = FL_DOTTED_FRAME;
         s->glyph = browser_glyph;
     }
