@@ -221,6 +221,7 @@ int main()
         hugemenu[i].text = strdup(buf);
     }
 
+#if 1
     //Fl_Window w(400,400,"MDI TEST");
     Fl_Main_Window mainwin(600,400);
 
@@ -275,7 +276,6 @@ int main()
     Fl_Workspace s(10,30,380,360);
     // Viewport doesnt...
     //Fl_MDI_Viewport s(10,30,380,360);
-    s.box(FL_THIN_DOWN_BOX);
 
     // Set MDI workspace to mainwindow's central widget
     mainwin.view(&s);
@@ -299,7 +299,23 @@ int main()
     mainwin.show();
 
     s.redraw_all();
+#else
 
+    Fl_Window w(500,500,"testi");
+
+    Fl_Menu_Bar b(10,400,100,20,"bar");
+    b.menu(menutable);
+
+    Fl_Workspace s(10,30,380,360, "testi2");
+    w.show();
+
+    Fl_MDI_Window *c;
+    c = add_win(s.viewport(), false,"non-resizable");
+    c->position(20,10);
+    //c->detach();
+
+
+#endif
     return Fl::run();
 }
 

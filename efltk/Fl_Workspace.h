@@ -38,6 +38,8 @@ typedef Fl_Window Fl_ViewportType;
 class Fl_MDI_Viewport : public Fl_ViewportType
 {	
 public:
+    static Fl_Named_Style* default_style;
+
     /*!
       Constructs widget with given coordinates.
     */
@@ -191,7 +193,9 @@ private:
    */
 class Fl_Workspace : public Fl_WorkType  {
 public:
-	/*!
+    static Fl_Named_Style* default_style;
+
+    /*!
       Constructs widget with given coordinates.
     */
     Fl_Workspace(int x, int y, int w, int h, const char *label = 0);

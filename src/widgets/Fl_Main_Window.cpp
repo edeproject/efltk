@@ -1,7 +1,7 @@
 #include <efltk/Fl_Main_Window.h>
 
 Fl_Main_Window::Fl_Main_Window(int x, int y, int w, int h, const char *l)
-    : Fl_Double_Window(x,y,w,h,l)
+    : Fl_Main_WindowType(x,y,w,h,l)
 {
     pack_ = new Fl_Pack(0,0,w,h);
     pack_->end();
@@ -15,7 +15,7 @@ Fl_Main_Window::Fl_Main_Window(int x, int y, int w, int h, const char *l)
 }
 
 Fl_Main_Window::Fl_Main_Window(int w, int h, const char *l)
-    : Fl_Double_Window(w,h,l)
+    : Fl_Main_WindowType(w,h,l)
 {
     pack_ = new Fl_Pack(0,0,w,h);
     pack_->end();

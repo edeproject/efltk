@@ -790,7 +790,7 @@ bool fl_handle()
                 }
             }
             Fl_X::i(window)->expose(fl_xevent.xexpose.x, fl_xevent.xexpose.y,
-                fl_xevent.xexpose.width, fl_xevent.xexpose.height);
+                                    fl_xevent.xexpose.width, fl_xevent.xexpose.height);
             return true;
 
         case ButtonPress:

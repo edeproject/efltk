@@ -26,6 +26,8 @@ class Fl_MDI_Window;
 class Fl_MDI_Titlebar : public Fl_Group {
     friend class Fl_MDI_Window;
 public:
+    static Fl_Named_Style* default_style;
+
     Fl_MDI_Titlebar(int x,int y,int w,int h,const char *l=0);
 
     virtual void draw();
@@ -35,7 +37,9 @@ public:
     static int ex,ey;
     static int old_rx,old_ry;
 
-		Fl_Button *close() { return &_close; }
+    Fl_Button *close() { return &_close; }
+    Fl_Button *min() { return &_min; }
+    Fl_Button *max() { return &_max; }
 
 protected:
     Fl_Button _close, _max, _min;
@@ -47,6 +51,8 @@ class Fl_MDI_Window : public Fl_Window {
     friend class Fl_Workspace;
     friend class Fl_MDI_Titlebar;
 public:
+    static Fl_Named_Style* default_style;
+
     Fl_MDI_Window(int x, int y, int w, int h, const char *label);
     virtual ~Fl_MDI_Window();
 
@@ -113,8 +119,11 @@ private:
     void check_move_boundary(int &x, int &y);
     void check_size_boundary(int &w, int &h);
 
-    void animate_min(int mx, int my, int mw, int mh);
-    void animate_max(int mx, int my, int mw, int mh);
+    void animate(int fx, int fy, int fw, int fh,
+                 int tx, int ty, int tw, int th);
+
+    //void animate_min(int mx, int my, int mw, int mh);
+    //void animate_max(int mx, int my, int mw, int mh);
 
     void _resize(int x, int y, int w, int h);
     void _position(int x, int y);

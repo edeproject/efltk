@@ -100,9 +100,21 @@ void draw_min(Fl_Color col)
 	fl_closepath();
 }
 
+static void title_revert(Fl_Style* s) {
+    s->box = FL_HOR_SHADE_FLAT_BOX;
+    s->button_box  = FL_THIN_UP_BOX;
+    s->label_color = FL_WHITE;
+    s->label_font  = FL_HELVETICA_BOLD;
+    s->color       = fl_rgb(0,0,200);
+}
+static Fl_Named_Style title_style("MDI_Titlebar", title_revert, &Fl_MDI_Titlebar::default_style);
+Fl_Named_Style* Fl_MDI_Titlebar::default_style = &::title_style;
+
 Fl_MDI_Titlebar::Fl_MDI_Titlebar(int x,int y,int w,int h,const char *l)
-: Fl_Group(x,y,w,h,l),_close(0,0,0,0),_max(0,0,0,0),_min(0,0,0,0)
+    : Fl_Group(x,y,w,h,l),_close(0,0,0,0),_max(0,0,0,0),_min(0,0,0,0)
 {
+    style(default_style);
+
     _owner = (Fl_MDI_Window *)parent();
 
     fl_add_symbol("xx", draw_cl, 1);
@@ -111,17 +123,17 @@ Fl_MDI_Titlebar::Fl_MDI_Titlebar(int x,int y,int w,int h,const char *l)
 
     _close.label_type(FL_SYMBOL_LABEL);
     _close.label("@xx");
-    _close.box(FL_THIN_UP_BOX);
+    _close.box(button_box());
     _close.callback(closeMdiWin, _owner);
 
     _max.label_type(FL_SYMBOL_LABEL);
     _max.label("@mx");
-    _max.box(FL_THIN_UP_BOX);
+    _max.box(button_box());
     _max.callback(maxMdiWin, _owner);
 
     _min.label_type(FL_SYMBOL_LABEL);
     _min.label("@mi");
-    _min.box(FL_THIN_UP_BOX);
+    _min.box(button_box());
     _min.callback(minMdiWin, _owner);
 
     _close.show();
@@ -201,32 +213,32 @@ int Fl_MDI_Titlebar::old_ry=0;
 int Fl_MDI_Titlebar::handle(int event) 
 {
     static int xx,yy,rx,ry;
-	static bool moving=false;
+    static bool moving=false;
 
     rx = Fl::event_x_root();
     ry = Fl::event_y_root();
 
     switch(event)
     {
-    case FL_PUSH: {		
-		if(Fl::event_button()>1) return 1;		
-		
-		// Send event to widgets...
+    case FL_PUSH: {
+        if(Fl::event_button()>1) return 1;
+
+        // Send event to widgets...
         for(int i = children(); i--;) {
-	        Fl_Widget* child = this->child(i);
-			// ignore widgets we are not pointing at:
-			if (Fl::event_x() < child->x()) continue;
-			if (Fl::event_x() >= child->x()+child->w()) continue;
-			if (Fl::event_y() < child->y()) continue;
-			if (Fl::event_y() >= child->y()+child->h()) continue;
-			// see if it wants the event:
-			if (child->send(event)) return true;
-			// quit when we reach a widget that claims mouse points at it,
-			// so we don't pass the events to widgets "hidden" behind that one.
-			if(event != FL_ENTER && event != FL_MOVE && child->contains(Fl::belowmouse())) return false;		
+            Fl_Widget* child = this->child(i);
+            // ignore widgets we are not pointing at:
+            if (Fl::event_x() < child->x()) continue;
+            if (Fl::event_x() >= child->x()+child->w()) continue;
+            if (Fl::event_y() < child->y()) continue;
+            if (Fl::event_y() >= child->y()+child->h()) continue;
+            // see if it wants the event:
+            if (child->send(event)) return true;
+            // quit when we reach a widget that claims mouse points at it,
+            // so we don't pass the events to widgets "hidden" behind that one.
+            if(event != FL_ENTER && event != FL_MOVE && child->contains(Fl::belowmouse())) return false;
         }
 
-		if(_owner->minimized()) return 0;
+        if(_owner->minimized()) return 0;
 
         fl_cursor(FL_CURSOR_MOVE);
         old_rx = rx - window()->x();
@@ -234,34 +246,34 @@ int Fl_MDI_Titlebar::handle(int event)
         ex = Fl::event_x();
         ey = Fl::event_y();
 
-		moving=true;		
+        moving=true;
         return 1;
     }
 
     case FL_RELEASE: {
-		if(when()&FL_WHEN_CHANGED || when()&FL_WHEN_RELEASE) do_callback();
+        if(when()&FL_WHEN_CHANGED || when()&FL_WHEN_RELEASE) do_callback();
         fl_cursor(FL_CURSOR_DEFAULT);
-		moving=false;
+        moving=false;
         return 1;
     }
 
-	case FL_DRAG: {
-		if(!moving) return 1;
-		if ((rx != old_rx) || (ry != old_ry)) {
+    case FL_DRAG: {
+        if(!moving) return 1;
+        if ((rx != old_rx) || (ry != old_ry)) {
             xx =  rx - old_rx;
             yy =  ry - old_ry;
             _owner->_position(xx,yy);
         }
         return 1;
     }
-/*    case FL_MOVE: {
-        return 0;
-    }
-    case FL_ENTER: {
-        return 0;
-    }*/
+    /*    case FL_MOVE: {
+     return 0;
+     }
+     case FL_ENTER: {
+     return 0;
+     }*/
 
-	case FL_LEAVE: {
+    case FL_LEAVE: {
         fl_cursor(FL_CURSOR_DEFAULT);
         return 1;
     }
@@ -270,12 +282,20 @@ int Fl_MDI_Titlebar::handle(int event)
     }
 }
 
+static void revert(Fl_Style* s) {
+    s->box = FL_THICK_UP_BOX;
+}
+static Fl_Named_Style style("MDI_Window", revert, &Fl_MDI_Window::default_style);
+Fl_Named_Style* Fl_MDI_Window::default_style = &::style;
+
 Fl_MDI_Window::Fl_MDI_Window(int x, int y, int w, int h, const char *label)
-: Fl_Window(x,y,w,h, _cap),
-_titlebar(2,2,w,20, _cap)
+    : Fl_Window(x,y,w,h, _cap),
+    _titlebar(2,2,w,20, _cap)
 {
+    style(default_style);
+
     label_type(FL_NO_LABEL);
-    box(FL_THICK_UP_BOX);
+    box();
 
     size(w+box()->dw(), h+titlebar()->h()+box()->dh());
 
@@ -286,10 +306,6 @@ _titlebar(2,2,w,20, _cap)
     //_anim_opaque = true;
 
     _titlebar.align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
-    _titlebar.box(FL_HOR_SHADE_FLAT_BOX);
-    _titlebar.label_color(FL_WHITE);
-    _titlebar.label_font(FL_HELVETICA_BOLD);
-    _titlebar.color(fl_rgb(0,0,200));
     _titlebar.parent(this);
 
     // Set flag to identify our window
@@ -350,20 +366,20 @@ _titlebar(2,2,w,20, _cap)
 
 Fl_MDI_Window::~Fl_MDI_Window()
 {
-	_owner->remove(this);
-	if(_owner->aot() == this)
-		_owner->aot(0);
+    _owner->remove(this);
+    if(_owner->aot() == this)
+        _owner->aot(0);
 
-	if(_owner->maximum() == this)
-		_owner->maximum(0);	
+    if(_owner->maximum() == this)
+        _owner->maximum(0);
 
-  if(_owner->_top == this)
-      _owner->_top = 0;
+    if(_owner->_top == this)
+        _owner->_top = 0;
 
-  delete prv;
-  prv=0;
+    delete prv;
+    prv=0;
 
-	destroy();
+    destroy();
 }
 
 Fl_Group *Fl_MDI_Window::view(Fl_Group *v)
@@ -382,6 +398,8 @@ void Fl_MDI_Window::draw()
 {
     if(damage() & ~FL_DAMAGE_CHILD) {
 
+        fl_push_clip(0,0,w(),h());
+
         draw_frame();
 
         if(prv->visible())
@@ -389,7 +407,7 @@ void Fl_MDI_Window::draw()
         if(_titlebar.visible())
             draw_child(_titlebar);
 
-        //fl_pop_clip();
+        fl_pop_clip();
     } else {
         if(prv->visible())
             update_child(*prv);
@@ -486,10 +504,10 @@ void Fl_MDI_Window::_resize(int x, int y, int w, int h)
         if(w<_minw) w=_minw;
         if(h<_minh) h=_minh;
         check_size_boundary(w,h);
-		}
+    }
 
-		if(x==this->x()&&y==this->y()&&w==this->w()&&h==this->h())
-			return;
+    if(x==this->x()&&y==this->y()&&w==this->w()&&h==this->h())
+        return;
 
     resize(x,y,w,h);
     layout_damage(FL_LAYOUT_DAMAGE|FL_LAYOUT_XYWH);
@@ -498,14 +516,18 @@ void Fl_MDI_Window::_resize(int x, int y, int w, int h)
 void Fl_MDI_Window::_position(int x, int y)
 {
     if(!_toplevel) {
-			check_move_boundary(x,y);
-		}
-		
-		if(x==this->x()&&y==this->y())
-			return;
-		
+        check_move_boundary(x,y);
+    }
+
+    if(x==this->x()&&y==this->y())
+        return;
+
+    //this->x(x);
+    //this->y(y);
     position(x,y);
-    layout_damage(FL_LAYOUT_DAMAGE|FL_LAYOUT_XY);
+    //layout_damage(FL_LAYOUT_DAMAGE|FL_LAYOUT_XY);
+    //layout();
+    //_owner->relayout();
 }
 
 void Fl_MDI_Window::check_size_boundary(int &w, int &h)
@@ -946,7 +968,7 @@ static int px,py,pw,ph;
 #ifdef _WIN32
 static int old_f;
 #else
-static GC invertGc=0;
+static GC invertGc=0, saved;
 #endif
 void set_overlay_func() {
 #ifdef _WIN32
@@ -964,19 +986,19 @@ void set_overlay_func() {
         //invertGc = XCreateGC(fl_display, RootWindow(fl_display, fl_screen), mask, &v);
         invertGc = XCreateGC(fl_display, fl_window, mask, &v);
     }
+    saved=fl_gc;
+    fl_gc=invertGc;
 #endif
 }
 void set_def_func() {
 #ifdef _WIN32
     SetROP2(fl_gc, old_f);
+#else
+    fl_gc=saved;
 #endif
 }
 static void draw_current_rect() {
-#ifdef _WIN32
     fl_rect(px, py, pw, ph);
-#else
-    XDrawRectangle(fl_display, fl_window, invertGc, px, py, pw, ph);
-#endif
 }
 void overlay_clear() { if (pw > 0) { draw_current_rect(); pw = 0; } }
 void overlay_rect(int x, int y, int w, int h) {
@@ -994,23 +1016,34 @@ void overlay_rect(int x, int y, int w, int h) {
 }
 
 #define STEP_DIV 15
-void Fl_MDI_Window::animate_max(int mx, int my, int mw, int mh)
+void Fl_MDI_Window::animate(int fx, int fy, int fw, int fh,
+                            int tx, int ty, int tw, int th)
 {
-    double steps = max((mw-w()),(mh-h())); steps/=STEP_DIV;
-    double sx = max( ((double)(x()-mx)/steps), ((double)(mx-x())/steps));
-    double sy = max( ((double)(y()-my)/steps), ((double)(my-y())/steps));
-    double sw = (double)(mw-w())/steps;
-    double sh = (double)(mh-h())/steps;
+# undef max
+# define max(a,b) (a) > (b) ? (a) : (b)
+    double max_steps = max( (tw-fw), (th-fh) );
+    double min_steps = max( (fw-tw), (fh-th) );
+    double steps = max(max_steps, min_steps);
+    steps/=STEP_DIV;
 
-    int xinc = x() < mx ? 1 : -1;
-    int yinc = y() < my ? 1 : -1;
-    double rx=x(),ry=y(),rw=w(),rh=h();
+    double sx = max( ((double)(fx-tx)/steps), ((double)(tx-fx)/steps) );
+    double sy = max( ((double)(fy-ty)/steps), ((double)(ty-fy)/steps) );
+    double sw = max( ((double)(fw-tw)/steps), ((double)(tw-fw)/steps) );
+    double sh = max( ((double)(fh-th)/steps), ((double)(th-fh)/steps) );
 
+    int xinc = fx < tx ? 1 : -1;
+    int yinc = fy < ty ? 1 : -1;
+    int winc = fw < tw ? 1 : -1;
+    int hinc = fh < th ? 1 : -1;
+    double rx=fx,ry=fy,rw=fw,rh=fh;
+
+    timeval t;
     while(steps-- > 0) {
+
         rx+=(sx*xinc);
         ry+=(sy*yinc);
-        rw+=sw;
-        rh+=sh;
+        rw+=(sw*winc);
+        rh+=(sh*hinc);
 
         if(_anim_opaque) {
             resize((int)rx, (int)ry, (int)rw, (int)rh);
@@ -1018,55 +1051,26 @@ void Fl_MDI_Window::animate_max(int mx, int my, int mw, int mh)
         } else {
             _owner->make_current();
             overlay_rect((int)rx, (int)ry, (int)rw, (int)rh);
-            usleep(1000); //This is needed only in Linux... Otherwise seems to be too fast?!?!
+            t.tv_sec = 0;
+            t.tv_usec = 1000;
+            ::select(0+1,0,0,0, &t);
         }
+
         XSync(fl_display, false);
         Fl::check();
     }
     if(!_anim_opaque) overlay_clear();
-    resize(mx,my,mw,mh);
-}
-
-void Fl_MDI_Window::animate_min(int mx, int my, int mw, int mh)
-{
-    double steps = max((h()-mh),w()-mw); steps/=STEP_DIV;
-    double sx = max( ((double)(x()-mx)/steps), ((double)(mx-x())/steps));
-    double sy = max( ((double)(y()-my)/steps), ((double)(my-y())/steps));
-    double sw = (double)(w()-mw)/steps;
-    double sh = (double)(h()-mh)/steps;
-
-    int xinc = x() > mx ? -1 : 1;
-    int yinc = y() > my ? -1 : 1;
-    double rx=x(),ry=y(),rw=w(),rh=h();
-    while(steps-- > 0) {
-        rx+=(sx*xinc);
-        ry+=(sy*yinc);
-        rw-=sw;
-        rh-=sh;
-
-        if(_anim_opaque) {
-            resize((int)rx, (int)ry, (int)rw, (int)rh);
-            layout();
-        } else {
-            _owner->make_current();
-            overlay_rect((int)rx, (int)ry, (int)rw, (int)rh);
-            usleep(1000); //This is needed only in Linux... Otherwise seems to be too fast?!?!
-        }
-        XSync(fl_display, false);
-        Fl::check();
-    }
-    if(!_anim_opaque) overlay_clear();
-    resize(mx,my,mw,mh);
+    resize(tx,ty,tw,th);
 }
 
 void Fl_MDI_Window::minmax()
-{	
+{
     if(_maximized) {
         int _W,_H;
         _W=_owner->w(); _H=_owner->h();
 
         if(_animate)
-            animate_max(0, 0, _W, _H);
+            animate(x(), y(), w(), h(), 0, 0, _W, _H);
         else
             resize(0, 0, _W, _H);
         _owner->maximum(this);
@@ -1089,7 +1093,7 @@ void Fl_MDI_Window::minmax()
         if(_oy+_oh > _owner->h())
             _oy=_oy-((_oy+_oh)-_owner->h());
         if(_animate) {
-            animate_min(_ox, _oy, _ow, _oh);
+            animate(x(), y(), w(), h(), _ox, _oy, _ow, _oh);
         } else
             resize(_ox, _oy, _ow, _oh);
     }
@@ -1121,12 +1125,12 @@ void Fl_MDI_Window::minimize(bool val)
 {
     if(_toplevel) return;
 
-	if(_maximized) {
-		_maximized=false;
-		_titlebar.h(old_title_h);
+    if(_maximized) {
+        _maximized=false;
+        _titlebar.h(old_title_h);
         _titlebar.label_size(old_title_fh);
-	}
-	if(_owner->_max==this) _owner->_max=0;
+    }
+    if(_owner->_max==this) _owner->_max=0;
 
     if(!val && _minimized)
     {
@@ -1134,7 +1138,7 @@ void Fl_MDI_Window::minimize(bool val)
         _maximized = false;
 
         if(_animate) {
-            animate_max(_hox, _hoy, _how, _hoh);
+            animate(x(), y(), w(), h(), _hox, _hoy, _how, _hoh);
         } else
             resize(_hox,_hoy,_how,_hoh);
 
@@ -1149,7 +1153,8 @@ void Fl_MDI_Window::minimize(bool val)
 
         if(_animate)
         {
-            animate_min(0,_owner->h()-_titlebar.h()+4, 100, _titlebar.h()+4);
+            animate(x(), y(), w(), h(),
+                    0,_owner->h()-_titlebar.h()+4, 100, _titlebar.h()+4);
         } else
             resize(0,_owner->h()-_titlebar.h()+4, 100, _titlebar.h()+4);
 

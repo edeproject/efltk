@@ -2,6 +2,7 @@
 #define _FL_MAINWIN_H_
 
 #include "Fl_Double_Window.h"
+#include "Fl_Window.h"
 #include "Fl_Button.h"
 #include "Fl_Box.h"
 #include "Fl_Widget.h"
@@ -11,7 +12,10 @@
 #include "Fl_Menu_Bar.h"
 #include "Fl_Tool_Bar.h"
 
-class Fl_Main_Window : public Fl_Double_Window
+typedef Fl_Window Fl_Main_WindowType;
+//typedef Fl_Double_Window Fl_Main_WindowType;
+
+class Fl_Main_Window : public Fl_Main_WindowType
 {
 public:
     Fl_Main_Window(int x, int y, int w, int h, const char *l=0);

@@ -580,7 +580,7 @@ int MenuWindow::handle(int event)
 
         index=-1;
         widget = find_widget(Fl::event_x(), Fl::event_y(), &index);
-        if( (index!=selected_ && index!=-1) || is_parent(index) ) {
+        if( (index!=selected_ && index!=-1) || (is_parent(index)&&index!=selected_) ) {
             selected_=index;
             redraw(FL_DAMAGE_CHILD);
         }

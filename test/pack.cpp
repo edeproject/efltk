@@ -56,17 +56,22 @@ void type_cb(Fl_Light_Button*, long v) {
 void spacing_cb(Fl_Value_Slider*o, long) {
   pack->spacing(int(o->value()));
   pack->relayout();
+  pack->redraw();
 }
 
 int main(int argc, char **argv) {
  Fl_Window *w;
- {Fl_Window* o = new Fl_Window(365, 525);
+ {
+     Fl_Window* o = new Fl_Window(365, 525);
   w = o;
   scroll = new Fl_Scroll(10,10,345,285);
+  w->resizable(scroll);
+
   {Fl_Pack* o = new Fl_Pack(10, 10, 345, 285);
    pack = o;
-   o->box(FL_DOWN_BOX);
-   //o->box(FL_ENGRAVED_FRAME);
+  o->box(FL_DOWN_BOX);
+  //o->box(FL_ENGRAVED_FRAME);
+
    (void) new Fl_Button(35, 35, 25, 25, "b1");
    (void) new Fl_Button(45, 45, 25, 25, "b2");
    (void) new Fl_Button(55, 55, 25, 25, "b3");
@@ -92,9 +97,11 @@ int main(int argc, char **argv) {
    (void) new Fl_Button(255, 255, 25, 25, "b23");
    (void) new Fl_Button(265, 265, 25, 25, "b24");
    o->end();
-   w->resizable(o);
+   scroll->resizable(o);
+
   }
   scroll->end();
+
   {Fl_Light_Button* o = new Fl_Light_Button(10, 325, 175, 25, "HORIZONTAL");
    o->type(FL_RADIO_BUTTON);
    o->callback((Fl_Callback*)type_cb, (void*)(Fl_Pack::HORIZONTAL));

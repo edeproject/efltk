@@ -148,7 +148,7 @@ void Fl_Pack::layout()
         if (b < y || !resizable() && !saw_vertical) H -= (b-y);
         size(W,H);
     }
-    redraw();
+    //redraw();
 }
 
 

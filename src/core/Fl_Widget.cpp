@@ -192,7 +192,6 @@ void Fl_Widget::redraw()
     redraw(FL_DAMAGE_ALL);
 }
 
-
 void Fl_Widget::redraw(uchar flags)
 {
     if (!(flags & ~damage_)) return;

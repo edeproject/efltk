@@ -568,12 +568,14 @@ int Fl_Text_Editor::handle(int event)
             case FL_KEY:
                 return handle_key();
 
-            case FL_PASTE:
-                buffer()->remove_selection();
-                if (insert_mode()) insert(Fl::event_text());
-                else overstrike(Fl::event_text());
-                show_insert_position();
-                return 1;
+        case FL_PASTE:
+            if(!Fl::event_length() || !Fl::event_text()) return 0;
+
+            buffer()->remove_selection();
+            if (insert_mode()) insert(Fl::event_text());
+            else overstrike(Fl::event_text());
+            show_insert_position();
+            return 1;
 
                 // CET - FIXME - this will clobber the window's current cursor state!
                 //    case FL_ENTER:

@@ -70,6 +70,9 @@ void Fl_Menu_Bar::draw()
 
     if(!children()) { last_highlight_ = last_selected_ = -1; return; }
 
+    //if(highlight_>=0) child(highlight_)->set_damage(FL_DAMAGE_HIGHLIGHT);
+    //if(last_highlight_>=0) child(last_highlight_)->set_damage(FL_DAMAGE_HIGHLIGHT);
+
     int X=0, Y=0, W=w(), H=h();
     box()->inset(X,Y,W,H);
     fl_push_clip(X,Y,W,H);
@@ -92,6 +95,7 @@ void Fl_Menu_Bar::draw()
             widget->highlight_label_color(highlight_label_color());
 
             button_box()->draw(widget->x(), widget->y(), widget->w(), widget->h(), button_color(), f);
+            //update_child(*widget);
             fl_push_matrix();
             fl_translate(widget->x(), widget->y());
             widget->draw();
@@ -109,6 +113,15 @@ void Fl_Menu_Bar::draw()
 
 void Fl_Menu_Bar::layout()
 {
+    if (!layout_damage()) return;
+
+    // we only need to do something special if the group is resized:
+    if (!(layout_damage() & (FL_LAYOUT_WH|FL_LAYOUT_DAMAGE)) || !children())
+    {
+        Fl_Group::layout();
+        if (!(layout_damage() & FL_LAYOUT_DAMAGE)) return;
+    }
+
     lines=1;
     if(do_layout) h(0);
     int X=box()->dx()+leading()/2;

@@ -136,6 +136,7 @@ void Fl_Tool_Bar::layout()
                 i->copy_label(w->tooltip()?w->tooltip():w->label());
                 i->image(w->image());
                 i->user_data(w);
+                i->activate(w->active());
             }
         }
         menu_->end();

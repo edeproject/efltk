@@ -223,6 +223,12 @@ extern "C" bool fltk_theme()
     if ((s = Fl_Style::find("highlight button"))) {
         s->box = hl;
     }
+    if ((s = Fl_Style::find("workspace"))) {
+        s->box = FL_THIN_DOWN_BOX;;
+    }
+    if ((s = Fl_Style::find("mdi viewport"))) {
+        s->box = flat;
+    }
     if ((s = Fl_Style::find("panel"))) {
         s->box = up;
     }

@@ -314,7 +314,7 @@ void Fl_Widget::redraw(int X, int Y, int W, int H)
 void Fl_X::expose(int X, int Y, int W, int H)
 {
     // Ignore if window already marked as completely damaged:
-    if (window->damage() & FL_DAMAGE_ALL) ;
+    if (window->damage() & FL_DAMAGE_ALL);
     // Detect expose events that cover the entire window:
     else if (X<=0 && Y<=0 && W>=window->w() && H>=window->h())
     {
