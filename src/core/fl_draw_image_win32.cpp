@@ -494,4 +494,8 @@ uint8 *Fl_Renderer::data_from_window(Window src, Fl_Rect &rect, int &bitspp)
 	return data;
 }
 
+Window Fl_Renderer::root_window() {
+    return GetDesktopWindow();
+}
+
 #endif // _WIN32

@@ -145,15 +145,14 @@ uchar* make_image()
 }
 
 int main(int argc, char *argv[])
-{	
-	/*
-	Fl_Renderer::system_init();
-	Fl_Rect r(0,0,Fl::w(),Fl::h());
-	int bpp=0;
-	uint8 *d = Fl_Renderer::data_from_window(GetDesktopWindow(), r, bpp); 
-	printf("BPP %d\n", bpp);
-	Fl_Image *i = new Fl_Image(Fl::w(),Fl::h(), Fl_Renderer::system_format(), d);	
-	*/
+{
+    Fl_Renderer::system_init();
+
+    Fl_Rect rect(0,0,Fl::w(),Fl::h());
+    int bpp=0;
+    uint8 *data = Fl_Renderer::data_from_window(Fl_Renderer::root_window(), rect, bpp);
+    Fl_Image *screen = new Fl_Image(Fl::w(),Fl::h(), Fl_Renderer::system_format(), data);
+
 #if HAVE_PNG
     // Initialize extension for PNG
     fl_init_images_lib();
@@ -162,7 +161,7 @@ int main(int argc, char *argv[])
     //////////////////////////////
     // Bouncing ball...
     Fl_Image *bb_bg, *bb;
-    bb_bg = new Fl_Image(WIDTH, HEIGHT, 24, make_image(), 0x0000FF, 0x00FF00, 0xFF0000, 0 ,0);
+    bb_bg = screen;//new Fl_Image(WIDTH, HEIGHT, 24, make_image(), 0x0000FF, 0x00FF00, 0xFF0000, 0 ,0);
     bb = Fl_Image::read("bb.png");
 
     if(bb_bg && bb) {

@@ -407,5 +407,9 @@ XImage *Fl_Renderer::ximage_from_pixmap(Pixmap src, Fl_Rect &rect)
     return im;
 }
 
+Window Fl_Renderer::root_window() {
+    return RootWindow(fl_display, fl_screen);
+}
+
 #endif
 

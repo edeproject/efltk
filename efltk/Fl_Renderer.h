@@ -139,8 +139,11 @@ public:
     static bool render_to_pixmap(uint8 *src, Fl_Rect *src_rect, Fl_PixelFormat *src_fmt, int src_pitch,
                                  Pixmap dst, Fl_Rect *dst_rect, GC dst_gc, int flags);
 
-	// Returns data, either from PIXMAP or WINDOW. depth of data is stored in 'bitspp' argument
-	static uint8 *data_from_pixmap(Pixmap src, Fl_Rect &rect, int &bitspp);
+    // Returns root/desktop window handle
+    static Window root_window();
+
+    // Returns data, either from PIXMAP or WINDOW. depth of data is stored in 'bitspp' argument
+    static uint8 *data_from_pixmap(Pixmap src, Fl_Rect &rect, int &bitspp);
     static uint8 *data_from_window(Window src, Fl_Rect &rect, int &bitspp);    
 
 #ifndef _WIN32
