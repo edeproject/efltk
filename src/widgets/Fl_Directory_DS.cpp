@@ -150,6 +150,20 @@ bool Fl_Directory_DS::open() {
 
          df["type"] = modeName.c_str();
 
+         if (n==0) {
+            m_current = &df;
+            field(0).align = FL_ALIGN_LEFT;
+            field(0).width = 30;
+            field(1).align = FL_ALIGN_RIGHT;
+            field(1).width = 10;
+            field(2).align = FL_ALIGN_LEFT;
+            field(2).width = 16;
+            field(3).align = FL_ALIGN_LEFT;
+            field(3).width = 2;
+            field(4).align = FL_ALIGN_LEFT;
+            field(4).width = 15;
+         }
+
          m_list.append(&df);
 
          free(file);

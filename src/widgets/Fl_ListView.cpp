@@ -1075,15 +1075,20 @@ void Fl_ListView::fill(Fl_Data_Source &ds) {
       Fl_Data_Field& df = ds.field(col);
       int width = 100;
       if (df.width >= 0)
-         width = df.width;
+         width = df.width * text_size() * 2 / 3;
       add_column(df.name(),width);
+      column_flags(col,df.align);
    }
 
+   begin();
    while (!ds.eof()) {
-      Fl_ListView_Item *item = new Fl_ListView_Item;
+      Fl_ListView_Item *item = new Fl_ListView_Item("");
       item->columns(columnCount);
       for (unsigned col = 0; col < columnCount; col++) {
-         //item->copy_label(col, tmp);
+         item->copy_label(col, ds.field(col).as_string().c_str());
       }
+      ds.next();
    }
+   ds.close();
+   end();
 }

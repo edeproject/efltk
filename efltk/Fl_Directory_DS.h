@@ -40,7 +40,6 @@ public:
    const char *directory() const { return m_directory.c_str(); }
 
    void clear();
-   bool eof() const { return m_eof; }
 
    // access to the field by name
    virtual const Fl_Variant& operator [] (const char *field_name) const;
@@ -68,6 +67,7 @@ public:
    virtual bool              prior();
    virtual bool              last();
    virtual bool              find(Fl_Variant position);
+   virtual bool              eof() const { return m_eof; }
 };
 
 #endif
