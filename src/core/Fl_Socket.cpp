@@ -47,7 +47,6 @@ Fl_Socket::Fl_Socket(int domain,int type,int protocol) {
 // Destructor
 Fl_Socket::~Fl_Socket() {
 	close();
-	if (m_host) free(m_host);
 	m_socketCount--;
 	if (!m_socketCount)
 		cleanup();
@@ -62,9 +61,8 @@ int Fl_Socket::control(int flag, unsigned long *check)
 #endif
 }
 
-void Fl_Socket::host(char *hostName) {
-	if (m_host) free(m_host);
-	m_host = strdup(hostName);
+void Fl_Socket::host(Fl_String hostName) {
+	m_host = hostName;
 }
 
 void Fl_Socket::port(int portNumber) {
@@ -72,8 +70,8 @@ void Fl_Socket::port(int portNumber) {
 }
 
 // Connect & disconnect
-void Fl_Socket::open(char *hostName,int portNumber) {
-	if (hostName)
+void Fl_Socket::open(Fl_String hostName,int portNumber) {
+	if (hostName.length())
 		host(hostName);
 	if (portNumber)
 		port(portNumber);
@@ -114,8 +112,7 @@ void Fl_Socket::open(char *hostName,int portNumber) {
 #endif
 }
 
-void Fl_Socket::close() 
-{
+void Fl_Socket::close() {
 	if (m_sockfd != INVALID_SOCKET) {
 		FD_CLR(m_sockfd,&inputs);
 		FD_CLR(m_sockfd,&outputs);
@@ -129,8 +126,7 @@ void Fl_Socket::close()
 }
 
 // Read & write
-int  Fl_Socket::read(char *buffer,int size) 
-{
+int  Fl_Socket::read(char *buffer,int size) {
 #ifdef _WIN32
 	return recv(m_sockfd, buffer, size, NULL);
 #else
@@ -138,13 +134,29 @@ int  Fl_Socket::read(char *buffer,int size)
 #endif
 }
 
-int  Fl_Socket::write(const char *buffer,int size) 
-{
+int  Fl_Socket::read(Fl_Buffer& buffer) {
+	int rc = read(buffer.data(),buffer.size());
+	buffer.bytes(rc);
+	return rc;
+}
+
+int  Fl_Socket::write(const char *buffer,int size) {
 #ifdef _WIN32
 	return send(m_sockfd, buffer, size, NULL);
 #else
 	return ::write(m_sockfd, buffer, size);
 #endif
+}
+
+int  Fl_Socket::write(const Fl_Buffer& buffer) {
+	char *ptr = buffer.data();
+	int	bytes = buffer.bytes();
+	while (bytes > 0) {
+		int rc = write(ptr,bytes);
+		bytes -= rc;
+		ptr += rc;
+	}
+	return buffer.bytes();
 }
 
 bool Fl_Socket::ready_to_read(int wait_msec) {
