@@ -374,6 +374,10 @@ SOURCE=..\src\core\fl_list_fonts.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\core\Fl_Lists.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\widgets\Fl_ListView.cpp
 # End Source File
 # Begin Source File
@@ -439,6 +443,10 @@ SOURCE=..\src\widgets\Fl_Menu_Window.cpp
 # Begin Source File
 
 SOURCE=..\src\widgets\Fl_Multi_Image.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Multi_Tabs.cpp
 # End Source File
 # Begin Source File
 
@@ -874,6 +882,10 @@ SOURCE=..\efltk\Fl_Image_Filter.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\efltk\Fl_Image_List.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\efltk\Fl_Images.h
 # End Source File
 # Begin Source File
@@ -887,6 +899,10 @@ SOURCE=..\efltk\Fl_Input_Browser.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_Int_Input.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Int_List.h
 # End Source File
 # Begin Source File
 
@@ -970,6 +986,10 @@ SOURCE=..\efltk\Fl_Multi_Image.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\efltk\Fl_Multi_Tabs.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\efltk\Fl_Multiline_Input.h
 # End Source File
 # Begin Source File
@@ -1003,6 +1023,10 @@ SOURCE=..\efltk\Fl_Pixmap.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_ProgressBar.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Ptr_List.h
 # End Source File
 # Begin Source File
 
@@ -1091,6 +1115,10 @@ SOURCE=..\efltk\Fl_Slider.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_String.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_String_List.h
 # End Source File
 # Begin Source File
 
@@ -1207,6 +1235,10 @@ SOURCE=..\efltk\Fl_Variant.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_Widget.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Widget_List.h
 # End Source File
 # Begin Source File
 
