@@ -17,6 +17,8 @@
 
 #include <config.h>
 
+#include <stdio.h>
+#include <efltk/Fl_Exception.h>
 #include <efltk/Fl_Variant.h>
 #include <string.h>
 #include <stdlib.h>
@@ -38,7 +40,7 @@ void Fl_Variant::set_int(int value) {
     free_buffers();
     m_type = VAR_INT;
     m_size = sizeof(value);
-	
+
     m_data.intData = value;
 }
 //---------------------------------------------------------------------------
@@ -135,32 +137,12 @@ void Fl_Variant::set_datetime(Fl_Date_Time value) {
     m_data.floatData = value;
 }
 //---------------------------------------------------------------------------
-int Fl_Variant::get_int() const {
-    return m_data.intData;
-}
-//---------------------------------------------------------------------------
-double Fl_Variant::get_float() const {
-    return m_data.floatData;
-}
-//---------------------------------------------------------------------------
 const Fl_Image * Fl_Variant::get_image_ptr() const {
     return m_data.imagePtr;
 }
 //---------------------------------------------------------------------------
-const char * Fl_Variant::get_string() const {
-    return m_data.stringData;
-}
-//---------------------------------------------------------------------------
 const void * Fl_Variant::get_buffer() const {
     return m_data.stringData;
-}
-//---------------------------------------------------------------------------
-Fl_Date_Time Fl_Variant::get_date() const {
-    return (int)m_data.floatData;
-}
-//---------------------------------------------------------------------------
-Fl_Date_Time Fl_Variant::get_datetime() const {
-    return m_data.floatData;
 }
 //---------------------------------------------------------------------------
 void Fl_Variant::set_data(const Fl_Variant &C) {
@@ -196,3 +178,125 @@ Fl_Variant::operator Fl_Date_Time () const {
 Fl_Variant::operator const Fl_Image * () const {
     return m_data.imagePtr;
 }
+//---------------------------------------------------------------------------
+// convertors
+int Fl_Variant::as_int() const {
+    switch (m_type) {
+        case VAR_INT:        return m_data.intData;
+        case VAR_FLOAT:      return (int)m_data.floatData;
+        case VAR_STRING:
+        case VAR_TEXT:
+        case VAR_BUFFER:     return strtol(m_data.stringData,0,10);
+        case VAR_DATE:
+        case VAR_DATETIME:   return int(m_data.floatData);
+        case VAR_IMAGEPTR:   fl_throw("Can't convert image field");
+        case VAR_NONE:       fl_throw("Can't convert field w/o type");
+    }
+    return 0;
+}
+
+bool Fl_Variant::as_bool() const {
+    char ch;
+    switch (m_type) {
+        case VAR_INT:        return (m_data.intData>0);
+        case VAR_FLOAT:      return (m_data.floatData>.5f);
+        case VAR_STRING:
+        case VAR_TEXT:
+        case VAR_BUFFER:     ch = m_data.stringData[0];
+            return (strchr("YyTt1",ch)!=0);
+        case VAR_DATE:       
+        case VAR_DATETIME:   return bool(m_data.floatData!=0);
+        case VAR_IMAGEPTR:   fl_throw("Can't convert image field");
+        case VAR_NONE:       fl_throw("Can't convert field w/o type");
+    }
+    return 0;
+}
+
+double Fl_Variant::as_float() const {
+    switch (m_type) {
+        case VAR_INT:        return m_data.intData;
+        case VAR_FLOAT:      return m_data.floatData;
+        case VAR_STRING:
+        case VAR_TEXT:
+        case VAR_BUFFER:     return strtod(m_data.stringData, 0);
+        case VAR_DATE:       
+        case VAR_DATETIME:   return m_data.floatData;
+        case VAR_IMAGEPTR:   fl_throw("Can't convert image field");
+        case VAR_NONE:       fl_throw("Can't convert field w/o type");
+    }
+    return 0;
+}
+
+Fl_String Fl_Variant::as_string() const {
+    char print_buffer[32];
+    switch (m_type) {
+        case VAR_INT:
+            sprintf(print_buffer,"%i",m_data.intData);
+            return Fl_String(print_buffer);
+        case VAR_FLOAT:
+            {
+                char formatString[] = "%0.4f";
+                sprintf(print_buffer,formatString,m_data.floatData);                
+                return Fl_String(print_buffer);
+            }
+        case VAR_STRING:
+        case VAR_TEXT:
+        case VAR_BUFFER:     return Fl_String(m_data.stringData);
+        case VAR_DATE:       return Fl_Date_Time(m_data.floatData).date_string();
+        case VAR_DATETIME:   {
+                Fl_Date_Time dt(m_data.floatData);
+                return dt.date_string() + " " + dt.time_string();
+            }
+        case VAR_IMAGEPTR:   fl_throw("Can't convert image field");
+        case VAR_NONE:       fl_throw("Can't convert field w/o type");
+    }
+    return "";
+}
+
+Fl_Date_Time Fl_Variant::as_date() const {
+    Fl_Date_Time   result;
+    switch (m_type) {
+        case VAR_INT:        result = m_data.intData;
+            break;
+        case VAR_FLOAT:      result = m_data.floatData;
+            break;
+        case VAR_STRING:
+        case VAR_TEXT:
+        case VAR_BUFFER:     result = m_data.stringData;
+            break;
+        case VAR_DATE:       
+        case VAR_DATETIME:   result = int(m_data.floatData);
+            break;
+        case VAR_IMAGEPTR:   fl_throw("Can't convert image field");
+        case VAR_NONE:       fl_throw("Can't convert field w/o type");
+    }
+    return result;
+}
+
+Fl_Date_Time Fl_Variant::as_datetime() const {
+    Fl_Date_Time   result;
+    switch (m_type) {
+        case VAR_INT:        result = m_data.intData;
+            break;
+        case VAR_FLOAT:      result = m_data.floatData;
+            break;
+        case VAR_STRING:
+        case VAR_TEXT:
+        case VAR_BUFFER:     result = m_data.stringData;
+            break;
+        case VAR_DATE:       
+        case VAR_DATETIME:   result = m_data.floatData;
+            break;
+        case VAR_IMAGEPTR:   fl_throw("Can't convert image field");
+        case VAR_NONE:       fl_throw("Can't convert field w/o type");
+    }
+    return result;
+}
+
+const Fl_Image *Fl_Variant::as_image() const {
+    switch (m_type) {
+        default:             fl_throw("Can't convert image field");
+        case VAR_IMAGEPTR:   return m_data.imagePtr;
+    }
+}
+

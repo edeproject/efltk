@@ -31,54 +31,6 @@ Fl_Data_Field::Fl_Data_Field(const char *name) {
     precision = 3; // default precision, only affects floating point fields
 }
 
-// convertors
-int Fl_Data_Field::as_int() const {
-    switch (value.type()) {
-        case VAR_INT:        return value.get_int();
-        case VAR_FLOAT:      return (int)value.get_float();
-        case VAR_STRING:
-        case VAR_TEXT:
-        case VAR_BUFFER:     return strtol(value.get_string(),0,10);
-        case VAR_DATE:       return int(value.get_date());
-        case VAR_DATETIME:   return int(value.get_datetime());
-        case VAR_IMAGEPTR:   fl_throw("Can't convert image field");
-        case VAR_NONE:       fl_throw("Can't convert field w/o type");
-    }
-    return 0;
-}
-
-bool Fl_Data_Field::as_bool() const {
-    char ch;
-    switch (value.type()) {
-        case VAR_INT:        return (value.get_int()>0);
-        case VAR_FLOAT:      return (value.get_float()>.5f);
-        case VAR_STRING:
-        case VAR_TEXT:
-        case VAR_BUFFER:     ch = value.get_string()[0];
-            return (strchr("YyTt1",ch)!=0);
-        case VAR_DATE:       return bool(value.get_date()!=0);
-        case VAR_DATETIME:   return bool(value.get_datetime()!=0);
-        case VAR_IMAGEPTR:   fl_throw("Can't convert image field");
-        case VAR_NONE:       fl_throw("Can't convert field w/o type");
-    }
-    return 0;
-}
-
-double Fl_Data_Field::as_float() const {
-    switch (value.type()) {
-        case VAR_INT:        return value.get_int();
-        case VAR_FLOAT:      return value.get_float();
-        case VAR_STRING:
-        case VAR_TEXT:
-        case VAR_BUFFER:     return strtod(value.get_string(), 0);
-        case VAR_DATE:       return double(value.get_date());
-        case VAR_DATETIME:   return double(value.get_datetime());
-        case VAR_IMAGEPTR:   fl_throw("Can't convert image field");
-        case VAR_NONE:       fl_throw("Can't convert field w/o type");
-    }
-    return 0;
-}
-
 Fl_String Fl_Data_Field::as_string() const {
     char print_buffer[32];
     switch (value.type()) {
@@ -95,7 +47,7 @@ Fl_String Fl_Data_Field::as_string() const {
                 }
                 if (prec > 9) prec = 9;
                 formatString[3] = '0' + prec;
-                sprintf(print_buffer,formatString,value.get_float());				
+                sprintf(print_buffer,formatString,value.get_float());               
                 return Fl_String(print_buffer);
             }
         case VAR_STRING:
@@ -107,53 +59,6 @@ Fl_String Fl_Data_Field::as_string() const {
         case VAR_NONE:       fl_throw("Can't convert field w/o type");
     }
     return "";
-}
-
-Fl_Date_Time Fl_Data_Field::as_date() const {
-    Fl_Date_Time   result;
-    switch (value.type()) {
-        case VAR_INT:        result = value.get_int();
-            break;
-        case VAR_FLOAT:      result = value.get_float();
-            break;
-        case VAR_STRING:
-        case VAR_TEXT:
-        case VAR_BUFFER:     result = value.get_string();
-            break;
-        case VAR_DATE:        result = value.get_date();
-        case VAR_DATETIME:   result = value.get_date();
-            break;
-        case VAR_IMAGEPTR:   fl_throw("Can't convert image field");
-        case VAR_NONE:       fl_throw("Can't convert field w/o type");
-    }
-    return result;
-}
-
-Fl_Date_Time Fl_Data_Field::as_datetime() const {
-    Fl_Date_Time   result;
-    switch (value.type()) {
-        case VAR_INT:        result = value.get_int();
-            break;
-        case VAR_FLOAT:      result = value.get_float();
-            break;
-        case VAR_STRING:
-        case VAR_TEXT:
-        case VAR_BUFFER:     result = value.get_string();
-            break;
-        case VAR_DATE:        
-        case VAR_DATETIME:   result = value.get_datetime();
-            break;
-        case VAR_IMAGEPTR:   fl_throw("Can't convert image field");
-        case VAR_NONE:       fl_throw("Can't convert field w/o type");
-    }
-    return result;
-}
-
-const Fl_Image *Fl_Data_Field::as_image() const {
-    switch (value.type()) {
-        default:             fl_throw("Can't convert image field");
-        case VAR_IMAGEPTR:   return value.get_image_ptr();
-    }
 }
 
 void Fl_Data_Fields::clear() {
@@ -203,7 +108,7 @@ const Fl_Variant& Fl_Data_Fields::operator [] (int index) const {
 
 Fl_Variant& Fl_Data_Fields::operator [] (const char *fname) {
     Fl_Data_Field *field=0;
-    int index = field_index(fname);	
+    int index = field_index(fname); 
     if (index < 0) {
         fl_throw("Field name not found");
     } else {

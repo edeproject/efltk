@@ -47,7 +47,7 @@ public:
       * in Fl_ListView and similar classes.
       */
     int         width;
-    int             precision;
+    int         precision;
     Fl_Flags    flags;
     bool        visible;
 
@@ -64,8 +64,16 @@ public:
     operator int () const                         { return as_int();         }
     operator double () const                      { return as_float();       }
     operator Fl_String () const                   { return as_string();      }
-    operator Fl_Date_Time () const                { return as_date();        }
+    operator Fl_Date_Time () const                { return as_datetime();    }
     operator const Fl_Image * () const            { return as_image();       }
+
+    int as_int() const                                    { return value.as_int();   }
+    double as_float() const                       { return value.as_float(); }
+    Fl_String as_string() const; // converting to a string requires internal formatting..
+    bool as_bool() const                                  { return value.as_bool();  }
+    Fl_Date_Time as_date() const                      { return value.as_date();  }
+    Fl_Date_Time as_datetime() const                  { return value.as_datetime(); }
+    const Fl_Image *as_image() const                  { return value.as_image(); }
 
     // assignments
     Fl_Data_Field& operator = (int v)             { value = v; return *this; }
@@ -74,14 +82,6 @@ public:
     Fl_Data_Field& operator = (Fl_Date_Time v)    { value = v; return *this; }
     Fl_Data_Field& operator = (const char *v)     { value = v; return *this; }
     Fl_Data_Field& operator = (const Fl_Image *v) { value = v; return *this; }
-
-    int as_int() const;
-    double as_float() const;
-    Fl_String as_string() const;
-    bool as_bool() const;
-    Fl_Date_Time as_date() const;
-    Fl_Date_Time as_datetime() const;
-    const Fl_Image *as_image() const;
 
 protected:
     Fl_String  m_name;

@@ -24,7 +24,7 @@ protected:
     virtual bool build_queries();
 
 public:
-    Fl_Record_DS(Fl_Group *group,Fl_Database *db=NULL,Fl_String tableName="",Fl_String keyField="");
+    Fl_Record_DS(Fl_Database *db=NULL,Fl_String tableName="",Fl_String keyField="");
     ~Fl_Record_DS();
 
     /// how many rows do we have ds?

@@ -63,23 +63,34 @@ public:
 
     void resize_buffer(int sz);
 
-    int    get_int() const;
-    double get_float() const;
-    const char *get_string() const;
+    // Convert functions
+    int as_int() const;
+    double as_float() const;
+    Fl_String as_string() const;
+    bool as_bool() const;
+    Fl_Date_Time as_date() const;
+    Fl_Date_Time as_datetime() const;
+    const Fl_Image *as_image() const;
+
+    // Compatibility with the legacy code    
+    int    get_int() const              { return as_int(); }
+    double get_float() const                { return as_float(); }
+    const char *get_string() const      { return as_string(); }
     const void *get_buffer() const;
     const Fl_Image *get_image_ptr() const;
-    Fl_Date_Time get_date() const;
-    Fl_Date_Time get_datetime() const;
+    Fl_Date_Time get_date() const       { return as_date(); }
+    Fl_Date_Time get_datetime() const   { return as_datetime(); }
 
-    Fl_Variant_Type type() const { return m_type; }
-    int size() const { return m_size; }
-    void *data() const { return (void *)(variantData *)&m_data; }
-
+    // Convert operators
     operator int () const;
     operator double () const;
     operator const char * () const;
     operator const Fl_Image * () const;
     operator Fl_Date_Time () const;
+
+    Fl_Variant_Type type() const { return m_type; }
+    int size() const { return m_size; }
+    void *data() const { return (void *)(variantData *)&m_data; }
 
     // ASSIGNMENT OPERATORS
     Fl_Variant& operator =(const Fl_Variant &C) {

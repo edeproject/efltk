@@ -415,7 +415,9 @@ Fl_Dialog::Fl_Dialog(int ww, int hh, const char *label, Fl_Data_Source *ds)
     m_externalDataSource = (ds != NULL);
 
     if (ds) m_dataSource = ds;
-    else    m_dataSource = new Fl_Dialog_DS(m_tabs);
+    else    m_dataSource = new Fl_Dialog_DS();
+
+    m_dataSource->parent(m_tabs);
 
     callback((Fl_Callback*)escape_callback);
 }
@@ -610,8 +612,8 @@ bool Fl_Dialog::load_data(Fl_Data_Source *ds)
     try {
         if (!ds) ds = m_dataSource;
 
-    // Clean the widgets data before loading. 
-    // Useful if we have incomplete information in datasource
+        // Clean the widgets data before loading. 
+        // Useful if we have incomplete information in datasource
         m_tabs->reset();
 
         return ds->load();

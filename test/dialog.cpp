@@ -30,14 +30,24 @@
 #include <efltk/Fl_Dialog.h>
 #include <efltk/Fl_Input.h>
 #include <efltk/fl_ask.h>
+#include <efltk/Fl_Config_Dialog_DS.h>
+#include <efltk/Fl_Date_Time_Input.h>
 
 #include <stdio.h>
 
 #include "smile.xpm"
+#include "dialog_dialog.xpm"
+#include "dialog_disk.xpm"
+
 Fl_Pixmap smile_pixmap(smile_xpm);
+Fl_Pixmap dialog_pixmap_1(dialog_dialog_xpm);
+Fl_Pixmap dialog_pixmap_2(dialog_disk_xpm);
 
 Fl_Dialog *dlg;
+Fl_Dialog *config_dlg;
 Fl_Input *input1, *input2;
+
+Fl_Config my_config("dialog_test.ini");
 
 static void cb_test(Fl_Widget*, void*) {
     char buffer[128];
@@ -63,6 +73,14 @@ static void cb_test(Fl_Widget*, void*) {
     }
 }
 
+static void cb_test2(Fl_Widget*, void*) {
+    switch (config_dlg->show_modal()) {
+        case FL_DLG_OK:
+            my_config.flush();
+            break;
+    }
+}
+
 void dialog_callback(Fl_Widget *widget,void *data) {
     // we only need dialog buttons' events here
     if (Fl::event() == FL_DIALOG_BTN) { 
@@ -74,15 +92,21 @@ void dialog_callback(Fl_Widget *widget,void *data) {
 }
 
 int main(int argc, char **argv) {
-    Fl_Window *window = new Fl_Window(300,180);
+    Fl_Window *window = new Fl_Window(300,150);
 
-    Fl_Button *btn = new Fl_Button(170,70,70,25,"Test dialog");
+    Fl_Button *btn = new Fl_Button(20,80,120,25,"Simple dialog");
+    btn->image(&dialog_pixmap_1);
+
     input1 = new Fl_Input(100,10,70,22,"First Name");
     input2 = new Fl_Input(100,35,70,22,"Last Name");
     btn->callback(cb_test);
 
     input1->value("Jonh");
     input2->value("Doe");
+
+    btn = new Fl_Button(170,80,120,25,"Config dialog");
+    btn->image(&dialog_pixmap_2);
+    btn->callback(cb_test2);
 
     window->end();
     window->show(argc, argv);
@@ -101,7 +125,35 @@ int main(int argc, char **argv) {
     // be unique inside the dialog.
     dlg->user_button(1024,"User Button",&smile_pixmap);
 
+    // This is the callback for the whole dialog. In this test,
+    // we process the user buttons in this callback function.
     dlg->callback(dialog_callback);
+
+
+    // This part of the test illustrates the usage of the Dialog
+    // as a 'preferences' dialog box. All the widgets with the defined
+    // field names will be stored/restored in the defined config file 
+    // section.
+
+    // First, define a config file
+    Fl_Config my_config("dialog.ini");
+
+    // Second, define a config datasource as a config file and a section
+    Fl_Config_Dialog_DS my_config_ds(&my_config,"Config dialog");
+
+    // Third, create the dialog with the datasource
+    config_dlg = new Fl_Dialog(400,300,"Config dialog",&my_config_ds);
+    config_dlg->new_page("default");
+    firstNameInput = new Fl_Input(100,20,100,24,"First Name:");
+    firstNameInput->field_name("first_name");
+    lastNameInput = new Fl_Input(100,50,100,24,"Last Name:");
+    lastNameInput->field_name("last_name");
+
+    Fl_Date_Input *di = new Fl_Date_Input(100,80,100,24,"Date:");
+    di->field_name("date");
+
+    config_dlg->end();
+    config_dlg->buttons(FL_DLG_OK|FL_DLG_CANCEL,FL_DLG_OK);
 
     return Fl::run();
 }

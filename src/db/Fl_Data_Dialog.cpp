@@ -9,7 +9,8 @@
 Fl_Data_Dialog::Fl_Data_Dialog(int w,int h,const char *label)
 : Fl_Dialog(w,h,label,(Fl_Data_Source *)0x1) {
     m_database  = NULL;
-    m_record_DS = new Fl_Record_DS(m_tabs);
+    m_record_DS = new Fl_Record_DS();
+    m_record_DS->parent(m_tabs);
     m_dataSource = m_record_DS;
 }
 
@@ -21,4 +22,3 @@ Fl_Data_Dialog::~Fl_Data_Dialog() {
 void Fl_Data_Dialog::setup(Fl_Database *db,Fl_String tableName,Fl_String keyField) {
     m_record_DS->setup(db,tableName,keyField);
 }
-

@@ -2,8 +2,8 @@
 #include <efltk/db/Fl_Record_DS.h>
 
 // Constructor
-Fl_Record_DS::Fl_Record_DS(Fl_Group *group,Fl_Database *db,Fl_String tableName,Fl_String keyField) 
-: Fl_Dialog_DS(group)
+Fl_Record_DS::Fl_Record_DS(Fl_Database *db,Fl_String tableName,Fl_String keyField) 
+: Fl_Dialog_DS()
 {
     m_keyValue = -1;
     m_queriesAreBuilt = false;

@@ -6,6 +6,7 @@
 // with defined field names
 void Fl_Dialog_DS::scan_widgets(Fl_Group *group) {
     if (!group) group = parent();
+    if (!group) return;
     unsigned cnt = group->children();
     for (unsigned i = 0; i < cnt; i++) {
         Fl_Widget *widget = group->child(i);
@@ -27,5 +28,10 @@ Fl_Variant& Fl_Dialog_DS::operator [] (const char *field_name) {
     if (fieldIndex < 0)
         fl_throw("Sorry, the field " + Fl_String(field_name) + " doesn't exist in that dialog.");
     return m_fields[field_name];
+}
+
+unsigned Fl_Dialog_DS::field_count() const {
+    //if (!m_widgetsScanned) scan_widgets();
+    return m_fields.count(); 
 }
 
