@@ -129,7 +129,7 @@ void fl_rtl_draw(const char *str, int n, float x, float y) {
     if (font_gc != fl_gc) {
         font_gc = fl_gc;
 #if !HAVE_XUTF8
-        XSetFont(fl_display, fl_gc, fl_xfont()->fid);
+        XSetFont(fl_display, fl_gc, ((XFontStruct*)fl_xfont())->fid);
 #endif
     }
 #if HAVE_XUTF8

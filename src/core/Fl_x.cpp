@@ -667,9 +667,9 @@ bool fl_handle()
 {
     Fl_Window* window = fl_find(fl_xevent.xany.window);
     int event = 0;
-    int filtered = 0;
 
 #if HAVE_XUTF8
+    int filtered = 0;
     if(fl_xevent.type == DestroyNotify) {
         XIM xim_im;
         xim_im = XOpenIM(fl_display, NULL, NULL, NULL);
@@ -1017,13 +1017,17 @@ bool fl_handle()
             break;
 
         case FocusIn:
+#if HAVE_XUTF8
             if (fl_xim_ic) XSetICFocus(fl_xim_ic);
+#endif
             xfocus = window;
             if (window) {fl_fix_focus(); return true;}
             break;
 
         case FocusOut:
+#if HAVE_XUTF8
             if (fl_xim_ic) XUnsetICFocus(fl_xim_ic);
+#endif
             if (window && window == xfocus) {xfocus = 0; fl_fix_focus(); return true;}
             break;
 

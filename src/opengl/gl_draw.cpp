@@ -105,7 +105,7 @@ void gl_font(Fl_Font font, float size)
             glXUseXFont(font->fid, base, size, current->listbase+base);
         }
 #else
-        XFontStruct* xfont = fl_xfont();
+        //XFontStruct* xfont = fl_xfont();
 #if USE_XFT
         current->xfont = xfont;
 #endif

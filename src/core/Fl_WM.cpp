@@ -44,7 +44,11 @@ Atom _XA_NET_WM_WINDOW_TYPE_NORMAL;
 
 Atom _XA_NET_WM_STRUT;
 
+#if HAVE_XUTF
 extern Atom fl_XaUtf8String;
+#else
+# define fl_XaUtf8String XA_STRING
+#endif
 
 uchar* getProperty(Window w, Atom a, Atom type, unsigned long *np=0, int *ret=0)
 {

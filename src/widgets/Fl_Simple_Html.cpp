@@ -60,10 +60,7 @@
 #include <efltk/Fl_Image.h>
 #include <efltk/Fl_Color.h>
 #include <efltk/vsnprintf.h>
-
-#if HAVE_XUTF8
 #include <efltk/fl_utf8.h>
-#endif
 
 #include "../core/fl_internal.h"
 

@@ -387,6 +387,12 @@ void Fl_Text_Display::layout()
 
     int X = 0, Y = 0, W = w(), H = h();
     box()->inset(X, Y, W, H);
+
+    if(W<0 || H<0) {
+        Fl_Widget::layout();
+        return;
+    }
+
     text_area.x = X+LEFT_MARGIN + mLineNumLeft + mLineNumWidth;
     text_area.y = Y+BOTTOM_MARGIN;
     text_area.w = W-LEFT_MARGIN-RIGHT_MARGIN - mLineNumWidth - mLineNumLeft;
@@ -436,7 +442,7 @@ void Fl_Text_Display::layout()
         {
             int old_vlines = mNVisibleLines;
             int new_vlines = (text_area.h + mMaxsize - 1) / mMaxsize;			
-            if(!new_vlines) new_vlines=1;			
+            if(new_vlines<0) new_vlines=1;
 
             /* reallocate and update the line starts array, which may have changed
              size and / or contents.  */
