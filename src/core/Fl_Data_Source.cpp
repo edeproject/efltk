@@ -5,7 +5,7 @@
 #include <efltk/Fl_Group.h>
 
 bool Fl_Data_Source::load() {
-   if (!parent_ || !loadData()) return false;
+   if (!parent_ || !load_data()) return false;
    for (int i = 0; i < parent_->children(); i++) {
       Fl_Widget *widget = parent_->child(i);
       if (widget->field_name()) {
@@ -16,7 +16,7 @@ bool Fl_Data_Source::load() {
 }
 
 bool Fl_Data_Source::save() { 
-   if (!parent_ || !saveData()) return false;
+   if (!parent_ || !save_data()) return false;
    for (int i = 0; i < parent_->children(); i++) {
       Fl_Widget *widget = parent_->child(i);
       if (widget->field_name()) {
