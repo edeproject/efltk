@@ -36,10 +36,10 @@ class FL_API Fl_Button : public Fl_Widget {
 public:
     static Fl_Named_Style* default_style;
 
-     /** The traditional constructor creates the button using the position, size, and label. */
+    /** Creates the button widget using the position, size, and label. */
     Fl_Button(int x, int y, int w, int h,const char *l=0);
 
-     /** The new style constructor creates the button using the label, size, and alignment. */
+    /** Creates the button using the label, size, and alignment. */
     Fl_Button(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP);
 
     /** values for type(int), which can be one of: */

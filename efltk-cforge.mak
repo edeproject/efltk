@@ -10908,6 +10908,7 @@ test/input_browser.o :	efltk/Fl_Input_Browser.h\
 # %TargetInfo test/date_time_widgets.cpp	SourceOrHeader,	UniqueId=0x4003e3,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/maskedinput.cpp	SourceOrHeader,	UniqueId=0x4003e5,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/input.cpp	SourceOrHeader,	UniqueId=0x4003e7,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/input_browser.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4003ea,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x6
@@ -10964,7 +10965,7 @@ test/input_browser.o :	efltk/Fl_Input_Browser.h\
 # %TargetInfo efltk/fl_draw.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400091,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo src/core/fl_internal.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400092,	TargetType=INC,	IDEFlags=0x6
 # %TargetInfo efltk/Fl_Translator.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400093,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Config.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400094,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Config.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400094,	TargetType=INC,	IDEFlags=0xc
 # %TargetInfo efltk/vsnprintf.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400095,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_String_Hash.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400096,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Ptr_Hash.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400097,	TargetType=INC,	IDEFlags=0xe
@@ -10980,7 +10981,7 @@ test/input_browser.o :	efltk/Fl_Input_Browser.h\
 # %TargetInfo efltk/Fl_Thread_Linux.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000a1,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Thread_w32.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000a2,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_MDI_Window.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000a3,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000a4,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Button.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4000a4,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Box.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000a5,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Workspace.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000a6,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Menu_Bar.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4000a7,	TargetType=INC,	IDEFlags=0xe
@@ -11029,7 +11030,7 @@ test/input_browser.o :	efltk/Fl_Input_Browser.h\
 # %TargetInfo efltk/Fl_Light_Button.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4000e5,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Check_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000e6,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Radio_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000e7,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Repeat_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000e8,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Repeat_Button.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4000e8,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Return_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000e9,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo config.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000f1,	TargetType=INC,	IDEFlags=0xc
 # %TargetInfo efltk/Fl_Align_Group.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40014b,	TargetType=INC,	IDEFlags=0xe
@@ -11178,7 +11179,6 @@ test/input_browser.o :	efltk/Fl_Input_Browser.h\
 # %TargetInfo efltk/Fl_Check_Buttons.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d2,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Radio_Buttons.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4003d3,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Int_Input.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4003e8,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo test/input_browser.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4003ea,	TargetType=C++,	IDEFlags=0x4
 
 
 # %UniqueId:	0x400001

@@ -30,7 +30,14 @@
 /** Fl_Round_Button */
 class Fl_Round_Button : public Fl_Radio_Button {
 public:
-    Fl_Round_Button(int x,int y,int w,int h,const char *l) : Fl_Radio_Button(x,y,w,h,l) { type(TOGGLE); }
+    /** Creates the round button widget using the position, size, and label. */
+    Fl_Round_Button(int x,int y,int w,int h,const char *l) 
+    : Fl_Radio_Button(x,y,w,h,l) { type(TOGGLE); }
+
+    /** Creates the round button widget using the label, size, and alignment. */
+    Fl_Round_Button(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP)
+    : Fl_Radio_Button(l,layout_size,layout_al) { type(TOGGLE); }
+
 };
 
 #endif

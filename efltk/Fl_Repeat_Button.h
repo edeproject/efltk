@@ -27,7 +27,13 @@
 /** Fl_Repeat_Button */
 class FL_API Fl_Repeat_Button : public Fl_Button {
 public:
-    Fl_Repeat_Button(int x,int y,int w,int h,const char *l=0) : Fl_Button(x,y,w,h,l) { }
+    /** Creates the repeat button widget using the position, size, and label. */
+    Fl_Repeat_Button(int x,int y,int w,int h,const char *l=0)
+    : Fl_Button(x,y,w,h,l) { }
+
+    /** Creates the repeat button using the label, size, and alignment. */
+    Fl_Repeat_Button(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP)
+    : Fl_Button(l,layout_size,layout_al) { }
 
     virtual int handle(int);
 

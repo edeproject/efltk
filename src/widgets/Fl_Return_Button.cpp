@@ -29,7 +29,7 @@
 
 // this is public so fl_draw_symbol can call it:
 void fl_glyph_return(const Fl_Widget*, int,
-int x,int y,int w,int h, Fl_Flags)
+    int x,int y,int w,int h, Fl_Flags)
 {
     int size = w; if (h<size) size = h;
     int d = (size+2)/4; if (d<3) d = 3;
@@ -37,7 +37,7 @@ int x,int y,int w,int h, Fl_Flags)
     int x0 = x+((w-2*d-2*t-1)>>1);
     int x1 = x0+d;
     int y0 = y+h/2;
-    #if 1
+#if 1
     fl_color(FL_LIGHT3);
     fl_newpath();
     fl_vertex(x0, y0);
@@ -55,12 +55,12 @@ int x,int y,int w,int h, Fl_Flags)
     fl_vertex(x1+d, y0-d);
     fl_vertex(x1+d+2*t, y0-d);
     fl_color(FL_DARK3); fl_stroke();
-    #else                        // solid arrow written by Carl
+#else                        // solid arrow written by Carl
     fl_color(fl_inactive(fc, f));
     fl_polygon(x0,y0, x1,y0+d, x1, y0-d);
     fl_rectf(x1,y0-t,d,2*t+1);
     fl_rectf(x1+d,y0-d,2*t+1,d+t+1);
-    #endif
+#endif
 }
 
 
@@ -79,6 +79,7 @@ static void revert(Fl_Style* s)
 static Fl_Named_Style style("Return_Button", revert, &Fl_Return_Button::default_style);
 Fl_Named_Style* Fl_Return_Button::default_style = &::style;
 
+// Traditional ctor
 Fl_Return_Button::Fl_Return_Button(int x,int y,int w,int h,const char *l)
 : Fl_Button(x,y,w,h,l)
 {
@@ -87,6 +88,14 @@ Fl_Return_Button::Fl_Return_Button(int x,int y,int w,int h,const char *l)
     shortcut('\r');
 }
 
+// New style ctor
+Fl_Return_Button::Fl_Return_Button(const char* l,int layout_size,Fl_Align layout_al)
+: Fl_Button(l,layout_size,layout_al)
+{
+    default_style->parent = style();
+    style(default_style);
+    shortcut('\r');
+}
 
 //
 // End of "$Id$".
