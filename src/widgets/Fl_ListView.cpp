@@ -1147,20 +1147,17 @@ void Fl_ListView::fill(Fl_Data_Source &ds, const char *user_data_column_name_)
         // Check if the column of that name/type exists already.
         // If exists, leave it intact. This way user may resize
         // columns and we won't destroy the user' column widths
-		bool keepColumnWidth = false;
 		int width = 100;
 		if (df.width >= 0) {
 			width = df.width * text_size() * 2 / 3;
 		}
 		if (actualColumn < m_columns.size()) {
-			if (df.name() == m_columns[actualColumn]->label() && df.type() == m_columns[actualColumn]->type())
-				keepColumnWidth = true;
-			else {
-				Fl_ListView_Column *column = m_columns.item(actualColumn); 
+			Fl_ListView_Column *column = m_columns.item(actualColumn); 
+			if (df.name() != column->label()) {
 				column->label(df.name());
 				col_width(actualColumn,width);
-				column->type(df.type());
 			}
+			column->type(df.type());
 		} else {
 			add_column(df.name(),width,df.type());
 		}
