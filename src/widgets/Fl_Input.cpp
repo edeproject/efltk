@@ -234,8 +234,7 @@ void Fl_Input::setfont() const
 
 
 void Fl_Input::draw()
-{
-    if (damage() & FL_DAMAGE_ALL) draw_frame();
+{    
     int X=0; int Y=0; int W=w(); int H=h(); box()->inset(X,Y,W,H);
     draw(X, Y, W, H);
 }
@@ -249,12 +248,14 @@ void Fl_Input::draw()
 
 void Fl_Input::draw(int X, int Y, int W, int H)
 {
+	bool ALL = (damage() & (FL_DAMAGE_ALL|FL_DAMAGE_EXPOSE))>0?true:false;	
+
     Fl_Flags f=flags();
     setfont();
     int height = line_height();
     float desc = height-fl_descent()-leading()/2.0f;
 
-    if (damage() & FL_DAMAGE_ALL)
+    if (ALL)
     {
         // draw and measure the inside label:
         if (label() && label()[0] && (!(flags()&15)||(flags()&FL_ALIGN_INSIDE)))
@@ -262,13 +263,11 @@ void Fl_Input::draw(int X, int Y, int W, int H)
             fl_font(label_font(), float(label_size()));
             float width = fl_width(label());
             label_width = int(width+fl_width(":")+2.5f);
-
-            //fl_color(color());
+            
             fl_push_clip(X, Y, label_width, H);
-            if(box()->fills_rectangle()) box()->draw(0,0,w(),h(),color(),f);
-            else if(parent()) parent()->draw_group_box();
-            fl_pop_clip();
-            //fl_rectf(X, Y, label_width, H);
+            if(!box()->fills_rectangle() && parent()) parent()->draw_group_box();
+			box()->draw(0,0,w(),h(),color(),f);            
+            fl_pop_clip();            
 
             Fl_Color color = label_color();
             if (!active_r()) color = fl_inactive(color);
@@ -284,22 +283,14 @@ void Fl_Input::draw(int X, int Y, int W, int H)
         }
     }
     X += label_width; W -= label_width;
-
-    //Fl_Color background = color();
-    bool erase_cursor_only =
-        this == ::erase_cursor_only &&
-        !(damage() & (FL_DAMAGE_ALL|FL_DAMAGE_EXPOSE));
+    
+    bool erase_cursor_only = (this == ::erase_cursor_only && !ALL);
 
     // handle a totally blank one quickly:
     if (!size() && !focused() && this != dnd_target)
-    {
-        //fl_color(background);
-        //fl_rectf(X, Y, W, H);
-        fl_push_clip(X, Y, W, H);
-        if(box()->fills_rectangle()) box()->draw(0,0,w(),h(),color(),f);
-        else if(parent()) parent()->draw_group_box();
-        fl_pop_clip();
-        //draw_box();
+    {		        
+		if(!box()->fills_rectangle() && parent()) parent()->draw_group_box();
+        box()->draw(0,0,w(),h(),color(),f);        		
         return;
     }
 
@@ -376,21 +367,17 @@ void Fl_Input::draw(int X, int Y, int W, int H)
         }
     } else {
         yscroll_ = -((H-height)>>1);
-    }
-
-    fl_push_clip(X, Y, W, H);
+    }    		
 
     // if we are not doing minimal update a single erase is done,
     // rather than one per line:
-    if (damage() & FL_DAMAGE_ALL)
-    {
-        //fl_color(background);
-        if(box()->fills_rectangle()) box()->draw(0,0,w(),h(),color(),f);
-        else if(parent()) parent()->draw_group_box();
-        //fl_rectf(X, Y, W, H);
+    if (ALL)
+    {		
+		if(!box()->fills_rectangle() && parent()) parent()->draw_group_box();
+        box()->draw(0,0,w(),h(),color(),f);		
     }
 
-    //fl_push_clip(X, Y, W, H);
+	fl_push_clip(X, Y, W, H);
 
     Fl_Color textcolor = text_color();
     if (!active_r()) textcolor = fl_inactive(text_color());
@@ -414,7 +401,7 @@ void Fl_Input::draw(int X, int Y, int W, int H)
         if (ypos <= -height) goto CONTINUE;
 
                                  // for minimal update:
-        if (!(damage()&FL_DAMAGE_ALL))
+        if (!ALL)
         {
             const char* pp = value()+mu_p; // pointer to where minimal update starts
             if (e < pp) goto CONTINUE2; // this line is before the changes
@@ -436,11 +423,9 @@ void Fl_Input::draw(int X, int Y, int W, int H)
                 else if (readonly()) x -= 3;
             }
             // clip to and erase it:
-            //fl_color(background);
             fl_push_clip(x, Y+ypos, r-x, height);
-            if(box()->fills_rectangle()) box()->draw(0,0,w(),h(),color(),f);
-            else if(parent()) parent()->draw_group_box();
-            //fl_rectf(x, Y+ypos, r-x, height);
+			if(!box()->fills_rectangle() && parent()) parent()->draw_group_box();
+            box()->draw(0,0,w(),h(),color(),f);			
 
             // it now draws entire line over it
             // this should not draw letters to left of erased area, but
@@ -484,7 +469,7 @@ void Fl_Input::draw(int X, int Y, int W, int H)
             fl_draw(buf, float(xpos), float(Y+ypos+desc));
         }
 
-        if (!(damage()&FL_DAMAGE_ALL)) fl_pop_clip();
+        if (!ALL) fl_pop_clip();
 
         CONTINUE2:
         // draw the cursor:
@@ -508,19 +493,17 @@ void Fl_Input::draw(int X, int Y, int W, int H)
     }
 
     // for minimal update, erase all lines below last one if necessary:
-    if (!(damage()&FL_DAMAGE_ALL) && input_type() == MULTILINE && ypos<H
+    if (!ALL && input_type() == MULTILINE && ypos<H
         && (!erase_cursor_only || p <= value()+mu_p))
     {
         if (ypos < 0) ypos = 0;
-        //fl_color(background);
-        //fl_rectf(X, Y+ypos, W, H-ypos);
-        fl_push_clip(X, Y+ypos, W, H-ypos);
-        if(box()->fills_rectangle()) box()->draw(0,0,w(),h(),color(),f);
-        else if(parent()) parent()->draw_group_box();
-        fl_pop_clip();
-    }
+		fl_push_clip(X, Y+ypos, W, H-ypos);
+		if(!box()->fills_rectangle() && parent()) parent()->draw_group_box();
+        box()->draw(0,0,w(),h(),color(),f);
+		fl_pop_clip();		
+    }    
 
-    fl_pop_clip();
+	fl_pop_clip();
 }
 
 
