@@ -5,7 +5,7 @@
 
 void cb_callback(Fl_Widget *combo_box,void *) {
     char *msg = "Not a combo box specific event";
-    switch (combo_box->event()) {
+    switch (Fl::event()) {
         case FL_DATA_CHANGE: {
                 msg = "Data changed"; 
             }

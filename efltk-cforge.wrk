@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x4003fa
+# %FirstUniqueId:	0x4003fb
 PROJECT_DIR = /develop/CVS/efltk/
 
 IDE_WORKING_DIR = /develop/CVS/efltk/
@@ -36,9 +36,9 @@ CCLINK = $(CC)
 
 LD = $(CC)
 
-LDOPTIONS = $(IDE_BLIND_LDOPTIONS) $(LDFLAGS)
+LDOPTIONS = $(LDFLAGS) $(IDE_BLIND_LDOPTIONS)
 
-LDFLAGS = -L. -L./lib -L/usr/X11R6/lib -lXext -liconv -lodbc -lpng -ljpeg
+LDFLAGS = -L. -L./lib -L/usr/X11R6/lib -lXext -liconv -lodbc -lpng -ljpeg -lstdc++
 
 IDE_BLIND_LDOPTIONS = -L./
 
@@ -187,7 +187,9 @@ lib/libefltk.so  :: 	lib/Fl.o\
 	lib/Fl_Single_Window.o\
 	lib/Fl_Slider.o\
 	lib/Fl_Socket.o\
+	lib/Fl_Split.o\
 	lib/Fl_String.o\
+	lib/Fl_String_List.o\
 	lib/Fl_Style.o\
 	lib/Fl_Style_Set.o\
 	lib/Fl_Tabs.o\
@@ -273,8 +275,7 @@ lib/libefltk.so  :: 	lib/Fl.o\
 	lib/fl_show_colormap.o\
 	lib/fl_symbols.o\
 	lib/scandir.o\
-	lib/vsnprintf.o\
-	lib/Fl_Split.o
+	lib/vsnprintf.o
 	rm -f $@
 	$(LD) -shared -o $@ $^ $(LDOPTIONS)
 
@@ -1577,6 +1578,10 @@ lib/Fl_Data_Dialog.o : src/db/Fl_Data_Dialog.cpp
 
 
 lib/Fl_Record_DS.o : src/db/Fl_Record_DS.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+lib/Fl_String_List.o : src/core/Fl_String_List.cpp
 	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
 
 
@@ -9574,3 +9579,9 @@ lib/Fl_Record_DS.o :	efltk/db/Fl_Record_DS.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h
+lib/Fl_String_List.o :	efltk/Fl_String_Stack.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Ptr_List.h

@@ -138,13 +138,11 @@ public:
     void    argument(long v)    { user_data_ = (void*)v; }
     uchar   when() const        { return when_; }
     void    when(uchar i)       { when_ = i; }
-    void    event(uchar e)      { event_ = e; }
-    uchar   event()             { return event_; }
 
     static void default_callback(Fl_Widget*, void*);
-    void    do_callback(uchar event) { do_callback(this, user_data_, event);}
-    void    do_callback(Fl_Widget* o, void* arg, uchar event);
-    void    do_callback(Fl_Widget* o, long arg, uchar event);
+    void    do_callback(int event) { do_callback(this, user_data_, event);}
+    void    do_callback(Fl_Widget* o, void* arg, int event,int event_argument=0);
+    void    do_callback(Fl_Widget* o, long arg, int event,int event_argument=0);
     int     test_shortcut() const   ;
     bool    contains(const Fl_Widget*) const;
     bool    inside(const Fl_Widget* o) const {return o && o->contains(this);}
@@ -289,7 +287,6 @@ private:
     uchar           damage_;
     uchar           layout_damage_, layout_flags_;
     uchar           when_;
-    uchar           event_;
 
     Fl_String field_name_; // data source support
     Fl_String tooltip_; // make this into another widget?

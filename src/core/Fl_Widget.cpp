@@ -32,18 +32,20 @@
 #include <stdlib.h>              // free
 #include <config.h>
 
-void Fl_Widget::do_callback(Fl_Widget* o, void* arg, uchar event)
+void Fl_Widget::do_callback(Fl_Widget* o, void* arg, int event,int event_argument)
 {
-    event_ = event;
+    Fl::e_type = event;
+    Fl::e_argument = event_argument;
     // Call callback_ only if NO slots connected!
     if (callback_) callback_(o,(void*)arg);
 }
 
-void Fl_Widget::do_callback(Fl_Widget* o, long arg, uchar event)
+void Fl_Widget::do_callback(Fl_Widget* o, long arg, int event,int event_argument)
 {       
-    event_ = event;
+    Fl::e_type = event;
+    Fl::e_argument = event_argument;
     // Call callback_ only if NO slots connected!
-    if(callback_) callback_(o,(void*)arg);
+    if (callback_) callback_(o,(void*)arg);
 }
 
 void Fl_Widget::default_callback(Fl_Widget* w, void*) {w->set_changed();}
@@ -530,7 +532,7 @@ bool Fl::test_shortcut(int shortcut)
 
     // kludge so that Ctrl+'_' works (as opposed to Ctrl+'^_'):
     if ((shift&FL_CTRL) && key >= 0x3f && key <= 0x5F
-            && Fl::event_text()[0]==(key^0x40)) return true;
+        && Fl::event_text()[0]==(key^0x40)) return true;
     return false;
 }
 
@@ -578,7 +580,7 @@ void Fl_Widget::draw_box() const
 {
     if(image() && !image()->get_mask()) {
         if((align()&FL_ALIGN_TILED || align()&FL_ALIGN_SCALE) &&
-                ( !(align()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT|FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) || (align()&FL_ALIGN_INSIDE) )
+            ( !(align()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT|FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) || (align()&FL_ALIGN_INSIDE) )
             ) {
             // We can draw only frame, if there's no mask and drawing image in tiled or scaled mode
             draw_frame();

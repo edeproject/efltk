@@ -9,7 +9,7 @@
 Fl_Box *statusBox;
 
 void datetime_cb(Fl_Widget *w, void *) {
-    if (w->event() == FL_DATA_CHANGE) {
+    if (Fl::event() == FL_DATA_CHANGE) {
         Fl_Date_Interval_Input *dii = dynamic_cast<Fl_Date_Interval_Input *>(w);
         if (dii) {
             statusBox->label(dii->value() + Fl_String("..") + dii->value2());

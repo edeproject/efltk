@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x4003fa
+# %FirstUniqueId:	0x4003fb
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -36,9 +36,9 @@ CCLINK = $(CC)
 
 LD = $(CC)
 
-LDOPTIONS = $(IDE_BLIND_LDOPTIONS) $(LDFLAGS)
+LDOPTIONS = $(LDFLAGS) $(IDE_BLIND_LDOPTIONS)
 
-LDFLAGS = -L. -L./lib -L/usr/X11R6/lib -lXext -liconv -lodbc -lpng -ljpeg
+LDFLAGS = -L. -L./lib -L/usr/X11R6/lib -lXext -liconv -lodbc -lpng -ljpeg -lstdc++
 
 IDE_BLIND_LDOPTIONS = -L./
 
@@ -194,7 +194,9 @@ lib/libefltk.so  :: 	lib/Fl.o\
 	lib/Fl_Single_Window.o\
 	lib/Fl_Slider.o\
 	lib/Fl_Socket.o\
+	lib/Fl_Split.o\
 	lib/Fl_String.o\
+	lib/Fl_String_List.o\
 	lib/Fl_Style.o\
 	lib/Fl_Style_Set.o\
 	lib/Fl_Tabs.o\
@@ -280,8 +282,7 @@ lib/libefltk.so  :: 	lib/Fl.o\
 	lib/fl_show_colormap.o\
 	lib/fl_symbols.o\
 	lib/scandir.o\
-	lib/vsnprintf.o\
-	lib/Fl_Split.o
+	lib/vsnprintf.o
 	rm -f $@
 	$(LD) -shared -o $@ $^ $(LDOPTIONS)
 
@@ -2756,6 +2757,13 @@ lib/Fl_Data_Dialog.o : src/db/Fl_Data_Dialog.cpp
 # %ParentTarget:	0x400002
 # %SourceTarget:	0x4003f7
 lib/Fl_Record_DS.o : src/db/Fl_Record_DS.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x400002
+# %SourceTarget:	0x4003fa
+lib/Fl_String_List.o : src/core/Fl_String_List.cpp
 	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
 
 
@@ -10753,6 +10761,12 @@ lib/Fl_Record_DS.o :	efltk/db/Fl_Record_DS.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h
+lib/Fl_String_List.o :	efltk/Fl_String_Stack.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Ptr_List.h
 
 
 # %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x6
@@ -10980,7 +10994,7 @@ lib/Fl_Record_DS.o :	efltk/db/Fl_Record_DS.h\
 # %TargetInfo tools/efluid/Fl_Group_Type.cpp	SourceOrHeader,	UniqueId=0x40038f,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo tools/efluid/Fl_Menu_Type.cpp	SourceOrHeader,	UniqueId=0x400390,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo tools/efluid/Fl_Type.cpp	SourceOrHeader,	UniqueId=0x400391,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo tools/efluid/Fl_Widget_Type.cpp	SourceOrHeader,	UniqueId=0x400392,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo tools/efluid/Fl_Widget_Type.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400392,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo tools/efluid/Fl_Window_Type.cpp	SourceOrHeader,	UniqueId=0x400393,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo tools/efluid/Fluid_Image.cpp	SourceOrHeader,	UniqueId=0x400394,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo tools/efluid/Fluid_Plugins.cpp	SourceOrHeader,	UniqueId=0x400395,	TargetType=C++,	IDEFlags=0x6
@@ -11003,15 +11017,15 @@ lib/Fl_Record_DS.o :	efltk/db/Fl_Record_DS.h\
 # %TargetInfo tools/etranslate/main_ui.cpp	SourceOrHeader,	UniqueId=0x4003c1,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo tools/etranslate/modify_info.cpp	SourceOrHeader,	UniqueId=0x4003c2,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Combo_Box.cpp	SourceOrHeader,	UniqueId=0x4003c4,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo test/combobox.cpp	SourceOrHeader,	UniqueId=0x4003c7,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/combobox.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4003c7,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/labelwidth.cpp	SourceOrHeader,	UniqueId=0x4003c9,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Button_Group.cpp	SourceOrHeader,	UniqueId=0x4003ca,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo test/labelwidth2.cpp	SourceOrHeader,	UniqueId=0x4003d9,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/labelwidth2.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4003d9,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/layout.cpp	SourceOrHeader,	UniqueId=0x4003db,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/layout2.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4003dd,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/button_groups.cpp	SourceOrHeader,	UniqueId=0x4003df,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/listview_sort.cpp	SourceOrHeader,	UniqueId=0x4003e1,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo test/date_time_widgets.cpp	SourceOrHeader,	UniqueId=0x4003e3,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/date_time_widgets.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4003e3,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/maskedinput.cpp	SourceOrHeader,	UniqueId=0x4003e5,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/input.cpp	SourceOrHeader,	UniqueId=0x4003e7,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/input_browser.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4003ea,	TargetType=C++,	IDEFlags=0x6
@@ -11020,6 +11034,7 @@ lib/Fl_Record_DS.o :	efltk/db/Fl_Record_DS.h\
 # %TargetInfo src/widgets/Fl_Dialog_DS.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4003f3,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/db/Fl_Data_Dialog.cpp	SourceOrHeader,	UniqueId=0x4003f6,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/db/Fl_Record_DS.cpp	SourceOrHeader,	UniqueId=0x4003f7,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_String_List.cpp	SourceOrHeader,	UniqueId=0x4003fa,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x6
@@ -11067,7 +11082,7 @@ lib/Fl_Record_DS.o :	efltk/db/Fl_Record_DS.h\
 # %TargetInfo src/core/aimm.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400088,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/filename.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400089,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Util.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40008a,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40008b,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40008b,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Tooltip.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40008c,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Bitmap.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40008d,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Image.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40008e,	TargetType=INC,	IDEFlags=0xe
