@@ -1,9 +1,9 @@
 /* -*- mode: C++ -*-
  * "$Id$"
  *
- * This file is used to compile fltk. It should not be necessary for
- * programs that use fltk to refer to this file, and this file is not
- * included by any of the fltk header files.
+ * This file is used to compile EFltk. It should not be necessary for
+ * programs that use EFltk to refer to this file, and this file is not
+ * included by any of the EFltk header files.
  *
  * If this file is "configh.in" it is the input to ./configure.
  */
@@ -134,9 +134,6 @@
 #  define strtok_r(a,b,c) strtok(a,b)
 #endif
 
-/* Defined if NO math.h float function emulation needed */
-#define HAVE_FLOAT_FUNCTIONS 0
-
 /* Use the Posix poll() call instead of select() ? */
 #define USE_POLL 0
 
@@ -204,6 +201,9 @@
 
 /* Does C library contain iconv */
 #define HAVE_LIBC_ICONV 0
+
+/* Defined if, math.h float function emulation NOT needed */
+#define HAVE_FLOAT_FUNCTIONS 0
 
 #if !HAVE_FLOAT_FUNCTIONS
 # define floorf(a)	float(floor(float(a)))
