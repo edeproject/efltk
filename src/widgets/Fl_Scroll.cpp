@@ -244,23 +244,23 @@ void Fl_Scroll::layout()
     }
 
     //Adjust Y pos
-    if(total_h < H && yp!=0) { yp = yposition_ = 0; need_pos = true; }
+    yposition_ = (Y-t);
+    if(total_h < H) { yp = 0; need_pos = true; }
     else if(H>b && total_h>H) { yp = total_h-H; need_pos=true; yposition_ = (Y-t);}
-    else { if(yp>0) yposition_ = (Y-t); }
 
     // Adjust X pos
-    if(total_w < W && xp!=0) { xp = xposition_ = 0; need_pos = true; }
+    xposition_ = (X-l);
+    if(total_w < W) { xp = 0; need_pos = true; }
     else if(W>r && total_w>W) { xp = total_w-W; need_pos=true; xposition_ = (X-l); }
-    else { if(xp>0) xposition_ = (X-l); }
-
-    if(need_pos) position(xp, yp);
 
     scrollbar.resize(scrollbar_align()&FL_ALIGN_LEFT ? X-sw : X+W, Y, sw, H);
-    scrollbar.value(yposition_, H, 0, b-t);
+    scrollbar.value(yposition_, H, 0, total_h);
     hscrollbar.resize(X, scrollbar_align()&FL_ALIGN_TOP ? Y-sw : Y+H, W, sw);
-    hscrollbar.value(xposition_, W, 0, r-l);
+    hscrollbar.value(xposition_, W, 0, total_w);
 
     Fl_Widget::layout();
+
+    if(need_pos) position(xp, yp);
     redraw(FL_DAMAGE_SCROLL);
 }
 
@@ -273,6 +273,7 @@ void Fl_Scroll::position(int X, int Y)
     yposition_ = Y;
     layoutdx += dx;
     layoutdy += dy;
+
     relayout();
 }
 
