@@ -16,6 +16,9 @@
  ***************************************************************************/
 #include <config.h>
 
+// If you wanna test that code w/o exceptions - uncomment next line.
+//#undef __FL_EXCEPTIONS__
+
 #include <efltk/fl_ask.h>
 #include <efltk/Fl.h>
 #include <efltk/Fl_Window.h>
