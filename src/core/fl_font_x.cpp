@@ -237,10 +237,8 @@ float Fl_Device::width(unsigned int c) const
     char2[1].byte1 = char2[1].byte2 = 0;
     return XTextWidth16(current_font, char2, 1);
 #else
-    char buff[2];
-    buff[0]=c;
-    buff[1]=0;
-    return fl_width(buff);
+    char ch=char(c);
+    return width(&ch,1);
 #endif    
 }
 

@@ -174,14 +174,14 @@ Fl_FontSize::~Fl_FontSize() {
 #if 1
 // Some of the line spacings these return are insanely big!
 //int fl_height() { return current_font->height; }
-float Fl_Device::height() { return current_font->ascent + current_font->descent; }
-float Fl_Device::descent() { return current_font->descent; }
+float Fl_Device::height() const { return current_font->ascent + current_font->descent; }
+float Fl_Device::descent() const { return current_font->descent; }
 #else
 float Fl_Device::height() { return fl_size_;}
 float Fl_Device::descent() { return fl_size_/4;}
 #endif
 
-float Fl_Device::width(const char *str, int n)
+float Fl_Device::width(const char *str, int n) const
 {
     XGlyphInfo i;
 #if HAVE_XUTF8    
@@ -196,9 +196,10 @@ float Fl_Device::width(const char *str, int n)
 //    return fl_width((const char *)(&c), 1);
 //}
 
-float Fl_Device::width(unsigned int c)
+float Fl_Device::width(unsigned int c) const
 {
-    return width((const char *)(&c), 1);
+    char ch=char(c);
+    return width(&ch, 1);
 }
 
 ////////////////////////////////////////////////////////////////
