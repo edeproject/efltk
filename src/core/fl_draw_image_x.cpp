@@ -157,7 +157,9 @@ void Fl_Renderer::system_init()
     printf("System Image Format: %d bits per pixel / Display Visual %d bits per pixel\n", pfv->bits_per_pixel, fl_visual->depth);
 
     s_image.format = ZPixmap;
-    s_image.byte_order = ImageByteOrder(fl_display);
+    //s_image.byte_order = ImageByteOrder(fl_display);
+    s_image.byte_order = (WORDS_BIGENDIAN==1) ? MSBFirst : LSBFirst;
+
     s_image.depth = fl_visual->depth;
     s_image.bits_per_pixel = pfv->bits_per_pixel;
 
