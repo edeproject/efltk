@@ -20,12 +20,15 @@
 #include <efltk/Fl_Multi_Tabs.h>
 #include <efltk/Fl_Dialog.h>
 
+
+// THESE ARE REPLACED BY Fl_Stobk_Button?
 struct Fl_Dialog_Button_Template {
    int         id;
    const char *label;
 //   Fl_Pixmap   pixmap;
 };
 
+// THESE ARE REPLACED BY Fl_Stobk_Button?
 static const Fl_Dialog_Button_Template buttonTemplates[] = {
    { FL_DLG_OK,     "Ok" },
    { FL_DLG_CANCEL, "Cancel" },
@@ -60,16 +63,6 @@ Fl_Variant Fl_Dialog::operator [] (const char *field_name) {
    // stub
    Fl_Variant tmp;
    return tmp;
-}
-
-int Fl_Dialog::show_modal() {
-   //show();
-   //Fl::modal(this,false);
-   //while (!Fl::exit_modal_flag()) {
-   //   Fl::wait();
-   //}
-   exec(0,true);
-   return 0;
 }
 
 bool Fl_Dialog::valid() {

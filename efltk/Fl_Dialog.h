@@ -51,7 +51,9 @@ public:
    const Fl_Variant operator [] (const char *field_name) const;
    Fl_Variant operator [] (const char *field_name);
 
-   int   show_modal();
+   // This is not needed? User can use show(), and for modal exec()
+   //int   show_modal();
+
    bool  valid();
    void  buttons(int buttons_mask,int default_button);
    void  user_button(Fl_Button *);
