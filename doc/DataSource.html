@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.0.1  (Solaris Sparc)">
+	<META NAME="AUTHOR" CONTENT="Alexey Parshin">
+	<META NAME="CREATED" CONTENT="20030208;9244200">
+	<META NAME="CHANGEDBY" CONTENT="Alexey Parshin">
+	<META NAME="CHANGED" CONTENT="20030208;10462400">
+	<STYLE>
+	<!--
+		@page { size: 21.59cm 27.94cm; margin-left: 3.18cm; margin-right: 3.18cm; margin-top: 2.54cm; margin-bottom: 2.54cm }
+		P { margin-bottom: 0.21cm }
+		H2 { margin-bottom: 0.21cm }
+		H2.western { font-family: "Albany", sans-serif; font-size: 14pt; font-style: italic }
+		H2.cjk { font-size: 14pt; font-style: italic }
+		H2.ctl { font-size: 14pt; font-style: italic }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US">
+<H2 CLASS="western" ALIGN=CENTER><FONT SIZE=4 STYLE="font-size: 16pt">Data
+Sources</FONT></H2>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><FONT SIZE=3>by Alexey
+Parshin</FONT></P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><BR>
+</P>
+<OL>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT SIZE=3>What is
+	the Data Source and why do we need it?</FONT></P>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT SIZE=3>How can a
+	Data Source be used?</FONT></P>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT SIZE=3>Minimal
+	structure of a simple Data Source.</FONT></P>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT SIZE=3>Using a
+	Data Source in widgets.</FONT></P>
+</OL>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-top: 0.42cm; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>What
+is the Data Source and why do we need it?</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT SIZE=3>Different
+sources of the information require very different ways to retrieve
+that information. The Datasource allows to hide the nature of
+information source behind the standard API, presenting information as
+rows (if applicable) and columns of data. It is very typical that all
+the rows have the same number of column types, and every column keeps
+it's data type from row to row. Datasource provides the abilities to
+open the information source and navigate through it. As soon it's
+opened, it has the list of the columns, or fields. Every field has
+the data type, width (size) and alignment, and, of course, you can
+read from it the actual data. As result, we have an abstraction class
+and can use it without knowing anything about the actual data. From
+the point of the particular widget, it's just a set of rows of
+fields. Widget opens the Datasource, reads the data, closes it. It
+doesn't matter if that Datasource was actually a database Query, or
+an FTP files directory. The widget has all the necessary information.
+</FONT>
+</P>
+<P STYLE="margin-top: 0.42cm; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>How
+can a Data Source be used?</FONT></FONT></P>
+<P>There are a lot of different usages of the Datasource in widgets.
+Some widgets, like List View, can utilize the whole Datasource (DS)
+simultaneously, by reading and displaying it completely. Some
+widgets, like Dialog, can use just one row of the DS in a time. And,
+finally, a lot of widgets can use just one field of the row in DS.
+I'm not even going to consider a pity group of remaining widgets that
+can't use DS at all. In eFLTK, every widget has a field_name() method
+that allows to connect any widget with the field of DS. Where is the
+DS? Well, widgets are not used by themselves. Usually, widgets are
+placed in the group, so the group should provide the DS, if widgets
+inside need it. So, Fl_Group defines data_source() method to connect
+the group with the DS, and couple of methods to load and unload data
+to/from widgets. By the way, it means that we may write to some
+Datasources.</P>
+<P>So, how do we read data from Datasource, and how do we write data
+to it? Very simple. First, we open the DS:</P>
+<P><I>my_ds.open();</I></P>
+<P>Datasource uses Fl_Variant to store every field. To communicate
+with DS we first find the field by the field name or index (in the DS
+row):</P>
+<P><I>Fl_Data_Field&amp; first_name_field = my_ds[&ldquo;name&rdquo;];</I></P>
+<P><I>Fl_Data_Field&amp; last_name_field = my_ds[1];</I></P>
+<P>Then we can just read the value from field, or write it to the
+field:</P>
+<P><I>Fl_String first_name = first_name_field;</I></P>
+<P><I>Fl_String last_name = &ldquo;New last name&rdquo;;</I></P>
+<P><I>last_name_field = last_name;</I></P>
+<P>And , finally, we close DS:</P>
+<P><I>my_ds.close();</I></P>
+<P>Well, this is true for the abstract DS. The real Datasources
+require to define some extra parameters prior to open(), like what
+are we trying to open? In case of the database query it would be the
+text of SQL statement, for Fl_Directory_DS it would be the path to
+the directory, etc..</P>
+</BODY>
+</HTML>
