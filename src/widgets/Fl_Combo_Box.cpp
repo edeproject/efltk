@@ -7,6 +7,7 @@
 #include <efltk/Fl_Pixmap.h>
 #include <efltk/fl_draw.h>
 #include <efltk/Fl_Combo_Box.h>
+//#include <efltk/Fl_Group.h>
 
 static char * add_small_xpm[] = {
     "15 15 6 1",
@@ -476,4 +477,11 @@ bool Fl_Combo_Box::save_data(Fl_Data_Source *ds) const
     Fl_Variant  fld_value;
     fld_value.set_int(value());
     return ds->write_field(field_name().c_str(), fld_value);
+}
+
+void Fl_Combo_Box::fill(Fl_Data_Source& ds,Fl_String user_data_column) 
+{
+    Fl_Group *saveGroup = current();
+    Fl_Combo_Box::listview()->fill(ds,user_data_column); 
+    current(saveGroup);
 }
