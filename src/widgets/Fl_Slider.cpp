@@ -471,7 +471,7 @@ int Fl_Slider::handle(int event, int x, int y, int w, int h)
                     }
                 }
                 double v;
-            RETRY:
+RETRY:
                 X = mx-offcenter;
                 if (X < 0)
                 {
@@ -492,6 +492,7 @@ int Fl_Slider::handle(int event, int x, int y, int w, int h)
                     event = FL_DRAG;
                     goto RETRY;
                 }
+                do_callback(FL_MOUSE_DRAG);
                 return 1;
             }
         case FL_RELEASE:
