@@ -530,8 +530,7 @@ static void revert(Fl_Style* s)
 static Fl_Named_Style style("Tabs", revert, &Fl_Tabs::default_style);
 Fl_Named_Style* Fl_Tabs::default_style = &::style;
 
-Fl_Tabs::Fl_Tabs(int X,int Y,int W, int H,const char *l)
-: Fl_Group(X,Y,W,H,l) {
+void Fl_Tabs::ctor_init() {
     m_tabsMatrix = new Fl_Tabs_Matrix(this);
     push_ = 0;
     m_showTabs = true;
@@ -540,12 +539,21 @@ Fl_Tabs::Fl_Tabs(int X,int Y,int W, int H,const char *l)
     m_tabsWidth = m_tabsHeight = 0;
     m_rowHeight = 0;
     style(default_style);
-   // This is not allowed:
-   //box(FL_THIN_UP_BOX);
-   // If you want to change default behaviour of tabs,
-   // Change box is revert function
 }
 
+// Traditional ctor
+Fl_Tabs::Fl_Tabs(int X,int Y,int W, int H,const char *l)
+: Fl_Group(X,Y,W,H,l) {
+    ctor_init();
+}
+
+// New style ctor
+Fl_Tabs::Fl_Tabs(const char* l,int layout_size,Fl_Align layout_al,int label_w)
+: Fl_Group(l,layout_size,layout_al,label_w) {
+    ctor_init();
+}
+
+// dtor
 Fl_Tabs::~Fl_Tabs() {
     delete m_tabsMatrix;
 }

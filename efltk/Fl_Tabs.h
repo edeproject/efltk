@@ -35,7 +35,13 @@ public:
     static const Fl_Color auto_color_table[16];
     static Fl_Named_Style* default_style;
 
+    /** Creates new tabs widget using the given position, size, and label string. */
     Fl_Tabs(int x,int y,int w,int h,const char *label = 0);
+
+    /** Creates new tabs widget using the label, size, alignment, and label width. */
+    Fl_Tabs(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=-1);
+
+    /** Destructor */
     virtual ~Fl_Tabs();
 
     Fl_Group* new_group(const char *label,bool autoColor=false);
@@ -44,11 +50,11 @@ public:
 
     Fl_Widget *value();
     int value(Fl_Widget *);
-    
-	Fl_Widget *push() const {return push_;}
+
+    Fl_Widget *push() const {return push_;}
     int push(Fl_Widget *);
-    
-	Fl_Widget *which(int event_x, int event_y);
+
+    Fl_Widget *which(int event_x, int event_y);
 
     void show_tabs(bool st);
     bool show_tabs() { return m_showTabs; }
@@ -74,12 +80,15 @@ protected:
     Fl_Scroll* create_new_scroll(const char *label);
     Fl_Group* create_new_group(const char *label);
 private:
+
+    /** constructor initializer */
+    void ctor_init();
+
     Fl_Widget        *value_;
     Fl_Widget        *push_;
     Fl_Tabs_Matrix   *m_tabsMatrix;
     int               m_autoColorIndex;
     Fl_Align          m_tabsMode;
-
 };
 
 #endif
