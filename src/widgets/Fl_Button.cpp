@@ -109,8 +109,11 @@ int Fl_Button::handle(int event)
                 value(oldval);
                 if (when() & FL_WHEN_CHANGED) do_callback(event);
             }
-            if (when() & FL_WHEN_RELEASE)
-                do_callback(event);
+            if (when() & FL_WHEN_RELEASE) {
+                do_callback(FL_BUTTON_UP);
+                if (value())
+                    do_callback(FL_BUTTON_PRESSED);
+            }
             else
                 set_changed();
             return 1;
