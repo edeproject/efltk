@@ -1,3 +1,903 @@
+2002-11-16 06:32  parshin
+
+	* src/widgets/Fl_Multi_Tabs.cpp: Fixed the old and nasty glitch
+	with tab resizing
+
+2002-11-15 18:11  laza2000
+
+	* configure.in, configh.in: Disable ICONV..
+
+2002-11-15 17:00  laza2000
+
+	* efltk/fl_utf8.h, src/core/fl_utf8.c, src/core/fl_utf8.cpp,
+	src/Makefile: Changed fl_utf8.cpp to fl_utf8.c
+
+2002-11-15 16:59  laza2000
+
+	* configure.in: iconv detect fix
+
+2002-11-15 09:56  laza2000
+
+	* src/widgets/Fl_Multi_Tabs.cpp: Some layout fixes
+
+2002-11-15 09:42  laza2000
+
+	* src/widgets/Fl_Multi_Tabs.cpp: box() from constructor to revert
+	function
+
+2002-11-15 07:20  parshin
+
+	* src/widgets/Fl_Multi_Tabs.cpp: Minor update
+
+2002-11-15 07:19  parshin
+
+	* efltk/: Fl_Dialog.h, Fl_Variant.h: Fl_Dialog update
+
+2002-11-15 07:17  parshin
+
+	* src/widgets/Fl_Dialog.cpp: Fl_Dialog update. Add field name
+	support for widgets (see test)
+
+2002-11-15 07:15  parshin
+
+	* test/dialog.cpp: test update for new features in Fl_Dialog
+
+2002-11-15 00:23  parshin
+
+	* test/maskedinput.cpp: Added phone # example
+
+2002-11-15 00:22  laza2000
+
+	* efltk/Fl_Font.h, src/core/fl_font_x.cpp,
+	src/core/fl_list_fonts_x.cpp: Removed bool xlist_cached_, xlist_ is
+	not null is cached
+
+2002-11-14 23:49  laza2000
+
+	* efltk/Fl_Font.h, src/core/fl_font_win32.cpp,
+	src/core/fl_list_fonts_win32.cpp, visualc/fonts.dsp: Added WIN32
+	encoding stuff (sucks) Added sizes and charsets cache to WIN32
+	Fl_Font_
+
+2002-11-14 19:29  cortex
+
+	* efltk.spec: Spec fix
+
+2002-11-14 17:10  laza2000
+
+	* src/core/Fl_init.cpp: Moved #endif to correct place
+
+2002-11-14 16:45  laza2000
+
+	* src/widgets/Fl_Text_Display.cpp: Added #ifdef _WIN32
+
+2002-11-14 16:24  laza2000
+
+	* configure.in, efltk/Xutf8.h, efltk/fl_utf8.h, efltk/x.h,
+	src/core/Fl_x.cpp, src/core/fl_font_x.cpp, src/core/fl_utf8.cpp,
+	src/opengl/gl_draw.cpp, src/widgets/Fl_Text_Display.cpp:  - Added
+	fl_supports_utf8(), returns true if UTF-8 compiled in.
+	 - Moved Xutf8.h under efltk include files, so it can be included
+	by external probram also.   - More XUTF8 stuff.. :)
+
+2002-11-14 15:47  laza2000
+
+	* src/core/: fl_utf8_ucs2fmap.c, fl_utf8_x.c, fl_utf8_x.h,
+	fl_utf8_x_input.c, fl_utf8_x_utils.c, fl_utf_keysym2ucs.c: Removed
+	old unneeded files
+
+2002-11-14 15:44  laza2000
+
+	* configh.in, configure.in, makeinclude.in, src/core/fl_utf8.cpp,
+	efltk/fl_utf8.h: XUTF updates
+
+2002-11-14 15:43  laza2000
+
+	* src/Makefile: Added xutf files
+
+2002-11-14 15:35  laza2000
+
+	* headers/: big5_0_.h, case.h, case_tbl.txt, dingbats_.h,
+	gb2312_1980_0_.h, iso8859_10_.h, iso8859_13_.h, iso8859_14_.h,
+	iso8859_15_.h, iso8859_1_.h, iso8859_2_.h, iso8859_3_.h,
+	iso8859_4_.h, iso8859_5_.h, iso8859_6_.h, iso8859_7_.h,
+	iso8859_8_.h, iso8859_9_.h, jisx0201_1976_0_.h, jisx0208_1983_0_.h,
+	jisx0212_1990_0_.h, koi8_1_.h, ksc5601_1987_0_.h, spacing.h,
+	spacing_tbl.txt, symbol_.h, tbl.txt, utils/README, utils/case.sh,
+	utils/conv_gen, utils/conv_gen.c, utils/convert_map,
+	utils/convert_map.c, utils/create_table, utils/create_table.c,
+	utils/non_spacing.sh, utils/tbl_gen.sh: Removed old XUTF8 files. 
+	headers directory is now obsolote.  XUTF can be found in src/xutf,
+	this allows MUCH easier update of whole XUTF lib.
+
+2002-11-14 14:03  laza2000
+
+	* src/widgets/Fl_Input.cpp: UTF-8 fixes
+
+2002-11-14 14:00  laza2000
+
+	* test/utf8.cpp: fixes
+
+2002-11-14 14:00  laza2000
+
+	* headers/case.h: Contents of this file is now in spacing.h
+
+2002-11-14 13:59  laza2000
+
+	* src/: core/fl_font_x.cpp, core/fl_utf8.cpp,
+	widgets/Fl_Calendar.cpp, widgets/Fl_FileBrowser.cpp: *nix fixes ..
+
+2002-11-14 13:44  laza2000
+
+	* src/core/Fl_Config.cpp, src/core/Fl_Image.cpp,
+	src/core/Fl_Util.cpp, src/core/fl_font_win32.cpp,
+	src/core/fl_internal.h, src/core/fl_list_fonts_win32.cpp,
+	src/core/fl_utf8.cpp, src/widgets/Fl_Calendar.cpp,
+	src/widgets/Fl_Dialog.cpp, src/widgets/Fl_FileBrowser.cpp,
+	src/widgets/Fl_File_Dialog.cpp, src/widgets/Fl_Input.cpp,
+	src/widgets/Fl_ListView.cpp, src/widgets/Fl_Menu.cpp,
+	src/widgets/Fl_Numeric_Input.cpp, src/widgets/Fl_Simple_Html.cpp,
+	src/widgets/Fl_Text_Buffer.cpp, src/widgets/Fl_Text_Display.cpp,
+	test/editor.cpp, test/utf8.cpp, test/utf-8_encoded_testpage.txt,
+	visualc/config.h, visualc/efltk.dsp, visualc/efltk.dsw,
+	visualc/fonts.dsp, visualc/utf8.dsp:  - Added WIN32 UTF-8 support
+	 - Added open, fopen, chmod .. wrapper functions fl_* to fl_utf8.h
+	 - Fixed some UTF-8 related bugs in Fl_Input and Fl_Text_Display
+	 - Test updates
+	 - Fixed re-definitions :)
+
+2002-11-14 13:41  laza2000
+
+	* efltk/: Fl_Font.h, Fl_Locale.h, fl_draw.h, fl_utf8.h:  - Added
+	WIN32 UTF-8 support
+	 - Added open, fopen, chmod .. wrapper functions fl_* to fl_utf8.h
+	 - Fixed some UTF-8 related bugs in Fl_Input and Fl_Text_Display
+	 - Test updates
+
+2002-11-14 13:24  laza2000
+
+	* headers/spacing.h: Updated spacing tables from Jean-Marc's
+	fltk-utf8-1.1.1
+
+2002-11-14 05:28  parshin
+
+	* efltk/Fl_Dialog.h, src/widgets/Fl_Dialog.cpp, test/dialog.cpp:
+	Added images for standard buttons. show_modal() now returns the id
+	of the pressed button. Help button has special callback - future
+	connection to the help subsystem.
+
+2002-11-13 18:01  laza2000
+
+	* src/widgets/Fl_Input.cpp: Some UTF-8 fixes..
+
+2002-11-13 17:28  laza2000
+
+	* src/core/fl_font_x.cpp: Init font->first to 0 in fl_create_font()
+
+2002-11-13 17:10  laza2000
+
+	* src/core/fl_locale.cpp: #if HAVE_TEXTDOMAIN_CODESET ..
+
+2002-11-13 16:56  laza2000
+
+	* Makefile, configure.in, efltk-config.in, makeinclude.in,
+	efltk/Fl.h, efltk/Fl_Font.h, efltk/Fl_Locale.h, efltk/win32.h,
+	fluid/fluid.cxx, src/Makefile, src/makedepend,
+	src/core/Fl_Config.cpp, src/core/Fl_Util.cpp, src/core/Fl_arg.cpp,
+	src/core/Fl_init.cpp, src/core/Fl_win32.cpp, src/core/Fl_x.cpp,
+	src/core/Makefile, src/core/fl_draw_image_x.cpp,
+	src/core/fl_font_x.cpp, src/core/fl_internal.h,
+	src/core/fl_list_fonts.cpp, src/core/fl_list_fonts_x.cpp,
+	src/core/fl_locale.cpp, src/core/fl_theme.cpp, src/core/makedepend,
+	src/widgets/Makefile, src/widgets/makedepend, test/Makefile,
+	test/file_chooser.cpp, test/fonts.cpp, test/listview.cpp,
+	test/utf8.cpp:	- Added fl_create_font(), for create multi-font
+	fonts (fontsets, see test/utf8.cpp)
+	 - Reworked Fl_Font_ to support fontsets better, and also cache
+	them correctly
+	 - Removed Fl::init()
+	 - Added Fl::init_locale(), inits EFltk own locale support
+	 - Added Fl::init_locale(app, dir), inits app locale support (inits
+	also efltk)
+	   Old one works still (fl_init_locale_support)
+	 - Added Fl::read_defaults(), reads widgets default settings
+	 - Added UTF-8 test
+	 - Better locale support
+	
+	Moved src/core/Makefile and src/widgets/Makefile to src/Makefile
+	EFltk doesnt build 2 libs abymore, only libefltk.{a | so} It was
+	impossible to link ui/core libs statically together.  This wont
+	broke anything, if app uses efltk-config (all EDE apps does)
+
+2002-11-13 09:02  laza2000
+
+	* src/widgets/Fl_Dialog.cpp: typo fix.. :)
+
+2002-11-13 08:58  laza2000
+
+	* efltk/Fl_Dialog.h, src/widgets/Fl_Dialog.cpp: show_modal() away
+
+2002-11-13 08:57  laza2000
+
+	* test/dialog.cpp: show_modal() -> exec(0, false);
+
+2002-11-13 06:47  parshin
+
+	* test/: Makefile, dialog.cpp: Test for Fl_Dialog.
+
+2002-11-13 06:35  parshin
+
+	* src/widgets/Fl_Dialog.cpp, src/widgets/Makefile,
+	efltk/Fl_Dialog.h: Pre-version of Fl_Dialog (non-working yet)
+
+2002-11-12 23:45  laza2000
+
+	* src/core/: fl_draw_image_x.cpp, fl_draw_image_x_2.cpp:  - Debug
+	messages away
+	 - Finally all works on BIG/LITTLE endian machines, even if host is
+	different than client.
+
+2002-11-12 23:31  laza2000
+
+	* src/core/fl_draw_image_x.cpp: Possible fix? :)
+
+2002-11-12 23:15  laza2000
+
+	* src/core/fl_draw_image_x_2.cpp: more debug..
+
+2002-11-12 23:14  laza2000
+
+	* src/core/: fl_draw_image_x.cpp, fl_draw_image_x_2.cpp: Debug..
+
+2002-11-12 22:31  laza2000
+
+	* src/widgets/Fl_Multi_Image.cpp: Fixed draw function..
+
+2002-11-12 22:31  laza2000
+
+	* efltk/Fl_Multi_Image.h: Fixed draw function
+
+2002-11-12 22:22  laza2000
+
+	* src/core/fl_draw_image_win32.cpp: WIN32 update
+
+2002-11-12 22:18  laza2000
+
+	* test/: Makefile, bitmap.cpp, image.cpp: Added bitmap demo
+
+2002-11-12 22:17  laza2000
+
+	* efltk/Fl_Bitmap.h, efltk/Fl_Image.h, efltk/Fl_Renderer.h,
+	efltk/Fl_WM.h, src/core/Fl_Bitmap.cpp, src/core/Fl_Bmp.cpp,
+	src/core/Fl_Image.cpp, src/core/Fl_Renderer.cpp,
+	src/core/fl_blit.cpp, src/core/fl_blit_a.cpp,
+	src/core/fl_color_x.cpp, src/core/fl_draw_image_x.cpp,
+	src/core/fl_draw_image_x_2.cpp, src/core/fl_draw_pixmap.cpp:  -
+	Added Fl_Renderer::big_endian() and Fl_Renderer::lil_endian() to
+	specify system image byte order.
+	 - Fixed Fl_Bitmap (hopefully)
+	 - Changed to use Fl_Renderer::*_endian() functions, instead of #if
+	WORDS_BIGENDIAN
+
+2002-11-12 18:19  laza2000
+
+	* test/glpuzzle.cpp: Added #ifdef HAVE_GL
+
+2002-11-12 18:01  laza2000
+
+	* src/core/fl_utf8_x.c: no_spc declaration to start of function...
+	THIS FILE C! :)
+
+2002-11-12 17:52  laza2000
+
+	* src/core/fl_utf8_x.c: TAB to space
+
+2002-11-12 08:40  laza2000
+
+	* src/core/: Fl_init.cpp, fl_locale.cpp: Added #if
+	HAVE_TEXTDOMAIN_CODESET
+
+2002-11-12 08:39  laza2000
+
+	* configh.in, configure.in: Added check for bind_textdomain_codeset
+
+2002-11-12 08:07  laza2000
+
+	* src/core/Fl_init.cpp: Added #if ENABLE_NLS
+
+2002-11-12 03:41  parshin
+
+	* src/widgets/: Fl_Date_Time_Input.cpp, Makefile: Missing image is
+	embedded to Fl_Date_Time_Input.cpp
+
+2002-11-12 00:51  laza2000
+
+	* src/widgets/: Fl_Choice.cpp, Fl_Menu.cpp:  - Fixed
+	fluid-choice-bug :)
+	 - Menuwindows takes bg color from widget which creates it
+
+2002-11-12 00:38  laza2000
+
+	* src/core/: Fl_init.cpp, fl_locale.cpp:  - Added gettext support
+	for convert to UTF-8 on the fly
+	 - Fixed EFLTK locale support
+
+2002-11-11 23:59  parshin
+
+	* test/maskedinput.cpp: Added test for Fl_Date_Input
+
+2002-11-11 23:54  parshin
+
+	* efltk/Fl_Date_Time_Input.h, src/widgets/Fl_Date_Time_Input.cpp:
+	Added Fl_Date_Time_Input.cpp/h. Currently contains just
+	Fl_Date_Input.
+
+2002-11-11 23:43  laza2000
+
+	* src/widgets/Fl_Menu.cpp: DEBUG away
+
+2002-11-11 23:28  laza2000
+
+	* src/: core/Fl_Lists.cpp, core/fl_font_x.cpp, core/fl_utf8_x.c,
+	widgets/Fl_Text_Buffer.cpp, widgets/Fl_Text_Display.cpp:  - Added
+	undo_size to Fl_Text_Buffer
+	 - Added maxsize to Fl_Ptr_Stack
+	 - Fixed XUtf8UcsWidth function
+	 - Fixed Fl_Text_Display to display UTF-8 correctly
+
+2002-11-11 23:25  laza2000
+
+	* efltk/: Fl_Ptr_Stack.h, Fl_Text_Buffer.h: Added undo_size to
+	Fl_TextBuffer, defines maximum undo steps
+
+2002-11-11 21:40  laza2000
+
+	* test/editor.cpp: Fixes...
+
+2002-11-11 21:39  parshin
+
+	* efltk/Fl_Date_Time.h: Minor corrections
+
+2002-11-11 21:36  laza2000
+
+	* src/widgets/: Fl_ListView.cpp, Fl_Menu.cpp, Fl_Text_Buffer.cpp,
+	Fl_Text_Display.cpp, Fl_Text_Editor.cpp: - Added undo() to
+	Fl_Text_Buffer and Fl_Text_Editor - Fixed some potential crash
+	points in editor - Fixed Fl_ListView pageup/pagedown keys
+
+2002-11-11 21:34  laza2000
+
+	* efltk/: Fl_Text_Buffer.h, Fl_Text_Editor.h: - Added undo() to
+	Fl_Text_Buffer and Fl_Text_Editor
+
+2002-11-11 20:51  parshin
+
+	* efltk/Fl_Date_Time.h, src/core/Fl_Date_Time.cpp,
+	test/maskedinput.cpp: Added support for date and time input masks
+	in Fl_Date_Time.  The masks are set up automatically from system
+	settings.  Fixed the 24hours mode recognition.	Update maskedit
+	test to demonstarte these masks.
+
+2002-11-11 19:35  cortex
+
+	* src/core/Fl_Util.cpp: stat to lstat to see symlink
+
+2002-11-11 19:33  cortex
+
+	* efltk.spec: Spec file added
+
+2002-11-11 18:27  parshin
+
+	* efltk/Fl_Data_Source.h, src/core/Fl_Data_Source.cpp,
+	src/core/Fl_String.cpp: Updated Alexey Parshin' e-mail address in
+	copyright :)
+
+2002-11-11 17:40  laza2000
+
+	* src/widgets/: Fl_Menu.cpp, Fl_Menu_Window.cpp: Fixed infinite
+	loop in animate mode, seems to be GCC bug.  For some reason class
+	member becomes "nan", even when there's no assigment to variable at
+	all...
+
+2002-11-11 16:31  laza2000
+
+	* src/core/: Fl_Config.cpp, Fl_init.cpp: Write/Read double and
+	float in locale independ format i.e. decimal pointer in file is
+	always '.'
+
+2002-11-11 15:37  laza2000
+
+	* visualc/: efltk.dsw, radio.dsp: Added 'radio' test project file
+
+2002-11-11 15:36  laza2000
+
+	* test/menubar.cpp: menu stuff
+
+2002-11-11 15:36  laza2000
+
+	* src/core/Fl_init.cpp: removed if(0) :)
+
+2002-11-11 15:35  laza2000
+
+	* src/: core/Fl.cpp, core/Fl_init.cpp, widgets/Fl_Button.cpp,
+	widgets/Fl_Menu.cpp, widgets/Fl_Menu_.cpp, widgets/Fl_Menu_Bar.cpp,
+	widgets/Fl_Tooltip.cpp:  - Menu timeout fixes
+	 - Added close_window timeout
+	 - Some tooltip fixes
+
+2002-11-10 20:43  parshin
+
+	* test/maskedinput.cpp: Minor corrections in maskedinput test
+
+2002-11-10 20:40  parshin
+
+	* test/: Makefile, maskedinput.cpp: Test for Fl_Masked_Input
+
+2002-11-10 20:29  parshin
+
+	* efltk/Fl_Masked_Input.h, src/widgets/Fl_Masked_Input.cpp,
+	src/widgets/Makefile: Fl_Masked_Edit (.cpp,.h,Makefile) added.
+
+2002-11-09 17:22  parshin
+
+	* src/widgets/Fl_Calendar.cpp: Fixed border and popup sizing
+	problems.
+
+2002-11-09 14:02  laza2000
+
+	* src/core/fl_utf8.cpp: #ifdef to #if
+
+2002-11-09 13:10  laza2000
+
+	* src/widgets/Fl_Calendar.cpp:	- Changed switch buttons to use
+	button_color()
+	 - set focus to current date after creating widget
+
+2002-11-09 12:39  laza2000
+
+	* src/widgets/Fl_ListView_Item.cpp: Fixed compiler warning
+
+2002-11-09 12:30  laza2000
+
+	* fluid/factory.cxx: Added Fl_Calendar type
+
+2002-11-09 12:27  laza2000
+
+	* test/: calendar.cpp, callback.cpp: Test updates
+
+2002-11-09 12:25  laza2000
+
+	* efltk/: Fl_Callback.h, Fl_Widget.h: Added connect(obj, func)
+	where func = SomeClass::method()
+
+2002-11-09 12:22  laza2000
+
+	* src/widgets/Fl_Calendar.cpp: Added styles for Fl_Calendar. 
+	Removed dynamic_cast<>
+
+2002-11-09 12:21  laza2000
+
+	* efltk/Fl_Calendar.h: Added styles for Fl_Calendar.  Removed
+	dynamic_cast<> from code
+
+2002-11-09 09:09  parshin
+
+	* test/: Makefile, calendar.cpp: Example for the calendar and popup
+	calendar.
+
+2002-11-09 09:01  parshin
+
+	* efltk/Fl_Calendar.h, src/widgets/Fl_Calendar.cpp,
+	src/widgets/Makefile: Fl_Calendar and Fl_Popup_Calendar classes
+
+2002-11-08 22:09  laza2000
+
+	* test/symbols.cpp: Added scale slider also
+
+2002-11-08 21:26  laza2000
+
+	* test/: Makefile, symbols.cpp: Added symbols test
+
+2002-11-08 20:07  laza2000
+
+	* src/widgets/Fl_Menu.cpp: Added hack to detect, if user meant to
+	popup in absolute position
+
+2002-11-08 19:46  laza2000
+
+	* visualc/: efltk.dsp, efltk.dsw, popup_window.dsp: Added
+	popup_window test
+
+2002-11-08 17:53  laza2000
+
+	* src/core/Fl_x.cpp: Fixed XWindow to behave like WIN32 after
+	FL_PUSH
+
+2002-11-08 17:40  laza2000
+
+	* efltk/Fl_Menu_Window.h, efltk/Fl_Popup_Window.h,
+	src/widgets/Fl_Popup_Window.cpp, test/popup_window.cpp: Fixed
+	Fl_Popup_Window to behave as it should
+
+2002-11-08 15:00  laza2000
+
+	* efltk/: Fl_Thread.h, Fl_Thread_Linux.h: Implemented recursive
+	mutexes for pthreads, if they dont support them
+
+2002-11-08 14:41  laza2000
+
+	* efltk/Fl_Thread.h, efltk/Fl_Thread_Linux.h,
+	efltk/Fl_Thread_w32.h, efltk/Fl_Threads.h, visualc/efltk.dsp,
+	visualc/efltk.dsw, visualc/image_loader.dsp, visualc/listview.dsp,
+	visualc/thread.dsp, test/threads.cpp: Moved more thread code to
+	platform specific files Fl_Thread_*.h Removed old code from
+	Fl_Threads.h
+
+2002-11-08 13:42  laza2000
+
+	* src/: core/Fl_Util.cpp, widgets/Fl_File_Dialog.cpp,
+	widgets/Fl_ListView.cpp, widgets/Fl_ListView_Header.cpp,
+	widgets/Fl_ListView_Item.cpp, widgets/Fl_Numeric_Input.cpp: Added
+	"find_data" and "find_text" to Fl_ListView Added abs_index() to
+	Fl_ListView_Item, i.e. insert order Added compare to
+	Fl_ListView_Item, override this to have own compare functions (e.g.
+	Fl_File_Dialog) Added redraw methods to Fl_ListView_Item Added own
+	comparing functions to size and date columns in Fl_File_Dialog
+	Better Fl_FileAttr
+
+2002-11-08 13:40  laza2000
+
+	* efltk/: Enumerations.h, Fl_File_Dialog.h, Fl_ListView.h,
+	Fl_ListView_Item.h, Fl_Util.h: Added "find_data" and "find_text" to
+	Fl_ListView Added compare to Fl_ListView_Item, override this to
+	have own compare functions (e.g. Fl_File_Dialog) Added redraw
+	methods to Fl_ListView_Item Better Fl_FileAttr
+
+2002-11-08 09:37  laza2000
+
+	* efltk/Fl_ListView_Item.h, src/widgets/Fl_ListView.cpp,
+	src/widgets/Fl_ListView_Item.cpp:  - Added leading() to
+	Fl_ListView_ItemExt
+	 - Fl_ListView_Item layout takes parent()->leading() as y offset
+	 - Fixed 1. column color bug
+
+2002-11-08 01:14  parshin
+
+	* src/widgets/Makefile, test/Makefile: Fl_Popup_Window/popup_window
+	added to makefiles
+
+2002-11-08 01:08  parshin
+
+	* efltk/Fl_Popup_Window.h, src/widgets/Fl_Popup_Window.cpp,
+	test/popup_window.cpp: Popup Window - simple and useful for several
+	other widgets:	 - popup calendar   - date input   - data combo   -
+	etc..
+
+2002-11-07 17:58  laza2000
+
+	* test/listview.cpp: Totally re-implemented Fl_ListView. Cause of
+	HUGE memory usage and slowness. :) Fl_ListView_Item is NOT derived
+	from Fl_Widget, And is very simple item which takes e.g. alignment
+	flags from listview. It uses listview text fonts (not label).  It's
+	suitable for most of Listview's and is very fast, and uses very
+	less memory (20MB / 100K items / 5 cols). There's also
+	Fl_ListView_ItemExt, which supports e.g. images/fonts/alignments
+	for each column.
+	
+	Fl_ListView_Item is almost backward compatible :) Normally
+	listviews set image to 1. column, old way: item->image(0, im); <<--
+	Same as in Fl_ListView_ItemExt new way: item->image(im);
+	
+	This is cause we want to use as less meory as possible. So, in
+	normal Fl_ListView_Item there's only one image what can be set.  It
+	will always be placed at left of first column.
+	
+	---------
+	
+	Added to Fl_Config possibility to read/write items with no section.
+	Setting section to NULL, will write item with no section, before
+	any section.
+	
+	---------
+	
+	Fixed some memory leaks.  And other bugs...
+	
+	ENJOY! :)
+
+2002-11-07 17:56  laza2000
+
+	* efltk/Fl_Config.h, efltk/Fl_File_Dialog.h, efltk/Fl_Group.h,
+	efltk/Fl_Image_List.h, efltk/Fl_ListView.h,
+	efltk/Fl_ListView_Header.h, efltk/Fl_ListView_Item.h,
+	efltk/Fl_PtrList.h, efltk/Fl_Ptr_List.h, efltk/Fl_Ptr_Stack.h,
+	efltk/Fl_String_List.h, efltk/Fl_Util.h, efltk/Fl_Widget_List.h,
+	src/core/Fl_Callback.cpp, src/core/Fl_Config.cpp,
+	src/core/Fl_Lists.cpp, src/core/Fl_Util.cpp, src/core/Fl_WM.cpp,
+	src/widgets/Fl_File_Dialog.cpp, src/widgets/Fl_ListView.cpp,
+	src/widgets/Fl_ListView_Header.cpp,
+	src/widgets/Fl_ListView_Item.cpp, src/widgets/Fl_MDI_Window.cpp,
+	src/widgets/Makefile: Totally re-implemented Fl_ListView. Cause of
+	HUGE memory usage and slowness. :) Fl_ListView_Item is NOT derived
+	from Fl_Widget, And is very simple item which takes e.g. alignment
+	flags from listview. It uses listview text fonts (not label).  It's
+	suitable for most of Listview's and is very fast, and uses very
+	less memory (20MB / 100K items / 5 cols). There's also
+	Fl_ListView_ItemExt, which supports e.g. images/fonts/alignments
+	for each column.
+	
+	Fl_ListView_Item is almost backward compatible :) Normally
+	listviews set image to 1. column, old way: item->image(0, im); <<--
+	Same as in Fl_ListView_ItemExt new way: item->image(im);
+	
+	This is cause we want to use as less meory as possible. So, in
+	normal Fl_ListView_Item there's only one image what can be set.  It
+	will always be placed at left of first column.
+	
+	---------
+	
+	Added to Fl_Config possibility to read/write items with no section.
+	Setting section to NULL, will write item with no section, before
+	any section.
+	
+	---------
+	
+	Fixed some memory leaks.  And other bugs...
+	
+	ENJOY! :)
+
+2002-11-07 10:17  laza2000
+
+	* efltk/Fl_Config.h, src/core/Fl_Config.cpp: Fixed memory leak
+
+2002-11-07 04:15  parshin
+
+	* efltk/Fl_Multi_Tabs.h, src/widgets/Fl_Multi_Tabs.cpp: Implemented
+	theming support.
+
+2002-11-06 19:50  laza2000
+
+	* src/core/Fl_Lists.cpp: Speed up... No call for resize() always
+	(dooh!)
+
+2002-11-06 16:51  laza2000
+
+	* src/widgets/: Fl_File_Dialog.cpp, Fl_ListView.cpp,
+	Fl_ListView_Item.cpp: Fixes for Fl_ListView and Fl_File_Dialog...
+	crashed after clear()
+
+2002-11-06 15:56  laza2000
+
+	* test/listview.cpp: Minor changes....
+
+2002-11-06 15:43  laza2000
+
+	* visualc/: efltk.dsp, efltk.dsw, listview.dsp: Updated prj files
+
+2002-11-06 15:42  laza2000
+
+	* efltk/Fl_Group.h, efltk/Fl_ListView.h, efltk/Fl_ListView_Item.h,
+	efltk/Fl_Ptr_Stack.h, efltk/Fl_String_List.h, efltk/Fl_Widget.h,
+	src/core/Fl_Group.cpp, src/core/Fl_Lists.cpp, src/core/Fl_Util.cpp,
+	src/widgets/Fl_ListView.cpp, src/widgets/Fl_ListView_Item.cpp:
+	Improved Fl_ListView, Fl_ListView_Item, Fl_LisyHeader to support
+	different fonts/sizes/colors in each column.  Variable number of
+	columns are now possible (instead of old max32) Added Fl_Ptr_Stack
+	Speeded up Fl_ListView to work also with 100000 items :))
+
+2002-11-06 03:08  leka
+
+	* src/core/Fl_String.cpp: Again the same problem with math...
+
+2002-11-06 01:24  parshin
+
+	* src/widgets/Fl_Multi_Tabs.cpp, efltk/Fl_Multi_Tabs.h,
+	test/multitabs2.cpp: Replaced CTM_XXX flags with FL_ALIGN_XXX
+
+2002-11-06 00:52  parshin
+
+	* src/widgets/Fl_Multi_Tabs.cpp: Fixed the resize to be gradual
+
+2002-11-05 10:03  laza2000
+
+	* test/: image_loader.cpp, image_loader.fl, image_loader.h:
+	Improved image_loader test a lil bit. Added "apply filter"
+
+2002-11-05 10:02  laza2000
+
+	* visualc/: efltk.dsw, image_loader.dsp, multitabs2.dsp: Added new
+	tests
+
+2002-11-05 07:21  parshin
+
+	* src/widgets/Fl_Multi_Tabs.cpp: Fixed the keyboard nivigation.
+	Have to discuss it ..  Fixed the variable space between tabs.
+
+2002-11-05 05:43  laza2000
+
+	* fluid/Fluid_Image.cxx: Fl_Ptr_List changes
+
+2002-11-05 05:41  laza2000
+
+	* src/core/Fl_Group.cpp, src/core/Fl_Lists.cpp,
+	efltk/Fl_Ptr_List.h: If blocksize<=0(default), do auto blocksize
+	calc
+
+2002-11-05 05:19  laza2000
+
+	* src/widgets/Fl_Multi_Tabs.cpp: WIN32 fixes
+
+2002-11-05 05:16  parshin
+
+	* test/multitabs2.cpp: Example demonstrates new box types for Multi
+	Tabs
+
+2002-11-05 05:15  parshin
+
+	* src/widgets/Fl_Multi_Tabs.cpp: Updated version better handles
+	icons, understands box type correctly, etc..
+
+2002-11-05 05:14  parshin
+
+	* efltk/Fl_Multi_Tabs.h: Updated version uses image() for icons
+
+2002-11-04 15:30  laza2000
+
+	* efltk/: Fl_Value_List.h, Fl_Value_Map.h: #ifdef 0 away :)
+
+2002-11-04 15:29  laza2000
+
+	* visualc/efltk.dsp: Updated prj files
+
+2002-11-04 15:28  laza2000
+
+	* efltk/Fl_Value_List.h, efltk/Fl_Value_Map.h,
+	src/core/Fl_Lists.cpp, src/widgets/Fl_ListView.cpp,
+	src/widgets/Fl_Multi_Tabs.cpp:	- WIN32 fixes
+
+2002-11-04 13:40  laza2000
+
+	* test/listview.cpp: Removed image stuff
+
+2002-11-04 13:38  laza2000
+
+	* efltk/Fl_String_List.h: Added file
+
+2002-11-04 13:37  laza2000
+
+	* efltk/Fl_Callback.h, efltk/Fl_Config.h, efltk/Fl_Group.h,
+	efltk/Fl_Image.h, efltk/Fl_Image_Cache.h, efltk/Fl_Image_List.h,
+	efltk/Fl_Int_List.h, efltk/Fl_ListView.h, efltk/Fl_ListView_Item.h,
+	efltk/Fl_PtrList.h, efltk/Fl_Ptr_List.h, efltk/Fl_String.h,
+	efltk/Fl_Widget_List.h, src/core/Fl_Callback.cpp,
+	src/core/Fl_Config.cpp, src/core/Fl_Date_Time.cpp,
+	src/core/Fl_Group.cpp, src/core/Fl_Image.cpp,
+	src/core/Fl_Lists.cpp, src/core/Fl_String.cpp,
+	src/core/Fl_Util.cpp, src/core/Makefile, src/core/fl_theme.cpp,
+	src/widgets/Fl_File_Dialog.cpp, src/widgets/Fl_ListView.cpp,
+	src/widgets/Fl_ListView_Item.cpp:  - Removed template based
+	Fl_PtrList.
+	 - Added void** based Fl_Ptr_List, and classes derived from it:
+	   Fl_Widget_List, Fl_Int_List, Fl_String_List, Fl_CString_List,
+	Fl_Image_List.
+	 - Changed Fl_Group to use Fl_Widget_List with blocksize=8
+	 - Added sorting to Fl_ListView
+	 - Added "int len" to Fl_String to keep track of string length w/o
+	calling strlen()
+	 - Many other fixes... :)
+
+2002-11-03 16:46  laza2000
+
+	* src/widgets/Fl_Scroll.cpp: Fixed scrolling auto-adjust..
+
+2002-11-03 16:17  laza2000
+
+	* src/widgets/Fl_Scroll.cpp, efltk/Fl_Scroll.h:  - Fl_Scroll now
+	includes widgets outside label, when calculating scrolling area.
+	 - Added "edge_offset" function, set pixels from each edge to
+	widget.
+	 - Fixed many bugs, related to showing/hiding scrollbars
+
+2002-11-02 23:19  laza2000
+
+	* src/widgets/Fl_Tabs.cpp: Draw fix...
+
+2002-11-02 18:30  parshin
+
+	* src/widgets/Fl_Multi_Tabs.cpp: Fixed the problem with resizing
+	tabs
+
+2002-11-02 10:56  cortex
+
+	* efltk/fl_draw.h, src/core/fl_font_win32.cpp: Added missing rtl
+	draw
+
+2002-11-02 04:38  parshin
+
+	* test/multitabs2.cpp: Added support for the new features of
+	Fl_Multi_Tabs
+
+2002-11-02 04:37  parshin
+
+	* src/widgets/Fl_Multi_Tabs.cpp: - lot of layout corrections -
+	added new tab modes - CTM_LEFT and CTM_BOTTOM - fixed images
+	problems for icons
+
+2002-11-02 04:35  parshin
+
+	* efltk/Fl_Multi_Tabs.h: Minor layout corrections (if any)
+
+2002-11-01 19:10  parshin
+
+	* src/widgets/Fl_Multi_Tabs.cpp, efltk/Fl_Multi_Tabs.h: layout()
+	method added to do it right :)
+
+2002-11-01 03:12  parshin
+
+	* src/widgets/Fl_Multi_Tabs.cpp: Minor corrections of include file
+
+2002-11-01 03:10  parshin
+
+	* test/: multitabs2.cpp, multitabs_glyph1.xpm,
+	multitabs_glyph2.xpm, multitabs_glyph3.xpm: Corrections/additions
+	to show how to use glyphs in Fl_Multi_Tabs
+
+2002-11-01 03:08  parshin
+
+	* src/widgets/Fl_Multi_Tabs.cpp: Correction in Fl_Multi_Tabs.cpp to
+	accept glyphs on tabs
+
+2002-11-01 02:59  parshin
+
+	* efltk/Fl_Multi_Tabs.h: Corrections in Fl_Multi_Tabs.h to accept
+	glyphs on the tabs
+
+2002-10-31 21:19  parshin
+
+	* test/multitabs2.cpp: Another minor update for Fl_Multi_Tabs
+	example.
+
+2002-10-31 21:11  parshin
+
+	* test/: multitabs1.cpp, multitabs2.cpp: Minor updates for
+	Fl_Multi_Tabs examples.
+
+2002-10-31 20:50  parshin
+
+	* test/: Makefile, multitabs1.cpp, multitabs2.cpp: Examples for
+	Fl_Multi_Tabs are added:
+	
+	- multitabs1 is tabs using Fl_Multi_Tabs instead of Fl_Tabs -
+	multitabs2 is using colors and stacking features
+
+2002-10-31 20:26  parshin
+
+	* src/widgets/: Fl_Multi_Tabs.cpp, Makefile: Fl_Multi_Tabs is
+	added!
+
+2002-10-31 20:20  parshin
+
+	* efltk/Fl_Multi_Tabs.h: Fl_Multi_Tabs is added, please test it :)
+
+2002-10-31 04:17  parshin
+
+	* efltk/Fl_Color.h: Now, fl_lighter and fl_darker are in the right
+	place.
+
+2002-10-31 04:13  parshin
+
+	* efltk/Enumerations.h: Sorry, made a mistake - rolling back last
+	change
+
+2002-10-31 04:09  parshin
+
+	* efltk/Enumerations.h: Added fl_lighter(Fl_Color c) and
+	fl_darker(Fl_Color c) inline functions.
+
+2002-10-30 19:43  leka
+
+	* ChangeLog: I haven't updated ChangeLog for a while :) Now it's
+	time for that.
+
 2002-10-30 00:18  laza2000
 
 	* efltk/Fl_Date_Time.h, efltk/Fl_Variant.h,
