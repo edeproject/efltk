@@ -85,16 +85,16 @@ public:
 
   const Fl_String &label() const  { return label_; }
   void	label(const Fl_String &l) { label_ = l; }
-  void	label(const char *l)      { label_ = l; }
+  void	label(const char *l)      { label_ = l ? l : ""; }
   void	copy_label(const char *a) { label(a); }
   void	copy_label(const Fl_String &a) { label(a); }
 
   const Fl_String &tooltip() const   { return tooltip_; }
-  void  tooltip(const char *t)       { tooltip_ = t; }
+  void  tooltip(const char *t)       { tooltip_ = t ? t : ""; }
   void  tooltip(const Fl_String &t)  { tooltip_ = t; }
 
   const Fl_String &field_name() const  { return field_name_; }
-  void  field_name(const char *f)      { field_name_ = f; }
+  void  field_name(const char *f)      { field_name_ = f ? f : ""; }
   void  field_name(const Fl_String &f) { field_name_ = f; }
 
   Fl_Image* image() const	{ return image_; }
