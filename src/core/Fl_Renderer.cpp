@@ -362,6 +362,13 @@ void fl_rgb888_from_rgb(uint32 &pixel, uint8 r, uint8 g, uint8 b)
 void fl_assemble_rgb(uint8 *buf, int bpp, Fl_PixelFormat *fmt, uint8 r, uint8 g, uint8 b)
 {
     switch (bpp) {
+    case 1: {
+        fmt->palette->colors[*buf].r = r;
+        fmt->palette->colors[*buf].g = g;
+        fmt->palette->colors[*buf].b = b;
+    }
+    break;
+
     case 2: {
         uint32 pixel;
         fl_pixel_from_rgb(pixel, fmt, r, g, b);
@@ -518,6 +525,13 @@ void fl_pixel_from_rgba(uint32 &pixel, Fl_PixelFormat *fmt, uint8 r, uint8 g, ui
 void fl_assemble_rgba(uint8 *buf, int bpp, Fl_PixelFormat *fmt, uint8 r, uint8 g, uint8 b, uint8 a)
 {
     switch (bpp) {
+    case 1: {
+        fmt->palette->colors[*buf].r = r;
+        fmt->palette->colors[*buf].g = g;
+        fmt->palette->colors[*buf].b = b;
+        fmt->palette->colors[*buf].a = a;
+    }
+    break;
     case 2: {
         uint32 pixel;
         fl_pixel_from_rgba(pixel, fmt, r, g, b, a);

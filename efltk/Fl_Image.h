@@ -320,6 +320,8 @@ private:
 
     int m_state;
     int m_quality;
+
+    int m_old_drawflags;
     int m_lastw, m_lasth; //last scaled size
     // Data store for selected, inactive...
     Fl_Image *m_mod_data;

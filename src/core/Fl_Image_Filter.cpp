@@ -4,8 +4,6 @@
 
 #include "fl_internal.h"
 
-#define SYSTEM_8BIT (Fl_Renderer::system_format()->bytespp==1)
-
 bool Fl_Image_Filter::apply_to_this(Fl_Image *image, Fl_Rect *rect, Fl_Image_Filter *filter)
 {
     return apply_to_this(image, rect, filter, 1.0, 1.0, 1.0);
@@ -75,30 +73,44 @@ bool FilterBrightness::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelF
 
     int val = (int)(val1 * 255);
 
-    ERROR_DIFF_START();
-
     uint8 *ptr = (uint8 *)*data + rect.y() * pitch + rect.x() * srcfmt->bytespp;
-    while ( height-- ) {
-        DUFFS_LOOP4(
-        {
-            if(srcbpp==1) fl_disemble_rgb(ptr, srcbpp, srcfmt, pixel, R, G, B);
-            else fl_disemble_rgba(ptr, srcbpp, srcfmt, pixel, R, G, B, A);
+    if(srcbpp>1) {
+        while ( height-- ) {
+            DUFFS_LOOP4(
+            {
+                fl_disemble_rgba(ptr, srcbpp, srcfmt, pixel, R, G, B, A);
 
-            dR = R+val;
-            dG = G+val;
-            dB = B+val;
+                dR = R+val;
+                dG = G+val;
+                dB = B+val;
+                if(dR > 255) dR = 255; else if(dR < 0) dR=0;
+                if(dG > 255) dG = 255; else if(dG < 0) dG=0;
+                if(dB > 255) dB = 255; else if(dB < 0) dB=0;
+
+                fl_assemble_rgba(ptr, srcbpp, srcfmt, dR, dG, dB, A);
+
+                ptr+=srcbpp;
+            }, width);
+            ptr += srcskip;
+        }
+
+    } else {
+
+        // indexed
+        Fl_Colormap *pal = srcfmt->palette;
+        for(int n=0;n<pal->ncolors; n++) {
+            dR = pal->colors[n].r+val;
+            dG = pal->colors[n].b+val;
+            dB = pal->colors[n].g+val;
             if(dR > 255) dR = 255; else if(dR < 0) dR=0;
             if(dG > 255) dG = 255; else if(dG < 0) dG=0;
             if(dB > 255) dB = 255; else if(dB < 0) dB=0;
 
-            if(SYSTEM_8BIT) { ERROR_DIFF(dR,dG,dB,*ptr); }
-            else { fl_assemble_rgba(ptr, srcbpp, srcfmt, dR, dG, dB, A); }
-
-            ptr+=srcbpp;
-        }, width);
-        ptr += srcskip;
+            pal->colors[n].r = dR;
+            pal->colors[n].b = dG;
+            pal->colors[n].g = dB;
+        }
     }
-    ERROR_DIFF_END();
 
     return true;
 }
@@ -118,30 +130,44 @@ bool FilterContrast::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFor
     uint8 R=0, G=0, B=0, A=255;
     int dR,dG,dB;
 
-    ERROR_DIFF_START();
-
     uint8 *ptr = (uint8 *)*data + rect.y() * pitch + rect.x() * srcfmt->bytespp;
-    while ( height-- ) {
-        DUFFS_LOOP4(
-        {
-            if(srcbpp==1) fl_disemble_rgb(ptr, srcbpp, srcfmt, pixel, R, G, B);
-            else fl_disemble_rgba(ptr, srcbpp, srcfmt, pixel, R, G, B, A);
+    if(srcbpp>1) {
+        while ( height-- ) {
+            DUFFS_LOOP4(
+            {
+                fl_disemble_rgba(ptr, srcbpp, srcfmt, pixel, R, G, B, A);
 
-            dR = (int((R - 127) * val1)) + 127;
-            dG = (int((G - 127) * val2)) + 127;
-            dB = (int((B - 127) * val3)) + 127;
+                dR = (int((R - 127) * val1)) + 127;
+                dG = (int((G - 127) * val2)) + 127;
+                dB = (int((B - 127) * val3)) + 127;
+                if(dR > 255) dR = 255; else if(dR < 0) dR=0;
+                if(dG > 255) dG = 255; else if(dG < 0) dG=0;
+                if(dB > 255) dB = 255; else if(dB < 0) dB=0;
+
+                fl_assemble_rgba(ptr, srcbpp, srcfmt, dR, dG, dB, A);
+
+                ptr+=srcbpp;
+            }, width);
+            ptr += srcskip;
+        }
+    } else {
+
+        // indexed
+        Fl_Colormap *pal = srcfmt->palette;
+        for(int n=0;n<pal->ncolors; n++) {
+            dR = (int((pal->colors[n].r - 127) * val1)) + 127;
+            dG = (int((pal->colors[n].g - 127) * val2)) + 127;
+            dB = (int((pal->colors[n].b - 127) * val3)) + 127;
             if(dR > 255) dR = 255; else if(dR < 0) dR=0;
             if(dG > 255) dG = 255; else if(dG < 0) dG=0;
             if(dB > 255) dB = 255; else if(dB < 0) dB=0;
 
-            if(SYSTEM_8BIT) { ERROR_DIFF(dR,dG,dB,*ptr); }
-            else { fl_assemble_rgba(ptr, srcbpp, srcfmt, dR, dG, dB, A); }
-
-            ptr+=srcbpp;
-        }, width);
-        ptr += srcskip;
+            pal->colors[n].r = dR;
+            pal->colors[n].b = dG;
+            pal->colors[n].g = dB;
+        }
     }
-    ERROR_DIFF_END();
+
     return true;
 }
 
@@ -164,30 +190,44 @@ bool FilterGamma::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFormat
     uint8 R=0, G=0, B=0, A=255;
     int dR,dG,dB;
 
-    ERROR_DIFF_START();
-
     uint8 *ptr = (uint8 *)*data + rect.y() * pitch + rect.x() * srcfmt->bytespp;
-    while ( height-- ) {
-        DUFFS_LOOP4(
-        {
-            if(srcbpp==1) fl_disemble_rgb(ptr, srcbpp, srcfmt, pixel, R, G, B);
-            else fl_disemble_rgba(ptr, srcbpp, srcfmt, pixel, R, G, B, A);
+    if(srcbpp>1) {
+        while ( height-- ) {
+            DUFFS_LOOP4(
+            {
+                fl_disemble_rgba(ptr, srcbpp, srcfmt, pixel, R, G, B, A);
 
-            dR = (int)(pow(((float)R / 255), (1 / val1)) * 255);
-            dG = (int)(pow(((float)G / 255), (1 / val2)) * 255);
-            dB = (int)(pow(((float)B / 255), (1 / val3)) * 255);
+                dR = (int)(pow(((float)R / 255), (1 / val1)) * 255);
+                dG = (int)(pow(((float)G / 255), (1 / val2)) * 255);
+                dB = (int)(pow(((float)B / 255), (1 / val3)) * 255);
+                if(dR > 255) dR = 255; else if(dR < 0) dR=0;
+                if(dG > 255) dG = 255; else if(dG < 0) dG=0;
+                if(dB > 255) dB = 255; else if(dB < 0) dB=0;
+
+                fl_assemble_rgba(ptr, srcbpp, srcfmt, dR, dG, dB, A);
+
+                ptr+=srcbpp;
+            }, width);
+            ptr += srcskip;
+        }
+    } else {
+
+        // indexed
+        Fl_Colormap *pal = srcfmt->palette;
+        for(int n=0;n<pal->ncolors; n++) {
+            dR = (int)(pow(((float)pal->colors[n].r / 255), (1 / val1)) * 255);
+            dG = (int)(pow(((float)pal->colors[n].g / 255), (1 / val2)) * 255);
+            dB = (int)(pow(((float)pal->colors[n].b / 255), (1 / val3)) * 255);
             if(dR > 255) dR = 255; else if(dR < 0) dR=0;
             if(dG > 255) dG = 255; else if(dG < 0) dG=0;
             if(dB > 255) dB = 255; else if(dB < 0) dB=0;
 
-            if(SYSTEM_8BIT) { ERROR_DIFF(dR,dG,dB,*ptr); }
-            else { fl_assemble_rgba(ptr, srcbpp, srcfmt, dR, dG, dB, A); }
-
-            ptr+=srcbpp;
-        }, width);
-        ptr += srcskip;
+            pal->colors[n].r = dR;
+            pal->colors[n].b = dG;
+            pal->colors[n].g = dB;
+        }
     }
-    ERROR_DIFF_END();
+
     return true;
 }
 
@@ -206,24 +246,34 @@ bool FilterDesaturate::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelF
     uint8 R=0, G=0, B=0, A=255;
     int D;
 
-    ERROR_DIFF_START();
-
     uint8 *ptr = (uint8 *)*data + rect.y() * pitch + rect.x() * srcfmt->bytespp;
-    while ( height-- ) {
-        DUFFS_LOOP4(
-        {
-            if(srcbpp==1) fl_disemble_rgb(ptr, srcbpp, srcfmt, pixel, R, G, B);
-            else fl_disemble_rgba(ptr, srcbpp, srcfmt, pixel, R, G, B, A);
+    if(srcbpp>1) {
+        while ( height-- ) {
+            DUFFS_LOOP4(
+            {
+                fl_disemble_rgba(ptr, srcbpp, srcfmt, pixel, R, G, B, A);
 
-            D = (31 * R + 61 * G + 8 * B) / 100;
+                D = (31 * R + 61 * G + 8 * B) / 100;
+                if(D > 255) D = 255; else if(D < 0) D=0;
+
+                fl_assemble_rgba(ptr, srcbpp, srcfmt, D, D, D, D);
+                ptr+=srcbpp;
+            }, width);
+            ptr += srcskip;
+        }
+    } else {
+
+        // indexed
+        Fl_Colormap *pal = srcfmt->palette;
+        for(int n=0;n<pal->ncolors; n++) {
+            D = (31 * pal->colors[n].r + 61 * pal->colors[n].g + 8 * pal->colors[n].b) / 100;
             if(D > 255) D = 255; else if(D < 0) D=0;
 
-            if(SYSTEM_8BIT) { ERROR_DIFF(D,D,D,*ptr); }
-            else { fl_assemble_rgba(ptr, srcbpp, srcfmt, D, D, D, D); }
-            ptr+=srcbpp;
-        }, width);
-        ptr += srcskip;
+            pal->colors[n].r = D;
+            pal->colors[n].b = D;
+            pal->colors[n].g = D;
+        }
     }
-    ERROR_DIFF_END();
+
     return true;
 }

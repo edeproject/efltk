@@ -135,7 +135,7 @@ void Fl_Image::init(int W, int H, int bits_pp, uint8 *data, uint32 Rmask, uint32
 
     m_state = 0;
     m_mod_data = 0;
-    m_lastw = m_lasth = 0;
+    m_lastw = m_lasth = m_old_drawflags = 0;
     m_mask_alloc = false;
     m_id_alloc = false;
 
@@ -705,6 +705,8 @@ void Fl_Image::_draw(int dx, int dy, int dw, int dh,
     if((f&FL_ALIGN_SCALE)==FL_ALIGN_SCALE) {
         draw_flags |= FL_ALIGN_SCALE;
     } else {
+        if((m_old_drawflags&FL_ALIGN_SCALE))
+            need_redraw=true;
         m_lastw = m_lasth = 0;
     }
 
@@ -748,13 +750,13 @@ void Fl_Image::_draw(int dx, int dy, int dw, int dh,
                 draw_fmt = Fl_Renderer::system_format();
                 need_redraw=true;
             }
-        } else if((F & FL_HIGHLIGHT)==FL_HIGHLIGHT && bitspp()>=16) {
+        } else if((F & FL_HIGHLIGHT)==FL_HIGHLIGHT) {
             //printf("HIGHLIGHT\n\n");
 
-            m_mod_data = Fl_Image_Filter::apply_to_new(this, 0, FILTER_BRIGHTNESS, 0.2f);
+            m_mod_data = Fl_Image_Filter::apply_to_new(this, 0, FILTER_BRIGHTNESS, 0.17f);
             if(m_mod_data) {
                 draw_data = m_mod_data->data();
-                draw_fmt = format();
+                draw_fmt = m_mod_data->format();
                 need_redraw=true;
             }
         }
@@ -831,6 +833,8 @@ void Fl_Image::_draw(int dx, int dy, int dw, int dh,
     } else {
         to_screen(dx, dy, dw, dh, 0, 0);
     }
+
+    m_old_drawflags = draw_flags;
 }
 
 extern Fl_Image_IO xpm_reader;
