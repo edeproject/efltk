@@ -94,6 +94,7 @@ int fl_is_ce(void)
  */
 int fl_tolower(unsigned int ucs)
 {
+#if HAVE_XUTF8
     int ret;
 
     if (ucs <= 0x02B6) {
@@ -161,6 +162,9 @@ int fl_tolower(unsigned int ucs)
     }
 
     return ucs;
+#else
+    return tolower(ucs);
+#endif        
 }
 
 /*
@@ -168,6 +172,7 @@ int fl_tolower(unsigned int ucs)
  */
 int fl_toupper(unsigned int ucs)
 {
+#if HAVE_XUTF8
     int i;
     static unsigned short *table = NULL;
 
@@ -183,11 +188,15 @@ int fl_toupper(unsigned int ucs)
     }
     if (ucs >= 0x10000) return ucs;
     return table[ucs];
+#else
+    return toupper(ucs);
+#endif    
 }
 
 // Returns charlen, 0 if inside char
 int fl_utf_charlen(char c)
 {
+#if HAVE_XUTF8
     if (!(c & 0x80)) return 1;
     if (c & 0x40) {
         if (c & 0x20) {
@@ -205,6 +214,9 @@ int fl_utf_charlen(char c)
         return 2;
     }
     return 0;
+#else
+    return 1;
+#endif    
 }
 
 /*** converts the first char UTF-8 string to an Unicode value ***/
@@ -214,6 +226,7 @@ int fl_utf2ucs(const unsigned char     *buf,
 		       int                     len,
 			   unsigned int            *ucs)
 {
+#if HAVE_XUTF8
     if (buf[0] & 0x80)
     {
         if (buf[0] & 0x40)
@@ -283,6 +296,10 @@ int fl_utf2ucs(const unsigned char     *buf,
 
     *ucs = (unsigned int) '?';   /* bad utf-8 string */
     return -1;
+#else
+    *ucs = buf[0];
+    return 1;
+#endif        
 }
 
 /* 
@@ -292,6 +309,7 @@ int fl_fast_utf2ucs(const unsigned char     *buf,
                     int                     len,
                     unsigned int            *ucs)
 {
+#if HAVE_XUTF8
     if (buf[0] & 0x80) {
         if (buf[0] & 0x40) {
             if (buf[0] & 0x20) {
@@ -341,6 +359,10 @@ int fl_fast_utf2ucs(const unsigned char     *buf,
     }
     *ucs = (unsigned int)'?'; /* bad utf-8 string */
     return -1;
+#else
+    *ucs = buf[0];
+    return 1;
+#endif        
 }
 
 
@@ -349,6 +371,7 @@ int fl_fast_utf2ucs(const unsigned char     *buf,
 int fl_ucs2utf(unsigned int ucs,
                char         *buf)
 {
+#if HAVE_XUTF8    
     if (ucs < 0x000080)
     {
         buf[0] = ucs;
@@ -386,6 +409,10 @@ int fl_ucs2utf(unsigned int ucs,
     }
     buf[0] = '?';
     return -1;
+#else
+    buf[0] = char(ucs);
+    return 1;    
+#endif    
 }
 
 
@@ -394,8 +421,12 @@ int fl_ucs2utf(unsigned int ucs,
 int fl_utflen(const unsigned char *buf,
               int                 len)
 {
+#if HAVE_XUTF8
     static unsigned int ucs;
     return fl_utf2ucs(buf, len, &ucs);
+#else
+    return (len<1)?0:1;
+#endif        
 }
 
 
@@ -403,6 +434,7 @@ int fl_utflen(const unsigned char *buf,
 int fl_utf_nb_char(const unsigned char *buf,
                    int             len)
 {
+#if HAVE_XUTF8
     int i = 0;
     int nbc = 0;
     while (i < len) {
@@ -412,6 +444,9 @@ int fl_utf_nb_char(const unsigned char *buf,
         i += cl;
     }
     return nbc;
+#else
+    return 0;
+#endif        
 }
 
 /*
@@ -422,6 +457,7 @@ int fl_utf_nb_char(const unsigned char *buf,
  */
 int fl_utf_strncasecmp(const char *s1, const char *s2, int n)
 {
+#if HAVE_XUTF8
     int i;
     int s1_l;
     int s2_l;
@@ -457,6 +493,9 @@ int fl_utf_strncasecmp(const char *s1, const char *s2, int n)
         }
     }
     return 0;
+#else
+    return strncasecmp(s1, s2, n);
+#endif    
 }
 
 /*
@@ -491,6 +530,7 @@ int fl_utf_strcasecmp(const char *s1, const char *s2)
  */
 int fl_utf_tolower(const unsigned char *str, int len, char *buf)
 {
+#if HAVE_XUTF8
 	int i;
 	int l = 0;
         for (i = 0; i < len;) {
@@ -512,6 +552,12 @@ int fl_utf_tolower(const unsigned char *str, int len, char *buf)
 
 	}
 	return l;
+#else
+    int n;
+    for(n=0; n<=len; n++)
+	buf[n] = tolower(str[n]);
+    return len;
+#endif    	
 }
 
 /*
@@ -520,6 +566,7 @@ int fl_utf_tolower(const unsigned char *str, int len, char *buf)
  */
 int fl_utf_toupper(const unsigned char *str, int len, char *buf)
 {
+#if HAVE_XUTF8
 	int i;
 	int l = 0;
         for (i = 0; i < len;) {
@@ -540,6 +587,12 @@ int fl_utf_toupper(const unsigned char *str, int len, char *buf)
 		}
 	}
 	return l;
+#else
+    int n;
+    for(n=0; n<=len; n++)
+	buf[n] = toupper(str[n]);
+    return len;
+#endif    	
 }
 
 /*
@@ -548,6 +601,7 @@ int fl_utf_toupper(const unsigned char *str, int len, char *buf)
  */
 int fl_utf2unicode(const unsigned char *str, int len, unsigned short *buf)
 {
+#if HAVE_XUTF8
     int l = 0;
     for(int i = 0; i < len;) {
         unsigned int u1;
@@ -558,6 +612,11 @@ int fl_utf2unicode(const unsigned char *str, int len, unsigned short *buf)
         l++;
     }
     return l;
+#else
+    for(int i=0; i < len; i++)
+	buf[i] = (char) str[i];    
+    return len;
+#endif    
 }
 
 
@@ -567,6 +626,7 @@ int fl_utf2unicode(const unsigned char *str, int len, unsigned short *buf)
  */
 int fl_unicode2utf(unsigned short *str, int len, char *buf)
 {
+#if HAVE_XUTF8
     int l = 0;
     for(int i = 0; i < len; i++) {
         int l1 = fl_ucs2utf((unsigned int) str[i], buf + l);
@@ -574,6 +634,11 @@ int fl_unicode2utf(unsigned short *str, int len, char *buf)
         else l += l1;
     }
     return l;
+#else
+    for(int i=0; i < len; i++)
+	buf[i] = str[i];    
+    return len;
+#endif    
 }
 
 /*
@@ -582,6 +647,7 @@ int fl_unicode2utf(unsigned short *str, int len, char *buf)
  */
 int fl_utf2latin1(const unsigned char *str, int len, char *buf)
 {
+#if HAVE_XUTF8
     int l = 0;
     for(int i = 0; i < len;) {
         unsigned int u1;
@@ -593,6 +659,10 @@ int fl_utf2latin1(const unsigned char *str, int len, char *buf)
 		l++;
 	}
 	return l;
+#else
+    memcpy(buf,str,len);
+    return len;
+#endif	
 }
 
 /*
@@ -601,6 +671,7 @@ int fl_utf2latin1(const unsigned char *str, int len, char *buf)
  */
 int fl_latin12utf(const unsigned char *str, int len, char *buf)
 {
+#if HAVE_XUTF8
 	int l = 0;
     for(int i = 0; i < len; i++) {
 		int l1 = fl_ucs2utf((unsigned int) str[i], buf + l);
@@ -608,6 +679,10 @@ int fl_latin12utf(const unsigned char *str, int len, char *buf)
         else l += l1;
 	}
 	return l;
+#else
+    memcpy(buf,str,len);
+    return len;
+#endif	
 }
 
 unsigned short fl_nonspacing(unsigned int ucs)
