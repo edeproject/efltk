@@ -55,6 +55,7 @@ static void read_data_fn(png_structp png_ptr, png_bytep d, png_size_t length) {
 
 #define return_error() \
     if(png_ptr) png_destroy_read_struct (&png_ptr, &info_ptr, &end_info_ptr);\
+    fl_throw("PNG: Not enough memory"); \
     return false
 
 static bool png_create(Fl_IO &png_io, uint8 *&data, Fl_PixelFormat &fmt, int &w, int &h)
@@ -292,39 +293,45 @@ static bool setup_write_data(uint8 *data, int pitch, Fl_PixelFormat &fmt, int w,
     return false;
 }
 
+#define return_error_er() \
+    if(png_ptr) png_destroy_write_struct(&png_ptr, &info_ptr); \
+    fl_throw("PNG: Not enough memory"); \
+    return false
+
 static bool png_write(Fl_IO &png_io, uint8 *data, Fl_PixelFormat &fmt, int w, int h)
 {
-    png_bytepp rows = 0;
     png_structp png_ptr;
     png_infop info_ptr;
+
+    png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    if(!png_ptr) { return_error_er(); }
+    info_ptr = png_create_info_struct(png_ptr);
+    if(!info_ptr) { return_error_er(); }
+
+    png_set_error_fn(png_ptr, 0, 0, &my_png_warning);
+
+    bool allocated = false;
+    uint8 *wr_data = data;
+    if(setjmp(png_ptr->jmpbuf)) {
+        if(png_ptr) png_destroy_write_struct(&png_ptr, &info_ptr);
+        if(allocated && wr_data) free(wr_data);
+        return false;
+    }
+
+    png_bytepp rows = 0;
     png_colorp palette=0;
     uint pitch = Fl_Renderer::calc_pitch(fmt.bytespp, w);
-	uint y; 
-	int n;
+    uint y;
+    int n;
 
     png_uint_32 width;
     png_uint_32 height;
     int bit_depth;
     int color_type;
 
-    bool allocated = false;
-    uint8 *wr_data = data;
     uint  wr_pitch = pitch;
     Fl_PixelFormat newfmt;
     Fl_PixelFormat *wr_fmt = &fmt;
-
-    png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-    if(!png_ptr) goto error;
-    info_ptr = png_create_info_struct(png_ptr);
-    if(!info_ptr) goto error;
-
-    png_set_error_fn(png_ptr, 0, 0, &my_png_warning);
-
-    if(setjmp(png_ptr->jmpbuf)) {
-        if(png_ptr) png_destroy_write_struct(&png_ptr, &info_ptr);
-        if(allocated && wr_data) free(wr_data);
-        return false;
-    }
 
     int comp_level;
     switch(png_quality) {
