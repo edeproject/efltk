@@ -34,6 +34,7 @@ CPPFILES = \
 	core/Fl_Boxtype.cpp \
 	core/Fl_Callback.cpp \
 	core/Fl_Config.cpp \
+	core/Fl_Data_Fields.cpp \
 	core/Fl_Data_Source.cpp \
 	core/Fl_Date_Time.cpp \
 	core/Fl_Gif.cpp \
