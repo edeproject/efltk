@@ -43,7 +43,7 @@ static void revert(Fl_Style* s)
     s->color = FL_GRAY;
     s->box = FL_NO_BOX;
 }
-           
+
 // This style is unnamed since there is no reason for themes to change it:
 extern Fl_Named_Style* group_style;
 static Fl_Named_Style the_style(0, revert, &group_style);
@@ -51,11 +51,14 @@ Fl_Named_Style* group_style = &the_style;
 
 Fl_Group::Fl_Group(int X,int Y,int W,int H,const char *l)
 : Fl_Widget(X,Y,W,H,l),
-    m_layout_spacing(1),
-    m_focus(-1),
-    m_resizable(0),
-	m_data_source(0)
+m_layout_spacing(1),
+m_focus(-1),
+m_resizable(0),
+m_data_source(0)
 {
+    m_use_preffered_sizes = true;
+    m_use_label_widths = true;
+
     widget_type(GROUP_TYPE);
     style(::group_style);
     align(FL_ALIGN_TOP);
@@ -85,9 +88,9 @@ void Fl_Group::clear()
 }
 
 Fl_Group::~Fl_Group() { 
-	clear(); 
-	if(Fl_Group::current()==this)
-		Fl_Group::current(parent());
+    clear(); 
+    if(Fl_Group::current()==this)
+        Fl_Group::current(parent());
 }
 
 void Fl_Group::insert(Fl_Widget &o, int index)
@@ -96,9 +99,9 @@ void Fl_Group::insert(Fl_Widget &o, int index)
         int n = o.parent()->find(o);
         if (o.parent() == this) {
             if (index > n) index--;
-            if (index == n) return;			
+            if (index == n) return;         
         }
-		o.parent()->remove(n);
+        o.parent()->remove(n);
     }
     o.parent(this);
     if(children() == 0) {
@@ -184,132 +187,132 @@ int Fl_Group::handle(int event)
 
     switch (event)
     {
-    case FL_FOCUS:
-        if (contains(Fl::focus()))
-        {
-            // The focus is being changed to some widget inside this.
-            m_focus = find(Fl::focus());
-            return true;
-        }
-        // otherwise it indicates an attempt to give this widget focus:
-        switch (navigation_key())
-        {
-        default:
+        case FL_FOCUS:
+            if (contains(Fl::focus()))
             {
+            // The focus is being changed to some widget inside this.
+                m_focus = find(Fl::focus());
+                return true;
+            }
+        // otherwise it indicates an attempt to give this widget focus:
+            switch (navigation_key())
+            {
+                default:
+                    {
                 // try to give it to whatever child had focus last:
-                if (m_focus >= 0 && m_focus < numchildren)
-                    if (child(m_focus)->take_focus()) return true;
+                        if (m_focus >= 0 && m_focus < numchildren)
+                            if (child(m_focus)->take_focus()) return true;
                 // otherwise search for the widget that needs the focus, but
                 // prefer a widget that returns 2:
-                Fl_Widget* f1 = 0; int ret = 0;
-                for (i = 0; i < numchildren; ++i)
-                {
-                    Fl_Widget* w = child(i);
-                    int n = w->handle(FL_FOCUS);
-                    if (n) {ret = n; f1 = w; if (n & 2) break;}
-                }
-                if (f1 && !f1->contains(Fl::focus())) Fl::focus(f1);
-                return ret;
+                        Fl_Widget* f1 = 0; int ret = 0;
+                        for (i = 0; i < numchildren; ++i)
+                        {
+                            Fl_Widget* w = child(i);
+                            int n = w->handle(FL_FOCUS);
+                            if (n) {ret = n; f1 = w; if (n & 2) break;}
+                        }
+                        if (f1 && !f1->contains(Fl::focus())) Fl::focus(f1);
+                        return ret;
+                    }
+                case FL_Right:
+                case FL_Down:
+                    for (i=0; i < numchildren; ++i)
+                        if (child(i)->take_focus()) return true;
+                    return false;
+                case FL_Left:
+                case FL_Up:
+                    for (i = numchildren; i--;)
+                        if (child(i)->take_focus()) return true;
+                    return false;
             }
-        case FL_Right:
-        case FL_Down:
-            for (i=0; i < numchildren; ++i)
-                if (child(i)->take_focus()) return true;
-            return false;
-        case FL_Left:
-        case FL_Up:
-            for (i = numchildren; i--;)
-                if (child(i)->take_focus()) return true;
-            return false;
-        }
 
-    case FL_DRAG:
-    case FL_RELEASE:
-    case FL_LEAVE:
-    case FL_DND_LEAVE:
+        case FL_DRAG:
+        case FL_RELEASE:
+        case FL_LEAVE:
+        case FL_DND_LEAVE:
         // Ignore these. We handle them if the belowmouse of pushed widget
         // has been set to this. Subclasses may do something with these.
         // Definately do not pass them to child widgets!
-        break;
+            break;
 
-    case FL_KEY: {
+        case FL_KEY: {
         // keyboard navigation
-        if (!numchildren) break;
-        int key = navigation_key();
-        if (!key) break;		
+                if (!numchildren) break;
+                int key = navigation_key();
+                if (!key) break;        
 
-        int previous = m_focus;		
-        if (previous < 0 || previous >= numchildren) previous = 0;		
-        for (i = previous;;)
-        {
-	        if (key == FL_Left || key == FL_Up) {
-				if (i) --i;
-                else
+                int previous = m_focus;     
+                if (previous < 0 || previous >= numchildren) previous = 0;      
+                for (i = previous;;)
                 {
-					if (parent()) return false;
-                    i = numchildren-1;
-                }
-			} else {
-				++i;
-                if (i >= numchildren) {
-					if (parent()) return false;
-                    i = 0;
-                }
-			}
+                    if (key == FL_Left || key == FL_Up) {
+                        if (i) --i;
+                        else
+                        {
+                            if (parent()) return false;
+                            i = numchildren-1;
+                        }
+                    } else {
+                        ++i;
+                        if (i >= numchildren) {
+                            if (parent()) return false;
+                            i = 0;
+                        }
+                    }
 
-            if (i == previous) {				
-				break;
-			}
+                    if (i == previous) {                
+                        break;
+                    }
 
-            if (key == FL_Down || key == FL_Up)
-            {
-				// for up/down, the widgets have to overlap horizontally:
-				Fl_Widget* o = child(i);
-                Fl_Widget* p = child(previous);
-                if (o->x() >= p->x()+p->w() || o->x()+o->w() <= p->x()) continue;
+                    if (key == FL_Down || key == FL_Up)
+                    {
+                // for up/down, the widgets have to overlap horizontally:
+                        Fl_Widget* o = child(i);
+                        Fl_Widget* p = child(previous);
+                        if (o->x() >= p->x()+p->w() || o->x()+o->w() <= p->x()) continue;
+                    }
+
+                    if (child(i)->take_focus()) {                   
+                        return true;
+                    }           
+                }
             }
-				
-            if (child(i)->take_focus()) {					
-				return true;
-			}			
-        }
-    }
 
-    case FL_PUSH:
-    case FL_ENTER:
-    case FL_MOVE:
-    case FL_DND_ENTER:
-    case FL_DND_DRAG:
+        case FL_PUSH:
+        case FL_ENTER:
+        case FL_MOVE:
+        case FL_DND_ENTER:
+        case FL_DND_DRAG:
         // search the children in backwards (top to bottom) order:
-        for (i = numchildren; i--;) {
-            Fl_Widget* child = this->child(i);
+            for (i = numchildren; i--;) {
+                Fl_Widget* child = this->child(i);
             // ignore widgets we are not pointing at:
-            if (Fl::event_x() < child->x()) continue;
-            if (Fl::event_x() >= child->x()+child->w()) continue;
-            if (Fl::event_y() < child->y()) continue;
-            if (Fl::event_y() >= child->y()+child->h()) continue;
+                if (Fl::event_x() < child->x()) continue;
+                if (Fl::event_x() >= child->x()+child->w()) continue;
+                if (Fl::event_y() < child->y()) continue;
+                if (Fl::event_y() >= child->y()+child->h()) continue;
             // see if it wants the event:
-            if (child->send(event)) return true;
+                if (child->send(event)) return true;
             // quit when we reach a widget that claims mouse points at it,
             // so we don't pass the events to widgets "hidden" behind that one.
-            if (event != FL_ENTER && event != FL_MOVE &&
-                child->contains(Fl::belowmouse())) return false;
-        }
-        return Fl_Widget::handle(event);
+                if (event != FL_ENTER && event != FL_MOVE &&
+                        child->contains(Fl::belowmouse())) return false;
+            }
+            return Fl_Widget::handle(event);
 
-    default: {
+        default: {
         // Try to give all other events to every child, starting at focus:
-        if (!numchildren) break;
-        int previous = m_focus;
-        if (previous < 0 || previous >= numchildren) previous = 0;
-        for (i = previous;;) {
-            if (child(i)->send(event)) return true;
-            if (++i >= numchildren) i = 0;
-            if (i == previous) break;
+                if (!numchildren) break;
+                int previous = m_focus;
+                if (previous < 0 || previous >= numchildren) previous = 0;
+                for (i = previous;;) {
+                    if (child(i)->send(event)) return true;
+                    if (++i >= numchildren) i = 0;
+                    if (i == previous) break;
 
-        }
-        break;
-    }
+                }
+                break;
+            }
     }
 
     return Fl_Widget::handle(event);
@@ -399,6 +402,7 @@ void Fl_Group::layout()
     // Save the layout damage and then clear it. This is so layout() of a
     // child can turn it back on and subclasses like Fl_Pack can detect that:
     int layout_damage = this->layout_damage();
+    int pref_w, pref_h;
     Fl_Widget::layout();
 
     int* p = 0;
@@ -430,62 +434,99 @@ void Fl_Group::layout()
 
         Fl_Widget*const* a = array().data();
         Fl_Widget*const* e = a+children();
+
         while (a < e)
         {
             Fl_Widget *o = *a++;
             switch (o->layout_align()) {
-            case 0: {
-                if(!p || !resizable()) break;
+                case 0: {
+                        if(!p || !resizable()) break;
 
-                int X = p[0];
-                if (X >= IR) X += dw;
-                else if (X > IX) X = X + dw * (X-IX)/(IR-IX);
-                int R = p[1];
-                if (R >= IR) R += dw;
-                else if (R > IX) R = R + dw * (R-IX)/(IR-IX);
+                        int X = p[0];
+                        if (X >= IR) X += dw;
+                        else if (X > IX) X = X + dw * (X-IX)/(IR-IX);
+                        int R = p[1];
+                        if (R >= IR) R += dw;
+                        else if (R > IX) R = R + dw * (R-IX)/(IR-IX);
 
-                int Y = p[2];
-                if (Y >= IB) Y += dh;
-                else if (Y > IY) Y = Y + dh*(Y-IY)/(IB-IY);
-                int B = p[3];
-                if (B >= IB) B += dh;
-                else if (B > IY) B = B + dh*(B-IY)/(IB-IY);
+                        int Y = p[2];
+                        if (Y >= IB) Y += dh;
+                        else if (Y > IY) Y = Y + dh*(Y-IY)/(IB-IY);
+                        int B = p[3];
+                        if (B >= IB) B += dh;
+                        else if (B > IY) B = B + dh*(B-IY)/(IB-IY);
 
-                o->resize(X, Y, R-X, B-Y);
-                p += 4;
-            }
-            break;
+                        o->resize(X, Y, R-X, B-Y);
+                        p += 4;
+                    }
+                    break;
 
-            case FL_ALIGN_LEFT:
-				if(!o->visible()) break;
-                o->resize(xx,yy,o->w(),hh);
-                xx += o->w()+offset*2;
-                ww -= o->w()+offset*2;
-                break;
-            case FL_ALIGN_RIGHT:
-				if(!o->visible()) break;
-                o->resize(xx+ww-o->w(),yy,o->w(),hh);
-                ww -= o->w()+offset*2;
-                break;
-            case FL_ALIGN_TOP:
-				if(!o->visible()) break;
-                o->resize(xx,yy,ww,o->h());
-                yy += o->h()+offset*2;
-                hh -= o->h()+offset*2;
-                break;
-            case FL_ALIGN_BOTTOM:
-				if(!o->visible()) break;
-                o->resize(xx,yy+hh-o->h(),ww,o->h());
-                hh -= o->h()+offset*2;
-                break;
-            case FL_ALIGN_CLIENT:
-				if(!o->visible()) break;
-                client = o;
-                break;
+                case FL_ALIGN_LEFT:
+                    if (!o->visible()) break;
+
+                    pref_w = o->w();
+                    pref_h = hh;
+                    if (m_use_preffered_sizes) 
+                        o->preferred_size(pref_w,pref_h);
+
+                    o->resize(xx,yy,pref_w,pref_h);
+                    xx += o->w()+offset*2;
+                    ww -= o->w()+offset*2;
+                    break;
+
+                case FL_ALIGN_RIGHT:
+                    if(!o->visible()) break;
+
+                    pref_w = o->w();
+                    pref_h = hh;
+                    if (m_use_preffered_sizes) 
+                        o->preferred_size(pref_w,pref_h);
+
+                    o->resize(xx+ww-pref_w,yy,pref_w,pref_h);
+                    ww -= o->w()+offset*2;
+                    break;
+
+                case FL_ALIGN_TOP:
+                    if(!o->visible()) break;
+
+                    pref_w = ww;
+                    pref_h = o->h();
+                    if (m_use_preffered_sizes) 
+                        o->preferred_size(pref_w,pref_h);
+
+                    o->resize(xx,yy,pref_w,pref_h);
+                    yy += o->h()+offset*2;
+                    hh -= o->h()+offset*2;
+                    break;
+
+                case FL_ALIGN_BOTTOM:
+                    if(!o->visible()) break;
+
+                    pref_w = ww;
+                    pref_h = o->h();
+                    if (m_use_preffered_sizes) 
+                        o->preferred_size(pref_w,pref_h);
+
+                    o->resize(xx,yy+hh-pref_h,pref_w,pref_h);
+                    hh -= o->h()+offset*2;
+                    break;
+
+                case FL_ALIGN_CLIENT:
+                    if(!o->visible()) break;
+                    client = o;
+                    break;
             }
         }
         // use the remaining space for the only client-size widget, if any
-        if(client) client->resize(xx,yy,ww,hh);
+        if(client) {
+            pref_w = ww;
+            pref_h = hh;
+            if (m_use_preffered_sizes) 
+                client->preferred_size(pref_w,pref_h);
+            // Center the widget in the client area, if it's preferred
+            // size is smaller than client area
+            client->resize(xx+ww/2-pref_w/2,yy+hh/2-pref_h/2,pref_w,pref_h);
+        }
     }
 
     Fl_Widget*const* a = array().data();
@@ -699,24 +740,24 @@ void Fl_Group::draw_outside_label(Fl_Widget& w) const
 // data source support methods
 void Fl_Group::data_source(Fl_Data_Source *ds)
 {
-   if (m_data_source)
-      m_data_source->parent_ = NULL;
-   m_data_source = ds; 
-   m_data_source->parent_ = this;
+    if (m_data_source)
+        m_data_source->parent_ = NULL;
+    m_data_source = ds; 
+    m_data_source->parent_ = this;
 }
 
 bool Fl_Group::load_data(Fl_Data_Source *ds) {
-   if (!ds)
-     ds = m_data_source;
-   if (!ds)
-	   return false;
+    if (!ds)
+        ds = m_data_source;
+    if (!ds)
+        return false;
 
-   unsigned cnt = children();
-   for (unsigned i = 0; i < cnt; i++) {
-      Fl_Widget   *widget = child(i);
-      widget->load_data(ds);
-   }
-   return true;
+    unsigned cnt = children();
+    for (unsigned i = 0; i < cnt; i++) {
+        Fl_Widget   *widget = child(i);
+        widget->load_data(ds);
+    }
+    return true;
 }
 
 bool Fl_Group::save_data(Fl_Data_Source *ds) const {

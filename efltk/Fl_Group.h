@@ -49,68 +49,68 @@
  */
 class FL_API Fl_Group : public Fl_Widget {
 public:
-	/**
-	 * Creates a new Fl_Group widget using the given position, size, and label string. The default boxtype is FL_NO_BOX. 
-	 */
+    /**
+     * Creates a new Fl_Group widget using the given position, size, and label string. The default boxtype is FL_NO_BOX. 
+     */
     Fl_Group(int x, int y, int w, int h, const char *l=0);
 
-	/**
-	 * The destructor also deletes all the children. 
-	 * This allows a whole tree to be deleted at once, without having to keep a pointer to all the children in the user code. 
-	 * A kludge has been done so the Fl_Group and all of it's children can be automatic (local) variables, 
-	 * but you must declare the Fl_Group first, so that it is destroyed last. 
-	 */
+    /**
+     * The destructor also deletes all the children. 
+     * This allows a whole tree to be deleted at once, without having to keep a pointer to all the children in the user code. 
+     * A kludge has been done so the Fl_Group and all of it's children can be automatic (local) variables, 
+     * but you must declare the Fl_Group first, so that it is destroyed last. 
+     */
     virtual ~Fl_Group();
 
-	/** Returns how many child widgets the group has. */
+    /** Returns how many child widgets the group has. */
     int children() const { return m_array.size(); }
 
-	/** Returns a child, n >= 0 &n < children(). <i>No range checking is done!</i> */
+    /** Returns a child, n >= 0 &n < children(). <i>No range checking is done!</i> */
     Fl_Widget* child(int n) const { return m_array[n]; }
 
-	/** Returns Fl_Widget_List of group */
+    /** Returns Fl_Widget_List of group */
     Fl_Widget_List &array() { return m_array; }
 
-	/** 
-	 * Draw the background. If FL_DAMAGE_EXPOSE is on, widgets are expected
+    /** 
+     * Draw the background. If FL_DAMAGE_EXPOSE is on, widgets are expected
      * to completely fill their rectangle. To allow non-rectangular widgets
      * to appear to work, a widget can call this (with the clip region set)
      * to draw the area of it's parent that is visible behind it.
-	 */
+     */
     void draw_group_box() const;
     virtual void draw();
     virtual void layout();
     virtual int handle(int);
 
-	/**
-	 * begin() sets the current group so you can build the widget tree by just constructing the widgets. 
-	 * begin() is automatically called by the constructor for Fl_Group (and thus for Fl_Window as well). begin() is exactly the same as current(this). 
+    /**
+     * begin() sets the current group so you can build the widget tree by just constructing the widgets. 
+     * begin() is automatically called by the constructor for Fl_Group (and thus for Fl_Window as well). begin() is exactly the same as current(this). 
      * <i>Don't forget to end() the group or window!</i>
-	 */
+     */
     void begin() { Fl_Group::m_current = this; }
 
-	/**
-	 * end() is exactly the same as current(this->parent()). Any new widgets added to the widget tree will be added to the parent of the group. 
-	 */
+    /**
+     * end() is exactly the same as current(this->parent()). Any new widgets added to the widget tree will be added to the parent of the group. 
+     */
     void end()   { Fl_Group::m_current = (Fl_Group*)parent(); }
 
-	/*
-	 * current() returns the currently active group. 
-	 * @see current(Fl_Group *g)
-	 */
+    /*
+     * current() returns the currently active group. 
+     * @see current(Fl_Group *g)
+     */
     static Fl_Group *current() { return Fl_Group::m_current; }
 
-	/** 
-	 * current() returns the currently active group. 
-	 * The Fl_Widget constructor automatically does current()->add(widget) if this is not null. 
-	 * To prevent new widgets from being added to a group, call Fl_Group::current(0). 
-	 */
+    /** 
+     * current() returns the currently active group. 
+     * The Fl_Widget constructor automatically does current()->add(widget) if this is not null. 
+     * To prevent new widgets from being added to a group, call Fl_Group::current(0). 
+     */
     static void current(Fl_Group *g) { Fl_Group::m_current = g; }
 
-	/** Searches the children for w, returns the index of w or of a parent of w that is a child of this. Returns children() if the widget is NULL or not found.  */
+    /** Searches the children for w, returns the index of w or of a parent of w that is a child of this. Returns children() if the widget is NULL or not found.  */
     int find(const Fl_Widget *w) const;
-	
-	/** Searches the children for w, returns the index of w or of a parent of w that is a child of this. Returns children() if the widget is NULL or not found.  */
+
+    /** Searches the children for w, returns the index of w or of a parent of w that is a child of this. Returns children() if the widget is NULL or not found.  */
     int find(const Fl_Widget &w) const { return find(&w); }
 
     void add(Fl_Widget&);
@@ -145,6 +145,8 @@ public:
     uchar layout_spacing() const { return m_layout_spacing; }
     void layout_spacing(const uchar offset) { m_layout_spacing = offset; }
 
+    void layout_settings(bool use_preffered_sizes=true,bool use_label_widths=true);
+
 protected:
     void draw_child(Fl_Widget&) const;
     void update_child(Fl_Widget&) const;
@@ -153,6 +155,8 @@ protected:
 
 private:
     uchar m_layout_spacing;
+    uchar m_use_preffered_sizes;
+    uchar m_use_label_widths;
     int m_focus;
 
     Fl_Widget_List m_array;
