@@ -915,6 +915,7 @@ Fl_Image* Fl_Image::read(const char *filename, const uint8 *data)
             return false;
         }
         from_file = true;
+        fclose(file);
 
     } else if(data) {
         buffer = (void *)data;
