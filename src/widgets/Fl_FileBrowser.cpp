@@ -39,6 +39,7 @@
 #include <efltk/fl_draw.h>
 #include <efltk/filename.h>
 #include <efltk/vsnprintf.h>
+#include <efltk/fl_utf8.h>
 #include <stdlib.h>
 #include <config.h>
 #include <string.h>

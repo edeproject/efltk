@@ -121,6 +121,7 @@ void Fl_Calendar::layout() {
     int xx=0, yy=0;
     int ww = w(), hh = h();
     box()->inset(xx,yy,ww,hh);
+    unsigned i;
 
     int bh = hh / 10;
     int bw = ww / 7;
@@ -134,7 +135,7 @@ void Fl_Calendar::layout() {
    m_headerBox->resize(xx,yy,ww,bh * 2+2);
    m_monthNameBox->resize(xx,0,ww,bh);
 
-   for (unsigned i=0; i < 7; i++) {
+   for (i=0; i < 7; i++) {
        m_dayNameBoxes[i]->resize(i*bw,bh+2,bw,bh);
    }
 

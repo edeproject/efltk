@@ -43,6 +43,9 @@
 #include <direct.h>
 #include <windows.h>
 #include <winbase.h>
+#else
+#include <fcntl.h>
+#include <unistd.h>
 #endif //WIN32
 
 #include <sys/types.h>
