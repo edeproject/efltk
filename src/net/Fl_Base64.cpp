@@ -38,31 +38,15 @@ static char B64Chars[64] = {
 /* ------------------------------------------------------------------------- */
 
 /**
- * Default constructor for Fl_Base64 class
- */
-Fl_Base64::Fl_Base64()
-{ 
-} /* Fl_Base64() */
-/* ------------------------------------------------------------------------- */
-
-/**
- * Fl_Base64 class destructor
- */
-Fl_Base64::~Fl_Base64()
-{
-} /* ~Fl_Base64() */
-/* ------------------------------------------------------------------------- */
-
-/**
- * encode() method encodes (base64) given buffer bufSource
- * to given destination buffer bufDest.
- *
- * @param bufDest Fl_Buffer Destination buffer
- * @param bufSource Fl_Buffer Source buffer
- * @see encode(Fl_Buffer bufSource)
- * @author Dejan Lekic, http://dejan.nu6.org
- */
-void Fl_Base64::encode(Fl_Buffer& bufDest, Fl_Buffer& bufSource)
+  * encode() method encodes (base64) given buffer bufSource
+  * to given destination buffer bufDest.
+  *
+  * @param bufDest Fl_Buffer Destination buffer
+  * @param bufSource Fl_Buffer Source buffer
+  * @see encode(Fl_Buffer bufSource)
+  * @author Dejan Lekic, http://dejan.nu6.org
+  */
+void Fl_Base64::encode(Fl_Buffer& bufDest, const Fl_Buffer& bufSource)
 {
 	char c;
 	char *current = bufSource.data();
@@ -106,7 +90,8 @@ void Fl_Base64::encode(Fl_Buffer& bufDest, Fl_Buffer& bufSource)
 			bufDest.append(&c, 1);
 		} /* else */
 	} /* if */
-} /* encode(Fl_Buffer* bufDest, Fl_Buffer* bufSource) */
+} /* encode(Fl_Buffer& bufDest, const Fl_Buffer& bufSource) */
+
 /* ------------------------------------------------------------------------- */
 
 /**
@@ -121,14 +106,11 @@ void Fl_Base64::encode(Fl_Buffer& bufDest, Fl_Buffer& bufSource)
 void 
 Fl_Base64::encode(Fl_String& strDest, const Fl_Buffer& bufSource)
 {
-	Fl_String strOut;
 	Fl_Buffer bufOut;
-	Fl_Buffer bufIn = bufSource;
-	//bufIn.append(bufSource->data(), bufSource->size()+1);
-	encode(bufOut, bufIn);
-	strDest.clear();
-	strDest.append((const char*)bufOut.data(), bufOut.bytes());
-} /* encode(Fl_Buffer bufSource) */
+	encode(bufOut, bufSource);
+	if(!strDest.empty()) strDest.clear();
+	strDest.append(bufOut.data(), bufOut.bytes());
+} /* encode(Fl_String& strDest, const Fl_Buffer& bufSource) */
 /* ------------------------------------------------------------------------- */
 /***** $id$
  *     Project: eFLTK
