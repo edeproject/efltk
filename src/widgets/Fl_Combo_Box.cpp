@@ -268,9 +268,21 @@ Fl_Combo_Box_Panel::Fl_Combo_Box_Panel(Fl_Combo_Box *cb)
 
 void Fl_Combo_Box_Panel::draw()
 {
-    fl_push_clip(0,0,w(),h());
-    m_comboBox->draw_group_box();
-    fl_pop_clip();
+	bool selected = focused();
+
+    int X=0, Y=0, W=w(), H=h();
+
+	if(selected) {		
+		// Draw using combo's focus_box
+		m_comboBox->focus_box()->draw(X,Y,W,H, m_comboBox->selection_color(), FL_SELECTED);
+	} else {
+		// Draw using combo's BG
+		fl_push_clip(X,Y,W,H);
+		m_comboBox->draw_group_box();
+		fl_pop_clip();
+	}
+
+    box()->inset(X,Y,W,H);	
 
     int dd = 2;
 
@@ -287,9 +299,7 @@ void Fl_Combo_Box_Panel::draw()
         fl_font(lv->text_font(), lv->text_size());
     }
 
-    int X=0, Y=0, W=w(), H=h();
-    box()->inset(X,Y,W,H);
-
+	Fl_Color text_color;
     for (unsigned c = 0; c < item->columns(); c++) {
         if (!lv->visible_col(c))
             continue;
@@ -297,10 +307,16 @@ void Fl_Combo_Box_Panel::draw()
         fl_push_clip(X+dd, Y, ww-dd, H);
         if (item_ext) {
             fl_font(item_ext->label_font(c),item_ext->label_size(c));
-            fl_color(item_ext->label_color(c));
+            text_color = item_ext->label_color(c);
         } else
-            fl_color(lv->text_color());
+            text_color = m_comboBox->text_color();
 
+		if(selected) {
+			// set selection color for text
+			text_color = m_comboBox->selection_text_color();
+		}
+
+		fl_color(text_color);
         fl_draw(item->label(c), X+dd, Y, ww-dd, H, FL_ALIGN_LEFT);
 
         fl_pop_clip();
@@ -315,16 +331,16 @@ void Fl_Combo_Box_Panel::draw()
 }
 
 int Fl_Combo_Box_Panel::handle(int event) {
-    color( parent()->color() );
     switch (event) {
         case FL_FOCUS:
         case FL_UNFOCUS:
             redraw();
             return 1;
+
         case FL_PUSH:
-            if (contains(Fl::focus())) return 1;
-            Fl::focus(this);
+			take_focus();
             return 1;
+
         case FL_KEYBOARD: {
                 unsigned ch = Fl::event_key();
                 if (ch == FL_Tab) break;
@@ -352,6 +368,7 @@ static void revert(Fl_Style* s)
 {
     s->color = FL_WHITE;
     s->button_box = FL_THIN_UP_BOX;
+	s->focus_box = FL_FLAT_BOX;
 }
 
 static Fl_Named_Style style("Combo_Box", revert, &Fl_Combo_Box::default_style);
@@ -422,6 +439,7 @@ Fl_ListView *Fl_Combo_Box::listview() const {
 
 void Fl_Combo_Box::cb_browse(Fl_Widget *w, void *) {
     Fl_Combo_Box *cb = (Fl_Combo_Box *) w->parent();
+	cb->take_focus();
     Fl_Popup_ListView *popup = cb->m_popup;
     int saveValue = cb->value();
     if (popup->popup(w->parent(),0,w->parent()->h())) {
@@ -436,6 +454,7 @@ void Fl_Combo_Box::cb_browse(Fl_Widget *w, void *) {
 
 void Fl_Combo_Box::cb_button(Fl_Widget *w, void *) {
     Fl_Combo_Box *cb = (Fl_Combo_Box *) w->parent();
+	cb->take_focus();
     int event = button_to_event(w->argument());
     cb->do_callback(event);
 }
