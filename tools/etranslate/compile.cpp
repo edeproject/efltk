@@ -6,20 +6,21 @@ void Compiler::compile(Fl_String infile, Fl_String outfile)
     if(!fpin) {
         return;
     }
-	Fl_XmlDoc *doc = 0;
+	
     try {
-        doc = Fl_XmlParser::create_dom(fpin);
+        Fl_XmlDoc *doc = Fl_XmlParser::create_dom(fpin);
+		fclose(fpin);
+		FILE *fpout = fopen(outfile.c_str(), "wb");
+		if(fpout) {
+			save_hash(doc->root_node(), fpout);
+			fclose(fpout);
+		} else
+			save_hash(doc->root_node(), stdout);
+		delete doc;
     } catch(Fl_Exception &exp) {
         fclose(fpin);
         Fl::fatal(exp.text().c_str());
     }
-    fclose(fpin);
-    FILE *fpout = fopen(outfile.c_str(), "wb");
-    if(fpout) {
-        save_hash(doc->root_node(), fpout);
-        fclose(fpout);
-    } else
-        save_hash(doc->root_node(), stdout);
 }
 
 void Compiler::save_hash(Fl_XmlNode *root, FILE *outfp)

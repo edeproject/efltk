@@ -146,12 +146,14 @@ void ETranslate::load_etm(FILE *fp)
         }
         browser->end();
 
+		delete xml;
+
     } catch(Fl_Exception &exc) {
 		Fl::warning(exc.text().c_str());
     }
 }
 
-void ETranslate::write_tag(FILE *fp, const Fl_String &str, const char *name)
+void ETranslate::save_tag(FILE *fp, const Fl_String &str, const char *name)
 {
 	Fl_String wr;
 	Fl_String ret;
@@ -161,8 +163,7 @@ void ETranslate::write_tag(FILE *fp, const Fl_String &str, const char *name)
 	else
 		wr = quote_controls(str);		
 
-	fprintf(fp, "  <%s>%s</%s>\n", name, wr.c_str(), name);
-	fprintf(fp, "\n");
+	fprintf(fp, "  <%s>%s</%s>\n", name, wr.c_str(), name);	
 }
 
 void ETranslate::save(const char *file)
@@ -201,9 +202,9 @@ void ETranslate::save(const char *file)
 
         fprintf(fp, " <String Finished=\"%d\">\n", i->finished());
 
-		write_tag(fp, i->comment(), "Comment");
-		write_tag(fp, i->orig(), "Original");
-		write_tag(fp, i->tr(), "Translation");
+		save_tag(fp, i->comment(), "Comment");
+		save_tag(fp, i->orig(), "Original");
+		save_tag(fp, i->tr(), "Translation");
 
         fprintf(fp, " </String>\n");
     }

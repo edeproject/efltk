@@ -34,7 +34,7 @@ public:
 
     void load(const char *file=0);
     void save(const char *file=0);
-	void write_tag(FILE *fp, const Fl_String &str, const char *name);
+	void save_tag(FILE *fp, const Fl_String &str, const char *name);
 
     void show_translation(TranslateItem *i);
     void save_translation();

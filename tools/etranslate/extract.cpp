@@ -163,17 +163,16 @@ Fl_String& normalize(const Fl_String &str)
     return ret;
 }
 
-void Extractor::write_tag(FILE *fp, const Fl_String &str, const char *name)
+void Extractor::print_tag(FILE *outfile, const Fl_String &str, const char *name)
 {
 	Fl_String &norm = normalize(str);
 	Fl_String ret;
 
 	if(doctype.encode_entities(norm, ret)) {
-		fprintf(fp, "  <%s>%s</%s>\n", name, ret.c_str(), name);
+		fprintf(outfile, "  <%s>%s</%s>\n", name, ret.c_str(), name);
 	} else {
-		fprintf(fp, "  <%s>%s</%s>\n", name, norm.c_str(), name);
-	}
-	fprintf(fp, "\n");
+		fprintf(outfile, "  <%s>%s</%s>\n", name, norm.c_str(), name);
+	}	
 }
 
 void Extractor::print_xml(FILE *outfile)
@@ -200,9 +199,9 @@ void Extractor::print_xml(FILE *outfile)
 
 		fprintf(outfile, " <String Finished=\"0\">\n");
 
-        write_tag(outfile, t->comment, "Comment");
-		write_tag(outfile, t->str, "Original");
-		write_tag(outfile, t->str, "Translation");
+        print_tag(outfile, t->comment, "Comment");
+		print_tag(outfile, t->str, "Original");
+		print_tag(outfile, t->str, "Translation");
         
         fprintf(outfile, " </String>\n");
     }
