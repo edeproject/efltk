@@ -32,7 +32,6 @@
 
 class FL_API Fl_FontSize;
 
-//class FL_API Fl_Font_;
 struct FL_API Fl_Font_;
 typedef const Fl_Font_* Fl_Font;
 
@@ -46,6 +45,7 @@ struct FL_API Fl_Font_ {
     // list of sizes (used by X and Win32 GDI):
     Fl_FontSize *first;
 
+#ifndef _WIN32
     // XWindows cache stuff:
     bool xlist_cached_; //Are all XListFonts cached
     Fl_CString_List xlist_; //Cached xlist
@@ -54,7 +54,7 @@ struct FL_API Fl_Font_ {
 
     uint cache_xlist();
     Fl_FontSize *load_font(float size);
-
+#endif
 // PUBLIC:
 
     // return the system-specific name, different for each fontset:
