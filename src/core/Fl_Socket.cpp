@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #ifndef _WIN32
+#include <fcntl.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <sys/time.h>
@@ -13,19 +14,15 @@ bool	Fl_Socket::m_inited = false;
 
 void Fl_Socket::init() {
 	if (m_inited) return;
-#ifndef _WIN32
 	m_inited =  true;
-#else
-	int rc = WSAStartup(MAKEWORD(2, 0), &d);
-	if (!rc)
-		m_inited = true;
+#ifdef _WIN32
+	// This does what we need here :)
+	extern void fl_private_init(); //Fl_Init.cpp
+	fl_private_init();
 #endif
 }
 
 void Fl_Socket::cleanup() {
-#ifdef _WIN32
-	WSACleanup();
-#endif
 	m_inited =  false;
 }
 
@@ -35,7 +32,7 @@ Fl_Socket::Fl_Socket(int domain,int type,int protocol) {
 
 	m_socketCount++;
 
-	m_sockfd   = -1;
+	m_sockfd   = INVALID_SOCKET;
 	m_domain   = domain;
 	m_type     = type;
 	m_protocol = protocol;
@@ -53,6 +50,15 @@ Fl_Socket::~Fl_Socket() {
 	m_socketCount--;
 	if (!m_socketCount)
 		cleanup();
+}
+
+int Fl_Socket::control(int flag, unsigned long *check)
+{
+#ifdef _WIN32
+	return ioctlsocket(m_sockfd, flag, check);
+#else
+	return fcntl(m_sockfd, flag, *check);
+#endif
 }
 
 void Fl_Socket::host(char *hostName) {
@@ -79,7 +85,7 @@ void Fl_Socket::open(char *hostName,int portNumber) {
 
    // Creat a new socket
 	m_sockfd = socket(m_domain, m_type, m_protocol);
-	if (m_sockfd == -1)
+	if (m_sockfd == INVALID_SOCKET)
 		fl_throw("Can't create a new socket");
 
 	host_info = gethostbyname(m_host);
@@ -99,34 +105,45 @@ void Fl_Socket::open(char *hostName,int portNumber) {
 		fl_throw("Can't connect. Host is unreachible.");
 	}
 
-	FD_SET(m_sockfd,&inputs);
-	FD_SET(m_sockfd,&outputs);
+	FD_SET(m_sockfd, &inputs);
+	FD_SET(m_sockfd, &outputs);
 #ifdef _WIN32
 	bool optval = true;
 	setsockopt(m_sockfd, IPPROTO_TCP, TCP_NODELAY, (char *) &optval, sizeof(bool));
 #endif
 }
 
-void Fl_Socket::close() {
-	if (m_sockfd != -1) {
+void Fl_Socket::close() 
+{
+	if (m_sockfd != INVALID_SOCKET) {
 		FD_CLR(m_sockfd,&inputs);
 		FD_CLR(m_sockfd,&outputs);
 #ifndef _WIN32
-		shutdown(m_sockfd,SHUT_RDWR);
+		shutdown(m_sockfd, SHUT_RDWR);
 #else
 		closesocket(m_sockfd);
 #endif
-		m_sockfd = -1;
+		m_sockfd = INVALID_SOCKET;
 	}
 }
 
 // Read & write
-int  Fl_Socket::read(char *buffer,int size) {
-	return recv(m_sockfd,buffer,size,0);
+int  Fl_Socket::read(char *buffer,int size) 
+{
+#ifdef WIN32
+	return recv(m_sockfd, buffer, size, NULL);
+#else
+	return read(m_sockfd, buffer, size);
+#endif
 }
 
-int  Fl_Socket::write(char *buffer,int size) {
-	return send(m_sockfd,buffer,size,0);
+int  Fl_Socket::write(char *buffer,int size) 
+{
+#ifdef _WIN32
+	return send(m_sockfd, buffer, size, NULL);
+#else
+	return write(m_sockfd, buffer, size);
+#endif
 }
 
 bool Fl_Socket::ready_to_read(int wait_msec) {
@@ -137,20 +154,26 @@ bool Fl_Socket::ready_to_read(int wait_msec) {
 	FD_ZERO(&inputs);
 	FD_SET(m_sockfd,&inputs);
 
-	select(FD_SETSIZE,&inputs,NULL,NULL,&timeout);
-	return FD_ISSET(m_sockfd,&inputs);
+	select(FD_SETSIZE, &inputs, NULL, NULL, &timeout);
+	return (FD_ISSET(m_sockfd ,&inputs)>0);
 }
 
 bool Fl_Socket::ready_to_write() {
 	return true;
 }
 
+#ifdef _WIN32
+# define VALUE_TYPE(val) (char*)(val)
+#else
+# define VALUE_TYPE(val) (void*)(val)
+#endif
+
 int Fl_Socket::set_option(int level,int option,int  value) {
-	unsigned len = sizeof(int);
-	return setsockopt(m_sockfd,level,option,&value,len);
+	int len = sizeof(int);
+	return setsockopt(m_sockfd, level, option, VALUE_TYPE(&value), len);
 }
 
 int Fl_Socket::get_option(int level,int option,int& value) {
-	unsigned len = sizeof(int);
-	return getsockopt(m_sockfd,level,option,&value,&len);
+	int len = sizeof(int);
+	return getsockopt(m_sockfd, level, option, VALUE_TYPE(&value), &len);
 }

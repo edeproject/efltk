@@ -1,18 +1,20 @@
-#ifndef __CSOCKET_H__
-#define __CSOCKET_H__
+#ifndef _FL_SOCKET_H_
+#define _FL_SOCKET_H_
 
 #ifndef _WIN32
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <stdio.h>
-#include <sys/un.h>
-#include <sys/unistd.h>
+# include <sys/types.h>
+# include <sys/socket.h>
+# include <stdio.h>
+# include <sys/un.h>
+# include <sys/unistd.h>
+  typedef int SOCKET;
+# define INVALID_SOCKET -1
 #else
-#include <winsock2.h>
+# include <winsock2.h>
 #endif
 
 class Fl_Socket {
-	int		m_sockfd;
+	SOCKET	m_sockfd;
 	int		m_domain;
 	int		m_type;
 	int 	   m_protocol;
@@ -28,7 +30,7 @@ protected:
 	static void cleanup();
 public:
     // Constructor & destructor
-	Fl_Socket(int domain=AF_INET,int type=SOCK_STREAM,int protocol=0);
+	Fl_Socket(int domain=AF_INET, int type=SOCK_STREAM, int protocol=0);
 	~Fl_Socket();
 
     // Settings
@@ -41,10 +43,11 @@ public:
 	int port() const { return m_port; }
 
     // Connect & disconnect
-	void open(char *hostName=NULL,int port=0);
+	void open(char *hostName=NULL, int port=0);
 	void close();
-	bool active() const { return m_sockfd != -1; }
-
+	bool active() const { return m_sockfd != INVALID_SOCKET; }
+	
+	int  control(int flag, unsigned long *check);
 	int  set_option(int level,int option,int  value);
 	int  get_option(int level,int option,int& value);
 
