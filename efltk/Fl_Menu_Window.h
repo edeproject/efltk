@@ -36,6 +36,7 @@ public:
     virtual void create();
     virtual void flush();
     virtual void destroy();
+	virtual void layout();
 
     int overlay() {return !(flags()&NO_OVERLAY);}
     void set_overlay() {clear_flag(NO_OVERLAY);}
@@ -46,24 +47,25 @@ public:
     Fl_Menu_Window(int W, int H, const char *l = 0);
     Fl_Menu_Window(int X, int Y, int W, int H, const char *l = 0);
 
-    static float default_step_div;
-
-    // Calculated steps needed for animating is divided by this number,
-    // So You can control the speed. DEFAULT=4
-    void step_divider(float div) { step_div_ = div; }
-    float step_divider() { return step_div_; }
-
-    static bool animate() { return animate_; }
-    static void animate(bool v) { animate_ = v; }
-
     void animate(int fx, int fy, int fw, int fh,
                  int tx, int ty, int tw, int th);
 
+	// Set/Get default animate speed
+	static float default_anim_speed() { return default_anim_speed_; }
+	static void  default_anim_speed(float v) { default_anim_speed_ = v; }
+
+    // Set/Get animate speed, ONLY for this window
+	float anim_speed() { return anim_speed_; }
+	void anim_speed(float v) { anim_speed_ = v; }
+
 protected:
-    static bool animate_;
+    static float default_anim_speed_;
+    float anim_speed_;
+
     bool animating; //set true, while animating
 
-    float step_div_;
+	int slow_down_to_h;
+	int slow_down_to_w;
 };
 
 #endif

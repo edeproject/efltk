@@ -93,6 +93,7 @@ int Fl_Menu_Button::popup()
         }
         else*/
         {
+			anim_flags_ = TOP_TO_BOTTOM|LEFT_TO_RIGHT;
             return Fl_Menu_::popup(Fl::event_x(), Fl::event_y());
         }
     }
@@ -171,6 +172,8 @@ Fl_Menu_Button::Fl_Menu_Button(int X,int Y,int W,int H,const char *l)
     style(default_style);
     align(FL_ALIGN_CENTER);
     //set_click_to_focus();
+
+	anim_flags_ = TOP_TO_BOTTOM;
 }
 
 

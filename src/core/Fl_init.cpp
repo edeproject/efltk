@@ -59,11 +59,14 @@ void Fl::init()
 
         // Read Fl_Menu_Window defaults:
         cfg.get("Menus", "Animate", b_val, true);
-        Fl_Menu_Window::animate(b_val);
+        Fl_Menu_::animate(b_val);
+		cfg.get("Menus", "Subwindow Animate", b_val, true);
+        Fl_Menu_::subwindow_animate(b_val);
         cfg.get("Menus", "Speed", f_val, 1.5f);
-        Fl_Menu_Window::default_step_div = f_val;
+        Fl_Menu_Window::default_anim_speed(f_val);
         cfg.get("Menus", "Delay", f_val, 0.2f);
         Fl_Menu_::default_delay(f_val);
+
 
         // Read Fl_Tooltip defaults:
         cfg.get("Tooltips", "Animate", b_val, true);

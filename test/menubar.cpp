@@ -228,6 +228,7 @@ int main(int argc, char **argv) {
   menus[0] = &menubar;
 
   window.view()->begin();
+  window.view()->box(FL_DOWN_BOX);
 
   Fl_Menu_Button mb1(100,100,120,25,"&menubutton");
   mb1.menu(pulldown);
@@ -243,7 +244,7 @@ int main(int argc, char **argv) {
   menus[2] = ch;
   ch->end();
 
-  Fl_Menu_Button mb(0,25,WIDTH,400-HEIGHT/*,"&popup"*/);
+  Fl_Menu_Button mb(0, 0, window.view()->w(), window.view()->h());
   mb.type(Fl_Menu_Button::POPUP3);
   mb.menu(menutable);
   mb.callback(test_cb);

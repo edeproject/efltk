@@ -28,18 +28,31 @@
 #include <efltk/Fl_Tooltip.h>
 #include <efltk/fl_draw.h>
 #include <efltk/Fl_Menu_Window.h>
+#include <stdio.h>
 
 float Fl_Tooltip::delay_ = 1.0f;
 bool  Fl_Tooltip::enabled_ = true;
 bool  Fl_Tooltip::animate_ = true;
+
+static Fl_Tooltip::Generator generator;
+static void* argument;
+Fl_Widget* Fl_Tooltip::widget;
+static int X,Y,W,H;
+
+static bool recent_tooltip;
+static bool recursion;
 
 #define MAX_WIDTH 400
 
 class Fl_TooltipBox : public Fl_Menu_Window
 {
 public:
+	bool no_layout;
+
     Fl_TooltipBox() : Fl_Menu_Window(0, 0)
     {
+		slow_down_to_h=-1;
+		no_layout = false;
         style(Fl_Tooltip::default_style);
         set_override();
         end();
@@ -50,18 +63,27 @@ public:
     // You have to destroy the window or it will not raise next time:
     void hide() {destroy();}
 #endif
+	int handle(int e) {
+		switch(e) {
+		case FL_ENTER:
+			Fl_Tooltip::exit();
+			recent_tooltip = false;
+		}
+		return Fl_Menu_Window::handle(e);
+	}
 };
 
-static Fl_Tooltip::Generator generator;
-static void* argument;
-Fl_Widget* Fl_Tooltip::widget;
-static int X,Y,W,H;
 static Fl_TooltipBox *window = 0;
 
 void Fl_TooltipBox::layout()
 {
+	// Dont do nothing, if already visible or animating
+	if(animating || visible()) return;
+
     fl_font(label_font(), float(label_size()));
-    int ww, hh;
+    
+	int ww, hh;
+
     ww = MAX_WIDTH;
     fl_measure(label(), ww, hh, FL_ALIGN_LEFT|FL_ALIGN_WRAP|FL_ALIGN_INSIDE);
     ww += 6; hh += 6;
@@ -87,28 +109,25 @@ void Fl_TooltipBox::layout()
     }
     if (oy < 0) oy = 0;
 
-    resize(ox, oy, ww, hh);
-    Fl_Menu_Window::layout();
+    resize(ox, oy, ww, hh);	
+
+	if(!no_layout) Fl_Menu_Window::layout();
 }
 
 
 void Fl_TooltipBox::draw()
 {
+	// Dont draw window, while animating
+	if(animating) return;
+
     box()->draw(0,0,w(),h(),color(),0);
     draw_label(box()->dx()+2, box()->dy()+2, w()-box()->dw()-2, h()-box()->dh()-2, FL_ALIGN_LEFT|FL_ALIGN_WRAP|FL_ALIGN_INSIDE);
 }
 
-
-static bool recent_tooltip;
-
 static void recent_timeout(void*)
 {
-    recent_tooltip = false;
+    recent_tooltip = false;	
 }
-
-
-static bool recursion;
-static bool no_anim=false;
 
 static void tooltip_timeout(void*)
 {
@@ -123,23 +142,27 @@ static void tooltip_timeout(void*)
 
         //if (Fl::grab()) return;
         if (!window) window = new Fl_TooltipBox;
+		
         // this cast bypasses the normal Fl_Window label() code:
-        ((Fl_Widget*)window)->label(tip);
+        ((Fl_Widget*)window)->label(tip);        
+		((Fl_Widget*)window)->tooltip(tip);		
 
-        window->layout();
+		window->no_layout = true;
+		window->layout();		
 
-        if(no_anim || !Fl_Tooltip::animate()) {
-            window->show();
-        } else {
+        if(!recent_tooltip && Fl_Tooltip::animate()) {
             if(!window->shown()) window->create();
 
-            window->step_divider(0.8f);
+            window->anim_speed(2);
             // Roll from top.
-            window->animate(window->x(), window->y(), window->w(), 1,
-                            window->x(), window->y(), window->w(), window->h());
-            window->layout();
+            window->animate(window->x(), window->y()+(window->h()/2), window->w(), 1,
+                            window->x(), window->y(), window->w(), window->h());            
         }
-        window->redraw();
+		window->no_layout = false;
+		
+		window->show();
+		window->resize(window->x(), window->y(), window->w(), window->h());
+		((Fl_Menu_Window*)window)->layout();
     }
 
     Fl::remove_timeout(recent_timeout);
@@ -153,13 +176,14 @@ static void tooltip_timeout(void*)
 // be found do exit(). If you don't want this behavior (for instance
 // if you want the tooltip to reappear when the mouse moves back in)
 // call the fancier enter() below.
-void Fl_Tooltip::enter(Fl_Widget* w) {
+void Fl_Tooltip::enter(Fl_Widget* w) 
+{
   // find the enclosing group with a tooltip:
   Fl_Widget* tw = w;
   for (;;) {
-    if (!tw) {exit(); return;}
-    if (tw->tooltip()) break;
-    tw = tw->parent();
+	  if (!tw) { exit(); return; }
+	  if (tw->tooltip()) break;
+      tw = tw->parent();	
   }
   enter(w, 0, 0, w->w(), w->h(), tw->tooltip());
 }
@@ -168,7 +192,8 @@ void Fl_Tooltip::enter(Fl_Widget* w) {
 // tooltip.  This is useful to prevent a tooltip from reappearing when
 // a modal overlapping window is deleted. Fltk does this automatically
 // when you click the mouse button.
-void Fl_Tooltip::current(Fl_Widget* w) {
+void Fl_Tooltip::current(Fl_Widget* w) 
+{	
   exit();
   // find the enclosing group with a tooltip:
   Fl_Widget* tw = w;
@@ -180,12 +205,14 @@ void Fl_Tooltip::current(Fl_Widget* w) {
   // act just like enter() except we can remember a zero:
   widget = w;
   generator = 0;
-  argument = (void*)tw->tooltip();
+  argument = (void*)tw->tooltip();  
 }
 
 // Hide any visible tooltip.
-void Fl_Tooltip::exit() {
-  if (!widget) return;
+void Fl_Tooltip::exit() 
+{
+  if (!widget) return;  
+
   widget = 0;
   Fl::remove_timeout(tooltip_timeout);
   Fl::remove_timeout(recent_timeout);
@@ -206,30 +233,40 @@ void Fl_Tooltip::exit() {
 // buffer, this function allows you to defer the calculation of the
 // tooltip text until it is first needed.
 void Fl_Tooltip::enter(Fl_Widget* wid, int x,int y,int w,int h,
-		       Fl_Tooltip::Generator gen, void* data)
+					   Fl_Tooltip::Generator gen, void* data)
 {
-  if (recursion) return;
+  if (recursion) return;  
   // act like exit() if nothing:
+
   if (!enabled() || !wid || !gen && (!data || !*(char*)data)) {
-    exit(); return;
+	exit(); 
+	return;
   }
+
   // do nothing if it is the same:
-  if (wid==widget && gen == generator && data == argument) return;
+  if (wid==widget && gen == generator && data == argument) {
+	  Fl::remove_timeout(tooltip_timeout);
+	  Fl::remove_timeout(recent_timeout);
+	  Fl::add_timeout(Fl_Tooltip::delay(), tooltip_timeout);
+	  return;
+  }
   Fl::remove_timeout(tooltip_timeout);
   Fl::remove_timeout(recent_timeout);
+
   // remember it:
   widget = wid; X = x; Y = y; W = w; H = h;
   generator = gen; argument = data;
+
   // popup the tooltip immediately if it was recently up:
   if (recent_tooltip || Fl_Tooltip::delay() < .1) {
-#ifdef WIN32
+#ifdef _WIN32
     // possible fix for the Windows titlebar, it seems to want the
     // window to be destroyed, moving it messes up the parenting:
-    if (window) window->hide();
+    if(window) window->hide();
 #endif
     tooltip_timeout(0);
   } else {
-    if (window) window->hide();
+    if(window) window->hide();
     Fl::add_timeout(Fl_Tooltip::delay(), tooltip_timeout);
   }
 }

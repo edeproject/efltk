@@ -137,9 +137,16 @@ MenuWindow::MenuWindow(MenuWindow *parent, Fl_Widget *widget, Fl_Menu_ *menu, in
     set_override();
 
     menubar = false;
-    // No animation for sub-menus, right?!?
+    
     anim_flags = 0;
-    //anim_flags = Fl_Menu_::TOP_TO_BOTTOM|Fl_Menu_::LEFT_TO_RIGHT;
+	if(parent) {
+		if(Fl_Menu_::subwindow_animate()) {
+			anim_flags = Fl_Menu_::LEFT_TO_RIGHT;
+			slow_down_to_w = 15;
+		}
+	} else {
+		slow_down_to_h = 20;
+	}
 
     child_win = 0;
     add_items = false;
@@ -152,7 +159,7 @@ MenuWindow::MenuWindow(MenuWindow *parent, Fl_Widget *widget, Fl_Menu_ *menu, in
     this->Wp=Wp;
     this->Hp=Hp;
 
-    relayout(indexes, level);
+    relayout(indexes, level);	
 }
 
 MenuWindow::~MenuWindow()
@@ -227,13 +234,7 @@ void MenuWindow::layout()
         size(W,H);
     }
 
-#ifdef _WIN32
-    if(shown())
-        SetWindowPos(fl_xid(this), HWND_TOPMOST, x(), y(), w(), h(), (SWP_NOSENDCHANGING | SWP_NOZORDER | SWP_NOACTIVATE));
-    Fl_Group::layout();
-#else
-    Fl_Window::layout();
-#endif
+    Fl_Menu_Window::layout();
 }
 
 Fl_Widget *MenuWindow::get_widget(int index)
@@ -261,7 +262,7 @@ int MenuWindow::is_parent(int index)
 
 void MenuWindow::draw()
 {
-    if(!indexes_ || empty) {
+    if(!indexes_ || empty || animating) {
         //box()->draw(0, 0, w(), h(), color(), 0); //Comment out, if little empty box is showed on empty menus
         return;
     }
@@ -524,7 +525,14 @@ void timeout_initial(void *) {
 
 int MenuWindow::handle(int event)
 {
-    Fl_Rect rect;
+	Fl_Rect rect;
+
+	if(animating && (event==FL_MOVE||event==FL_DRAG)) {
+		// Stop animating if moving or dragging...
+        rect.set(x(), y(), w(), h());
+		animating = false;			
+		return 0;
+	}
 
     // Redirect mouse events to child_win if needed
     if(indexes_ && child_win &&
@@ -810,7 +818,7 @@ void MenuWindow::show()
         return;
     }
 
-    if(!Fl_Menu_Window::animate()) {
+    if(!Fl_Menu_::animate()) {
         Fl_Window::show();
         return;
     }
@@ -818,6 +826,12 @@ void MenuWindow::show()
     if(!shown()) create();
 
     int X=x(), Y=y(), W=ow, H=oh;
+
+    int ty=y(), tx=x();
+    int tw=ow , th=oh;
+    if(ty+th > Fl::h()) {
+		H = th = Fl::h()-ty;
+	}
 
     if(anim_flags&Fl_Menu_::TOP_TO_BOTTOM) {
         Y=y();
@@ -834,13 +848,9 @@ void MenuWindow::show()
     else if(anim_flags&Fl_Menu_::RIGHT_TO_LEFT) {
         X=x()+w();
         W=1;
-    }
+    }	
 
-    int ty=y(), tx=x();
-    int tw=ow , th=oh;
-    if(ty+th > Fl::h()) th=Fl::h()-ty;
-
-    if(W!=ow || H!=oh) {
+    if(W!=tw || H!=th) {
         Fl_Menu_Window::animate(X,Y,W,H,
                                 tx,ty,tw,th);
     } else
@@ -918,11 +928,11 @@ int Fl_Menu_::popup(int X, int Y, int W, int H)
 
     MenuWindow::default_style->color = color();
 
-	float speed = (anim_speed_==-1)?Fl_Menu_Window::default_step_div:anim_speed_;
+	float speed = (anim_speed_==-1)?Fl_Menu_Window::default_anim_speed():anim_speed_;
 
     MenuWindow w(0, this, this, indexes, level, W, H);
     w.anim_flags = anim_flags_;
-    w.step_divider(speed);
+    w.anim_speed(speed);		
     w.widget_ = this;
     MenuWindow *saved_first = Fl_Menu_::first_menu;
     Fl_Menu_::first_menu = &w;
@@ -986,11 +996,11 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
 
     MenuWindow::default_style->color = color();
 
-    float speed = (anim_speed_==-1)?Fl_Menu_Window::default_step_div:anim_speed_;
+    float speed = (anim_speed()==-1)?Fl_Menu_Window::default_anim_speed():anim_speed();
 
     MenuWindow w(0, this, this, 0, -1);
     w.anim_flags = anim_flags_;
-    w.step_divider(speed);
+    w.anim_speed(speed);		
     w.menubar = true;
     w.child_of(Fl::first_window());
     MenuWindow *saved_first = Fl_Menu_::first_menu;
@@ -1058,7 +1068,7 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
         }
 
         if(index>=0 && index!=cur_index)
-        {
+        {			
             if(index!=last_selected_) {
                 highlight_ = selected_ = index;
                 redraw(FL_DAMAGE_HIGHLIGHT);
@@ -1151,11 +1161,11 @@ int Fl_Choice::popup(int X, int Y, int W, int H)
 
     MenuWindow::default_style->color = color();
 
-    float speed = (anim_speed_==-1)?Fl_Menu_Window::default_step_div:anim_speed_;
+    float speed = (anim_speed()==-1)?Fl_Menu_Window::default_anim_speed():anim_speed();
 
     MenuWindow w(0, this, this, indexes, level, W, H);
     w.anim_flags = anim_flags_;
-    w.step_divider(speed);
+    w.anim_speed(speed);
     w.widget_ = this;
     MenuWindow *saved_first = Fl_Menu_::first_menu;
     Fl_Menu_::first_menu = &w;

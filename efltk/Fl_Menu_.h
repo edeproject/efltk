@@ -99,10 +99,6 @@ public:
 	void anim_flags(int f) { anim_flags_ = f; }
 	int anim_flags() { return anim_flags_; }
 	
-	// This set animation speed as a step_divider to menuwindow
-	void anim_speed(float f) { anim_speed_ = f; }
-	float anim_speed() { return anim_speed_; }
-	
 	// Relayouts current menuwindow, useful when adding items after show
 	static void relayout_current_menu();
 	
@@ -146,11 +142,27 @@ public:
 	float delay() { return delay_; }
 	void delay(float v) { delay_ = v; }
 
+	// Set/Get animate speed, ONLY for this menu
+	float anim_speed() { return anim_speed_; }
+	void anim_speed(float v) { anim_speed_ = v; }
+
+    static bool animate() { return animate_; }
+    static void animate(bool v) { animate_ = v; }
+
+    static bool subwindow_animate() { return subwindow_animate_; }
+    static void subwindow_animate(bool v) { subwindow_animate_ = v; }
+
 private:
     friend class MenuWindow;
     Fl_List* list_;	
+
 	static float default_delay_;
 	float delay_;
+
+	static bool animate_;
+	static bool subwindow_animate_;
+
+    float anim_speed_;
 
 protected:
 		
@@ -164,7 +176,6 @@ protected:
     Fl_Widget *executed_;
 	
     int anim_flags_;
-    float anim_speed_;
 };
 
 #endif

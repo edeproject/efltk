@@ -62,6 +62,8 @@ Fl_Menu_Bar::Fl_Menu_Bar(int x,int y,int w,int h,const char *l)
     key_event = false;
 
     value(-1);
+
+	anim_flags_ = TOP_TO_BOTTOM;
 }
 
 void Fl_Menu_Bar::draw()

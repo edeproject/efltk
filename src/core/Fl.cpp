@@ -235,8 +235,6 @@ int Fl::run()
 {
     while(first_window()) wait(FOREVER);
 
-    // We could add here "EXIT" handlers... for cleanup!
-
     return(0);
     // WAS: This was tried for fltk 2.0, and the callback for closing the last
     // window in Fl_Window.C called exit(). This proved to be unpopular:
@@ -507,7 +505,7 @@ void Fl_Widget::throw_focus()
     if (this == xmousewin) xmousewin = Fl::first_window();
     if (contains(Fl::focus())) Fl::focus_ = 0;
     if (this == xfocus) xfocus = 0;
-    if (this == Fl_Tooltip::current()) Fl_Tooltip::current(0);
+    if (this == Fl_Tooltip::current()) { Fl_Tooltip::current(0); }
     if (this == Fl::modal_) {Fl::modal_ = 0; Fl::exit_modal();}
 }
 
@@ -661,7 +659,9 @@ bool Fl::handle(int event, Fl_Window* window)
                 Fl_Widget* pbm = belowmouse();
                 if (modal_ && !modal_->contains(to)) to = modal_;
                 bool ret = to && to->send(FL_MOVE);
-                if (pbm != belowmouse()) Fl_Tooltip::enter(belowmouse());
+                if (pbm != belowmouse() || ret) {
+					Fl_Tooltip::enter(belowmouse());
+				}
                 return ret;
             }
 
