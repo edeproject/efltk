@@ -102,14 +102,17 @@ void cb_button_box(Fl_Widget *w, Fl_ListView *l)
 {
     static int boxmode = 0;
     switch (boxmode) {
-        case 0: l->button_box(FL_THIN_DOWN_BOX); break;
-        case 1: l->button_box(FL_DOWN_BOX); break;
-        case 2: l->button_box(FL_THIN_UP_BOX); break;
-        case 3: l->button_box(FL_UP_BOX); break;
-        case 4: l->button_box(FL_FLAT_BOX); break;
+    case 0: l->button_box(FL_BORDER_BOX); break;
+    case 1: l->button_box(FL_THIN_DOWN_BOX); break;
+    case 2: l->button_box(FL_DOWN_BOX); break;
+    case 3: l->button_box(FL_THIN_UP_BOX); break;
+    case 4: l->button_box(FL_UP_BOX); break;
+    case 5: l->button_box(FL_FLAT_BOX); break;
     }
     boxmode++;
     if (boxmode > 4) boxmode = 0;
+
+    l->recalc_totalheight();
     l->redraw();
 }
 
@@ -219,6 +222,7 @@ void make_listview()
     w->begin();
 
     Fl_ListView *l = new Fl_ListView(10,20,280,240, "LIST VIEW: Normal items");
+    //l->color(FL_GRAY);
     //l->header()->hide();
     //l->header()->h(30);
     l->callback((Fl_Callback*)callback);
@@ -261,7 +265,6 @@ void make_listview()
     but->callback((Fl_Callback*)cb_multi, l);
 
     but = new Fl_Button(130, 265, 80, 20, "Button Box");
-    but->type(Fl_Button::TOGGLE);
     but->callback((Fl_Callback*)cb_button_box, l);
 
     but = new Fl_Button(220, 265, 50, 20, "Stripes");
