@@ -2,13 +2,6 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-/*
-  Notes for the linux port:
-  - The following mode flags are ignored:
-    IO_RANDOM, IO_SEQ, IO_BINARY, IO_LOCKED
-  - IO_TEMP not yet implemented
-*/
-
 #include <efltk/Fl_File_IO.h>
 #include <stdlib.h> //free
 
@@ -150,20 +143,23 @@ bool Fl_File_IO::open()
 
 #else
 // for *nix
-        int open_flags = 0;
+	int open_flags = 0;
 	if(mode() & IO_READ){
-                if (mode() & IO_WRITE) open_flags |= O_RDWR;
-                        else open_flags |= O_RDONLY;
-        } else
-        if (mode() & IO_WRITE) open_flags |= O_WRONLY;
-	if(mode() & IO_CREATE)  open_flags |= O_CREAT;
-	if(mode() & IO_TRUNCATE) open_flags |= O_TRUNC;
-	if(mode() & IO_APPEND) open_flags |= O_APPEND;
-	if(mode() & IO_SYNC) open_flags |= O_SYNC;
+		if (mode() & IO_WRITE)	open_flags |= O_RDWR;
+		else					open_flags |= O_RDONLY;
+	} else 
+	if(mode() & IO_WRITE)		open_flags |= O_WRONLY;
+	if(mode() & IO_CREATE)		open_flags |= O_CREAT;
+	if(mode() & IO_TRUNCATE)	open_flags |= O_TRUNC;
+	if(mode() & IO_APPEND)		open_flags |= O_APPEND;
+	if(mode() & IO_SYNC)		open_flags |= O_SYNC;
 
-        m_handle = (void*)::open(file, open_flags, 0664);
-        if (m_handle < 0)
-                m_handle = INVALID_HANDLE_VALUE;
+	m_handle = (void*)::open(file, open_flags, 0664);
+	if(i_handle < 0)
+		m_handle = INVALID_HANDLE_VALUE;
+	else if(mode() & IO_LOCKED)
+		flock(m_handle, LOCK_EX|LOCK_NB);
+
 #endif
 
 #ifdef UNICODE
@@ -183,7 +179,13 @@ bool Fl_File_IO::close()
 #ifdef _WIN32
 	BOOL ret = CloseHandle((HANDLE)m_handle);
 #else
-        bool ret = ::close(i_handle) == 0;
+	bool ret = ::close(i_handle) == 0;
+	// Remove temp file
+	if(mode() & IO_TEMP)
+		unlink(m_filename.c_str());
+	// Unlock file
+	if(mode() & IO_LOCKED)
+		flock(m_handle, LOCK_UN);
 #endif
 	m_handle = INVALID_HANDLE_VALUE;
 	
@@ -204,16 +206,12 @@ int Fl_File_IO::read(void *buffer, int buffer_len)
 #ifdef _WIN32
 	if(ReadFile(m_handle, buffer, buffer_len, &read_bytes, NULL)) {
 #else
-        read_bytes = ::read(i_handle, buffer, buffer_len);
-        if (read_bytes >= 0){
+	read_bytes = ::read(i_handle, buffer, buffer_len);
+	if (read_bytes >= 0){
 #endif
 		m_eos = (read_bytes == 0);
 		return read_bytes;
 	}
-
-#ifdef _WIN32
-	printf("ERR %d\n", GetLastError());
-#endif
 
 	m_eos = true;//(GetLastError()==ERROR_HANDLE_EOF);
 	return -1;
@@ -225,19 +223,17 @@ int Fl_File_IO::write(void *buffer, int buffer_len)
 	if(m_handle==INVALID_HANDLE_VALUE) return -1;
 	DWORD written_bytes = 0;
 
+	m_eos = false;
+
 #ifdef _WIN32
 	if(WriteFile(m_handle, buffer, buffer_len, &written_bytes, NULL)) {
-#else
-        m_eos = false; // how can be EOS while writing ?
-        written_bytes = ::write(i_handle, buffer, buffer_len);
-        if (written_bytes >= 0) {
+#else        
+	written_bytes = ::write(i_handle, buffer, buffer_len);
+	if (written_bytes >= 0) {
 #endif
 		return written_bytes;
 	}
 
-#ifdef _WIN32
-	m_eos = (GetLastError()==ERROR_HANDLE_EOF);
-#endif
 	return -1;
 }
 
@@ -294,13 +290,14 @@ long Fl_File_IO::tell()
 }
 
 
-int Fl_File_IO::flush()
+bool Fl_File_IO::flush()
 {
-	if(m_handle==INVALID_HANDLE_VALUE) return -1;
+	if(m_handle==INVALID_HANDLE_VALUE) return false;
+
 #ifdef _WIN32
-        FlushFileBuffers(m_handle);
+	bool ret = (FlushFileBuffers(m_handle)==TRUE);
 #else
-	if (fsync(i_handle) != 0) return -1;
+	bool ret = (fsync(i_handle) == 0);
 #endif
-	return 0;
+	return ret;
 }

@@ -52,10 +52,9 @@ public:
 	virtual long tell()								{ return -1; }
 	/** Is end-of-stream. Return -1 on error */
 	virtual bool eos()								{ return true; }
+
 	/** Flushes the buffer. Return -1 on error */
-	virtual int flush() { return 0; }
-	/** Flushes all buffers. Returns ? (maybe the number of buffers flushed ?) */
-	static int flush_all() { return 0;/* TODO */}
+	virtual bool flush() { return 0; }
 
 protected:
 	Fl_IO() { }

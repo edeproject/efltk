@@ -13,6 +13,8 @@
  *
  * IO can be optimized several ways, for different purpose.
  *
+ * @note Under *nix based systems (such as Linux) following flags are ignored: IO_RANDOM, IO_SEQ
+ *
  * @see IOModes
  */
 class Fl_File_IO : public Fl_IO
@@ -86,15 +88,15 @@ public:
 	 * Try to open file. Open will fail, if file is already open.
 	 * Returns true on success.
 	 */
-	bool open();
+	virtual bool open();
 	/**
 	 * Try to close file.
 	 * Returns true on success.
 	 */
-	bool close();
+	virtual bool close();
 
 	/** Return tru if file is open. */
-	bool is_open() const;
+	virtual bool is_open() const;
 
 	/** 
 	 * Read from opened file. 
@@ -132,7 +134,7 @@ public:
 	/**
 	 * Returns file handle.
 	 *  @li Under Win32 this is 'HANDLE' created by CreateFile.
-	 *  @li Under *nix this is 'int' (fd?) created by open(?).
+	 *  @li Under *nix this is 'int' file descriptor created by open().
 	 */
 	void *handle() { return m_handle; }
 	
@@ -140,7 +142,7 @@ public:
 	 * Flushes the buffers
 	 * Returns 0 on succes, -1 on error
 	 */
-	int flush();
+	virtual bool flush();
 
 private:
 	Fl_String m_filename;
