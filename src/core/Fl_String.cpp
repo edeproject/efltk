@@ -32,6 +32,7 @@
 #ifdef _WIN32_WCE
 #include <wince.h>
 #endif
+
 //------------------------------------------------------------------------------
 // constructors & destructors
 //------------------------------------------------------------------------------
@@ -41,7 +42,7 @@ Fl_String::Fl_String(const char *s, int maxlen, bool pre_allocated)
     if(maxlen>0) {
         if(pre_allocated) str_ = (char*)s;
         else {
-            str_ = new char[maxlen + 1];
+            str_ = (char*)malloc(maxlen + 1);
             strncpy(str_, s, maxlen);
             str_[maxlen] = '\0';
         }
@@ -56,10 +57,10 @@ Fl_String::Fl_String(const char *s, int maxlen, bool pre_allocated)
 Fl_String::Fl_String(char c, int repeater)
 {
     if (repeater == 1) {
-        str_ = new char[1];
+        str_ = (char*)malloc(1);
         str_[0] = c;
     } else {
-        str_ = new char[repeater + 1];
+        str_ = (char*)malloc(repeater + 1);
         memset(str_, c, repeater);
         str_[repeater] = '\0';
     }
@@ -68,14 +69,14 @@ Fl_String::Fl_String(char c, int repeater)
 
 Fl_String::Fl_String(int number)
 {
-    str_ = new char[33];
+    str_ = (char*)malloc(33);
     snprintf(str_, 32, "%i", number);
     len_ = strlen(str_);
 }
 
 Fl_String::Fl_String(unsigned number)
 {
-    str_ = new char[33];
+    str_ = (char*)malloc(33);
     snprintf(str_, 32, "%i", number);
     len_ = strlen(str_);
 }
@@ -88,7 +89,7 @@ Fl_String::Fl_String(const Fl_String &s)
 
 Fl_String::~Fl_String()
 {
-    delete []str_;
+    free((char*)str_);
 }
 
 //------------------------------------------------------------------------------
@@ -102,8 +103,8 @@ void Fl_String::assign(const char *s)
         strncpy(str_, s, len_);
         str_[len_] = '\0';
     } else {
-        delete []str_;
-        str_ = new char[1];
+        free((char*)str_);
+        str_ = (char*)malloc(1);
         str_[0] = '\0';
         len_ = 0;
     }
@@ -166,7 +167,7 @@ Fl_String Fl_String::operator + (const char * s) const
     if(s) len = length() + strlen(s) + 1;
     else len = length() + 1;
 
-    temp = new char[len];
+    temp = (char*)malloc(len);
     strcpy(temp, str_);
     if(s) strcat(temp, s);
 
@@ -177,7 +178,7 @@ Fl_String Fl_String::operator + (const char * s) const
 Fl_String Fl_String::operator + (const Fl_String& s) const
 {
     int len = length() + s.length() + 1;
-    char *temp = new char[len];
+    char *temp = (char*)malloc(len);
     strcpy(temp, str_);
     if(s.length()) strcat(temp, s.c_str());
 
@@ -254,14 +255,15 @@ void Fl_String::printf(const char *string, ...)
     valen = fl_va_len((char *)string, ap);
     va_end(ap);
 
-    s = new char[valen];
+    s = (char*)malloc(valen);
     va_start(ap, string);
-    vsprintf(s, string, ap);
+    vsnprintf(s, valen, string, ap);
     va_end(ap);
     s[valen] = '\0';
 
+    free((char*)str_);
     str_ = s;
-    len_ = valen;
+    len_ = strlen(str_);
 }
 
 Fl_String Fl_String::remove(const char *pattern) const
