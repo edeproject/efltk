@@ -259,9 +259,6 @@ enum {
   FL_EFFECT_FADE
 };
 
-inline Fl_Color fl_lighter(Fl_Color c) { return fl_color_average(c, FL_WHITE, .67f); }
-inline Fl_Color fl_darker(Fl_Color c) { return fl_color_average(c, FL_BLACK, .67f); }
-
 /* Prevent Visual C++ 6.0 from printing out stupid warnings */
 #if defined(_MSC_VER) && (_MSC_VER >= 600)
 	#pragma warning(disable: 4550)
