@@ -1,8 +1,8 @@
-#ifndef __FL_COMBO_BOX_H__
-#define __FL_COMBO_BOX_H__
+#ifndef _FL_COMBO_BOX_H_
+#define _FL_COMBO_BOX_H_
 
-#include <efltk/Fl_Group.h>
-#include <efltk/Fl_ListView.h>
+#include "Fl_Group.h"
+#include "Fl_ListView.h"
 
 enum Fl_Combo_Box_Buttons {
     FL_CBB_BROWSE  = 1,
@@ -26,6 +26,8 @@ protected:
     static void Fl_Combo_Box::cb_browse(Fl_Widget *w, void *data);
     static void Fl_Combo_Box::cb_button(Fl_Widget *w, void *data);
 public:
+    static Fl_Named_Style* default_style;
+
     /** Creates new combo box widget using the given position, size, and label string. */
     Fl_Combo_Box(int x,int y,int w,int h,const char *label=0);
 
