@@ -33,6 +33,7 @@
 // (310)314-2800 FAX(310)314-2888
 
 #include <efltk/Fl.h>
+#include <efltk/fl_ask.h>
 #include <efltk/Fl_Numeric_Input.h>
 #include <stdio.h>
 
@@ -100,6 +101,8 @@ int Fl_Numeric_Input::handle(int event)
 // Handle and up or down arrow key:
 int Fl_Numeric_Input::handle_arrow(int dir)
 {
+    if (readonly()) { fl_beep(); return 0; }
+
     char decimal = '.';
 #if ENABLE_NLS
     lconv *locale = localeconv();

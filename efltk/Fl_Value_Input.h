@@ -44,6 +44,7 @@ protected:
 private:
   virtual void value_damage(); // cause damage() due to value() changing
   static void input_cb(Fl_Widget*,void*);
+
   void increment_cb();
   static void repeat_callback(void* v);
 };

@@ -32,7 +32,7 @@
 class Fl_Multiline_Output : public Fl_Output {
 public:
     Fl_Multiline_Output(int x,int y,int w,int h,const char *l = 0)
-	: Fl_Output(x,y,w,h,l) {type(MULTILINE);}
+	: Fl_Output(x,y,w,h,l) { input_type(MULTILINE); }
 };
 
 #endif

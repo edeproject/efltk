@@ -27,11 +27,12 @@
 #define Fl_Value_Output_H
 
 #include "Fl_Value_Input.h"
+#include "Fl_Output.h"
 
 class FL_API Fl_Value_Output : public Fl_Value_Input {
 public:
   Fl_Value_Output(int x,int y,int w,int h,const char *l = 0)
-    : Fl_Value_Input(x, y, w, h, l) { input.set_output(); }
+        : Fl_Value_Input(x, y, w, h, l) { input.readonly(1); input.copy_style(Fl_Output::default_style); }
   void soft(uchar x) {} // unimplemented, it acts like true allways
   bool soft() const {return true;}
 };

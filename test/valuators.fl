@@ -16,7 +16,7 @@ Function {} {open
 } {
   Fl_Window {} {
     label {Valuator classes, showing values for the type()} open
-    xywh {456 247 565 490} resizable label_size 10
+    xywh {66 210 565 490} resizable label_size 10
     extra_code {\#include <stdio.h>} visible
   } {
     Fl_Box {} {
@@ -86,11 +86,6 @@ Function {} {open
       label y
       callback callback
       xywh {475 63 65 22} align 20 color 10 selection_color 1 maximum 100 step 0
-    }
-    Fl_Value_Input {} {
-      label larger
-      callback callback selected
-      xywh {360 93 180 32} color 10 selection_color 1 step 0
     }
     Fl_Box {} {
       label Fl_Value_Slider
@@ -184,6 +179,10 @@ Function {} {open
     Fl_Box {} {
       label {All widgets have color(green) and selection_color(red) to show the areas these colors affect.}
       xywh {295 419 260 60} align 128 box ENGRAVED_BOX label_size 10
+    }
+    Fl_Value_Output {} {
+      label Fl_Value_Output selected
+      xywh {430 90 110 35} value 0.15
     }
   }
 } 

@@ -31,6 +31,7 @@
 #include <efltk/Fl_Input.h>
 #include <efltk/fl_draw.h>
 #include <efltk/math.h>
+#include <efltk/fl_ask.h>
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -39,8 +40,9 @@
 
 #include <efltk/Fl_Menu_Button.h>
 
-static Fl_Menu_Button *menu_=0;
 static Fl_Input *menu_widget=0;
+static Fl_Menu_ menu;
+static Fl_Menu_ *menu_ = &menu;
 
 #define CUT   1
 #define COPY  2
@@ -86,7 +88,7 @@ const char* Fl_Input::expand(const char* p, char* buf,int wordwrap) const
     int width_to_lastspace = 0;
     int word_count = 0;
 
-    if (type() == SECRET)
+    if (input_type() == SECRET)
     {
         while (o<e && p < value_+size_) {*o++ = '*'; p++;}
     }
@@ -114,8 +116,8 @@ const char* Fl_Input::expand(const char* p, char* buf,int wordwrap) const
         }
         else
         {
-            if (c == '\n' && type() >= MULTILINE) {p--; break;}
-            if (c == '\t' && type() >= MULTILINE)
+            if (c == '\n' && input_type() == MULTILINE) {p--; break;}
+            if (c == '\t' && input_type() == MULTILINE)
             {
                 for (c = (o-buf)%8; c<8 && o<e; c++) *o++ = ' ';
             }
@@ -140,7 +142,7 @@ int* returnn                     // return offset into buf here
 ) const
 {
     int n = 0;
-    if (type() == SECRET) n = e-p;
+    if (input_type() == SECRET) n = e-p;
     else while (p<e)
     {
         int c = *p++;
@@ -150,7 +152,7 @@ int* returnn                     // return offset into buf here
         }
         else
         {
-            if (c == '\t' && type() >= MULTILINE) n += 8-(n%8);
+            if (c == '\t' && input_type() == MULTILINE) n += 8-(n%8);
             else n += 2;
         }
     }
@@ -295,7 +297,7 @@ void Fl_Input::draw(int X, int Y, int W, int H)
         selend = position(); selstart = mark();
     }
 
-    int wordwrap = (type() > MULTILINE) ? W-8 : 0;
+    int wordwrap = this->wordwrap() ? W-8 : 0;
 
     const char *p, *e;
     char buf[MAXBUF];
@@ -342,7 +344,7 @@ void Fl_Input::draw(int X, int Y, int W, int H)
     }
 
     // adjust the scrolling:
-    if (type() >= MULTILINE)
+    if(input_type() == MULTILINE)
     {
         int newy = yscroll_;
         if (cury < newy) newy = cury;
@@ -392,12 +394,10 @@ void Fl_Input::draw(int X, int Y, int W, int H)
                                  // for minimal update:
         if (!(damage()&FL_DAMAGE_ALL))
         {
-                                 // pointer to where minimal update starts
-            const char* pp = value()+mu_p;
-                                 // this line is before the changes
-            if (e < pp) goto CONTINUE2;
-                                 // this line is after
-            if (erase_cursor_only && p > pp) goto CONTINUE2;
+            const char* pp = value()+mu_p; // pointer to where minimal update starts
+            if (e < pp) goto CONTINUE2; // this line is before the changes
+            if (readonly()) erase_cursor_only = 0; // this isn't the most efficient way
+            if (erase_cursor_only && p > pp) goto CONTINUE2; // this line is after
             // calculate area to erase:
             int r = X+W;
             int x;
@@ -405,11 +405,13 @@ void Fl_Input::draw(int X, int Y, int W, int H)
             {
                 x = X;
                 if (erase_cursor_only) r = xpos+2;
+                else if (readonly()) x -= 3;
             }
             else
             {
                 x = xpos+int(expandpos(p, pp, buf, 0));
                 if (erase_cursor_only) r = x+2;
+                else if (readonly()) x -= 3;
             }
             // clip to and erase it:
             fl_color(background);
@@ -464,8 +466,13 @@ void Fl_Input::draw(int X, int Y, int W, int H)
         if ((this==dnd_target || focused() && selstart == selend) &&
             cursor_position >= p-value() && cursor_position <= e-value())
         {
-            fl_color(textcolor);
-            fl_rectf(xpos+curx, Y+ypos, 2, height);
+            fl_color(button_color());
+            if (readonly()) {
+                fl_line(xpos+curx-3, Y+ypos+height-1, xpos+curx, Y+ypos+height-4);
+                fl_line(xpos+curx, Y+ypos+height-4, xpos+curx+3, Y+ypos+height-1);
+            } else {
+                fl_rectf(xpos+curx, Y+ypos, 2, height);
+            }
         }
 
         CONTINUE:
@@ -476,7 +483,7 @@ void Fl_Input::draw(int X, int Y, int W, int H)
     }
 
     // for minimal update, erase all lines below last one if necessary:
-    if (!(damage()&FL_DAMAGE_ALL) && type() >= MULTILINE && ypos<H
+    if (!(damage()&FL_DAMAGE_ALL) && input_type() == MULTILINE && ypos<H
         && (!erase_cursor_only || p <= value()+mu_p))
     {
         if (ypos < 0) ypos = 0;
@@ -496,7 +503,7 @@ static int isword(char c)
 
 int Fl_Input::word_end(int i) const
 {
-    if (type() == SECRET) return size();
+    if (input_type() == SECRET) return size();
     while (!i || !isword(index(i-1))) i++;
     while (i < size() && isword(index(i))) i++;
     return i;
@@ -505,7 +512,7 @@ int Fl_Input::word_end(int i) const
 
 int Fl_Input::word_start(int i) const
 {
-    if (type() == SECRET) return 0;
+    if (input_type() == SECRET) return 0;
     while (!isword(index(i))) i--;
     while (i > 0 && isword(index(i-1))) i--;
     return i;
@@ -514,7 +521,7 @@ int Fl_Input::word_start(int i) const
 
 int Fl_Input::line_end(int i) const
 {
-    if (type() >= WORDWRAP)
+    if(this->wordwrap())
     {
         // go to the start of the paragraph:
         int j = i;
@@ -530,7 +537,7 @@ int Fl_Input::line_end(int i) const
             p++;
         }
     }
-    else if (type() >= MULTILINE)
+    else if (input_type() == MULTILINE)
     {
         while (i < size() && index(i) != '\n') i++;
         return i;
@@ -544,10 +551,10 @@ int Fl_Input::line_end(int i) const
 
 int Fl_Input::line_start(int i) const
 {
-    if (type() < MULTILINE) return 0;
+    if (input_type() != MULTILINE) return 0;
     int j = i;
     while (j > 0 && index(j-1) != '\n') j--;
-    if (type() >= WORDWRAP)
+    if(wordwrap())
     {
         // now measure lines until we get past i, start of that line is real eol:
         int wordwrap = w()-Fl::box_dw(box())-6;
@@ -573,7 +580,7 @@ int Fl_Input::mouse_position(int X, int Y, int W, int ) const
 
     // figure out what line we are pointing at:
     int theline = 0;
-    if (type() >= MULTILINE)
+    if (input_type() == MULTILINE)
     {
         theline = Fl::event_y()-Y+yscroll_;
         if (theline < 0) return 0;
@@ -586,7 +593,7 @@ int Fl_Input::mouse_position(int X, int Y, int W, int ) const
         theline /= line_height();
     }
 
-    int wordwrap = (type() > MULTILINE) ? W-8 : 0;
+    int wordwrap = this->wordwrap() ? W-8 : 0;
 
     // Step through all the lines until we reach the pointed-to line.
     // Expand the lines to printed representation into the buffer:
@@ -650,7 +657,7 @@ void Fl_Input::up_down_position(int i, bool keepmark)
 {
     // cursor must already be at start of line!
     setfont();
-    int wordwrap = type() > MULTILINE ? w()-Fl::box_dw(box())-6 : 0;
+    int wordwrap = this->wordwrap() ? w()-box()->dw()-6 : 0;
     char buf[MAXBUF];
     const char* p = value()+i;
     const char* e = expand(p, buf, wordwrap);
@@ -674,7 +681,7 @@ bool Fl_Input::copy(bool clipboard)
     if (b != e)
     {
         if (b > e) {b = mark(); e = position();}
-        if (type() == SECRET) e = b;
+        if (input_type() == SECRET) e = b;
         Fl::copy(value()+b, e-b, clipboard);
         return true;
     }
@@ -765,7 +772,7 @@ bool Fl_Input::replace(int b, int e, const char* text, int ilen)
         size_ -= e-b;
         undowidget = this;
         undoat = b;
-        if (type() == SECRET) yankcut = 0; else yankcut = undocut;
+        if (input_type() == SECRET) yankcut = 0; else yankcut = undocut;
     }
 
     if (ilen)
@@ -789,7 +796,7 @@ bool Fl_Input::replace(int b, int e, const char* text, int ilen)
     // minimal update pointer must point at it.  This will
     // result in sub-optimal update when such wrapping does not happen
     // but it is too hard to figure out for now...
-    if (type() > MULTILINE)
+    if (wordwrap())
     {
         int c = b - 1;
         while (c > 0 && !isspace(index(c))) c--;
@@ -871,6 +878,7 @@ void Fl_Input::maybe_do_callback()
 
 static void revert(Fl_Style *s) {
     s->leading = 2;
+    s->button_color = FL_BLACK;
 }
 
 static Fl_Named_Style style("Input", revert, &Fl_Input::default_style);
@@ -879,14 +887,13 @@ Fl_Named_Style* Fl_Input::default_style = &::style;
 Fl_Input::Fl_Input(int x, int y, int w, int h, const char* l)
     : Fl_Widget(x, y, w, h, l)
 {
-    if(!menu_) {
-        menu_ = new Fl_Menu_Button(0,0,0,0,0);
-        menu_->parent(0);
-        menu_->type(Fl_Menu_Button::POPUP3);
-
+    static bool menuinit=false;
+    if(!menuinit) {
+        menu_->type(Fl_Menu_Button::POPUP3); //HACK! :)
         menu_->add("Cut", 0, cb_menu, (void *)CUT);
         menu_->add("Copy", 0, cb_menu, (void *)COPY);
         menu_->add("Paste", 0, cb_menu, (void *)PASTE);
+        menuinit=true;
     }
 
     clear_flag(FL_ALIGN_MASK);
@@ -972,7 +979,7 @@ bool Fl_Input::static_value(const char* str, int len)
         xscroll_ = yscroll_ = 0;
         minimal_update(0);
     }
-    position(0, size());
+    position(0, readonly() ? 0 : size());
     return true;
 }
 
@@ -1045,8 +1052,10 @@ bool Fl_Input::handle_key()
     if (Fl::compose(i))
     {
         if (!i && !Fl::event_length()) return 1;
-        return replace(position(), i ? position()-i : mark(),
-            Fl::event_text(), Fl::event_length());
+        if (readonly()) fl_beep();
+        else replace(position(), i ? position()-i : mark(),
+                     Fl::event_text(), Fl::event_length());
+        return 1;
     }
 
     bool ctrl = Fl::event_state(FL_CTRL);
@@ -1076,7 +1085,7 @@ bool Fl_Input::handle_key()
             if (key_is_shortcut()) return true;
             ctrl = alt;
         case FL_Up:
-            if (type() < MULTILINE) return false;
+            if (input_type() != MULTILINE) return false;
             i = position_; if (!shift && mark_<i) i = mark_;
             i = line_start(i);
             if (!i) shift_position(0);
@@ -1087,7 +1096,7 @@ bool Fl_Input::handle_key()
             if (key_is_shortcut()) return true;
             ctrl = alt;
         case FL_Down:
-            if (type() < MULTILINE) return false;
+            if (input_type() != MULTILINE) return false;
             i = position_; if (!shift && mark_>i) i = mark_;
             i = line_end(i);
             if (i >= size()) shift_position(i);
@@ -1096,7 +1105,7 @@ bool Fl_Input::handle_key()
 
         case FL_Page_Up:
         {
-            if (type() < MULTILINE) return false;
+            if (input_type() != MULTILINE) return false;
             i = line_start(position());
             setfont();
             for (int n = h()/line_height(); n--;) i = line_start(i-1);
@@ -1106,7 +1115,7 @@ bool Fl_Input::handle_key()
 
         case FL_Page_Down:
         {
-            if (type() < MULTILINE) return false;
+            if (input_type() != MULTILINE) return false;
             i = line_end(position());
             setfont();
             for (int n = h()/line_height(); n--;) i = line_end(i)+1;
@@ -1167,7 +1176,7 @@ bool Fl_Input::handle_key()
             //if (key_is_shortcut()) return true;
 
             // Add new line, if MULTILINE input and Shift is hold down
-            if(type()>=MULTILINE && shift) return replace(position(), mark(), '\n');
+            if(input_type()==MULTILINE && shift) return replace(position(), mark(), '\n');
 
             if (when() & FL_WHEN_ENTER_KEY)
             {
@@ -1175,16 +1184,18 @@ bool Fl_Input::handle_key()
                 maybe_do_callback();
                 return true;
             }
-            if (type() < MULTILINE || ctrl || shift) return false;
-            return replace(position(), mark(), '\n');
+            if(input_type() != MULTILINE || ctrl || shift) return false;
+
+            if(!readonly()) return replace(position(), mark(), "\n", 1);
+            else return 0;
 
         case FL_Tab:
-            //if (type() < MULTILINE || ctrl || shift)
-                return false;
-            //return replace(position(), mark(), Fl::event_text(), 1);
+            if (ctrl || shift || input_type()!=MULTILINE || readonly()) return false;
+            return replace(position(), mark(), Fl::event_text(), 1);
 
         case 'k':                // Emacs clear-to-end-of-line
             if (key_is_shortcut()) return true;
+            if (readonly()) { fl_beep(); return true; }
             // alt should clear to end of paragraph, nyi
             i = line_end(position());
             if (i == position() && i < size()) i++;
@@ -1199,6 +1210,7 @@ bool Fl_Input::handle_key()
 
         case 'o':                // Emacs insert newline after cursor
             if (key_is_shortcut()) return true;
+            if (readonly()) { fl_beep(); return true; }
             if (replace(position(),mark(),"\n",1))
             {
                 position(position()-1);
@@ -1208,6 +1220,7 @@ bool Fl_Input::handle_key()
 
         case 't':                // Emacs swap characters
             if (key_is_shortcut()) return true;
+            if (readonly()) { fl_beep(); return true; }
             if (size()<2) return 1;
             i = position();
             if (i <= 0 || value_[i-1]=='\n') i++;
@@ -1221,30 +1234,36 @@ bool Fl_Input::handle_key()
 
         case 'v':
             if (!ctrl && key_is_shortcut()) return true;
+            if (readonly()) { fl_beep(); return true; }
             Fl::paste(*this,true);
             return true;
 
         case 'w':                // Emacs cut
             if (key_is_shortcut()) return true;
+            if (readonly()) { fl_beep(); return true; }
             copy();
             return cut();
 
         case 'x':
             if (!ctrl && key_is_shortcut()) return true;
+            if (readonly()) { fl_beep(); return true; }
             copy();
             return cut();
 
         case 'y':                // Emacs paste
             if (key_is_shortcut()) return true;
+            if (readonly()) { fl_beep(); return true; }
             Fl::paste(*this,true);
             return true;
 
         case 'z':
             if (!ctrl && key_is_shortcut()) return true;
+            if (readonly()) { fl_beep(); return true; }
             return undo();
 
         case '/':                // Emacs undo
             if (key_is_shortcut()) return true;
+            if (readonly()) { fl_beep(); return true; }
             return undo();
 
             // Other interesting Emacs characters:
@@ -1259,6 +1278,7 @@ bool Fl_Input::handle_key()
     if (Fl::event_length())
     {
         if (key_is_shortcut()) return true;
+        if (readonly()) { fl_beep(); return true; }
         return replace(position(), mark(), Fl::event_text(), Fl::event_length());
     }
 
@@ -1367,11 +1387,19 @@ int Fl_Input::handle(int event, int X, int Y, int W, int H)
 
     case FL_PUSH:
         if(Fl::event_button()==3) {
-            if(position()==mark()) menu_->find("Cut")->deactivate();
-            else menu_->find("Cut")->activate();
-            ((Fl_Group *)&menu_)->focus(-1);
+            if(position()==mark()) {
+                menu_->find("Cut")->deactivate();
+                menu_->find("Copy")->deactivate();
+            } else {
+                menu_->find("Cut")->activate();
+                menu_->find("Copy")->activate();
+            }
+            if(readonly()) {
+                menu_->find("Cut")->deactivate();
+                menu_->find("Paste")->deactivate();
+            }
             menu_widget = this;
-            menu_->popup();
+            menu_->popup(Fl::event_x(), Fl::event_y());
             menu_widget = 0;
             return 1;
         }
@@ -1379,7 +1407,7 @@ int Fl_Input::handle(int event, int X, int Y, int W, int H)
         newpos = mouse_position(X, Y, W, H);
 #if DND_OUT
         // detect if the user tries to grab the selected text:
-        if (focused() && type()!=SECRET &&
+        if (focused() && input_type()!=SECRET &&
             (newpos >= mark() && newpos < position() ||
              newpos >= position() && newpos < mark()))
         {
@@ -1565,7 +1593,7 @@ int Fl_Input::handle(int event, int X, int Y, int W, int H)
             // strip trailing nulls:
             while (n > 0 && !t[n-1]) n--;
             // strip all trailing control & whitespace for single-line inputs:
-            if (type() < MULTILINE)
+            if (input_type() != MULTILINE)
                 while (n > 0 && ((unsigned char*)t)[n-1] <= ' ') n--;
             return replace(position(), mark(), t, n);
         }
@@ -1574,7 +1602,7 @@ int Fl_Input::handle(int event, int X, int Y, int W, int H)
         {
             // Fake Up and Down arrow clicks :)
             Fl::e_length = 0;
-            if(Fl::event_dy()>0) {
+            if(Fl::event_dy()<0) {
                 Fl::e_keysym = FL_Down;
             } else {
                 Fl::e_keysym = FL_Up;

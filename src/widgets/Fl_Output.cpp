@@ -27,33 +27,22 @@
 #include <efltk/Fl_Output.h>
 #include <efltk/fl_draw.h>
 
-bool Fl_Output::replace(int, int, const char*, int)
-{
-    // By making this function return false, all editing is disallowed:
-    return false;
-}
-
-
-int Fl_Output::handle(int event)
-{
-    // The Fl_Input may grab the focus if sent a shortcut, prevent this:
-    if (event == FL_SHORTCUT) return 0;
-    // You can't drag&drop on it either:
-    if (event == FL_DND_ENTER) return 0;
-    // Don't return 3 for FL_FOCUS, return 1 instead:
-    return Fl_Input::handle(event)&1;
-}
-
-
 // Output has it's own style so the color can be set to gray like
 // some themes want:
-static Fl_Named_Style style("Output", 0, &Fl_Output::default_style);
+
+static void revert(Fl_Style *s) {
+    s->color = FL_GRAY;
+    s->button_color = fl_color_average(FL_RED, FL_BLACK, 0.5);
+}
+
+static Fl_Named_Style style("Output", revert, &Fl_Output::default_style);
 Fl_Named_Style* Fl_Output::default_style = &::style;
 
 Fl_Output::Fl_Output(int x, int y, int w, int h, const char *l)
-: Fl_Input(x, y, w, h, l)
+    : Fl_Input(x, y, w, h, l)
 {
     style(default_style);
+    readonly(1);
 }
 
 

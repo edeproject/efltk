@@ -29,11 +29,9 @@
 #include "Fl_Input.h"
 
 class FL_API Fl_Output : public Fl_Input {
-  virtual bool replace(int, int, const char*, int); // does nothing
 public:
-  Fl_Output(int x, int y, int w, int h, const char *l = 0);
-  static Fl_Named_Style* default_style;
-  int handle(int);
+    Fl_Output(int x, int y, int w, int h, const char *l = 0);
+    static Fl_Named_Style* default_style;
 };
 
 #endif 

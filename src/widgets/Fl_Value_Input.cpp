@@ -67,23 +67,26 @@ void Fl_Value_Input::draw()
 {
     int X=0; int Y=0; int W=w(); int H=h(); box()->inset(X,Y,W,H);
 
-    const int bw = int(floor((H/1.8)+.5)); W -= bw;
-    const int bh = H/2;
-
     if (damage() & FL_DAMAGE_ALL)
     {
         draw_frame();
         input.set_damage(FL_DAMAGE_ALL);
     }
-    if (damage() & (FL_DAMAGE_ALL | FL_DAMAGE_HIGHLIGHT))
-    {
-        Fl_Flags f[2]; f[0] = f[1] = 0;
-        if (which_highlight && this==Fl::belowmouse())
-            f[which_highlight-1] = FL_HIGHLIGHT;
-        if (which_pushed && this==Fl::pushed())
-            f[which_pushed-1] = FL_VALUE | FL_HIGHLIGHT;
-        draw_glyph(FL_GLYPH_UP_BUTTON, X+W, Y, bw, bh, f[0]);
-        draw_glyph(FL_GLYPH_DOWN_BUTTON, X+W, Y+bh, bw, H-bh, f[1]);
+
+    if(!input.readonly()) {
+        const int bw = int(floor((H/1.8)+.5)); W -= bw;
+        const int bh = H/2;
+
+        if (damage() & (FL_DAMAGE_ALL | FL_DAMAGE_HIGHLIGHT))
+        {
+            Fl_Flags f[2]; f[0] = f[1] = 0;
+            if (which_highlight && this==Fl::belowmouse())
+                f[which_highlight-1] = FL_HIGHLIGHT;
+            if (which_pushed && this==Fl::pushed())
+                f[which_pushed-1] = FL_VALUE | FL_HIGHLIGHT;
+            draw_glyph(FL_GLYPH_UP_BUTTON, X+W, Y, bw, bh, f[0]);
+            draw_glyph(FL_GLYPH_DOWN_BUTTON, X+W, Y+bh, bw, H-bh, f[1]);
+        }
     }
 
     input.label(label());
@@ -119,6 +122,13 @@ void Fl_Value_Input::repeat_callback(void* v)
 
 int Fl_Value_Input::handle(int event)
 {
+    if(input.readonly()) {
+        int r = 0;
+        // If readonly, send only FL_PUSH, so selection can be done!
+        if(event==FL_PUSH) r=input.send(event);
+        return r;
+    }
+
     int X=0; int Y=0; int W=w(); int H=h(); box()->inset(X,Y,W,H);
     const int bw = H/2; W -= bw;
     int n;
@@ -194,7 +204,8 @@ int Fl_Value_Input::handle(int event)
             input.position(0, input.size());
             break;
     }
-    input.type(step()>=1.0 ? Fl_Float_Input::INT : Fl_Float_Input::FLOAT);
+
+    input.input_type(step()>=1.0 ? Fl_Float_Input::INT : Fl_Float_Input::FLOAT);
     input.when(when());
     int r = input.send(event);
     if (!r)
@@ -249,7 +260,6 @@ Fl_Value_Input::Fl_Value_Input(int x, int y, int w, int h, const char* l)
     set_flag(FL_ALIGN_LEFT);
     set_click_to_focus();
 }
-
 
 Fl_Value_Input::~Fl_Value_Input()
 {

@@ -50,12 +50,13 @@
 				 FL_PATCH_VERSION * 0.0001f)
 
 #if defined(_WIN32) && !defined(__GNUC__)
-typedef __int64           int64;
-typedef unsigned __int64  uint64;
+ typedef __int64           int64;
+ typedef unsigned __int64  uint64;
 #else
-typedef signed long long   int64;
-typedef unsigned long long uint64;
+ typedef signed long long   int64;
+ typedef unsigned long long uint64;
 #endif
+
 #ifdef _WIN32
 # undef slash
 # define slash '\\'

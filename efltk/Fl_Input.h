@@ -37,17 +37,27 @@ public:
     // this hole was used by float & int types
     SECRET = 3,
     MULTILINE = 4,
-    WORDWRAP = 5
+    // 5 and 6 not used now...
+    INPUT_TYPE = 7,
+    READ_ONLY = 8,
+    WORDWRAP = 16
   };
 
   Fl_Input(int, int, int, int, const char* = 0);
   ~Fl_Input();
   static Fl_Named_Style* default_style;
 
-  void draw();
-  void draw(int, int, int, int);
-  int handle(int);
-  int handle(int event, int, int, int, int);
+  int input_type() const {return type() & INPUT_TYPE; }
+  void input_type(int t) { type(t | readonly()); }
+  int readonly() const { return (type() & READ_ONLY); }
+  void readonly(int b) { if (b) type(type() | READ_ONLY); else type(type() & ~READ_ONLY); }
+  int wordwrap() const { return (type() & WORDWRAP); }
+  void wordwrap(int b) { if (b) type(type() | WORDWRAP); else type(type() & ~WORDWRAP); }
+
+  virtual void draw();
+  virtual void draw(int, int, int, int);
+  virtual int handle(int);
+  virtual int handle(int event, int, int, int, int);
 
   bool value(const char*);
   bool value(const char*, int);

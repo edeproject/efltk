@@ -32,6 +32,16 @@
 
 class FL_API Fl_Widget;
 
+enum {
+  FL_BEEP_DEFAULT = 0,
+  FL_BEEP_MESSAGE,
+  FL_BEEP_ERROR,
+  FL_BEEP_QUESTION,
+  FL_BEEP_PASSWORD,
+  FL_BEEP_NOTIFICATION
+};
+
+FL_API void fl_beep(int type = FL_BEEP_DEFAULT);
 FL_API void fl_message(const char *,...);
 FL_API void fl_alert(const char *,...);
 FL_API int fl_ask(const char *,...);

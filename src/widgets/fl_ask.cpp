@@ -247,6 +247,51 @@ const char *fl_password(const char *fmt, const char *defstr, ...)
     return r;
 }
 
+#include <efltk/x.h>
+
+// fltk functions: BEEP function from FLTK1.1
+void fl_beep(int type) {
+#ifdef WIN32
+  switch (type) {
+    case FL_BEEP_QUESTION :
+    case FL_BEEP_PASSWORD :
+      MessageBeep(MB_ICONQUESTION);
+      break;
+    case FL_BEEP_MESSAGE :
+      MessageBeep(MB_ICONASTERISK);
+      break;
+    case FL_BEEP_NOTIFICATION :
+      MessageBeep(MB_ICONASTERISK);
+      break;
+    case FL_BEEP_ERROR :
+      MessageBeep(MB_ICONERROR);
+      break;
+    default :
+      MessageBeep(0xFFFFFFFF);
+      break;
+  }
+#elif defined(__APPLE__)
+  switch (type) {
+    case FL_BEEP_DEFAULT :
+    case FL_BEEP_ERROR :
+      SysBeep(30);
+      break;
+    default :
+      break;
+  }
+#else
+  fl_open_display();
+  switch (type) {
+  case FL_BEEP_DEFAULT :
+  case FL_BEEP_ERROR :
+      XBell(fl_display, 100);
+      break;
+  default :
+      XBell(fl_display, 50);
+      break;
+  }
+#endif // WIN32
+}
 
 //
 // End of "$Id$".

@@ -64,17 +64,21 @@ void color_cb(Fl_Widget* button, void* v) {
   switch ((long)v) {
     case 0: c = s.color; break;
     case 1: c = s.selection_color; break;
+    case 3: c = s.button_color; break;
+    case 4: c = s.selection_text_color; break;
     default: c = s.text_color; break;
   }
   c = fl_show_colormap(c);
   switch ((long)v) {
     case 0: s.color = c; break;
     case 1: s.selection_color = c; break;
+    case 3: s.button_color = c; break;
+    case 4: s.selection_text_color = c; break;
     default: s.text_color = c; break;
   }
-  s.selection_text_color = fl_contrast(s.text_color, s.selection_color);
+  //s.selection_text_color = fl_contrast(s.text_color, s.selection_color);
   button->color(c);
-  button->label_color(fl_contrast(FL_BLACK,(Fl_Color)c));
+  button->label_color(c);
   Fl::redraw();
 }
 
@@ -116,22 +120,31 @@ int main(int argc, char **argv) {
   b->callback(toggle_cb, FL_WHEN_NOT_CHANGED); y += 23;
   b->tooltip("Do callback even if the text is not changed");
   y += 5;
+
   b = new Fl_Button(10,y,200,23,"&print changed()");
   b->callback(button_cb);
   b->tooltip("Print widgets that have changed() flag set");
 
-  b = new Fl_Button(220,y1,100,23,"color"); y1 += 23;
-  b->color(input[0]->color()); b->callback(color_cb, (void*)0);
-  b->label_color(fl_contrast(FL_BLACK,b->color()));
+  b = new Fl_Button(220,y1,130,23,"color"); y1 += 23;
+  b->label_color(input[0]->color()); b->callback(color_cb, (void*)0);
   b->tooltip("Color behind the text");
-  b = new Fl_Button(220,y1,100,23,"selection_color"); y1 += 23;
-  b->color(input[0]->selection_color()); b->callback(color_cb, (void*)1);
-  b->label_color(fl_contrast(FL_BLACK,b->color()));
-  b->tooltip("Color behind selected text");
-  b = new Fl_Button(220,y1,100,23,"text_color"); y1 += 23;
-  b->color(input[0]->text_color()); b->callback(color_cb, (void*)2);
-  b->label_color(fl_contrast(FL_BLACK,b->color()));
+
+  b = new Fl_Button(220,y1,130,23,"button color"); y1 += 23;
+  b->label_color(input[0]->button_color()); b->callback(color_cb, (void*)3);
+  b->tooltip("Cursor color");
+
+  b = new Fl_Button(220,y1,130,23,"text_color"); y1 += 23;
+  b->label_color(input[0]->text_color()); b->callback(color_cb, (void*)2);
   b->tooltip("Color of the text");
+
+  b = new Fl_Button(220,y1,130,23,"selection_color"); y1 += 23;
+  b->label_color(input[0]->selection_color()); b->callback(color_cb, (void*)1);
+  b->tooltip("Color behind selected text");
+
+  b = new Fl_Button(220,y1,130,23,"selection_text_color"); y1 += 23;
+  b->label_color(input[0]->selection_text_color()); b->callback(color_cb, (void*)4);
+  b->tooltip("Text color, when selected");
+
 
   window->resizable(window);
   window->end();

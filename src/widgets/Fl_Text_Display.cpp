@@ -26,7 +26,6 @@
 #include <efltk/Fl_Text_Buffer.h>
 #include <efltk/Fl_Text_Display.h>
 #include <efltk/Fl_Style.h>
-#include <efltk/Fl_Menu_Button.h>
 #include <efltk/x.h>
 
 #include <stdio.h>
@@ -70,43 +69,6 @@ static int max( int i1, int i2 );
 static int min( int i1, int i2 );
 static int countlines( const char *string );
 
-static Fl_Menu_Button *menu_=0;
-static Fl_Text_Display *menu_widget=0;
-
-#define CUT   1
-#define COPY  2
-#define PASTE 3
-
-static void cb_menu(Fl_Widget *w, void *d)
-{
-    if(!menu_widget) return;
-    const char *selection = 0;
-    switch((int)d) {
-    case COPY:
-        selection = menu_widget->buffer()->selection_text();
-        if(*selection) {
-            Fl::copy(selection, strlen(selection), true);
-            free((void*)selection);
-        }
-        break;
-    case CUT:
-        selection = menu_widget->buffer()->selection_text();
-        if(*selection) {
-            Fl::copy(selection, strlen(selection), true);
-            free((void*)selection);
-            menu_widget->buffer()->remove_selection();
-        }
-        break;
-
-    case PASTE:
-        Fl::paste(*menu_widget, true);
-        break;
-
-    default:
-        break;
-    };
-}
-
 static void set_fl_font(Fl_Font font, unsigned size) {
     if(fl_font()!=font || fl_size()!=size) {
         fl_font(font, size);
@@ -117,16 +79,6 @@ Fl_Text_Display::Fl_Text_Display(int X, int Y, int W, int H,  const char* l)
 	: Fl_Group(X, Y, W, H, l)
 {
     int i;
-
-    if(!menu_) {
-        menu_ = new Fl_Menu_Button(0,0,0,0,0);
-        menu_->parent(0);
-        menu_->type(Fl_Menu_Button::POPUP3);
-
-        menu_->add("Cut", 0, cb_menu, (void *)CUT);
-        menu_->add("Copy", 0, cb_menu, (void *)COPY);
-        menu_->add("Paste", 0, cb_menu, (void *)PASTE);
-    }
 
     set_click_to_focus();
     mMaxsize = 0;
@@ -3164,16 +3116,6 @@ int Fl_Text_Display::handle(int event) {
         // handle clicks in the scrollbars:
         if(!Fl::event_inside(text_area.x,text_area.y,text_area.w,text_area.h)) {
             return Fl_Group::handle(event);
-        }
-
-        if(Fl::event_button()==3) {
-            if(!buffer()->selected()) menu_->find("Cut")->deactivate();
-            else menu_->find("Cut")->activate();
-            ((Fl_Group *)&menu_)->focus(-1);
-            menu_widget = this;
-            menu_->popup();
-            menu_widget = 0;
-            return 1;
         }
 
         //take_focus();

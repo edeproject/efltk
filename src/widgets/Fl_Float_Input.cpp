@@ -24,6 +24,7 @@
 //
 
 #include <efltk/Fl.h>
+#include <efltk/fl_ask.h>
 #include <efltk/Fl_Widget.h>
 #include <efltk/Fl_Float_Input.h>
 #include <string.h>
@@ -40,11 +41,16 @@ bool Fl_Float_Input::replace(int b, int e, const char* text, int ilen)
             (b+n==1 && index(0)=='0' && (ascii=='x' || ascii == 'X')) ||
             (b+n>1 && index(0)=='0' && (index(1)=='x'||index(1)=='X')
             && (ascii>='A'&& ascii<='F' || ascii>='a'&& ascii<='f')) ||
-            type()==FLOAT && ascii && strchr(".eE+-", ascii))
+            input_type()==FLOAT && ascii && strchr(".eE+-", ascii))
             continue;            // it's ok;
         return false;
     }
-    return Fl_Input::replace(b,e,text,ilen);
+
+    int ret=0;
+    if (readonly()) fl_beep();
+    else ret=Fl_Input::replace(b,e,text,ilen);
+
+    return ret;
 }
 
 

@@ -29,6 +29,44 @@
 #include <string.h>
 #include <ctype.h>
 
+#include <efltk/Fl_Menu_Button.h>
+
+static Fl_Text_Editor *menu_widget=0;
+static Fl_Menu_ menu;
+static Fl_Menu_ *menu_ = &menu;
+
+#define CUT   1
+#define COPY  2
+#define PASTE 3
+
+static void cb_menu(Fl_Widget *w, void *d)
+{
+    if(!menu_widget) return;
+    const char *selection = 0;
+    switch((int)d) {
+    case COPY:
+        selection = menu_widget->buffer()->selection_text();
+        if(*selection) {
+            Fl::copy(selection, strlen(selection), true);
+            free((void*)selection);
+        }
+        break;
+    case CUT:
+        selection = menu_widget->buffer()->selection_text();
+        if(*selection) {
+            Fl::copy(selection, strlen(selection), true);
+            free((void*)selection);
+            menu_widget->buffer()->remove_selection();
+        }
+        break;
+    case PASTE:
+        Fl::paste(*menu_widget, true);
+        break;
+    default:
+        break;
+    };
+}
+
 static void revert(Fl_Style *s) {
 	s->text_font = FL_COURIER;
     s->box = FL_DOWN_BOX;
@@ -43,6 +81,15 @@ Fl_Named_Style* Fl_Text_Editor::default_style = &::style;
 Fl_Text_Editor::Fl_Text_Editor(int X, int Y, int W, int H,  const char* l)
 : Fl_Text_Display(X, Y, W, H, l)
 {
+    static bool menuinit=false;
+    if(!menuinit) {
+        menu_->type(Fl_Menu_Button::POPUP3); //HACK! :)
+        menu_->add("Cut", 0, cb_menu, (void *)CUT);
+        menu_->add("Copy", 0, cb_menu, (void *)COPY);
+        menu_->add("Paste", 0, cb_menu, (void *)PASTE);
+        menuinit=true;
+    }
+
     style(default_style);
     mCursorOn = 1;
     insert_mode_ = 1;
@@ -572,6 +619,19 @@ int Fl_Text_Editor::handle(int event)
             {
                 dragType = -1;
                 Fl::paste(*this,false);
+            } else if(Fl::event_button()==3) {
+                const char *selection = buffer()->selection_text();
+                if(!*selection) {
+                    menu_->find("Cut")->deactivate();
+                    menu_->find("Copy")->deactivate();
+                } else {
+                    menu_->find("Cut")->activate();
+                    menu_->find("Copy")->activate();
+                }
+                free((void*)selection);
+                menu_widget = this;
+                menu_->popup(Fl::event_x(), Fl::event_y());
+                menu_widget = 0;
             }
             return 1;
 

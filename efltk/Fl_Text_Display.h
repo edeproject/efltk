@@ -41,8 +41,8 @@ public:
     };
 
     enum {
-      CURSOR_POS, 
-	  CHARACTER_POS
+        CURSOR_POS,
+        CHARACTER_POS
     };
 
     // drag types- they match Fl::event_clicks() so that single clicking to

@@ -112,12 +112,6 @@ int main (int argc, char **argv) {
       o->callback((Fl_Callback*)callback);
       o->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
     }
-     {Fl_Value_Input* o = new Fl_Value_Input(360, 93, 180, 32, "larger");
-      o->color((Fl_Color)10);
-      o->selection_color((Fl_Color)1);
-      o->step(0);
-      o->callback((Fl_Callback*)callback);
-    }
      {Fl_Box* o = new Fl_Box(10, 250, 280, 229, "Fl_Value_Slider");
       o->box(FL_ENGRAVED_BOX);
       o->label_font(fl_fonts+1);
@@ -250,6 +244,9 @@ e colors affect.");
       o->box(FL_ENGRAVED_BOX);
       o->label_size(10);
       o->align(FL_ALIGN_WRAP);
+    }
+     {Fl_Value_Output* o = new Fl_Value_Output(430, 90, 110, 35, "Fl_Value_Output");
+      o->value(0.15);
     }
     o->end();
     o->resizable(o);

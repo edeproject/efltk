@@ -19,4 +19,5 @@ extern void callback(Fl_Roller*, void*);
 #include <efltk/Fl_Group.h>
 #include <efltk/Fl_Dial.h>
 extern void callback(Fl_Dial*, void*);
+#include <efltk/Fl_Value_Output.h>
 #endif

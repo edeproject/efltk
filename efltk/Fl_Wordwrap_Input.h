@@ -32,7 +32,7 @@
 class Fl_Wordwrap_Input : public Fl_Input {
 public:
     Fl_Wordwrap_Input(int x,int y,int w,int h,const char *l = 0)
-	: Fl_Input(x,y,w,h,l) {type(WORDWRAP);}
+	: Fl_Input(x,y,w,h,l) {input_type(MULTILINE); wordwrap(1);}
 };
 
 #endif
