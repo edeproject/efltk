@@ -117,7 +117,7 @@ NodeList Fl_XmlNode::nodes(Fl_String nodename)
         Fl_XmlNode *np = nodelist_.item(n);
         if(np->name() == nodename)
             nlist.append(np);
-    };
+    }
 
     return nlist;
 }
@@ -145,11 +145,20 @@ void Fl_XmlNode::remove_node(Fl_XmlNode *ptr)
     if(ptr) nodelist_.remove(ptr);
 }
 
-void Fl_XmlNode::remove_node(Fl_String name)
+int Fl_XmlNode::remove_nodes(Fl_String name)
 {
-    Fl_XmlNode *ptr = child(name);
-    if(ptr) nodelist_.remove(ptr);
+    int removed=0;
+    for(uint n=0; n<nodelist_.size(); n++) {
+        Fl_XmlNode *np = nodelist_.item(n);
+        if(np->name() == name) {
+            delete np;
+            nodelist_.remove(n);
+            removed++;
+        }
+    }
+    return removed;
 }
+
 /* true if success */
 bool Fl_XmlNode::load(const char *ptr, int len)
 {
