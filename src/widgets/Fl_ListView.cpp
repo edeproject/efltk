@@ -16,10 +16,10 @@ Fl_ListView *Fl_ListView::current=0;
 
 
 Fl_ListView::Fl_ListView(int X,int Y,int W,int H,const char* L)
-    : Fl_Group(X,Y,W,H,L),
-    vscrollbar(X+W-SLIDER_WIDTH,Y,SLIDER_WIDTH,H-SLIDER_WIDTH),
-    hscrollbar(X,Y+H-SLIDER_WIDTH,W-SLIDER_WIDTH,SLIDER_WIDTH),
-    head(0,0,W,20)
+: Fl_Group(X,Y,W,H,L),
+vscrollbar(X+W-SLIDER_WIDTH,Y,SLIDER_WIDTH,H-SLIDER_WIDTH),
+hscrollbar(X,Y+H-SLIDER_WIDTH,W-SLIDER_WIDTH,SLIDER_WIDTH),
+head(0,0,W,20)
 {
     style(default_style);
     set_click_to_focus();
@@ -72,21 +72,21 @@ void Fl_ListView::end()
 
 Fl_ListView_Item *Fl_ListView::find_userdata(void *data, uint start_index) const
 {
-	for(uint n=start_index; n<children(); n++) {
-		if(items[n]->user_data()==data) 
-			return items[n];
-	}
-	return 0;
+    for(uint n=start_index; n<children(); n++) {
+        if(items[n]->user_data()==data) 
+            return items[n];
+    }
+    return 0;
 }
 
 Fl_ListView_Item *Fl_ListView::find_text(const char *text, uint column, uint start_index) const
 {
-	for(uint n=start_index; n<children(); n++) {
-		const char *itext = items[n]->label(column);
-		if(!strcmp(text, itext))			
-			return items[n];
-	}
-	return 0;
+    for(uint n=start_index; n<children(); n++) {
+        const char *itext = items[n]->label(column);
+        if(!strcmp(text, itext))			
+            return items[n];
+    }
+    return 0;
 }
 
 static int scol=-1;
@@ -94,7 +94,7 @@ static int stype=-1;
 static int fl_listview_sort(const void *w1, const void *w2) {
     Fl_ListView_Item *i1 = *(Fl_ListView_Item **)w1;
     Fl_ListView_Item *i2 = *(Fl_ListView_Item **)w2;
-	return i1->compare(i2, scol, stype);    
+    return i1->compare(i2, scol, stype);    
 }
 
 // Returns sort type: ASC, DESC, ABSOLUTE
@@ -108,7 +108,7 @@ int Fl_ListView::sort(int column)
 
     scol = column;
     stype = sort_type_;
-	items.sort(fl_listview_sort);
+    items.sort(fl_listview_sort);
 
     calc_total_h = true;
     relayout();
@@ -493,7 +493,7 @@ void Fl_ListView::layout()
         }	
 
         if(calc_total_h) 
-			total_height = widgety;
+            total_height = widgety;
         calc_total_h = false;
 
         if(find_def) find_default_sizes();
@@ -521,7 +521,7 @@ void Fl_ListView::vscrollbar_cb(Fl_Widget* o, void*) {
 void Fl_ListView::xposition(int X)
 {
     if(X == xposition_) return;
-	((Fl_Slider*)(&hscrollbar))->value(X);
+    ((Fl_Slider*)(&hscrollbar))->value(X);
     int dx = xposition_-X;
     if(dx) {
         xposition_ = X;
@@ -536,12 +536,12 @@ void Fl_ListView::yposition(int Y)
     if(Y == yposition_) return;
 
     ((Fl_Slider*)(&vscrollbar))->value(Y);
-	int dy = yposition_-Y;
-	if(dy) {
-		scrolldy += (yposition_-Y);
-		yposition_ = Y;
-	    redraw(FL_DAMAGE_SCROLL);
-	}
+    int dy = yposition_-Y;
+    if(dy) {
+        scrolldy += (yposition_-Y);
+        yposition_ = Y;
+        redraw(FL_DAMAGE_SCROLL);
+    }
 }
 
 ////////////////////////////////////////////////////////////////
@@ -578,10 +578,10 @@ int Fl_ListView::unselect_all()
 int Fl_ListView::select_only(Fl_ListView_Item *w)
 {
     // Turn off all other items:
-	unselect_all();    
+    unselect_all();    
     set_changed();
     selection.append(w);    
-	damage_item(w);    
+    damage_item(w);    
 
     item(w);
     return 1;
@@ -600,290 +600,290 @@ int Fl_ListView::handle(int event)
 
     switch(event)
     {
-    case FL_FOCUS:
-    case FL_UNFOCUS:
-        return 1;
-
-    case FL_PUSH:
-        HANDLE_HEADER_PUSH;
-    case FL_MOVE:
-        HANDLE_HEADER;
-    case FL_ENTER:
-        if(vscrollbar.align()&FL_ALIGN_LEFT ? (Fl::event_x() < vscrollbar.x()+vscrollbar.w()) : (Fl::event_x() >= vscrollbar.x()))
-            if(vscrollbar.send(event))
-                return 1;
-        if(hscrollbar.align()&FL_ALIGN_TOP ? (Fl::event_y() < hscrollbar.y()+hscrollbar.h()) : (Fl::event_y() >= hscrollbar.y()))
-            if(hscrollbar.send(event))
-                return 1;
-
-        if(event != FL_PUSH)
-        {
-            Fl::belowmouse(this);
+        case FL_FOCUS:
+        case FL_UNFOCUS:
             return 1;
-        }
 
-        take_focus();
-    case FL_DRAG:
-        {
-            if(header_pushed)
-                HANDLE_HEADER;
-            int my = Fl::event_y()+yposition_-Y;
-            Fl_ListView_Item *i = item_at(my);
-            if(!i) return 0;
+        case FL_PUSH:
+            HANDLE_HEADER_PUSH;
+        case FL_MOVE:
+            HANDLE_HEADER;
+        case FL_ENTER:
+            if(vscrollbar.align()&FL_ALIGN_LEFT ? (Fl::event_x() < vscrollbar.x()+vscrollbar.w()) : (Fl::event_x() >= vscrollbar.x()))
+                if(vscrollbar.send(event))
+                    return 1;
+            if(hscrollbar.align()&FL_ALIGN_TOP ? (Fl::event_y() < hscrollbar.y()+hscrollbar.h()) : (Fl::event_y() >= hscrollbar.y()))
+                if(hscrollbar.send(event))
+                    return 1;
 
-            if(event == FL_DRAG)
+            if(event != FL_PUSH)
             {
-                if(move())
+                Fl::belowmouse(this);
+                return 1;
+            }
+
+            take_focus();
+        case FL_DRAG:
+            {
+                if(header_pushed)
+                    HANDLE_HEADER;
+                int my = Fl::event_y()+yposition_-Y;
+                Fl_ListView_Item *i = item_at(my);
+                if(!i) return 0;
+
+                if(event == FL_DRAG)
                 {
-                    if(sel_item)
+                    if(move())
                     {
+                        if(sel_item)
+                        {
                         /*if(selection.size() == 1) //Move one
                         {
                             //OPTIMIZE THIS!!!
                         } else
                         */
                         //if(selection.size() > 1) //Move many
-                        if(selection.size() > 0) //Move many
-                        {
+                            if(selection.size() > 0) //Move many
+                            {
                             //OPTIMIZE THIS ALSO!!!
-                            if(my < sel_item->y()-2) //UP
-                            {
-                                int cnt = sel_item->index() - i->index();
-                                if(selection.item(selection.size()-1)->index()-cnt >= 0) {
-                                    moveselection_up(cnt);
-                                    calc_index();
-                                    show_item(sel_item);
-                                    redraw(FL_DAMAGE_CONTENTS);
+                                if(my < sel_item->y()-2) //UP
+                                {
+                                    int cnt = sel_item->index() - i->index();
+                                    if(selection.item(selection.size()-1)->index()-cnt >= 0) {
+                                        moveselection_up(cnt);
+                                        calc_index();
+                                        show_item(sel_item);
+                                        redraw(FL_DAMAGE_CONTENTS);
+                                    }
+                                }
+                                else if(my > sel_item->y()+sel_item->h()+2) //DOWN
+                                {
+                                    int cnt = i->index() - sel_item->index();
+                                    if(selection.item(0)->index()+cnt < (int)children()) {
+                                        moveselection_down(cnt);
+                                        calc_index();
+                                        show_item(sel_item);
+                                        redraw(FL_DAMAGE_CONTENTS);
+                                    }
                                 }
                             }
-                            else if(my > sel_item->y()+sel_item->h()+2) //DOWN
-                            {
-                                int cnt = i->index() - sel_item->index();
-                                if(selection.item(0)->index()+cnt < (int)children()) {
-                                    moveselection_down(cnt);
-                                    calc_index();
-                                    show_item(sel_item);
-                                    redraw(FL_DAMAGE_CONTENTS);
-                                }
-                            }
-                        }
-                    } //sel_item
+                        } //sel_item
 
-                } else if(multi()) // end move
-                {
-                    if(sel_item) {
+                    } else if(multi()) // end move
+                    {
+                        if(sel_item) {
                         // If not movable, then dragging selects
                         //drag_type = !SEL(i);
                         //select(i, drag_type);
-                        if(item()!=i) {
-                            select_items(sel_item->index(), i->index());
-                            item(i);
-                            show_item(i);
-                            redraw(FL_DAMAGE_CHILD);
+                            if(item()!=i) {
+                                select_items(sel_item->index(), i->index());
+                                item(i);
+                                show_item(i);
+                                redraw(FL_DAMAGE_CHILD);
+                            }
                         }
-                    }
                     //return 1;
 
-                } else { // end multi
+                    } else { // end multi
 
-                    select_only(i);
-                    item(i);
-                    show_item(i);
-                    redraw(FL_DAMAGE_CHILD);
-                    //return 1;
-
-                }
-
-				if(sel_item!=i) {
-					if(when() & FL_WHEN_CHANGED) do_callback();
-					else set_changed();
-				}
-				return 1;
-
-            } // end if( event != FL_PUSH )
-            else if(event == FL_PUSH) {
-
-                // If different item, set clicks to 0
-                if(i != item())	Fl::event_clicks(0);
-
-                item(i);
-                damage_item(i);                
-                show_item(i);
-                int ret = 0;
-
-                if(Fl::event_button() == FL_LEFT_MOUSE && multi())
-                {
-                    // Multiple selection button handling
-                    if(Fl::event_state(FL_CTRL))
-                    {
-                        // start a new selection block without changing state
-                        drag_type = !SEL(i);
-                        select(i, drag_type);
-                        sel_item = i;
+                        select_only(i);
+                        item(i);
                         show_item(i);
                         redraw(FL_DAMAGE_CHILD);
-                        ret = 1;
+                    //return 1;
+
                     }
-                    else if(Fl::event_state(FL_SHIFT)) {
+
+                    if(sel_item!=i) {
+                        if(when() & FL_WHEN_CHANGED) do_callback();
+                        else set_changed();
+                    }
+                    return 1;
+
+                } // end if( event != FL_PUSH )
+                else if(event == FL_PUSH) {
+
+                // If different item, set clicks to 0
+                    if(i != item())	Fl::event_clicks(0);
+
+                    item(i);
+                    damage_item(i);                
+                    show_item(i);
+                    int ret = 0;
+
+                    if(Fl::event_button() == FL_LEFT_MOUSE && multi())
+                    {
+                    // Multiple selection button handling
+                        if(Fl::event_state(FL_CTRL))
+                        {
+                        // start a new selection block without changing state
+                            drag_type = !SEL(i);
+                            select(i, drag_type);
+                            sel_item = i;
+                            show_item(i);
+                            redraw(FL_DAMAGE_CHILD);
+                            ret = 1;
+                        }
+                        else if(Fl::event_state(FL_SHIFT)) {
                         // We want to change the selection between
                         // the top most selected item and the just clicked item.
                         // start a new selection block without changing state
-                        drag_type = !SEL(i);
+                            drag_type = !SEL(i);
                         //select(i, drag_type);
-                        select_items(sel_item->index(), i->index());
-                        sel_item  = i;
-                        Fl::event_clicks(0);
-                        show_item(i);
-                        redraw(FL_DAMAGE_CHILD);
-                        ret = 1;
-                    } else {
+                            select_items(sel_item->index(), i->index());
+                            sel_item  = i;
+                            Fl::event_clicks(0);
+                            show_item(i);
+                            redraw(FL_DAMAGE_CHILD);
+                            ret = 1;
+                        } else {
                         //Normal push
+                            select_only(i);
+                            drag_type = 1;
+                            sel_item  = i;
+                            show_item(i);
+                            redraw(FL_DAMAGE_CHILD);
+                            ret = 1;
+                        }
+
+                    } else { // LEFT_MOUSE && multi()
+
                         select_only(i);
-                        drag_type = 1;
                         sel_item  = i;
                         show_item(i);
                         redraw(FL_DAMAGE_CHILD);
                         ret = 1;
                     }
 
-                } else { // LEFT_MOUSE && multi()
+                    if(when() & FL_WHEN_CHANGED)
+                        do_callback();
+                    else
+                        set_changed();
 
-                    select_only(i);
-                    sel_item  = i;
-                    show_item(i);
-                    redraw(FL_DAMAGE_CHILD);
-                    ret = 1;
+                    return ret;
                 }
+            }  // end case FL_PUSH / FL_DRAG
+            return 1;
 
-                if(when() & FL_WHEN_CHANGED)
-                    do_callback();
-                else
-                    set_changed();
-
-                return ret;
-            }
-        }  // end case FL_PUSH / FL_DRAG
-        return 1;
-
-    case FL_RELEASE:
-        {
-            HANDLE_HEADER;
-            header_pushed=false;
-
-            if(when() & FL_WHEN_RELEASE) {
-                if(Fl::event_clicks()) {
-                    do_callback();
-                    Fl::event_clicks(0);
-                    return 1;
-                }
-                do_callback();
-            }
-        }
-        return 1;
-
-    case FL_KEY:
-        {
-            Fl::event_clicks(0); // make program not think it is a double-click
-            switch(Fl::event_key())
+        case FL_RELEASE:
             {
-            case FL_Delete:
-                return 1;
-            case FL_Home:
-                yposition(0);
-                item(child(0));
-                select_only(child(0));
-                return 1;
+                HANDLE_HEADER;
+                header_pushed=false;
 
-            case FL_End:
-                yposition(totalheight()-h());
-                item(child(children()-1));
-                select_only(child(children()-1));
-                redraw(FL_DAMAGE_CONTENTS);
-                return 1;
-
-            case FL_Up:
-                {
-                    Fl_ListView_Item *i;
-                    if(!item() && children()>0) i = child(children()-1);
-                    else i = prev();
-                    if(i) {
-                        if(i->y() <= yposition_)
-                            scroll_up(i->h()+10);
-                        if(Fl::event_state(FL_SHIFT|FL_CTRL) && multi())
-                            select(i, 1);
-                        else
-                            select_only(i);
-
-                        show_item(i);
-                        redraw(FL_DAMAGE_CONTENTS);
+                if(when() & FL_WHEN_RELEASE) {
+                    if(Fl::event_clicks()) {
+                        do_callback();
+                        Fl::event_clicks(0);
+                        return 1;
                     }
-                    if((when()&FL_WHEN_RELEASE) && (changed() || (when()&FL_WHEN_NOT_CHANGED))) {
+                    do_callback();
+                }
+            }
+            return 1;
+
+        case FL_KEY:
+            {
+                Fl::event_clicks(0); // make program not think it is a double-click
+                switch(Fl::event_key())
+                {
+                    case FL_Delete:
+                        return 1;
+                    case FL_Home:
+                        yposition(0);
+                        item(child(0));
+                        select_only(child(0));
+                        return 1;
+
+                    case FL_End:
+                        yposition(totalheight()-h());
+                        item(child(children()-1));
+                        select_only(child(children()-1));
+                        redraw(FL_DAMAGE_CONTENTS);
+                        return 1;
+
+                    case FL_Up:
+                        {
+                            Fl_ListView_Item *i;
+                            if(!item() && children()>0) i = child(children()-1);
+                            else i = prev();
+                            if(i) {
+                                if(i->y() <= yposition_)
+                                    scroll_up(i->h()+10);
+                                if(Fl::event_state(FL_SHIFT|FL_CTRL) && multi())
+                                    select(i, 1);
+                                else
+                                    select_only(i);
+
+                                show_item(i);
+                                redraw(FL_DAMAGE_CONTENTS);
+                            }
+                            if((when()&FL_WHEN_RELEASE) && (changed() || (when()&FL_WHEN_NOT_CHANGED))) {
+                                clear_changed();
+                                do_callback();
+                            }
+                            return 1;
+                        }
+
+                    case FL_Down:
+                        {
+                            Fl_ListView_Item *i;
+                            if(!item() && children()>0) i = child(0);
+                            else i = next();
+                            if(i) {
+                                if(i->y()+i->h() >= yposition_+H)
+                                    scroll_down(i->h()+10);
+                                if(Fl::event_state(FL_SHIFT|FL_CTRL) && multi())
+                                    select(i, 1);
+                                else
+                                    select_only(i);
+
+                                show_item(i);
+                                redraw(FL_DAMAGE_CONTENTS);
+                            }
+                            if((when()&FL_WHEN_RELEASE) && (changed() || (when()&FL_WHEN_NOT_CHANGED))) {
+                                clear_changed();
+                                do_callback();
+                            }
+                            return 1;
+                        }
+
+                    case FL_Enter:
+                        if (!(when() & FL_WHEN_ENTER_KEY)) break;
                         clear_changed();
                         do_callback();
-                    }
-                    return 1;
-                }
+                        return 1;
 
-            case FL_Down:
-                {
-                    Fl_ListView_Item *i;
-                    if(!item() && children()>0) i = child(0);
-                    else i = next();
-                    if(i) {
-                        if(i->y()+i->h() >= yposition_+H)
-                            scroll_down(i->h()+10);
-                        if(Fl::event_state(FL_SHIFT|FL_CTRL) && multi())
-                            select(i, 1);
-                        else
-                            select_only(i);
+                    default:
+                        int ret=0;
+                        ret = vscrollbar.send(event);
+                        if(!ret) ret = hscrollbar.send(event);
+                        if(ret) {
+                            if(Fl::event_key()==FL_Page_Up)
+                                select_only(item_at(yposition_+10));
+                            else if(Fl::event_key()==FL_Page_Down)
+                                select_only(item_at(yposition_+H-10));
+                            show_item(item());
+                            redraw(FL_DAMAGE_CONTENTS);
+                            return 1;
+                        }
+                        break;
 
-                        show_item(i);
-                        redraw(FL_DAMAGE_CONTENTS);
-                    }
-                    if((when()&FL_WHEN_RELEASE) && (changed() || (when()&FL_WHEN_NOT_CHANGED))) {
-                        clear_changed();
-                        do_callback();
-                    }
-                    return 1;
-                }
-
-            case FL_Enter:
-                if (!(when() & FL_WHEN_ENTER_KEY)) break;
-                clear_changed();
-                do_callback();
-                return 1;
-
-            default:
-                int ret=0;
-                ret = vscrollbar.send(event);
-                if(!ret) ret = hscrollbar.send(event);
-                if(ret) {
-                    if(Fl::event_key()==FL_Page_Up)
-                        select_only(item_at(yposition_+10));
-                    else if(Fl::event_key()==FL_Page_Down)
-                        select_only(item_at(yposition_+H-10));
-                    show_item(item());
-                    redraw(FL_DAMAGE_CONTENTS);
-                    return 1;
-                }
+                } // event_key
                 break;
-
-            } // event_key
+            } // FL_KEYBOARD
+        case FL_MOUSEWHEEL:
+            {
+            /*if(vscrollbar.visible())
+                return vscrollbar.send(event);
+            else if(hscrollbar.visible())
+                return hscrollbar.send(event);
+            break;*/
+                if(Fl::event_dy()>0) scroll_up(25);
+                else scroll_down(25);
+                return 1;
+            }
+        default:
             break;
-        } // FL_KEYBOARD
-    case FL_MOUSEWHEEL:
-        {
-			/*if(vscrollbar.visible())
-				return vscrollbar.send(event);
-			else if(hscrollbar.visible())
-				return hscrollbar.send(event);
-			break;*/
-			if(Fl::event_dy()>0) scroll_up(25);
-			else scroll_down(25);
-			return 1;
-        }
-	default:
-		break;
     } // event
 
     return 0;
@@ -976,9 +976,9 @@ void Fl_ListView::select_items(int from, int to)
 
     unselect_all();
     for(int n=start; n<end; n++) {
-		selection.append(child(n));
+        selection.append(child(n));
         set_changed();
-		damage_item(child(n));
+        damage_item(child(n));
     }
 
     if(selection.size()>0 && move()) {
@@ -1010,7 +1010,7 @@ void Fl_ListView::remove(int index)
     Fl_ListView_Item *w = child(index);
     if(w==item_) item_ = 0;
 
-	w->abs_index(-1);
+    w->abs_index(-1);
     w->parent(0);
     items.remove(index);
 
@@ -1028,7 +1028,7 @@ void Fl_ListView::insert(Fl_ListView_Item  &o, uint index)
         o.parent()->remove(n);
     }
     o.parent(this);
-	o.abs_index(children());
+    o.abs_index(children());
     if(children() == 0) {
         // allocate for 1 child
         items.append(&o);
@@ -1078,43 +1078,44 @@ void Fl_ListView::find_default_sizes()
 
 void Fl_ListView::fill(Fl_Data_Source &ds) 
 {
-   if (!ds.open()) return;
+    if (!ds.open()) return;
 
    // First version is very primitive.
    // Final version should replace the existing columns, if necessary.
-   header()->clear();
+    header()->clear();
    // Final version should replace the existing rows (truncate them,if necessary).
-   clear();
+    clear();
    //header()->button_box(FL_VERT_SHADE_UP_BOX);
 
-   unsigned columnCount = ds.field_count();
-   if (!columnCount) return;
-   for (unsigned col = 0; col < columnCount; col++) {
-      Fl_Data_Field& df = ds.field(col);
-      int width = 100;
-      if (df.width >= 0) {
-         width = df.width * text_size() * 2 / 3;
-	  }
-      add_column(df.name(),width);
-      column_flags(col,df.flags);
-   }
+    unsigned columnCount = ds.field_count();
+    if (!columnCount) return;
+    for (unsigned col = 0; col < columnCount; col++) {
+        Fl_Data_Field& df = ds.field(col);
+        if (!df.visible) continue;
+        int width = 100;
+        if (df.width >= 0) {
+            width = df.width * text_size() * 2 / 3;
+        }
+        add_column(df.name(),width);
+        column_flags(col,df.flags);
+    }
 
-   begin();
+    begin();
 
-   while (!ds.eof()) {
-      Fl_ListView_ItemExt *item = new Fl_ListView_ItemExt();
-      item->columns(columnCount);
-      for (int col = 0; col < (int)columnCount; col++) {
-         Fl_Data_Field& df = ds.field(col);
-		 item->flags(col, df.flags);
-         
-		 if(df.type() == VAR_IMAGEPTR) item->image(col, (Fl_Image *)df.as_image());
-         else item->label(col, ds.field(col).as_string());
-      }
-      ds.next();
-   }
-   ds.close();
-   end();
+    while (!ds.eof()) {
+        Fl_ListView_ItemExt *item = new Fl_ListView_ItemExt();
+        item->columns(columnCount);
+        for (int col = 0; col < (int)columnCount; col++) {
+            Fl_Data_Field& df = ds.field(col);
+            if (!df.visible) continue;
+            item->flags(col, df.flags);
+            if(df.type() == VAR_IMAGEPTR) item->image(col, (Fl_Image *)df.as_image());
+            else item->label(col, ds.field(col).as_string());
+        }
+        ds.next();
+    }
+    ds.close();
+    end();
 
-   find_def = false;
+    find_def = false;
 }
