@@ -278,7 +278,7 @@ void Fl_Function_Type::write_code()
 	if (!attributes.empty()) {
 		attr = attributes;
 		attr += " ";
-	}
+	}	
 
 	for (child = first_child; child; child = child->next_brother) 
 	{
@@ -286,112 +286,112 @@ void Fl_Function_Type::write_code()
 			havewidgets = 1;
 			last_group = (Fl_Widget_Type*)child;
 		}
+	}
 
-		write_c("\n");
-		if (ismain()) {
+	write_c("\n");
+	if (ismain()) {
 
-			write_c("int main%s(int argc, char **argv)%s\n",
-					gno_space_parens ? "" : " ", get_opening_brace(1));
-			if (havewidgets)	rtype = last_group->subclass();
-			else				rtype = "void";
+		write_c("int main%s(int argc, char **argv)%s\n",
+				gno_space_parens ? "" : " ", get_opening_brace(1));
+		if (havewidgets)	rtype = last_group->subclass();
+		else				rtype = "void";
+
+	} else {			
+
+		const char* star = "";
+			
+		// from matt: let the user type "static " at the start of type
+		// in order to declare a static method;
+		int is_static = 0;
+		int is_virtual = 0;
+		if(!rtype.empty()) {
+			if(rtype=="static") { is_static = 1; rtype = ""; }
+			else if(!strncmp(rtype.c_str(), "static ", 7)) { is_static = 1; rtype.sub_delete(0, 7); }
+
+			if(rtype=="virtual") { is_virtual = 1; rtype = ""; }
+			else if(!strncmp(rtype.c_str(), "virtual ", 8)) { is_virtual = 1; rtype.sub_delete(0,8); }
+		}
+			
+		if(rtype.empty()) {
+			if (havewidgets) {
+				rtype = last_group->subclass();					
+				star = "*";
+			} else 
+				rtype = "void";
+		}
+			
+		const char* k = member_of(0);
+		if (k) {
+			write_public(public_);
+			if (name()[0] == '~')
+				constructor = 1;
+			else {
+				int n = strlen(k);
+				if (!strncmp(name().c_str(), k, n) && name().c_str()[n] == '(') 
+					constructor = 1;
+			}
+			
+			write_h(get_indent_string(1));
+			if (is_static) write_h("static ");
+			if (is_virtual) write_h("virtual ");
+			if (!constructor) {
+				write_h("%s%s%s ", attr.c_str(), rtype.c_str(), star);
+				write_c("%s%s ", rtype.c_str(), star);					
+			}
+			
+			// if this is a subclass, only write_h() the part before the ':'
+			char s[1024], *sptr = s;
+			const char *nptr = name().c_str();
+			
+			while (*nptr) {
+				if (*nptr == ':') {
+					if (nptr[1] != ':') break;
+					// Copy extra ":" for "class::member"...
+					*sptr++ = *nptr++;
+				}	  
+				*sptr++ = *nptr++;
+			}
+			*sptr = '\0';
+			
+			if(constructor)	// already wrote this for constructors.
+				write_h("%s", attr.c_str());
+			write_h("%s;\n", s);
+			write_c("%s::%s%s", k, strip_default_args(name()), get_opening_brace(1));				
 
 		} else {
 
-			const char* star = "";
-			
-			// from matt: let the user type "static " at the start of type
-			// in order to declare a static method;
-			int is_static = 0;
-			int is_virtual = 0;
-			if(!rtype.empty()) {
-				if(rtype=="static") { is_static = 1; rtype = ""; }
-				else if(!strncmp(rtype.c_str(), "static ", 7)) { is_static = 1; rtype.sub_delete(0, 7); }
-
-				if(rtype=="virtual") { is_virtual = 1; rtype = ""; }
-				else if(!strncmp(rtype.c_str(), "virtual ", 8)) { is_virtual = 1; rtype.sub_delete(0,8); }
+			if (public_) {
+				if (cdecl_)
+					write_h("extern \"C\" { %s%s%s %s; }\n", attr.c_str(), rtype.c_str(), star, name().c_str());
+				else
+					write_h("%s%s%s %s;\n", attr.c_str(), rtype.c_str(), star, name().c_str());
 			}
-			
-			if(rtype.empty()) {
-				if (havewidgets) {
-					rtype = last_group->subclass();					
-					star = "*";
-				} else 
-					rtype = "void";
-			}
-			
-			const char* k = member_of(0);
-			if (k) {
-				write_public(public_);
-				if (name()[0] == '~')
-					constructor = 1;
-				else {
-					int n = strlen(k);
-					if (!strncmp(name().c_str(), k, n) && name().c_str()[n] == '(') 
-						constructor = 1;
-				}
-				
-				write_h(get_indent_string(1));
-				if (is_static) write_h("static ");
-				if (is_virtual) write_h("virtual ");
-				if (!constructor) {
-					write_h("%s%s%s ", attr.c_str(), rtype.c_str(), star);
-					write_c("%s%s ", rtype.c_str(), star);
-				}
-				
-				// if this is a subclass, only write_h() the part before the ':'
-				char s[1024], *sptr = s;
-				const char *nptr = name().c_str();
-				
-				while (*nptr) {
-					if (*nptr == ':') {
-						if (nptr[1] != ':') break;
-						// Copy extra ":" for "class::member"...
-						*sptr++ = *nptr++;
-					}	  
-					*sptr++ = *nptr++;
-				}
-				*sptr = '\0';
-				
-				if(constructor)	// already wrote this for constructors.
-					write_h("%s", attr.c_str());
-				write_h("%s;\n", s);
-				write_c("%s::%s%s", k, strip_default_args(name()), get_opening_brace(1));
-
-			} else {
-
-				if (public_) {
-					if (cdecl_)
-						write_h("extern \"C\" { %s%s%s %s; }\n", attr.c_str(), rtype.c_str(), star, name().c_str());
-					else
-						write_h("%s%s%s %s;\n", attr.c_str(), rtype.c_str(), star, name().c_str());
-				}
-				else 
-					write_c("static ");
-				write_c("%s%s %s%s", rtype.c_str(), star, name().c_str(), get_opening_brace(1));
-			}
+			else 
+				write_c("static ");
+			write_c("%s%s %s%s", rtype.c_str(), star, name().c_str(), get_opening_brace(1));
 		}
-		
-		indentation += 2;
-		if(havewidgets) 
-			write_c("%s%s* w;\n", indent(), last_group->subclass());
-		
-		for (Fl_Type* q = first_child; q; q = q->next_brother) 
-			q->write_code();
-		
-		if (ismain()) {
-			if (havewidgets) write_c("%sw->show(argc, argv);\n", get_indent_string(1));
-			write_c("%sreturn %s%sFl::run()%s;\n", get_indent_string(1),
-					gno_space_parens ? "" : " ",
-					galways_return_parens ? "(" : "", galways_return_parens ? ")" : "");
-		} else if (havewidgets && !constructor && !return_type)
-			write_c("%sreturn %s%sw%s;\n", get_indent_string(1), 
-					gno_space_parens ? "" : " ",
-					galways_return_parens ? "(" : "", galways_return_parens ? ")" : "");
-		
-		write_c("}\n");
-		indentation -= 2;
-		if (indentation < 0) indentation = 0;
 	}
+		
+	indentation += 2;
+	if(havewidgets) 
+		write_c("%s%s* w;\n", indent(), last_group->subclass());
+		
+	for (Fl_Type* q = first_child; q; q = q->next_brother) 
+		q->write_code();
+		
+	if (ismain()) {
+		if (havewidgets) write_c("%sw->show(argc, argv);\n", get_indent_string(1));
+		write_c("%sreturn %s%sFl::run()%s;\n", get_indent_string(1),
+				gno_space_parens ? "" : " ",
+				galways_return_parens ? "(" : "", galways_return_parens ? ")" : "");
+	} else if (havewidgets && !constructor && !return_type)
+		write_c("%sreturn %s%sw%s;\n", get_indent_string(1), 
+				gno_space_parens ? "" : " ",
+				galways_return_parens ? "(" : "", galways_return_parens ? ")" : "");
+	
+	write_c("}\n");
+	indentation -= 2;
+	if (indentation < 0) indentation = 0;	
 }
 
 ////////////////////////////////////////////////////////////////
@@ -448,21 +448,28 @@ Fl_Code_Type Fl_Code_type;
 
 void Fl_Code_Type::write_code() 
 {
-	if(name().empty()) return;
+	if(name().empty()) return;	
+
 	//write_c("%s%s\n", indent(), c);
 	write_code_block(name());
-	for (Fl_Type* q = first_child; q; q = q->next_brother) q->write_code();
+	for (Fl_Type* q = first_child; q; q = q->next_brother) {		
+		q->write_code();
+	}
 }
 
 void Fl_Code_Type::write_static(int type) 
 {
-	if(name().empty()) return;
+	if(name().empty()) return;	
 
 	switch(type) {
-	case DIRECTIVES:
-		write_includes_from_code(name());	break;
-	case FUNCTIONS:
-		write_externs_from_code(name());	break;
+	case DIRECTIVES:		
+		write_includes_from_code(name());	
+		break;
+
+	case FUNCTIONS:		
+		write_externs_from_code(name());	
+		break;
+
 	default:
 		break;
 	}

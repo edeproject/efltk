@@ -11,7 +11,6 @@
 #include <efltk/Fl_Box.h>
 #include <efltk/Fl_Return_Button.h>
 
-
 extern Fl_Window* about_panel;
 extern Fl_Group* display_group;
 extern Fl_Box* copyright_box;

@@ -12,7 +12,6 @@
 #include <efltk/Fl_Box.h>
 #include <efltk/Fl_Return_Button.h>
 
-
 extern Fl_Window* images_dir_window;
 extern Fl_Input* images_dir_input;
 

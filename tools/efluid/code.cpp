@@ -30,6 +30,8 @@
 #include <stdarg.h>
 
 #include <efltk/Fl.h>
+#include <efltk/filename.h>
+
 #include "Fl_Type.h"
 #include "alignment_panel.h"
 #include "coding_style.h"
@@ -38,6 +40,9 @@ extern bool i18n;
 
 static FILE *code_file;
 static FILE *header_file;
+
+static bool code_file_w = false;
+static bool header_file_w = false;
 
 // return true if c can be in a C identifier.  I needed this so
 // it is not messed up by locale settings:
@@ -145,6 +150,9 @@ int write_declare(const char *format, ...)
 	*p = new included(buf);
 
 	fprintf(header_file,"%s\n", buf);
+
+	header_file_w = true;
+
 	return 1;
 }
 
@@ -157,7 +165,8 @@ int varused_test;
 int varused;
 
 // write an array of C characters (adds a null):
-void write_cstring(const char *w, int length) {
+void write_cstring(const char *w, int length) 
+{
   if (varused_test) return;
   const char *e = w+length;
   int linelength = 1;
@@ -218,10 +227,13 @@ void write_cstring(const char *w, int length) {
     }
   }
   putc('\"', code_file);
+
+  code_file_w = true;
 }
 
 // write an array of C characters in a decimal format
-void write_carray(const char *w, int length) {
+void write_carray(const char *w, int length) 
+{
   if (varused_test) return;
 #if 0
   write_cstring(w,length);
@@ -237,6 +249,7 @@ void write_carray(const char *w, int length) {
     if(c>=10) linelength++;
     if(c>=100) linelength++;
   }
+  code_file_w = true;
 #endif
 }
 
@@ -247,6 +260,7 @@ void write_carray(const char *w) {write_carray(w,strlen(w));}
 // write some raw data in the code file (used to write inlined XPM)
 void write_craw(const char* str) {
   fputs(str, code_file);
+  code_file_w = true;
 }
 
 void write_c(const char* format,...) {
@@ -255,6 +269,7 @@ void write_c(const char* format,...) {
   va_start(args, format);
   vfprintf(code_file, format, args);
   va_end(args);
+  code_file_w = true;
 }
 
 void write_h(const char* format,...) {
@@ -263,9 +278,9 @@ void write_h(const char* format,...) {
   va_start(args, format);
   vfprintf(header_file, format, args);
   va_end(args);
+  header_file_w = true;
 }
 
-#include <efltk/filename.h>
 int write_number;
 
 int write_code(const char *s, const char *t) 
@@ -312,22 +327,29 @@ int write_code(const char *s, const char *t)
 
 	Fl_Type* p;
 
+	code_file_w = false;
+	header_file_w = false;
+
 	// write all include directives for this & all children first
 	for (p = Fl_Type::first; p; p = p->next_brother) {
 		p->write_static(DIRECTIVES);
 		for (Fl_Type* q = p->first_child; q; q = q->walk(p))
 			q->write_static(DIRECTIVES);
 	}
-	write_h("\n");
-	write_c("\n");
+	if(header_file_w)	write_h("\n");
+	if(code_file_w)		write_c("\n");
 	
+	header_file_w = false;
+
 	// write all external function declarations for this & all children first
 	for (p = Fl_Type::first; p; p = p->next_brother) {
 		p->write_static(FUNCTIONS);
 		for (Fl_Type* q = p->first_child; q; q = q->walk(p))
 			q->write_static(FUNCTIONS);
 	}
-	write_h("\n");
+	if(header_file_w) write_h("\n");
+
+	header_file_w = false;
 
 	// write all (external) variable declarations for this & all children first
 	for (p = Fl_Type::first; p; p = p->next_brother) {
@@ -335,12 +357,16 @@ int write_code(const char *s, const char *t)
 		for (Fl_Type* q = p->first_child; q; q = q->walk(p))
 			q->write_static(VARIABLES);
 	}
-	write_h("\n");
+	if(header_file_w) write_h("\n");
 
-	// then write declarations..
+	// then write declarations.. SIGH!
 	for (p = Fl_Type::first; p; p = p->next_brother) {
-		if(p->is_decl()) p->write_code();
+		if(p->is_decl()) 
+			p->write_code();
 	}
+
+	code_file_w = false;
+	header_file_w = false;
 
 	// write inline callbacks and variable decls in src
 	// and write the nested code:
@@ -348,7 +374,10 @@ int write_code(const char *s, const char *t)
 		p->write_static(CODE);
 		for (Fl_Type* q = p->first_child; q; q = q->walk(p))
 			q->write_static(CODE);
-		if(!p->is_decl()) p->write_code();
+		
+		// No declarations - already wrote them
+		if(!p->is_decl()) 
+			p->write_code();
 	}
 
 	delete included_root; 

@@ -14,7 +14,6 @@
 #include <efltk/Fl_Group.h>
 #include <efltk/Fl_Box.h>
 
-
 extern Fl_Window* function_panel;
 extern Fl_Check_Button* f_public_button;
 extern Fl_Check_Button* f_c_button;

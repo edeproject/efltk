@@ -14,8 +14,6 @@
 #include <efltk/Fl_Value_Input.h>
 #include <efltk/Fl_Button.h>
 
-
-
 extern int gbrace_style;
 extern int gno_space_parens;
 extern int gbrace_functions;
