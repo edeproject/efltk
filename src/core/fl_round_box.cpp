@@ -110,10 +110,13 @@ Fl_Color c, Fl_Flags f) const
     {
         t = s+2;
     }
-    while (*s && *t && w > 0 && h > 0)
-    {
-        Fl_Color c1 = *s + (FL_GRAY_RAMP-'A'); s += 4;
-        Fl_Color c2 = *t + (FL_GRAY_RAMP-'A'); t += 4;
+    int s_length = strlen(s);
+    int t_length = strlen(t);
+    int offset = 0;
+    while (offset < s_length && offset < t_length && w > 0 && h > 0) {
+        Fl_Color c1 = s[offset] + (FL_GRAY_RAMP-'A');
+        Fl_Color c2 = t[offset] + (FL_GRAY_RAMP-'A');
+        offset += 4;
         lozenge(UPPER_LEFT,  x+1, y,   w-2, h, *s&&*t ? c1 : c);
         lozenge(UPPER_LEFT,  x,   y,   w,   h, c1);
         lozenge(LOWER_RIGHT, x+1, y,   w-2, h, *s&&*t ? c2 : c);
