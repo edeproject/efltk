@@ -48,17 +48,17 @@
 
 class Fl_Exception {
 public:
-	Fl_Exception(const char *text="", const char *p="", int line=0);
+	Fl_Exception(Fl_String text="", const char *p="", int line=0);
 	Fl_String text(bool shortVersion=false) const;
 
 	Fl_Exception& operator = (Fl_Exception &src) { m_file=src.m_file; m_text=src.m_text; m_line=src.m_line; return *this; }
 protected:
+	Fl_String m_text;
 	const char *m_file;
-	const char *m_text;
-	int	m_line;
+	int m_line;
 };
 
-#if 1 // EFLTK Exceptions enabled
+#ifndef STD_EXCEPTIONS
 
 /*
  * EFltk exception interface.
@@ -103,7 +103,7 @@ extern Fl_JmpBuf_Stack fl_jmpbuf_stack;
 #define fl_rethrow fl_throw_exception(fl_last_throwed_exception)
 #define fl_throw_(text, file, line) { Fl_Exception e(text, file, line); fl_throw_exception(e); }
 
-#else /* __FL_EXCEPTIONS__ */
+#else /* STD_EXCEPTIONS */
 
 /*
  * Std C++ exception interface
@@ -113,7 +113,7 @@ extern Fl_JmpBuf_Stack fl_jmpbuf_stack;
 #define fl_throw_(text, file, line) throw Fl_Exception(text, file, line);
 #define fl_rethrow throw
 
-#endif /* __FL_EXCEPTIONS__ */
+#endif /* STD_EXCEPTIONS */
 
 //Shortcut...
 #define fl_throw(a) fl_throw_(a, __FILE__, __LINE__)
