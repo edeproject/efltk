@@ -137,7 +137,8 @@ void ETranslate::load(const char *file)
 
     if(filename.length()>0) {
         sort_strings();
-        show_translation((TranslateItem*)browser->child(0));
+        if(browser->children()>0)
+            show_translation((TranslateItem*)browser->child(0));
         update_status();
         activate(true);
     } else {
