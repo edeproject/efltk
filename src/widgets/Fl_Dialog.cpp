@@ -18,10 +18,12 @@
 #include <efltk/Fl.h>
 #include <efltk/Fl_Button.h>
 #include <efltk/Fl_Multi_Tabs.h>
-#include <efltk/Fl_Dialog.h>
 #include <efltk/Fl_Pixmap.h>
 #include <efltk/fl_ask.h>
 #include <efltk/fl_draw.h>
+
+#include <efltk/Fl_Dialog.h>
+
 
 /* XPM */
 static char * cancel_xpm[] = {
@@ -295,6 +297,10 @@ static const Fl_Dialog_Button_Template buttonTemplates[] = {
 void Fl_Dialog::buttons_callback(Fl_Widget *btn,void *id) {
    Fl::exit_modal();
    Fl_Widget *buttonPanel = btn->parent();
+   if (buttonPanel->user_data() == btn->user_data()) {
+      // for default button parent is a black down group box
+      buttonPanel = buttonPanel->parent();
+   }
    Fl_Dialog *dialog = (Fl_Dialog *)buttonPanel->parent();
    dialog->m_modalResult = (int)id;
 }
@@ -312,20 +318,29 @@ Fl_Dialog::Fl_Dialog(int ww,int hh) : Fl_Window(ww,hh) {
    m_buttonPanel = new Fl_Group(0,0,10,10);
    m_buttonPanel->end();
    m_tabs = new Fl_Multi_Tabs(0,0,10,10);
-   end();
    m_modalResult = 0;
 }
 
-const Fl_Variant Fl_Dialog::operator [] (const char *field_name) const {
-   // stub
-   Fl_Variant tmp;
-   return tmp;
+Fl_Widget *Fl_Dialog::find_widget(const char *field_name) const {
+   unsigned n_pages = m_tabs->children();
+   for (unsigned i = 0; i < n_pages; i++) {
+      Fl_Group *page = (Fl_Group *)m_tabs->child(i);
+      unsigned  n_widgets = page->children();
+      for (unsigned j = 0; j < n_widgets; j++) {
+         Fl_Widget *widget = page->child(j);
+         if (strcmp(widget->field_name(),field_name) == 0)
+            return widget;
+      }
+   }
+   return 0L;
 }
 
-Fl_Variant Fl_Dialog::operator [] (const char *field_name) {
-   // stub
-   Fl_Variant tmp;
-   return tmp;
+const Fl_Widget *Fl_Dialog::operator [] (const char *field_name) const {
+   return find_widget(field_name);
+}
+
+Fl_Widget *Fl_Dialog::operator [] (const char *field_name) {
+   return find_widget(field_name);
 }
 
 bool Fl_Dialog::valid() {
@@ -357,6 +372,7 @@ void Fl_Dialog::buttons(int buttons_mask,int default_button) {
             default_box->box(FL_THIN_DOWN_BOX);
             btn = new Fl_Button(0,0,10,10,buttonTemplate.label);
             default_box->end();
+            default_box->user_data((void *)id);
             m_defaultButton = btn;
          } else
             btn = new Fl_Button(0,0,10,10,buttonTemplate.label);
@@ -394,15 +410,15 @@ void Fl_Dialog::layout() {
    }
 
    // resize button panel
-   int bpanelh = maxh + 6;
+   int bpanelh = maxh + 8;
    m_buttonPanel->resize(4,h() - (bpanelh + 2),w()-8,bpanelh);
 
    // resize widget area
    m_tabs->resize(4,4,w()-8,m_buttonPanel->y()-4);
-   //m_tabs->relayout();
+   m_tabs->layout();
 
    // resize buttons
-   int bx = m_buttonPanel->w();
+   int bx = m_buttonPanel->w() + 3;
 
    for (i = 0; i < cnt; i++) {
       Fl_Widget *btn = m_buttonList[i];
@@ -415,10 +431,10 @@ void Fl_Dialog::layout() {
       bx -= ww + 6;
       if (btn == m_defaultButton) {
          Fl_Widget *default_box = btn->parent();
-         default_box->resize(bx-2,2,ww+4,maxh+4);
+         default_box->resize(bx-2,3,ww+4,maxh+4);
          btn->resize(2,2,ww,maxh);
       } else {
-         btn->resize(bx,4,ww,maxh);
+         btn->resize(bx,5,ww,maxh);
       }
    }
 }
@@ -431,3 +447,15 @@ int Fl_Dialog::show_modal() {
    exec(0,false);
    return m_modalResult;
 }
+
+Fl_Group *Fl_Dialog::new_page(const char *lbl,bool autoColor) {
+   if (!m_tabs->children()) {
+      m_tabs->box(FL_THIN_DOWN_BOX);
+      m_tabs->show_tabs(false);
+   } else {
+      m_tabs->box(FL_THIN_UP_BOX);
+      m_tabs->show_tabs(true);
+   }
+   return m_tabs->new_page(lbl,autoColor);
+}
+
