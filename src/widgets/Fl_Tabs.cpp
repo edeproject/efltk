@@ -394,27 +394,27 @@ void Fl_Tabs::draw()
 
     }
 
-	if (damage() & FL_DAMAGE_ALL) {
-		// Clip out buttons
-		fl_clip_out(0, H>=0 ? 0 : h()+H, p[children()], (H>=0?H:-H));
-				
-		if(selected>=0) {			
-			i = selected;
-			// Clip out little piece of box()
-			fl_clip_out(p[i], (H>=0?H:this->h()+H)-1,
-						p[i+1]-p[i], box()->dy());
-		}
-				
-		parent()->draw_group_box();				
-		box()->draw(0, (H>=0?H:0), this->w(), this->h()-(H>=0?H:-H), v ? v->color() : color(), FL_INVISIBLE);
-		fl_pop_clip();				
-	}	
+    if (damage() & FL_DAMAGE_ALL) {
+        // Clip out buttons
+        fl_clip_out(0, H>=0 ? 0 : h()+H, p[children()], (H>=0?H:-H));
 
-	if (damage() & FL_DAMAGE_EXPOSE) {
-		fl_clip_out(0, H>=0 ? 0 : h()+H, p[children()]+TABSLOPE, (H>=0?H:-H));
+        if(selected>=0) {
+            i = selected;
+            // Clip out little piece of box()
+            fl_clip_out(p[i], (H>=0?H:this->h()+H)-1,
+                        p[i+1]-p[i], box()->dy()+1);
+        }
+
+        parent()->draw_group_box();
+        box()->draw(0, (H>=0?H:0), this->w(), this->h()-(H>=0?H:-H), v ? v->color() : color(), FL_INVISIBLE);
+        fl_pop_clip();
+    }
+
+    if (damage() & FL_DAMAGE_EXPOSE) {
+        fl_clip_out(0, H>=0 ? 0 : h()+H, p[children()]+TABSLOPE, (H>=0?H:-H));
         fl_clip_out(0, H>0 ? H : 0, this->w(), h()-(H>=0?H:-H-1));
         fl_did_clipping = this;
-    }	
+    }
 }
 
 
