@@ -353,7 +353,7 @@ void style_init(void) {
 
     stylebuf->text(style);
     delete[] style;
-    free(text);
+    delete[] text;
 }
 
 
@@ -457,8 +457,8 @@ style_update(int        pos,		// I - Position of update
     {
         // The last character on the line changed styles, so reparse the
         // remainder of the buffer...
-        free(text);
-        free(style);
+        delete[] text;
+        delete[] style;
 
         end   = textbuf->length();
         text  = (char *)textbuf->text_range(start, end);
@@ -470,8 +470,8 @@ style_update(int        pos,		// I - Position of update
         stylebuf->replace(start, end, style);
 
     ((Fl_Text_Editor *)cbArg)->redisplay_range(start, end);
-    free(text);
-    free(style);
+    delete[] text;
+    delete[] style;
 }
 #endif
 
