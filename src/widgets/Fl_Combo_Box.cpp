@@ -245,47 +245,50 @@ int Fl_Popup_ListView::handle(int event) {
 }
 
 class Fl_Combo_Box_Panel : public Fl_Box {
-    Fl_ListView *m_listView;
+    Fl_Combo_Box *m_comboBox;
     void draw();
 public:
-    Fl_Combo_Box_Panel(Fl_ListView *lv);
+    Fl_Combo_Box_Panel(Fl_Combo_Box *cb);
 
     int handle(int);
 };
 
-Fl_Combo_Box_Panel::Fl_Combo_Box_Panel(Fl_ListView *lv)
+Fl_Combo_Box_Panel::Fl_Combo_Box_Panel(Fl_Combo_Box *cb)
 : Fl_Box(0,0,10,10) {
-    m_listView = lv;
+    m_comboBox = cb;
     align(FL_ALIGN_LEFT);
     box(FL_FLAT_BOX);
 }
 
 void Fl_Combo_Box_Panel::draw()
 {
+    box(m_comboBox->box());
     draw_box();
 
     int dd = 2;
 
-    Fl_ListView_Item    *item = (Fl_ListView_ItemExt *)m_listView->item();
+    Fl_ListView *lv = m_comboBox->listview();
+
+    Fl_ListView_Item    *item = (Fl_ListView_ItemExt *)lv->item();
     if (!item) return;
 
     Fl_ListView_ItemExt *item_ext = dynamic_cast<Fl_ListView_ItemExt *>(item);
 
     if (!item_ext) {
-        fl_font(m_listView->text_font(), m_listView->text_size());
+        fl_font(lv->text_font(), lv->text_size());
     }
 
     int X=0, Y=0, W=w(), H=h();
     box()->inset(X,Y,W,H);
 
     for (unsigned c = 0; c < item->columns(); c++) {
-        int ww = m_listView->column_width(c);
+        int ww = lv->column_width(c);
         fl_push_clip(X+dd, Y, ww-dd, H);
         if (item_ext) {
             fl_font(item_ext->label_font(c),item_ext->label_size(c));
             fl_color(item_ext->label_color(c));
         } else
-            fl_color(m_listView->text_color());
+            fl_color(lv->text_color());
 
         fl_draw(item->label(c), X+dd, Y, ww-dd, H, FL_ALIGN_LEFT);
 
@@ -314,7 +317,7 @@ int Fl_Combo_Box_Panel::handle(int event) {
         case FL_KEYBOARD: {
                 unsigned ch = Fl::event_key();
                 if (ch == FL_Tab) break;
-                int rc = m_listView->handle(event);
+                int rc = m_comboBox->listview()->handle(event);
                 redraw();
                 return rc;
             }
@@ -385,7 +388,7 @@ void Fl_Combo_Box::ctor_init()
         else b->hide();
     }
 
-    m_panel = new Fl_Combo_Box_Panel(listview());
+    m_panel = new Fl_Combo_Box_Panel(this);
     m_panel->layout_align(FL_ALIGN_CLIENT);
 
     Fl_Group::end();
