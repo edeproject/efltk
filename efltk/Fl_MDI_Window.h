@@ -74,7 +74,7 @@ public:
     Fl_Widget *resizable()       { return prv->resizable(); }
 
     // Caption functions
-    void caption(const char *cap) { Fl_Widget::copy_label(cap); _titlebar.redraw(); }
+    void caption(const char *cap);
     const char *caption() { return label(); }
 
     //void titlebar(Fl_Box *b) { _titlebar = b; }

@@ -1,5 +1,6 @@
 #include <efltk/Fl_Workspace.h>
 #include <efltk/Fl_MDI_Window.h>
+#include <efltk/Fl_MDI_Bar.h>
 
 static void cb_none(Fl_Widget *, void *) { }
 
@@ -19,6 +20,7 @@ Fl_MDI_Viewport::Fl_MDI_Viewport(int x, int y, int w, int h, const char *label)
 
     callback(cb_none);
 
+	_bar = 0;
     _menu = 0;
     _aot = 0;
     _max = 0;
@@ -26,6 +28,29 @@ Fl_MDI_Viewport::Fl_MDI_Viewport(int x, int y, int w, int h, const char *label)
 
     _scrolldx = _scrolldy = 0;
 }
+
+void Fl_MDI_Viewport::taskbar(Fl_MDI_Bar *bar)
+{ 
+	if(_bar) _bar->clear();	
+
+	_bar = bar; 	
+	_bar->clear();
+
+    for(int n=0; n<children(); n++) {
+        if(((child(n)->flags() & FL_MDI_WINDOW) == FL_MDI_WINDOW))
+        {
+            Fl_MDI_Window *win = (Fl_MDI_Window *)child(n);
+			_bar->add_task(win);
+        }
+	}
+
+}
+
+Fl_MDI_Bar *Fl_MDI_Viewport::taskbar() 
+{ 	
+	return _bar; 
+}
+
 
 void Fl_MDI_Viewport::top(Fl_MDI_Window *win)
 {
@@ -82,6 +107,7 @@ void Fl_MDI_Viewport::top(Fl_MDI_Window *win)
 
 		focus(win);
 
+		if(_bar) _bar->update_tasks();
         do_callback();
     }
 }
@@ -135,6 +161,8 @@ void Fl_MDI_Viewport::attach(Fl_MDI_Window *w)
 
     if(w->toplevel())
         w->attach(this);
+
+	if(_bar) _bar->add_task(w);
 }
 
 void Fl_MDI_Viewport::detach(Fl_MDI_Window *w)
@@ -143,6 +171,7 @@ void Fl_MDI_Viewport::detach(Fl_MDI_Window *w)
         return;
 
     w->detach();
+	if(_bar) _bar->remove_task(w);
 }
 
 void Fl_MDI_Viewport::close_all()
@@ -156,6 +185,7 @@ void Fl_MDI_Viewport::close_all()
             win->do_callback();
         }
     }
+	if(_bar) _bar->update_tasks();
 }
 
 void Fl_MDI_Viewport::cb_draw_clip(void* v,int X, int Y, int W, int H)

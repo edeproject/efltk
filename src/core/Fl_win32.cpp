@@ -177,18 +177,18 @@ void Fl::add_fd(int n, int events, void (*cb)(int, void*), void *v)
     fd[i].cb = cb;
     fd[i].arg = v;
 
-    #ifdef USE_ASYNC_SELECT
+#ifdef USE_ASYNC_SELECT
     int mask = 0;
     if (events & POLLIN) mask |= FD_READ;
     if (events & POLLOUT) mask |= FD_WRITE;
     if (events & POLLERR) mask |= FD_CLOSE;
                                  /*fl_window*/
     WSAAsyncSelect(n, 0, WM_FLSELECT, mask);
-    #else
+#else
     if (events & POLLIN) FD_SET(n, &fdsets[0]);
     if (events & POLLOUT) FD_SET(n, &fdsets[1]);
     if (events & POLLERR) FD_SET(n, &fdsets[2]);
-    #endif                       // USE_ASYNC_SELECT
+#endif                       // USE_ASYNC_SELECT
 }
 
 

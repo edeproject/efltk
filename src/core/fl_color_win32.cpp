@@ -65,7 +65,6 @@ COLORREF fl_wincolor(Fl_Color i)
     return rgb;
 }
 
-
 static int line_style = 0;
 static DWORD dash_pattern[16];
 static int dash_pattern_size = 0;
@@ -73,47 +72,40 @@ static int line_width = 0;
 
 void fl_line_style(int style, int width, char* dashes)
 {
-    /*static DWORD Cap[4]= {PS_ENDCAP_ROUND, PS_ENDCAP_FLAT, PS_ENDCAP_ROUND, PS_ENDCAP_SQUARE};
-    static DWORD Join[4]={PS_JOIN_ROUND, PS_JOIN_MITER, PS_JOIN_ROUND, PS_JOIN_BEVEL};
-    line_style = PS_GEOMETRIC | Cap[(style>>8)&3] | Join[(style>>12)&3];
-    if (dashes && dashes[0])
-    {
-        line_style |= PS_USERSTYLE;
-        int n; for (n = 0; n < 16 && *dashes;) dash_pattern[n++] = *dashes++;
-        dash_pattern_size = n;
-    }
-    else
-    {
-        dash_pattern_size = 0;
-                                 // allow them to pass any low 8 bits for style
-        line_style |= style & 0xff;
-    }
-    line_width = width;
-    // fix cards that ignore dash pattern for zero width:
-    if (!width && (line_style || dash_pattern_size)) line_width = 1;
-    */
+#ifndef _WIN32_WCE
+	static DWORD Cap[4]= {PS_ENDCAP_ROUND, PS_ENDCAP_FLAT, PS_ENDCAP_ROUND, PS_ENDCAP_SQUARE};
+	static DWORD Join[4]={PS_JOIN_ROUND, PS_JOIN_MITER, PS_JOIN_ROUND, PS_JOIN_BEVEL};
+	line_style = PS_GEOMETRIC | Cap[(style>>8)&3] | Join[(style>>12)&3];
+	if (dashes && dashes[0]) {
+		line_style |= PS_USERSTYLE;
+		int n; for (n = 0; n < 16 && *dashes;) dash_pattern[n++] = *dashes++;
+		dash_pattern_size = n;
+	} else {
+		dash_pattern_size = 0;
+		line_style |= style & 0xff; // allow them to pass any low 8 bits for style
+	}
+	line_width = width;
+	// fix cards that ignore dash pattern for zero width:
+	if (!width && (line_style || dash_pattern_size)) line_width = 1;
+#endif
 	fl_pen = fl_create_pen();
-    HPEN oldpen = (HPEN)SelectObject(fl_gc, fl_pen);
-    if (oldpen) DeleteObject(oldpen);
-	
+	HPEN oldpen = (HPEN)SelectObject(fl_gc, fl_pen);
+	if (oldpen) DeleteObject(oldpen);	
 }
 
 
 HPEN fl_create_pen()
 {
-/*    if (line_style || line_width || dash_pattern_size)
-    {
-        LOGBRUSH penbrush =      // can this be fl_brush?
-        {
-            BS_SOLID, fl_colorref, 0
-        };
-        return ExtCreatePen(line_style, line_width, &penbrush,
-            dash_pattern_size, dash_pattern_size?dash_pattern:0);
-    }
-    else
-    {*/
-        return CreatePen(PS_SOLID, 1, fl_colorref);
-    //}
+#ifndef _WIN32_WCE
+	if (line_style || line_width || dash_pattern_size) {
+		LOGBRUSH penbrush = {BS_SOLID, fl_colorref, 0}; // can this be fl_brush?
+		return ExtCreatePen(line_style, line_width, &penbrush,
+			dash_pattern_size, dash_pattern_size?dash_pattern:0);
+	} else 
+#endif
+	{
+		return CreatePen(PS_SOLID, 1, fl_colorref);
+	}
 }
 
 

@@ -477,7 +477,7 @@ void Fl_Text_Display::layout()
         calc_last_char();
 	} else if(mContinuousWrap && !mWrapMargin) {		
 		
-		if(layout_damage()&FL_LAYOUT_W) {			
+		if(layout_damage()&FL_LAYOUT_W) {
 			calc_line_starts(0, mNVisibleLines);
 			calc_last_char();
 		}
@@ -1437,9 +1437,6 @@ void Fl_Text_Display::buffer_modified_cb( int pos, int nInserted, int nDeleted,
   // don't need to do anything else if not visible?
   if (!textD->visible_r()) return;
 
-  // refigure scrollbars & stuff
-  textD->relayout();
-
   /* If the changes caused scrolling, re-paint everything and we're done. */
   if ( scrolled ) {
       textD->redraw();
@@ -1500,6 +1497,9 @@ void Fl_Text_Display::buffer_modified_cb( int pos, int nInserted, int nDeleted,
 
   /* Redisplay computed range */
   textD->redisplay_range( startDispPos, endDispPos );
+
+  // refigure scrollbars & stuff
+  textD->relayout(FL_LAYOUT_DAMAGE | FL_LAYOUT_W);
 }
 
 /*

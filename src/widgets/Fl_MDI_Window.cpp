@@ -1,4 +1,5 @@
 #include <efltk/Fl_MDI_Window.h>
+#include <efltk/Fl_MDI_Bar.h>
 #include <efltk/Fl_Image.h>
 #include <efltk/Fl_Item.h>
 
@@ -407,6 +408,7 @@ Fl_MDI_Window::Fl_MDI_Window(int x, int y, int w, int h, const char *label)
         _owner = (Fl_MDI_Viewport *)parent();
         _toplevel = false;
         Fl_Window::resizable(prv);
+		if(_owner->taskbar()) _owner->taskbar()->add_task(this);
     } else {
         Fl_Window::resizable(0);
         _owner = 0;
@@ -425,6 +427,7 @@ Fl_MDI_Window::Fl_MDI_Window(int x, int y, int w, int h, const char *label)
 
 Fl_MDI_Window::~Fl_MDI_Window()
 {
+	if(_owner->taskbar()) _owner->taskbar()->remove_task(this);
     _owner->remove(this);
     if(_owner->aot() == this)
         _owner->aot(0);
@@ -441,6 +444,13 @@ Fl_MDI_Window::~Fl_MDI_Window()
     }
 
     destroy();
+}
+
+void Fl_MDI_Window::caption(const char *cap)
+{ 
+	Fl_Widget::copy_label(cap); 
+	_titlebar.redraw(); 
+	if(_owner->taskbar()) _owner->taskbar()->update_task(this);
 }
 
 Fl_Group *Fl_MDI_Window::view(Fl_Group *v)
@@ -788,7 +798,8 @@ int Fl_MDI_Window::handle(int event)
         Fl_Window::handle(event);
         if(_toplevel) return 1;		
 		setTop();
-		_owner->relayout();
+		if(_owner->taskbar()) _owner->taskbar()->update_tasks();
+		_owner->relayout();		
 		Fl::flush();
         return 1;
     }
@@ -803,7 +814,8 @@ int Fl_MDI_Window::handle(int event)
         throw_focus();
 
         _active = false;
-		_owner->relayout();
+		if(_owner->taskbar()) _owner->taskbar()->update_tasks();
+		_owner->relayout();		
 		Fl::flush();
         return 1;
     }

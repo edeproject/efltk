@@ -14,6 +14,7 @@
 # include <windows.h>
 #endif
 
+class Fl_MDI_Bar;
 class Fl_MDI_Window;
 class Fl_Workspace;
 
@@ -59,6 +60,11 @@ public:
      Force to relayout all MDI windows
      */
     void relayout_all();
+
+	/*!	
+	*/
+	void taskbar(Fl_MDI_Bar *bar);
+	Fl_MDI_Bar *taskbar();
 
     /*!
      @param caption As a string to match with window caption.
@@ -176,6 +182,7 @@ private:
     friend class Fl_MDI_Window;
 
     Fl_Menu_Bar *_menu;
+	Fl_MDI_Bar *_bar;
 
     Fl_MDI_Window *_aot; //Always On Top
     Fl_MDI_Window *_max; //Maximized
