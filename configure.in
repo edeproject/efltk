@@ -421,7 +421,7 @@ dnl # --with-unixODBC will probably be removed from here...
 dnl ####
 unixODBC="/usr/local"
 AC_ARG_WITH( unixODBC,
-	AC_HELP_STRING([--without-unixODBC], [Use alternative ODBC driver manager]),
+	AC_HELP_STRING([--without-unixODBC], [Do not add unixODBC support]),
 	[ unixODBC="$withval"])
 
 if test x$withval = xno
