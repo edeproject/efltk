@@ -39,8 +39,20 @@ static void revert(Fl_Style *s)
 static Fl_Named_Style style("Bar", revert, &Fl_Bar::default_style);
 Fl_Named_Style* Fl_Bar::default_style = &::style;
 
-Fl_Bar::Fl_Bar(int x, int y, int w, int h, const char* title)
-: Fl_Group(x, y, w, h,title)
+Fl_Bar::Fl_Bar(int x, int y, int w, int h, const char* l)
+: Fl_Group(x, y, w, h, l)
+{
+    initialize(h);
+}
+
+Fl_Bar::Fl_Bar(const char* l,Fl_Align layout_al,int label_w) : Fl_Group(0,0,10,10,l)
+{
+    initialize(10);
+    label_width(label_w);
+    layout_align(layout_al);
+}
+
+void Fl_Bar::initialize(int hh) 
 {
     style(default_style);
 
@@ -49,10 +61,9 @@ Fl_Bar::Fl_Bar(int x, int y, int w, int h, const char* title)
     highlighted = false;
     pushed = false;
     glyph_size_ = 12;
-    saved_size = h;
+    saved_size = hh;
     align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
 }
-
 
 void Fl_Bar::glyph_box(int& x, int& y, int& w, int& h)
 {
