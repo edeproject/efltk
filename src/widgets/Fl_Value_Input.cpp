@@ -34,6 +34,7 @@
 #include <efltk/Fl.h>
 #include <efltk/Fl_Value_Input.h>
 #include <efltk/Fl_Group.h>
+#include <efltk/fl_draw.h>
 
 #include <stdlib.h>
 
@@ -50,9 +51,7 @@ void Fl_Value_Input::input_cb(Fl_Widget*, void* v)
         {
             t.clear_changed();
             t.do_callback();
-        }
-        else
-        {
+        } else {
             t.set_changed();
         }
     }
@@ -90,24 +89,41 @@ void Fl_Value_Input::draw()
         }
     }
 
-    input.label(label());
-    input.align(align());
-    input.copy_style(style());
+	if(align() & FL_ALIGN_INSIDE) {
+		input.align(align());
+		input.label(label());
+	} else {
+		input.align(0);		
+	}
+    
+    input.box(FL_FLAT_BOX);
+	input.color(color());
+	input.button_color(button_color());
+	input.text_color(text_color());
+	input.text_size(text_size());
+	input.text_font(text_font());
+
     input.set_damage(damage());
-    input.draw(X, Y, W, H);
+	
+#if 1
+	fl_push_matrix();
+	fl_translate(X,Y);
+    input.draw();
+	fl_pop_matrix();
+#else
+	input.draw(X, Y, W, H);
+#endif
+
     input.set_damage(0);
 }
 
 void Fl_Value_Input::increment_cb()
 {
-#undef max
-#define max(a,b) ((a) > (b) ? (a) : (b))
     double i = step();
     if (Fl::event_state()&(FL_SHIFT|FL_CTRL|FL_ALT)) i *= 10;
     if (which_pushed == 2) i = -i;
     handle_drag(value()+i);
 }
-
 
 #define INITIALREPEAT .5f
 #define REPEAT .1f
@@ -217,15 +233,21 @@ int Fl_Value_Input::handle(int event)
 
 
 void Fl_Value_Input::layout()
-{
-    Fl_Valuator::layout();
+{    
     // this is needed so events sent directly to the input get correct
     // coordinates:
-    input.resize(0, 0, w(), h());
+	int X=0; int Y=0; int W=w(); int H=h(); box()->inset(X,Y,W,H);
+	if(!input.readonly()) {
+		const int bw = int(floor((H/1.8)+.5)); 
+		W -= bw;
+	}
+    input.resize(X,Y,W,H);
     input.layout();
 
     // I'm not sure why this is here, may be a mistake:
     value_damage();
+
+	Fl_Valuator::layout();
 }
 
 
@@ -248,14 +270,15 @@ void Fl_Value_Input::value_damage()
 }
 
 // ctor initializer - used in both ctors
-void Fl_Value_Input::ctor_init() {
+void Fl_Value_Input::ctor_init() 
+{
     if (input.parent())          // defeat automatic-add
         input.parent()->remove(input);
 
     input.parent((Fl_Group*)this); // kludge!
     input.callback(input_cb, this);
-    clear_flag(FL_ALIGN_MASK);
-    set_flag(FL_ALIGN_LEFT);
+    
+    align(FL_ALIGN_LEFT);
 }
 
 // Traditional ctor
