@@ -168,7 +168,7 @@ public:
     float size() const { return size_; }
 
     void  encoding(const char*);
-    const char* encoding();
+    const char* encoding() const;
 
     const char* fontname(Fl_Font, int * = 0);
 

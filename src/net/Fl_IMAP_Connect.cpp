@@ -47,6 +47,8 @@ bool Fl_IMAP_Connect::get_response(Fl_String ident) {
             }
         }
     }
+    // BCB says this is "unreachable",
+    // but VCPP says "not all paths return" if we take it away.
     return false;
 }
 

@@ -774,7 +774,7 @@ int Fl_PostScript::not_clipped(int x, int y, int w, int h)
     return 0;
 }
 
-const char* Fl_PostScript::encoding()
+const char* Fl_PostScript::encoding() const
 {
     puts("Not implemented encoding.");
     return 0;

@@ -279,8 +279,8 @@ int Fl::wait(float time_to_wait)
     if (first_timeout)
     {
         elapse_timeouts();
-        Timeout *t;
-        while ((t = first_timeout))
+        Timeout *t = first_timeout;
+        while (t)
         {
             if (t->time > 0)
             {
@@ -299,6 +299,8 @@ int Fl::wait(float time_to_wait)
             cb(arg);
             // return immediately afterwards because timeout was done:
             time_to_wait = 0; ret = 1;
+
+            t = first_timeout;
         }
     }
     else
@@ -344,17 +346,19 @@ Fl_X* Fl_X::first;
 Fl_Window* fl_find(Window xid)
 {
     Fl_X *x;
-    for (Fl_X **pp = &Fl_X::first; (x = *pp); pp = &x->next)
-        if (x->xid == xid)
+    for (Fl_X **pp = &Fl_X::first; *pp; pp = &x->next)
     {
-        if (x != Fl_X::first)
-        {
-            // make this window be first to speed up searches
-            *pp = x->next;
-            x->next = Fl_X::first;
-            Fl_X::first = x;
+        x = *pp;
+        if (x->xid == xid) {
+            if (x != Fl_X::first)
+            {
+                // make this window be first to speed up searches
+                *pp = x->next;
+                x->next = Fl_X::first;
+                Fl_X::first = x;
+            }
+            return x->window;
         }
-        return x->window;
     }
     return 0;
 }

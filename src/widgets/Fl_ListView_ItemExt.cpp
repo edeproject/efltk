@@ -134,12 +134,13 @@ void Fl_ListView_ItemExt::setup(unsigned row)
             fl_measure(col_label, w, h, a);
         } else {
             // No wrap, check for multi line
-            char *ptr = (char *)strchr(col_label, '\n');
+            const char *ptr = strchr(col_label, '\n');
             if(ptr) {
                 // Multi line, calc lines
-                h = (int)fl_height();
-                while((ptr=strchr(ptr+1, '\n'))) {
+                h = 0;
+                while(ptr) {
                     h += (int)fl_height();
+                    ptr = strchr(ptr+1, '\n');
                 }
                 h += int(fl_height() + fl_descent());
             }
@@ -195,8 +196,8 @@ void Fl_ListView_ItemExt::draw_label(unsigned col, const char *label, int X, int
     // yes, inside label is affected by selection or highlight:
     if(flags&FL_SELECTED)
         color = parent()->selection_text_color();
-    else if (flags&FL_HIGHLIGHT && (color = parent()->highlight_label_color()))
-        ;
+    else if (flags&FL_HIGHLIGHT && parent()->highlight_label_color())
+        color = parent()->highlight_label_color();
     else
         color = label_color(col);
 

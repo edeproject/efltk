@@ -95,8 +95,8 @@ void Fl_Widget::draw_label(int X, int Y, int W, int H, Fl_Flags flags) const
         // yes, inside label is affected by selection or highlight:
 		if (flags&FL_SELECTED)
 			color = selection_text_color();
-		else if (flags&FL_HIGHLIGHT && (color = highlight_label_color()))
-		;
+		else if (flags&FL_HIGHLIGHT && highlight_label_color())
+		    color = highlight_label_color();
 		else
 			color = label_color();
 		if (focused()) flags |= FL_SELECTED;

@@ -2694,17 +2694,19 @@ int Fl_Text_Buffer::insertfile(const char *file, int pos, int buflen)
 }
 
 
-int
-   Fl_Text_Buffer::outputfile(const char *file, int start, int end, int buflen)
+int Fl_Text_Buffer::outputfile(const char *file, int start, int end, int buflen)
 {
    FILE *fp = fl_fopen(file, "w");
    if (!fp) return 1;
-   for (int n; (n = min(end - start, buflen)); start += n)
+   for(; start<end;)
    {
+      int n = min(end - start, buflen);
       char *p = (char*)text_range(start, start + n);
       int r = fwrite(p, 1, n, fp);
       delete []p;
-      if (r != n) break;
+      if (r != n)
+        break;
+      start += n;
    }
 
    int e = ferror(fp) ? 2 : 0;

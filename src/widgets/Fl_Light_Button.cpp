@@ -41,8 +41,9 @@ static void glyph(const Fl_Widget* widget, int,
         f = f&FL_INACTIVE;
         color = widget->selection_color();
     }
-    else if ((color = widget->style()->button_color))
+    else if (widget->style()->button_color)
     {
+        color = widget->style()->button_color;
         // if user set the color of the button draw that color
         f = f&FL_INACTIVE;
     }

@@ -67,6 +67,10 @@ public:
 
     virtual void draw(Fl_Widget * w) = 0;
 
+    virtual void draw(const char* s, float x, float y) { Fl_Device::draw(s, x, y); }
+    virtual void draw(const Fl_String & s, float x, float y) { Fl_Device::draw(s, x, y); }
+    virtual void draw(const char* s, int n, float x, float y) { Fl_Device::draw(s, n, x, y); }
+
 protected:
 
     int nPages;

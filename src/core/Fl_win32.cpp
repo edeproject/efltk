@@ -44,9 +44,6 @@
 #include <time.h>
 #include <winsock.h>
 
-#include <exception>
-using namespace std;
-
 // The following include files require GCC 3.x or a non-GNU compiler...
 #if !defined(__GNUC__) || __GNUC__ >= 3
 # include <ole2.h>
@@ -237,9 +234,9 @@ void Fl::remove_fd(int n, int events)
     }
 
 #ifndef USE_ASYNC_SELECT
-    if (events & POLLIN) FD_CLR(n, &fdsets[0]);
-    if (events & POLLOUT) FD_CLR(n, &fdsets[1]);
-    if (events & POLLERR) FD_CLR(n, &fdsets[2]);
+    if (events & POLLIN)  FD_CLR((unsigned)n, &fdsets[0]);
+    if (events & POLLOUT) FD_CLR((unsigned)n, &fdsets[1]);
+    if (events & POLLERR) FD_CLR((unsigned)n, &fdsets[2]);
 #endif                       // USE_ASYNC_SELECT
 }
 
@@ -1516,14 +1513,13 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 	} catch(Fl_Exception &e) {
 		Fl::warning(e.text());
-		terminate();
 	} catch(...) {
-		// When programming for Windows, it is important to remember that 
-		// exceptions cannot cross the boundary of a "callback." 
-		// In other words, if an exception occurs within the scope 
-		// of a message or command handler, it must be caught there, 
+		// When programming for Windows, it is important to remember that
+		// exceptions cannot cross the boundary of a "callback."
+		// In other words, if an exception occurs within the scope
+		// of a message or command handler, it must be caught there,
 		// before the next message is processed.
-		terminate();
+		abort();
 	}
 
     return DefWindowProc(hWnd, uMsg, wParam, lParam);

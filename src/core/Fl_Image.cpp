@@ -736,7 +736,7 @@ bool fl_check_pixel(const Fl_Image *i, uint8 *buf)
         return (i->format()->Amask && a < i->threshold());
 
     case FL_MASK_PIXELKEY:
-        return (*buf==i->colorkey());
+        return (*buf==(uint8)i->colorkey());
 
     case FL_MASK_COLORKEY: {
         if(i->bytespp()==1 && (i->colorkey()==0x00000000)) return (a==1); //indexed xpm's

@@ -95,6 +95,11 @@ public:
 	  void delete_mode(int i){delete_mode_=i;};
 
 	  void draw(Fl_Widget * w);
+
+      void draw(const char* s, float x, float y) { Fl_Printer::draw(s, x, y); }
+      void draw(const Fl_String & s, float x, float y) { Fl_Printer::draw(s, x, y); }
+      void draw(const char* s, int n, float x, float y) { Fl_Printer::draw(s, n, x, y); }
+
 	  void page(double pw, double ph, int orientation);
 	  void page(int format, int orientation);
 	  void page();

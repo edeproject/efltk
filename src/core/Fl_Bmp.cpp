@@ -51,6 +51,8 @@ uint32 ReadLe32(Fl_IO &bmp_io)
     return fl_swap_le32(tmp);
 }
 
+#define UNUSED(x) (void)x;
+
 static bool bmp_create(Fl_IO &bmp_io, uint8 *&data, Fl_PixelFormat &fmt, int &w, int &h)
 {
     char *error_str=0;
@@ -63,13 +65,15 @@ static bool bmp_create(Fl_IO &bmp_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
     uint8 *bits;
     int ExpandBMP;
 
+    uint pitch;
+	uint32 file_offset;
+
     /* The Win32 BMP file header (14 bytes) */
     char   magic[2];
     uint32 bfSize;
     uint16 bfReserved1;
     uint16 bfReserved2;
     uint32 bfOffBits;
-    uint pitch;
 
     /* The Win32 BITMAPINFOHEADER struct (40 bytes) */
     uint32 biSize;
@@ -83,8 +87,7 @@ static bool bmp_create(Fl_IO &bmp_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
     int32 biYPelsPerMeter;
     uint32 biClrUsed;
     uint32 biClrImportant;
-    uint32 file_offset;
-
+    
     file_offset = bmp_io.tell();
 
     bmp_io.read(magic, 2);
@@ -95,12 +98,12 @@ static bool bmp_create(Fl_IO &bmp_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
 
     // Header
     bfSize	= ReadLe32(bmp_io);
-    bfReserved1	= ReadLe16(bmp_io);
+    bfReserved1 = ReadLe16(bmp_io);
     bfReserved2	= ReadLe16(bmp_io);
     bfOffBits	= ReadLe32(bmp_io);
 
     /* Read the Win32 BITMAPINFOHEADER */
-    biSize	= ReadLe32(bmp_io);
+    biSize = ReadLe32(bmp_io);
 
     if(biSize == 12) /* BITMAPCOREINFO */
     {
@@ -112,8 +115,8 @@ static bool bmp_create(Fl_IO &bmp_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
         biSizeImage	= 0;
         biXPelsPerMeter	= 0;
         biYPelsPerMeter	= 0;
-        biClrUsed	= 0;
         biClrImportant	= 0;
+        biClrUsed	= 0;
 
         //imgsize = size - offset;
     }
@@ -123,11 +126,11 @@ static bool bmp_create(Fl_IO &bmp_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
         biHeight	= ReadLe32(bmp_io);
         biPlanes	= ReadLe16(bmp_io);
         biBitCount	= ReadLe16(bmp_io);
-        biCompression	= ReadLe32(bmp_io);
+        biCompression= ReadLe32(bmp_io);
         biSizeImage	= ReadLe32(bmp_io);
         biXPelsPerMeter	= ReadLe32(bmp_io);
         biYPelsPerMeter	= ReadLe32(bmp_io);
-        biClrUsed	= ReadLe32(bmp_io);
+        biClrUsed		= ReadLe32(bmp_io);
         biClrImportant	= ReadLe32(bmp_io);
     }
     else

@@ -40,7 +40,8 @@ int fl_va_len(char *format, va_list ap)
     char tmpnum[64];
 
     char ch;
-    while((ch = *ptr++)) {
+    while(*ptr) {
+        ch = *ptr++;
         if(ch=='%') {
             ch = *ptr++;
             // Copy format

@@ -46,8 +46,10 @@ int x,int y,int w,int h, Fl_Flags flags)
             {
                 Fl_Color color;
                 if (flags & FL_SELECTED) color = widget->selection_color();
-                else if (flags & FL_HIGHLIGHT && (color = widget->highlight_color())) ;
-                else color = widget->button_color();
+                else if (flags & FL_HIGHLIGHT && widget->highlight_color())
+                    color = widget->highlight_color();
+                else
+                    color = widget->button_color();
                 box->draw(x,y,w,h, color, flags);
                 box->inset(x,y,w,h);
             }
@@ -57,8 +59,8 @@ int x,int y,int w,int h, Fl_Flags flags)
     Fl_Color color;
     if (flags & FL_SELECTED)
         color = widget->selection_text_color();
-    else if (flags&FL_HIGHLIGHT && (color = widget->highlight_label_color()))
-        ;
+    else if (flags&FL_HIGHLIGHT && widget->highlight_label_color())
+        color = widget->highlight_label_color();
     else
         color = widget->text_color();
     // to draw the shape inactive, draw it twice to get the engraved look:

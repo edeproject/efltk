@@ -139,12 +139,13 @@ void Fl_ListView_Item::setup(unsigned row)
             fl_measure(col_label, w, h, parent()->column(n)->flags());
         } else {
             // No wrap, check for multi line
-            char *ptr = (char *)strchr(col_label, '\n');
+            const char *ptr = strchr(col_label, '\n');
             if(ptr) {
                 // Multi line, calc lines
-                h = (int)fl_height();
-                while((ptr=strchr(ptr+1, '\n'))) {
+                h = 0;
+                while(ptr) {
                     h += (int)fl_height();
+                    ptr=strchr(ptr+1, '\n');
                 }
                 h += int(fl_height() + fl_descent());
             }

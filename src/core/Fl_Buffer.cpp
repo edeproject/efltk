@@ -103,7 +103,6 @@ void Fl_Buffer::read_file(const char *fileName)
     FILE *f = fopen(fileName, "rb");
     if (!f) {
         fl_throw("Can't open file <" + Fl_String(fileName) + "> for reading");
-		return;
 	}
     fseek(f,0,SEEK_END);
     unsigned fileLength = ftell(f);

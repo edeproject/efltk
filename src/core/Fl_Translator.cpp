@@ -152,14 +152,14 @@ struct catalog *load_binary_file(const char *domain, const char *full_path, stru
 ////////////////////////////
 ////////////////////////////
 
-static Fl_String get_filename(const char *domainname, const char *dirname, const char *ext, struct locale &l, bool is_mo)
+static const char *get_filename(const char *domainname, const char *dirname, const char *ext, struct locale &l, bool is_mo)
 {
     //language[_territory[.codeset]][@modifier]
-    char file[FL_PATH_MAX];
+    static char file[FL_PATH_MAX];
 
     // Full locale string
     snprintf(file, sizeof(file)-1, "%s/%s/%s%s.%s", dirname, l.fullstring.c_str(), is_mo?"LC_MESSAGES/":"", domainname, ext);
-    if(fl_file_exists(file)) return file;
+    if(fl_file_exists(file)) return Fl_String(file);
 
     if(l.territory.length()>0 && l.codeset.length()>0 && l.modifier.length()>0) {
         // Lang + territory + codeset + modifier

@@ -10,7 +10,6 @@
 
 #ifdef _WIN32
 
-# define S_ISLNK(m)      (false)
 #if !defined(__GNUC__) && !defined(__BORLANDC__)
 # define S_ISREG(m)      (((m) & _S_IFMT) == _S_IFREG)
 # define S_ISDIR(m)      (((m) & _S_IFMT) == _S_IFDIR)
@@ -101,7 +100,9 @@ bool Fl_File_Attr::parse(const char *filename)
 
     if(S_ISDIR(s.st_mode)) flags |= DIR;
     if(S_ISREG(s.st_mode)) flags |= FILE;
+#ifndef _WIN32
     if(S_ISLNK(s.st_mode)) flags |= LINK;
+#endif
 
     size = (ulong)s.st_size;
 	modified = (ulong)s.st_mtime;

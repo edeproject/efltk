@@ -544,7 +544,7 @@ int MenuWindow::forward(int menu)
     for(int item = state->indexes[menu]+1;;item++)
     {
         Fl_Widget* widget = get_widget(item);
-        if (!widget) return 0;
+        if (!widget) break;
         if (widget->takesevents()) {
             set_item(menu, item);
             if(selected_!=item) {

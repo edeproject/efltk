@@ -67,7 +67,6 @@ static Fl_Font grok_font(Fl_Config *cf, const char* fontstr)
         return fl_create_font(p);
     else	
 	return fl_find_font(p);
-    return 0;	
 }
 
 extern "C" bool fltk_theme()
