@@ -191,7 +191,7 @@
 #define ENABLE_NLS 0
 
 /* Enables UTF8 */
-#define HAVE_XUTF8 0
+#define HAVE_XUTF8 1
 
 /*
  * End of "$Id$".

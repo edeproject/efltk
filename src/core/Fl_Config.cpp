@@ -5,6 +5,7 @@
 #include <efltk/vsnprintf.h>
 #include <efltk/Fl_Config.h>
 #include <efltk/filename.h>
+#include <efltk/fl_utf8.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -200,7 +201,7 @@ bool Fl_Config::read_file(bool create)
     bool error = false;
     if(filename_) {
         if(create && !fl_file_exists(filename_)) {
-            FILE *f = fopen(filename_, "w+");
+            FILE *f = fl_fopen(filename_, "w+");
             if(f) {
                 fputs("\n",f);
                 fclose(f);
@@ -233,7 +234,7 @@ bool Fl_Config::read_file(bool create)
         return true;
     }
 
-    FILE *fp = fopen(filename_, "r");
+    FILE *fp = fl_fopen(filename_, "r");
     if(!fp) {
         //fprintf(stderr, "fp == 0: %s\n", filename_);
         _error = CONF_ERR_FILE;
@@ -327,7 +328,7 @@ bool Fl_Config::flush()
         _error = CONF_ERR_FILE;
         return false;
     }
-    FILE *file = fopen(filename_, "w+");
+    FILE *file = fl_fopen(filename_, "w+");
     if(!file) {
         _error = CONF_ERR_FILE;
         return false;
@@ -565,23 +566,18 @@ void Fl_Config::remove_sec(const char *section)
 }
 
 #include "fl_internal.h"
-
-#if ENABLE_NLS
 static lconv *locale_conv = 0;
 static char decimal = '.';
-#endif
 
 // Converts locale decimal to '.' e.g. "1,5" to "1.5"
 char *double_to_str(double v)
 {
     static char ret[128];
     snprintf(ret, sizeof(ret)-1, "%g", v);
-#if ENABLE_NLS
     if(!locale_conv) {
         locale_conv = localeconv();
         decimal = locale_conv->decimal_point[0];
     }
-#endif
     if(decimal=='.') return ret;
 
     char *ptr = ret;
@@ -592,12 +588,10 @@ char *double_to_str(double v)
 // Reads double with '.' as decimal pointer
 double str_to_double(const char *v)
 {
-#if ENABLE_NLS
     if(!locale_conv) {
         locale_conv = localeconv();
         decimal = locale_conv->decimal_point[0];
     }
-#endif
     if(decimal=='.') return atof(v);
 
     static char ret[128];

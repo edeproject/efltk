@@ -198,6 +198,10 @@ SOURCE=..\src\widgets\Fl_Button.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\widgets\Fl_Calendar.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\core\fl_call_main.c
 # End Source File
 # Begin Source File
@@ -255,6 +259,10 @@ SOURCE=..\src\core\Fl_Date_Time.cpp
 # Begin Source File
 
 SOURCE=..\src\widgets\Fl_Dial.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Dialog.cpp
 # End Source File
 # Begin Source File
 
@@ -630,6 +638,10 @@ SOURCE=..\src\widgets\Fl_Tooltip.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\core\fl_utf8.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\core\Fl_Util.cpp
 # End Source File
 # Begin Source File
@@ -762,6 +774,10 @@ SOURCE=..\efltk\Fl_Button.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\efltk\Fl_Calendar.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\efltk\Fl_Callback.h
 # End Source File
 # Begin Source File
@@ -803,6 +819,10 @@ SOURCE=..\efltk\Fl_Date_Time.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_Dial.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Dialog.h
 # End Source File
 # Begin Source File
 

@@ -23,11 +23,15 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
-#include <efltk/x.h>
 #include <efltk/Fl_Font.h>
+#include <efltk/x.h>
 #include <ctype.h>
 #include <stdlib.h>
 #include <efltk/math.h>
+
+#if HAVE_XUTF8
+# include <efltk/fl_utf8.h>
+#endif
 
 class Fl_FontSize {
 public:
@@ -35,7 +39,11 @@ public:
   Fl_FontSize *next_all;// linked list so we can destroy em all
   unsigned size;
   int charset;
-  int width[256];
+#if HAVE_XUTF8
+  int *width[64];
+#else
+  int width[255];
+#endif
   HFONT font;
   TEXTMETRIC metr;
   Fl_FontSize(const char* fontname, int size, int charset);
@@ -82,16 +90,18 @@ Fl_FontSize::Fl_FontSize(const char* name, int size, int charset)
 
   HDC dc = fl_getDC();
   SelectObject(dc, font);
-  GetTextMetrics(dc, &fl_fontsize->metr);
-  //BOOL ret = GetCharWidthFloat(dc, metr.tmFirstChar, metr.tmLastChar, font->width+metr.tmFirstChar);
-  //...would be the right call, but is not implemented into Window95! (WinNT?)
+#ifdef HAVE_XUTF8
+  for(int i = 0; i < 64; i++) width[i] = 0;
+#else
   GetCharWidth(dc, 0, 255, width);
-
+#endif
+  GetTextMetrics(dc, &fl_fontsize->metr);
+  
   this->font = font;
   this->size = size;
   this->charset = charset;
   next_all = all_fonts;
-  all_fonts = this;
+  all_fonts = this;  
 }
 
 Fl_FontSize::~Fl_FontSize() {
@@ -109,26 +119,36 @@ void fl_font_rid() {
   }
 }
 
+Fl_Font fl_create_font(const char *system_name)
+{
+    Fl_Font_ *f = new Fl_Font_;
+    f->name_ = system_name;
+    f->bold_ = f;
+    f->italic_ = f;
+    f->first = 0;
+    return f;
+}
+
 ////////////////////////////////////////////////////////////////
 
 // The predefined fonts that fltk has:  bold:       italic:
 Fl_Font_ fl_fonts[] = {
-{" Arial",				fl_fonts+1, fl_fonts+2},
-{"BArial", 				fl_fonts+1, fl_fonts+3},
-{"IArial",				fl_fonts+3, fl_fonts+2},
-{"PArial",				fl_fonts+3, fl_fonts+3},
-{" Courier New",			fl_fonts+5, fl_fonts+6},
-{"BCourier New",			fl_fonts+5, fl_fonts+7},
-{"ICourier New",			fl_fonts+7, fl_fonts+6},
-{"PCourier New",			fl_fonts+7, fl_fonts+7},
-{" Times New Roman",			fl_fonts+9, fl_fonts+10},
-{"BTimes New Roman",			fl_fonts+9, fl_fonts+11},
-{"ITimes New Roman",			fl_fonts+11,fl_fonts+10},
-{"PTimes New Roman",			fl_fonts+11,fl_fonts+11},
-{" Symbol",				fl_fonts+12,fl_fonts+12},
-{" Terminal",				fl_fonts+14,fl_fonts+14},
-{"BTerminal",				fl_fonts+14,fl_fonts+14},
-{" Wingdings",				fl_fonts+15,fl_fonts+15},
+	{" Arial",				fl_fonts+1, fl_fonts+2},
+	{"BArial", 				fl_fonts+1, fl_fonts+3},
+	{"IArial",				fl_fonts+3, fl_fonts+2},
+	{"PArial",				fl_fonts+3, fl_fonts+3},
+	{" Courier New",		fl_fonts+5, fl_fonts+6},
+	{"BCourier New",		fl_fonts+5, fl_fonts+7},
+	{"ICourier New",		fl_fonts+7, fl_fonts+6},
+	{"PCourier New",		fl_fonts+7, fl_fonts+7},
+	{" Times New Roman",	fl_fonts+9, fl_fonts+10},
+	{"BTimes New Roman",	fl_fonts+9, fl_fonts+11},
+	{"ITimes New Roman",	fl_fonts+11,fl_fonts+10},
+	{"PTimes New Roman",	fl_fonts+11,fl_fonts+11},
+	{" Symbol",				fl_fonts+12,fl_fonts+12},
+	{" Terminal",			fl_fonts+14,fl_fonts+14},
+	{"BTerminal",			fl_fonts+14,fl_fonts+14},
+	{" Wingdings",			fl_fonts+15,fl_fonts+15},
 };
 
 ////////////////////////////////////////////////////////////////
@@ -141,8 +161,8 @@ TEXTMETRIC* fl_textmetric() {return &(fl_fontsize->metr);}
 // we need to decode the encoding somehow!
 static int charset = DEFAULT_CHARSET;
 
-void fl_font(Fl_Font font, float psize) {
-
+void fl_font(Fl_Font font, float psize) 
+{
   // only integers supported right now, I think there is a newer
   // interface that takes arbitrary sizes, though...
   psize = float(int(psize+.5f));
@@ -154,52 +174,139 @@ void fl_font(Fl_Font font, float psize) {
 
   Fl_FontSize* f;
   // search the fontsizes we have generated already:
-  for (f = font->first; f; f = f->next)
-    if (f->size == size && f->charset == charset) break;
-  if (!f) {
-    f = new Fl_FontSize(font->name_, size, charset);
-    f->next = font->first;
-    ((Fl_Font_*)font)->first = f;
+  for (f = font->first; f; f = f->next) {
+	if (f->size == size && f->charset == charset) break;
   }
+
+  if (!f) {
+		f = new Fl_FontSize(font->name_, size, charset);
+		f->next = font->first;
+		((Fl_Font_*)font)->first = f;
+  }
+  
   fl_fontsize = f;
 }
 
-float fl_height() {
-  return float(fl_fontsize->metr.tmAscent + fl_fontsize->metr.tmDescent);
-}
-
+float fl_height()  { return float(fl_fontsize->metr.tmAscent + fl_fontsize->metr.tmDescent); }
 float fl_descent() { return float(fl_fontsize->metr.tmDescent); }
 
-/*
-float fl_width(const char* c, int n) {
-  SIZE size;
-  HDC dc = fl_getDC();
-  SelectObject(dc, current_font);
-  // I think win32 has a fractional version of this:
-  GetTextExtentPoint(dc, c, n, &size);
-  return float(size.cx);
-}
-*/
-
-float fl_width(const char* c, int n) {
-    float w = 0;
-    while (n--) w += fl_fontsize->width[uchar(*c++)];
-    return w;
+// Unicode string buffer
+static unsigned short *wstr = NULL;
+static int wstr_len	= 0;
+#define resize_buffer(len) \
+if(len > wstr_len) { \
+		if(wstr) wstr = (unsigned short*)realloc(wstr, sizeof(short) * len); \
+		else wstr = (unsigned short*)malloc(sizeof(short) * len); \
+		wstr_len = len; \
 }
 
-float fl_width(uchar c) {
+float fl_width(const char* c, int n) 
+{
+#if HAVE_XUTF8
+  int i = 0;
+  float w = 0;
+  unsigned int ucs;
+  while (i < n) {    
+    int l = fl_utf2ucs((const unsigned char*)c + i, n - i, &ucs);
+    if (l < 1) l = 1; 
+    i += l;
+    if (!fl_nonspacing(ucs)) {
+      w += fl_width(ucs);
+    }
+  }
+  return  w;
+#else  		
+	SIZE size;
+	HDC dc = fl_getDC();
+	SelectObject(dc, current_font);
+	// I think win32 has a fractional version of this:
+	GetTextExtentPoint(dc, c, n, &size);	
+	return float(size.cx);
+#endif
+}
+
+#if HAVE_XUTF8
+float fl_width(unsigned int ucs) {
+	unsigned int r = (ucs & 0xFC00)>>10;
+	if(!fl_fontsize->width[r]) {
+		SIZE s;
+		HDC dc = fl_getDC();
+		SelectObject(dc, current_font);
+     	fl_fontsize->width[r] = new int[0x0400];        
+		unsigned short i=0, ii = r * 0x400;
+		for (; i < 0x400; i++) {
+			GetTextExtentPoint32W(dc, &ii, 1, &s);
+			fl_fontsize->width[r][i] = s.cx;
+			ii++;
+		}		
+	}
+	return float(fl_fontsize->width[r][ucs&0x03FF]);
+}
+#else
+float fl_width(unsigned int c) {
+	if(c>255) c=255;
     return float(fl_fontsize->width[c]);
 }
+#endif
 
-void fl_transformed_draw(const char *str, int n, float x, float y) {
-  SetTextColor(fl_gc, fl_colorref);
-  HGDIOBJ oldfont = SelectObject(fl_gc, current_font);
-  TextOut(fl_gc, int(floorf(x+.5f)), int(floorf(y+.5f)), str, n);
-  SelectObject(fl_gc, oldfont);
+void fl_transformed_draw(const char *str, int n, float x, float y) 
+{
+	SetTextColor(fl_gc, fl_colorref);
+	SelectObject(fl_gc, current_font);
+#if HAVE_XUTF8	
+	int wn = 0;
+	int i = 0;
+	int lx = 0;
+	while (i < n) {
+		unsigned int u;
+		unsigned short ucs;
+		int l = fl_utf2ucs((const unsigned char*)str + i, n - i, &u);
+		if (fl_nonspacing(u)) {
+			x -= lx;
+		} else {
+	        lx = (int) fl_width(u);
+		}
+		ucs = u; 
+		if (l < 1) l = 1;
+		i += l;
+		TextOutW(fl_gc, x, y, &ucs, 1);
+		x += lx;
+	}
+#else
+	TextOut(fl_gc, int(floorf(x+.5f)), int(floorf(y+.5f)), str, n);  
+#endif
 }
 
-void fl_rtl_draw(const char *str, int n, float x, float y){
-    fl_transformed_draw(str, n, x, y);
+void fl_rtl_draw(const char *str, int n, float x, float y)
+{
+	int i = 0;
+	int lx = 0;
+#if HAVE_XUTF8
+	resize_buffer(n);
+	int wn = fl_utf2unicode((const unsigned char *)str, n, wstr);
+	SetTextColor(fl_gc, fl_colorref);
+	SelectObject(fl_gc, current_font);
+	while (i < wn) {
+	    lx = int(fl_width(wstr[i]));
+		x -= lx;
+		TextOutW(fl_gc, int(floorf(x+.5f)), int(floorf(y+.5f)),
+				wstr + i, 1);
+		if (fl_nonspacing(wstr[i])) {
+			x += lx;
+		}
+		i++;
+	}	
+#else
+	SetTextColor(fl_gc, fl_colorref);
+	SelectObject(fl_gc, current_font);
+	while(i < n) {
+	    lx = int(fl_width(str[i]));
+		x -= lx;
+		TextOut(fl_gc, int(floorf(x+.5f)), int(floorf(y+.5f)), 
+				str + i, 1);
+		i++;
+	}
+#endif
 }
 
 // Change the encoding to use for the next font selection.

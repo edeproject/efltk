@@ -490,9 +490,10 @@ void Fl_ListView::layout()
 
             if(calc_total_h) widget->index(a);
             if(!calc_total_h && widgety>Y+H+yposition_) break;
-        }
+        }	
 
-        if(calc_total_h) total_height = widgety;
+        if(calc_total_h) 
+			total_height = widgety;
         calc_total_h = false;
 
         if(find_def) find_default_sizes();

@@ -84,14 +84,14 @@ Fl_Named_Style* Fl_Calendar::default_style = &::style;
 Fl_Calendar::Fl_Calendar(int x,int y,int w,int h,const char *lbl)
     : Fl_Group(x,y,w,h,lbl) {
    style(default_style);
-
+	unsigned i;
    // Header box
    m_headerBox = new Fl_Group(x,y,w,32);
    m_monthNameBox = new Fl_Box(x,0,w-64,16);
    m_monthNameBox->box(FL_NO_BOX);
 
    // Weekday headers
-   for (unsigned i = 0; i < 7; i++) {
+   for (i = 0; i < 7; i++) {
       m_dayNameBoxes[i] = new Fl_Box(x+i*16,y+16,16,16,weekDayLabels[i]);
    }
    m_headerBox->end();
@@ -99,7 +99,7 @@ Fl_Calendar::Fl_Calendar(int x,int y,int w,int h,const char *lbl)
    // Day buttons, correct positions are set by resize()
    m_buttonBox = new Fl_Group(0,32,w,64);
    m_buttonBox->box(FL_FLAT_BOX);
-   for (unsigned i = 0; i < 31; i++) {
+   for (i = 0; i < 31; i++) {
        Fl_Button *btn = new Fl_Button(0,0,16,16,monthDayLabels[i]);
        m_dayButtons[i] = btn;
        btn->connect(this, &Fl_Calendar::cbDayButtonClicked, (void *)(i+1));
@@ -107,7 +107,7 @@ Fl_Calendar::Fl_Calendar(int x,int y,int w,int h,const char *lbl)
    m_buttonBox->end();
 
    // Switch buttons, correct positions are set by resize()
-   for (unsigned i = 0; i < 4; i++) {
+   for (i = 0; i < 4; i++) {
       m_switchButtons[i] = new Fl_Button(x,y,16,16,switchLabels[i]);
       m_switchButtons[i]->connect(this, &Fl_Calendar::cbSwitchButtonClicked, (void *)monthChanges[i]);
       m_switchButtons[i]->label_type(FL_SYMBOL_LABEL);
@@ -152,11 +152,11 @@ void Fl_Calendar::layout() {
    int dayOffset   = monthDate.day_of_week()-1;
    int daysInMonth = monthDate.days_in_month();
    int weekOffset  = 0;
-   for (int i = 0; i < 31; i++) {
+   for (i = 0; i < 31; i++) {
        Fl_Button *btn = m_dayButtons[i];
        btn->resize(dayOffset*bw,weekOffset,bw,bh);
        dayOffset++;
-       if (i < daysInMonth) {
+       if ((int)i < daysInMonth) {
            if (dayOffset > 6) {
                dayOffset = 0;
                weekOffset += bh;
@@ -169,12 +169,12 @@ void Fl_Calendar::layout() {
 
    int sby = m_buttonBox->y() + m_buttonBox->h();
 
-   for (unsigned i = 0; i < 2; i++) {
+   for (i = 0; i < 2; i++) {
        m_switchButtons[i]->resize(xx+i*bw,sby,bw,bh);
    }
 
    int x1 = ww - bw * 2;
-   for (unsigned i = 2; i < 4; i++) {
+   for (i = 2; i < 4; i++) {
        m_switchButtons[i]->resize(xx+x1+(i-2)*bw,sby,bw,bh);
    }
 
@@ -186,7 +186,9 @@ void Fl_Calendar::draw() {
     Fl_Color btn_color = fl_color_average(button_color(), FL_WHITE, .4f);
     Fl_Color btn_color_hl = fl_color_average(button_color(), FL_GRAY, .5f);
 
-   for (int i = 0; i < 31; i++) {
+	unsigned i;
+
+   for (i = 0; i < 31; i++) {
        Fl_Button *btn = m_dayButtons[i];
        btn->box(button_box());
        btn->color(btn_color);
@@ -194,20 +196,20 @@ void Fl_Calendar::draw() {
        btn->label_font(label_font());
        btn->label_color(label_color());
        btn->label_size(label_size());
-       if(i==m_activeButtonIndex) {
+       if((int)i==m_activeButtonIndex) {
            btn->box(FL_FLAT_BOX);
            btn->color(button_color());
        }
    }
 
-   for (unsigned i = 0; i < 4; i++) {
+   for (i = 0; i < 4; i++) {
        m_switchButtons[i]->box(button_box());
        m_switchButtons[i]->color(btn_color);
        m_switchButtons[i]->label_color(button_color());
        m_switchButtons[i]->highlight_color(btn_color_hl);
    }
 
-   for (unsigned i=0; i < 7; i++) {
+   for (i=0; i < 7; i++) {
        m_dayNameBoxes[i]->box(button_box());
        m_dayNameBoxes[i]->color(button_color());
        m_dayNameBoxes[i]->label_color(label_color());

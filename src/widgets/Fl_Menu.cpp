@@ -44,6 +44,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#ifdef _WIN32
+# define isnan(x) false
+#endif
+
 ///////////////////////
 // MENU WINDOW CLASS //
 ///////////////////////

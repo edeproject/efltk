@@ -5,6 +5,7 @@
 #include <efltk/Fl_Window.h>
 #include <efltk/Fl.h>
 #include <efltk/x.h>
+#include <efltk/fl_utf8.h>
 
 #include <string.h>
 #include <stdio.h>
@@ -928,7 +929,7 @@ bool Fl_Image::read_image(const char *filename, const uint8 *data, uint32 data_s
     FILE *fp = 0;
 
     if(filename && fl_file_exists(filename)) {
-        fp = fopen(filename, "rb");
+        fp = fl_fopen(filename, "rb");
         if(!fp) return ret;
     } else if(!data && data_size<=0) {
         return ret;
@@ -983,7 +984,7 @@ bool Fl_Image::write_image(const char *filename, Fl_Image_IO *io)
     fl_register_imageio(&bmp_reader);
     fl_register_imageio(&gif_reader);
 
-    FILE *fp = fopen(filename, "wb");
+    FILE *fp = fl_fopen(filename, "wb");
     if(!fp) return false;
 
     bool ret = io->write_file(fp, quality_, _data, fmt, w, h);

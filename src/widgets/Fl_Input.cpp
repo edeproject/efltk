@@ -140,27 +140,6 @@ const char* Fl_Input::expand(const char* p, char* buf,int wordwrap) const
         } else {
             *o++ = c;
         }
-
-        /*int c = *p++;
-	
-        if (c & 0xE0)
-        {
-            *o++ = c;
-        }
-        else
-        {
-            if (c == '\n' && input_type() == MULTILINE) {p--; break;}
-            if (c == '\t' && input_type() == MULTILINE)
-            {
-                for (c = (o-buf)%8; c<8 && o<e; c++) *o++ = ' ';
-            }
-            else
-            {
-                *o++ = '^';
-                *o++ = c ^ 0x40;
-            }
-    
-        }*/
     }
     *o = 0;
     return p;
@@ -189,9 +168,13 @@ int* returnn                     // return offset into buf here
             unsigned int ucs;
             fl_utf2ucs((unsigned char*) (p - 1), 2, &ucs);
             if (ucs >= 128 && ucs < 0xA0) {
-                n += 4;
+				int len = fl_utf_charlen((unsigned char)*(p - 1));
+				n += len;
                 p++;
-            } else {
+            } else if(ucs == 0xA0) {
+				n++;
+				p++;
+			} else {
                 n++;
             }
 #else

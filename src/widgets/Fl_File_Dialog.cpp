@@ -4,6 +4,7 @@
 #include <efltk/vsnprintf.h>
 #include <efltk/fl_ask.h>
 #include <efltk/fl_draw.h>
+#include <efltk/fl_utf8.h>
 
 // For NLS stuff
 #include "../core/fl_internal.h"
@@ -1584,7 +1585,7 @@ void Fl_File_Dialog::update_preview(const char *filename)
 		int	 bytes;
 		char *ptr;
 
-		fp = fopen(filename, "rb");
+		fp = fl_fopen(filename, "rb");
 		if (fp != NULL) {
 			// Try reading the first 1k of data for a label...
 			bytes = fread(preview_text, 1, sizeof(preview_text) - 1, fp);

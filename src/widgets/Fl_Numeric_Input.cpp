@@ -97,16 +97,17 @@ int Fl_Numeric_Input::handle(int event)
 }
 
 #include "../core/fl_internal.h"
+
+static lconv *locale = 0;
+static char decimal = '.';
+
 // Handle and up or down arrow key:
 int Fl_Numeric_Input::handle_arrow(int dir)
 {
     if (readonly()) { fl_beep(); return 0; }
 
-    char decimal = '.';
-#if ENABLE_NLS
-    lconv *locale = localeconv();
+	if(!locale) locale = localeconv();
     decimal = locale->decimal_point[0];
-#endif
 
     // locate the character to change:
     int p; char c;

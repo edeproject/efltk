@@ -11,6 +11,8 @@
 ////////////////////////////////////////
 // NLS
 
+#include <locale.h>
+
 #if !ENABLE_NLS
 
 /* Stubs that do something close enough.  */
@@ -25,7 +27,6 @@
 #else
 
 // only include if ENABLE_NLS=1
-#include <locale.h>
 #include <libintl.h>
 # define _(String) dgettext ("efltk", String)
 

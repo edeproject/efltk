@@ -29,6 +29,7 @@
 // Include necessary headers...
 //
 
+#include <config.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -49,26 +50,30 @@
 #include <efltk/Fl_Text_Buffer.h>
 #include <efltk/Fl_Text_Editor.h>
 
-#define UNFINISHED 'A'
-#define PLAIN 'B'
-
 int                changed = 0;
 char               filename[256] = "";
 char               title[256];
 Fl_Text_Buffer     *textbuf = 0;
 
+#define STYLES 1
+
+#if STYLES
+
+#define UNFINISHED 'A'
+#define PLAIN 'B'
+
 // Syntax highlighting stuff...
 Fl_Text_Buffer     *stylebuf = 0;
 Fl_Text_Display::Style_Table_Entry
     styletable[] = {	// Style table
-        { FL_BLACK, FL_HELVETICA,        12 }, // A - Unfinished
-        { FL_BLACK, FL_HELVETICA,        12 }, // B - Plain
-        { FL_DARK3, FL_HELVETICA_ITALIC, 12 }, // C - Line comments
-        { FL_DARK3, FL_HELVETICA_ITALIC, 12 }, // D - Block comments
-        { fl_color_average(FL_BLACK, FL_YELLOW, 0.5), FL_HELVETICA,        12 }, // E - Strings
-        { fl_color_average(FL_BLACK, FL_GREEN, 0.5),  FL_HELVETICA,        12 }, // F - Directives
-        { fl_color_average(FL_BLACK, FL_RED, 0.5),    FL_HELVETICA,   12 }, // G - Types
-        { fl_color_average(FL_BLACK, FL_BLUE, 0.5),   FL_HELVETICA,   12 }  // H - Keywords
+        { FL_BLACK, FL_COURIER,        12 }, // A - Unfinished
+        { FL_BLACK, FL_COURIER,        12 }, // B - Plain
+        { FL_DARK3, FL_COURIER_ITALIC, 12 }, // C - Line comments
+        { FL_DARK3, FL_COURIER_ITALIC, 12 }, // D - Block comments
+        { fl_color_average(FL_BLACK, FL_YELLOW, 0.5), FL_COURIER,   12 }, // E - Strings
+        { fl_color_average(FL_BLACK, FL_GREEN, 0.5),  FL_COURIER,   12 }, // F - Directives
+        { fl_color_average(FL_BLACK, FL_RED, 0.5),    FL_COURIER,   12 }, // G - Types
+        { fl_color_average(FL_BLACK, FL_BLUE, 0.5),   FL_COURIER,   12 }  // H - Keywords
     };
 
 const char *code_keywords[] = {	// List of known C/C++ keywords...
@@ -468,7 +473,7 @@ style_update(int        pos,		// I - Position of update
     free(text);
     free(style);
 }
-
+#endif
 
 // Editor window functions and class...
 void save_cb();
@@ -806,6 +811,10 @@ Fl_Menu_Item menuitems[] = {
   { 0 }
 };
 
+#if !STYLES && HAVE_XUTF8
+Fl_Font myfont = 0;
+#endif
+
 Fl_Window* new_view() {
     EditorWindow* w = new EditorWindow(660, 400, title);
     w->begin();
@@ -817,24 +826,79 @@ Fl_Window* new_view() {
     m->copy(menuitems, w);
     m->end();
 
+#if !STYLES && HAVE_XUTF8
+	if(!myfont) 
+		myfont = fl_create_font(
+#ifdef _WIN32
+			"Arial Unicode MS"
+			//"MS Gothic"				
+#else
+			"-*-courier-medium-r-normal--*,"
+			"-*-fixed-medium-*-*--*-*-*-*-*-*-iso8859-15,"
+			"-*-symbol-*-*-*--*-*-*-*-*-*-adobe-fontspecific,"
+			"-*-*dingbats-*-*-*--*-*-*-*-*-*-adobe-fontspecific,"
+			"-*-fixed-*-*-*--*-*-*-*-*-*-iso8859-2,"
+			"-*-fixed-*-*-*--*-*-*-*-*-*-iso8859-3,"
+			"-*-fixed-*-*-*--*-*-*-*-*-*-iso8859-4,"
+			"-*-fixed-*-*-*--*-*-*-*-*-*-iso8859-5,"
+			"-*-fixed-*-*-*--*-*-*-*-*-*-iso8859-6,"
+			"-*-fixed-*-*-*--*-*-*-*-*-*-iso8859-7,"
+			"-*-fixed-*-*-*--*-*-*-*-*-*-iso8859-8,"
+			"-*-fixed-*-*-*--*-*-*-*-*-*-iso8859-9,"
+			"-*-fixed-*-*-*--*-*-*-*-*-*-iso8859-13,"
+			"-*-fixed-*-*-*--*-*-*-*-*-*-iso8859-14,"
+			"-*-fixed-*-*-*--*-*-*-*-*-*-koi8-*,"
+			"-*-fixed-*-*-*--*-*-*-*-*-*-jisx0208.1983-*,"
+			//"-*-fixed-*-*-*--*-*-*-*-*-*-jisc6226.1978-*,"
+			"-*-fixed-*-*-*--*-*-*-*-*-*-jisx0201.1976-*,"
+			"-*-*-*-*-*--*-*-*-*-*-*-ksc5601.1987-*,"
+			//"-*-fixed-*-*-*--*-*-*-*-*-*-jisx0208.1990-*,"
+			"-*-fixed-medium-r-normal--*-*-*-*-*-*-big5*-*,"
+			//"-*-fixed-*-*-*--*-*-*-*-*-*-iso646.1991-*,"
+			//"-*-fixed-*-*-*--*-*-*-*-*-*-mulearabic-1,"
+			//"-*-fixed-*-*-*--*-*-*-*-*-*-muleindian-1,"
+			//"-*-fixed-*-*-*--*-*-*-*-*-*-muleindian-2,"
+			//"-*-fixed-*-*-*--*-*-*-*-*-*-mulelao-*,"
+			//"-*-fixed-*-*-*--*-*-*-*-*-*-tis620.2529-*,"
+			//"-*-fixed-*-*-*--*-*-*-*-*-*-is13194-*,"
+			//"-*-fixed-*-*-*--*-*-*-*-*-*-mulearabic-2,"
+			//"-*-fixed-*-*-*--*-*-*-*-*-*-sisheng_cwnn-*,"
+			//"-*-fixed-*-*-*--*-*-*-*-*-*-omron_udc_zh-*,"
+			//"-*-fixed-*-*-*--*-*-*-*-*-*-muleipa-*,"
+			//"-*-fixed-*-*-*--*-*-*-*-*-*-viscii1.1-*,"
+			//"-*-fixed-*-*-*--*-*-*-*-*-*-gost19768.74-*,"
+			"-*-unifont-*-*-*--*-*-*-*-*-*-iso10646-1"
+#endif	
+			);
+#endif
+
     w->editor = new Fl_Text_Editor(0, 30, 660, 370);
-    w->editor->text_size(12);
+#if !STYLES
+    w->editor->text_size(14);
+#if HAVE_XUTF8
+	w->editor->text_font(myfont);
+#endif
+#endif
     //w->editor->cursor_style(Fl_Text_Editor::BLOCK_CURSOR);
     //w->editor->cursor_color(FL_RED);
     //w->editor->wrap_mode(1, 0);
 
-    w->editor->set_linenumber_area(0, 40);
+    w->editor->set_linenumber_area(0, 42);
     w->editor->buffer(textbuf);
+#if STYLES
     w->editor->highlight_data(stylebuf, styletable,
                               sizeof(styletable) / sizeof(styletable[0]),
                               UNFINISHED, style_unfinished_cb, 0);
+#endif
     w->end();
     w->callback((Fl_Callback *)close_cb, w);
 
     pack->resizable(w->editor);
     w->resizable(pack);
 
+#if STYLES
     textbuf->add_modify_callback(style_update, w->editor);
+#endif
     textbuf->add_modify_callback(changed_cb, w);
     textbuf->call_modify_callbacks();
 
@@ -846,8 +910,9 @@ int main(int argc, char **argv)
 {
   textbuf = new Fl_Text_Buffer;
   textbuf->tab_distance(4);
+#if STYLES
   style_init();
-
+#endif
   Fl_Window* window = new_view();
 
   window->show(1, argv);

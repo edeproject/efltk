@@ -2378,7 +2378,7 @@ int	Fl_Simple_Html::load(const char *f)// I - Filename to load (may also have ta
     if (strncmp(localname, "file:", 5) == 0)
       localname += 5;	// Adjust for local filename...
 
-    if ((fp = fopen(localname, "rb")) != NULL)
+    if ((fp = fl_fopen(localname, "rb")) != NULL)
     {
       fseek(fp, 0, SEEK_END);
       len = ftell(fp);

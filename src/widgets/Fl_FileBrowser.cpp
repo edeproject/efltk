@@ -332,15 +332,15 @@ Fl_FileBrowser::load(const char *directory)
         //
 #  if defined(__hpux) || defined(__sun)
         // Fairly standard
-        mtab = fopen("/etc/mnttab", "r");
+        mtab = fl_fopen("/etc/mnttab", "r");
 #  elif defined(__sgi) || defined(linux)
         // More standard
-        mtab = fopen("/etc/mtab", "r");
+        mtab = fl_fopen("/etc/mtab", "r");
 #  else
         // Otherwise fallback to full list
-        mtab = fopen("/etc/fstab", "r");
+        mtab = fl_fopen("/etc/fstab", "r");
         if (mtab == NULL)
-            mtab = fopen("/etc/vfstab", "r");
+            mtab = fl_fopen("/etc/vfstab", "r");
 #  endif
 
         if (mtab != NULL)

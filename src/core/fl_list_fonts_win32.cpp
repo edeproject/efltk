@@ -30,6 +30,8 @@
 #include <stdlib.h>
 #include <config.h>
 
+#include <stdio.h>
+
 // turn a stored font name into a pretty name:
 const char* Fl_Font_::name(int* ap) const
 {
@@ -41,12 +43,14 @@ const char* Fl_Font_::name(int* ap) const
         case 'P': type = FL_BOLD | FL_ITALIC; break;
         default:  type = 0; break;
     }
-    if (ap) {*ap = type; return name_+1;}
-    if (!type) {return name_+1;}
-    static char *buffer = new char[128];
-    strcpy(buffer, name_+1);
+	int skip=1; if(name_[1]=='@') skip++;
+    if (ap) { *ap = type; return name_+skip; }
+    if (!type) { return name_+skip; }
+    static char buffer[128];
+    strncpy(buffer, name_+skip, sizeof(buffer)-1);
     if (type & FL_BOLD) strcat(buffer, " bold");
-    if (type & FL_ITALIC) strcat(buffer, " italic");
+    if (type & FL_ITALIC) strcat(buffer, " italic");	
+
     return buffer;
 }
 

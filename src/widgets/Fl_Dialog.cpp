@@ -374,14 +374,14 @@ void Fl_Dialog::buttons(int buttons_mask,int default_button) {
 
 void Fl_Dialog::layout() {
    unsigned cnt = m_buttonList.count();
-
+   unsigned i;
    int maxh = 15;
    if (cnt) {
       Fl_Widget *btn = m_buttonList[0];
       fl_font(btn->textfont(),btn->textsize());
    }
 
-   for (unsigned i = 0; i < cnt; i++) {
+   for (i = 0; i < cnt; i++) {
       Fl_Widget *btn = m_buttonList[i];
       int ww = 0, hh = 0;
       fl_measure(btn->label(),ww,hh);
@@ -404,7 +404,7 @@ void Fl_Dialog::layout() {
    // resize buttons
    int bx = m_buttonPanel->w();
 
-   for (unsigned i = 0; i < cnt; i++) {
+   for (i = 0; i < cnt; i++) {
       Fl_Widget *btn = m_buttonList[i];
 
       int ww = 0, hh = 0;

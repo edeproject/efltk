@@ -24,11 +24,12 @@
 
 #include <efltk/Fl.h>
 #include <efltk/Fl_Double_Window.h>
-#include <efltk/Fl_Scroll.h>
 #include <efltk/Fl_Toggle_Button.h>
 #include <efltk/Fl_Choice.h>
 #include <efltk/Fl_Input.h>
 #include <efltk/Fl_Box.h>
+#include <efltk/Fl_Scroll.h>
+#include <efltk/Fl_ListView.h>
 #include <efltk/fl_draw.h>
 #include <efltk/math.h>
 #include <efltk/fl_utf8.h>
@@ -43,13 +44,6 @@
 #endif
 
 #if HAVE_XUTF8
-
-Fl_Scroll* thescroll;
-
-void box_cb(Fl_Widget* o, void*) {
-  //thescroll->box(((Fl_Button*)o)->value() ? FL_DOWN_FRAME : FL_NO_BOX);
-  thescroll->redraw();
-}
 
 class My_Input : public Fl_Input
 {
@@ -70,12 +64,12 @@ public:
     }
 };
 
-int main(int argc, char** argv) {
-  Fl_Window window(200 + 5*75,400);
-  Fl_Scroll scroll(200,0,5*75,400);
+int main(int argc, char** argv) 
+{
   Fl_Font myfont = fl_create_font(
 #ifdef _WIN32
-	" MS Gothic"
+	  "Arial Unicode MS"
+	//" MS Gothic"	
 #else
 	"-*-courier-medium-r-normal--*,"
 	"-*-fixed-medium-*-*--*-*-*-*-*-*-iso8859-15,"
@@ -115,12 +109,22 @@ int main(int argc, char** argv) {
 #endif	
   );
 
-#ifndef _WIN32
-  setlocale(LC_CTYPE, "");
-  XSetLocaleModifiers("");
-#endif
+  Fl::init_locale();
 
-  //for (int y=1; y<4095; y++) {
+#define SCROLL
+
+  Fl_Window window(200 + 5*75,400);
+#ifdef SCROLL
+  Fl_Scroll scroll(200,0,5*75,400);
+#else
+  Fl_ListView scroll(200,0,5*75,400);
+  scroll.add_column("Range",75);
+  scroll.add_column("UTF-8",4*75-20);
+  scroll.text_size(14);
+  scroll.text_font(myfont);    
+#endif
+  scroll.begin();
+
   int off = 2;
   
   if (argc > 1) {
@@ -141,21 +145,21 @@ int main(int argc, char** argv) {
 	i++;
     }
     buf[o] = '\0';
-    sprintf(bu, "0x%04X", y * 16);
-
+    sprintf(bu, "0x%04X", y * 16, (y+1) * 16);
+#ifdef SCROLL
     Fl_Input* b = new Fl_Input(0,(y-off)*25,60,25);
     b->value(bu);
-
-    b = new Fl_Input(60,(y-off)*25,290,25);
+    b = new Fl_Input(60,(y-off)*25,300,25);
     b->text_font(myfont);
-    b->text_size(14);
     b->value(buf);
+#else
+    Fl_ListView_Item* b = new Fl_ListView_Item();
+	b->copy_label(0, bu);
+	b->copy_label(1, buf);
+#endif
   }
   scroll.end();
   window.resizable(scroll);
-
-
-  thescroll = &scroll;
 
   int l;
   char *latin1 = "ABCabc‡ËÈÔ‚Óˆ¸„123";

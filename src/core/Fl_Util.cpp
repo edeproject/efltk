@@ -25,6 +25,8 @@
 # define S_ISBLK(m)      (((m) & _S_IFMT) == _S_IFBLK)
 #endif /* __GNUC__ */
 
+#define lstat stat
+
 #else
 
 # include <sys/types.h>

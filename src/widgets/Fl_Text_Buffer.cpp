@@ -28,6 +28,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <efltk/Fl_Text_Buffer.h>
+#include <efltk/fl_utf8.h>
 
 //#define PREFERRED_GAP_SIZE 80
 #define PREFERRED_GAP_SIZE 256
@@ -103,7 +104,7 @@ public:
         rep = replaced;
         ins = inserted;
         if(s && len) {
-            str = new char[len];
+            str = new char[len+1];
             strncpy(str, s, len);
             str[len]='\0';
         }
@@ -2838,7 +2839,7 @@ int
 Fl_Text_Buffer::insertfile(const char *file, int pos, int buflen)
 {
     FILE *fp;  int r;
-    if (!(fp = fopen(file, "r"))) return 1;
+    if (!(fp = fl_fopen(file, "r"))) return 1;
     char *buffer = new char[buflen];
     for (; (r = fread(buffer, 1, buflen - 1, fp)) > 0; pos += r)
     {
@@ -2857,7 +2858,7 @@ int
 Fl_Text_Buffer::outputfile(const char *file, int start, int end, int buflen)
 {
     FILE *fp;
-    if (!(fp = fopen(file, "w"))) return 1;
+    if (!(fp = fl_fopen(file, "w"))) return 1;
     for (int n; (n = min(end - start, buflen)); start += n)
     {
         char *p = (char*)text_range(start, start + n);
