@@ -34,6 +34,7 @@ enum Fl_Event_Types {
     // (Physical) Keyboard 
     FL_KEY_DOWN             = FL_KEY_EVENTS + 1, 
     FL_KEY_UP               = FL_KEY_EVENTS + 2,
+    FL_KEY_SHORTCUT         = FL_KEY_EVENTS + 3,
 
     // (Physical) Focus events
     FL_FOCUS_SET            = FL_FOCUS_EVENTS + 1, 
@@ -53,7 +54,6 @@ enum Fl_Event_Types {
 
     // (Logical) Menu commands
     FL_MENU_COMMAND         = FL_MENU_EVENTS + 1,
-    FL_SHORTCUT             = FL_MENU_EVENTS + 3,
 
     // (Logical) Data modification commands
     FL_DATA_CHANGE          = FL_DATA_EVENTS + 1,
@@ -118,8 +118,8 @@ enum Fl_Event_Types {
 #define FL_KEYBOARD     FL_KEY_DOWN
 #define FL_KEY          FL_KEY_DOWN
 #define FL_KEYUP        FL_KEY_UP
+#define FL_SHORTCUT     FL_KEY_SHORTCUT
 
-#define FL_SHORTCUT     FL_SHORTCUT
 #define FL_MENU_ITEM    FL_MENU_COMMAND
 
 #define FL_SHOW         FL_WIDGET_SHOW
