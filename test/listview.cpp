@@ -9,63 +9,63 @@
 #include <efltk/x.h>
 
 static char * blue_ball_xpm[] = {
-"16 16 8 1",
-" 	c None",
-".	c #FFECEC",
-"+	c #B9D0F7",
-"@	c #FFD9D9",
-"#	c #A4BEEA",
-"$	c #7AA2E8",
-"%	c #1549A3",
-"&	c #FFC1C1",
-"                ",
-"    .++++++.    ",
-"   @#$$%%$$+@   ",
-"  @++%%%%%%$+@  ",
-" .+$%%%%%%%%$+. ",
-" +$%%%%%%%%%%$& ",
-" +$%%%%%%%%%%$+ ",
-" +%%%%%%%%%%%%+ ",
-" +%%%%%%%%%%%%+ ",
-" +$%%%%%%%%%%$+ ",
-" +$%%%%%%%%%%$& ",
-" .+$%%%%%%%%$+. ",
-"  @$$%%%%%%$+@  ",
-"   @+$$%%$$+@   ",
-"    .+++++&+    ",
-"                "};
+    "16 16 8 1",
+    "   c None",
+    ".  c #FFECEC",
+    "+  c #B9D0F7",
+    "@  c #FFD9D9",
+    "#  c #A4BEEA",
+    "$  c #7AA2E8",
+    "%  c #1549A3",
+    "&  c #FFC1C1",
+    "                ",
+    "    .++++++.    ",
+    "   @#$$%%$$+@   ",
+    "  @++%%%%%%$+@  ",
+    " .+$%%%%%%%%$+. ",
+    " +$%%%%%%%%%%$& ",
+    " +$%%%%%%%%%%$+ ",
+    " +%%%%%%%%%%%%+ ",
+    " +%%%%%%%%%%%%+ ",
+    " +$%%%%%%%%%%$+ ",
+    " +$%%%%%%%%%%$& ",
+    " .+$%%%%%%%%$+. ",
+    "  @$$%%%%%%$+@  ",
+    "   @+$$%%$$+@   ",
+    "    .+++++&+    ",
+    "                "};
 
 static char * ball_xpm[] = {
-"16 16 13 1",
-" 	c None",
-".	c #FFECEC",
-"+	c #FFC1C1",
-"@	c #FF9A9A",
-"#	c #FF8585",
-"$	c #FFD9D9",
-"%	c #FF8686",
-"&	c #FF4141",
-"*	c #FF1A1A",
-"=	c #FF0505",
-"-	c #FF7373",
-";	c #FF1919",
-">	c #FF0000",
-"                ",
-"    .+@##@+.    ",
-"   $%&*==*&%$   ",
-"  $-;>>>>>>;-$  ",
-" .%;>>>>>>>>;%. ",
-" +&>>>>>>>>>>&+ ",
-" @*>>>>>>>>>>*@ ",
-" #=>>>>>>>>>>=# ",
-" #=>>>>>>>>>>=# ",
-" @*>>>>>>>>>>*@ ",
-" +&>>>>>>>>>>&+ ",
-" .%;>>>>>>>>;%. ",
-"  $-;>>>>>>;-$  ",
-"   $%&*==*&%$   ",
-"    .+@##@+.    ",
-"                "};
+    "16 16 13 1",
+    "   c None",
+    ".  c #FFECEC",
+    "+  c #FFC1C1",
+    "@  c #FF9A9A",
+    "#  c #FF8585",
+    "$  c #FFD9D9",
+    "%  c #FF8686",
+    "&  c #FF4141",
+    "*  c #FF1A1A",
+    "=  c #FF0505",
+    "-  c #FF7373",
+    ";  c #FF1919",
+    ">  c #FF0000",
+    "                ",
+    "    .+@##@+.    ",
+    "   $%&*==*&%$   ",
+    "  $-;>>>>>>;-$  ",
+    " .%;>>>>>>>>;%. ",
+    " +&>>>>>>>>>>&+ ",
+    " @*>>>>>>>>>>*@ ",
+    " #=>>>>>>>>>>=# ",
+    " #=>>>>>>>>>>=# ",
+    " @*>>>>>>>>>>*@ ",
+    " +&>>>>>>>>>>&+ ",
+    " .%;>>>>>>>>;%. ",
+    "  $-;>>>>>>;-$  ",
+    "   $%&*==*&%$   ",
+    "    .+@##@+.    ",
+    "                "};
 
 static Fl_Pixmap im1(ball_xpm);
 static Fl_Pixmap im2(blue_ball_xpm);
@@ -84,17 +84,32 @@ void callback(Fl_ListView *l, void *)
 
 void cb_multi(Fl_Widget *w, Fl_ListView *l)
 {
-	l->multi(w->value());
+    l->multi(w->value());
 }
 
 void cb_move(Fl_Widget *w, Fl_ListView *l)
 {
-	l->move(w->value());
+    l->move(w->value());
 }
 
 void cb_stripes(Fl_Widget *w, Fl_ListView *l)
 {
     l->draw_stripes(w->value());
+    l->redraw();
+}
+
+void cb_button_box(Fl_Widget *w, Fl_ListView *l)
+{
+    static int boxmode = 0;
+    switch (boxmode) {
+        case 0: l->button_box(FL_THIN_DOWN_BOX); break;
+        case 1: l->button_box(FL_DOWN_BOX); break;
+        case 2: l->button_box(FL_THIN_UP_BOX); break;
+        case 3: l->button_box(FL_UP_BOX); break;
+        case 4: l->button_box(FL_FLAT_BOX); break;
+    }
+    boxmode++;
+    if (boxmode > 4) boxmode = 0;
     l->redraw();
 }
 
@@ -149,12 +164,12 @@ void make_listview_ext()
         // Set color for column 1 and 2
         Fl_Color c=FL_BLACK;
         switch(a%5) {
-        case 1: c=FL_RED; break;
-        case 2: c=fl_darker(FL_GREEN); break;
-        case 3: c=FL_BLUE; break;
-        case 4: c=fl_darker(FL_YELLOW); break;
-        case 5: c=FL_GRAY; break;
-        default: break;
+            case 1: c=FL_RED; break;
+            case 2: c=fl_darker(FL_GREEN); break;
+            case 3: c=FL_BLUE; break;
+            case 4: c=fl_darker(FL_YELLOW); break;
+            case 5: c=FL_GRAY; break;
+            default: break;
         }
         i->label_color(1, c);
         i->label_color(2, c);
@@ -185,7 +200,11 @@ void make_listview_ext()
     but->type(Fl_Button::TOGGLE);
     but->callback((Fl_Callback*)cb_multi, l);
 
-    but = new Fl_Button(190, 265, 50, 20, "Stripes");
+    but = new Fl_Button(130, 265, 80, 20, "Button Box");
+    but->type(Fl_Button::TOGGLE);
+    but->callback((Fl_Callback*)cb_button_box, l);
+
+    but = new Fl_Button(220, 265, 50, 20, "Stripes");
     but->type(Fl_Button::TOGGLE);
     but->callback((Fl_Callback*)cb_stripes, l);
 
@@ -201,7 +220,7 @@ void make_listview()
 
     Fl_ListView *l = new Fl_ListView(10,20,280,240, "LIST VIEW: Normal items");
     //l->header()->hide();
-	//l->header()->h(30);
+    //l->header()->h(30);
     l->callback((Fl_Callback*)callback);
 
     // Add 4 cols
@@ -228,9 +247,9 @@ void make_listview()
         i->label(0, tmp);
     }
 
-	long end = Fl::ticks();    
+    long end = Fl::ticks();    
     printf("Fl_ListView with normal 1000 items: Duration: %ld ms\n", end-start);
- 
+
     l->end();
 
     Fl_Button *but = new Fl_Button(10, 265, 50, 20, "Move");
@@ -241,7 +260,11 @@ void make_listview()
     but->type(Fl_Button::TOGGLE);
     but->callback((Fl_Callback*)cb_multi, l);
 
-    but = new Fl_Button(190, 265, 50, 20, "Stripes");
+    but = new Fl_Button(130, 265, 80, 20, "Button Box");
+    but->type(Fl_Button::TOGGLE);
+    but->callback((Fl_Callback*)cb_button_box, l);
+
+    but = new Fl_Button(220, 265, 50, 20, "Stripes");
     but->type(Fl_Button::TOGGLE);
     but->callback((Fl_Callback*)cb_stripes, l);
 
