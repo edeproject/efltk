@@ -15,8 +15,8 @@ public:
     : Fl_Button_Group(x,y,w,h,label) { type(RADIO_BUTTONS); }
 
     /** The new style constructor creates the radio buttons group using the label, size, alignment, and label_width. */
-    Fl_CRadio_Buttons(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100)
-    : Fl_Button_Group(const char* l,int layout_size,Fl_Align layout_al,int label_w) { type(RADIO_BUTTONS); }
+    Fl_Radio_Buttons(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100)
+    : Fl_Button_Group(l,layout_size,layout_al,label_w) { type(RADIO_BUTTONS); }
 };
 
 #endif

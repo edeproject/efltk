@@ -8,6 +8,9 @@
 #include <efltk/Fl_Box.h>
 #include <efltk/Fl_Button_Group.h>
 
+#include <efltk/Fl_Check_Buttons.h>
+#include <efltk/Fl_Radio_Buttons.h>
+
 Fl_Input            *i;
 Fl_Button_Group     *cb;
 Fl_Box              *bx;
