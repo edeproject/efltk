@@ -34,6 +34,38 @@
 class Fl_Button;
 class Fl_Multi_Tabs;
 
+enum Fl_Dlg_Widget_Types {
+   DWT_UNKNOWN,
+   DWT_BOX=1,
+   DWT_HTMLBOX=2,
+   DWT_STRING=4,
+   DWT_MEMO=8,
+   DWT_INTEGER=16,
+   DWT_FLOAT=32,
+   DWT_DATE=64,
+   DWT_TIME=128,
+   DWT_DATETIME=256,
+   DWT_DATEINTERVAL=512,
+   DWT_COMBO=1024,
+   DWT_INTVALUECOMBO=2048,
+   DWT_LISTBOX=4096,
+   DWT_CHECKBUTTONS=8192,
+   DWT_RADIOBUTTONS=16384,
+   DWT_PHONE=32768
+};
+
+enum FGENTRYFLAGS {
+   FGE_NONE,
+   FGE_SPELLCHECK=1,
+   FGE_MANDATORY=2,
+   FGE_CFIELD=4,
+   FGE_USEPARENTCOLOR=8,
+   FGE_SINGLELINEENTRY=256,
+   FGE_MULTILINEENTRY=512
+};
+
+#define SINGLE_EDIT_ENTRY_HEIGHT 23
+
 class FL_API Fl_Dialog : public Fl_Window {
    typedef Fl_Window inherited;
 
@@ -47,11 +79,12 @@ class FL_API Fl_Dialog : public Fl_Window {
    int             m_buttons;
    int             m_modalResult;
 
+   Fl_Widget *find_widget(const char *field_name) const;
 public:
    Fl_Dialog(int w,int h);
 
-   const Fl_Variant operator [] (const char *field_name) const;
-   Fl_Variant operator [] (const char *field_name);
+   const Fl_Widget *operator [] (const char *field_name) const;
+   Fl_Widget * operator [] (const char *field_name);
 
    int   show_modal();
 
@@ -59,6 +92,8 @@ public:
    void  buttons(int buttons_mask,int default_button);
    void  user_button(Fl_Button *);
    void  clear_buttons();
+
+   Fl_Group *new_page(const char *label,bool autoColor=false);
 
    int   handle(int);
    void  layout();

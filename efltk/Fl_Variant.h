@@ -18,55 +18,60 @@
 #ifndef __FL_VARIANT_H__
 #define __FL_VARIANT_H__
 
-#include "Fl_Export.h"
-#include "Fl_Date_Time.h"
+#include <efltk/Fl_Export.h>
+#include <efltk/Fl_Date_Time.h>
 
 class FL_API Fl_Variant {
 public:
-	enum { 
-		NONE = 0, 
-		INT, 
-		FLOAT, 
-		STRING, 
-		TEXT, 
-		BUFFER, 
-		DATETIME 
-	};
+   enum {
+      NONE = 0,
+      INT,
+      FLOAT,
+      STRING,
+      TEXT,
+      BUFFER,
+      DATETIME
+   };
 
-    Fl_Variant() { m_type = NONE; }
-    ~Fl_Variant() { free_buffers(); }
+   Fl_Variant() { m_type = NONE; }
+   ~Fl_Variant() { free_buffers(); }
 
-    void set_int(int value);
-    void set_float(double value);
-    void set_string(const char * value,int maxlen=0);
-    void set_text(const char * value);
-    void set_buffer(const void * value,int sz);
-    void set_date(Fl_Date_Time value);
+   void set_int(int value);
+   void set_float(double value);
+   void set_string(const char * value,int maxlen=0);
+   void set_text(const char * value);
+   void set_buffer(const void * value,int sz);
+   void set_date(Fl_Date_Time value);
 
-    int    get_int() const;
-    double get_float() const;
-    const char * get_string() const;
-    const void * get_buffer() const;
-    Fl_Date_Time get_date() const;
+   int    get_int() const;
+   double get_float() const;
+   const char * get_string() const;
+   const void * get_buffer() const;
+   Fl_Date_Time get_date() const;
 
-    int type() const { return m_type; }
-    int size() const { return m_size; }
-    void *data() const { return (void *)(variantData *)&m_data; }
+   int type() const { return m_type; }
+   int size() const { return m_size; }
+   void *data() const { return (void *)(variantData *)&m_data; }
 
-    operator int () const;
-    operator double () const;
-    operator const char * () const;
-    operator Fl_Date_Time () const;
+   operator int () const;
+   operator double () const;
+   operator const char * () const;
+   operator Fl_Date_Time () const;
 
-    Fl_Variant& operator =(const Fl_Variant &C) { // ASSIGNMENT OPERATOR
+   Fl_Variant& operator =(const Fl_Variant &C) { // ASSIGNMENT  OPERATOR
       if (this == &C) return *this;
       set_data(C);
       return *this;
-	};
+   };
+
+   Fl_Variant& operator =(const char *s) { // ASSIGNMENT  OPERATOR
+      set_string(s);
+      return *this;
+   };
 
 protected:
-    void set_data(const Fl_Variant &C);
-    void free_buffers();
+   void set_data(const Fl_Variant &C);
+   void free_buffers();
 
 private:
    union variantData {
