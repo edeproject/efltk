@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE EXAMPLE PUBLIC "example.dtd" [
+<!ENTITY sampleEnt "FromEntity">
+<!ENTITY xml "Extensible Markup Language">
+]>
+<node1 value="true" visible="false">
+<!-- Comment after node1 -->
+
+<![CDATA[ Fixed cdata section.
+This can contain any characters ]]>
+
+ <CdataItem>This is a '&xml;'</CdataItem>
+ <CdataItem2>Fixed Cdata and '&sampleEnt;' Cdata</CdataItem2>
+ <node2>
+  <node3 val="123"/>
+  <node3 val='456'/>
+ </node2>
+ <node4 attr="test value"/>
+</node1>
