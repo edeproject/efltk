@@ -94,22 +94,6 @@ SOURCE=..\src\core\filename.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\core\filename_absolute.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\core\filename_expand.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\core\filename_ext.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\core\filename_isdir.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\core\filename_list.cpp
 # End Source File
 # Begin Source File
