@@ -64,7 +64,7 @@ Fl_String::Fl_String(char c, int repeater)
         memset(str_, c, repeater);
     }
     str_[repeater] = '\0';
-    len_ = strlen(str_);
+    len_ = repeater;
 }
 
 Fl_String::Fl_String(int number)
