@@ -277,6 +277,7 @@ Fl_String Fl_String::lower_case() const
 {
     char *temp = (char*)malloc(length()*3);
     int len = fl_utf_tolower((const uchar*)str_, length(), temp);
+    temp[len] = '\0';
     return Fl_String(temp, len, true);
 }
 
@@ -284,6 +285,7 @@ Fl_String Fl_String::upper_case() const
 {
     char *temp = (char*)malloc(length()*3);
     int len = fl_utf_toupper((const uchar*)str_, length(), temp);
+    temp[len] = '\0';
     return Fl_String(temp, len, true);
 }
 
