@@ -1,9 +1,9 @@
 #include <efltk/fl_math.h>
 #include <efltk/Fl_Tool_Bar.h>
-#include <efltk/Fl_Divider.h>
 #include <efltk/fl_draw.h>
 #include <efltk/Fl.h>
 #include <efltk/Fl_Item.h>
+#include <efltk/Fl_Image.h>
 #include <efltk/Fl_Button.h>
 
 class ToolMenuButton : public Fl_Widget
@@ -48,11 +48,19 @@ void Fl_Tool_Bar::cb_menu(Fl_Widget *w, void *data)
     }
 }
 
-int Fl_Tool_Bar::button_w = 24;
-int Fl_Tool_Bar::button_h = 24;
+void Fl_Tool_Bar::default_callback(Fl_Widget *button, void *arg)
+{
+    Fl_Tool_Bar *b = (Fl_Tool_Bar *)button->parent();
+    b->item(button);
+    b->do_callback(FL_RELEASE);
+}
+
+int Fl_Tool_Bar::m_button_sizes[2][2] = { { 28, 28 }, { 40, 40 } };
+Fl_Tool_Bar::TbSize Fl_Tool_Bar::m_tb_def_size = TB_SIZE_SMALL;
 
 static void revert(Fl_Style* s)
 {
+    s->text_size = 10;
     s->button_box = FL_UP_BOX;
     s->button_color = FL_BLACK;
     s->glyph = Fl_Tool_Bar::button_glyph;
@@ -63,18 +71,22 @@ static Fl_Named_Style style("Tool_Bar", revert, &Fl_Tool_Bar::default_style);
 Fl_Named_Style* Fl_Tool_Bar::default_style = &::style;
 
 // ctor initializer - used in both ctors
-void Fl_Tool_Bar::ctor_init() {
+void Fl_Tool_Bar::ctor_init()
+{
     style(default_style);
 
-    menu_ = new Fl_Menu_();
-    menu_->callback(cb_menu, this);
+    m_menu = new Fl_Menu_();
+    m_menu->callback(cb_menu, this);
 
-    menu_but = new ToolMenuButton();
-    menu_but->hide();
-    ((ToolMenuButton*)menu_but)->menu = menu_;
-    if(menu_but->parent()) menu_but->parent()->remove(menu_but);
+    m_menubut = new ToolMenuButton();
+    m_menubut->hide();
+    ((ToolMenuButton*)m_menubut)->menu = m_menu;
+    if(m_menubut->parent())
+        m_menubut->parent()->remove(m_menubut);
 
-    space_ = 2;
+    layout_spacing(3);
+
+    m_tb_size = TB_SIZE_DEFAULT;
 }
 
 // Traditional ctor
@@ -86,14 +98,15 @@ Fl_Tool_Bar::Fl_Tool_Bar(int x, int y, int w, int h, const char *label)
 
 // New style ctor
 Fl_Tool_Bar::Fl_Tool_Bar(const char* l,int layout_size,Fl_Align layout_al,int label_w)
-: Fl_Bar(l,layout_size,layout_al,label_w) {
+: Fl_Bar(l,layout_size,layout_al,label_w)
+{
     ctor_init();
 }
 
 // dtor
 Fl_Tool_Bar::~Fl_Tool_Bar()
 {
-    delete menu_but;
+    delete m_menubut;
 }
 
 void Fl_Tool_Bar::layout()
@@ -105,40 +118,51 @@ void Fl_Tool_Bar::layout()
 
     int X=0,Y=0,W=w(),H=h();
     box()->inset(X,Y,W,H);
-    X+=glyph_size()+space_;
+    X+=glyph_size()+layout_spacing();
 
     H=0;
+    int hoff = layout_spacing()*2 + box()->dh();
 
     int out=-1;
 
-    for(int n=0; n<children(); n++) {
-        Fl_Widget *w=child(n);
-        if(w==menu_||w==menu_but) continue;
-        if(w==right_) continue;
+    for(int n=0; n<children(); n++)
+    {
+        Fl_Widget *w = child(n);
+        if(w==m_menu || w==m_menubut || w==m_right) continue;
 
+        int ww = w->w();
+        int wh = w->h();
+
+        w->resize(X, box()->dy()+layout_spacing(), ww, wh);
         w->layout();
-        w->position(X, box()->dh()+space_/2);
 
-        if(H < (w->h()+space_+box()->dh()*2) ) H = w->h()+space_+box()->dh()*2;
-        X+=w->w()+space_;
+        if(H < w->h()+hoff)
+            H = w->h()+hoff;
 
-        if(X>W - (menu_but->visible()?15:0) ) {
+        X += w->w()+layout_spacing();
+
+        if(X>W - (m_menubut->visible()?15:0) ) {
             out=n;
             //w->hide();
             break;
         } else
-        ;//w->show();
+            ;//w->show();
     }
 
-    if(menu_->children()) menu_->clear();
-    if(out>=0) {
-        menu_but->resize(W-15, Y+2, 14, H-box()->dh()-4);
-        menu_->resize(W-15, Y, 15, H-box()->dh());
-        menu_but->show();
+    if(m_menu->children())
+        m_menu->clear();
 
-        menu_->begin();
+    if(out>=0)
+    {
+        m_menubut->resize(W-15, Y+2, 14, H-box()->dh()-4);
+        m_menu->resize(W-15, Y, 15, H-box()->dh());
+        m_menubut->show();
+
+        m_menu->begin();
         for(int n=out; n<children(); n++) {
             Fl_Widget *w = child(n);
+
+            if(w->is_group()) continue;
 
             if(w->type()==Fl_Divider::VERTICAL) {
                 // Create divider, only if not first in menu
@@ -149,7 +173,7 @@ void Fl_Tool_Bar::layout()
 
                 Fl_Item *i = new Fl_Item();
                 // Tooltip as a label, if theres one
-                i->copy_label(w->tooltip().empty() ? w->label() : w->tooltip());
+                i->label(w->tooltip().empty() ? w->label() : w->tooltip());
                 i->image(w->image());
                 i->user_data(w);
                 i->activate(w->active());
@@ -158,18 +182,30 @@ void Fl_Tool_Bar::layout()
                 else i->clear_value();
             }
         }
-        menu_->end();
+        m_menu->end();
 
     } else {
-        menu_but->hide();
+        m_menubut->hide();
     }
 
     h(H);
     Fl_Widget::layout();
 }
 
+void Fl_Tool_Bar::preferred_size(int &w, int &h) const
+{
+    if(opened()) {
+        h = m_button_sizes[tb_size()][1];
+        h += box()->dh() + layout_spacing()*2;
+    } else {
+        h = glyph_size();
+    }
+}
+
 void Fl_Tool_Bar::draw()
 {
+    int n;
+
     if(opened())
     {
         // make it not draw the inside label:
@@ -177,24 +213,24 @@ void Fl_Tool_Bar::draw()
 
         if(damage() & ~FL_DAMAGE_CHILD) {
             draw_frame();
-            fl_push_clip(box()->dx(), box()->dy(), w()-box()->dw()-(menu_but->visible()?20:0), h()-box()->dh());
-            int n; for (n = children(); n--;) draw_child(*child(n));
+            fl_push_clip(box()->dx(), box()->dy(), w()-box()->dw()-(m_menubut->visible()?20:0), h()-box()->dh());
+            for (n = children(); n--;) draw_child(*child(n));
             draw_box();
             draw_inside_label();
             fl_pop_clip();
 
-            if(menu_but->visible()) {
-                fl_push_clip(w()-box()->dw()-(menu_but->visible()?20:0), box()->dy(), 30, h()-box()->dh());
-                draw_child(*menu_but);
+            if(m_menubut->visible()) {
+                fl_push_clip(w()-box()->dw()-(m_menubut->visible()?20:0), box()->dy(), 30, h()-box()->dh());
+                draw_child(*m_menubut);
                 draw_box();
                 fl_pop_clip();
             }
 
             for (n = 0; n < children(); n++) draw_outside_label(*child(n));
         } else {
-            fl_push_clip(box()->dx(), box()->dy(), w()-box()->dw()-(menu_but->visible()?20:0), h()-box()->dh());
+            fl_push_clip(box()->dx(), box()->dy(), w()-box()->dw()-(m_menubut->visible()?20:0), h()-box()->dh());
 
-            for (int n = 0; n < children(); n++) {
+            for(n = 0; n < children(); n++) {
                 Fl_Widget& w = *child(n);
                 if (w.damage() & FL_DAMAGE_CHILD_LABEL) {
                     draw_outside_label(w);
@@ -222,15 +258,14 @@ void Fl_Tool_Bar::draw()
 
 int Fl_Tool_Bar::handle(int ev)
 {
-    if(menu_but->visible() && Fl::event_inside(menu_but->x(), menu_but->y(), menu_but->w(), menu_but->h())) {
-        int ret = menu_but->handle(ev);
+    if(m_menubut->visible() && Fl::event_inside(m_menubut->x(), m_menubut->y(), m_menubut->w(), m_menubut->h())) {
+        int ret = m_menubut->handle(ev);
         return ret;
     }
     return Fl_Bar::handle(ev);
 }
 
-void Fl_Tool_Bar::button_glyph(const Fl_Widget* widget, int glyph,
-    int x,int y,int w,int h, Fl_Flags flags)
+void Fl_Tool_Bar::button_glyph(const Fl_Widget* widget, int glyph, int x,int y,int w,int h, Fl_Flags flags)
 {
     int X=0, Y=0, W=w, H=h;
     widget->box()->inset(X,Y,W,H);
@@ -247,23 +282,165 @@ void Fl_Tool_Bar::button_glyph(const Fl_Widget* widget, int glyph,
     }
 }
 
-Fl_Widget *Fl_Tool_Bar::add_button(const char *label, const char *tip, Fl_Image *image, Fl_Callback *cb)
+Fl_Tool_Button *Fl_Tool_Bar::add_toggle(Fl_Image *image, long id, const char *label, const char *tip)
 {
-    begin();
-    Fl_Button *b = new Fl_Button(0, 0, button_w, button_h, label);
-    b->tooltip(tip);
-    b->image(image);
-    b->callback(cb ? cb : Fl_Widget::default_callback);
-    //b->box(FL_THIN_UP_BOX);
-    end();
+    Fl_Tool_Button *b = Fl_Tool_Button::create(this, image, label, tip, id);
+    b->type(Fl_Button::TOGGLE);
     return b;
 }
 
-Fl_Widget *Fl_Tool_Bar::add_divider()
+Fl_Tool_Button *Fl_Tool_Bar::add_button(Fl_Image *image, long id, const char *label, const char *tip)
+{
+    return Fl_Tool_Button::create(this, image, label, tip, id);
+}
+
+Fl_Tool_Button *Fl_Tool_Bar::add_toggle(const char *label, const char *tip, Fl_Image *image, Fl_Callback *cb, void *data)
+{
+    Fl_Tool_Button *b = Fl_Tool_Button::create(this, image, label, tip, cb, data);
+    b->type(Fl_Button::TOGGLE);
+    return b;
+}
+
+Fl_Tool_Button *Fl_Tool_Bar::add_button(const char *label, const char *tip, Fl_Image *image, Fl_Callback *cb, void *data)
+{
+    return Fl_Tool_Button::create(this, image, label, tip, cb, data);
+}
+
+Fl_Divider *Fl_Tool_Bar::add_divider()
 {
     begin();
-    Fl_VertDivider *l = new Fl_VertDivider(10, button_h);
+
+    int dw, dh;
+    get_button_sizes(tb_size(), dw, dh);
+
+    Fl_VertDivider *l = new Fl_VertDivider(10, dh);
+
     end();
     return l;
 }
 
+///////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
+
+Fl_Tool_Button::TbShowMode Fl_Tool_Button::m_def_showmode = Fl_Tool_Button::TB_SHOW_AUTO;
+Fl_Tool_Button::TbTextPos Fl_Tool_Button::m_def_textpos = Fl_Tool_Button::TB_TEXT_AUTO;
+
+static void button_revert(Fl_Style* s)
+{
+    s->box = FL_UP_BOX;
+    s->color = FL_GRAY;
+}
+
+static Fl_Named_Style but_style("Tool_Button", button_revert, &Fl_Tool_Bar::default_style);
+Fl_Named_Style* Fl_Tool_Button::default_style = &::but_style;
+
+Fl_Tool_Button::Fl_Tool_Button(Fl_Tool_Bar *bar)
+    : Fl_Button(0,0,0,0), m_bar(bar)
+{
+    style(Fl_Tool_Button::default_style);
+
+    m_showmode = TB_SHOW_DEFAULT;
+    m_textpos  = TB_TEXT_DEFAULT;
+}
+
+Fl_Tool_Button *Fl_Tool_Button::create(Fl_Tool_Bar *bar, Fl_Image *image, const char *label, const char *tooltip, long id)
+{
+    return create(bar, image, label, tooltip, 0, (void*)id);
+}
+
+Fl_Tool_Button *Fl_Tool_Button::create(Fl_Tool_Bar *bar, Fl_Image *image, const char *label, const char *tooltip, Fl_Callback *cb, void *data)
+{
+    Fl_Group *saved = Fl_Group::current();
+    Fl_Group::current(bar);
+
+    Fl_Tool_Button *b = new Fl_Tool_Button(bar);
+    if(image) b->image(image);
+    if(label) b->label(label);
+    if(tooltip) b->tooltip(tooltip);
+    if(cb) b->callback(cb); else b->callback(Fl_Tool_Bar::default_callback);
+    if(data) b->user_data(data);
+
+    Fl_Group::current(saved);
+
+    return b;
+}
+
+void Fl_Tool_Button::draw()
+{
+    label_size(m_bar->text_size());
+    label_font(m_bar->text_font());
+
+    Fl_String saved_l;
+    Fl_Image *saved_im = image();
+
+    TbShowMode sm = showmode();
+    if(sm==TB_SHOW_DEFAULT) sm = default_showmode();
+
+    if(sm==TB_SHOW_AUTO) {
+        if(image()) sm = TB_SHOW_IMAGE;
+        else        sm = TB_SHOW_TEXT;
+    }
+
+    if(!(sm&TB_SHOW_IMAGE)) image(0);
+    if(!(sm&TB_SHOW_TEXT)) {
+        saved_l = label();
+        label("");
+    }
+
+    Fl_Button::draw();
+
+    image(saved_im);
+    if(!saved_l.empty())
+        label(saved_l);
+}
+
+void Fl_Tool_Button::layout()
+{
+    TbTextPos tp = textpos();
+    if(tp==TB_TEXT_DEFAULT) tp = default_textpos();
+
+    TbShowMode sm = showmode();
+    if(sm==TB_SHOW_DEFAULT) sm = default_showmode();
+
+    if(sm==TB_SHOW_AUTO) {
+        if(image()) sm = TB_SHOW_IMAGE;
+        else        sm = TB_SHOW_TEXT;
+    }
+
+    if(tp==TB_TEXT_BOTTOM) align(FL_ALIGN_INSIDE|FL_ALIGN_TOP);
+    else if(tp==TB_TEXT_RIGHT) align(FL_ALIGN_INSIDE|FL_ALIGN_LEFT);
+    else align(0);
+
+AGAIN:
+    int bw, bh, lw=0, lh=0;
+    m_bar->get_button_sizes(m_bar->tb_size(), bw, bh);
+
+    if(sm&TB_SHOW_TEXT)
+        measure_label(lw, lh);
+
+    if(image() && sm&TB_SHOW_IMAGE) {
+        lw += image()->width()+2;
+        lh += image()->height()+2;
+    }
+
+    lw += box()->dw() + 4;
+    if(lw < bw) lw = bw;
+
+    if(tp == TB_TEXT_AUTO) {
+        if(lh > bh) {
+            // Text and image didn't fit to box, try with left alignment.
+            if(!align()) {
+                align(FL_ALIGN_INSIDE|FL_ALIGN_LEFT);
+                goto AGAIN;
+            }
+        } else {
+            // Reset align, so text and image is "nicely centered"
+            align(0);
+        }
+    }
+
+    if(align() & FL_ALIGN_LEFT) lw += 2;
+    size(lw, bh);
+
+    Fl_Button::layout();
+}

@@ -1,135 +1,111 @@
 #include <efltk/Fl_Main_Window.h>
 
-static void revert(Fl_Style* s)
-{
-    s->color = FL_GRAY;
-    s->box = FL_FLAT_BOX;
-}
-static Fl_Named_Style style("Main_Window", revert, &Fl_Main_Window::default_style);
-Fl_Named_Style* Fl_Main_Window::default_style = &::style;
-
 Fl_Main_Window::Fl_Main_Window(int x, int y, int w, int h, const char *l)
     : Fl_Main_WindowType(x,y,w,h,l)
 {
-    style(default_style);
-
-    pack_ = new Fl_Pack(0,0,w,h);
-    pack_->box(FL_NO_BOX);
-    pack_->end();
-
-    menu_ = 0;
-    toolbar_ = 0;
-    view_ = 0;
-    status_ = 0;
-
-    resizable(pack_);
+    m_menu = 0;
+    m_toolbar = 0;
+    m_view = 0;
+    m_status = 0;
+    resizable(this);
 }
 
 Fl_Main_Window::Fl_Main_Window(int w, int h, const char *l)
     : Fl_Main_WindowType(w,h,l)
 {
-    style(default_style);
-
-    pack_ = new Fl_Pack(0,0,w,h);
-    pack_->box(FL_NO_BOX);
-    pack_->end();
-
-    menu_ = 0;
-    toolbar_ = 0;
-    view_ = 0;
-    status_ = 0;
-
-    resizable(pack_);
+    m_menu = 0;
+    m_toolbar = 0;
+    m_view = 0;
+    m_status = 0;
+    resizable(this);
 }
 
 Fl_Main_Window::~Fl_Main_Window()
-{	
+{
 }
 
 void Fl_Main_Window::menu(Fl_Menu_Bar *w)
 {
-    if(menu_) pack_->remove(menu_);
+    if(m_menu) remove(m_menu);
 
-    menu_ = w;
-    pack_->insert(*menu_,0);
+    m_menu = w;
+    insert(*m_menu, 0);
+    m_menu->layout_align(FL_ALIGN_TOP);
 }
 
 Fl_Menu_Bar *Fl_Main_Window::menu()
 {
-    if(!menu_) {
-        Fl_Menu_Bar *m = new Fl_Menu_Bar(0,0,0,23);
-        //m->box(FL_THIN_UP_BOX);
+    if(!m_menu) {
+        Fl_Menu_Bar *m = new Fl_Menu_Bar();
         m->end();
         menu(m);
     }
-    return menu_;
+    return m_menu;
 }
 
 void Fl_Main_Window::toolbar(Fl_Tool_Bar *w)
 {
-    if(toolbar_) pack_->remove(toolbar_);
+    if(m_toolbar) remove(m_toolbar);
 
-    toolbar_ = w;
+    m_toolbar = w;
 
     int index=0;
-    if(menu_) index++;
+    if(m_menu) index++;
 
-    pack_->insert(*toolbar_, index);
+    insert(*m_toolbar, index);
+    m_toolbar->layout_align(FL_ALIGN_TOP);
 }
 
 Fl_Tool_Bar *Fl_Main_Window::toolbar()
 {
-    if(!toolbar_) {
-        Fl_Tool_Bar *b = new Fl_Tool_Bar(0,0,0,10);
-        //b->box(FL_THIN_UP_BOX);
+    if(!m_toolbar) {
+        Fl_Tool_Bar *b = new Fl_Tool_Bar();
         b->end();
         toolbar(b);
     }
-    return toolbar_;
+    return m_toolbar;
 }
 
 void Fl_Main_Window::view(Fl_Group *w)
 {
-    if(view_) pack_->remove(view_);
+    if(m_view) remove(m_view);
 
-    view_ = w;
+    m_view = w;
 
     int index=0;
-    if(menu_) index++;
-    if(toolbar_) index++;
+    if(m_menu) index++;
+    if(m_toolbar) index++;
 
-    pack_->insert(*view_, index);
-    pack_->resizable(view_);
-    view_->layout();
+    insert(*m_view, index);
+    m_view->layout_align(FL_ALIGN_CLIENT);
 }
 
 Fl_Group *Fl_Main_Window::view()
 {
-    if(!view_) {
-        Fl_Group *g = new Fl_Group(0,0,w(),h());
-        //g->box(FL_THIN_DOWN_BOX);
+    if(!m_view) {
+        Fl_Group *g = new Fl_Group();
         g->end();
         view(g);
     }
-    return view_;
+    return m_view;
 }
 
-void Fl_Main_Window::status(Fl_Group *w)
+void Fl_Main_Window::status(Fl_Widget *w)
 {
-    if(status_) pack_->remove(status_);
+    if(m_status) remove(m_status);
 
-    status_ = w;
-    pack_->add(*status_);
+    m_status = w;
+    add(*m_status);
+    m_status->layout_align(FL_ALIGN_BOTTOM);
 }
 
-Fl_Group *Fl_Main_Window::status()
+Fl_Widget* Fl_Main_Window::status()
 {
-    if(!status_) {
-        Fl_Group *g = new Fl_Group(0,0,0,23);
-        //g->box(FL_THIN_UP_BOX);
-        g->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
-        status(g);
+    if(!m_status) {
+        Fl_Box *b = new Fl_Box();
+        b->align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
+        status(b);
     }
-    return status_;
+    return m_status;
 }
 
