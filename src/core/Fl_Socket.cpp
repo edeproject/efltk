@@ -138,7 +138,7 @@ int  Fl_Socket::read(char *buffer,int size)
 #endif
 }
 
-int  Fl_Socket::write(char *buffer,int size) 
+int  Fl_Socket::write(const char *buffer,int size) 
 {
 #ifdef _WIN32
 	return send(m_sockfd, buffer, size, NULL);

@@ -52,8 +52,8 @@ public:
 	int  get_option(int level,int option,int& value);
 
     // Read & write
-	int read(char *buffer,int size);
-	int write(char *buffer,int size);
+	int read(char *buffer, int size);
+	int write(const char *buffer, int size);
 	bool ready_to_read(int waitmsec);
 	bool ready_to_write();
 };
