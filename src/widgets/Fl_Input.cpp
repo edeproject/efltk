@@ -313,12 +313,13 @@ void Fl_Input::draw(int X, int Y, int W, int H)
             fl_draw(":", X+2+width, y);
             setfont();
 
-            X += inside_label_width; 
-            W -= inside_label_width;            
         } else {
             inside_label_width = 0;
         }
     }    
+
+    X += inside_label_width;
+    W -= inside_label_width;
 
     bool erase_cursor_only = (this == ::erase_cursor_only && !ALL);
 
