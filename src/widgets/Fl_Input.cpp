@@ -37,6 +37,41 @@
 
 #define MAXBUF 1024
 
+#include <efltk/Fl_Menu_.h>
+
+static Fl_Menu_ menu_(0,0,0,0,0);
+static bool menu_inited=false;
+static Fl_Input *menu_widget=0;
+
+#define CUT   1
+#define COPY  2
+#define PASTE 3
+
+static void cb_menu(Fl_Widget *w, void *d)
+{
+    if(!menu_widget) return;
+    switch((int)d) {
+    case CUT:
+        // Copy to both clipboards...
+        menu_widget->copy(true);
+        menu_widget->copy(false);
+        menu_widget->cut();
+        menu_widget->redraw();
+        break;
+    case COPY:
+        menu_widget->copy(true);
+        menu_widget->copy(false);
+        break;
+    case PASTE:
+        Fl::paste(*menu_widget, true);
+        menu_widget->redraw();
+        break;
+    default:
+        break;
+    };
+}
+
+
 ////////////////////////////////////////////////////////////////
 
 // Copy string p to the buffer, replacing control characters with ^X.
@@ -250,7 +285,7 @@ void Fl_Input::draw(int X, int Y, int W, int H)
     }
 
     int selstart, selend;
-    if (!focused() && !pushed())
+    if( (!focused() && !pushed() && menu_widget!=this) )
         selstart = selend = 0;
     else if (position() <= mark())
     {
@@ -835,40 +870,6 @@ void Fl_Input::maybe_do_callback()
 
 ////////////////////////////////////////////////////////////////
 
-#include <efltk/Fl_Menu_.h>
-
-static Fl_Menu_ menu_(0,0,0,0,0);
-static bool menu_inited=false;
-static Fl_Input *menu_widget=0;
-
-#define CUT   1
-#define COPY  2
-#define PASTE 3
-
-static void cb_menu(Fl_Widget *w, void *d)
-{
-    if(!menu_widget) return;
-    switch((int)d) {
-    case CUT:
-        // Copy to both clipboards...
-        menu_widget->copy(true);
-        menu_widget->copy(false);
-        menu_widget->cut();
-        menu_widget->redraw();
-        break;
-    case COPY:
-        menu_widget->copy(true);
-        menu_widget->copy(false);
-        break;
-    case PASTE:
-        Fl::paste(*menu_widget, true);
-        menu_widget->redraw();
-        break;
-    default:
-        break;
-    };
-}
-
 static void revert(Fl_Style *s) {
     s->leading = 2;
 }
@@ -1370,6 +1371,7 @@ int Fl_Input::handle(int event, int X, int Y, int W, int H)
             ((Fl_Group *)&menu_)->focus(-1);
             menu_widget = this;
             menu_.popup(Fl::event_x(), Fl::event_y());
+            menu_widget = 0;
             return 1;
         }
 

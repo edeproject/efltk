@@ -1633,7 +1633,8 @@ void Fl_Text_Display::scroll_(int topLineNum, int horizOffset) {
   mHorizOffset = horizOffset;
 
   // redraw all text
-  redraw(FL_DAMAGE_SCROLL);
+  //redraw(FL_DAMAGE_SCROLL);
+  redraw();
 }
 
 /*
@@ -1952,6 +1953,7 @@ int Fl_Text_Display::handle(int event) {
             ((Fl_Group *)&menu_)->focus(-1);
             menu_widget = this;
             menu_.popup(Fl::event_x(), Fl::event_y());
+            menu_widget = 0;
             return 1;
         }
 
