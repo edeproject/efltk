@@ -312,5 +312,5 @@ void Fl_Query::sql(const Fl_String& _sql) {
 }
 
 unsigned Fl_Query::record_count() const {
-    fl_throw("Record count is not supported for Fl_Query");
+    fl_throw("Record count is not supported for this database");
 }

@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x40038a
+# %FirstUniqueId:	0x40038c
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -682,6 +682,16 @@ test/fullscreen ::	test/fullscreen.o
 # %ObjsDir:	test
 test/progress ::	test/progress.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+# %UniqueId:	0x40038a
+# %TargetType:	C++_EXE
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	test
+# %IncDir:	test
+# %ObjsDir:	test
+test/menubar ::	test/menubar.o
+	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %ObjectFilesLinking
 # %TargetType:	C++_OBJ
@@ -2319,6 +2329,13 @@ test/fullscreen.o : test/fullscreen.cpp
 # %ParentTarget:	0x400388
 # %SourceTarget:	0x400389
 test/progress.o : test/progress.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40038a
+# %SourceTarget:	0x40038b
+test/menubar.o : test/menubar.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
@@ -7597,6 +7614,57 @@ test/progress.o :	efltk/Fl_ProgressBar.h\
 	efltk/Fl.h\
 	efltk/Fl_Box.h\
 	efltk/Fl_Window.h
+test/menubar.o :	efltk/fl_draw.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Pixmap.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl_Tooltip.h\
+	efltk/Fl.h\
+	efltk/Fl_Choice.h\
+	efltk/Fl_Menu_.h\
+	efltk/Fl_Menu_Item.h\
+	efltk/Fl_Menu_Button.h\
+	efltk/Fl_Toggle_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Menu_Bar.h\
+	efltk/Fl_Menu_Window.h\
+	efltk/Fl_Single_Window.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Main_Window.h\
+	efltk/Fl_Tool_Bar.h\
+	efltk/Fl_Bar.h\
+	efltk/Fl_Pack.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Double_Window.h\
+	efltk/Fl_Item_Group.h\
+	efltk/Fl_Output.h\
+	efltk/Fl_Input.h
 
 
 # %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x4
@@ -7825,6 +7893,7 @@ test/progress.o :	efltk/Fl_ProgressBar.h\
 # %TargetInfo test/listview_ds.cpp	SourceOrHeader,	UniqueId=0x400381,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/fonts.cpp	SourceOrHeader,	UniqueId=0x400383,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/fullscreen.cpp	SourceOrHeader,	UniqueId=0x400385,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/progress.cpp	SourceOrHeader,	UniqueId=0x400389,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x4
@@ -8062,7 +8131,7 @@ test/progress.o :	efltk/Fl_ProgressBar.h\
 # %TargetInfo efltk/net/Fl_Base64.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40037d,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Toggle_Light_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400386,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Hor_Slider.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400387,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo test/progress.cpp	SourceOrHeader,	UniqueId=0x400389,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/menubar.cpp	SourceOrHeader,	UniqueId=0x40038b,	TargetType=C++,	IDEFlags=0x4
 
 
 # %UniqueId:	0x400001
@@ -8123,6 +8192,7 @@ test/progress.o :	efltk/Fl_ProgressBar.h\
 #	0x40033f
 #	0x400364
 #	0x400361
+#	0x40038a
 #	0x40035a
 #	0x40033a
 #	0x400388

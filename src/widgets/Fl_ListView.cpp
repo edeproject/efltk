@@ -83,7 +83,7 @@ Fl_ListView_Item *Fl_ListView::find_text(const char *text, uint column, uint sta
 {
     for(uint n=start_index; n<children(); n++) {
         const char *itext = items[n]->label(column);
-        if(!strcmp(text, itext))			
+        if(!strcmp(text, itext))            
             return items[n];
     }
     return 0;
@@ -207,7 +207,7 @@ void Fl_ListView::draw_row(int x, int y, int w, int h, Fl_ListView_Item *widget,
             // pixel rows on top and bottom:
             fl_color(c1);
             fl_rectf(x, y, w, h);
-            			
+
             fl_color(fl_lighter(button_color()));
             fl_line(x, y, w, y);
             fl_line(x, y+h-1, w, y+h-1);
@@ -429,16 +429,16 @@ unsigned Fl_ListView::find_safe_top() const
 {
     if(!children() || yposition_<=0) return 0;
 
-	unsigned idx = 0;
-	for(unsigned n=m_ypos_lookup.size()-1; n>=0; n--) {
-		Fl_ListView_Item *i = child(m_ypos_lookup[n]);
-		if(i->y() < yposition_) {
-			idx = m_ypos_lookup[n];
-			break;
-		}
-	}
-	
-	return idx;
+    unsigned idx = 0;
+    for(unsigned n=m_ypos_lookup.size()-1; n>=0; n--) {
+        Fl_ListView_Item *i = child(m_ypos_lookup[n]);
+        if(i->y() < yposition_) {
+            idx = m_ypos_lookup[n];
+            break;
+        }
+    }
+
+    return idx;
 }
 
 void Fl_ListView::layout()
@@ -471,18 +471,18 @@ void Fl_ListView::layout()
     }    
 
     if(children()>0 && calc_total_h) {
-        
+
         int widgety=0;
         Fl_ListView_Item *widget = 0;
 
-		m_ypos_lookup.clear();
-		m_ypos_lookup.append(0);
+        m_ypos_lookup.clear();
+        m_ypos_lookup.append(0);
 
         for(uint a=0; a < children(); a++)
         {
-			if(a%1000 == 0) {				
-				m_ypos_lookup.append(a);
-			}
+            if(a%1000 == 0) {               
+                m_ypos_lookup.append(a);
+            }
             widget = (Fl_ListView_Item *)child(a);
             widget->y(widgety);
             widget->layout();
@@ -490,7 +490,7 @@ void Fl_ListView::layout()
             widgety+=widget->h();
 
             widget->index(a);
-        }	
+        }   
 
         total_height = widgety;
         calc_total_h = false;
@@ -637,12 +637,12 @@ int Fl_ListView::handle(int event)
                         if(sel_item)
                         {
                             if(selection.size() > 0) //Move many
-                            {								
-								int offset = i->h()-sel_item->h()/2;
+                            {                               
+                                int offset = i->h()-sel_item->h()/2;
                                 if(my < sel_item->y()-offset) //UP
                                 {
-                                    int cnt = sel_item->index() - i->index();										
-                                    if(selection.item(selection.size()-1)->index()-cnt >= 0) {										
+                                    int cnt = sel_item->index() - i->index();                                       
+                                    if(selection.item(selection.size()-1)->index()-cnt >= 0) {                                      
                                         moveselection_up(cnt);                                        
                                         show_item(sel_item);
                                         redraw(FL_DAMAGE_CONTENTS);
@@ -650,7 +650,7 @@ int Fl_ListView::handle(int event)
                                 }
                                 else if(my > sel_item->y()+sel_item->h()+offset) //DOWN
                                 {
-                                    int cnt = i->index() - sel_item->index();									
+                                    int cnt = i->index() - sel_item->index();                                   
                                     if(selection.item(0)->index()+cnt < (int)children()) {
                                         moveselection_down(cnt);                                        
                                         show_item(sel_item);
@@ -695,7 +695,7 @@ int Fl_ListView::handle(int event)
                 else if(event == FL_PUSH) {
 
                 // If different item, set clicks to 0
-                    if(i != item())	Fl::event_clicks(0);
+                    if(i != item()) Fl::event_clicks(0);
 
                     item(i);
                     damage_item(i);                
@@ -919,7 +919,7 @@ void Fl_ListView::sort_selection() {
 }
 
 void Fl_ListView::moveselection_up(int dy)
-{	
+{   
     unsigned n=selection.size();
     Fl_ListView_Item *i;
 
@@ -1117,7 +1117,7 @@ void Fl_ListView::find_default_sizes()
     find_def = false;
 }
 
-void Fl_ListView::fill(Fl_Data_Source &ds) 
+void Fl_ListView::fill(Fl_Data_Source &ds,int user_data_column) 
 {
     // Final version should replace the existing rows (truncate them,if necessary).
     clear();
@@ -1131,15 +1131,17 @@ void Fl_ListView::fill(Fl_Data_Source &ds)
 
     unsigned columnCount = ds.field_count();
     if (!columnCount) return;
+    unsigned actualColumn = 0;
     for (unsigned col = 0; col < columnCount; col++) {
         Fl_Data_Field& df = ds.field(col);
-        if (!df.visible) continue;
+        if (!df.visible || int(col) == user_data_column) continue;
         int width = 100;
         if (df.width >= 0) {
             width = df.width * text_size() * 2 / 3;
         }
         add_column(df.name(),width);
-        column_flags(col,df.flags);
+        column_flags(actualColumn,df.flags);
+        actualColumn++;
     }
 
     begin();
@@ -1148,12 +1150,18 @@ void Fl_ListView::fill(Fl_Data_Source &ds)
         Fl_ListView_ItemExt *item = new Fl_ListView_ItemExt();
         item->columns(columnCount);
         item->user_data(ds.user_data());
+        actualColumn = 0;
         for (int col = 0; col < (int)columnCount; col++) {
             Fl_Data_Field& df = ds.field(col);
             if (!df.visible) continue;
-            item->flags(col, df.flags);
-            if(df.type() == VAR_IMAGEPTR) item->image(col, (Fl_Image *)df.as_image());
-            else item->label(col, ds.field(col).as_string());
+            if (int(col) == user_data_column) {
+                item->argument(df.as_int());
+            } else {
+                item->flags(col, df.flags);
+                if (df.type() == VAR_IMAGEPTR) item->image(actualColumn, (Fl_Image *)df.as_image());
+                else item->label(actualColumn, df.as_string());
+                actualColumn++;
+            }
         }
         ds.next();
     }

@@ -77,19 +77,31 @@ Fl_ODBC_Field::Fl_ODBC_Field(const char *name,short number,short type,short leng
     switch (m_columnType) {
         case SQL_C_SLONG:
             value.set_int(0);
+            width = 8;
+            flags = FL_ALIGN_RIGHT;
             break;
         case SQL_C_DOUBLE:
             value.set_float(0);
+            width = 10;
+            flags = FL_ALIGN_RIGHT;
             break;
         case SQL_C_TIMESTAMP:
             value.set_date(Fl_Date_Time(0.0));
+            width = 10;
+            flags = FL_ALIGN_RIGHT;
             break;
         case SQL_C_BINARY:
             value.set_buffer(NULL,0);
+            width = length;
+            if (width > 50) width = 50;
+            flags = FL_ALIGN_LEFT;
             break;
         default:
             value.set_string("");
             value.resize_buffer(256);
+            width = length * 3 / 2;
+            if (width > 50) width = 50;
+            flags = FL_ALIGN_LEFT;
             break;
     }
 }

@@ -65,6 +65,8 @@ public:
     const Fl_String& sql()               { return m_sql; }
     Fl_Params& params()                  { return m_params; }
 
+    bool                    next()                { fetch(); return true; }
+
 public:
     bool             eof() const         { return m_eof; }
     bool             prepared() const    { return m_prepared; }

@@ -140,7 +140,7 @@ public:
     // Virtual functions
     virtual void insert(Fl_ListView_Item &, uint pos);
     virtual void add(Fl_ListView_Item &);
-    virtual void fill(Fl_Data_Source &ds);
+    virtual void fill(Fl_Data_Source &ds,int user_data_column=-1);
     virtual void remove(int index);
     void remove(Fl_ListView_Item& o) { int w = items.index_of(&o); remove(w);}
     void remove(Fl_ListView_Item* o) { int w = items.index_of(o); remove(w);}
