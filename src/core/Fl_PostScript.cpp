@@ -1254,8 +1254,8 @@ static void add_n_points(int n)
 
 void Fl_PostScript::vertex(float X, float Y)
 {
-    COORD_T x = COORD_T(floorf(X*m.a + Y*m.c + m.x + .5f));
-    COORD_T y = COORD_T(floorf(X*m.b + Y*m.d + m.y + .5f));
+    COORD_T x = COORD_T(floor(X*m.a + Y*m.c + m.x + .5f));
+    COORD_T y = COORD_T(floor(X*m.b + Y*m.d + m.y + .5f));
     if (!points_ || x != point_[points_-1].x || y != point_[points_-1].y) {
         if (points_+1 >= point_array_size) add_n_points(1);
         point_[points_].x = x;
@@ -1271,8 +1271,8 @@ void Fl_PostScript::vertex(int X, int Y)
         x = COORD_T(X+m.ix);
         y = COORD_T(Y+m.iy);
     } else {
-        x = COORD_T(floorf(X*m.a + Y*m.c + m.x + .5f));
-        y = COORD_T(floorf(X*m.b + Y*m.d + m.y + .5f));
+        x = COORD_T(floor(X*m.a + Y*m.c + m.x + .5f));
+        y = COORD_T(floor(X*m.b + Y*m.d + m.y + .5f));
     }
     if (!points_ || x != point_[points_-1].x || y != point_[points_-1].y) {
         if (points_+1 >= point_array_size) add_n_points(1);
@@ -1290,8 +1290,8 @@ void Fl_PostScript::vertices(int n, const float array[][2])
     int pn = points_;
     if (m.trivial) {
         for (; a < e; a += 2) {
-            COORD_T x = COORD_T(floorf(a[0] + m.x + .5f));
-            COORD_T y = COORD_T(floorf(a[1] + m.y + .5f));
+            COORD_T x = COORD_T(floor(a[0] + m.x + .5f));
+            COORD_T y = COORD_T(floor(a[1] + m.y + .5f));
             if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
                 point_[pn].x = x;
                 point_[pn].y = y;
@@ -1300,8 +1300,8 @@ void Fl_PostScript::vertices(int n, const float array[][2])
         }
     } else {
         for (; a < e; a += 2) {
-            COORD_T x = COORD_T(floorf(a[0]*m.a + a[1]*m.c + m.x + .5f));
-            COORD_T y = COORD_T(floorf(a[0]*m.b + a[1]*m.d + m.y + .5f));
+            COORD_T x = COORD_T(floor(a[0]*m.a + a[1]*m.c + m.x + .5f));
+            COORD_T y = COORD_T(floor(a[0]*m.b + a[1]*m.d + m.y + .5f));
             if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
                 point_[pn].x = x;
                 point_[pn].y = y;
@@ -1330,8 +1330,8 @@ void Fl_PostScript::vertices(int n, const int array[][2])
         }
     } else {
         for (; a < e; a += 2) {
-            COORD_T x = COORD_T(floorf(a[0]*m.a + a[1]*m.c + m.x + .5f));
-            COORD_T y = COORD_T(floorf(a[0]*m.b + a[1]*m.d + m.y + .5f));
+            COORD_T x = COORD_T(floor(a[0]*m.a + a[1]*m.c + m.x + .5f));
+            COORD_T y = COORD_T(floor(a[0]*m.b + a[1]*m.d + m.y + .5f));
             if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
                 point_[pn].x = x;
                 point_[pn].y = y;
@@ -1349,8 +1349,8 @@ void Fl_PostScript::transformed_vertices(int n, const float array[][2])
     const float* e = a+2*n;
     int pn = points_;
     for (; a < e; a += 2) {
-        COORD_T x = COORD_T(floorf(a[0] + .5f));
-        COORD_T y = COORD_T(floorf(a[1] + .5f));
+        COORD_T x = COORD_T(floor(a[0] + .5f));
+        COORD_T y = COORD_T(floor(a[1] + .5f));
         if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
             point_[pn].x = x;
             point_[pn].y = y;
@@ -1396,10 +1396,10 @@ static int circle_x, circle_y, circle_w, circle_h;
 void Fl_PostScript::circle(float x, float y, float r)
 {
     fl_transform(x,y);
-    float rt = r * sqrtf(fabsf(m.a*m.d-m.b*m.c));
+    float rt = r * sqrt(fabs(m.a*m.d-m.b*m.c));
     circle_w = circle_h = int(rt*2 + .5);
-    circle_x = int(floorf(x - circle_w*.5f + .5f));
-    circle_y = int(floorf(y - circle_h*.5f + .5f));
+    circle_x = int(floor(x - circle_w*.5f + .5f));
+    circle_y = int(floor(y - circle_h*.5f + .5f));
 }
 
 // Add an ellipse to the path. On X/Win32 this only works for 90 degree

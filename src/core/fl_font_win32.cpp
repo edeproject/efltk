@@ -276,10 +276,10 @@ void Fl_Device::transformed_draw(const char *str, int n, float x, float y)
 	SelectObject(fl_gc, current_font);
 	
 #ifdef _WIN32_WCE
-	RECT rect = { int(floorf(x+.5f)), int(floorf(y+.5f)), 0, 0 };	
+	RECT rect = { int(floor(x+.5f)), int(floor(y+.5f)), 0, 0 };	
 #else
-    int X = int(floorf(x+.5f));
-    int Y = int(floorf(y+.5f));
+    int X = int(floor(x+.5f));
+    int Y = int(floor(y+.5f));
 #endif
 
 	unsigned ucs;
@@ -349,9 +349,9 @@ void Fl_Device::rtl_draw(const char *str, int n, float x, float y)
 		x -= lx;
 		skod = (const WCHAR*)wstr + i;
 #ifndef _WIN32_WCE
-		TextOutW(fl_gc, int(floorf(x+.5f)), int(floorf(y+.5f)), skod, 1);
+		TextOutW(fl_gc, int(floor(x+.5f)), int(floor(y+.5f)), skod, 1);
 #else
-		RECT rect = {int(floorf(x+.5f)),int(floorf(y+.5f)), 0,0};
+		RECT rect = {int(floor(x+.5f)),int(floor(y+.5f)), 0,0};
 		DrawText(fl_gc, skod, 1, &rect, DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP);	
 #endif
 		if (fl_nonspacing(wstr[i])) {

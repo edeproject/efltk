@@ -53,8 +53,8 @@ void Fl_Device::pop_matrix() {m = stack[--sptr];}
 void Fl_Device::mult_matrix(float a, float b, float c, float d, float x, float y) {
   if (m.trivial) {
     m.a = a; m.b = b; m.c = c; m.d = d;
-    m.x += x; m.ix = int(floorf(m.x+.5f));
-    m.y += y; m.iy = int(floorf(m.y+.5f));
+    m.x += x; m.ix = int(floor(m.x+.5f));
+    m.y += y; m.iy = int(floor(m.y+.5f));
     m.trivial = false;
   } else {
     Matrix o;
@@ -62,8 +62,8 @@ void Fl_Device::mult_matrix(float a, float b, float c, float d, float x, float y
     o.b = a*m.b + b*m.d;
     o.c = c*m.a + d*m.c;
     o.d = c*m.b + d*m.d;
-    o.x = x*m.a + y*m.c + m.x; o.ix = int(floorf(o.x+.5f));
-    o.y = x*m.b + y*m.d + m.y; o.iy = int(floorf(o.y+.5f));
+    o.x = x*m.a + y*m.c + m.x; o.ix = int(floor(o.x+.5f));
+    o.y = x*m.b + y*m.d + m.y; o.iy = int(floor(o.y+.5f));
     o.trivial = false;
     m = o;
   }
@@ -79,8 +79,8 @@ void Fl_Device::scale(float x) {
 
 void Fl_Device::translate(float x,float y) {
   if (m.trivial) {
-    m.x += x; m.ix = int(floorf(m.x+.5f));
-    m.y += y; m.iy = int(floorf(m.y+.5f));
+    m.x += x; m.ix = int(floor(m.x+.5f));
+    m.y += y; m.iy = int(floor(m.y+.5f));
     m.trivial = m.ix==m.x && m.iy==m.y;
   } else {
     fl_mult_matrix(1,0,0,1,x,y);
@@ -139,8 +139,8 @@ void Fl_Device::transform_distance(float& x, float& y) {
 
 void Fl_Device::transform(int& x, int& y) {
   if (!m.trivial) {
-    int t = int(floorf(x*m.a + y*m.c + m.x + .5f));
-    y = int(floorf(x*m.b + y*m.d + m.y + .5f));
+    int t = int(floor(x*m.a + y*m.c + m.x + .5f));
+    y = int(floor(x*m.b + y*m.d + m.y + .5f));
     x = t;
   } else {
     x += m.ix;
@@ -180,8 +180,8 @@ static void add_n_points(int n)
 
 void Fl_Device::vertex(float X, float Y)
 {
-    COORD_T x = COORD_T(floorf(X*m.a + Y*m.c + m.x + .5f));
-    COORD_T y = COORD_T(floorf(X*m.b + Y*m.d + m.y + .5f));
+    COORD_T x = COORD_T(floor(X*m.a + Y*m.c + m.x + .5f));
+    COORD_T y = COORD_T(floor(X*m.b + Y*m.d + m.y + .5f));
     if (!points_ || x != point_[points_-1].x || y != point_[points_-1].y) {
         if (points_+1 >= point_array_size) add_n_points(1);
         point_[points_].x = x;
@@ -197,8 +197,8 @@ void Fl_Device::vertex(int X, int Y)
         x = COORD_T(X+m.ix);
         y = COORD_T(Y+m.iy);
     } else {
-        x = COORD_T(floorf(X*m.a + Y*m.c + m.x + .5f));
-        y = COORD_T(floorf(X*m.b + Y*m.d + m.y + .5f));
+        x = COORD_T(floor(X*m.a + Y*m.c + m.x + .5f));
+        y = COORD_T(floor(X*m.b + Y*m.d + m.y + .5f));
     }
     if (!points_ || x != point_[points_-1].x || y != point_[points_-1].y) {
         if (points_+1 >= point_array_size) add_n_points(1);
@@ -216,8 +216,8 @@ void Fl_Device::vertices(int n, const float array[][2])
     int pn = points_;
     if (m.trivial) {
         for (; a < e; a += 2) {
-            COORD_T x = COORD_T(floorf(a[0] + m.x + .5f));
-            COORD_T y = COORD_T(floorf(a[1] + m.y + .5f));
+            COORD_T x = COORD_T(floor(a[0] + m.x + .5f));
+            COORD_T y = COORD_T(floor(a[1] + m.y + .5f));
             if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
                 point_[pn].x = x;
                 point_[pn].y = y;
@@ -226,8 +226,8 @@ void Fl_Device::vertices(int n, const float array[][2])
         }
     } else {
         for (; a < e; a += 2) {
-            COORD_T x = COORD_T(floorf(a[0]*m.a + a[1]*m.c + m.x + .5f));
-            COORD_T y = COORD_T(floorf(a[0]*m.b + a[1]*m.d + m.y + .5f));
+            COORD_T x = COORD_T(floor(a[0]*m.a + a[1]*m.c + m.x + .5f));
+            COORD_T y = COORD_T(floor(a[0]*m.b + a[1]*m.d + m.y + .5f));
             if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
                 point_[pn].x = x;
                 point_[pn].y = y;
@@ -256,8 +256,8 @@ void Fl_Device::vertices(int n, const int array[][2])
         }
     } else {
         for (; a < e; a += 2) {
-            COORD_T x = COORD_T(floorf(a[0]*m.a + a[1]*m.c + m.x + .5f));
-            COORD_T y = COORD_T(floorf(a[0]*m.b + a[1]*m.d + m.y + .5f));
+            COORD_T x = COORD_T(floor(a[0]*m.a + a[1]*m.c + m.x + .5f));
+            COORD_T y = COORD_T(floor(a[0]*m.b + a[1]*m.d + m.y + .5f));
             if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
                 point_[pn].x = x;
                 point_[pn].y = y;
@@ -275,8 +275,8 @@ void Fl_Device::transformed_vertices(int n, const float array[][2])
     const float* e = a+2*n;
     int pn = points_;
     for (; a < e; a += 2) {
-        COORD_T x = COORD_T(floorf(a[0] + .5f));
-        COORD_T y = COORD_T(floorf(a[1] + .5f));
+        COORD_T x = COORD_T(floor(a[0] + .5f));
+        COORD_T y = COORD_T(floor(a[1] + .5f));
         if (!pn || x != point_[pn-1].x || y != point_[pn-1].y) {
             point_[pn].x = x;
             point_[pn].y = y;
@@ -321,10 +321,10 @@ static int circle_x, circle_y, circle_w, circle_h;
 // can make.
 void Fl_Device::circle(float x, float y, float r) {
   fl_transform(x,y);
-  float rt = r * sqrtf(fabsf(m.a*m.d-m.b*m.c));
+  float rt = r * sqrt(fabs(m.a*m.d-m.b*m.c));
   circle_w = circle_h = int(rt*2 + .5);
-  circle_x = int(floorf(x - circle_w*.5f + .5f));
-  circle_y = int(floorf(y - circle_h*.5f + .5f));
+  circle_x = int(floor(x - circle_w*.5f + .5f));
+  circle_y = int(floor(y - circle_h*.5f + .5f));
 }
 
 // Add an ellipse to the path. On X/Win32 this only works for 90 degree
@@ -338,12 +338,12 @@ void Fl_Device::ellipse(float x, float y, float w, float h) {
   fl_transform(x,y);
   float d1x,d1y; d1x = w; d1y = 0; fl_transform_distance(d1x, d1y);
   float d2x,d2y; d2x = 0; d2y = h; fl_transform_distance(d2x, d2y);
-  float rx = sqrtf(d1x*d1x+d2x*d2x)/2;
-  float ry = sqrtf(d1y*d1y+d2y*d2y)/2;
+  float rx = sqrt(d1x*d1x+d2x*d2x)/2;
+  float ry = sqrt(d1y*d1y+d2y*d2y)/2;
   circle_w = int(rx*2 + .5f);
-  circle_x = int(floorf(x - circle_w*.5f + .5f));
+  circle_x = int(floor(x - circle_w*.5f + .5f));
   circle_h = int(ry*2 + .5f);
-  circle_y = int(floorf(y - circle_h*.5f + .5f));
+  circle_y = int(floor(y - circle_h*.5f + .5f));
 #else
   // This produces the correct image, but not as nice as using circles
   // produced by the server:

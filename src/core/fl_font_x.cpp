@@ -102,8 +102,8 @@ void Fl_Device::transformed_draw(const char *str, int n, float x, float y)
         XSetFont(fl_display, fl_gc, current_font->fid);
     }
 
-    int X = int(floorf(x+.5f));
-    int Y = int(floorf(y+.5f));
+    int X = int(floor(x+.5f));
+    int Y = int(floor(y+.5f));
 
     char glyph[2];       // byte1 and byte2 value of the UTF-8 char
     XChar2b buf[128];    // drawing buffer

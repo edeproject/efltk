@@ -212,7 +212,7 @@ int Fl_Scrollbar::handle(int event)
             {
                 float n = (vertical() ? -Fl::event_dy() : Fl::event_dx())
                     * Fl_Style::wheel_scroll_lines * linesize();
-                if (fabsf(n) > pagesize()) n = (n<0)?-pagesize():pagesize();
+                if (fabs(n) > pagesize()) n = (n<0)?-pagesize():pagesize();
                 handle_drag(value()+n);
                 return 1;
             }

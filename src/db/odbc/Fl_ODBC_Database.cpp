@@ -40,7 +40,7 @@ class Fl_ODBC_Param : public Fl_Param {
     friend class Fl_ODBC_Database;
 protected:
     TIMESTAMP_STRUCT m_timeData;
-    //SQLINTEGER			m_cbValue;
+    //SQLINTEGER            m_cbValue;
 public:
     Fl_ODBC_Param(const char *paramName) : Fl_Param(paramName) {}
 };
@@ -320,8 +320,8 @@ void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
                     fl_throw("Unknown type of parameter " + Fl_String(paramNumber));
             }
             //param->m_cbValue = len;
-            cbLen = len;
-            rc = SQLBindParameter(statement,paramNumber,parameterMode,paramType,sqlType,len,scale,buff,short(len),&cbLen);
+            //cbLen = len;
+            rc = SQLBindParameter(statement,paramNumber,parameterMode,paramType,sqlType,len,scale,buff,short(len),NULL);
             if (rc != 0)
                 fl_throw("Can't bind parameter " + Fl_String(paramNumber));
         }
@@ -509,7 +509,7 @@ void Fl_ODBC_Database::fetch_query(Fl_Query *query)
     }
 
     Fl_Data_Fields& fields = query_fields(query); 
-    unsigned	fieldCount = fields.count();
+    unsigned    fieldCount = fields.count();
     SQLINTEGER  dataLength;
 
     if (!fieldCount) return;

@@ -58,15 +58,15 @@ void Fl_Device::arc(float l, float b, float w, float h, float start, float end) 
     // calculate area of parallelogram defined by diameters
     float dx1,dy1; dx1=w; dy1=0; fl_transform_distance(dx1,dy1);
     float dx2,dy2; dx2=0; dy2=h; fl_transform_distance(dx2,dy2);
-    float r = fabsf(dx1*dy2 - dx2*dy1);
-    r = .5f*sqrtf(r);     // approximate radius
+    float r = fabs(dx1*dy2 - dx2*dy1);
+    r = .5f*sqrt(r);     // approximate radius
     // I don't understand this part:
     r = 1.0f - 0.125f/r;	// r2 = cos(epsilon/2)
     if (r < 0.5f) r = 0.5f;	// minimum 3 chords/circle
     epsilon = /*2**/acosf(r);	// Maximum arc angle
   }
   angle = end*float(M_PI/180) - angle;	// Displacement angle (radians)
-  int i = int(ceilf(fabsf(angle)/epsilon));// Segments in approximation
+  int i = int(ceil(fabs(angle)/epsilon));// Segments in approximation
   if (i > MAXPOINTS-1) i = MAXPOINTS-1;
 
   if (i) {

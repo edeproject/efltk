@@ -265,7 +265,7 @@ void Fl_Device::transformed_draw(const char *str, int n, float x, float y)
 #else    
     XftDrawString8(draw, &color, current_font,
 #endif    
-                   int(floorf(x+.5f)), int(floorf(y+.5f)),
+                   int(floor(x+.5f)), int(floor(y+.5f)),
                    (XftChar8 *)str, n);
 }
 

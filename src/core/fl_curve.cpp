@@ -50,12 +50,12 @@ void Fl_Device::curve(float x0, float y0,
   *p++ = float(x); *p++ = float(y);
 
   // find the area:
-  float a = fabsf((x-x2)*(y3-y1)-(y-y2)*(x3-x1));
-  float b = fabsf((x-x3)*(y2-y1)-(y-y3)*(x2-x1));
+  float a = fabs((x-x2)*(y3-y1)-(y-y2)*(x3-x1));
+  float b = fabs((x-x3)*(y2-y1)-(y-y3)*(x2-x1));
   if (b > a) a = b;
 
   // use that to guess at the number of segments:
-  int n = int(sqrtf(a)/4);
+  int n = int(sqrt(a)/4);
   if (n > 1) {
     if (n > MAXPOINTS-1) n = MAXPOINTS-1;
 
