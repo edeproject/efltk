@@ -70,7 +70,7 @@ CXXFLAGS=
 
 dnl# See if we need a .exe extension on executables...
 AC_EXEEXT
-nl Architecture checks...
+dnl Architecture checks...
 AC_PROG_CC
 AC_PROG_CXX
 
@@ -130,7 +130,7 @@ EFLTK_BUILDDIR=`pwd`
 AC_SUBST(EFLTK_BUILDDIR)
 
 LD="\${CXX}"
-LDLIBS="-lX11 -lXext -lm"
+LDLIBS="$LDLIBS -lX11 -lXext -lm"
 
 DSOEXT=".so.$FL_API_VERSION"
 DSOSHORTEXT=".so"
