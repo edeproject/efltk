@@ -14,26 +14,26 @@ Function {make_window()} {open
   } {
     Fl_Box {} {
       label XPM
-      xywh {5 5 195 55} align 20 label_font 1 image not_inlined {/home/Laza/develop/efltk/test/rgb.xpm}
+      xywh {5 5 195 55} align 20 label_font 1 image not_inlined {rgb.xpm}
     }
     Fl_Box {} {
       label BMP
-      xywh {5 65 190 55} align 20 label_font 1 image not_inlined {/home/Laza/develop/efltk/test/rgb.bmp}
+      xywh {5 65 190 55} align 20 label_font 1 image not_inlined {rgb.bmp}
     }
     Fl_Box {} {
       label GIF
-      xywh {5 125 190 55} align 20 label_font 1 image not_inlined {/home/Laza/develop/efltk/test/rgb.gif}
+      xywh {5 125 190 55} align 20 label_font 1 image not_inlined {rgb.gif}
     }
     Fl_Box {} {
       label PNG
-      xywh {5 185 195 55} align 20 label_font 1 image not_inlined {/home/Laza/develop/efltk/test/rgb.png}
+      xywh {5 185 195 55} align 20 label_font 1 image not_inlined {rgb.png}
       extra_code {\#if !HAVE_PNG
 o->label("PNG support not compiled");
 \#endif}
     }
     Fl_Box {} {
       label JPEG
-      xywh {5 245 200 55} align 20 label_font 1 image not_inlined {/home/Laza/develop/efltk/test/rgb.jpg}
+      xywh {5 245 200 55} align 20 label_font 1 image not_inlined {rgb.jpg}
       extra_code {\#if !HAVE_PNG
 o->label("PNG support not compiled");
 \#endif}
