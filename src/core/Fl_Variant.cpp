@@ -137,24 +137,16 @@ void Fl_Variant::set_datetime(Fl_Date_Time value) {
     m_data.floatData = value;
 }
 //---------------------------------------------------------------------------
-const Fl_Image * Fl_Variant::get_image_ptr() const {
-    return m_data.imagePtr;
-}
-//---------------------------------------------------------------------------
-const void * Fl_Variant::get_buffer() const {
-    return m_data.stringData;
-}
-//---------------------------------------------------------------------------
 void Fl_Variant::set_data(const Fl_Variant &C) {
     switch (C.m_type) {
-        case VAR_INT:        set_int(C.get_int());                break;
-        case VAR_FLOAT:      set_float(C.get_float());            break;
-        case VAR_STRING:     set_string(C.get_string());          break;
-        case VAR_TEXT:       set_buffer(C.get_buffer(),C.size()); break;
-        case VAR_BUFFER:     set_buffer(C.get_buffer(),C.size()); break;
-        case VAR_DATE:        set_date(C.get_date());              break;
-        case VAR_DATETIME:   set_datetime(C.get_datetime());      break;
-        case VAR_IMAGEPTR:   set_image_ptr(C.get_image_ptr());    break;
+        case VAR_INT:        set_int(C.m_data.intData);           break;
+        case VAR_FLOAT:      set_float(C.m_data.floatData);       break;
+        case VAR_STRING:     set_string(C.m_data.stringData);     break;
+        case VAR_TEXT:       set_buffer(C.m_data.stringData,C.size()); break;
+        case VAR_BUFFER:     set_buffer(C.m_data.blobData,C.size()); break;
+        case VAR_DATE:        set_date(C.m_data.floatData);         break;
+        case VAR_DATETIME:   set_datetime(C.m_data.floatData);      break;
+        case VAR_IMAGEPTR:   set_image_ptr(C.m_data.imagePtr);    break;
         case VAR_NONE:       break;
     }
 }
@@ -241,7 +233,7 @@ Fl_String Fl_Variant::as_string() const {
             }
         case VAR_STRING:
         case VAR_TEXT:
-        case VAR_BUFFER:     return Fl_String(m_data.stringData);
+        case VAR_BUFFER:     return m_data.stringData;
         case VAR_DATE:       return Fl_Date_Time(m_data.floatData).date_string();
         case VAR_DATETIME:   {
                 Fl_Date_Time dt(m_data.floatData);

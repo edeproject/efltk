@@ -40,7 +40,7 @@ bool Fl_Float_Input::load_data(Fl_Data_Source *ds)
 
     Fl_Variant fld_value;
     if (ds->read_field(field_name().c_str(), fld_value)) {
-        value(fld_value.get_float());
+        value(fld_value.as_float());
         return true;
     }
     return false;
@@ -92,7 +92,7 @@ bool Fl_Int_Input::load_data(Fl_Data_Source *ds)
 
     Fl_Variant fld_value;
     if (ds->read_field(field_name().c_str(), fld_value)) {
-        value(fld_value.get_int());
+        value(fld_value.as_int());
         return true;
     }
     return false;

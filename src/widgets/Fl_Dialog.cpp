@@ -343,7 +343,7 @@ void Fl_Dialog_Button::preferred_size(int& w,int& h) const {
     if (m_default) w += 6;
 }
 
-void Fl_Dialog_Button::Fl_Dialog_Button::layout() {
+void Fl_Dialog_Button::layout() {
     Fl_Group::layout();
     int bx = 0;
     int bw = w();

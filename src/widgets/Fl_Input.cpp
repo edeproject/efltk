@@ -1789,8 +1789,8 @@ bool Fl_Input::load_data(Fl_Data_Source *ds)
         return false;
 
     Fl_Variant fld_value;
-    if (ds->read_field(field_name().c_str(), fld_value)) {		
-        value(fld_value.get_string());
+    if (ds->read_field(field_name().c_str(), fld_value)) {
+        value(fld_value.as_string());
         return true;
     }
     return false;

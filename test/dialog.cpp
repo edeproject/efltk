@@ -29,6 +29,8 @@
 #include <efltk/Fl_Button.h>
 #include <efltk/Fl_Dialog.h>
 #include <efltk/Fl_Input.h>
+#include <efltk/Fl_Int_Input.h>
+#include <efltk/Fl_Float_Input.h>
 #include <efltk/fl_ask.h>
 #include <efltk/Fl_Config_Dialog_DS.h>
 #include <efltk/Fl_Date_Time_Input.h>
@@ -52,15 +54,15 @@ Fl_Config my_config("dialog_test.ini");
 static void cb_test(Fl_Widget*, void*) {
     char buffer[128];
     Fl_Dialog& dialog = *dlg;
-   // define widgets contents
+    // define widgets contents
     dialog["first_name"] = input1->value();
     dialog["last_name"]  = input2->value();
-   // show modal dialog, and get results after it's closed
+    // show modal dialog, and get results after it's closed
     Fl_String fname, lname;
     switch (dialog.show_modal()) {
         case FL_DLG_OK:      
-            fname = dialog["first_name"].get_string();
-            lname = dialog["last_name"].get_string();
+            fname = dialog["first_name"];
+            lname = dialog["last_name"];
             sprintf(buffer,"Ok pressed, %s %s",
                 fname.c_str(), lname.c_str()
             );
@@ -97,8 +99,9 @@ int main(int argc, char **argv) {
     Fl_Button *btn = new Fl_Button(20,80,120,25,"Simple dialog");
     btn->image(&dialog_pixmap_1);
 
-    input1 = new Fl_Input(100,10,70,22,"First Name");
-    input2 = new Fl_Input(100,35,70,22,"Last Name");
+    // using auto-layout
+    input1 = new Fl_Input("First Name");
+    input2 = new Fl_Input("Last Name");
     btn->callback(cb_test);
 
     input1->value("Jonh");
@@ -112,16 +115,17 @@ int main(int argc, char **argv) {
     window->show(argc, argv);
 
     dlg = new Fl_Dialog(400,300,"Demo dialog");
-    dlg->new_page("default");
-    Fl_Input *firstNameInput = new Fl_Input(100,20,100,24,"First Name:");
+    dlg->new_group("default");
+    // Using auto-layout
+    Fl_Input *firstNameInput = new Fl_Input("First Name:");
     firstNameInput->field_name("first_name");
-    Fl_Input *lastNameInput = new Fl_Input(100,50,100,24,"Last Name:");
+    Fl_Input *lastNameInput = new Fl_Input("Last Name:");
     lastNameInput->field_name("last_name");
     dlg->end();
     dlg->buttons(FL_DLG_OK|FL_DLG_CANCEL|FL_DLG_HELP,FL_DLG_OK);
 
     // User may add his own buttons. The button bitmap is optional,
-    // and it should 20x20 or less if presented. The button id should 
+    // and it should 20x20 or less if presented. The button id should
     // be unique inside the dialog.
     dlg->user_button(1024,"User Button",&smile_pixmap);
 
@@ -132,7 +136,7 @@ int main(int argc, char **argv) {
 
     // This part of the test illustrates the usage of the Dialog
     // as a 'preferences' dialog box. All the widgets with the defined
-    // field names will be stored/restored in the defined config file 
+    // field names will be stored/restored in the defined config file
     // section.
 
     // First, define a config file
@@ -143,14 +147,28 @@ int main(int argc, char **argv) {
 
     // Third, create the dialog with the datasource
     config_dlg = new Fl_Dialog(400,300,"Config dialog",&my_config_ds);
-    config_dlg->new_page("default");
-    firstNameInput = new Fl_Input(100,20,100,24,"First Name:");
+    config_dlg->new_group("default");
+
+    // Using auto-layout
+
+    firstNameInput = new Fl_Input("First Name:");
     firstNameInput->field_name("first_name");
-    lastNameInput = new Fl_Input(100,50,100,24,"Last Name:");
+
+    lastNameInput = new Fl_Input("Last Name:");
     lastNameInput->field_name("last_name");
 
-    Fl_Date_Input *di = new Fl_Date_Input(100,80,100,24,"Date:");
-    di->field_name("date");
+    Fl_Input *inp;
+
+    inp = new Fl_Float_Input("Age:");
+    inp->field_name("age");
+    inp->maximum_size(5);
+
+    inp = new Fl_Int_Input("Children:");
+    inp->field_name("children");
+    inp->maximum_size(3);
+
+    Fl_Date_Input *dinp = new Fl_Date_Input("Date:");
+    dinp->field_name("date");
 
     config_dlg->end();
     config_dlg->buttons(FL_DLG_OK|FL_DLG_CANCEL,FL_DLG_OK);

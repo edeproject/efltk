@@ -105,7 +105,7 @@ bool Fl_Check_Button::load_data(Fl_Data_Source *ds)
 
     Fl_Variant fld_value;
     if (ds->read_field(field_name().c_str(), fld_value)) {
-        Fl_String v = fld_value.get_string();
+        Fl_String v = fld_value.as_string();
         if (strchr("YyTt1",v[0]))
             value(1);
         else value(0);

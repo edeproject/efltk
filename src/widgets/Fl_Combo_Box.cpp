@@ -507,7 +507,7 @@ bool Fl_Combo_Box::load_data(Fl_Data_Source *ds)
 
     Fl_Variant fld_value;
     if (ds->read_field(field_name().c_str(), fld_value)) {
-        value(fld_value.get_int());
+        value(fld_value.as_int());
         return true;
     }
     return false;

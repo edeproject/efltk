@@ -169,7 +169,7 @@ bool Fl_Date_Input::load_data(Fl_Data_Source *ds)
 
     Fl_Variant fld_value;
     if (ds->read_field(field_name().c_str(), fld_value)) {
-        date_value(fld_value.get_date());
+        date_value(fld_value.as_date());
         return true;
     }
     return false;
@@ -259,7 +259,7 @@ bool Fl_Date_Time_Input::load_data(Fl_Data_Source *ds)
 
     Fl_Variant fld_value;
     if (ds->read_field(field_name().c_str(), fld_value)) {
-        date_time_value(fld_value.get_datetime());
+        date_time_value(fld_value.as_datetime());
         return true;
     }
     return false;
@@ -360,14 +360,14 @@ bool Fl_Date_Interval_Input::load_data(Fl_Data_Source *ds)
     Fl_Variant fld_value;
 
     if (!field_name().empty()) {
-        if (ds->read_field(field_name().c_str(), fld_value)) 
-            date_value(fld_value.get_datetime());
+        if (ds->read_field(field_name().c_str(), fld_value))
+            date_value(fld_value.as_datetime());
         else return false;
     }
 
     if (!field_name2().empty()) {
-        if (ds->read_field(field_name2().c_str(), fld_value)) 
-            date_value2(fld_value.get_datetime());
+        if (ds->read_field(field_name2().c_str(), fld_value))
+            date_value2(fld_value.as_datetime());
         else return false;
     }
 

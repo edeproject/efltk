@@ -72,14 +72,16 @@ public:
     Fl_Date_Time as_datetime() const;
     const Fl_Image *as_image() const;
 
-    // Compatibility with the legacy code    
-    int    get_int() const              { return as_int(); }
-    double get_float() const                { return as_float(); }
-    const char *get_string() const      { return as_string(); }
-    const void *get_buffer() const;
-    const Fl_Image *get_image_ptr() const;
-    Fl_Date_Time get_date() const       { return as_date(); }
-    Fl_Date_Time get_datetime() const   { return as_datetime(); }
+    /** Direct access to the data - use correctly with type().
+      * There is no conversion performed.
+      */
+    int    get_int() const              { return m_data.intData; }
+    double get_float() const            { return m_data.floatData; }
+    const char *get_string() const      { return m_data.stringData; }
+    const void *get_buffer() const      { return m_data.blobData; }
+    const Fl_Image *get_image_ptr() const { return m_data.imagePtr; }
+    Fl_Date_Time get_date() const       { return int(m_data.floatData); }
+    Fl_Date_Time get_datetime() const   { return m_data.floatData; }
 
     // Convert operators
     operator int () const;
