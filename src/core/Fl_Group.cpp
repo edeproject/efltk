@@ -75,7 +75,7 @@ Fl_Group::Fl_Group(const char* l,int layout_size,Fl_Align layout_al,int label_w)
     begin();
 }
 
-// Cleanup
+// Cleanup removes all the internal widgets
 void Fl_Group::clear()
 {
     init_sizes();
@@ -428,13 +428,13 @@ static void widget_position(Fl_Widget *w,int x,int y,int& wx,int& wy) {
     if (w->align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) {
         wx = x;
         wy = y;
-        if (!w->align() & FL_ALIGN_INSIDE)
+        if (!(w->align() & FL_ALIGN_INSIDE))
             if (w->align() & FL_ALIGN_TOP)
                 wy = y + w->label_height();
     } else {
         wx = x;
         wy = y;
-        if (!w->align() & FL_ALIGN_INSIDE)
+        if (!(w->align() & FL_ALIGN_INSIDE))
             if (w->align() & FL_ALIGN_LEFT)
                 wx = x + label_w;
     }
