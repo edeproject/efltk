@@ -150,7 +150,7 @@ Fl_Widget* Fl_Menu_::child(int n) const
 FL_API int fl_dont_execute = 0;  // hack for fluid
 
 // Do the callback for the current item:
-void Fl_Menu_::execute(Fl_Widget* widget)
+void Fl_Menu_::execute(Fl_Widget* widget, Fl_Event_Type ev)
 {
     item(widget);
     if (fl_dont_execute) return;
@@ -179,7 +179,7 @@ void Fl_Menu_::execute(Fl_Widget* widget)
         if (widget->value()) widget->clear_value(); else widget->set_value();
     }
 
-    do_callback(this, user_data(), FL_MENU_COMMAND);
+    do_callback(this, user_data(), ev);
 }
 
 
@@ -299,7 +299,7 @@ int Fl_Menu_::handle_shortcut()
             if (widget) value(i);
         }
     }
-    if (widget) {execute(widget); return 1;}
+    if (widget) {execute(widget, FL_MENU_COMMAND); return 1;}
     return 0;
 }
 

@@ -129,6 +129,8 @@ void ComboBrowser::browser_cb(Fl_Widget *w, void *data)
     //if(Fl::event_key() != FL_Enter && Fl::event_key() != ' ')
     //return;
 
+    if (Fl::event() != FL_MENU_COMMAND) return;
+    
     ComboBrowser *br = (ComboBrowser *)w;
     Fl_Input_Browser *combo = (Fl_Input_Browser *)data;
     Fl_Widget *item = br->item();

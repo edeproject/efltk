@@ -884,7 +884,7 @@ bool Fl_Browser::set_item_selected(bool value, Fl_Event_Type do_callback)
         if (when() & do_callback)
         {
             clear_changed();
-            execute(item());
+            execute(item(), do_callback);
         }
         else if (do_callback)
         {
@@ -936,7 +936,7 @@ bool Fl_Browser::select_only_this(Fl_Event_Type do_callback)
         if (when() & do_callback)
         {
             clear_changed();
-            execute(item());
+            execute(item(), do_callback);
         }
         else if (do_callback)
         {
@@ -1057,13 +1057,14 @@ int Fl_Browser::handle(int event)
                 // double clicks act like Enter
                 Fl::e_keysym = FL_Enter;
                 clear_changed();
-                execute(item());
+                execute(item(), FL_MENU_COMMAND);
                 return 1;
             }
             if (changed())
             {
                 clear_changed();
-                execute(item());
+//                execute(item(), FL_DATA_CHANGE); //??
+                execute(item(), FL_MENU_COMMAND);
             }
             return 1;
 
@@ -1107,7 +1108,7 @@ AFTER_MOVEMENT_KEY:
                     //if (!(when() & FL_WHEN_ENTER_KEY)) break;
                     if (!goto_visible_focus()) break;
                     clear_changed();
-                    execute(item());
+                    execute(item(), FL_MENU_COMMAND);
                     return 1;
                 default:
                     if (scrollbar.send(event)) return 1;

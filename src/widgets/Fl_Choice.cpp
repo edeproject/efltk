@@ -87,7 +87,7 @@ static bool try_item(Fl_Choice* choice, int i)
     Fl_Widget* w = choice->child(i);
     if (!w->takesevents()) return false;
     choice->value(i);
-    choice->execute(w);
+    choice->execute(w, FL_MENU_COMMAND);
     choice->redraw(FL_DAMAGE_VALUE);
     return true;
 }

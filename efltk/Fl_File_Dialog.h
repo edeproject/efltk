@@ -157,15 +157,41 @@ private:
     void folder_clicked(Fl_ListView_Item *i);
 
     static void cb_list          (Fl_File_Browser *w, Fl_File_Chooser *d);
-    static inline void cb_preview(Fl_Widget *w, Fl_File_Chooser *d) { d->preview(bool(w->value()==1)); }
+    static inline void cb_preview(Fl_Widget *w, Fl_File_Chooser *d) 
+    { 
+	if (Fl::event() == FL_BUTTON_PRESSED)
+	    d->preview(bool(w->value()==1)); 
+    }
 
-    static inline void cb_new	 (Fl_Widget *, Fl_File_Chooser *d) { d->new_dir(); }
-    static inline void cb_home	 (Fl_Widget *, Fl_File_Chooser *d) { d->directory(fl_homedir()); }
-    static inline void cb_refresh(Fl_Widget *, Fl_File_Chooser *d) { d->refresh(); }
-    static inline void cb_up	 (Fl_Widget *, Fl_File_Chooser *d) { d->up(); }
+    static inline void cb_new	 (Fl_Widget *, Fl_File_Chooser *d) 
+    { 
+	if (Fl::event() == FL_BUTTON_PRESSED)
+	    d->new_dir(); 
+    }
+    static inline void cb_home	 (Fl_Widget *, Fl_File_Chooser *d) 
+    { 
+	if (Fl::event() == FL_BUTTON_PRESSED)
+	    d->directory(fl_homedir()); 
+    }
+    static inline void cb_refresh(Fl_Widget *, Fl_File_Chooser *d) 
+    { 
+	if (Fl::event() == FL_BUTTON_PRESSED)
+	    d->refresh(); 
+    }
+    static inline void cb_up	 (Fl_Widget *, Fl_File_Chooser *d) 
+    { 
+	if (Fl::event() == FL_BUTTON_PRESSED)
+	    d->up(); 
+    }
 
-    static inline void cb_dirc	(Fl_Input_Browser *w, Fl_File_Chooser *d) { d->directory(w->value()); }
-    static inline void cb_filter(Fl_Input_Browser *w, Fl_File_Chooser *d) { d->filebrowser()->pattern((const char *)w->item()->user_data()); d->refresh(); }
+    static inline void cb_dirc	(Fl_Input_Browser *w, Fl_File_Chooser *d) 
+    { 
+        d->directory(w->value()); 
+    }
+    static inline void cb_filter(Fl_Input_Browser *w, Fl_File_Chooser *d) 
+    { 
+        d->filebrowser()->pattern((const char *)w->item()->user_data()); d->refresh(); 
+    }
     static void cb_location     (Fl_Input_Browser *w, Fl_File_Chooser *d);
 };
 
