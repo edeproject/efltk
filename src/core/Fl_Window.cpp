@@ -79,7 +79,9 @@ void Fl_Window::_Fl_Window()
     //resizable(0); // new default for group
     size_range_set = 0;
     child_of_ = 0;
-    callback((Fl_Callback*)default_callback);
+    
+	//connect(&Fl_Widget::hide, (void*)0);
+	callback((Fl_Callback*)default_callback);
 }
 
 

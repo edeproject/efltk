@@ -74,10 +74,8 @@ public:
     Fl_Widget *resizable()       { return prv->resizable(); }
 
     // Caption functions
-    void caption(const char *cap) { if(cap) strncpy(_cap, cap, 4096); else _cap[0]='\0'; _titlebar.redraw(); }
-    void label(const char *_label) { caption(_label); }
-    const char *caption() { return _cap; }
-    const char *label() { return caption(); }
+    void caption(const char *cap) { Fl_Widget::copy_label(cap); _titlebar.redraw(); }
+    const char *caption() { return label(); }
 
     //void titlebar(Fl_Box *b) { _titlebar = b; }
     Fl_MDI_Titlebar* titlebar() {return &_titlebar;}
@@ -90,8 +88,6 @@ public:
 
     void owner(Fl_MDI_Viewport *ws) { _owner = ws; }
     Fl_MDI_Viewport *owner() { return _owner; }
-
-    void close_callback();
 
     void setTop() { if(!_toplevel && _owner) _owner->top(this); else show(); }
     bool isTop() { return _toplevel==true ? 0 : (_owner->top()==this); }
@@ -122,6 +118,8 @@ public:
     virtual void draw();
     virtual void layout();
 
+	static void default_callback(Fl_MDI_Window*, void* v);
+
 private:
     void check_move_boundary(int &x, int &y);
     void check_size_boundary(int &w, int &h);
@@ -135,8 +133,6 @@ private:
     Fl_MDI_Viewport *_owner; //Workspace who own this window.
     Fl_Group *prv;
     Fl_MDI_Titlebar _titlebar;
-
-    char _cap[4096];
 
     bool _toplevel;
 	bool _active;

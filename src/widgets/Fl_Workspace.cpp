@@ -153,7 +153,7 @@ void Fl_MDI_Viewport::close_all()
         if(((o->flags() & FL_MDI_WINDOW) == FL_MDI_WINDOW))
         {
             Fl_MDI_Window *win = (Fl_MDI_Window *)o;
-            win->close_callback();
+            win->do_callback();
         }
     }
 }

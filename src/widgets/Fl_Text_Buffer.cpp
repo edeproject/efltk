@@ -2163,7 +2163,6 @@ void Fl_Text_Buffer::call_modify_callbacks( int pos, int nDeleted,
 int nInserted, int nRestyled, const char *deletedText )
 {
     int i;
-
     for ( i = 0; i < mNModifyProcs; i++ )
         ( *mNodifyProcs[ i ] ) ( pos, nInserted, nDeleted, nRestyled,
         deletedText, mCbArgs[ i ] );
@@ -2173,9 +2172,9 @@ int nInserted, int nRestyled, const char *deletedText )
 ** Call the stored pre-delete callback procedure(s) for this buffer to update 
 ** the changed area(s) on the screen and any other listeners. 
 */ 
-void Fl_Text_Buffer::call_predelete_callbacks(int pos, int nDeleted) { 
-	int i; 
-    
+void Fl_Text_Buffer::call_predelete_callbacks(int pos, int nDeleted) 
+{ 
+	int i;     
 	for (i=0; i<mNPredeleteProcs; i++) 
 		(*mPredeleteProcs[i])(pos, nDeleted, mPredeleteCbArgs[i]); 
 } 

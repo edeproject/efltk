@@ -1313,7 +1313,7 @@ void Fl_Text_Display::buffer_predelete_cb(int pos, int nDeleted, void *cbArg)
 void Fl_Text_Display::buffer_modified_cb( int pos, int nInserted, int nDeleted,
 										int nRestyled, const char *deletedText, void *cbArg ) 
 {
-    int linesInserted, linesDeleted, startDispPos, endDispPos;
+  int linesInserted, linesDeleted, startDispPos, endDispPos;
   Fl_Text_Display *textD = ( Fl_Text_Display * ) cbArg;
   Fl_Text_Buffer *buf = textD->mBuffer;
   int oldFirstChar = textD->mFirstChar;

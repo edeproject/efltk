@@ -31,7 +31,7 @@ CPPFILES = demo.cpp hello.cpp resizable.cpp scroll.cpp image.cpp file_chooser.cp
            clock.cpp color_chooser.cpp cube.cpp cursor.cpp curve.cpp fast_slow.cpp \
            fonts.cpp fullscreen.cpp gl_overlay.cpp iconize.cpp input.cpp navigation.cpp \
            output.cpp overlay.cpp pack.cpp radio.cpp shape.cpp tile.cpp CubeMain.cpp CubeView.cpp \
-           preferences.cpp image_manip.cpp listview.cpp alphablend.cpp
+           preferences.cpp image_manip.cpp listview.cpp alphablend.cpp callback.cpp
 
 ALL =   demo hello resizable scroll image file_chooser menubar browser \
 	threads progress editor inactive checkers valuators glpuzzle boxtype \
@@ -39,7 +39,7 @@ ALL =   demo hello resizable scroll image file_chooser menubar browser \
         keyboard label layout arc ask button buttons clock color_chooser cube \
         cursor curve fast_slow fonts fullscreen gl_overlay iconize input navigation \
         output overlay pack radio shape tile CubeView preferences image_manip \
-        listview alphablend
+        listview alphablend callback
 
 all: demos
 

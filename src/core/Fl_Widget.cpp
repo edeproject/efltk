@@ -32,39 +32,31 @@
 #include <stdlib.h>              // free
 #include <config.h>
 
-#include <efltk/Fl_Callback.h>
-
-/*void Fl_Widget::add_callback(Fl_Callback_Func *cb, void *p)
-{
-	user_data_=(void*)p;
-	if(!callbacks_) callbacks_ = new Fl_Callback_();
-	callbacks_->add(cb);
-	callbacks_->debug();
-}
-
-void Fl_Widget::add_callback(Fl_Callback_Func *cb, long p)
-{
-	user_data_=(void*)p;
-	if(!callbacks_) callbacks_ = new Fl_Callback_();
-	callbacks_->add(cb);
-	callbacks_->debug();
-}*/
-
-Fl_Callback_Signal *Fl_Widget::cb_signal() {
+Fl_Callback_Signal *Fl_Widget::signal() {
 	if(!signal_) signal_ = new Fl_Callback_Signal();
 	return signal_;
 }
 
 void Fl_Widget::do_callback(Fl_Widget* o, void* arg)
 {	
-	if(callback_) callback_(o, arg);
-	if(signal_) signal_->do_callback(o);
+	if(signal_) {
+		signal_->do_callback(o);
+		return;
+	}
+
+	// Call callback_ only if NO slots connected!
+	if(callback_) callback_(o,(void*)arg);
 }
 
 void Fl_Widget::do_callback(Fl_Widget* o, long arg)
-{
+{		
+	if(signal_) {
+		signal_->do_callback(o);	
+		return;
+	}
+
+	// Call callback_ only if NO slots connected!
 	if(callback_) callback_(o,(void*)arg);
-	if(signal_) signal_->do_callback(o);
 }
 
 void Fl_Widget::default_callback(Fl_Widget* w, void*) {w->set_changed();}
@@ -103,6 +95,7 @@ Fl_Widget::~Fl_Widget()
     }
     if (flags_&FL_COPIED_LABEL) free((void*)label_);
 	if(signal_) delete signal_;
+	signal_=0;
 }
 
 void Fl_Widget::label(const char* a)

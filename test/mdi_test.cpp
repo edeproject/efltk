@@ -99,6 +99,24 @@ public:
 	}
 } cb;
 
+void close_mdi(Fl_Widget *w, void *)
+{	
+	Fl_MDI_Window *win = (Fl_MDI_Window *)w;
+	win->hide();
+	char item[64]; 
+	sprintf(item, "Windows/%s", win->label());
+	Fl_Widget *i = menu->find(item);
+	if(i) {
+		// THIS IS NEEDED! This stops callbacks execution in signal,
+		// So it wont seg fault, when callback deleted caller...
+		Fl_Callback_Object::object_deleted(true);
+
+		delete i; //Delete item
+		delete win; //Delete window		
+	}	
+
+}
+
 Fl_MDI_Window *add_win(Fl_MDI_Viewport *s, bool doublebuf, const char *n)
 {
     s->begin();
@@ -125,12 +143,12 @@ Fl_MDI_Window *add_win(Fl_MDI_Viewport *s, bool doublebuf, const char *n)
     b = new Fl_Button(0,10,w->view()->w(),20,"Attach");
     b->tooltip("Attach window!");
     //b->callback(cb_attach, w);
-	b->connect_cb(&cb, &Callbacks::cb_attach, w);
+	b->connect(&cb, &Callbacks::cb_attach, w);
 
     b = new Fl_Button(10,40,130,20,"Detach");
     b->tooltip("Detach window!");
     //b->callback(cb_detach, w);
-	b->connect_cb(&cb, &Callbacks::cb_detach, w);
+	b->connect(&cb, &Callbacks::cb_detach, w);
 
     Fl_Input *in = new Fl_Input(10,150, 130, 60);
     in->tooltip("Click right mouse button!");
@@ -149,8 +167,12 @@ Fl_MDI_Window *add_win(Fl_MDI_Viewport *s, bool doublebuf, const char *n)
 	hide_windows.connect(w, &Fl_Widget::hide);
 
 	Fl_Menu_ *m = (Fl_Menu_ *)menu->find("Windows");
-	m->add(w->label(), w)->connect_cb(&cb, &Callbacks::cb_top_window, w);
+	m->add(w->label(), w)->connect(&cb, &Callbacks::cb_top_window, w);
 	
+	//Connect to global function
+	w->connect(close_mdi); // connect method, inside class
+	//connect(w->signal(), w, close_mdi, 0); //global connect method
+
 	w->show();	
     return w;
 }
@@ -211,12 +233,12 @@ int main(int argc, char **argv)
     b = new Fl_Check_Button(10,30,130,20,"Animate");
     b->value(Fl_MDI_Window::animate());
     //b->callback(cb_anim);
-	b->connect_cb(&cb, &Callbacks::cb_anim);
+	b->connect(&cb, &Callbacks::cb_anim);
 
     b = new Fl_Check_Button(10,50,130,20,"Opaque");
     b->value(Fl_MDI_Window::animate_opaque());
     //b->callback(cb_opaq);
-	b->connect_cb(&cb, &Callbacks::cb_opaq);
+	b->connect(&cb, &Callbacks::cb_opaq);
 
 	b = new Fl_Button(10,100,130,20,"Hide All");
 	b->callback(cb_b);

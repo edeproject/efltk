@@ -70,9 +70,8 @@ void overlay_rect(int x, int y, int w, int h) {
     set_def_func();
 }
 
-static void closeMdiWin(Fl_Widget *, void *d)
-{
-    ((Fl_MDI_Window*)d)->close_callback();	
+static void closeMdiWin(Fl_Widget *, void *d) {
+	((Fl_MDI_Window*)d)->do_callback();	
 }
 
 static void maxMdiWin(Fl_Widget *, void *d)
@@ -178,6 +177,7 @@ Fl_MDI_Titlebar::Fl_MDI_Titlebar(int x,int y,int w,int h,const char *l)
     _close.label("@xx");
     _close.box(button_box());
     _close.callback(closeMdiWin, _owner);
+	//_close.connect(_owner, &Fl_Widget::do_callback, (void*)0);
 
     _max.label_type(FL_SYMBOL_LABEL);
     _max.label("@mx");
@@ -224,6 +224,8 @@ void Fl_MDI_Titlebar::draw()
     if(!_owner->active())
         set_flag(FL_INACTIVE);
 
+	label(_owner->label());
+
     int X = 7 + _close.w();
     if(_min.visible()) X+=_min.w();
     if(_max.visible()) X+=_max.w();
@@ -232,7 +234,7 @@ void Fl_MDI_Titlebar::draw()
     fl_font(label_font(), float(label_size()));
 
     char *txt = fl_cut_line(label(), w()-X);
-
+	
     const char *saved_label = label();
     label(txt);
 
@@ -340,6 +342,11 @@ int Fl_MDI_Titlebar::handle(int event)
 bool Fl_MDI_Window::animate_ = true;
 bool Fl_MDI_Window::anim_opaque_ = false;
 
+void Fl_MDI_Window::default_callback(Fl_MDI_Window *win, void* v)
+{
+	win->hide();
+}
+
 static void revert(Fl_Style* s) {
     s->box = FL_THICK_UP_BOX;
 }
@@ -347,18 +354,17 @@ static Fl_Named_Style style("MDI_Window", revert, &Fl_MDI_Window::default_style)
 Fl_Named_Style* Fl_MDI_Window::default_style = &::style;
 
 Fl_MDI_Window::Fl_MDI_Window(int x, int y, int w, int h, const char *label)
-    : Fl_Window(x,y,w,h, _cap),
-    _titlebar(2,2,w,18, _cap)
+    : Fl_Window(x,y,w,h,0),
+    _titlebar(2,2,w,18,0)
 {
+	Fl_Widget::copy_label(label);
+
     style(default_style);
 
     label_type(FL_NO_LABEL);
     box();
 
     size(w+box()->dw(), h+titlebar()->h()+box()->dh());
-
-    memset(_cap, 0, 4096);
-    caption(label);
 
     _titlebar.align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
     _titlebar.parent(this);
@@ -407,8 +413,10 @@ Fl_MDI_Window::Fl_MDI_Window(int x, int y, int w, int h, const char *label)
         _toplevel = true;
     }
 
-    callback(closeMdiWin, this);
-    //_titlebar.activate(0);
+	//connect(&Fl_Widget::hide, (void*)0);
+    callback((Fl_Callback*)default_callback, this);
+    
+	//_titlebar.activate(0);
 
     _boundaries=true;
 
@@ -777,6 +785,13 @@ int Fl_MDI_Window::handle(int event)
     case FL_HIDE: {
         delete_menu_buttons();
         Fl_Window::handle(event);
+
+        if(_owner->aot() == this) _owner->aot(0);
+        if(_owner->maximum() == this) _owner->maximum(0);					
+        if(_owner->top() == this) _owner->_top=0;
+		state_ = NORMAL;        
+        throw_focus();
+
         _active = false;
 		_owner->relayout();
 		Fl::flush();
@@ -915,25 +930,6 @@ int Fl_MDI_Window::handle(int event)
     } //switch
 
     return Fl_Group::handle(event);
-}
-
-void Fl_MDI_Window::close_callback()
-{
-    if(!callback()) return;
-    if(callback() == closeMdiWin) {
-        _owner->remove(this);
-        if(_owner->aot() == this)
-            _owner->aot(0);
-        if(_owner->maximum() == this)
-            _owner->maximum(0);					
-        if(_owner->top() == this)
-            _owner->_top=0;
-		state_ = NORMAL;
-        hide();
-        throw_focus();
-    } else {
-        do_callback();
-    }
 }
 
 void Fl_MDI_Window::detach()
@@ -1145,7 +1141,7 @@ public:
             win->maximize(false);
             break;
         case 2: //CLOSE
-            win->close_callback();
+            win->do_callback();
             break;
         default:
             break;

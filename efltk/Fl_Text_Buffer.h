@@ -32,6 +32,12 @@
 #define FL_TEXT_MAX_EXP_CHAR_LEN 20
 
 #include "Fl_Export.h"
+#include "Fl_Callback.h"
+
+typedef void (*Fl_Text_Modify_Cb)(int pos, int nInserted, int nDeleted,
+                                  int nRestyled, const char* deletedText,
+                                  void* cbArg);
+typedef void (*Fl_Text_Predelete_Cb)(int pos, int nDeleted, void* cbArg);
 
 class FL_API Fl_Text_Selection {
   friend class Fl_Text_Buffer;
@@ -60,6 +66,8 @@ class FL_API Fl_Text_Selection {
     int mRectStart;
     int mRectEnd;
 };
+
+class TextBufferSignal;
 
 typedef void (*Fl_Text_Modify_Cb)(int pos, int nInserted, int nDeleted,
                                   int nRestyled, const char* deletedText,
@@ -139,17 +147,14 @@ class FL_API Fl_Text_Buffer {
                            int* rectEnd);
 
     const char* highlight_text();
+
     void add_modify_callback(Fl_Text_Modify_Cb bufModifiedCB, void* cbArg);
     void remove_modify_callback(Fl_Text_Modify_Cb bufModifiedCB, void* cbArg);
-
     void call_modify_callbacks() { call_modify_callbacks(0, 0, 0, 0, 0); }
 	
 	void add_predelete_callback(Fl_Text_Predelete_Cb bufPredelCB, void* cbArg); 
     void remove_predelete_callback(Fl_Text_Predelete_Cb predelCB, void* cbArg); 
-    
 	void call_predelete_callbacks() { call_predelete_callbacks(0, 0); } 
-
-
 
     const char* line_text(int pos);
     int line_start(int pos);
