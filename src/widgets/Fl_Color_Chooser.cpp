@@ -393,6 +393,7 @@ void Flcc_ValueBox::draw()
 
 void Fl_Color_Chooser::rgb_cb(Fl_Widget* o, Fl_Color_Chooser *c)
 {
+    if (Fl::event() != FL_DATA_CHANGE) return;
     float r = c->rvalue.value();
     float g = c->gvalue.value();
     float b = c->bvalue.value();
@@ -410,6 +411,7 @@ void Fl_Color_Chooser::rgb_cb(Fl_Widget* o, Fl_Color_Chooser *c)
 
 void Fl_Color_Chooser::mode_cb(Fl_Widget* o, Fl_Color_Chooser *c)
 {
+    if (Fl::event() != FL_DATA_CHANGE) return;
     // force them to redraw even if value is the same:
     c->rvalue.value(-1);
     c->gvalue.value(-1);
@@ -594,12 +596,15 @@ FL_API Fl_Color fl_color_cells[ROWS*COLS] = {
 };
 
 static void ok_cb(Fl_Widget* w, void*) {
-    w->window()->set_value();
-    w->window()->hide();
+    if (Fl::event() == FL_BUTTON_PRESSED) {
+        w->window()->set_value();
+        w->window()->hide();
+    }
 }
 
 static void cancel_cb(Fl_Widget* w, void*) {
-    w->window()->hide();
+    if (Fl::event() == FL_BUTTON_PRESSED) 
+        w->window()->hide();
 }
 
 static void make_it()

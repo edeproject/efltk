@@ -455,25 +455,29 @@ Fl_ListView *Fl_Combo_Box::listview() const {
 }
 
 void Fl_Combo_Box::cb_browse(Fl_Widget *w, void *) {
-    Fl_Combo_Box *cb = (Fl_Combo_Box *) w->parent();
-    cb->take_focus();
-    Fl_Popup_ListView *popup = cb->m_popup;
-    int saveValue = cb->value();
-    if (popup->popup(w->parent(),0,w->parent()->h())) {
+    if (Fl::event() == FL_BUTTON_PRESSED) {
+        Fl_Combo_Box *cb = (Fl_Combo_Box *) w->parent();
+        cb->take_focus();
+        Fl_Popup_ListView *popup = cb->m_popup;
+        int saveValue = cb->value();
+        if (popup->popup(w->parent(),0,w->parent()->h())) {
         // Call the callback function if the value has changed      
-        if (cb->value() != saveValue) 
-            cb->do_callback(FL_DATA_CHANGE);
-    } else {        
+            if (cb->value() != saveValue) 
+                cb->do_callback(FL_DATA_CHANGE);
+        } else {        
         // Restore original value
-        cb->value(saveValue);       
-    }   
+            cb->value(saveValue);       
+        }   
+    }
 }
 
 void Fl_Combo_Box::cb_button(Fl_Widget *w, void *) {
-    Fl_Combo_Box *cb = (Fl_Combo_Box *) w->parent();
-    cb->take_focus();
-    Fl_Event_Type event = button_to_event(w->argument());
-    cb->do_callback(event);
+    if (Fl::event() == FL_BUTTON_PRESSED) {
+        Fl_Combo_Box *cb = (Fl_Combo_Box *) w->parent();
+        cb->take_focus();
+        Fl_Event_Type event = button_to_event(w->argument());
+        cb->do_callback(event);
+    }
 }
 
 int Fl_Combo_Box::value() const {
