@@ -81,8 +81,8 @@ public:
   // data source support methods
   void data_source(Fl_Data_Source *ds);
   Fl_Data_Source* data_source() const { return data_source_; }
-  bool load();
-  bool save();
+  virtual bool load_data(Fl_Data_Source *ds);
+  virtual bool save_data(Fl_Data_Source *ds) const;
 
 protected:
 

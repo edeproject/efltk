@@ -314,17 +314,21 @@ void Fl_Dialog::help_callback(Fl_Widget *btn,void *id) {
    fl_alert("Here we should show some help");
 }
 
-Fl_Dialog::Fl_Dialog(int ww,int hh) : Fl_Window(ww,hh) {
+Fl_Dialog::Fl_Dialog(int ww,int hh,Fl_Data_Source *ds) : Fl_Window(ww,hh) {
    m_defaultButton = NULL;
    m_buttonPanel = new Fl_Group(0,0,10,10);
    m_buttonPanel->end();
    m_tabs = new Fl_Multi_Tabs(0,0,10,10);
    m_modalResult = 0;
-   m_dataSource = new Fl_Dialog_Data_Source(m_tabs);
+   m_externalDataSource = (ds != NULL);
+   if (ds)
+         m_dataSource = ds;
+   else  m_dataSource = new Fl_Dialog_Data_Source(m_tabs);
 }
 
 Fl_Dialog::~Fl_Dialog() {
-   delete m_dataSource;
+   if (!m_externalDataSource)
+      delete m_dataSource;
 }
 
 Fl_Widget *Fl_Dialog::find_widget(const char *field_name) const {
@@ -450,10 +454,10 @@ int Fl_Dialog::handle(int event) {
 }
 
 int Fl_Dialog::show_modal() {
-   loadFromDataSource(m_tabs);
+   load_data();
    exec(0,false);
    if (m_modalResult & (FL_DLG_OK|FL_DLG_YES)) 
-      saveToDataSource(m_tabs);
+      save_data();
    return m_modalResult;
 }
 
@@ -468,39 +472,14 @@ Fl_Group *Fl_Dialog::new_page(const char *lbl,bool autoColor) {
    return m_tabs->new_page(lbl,autoColor);
 }
 
-void Fl_Dialog::loadFromDataSource(Fl_Group *grp) {
-   unsigned cnt = grp->children();
-   for (unsigned i = 0; i < cnt; i++) {
-      Fl_Widget   *widget = grp->child(i);
-      const char  *fld_name = widget->field_name();
-      if (fld_name && strlen(fld_name)) {
-         Fl_Input    *input = (Fl_Input *)widget;
-         Fl_Variant   fld_value;
-         m_dataSource->read_field(fld_name,fld_value);
-         Fl_String str = "test1";
-         input->value(fld_value.get_string());
-      }
-      //else if (widget->is_group()) {
-      else if (dynamic_cast<Fl_Group *>(widget)) {
-         loadFromDataSource((Fl_Group *)widget);
-      } 
-   }
+bool Fl_Dialog::load_data(Fl_Data_Source *ds) {
+   if (ds)
+         return m_tabs->load_data(ds);
+   else  return m_tabs->load_data(m_dataSource);
 }
 
-void Fl_Dialog::saveToDataSource(Fl_Group *grp) {
-   unsigned cnt = grp->children();
-   for (unsigned i = 0; i < cnt; i++) {
-      Fl_Widget   *widget = grp->child(i);
-      const char  *fld_name = widget->field_name();
-      if (fld_name && strlen(fld_name)) {
-         Fl_Input    *input = (Fl_Input *)widget;
-         Fl_Variant  fld_value;
-         fld_value.set_string(input->value());
-         m_dataSource->write_field(fld_name,fld_value);
-      }
-      //else if (widget->is_group()) {
-      else if (dynamic_cast<Fl_Group *>(widget)) {
-         saveToDataSource((Fl_Group *)widget);
-      } 
-   }
+bool Fl_Dialog::save_data(Fl_Data_Source *ds) const {
+   if (ds)
+         return m_tabs->save_data(ds);
+   else  return m_tabs->save_data(m_dataSource);
 }

@@ -660,16 +660,31 @@ void Fl_Group::data_source(Fl_Data_Source *ds) {
    data_source_->parent_ = this;
 }
 
-bool Fl_Group::load() {
-   if (!data_source_)
+bool Fl_Group::load_data(Fl_Data_Source *ds) {
+   if (!ds)
+     ds = data_source_;
+   if (!ds)
 	   return false;
-   return data_source_->load();
+
+   unsigned cnt = children();
+   for (unsigned i = 0; i < cnt; i++) {
+      Fl_Widget   *widget = child(i);
+      widget->load_data(ds);
+   }
+   return true;
 }
 
-bool Fl_Group::save() {
-   if (!data_source_)
+bool Fl_Group::save_data(Fl_Data_Source *ds) const {
+   if (!ds)
+     ds = data_source_;
+   if (!ds)
 	   return false;
-   return data_source_->save();
+   unsigned cnt = children();
+   for (unsigned i = 0; i < cnt; i++) {
+      Fl_Widget   *widget = child(i);
+      widget->save_data(ds);
+   }
+   return true;
 }
 
 //

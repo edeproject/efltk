@@ -34,6 +34,9 @@ public:
    Fl_Data_Source(Fl_Group *group) { parent_ = group; }
    virtual ~Fl_Data_Source() {}
 
+   virtual const Fl_Variant& operator [] (const char *field_name) const = 0;
+   virtual Fl_Variant&       operator [] (const char *field_name) = 0;
+
    virtual bool         read_field(const char *fname,Fl_Variant& value) = 0; 
    virtual bool         write_field(const char *fname,const Fl_Variant& fvalue) = 0; 
 

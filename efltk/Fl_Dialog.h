@@ -80,18 +80,20 @@ class FL_API Fl_Dialog : public Fl_Window {
    Fl_Widget_List  m_buttonList;
    int             m_buttons;
    int             m_modalResult;
+   bool            m_externalDataSource;
 
-   Fl_Dialog_Data_Source *m_dataSource;
+   Fl_Data_Source *m_dataSource;
 protected:
    Fl_Widget *find_widget(const char *field_name) const;
-   void loadFromDataSource(Fl_Group *grp);
-   void saveToDataSource(Fl_Group *grp);
 public:
-   Fl_Dialog(int w,int h);
+   Fl_Dialog(int w,int h,Fl_Data_Source *ds=NULL);
    ~Fl_Dialog();
 
    const Fl_Variant& operator [] (const char *field_name) const;
    Fl_Variant& operator [] (const char *field_name);
+
+   virtual bool  load_data(Fl_Data_Source *ds=NULL);
+   virtual bool  save_data(Fl_Data_Source *ds=NULL) const;
 
    int   show_modal();
 
