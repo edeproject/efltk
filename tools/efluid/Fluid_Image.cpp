@@ -1,0 +1,423 @@
+//
+// "$Id$"
+//
+// Pixmap label support for the Fast Light Tool Kit (FLTK).
+//
+// Copyright 1998-1999 by Bill Spitzak and others.
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Library General Public
+// License as published by the Free Software Foundation; either
+// version 2 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Library General Public License for more details.
+//
+// You should have received a copy of the GNU Library General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+// USA.
+//
+// Please report all bugs and problems to "fltk-bugs@easysw.com".
+//
+
+#include <efltk/Fl.h>
+#include <efltk/Fl_Widget.h>
+#include <efltk/Fl_Image.h>
+#include "Fl_Type.h"
+#include "Fluid_Image.h"
+#include <string.h>
+#include <stdio.h>
+#include <errno.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include <efltk/filename.h>
+#include <config.h>
+
+extern void goto_source_dir(); // in fluid.C
+extern void goto_images_dir(); // in fluid.cxx
+extern void leave_source_dir(); // in fluid.C
+#define leave_images_dir() leave_source_dir()
+
+const char *images_dir = "";
+
+////////////////////////////////////////////////////////////////
+
+static uchar* fl_store_datas_from_file(const char *filename, size_t &size)
+{
+  uchar *d=0;
+  FILE *fd = fopen(filename, "rb");
+  if(!fd) return 0;
+  size_t c=512, cc=0, r;
+  size = 0;
+  do {
+    c*=2;
+    cc+=c;
+    if(d)
+      d=(uchar *) realloc(d, cc);
+    else
+      d=(uchar *) malloc(cc);
+    r=fread(d+cc-c, 1, c, fd);
+    size+=r;
+  } while(r==c);
+  if(size!=cc) d=(uchar *) realloc(d, size?size:1);
+  return d;
+}
+
+////////////////////////////////////////////////////////////////
+
+class generic_image : public Fluid_Image {
+protected:
+  Fl_Image *p;
+  int *linelength;
+  char* filetype;
+public:
+  generic_image(const char *name);
+  ~generic_image();
+  virtual void label(Fl_Widget *); // set the label of this widget
+  virtual void write_static();
+  virtual void write_code();
+  static int test_file(char *buffer);
+};
+
+#include <efltk/Fl_Ptr_List.h>
+#include <efltk/Fl_Image.h>
+
+int generic_image::test_file(char *buffer)
+{
+	Fl_Image::read(0,0);
+	Fl_Ptr_List &list = fl_list_imageio();
+    
+	for(uint n=0; n<list.size(); n++) {
+		Fl_Image_IO *r=(Fl_Image_IO *)list[n];
+        if(r->is_valid_mem && r->is_valid_mem((const uint8*)buffer, 1024)) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void generic_image::label(Fl_Widget *o) {
+  o->image(p);
+}
+
+static int image_file_header_written;
+
+#define MAX_CLINESIZE 1024
+void generic_image::write_static() {
+  uchar* d=0;
+  if (!p) return;
+  if(image_file_header_written != write_number)
+  {
+    write_c("\n#include <efltk/Fl_Image.h>\n");
+    write_c("\n#include <efltk/Fl_Images.h>\n");
+    image_file_header_written = write_number;
+  }
+  if (inlined) {
+    size_t l=0;
+    goto_images_dir();
+
+    if (filetype && !strcasecmp(filetype, "xpm"))
+    {
+      write_c("static const char *%s[] = {\n", unique_id(this, "datas", fl_file_filename(name()), 0));
+      FILE* fp = fopen(name(), "rb");
+      if(fp) {
+	indentation += 2;
+	char s[MAX_CLINESIZE+1];
+	do {
+	  fgets(s, MAX_CLINESIZE+1, fp);
+	} while (!feof(fp) && !strchr(s, '{'));
+	while (!feof(fp) && fgets(s, MAX_CLINESIZE+1, fp)) {
+		write_c(indent());
+	    write_craw(s);
+	  //	  write_c(s);
+	}
+	indentation -= 2;
+	fclose(fp);
+      }
+    } else {
+      d = fl_store_datas_from_file(name(), l);
+      if(d) {
+#if 1
+	write_c("static const unsigned char %s[%d] = {\n", unique_id(this, "datas", fl_file_filename(name()), 0), l);
+	write_carray((const char*)d, l);
+	write_c("};\n");
+#else
+	write_c("static const unsigned char %s[] =\n",
+		unique_id(this, "datas", filename_name(name()), 0));
+	write_cstring((const char*)d, l);
+	write_c(";\n");
+#endif
+	free(d);
+      }
+    }
+    leave_images_dir();
+  }
+}
+
+void generic_image::write_code() {
+    if (!p) return;
+
+    bool xpm = (filetype && !strcasecmp(filetype, "xpm"));
+
+    //write_c("%so->image(Fl_Image::read%s(\"%s\"", indent(), xpm?"_xpm":"", name());
+	write_c("%so->image(Fl_Image::read%s(", indent(), xpm?"_xpm":"");
+	write_cstring(name());	
+    if (inlined) {
+		const char *id = unique_id(this, "datas", fl_file_filename(name()), 0);
+		if(xpm) {
+			write_c(", (const char**)%s", id);
+		} else {			
+			write_c(", (const uint8*)%s, sizeof(%s)", id, id);
+		}
+	}
+	
+    write_c("));\n");
+}
+
+generic_image::generic_image(const char *name) : Fluid_Image(name) {
+
+    p = Fl_Image::read(name);
+    if(p) {
+        const char *type = fl_file_getext(name)+1;
+        filetype = type?strdup(type):0;
+    }
+    inlined = 1;
+}
+
+generic_image::~generic_image() {
+    if(filetype) delete []filetype;
+}
+
+////////////////////////////////////////////////////////////////
+#include <efltk/Fl_Bitmap.h>
+
+class bitmap_image : public Fluid_Image {
+  Fl_Bitmap *p;
+public:
+  ~bitmap_image();
+  bitmap_image(const char *name, FILE *);
+  virtual void label(Fl_Widget *); // set the label of this widget
+  virtual void write_static();
+  virtual void write_code();
+  static int test_file(char *buffer);
+};
+
+// bad test, always do this last!
+int bitmap_image::test_file(char *buffer) {
+    return (strstr(buffer,"#define ") != 0);
+}
+
+void bitmap_image::label(Fl_Widget *o) {
+  o->image(p);
+}
+
+static int bitmap_header_written;
+
+void bitmap_image::write_static() {
+  if (!p) return;
+  write_c("\n");
+  if (bitmap_header_written != write_number) {
+    write_c("#include <efltk/Fl_Bitmap.h>\n");
+    bitmap_header_written = write_number;
+  }
+  int w, h;
+  p->measure(w, h);
+  int n = ((w+7)/8)*h;
+#if 1 // older one
+  write_c("static const unsigned char %s[%d] = {\n",
+          unique_id(this, "bits", fl_file_filename(name()), 0), n);
+  write_carray((const char*)(p->data()), n);
+  write_c("};\n");
+#else // this seems to produce slightly shorter c++ files
+  write_c("static const unsigned char %s[] =\n",
+	  unique_id(this, "bits", fl_file_filename(name()), 0));
+  write_cstring((const char*)(p->array), n);
+  write_c(";\n");
+#endif
+  write_c("static Fl_Bitmap %s(%s, %d, %d);\n",
+	  unique_id(this, "bitmap", fl_file_filename(name()), 0),
+	  unique_id(this, "bits", fl_file_filename(name()), 0),
+	  w, h);
+}
+
+void bitmap_image::write_code() {
+  if (!p) return;
+  write_c("%so->image(%s);\n", indent(),
+	  unique_id(this, "bitmap", fl_file_filename(name()), 0));
+}
+
+bitmap_image::bitmap_image(const char *name, FILE *f) : Fluid_Image(name) {
+  p = 0;//&nosuch_bitmap; // if any problems with parse we exit with this
+  if (!f) return;
+  char buffer[1024];
+  char junk[1024];
+  int wh[2]; // width and height
+  int i;
+  for (i = 0; i<2; i++) {
+    for (;;) {
+      if (!fgets(buffer,1024,f)) return;
+      int r = sscanf(buffer,"#define %s %d",junk,&wh[i]);
+      if (r >= 2) break;
+    }
+  }
+  // skip to data array:
+  for (;;) {
+    if (!fgets(buffer,1024,f)) return;
+    if (!strncmp(buffer,"static ",7)) break;
+  }
+  int n = ((wh[0]+7)/8)*wh[1];
+  uchar *data = new uchar[n];
+  // read the data:
+  i = 0;
+  for (;i<n;) {
+    if (!fgets(buffer,1024,f)) return;
+    const char *a = buffer;
+    while (*a && i<n) {
+      int t;
+      if (sscanf(a," 0x%x",&t)>0) data[i++] = t;
+      while (*a && *a++ != ',');
+    }
+  }
+  p = new Fl_Bitmap(data,wh[0],wh[1],true);
+}
+
+bitmap_image::~bitmap_image() {
+  if (p /*&& p != &nosuch_bitmap*/) {    
+    delete p;
+  }
+}
+
+////////////////////////////////////////////////////////////////
+
+static Fluid_Image** images; // sorted list
+static int numimages;
+static int tablesize;
+
+Fluid_Image* Fluid_Image::find(const char *name) {
+  if (!name || !*name) return 0;
+
+  // first search to see if it exists already:
+  int a = 0;
+  int b = numimages;
+  while (a < b) {
+    int c = (a+b)/2;
+    int i = strcmp(name,images[c]->name_);
+    if (i < 0) b = c;
+    else if (i > 0) a = c+1;
+    else return images[c];
+  }
+
+  // no, so now see if the file exists:
+
+  Fluid_Image *ret = 0;
+
+  goto_images_dir();
+  FILE *f = fopen(name,"rb");
+
+  if (!f) {
+    read_error("%s : %s",name,strerror(errno));
+    leave_images_dir();
+  } else {
+    // now see if we can identify the type, by reading in some data
+    // and asking all the types we know about:
+    char buffer[1025];
+    fread(buffer, 1, 1024, f);
+    rewind(f);
+    buffer[1024] = 0; // null-terminate so strstr() works
+    if (generic_image::test_file(buffer)) {
+        ret = new generic_image(name);
+    } else if (bitmap_image::test_file(buffer)) {
+        ret = new bitmap_image(name,f);
+    } else {
+        ret = 0;
+        read_error("%s : unrecognized image format", name);
+    }
+    fclose(f);
+  }
+  leave_images_dir();
+  if (!ret) ret = new bitmap_image(name, 0);
+
+  // make a new entry in the table:
+  numimages++;
+  if (numimages > tablesize) {
+    tablesize = tablesize ? 2*tablesize : 16;
+    images = (Fluid_Image**)realloc(images, tablesize*sizeof(Fluid_Image*));
+  }
+  for (b = numimages-1; b > a; b--) images[b] = images[b-1];
+  images[a] = ret;
+
+  return ret;
+}
+
+Fluid_Image::Fluid_Image(const char *name) {
+  name_ = strdup(name);
+  written = 0;
+  refcount = 0;
+  inlined=0;
+}
+
+void Fluid_Image::increment() {
+  ++refcount;
+}
+
+void Fluid_Image::decrement() {
+  --refcount;
+  if (refcount > 0) return;
+  delete this;
+}
+
+Fluid_Image::~Fluid_Image() {
+  int a;
+  for (a = 0; a<numimages; a++) if (images[a] == this) break;
+  if(a<numimages) {
+    numimages--;
+    for (; a < numimages; a++) images[a] = images[a+1];
+  }
+  free((void*)name_);
+}
+
+////////////////////////////////////////////////////////////////
+
+#include <efltk/Fl_File_Dialog.h>
+
+Fluid_Image *ui_find_image(Fluid_Image *old) {
+  goto_images_dir();
+  const char *name = fl_select_file(old ? old->name() : 0, "Image Files, *.{xpm|gif|png|bmp|jpg|jpeg}");
+  Fluid_Image *ret = (name && *name) ? Fluid_Image::find(name) : 0;
+  leave_images_dir();
+  return ret;
+}
+
+////////////////////////////////////////////////////////////////
+
+static int cancel, modal;
+void browse_dir_cb();
+
+#include "image_file_panel.h"
+#include "image_file_panel.cpp"
+
+void browse_dir_cb()
+{
+    char *f =
+        fl_select_dir(images_dir_input->value(), "Images directory");
+  if(f) images_dir_input->value(f);
+}
+
+void set_images_dir_cb(Fl_Widget *, void *) {
+  goto_source_dir();
+  if(!images_dir_window) make_images_dir_window();
+  images_dir_input->value(images_dir);
+  images_dir_window->show();
+  cancel=0; modal=1;
+  while(modal) Fl::wait();
+  if(!cancel)
+    images_dir = images_dir_input->value();
+  leave_source_dir();
+}
+ 
+//
+// End of "$Id$".
+//
