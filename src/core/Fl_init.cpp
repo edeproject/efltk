@@ -38,10 +38,12 @@
 # endif
 # ifndef SPI_GETTOOLTIPANIMATION
 #  define SPI_GETTOOLTIPANIMATION             0x1016
+# ifndef SPI_GETMENUSHOWDELAY
+#  define SPI_GETMENUSHOWDELAY       0x006A
+# endif
 # endif
 
 #endif
-
 
 void clean_up()
 {
@@ -61,7 +63,7 @@ void Fl::init()
     if(!file) file = Fl_Config::find_config_file("efltk.conf", false, Fl_Config::SYSTEM);
 
     Fl_Config cfg(file, true, false);
-    if(!cfg.error()) {
+    if(0) {//!cfg.error()) {
 
         bool b_val;
         float f_val;
@@ -80,7 +82,7 @@ void Fl::init()
         Fl_Menu_::default_effect_type(i_val);
         cfg.get("Menus", "Speed", f_val, 1.5f);
         Fl_Menu_::default_anim_speed(f_val);
-        cfg.get("Menus", "Delay", f_val, 0.2f);
+        cfg.get("Menus", "Delay", f_val, 0.3f);
         Fl_Menu_::default_delay(f_val);
 
 
@@ -125,7 +127,10 @@ void Fl::init()
 		if(tooltip_fade) Fl_Tooltip::effect_type(FL_EFFECT_FADE);
 		else Fl_Tooltip::effect_type(FL_EFFECT_ANIM);
 
-
+		DWORD menu_delay;
+		SystemParametersInfo(SPI_GETMENUSHOWDELAY, 0, (PVOID)&menu_delay, 0);		        
+		double del = (double)menu_delay/1000;
+		Fl_Menu_::default_delay(del);
 	}
 
 	// WIN32 needs sockets to be initialized to get select funtion working...

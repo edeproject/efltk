@@ -63,7 +63,7 @@ public:
     void draw();
     void layout();
     // You have to destroy the window or it will not raise next time:
-    void hide() {destroy();}
+    //void hide() {destroy();}
 
     int handle(int e) {
         switch(e) {
@@ -79,40 +79,39 @@ static Fl_TooltipBox *window = 0;
 
 void Fl_TooltipBox::layout()
 {
-    // Dont do nothing, if already visible or animating
-    if(animating || visible()) return;
+    // Dont do nothing, if animating
+    if(animating) return;
 
-    fl_font(label_font(), float(label_size()));
+	if(!visible()) {
+		// Fond new pos/size for NON-visible windows
+		fl_font(label_font(), float(label_size()));
     
-    int ww, hh;
+		int ww, hh;
 
-    ww = MAX_WIDTH;
-    fl_measure(label(), ww, hh, FL_ALIGN_LEFT|FL_ALIGN_WRAP|FL_ALIGN_INSIDE);
-    ww += 6; hh += 6;
+		ww = MAX_WIDTH;
+		fl_measure(label(), ww, hh, FL_ALIGN_LEFT|FL_ALIGN_WRAP|FL_ALIGN_INSIDE);
+		ww += 6; hh += 6;
 
-    // find position on the screen of the widget:
-    int ox = Fl::event_x_root();
-    //int ox = X+W/2;
-    int oy = Y + H+2;
-    for (Fl_Widget* p = Fl_Tooltip::current(); p; p = p->parent()) {
-        //ox += p->x();
-        oy += p->y();
-    }
-    if (ox+ww > Fl::w()) ox = Fl::w() - ww;
-    if (ox < 0) ox = 0;
-    if (H > 30)
-    {
-        oy = Fl::event_y_root()+13;
-        if (oy+hh > Fl::h()) oy -= 23+hh;
-    }
-    else
-    {
-        if (oy+hh > Fl::h()) oy -= (4+hh+H);
-    }
-    if (oy < 0) oy = 0;
+		// find position on the screen of the widget:
+		int ox = Fl::event_x_root();
+		//int ox = X+W/2;
+		int oy = Y + H+2;
+		for (Fl_Widget* p = Fl_Tooltip::current(); p; p = p->parent()) {
+			//ox += p->x();
+	        oy += p->y();
+		}
+		if (ox+ww > Fl::w()) ox = Fl::w() - ww;
+		if (ox < 0) ox = 0;
+		if (H > 30) {
+			oy = Fl::event_y_root()+13;
+			if (oy+hh > Fl::h()) oy -= 23+hh;
+		} else {
+			if (oy+hh > Fl::h()) oy -= (4+hh+H);
+		}
+		if (oy < 0) oy = 0;
 
-    resize(ox, oy, ww, hh);	
-
+		resize(ox, oy, ww, hh);	
+	}
     if(!no_layout) Fl_Menu_Window::layout();
 }
 
@@ -134,6 +133,7 @@ static void recent_timeout(void*)
 static void tooltip_timeout(void*)
 {
     if (recursion) return;
+	Fl::remove_timeout(recent_timeout);
     recursion = true;
     const char* tip = generator ?
         generator(Fl_Tooltip::current(), argument) :
@@ -178,7 +178,7 @@ static void tooltip_timeout(void*)
         ((Fl_Menu_Window*)window)->layout();
     }
 
-    Fl::remove_timeout(recent_timeout);
+    Fl::add_timeout(1, recent_timeout);
     recent_tooltip = true;
     recursion = false;
 }

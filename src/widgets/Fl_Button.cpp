@@ -72,7 +72,7 @@ int Fl_Button::handle(int event)
         if (highlight_color() && takesevents()) redraw(FL_DAMAGE_HIGHLIGHT);
     case FL_MOVE:
         return 1;
-    case FL_PUSH:
+    case FL_PUSH:		
         if(!already_pushed) oldval = value();
         already_pushed = true;
     case FL_DRAG:

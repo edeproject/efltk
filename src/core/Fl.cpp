@@ -651,7 +651,8 @@ bool Fl::handle(int event, Fl_Window* window)
 
         case FL_PUSH:
             if (pushed()) to = pushed();
-            Fl_Tooltip::enter(to);
+			// This is bad... It brings up underlying window tooltip, if tooltip recently was up
+            //Fl_Tooltip::enter(to);
             break;
 
         case FL_ENTER:

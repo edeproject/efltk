@@ -33,6 +33,8 @@
 static void revert_menubar(Fl_Style* s) {
     s->leading = 5;
     s->color = FL_GRAY;
+	s->selection_color = FL_LIGHT1;
+	s->selection_text_color = FL_BLACK;
     s->box = FL_FLAT_BOX;
 #if 0
     // NT 4.0 style
@@ -85,9 +87,9 @@ void Fl_Menu_Bar::draw()
         Fl_Widget* widget = child(i);
         if (!widget->visible()) continue;
 
-        Fl_Flags f=0;
+        Fl_Flags f=widget->flags();
 
-        if(i==selected_) f|=FL_VALUE;
+        if(i==selected_) f|=FL_VALUE|FL_SELECTED;
         else if(i==highlight_) f|=FL_HIGHLIGHT;
 
         if( (damage()&(~FL_DAMAGE_HIGHLIGHT)) ||
@@ -96,15 +98,22 @@ void Fl_Menu_Bar::draw()
         {
             Fl_Color save_color = widget->highlight_label_color();
             widget->highlight_label_color(highlight_label_color());
+            Fl_Color save_scolor = widget->selection_text_color();
+            widget->selection_text_color(selection_text_color());
+			int save_flags = widget->flags();
+			widget->flags(f);
 
-            button_box()->draw(widget->x(), widget->y(), widget->w(), widget->h(), button_color(), f);
+			Fl_Color c = (selected_==i)?selection_color():button_color();
+            button_box()->draw(widget->x(), widget->y(), widget->w(), widget->h(), c, f);
             //update_child(*widget);
             fl_push_matrix();
             fl_translate(widget->x(), widget->y());
             widget->draw();
             fl_pop_matrix();
 
+			widget->flags(save_flags);
             widget->highlight_label_color(save_color);
+			widget->selection_text_color(save_scolor);
         }
     }
 
