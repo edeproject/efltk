@@ -160,14 +160,12 @@ void Fl_Date_Time::encodeDate(double &dt,short year,short month,short day) {
       return;
    }
    int yearKind = isLeapYear(year);
-   if (day < 1 || day > _monthDays[yearKind][month-1])
- {
+   if (day < 1 || day > _monthDays[yearKind][month-1]) {
       dt = 0;
       return;
    }      
       
-   if (year <= 0 || year > 9999)
- {
+   if (year <= 0 || year > 9999) {
       dt = 0;
       return;
    }
