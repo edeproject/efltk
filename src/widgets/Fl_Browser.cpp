@@ -864,7 +864,7 @@ bool Fl_Browser::make_item_visible(linepos where)
 
 
 // force current item to a state and do callback for multibrowser:
-bool Fl_Browser::set_item_selected(bool value, int do_callback)
+bool Fl_Browser::set_item_selected(bool value, Fl_Event_Type do_callback)
 {
     if (multi())
     {
@@ -901,7 +901,7 @@ bool Fl_Browser::set_item_selected(bool value, int do_callback)
 
 
 // Turn off all lines in the browser:
-bool Fl_Browser::deselect(int do_callback)
+bool Fl_Browser::deselect(Fl_Event_Type do_callback)
 {
     unset_mark(HERE);
     return select_only_this(do_callback);
@@ -909,7 +909,7 @@ bool Fl_Browser::deselect(int do_callback)
 
 
 // Set both the single and multi-browser to only this item:
-bool Fl_Browser::select_only_this(int do_callback)
+bool Fl_Browser::select_only_this(Fl_Event_Type do_callback)
 {
     if (multi())
     {
@@ -1004,7 +1004,7 @@ int Fl_Browser::handle(int event)
                             drag_type = !item()->selected();
                                  // don't change it
                             if (openclose_drag) drag_type = !drag_type;
-                            set_item_selected(drag_type, FL_DATA_EVENTS);
+                            set_item_selected(drag_type, FL_DATA_CHANGE);
                             set_focus();
                                  // make it not be a double-click for callback
                             Fl::event_clicks(0);
@@ -1019,7 +1019,7 @@ int Fl_Browser::handle(int event)
                         }
                         else
                         {
-                            select_only_this(FL_DATA_EVENTS);
+                            select_only_this(FL_DATA_CHANGE);
                             drag_type = true;
                             return 1;
                         }
@@ -1029,7 +1029,7 @@ int Fl_Browser::handle(int event)
                     set_mark(TEMP, HERE);
                     for (;;)
                     {
-                        set_item_selected(drag_type, FL_DATA_EVENTS);
+                        set_item_selected(drag_type, FL_DATA_CHANGE);
                         if (at_mark(FOCUS)) break;
                         if (!(direction<0 ? next_visible() : previous_visible())) break;
                     }
@@ -1038,7 +1038,7 @@ int Fl_Browser::handle(int event)
                 }
                 else
                 {
-                    select_only_this(FL_DATA_EVENTS);
+                    select_only_this(FL_DATA_CHANGE);
                 }
                 return 1;
             }
@@ -1088,19 +1088,19 @@ AFTER_MOVEMENT_KEY:
                     if (!item()) return 1;
                     if (multi() && Fl::event_state(FL_SHIFT|FL_CTRL))
                     {
-                        if (Fl::event_state(FL_SHIFT)) set_item_selected(1,FL_DATA_EVENTS);
+                        if (Fl::event_state(FL_SHIFT)) set_item_selected(1,FL_DATA_CHANGE);
                         set_focus();
                     }
                     else
                     {
-                        select_only_this(FL_DATA_EVENTS);
+                        select_only_this(FL_DATA_CHANGE);
                     }
                     //goto RELEASE;
                     return 1;
 
                 case ' ':
                     if (!multi() || !goto_visible_focus()) break;
-                    set_item_selected(!item()->selected(), FL_DATA_EVENTS);
+                    set_item_selected(!item()->selected(), FL_DATA_CHANGE);
                     return 1;
 
                 case FL_Enter:
@@ -1238,7 +1238,7 @@ Fl_Widget* Fl_Browser::goto_index(int a, int b, int c, int d, int e)
 bool Fl_Browser::select(int line, bool value)
 {
     if (!goto_index(line)) return false;
-    return set_item_selected(value, false);
+    return set_item_selected(value, FL_NO_EVENT);
 }
 
 

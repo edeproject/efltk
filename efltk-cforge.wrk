@@ -2292,6 +2292,7 @@ test/cursor.o :	efltk/Fl_Box.h\
 	efltk/Fl_Flags.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Enumerations.h\
+	efltk/Fl_Events.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
@@ -4382,6 +4383,7 @@ lib/Fl_Browser.o :	efltk/Fl_Bitmap.h\
 	efltk/Fl_PtrList.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Enumerations.h\
+	efltk/Fl_Events.h\
 	efltk/Fl_Renderer.h\
 	efltk/x.h\
 	efltk/win32.h\
@@ -4404,6 +4406,9 @@ lib/Fl_Browser.o :	efltk/Fl_Bitmap.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h\
+	efltk/Fl_Size.h\
+	efltk/Fl_Point.h\
+	efltk/Fl_Rect.h\
 	efltk/fl_draw.h\
 	efltk/Fl_Browser.h\
 	efltk/Fl_Scrollbar.h\
@@ -7388,6 +7393,7 @@ test/fonts.o :	efltk/fl_ask.h\
 	efltk/Fl_Int_List.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Enumerations.h\
+	efltk/Fl_Events.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_String_List.h\
 	efltk/Fl_String.h\
@@ -7417,7 +7423,8 @@ test/fonts.o :	efltk/fl_ask.h\
 	efltk/Fl_Menu_Item.h\
 	efltk/Fl_Double_Window.h\
 	efltk/Fl_Window.h\
-	efltk/Fl.h
+	efltk/Fl.h\
+	config.h
 test/fullscreen.o :	efltk/fl_draw.h\
 	efltk/Fl_Device.h\
 	efltk/Fl_Group.h\

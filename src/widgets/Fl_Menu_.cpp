@@ -179,7 +179,7 @@ void Fl_Menu_::execute(Fl_Widget* widget)
         if (widget->value()) widget->clear_value(); else widget->set_value();
     }
 
-    widget->do_callback(FL_MENU_COMMAND,widget->argument());
+    do_callback(widget,widget->user_data(),FL_MENU_COMMAND);
 }
 
 

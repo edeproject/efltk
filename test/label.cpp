@@ -40,6 +40,7 @@ Fl_Value_Slider *sizes;
 Fl_Double_Window *window;
 
 void button_cb(Fl_Widget *,void *) {
+  if (!Fl::event() == FL_BUTTON_PRESSED) return;
   int i = 0;
   if (leftb->value()) i |= FL_ALIGN_LEFT;
   if (rightb->value()) i |= FL_ALIGN_RIGHT;
@@ -53,47 +54,63 @@ void button_cb(Fl_Widget *,void *) {
 }
 
 void font_cb(Fl_Widget *,void *) {
-  text->label_font(fl_fonts +  int(fonts->value()));
-  window->redraw();
+  if (Fl::event() == FL_DATA_CHANGE) {
+    text->label_font(fl_fonts +  int(fonts->value()));
+    window->redraw();
+  }
 }
 
 void size_cb(Fl_Widget *,void *) {
-  text->label_size(int(sizes->value()));
-  window->redraw();
+  if (Fl::event() == FL_DATA_CHANGE) {
+    text->label_size(int(sizes->value()));
+    window->redraw();
+  }
 }
 
 void input_cb(Fl_Widget *,void *) {
-  text->label(input->value());
-  window->redraw();
+  if (Fl::event() == FL_DATA_CHANGE) {
+    text->label(input->value());
+    window->redraw();
+  }
 }
 
 void normal_cb(Fl_Widget *,void *) {
-  text->label_type(FL_NORMAL_LABEL);
-  window->redraw();
+  if (Fl::event() == FL_MENU_COMMAND) {
+    text->label_type(FL_NORMAL_LABEL);
+    window->redraw();
+  }
 }
 
 void symbol_cb(Fl_Widget *,void *) {
-  text->label_type(FL_SYMBOL_LABEL);
-  if (input->value()[0] != '@') {
-    input->static_value("@->");
-    text->label("@->");
+  if (Fl::event() == FL_MENU_COMMAND) {
+    text->label_type(FL_SYMBOL_LABEL);
+    if (input->value()[0] != '@') {
+      input->static_value("@->");
+      text->label("@->");
+    }
+    window->redraw();
   }
-  window->redraw();
 }
 
 void shadow_cb(Fl_Widget *,void *) {
-  text->label_type(FL_SHADOW_LABEL);
-  window->redraw();
+  if (Fl::event() == FL_MENU_COMMAND) {
+    text->label_type(FL_SHADOW_LABEL);
+    window->redraw();
+  }
 }
 
 void embossed_cb(Fl_Widget *,void *) {
-  text->label_type(FL_EMBOSSED_LABEL);
-  window->redraw();
+  if (Fl::event() == FL_MENU_COMMAND) {
+    text->label_type(FL_EMBOSSED_LABEL);
+    window->redraw();
+  }
 }
 
 void engraved_cb(Fl_Widget *,void *) {
-  text->label_type(FL_ENGRAVED_LABEL);
-  window->redraw();
+  if (Fl::event() == FL_MENU_COMMAND) {
+    text->label_type(FL_ENGRAVED_LABEL);
+    window->redraw();
+  }
 }
 
 Fl_Menu_Item choices[] = {
@@ -109,7 +126,6 @@ int main(int argc, char **argv) {
 
   input = new Fl_Input(25,375,350,25);
   input->static_value("The quick brown fox jumps over the lazy dog.");
-  input->when(FL_WHEN_CHANGED);
   input->callback(input_cb);
 
   sizes= new Fl_Value_Slider(50,350,350,25,"Size:");
