@@ -401,11 +401,13 @@ void Fl_Group::layout()
     int layout_damage = this->layout_damage();
     Fl_Widget::layout();
 
+    int* p = 0;
+    if (resizable() && children() > 0) {
+        p = sizes(); // initialize the size array
+    }
+
     if(children() > 0 && layout_damage&FL_LAYOUT_WH)
     {
-        int *p=0;
-        if(resizable()) p = sizes(); // initialize the size array
-
         Fl_Widget *client = NULL;
         int dw=0, dh=0, IX=0, IR=0, IY=0, IB=0;
         if(p) {
@@ -433,7 +435,7 @@ void Fl_Group::layout()
             Fl_Widget *o = *a++;
             switch (o->layout_align()) {
             case 0: {
-                if(!p) break;
+                if(!p || !resizable()) break;
 
                 int X = p[0];
                 if (X >= IR) X += dw;
