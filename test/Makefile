@@ -51,14 +51,15 @@ CPPFILES = demo.cpp sizes.cpp hello.cpp resizable.cpp scroll.cpp image.cpp file_
         exceptions.cpp layout2.cpp socket.cpp
 
 ALL =   demo sizes hello resizable scroll image file_chooser menubar browser \
-	threads progress editor inactive checkers valuators glpuzzle boxtype \
+	threads progress editor inactive checkers valuators boxtype \
         multi_image help mdi_test resize tabs line_style doublebuffer subwindow \
-        keyboard label layout arc ask button buttons clock color_chooser cube \
-        cursor curve fast_slow fonts fullscreen gl_overlay iconize input navigation \
-        output overlay pack radio shape tile CubeView preferences image_manip \
+        keyboard label layout arc ask button buttons clock color_chooser \
+        cursor curve fast_slow fonts iconize input navigation \
+        output overlay pack radio tile preferences image_manip \
         listview alphablend thread_ball images image_loader layout2 \
 	multitabs1 multitabs2 popup_window symbols calendar maskedinput bitmap utf8 \
-        dialog directory listview_ds xml_test xml_test2 exceptions socket
+        dialog directory listview_ds xml_test xml_test2 exceptions socket \
+	glpuzzle cube fullscreen gl_overlay shape CubeView
 
 all: demos
 
