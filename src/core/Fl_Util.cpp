@@ -81,7 +81,7 @@ bool Fl_FileAttr::parse(const char *filename)
 #endif // WIN32 || __EMX__
 
     struct stat s;
-    if(stat(file, &s) < 0)
+    if(lstat(file, &s) < 0)
         return false;
 
     if(S_ISDIR(s.st_mode)) flags |= FL_DIR;
