@@ -391,6 +391,10 @@ int Fl_String::rpos(int c, int index) const
 
 Fl_String Fl_String::sub_str(int start,int count) const
 {
+    if (start >= (int)len_)
+        return Fl_String("");
+    if (count > (int)len_ - start)
+        count = len_ - start;
     return Fl_String(str_+start, count);
 }
 
@@ -447,12 +451,15 @@ void Fl_String::sub_insert(int start, char ch)
 
 void Fl_String::sub_delete(int start, int count)
 {
-    if(count) {
+    if (count) {
         int l = len_+1;
-        if(count > l) count = l;
-        memmove(str_+start, str_+start+count, l-count-start);
-        len_ -= count;
-        str_[len_] = '\0';
+        if (count > (int)len_ - start)
+            count = len_ - start;
+        if (count > 0) {
+            memmove(str_+start, str_+start+count, l-count-start);
+            len_ -= count;
+            str_[len_] = '\0';
+        }
     }
 }
 
@@ -513,3 +520,5 @@ Fl_String Fl_String::from_codeset(int conv_index, const char *str, int str_len)
 Fl_String Fl_String::from_codeset(Fl_String codeset, const char *str, int str_len) {
     return Fl_String::from_codeset(fl_find_converter(codeset.c_str()), str, str_len);
 }
+
+
