@@ -14,7 +14,7 @@ Group: X11/EDE/Development/Tools
 URL: http://ede.sf.net
 License: GNU GPL
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-Requires: %{name}-devel >= %{version}-%{release}-%{release}
+Requires: %{name}-devel >= %{version}-%{release}
 
 %description
 eFLTK is a cross-platform C++ GUI toolkit for UNIX®/Linux® (X11), Microsoft® Windows®,
@@ -31,6 +31,8 @@ raznih krajeva sveta koja ima centralno CVS skladiste na SourceForge-u.
 
 %package -n %{name}-devel
 Summary: Header files and libraries for developing apps which will eFLTK
+Version: %{version}
+Release: %{release}
 Group: X11/EDE/Libraries
 #Requires: %{name} = %{version}-%{release}
 
@@ -50,9 +52,8 @@ numprocs=`egrep -c ^cpu[0-9]+ /proc/stat || :`
 if [ "$numprocs" = "0" ]; then
 	numprocs=1
 fi
-#make -j$numprocs 
-make
-make static
+make -j$numprocs static
+make -j$numprocs
 
 %install
 install -d $RPM_BUILD_ROOT/%{_prefix}
@@ -82,4 +83,4 @@ rm -fr $RPM_BUILD_ROOT
 
 %changelog
 * %{date} Just entered something here... :)
-Blabla
+Now efltk.spec file is built with configure script.
