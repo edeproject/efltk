@@ -630,6 +630,7 @@ int Fl_Tabs::handle(int event)
         DEFAULT:
             return Fl_Group::handle(event);
     }
+    return 1;
 }
 
 int Fl_Tabs::push(Fl_Widget *o)
