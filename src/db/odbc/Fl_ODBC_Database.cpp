@@ -341,9 +341,10 @@ void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
                 pcbLen = &cbNullData;
                 len = 0;
                 scale = 0;
+                rc = SQLBindParameter(statement,paramNumber,parameterMode,paramType,sqlType,len,scale,buff,short(len),pcbLen);
+            } else {
+                rc = SQLBindParameter(statement,paramNumber,parameterMode,paramType,sqlType,len,scale,buff,short(len),NULL);
             }
-            rc = SQLBindParameter(statement,paramNumber,parameterMode,paramType,sqlType,len,scale,buff,short(len),pcbLen);
-            //rc = SQLBindParameter(statement,paramNumber,parameterMode,paramType,sqlType,len,scale,buff,short(len),NULL);
             if (rc != 0)
                 fl_throw("Can't bind parameter " + Fl_String(paramNumber) + ": " + query_error(query));
         }
