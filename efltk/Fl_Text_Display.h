@@ -32,6 +32,7 @@
 #include "Fl_Widget.h"
 #include "Fl_Scrollbar.h"
 #include "Fl_Text_Buffer.h"
+#include "Fl_Int_List.h"
 
 class FL_API Fl_Text_Display: public Fl_Group {
 public:
@@ -61,14 +62,16 @@ public:
     enum {
       ATTR_NONE = 0,
       ATTR_UNDERLINE = 1,
-      ATTR_HIDDEN = 2 //Not implement
+      ATTR_HIDDEN = 2, //Not implement
+	  ATTR_IMAGE = 3 
     };
 
     struct FL_API Style_Table_Entry {
-      Fl_Color	color;
-      Fl_Font	font;
-      int	size;
-      unsigned	attr;
+      Fl_Color color;
+      Fl_Font font;
+      int size;
+      unsigned attr;
+	  Fl_Image *image;
     };
 
     Fl_Text_Display(int X, int Y, int W, int H, const char *l = 0);
@@ -240,7 +243,7 @@ protected:
     int mContinuousWrap;        /* Wrap long lines when displaying */
     int mWrapMargin;            /* Margin in # of char positions for
                                    wrapping in continuousWrap mode */
-    int* mLineStarts;
+    Fl_Int_List mLineStarts;
     int mTopLineNum;            /* Line number of top displayed line
                                    of file (first line of file is 1) */
     int mAbsTopLineNum;         /* In continuous wrap mode, the line
