@@ -90,12 +90,12 @@ public:
      * begin() is automatically called by the constructor for Fl_Group (and thus for Fl_Window as well). begin() is exactly the same as current(this). 
      * <i>Don't forget to end() the group or window!</i>
      */
-    void begin() { Fl_Group::m_current = this; }
+    virtual void begin() { Fl_Group::m_current = this; }
 
     /**
      * end() is exactly the same as current(this->parent()). Any new widgets added to the widget tree will be added to the parent of the group. 
      */
-    void end()   { Fl_Group::m_current = (Fl_Group*)parent(); }
+    virtual void end()   { Fl_Group::m_current = (Fl_Group*)parent(); }
 
     /*
      * current() returns the currently active group. 
