@@ -289,16 +289,16 @@ void Fl_Input::draw(int X, int Y, int W, int H)
     setfont();
     int height = line_height();
     float desc = height-fl_descent()-leading()/2.0f;
-	
+
     if (ALL)
-    {		
+    {       
         // draw and measure the inside label:
         if(!label().empty() && (!(flags()&15)||(flags()&FL_ALIGN_INSIDE)))
         {
-			fl_font(label_font(), float(label_size()));
+            fl_font(label_font(), float(label_size()));
             float width = fl_width(label());
-            
-			inside_label_width = int(width+fl_width(":")+2.5f);
+
+            inside_label_width = int(width+fl_width(":")+2.5f);
 
             fl_push_clip(X, Y, inside_label_width, H);
             if(!box()->fills_rectangle() && parent()) 
@@ -313,12 +313,12 @@ void Fl_Input::draw(int X, int Y, int W, int H)
             fl_draw(label(), float(X+2), float(y));
             fl_draw(":", X+2+width, y);
             setfont();
-			
-			X += inside_label_width; 
-			W -= inside_label_width;			
+
+            X += inside_label_width; 
+            W -= inside_label_width;            
         } else {
-			inside_label_width = 0;
-		}
+            inside_label_width = 0;
+        }
     }    
 
     bool erase_cursor_only = (this == ::erase_cursor_only && !ALL);
@@ -1006,9 +1006,9 @@ Fl_Input::Fl_Input(int x, int y, int w, int h, const char* l)
     buffer  = 0;
     value_ = "";
     xscroll_ = yscroll_ = 0;
-	inside_label_width = 0;
+    inside_label_width = 0;
 
-    style(default_style);	
+    style(default_style);   
 }
 
 void Fl_Input::put_in_buffer(int len)
@@ -1758,12 +1758,10 @@ bool Fl_Input::save_data(Fl_Data_Source *ds) const
 
 void Fl_Input::preferred_size(int& w, int& h) const
 {
-	fl_font(text_font(), float(text_size()));
-	h = int(fl_height()+fl_descent()) + box()->dh() + 2;
-	if(maximum_size()>0)
-		w = maximum_size() * (int)fl_width((unsigned int)'W');
-	else
-		w = 8 * (int)fl_height();
+    fl_font(text_font(), float(text_size()));
+    h = int(fl_height()+fl_descent()) + box()->dh() + 2;
+    if(maximum_size()>0)
+        w = maximum_size() * (int)fl_width((unsigned int)'W');
 }
 
 //

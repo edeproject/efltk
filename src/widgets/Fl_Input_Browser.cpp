@@ -417,3 +417,11 @@ void Fl_Input_Browser::popup()
     clear_value();
     redraw(FL_DAMAGE_VALUE);
 }
+
+void Fl_Input_Browser::preferred_size(int& w, int& h) const
+{
+    fl_font(text_font(), float(text_size()));
+    h = int(fl_height()+fl_descent()) + box()->dh() + 2;
+    if(m_input.maximum_size()>0)
+        w = m_input.maximum_size() * (int)fl_width((unsigned int)'W');
+}

@@ -49,6 +49,7 @@ public:
 
     virtual void draw();
     virtual int handle(int);
+    virtual void preferred_size(int& w,int &h) const;
 
     void clear() { Fl_Menu_::clear(); item(0); }
 
@@ -56,9 +57,9 @@ public:
     const char *value() { return input()->value(); }
 
     Fl_Input *input() { return &m_input; }
-    
+
 private:
-	Fl_Input m_input;
+    Fl_Input m_input;
 
     ComboWindow *win;
     ComboBrowser *list;

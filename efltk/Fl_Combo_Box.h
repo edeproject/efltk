@@ -35,6 +35,8 @@ public:
     int value() const;
     void value(int) const;
 
+    virtual void preferred_size(int& w,int &h) const;
+
     // Get text from the active item by column
     Fl_String text(int column) const;
 };

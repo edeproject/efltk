@@ -420,3 +420,9 @@ void Fl_Combo_Box::buttons(int buttons_set) {
     }
     relayout();
 }
+
+void Fl_Combo_Box::preferred_size(int& w, int& h) const
+{
+    fl_font(text_font(), float(text_size()));
+    h = int(fl_height()+fl_descent()) + box()->dh() + 2;
+}
