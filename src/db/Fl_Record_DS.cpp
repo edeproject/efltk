@@ -65,6 +65,8 @@ bool Fl_Record_DS::build_queries() {
 }
 
 bool Fl_Record_DS::load_data() {
+    bool rc = true;
+
     if (!build_queries())
         return false;
 
@@ -79,11 +81,14 @@ bool Fl_Record_DS::load_data() {
             Fl_Data_Field& dst = m_fields.field(src.name());
             dst.value = src.value;
         }
-        m_selectQuery->close();
     } else {
+        m_saveQuery = m_insertQuery;
         m_recordCount = 0;
+        parent()->reset();
+        rc = false;
     }
-    return true;
+    m_selectQuery->close();
+    return rc;
 }
 
 bool Fl_Record_DS::save_data() {
