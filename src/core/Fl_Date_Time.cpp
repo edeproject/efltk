@@ -633,7 +633,7 @@ Fl_Date_Time Fl_Date_Time::System() {
    double datetime = convert(tt);
 #ifndef _WIN32
    timeval tp;
-   silc_gettimeofday(&tp,0L);
+   gettimeofday(&tp,0L);
    double mcsec = tp.tv_usec / 1000000.0 / (3600 * 24);
 #else
    // This works now!
