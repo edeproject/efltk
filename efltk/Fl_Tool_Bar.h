@@ -31,7 +31,13 @@ class Fl_Tool_Bar : public Fl_Bar
 public:
     static Fl_Named_Style* default_style;
 
+    /** Creates new toolbar widget using the given position, size, and label string. */
     Fl_Tool_Bar(int x, int y, int w, int h, const char *label=0);
+
+    /** Creates new toolbar widget using the label, size, alignment, and label width. */
+    Fl_Tool_Bar(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=-1);
+
+    /** Destructor */
     ~Fl_Tool_Bar();
 
     static int button_w;

@@ -27,7 +27,13 @@
 /** Fl_Tile */
 class FL_API Fl_Tile : public Fl_Group {
 public:
-    Fl_Tile(int X,int Y,int W,int H,const char*l=0) : Fl_Group(X,Y,W,H,l) {}
+    /** Creates new tile widget using the given position, size, and label string. */
+    Fl_Tile(int X,int Y,int W,int H,const char*l=0) 
+    : Fl_Group(X,Y,W,H,l) {}
+
+    /** Creates new tile widget using the label, size, alignment, and label width. */
+    Fl_Tile(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100)
+    : Fl_Group(l,layout_size,layout_al,label_w) {}
 
     void position(int, int, int, int);
 

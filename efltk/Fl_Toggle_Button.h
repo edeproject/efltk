@@ -27,7 +27,13 @@
 /** Fl_Toggle_Button */
 class Fl_Toggle_Button : public Fl_Button {
 public:
-    Fl_Toggle_Button(int x,int y,int w,int h,const char *l=0) : Fl_Button(x,y,w,h,l) { type(TOGGLE); }
+    /** Creates new toggle button widget using the given position, size, and label string. */
+    Fl_Toggle_Button(int x,int y,int w,int h,const char *l=0) 
+    : Fl_Button(x,y,w,h,l) { type(TOGGLE); }
+
+    /** Creates new toggle button widget using the label, size, alignment, and label width. */
+    Fl_Toggle_Button(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100)
+    : Fl_Button(l,layout_size,layout_al,label_w) { type(TOGGLE); }
 };
 
 #endif

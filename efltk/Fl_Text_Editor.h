@@ -29,18 +29,25 @@
 
 /** Fl_Text_Editor */
 class FL_API Fl_Text_Editor : public Fl_Text_Display {
-  public:
+public:
     typedef int (*Key_Func)(int key, Fl_Text_Editor* editor);
 
     struct FL_API Key_Binding {
-      int          key;
-      int          state;
-      Key_Func     function;
-      Key_Binding* next;
+        int          key;
+        int          state;
+        Key_Func     function;
+        Key_Binding* next;
     };
 
+    /** Creates new text editor widget using the given position, size, and label string. */
     Fl_Text_Editor(int X, int Y, int W, int H, const char* l = 0);
+
+    /** Creates new input widget using the label, size, alignment, and label width. */
+    Fl_Text_Editor(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=-1);
+
+    /** Destructor */
     ~Fl_Text_Editor() { remove_all_key_bindings(); }
+
     static Fl_Named_Style* default_style;
     virtual int handle(int e);
     void insert_mode(int b) { insert_mode_ = b; }
@@ -48,16 +55,16 @@ class FL_API Fl_Text_Editor : public Fl_Text_Display {
 
     void add_key_binding(int key, int state, Key_Func f, Key_Binding** list);
     void add_key_binding(int key, int state, Key_Func f)
-      { add_key_binding(key, state, f, &key_bindings); }
+    { add_key_binding(key, state, f, &key_bindings); }
     void remove_key_binding(int key, int state, Key_Binding** list);
     void remove_key_binding(int key, int state)
-      { remove_key_binding(key, state, &key_bindings); }
+    { remove_key_binding(key, state, &key_bindings); }
     void remove_all_key_bindings(Key_Binding** list);
     void remove_all_key_bindings() { remove_all_key_bindings(&key_bindings); }
     void add_default_key_bindings(Key_Binding** list);
     Key_Func bound_key_function(int key, int state, Key_Binding* list);
     Key_Func bound_key_function(int key, int state)
-      { return bound_key_function(key, state, key_bindings); }
+    { return bound_key_function(key, state, key_bindings); }
     void default_key_function(Key_Func f) { default_key_function_ = f; }
 
     // functions for the built in default bindings

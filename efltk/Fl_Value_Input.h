@@ -28,7 +28,13 @@
 /** Fl_Value_Input */
 class FL_API Fl_Value_Input : public Fl_Valuator {
 public:
+    /** Creates new value input widget using the given position, size, and label string. */
     Fl_Value_Input(int x,int y,int w,int h,const char *l=0);
+
+    /** Creates new value input widget using the label, size, alignment, and label width. */
+    Fl_Value_Input(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
+
+    /** Destructor */
     ~Fl_Value_Input();
 
     Fl_Float_Input input;
