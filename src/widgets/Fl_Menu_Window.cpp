@@ -40,6 +40,7 @@
 # include <winsock.h>
 #else
 # include <unistd.h>
+# include <sys/time.h>
 # define Sleep(x) {\
         timeval t; \
         t.tv_sec = 0; \
