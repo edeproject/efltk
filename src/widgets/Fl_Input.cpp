@@ -136,7 +136,7 @@ const char* Fl_Input::expand(const char* p, char* buf,int wordwrap) const
             }
 #else
 //            *o++ = ' ';
-	    *o++ = c;
+            *o++ = c;
 #endif
         } else {
             *o++ = c;
@@ -337,14 +337,14 @@ void Fl_Input::draw(int X, int Y, int W, int H)
     int ra_delta = 0;
     if (type()&RIGHT_ALIGNED){
         float width = fl_width(value(), size());
-	if (W>width){
-	    ra_delta=int(W-width-6);
-	    if (ra_delta < 0)
-		ra_delta = 0;
-	}
-	ALL=true;
+        if (W>width){
+            ra_delta=int(W-width-6);
+            if (ra_delta < 0)
+                ra_delta = 0;
+        }
+        ALL=true;
     }
-    
+
     int selstart, selend;
     if( (!focused() && !pushed() && menu_widget!=this) )
         selstart = selend = 0;
@@ -390,15 +390,15 @@ void Fl_Input::draw(int X, int Y, int W, int H)
                 newscroll = curx-20;
             }
 
-	    // if xscroll is not zero, the input is right aligned
-	    // but there is some extra space after the text,
-	    // adjust the xscroll
-	    if (type()&RIGHT_ALIGNED){
-		int len=(int)fl_width(p,e-p);
-		if (newscroll + (W-6) > len)
-		    newscroll = len - (W-6);
-	    }
-	    
+        // if xscroll is not zero, the input is right aligned
+        // but there is some extra space after the text,
+        // adjust the xscroll
+            if (type()&RIGHT_ALIGNED){
+                int len=(int)fl_width(p,e-p);
+                if (newscroll + (W-6) > len)
+                    newscroll = len - (W-6);
+            }
+
             if (newscroll < 0) newscroll = 0;
             if (newscroll != xscroll_)
             {
@@ -685,12 +685,12 @@ int Fl_Input::mouse_position(int X, int Y, int W, int ) const
 
     // Do a binary search for the character that starts before this position:
     int xpos = X-xscroll_; if (W > 12) xpos += 3;
-    
+
     if (type()&RIGHT_ALIGNED){
-	int len=(int)fl_width(p,e-p);
-	if (len < W - 6) xpos += (W - 6) -len;
+        int len=(int)fl_width(p,e-p);
+        if (len < W - 6) xpos += (W - 6) -len;
     }
-    
+
     const char *l, *r, *t; float f0 = float(Fl::event_x()-xpos);
     for (l = p, r = e; l<r; )
     {
@@ -1015,9 +1015,8 @@ static void revert(Fl_Style *s) {
 static Fl_Named_Style style("Input", revert, &Fl_Input::default_style);
 Fl_Named_Style* Fl_Input::default_style = &::style;
 
-Fl_Input::Fl_Input(int x, int y, int w, int h, const char* l)
-: Fl_Widget(x, y, w, h, l)
-{
+// ctor initialized - used in both ctors
+void Fl_Input::ctor_init() {
     static bool menuinit=false;
     if(!menuinit) {
         menu_->type(Fl_Menu_Button::POPUP3); //HACK! :)
@@ -1039,6 +1038,20 @@ Fl_Input::Fl_Input(int x, int y, int w, int h, const char* l)
     inside_label_width = 0;
 
     style(default_style);   
+}
+
+// Traditional ctor
+Fl_Input::Fl_Input(int x, int y, int w, int h, const char* l)
+: Fl_Widget(x, y, w, h, l)
+{
+    ctor_init();
+}
+
+// New style ctor
+Fl_Input::Fl_Input(const char* l,int layout_size,Fl_Align layout_al,int label_w)
+: Fl_Widget(l,layout_size,layout_al,label_w)
+{
+    ctor_init();
 }
 
 void Fl_Input::put_in_buffer(int len)

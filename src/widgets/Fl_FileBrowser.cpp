@@ -24,8 +24,8 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 // Contents:
-//   Fl_FileBrowser::load()			- Load a directory into the browser.
-//   Fl_FileBrowser::up()			- Up one directory, and load it
+//   Fl_FileBrowser::load()         - Load a directory into the browser.
+//   Fl_FileBrowser::up()           - Up one directory, and load it
 
 #include <config.h>
 #include "../core/fl_internal.h"
@@ -51,143 +51,143 @@
 
 #ifdef _WIN32
 static const char * datas_cd[] = {
-"16 16 29 1",
-" 	c None",
-".	c #737173",
-"+	c #9CCF9C",
-"@	c #CECF63",
-"#	c #C6C7C6",
-"$	c #319E9C",
-"%	c #63CF9C",
-"&	c #B5B6B5",
-"*	c #313031",
-"=	c #CECF9C",
-"-	c #DEDFDE",
-";	c #848684",
-">	c #319ECE",
-",	c #639ECE",
-"'	c #63CFCE",
-")	c #D6D7D6",
-"!	c #949694",
-"~	c #A5A6A5",
-"{	c #639E9C",
-"]	c #000000",
-"^	c #CECFCE",
-"/	c #F7F7F7",
-"(	c #E7E7E7",
-"_	c #EFEFEF",
-":	c #FFFFFF",
-"<	c #CEFFFF",
-"[	c #009ECE",
-"}	c #00FF00",
-"|	c #008600",
-"        ...     ",
-"      ..+@#..   ",
-"     .$%+@&##*  ",
-"    .%%$%=#&-&* ",
-"    ;>,%';&)#&* ",
-"   .!~{';];~&^^*",
-"   .&&^;]/];^^^*",
-"   .(/(&;];&_/^*",
-" ;;;;~&~~;$-(:* ",
-";:::.~~&)=%><&* ",
-";:###.~&^=+[[]  ",
-";:****;;^=+**]  ",
-";:}|::##***#.]  ",
-".;;;;;;;;;;;;]  ",
-" ]]]]]]]]]]]]   ",
-"                "};
+    "16 16 29 1",
+    "   c None",
+    ".  c #737173",
+    "+  c #9CCF9C",
+    "@  c #CECF63",
+    "#  c #C6C7C6",
+    "$  c #319E9C",
+    "%  c #63CF9C",
+    "&  c #B5B6B5",
+    "*  c #313031",
+    "=  c #CECF9C",
+    "-  c #DEDFDE",
+    ";  c #848684",
+    ">  c #319ECE",
+    ",  c #639ECE",
+    "'  c #63CFCE",
+    ")  c #D6D7D6",
+    "!  c #949694",
+    "~  c #A5A6A5",
+    "{  c #639E9C",
+    "]  c #000000",
+    "^  c #CECFCE",
+    "/  c #F7F7F7",
+    "(  c #E7E7E7",
+    "_  c #EFEFEF",
+    ":  c #FFFFFF",
+    "<  c #CEFFFF",
+    "[  c #009ECE",
+    "}  c #00FF00",
+    "|  c #008600",
+    "        ...     ",
+    "      ..+@#..   ",
+    "     .$%+@&##*  ",
+    "    .%%$%=#&-&* ",
+    "    ;>,%';&)#&* ",
+    "   .!~{';];~&^^*",
+    "   .&&^;]/];^^^*",
+    "   .(/(&;];&_/^*",
+    " ;;;;~&~~;$-(:* ",
+    ";:::.~~&)=%><&* ",
+    ";:###.~&^=+[[]  ",
+    ";:****;;^=+**]  ",
+    ";:}|::##***#.]  ",
+    ".;;;;;;;;;;;;]  ",
+    " ]]]]]]]]]]]]   ",
+    "                "};
 
 static const char * datas_floppy[] = {
-"16 16 11 1",
-" 	c None",
-".	c #848684",
-"+	c #737173",
-"@	c #9CFFFF",
-"#	c #000000",
-"$	c #FFFFFF",
-"%	c #CEFFFF",
-"&	c #CECFCE",
-"*	c #C6C7C6",
-"=	c #B5B6B5",
-"-	c #FF0000",
-"         ...... ",
-"        +@@@@@@#",
-"        +$$$$$##",
-"        +$$$%%%#",
-"        +%%%%%%#",
-"        +&*&=*=#",
-"  ......+*....*#",
-" .******+&+#+$=#",
-".$$$$$$$$###### ",
-".*********-*.+# ",
-".***....****.+# ",
-".*..####...*.+# ",
-".***$$$$****.+# ",
-".............#  ",
-" ############   ",
-"                "};
+    "16 16 11 1",
+    "   c None",
+    ".  c #848684",
+    "+  c #737173",
+    "@  c #9CFFFF",
+    "#  c #000000",
+    "$  c #FFFFFF",
+    "%  c #CEFFFF",
+    "&  c #CECFCE",
+    "*  c #C6C7C6",
+    "=  c #B5B6B5",
+    "-  c #FF0000",
+    "         ...... ",
+    "        +@@@@@@#",
+    "        +$$$$$##",
+    "        +$$$%%%#",
+    "        +%%%%%%#",
+    "        +&*&=*=#",
+    "  ......+*....*#",
+    " .******+&+#+$=#",
+    ".$$$$$$$$###### ",
+    ".*********-*.+# ",
+    ".***....****.+# ",
+    ".*..####...*.+# ",
+    ".***$$$$****.+# ",
+    ".............#  ",
+    " ############   ",
+    "                "};
 static Fl_Pixmap cd_pix(datas_cd);
 static Fl_Pixmap floppy_pix(datas_floppy);
 #endif
 
 static const char * datas_harddisk[] = {
-"16 16 12 1",
-" 	c None",
-".	c #737173",
-"+	c #B5B6B5",
-"@	c #000000",
-"#	c #FFFFFF",
-"$	c #9C9E9C",
-"%	c #D6D7D6",
-"&	c #C6C7C6",
-"*	c #00CF00",
-"=	c #008600",
-"-	c #949694",
-";	c #DEDFDE",
-"                ",
-"                ",
-"                ",
-"                ",
-"  ............. ",
-" .++++++++++++.@",
-".############$.@",
-".%&&&&&&&+*=+-.@",
-".;+&&&&&+++++-.@",
-".;..........+-.@",
-".%##########+-.@",
-"..............@ ",
-" @@@@@@@@@@@@@  ",
-"                ",
-"                ",
-"                "};
+    "16 16 12 1",
+    "   c None",
+    ".  c #737173",
+    "+  c #B5B6B5",
+    "@  c #000000",
+    "#  c #FFFFFF",
+    "$  c #9C9E9C",
+    "%  c #D6D7D6",
+    "&  c #C6C7C6",
+    "*  c #00CF00",
+    "=  c #008600",
+    "-  c #949694",
+    ";  c #DEDFDE",
+    "                ",
+    "                ",
+    "                ",
+    "                ",
+    "  ............. ",
+    " .++++++++++++.@",
+    ".############$.@",
+    ".%&&&&&&&+*=+-.@",
+    ".;+&&&&&+++++-.@",
+    ".;..........+-.@",
+    ".%##########+-.@",
+    "..............@ ",
+    " @@@@@@@@@@@@@  ",
+    "                ",
+    "                ",
+    "                "};
 static const char *up_xpm[] = {
-"16 16 6 1",
-" 	c None",
-"*  c #000000",
-".	c #FFE79C",
-"+	c #C6864A",
-"@	c #FFC78C",
-"#	c #000000",
-"                ",
-"                ",
-"    ...+        ",
-"   @.@@@+       ",
-"  @@@@@@@@@@@@  ",
-" @@...*.......# ",
-" @.@@***@@@@@+# ",
-" @.@*****@@@@+# ",
-" @.@@@*@@@@@@+# ",
-" @.@@@*@@@@@@+# ",
-" @.@@@*****@@+# ",
-" @.@@@@@@@@@@+# ",
-" @.+++++++++++# ",
-"  ############# ",
-"                ",
-"                "};
+    "16 16 6 1",
+    "   c None",
+    "*  c #000000",
+    ".  c #FFE79C",
+    "+  c #C6864A",
+    "@  c #FFC78C",
+    "#  c #000000",
+    "                ",
+    "                ",
+    "    ...+        ",
+    "   @.@@@+       ",
+    "  @@@@@@@@@@@@  ",
+    " @@...*.......# ",
+    " @.@@***@@@@@+# ",
+    " @.@*****@@@@+# ",
+    " @.@@@*@@@@@@+# ",
+    " @.@@@*@@@@@@+# ",
+    " @.@@@*****@@+# ",
+    " @.@@@@@@@@@@+# ",
+    " @.+++++++++++# ",
+    "  ############# ",
+    "                ",
+    "                "};
 static Fl_Pixmap up_pix(up_xpm);
 static Fl_Pixmap hd_pix(datas_harddisk);
-                    
+
 // Define access mode constants if they aren't already defined.
 #ifndef R_OK
 # define R_OK 04
@@ -218,39 +218,47 @@ void Fl_File_Browser::default_callback(Fl_Widget *w, void *)
     }
 }
 
-Fl_File_Browser::Fl_File_Browser(
-	int        x,	// I - Upper-lefthand X coordinate
-        int        y,   // I - Upper-lefthand Y coordinate
-	int        w,   // I - Width in pixels
-	int        h,   // I - Height in pixels
-	const char *l)  // I - Label text
+// Traditional ctor
+Fl_File_Browser::Fl_File_Browser(int x,int y,int w,int h,const char *l)
 : Fl_ListView(x, y, w, h, l)
 {
-	m_add_up_item = true;
-        m_up_item = 0;
+    m_add_up_item = true;
+    m_up_item = 0;
 
-	callback(default_callback);
-	when(FL_WHEN_ENTER_KEY | FL_WHEN_RELEASE);
-	data_source(&m_dir_ds);
+    callback(default_callback);
+    when(FL_WHEN_ENTER_KEY | FL_WHEN_RELEASE);
+    data_source(&m_dir_ds);
+}
+
+// New style ctor
+Fl_File_Browser::Fl_File_Browser(const char* l,int layout_size,Fl_Align layout_al,int label_w)
+: Fl_ListView(l,layout_size,layout_al,label_w)
+{
+    m_add_up_item = true;
+    m_up_item = 0;
+
+    callback(default_callback);
+    when(FL_WHEN_ENTER_KEY | FL_WHEN_RELEASE);
+    data_source(&m_dir_ds);
 }
 
 #ifdef _WIN32
 
 static uint get_dev_size(uint64 size, Fl_String &suffix)
-{	
-	if(size<1024) {
-		suffix=_("bytes");
-		return (uint)size;
-	}
-	if(size>1024) {
-		size /= 1024;
-		suffix=_("Kb");
-	}
-	if(size>1024) {
-		size /= 1024;		
-		suffix=_("Mb");
-	}
-	return (uint)size;
+{   
+    if(size<1024) {
+        suffix=_("bytes");
+        return (uint)size;
+    }
+    if(size>1024) {
+        size /= 1024;
+        suffix=_("Kb");
+    }
+    if(size>1024) {
+        size /= 1024;       
+        suffix=_("Mb");
+    }
+    return (uint)size;
 }
 
 #endif
@@ -258,7 +266,7 @@ static uint get_dev_size(uint64 size, Fl_String &suffix)
 #ifdef _WIN32
 static const char *types[] = {
     N_("Unknown"),
-	
+
     N_("File"),
     N_("Dir"),
     N_("Link"),
@@ -308,8 +316,8 @@ Fl_String Fl_File_Browser::filename_full() const
 
 // 'Fl_FileBrowser::load()' - Load a directory into the browser.
 int                                         // O - Number of files loaded
-Fl_File_Browser::load(const Fl_String &dir) // I - Directory to load
-{	
+    Fl_File_Browser::load(const Fl_String &dir) // I - Directory to load
+{   
     Fl_String old_dir(directory());
     m_dir_ds.directory(dir);
 
@@ -326,7 +334,7 @@ Fl_File_Browser::load(const Fl_String &dir) // I - Directory to load
 
         //icon      = Fl_FileIcon::find("any", Fl_FileIcon::DEVICE);
         //if (icon == (Fl_FileIcon *)0)
-        //	icon = Fl_FileIcon::find("any", Fl_FileIcon::DIR);
+        //  icon = Fl_FileIcon::find("any", Fl_FileIcon::DIR);
 
         begin();
         char filename[FL_PATH_MAX];
@@ -351,11 +359,11 @@ Fl_File_Browser::load(const Fl_String &dir) // I - Directory to load
                     uint type = GetDriveTypeA(filename);
                     const char *typestr=_(types[0]);
 
-                    if (type==DRIVE_CDROM)		{ typestr=_(types[4]); item->image(&cd_pix); }
-                    else if (type==DRIVE_REMOVABLE)	{ typestr=_(types[5]); item->image(&floppy_pix); }
-                    else if (type==DRIVE_FIXED)		typestr=_(types[6]);
-                    else if (type==DRIVE_REMOTE)		typestr=_(types[7]);
-                    else if (type==DRIVE_RAMDISK)	typestr=_(types[8]);
+                    if (type==DRIVE_CDROM)      { typestr=_(types[4]); item->image(&cd_pix); }
+                    else if (type==DRIVE_REMOVABLE) { typestr=_(types[5]); item->image(&floppy_pix); }
+                    else if (type==DRIVE_FIXED)     typestr=_(types[6]);
+                    else if (type==DRIVE_REMOTE)        typestr=_(types[7]);
+                    else if (type==DRIVE_RAMDISK)   typestr=_(types[8]);
 
                     item->label(2, typestr);
 
@@ -390,8 +398,8 @@ Fl_File_Browser::load(const Fl_String &dir) // I - Directory to load
 
         FILE    *mtab = 0;      // /etc/mtab or /etc/mnttab file
         char    line[1024];     // Input line
-        char	dev[256];		// Device name
-        char	fstype[256];	// Filesystem type
+        char    dev[256];       // Device name
+        char    fstype[256];    // Filesystem type
 
         // Open the file that contains a list of mounted filesystems...
 #  if defined(__hpux) || defined(__sun)
@@ -466,4 +474,3 @@ Fl_File_Browser::load(const Fl_String &dir) // I - Directory to load
 
     return children()-1;
 }
-

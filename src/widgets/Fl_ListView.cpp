@@ -14,13 +14,7 @@ Fl_Named_Style* Fl_ListView::default_style = &::style;
 
 Fl_ListView *Fl_ListView::current=0;
 
-
-Fl_ListView::Fl_ListView(int X,int Y,int W,int H,const char* L)
-: Fl_Group(X,Y,W,H,L),
-vscrollbar(X+W-SLIDER_WIDTH,Y,SLIDER_WIDTH,H-SLIDER_WIDTH),
-hscrollbar(X,Y+H-SLIDER_WIDTH,W-SLIDER_WIDTH,SLIDER_WIDTH),
-head(0,0,W,20)
-{
+void Fl_ListView::ctor_init() {
     style(default_style);
     set_click_to_focus();
 
@@ -52,6 +46,24 @@ head(0,0,W,20)
 
     Fl_Group::end();
     Fl_ListView::current = this;
+}
+
+Fl_ListView::Fl_ListView(int X,int Y,int W,int H,const char* L)
+: Fl_Group(X,Y,W,H,L),
+vscrollbar(X+W-SLIDER_WIDTH,Y,SLIDER_WIDTH,H-SLIDER_WIDTH),
+hscrollbar(X,Y+H-SLIDER_WIDTH,W-SLIDER_WIDTH,SLIDER_WIDTH),
+head(0,0,W,20)
+{
+    ctor_init();
+}
+
+Fl_ListView::Fl_ListView(const char* l,int layout_size,Fl_Align layout_al,int label_w)
+: Fl_Group(l,layout_size,layout_al,label_w),
+vscrollbar(X+W-SLIDER_WIDTH,Y,SLIDER_WIDTH,H-SLIDER_WIDTH),
+hscrollbar(X,Y+H-SLIDER_WIDTH,W-SLIDER_WIDTH,SLIDER_WIDTH),
+head(0,0,W,20)
+{
+    ctor_init();
 }
 
 Fl_ListView::~Fl_ListView() {

@@ -139,15 +139,15 @@ lib/libefltk.so ::	lib/Fl.o\
 	lib/Fl_FileInput.o\
 	lib/Fl_File_Dialog.o\
 	lib/Fl_Float_Input.o\
+	lib/Fl_Gdi.o\
+	lib/Fl_Gif.o\
+	lib/Fl_Group.o\
+	lib/Fl_Hashs.o\
 	lib/Fl_Help_Dialog.o\
 	lib/Fl_Highlight_Button.o\
 	lib/Fl_Input.o\
 	lib/Fl_Input_Browser.o\
 	lib/Fl_Item.o\
-	lib/Fl_Gdi.o\
-	lib/Fl_Gif.o\
-	lib/Fl_Group.o\
-	lib/Fl_Hashs.o\
 	lib/Fl_Image.o\
 	lib/Fl_Image_Filter.o\
 	lib/Fl_Light_Button.o\
@@ -10725,17 +10725,17 @@ test/maskedinput.o :	efltk/Fl_Date_Time_Input.h\
 # %TargetInfo src/widgets/Fl_Dialog.cpp	SourceOrHeader,	UniqueId=0x4002f5,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Directory_DS.cpp	SourceOrHeader,	UniqueId=0x4002f6,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Double_Window.cpp	SourceOrHeader,	UniqueId=0x4002f7,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/widgets/Fl_FileBrowser.cpp	SourceOrHeader,	UniqueId=0x4002f8,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_FileBrowser.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4002f8,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_FileInput.cpp	SourceOrHeader,	UniqueId=0x4002f9,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_File_Dialog.cpp	SourceOrHeader,	UniqueId=0x4002fa,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Float_Input.cpp	SourceOrHeader,	UniqueId=0x4002fb,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Help_Dialog.cpp	SourceOrHeader,	UniqueId=0x4002fc,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Highlight_Button.cpp	SourceOrHeader,	UniqueId=0x4002fd,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/widgets/Fl_Input.cpp	SourceOrHeader,	UniqueId=0x4002fe,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Input.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4002fe,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Input_Browser.cpp	SourceOrHeader,	UniqueId=0x4002ff,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Item.cpp	SourceOrHeader,	UniqueId=0x400300,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Light_Button.cpp	SourceOrHeader,	UniqueId=0x400301,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/widgets/Fl_ListView.cpp	SourceOrHeader,	UniqueId=0x400302,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_ListView.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400302,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_ListView_Header.cpp	SourceOrHeader,	UniqueId=0x400303,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_ListView_Item.cpp	SourceOrHeader,	UniqueId=0x400304,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_MDI_Bar.cpp	SourceOrHeader,	UniqueId=0x400305,	TargetType=C++,	IDEFlags=0x6
@@ -10987,7 +10987,7 @@ test/maskedinput.o :	efltk/Fl_Date_Time_Input.h\
 # %TargetInfo efltk/Fl_Value_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400154,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Float_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400155,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Numeric_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400156,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400157,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Input.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400157,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Masked_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400158,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Date_Time_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400159,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Dial.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40015a,	TargetType=INC,	IDEFlags=0xe
@@ -10996,12 +10996,12 @@ test/maskedinput.o :	efltk/Fl_Date_Time_Input.h\
 # %TargetInfo efltk/fl_ask.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40015d,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Directory_DS.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40015f,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Double_Window.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400160,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_FileBrowser.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400161,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_FileBrowser.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400161,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_ListView_Item.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400162,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Image_List.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400163,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_ListView.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400164,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_ListView.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400164,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_ListView_Header.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400165,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_FileInput.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400166,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_FileInput.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400166,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo src/widgets/Pixmaps.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400167,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Divider.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400168,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_File_Dialog.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400169,	TargetType=INC,	IDEFlags=0xe
@@ -11112,7 +11112,7 @@ test/maskedinput.o :	efltk/Fl_Date_Time_Input.h\
 # %TargetInfo efltk/xml/Fl_XmlNode.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003bb,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/xml/Fl_XmlNode_List.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003bc,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo tools/etranslate/extract.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003c3,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Combo_Box.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003c5,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Combo_Box.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4003c5,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Button_Group.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003cd,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo test/net/mail_accounts.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003ce,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo test/net/file_small.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x4003cf,	TargetType=XPM,	IDEFlags=0xe

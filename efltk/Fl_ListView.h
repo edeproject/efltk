@@ -52,7 +52,13 @@ public:
         SORT_LAST_TYPE //number of last type
     };
 
+    /** Creates new list view widget using the given position, size, and label string. */
     Fl_ListView(int X,int Y,int W,int H,const char*l=0);
+
+    /** Creates list view box widget using the label, size, alignment, and label_width. */
+    Fl_ListView(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
+
+    /** destructor */
     virtual ~Fl_ListView();
 
     virtual void begin();
@@ -164,6 +170,9 @@ public:
     Fl_Scrollbar hscrollbar;
 
 protected:
+
+    /** ctor initializer */
+    void ctor_init();
 
     static void hscrollbar_cb(Fl_Widget*, void*);
     static void vscrollbar_cb(Fl_Widget*, void*);

@@ -31,7 +31,11 @@
 class FL_API Fl_File_Browser : public Fl_ListView
 {
 public:
+    /** Creates new file browser widget using the given position, size, and label string. */
     Fl_File_Browser(int x, int y, int w, int h, const char *label = 0);
+
+    /** Creates new file browser widget using the label, size, alignment, and label_width. */
+    Fl_File_Browser(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
 
     // Set match pattern files
     void pattern(const char *pattern) { m_dir_ds.pattern(pattern); load(directory()); }
@@ -43,8 +47,8 @@ public:
     void showpolicy(char type) { m_dir_ds.showpolicy(type); }
 
     // Load and set directory
-    int	load(const Fl_String &directory);
-    int	load(const char *directory) { Fl_String dir(directory); return load(dir); }
+    int load(const Fl_String &directory);
+    int load(const char *directory) { Fl_String dir(directory); return load(dir); }
 
     // Set new directory
     void directory(const char *directory) { load(directory); }

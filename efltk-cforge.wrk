@@ -132,15 +132,15 @@ lib/libefltk.so ::	lib/Fl.o\
 	lib/Fl_FileInput.o\
 	lib/Fl_File_Dialog.o\
 	lib/Fl_Float_Input.o\
+	lib/Fl_Gdi.o\
+	lib/Fl_Gif.o\
+	lib/Fl_Group.o\
+	lib/Fl_Hashs.o\
 	lib/Fl_Help_Dialog.o\
 	lib/Fl_Highlight_Button.o\
 	lib/Fl_Input.o\
 	lib/Fl_Input_Browser.o\
 	lib/Fl_Item.o\
-	lib/Fl_Gdi.o\
-	lib/Fl_Gif.o\
-	lib/Fl_Group.o\
-	lib/Fl_Hashs.o\
 	lib/Fl_Image.o\
 	lib/Fl_Image_Filter.o\
 	lib/Fl_Light_Button.o\

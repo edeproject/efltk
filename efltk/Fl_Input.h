@@ -39,14 +39,21 @@ public:
 	RIGHT_ALIGNED = 32
     };
 
+    /** Creates new input widget using the given position, size, and label string. */
     Fl_Input(int, int, int, int, const char* = 0);
+
+    /** Creates new input widget using the label, size, alignment, and label_width. */
+    Fl_Input(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
+
+    /** destructor */
     virtual ~Fl_Input();
+
     static Fl_Named_Style* default_style;
 
     int input_type() const {return type() & INPUT_TYPE; }
     void input_type(int t) { type(t | readonly()); }
-    
-	int readonly() const { return (type() & READ_ONLY); }
+
+    int readonly() const { return (type() & READ_ONLY); }
     void readonly(int b) { if (b) type(type() | READ_ONLY); else type(type() & ~READ_ONLY); }
 
     int wordwrap() const { return (type() & WORDWRAP); }
@@ -61,18 +68,18 @@ public:
 
     bool value(const char*);
     bool value(const char*, int);
-    
-	bool static_value(const char*);
+
+    bool static_value(const char*);
     bool static_value(const char*, int);
 
     const char* value() const {return value_;}
-    
-	char index(int i) const {return value_[i];}
+
+    char index(int i) const {return value_[i];}
     int size() const {return size_;}
     int maximum_size() const { return maximum_size_; }
     void maximum_size(int m) { maximum_size_ = m; }
 
-	// Data source support
+    // Data source support
     virtual bool load_data(Fl_Data_Source *ds);
     virtual bool save_data(Fl_Data_Source *ds) const;
 
@@ -114,6 +121,9 @@ private:
     int xscroll_, yscroll_;
     int mu_p;
     int inside_label_width;
+
+    /** ctor initializer */
+    void ctor_init();
 
     const char* expand(const char*, char*, int) const;
     float expandpos(const char*, const char*, const char*, int*) const;
