@@ -36,6 +36,9 @@ public:
     /** Creates new multiline input widget using the label, size, alignment, and label_width. */
     Fl_Multiline_Input(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100)
     : Fl_Input(l,layout_size,layout_al,label_w) { input_type(MULTILINE); }
+
+    /** We do not want to limit multiline inputs */
+    virtual void preferred_size(int& w, int& h) const {}
 };
 
 #endif
