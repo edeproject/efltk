@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x400347
+# %FirstUniqueId:	0x400358
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -117,6 +117,7 @@ lib/libefltk.so ::	lib/Fl.o\
 	lib/Fl_Data_Source.o\
 	lib/Fl_Date_Time.o\
 	lib/Fl_Exception.o\
+	lib/Fl_Gdi.o\
 	lib/Fl_Gif.o\
 	lib/Fl_Group.o\
 	lib/Fl_Hashs.o\
@@ -125,7 +126,10 @@ lib/libefltk.so ::	lib/Fl.o\
 	lib/Fl_Lists.o\
 	lib/Fl_Maps.o\
 	lib/Fl_Pixmap.o\
+	lib/Fl_PostScript.o\
+	lib/Fl_Printer.o\
 	lib/Fl_Renderer.o\
+	lib/Fl_Socket.o\
 	lib/Fl_String.o\
 	lib/Fl_Style.o\
 	lib/Fl_Style_Set.o\
@@ -274,8 +278,7 @@ lib/libefltk.so ::	lib/Fl.o\
 	lib/fl_symbols.o\
 	lib/Fl_Database.o\
 	lib/Fl_Params.o\
-	lib/Fl_Query.o\
-	lib/Fl_Socket.o
+	lib/Fl_Query.o
 	rm -f $@
 	$(LD) -shared -o $@ $^ $(LDOPTIONS)
 
@@ -508,7 +511,8 @@ lib/libefltk_net.so ::	lib/Fl_FTP_Socket.o
 test/net/ftp_socket ::	test/net/ftp_socket.o\
 	test/net/Fl_FTP_Socket.o\
 	test/net/Fl_Socket.o\
-	test/net/Fl_Buffer.o
+	test/net/Fl_Buffer.o\
+	test/net/Fl_FTP_Connect.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x400345
@@ -520,6 +524,46 @@ test/net/ftp_socket ::	test/net/ftp_socket.o\
 # %ObjsDir:	test/db
 test/db/db_odbc ::	test/db/db_odbc.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk -lefltk_odbc
+
+# %UniqueId:	0x40034e
+# %TargetType:	C++_EXE
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	test
+# %IncDir:	test
+# %ObjsDir:	test
+test/curve ::	test/curve.o
+	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+# %UniqueId:	0x400350
+# %TargetType:	C++_EXE
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	test
+# %IncDir:	test
+# %ObjsDir:	test
+test/dialog ::	test/dialog.o
+	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+# %UniqueId:	0x400352
+# %TargetType:	C++_EXE
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	test
+# %IncDir:	test
+# %ObjsDir:	test
+test/directory ::	test/directory.o
+	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+# %UniqueId:	0x400354
+# %TargetType:	C++_EXE
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	test
+# %IncDir:	test
+# %ObjsDir:	test
+test/doublebuffer ::	test/doublebuffer.o
+	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %ObjectFilesLinking
 # %TargetType:	C++_OBJ
@@ -1968,6 +2012,62 @@ test/db/db_odbc.o : test/db/db_odbc.cpp
 # %ParentTarget:	0x40033f
 # %SourceTarget:	0x400343
 test/net/Fl_Buffer.o : src/core/Fl_Buffer.cpp
+	$(CXX) -c -o $@ $< -Itest/net -Itest/net $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x400002
+# %SourceTarget:	0x400347
+lib/Fl_Gdi.o : src/core/Fl_Gdi.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x400002
+# %SourceTarget:	0x40034b
+lib/Fl_PostScript.o : src/core/Fl_PostScript.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x400002
+# %SourceTarget:	0x40034d
+lib/Fl_Printer.o : src/core/Fl_Printer.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40034e
+# %SourceTarget:	0x40034f
+test/curve.o : test/curve.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x400350
+# %SourceTarget:	0x400351
+test/dialog.o : test/dialog.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x400352
+# %SourceTarget:	0x400353
+test/directory.o : test/directory.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x400354
+# %SourceTarget:	0x400355
+test/doublebuffer.o : test/doublebuffer.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40033f
+# %SourceTarget:	0x400356
+test/net/Fl_FTP_Connect.o : src/net/Fl_FTP_Connect.cpp
 	$(CXX) -c -o $@ $< -Itest/net -Itest/net $(CXXFLAGS)
 
 
@@ -6306,13 +6406,20 @@ lib/Fl_FTP_Socket.o :	efltk/net/Fl_FTP_Socket.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_Exception.h
-test/net/ftp_socket.o :	efltk/net/Fl_FTP_Socket.h\
+test/net/ftp_socket.o :	efltk/net/Fl_FTP_Connect.h\
+	efltk/net/Fl_FTP_Socket.h\
 	efltk/Fl_Socket.h\
 	efltk/Fl_Buffer.h\
-	efltk/Fl_Export.h\
 	efltk/Fl_String.h\
 	efltk/Enumerations.h\
-	efltk/Fl_Exception.h
+	efltk/Fl_Export.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h
 test/net/Fl_FTP_Socket.o :	efltk/net/Fl_FTP_Socket.h\
 	efltk/Fl_Socket.h\
 	efltk/Fl_Buffer.h\
@@ -6357,6 +6464,247 @@ test/db/db_odbc.o :	efltk/db/Fl_ODBC_Database.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl.h
+lib/Fl_Gdi.o :	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Flags.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Printer.h\
+	efltk/Fl_Gdi.h\
+	efltk/fl_draw.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Bitmap.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Fl_Renderer.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Pixmap.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl.h\
+	config.h
+lib/Fl_PostScript.o :	efltk/Fl.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_PostScript.h\
+	efltk/Fl_Printer.h\
+	efltk/Fl_Gdi.h\
+	efltk/fl_draw.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Bitmap.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Pixmap.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Boxtype.h
+lib/Fl_Printer.o :	efltk/Fl_Printer.h\
+	efltk/Fl_Gdi.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/fl_draw.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Bitmap.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Pixmap.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Boxtype.h
+test/curve.o :	efltk/Fl_Toggle_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/fl_draw.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Bitmap.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl_Pixmap.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Hor_Value_Slider.h\
+	efltk/Fl_Value_Slider.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Double_Window.h\
+	efltk/Fl_Window.h\
+	efltk/Fl.h
+test/dialog.o :	efltk/fl_ask.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Dialog.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Scroll.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Calendar.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Popup_Window.h\
+	efltk/Fl_Menu_Window.h\
+	efltk/Fl_Single_Window.h\
+	efltk/Fl.h
+test/directory.o :	efltk/Fl_Directory_DS.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	config.h
+test/doublebuffer.o :	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/fl_draw.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Bitmap.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl_Pixmap.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Double_Window.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Single_Window.h\
+	efltk/Fl.h\
+	config.h\
+	efltk/fl_math.h
+test/net/Fl_FTP_Connect.o :	efltk/net/Fl_FTP_Connect.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Buffer.h
 
 
 # %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x4
@@ -6559,8 +6907,15 @@ test/db/db_odbc.o :	efltk/db/Fl_ODBC_Database.h\
 # %TargetInfo src/core/Fl_Socket.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400342,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/socket.cpp	SourceOrHeader,	UniqueId=0x40033b,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/net/Fl_FTP_Socket.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400341,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/net/ftp_socket.cpp	SourceOrHeader,	UniqueId=0x400340,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/net/ftp_socket.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400340,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/db/db_odbc.cpp	SourceOrHeader,	UniqueId=0x400346,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/core/Fl_Gdi.cpp	SourceOrHeader,	UniqueId=0x400347,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/core/Fl_PostScript.cpp	SourceOrHeader,	UniqueId=0x40034b,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/core/Fl_Printer.cpp	SourceOrHeader,	UniqueId=0x40034d,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/curve.cpp	SourceOrHeader,	UniqueId=0x40034f,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/dialog.cpp	SourceOrHeader,	UniqueId=0x400351,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/directory.cpp	SourceOrHeader,	UniqueId=0x400353,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/doublebuffer.cpp	SourceOrHeader,	UniqueId=0x400355,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x4
@@ -6778,6 +7133,12 @@ test/db/db_odbc.o :	efltk/db/Fl_ODBC_Database.h\
 # %TargetInfo efltk/Fl_Socket.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400339,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/net/Fl_FTP_Socket.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40033e,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/db/Fl_ODBC_Database.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400344,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Printer.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400348,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Gdi.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400349,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Device.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40034a,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_PostScript.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40034c,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo src/net/Fl_FTP_Connect.cpp	SourceOrHeader,	UniqueId=0x400356,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo efltk/net/Fl_FTP_Connect.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400357,	TargetType=INC,	IDEFlags=0xe
 
 
 # %UniqueId:	0x400001
@@ -6822,8 +7183,12 @@ test/db/db_odbc.o :	efltk/db/Fl_ODBC_Database.h\
 #	0x400262
 #	0x400266
 #	0x400272
+#	0x40034e
+#	0x400350
 #	0x400284
 #	0x40033a
+#	0x400354
+#	0x400352
 #	0x40033f
 #	0x400345
 #

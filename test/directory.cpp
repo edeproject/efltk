@@ -26,29 +26,29 @@
 #include <efltk/Fl_Directory_DS.h>
 
 int main(int argc, char *argv[]) {
-   Fl_Directory_DS   dds;
+	Fl_Directory_DS   dds;
 
-   fl_try {
+	fl_try {
 #ifdef _WIN32
-      dds.directory("C:\\");
+		dds.directory("C:\\");
 #else
-      dds.directory("/usr/lib");
+		dds.directory("/usr/lib");
 #endif
-      dds.open();
-      while (!dds.eof()) {
-         Fl_Date_Time d = dds["modified"].get_date();
-         printf("%20s %15s %10i %10s \n",
-             dds["name"].get_string(),
-             dds["type"].get_string(),
-             dds["size"].get_int(),
-             (d.date_string() + " " + d.time_string()).c_str());
-         dds.next();
-      }
-      dds.close();
-   }
-   fl_catch (exception) {
-      puts(exception.text().c_str());
-   }
+		dds.open();
+		while (!dds.eof()) {
+			Fl_Date_Time d = dds["Modified"].get_date();
+			printf("%20s %15s %10i %10s \n",
+				dds["Name"].get_string(),
+				dds["Type"].get_string(),
+				dds["Size"].get_int(),
+				(d.date_string() + " " + d.time_string()).c_str());
+			dds.next();
+		}
+		dds.close();
+	}
+fl_catch (exception) {
+	puts(exception.text().c_str());
+}
 
-   return EXIT_SUCCESS;
+return EXIT_SUCCESS;
 }
