@@ -3,7 +3,10 @@
 #include "tabs.h"
 #include <efltk/Fl_ListView.h>
 
-Fl_Window* foo_window;
+Fl_Window *foo_window;
+Fl_Tabs   *foo_tabs;
+
+Fl_Align   tabAlignes[] = {FL_ALIGN_TOP,FL_ALIGN_BOTTOM,FL_ALIGN_LEFT,FL_ALIGN_RIGHT};
 
 static void cb_cancel(Fl_Button*, void*) {
     exit(1);
@@ -13,12 +16,18 @@ static void cb_OK(Fl_Return_Button*, void*) {
     exit(0);
 }
 
+int tabAlignIndex = 0;
+static void cb_mode(Fl_Button*, void*) {
+   tabAlignIndex = (tabAlignIndex + 1) % 4;
+   foo_tabs->tabs_mode(tabAlignes[tabAlignIndex]);   
+}
+
 int main (int argc, char **argv) {
 
     Fl_Window* w;
     {Fl_Window* o = foo_window = new Fl_Window(320, 305);
         w = o;
-        {Fl_Tabs* o = new Fl_Tabs(10, 10, 300, 200);
+        {Fl_Tabs* o = foo_tabs = new Fl_Tabs(10, 10, 300, 200);
             {Fl_Group* o = new Fl_Group(0, 20, 300, 180, "Label1");
                 new Fl_Input(50, 14, 240, 22, "input:");
                 new Fl_Input(50, 36, 240, 22, "input2:");
@@ -76,6 +85,9 @@ int main (int argc, char **argv) {
         }
         new Fl_Input(60, 220, 130, 22, "inputA:");
         new Fl_Input(60, 242, 250, 22, "inputB:");
+     {Fl_Button* o = new Fl_Button(110, 275, 60, 22, "mode");
+      o->callback((Fl_Callback*)cb_mode);
+     }
         {Fl_Button* o = new Fl_Button(180, 275, 60, 22, "cancel");
             o->callback((Fl_Callback*)cb_cancel);
         }
