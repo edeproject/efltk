@@ -93,6 +93,11 @@ depend: $(GENERATED)
 		(cd $$dir;$(MAKE) $(MFLAGS) depend) || exit;\
 	done
 
+uninstall: $(GENERATED)
+	@for dir in $(DIRS); do\
+		(cd $$dir;$(MAKE) $(MFLAGS) uninstall) || exit;\
+	done
+
 clean:
 	-@ rm -f core *~ *.o *.bck
 	@for dir in $(DIRS); do\

@@ -26,6 +26,10 @@ install:
 %.mo: %.po
 	$(MSGFMT) -f -o $@ $<
 
+uninstall:
+	@for f in *.mo ; do \
+		rm -f $(INSTALL_PREFIX)$(LOCALEDIR)/`basename $$f .mo`/LC_MESSAGES/$(PROG).mo ; done
+
 clean:
 	@$(RM) $(FILES_MO)
 	@$(RM) *~

@@ -77,6 +77,9 @@ install_shared:
 	@-mkdir -p $(libdir)/fltk
 	@cp -f $(THEMES) $(libdir)/fltk
 
+uninstall:
+	@rm -R -f $(libdir)/fltk
+
 install_programs:
 
 depend:

@@ -174,7 +174,6 @@ ifneq ($(DIRS), )
 endif
 
 endif
-
 #
 # Same for all
 #
@@ -229,3 +228,9 @@ ifneq ($(STRIP), )
 endif
 
 endif
+
+uninstall: 
+	@if [ -f "$(libdir)/$(DSOLIBNAME)$(DSOSHORTEXT)" ]; then rm -f $(libdir)/$(DSOLIBNAME)$(DSOSHORTEXT); fi
+	@if [ -f "$(libdir)/$(DLLIMPORTNAME)" ];            then rm -f $(libdir)/$(DLLIMPORTNAME); fi
+	@if [ -f "$(libdir)/$(DSOLIBNAME)$(DSOEXT)" ];      then rm -f $(libdir)/$(DSOLIBNAME)$(DSOEXT); fi
+	@if [ -f "$(libdir)/$(LIBNAME)$(LIBEXT)" ];         then rm -f $(libdir)/$(LIBNAME)$(LIBEXT); fi

@@ -145,8 +145,19 @@ install_shared: shared
         	if test ! -f $$dir/makedepend; then touch $$dir/makedepend; fi;\
         	(cd $$dir;$(MAKE) $(MFLAGS) install_shared) || exit;\
 	done
- 
+
+
 install_programs:
+
+
+uninstall:
+	@rm -f $(libdir)/$(DLLIMPORTNAME)
+	@rm -f $(libdir)/$(DSOLIBNAME)$(DSOEXT)
+	@rm -f $(libdir)/$(DSOLIBNAME)$(DSOSHORTEXT)
+	@rm -f $(libdir)/$(LIBNAME)$(LIBEXT)
+	@for dir in $(DIRS) $(FLDIRS); do\
+		(cd $$dir; $(MAKE) $(MFLAGS) uninstall) || exit;\
+	done
 
 #
 # End of "$Id$".

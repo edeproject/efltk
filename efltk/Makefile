@@ -46,3 +46,7 @@ install_fltk_config:
 	@mkdir -p $(bindir)
 	@cp ../efltk-config $(bindir)
 
+
+uninstall:
+	@rm -R -f $(includedir)/efltk
+	@rm -f $(bindir)/efltk-config
