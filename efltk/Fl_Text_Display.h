@@ -295,6 +295,8 @@ protected:
 
     int mLineNumLeft, mLineNumWidth;  /* Line number margin and width */
     Fl_String_Buffer    m_lineBuffer;
+private:
+    void ctor_init();
 };
 
 #endif
