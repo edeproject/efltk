@@ -129,10 +129,11 @@ int Fl_Color_Chooser::rgb(float r, float g, float b)
 #ifdef UPDATE_HUE_BOX
         huebox.redraw(FL_DAMAGE_ALL);
 #endif
-        valuebox.redraw(FL_DAMAGE_ALL);}
+		valuebox.redraw(FL_DAMAGE_VALUE);		
+	}
     if (hue_ != ph || saturation_ != ps) {
-        huebox.redraw(FL_DAMAGE_VALUE);
-        valuebox.redraw(FL_DAMAGE_VALUE);
+		huebox.redraw(FL_DAMAGE_VALUE);
+        valuebox.redraw(FL_DAMAGE_ALL);		
     }
     return 1;
 }
@@ -151,10 +152,11 @@ int Fl_Color_Chooser::hsv(float h, float s, float v)
 #ifdef UPDATE_HUE_BOX
         huebox.redraw(FL_DAMAGE_ALL);
 #endif
-        valuebox.redraw(FL_DAMAGE_ALL);}
+        valuebox.redraw(FL_DAMAGE_VALUE);
+	}
     if (hue_ != ph || saturation_ != ps) {
         huebox.redraw(FL_DAMAGE_VALUE);
-        valuebox.redraw(FL_DAMAGE_VALUE);
+        valuebox.redraw(FL_DAMAGE_ALL);
     }
     hsv2rgb(h,s,v,r_,g_,b_);
     set_valuators();
@@ -237,7 +239,7 @@ void Flcc_HueBox::generate()
     Fl_Image *im = new Fl_Image(W, H, 32);
 
     uint32 *dst = (uint32 *)im->data();
-    int skip = im->pitch() - W * im->bytespp();
+    int skip = (im->pitch() - W * im->bytespp()) >> 2;
     register float r,g,b;
 
     for(int y = 0; y < H; y++) {
@@ -251,7 +253,7 @@ void Flcc_HueBox::generate()
             Fl_Color_Chooser::hsv2rgb(H,S,V,r,g,b);
             fl_rgb888_from_rgb(*dst++, uchar(255*r+.5f), uchar(255*g+.5f), uchar(255*b+.5f));
         }
-        ((uint8*)dst) += skip;
+        dst += skip;
     }
 
     if(bg) delete bg;
@@ -263,15 +265,14 @@ void Flcc_HueBox::draw()
 {
     if (damage() & FL_DAMAGE_ALL) {
         draw_frame();
-        generate();
     }
 
     int x1 = 0; int y1 = 0; int w1 = w(); int h1 = h();
     box()->inset(x1,y1,w1,h1);
 
-    if (damage() & FL_DAMAGE_VALUE) fl_push_clip(x1+px,y1+py,BUTTON_SIZE,BUTTON_SIZE);
+    if (damage() == FL_DAMAGE_VALUE) fl_push_clip(x1+px,y1+py,BUTTON_SIZE,BUTTON_SIZE);
     if(bg) bg->draw(x1,y1,w1,h1);
-    if (damage() & FL_DAMAGE_VALUE) fl_pop_clip();
+    if (damage() == FL_DAMAGE_VALUE) fl_pop_clip();
 
     Fl_Color_Chooser* c = (Fl_Color_Chooser*)parent();
 
@@ -345,7 +346,7 @@ void Flcc_ValueBox::generate()
 
     uint32 *dst = (uint32*)im->data();
     uint32 rgb;
-    int skip = im->pitch() - W * im->bytespp();
+    int skip = (im->pitch() - W * im->bytespp()) >> 2;
 
     for(int y = 0; y < H; y++) {
 
@@ -356,7 +357,7 @@ void Flcc_ValueBox::generate()
             *dst++ = rgb;
         }
 
-        ((uint8*)dst) += skip;
+        dst += skip;
     }
     if(bg) delete bg;
     bg = im;
@@ -374,12 +375,12 @@ void Flcc_ValueBox::draw()
 
     if(d & FL_DAMAGE_ALL) {
         draw_frame();
-        generate();
+        generate();		
     }
 
-    if (d & FL_DAMAGE_VALUE) fl_push_clip(x1,y1+py,w1,6);
+    if (d == FL_DAMAGE_VALUE) fl_push_clip(x1,y1+py,w1,6);
     bg->draw(x1,y1,w1,h1);
-    if (d & FL_DAMAGE_VALUE) fl_pop_clip();
+    if (d == FL_DAMAGE_VALUE) fl_pop_clip();
 
     int Y = int((1-c->v()) * (h1-6));
     if (Y < 0) Y = 0; else if (Y > h1-6) Y = h1-6;
@@ -418,6 +419,19 @@ void Fl_Color_Chooser::mode_cb(Fl_Widget* o, Fl_Color_Chooser *c)
 
 ////////////////////////////////////////////////////////////////
 
+void Fl_Color_Chooser::draw()
+{
+    huebox.box(box());
+    huebox.button_box(button_box());
+
+    valuebox.box(box());
+
+	Fl_Boxtype saved = box();
+    box(FL_NO_BOX);
+	Fl_Group::draw();
+	box(saved);
+}
+
 static void revert(Fl_Style* s) {
     s->color = FL_GRAY;
     s->button_box = FL_ROUND_UP_BOX;
@@ -437,13 +451,6 @@ Fl_Color_Chooser::Fl_Color_Chooser(int X, int Y, int W, int H, const char* L)
     bvalue(0,66,60,21)
 {
     style(Fl_Color_Chooser::default_style);
-
-    huebox.box(box());
-    huebox.button_box(button_box());
-
-    valuebox.box(box());
-
-    box(FL_FLAT_BOX);
 
     nrgroup.end();
     choice.begin();
@@ -577,8 +584,8 @@ static void cancel_cb(Fl_Widget* w, void*) {
 
 static void make_it()
 {
-    int W=250;
-    int H=260;
+    int W=280;
+    int H=290;
 
     if (window) return;
     window = new Fl_Window(W, H);

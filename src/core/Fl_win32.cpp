@@ -34,7 +34,6 @@
 #include <efltk/fl_utf8.h>
 #include <efltk/win32.h>
 
-#include <exception>
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -44,6 +43,9 @@
 #include <limits.h>
 #include <time.h>
 #include <winsock.h>
+
+#include <exception>
+using namespace std;
 
 // The following include files require GCC 3.x or a non-GNU compiler...
 #if !defined(__GNUC__) || __GNUC__ >= 3
@@ -1503,7 +1505,7 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 		// In other words, if an exception occurs within the scope 
 		// of a message or command handler, it must be caught there, 
 		// before the next message is processed.
-		std::terminate();
+		terminate();
 	}
 
     return DefWindowProc(hWnd, uMsg, wParam, lParam);

@@ -36,9 +36,6 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#ifndef _WIN32
-#include "list_visuals.cpp"
-#endif
 
 int width = 75;
 int height = 75;
@@ -89,9 +86,9 @@ void cb1(Fl_Widget *, void *v) {
   b->parent()->redraw();
 }
 
-void cb2(Fl_Widget *, void *v) {
+void cb2(Fl_Widget *, void *v) 
+{
   uchar r,g,b;
-//  Fl::get_color(c,r,g,b);
   fl_get_color(c,r,g,b);
   if (!fl_color_chooser("New color:",r,g,b)) return;
   c = fullcolor_cell;
@@ -101,7 +98,8 @@ void cb2(Fl_Widget *, void *v) {
   bx->parent()->redraw();
 }
 
-int main(int argc, char ** argv) {
+int main(int argc, char ** argv) 
+{
   fl_set_color(fullcolor_cell, fl_rgb(145,159,170));
   Fl_Window window(400,400);
   Fl_Box box(50,50,300,300);
@@ -115,43 +113,13 @@ int main(int argc, char ** argv) {
   Fl_Box image_box(140,200,120,120,0);
   make_image();
 
-  image_box.image(new Fl_Image(width, height, 24, image, 0x0000FF, 0x00FF00, 0xFF0000, 0));
+  Fl_Image im(width, height, 24, image, true, 0x0000FF, 0x00FF00, 0xFF0000, 0);
+  image_box.image(im);
 
   Fl_Box b(140,320,120,0,"Example of fl_draw_image()");
   Pens p(80,200,3*8,120,"lines");
   p.set_flag(FL_ALIGN_TOP);
-  int i = 1;
-  if (!Fl::args(argc,argv,i) || i != argc-1) {
-    printf("usage: %s <switches> visual-number\n"
-	   " - : default visual\n"
-	   " r : call Fl::visual(FL_RGB)\n"
-	   " c : call Fl::own_colormap()\n",argv[0]);
-#ifndef _WIN32
-    printf(" # : use this visual with an empty colormap:\n");
-    list_visuals();
-#endif
-    puts(Fl::help);
-    exit(1);
-  }
-  if (argv[i][0] == 'r') {
-    if (!Fl::visual(FL_RGB)) printf("Fl::visual(FL_RGB) returned false.\n");
-  } else if (argv[i][0] == 'c') {
-    Fl::own_colormap();
-  } else if (argv[i][0] != '-') {
-#ifndef _WIN32
-    int visid = atoi(argv[i]);
-    fl_open_display();
-    XVisualInfo templt; int num;
-    templt.visualid = visid;
-    fl_visual = XGetVisualInfo(fl_display, VisualIDMask, &templt, &num);
-    if (!fl_visual) Fl::fatal("No visual with id %d",visid);
-    fl_colormap = XCreateColormap(fl_display, RootWindow(fl_display,fl_screen),
-				  fl_visual->visual, AllocNone);
-    fl_xpixel(FL_BLACK); // make sure black is allocated
-#else
-    Fl::fatal("Visual id's not supported on MSWindows");
-#endif
-  }
+
   window.show(argc,argv);
   return Fl::run();
 }

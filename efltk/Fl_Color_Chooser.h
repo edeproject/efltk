@@ -89,6 +89,8 @@ public:
     static void hsv2rgb(float, float, float,float&,float&,float&);
     static void rgb2hsv(float, float, float,float&,float&,float&);
 
+	void draw();
+
 private:
     Flcc_HueBox huebox;
     Flcc_ValueBox valuebox;
