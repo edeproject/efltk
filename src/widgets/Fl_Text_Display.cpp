@@ -3237,7 +3237,7 @@ int Fl_Text_Display::handle(int event) {
 void Fl_Text_Display::draw_line_numbers(bool clearAll) 
 {
     /* Don't draw if mLineNumWidth == 0 (line numbers are hidden), or widget is not yet realized */
-    if(mLineNumWidth == 0 || !visible_r() || !visible())
+    if(mLineNumWidth == 0 || !visible_r())
         return;
 
     int X = mLineNumLeft+box()->dx();
@@ -3266,7 +3266,7 @@ void Fl_Text_Display::draw_line_numbers(bool clearAll)
     nCols = min(11, mLineNumWidth / charWidth);
     y = Y+lineHeight;
     line = get_absolute_top_line_number();
-    for (visLine=0; visLine < mNVisibleLines; visLine++)
+    for (visLine=0; visLine <= mNVisibleLines; visLine++)
     {
         lineStart = mLineStarts[visLine];
         if(lineStart != -1 && (lineStart==0 || buffer()->character(lineStart-1)=='\n'))
@@ -3275,7 +3275,7 @@ void Fl_Text_Display::draw_line_numbers(bool clearAll)
             fl_color(text_color());
             fl_draw(lineNumString, strlen(lineNumString), X, y);
             line++;
-        } else if(!clearAll)
+        } else if(!clearAll || mContinuousWrap)
         {
             fl_color(button_color());
             fl_rectf(X, y, W, int(fl_height()));
