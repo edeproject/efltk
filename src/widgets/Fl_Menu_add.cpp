@@ -38,6 +38,7 @@
 #include <efltk/Fl_Item.h>
 #include <efltk/Fl_Item_Group.h>
 #include <efltk/Fl_Divider.h>
+#include <efltk/Fl_Menu_Bar.h>
 #include <efltk/Fl_Menu_Item.h>
 #include <string.h>
 #include "../core/ARRAY.h"
@@ -59,6 +60,7 @@ int flags
     if (flags & FL_SUBMENU)
     {
         o = new Fl_Item_Group();
+        if(flags&FL_MENU_RIGHTLAYOUT) ((Fl_Menu_Bar *)g)->right_layout(o);
         Fl_Group::current(0);
     }
     else
@@ -70,7 +72,7 @@ int flags
     else if (flags & FL_MENU_TOGGLE) o->type(Fl_Item::TOGGLE);
     // these flags have been cleverly assigned so this shift and mask
     // converts from the old values to the new ones:
-    o->set_flag((flags<<8)&(FL_INACTIVE|FL_VALUE|FL_INVISIBLE));
+    o->set_flag((flags<<12)&(FL_INACTIVE|FL_VALUE|FL_INVISIBLE));
     if (insert_here) {g->insert(*o, insert_here-1); insert_here = 0;}
     else g->add(o);
     if (flags & FL_MENU_DIVIDER) g->add(new Fl_Divider());
