@@ -45,7 +45,7 @@ Fl_Highlight_Button::Fl_Highlight_Button(int x,int y,int w,int h,const char *l)
 }
 
 // New style ctor
-Fl_Highlight_Button::Fl_Highlight_Button(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP)
+Fl_Highlight_Button::Fl_Highlight_Button(const char* l,int layout_size,Fl_Align layout_al)
 : Fl_Button(l,layout_size,layout_al)
 {
     style(default_style);

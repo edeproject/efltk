@@ -574,7 +574,7 @@ Fl_Slider::Fl_Slider(int x, int y, int w, int h, const char* l)
 }
 
 // New style ctor
-Fl_Slider::Fl_Slider(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100)
+Fl_Slider::Fl_Slider(const char* l,int layout_size,Fl_Align layout_al,int label_w)
 : Fl_Valuator(l,layout_size,layout_al,label_w)
 {
     style(default_style);
