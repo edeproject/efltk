@@ -32,12 +32,19 @@ public:
 
 #define fl_try try
 #define fl_catch(exception_variable) catch(Fl_Exception& exception_variable)
+#define fl_throw(a) throw(a)
+#define fl_throw(a,b) throw(a,b)
+#define fl_throw(a,b,c) throw(a,b,c)
 
 #else
 
 #define fl_try 
 #define fl_catch(exception_variable) if (false)
+#define fl_throw(a) 
+#define fl_throw(a,b)
+#define fl_throw(a,b,c)
 
 #endif
 
 #endif
+
