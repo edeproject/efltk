@@ -25,7 +25,7 @@ imap_connect: imap_connect.cpp  $(FLNETLIB) $(FLLIB)
 	$(CXX) -I../.. $(CXXFLAGS) $<  $(FLNETLIB) $(LDLIBS) -o $@
 
 base64: base64.cpp  $(FLNETLIB) $(FLLIB)
-    $(CXX) -I../.. $(CXXFLAGS) $<  $(FLNETLIB) $(LDLIBS) -o $@
+	$(CXX) -I../.. $(CXXFLAGS) $<  $(FLNETLIB) $(LDLIBS) -o $@
     
 depend:
 	$(MAKEDEPEND) -I.. $(CXXFLAGS) $(CPPFILES) > makedepend
