@@ -174,10 +174,10 @@ const char *b2)
 
 // pointers you can use to change fltk to a foreign language:
 // These localized now...
-const char* fl_no = _("No");
-const char* fl_yes= _("Yes");
-const char* fl_ok = _("OK");
-const char* fl_cancel= _("Cancel");
+const char* fl_no = "No";
+const char* fl_yes= "Yes";
+const char* fl_ok = "OK";
+const char* fl_cancel= "Cancel";
 
 // fltk functions:
 
@@ -185,7 +185,7 @@ void fl_message(const char *fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);
-    innards("i", 0, 0, fmt, ap, fl_ok, 0, 0);
+    innards("i", 0, 0, fmt, ap, _(fl_ok), 0, 0);
     va_end(ap);
 }
 
@@ -194,7 +194,7 @@ void fl_alert(const char *fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);
-    innards("!", 0, 0, fmt, ap, fl_ok, 0, 0);
+    innards("!", 0, 0, fmt, ap, _(fl_ok), 0, 0);
     va_end(ap);
 }
 
@@ -203,7 +203,7 @@ int fl_ask(const char *fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);
-    int r = innards("?", 0, 0, fmt, ap, fl_no, fl_yes, 0);
+    int r = innards("?", 0, 0, fmt, ap, _(fl_no), _(fl_yes), 0);
     va_end(ap);
     return r;
 }
@@ -223,7 +223,7 @@ static const char* input_innards(const char* fmt, va_list ap,
 const char* defstr, uchar type)
 {
     int r = innards("?", defstr ? defstr : "", type,
-        fmt, ap, fl_cancel, fl_ok, 0);
+        fmt, ap, _(fl_cancel), _(fl_ok), 0);
     return r ? input->value() : 0;
 }
 

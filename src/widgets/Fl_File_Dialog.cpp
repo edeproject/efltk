@@ -83,17 +83,17 @@ uint get_dev_size(uint64 size, char **prefix)
 #endif
 
 static const char *types[] = {
-    _("Unknown"),
+    "Unknown",
 	
-    _("File"),
-    _("Dir"),
-    _("Link"),
+    "File",
+    "Dir",
+    "Link",
 
-    _("CD-Rom"),
-    _("Removable"),
-    _("Local Disk"),
-    _("Network Disk"),
-    _("RAM Disk")
+    "CD-Rom",
+    "Removable",
+    "Local Disk",
+    "Network Disk",
+    "RAM Disk"
 };
 
 //////////////////////////
@@ -102,78 +102,78 @@ static const char *types[] = {
 Fl_FileItem::Fl_FileItem(const char *filename, Fl_FileAttr *a)
 : Fl_ListView_Item(0, 0, 0, 0)
 {
-	strcpy(fname, filename?filename:_("Unknown"));
-	label(0, fname);
+    strcpy(fname, filename?filename:_("Unknown"));
+    label(0, fname);
 
-	attr = a;
-	if(!attr) return;
+    attr = a;
+    if(!attr) return;
 
-	const char *typestr=types[0];	
+    const char *typestr=_(types[0]);
 
-	char ptr[10];	
-	char *prefix = ptr;	
+    char ptr[10];
+    char *prefix = ptr;
 
-	if(a->flags&FL_DEVICE) {
+    if(a->flags&FL_DEVICE) {
 #ifdef _WIN32
-		this->type(DEVICE);
+        this->type(DEVICE);
 
-		char nbuf[4];nbuf[0] = filename[0];nbuf[1]=':';nbuf[2]='\\';nbuf[3]='\0';
-		uint type = GetDriveType(nbuf);
-		if(type==DRIVE_CDROM)
-			typestr=types[4];
-		if(type==DRIVE_REMOVABLE)
-			typestr=types[5];
-		if(type==DRIVE_FIXED)
-			typestr=types[6];
-		if(type==DRIVE_REMOTE)
-			typestr=types[7];
-		if(type==DRIVE_RAMDISK)
-			typestr=types[8];
+        char nbuf[4];nbuf[0] = filename[0];nbuf[1]=':';nbuf[2]='\\';nbuf[3]='\0';
+        uint type = GetDriveType(nbuf);
+        if(type==DRIVE_CDROM)
+            typestr=_(types[4]);
+        if(type==DRIVE_REMOVABLE)
+            typestr=_(types[5]);
+        if(type==DRIVE_FIXED)
+            typestr=_(types[6]);
+        if(type==DRIVE_REMOTE)
+            typestr=_(types[7]);
+        if(type==DRIVE_RAMDISK)
+            typestr=_(types[8]);
 
-		label(1, typestr);
-				
-		uint s = 0;				
-		s = get_dev_size(a->used, &prefix);		
-		if(s>0) {
-			sprintf(size, "%d %s", s, prefix);
-			label(2, size);
-		} else label(2,0);
-		
-		s = get_dev_size(a->free, &prefix);		
-		if(s>0) {
-			sprintf(free, "%d %s", s, prefix);
-			label(3, free);
-		} else label(3,0);
+        label(1, typestr);
+
+        uint s = 0;
+        s = get_dev_size(a->used, &prefix);
+        if(s>0) {
+            sprintf(size, "%d %s", s, prefix);
+            label(2, size);
+        } else label(2,0);
+
+        s = get_dev_size(a->free, &prefix);
+        if(s>0) {
+            sprintf(free, "%d %s", s, prefix);
+            label(3, free);
+        } else label(3,0);
 #endif
-	} else {
+    } else {
 
-		if(a->flags & FL_DIR) {
-			this->type(DIR);
-			typestr=types[2];
-		} else if(a->flags & FL_FILE) {
-			this->type(FILE);
-			typestr=types[1];
-		}	else if(a->flags & FL_LINK) {
-			this->type(FILE);
-			typestr=types[3];
-		}	
-		
-		double s = get_file_size(a->size, &prefix);
-	
-		if(s>0) {
-			if(!strcmp(prefix, _("bytes")))
-				sprintf(size, "%.0f %s", s, prefix);	
-			else
-				sprintf(size, "%.1f %s", s, prefix);
+        if(a->flags & FL_DIR) {
+            this->type(DIR);
+            typestr=_(types[2]);
+        } else if(a->flags & FL_FILE) {
+            this->type(FILE);
+            typestr=_(types[1]);
+        }	else if(a->flags & FL_LINK) {
+            this->type(FILE);
+            typestr=_(types[3]);
+        }
 
-			label(1, size);
-		} else
-			label(1, 0);
-	
-		label(2, typestr);
+        double s = get_file_size(a->size, &prefix);
 
-		label(3, a->time);
-	}	
+        if(s>0) {
+            if(!strcmp(prefix, _("bytes")))
+                sprintf(size, "%.0f %s", s, prefix);
+            else
+                sprintf(size, "%.1f %s", s, prefix);
+
+            label(1, size);
+        } else
+            label(1, 0);
+
+        label(2, typestr);
+
+        label(3, a->time);
+    }
 }
 
 Fl_FileItem::~Fl_FileItem()
