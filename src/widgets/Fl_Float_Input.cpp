@@ -28,6 +28,33 @@
 #include <efltk/Fl_Widget.h>
 #include <efltk/Fl_Float_Input.h>
 #include <string.h>
+#include <stdlib.h>
+
+// Data source support
+// loading data from DS
+bool Fl_Float_Input::load_data(Fl_Data_Source *ds)
+{
+    if (field_name().empty())
+        return false;
+
+    Fl_Variant fld_value;
+    if (ds->read_field(field_name().c_str(), fld_value)) {
+        value(fld_value.get_float());
+        return true;
+    }
+    return false;
+}
+
+// saving data to DS
+bool Fl_Float_Input::save_data(Fl_Data_Source *ds) const
+{
+    if(field_name().empty())
+        return false;
+
+    Fl_Variant  fld_value;
+    fld_value.set_float(atof(value()));
+    return ds->write_field(field_name().c_str(), fld_value);
+}
 
 bool Fl_Float_Input::replace(int b, int e, const char* text, int ilen)
 {
@@ -40,7 +67,7 @@ bool Fl_Float_Input::replace(int b, int e, const char* text, int ilen)
             (ascii >= '0' && ascii <= '9') ||
             (b+n==1 && index(0)=='0' && (ascii=='x' || ascii == 'X')) ||
             (b+n>1 && index(0)=='0' && (index(1)=='x'||index(1)=='X')
-            && (ascii>='A'&& ascii<='F' || ascii>='a'&& ascii<='f')) ||
+                && (ascii>='A'&& ascii<='F' || ascii>='a'&& ascii<='f')) ||
             input_type()==FLOAT && ascii && strchr(".eE+-", ascii))
             continue;            // it's ok;
         return false;

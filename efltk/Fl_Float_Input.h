@@ -37,6 +37,10 @@ public:
     Fl_Float_Input(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100)
     : Fl_Numeric_Input(l,layout_size,layout_al,label_w) { }
 
+    // Data source support
+    virtual bool load_data(Fl_Data_Source *ds);
+    virtual bool save_data(Fl_Data_Source *ds) const;
+
 protected:
     virtual bool replace(int, int, const char*, int);
 };
