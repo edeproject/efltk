@@ -925,7 +925,7 @@ void Fl_Menu_::relayout_current_menu()
     current_menu->show();
 }
 
-#define DEBUG
+//#define DEBUG
 
 #ifdef DEBUG
 # define MODAL false
