@@ -245,7 +245,7 @@ static bool xpm_create(Fl_IO *xpm_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
     int index;
     int x, y;
     int ncolors, cpp;
-    int pixels_len;
+    int pixels_len=0;
     char *pixels = NULL;
     int indexed;
     uint8 *dst;
