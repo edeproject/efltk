@@ -48,13 +48,31 @@ public:
     Fl_XmlTokenizer();
     virtual ~Fl_XmlTokenizer() { }
 
+	/**
+	 * Returns current stream locator.
+	 */
 	Fl_XmlLocator *locator() const { return m_locator; }
+
+	/**
+	 * Set current stream locator.
+	 * @param locator to set
+	 */
 	void locator(Fl_XmlLocator *locator) { m_locator = locator; }
 
 protected:
-    // End of input stream
+    /**
+	 * Derived tokenizers override this function.
+	 * Returns true, if END-OF-STREAM
+	 */
     virtual bool stream_eos() const = 0;
-    // Read to buffer
+    
+    /**
+	 * Derived tokenizers override this function.
+	 * Tries to 'length' data from stream to 'buf' buffer.
+	 * Returns bytes readed.
+	 * @param buf buffer to read
+	 * @param length to read from stream to buffer
+	 */
     virtual int stream_read(char *buf, int length) = 0;
 
 private:
@@ -126,7 +144,7 @@ private:
 	Fl_XmlLocator *m_locator;
 };
 
-/*
+/**
  * DefaultTokenizer class.
  * Simple XML tokenizer implementation.
  * Handles FILE and memory buffer tokenizing.
@@ -134,18 +152,25 @@ private:
 class Fl_XmlDefaultTokenizer : public Fl_XmlTokenizer
 {
 public:
-    // Contructor with inputbuffer
+    /** 
+	 * Contructor with inputbuffer 
+	 * @param buffer pointer XML data
+	 * @param buffer_len length of data
+	 */
     Fl_XmlDefaultTokenizer(const char *buffer, long buffer_len);
     
-	// Contructor with FILE pointer
+	/** 
+	 * Contructor with FILE pointer. fp MUST be opened and closed by user.
+	 * @param fp pointer to FILE
+	 */
     Fl_XmlDefaultTokenizer(FILE *fp);
 
     virtual ~Fl_XmlDefaultTokenizer();
 
 protected:
-    // Reads length bytes from stream, removed from stream
+    /** Reads length bytes from stream, removed from stream */
     virtual int stream_read(char *buf, int length);
-    // End of stream?
+    /** End of stream? */
     virtual bool stream_eos() const;
 
 private:
