@@ -3,25 +3,31 @@
 #if HAVE_JPEG
 
 #include <efltk/Fl_Image.h>
-#include <efltk/Fl_Exception.h>
 #include <efltk/Fl.h>
 
 #include <stdlib.h>
 #include <setjmp.h>
+
 extern "C" {
-# include <jpeglib.h>
+ #include <jpeglib.h>
 }
 
 #include "../core/fl_internal.h"
-static int jpeg_quality;
+
+static volatile int jpeg_quality; //Maybe accessed through processes
 
 /* Define this for fast loading and not as good image quality */
 /*#define FAST_JPEG*/
 
 #define JPEG_BYTES_TO_CHECK 4
 
-static bool jpeg_is_valid_file(const char *filename, FILE *fp)
+static bool jpeg_is_valid_file(const char *filename)
 {
+#ifndef VALIDATE_IMAGE_CONTENT
+	int len=strlen(filename)-4;
+	if(len<1) return false;
+	return (!strncasecmp(filename+len, "JPEG", 4) || !strncasecmp(filename+len+1, "JPG", 3));
+#else
     uint8 type[JPEG_BYTES_TO_CHECK];
     bool ret = false;
     uint32 pos = ftell(fp);
@@ -34,8 +40,8 @@ static bool jpeg_is_valid_file(const char *filename, FILE *fp)
         }
     }
     fseek(fp, pos, SEEK_SET); //return position in file
-
     return ret;
+#endif
 }
 
 static bool jpeg_is_valid_mem(const uint8 *stream, uint32 size)
@@ -177,7 +183,7 @@ static void my_error_exit(j_common_ptr cinfo)
 }
 
 static void output_no_message(j_common_ptr cinfo)
-{
+{	
     /* do nothing */
 }
 
@@ -196,9 +202,8 @@ static bool jpeg_create(Fl_IO &jpeg_io, uint8 *&data, Fl_PixelFormat &fmt, int &
     if(setjmp(jerr.escape)) {
         /* If we get here, libjpeg found an error */
         jpeg_destroy_decompress(&cinfo);
-        if(data) free(data);
-        if(data) free(data);
-        fl_throw("JPEG: Error loading JPEG");
+        if(data) free(data);        
+        fprintf(stderr, "Error loading JPEG");
         return false;
     }
 
@@ -254,20 +259,26 @@ static bool jpeg_create(Fl_IO &jpeg_io, uint8 *&data, Fl_PixelFormat &fmt, int &
     return true;
 }
 
-static bool jpeg_read_file(FILE *fp, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h)
+static bool jpeg_read_file(const char *filename, int quality, uint8 *&data, Fl_PixelFormat &data_format, int &w, int &h)
 {
+	FILE *fp = fopen(filename, "r");
+	if(!fp) return false;
+
     jpeg_quality = quality;
     Fl_IO jpeg_io;
     jpeg_io.init_io(fp, 0, 0);
-    return jpeg_create(jpeg_io, data, format, w, h);
+    bool ret = jpeg_create(jpeg_io, data, data_format, w, h);
+	
+	fclose(fp);
+	return ret;
 }
 
-static bool jpeg_read_mem(uint8 *stream, uint32 size, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h)
+static bool jpeg_read_mem(const uint8 *stream, uint32 size, int quality, uint8 *&data, Fl_PixelFormat &data_format, int &w, int &h)
 {
     jpeg_quality = quality;
     Fl_IO jpeg_io;
-    jpeg_io.init_io(0, stream, size);
-    return jpeg_create(jpeg_io, data, format, w, h);
+    jpeg_io.init_io(0, (uint8*)stream, size);
+    return jpeg_create(jpeg_io, data, data_format, w, h);
 }
 
 Fl_Image_IO jpeg_reader =
@@ -279,7 +290,6 @@ Fl_Image_IO jpeg_reader =
     /* VALIDATE FUNCTIONS: */
     jpeg_is_valid_file, //bool (*is_valid_file)(const char *filename, FILE *fp);
     jpeg_is_valid_mem, //bool (*is_valid_mem)(uint8 *stream, uint32 size);
-    NULL, //bool (*is_valid_xpm)(uint8 **stream);
 
     /* READ FUNCTIONS: */
     jpeg_read_file, //bool (*read_file)(FILE *fp, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h);

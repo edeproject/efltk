@@ -27,47 +27,9 @@
 #include "Fl_PtrList.h"
 #include "Fl_Export.h"
 #include "Fl_Flags.h"
+#include "Fl_Image_IO.h"
 
 #include <stdio.h> //For FILE
-
-/** Fl_Image quality types */
-enum ImageQuality {	
-    FL_QUALITY_POOR = 0,
-    FL_QUALITY_NORMAL, // Default quality type.
-    FL_QUALITY_GOOD,
-    FL_QUALITY_BEST
-};
-
-/** Image IO struct */
-typedef struct
-{
-    /* GENERAL: */
-    /* Name of image type, e.g. "JPEG" or "PNG" */
-    char *name;
-    /* Supported file extension, e.g. "jpeg;jpg" */
-    char *extensions;
-
-    /* VALIDATE FUNCTIONS: */
-    /* Check if filename has valid extension and/or is data valid. 'fp' is opened already. */
-    bool (*is_valid_file)(const char *filename, FILE *fp);
-    /* Check if 'stream' memory pointer is valid stream. 'size' is size of 'stream' */
-    bool (*is_valid_mem)(const uint8 *stream, uint32 size);
-    //XPM ONLY:
-    bool (*is_valid_xpm)(const uint8 **stream);
-
-    /* READ FUNCTIONS: */
-    /* data will be stored in 'data' and its format in 'format' in both functions */
-    /* read from file, 'fp' is opened already. Called ONLY if valid_file function passed. */
-    bool (*read_file)(FILE *fp, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h);
-    /* read 'stream' memory pointer. 'size' is size of 'stream'. Called ONLY if valid_mem function passed. */
-    bool (*read_mem)(uint8 *stream, uint32 size, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h);
-
-    /* WRITE FUNCTIONS: */
-    /* Write to memory, stream is allocated in this function, size of allocated stream is stored in 'size'. */
-    bool (*write_mem)(uint8 *&stream, int &size, int quality, uint8 *data, Fl_PixelFormat &data_format, int w, int h);
-    /* Write to file, 'fp' is opened already. */
-    bool (*write_file)(FILE *fp, int quality, uint8 *data, Fl_PixelFormat &data_format, int w, int h);
-} Fl_Image_IO;
 
 class Fl_Image;
 
@@ -331,15 +293,5 @@ private:
     // Data storage for selected, inactive...
     Fl_Image *m_mod_data;
 };
-
-// Image IO functions:
-extern void fl_register_imageio(Fl_Image_IO *reader);
-extern void fl_unregister_imageio(Fl_Image_IO *reader);
-extern Fl_Image_IO *fl_find_imageio(Fl_Image_IO *reader);
-extern Fl_Image_IO *fl_find_imageio(const char *name, const char *extension);
-
-extern Fl_Image_IO *fl_find_imageio(int index);
-extern uint fl_count_imageio();
-Fl_Ptr_List &fl_list_imageio();
 
 #endif

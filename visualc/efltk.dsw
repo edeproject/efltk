@@ -78,6 +78,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "efltk_dll"=.\efltk_dll.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "efltk_images"=.\efltk_images.dsp - Package Owner=<4>
 
 Package=<5>
@@ -426,7 +438,7 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name efltk
+    Project_Dep_Name efltk_dll
     End Project Dependency
 }}}
 

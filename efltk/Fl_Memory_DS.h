@@ -26,7 +26,7 @@
 #include <efltk/Fl_Exception.h>
 
 /** Fl_Memory_DS */
-class Fl_Memory_DS : public Fl_Data_Source  {
+class FL_API Fl_Memory_DS : public Fl_Data_Source  {
 protected:
     // ctor, prevent creating the instance of that class
     Fl_Memory_DS() : Fl_Data_Source(0L), m_current(0L), m_currentIndex(-1) { }

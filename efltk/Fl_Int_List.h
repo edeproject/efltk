@@ -25,7 +25,7 @@
 #include "Fl_Ptr_List.h"
 
 /** Fl_Int_List */
-class Fl_Int_List : public Fl_Ptr_List {
+class FL_API Fl_Int_List : public Fl_Ptr_List {
 public:
     Fl_Int_List() : Fl_Ptr_List() { }
 	virtual ~Fl_Int_List() { clear(); }

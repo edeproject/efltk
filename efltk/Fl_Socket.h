@@ -16,7 +16,7 @@ typedef int SOCKET;
 #include <efltk/Fl_String.h>
 #include <efltk/Fl_Buffer.h>
 
-class Fl_Socket_Reader : protected Fl_Buffer {
+class FL_API Fl_Socket_Reader : protected Fl_Buffer {
    int m_socket;
    int m_readOffset;
    int buffered_read(char *dest,int sz,bool read_line);

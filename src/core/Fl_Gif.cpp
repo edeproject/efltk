@@ -1,6 +1,5 @@
 /* This is a GIF image file loading framework */
 #include <efltk/Fl_Image.h>
-#include <efltk/Fl_Exception.h>
 #include <efltk/Fl.h>
 
 #include <stdlib.h>
@@ -33,7 +32,7 @@
 
 #include "fl_internal.h"
 
-#define RWSetMsg fl_throw
+#define RWSetMsg printf
 
 #define SetCmap(i, R, G, B) do { \
     fmt.palette->colors[i].r = R; \
@@ -89,8 +88,13 @@ static uint8 *ReadImage(Fl_IO &gif_io, int len, int height, int,
 /* See if an image is contained in a data source */
 #define GIF_BYTES_TO_CHECK 6
 
-static bool gif_is_valid_file(const char *filename, FILE *fp)
+static bool gif_is_valid_file(const char *filename)
 {	
+#ifndef VALIDATE_IMAGE_CONTENT
+	int len=strlen(filename)-3;
+	if(len<1) return false;
+	return !strncasecmp(filename+len, "GIF", 3);
+#else
 	char type[GIF_BYTES_TO_CHECK];
 	uint32 pos = ftell(fp);
 	fread(type, GIF_BYTES_TO_CHECK, 1, fp);    
@@ -99,6 +103,7 @@ static bool gif_is_valid_file(const char *filename, FILE *fp)
 	return (strncmp(type, "GIF", 3) == 0) && 
 			((memcmp(type + 3, "87a", 3) == 0) ||
 			(memcmp(type + 3, "89a", 3) == 0));
+#endif
 }
        
 static bool gif_is_valid_mem(const uint8 *stream, uint32 size)
@@ -123,18 +128,18 @@ static bool gif_create(Fl_IO &gif_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
 
     if(!gif_io.read(buf, 6)) {
         RWSetMsg("GIF: Can't read magic number");
-        //goto done;
+        goto done;
     }
     if (strncmp((char *) buf, "GIF", 3) != 0) {
         RWSetMsg("GIF: Not a GIF file");
-        //goto done;
+        goto done;
     }
     strncpy(version, (char *) buf + 3, 3);
     version[3] = '\0';
 
     if ((strcmp(version, "87a") != 0) && (strcmp(version, "89a") != 0)) {
         RWSetMsg("GIF: Bad version number, not '87a' or '89a'");
-        //goto done;
+        goto done;
     }
     Gif89.transparent = -1;
     Gif89.delayTime = -1;
@@ -143,7 +148,7 @@ static bool gif_create(Fl_IO &gif_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
 
     if (!gif_io.read(buf, 7)) {
         RWSetMsg("GIF: Failed to read screen descriptor");
-        //goto done;
+        goto done;
     }
     GifScreen.Width = LM_to_uint(buf[0], buf[1]);
     GifScreen.Height = LM_to_uint(buf[2], buf[3]);
@@ -153,27 +158,26 @@ static bool gif_create(Fl_IO &gif_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
     GifScreen.AspectRatio = buf[6];
 
     if (BitSet(buf[4], LOCALCOLORMAP)) {	/* Global Colormap */
-        if (ReadColorMap(gif_io, GifScreen.BitPixel, GifScreen.ColorMap,
-                         &GifScreen.GrayScale2)) {
+        if (ReadColorMap(gif_io, GifScreen.BitPixel, GifScreen.ColorMap, &GifScreen.GrayScale2)) {
             RWSetMsg("GIF: Error reading global colormap");
-            //goto done;
+            goto done;
         }
     }
     do {
         if (!gif_io.read(&c, 1)) {
             RWSetMsg("GIF: EOF / read error on image data");
-            //goto done;
+            goto done;
         }
         if (c == ';') { /* GIF terminator */
             if (imageCount < imageNumber) {
                 RWSetMsg("GIF: Too few image(s) found in file");
-                //goto done;
+                goto done;
             }
         }
         if (c == '!') { /* Extension */
             if (!gif_io.read(&c, 1)) {
                 RWSetMsg("GIF: EOF / read error on extention function code");
-                //goto done;
+                goto done;
             }
             DoExtension(gif_io, c);
             continue;
@@ -185,7 +189,7 @@ static bool gif_create(Fl_IO &gif_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
 
         if (!gif_io.read(buf, 9)) {
             RWSetMsg("GIF: Couldn't read left/top/width/height");
-            //goto done;
+            goto done;
         }
         useGlobalColormap = !BitSet(buf[8], LOCALCOLORMAP);
 
@@ -194,7 +198,7 @@ static bool gif_create(Fl_IO &gif_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
         if (!useGlobalColormap) {
             if (ReadColorMap(gif_io, bitPixel, localColorMap, &grayScale)) {
                 RWSetMsg("GIF: Error reading local colormap");
-                //goto done;
+                goto done;
             }
             data = ReadImage(gif_io, LM_to_uint(buf[4], buf[5]),
                              LM_to_uint(buf[6], buf[7]),
@@ -216,7 +220,7 @@ static bool gif_create(Fl_IO &gif_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
         fmt.masktype = FL_MASK_PIXELKEY;
     }
 
-//done:
+done:
     return (data!=0);
 }
 
@@ -231,7 +235,7 @@ static int ReadColorMap(Fl_IO &gif_io, int number, unsigned char buffer[3][MAXCO
     for (i = 0; i < number; ++i) {
         if (!gif_io.read(rgb, sizeof(rgb))) {
             RWSetMsg("GIF: Bad colormap");
-            //return 1;
+            return 1;
         }
         buffer[CM_RED][i] = rgb[0];
         buffer[CM_GREEN][i] = rgb[1];
@@ -469,11 +473,11 @@ static uint8 *ReadImage(Fl_IO &gif_io, int len, int height, int cmapSize,
      */
     if (!gif_io.read(&c, 1)) {
         RWSetMsg("GIF: EOF / read error on image data");
-        //return NULL;
+        return NULL;
     }
     if (LWZReadByte(gif_io, TRUE, c) < 0) {
         RWSetMsg("GIF: Error reading image");
-        //return NULL;
+        return NULL;
     }
     /*
      **	If this is an "uninteresting picture" ignore it.
@@ -541,18 +545,24 @@ fini:
     return data;
 }
 
-static bool gif_read_file(FILE *fp, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h)
+static bool gif_read_file(const char *filename, int quality, uint8 *&data, Fl_PixelFormat &data_format, int &w, int &h)
 {
+	FILE *fp = fopen(filename, "rb");
+	if(!fp) return false;
+
     Fl_IO gif_io;
     gif_io.init_io(fp, 0, 0);
-    return gif_create(gif_io, data, format, w, h);
+    bool ret = gif_create(gif_io, data, data_format, w, h);
+
+	fclose(fp);
+	return ret;
 }
 
-static bool gif_read_mem(uint8 *stream, uint32 size, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h)
+static bool gif_read_mem(const uint8 *stream, uint32 size, int quality, uint8 *&data, Fl_PixelFormat &data_format, int &w, int &h)
 {
     Fl_IO gif_io;
-    gif_io.init_io(0, stream, size);
-    return gif_create(gif_io, data, format, w, h);
+    gif_io.init_io(0, (uint8*)stream, size);
+    return gif_create(gif_io, data, data_format, w, h);
 }
 
 Fl_Image_IO gif_reader =
@@ -564,7 +574,6 @@ Fl_Image_IO gif_reader =
     /* VALIDATE FUNCTIONS: */
     gif_is_valid_file, //bool (*is_valid_file)(const char *filename, FILE *fp);
     gif_is_valid_mem, //bool (*is_valid_mem)(uint8 *stream, uint32 size);
-    NULL, //bool (*is_valid_xpm)(uint8 **stream);
 
     /* READ FUNCTIONS: */
     gif_read_file, //bool (*read_file)(FILE *fp, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h);

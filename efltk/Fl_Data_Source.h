@@ -28,7 +28,7 @@
 class Fl_Group;
 
 /** Fl_Data_Source */
-class Fl_Data_Source {
+class FL_API Fl_Data_Source {
     friend class Fl_Group;
 public:
     // ctor, dtor

@@ -22,7 +22,7 @@
 #ifndef _FL_FONT_H_
 #define _FL_FONT_H_
 
-#include "Enumerations.h" // for FL_API
+#include "Fl_Export.h" // for FL_API
 #include "Fl_String_List.h"
 #include "Fl_Int_List.h"
 
@@ -81,31 +81,32 @@ enum {
 
 // Built-in fonts:
 extern FL_API Fl_Font_ fl_fonts[16];
-#define FL_HELVETICA		(fl_fonts+0)
-#define FL_HELVETICA_BOLD	(fl_fonts+1)
-#define FL_HELVETICA_ITALIC	(fl_fonts+2)
+
+#define FL_HELVETICA			(fl_fonts+0)
+#define FL_HELVETICA_BOLD		(fl_fonts+1)
+#define FL_HELVETICA_ITALIC		(fl_fonts+2)
 #define FL_HELVETICA_BOLD_ITALIC (fl_fonts+3)
-#define FL_COURIER		(fl_fonts+4)
-#define FL_COURIER_BOLD		(fl_fonts+5)
-#define FL_COURIER_ITALIC	(fl_fonts+6)
+#define FL_COURIER				(fl_fonts+4)
+#define FL_COURIER_BOLD			(fl_fonts+5)
+#define FL_COURIER_ITALIC		(fl_fonts+6)
 #define FL_COURIER_BOLD_ITALIC	(fl_fonts+7)
-#define FL_TIMES		(fl_fonts+8)
-#define FL_TIMES_BOLD		(fl_fonts+9)
-#define FL_TIMES_ITALIC		(fl_fonts+10)
+#define FL_TIMES				(fl_fonts+8)
+#define FL_TIMES_BOLD			(fl_fonts+9)
+#define FL_TIMES_ITALIC			(fl_fonts+10)
 #define FL_TIMES_BOLD_ITALIC	(fl_fonts+11)
-#define FL_SYMBOL		(fl_fonts+12)
-#define FL_SCREEN		(fl_fonts+13)
-#define FL_SCREEN_BOLD		(fl_fonts+14)
-#define FL_ZAPF_DINGBATS	(fl_fonts+15)
+#define FL_SYMBOL				(fl_fonts+12)
+#define FL_SCREEN				(fl_fonts+13)
+#define FL_SCREEN_BOLD			(fl_fonts+14)
+#define FL_ZAPF_DINGBATS		(fl_fonts+15)
 
 // XWin: Create a fontset, XLFD's separated with comma
 // WIN32: Create single font
-FL_API Fl_Font fl_create_font(const char *system_name);
+extern FL_API Fl_Font fl_create_font(const char *system_name);
 
 /** Find a font by name + attributes */
-FL_API Fl_Font fl_find_font(const char* name, int attrib = 0);
+extern FL_API Fl_Font fl_find_font(const char* name, int attrib = 0);
 
 /** Find and return every font on the system. */
-FL_API int fl_list_fonts(Fl_Font*& arrayp);
+extern FL_API int fl_list_fonts(Fl_Font*& arrayp);
 
 #endif

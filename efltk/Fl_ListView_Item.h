@@ -143,7 +143,7 @@ private:
 //////////////////////////////////////////
 //////////////////////////////////////////
 
-class Fl_ListItem_List : public Fl_Ptr_List {
+class FL_API Fl_ListItem_List : public Fl_Ptr_List {
 public:
     Fl_ListItem_List() : Fl_Ptr_List() { }
     virtual ~Fl_ListItem_List() { clear(); }

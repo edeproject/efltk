@@ -1,18 +1,27 @@
 #include "fl_internal.h"
+
 #include <efltk/Fl_Image.h>
-#include <efltk/Fl_Exception.h>
 #include <efltk/Fl.h>
 
 #define BMP_BYTES_TO_CHECK 2
 
-static bool bmp_is_valid_file(const char *filename, FILE *fp)
+static bool bmp_is_valid_file(const char *filename)
 {	
-	char type[BMP_BYTES_TO_CHECK];
-	uint32 pos = ftell(fp);
-	fread(type, BMP_BYTES_TO_CHECK, 1, fp);    
-	fseek(fp, pos, SEEK_SET); //return position in file
-	
-	return !(strncmp(type, "BM", BMP_BYTES_TO_CHECK));
+#ifndef VALIDATE_IMAGE_CONTENT
+	int len=strlen(filename)-3;
+	if(len<1) return false;
+	return !strncasecmp(filename+len, "BMP", 3);
+#else
+	FILE *fp = fopen(filename, "rb");
+	if(fp) {
+		char type[BMP_BYTES_TO_CHECK];
+		uint32 pos = ftell(fp);
+		fread(type, BMP_BYTES_TO_CHECK, 1, fp);    
+		fclose(fp);
+		return !(strncmp(type, "BM", BMP_BYTES_TO_CHECK));
+	}
+	return false;
+#endif
 }
        
 static bool bmp_is_valid_mem(const uint8 *stream, uint32 size)
@@ -308,21 +317,27 @@ static bool bmp_create(Fl_IO &bmp_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
 error:
     if(data) delete []data;
     data = 0;
-    fl_throw(error_str?error_str:"BMP: Unknown");
+    fputs(error_str ? error_str : "BMP: Unknown error!", stderr);
 }
 
-static bool bmp_read_file(FILE *fp, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h)
+static bool bmp_read_file(const char *filename, int quality, uint8 *&data, Fl_PixelFormat &data_format, int &w, int &h)
 {
+	FILE *fp = fopen(filename, "rb");
+	if(!fp) return false;
+
     Fl_IO bmp_io;
     bmp_io.init_io(fp, 0, 0);
-    return bmp_create(bmp_io, data, format, w, h);
+    bool ret = bmp_create(bmp_io, data, data_format, w, h);
+
+	fclose(fp);
+	return ret;
 }
 
-static bool bmp_read_mem(uint8 *stream, uint32 size, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h)
+static bool bmp_read_mem(const uint8 *stream, uint32 size, int quality, uint8 *&data, Fl_PixelFormat &data_format, int &w, int &h)
 {
     Fl_IO bmp_io;
-    bmp_io.init_io(0, stream, size);
-    return bmp_create(bmp_io, data, format, w, h);
+    bmp_io.init_io(0, (uint8*)stream, size);
+    return bmp_create(bmp_io, data, data_format, w, h);
 }
 
 Fl_Image_IO bmp_reader =
@@ -334,7 +349,6 @@ Fl_Image_IO bmp_reader =
     /* VALIDATE FUNCTIONS: */
     bmp_is_valid_file, //bool (*is_valid_file)(const char *filename, FILE *fp);
     bmp_is_valid_mem, //bool (*is_valid_mem)(uint8 *stream, uint32 size);
-    NULL, //bool (*is_valid_xpm)(uint8 **stream);
 
     /* READ FUNCTIONS: */
     bmp_read_file, //bool (*read_file)(FILE *fp, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h);

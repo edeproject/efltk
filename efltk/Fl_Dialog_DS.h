@@ -27,7 +27,7 @@
 #include <efltk/Fl_Data_Source.h>
 
 /** Fl_Dialog_DS - the special DataSource for Fl_Dialog */
-class Fl_Dialog_DS : public Fl_Data_Source {
+class FL_API Fl_Dialog_DS : public Fl_Data_Source {
 
 protected:
     Fl_Data_Fields            m_fields;

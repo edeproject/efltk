@@ -22,6 +22,8 @@
 #ifndef _FL_FLAGS_H_
 #define _FL_FLAGS_H_
 
+#include "Fl_Export.h"
+
 // This same value is used to:
 
 // 1. store state and other information in a widget or menu item
@@ -78,7 +80,7 @@ enum Fl_FlagsEnum {
 typedef Fl_AlignEnum Fl_Align;
 
 /** Fl_Flags */
-class Fl_Flags
+class FL_API Fl_Flags
 {
     int m_flags;
 public:

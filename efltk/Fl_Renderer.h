@@ -70,7 +70,7 @@ public:
 };
 
 /** Fl_PixelFormat, Everything in the pixel format structure is read-only */
-class Fl_PixelFormat
+class FL_API Fl_PixelFormat
 {
 public:
     Fl_PixelFormat();

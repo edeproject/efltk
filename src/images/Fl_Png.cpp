@@ -1,16 +1,16 @@
 #include <config.h>
+
 #if HAVE_PNG
 
 #include <png.h>
 #include <stdlib.h>
 
 #include <efltk/Fl_Image.h>
-#include <efltk/Fl_Exception.h>
 #include <efltk/Fl.h>
 
 #include "../core/fl_internal.h"
-static int png_quality;
-static char *png_last_error;
+static volatile int png_quality;		//Maybe accessed through processes
+static volatile char *png_last_error;	//Maybe accessed through processes
 
 #define PNG_BYTES_TO_CHECK 4
 bool setup_png_transformations(png_structp png_ptr, png_infop info_ptr, png_color_16 *transv,int &col_type, int &ckey, int &bitspp, int &w, int &h);
@@ -31,14 +31,20 @@ static void my_png_error(png_structp png_ptr, png_const_charp message)
     longjmp(png_ptr->jmpbuf, 0);
 }
 
-static bool png_is_valid_file(const char *filename, FILE *fp)
+static bool png_is_valid_file(const char *filename)
 {
+#ifndef VALIDATE_IMAGE_CONTENT
+	int len=strlen(filename)-3;
+	if(len<1) return false;
+	return !strncasecmp(filename+len, "PNG", 3);
+#else
     uint8 type[PNG_BYTES_TO_CHECK];
     uint32 pos = ftell(fp);
     fread(type, PNG_BYTES_TO_CHECK, 1, fp);
     fseek(fp, pos, SEEK_SET); //return position in file
 
     return (!png_sig_cmp((png_byte *)type, (png_size_t)0, PNG_BYTES_TO_CHECK));
+#endif
 }
 
 static bool png_is_valid_mem(const uint8 *stream, uint32 size)
@@ -55,7 +61,7 @@ static void read_data_fn(png_structp png_ptr, png_bytep d, png_size_t length) {
 
 #define return_error() \
     if(png_ptr) png_destroy_read_struct (&png_ptr, &info_ptr, &end_info_ptr);\
-    fl_throw("PNG: Not enough memory"); \
+    fprintf(stderr, "PNG: Not enough memory"); \
     return false
 
 static bool png_create(Fl_IO &png_io, uint8 *&data, Fl_PixelFormat &fmt, int &w, int &h)
@@ -78,7 +84,7 @@ static bool png_create(Fl_IO &png_io, uint8 *&data, Fl_PixelFormat &fmt, int &w,
     if(setjmp(png_ptr->jmpbuf)) {
         if(rows) free(rows);
         if(png_ptr) png_destroy_read_struct (&png_ptr, &info_ptr, &end_info_ptr);
-        fl_throw(png_last_error);
+        fputs((const char *)png_last_error, stderr);
         return false;
     }
 
@@ -257,7 +263,7 @@ static void write_flush(png_structp) {
     // since we use synchronous output method.
 }
 
-static bool setup_write_data(uint8 *data, int pitch, Fl_PixelFormat &fmt, int w, int h,
+static bool setup_write_data(const uint8 *data, int pitch, const Fl_PixelFormat &fmt, int w, int h,
                              uint8 *&newdata, uint &newpitch, Fl_PixelFormat &newfmt)
 {
     if(fmt.bitspp>8) {
@@ -283,7 +289,7 @@ static bool setup_write_data(uint8 *data, int pitch, Fl_PixelFormat &fmt, int w,
 
         newpitch = Fl_Renderer::calc_pitch(newfmt.bytespp, w);
         newdata  = (uint8*)malloc(h*newpitch*sizeof(uint8));
-        if(!Fl_Renderer::blit(data, &rect, &fmt, pitch, newdata, &rect, &newfmt, newpitch, 0)) {
+        if(!Fl_Renderer::blit((uint8*)data, &rect, (Fl_PixelFormat *)&fmt, pitch, newdata, &rect, &newfmt, newpitch, 0)) {
             free(newdata);
             newdata = 0;
             return false;
@@ -293,25 +299,25 @@ static bool setup_write_data(uint8 *data, int pitch, Fl_PixelFormat &fmt, int w,
     return false;
 }
 
-#define return_error_er() \
+#define return_error_wr() \
     if(png_ptr) png_destroy_write_struct(&png_ptr, &info_ptr); \
-    fl_throw("PNG: Not enough memory"); \
+    fprintf(stderr, "PNG: Not enough memory"); \
     return false
 
-static bool png_write(Fl_IO &png_io, uint8 *data, Fl_PixelFormat &fmt, int w, int h)
+static bool png_write(Fl_IO &png_io, const uint8 *data, const Fl_PixelFormat &fmt, int w, int h)
 {
     png_structp png_ptr;
     png_infop info_ptr;
 
     png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-    if(!png_ptr) { return_error_er(); }
+    if(!png_ptr) { return_error_wr(); }
     info_ptr = png_create_info_struct(png_ptr);
-    if(!info_ptr) { return_error_er(); }
+    if(!info_ptr) { return_error_wr(); }
 
     png_set_error_fn(png_ptr, 0, 0, &my_png_warning);
 
     bool allocated = false;
-    uint8 *wr_data = data;
+    uint8 *wr_data = (uint8*)data;
     if(setjmp(png_ptr->jmpbuf)) {
         if(png_ptr) png_destroy_write_struct(&png_ptr, &info_ptr);
         if(allocated && wr_data) free(wr_data);
@@ -331,7 +337,7 @@ static bool png_write(Fl_IO &png_io, uint8 *data, Fl_PixelFormat &fmt, int w, in
 
     uint  wr_pitch = pitch;
     Fl_PixelFormat newfmt;
-    Fl_PixelFormat *wr_fmt = &fmt;
+    Fl_PixelFormat *wr_fmt = (Fl_PixelFormat *)&fmt;
 
     int comp_level;
     switch(png_quality) {
@@ -463,34 +469,46 @@ error:
 }
 
 
-static bool png_read_file(FILE *fp, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h)
+static bool png_read_file(const char *filename, int quality, uint8 *&data, Fl_PixelFormat &data_format, int &w, int &h)
 {
+	FILE *fp = fopen(filename, "rb");
+	if(!fp) return false;
+
     Fl_IO png_io;
     png_io.init_io(fp, 0, 0);
-    return png_create(png_io, data, format, w, h);
+    bool ret = png_create(png_io, data, data_format, w, h);
+
+	fclose(fp);
+	return ret;
 }
 
-static bool png_read_mem(uint8 *stream, uint32 size, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h)
+static bool png_read_mem(const uint8 *stream, uint32 size, int quality, uint8 *&data, Fl_PixelFormat &data_format, int &w, int &h)
 {
     Fl_IO png_io;
-    png_io.init_io(0, stream, size);
-    return png_create(png_io, data, format, w, h);
+    png_io.init_io(0, (uint8*)stream, size);
+    return png_create(png_io, data, data_format, w, h);
 }
 
-static bool png_write_file(FILE *fp, int quality, uint8 *data, Fl_PixelFormat &format, int w, int h)
+static bool png_write_file(const char *filename, int quality, const uint8 *data, const Fl_PixelFormat &data_format, int w, int h)
 {
+	FILE *fp = fopen(filename, "wb");
+	if(!fp) return false;
+
     Fl_IO png_io;
     png_io.init_io(fp, 0, 0);
     png_quality = quality;
-    return png_write(png_io, data, format, w, h);
+    bool ret = png_write(png_io, data, data_format, w, h);
+
+	fclose(fp);
+	return ret;
 }
 
-static bool png_write_mem(uint8 *&stream, int &size, int quality, uint8 *data, Fl_PixelFormat &format, int w, int h)
+static bool png_write_mem(uint8 *&stream, int &size, int quality, const uint8 *data, const Fl_PixelFormat &data_format, int w, int h)
 {
     Fl_IO png_io;
     png_io.init_io(0, stream, size);
     png_quality = quality;
-    return png_write(png_io, data, format, w, h);
+    return png_write(png_io, data, data_format, w, h);
 }
 
 
@@ -503,7 +521,6 @@ Fl_Image_IO png_reader =
     /* VALIDATE FUNCTIONS: */
     png_is_valid_file, //bool (*is_valid_file)(const char *filename, FILE *fp);
     png_is_valid_mem, //bool (*is_valid_mem)(uint8 *stream, uint32 size);
-    NULL, //bool (*is_valid_xpm)(uint8 **stream);
 
     /* READ FUNCTIONS: */
     png_read_file, //bool (*read_file)(FILE *fp, int quality, uint8 *&data, Fl_PixelFormat &format, int &w, int &h);

@@ -33,7 +33,7 @@ typedef struct Fl_Signal_Func_Struct {
 
 // Fl_Signal structure.
 // Handles multiple callbacks.
-typedef struct Fl_Signal_Struct
+typedef struct FL_API Fl_Signal_Struct
 {
     Fl_Signal_Struct()  { first = 0; }
     ~Fl_Signal_Struct() { disconnect_all(); }

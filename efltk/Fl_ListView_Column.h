@@ -48,7 +48,7 @@ private:
 //////////////////////////////////////////
 //////////////////////////////////////////
 
-class Fl_ListColumn_List : public Fl_Ptr_List {
+class FL_API Fl_ListColumn_List : public Fl_Ptr_List {
 public:
     Fl_ListColumn_List() : Fl_Ptr_List() { }
     virtual ~Fl_ListColumn_List() { clear(); }

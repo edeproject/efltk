@@ -64,7 +64,8 @@ public:
 
 private:
   static float delay_;
-  static bool enabled_, effects_;
+  static bool enabled_;
+  static bool effects_;
   static int effect_type_;
   static void tooltip_timeout(void*);
 };

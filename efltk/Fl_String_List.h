@@ -27,7 +27,7 @@
 #include <stdio.h>
 
 /** Fl_String based string list */
-class Fl_String_List {
+class FL_API Fl_String_List {
 public:
     Fl_String_List();
     Fl_String_List(const Fl_String_List& sl);
@@ -92,7 +92,7 @@ private:
 };
 
 // Char pointer based string list
-class Fl_CString_List : public Fl_Ptr_List {
+class FL_API Fl_CString_List : public Fl_Ptr_List {
 public:
     Fl_CString_List() : Fl_Ptr_List() { }
 

@@ -45,7 +45,7 @@
 class Fl_MDI_Window;
 
 /** Fl_MDI_Titlebar */
-class Fl_MDI_Titlebar : public Fl_Group {
+class FL_API Fl_MDI_Titlebar : public Fl_Group {
     friend class Fl_MDI_Window;
 public:
     static Fl_Named_Style* default_style;
@@ -56,8 +56,10 @@ public:
     virtual int handle(int event);
     virtual void layout();
 
-    static int ex,ey;
-    static int old_rx,old_ry;
+    static int ex;
+	static int ey;
+    static int old_rx;
+	static int old_ry;
 
     Fl_Button *close_button() { return &_close; }
     Fl_Button *min_button() { return &_min; }

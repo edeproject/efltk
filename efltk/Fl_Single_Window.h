@@ -25,7 +25,7 @@
 #include "Fl_Window.h"
 
 /** Fl_Single_Window */
-class Fl_Single_Window : public Fl_Window {
+class FL_API Fl_Single_Window : public Fl_Window {
 public:
     Fl_Single_Window(int W, int H, const char *l=0) : Fl_Window(W,H,l) { }
     Fl_Single_Window(int X, int Y, int W, int H, const char *l=0) : Fl_Window(X,Y,W,H,l) { }

@@ -60,7 +60,7 @@ protected:
 };
 
 /** Fl_Map */
-class Fl_Map {
+class FL_API Fl_Map {
     friend class Fl_Map_Iterator;
 public:
     static unsigned hash_string( const char *key, int table_size );
@@ -92,7 +92,7 @@ protected:
 class Fl_String_String_Iterator;
 
 /** Fl_String_String_Map */
-class Fl_String_String_Map : public Fl_Map {
+class FL_API Fl_String_String_Map : public Fl_Map {
 public:
     struct Pair { Fl_String id; Fl_String val; };
     typedef Fl_String_String_Iterator Iterator;

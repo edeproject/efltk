@@ -33,7 +33,7 @@
  *
  * Fl_Table_Base is inspired by the Fl_Table from Greg Ercolano, but is mostly rewritten.
  */
-class Fl_Table_Base : public Fl_Group
+class FL_API Fl_Table_Base : public Fl_Group
 {
 public:
     // Bit mask for row/col flags. MAX 8 bytes!

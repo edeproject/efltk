@@ -25,7 +25,7 @@
 #include "Fl_Memory_DS.h"
 
 /** Fl_Directory_DS */
-class Fl_Directory_DS : public Fl_Memory_DS  {
+class FL_API Fl_Directory_DS : public Fl_Memory_DS  {
 public:
     // ctor, dtor 
     Fl_Directory_DS() : Fl_Memory_DS(), m_showpolicy(0) { }

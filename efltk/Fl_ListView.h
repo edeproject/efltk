@@ -9,7 +9,7 @@
 /**
  * Fl_ListView.. Docos to do..
  */
-class Fl_ListView : public Fl_Table_Base {
+class FL_API Fl_ListView : public Fl_Table_Base {
 public:
     // This must not overlap values in Fl_Table_Base::Flags
     // Now it's next available bit mask (after RESIZABLE)
