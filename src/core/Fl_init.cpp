@@ -63,7 +63,7 @@ void Fl::init()
     if(!file) file = Fl_Config::find_config_file("efltk.conf", false, Fl_Config::SYSTEM);
 
     Fl_Config cfg(file, true, false);
-    if(0) {//!cfg.error()) {
+    if(!cfg.error()) {
 
         bool b_val;
         float f_val;
