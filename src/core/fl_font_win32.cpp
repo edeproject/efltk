@@ -29,6 +29,8 @@
 #include <stdlib.h>
 #include <efltk/math.h>
 
+
+
 #if HAVE_XUTF8
 # include <efltk/fl_utf8.h>
 #endif
@@ -264,13 +266,15 @@ void fl_transformed_draw(const char *str, int n, float x, float y)
 {
 	SetTextColor(fl_gc, fl_colorref);
 	SelectObject(fl_gc, current_font);
+	
 #if HAVE_XUTF8	
 	int wn = 0;
 	int i = 0;
 	int lx = 0;
 	while (i < n) {
 		unsigned int u;
-		unsigned short ucs;
+		WCHAR ucs;
+		const WCHAR *skod;
 		int l = fl_utf2ucs((const unsigned char*)str + i, n - i, &u);
 		if (fl_nonspacing(u)) {
 			x -= lx;
@@ -280,7 +284,8 @@ void fl_transformed_draw(const char *str, int n, float x, float y)
 		ucs = u; 
 		if (l < 1) l = 1;
 		i += l;
-		TextOutW(fl_gc, int(floorf(x+.5f)), int(floorf(y+.5f)), (const WCHAR*)&ucs, 1);
+		skod = (const WCHAR*)&ucs;
+		TextOutW(fl_gc, int(floorf(x+.5f)), int(floorf(y+.5f)), skod, 1);
 		x += lx;
 	}
 #else
@@ -292,6 +297,7 @@ void fl_rtl_draw(const char *str, int n, float x, float y)
 {
 	int i = 0;
 	int lx = 0;
+	const WCHAR *skod;
 #if HAVE_XUTF8
 	resize_buffer(n);
 	int wn = fl_utf2unicode((const unsigned char *)str, n, wstr);
@@ -300,8 +306,9 @@ void fl_rtl_draw(const char *str, int n, float x, float y)
 	while (i < wn) {
 	    lx = int(fl_width(wstr[i]));
 		x -= lx;
+		skod = (const WCHAR*)wstr + i;
 		TextOutW(fl_gc, int(floorf(x+.5f)), int(floorf(y+.5f)),
-				(const WCHAR*)wstr + i, 1);
+				skod, 1);
 		if (fl_nonspacing(wstr[i])) {
 			x += lx;
 		}

@@ -21,9 +21,10 @@
 #include <stdio.h>
 #include <time.h>
 #include <ctype.h>
+#include <stdlib.h>
 
 #ifndef _WIN32
-# include <sys/time.h>
+//# include <sys/time.h>
 #else
 # include <windows.h>
 #endif

@@ -30,8 +30,14 @@
 #ifndef FL_WIN32_H
 #define FL_WIN32_H
 
+#ifdef _WIN32_WCE
+#include <wince.h>
+#else
 #include <windows.h>
 #include <winuser.h>
+#endif
+
+
 // In some of the distributions, the gcc header files are missing some stuff:
 #ifndef LPMINMAXINFO
 # define LPMINMAXINFO MINMAXINFO*

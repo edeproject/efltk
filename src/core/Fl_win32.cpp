@@ -45,8 +45,9 @@
 // USE_ASYNC_SELECT - define it if you have WSAAsyncSelect()...
 //
 
+#ifndef _WIN32_WCE 
 #define USE_ASYNC_SELECT
-
+#endif
 //
 // USE_TRACK_MOUSE - define it if you have TrackMouseEvent()...
 //

@@ -193,7 +193,11 @@ void background(uchar r, uchar g, uchar b)
  X 55 1.0
  */
 
+#ifdef _WIN32_WCE
+__cdecl main()
+#else
 int main()
+#endif
 {
     int i,r,g,b;
     #if 0
