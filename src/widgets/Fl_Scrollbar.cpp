@@ -29,7 +29,9 @@
 #include <efltk/Fl_Scrollbar.h>
 #include <efltk/fl_draw.h>
 #include <stdlib.h>
-
+#ifdef _WIN32_WCE
+#include <wince.h>
+#endif
 #define vertical() (!(type()&1))
 
 int Fl_Scrollbar::value(int p, int w, int t, int l)

@@ -1555,7 +1555,7 @@ void Fl_X::create(Fl_Window* window)
 			wc.hCursor = 0;
 			//uchar r,g,b; Fl::get_color(FL_GRAY,r,g,b);
 			//wc.hbrBackground = (HBRUSH)CreateSolidBrush(RGB(r,g,b));
-			wc.hbrBackground = (HBRUSH) GetStockObject(DEFAULT_PALETTE);
+			wc.hbrBackground = (HBRUSH) GetStockObject(WHITE_BRUSH);
 			wc.hbrBackground = NULL;
 			wc.lpszMenuName = NULL;
 			wc.lpszClassName = xclass;
@@ -1633,8 +1633,7 @@ void Fl_X::create(Fl_Window* window)
 			lab[l] = 0;			
 		}
 		x->xid = CreateWindowEx(
-			styleEx,
-			class_namew, lab, style,
+			styleEx,xclass, lab, style,
 			xp, yp, window->w()+dw, window->h()+dh,
 			parent,
 			NULL, // menu

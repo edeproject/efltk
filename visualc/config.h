@@ -135,10 +135,10 @@
 #define USE_POLL 0
 
 /* Do we have libpng ? (for reading .png images) */
-#define HAVE_PNG 1
+#define HAVE_PNG 0
 
 /* Do we have libjpeg ? (for reading .jpg images) */
-#define HAVE_JPEG 1
+#define HAVE_JPEG 0
 
 /* Enables Fl::lock() and Fl::unlock() on Unix */
 #define HAVE_PTHREAD 0

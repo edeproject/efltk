@@ -38,6 +38,9 @@
 
 #include "Fl_Color.h"
 
+#ifdef _WIN32_WCE
+#include <wince.h>
+#endif
 #ifdef _WIN32
 # include "win32.h"
 #elif defined(__APPLE__)

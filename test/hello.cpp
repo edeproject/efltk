@@ -36,7 +36,7 @@
 
 int main(int argc, char **argv)
 {
-    Fl_Window *window = new Fl_Window(300,180);
+    Fl_Window *window = new Fl_Window(20,20,300,180);
 
     //Set type to DIALOG
     window->window_type(Fl_WM::DIALOG);

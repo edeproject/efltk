@@ -26,7 +26,7 @@
 #include <math.h>
 #include <config.h>
 
-#if HAVE_PTHREAD || defined(WIN32)
+#if HAVE_PTHREAD || defined(_WIN32)
 #include <efltk/Fl.h>
 #include <efltk/Fl_Window.h>
 #include <efltk/Fl_Browser.h>

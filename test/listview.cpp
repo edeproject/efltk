@@ -6,6 +6,7 @@
 #include <efltk/Fl_ListView_Item.h>
 #include <efltk/Fl_Image.h>
 #include <efltk/Fl_Date_Time.h>
+#include <efltk/x.h>
 
 static char * ball_xpm[] = {
 "16 16 13 1",

@@ -8,14 +8,18 @@
 // Generated from the TEXTINCLUDE 2 resource.
 //
 #include "newres.h"
+
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 #ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
-#endif
+#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -24,7 +28,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_TEST2       ICON    DISCARDABLE     "test2.ICO"
+IDI_TEST2               ICON    DISCARDABLE     "test2.ICO"
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -39,7 +43,7 @@ END
 
 2 TEXTINCLUDE DISCARDABLE 
 BEGIN
-	"#include ""newres.h""\r\n"
+    "#include ""newres.h""\r\n"
     "\0"
 END
 
@@ -51,6 +55,7 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // Menu
@@ -60,11 +65,11 @@ IDM_MENU MENU DISCARDABLE
 BEGIN
     POPUP "&File"
     BEGIN
-        MENUITEM "E&xit",                        IDM_FILE_EXIT
+        MENUITEM "E&xit",                       IDM_FILE_EXIT
     END
     POPUP "&Help"
     BEGIN
-        MENUITEM "&About",                       IDM_HELP_ABOUT
+        MENUITEM "&About",                      IDM_HELP_ABOUT
     END
 END
 
@@ -73,16 +78,18 @@ END
 //
 // Dialog
 //
-IDD_ABOUTBOX DIALOGEX 0, 0, 125, 55
+
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 125, 55
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-EXSTYLE WS_EX_CAPTIONOKBTN
+EXSTYLE 0x80000000L
 CAPTION "About test2"
 FONT 8, "System"
 BEGIN
-	ICON            IDI_TEST2,IDC_STATIC,11,17,20,20
-	LTEXT           "test2 Version 1.0",IDC_STATIC,38,10,70,8, SS_NOPREFIX
-	LTEXT           "Copyright (C) 2002",IDC_STATIC,38,25,70,8
+    ICON            IDI_TEST2,IDC_STATIC,11,17,20,20
+    LTEXT           "test2 Version 1.0",IDC_STATIC,38,10,70,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2002",IDC_STATIC,38,25,70,8
 END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -122,12 +129,12 @@ END
 
 STRINGTABLE DISCARDABLE 
 BEGIN
-   IDC_TEST2   "TEST2"
-   IDS_APP_TITLE       "test2"
-   IDS_HELLO           "Hello World!"
+    IDS_APP_TITLE           "test2"
+    IDS_HELLO               "Hello World!"
+    IDC_TEST2               "TEST2"
 END
 
-#endif
+#endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -141,3 +148,4 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
+
