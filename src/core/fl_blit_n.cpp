@@ -29,7 +29,9 @@ static void Blit_RGB888_index8(BlitInfo *info)
     dstskip = info->d_skip;
     map = info->table;
 
-    //Fl_PixelFormat *srcfmt = info->src;
+#if !USE_COLORMAP
+    Fl_PixelFormat *srcfmt = info->src;
+#endif
 
     uint8 R,G,B;
 
