@@ -509,7 +509,6 @@ void Fl_MDI_Window::layout()
 
 #ifdef _WIN32
 
-
     unsigned int flags;
     if(layout_damage() & FL_LAYOUT_WH)
 #ifndef _WIN32_WCE
@@ -537,7 +536,7 @@ void Fl_MDI_Window::layout()
             pw=w(); ph=h();
 
             prv->resize(px,py,pw,ph);
-            prv->layout_damage(layout_damage());
+            //prv->layout_damage(layout_damage());
             prv->layout();
 
         } else {
@@ -555,7 +554,7 @@ void Fl_MDI_Window::layout()
 
             prv->resize(px,py,pw,ph);
             _titlebar.resize(tx,ty,tw,th);
-            prv->layout_damage(layout_damage());
+            //prv->layout_damage(layout_damage());
             prv->layout();
             _titlebar.layout();
 
