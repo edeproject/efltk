@@ -144,6 +144,8 @@ Fl_FontSize::Fl_FontSize(const char* name, int size, int charset)
   this->font = font;
   this->size = size;
   this->charset = charset;
+
+  append_font(this);
 }
 
 Fl_FontSize::~Fl_FontSize() {
