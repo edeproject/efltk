@@ -442,7 +442,7 @@ if test "$have_pthread" = yes; then
 fi
 AC_SUBST(THREADSLIBS)
 
-dnl # Let's look for unixODBC...
+dnl# Let's look for unixODBC...
 AC_ARG_ENABLE(unixODBC, [  --disable-unixODBC      don't add unixODBC support],,enable_unixODBC=yes)
 have_unixODBC=no
 if test "$enable_unixODBC" = yes; then
@@ -451,16 +451,40 @@ if test "$enable_unixODBC" = yes; then
   )
 fi
 
-dnl # Let's look for MySQL...
+dnl# Let's look for MySQL...
 AC_ARG_ENABLE(mysql, [  --disable-mysql         don't add MySQL support],,enable_mysql=yes)
 if test "$enable_mysql" = yes; then
 	MYSQLCONFIG=mysql_config
 	AC_PATH_PROG(MYSQLCONFIG_PATH, ${MYSQLCONFIG},, $PATH)
-        MYSQLLIBS=`$MYSQLCONFIG_PATH --libs`
-	MYSQLFLAGS=`$MYSQLCONFIG_PATH --cflags`
-	AC_SUBST(MYSQLCONFIG_PATH)
-	AC_SUBST(MYSQLLIBS)
-	AC_SUBST(MYSQLFLAGS)
+        if test -n "$MYSQLCONFIG_PATH"; then
+	        MYSQLLIBS=`$MYSQLCONFIG_PATH --libs`
+		MYSQLFLAGS=`$MYSQLCONFIG_PATH --cflags`
+        else
+		DIRS="/usr/include /usr/local/include /usr/include/mysql /usr/local/include/mysql"
+		for dir in $DIRS; do
+                        if test -e "$dir/mysql.h"; then
+                        	mysql_include=$dir
+                        fi
+		done
+
+		OLIBS="$LIBS"
+                OCFLAGS="$CFLAGS"
+		LIBS="$LIBS -lmysqlclient -lz"
+                CFLAGS="$CFLAGS -I$mysql_include"
+		AC_TRY_LINK(
+                      [#include <mysql.h>],
+  	              [int f() { mysql_init(0); }],
+                      echo "Enabling MYSQL"
+		      MYSQLLIBS="-lmysqlclient -lz"
+		      MYSQLFLAGS="-I$mysql_include"
+                      ,		      
+                      dnl ERROR
+                )
+	        LIBS="$OLIBS"
+                CFLAGS="$OCFLAGS"
+        fi
+       	AC_SUBST(MYSQLLIBS)
+       	AC_SUBST(MYSQLFLAGS)
 fi
 
 STRIP=strip
