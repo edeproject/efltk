@@ -604,8 +604,9 @@ void Fl_Widget::draw()
 }
 
 void Fl_Widget::preferred_size(int& w, int& h) const {
-    h = this->h();
-    w = this->w();
+    // Maybe this should not do anything.. So layout_align takes effect by default.
+    //h = this->h();
+    //w = this->w();
 }
 
 //
