@@ -1,18 +1,32 @@
 /*
-*
-* $Author$
-* $Revision$
-* $Log$
-* Revision 1.1  2003/04/19 21:43:07  parshin
-* New module - should compute layout sizes and resize widget correctly in both - Fl_Split and Fl_Group.
-*
-*/
+ * $Id$
+ *
+ * Extended Fast Light Toolkit (EFLTK)
+ * Copyright (C) 2002-2003 by EDE-Team
+ * WWW: http://www.sourceforge.net/projects/ede
+ *
+ * Fast Light Toolkit (FLTK)
+ * Copyright (C) 1998-2003 by Bill Spitzak and others.
+ * WWW: http://www.fltk.org
+ *
+ * This library is distributed under the GNU LIBRARY GENERAL PUBLIC LICENSE
+ * version 2. See COPYING for details.
+ *
+ * Author : Alexey Parshin
+ * Email  : alexey@fltk.net
+ *
+ * Please report all bugs and problems to "efltk-bugs@fltk.net"
+ *
+ */
 
 #ifndef __LAYOUT_SIZE_H__
 #define __LAYOUT_SIZE_H__
 
-void widget_layout_width(const Fl_Widget *w);
-void widget_layout_height(const Fl_Widget *w);
+#include <efltk/Fl_Widget.h>
+
+int widget_layout_width(const Fl_Widget *w);
+int widget_layout_height(const Fl_Widget *w);
 void widget_layout_resize(Fl_Widget *w,int x,int y,int w,int h);
+void widget_layout_position(Fl_Widget *w,int x,int y,int& wx,int& wy);
 
 #endif
