@@ -11,7 +11,7 @@
 Fl_Ptr_List::Fl_Ptr_List()
 {
     auto_delete_ = false;
-    blocksize_ = 32;
+    blocksize_ = 0;
     items = 0;
     capacity_ = 0;
     resize(0);
@@ -32,24 +32,22 @@ void Fl_Ptr_List::clear()
     size_=0;
     capacity_=0;
 }
-
+#include <efltk/Fl.h>
 void Fl_Ptr_List::resize(uint newsize)
-{
-	if(blocksize_<=0) blocksize_=1; //For some reason this is 0 after create in WIN32??!?
-    if(newsize>capacity_) {
-        // Grow list capacity
-        capacity_= (newsize/blocksize_+1)*blocksize_;
+{	
+	unsigned newcap;
+	if(blocksize_<=0) newcap = (newsize * 9 / 64 + 1) * 8;
+	else newcap = (newsize/blocksize_+1)*blocksize_;
+
+	if(newcap!=capacity_) {		
+
+		// Delete items, if needed. (see Fl_String_List)
+        if(newsize<size_ && auto_delete_) for (uint i = newsize+1; i < size_; i++) free(items[i]);
+
+		capacity_ = newcap;
+        // Realloc list capacity
         if(items) items = (Fl_Ptr_List_Item *)realloc(items, capacity_ * sizeof(Fl_Ptr_List_Item));
         else items = (Fl_Ptr_List_Item *)malloc(capacity_ * sizeof(Fl_Ptr_List_Item));
-    }
-    else if(newsize>0 && newsize<size_ && newsize<capacity_-blocksize_) {
-
-        // Delete items, if needed. (see Fl_String_List)
-        if(auto_delete_) for (uint i = newsize+1; i < size_; i++) free(items[i]);
-
-        // Shrink list capacity
-        capacity_= (newsize/blocksize_+1)*blocksize_;
-        if(items) items = (Fl_Ptr_List_Item *)realloc(items, capacity_ * sizeof(Fl_Ptr_List_Item));
     }
 
     size_ = newsize;

@@ -15,7 +15,7 @@ public:
     void auto_delete(bool val) { auto_delete_ = val; }
     bool auto_delete() { return auto_delete_; }
 
-    //Default is 32
+    //Default is 0, means auto-calculated
     void blocksize(int s) { blocksize_ = s; }
     int blocksize() { return blocksize_; }
 

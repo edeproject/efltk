@@ -57,9 +57,6 @@ resizable_(0),                   // fltk 1.0 used (this)
 sizes_(0),
 data_source_(0L)
 {
-    // Block size to 8, so don't allocate so much unnecessary space.
-    array_.blocksize(8);
-
     type(GROUP_TYPE);
     style(::group_style);
     align(FL_ALIGN_TOP);
