@@ -189,16 +189,16 @@ Fl_Popup_ListView::Fl_Popup_ListView(Fl_Widget *editControl)
     m_listView->callback(Fl_Popup_ListView::cb_clicked);
     m_listView->layout_align(FL_ALIGN_CLIENT);
     m_listView->layout_spacing(0);
-	box(FL_THIN_UP_BOX);
+    box(FL_THIN_UP_BOX);
     end();
 }
 
 void Fl_Popup_ListView::draw() {
-	draw_frame();
-	if((damage() & ~FL_DAMAGE_CHILD))
-		draw_child(*m_listView);
-	else
-		update_child(*m_listView);
+    draw_frame();
+    if((damage() & ~FL_DAMAGE_CHILD))
+        draw_child(*m_listView);
+    else
+        update_child(*m_listView);
     //Fl_Popup_Window::draw();
 }
 
@@ -216,7 +216,7 @@ bool Fl_Popup_ListView::popup() {
         resize(X, Y+m_editControl->h(), width+box()->dw(), height+box()->dh());
     }
     bool rc = Fl_Popup_Window::show_popup();
-	if(!rc) m_listView->item(0);
+    if(!rc) m_listView->item(0);
     if (m_editControl)
         m_editControl->redraw();
     return rc;
@@ -236,10 +236,10 @@ bool Fl_Popup_ListView::popup(Fl_Widget *editControl, int X, int Y, int W, int H
         resize(X, Y, width, height);
         layout(); // Make sure window moves
     }
-    bool rc = Fl_Popup_Window::show_popup();	
-	if(!rc) m_listView->item(0);	
+    bool rc = Fl_Popup_Window::show_popup();    
+    if(!rc) m_listView->item(0);    
     if (editControl)
-        editControl->redraw();	
+        editControl->redraw();  
     return rc;
 }
 
@@ -268,9 +268,9 @@ Fl_Combo_Box_Panel::Fl_Combo_Box_Panel(Fl_Combo_Box *cb)
 
 void Fl_Combo_Box_Panel::draw()
 {
-	fl_push_clip(0,0,w(),h());
-	m_comboBox->draw_group_box();
-	fl_pop_clip();
+    fl_push_clip(0,0,w(),h());
+    m_comboBox->draw_group_box();
+    fl_pop_clip();
 
     int dd = 2;
 
@@ -279,9 +279,9 @@ void Fl_Combo_Box_Panel::draw()
     Fl_ListView_Item *item = lv->item();
     if (!item) return;
 
-	Fl_ListView_ItemExt *item_ext = 0;
-	if(item->type()==Fl_ListView_Item::EXT)
-		item_ext = (Fl_ListView_ItemExt *)item;
+    Fl_ListView_ItemExt *item_ext = 0;
+    if(item->type()==Fl_ListView_Item::EXT)
+        item_ext = (Fl_ListView_ItemExt *)item;
 
     if (!item_ext) {
         fl_font(lv->text_font(), lv->text_size());
@@ -291,6 +291,8 @@ void Fl_Combo_Box_Panel::draw()
     box()->inset(X,Y,W,H);
 
     for (unsigned c = 0; c < item->columns(); c++) {
+        if (!lv->visible_col(c))
+            continue;
         int ww = lv->column_width(c);
         fl_push_clip(X+dd, Y, ww-dd, H);
         if (item_ext) {
@@ -423,13 +425,13 @@ void Fl_Combo_Box::cb_browse(Fl_Widget *w, void *) {
     Fl_Popup_ListView *popup = cb->m_popup;
     int saveValue = cb->value();
     if (popup->popup(w->parent(),0,w->parent()->h())) {
-        // Call the callback function if the value has changed		
+        // Call the callback function if the value has changed      
         if (cb->value() != saveValue) 
             cb->do_callback(FL_DATA_CHANGE);
-    } else {		
+    } else {        
         // Restore original value
-        cb->value(saveValue);		
-    }	
+        cb->value(saveValue);       
+    }   
 }
 
 void Fl_Combo_Box::cb_button(Fl_Widget *w, void *) {
