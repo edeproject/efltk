@@ -1,5 +1,5 @@
 /* -*- mode: C++ -*-
- * "$Id: config.h,v 1.5 2003/02/18 03:32:06 parshin Exp $"
+ * "$Id: config.h,v 1.6 2003/04/21 20:48:44 parshin Exp $"
  *
  * This file is used to compile fltk. It should not be necessary for
  * programs that use fltk to refer to this file, and this file is not
@@ -192,9 +192,8 @@
 /* Enables NLS localization support */
 #define ENABLE_NLS 0
 
-/* Enables UTF8 */
+/* Enables UTF8 (must be 1 under MS windows)*/
 #define HAVE_XUTF8 1
-#undef UNICODE
 
 /* Defined if, math.h float function emulation NOT needed */
 #define HAVE_FLOAT_FUNCTIONS 0
@@ -219,7 +218,15 @@
 
 // For Windows 95/98/ME:
 #define _WIN32_WINNT 0x0400
+#undef UNICODE
+
+// For NT4, W2K, XP
+// Defining these will make binary faster under nt platforms,
+// But makes binary incompatible with windows 9x systems.
+
+// #define _WIN32_WINNT 0x0500
+// #define UNICODE 1
 
 /*
- * End of "$Id: config.h,v 1.5 2003/02/18 03:32:06 parshin Exp $".
+ * End of "$Id: config.h,v 1.6 2003/04/21 20:48:44 parshin Exp $".
  */

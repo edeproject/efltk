@@ -194,15 +194,16 @@
 /* THIS IS MUST DEFINED IN WIN32 */
 #define HAVE_XUTF8 1
 
-// FOR W2K, XP and similar
-// If you want binary to work also under Windows 9x,
-// Do NOT define "UNICODE 1"
-//#define UNICODE 1
+// For Windows 95/98/ME:
+#define _WIN32_WINNT 0x0400
+#undef UNICODE
 
-// FOR W2K, XP and similar
-// If you want binary to work also under Windows 9x,
-// Do NOT define "_WIN32_WINNT 0x0500"
-//#define _WIN32_WINNT 0x0500
+// For NT4, W2K, XP
+// Defining these will make binary faster under nt platforms,
+// But makes binary incompatible with windows 9x systems.
+
+// #define _WIN32_WINNT 0x0500
+// #define UNICODE 1
 
 /*
  * End of "$Id$".
