@@ -44,6 +44,8 @@ protected:
    virtual void open_connection();
    virtual void close_connection();
 
+   Fl_String query_error(Fl_Query *) const;
+
 public:
    // ctor, dtor
    Fl_ODBC_Database(const Fl_String connString);

@@ -24,6 +24,7 @@
 class Fl_Database;
 
 class Fl_Query : public Fl_Data_Source {
+   friend class Fl_Database;
 private:
    bool              m_prepared;
    bool              m_active;

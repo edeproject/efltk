@@ -21,6 +21,7 @@
 #include <efltk/Fl_String.h>
 #include <efltk/Fl_Ptr_List.h>
 #include <efltk/Fl_Exception.h>
+#include <efltk/db/Fl_Query.h>
 
 enum Fl_Database_Capabilities {
    FL_DB_UNKNOWN = 0, 
@@ -28,8 +29,6 @@ enum Fl_Database_Capabilities {
    FL_DB_STMT_PREPARE = 2,
    FL_DB_STMT_BINDING = 4
 };
-
-class Fl_Query;
 
 class Fl_Database {
    friend class   Fl_Query;
@@ -55,6 +54,11 @@ protected:
    // These methods should be implemented in actual database class
    virtual void open_connection() = 0;
    virtual void close_connection()                 { fl_throw("Method not implemented"); }
+
+protected:
+   // These methods provide access to protected data of Fl_Query
+   void *query_handle(const Fl_Query *q) const     { return q->m_stmt; }
+   void  query_handle(Fl_Query *q,void *handle)    { q->m_stmt = handle; } 
 
 public:
    Fl_Database(const Fl_String connString)         { m_inTransaction = m_active = false; }
