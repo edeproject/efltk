@@ -29,22 +29,24 @@
 #include <config.h>
 #include "../core/fl_internal.h"
 
+#include <efltk/vsnprintf.h>
 #include <efltk/Fl_FileBrowser.h>
 #include <efltk/Fl_Pixmap.h>
 #include <efltk/fl_ask.h>
 #include <efltk/fl_draw.h>
 #include <efltk/filename.h>
-#include <efltk/vsnprintf.h>
 #include <efltk/fl_utf8.h>
 
 #include <stdlib.h>
 #include <string.h>
 
-#if defined(_WIN32)
+#ifdef _WIN32
 # include <windows.h>
 # include <io.h>
 # include <direct.h>
-#endif /* _WIN32 */
+#else /* _WIN32 */
+# include <unistd.h>
+#endif
 
 #ifdef _WIN32
 static const char * datas_cd[] = {
@@ -254,6 +256,7 @@ static uint get_dev_size(uint64 size, Fl_String &suffix)
 
 #endif
 
+#ifdef _WIN32
 static const char *types[] = {
     N_("Unknown"),
 	
@@ -267,6 +270,7 @@ static const char *types[] = {
     N_("Network Disk"),
     N_("RAM Disk")
 };
+#endif
 
 // 'Fl_FileBrowser::up()' - Up one directory, and load it
 void Fl_File_Browser::up()
