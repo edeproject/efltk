@@ -1224,7 +1224,7 @@ bool Fl_Input::handle_key()
             //if (key_is_shortcut()) return true;
 
             // Add new line, if MULTILINE input and Shift is hold down
-            if(input_type()==MULTILINE && shift) return replace(position(), mark(), '\n');
+            if(!readonly() && input_type()==MULTILINE && shift) return replace(position(), mark(), '\n');
 
             if (when() & FL_WHEN_ENTER_KEY)
             {
