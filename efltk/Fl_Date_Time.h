@@ -22,6 +22,8 @@
 
 class FL_API Fl_Date_Time {
 public:
+	static char   dateInputFormat[32];
+	static char   timeInputFormat[32];
 	static char   dateFormat[32];
 	static char   timeFormat[32];
 	static char   datePartsOrder[4];

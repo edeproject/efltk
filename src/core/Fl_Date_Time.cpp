@@ -50,6 +50,8 @@ static const short _monthDaySums[2][12] = {
 
 #define DateDelta 693594
 
+char Fl_Date_Time::dateInputFormat[32];
+char Fl_Date_Time::timeInputFormat[32];
 char Fl_Date_Time::dateFormat[32];
 char Fl_Date_Time::datePartsOrder[4];
 char Fl_Date_Time::timeFormat[32];
@@ -138,6 +140,32 @@ public:
    Fl_Date_Time_Format();
 };
 
+static void buildDateInputFormat() {
+   Fl_Date_Time::dateInputFormat[0] = 0;
+   char separator[] = { Fl_Date_Time::dateSeparator, 0 };
+   for (int i = 0; i < 3; i++) 
+   switch (Fl_Date_Time::datePartsOrder[i]) {
+   case 'D':   strcat(Fl_Date_Time::dateInputFormat,"39\\");
+               strcat(Fl_Date_Time::dateInputFormat,separator);
+               break;
+   case 'M':   strcat(Fl_Date_Time::dateInputFormat,"19\\");
+               strcat(Fl_Date_Time::dateInputFormat,separator);
+               break;
+   case 'Y':   strcat(Fl_Date_Time::dateInputFormat,"2999\\");
+               strcat(Fl_Date_Time::dateInputFormat,separator);
+               break;
+   }
+   int len = strlen(Fl_Date_Time::dateInputFormat);
+   if (len) 
+      Fl_Date_Time::dateInputFormat[len-2] = 0;
+}
+
+static void buildTimeInputFormat() {
+   if (Fl_Date_Time::time24Mode)
+         strcpy(Fl_Date_Time::timeInputFormat,"29\\:59");
+   else  strcpy(Fl_Date_Time::timeInputFormat,"19\\:59T\\M");
+}
+
 Fl_Date_Time_Format::Fl_Date_Time_Format() {
    char  dateBuffer[32];
    char  timeBuffer[32];
@@ -158,11 +186,13 @@ Fl_Date_Time_Format::Fl_Date_Time_Format() {
 
    // Build local date and time formats
    Fl_Date_Time::datePartsOrder[0] = 0;
+   Fl_Date_Time::time24Mode = false; // to be determined below
    Fl_Date_Time::dateSeparator = parseDateOrTime(Fl_Date_Time::dateFormat,dateBuffer);
    Fl_Date_Time::timeSeparator = parseDateOrTime(Fl_Date_Time::timeFormat,timeBuffer);
-   Fl_Date_Time::time24Mode = false; // Sorry - I don't know how to get the correct value for 12 or 24 hours mode
    if (!Fl_Date_Time::time24Mode)
       strcat(Fl_Date_Time::timeFormat,"AM");
+   buildDateInputFormat();
+   buildTimeInputFormat();
 }
 
 // This is the only instance to Fl_Date_Time_Format. 
@@ -410,7 +440,6 @@ Fl_Date_Time::Fl_Date_Time (const char * dat) {
       }
    }
    else  encode_time(m_dateTime, s1.c_str());
-
 }
 
 Fl_Date_Time::Fl_Date_Time (const Fl_Date_Time &dt) {
