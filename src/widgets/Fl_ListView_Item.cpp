@@ -1,13 +1,5 @@
 #include <efltk/Fl_ListView_Item.h>
 
-Fl_ListView_Item::Fl_ListView_Item()
-    : Fl_Widget(0,0,0,0,0)
-{
-    list = (Fl_ListView *)parent();
-
-    for(int a=0; a<MAX_COLUMNS; a++) labels[a] = 0;
-}
-
 Fl_ListView_Item::Fl_ListView_Item(const char *label1,
                                    const char *label2,
                                    const char *label3,
