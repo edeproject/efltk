@@ -125,18 +125,22 @@ public:
   template<typename T> void connect(Fl_Callback_Object *o, void (T::*func)(Fl_Widget *, void *), void *p=0)  { signal()->connect(o, func, p); user_data_=p; }
   template<typename T> void connect(Fl_Callback_Object *o, void (T::*func)(Fl_Widget *, long), long p=0) { signal()->connect(o, func, (void*)p); user_data_=(void*)p; }
   template<typename T> void connect(Fl_Callback_Object *o, void (T::*func)(), void *p) { signal()->connect(o, func, p); user_data_=p; }
+  template<typename T> void connect(Fl_Callback_Object *o, void (T::*func)()) { signal()->connect(o, func); }
 
   template<typename T> void connect(void (T::*func)(Fl_Widget *, void *), void *p=0)  { signal()->connect(this, func, p); user_data_=p; }
   template<typename T> void connect(void (T::*func)(Fl_Widget *, long), long p=0) { signal()->connect(this, func, (void*)p); user_data_=(void*)p; }
   template<typename T> void connect(void (T::*func)(), void *p) { signal()->connect(this, func, p); user_data_=p; }
+  template<typename T> void connect(void (T::*func)()) { signal()->connect(this, func); }
 
   template<typename T> void disconnect(Fl_Callback_Object *o, void (T::*func)(Fl_Widget *, void *), void *p=0) { signal()->disconnect(o, (void**)&func, p); }
   template<typename T> void disconnect(Fl_Callback_Object *o, void (T::*func)(Fl_Widget *, long), long p=0) { signal()->disconnect(o, (void**)&func, (void*)p); }
   template<typename T> void disconnect(Fl_Callback_Object *o, void (T::*func)(), void *p=0) { signal()->disconnect(o, (void**)&func, p); }
+  template<typename T> void disconnect(Fl_Callback_Object *o, void (T::*func)()) { signal()->disconnect(o, (void**)&func, 0); }
 
   template<typename T> void disconnect(void (T::*func)(Fl_Widget *, void *), void *p=0) { signal()->disconnect(this, func, p); }
   template<typename T> void disconnect(void (T::*func)(Fl_Widget *, long), long p=0) { signal()->disconnect(this, func, (void*)p); }
   template<typename T> void disconnect(void (T::*func)(), void *p=0) { signal()->disconnect(this, func, p); }
+  template<typename T> void disconnect(void (T::*func)()) { signal()->disconnect(this, func, 0); }
 
   static void default_callback(Fl_Widget*, void*);
   void	do_callback()		{ do_callback(this, user_data_);}
