@@ -18,6 +18,9 @@
 #include <efltk/db/Fl_Database.h>
 #include <efltk/db/Fl_Query.h>
 #include <ctype.h>
+#ifdef _WIN32_WCE
+#include <stdlibx.h>
+#endif
 
 Fl_Query::Fl_Query(Fl_Database *db,Fl_String _sql)
 : Fl_Data_Source(0L) {
@@ -178,7 +181,7 @@ void Fl_Query::sql(Fl_String _sql) {
 
    free(s);
 
-   for (int i = m_params.count() - 1; i >= 0; i--)
+   for (i = m_params.count() - 1; i >= 0; i--)
    if (!m_params[i].bindCount())
       m_params.remove(i);
 
