@@ -259,6 +259,9 @@ public:
     virtual bool load_data(Fl_Data_Source *ds) { return true; }
     virtual bool save_data(Fl_Data_Source *ds) const { return true; }
 
+    // Dialog support
+    virtual void reset() {}
+
 protected:
     /**
      * This is the protected constructor for an Fl_Widget, but all derived
