@@ -73,7 +73,6 @@ int Fl_Valuator::value(double v)
 double Fl_Valuator::previous_value_;
 
 // inline void Fl_Valuator::handle_push() {previous_value_ = value_;}
-
 void Fl_Valuator::handle_drag(double v)
 {
     // round to nearest multiple of step:
@@ -153,7 +152,6 @@ int Fl_Valuator::format(char* buffer)
     return sprintf(buffer, "%.*f", i, v);
 }
 
-
 int Fl_Valuator::handle(int event)
 {
     switch(event)
@@ -194,7 +192,8 @@ int Fl_Valuator::handle(int event)
             return 0;
         }
         case FL_MOUSEWHEEL:
-        {
+            {
+            previous_value_ = value_;
             // For normal valuators, each click is linesize(), wheel_scroll_lines
             // is ignored. However Fl_Scrollbar does use wheel_scroll_lines.
             handle_drag(value()+(Fl::event_dy()*-1)*linesize());

@@ -80,6 +80,7 @@ void Fl_Value_Input::draw()
         draw_glyph(FL_GLYPH_UP_BUTTON, X+W, Y, bw, bw, f[0]);
         draw_glyph(FL_GLYPH_DOWN_BUTTON, X+W, Y+bw, bw, H-bw, f[1]);
     }
+
     input.label(label());
     input.align(align());
     input.copy_style(style());
@@ -87,10 +88,11 @@ void Fl_Value_Input::draw()
     input.set_damage(0);
 }
 
-
 void Fl_Value_Input::increment_cb()
 {
-    double i = linesize();
+#undef max
+#define max(a,b) ((a) > (b) ? (a) : (b))
+    double i = max(linesize(), step());
     if (Fl::event_state()&(FL_SHIFT|FL_CTRL|FL_ALT)) i *= 10;
     if (which_pushed == 2) i = -i;
     handle_drag(value()+i);
@@ -109,7 +111,6 @@ void Fl_Value_Input::repeat_callback(void* v)
         b->increment_cb();
     }
 }
-
 
 int Fl_Value_Input::handle(int event)
 {
@@ -191,7 +192,8 @@ int Fl_Value_Input::handle(int event)
     input.type(step()>=1.0 ? Fl_Float_Input::INT : Fl_Float_Input::FLOAT);
     input.when(when());
     int r = input.send(event);
-    if (!r) r = Fl_Valuator::handle(event);
+    if (!r)
+        r = Fl_Valuator::handle(event);
     return r;
 }
 
@@ -203,8 +205,6 @@ void Fl_Value_Input::layout()
     // coordinates:
     input.resize(0, 0, w(), h());
     input.layout();
-    // I'm not sure why this is here, may be a mistake:
-    value_damage();
 }
 
 
@@ -221,8 +221,12 @@ void Fl_Value_Input::value_damage()
     char buf[128];
     format(buf);
     input.value(buf);
-                                 // highlight it all
+
+    // highlight it all
     input.position(0, input.size());
+
+    // I'm not sure why this is here, may be a mistake:
+    value_damage();
 }
 
 
