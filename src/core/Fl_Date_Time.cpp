@@ -18,6 +18,9 @@
 #include <efltk/Fl_Date_Time.h>
 #include <efltk/Fl_Util.h>
 
+// For NLS stuff
+#include "../core/fl_internal.h"
+
 #include <stdio.h>
 #include <time.h>
 #include <ctype.h>
@@ -414,6 +417,11 @@ void Fl_Date_Time::decode_date(const double dat, short& year, short& month, shor
 //----------------------------------------------------------------
 Fl_Date_Time::Fl_Date_Time (short year,short month,short day,short hour,short minute,short second) {
    double t;
+   
+   // NLS stuff
+   for (int i=0; i<7;i++) dayname[i]=_(dayname[i]);
+   for (int i=0; i<12;i++) mname[i]=_(mname[i]);   
+  
    encode_date(m_dateTime,year,month,day);
    encode_time(t,hour,minute,second);
    m_dateTime += t;

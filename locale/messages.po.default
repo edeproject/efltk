@@ -18,23 +18,9 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: fl_ask.cpp:174
-msgid "No"
-msgstr ""
-
-#: fl_ask.cpp:175
-msgid "Yes"
-msgstr ""
-
-#: fl_ask.cpp:176 Fl_File_Dialog.cpp:540
+#: Fl_File_Dialog.cpp:540
 msgid "OK"
 msgstr ""
-
-#: fl_ask.cpp:177
-msgid "Cancel"
-msgstr ""
-
-
 
 #: Fl_File_Dialog.cpp:46 Fl_File_Dialog.cpp:64 Fl_File_Dialog.cpp:158
 msgid "bytes"
@@ -172,8 +158,6 @@ msgstr ""
 msgid "File Size:"
 msgstr ""
 
-
-
 #: Fl_Help_Dialog.cpp:155
 msgid "&File"
 msgstr ""
@@ -202,7 +186,6 @@ msgstr ""
 msgid "Open Help File"
 msgstr ""
 
-
 #: Fl_Simple_Html.cpp:2321 Fl_Simple_Html.cpp:2350
 #, c-format
 msgid ""
@@ -221,3 +204,144 @@ msgstr ""
 #: Fl_Simple_Html.cpp:2328
 msgid "no handler exists for this URI scheme"
 msgstr ""
+
+#: Fl_Input.cpp:995
+msgid "Cut"
+msgstr ""
+
+#: Fl_Input.cpp:996
+msgid "Copy"
+msgstr ""
+
+#: Fl_Input.cpp:997
+msgid "Paste"
+msgstr ""
+
+#: fl_ask.cpp:166
+msgid "Information"
+msgstr ""
+
+#: fl_ask.cpp:170
+msgid "Warning"
+msgstr ""
+
+#: fl_ask.cpp:174
+msgid "Question"
+msgstr ""
+
+#: fl_ask.cpp:254 fl_ask.cpp:263 fl_ask.cpp:292
+msgid "&OK"
+msgstr ""
+
+#: fl_ask.cpp:272
+msgid "&No"
+msgstr ""
+
+#: fl_ask.cpp:272
+msgid "&Yes"
+msgstr ""
+
+#: Fl_Date_Time.cpp:36
+msgid "Sunday"
+msgstr ""
+
+#: Fl_Date_Time.cpp:36
+msgid "Monday"
+msgstr ""
+
+#: Fl_Date_Time.cpp:36
+msgid "Tuesday"
+msgstr ""
+
+#: Fl_Date_Time.cpp:36
+msgid "Wednesday"
+msgstr ""
+
+#: Fl_Date_Time.cpp:37
+msgid "Thursday"
+msgstr ""
+
+#: Fl_Date_Time.cpp:37
+msgid "Friday"
+msgstr ""
+
+#: Fl_Date_Time.cpp:37
+msgid "Saturday"
+msgstr ""
+
+#: Fl_Date_Time.cpp:41
+msgid "January"
+msgstr ""
+
+#: Fl_Date_Time.cpp:41
+msgid "February"
+msgstr ""
+
+#: Fl_Date_Time.cpp:41
+msgid "March"
+msgstr ""
+
+#: Fl_Date_Time.cpp:41
+msgid "April"
+msgstr ""
+
+#: Fl_Date_Time.cpp:41
+msgid "May"
+msgstr ""
+
+#: Fl_Date_Time.cpp:41
+msgid "June"
+msgstr ""
+
+#: Fl_Date_Time.cpp:42
+msgid "July"
+msgstr ""
+
+#: Fl_Date_Time.cpp:42
+msgid "August"
+msgstr ""
+
+#: Fl_Date_Time.cpp:42
+msgid "September"
+msgstr ""
+
+#: Fl_Date_Time.cpp:42
+msgid "October"
+msgstr ""
+
+#: Fl_Date_Time.cpp:42
+msgid "November"
+msgstr ""
+
+#: Fl_Date_Time.cpp:42
+msgid "December"
+msgstr ""
+
+#: Fl_Calendar.cpp:25
+msgid "Su"
+msgstr ""
+
+#: Fl_Calendar.cpp:25
+msgid "Mo"
+msgstr ""
+
+#: Fl_Calendar.cpp:25
+msgid "Tu"
+msgstr ""
+
+#: Fl_Calendar.cpp:25
+msgid "We"
+msgstr ""
+
+#: Fl_Calendar.cpp:25
+msgid "Th"
+msgstr ""
+
+#: Fl_Calendar.cpp:25
+msgid "Fr"
+msgstr ""
+
+#: Fl_Calendar.cpp:25
+msgid "Sa"
+msgstr ""
+
