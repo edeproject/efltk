@@ -36,8 +36,6 @@ VPATH		=@srcdir@
 
 SYSTYPE		=@SYSTYPE@
 
-COMPILE_XUTF	=@COMPILE_XUTF@
-
 # compiler names:
 CXX		=@CXX@
 CC		=@CC@
@@ -49,9 +47,9 @@ STRIP           =@STRIP_PATH@
 # flags for C++ compiler:
 # WAS: I removed the -I@srcdir@, please use "xyz" rather than <xyz>
 # for files that are in the same directory as the source file.
-CFLAGS		= -DHAVE_CONFIG_H @DEBUGFLAG@ -I.. @CFLAGS@
-CXXFLAGS	= -DHAVE_CONFIG_H @DEBUGFLAG@ -I.. @CXXFLAGS@
-DSOCFLAGS	=@DSOCFLAGS@
+CFLAGS		= -DHAVE_CONFIG_H -I.. @CFLAGS@ @DEBUGFLAG@
+CXXFLAGS	= -DHAVE_CONFIG_H -I.. @CXXFLAGS@ @DEBUGFLAG@
+DSOCFLAGS	= @DSOCFLAGS@
 
 # program to make the archive:
 LIBEXT		=@LIBEXT@

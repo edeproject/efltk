@@ -84,7 +84,7 @@ AC_ARG_ENABLE(cmap, [  --enable-cmap           enable support for 8bit displays]
 fi])
 
 AC_ARG_ENABLE(debug, [  --enable-debug          compile with debug rather than optimized],[if eval "test x$enable_debug = xyes"; then
-	DEBUGFLAG="-g3 -D_DEBUG"
+	DEBUGFLAG="-Wall -g3 -D_DEBUG"
 fi])
 
 case $uname in
@@ -136,8 +136,8 @@ FLGLUTLIB="../lib/libefltk_glut${DSOEXT}"
 FLFORMSLIB="../lib/libefltk_forms${DSOEXT}"
 FLIMAGESLIB="../lib/libefltk_images${DSOEXT}"
 FLXMLLIB="../lib/libefltk_xml${DSOEXT}"
-CFLAGS="-DFL_SHARED $CFLAGS"
-CXXFLAGS="-DFL_SHARED $CXXFLAGS"
+CFLAGS="$CFLAGS -DFL_SHARED"
+CXXFLAGS="$CXXFLAGS -DFL_SHARED"
 case $uname in
 	WIN32)
 	    FLLIB="../lib/libefltk.2.dll.a"
@@ -362,7 +362,8 @@ fi
 
 AC_ARG_ENABLE(stdexceptions, [  --enable-stdexceptions    enable std C++ exceptions inside efltk],enable_stdexceptions=yes)
 if test "$enable_stdexceptions" = yes; then
-	AC_DEFINE(USE_STD_EXCEPTIONS)
+ 	CFLAGS="$CFLAGS -DSTD_EXCEPTIONS"
+        CXXFLAGS="$CXXFLAGS -DSTD_EXCEPTIONS"
 else
 	CFLAGS="$CFLAGS -fno-exceptions"
         CXXFLAGS="$CXXFLAGS -fno-exceptions"
@@ -418,8 +419,6 @@ MAKEDEPEND="\${CXX} -M"
 dnl# add warnings to compiler switches:
 dnl# do this last so messing with switches does not break tests
 if test -n "$GXX"; then
-    CFLAGS="-Wall $CFLAGS"
-    CXXFLAGS="-Wall $CXXFLAGS"
     if test -z "$DEBUGFLAG"; then
     	# Note: Can't use -fomit-frame-pointer - prevents tools like
 	#       libsafe from working!
@@ -458,12 +457,12 @@ else
         	CFLAGS="-fullwarn $CFLAGS"
         	CXXFLAGS="-fullwarn $CXXFLAGS"
 		if test -z "$DEBUGFLAG"; then
-	            DEBUGFLAG="-O2 -OPT:Olimit=3000"
+	            DEBUGFLAG="-OPT:Olimit=3000"
 		fi
 	    else
         	CXXFLAGS="+w +pp $CXXFLAGS"
 		if test -z "$DEBUGFLAG"; then
-	            DEBUGFLAG="-O2 -Olimit=3000"
+	            DEBUGFLAG="-Olimit=3000"
 		fi
 	    fi
 	    ;;
@@ -486,9 +485,6 @@ else
 	    echo "fltk-bugs@easysw.com with uname and compiler options needed"
 	    echo "for your platform, or set the CFLAGS and CXXFLAGS options"
 	    echo "before running configure."
-	    if test -z "$DEBUGFLAG"; then
-		DEBUGFLAG="-O2"
-	    fi
 	    ;;
     esac
 fi
@@ -504,6 +500,7 @@ if test "$exec_prefix" = NONE; then
 fi
 
 AC_SUBST(DEBUGFLAG)
+AC_SUBST(EXCEPTIONFLAG)
 
 AC_DEFINE_UNQUOTED(PREFIX, "${prefix}")
 AC_DEFINE_UNQUOTED(CONFIGDIR, "${prefix}/share/ede")

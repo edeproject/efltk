@@ -31,8 +31,8 @@ CXX="@CXX@"
 CC="@CC@"
 
 # flags for C++ compiler:
-CFLAGS="@CFLAGS@"
-CXXFLAGS="@CXXFLAGS@"
+CFLAGS="@CFLAGS@ @DEBUGFLAG@"
+CXXFLAGS="@CXXFLAGS@ @DEBUGFLAG@"
 
 # program to make the archive:
 LIBNAME="@LIBNAME@"
