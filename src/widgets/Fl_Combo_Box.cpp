@@ -279,6 +279,8 @@ void Fl_Combo_Box_Panel::draw() {
         fl_color(text_color());
     }
 
+    fl_push_clip(xx, yy, w(), hh);
+    
     for (unsigned c = 0; c < item->columns(); c++) {
         int ww = m_listView->column_width(c);
         fl_push_clip(xx+dd,yy,ww-dd,hh);
@@ -294,6 +296,8 @@ void Fl_Combo_Box_Panel::draw() {
 
         xx += ww;
     }
+
+    fl_pop_clip();
 }
 
 int Fl_Combo_Box_Panel::handle(int event) {

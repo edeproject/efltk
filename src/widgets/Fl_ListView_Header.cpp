@@ -281,7 +281,9 @@ void Fl_ListView_Header::draw()
                 fl_font(a->font, float(a->font_size));
                 const char *pbuf = fl_cut_line(txt, W-iw-6);
                 Fl_Widget::label(pbuf);
-            }
+            } else {
+		Fl_Widget::label("");
+	    }
 
             //Clear CLIP flag if set, cause we clip anyway =)
             if(align() & FL_ALIGN_CLIP) Fl_Widget::clear_flag(FL_ALIGN_CLIP);
