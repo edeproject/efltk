@@ -125,7 +125,7 @@ void Fl::read_defaults()
     else {
         // Get system defaults, if efltk configfile NOT found
 
-        bool menu_anim=false, menu_fade=false, tooltip_anim=false, tooltip_fade=false;
+        BOOL menu_anim=false, menu_fade=false, tooltip_anim=false, tooltip_fade=false;
 
         SystemParametersInfo(SPI_GETMENUANIMATION, 0, (PVOID)&menu_anim, 0);
 		Fl_Menu_::effects(menu_anim);
@@ -145,6 +145,7 @@ void Fl::read_defaults()
         SystemParametersInfo(SPI_GETMENUSHOWDELAY, 0, (PVOID)&menu_delay, 0);
         double del = (double)menu_delay/1000;
         Fl_Menu_::default_delay(del);
+		
     }
 #endif
 }
