@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x4003da
+# %FirstUniqueId:	0x4003de
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -44,7 +44,7 @@ IDE_BLIND_LDOPTIONS = -L./
 
 IDE_PROJECT_TOOLS = MAKE CCLINK G++ IDE_C_PARSER GCC TAGS IDE_CXX_PARSER
 
-IDE_RCS_TYPE = none
+IDE_RCS_TYPE = cvs
 
 G++ = g++
 
@@ -766,6 +766,26 @@ test/radio_buttons ::	test/radio_buttons.o
 # %IncDir:	test
 # %ObjsDir:	test
 test/labelwidth2 ::	test/labelwidth2.o
+	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+# %UniqueId:	0x4003da
+# %TargetType:	C_EXE
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	test
+# %IncDir:	test
+# %ObjsDir:	test
+test/layout ::	test/layout.o
+	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+# %UniqueId:	0x4003dc
+# %TargetType:	C_EXE
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	test
+# %IncDir:	test
+# %ObjsDir:	test
+test/layout2 ::	test/layout2.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %ObjectFilesLinking
@@ -2621,6 +2641,20 @@ test/radio_buttons.o : test/radio_buttons.cpp
 # %ParentTarget:	0x4003d8
 # %SourceTarget:	0x4003d9
 test/labelwidth2.o : test/labelwidth2.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x4003da
+# %SourceTarget:	0x4003db
+test/layout.o : test/layout.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x4003dc
+# %SourceTarget:	0x4003dd
+test/layout2.o : test/layout2.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
@@ -10392,289 +10426,366 @@ test/labelwidth2.o :	efltk/Fl_Box.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h\
-	efltk/Fl_Input.h\
-	efltk/Fl_Window.h\
+	efltk/Fl_Tabs.h\
 	efltk/Fl_Group.h\
 	efltk/Fl_Widget_List.h\
+	efltk/Fl_Button_Group.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Combo_Box.h\
+	efltk/Fl_ListView.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_ListView_Item.h\
+	efltk/Fl_Image_List.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl.h\
+	efltk/Fl_ListView_Header.h\
+	efltk/Fl_Input_Browser.h\
+	efltk/Fl_Menu_Window.h\
+	efltk/Fl_Single_Window.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Menu_.h\
+	efltk/Fl_Menu_Item.h
+test/layout.o :	efltk/Fl_Window.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Align_Group.h\
+	efltk/Fl_Light_Button.h\
+	efltk/Fl_Check_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Choice.h\
+	efltk/Fl_Menu_.h\
+	efltk/Fl_Menu_Item.h\
+	efltk/Fl.h
+test/layout2.o :	efltk/Fl_Window.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Button.h\
 	efltk/Fl.h
 
 
-# %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/db/odbc/fl_odbc.cpp	SourceOrHeader,	UniqueId=0x4000ce,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/xml/Fl_XmlCtx.cpp	SourceOrHeader,	UniqueId=0x4000f9,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/xml/Fl_XmlDoc.cpp	SourceOrHeader,	UniqueId=0x4000fa,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/xml/Fl_XmlNode.cpp	SourceOrHeader,	UniqueId=0x4000fb,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/xml/Fl_XmlParser.cpp	SourceOrHeader,	UniqueId=0x4000fc,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/xml/Fl_XmlTokenizer.cpp	SourceOrHeader,	UniqueId=0x4000fd,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/images/Fl_Images.cpp	SourceOrHeader,	UniqueId=0x4000fe,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/images/Fl_Jpeg.cpp	SourceOrHeader,	UniqueId=0x4000ff,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/images/Fl_Png.cpp	SourceOrHeader,	UniqueId=0x400100,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/arc.cpp	SourceOrHeader,	UniqueId=0x400185,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/ask.cpp	SourceOrHeader,	UniqueId=0x400187,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/bitmap.cpp	SourceOrHeader,	UniqueId=0x400189,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/boxtype.cpp	SourceOrHeader,	UniqueId=0x40018d,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/browser.cpp	SourceOrHeader,	UniqueId=0x40018f,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/button.cpp	SourceOrHeader,	UniqueId=0x400193,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/buttons.cpp	SourceOrHeader,	UniqueId=0x400196,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/calendar.cpp	SourceOrHeader,	UniqueId=0x40024a,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/checkers.cpp	SourceOrHeader,	UniqueId=0x40024c,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/clock.cpp	SourceOrHeader,	UniqueId=0x40025f,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/color_chooser.cpp	SourceOrHeader,	UniqueId=0x400263,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/cube.cpp	SourceOrHeader,	UniqueId=0x400267,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/editor.cpp	SourceOrHeader,	UniqueId=0x400285,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/cursor.cpp	SourceOrHeader,	UniqueId=0x400287,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl.cpp	SourceOrHeader,	UniqueId=0x400288,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Bitmap.cpp	SourceOrHeader,	UniqueId=0x400289,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Bmp.cpp	SourceOrHeader,	UniqueId=0x40028a,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Boxtype.cpp	SourceOrHeader,	UniqueId=0x40028b,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Buffer.cpp	SourceOrHeader,	UniqueId=0x400343,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Config.cpp	SourceOrHeader,	UniqueId=0x40028d,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Data_Fields.cpp	SourceOrHeader,	UniqueId=0x40028e,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Data_Source.cpp	SourceOrHeader,	UniqueId=0x40028f,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Date_Time.cpp	SourceOrHeader,	UniqueId=0x400290,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Exception.cpp	SourceOrHeader,	UniqueId=0x400291,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Gif.cpp	SourceOrHeader,	UniqueId=0x400292,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Group.cpp	SourceOrHeader,	UniqueId=0x400293,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Hashs.cpp	SourceOrHeader,	UniqueId=0x400294,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Image.cpp	SourceOrHeader,	UniqueId=0x400295,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Image_Filter.cpp	SourceOrHeader,	UniqueId=0x400296,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Lists.cpp	SourceOrHeader,	UniqueId=0x400297,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Maps.cpp	SourceOrHeader,	UniqueId=0x400298,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Pixmap.cpp	SourceOrHeader,	UniqueId=0x400299,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Renderer.cpp	SourceOrHeader,	UniqueId=0x40029a,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_String.cpp	SourceOrHeader,	UniqueId=0x40029b,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Style.cpp	SourceOrHeader,	UniqueId=0x40029c,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Style_Set.cpp	SourceOrHeader,	UniqueId=0x40029d,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Thread.cpp	SourceOrHeader,	UniqueId=0x40029e,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Translator.cpp	SourceOrHeader,	UniqueId=0x40029f,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Util.cpp	SourceOrHeader,	UniqueId=0x4002a0,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Variant.cpp	SourceOrHeader,	UniqueId=0x4002a1,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_WM.cpp	SourceOrHeader,	UniqueId=0x4002a2,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Widget.cpp	SourceOrHeader,	UniqueId=0x4002a3,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Window.cpp	SourceOrHeader,	UniqueId=0x4002a4,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Window_fullscreen.cpp	SourceOrHeader,	UniqueId=0x4002a5,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Window_hotspot.cpp	SourceOrHeader,	UniqueId=0x4002a6,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Window_iconize.cpp	SourceOrHeader,	UniqueId=0x4002a7,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Xpm.cpp	SourceOrHeader,	UniqueId=0x4002a8,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_abort.cpp	SourceOrHeader,	UniqueId=0x4002a9,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_add_idle.cpp	SourceOrHeader,	UniqueId=0x4002aa,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_arg.cpp	SourceOrHeader,	UniqueId=0x4002ab,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_compose.cpp	SourceOrHeader,	UniqueId=0x4002ac,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_display.cpp	SourceOrHeader,	UniqueId=0x4002ad,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_get_key.cpp	SourceOrHeader,	UniqueId=0x4002ae,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_init.cpp	SourceOrHeader,	UniqueId=0x4002af,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_key_name.cpp	SourceOrHeader,	UniqueId=0x4002b0,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_lock.cpp	SourceOrHeader,	UniqueId=0x4002b1,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_own_colormap.cpp	SourceOrHeader,	UniqueId=0x4002b2,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_visual.cpp	SourceOrHeader,	UniqueId=0x4002b3,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/KStoUCS.cpp	SourceOrHeader,	UniqueId=0x4002b4,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/cmap.cpp	SourceOrHeader,	UniqueId=0x4002b5,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/filename.cpp	SourceOrHeader,	UniqueId=0x4002b6,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/filename_list.cpp	SourceOrHeader,	UniqueId=0x4002b7,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/filename_match.cpp	SourceOrHeader,	UniqueId=0x4002b8,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/filename_setext.cpp	SourceOrHeader,	UniqueId=0x4002b9,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_arc.cpp	SourceOrHeader,	UniqueId=0x4002ba,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_arci.cpp	SourceOrHeader,	UniqueId=0x4002bb,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_blit.cpp	SourceOrHeader,	UniqueId=0x4002bc,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_blit_1.cpp	SourceOrHeader,	UniqueId=0x4002bd,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_blit_a.cpp	SourceOrHeader,	UniqueId=0x4002be,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_blit_n.cpp	SourceOrHeader,	UniqueId=0x4002bf,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_call_main.c	SourceOrHeader,	UniqueId=0x4002c0,	TargetType=C,	IDEFlags=0x4
-# %TargetInfo src/core/fl_clip.cpp	SourceOrHeader,	UniqueId=0x4002c1,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_color.cpp	SourceOrHeader,	UniqueId=0x4002c2,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_converters.cpp	SourceOrHeader,	UniqueId=0x4002c3,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_cursor.cpp	SourceOrHeader,	UniqueId=0x4002c4,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_curve.cpp	SourceOrHeader,	UniqueId=0x4002c5,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_diamond_box.cpp	SourceOrHeader,	UniqueId=0x4002c6,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_dnd.cpp	SourceOrHeader,	UniqueId=0x4002c7,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_draw.cpp	SourceOrHeader,	UniqueId=0x4002c8,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_draw_image.cpp	SourceOrHeader,	UniqueId=0x4002c9,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_draw_pixmap.cpp	SourceOrHeader,	UniqueId=0x4002ca,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_font.cpp	SourceOrHeader,	UniqueId=0x4002cb,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_glyph.cpp	SourceOrHeader,	UniqueId=0x4002cc,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4002cd,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_labeltype.cpp	SourceOrHeader,	UniqueId=0x4002ce,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_list_fonts.cpp	SourceOrHeader,	UniqueId=0x4002cf,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_load_plugin.cpp	SourceOrHeader,	UniqueId=0x4002d0,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_locale.cpp	SourceOrHeader,	UniqueId=0x4002d1,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_map.cpp	SourceOrHeader,	UniqueId=0x4002d2,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_oval_box.cpp	SourceOrHeader,	UniqueId=0x4002d3,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_overlay.cpp	SourceOrHeader,	UniqueId=0x4002d4,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_overlay_visual.cpp	SourceOrHeader,	UniqueId=0x4002d5,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_plastic_box.cpp	SourceOrHeader,	UniqueId=0x4002d6,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_rect.cpp	SourceOrHeader,	UniqueId=0x4002d7,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_rgb.cpp	SourceOrHeader,	UniqueId=0x4002d8,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_round_box.cpp	SourceOrHeader,	UniqueId=0x4002d9,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_rounded_box.cpp	SourceOrHeader,	UniqueId=0x4002da,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_scroll_area.cpp	SourceOrHeader,	UniqueId=0x4002db,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_shadow_box.cpp	SourceOrHeader,	UniqueId=0x4002dc,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_stretch.cpp	SourceOrHeader,	UniqueId=0x4002dd,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_theme.cpp	SourceOrHeader,	UniqueId=0x4002de,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_utf8.cpp	SourceOrHeader,	UniqueId=0x4002df,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_vertex.cpp	SourceOrHeader,	UniqueId=0x4002e0,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/scandir.cpp	SourceOrHeader,	UniqueId=0x4002e1,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/vsnprintf.c	SourceOrHeader,	UniqueId=0x4002e2,	TargetType=C,	IDEFlags=0x4
-# %TargetInfo src/opengl/Fl_Gl_Choice.cpp	SourceOrHeader,	UniqueId=0x4002e3,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/opengl/Fl_Gl_Overlay.cpp	SourceOrHeader,	UniqueId=0x4002e4,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/opengl/Fl_Gl_Window.cpp	SourceOrHeader,	UniqueId=0x4002e5,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/opengl/gl_draw.cpp	SourceOrHeader,	UniqueId=0x4002e6,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/opengl/gl_start.cpp	SourceOrHeader,	UniqueId=0x4002e7,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Adjuster.cpp	SourceOrHeader,	UniqueId=0x4002e8,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Align_Group.cpp	SourceOrHeader,	UniqueId=0x4002e9,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Bar.cpp	SourceOrHeader,	UniqueId=0x4002ea,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Box.cpp	SourceOrHeader,	UniqueId=0x4002eb,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Browser.cpp	SourceOrHeader,	UniqueId=0x4002ec,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Button.cpp	SourceOrHeader,	UniqueId=0x4002ed,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Calendar.cpp	SourceOrHeader,	UniqueId=0x4002ee,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Check_Button.cpp	SourceOrHeader,	UniqueId=0x4002ef,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Choice.cpp	SourceOrHeader,	UniqueId=0x4002f0,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Clock.cpp	SourceOrHeader,	UniqueId=0x4002f1,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Color_Chooser.cpp	SourceOrHeader,	UniqueId=0x4002f2,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Date_Time_Input.cpp	SourceOrHeader,	UniqueId=0x4002f3,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Dial.cpp	SourceOrHeader,	UniqueId=0x4002f4,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Dialog.cpp	SourceOrHeader,	UniqueId=0x4002f5,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Directory_DS.cpp	SourceOrHeader,	UniqueId=0x4002f6,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Double_Window.cpp	SourceOrHeader,	UniqueId=0x4002f7,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_FileBrowser.cpp	SourceOrHeader,	UniqueId=0x4002f8,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_FileInput.cpp	SourceOrHeader,	UniqueId=0x4002f9,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_File_Dialog.cpp	SourceOrHeader,	UniqueId=0x4002fa,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Float_Input.cpp	SourceOrHeader,	UniqueId=0x4002fb,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Help_Dialog.cpp	SourceOrHeader,	UniqueId=0x4002fc,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Highlight_Button.cpp	SourceOrHeader,	UniqueId=0x4002fd,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Input.cpp	SourceOrHeader,	UniqueId=0x4002fe,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Input_Browser.cpp	SourceOrHeader,	UniqueId=0x4002ff,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Item.cpp	SourceOrHeader,	UniqueId=0x400300,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Light_Button.cpp	SourceOrHeader,	UniqueId=0x400301,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_ListView.cpp	SourceOrHeader,	UniqueId=0x400302,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_ListView_Header.cpp	SourceOrHeader,	UniqueId=0x400303,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_ListView_Item.cpp	SourceOrHeader,	UniqueId=0x400304,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_MDI_Bar.cpp	SourceOrHeader,	UniqueId=0x400305,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_MDI_Window.cpp	SourceOrHeader,	UniqueId=0x400306,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Main_Window.cpp	SourceOrHeader,	UniqueId=0x400307,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Masked_Input.cpp	SourceOrHeader,	UniqueId=0x400308,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Menu.cpp	SourceOrHeader,	UniqueId=0x400309,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Menu_.cpp	SourceOrHeader,	UniqueId=0x40030a,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Menu_Bar.cpp	SourceOrHeader,	UniqueId=0x40030b,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Menu_Button.cpp	SourceOrHeader,	UniqueId=0x40030c,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Menu_Item.cpp	SourceOrHeader,	UniqueId=0x40030d,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Menu_Window.cpp	SourceOrHeader,	UniqueId=0x40030e,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Menu_add.cpp	SourceOrHeader,	UniqueId=0x40030f,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Menu_global.cpp	SourceOrHeader,	UniqueId=0x400310,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Multi_Image.cpp	SourceOrHeader,	UniqueId=0x400311,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Numeric_Input.cpp	SourceOrHeader,	UniqueId=0x400313,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Output.cpp	SourceOrHeader,	UniqueId=0x400314,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Overlay_Window.cpp	SourceOrHeader,	UniqueId=0x400315,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Pack.cpp	SourceOrHeader,	UniqueId=0x400316,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Popup_Window.cpp	SourceOrHeader,	UniqueId=0x400317,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_ProgressBar.cpp	SourceOrHeader,	UniqueId=0x400318,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Radio_Button.cpp	SourceOrHeader,	UniqueId=0x400319,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Repeat_Button.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x40031a,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Return_Button.cpp	SourceOrHeader,	UniqueId=0x40031b,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Roller.cpp	SourceOrHeader,	UniqueId=0x40031c,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Scroll.cpp	SourceOrHeader,	UniqueId=0x40031d,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Scrollbar.cpp	SourceOrHeader,	UniqueId=0x40031e,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Shaped_Window.cpp	SourceOrHeader,	UniqueId=0x40031f,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Simple_Html.cpp	SourceOrHeader,	UniqueId=0x400320,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Single_Window.cpp	SourceOrHeader,	UniqueId=0x400321,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Slider.cpp	SourceOrHeader,	UniqueId=0x400322,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Tabs.cpp	SourceOrHeader,	UniqueId=0x400323,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Text_Buffer.cpp	SourceOrHeader,	UniqueId=0x400324,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Text_Display.cpp	SourceOrHeader,	UniqueId=0x400325,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Text_Editor.cpp	SourceOrHeader,	UniqueId=0x400326,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Tile.cpp	SourceOrHeader,	UniqueId=0x400327,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Tool_Bar.cpp	SourceOrHeader,	UniqueId=0x400328,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Tooltip.cpp	SourceOrHeader,	UniqueId=0x400329,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Valuator.cpp	SourceOrHeader,	UniqueId=0x40032a,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Value_Input.cpp	SourceOrHeader,	UniqueId=0x40032b,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Value_Slider.cpp	SourceOrHeader,	UniqueId=0x40032c,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Workspace.cpp	SourceOrHeader,	UniqueId=0x40032d,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/fl_ask.cpp	SourceOrHeader,	UniqueId=0x40032e,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/fl_engraved_label.cpp	SourceOrHeader,	UniqueId=0x40032f,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/fl_show_colormap.cpp	SourceOrHeader,	UniqueId=0x400330,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/fl_symbols.cpp	SourceOrHeader,	UniqueId=0x400331,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/db/Fl_Database.cpp	SourceOrHeader,	UniqueId=0x400332,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/db/Fl_Params.cpp	SourceOrHeader,	UniqueId=0x400333,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/db/Fl_Query.cpp	SourceOrHeader,	UniqueId=0x400334,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Socket.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400342,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/socket.cpp	SourceOrHeader,	UniqueId=0x40033b,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/net/ftp_connect.cpp	SourceOrHeader,	UniqueId=0x400340,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/db/db_odbc.cpp	SourceOrHeader,	UniqueId=0x400346,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Gdi.cpp	SourceOrHeader,	UniqueId=0x400347,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_PostScript.cpp	SourceOrHeader,	UniqueId=0x40034b,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_Printer.cpp	SourceOrHeader,	UniqueId=0x40034d,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/curve.cpp	SourceOrHeader,	UniqueId=0x40034f,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/dialog.cpp	SourceOrHeader,	UniqueId=0x400351,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/directory.cpp	SourceOrHeader,	UniqueId=0x400353,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/doublebuffer.cpp	SourceOrHeader,	UniqueId=0x400355,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/net/Fl_FTP_Connect.cpp	SourceOrHeader,	UniqueId=0x400356,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/net/Fl_IMAP_Connect.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400363,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/net/imap_connect.cpp	SourceOrHeader,	UniqueId=0x400365,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Memory_DS.cpp	SourceOrHeader,	UniqueId=0x400367,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/net/Fl_IMAP_DS.cpp	SourceOrHeader,	UniqueId=0x400369,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/exceptions.cpp	SourceOrHeader,	UniqueId=0x40036c,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/fast_slow.cpp	SourceOrHeader,	UniqueId=0x40036e,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/file_chooser.cpp	SourceOrHeader,	UniqueId=0x400371,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/net/Fl_FTP_DS.cpp	SourceOrHeader,	UniqueId=0x400375,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/net/Fl_Mail_Message.cpp	SourceOrHeader,	UniqueId=0x400377,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/net/mail_accounts.cpp	SourceOrHeader,	UniqueId=0x400379,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/net/Fl_Base64.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x40037c,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/listview.cpp	SourceOrHeader,	UniqueId=0x40037f,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/listview_ds.cpp	SourceOrHeader,	UniqueId=0x400381,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/fonts.cpp	SourceOrHeader,	UniqueId=0x400383,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/fullscreen.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400385,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/progress.cpp	SourceOrHeader,	UniqueId=0x400389,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/menubar.cpp	SourceOrHeader,	UniqueId=0x40038b,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/Fl_Function_Type.cpp	SourceOrHeader,	UniqueId=0x40038e,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/Fl_Group_Type.cpp	SourceOrHeader,	UniqueId=0x40038f,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/Fl_Menu_Type.cpp	SourceOrHeader,	UniqueId=0x400390,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/Fl_Type.cpp	SourceOrHeader,	UniqueId=0x400391,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/Fl_Widget_Type.cpp	SourceOrHeader,	UniqueId=0x400392,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/Fl_Window_Type.cpp	SourceOrHeader,	UniqueId=0x400393,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/Fluid_Image.cpp	SourceOrHeader,	UniqueId=0x400394,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/Fluid_Plugins.cpp	SourceOrHeader,	UniqueId=0x400395,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/about_panel.cpp	SourceOrHeader,	UniqueId=0x400396,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/alignment_panel.cpp	SourceOrHeader,	UniqueId=0x400397,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/code.cpp	SourceOrHeader,	UniqueId=0x400398,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/coding_style.cpp	SourceOrHeader,	UniqueId=0x400399,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/coding_style_func.cpp	SourceOrHeader,	UniqueId=0x40039a,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/factory.cpp	SourceOrHeader,	UniqueId=0x40039b,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/file.cpp	SourceOrHeader,	UniqueId=0x40039c,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/fluid.cpp	SourceOrHeader,	UniqueId=0x40039d,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/function_panel.cpp	SourceOrHeader,	UniqueId=0x40039e,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/efluid/widget_panel.cpp	SourceOrHeader,	UniqueId=0x4003a0,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/etranslate/compile.cpp	SourceOrHeader,	UniqueId=0x4003af,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/etranslate/etranslate.cpp	SourceOrHeader,	UniqueId=0x4003b0,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/etranslate/extract.cpp	SourceOrHeader,	UniqueId=0x4003bd,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/etranslate/load_etm.cpp	SourceOrHeader,	UniqueId=0x4003be,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/etranslate/load_pot.cpp	SourceOrHeader,	UniqueId=0x4003bf,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/etranslate/main.cpp	SourceOrHeader,	UniqueId=0x4003c0,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/etranslate/main_ui.cpp	SourceOrHeader,	UniqueId=0x4003c1,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo tools/etranslate/modify_info.cpp	SourceOrHeader,	UniqueId=0x4003c2,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Combo_Box.cpp	SourceOrHeader,	UniqueId=0x4003c4,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/combobox.cpp	SourceOrHeader,	UniqueId=0x4003c7,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/labelwidth.cpp	SourceOrHeader,	UniqueId=0x4003c9,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Button_Group.cpp	SourceOrHeader,	UniqueId=0x4003ca,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/db/odbc/fl_odbc.cpp	SourceOrHeader,	UniqueId=0x4000ce,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/xml/Fl_XmlCtx.cpp	SourceOrHeader,	UniqueId=0x4000f9,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/xml/Fl_XmlDoc.cpp	SourceOrHeader,	UniqueId=0x4000fa,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/xml/Fl_XmlNode.cpp	SourceOrHeader,	UniqueId=0x4000fb,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/xml/Fl_XmlParser.cpp	SourceOrHeader,	UniqueId=0x4000fc,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/xml/Fl_XmlTokenizer.cpp	SourceOrHeader,	UniqueId=0x4000fd,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/images/Fl_Images.cpp	SourceOrHeader,	UniqueId=0x4000fe,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/images/Fl_Jpeg.cpp	SourceOrHeader,	UniqueId=0x4000ff,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/images/Fl_Png.cpp	SourceOrHeader,	UniqueId=0x400100,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/arc.cpp	SourceOrHeader,	UniqueId=0x400185,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/ask.cpp	SourceOrHeader,	UniqueId=0x400187,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/bitmap.cpp	SourceOrHeader,	UniqueId=0x400189,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/boxtype.cpp	SourceOrHeader,	UniqueId=0x40018d,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/browser.cpp	SourceOrHeader,	UniqueId=0x40018f,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/button.cpp	SourceOrHeader,	UniqueId=0x400193,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/buttons.cpp	SourceOrHeader,	UniqueId=0x400196,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/calendar.cpp	SourceOrHeader,	UniqueId=0x40024a,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/checkers.cpp	SourceOrHeader,	UniqueId=0x40024c,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/clock.cpp	SourceOrHeader,	UniqueId=0x40025f,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/color_chooser.cpp	SourceOrHeader,	UniqueId=0x400263,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/cube.cpp	SourceOrHeader,	UniqueId=0x400267,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/editor.cpp	SourceOrHeader,	UniqueId=0x400285,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/cursor.cpp	SourceOrHeader,	UniqueId=0x400287,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl.cpp	SourceOrHeader,	UniqueId=0x400288,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Bitmap.cpp	SourceOrHeader,	UniqueId=0x400289,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Bmp.cpp	SourceOrHeader,	UniqueId=0x40028a,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Boxtype.cpp	SourceOrHeader,	UniqueId=0x40028b,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Buffer.cpp	SourceOrHeader,	UniqueId=0x400343,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Config.cpp	SourceOrHeader,	UniqueId=0x40028d,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Data_Fields.cpp	SourceOrHeader,	UniqueId=0x40028e,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Data_Source.cpp	SourceOrHeader,	UniqueId=0x40028f,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Date_Time.cpp	SourceOrHeader,	UniqueId=0x400290,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Exception.cpp	SourceOrHeader,	UniqueId=0x400291,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Gif.cpp	SourceOrHeader,	UniqueId=0x400292,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Group.cpp	SourceOrHeader,	UniqueId=0x400293,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Hashs.cpp	SourceOrHeader,	UniqueId=0x400294,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Image.cpp	SourceOrHeader,	UniqueId=0x400295,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Image_Filter.cpp	SourceOrHeader,	UniqueId=0x400296,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Lists.cpp	SourceOrHeader,	UniqueId=0x400297,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Maps.cpp	SourceOrHeader,	UniqueId=0x400298,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Pixmap.cpp	SourceOrHeader,	UniqueId=0x400299,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Renderer.cpp	SourceOrHeader,	UniqueId=0x40029a,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_String.cpp	SourceOrHeader,	UniqueId=0x40029b,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Style.cpp	SourceOrHeader,	UniqueId=0x40029c,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Style_Set.cpp	SourceOrHeader,	UniqueId=0x40029d,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Thread.cpp	SourceOrHeader,	UniqueId=0x40029e,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Translator.cpp	SourceOrHeader,	UniqueId=0x40029f,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Util.cpp	SourceOrHeader,	UniqueId=0x4002a0,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Variant.cpp	SourceOrHeader,	UniqueId=0x4002a1,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_WM.cpp	SourceOrHeader,	UniqueId=0x4002a2,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Widget.cpp	SourceOrHeader,	UniqueId=0x4002a3,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Window.cpp	SourceOrHeader,	UniqueId=0x4002a4,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Window_fullscreen.cpp	SourceOrHeader,	UniqueId=0x4002a5,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Window_hotspot.cpp	SourceOrHeader,	UniqueId=0x4002a6,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Window_iconize.cpp	SourceOrHeader,	UniqueId=0x4002a7,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Xpm.cpp	SourceOrHeader,	UniqueId=0x4002a8,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_abort.cpp	SourceOrHeader,	UniqueId=0x4002a9,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_add_idle.cpp	SourceOrHeader,	UniqueId=0x4002aa,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_arg.cpp	SourceOrHeader,	UniqueId=0x4002ab,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_compose.cpp	SourceOrHeader,	UniqueId=0x4002ac,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_display.cpp	SourceOrHeader,	UniqueId=0x4002ad,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_get_key.cpp	SourceOrHeader,	UniqueId=0x4002ae,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_init.cpp	SourceOrHeader,	UniqueId=0x4002af,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_key_name.cpp	SourceOrHeader,	UniqueId=0x4002b0,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_lock.cpp	SourceOrHeader,	UniqueId=0x4002b1,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_own_colormap.cpp	SourceOrHeader,	UniqueId=0x4002b2,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_visual.cpp	SourceOrHeader,	UniqueId=0x4002b3,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/KStoUCS.cpp	SourceOrHeader,	UniqueId=0x4002b4,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/cmap.cpp	SourceOrHeader,	UniqueId=0x4002b5,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/filename.cpp	SourceOrHeader,	UniqueId=0x4002b6,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/filename_list.cpp	SourceOrHeader,	UniqueId=0x4002b7,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/filename_match.cpp	SourceOrHeader,	UniqueId=0x4002b8,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/filename_setext.cpp	SourceOrHeader,	UniqueId=0x4002b9,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_arc.cpp	SourceOrHeader,	UniqueId=0x4002ba,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_arci.cpp	SourceOrHeader,	UniqueId=0x4002bb,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_blit.cpp	SourceOrHeader,	UniqueId=0x4002bc,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_blit_1.cpp	SourceOrHeader,	UniqueId=0x4002bd,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_blit_a.cpp	SourceOrHeader,	UniqueId=0x4002be,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_blit_n.cpp	SourceOrHeader,	UniqueId=0x4002bf,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_call_main.c	SourceOrHeader,	UniqueId=0x4002c0,	TargetType=C,	IDEFlags=0x6
+# %TargetInfo src/core/fl_clip.cpp	SourceOrHeader,	UniqueId=0x4002c1,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_color.cpp	SourceOrHeader,	UniqueId=0x4002c2,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_converters.cpp	SourceOrHeader,	UniqueId=0x4002c3,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_cursor.cpp	SourceOrHeader,	UniqueId=0x4002c4,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_curve.cpp	SourceOrHeader,	UniqueId=0x4002c5,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_diamond_box.cpp	SourceOrHeader,	UniqueId=0x4002c6,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_dnd.cpp	SourceOrHeader,	UniqueId=0x4002c7,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_draw.cpp	SourceOrHeader,	UniqueId=0x4002c8,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_draw_image.cpp	SourceOrHeader,	UniqueId=0x4002c9,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_draw_pixmap.cpp	SourceOrHeader,	UniqueId=0x4002ca,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_font.cpp	SourceOrHeader,	UniqueId=0x4002cb,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_glyph.cpp	SourceOrHeader,	UniqueId=0x4002cc,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4002cd,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_labeltype.cpp	SourceOrHeader,	UniqueId=0x4002ce,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_list_fonts.cpp	SourceOrHeader,	UniqueId=0x4002cf,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_load_plugin.cpp	SourceOrHeader,	UniqueId=0x4002d0,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_locale.cpp	SourceOrHeader,	UniqueId=0x4002d1,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_map.cpp	SourceOrHeader,	UniqueId=0x4002d2,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_oval_box.cpp	SourceOrHeader,	UniqueId=0x4002d3,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_overlay.cpp	SourceOrHeader,	UniqueId=0x4002d4,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_overlay_visual.cpp	SourceOrHeader,	UniqueId=0x4002d5,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_plastic_box.cpp	SourceOrHeader,	UniqueId=0x4002d6,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_rect.cpp	SourceOrHeader,	UniqueId=0x4002d7,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_rgb.cpp	SourceOrHeader,	UniqueId=0x4002d8,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_round_box.cpp	SourceOrHeader,	UniqueId=0x4002d9,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_rounded_box.cpp	SourceOrHeader,	UniqueId=0x4002da,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_scroll_area.cpp	SourceOrHeader,	UniqueId=0x4002db,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_shadow_box.cpp	SourceOrHeader,	UniqueId=0x4002dc,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_stretch.cpp	SourceOrHeader,	UniqueId=0x4002dd,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_theme.cpp	SourceOrHeader,	UniqueId=0x4002de,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_utf8.cpp	SourceOrHeader,	UniqueId=0x4002df,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_vertex.cpp	SourceOrHeader,	UniqueId=0x4002e0,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/scandir.cpp	SourceOrHeader,	UniqueId=0x4002e1,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/vsnprintf.c	SourceOrHeader,	UniqueId=0x4002e2,	TargetType=C,	IDEFlags=0x6
+# %TargetInfo src/opengl/Fl_Gl_Choice.cpp	SourceOrHeader,	UniqueId=0x4002e3,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/opengl/Fl_Gl_Overlay.cpp	SourceOrHeader,	UniqueId=0x4002e4,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/opengl/Fl_Gl_Window.cpp	SourceOrHeader,	UniqueId=0x4002e5,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/opengl/gl_draw.cpp	SourceOrHeader,	UniqueId=0x4002e6,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/opengl/gl_start.cpp	SourceOrHeader,	UniqueId=0x4002e7,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Adjuster.cpp	SourceOrHeader,	UniqueId=0x4002e8,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Align_Group.cpp	SourceOrHeader,	UniqueId=0x4002e9,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Bar.cpp	SourceOrHeader,	UniqueId=0x4002ea,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Box.cpp	SourceOrHeader,	UniqueId=0x4002eb,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Browser.cpp	SourceOrHeader,	UniqueId=0x4002ec,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Button.cpp	SourceOrHeader,	UniqueId=0x4002ed,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Calendar.cpp	SourceOrHeader,	UniqueId=0x4002ee,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Check_Button.cpp	SourceOrHeader,	UniqueId=0x4002ef,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Choice.cpp	SourceOrHeader,	UniqueId=0x4002f0,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Clock.cpp	SourceOrHeader,	UniqueId=0x4002f1,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Color_Chooser.cpp	SourceOrHeader,	UniqueId=0x4002f2,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Date_Time_Input.cpp	SourceOrHeader,	UniqueId=0x4002f3,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Dial.cpp	SourceOrHeader,	UniqueId=0x4002f4,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Dialog.cpp	SourceOrHeader,	UniqueId=0x4002f5,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Directory_DS.cpp	SourceOrHeader,	UniqueId=0x4002f6,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Double_Window.cpp	SourceOrHeader,	UniqueId=0x4002f7,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_FileBrowser.cpp	SourceOrHeader,	UniqueId=0x4002f8,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_FileInput.cpp	SourceOrHeader,	UniqueId=0x4002f9,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_File_Dialog.cpp	SourceOrHeader,	UniqueId=0x4002fa,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Float_Input.cpp	SourceOrHeader,	UniqueId=0x4002fb,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Help_Dialog.cpp	SourceOrHeader,	UniqueId=0x4002fc,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Highlight_Button.cpp	SourceOrHeader,	UniqueId=0x4002fd,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Input.cpp	SourceOrHeader,	UniqueId=0x4002fe,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Input_Browser.cpp	SourceOrHeader,	UniqueId=0x4002ff,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Item.cpp	SourceOrHeader,	UniqueId=0x400300,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Light_Button.cpp	SourceOrHeader,	UniqueId=0x400301,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_ListView.cpp	SourceOrHeader,	UniqueId=0x400302,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_ListView_Header.cpp	SourceOrHeader,	UniqueId=0x400303,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_ListView_Item.cpp	SourceOrHeader,	UniqueId=0x400304,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_MDI_Bar.cpp	SourceOrHeader,	UniqueId=0x400305,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_MDI_Window.cpp	SourceOrHeader,	UniqueId=0x400306,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Main_Window.cpp	SourceOrHeader,	UniqueId=0x400307,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Masked_Input.cpp	SourceOrHeader,	UniqueId=0x400308,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Menu.cpp	SourceOrHeader,	UniqueId=0x400309,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Menu_.cpp	SourceOrHeader,	UniqueId=0x40030a,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Menu_Bar.cpp	SourceOrHeader,	UniqueId=0x40030b,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Menu_Button.cpp	SourceOrHeader,	UniqueId=0x40030c,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Menu_Item.cpp	SourceOrHeader,	UniqueId=0x40030d,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Menu_Window.cpp	SourceOrHeader,	UniqueId=0x40030e,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Menu_add.cpp	SourceOrHeader,	UniqueId=0x40030f,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Menu_global.cpp	SourceOrHeader,	UniqueId=0x400310,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Multi_Image.cpp	SourceOrHeader,	UniqueId=0x400311,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Numeric_Input.cpp	SourceOrHeader,	UniqueId=0x400313,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Output.cpp	SourceOrHeader,	UniqueId=0x400314,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Overlay_Window.cpp	SourceOrHeader,	UniqueId=0x400315,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Pack.cpp	SourceOrHeader,	UniqueId=0x400316,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Popup_Window.cpp	SourceOrHeader,	UniqueId=0x400317,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_ProgressBar.cpp	SourceOrHeader,	UniqueId=0x400318,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Radio_Button.cpp	SourceOrHeader,	UniqueId=0x400319,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Repeat_Button.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x40031a,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Return_Button.cpp	SourceOrHeader,	UniqueId=0x40031b,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Roller.cpp	SourceOrHeader,	UniqueId=0x40031c,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Scroll.cpp	SourceOrHeader,	UniqueId=0x40031d,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Scrollbar.cpp	SourceOrHeader,	UniqueId=0x40031e,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Shaped_Window.cpp	SourceOrHeader,	UniqueId=0x40031f,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Simple_Html.cpp	SourceOrHeader,	UniqueId=0x400320,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Single_Window.cpp	SourceOrHeader,	UniqueId=0x400321,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Slider.cpp	SourceOrHeader,	UniqueId=0x400322,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Tabs.cpp	SourceOrHeader,	UniqueId=0x400323,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Text_Buffer.cpp	SourceOrHeader,	UniqueId=0x400324,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Text_Display.cpp	SourceOrHeader,	UniqueId=0x400325,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Text_Editor.cpp	SourceOrHeader,	UniqueId=0x400326,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Tile.cpp	SourceOrHeader,	UniqueId=0x400327,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Tool_Bar.cpp	SourceOrHeader,	UniqueId=0x400328,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Tooltip.cpp	SourceOrHeader,	UniqueId=0x400329,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Valuator.cpp	SourceOrHeader,	UniqueId=0x40032a,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Value_Input.cpp	SourceOrHeader,	UniqueId=0x40032b,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Value_Slider.cpp	SourceOrHeader,	UniqueId=0x40032c,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Workspace.cpp	SourceOrHeader,	UniqueId=0x40032d,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/fl_ask.cpp	SourceOrHeader,	UniqueId=0x40032e,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/fl_engraved_label.cpp	SourceOrHeader,	UniqueId=0x40032f,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/fl_show_colormap.cpp	SourceOrHeader,	UniqueId=0x400330,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/fl_symbols.cpp	SourceOrHeader,	UniqueId=0x400331,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/db/Fl_Database.cpp	SourceOrHeader,	UniqueId=0x400332,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/db/Fl_Params.cpp	SourceOrHeader,	UniqueId=0x400333,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/db/Fl_Query.cpp	SourceOrHeader,	UniqueId=0x400334,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Socket.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400342,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/socket.cpp	SourceOrHeader,	UniqueId=0x40033b,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/net/ftp_connect.cpp	SourceOrHeader,	UniqueId=0x400340,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/db/db_odbc.cpp	SourceOrHeader,	UniqueId=0x400346,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Gdi.cpp	SourceOrHeader,	UniqueId=0x400347,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_PostScript.cpp	SourceOrHeader,	UniqueId=0x40034b,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Printer.cpp	SourceOrHeader,	UniqueId=0x40034d,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/curve.cpp	SourceOrHeader,	UniqueId=0x40034f,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/dialog.cpp	SourceOrHeader,	UniqueId=0x400351,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/directory.cpp	SourceOrHeader,	UniqueId=0x400353,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/doublebuffer.cpp	SourceOrHeader,	UniqueId=0x400355,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/net/Fl_FTP_Connect.cpp	SourceOrHeader,	UniqueId=0x400356,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/net/Fl_IMAP_Connect.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400363,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/net/imap_connect.cpp	SourceOrHeader,	UniqueId=0x400365,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Memory_DS.cpp	SourceOrHeader,	UniqueId=0x400367,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/net/Fl_IMAP_DS.cpp	SourceOrHeader,	UniqueId=0x400369,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/exceptions.cpp	SourceOrHeader,	UniqueId=0x40036c,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/fast_slow.cpp	SourceOrHeader,	UniqueId=0x40036e,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/file_chooser.cpp	SourceOrHeader,	UniqueId=0x400371,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/net/Fl_FTP_DS.cpp	SourceOrHeader,	UniqueId=0x400375,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/net/Fl_Mail_Message.cpp	SourceOrHeader,	UniqueId=0x400377,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/net/mail_accounts.cpp	SourceOrHeader,	UniqueId=0x400379,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/net/Fl_Base64.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x40037c,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/listview.cpp	SourceOrHeader,	UniqueId=0x40037f,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/listview_ds.cpp	SourceOrHeader,	UniqueId=0x400381,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/fonts.cpp	SourceOrHeader,	UniqueId=0x400383,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/fullscreen.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400385,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/progress.cpp	SourceOrHeader,	UniqueId=0x400389,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/menubar.cpp	SourceOrHeader,	UniqueId=0x40038b,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo tools/efluid/Fl_Function_Type.cpp	SourceOrHeader,	UniqueId=0x40038e,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo tools/efluid/Fl_Group_Type.cpp	SourceOrHeader,	UniqueId=0x40038f,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo tools/efluid/Fl_Menu_Type.cpp	SourceOrHeader,	UniqueId=0x400390,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo tools/efluid/Fl_Type.cpp	SourceOrHeader,	UniqueId=0x400391,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo tools/efluid/Fl_Widget_Type.cpp	SourceOrHeader,	UniqueId=0x400392,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo tools/efluid/Fl_Window_Type.cpp	SourceOrHeader,	UniqueId=0x400393,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo tools/efluid/Fluid_Image.cpp	SourceOrHeader,	UniqueId=0x400394,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo tools/efluid/Fluid_Plugins.cpp	SourceOrHeader,	UniqueId=0x400395,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo tools/efluid/about_panel.cpp	SourceOrHeader,	UniqueId=0x400396,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo tools/efluid/alignment_panel.cpp	SourceOrHeader,	UniqueId=0x400397,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo tools/efluid/code.cpp	SourceOrHeader,	UniqueId=0x400398,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo tools/efluid/coding_style.cpp	SourceOrHeader,	UniqueId=0x400399,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo tools/efluid/coding_style_func.cpp	SourceOrHeader,	UniqueId=0x40039a,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo tools/efluid/factory.cpp	SourceOrHeader,	UniqueId=0x40039b,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo tools/efluid/file.cpp	SourceOrHeader,	UniqueId=0x40039c,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo tools/efluid/fluid.cpp	SourceOrHeader,	UniqueId=0x40039d,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo tools/efluid/function_panel.cpp	SourceOrHeader,	UniqueId=0x40039e,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo tools/efluid/widget_panel.cpp	SourceOrHeader,	UniqueId=0x4003a0,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo tools/etranslate/compile.cpp	SourceOrHeader,	UniqueId=0x4003af,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo tools/etranslate/etranslate.cpp	SourceOrHeader,	UniqueId=0x4003b0,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo tools/etranslate/extract.cpp	SourceOrHeader,	UniqueId=0x4003bd,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo tools/etranslate/load_etm.cpp	SourceOrHeader,	UniqueId=0x4003be,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo tools/etranslate/load_pot.cpp	SourceOrHeader,	UniqueId=0x4003bf,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo tools/etranslate/main.cpp	SourceOrHeader,	UniqueId=0x4003c0,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo tools/etranslate/main_ui.cpp	SourceOrHeader,	UniqueId=0x4003c1,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo tools/etranslate/modify_info.cpp	SourceOrHeader,	UniqueId=0x4003c2,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Combo_Box.cpp	SourceOrHeader,	UniqueId=0x4003c4,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/combobox.cpp	SourceOrHeader,	UniqueId=0x4003c7,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/labelwidth.cpp	SourceOrHeader,	UniqueId=0x4003c9,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Button_Group.cpp	SourceOrHeader,	UniqueId=0x4003ca,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/check_buttons.cpp	SourceOrHeader,	UniqueId=0x4003d5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/radio_buttons.cpp	SourceOrHeader,	UniqueId=0x4003d7,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/labelwidth2.cpp	SourceOrHeader,	UniqueId=0x4003d9,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_wince.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400030,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/Fl_x.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400031,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_color_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400041,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_color_x.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400042,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_dnd_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400048,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_dnd_x.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400049,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_draw_image_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40004c,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_draw_image_win32_2.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40004d,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_draw_image_x.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40004e,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_draw_image_x_2.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40004f,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_font_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400052,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_font_x.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400053,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_font_xft.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400054,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_list_fonts_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400059,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/fl_list_fonts_x.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40005a,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/core/scandir_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40006d,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_wince.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400030,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_x.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400031,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_color_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400041,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_color_x.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400042,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_dnd_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400048,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_dnd_x.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400049,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_draw_image_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40004c,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_draw_image_win32_2.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40004d,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_draw_image_x.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40004e,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_draw_image_x_2.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40004f,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_font_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400052,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_font_x.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400053,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_font_xft.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400054,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_list_fonts_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400059,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/fl_list_fonts_x.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40005a,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/scandir_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40006d,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo efltk/Fl_Style.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40006f,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Font.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400070,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Int_List.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400071,	TargetType=INC,	IDEFlags=0xe
@@ -10710,7 +10821,7 @@ test/labelwidth2.o :	efltk/Fl_Box.h\
 # %TargetInfo efltk/Fl_PtrList.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40008f,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Renderer.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400090,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/fl_draw.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400091,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo src/core/fl_internal.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400092,	TargetType=INC,	IDEFlags=0x4
+# %TargetInfo src/core/fl_internal.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400092,	TargetType=INC,	IDEFlags=0x6
 # %TargetInfo efltk/Fl_Translator.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400093,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Config.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400094,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/vsnprintf.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400095,	TargetType=INC,	IDEFlags=0xe
@@ -10765,21 +10876,21 @@ test/labelwidth2.o :	efltk/Fl_Box.h\
 # %TargetInfo src/core/headers/spacing.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000c6,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo src/db/odbc/fl_odbc.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000cf,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo src/xml/html_entities.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000d9,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_XmlCtx.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000da,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_XmlHandler.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000db,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_XmlNode.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000dc,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_XmlNode_List.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000dd,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Xml.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000de,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_XmlTokenizer.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000df,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_XmlParser.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000e0,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_XmlDoc.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000e1,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_XmlCtx.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000da,	TargetType=INC,	IDEFlags=0xc
+# %TargetInfo efltk/Fl_XmlHandler.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000db,	TargetType=INC,	IDEFlags=0xc
+# %TargetInfo efltk/Fl_XmlNode.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000dc,	TargetType=INC,	IDEFlags=0xc
+# %TargetInfo efltk/Fl_XmlNode_List.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000dd,	TargetType=INC,	IDEFlags=0xc
+# %TargetInfo efltk/Fl_Xml.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000de,	TargetType=INC,	IDEFlags=0xc
+# %TargetInfo efltk/Fl_XmlTokenizer.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000df,	TargetType=INC,	IDEFlags=0xc
+# %TargetInfo efltk/Fl_XmlParser.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000e0,	TargetType=INC,	IDEFlags=0xc
+# %TargetInfo efltk/Fl_XmlDoc.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000e1,	TargetType=INC,	IDEFlags=0xc
 # %TargetInfo efltk/Fl_Highlight_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000e4,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Light_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000e5,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Check_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000e6,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Radio_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000e7,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Repeat_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000e8,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Return_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000e9,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo config.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000f1,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo config.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000f1,	TargetType=INC,	IDEFlags=0xc
 # %TargetInfo efltk/Fl_Align_Group.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40014b,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Bar.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40014c,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Browser.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40014d,	TargetType=INC,	IDEFlags=0xe
@@ -10890,7 +11001,7 @@ test/labelwidth2.o :	efltk/Fl_Box.h\
 # %TargetInfo efltk/net/Fl_Base64.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40037d,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Toggle_Light_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400386,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Hor_Slider.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400387,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo tools/efluid/image_file_panel.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40039f,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/image_file_panel.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40039f,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo tools/efluid/function_panel.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003a1,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Locale.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003a2,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo tools/efluid/coding_style.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003a3,	TargetType=INC,	IDEFlags=0xe
@@ -10923,9 +11034,10 @@ test/labelwidth2.o :	efltk/Fl_Box.h\
 # %TargetInfo test/net/file_small.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x4003cf,	TargetType=XPM,	IDEFlags=0xe
 # %TargetInfo test/net/folder_small.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d0,	TargetType=XPM,	IDEFlags=0xe
 # %TargetInfo efltk/xml/Fl_XmlCtx.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d1,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Check_Buttons.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d2,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Radio_Buttons.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d3,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo test/labelwidth2.cpp	SourceOrHeader,	UniqueId=0x4003d9,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo efltk/Fl_Check_Buttons.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d2,	TargetType=INC,	IDEFlags=0xc
+# %TargetInfo efltk/Fl_Radio_Buttons.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d3,	TargetType=INC,	IDEFlags=0xc
+# %TargetInfo test/layout.cpp	SourceOrHeader,	UniqueId=0x4003db,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/layout2.cpp	SourceOrHeader,	UniqueId=0x4003dd,	TargetType=C++,	IDEFlags=0x6
 
 
 # %UniqueId:	0x400001
@@ -10987,8 +11099,10 @@ test/labelwidth2.o :	efltk/Fl_Box.h\
 #	0x40037e
 #	0x40033f
 #	0x400364
-#	0x4003d8
+#	0x4003da
+#	0x4003dc
 #	0x4003c8
+#	0x4003d8
 #	0x40038a
 #	0x40033a
 #	0x400388
