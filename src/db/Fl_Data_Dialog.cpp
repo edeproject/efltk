@@ -11,7 +11,7 @@ Fl_Data_Dialog::Fl_Data_Dialog(int w,int h,const char *label)
     m_database  = NULL;
     m_record_DS = new Fl_Record_DS();
     m_record_DS->parent(m_tabs);
-    m_dataSource = m_record_DS;
+    data_source(m_record_DS);
 }
 
 Fl_Data_Dialog::~Fl_Data_Dialog() {
