@@ -10,9 +10,11 @@
 
 void build_tree(Fl_XmlNode *n)
 {
+	if(!n) return;
+
     Fl_Widget *w=0;
     Fl_Item_Group *g=0;
-    if(n->children()>0 || (n->type()!=FL_XML_TYPE_NODE && n->type()!=FL_XML_TYPE_LEAF)) {
+    if(n->children()>0 || n->has_cdata()) {
         g = new Fl_Item_Group();
         g->begin();
         g->set_flag(FL_VALUE);
@@ -22,49 +24,30 @@ void build_tree(Fl_XmlNode *n)
         w = (Fl_Widget*)i;
     }
 
-    Fl_String label;
-    switch(n->type()) {
-    default: {
-        label = n->name();
-        AttrMap &attr_map = n->attributes();
-        for(uint a=0; a<attr_map.size(); a++) {
-            AttrMap_Pair *p = attr_map.item(a);
-            label += " " + p->id + "=\"" + p->val + "\"";
-        }
-        break;
-    }
-    case FL_XML_TYPE_FIXED_CDATA: {
-        w->label("Fixed cdata: ");
-        w = (Fl_Widget*)new Fl_Item();
-        label = n->context()->unXMLize(n->cdata());
-        g->clear_flag(FL_VALUE); g->end();
-        break;
+	Fl_String label;
+	uint a;
+
+	label = n->name();
+    AttrMap &attr_map = n->attributes();
+    for(a=0; a<attr_map.size(); a++) {
+	    AttrMap_Pair *p = attr_map.item(a);
+        label += " " + p->id + "=\"" + p->val + "\"";
     }
 
-    case FL_XML_TYPE_CDATA: {
-        w->label("Cdata: ");
-        w = (Fl_Widget*)new Fl_Item();
-        label = n->context()->unXMLize(n->cdata());
-        g->clear_flag(FL_VALUE); g->end();
-        break;
-    }
+	if(n->has_cdata()) {
+		Fl_Item *i = new Fl_Item();
+		i->copy_label(n->context()->unXMLize(n->cdata()));
+	}
 
-    case FL_XML_TYPE_COMMENT: {
-        w->label("Comment: ");
-        w = (Fl_Widget*)new Fl_Item();
-        label = n->context()->unXMLize(n->cdata());
-        g->clear_flag(FL_VALUE); g->end();
-        break;
-    }
-    }
     w->copy_label(label.c_str());
 
-    for(int a=0; a<n->children(); a++) {
+    for(a=0; a<(uint)n->children(); a++) {
         Fl_XmlNode *node = n->child(a);
         build_tree(node);
     }
 
-    if(g) g->end();
+    if(w->is_group()) 
+		((Fl_Group*)w)->end();
 }
 
 int main(int argc, char **argv)
@@ -76,10 +59,18 @@ int main(int argc, char **argv)
     if(!fp) return -1;
 
     Fl_XmlDoc doc;
+	int time1 = Fl::ticks();
     bool ret = doc.load(fp);
+	int time2 = Fl::ticks();
+
     fclose(fp);
 
-    Fl_Window *window = new Fl_Window(20,20,300,300,"XML Test");
+	Fl_String label;
+	label.printf("XML Test - loaded file in %d ms", time2-time1);
+
+	//Fl_Group::current(0); //hmmm
+    Fl_Window *window = new Fl_Window(20,20,300,300);
+	window->copy_label(label.c_str());
     window->begin();
 
     if(!ret) {
@@ -98,8 +89,8 @@ int main(int argc, char **argv)
         Fl_Browser *tree = new Fl_Browser(10,10,280,280);
         tree->indented(1);
         tree->begin();
-
-        build_tree(&doc);
+		
+        build_tree(doc.root_node());		
 
         tree->end();
         tree->relayout();

@@ -28,19 +28,19 @@ public:
         tree->indented(1);
         tree->begin();
 
-        printf("start_document\n");
+//        printf("start_document\n");
     }
 
     // Called when parsing a document finished
     virtual void end_document() {
         win->end();
         win->show();
-        printf("end_document\n");
+//        printf("end_document\n");
     }
 
     // Called when parsing a processing instruction
     virtual void processing_instruction(Fl_XmlNode &/*pinode*/) {
-        printf("processing_instruction\n");
+//        printf("processing_instruction\n");
     }
 
     // Called when start parsing a node
@@ -49,7 +49,7 @@ public:
         g->set_flag(FL_VALUE);
         g->copy_label(nodename.c_str());
         g->begin();
-        printf("start_node(%s)\n", nodename.c_str());
+//        printf("start_node(%s)\n", nodename.c_str());
     }
 
     // Called when an attribute list was parsed
@@ -61,23 +61,20 @@ public:
             label += " " + p->id + "=\"" + p->val + "\"";
         }
         g->copy_label(label.c_str());
-        printf("parsed_attributes\n");
+//        printf("parsed_attributes\n");
     }
 
     // Called when parsing of a node was finished
     virtual void end_node(Fl_String &nodename) {
         Fl_Group::current()->end();
-        printf("end_node(%s)\n", nodename.c_str());
+//        printf("end_node(%s)\n", nodename.c_str());
     }
 
     // Called when a cdata section ended
     virtual void cdata(Fl_String &cdata) {
-        Fl_Item_Group *g = new Fl_Item_Group("CDATA");
-        g->begin();
         Fl_Item *i = new Fl_Item();
         i->copy_label(cdata.c_str());
-        g->end();
-        printf("cdata(%s)\n", cdata.c_str());
+//        printf("cdata(%s)\n", cdata.c_str());
     }
 
     // Called when a comment section ended
@@ -87,13 +84,18 @@ public:
         Fl_Item *i = new Fl_Item();
         i->copy_label(comment.c_str());
         g->end();
-        printf("comment(%s)\n", comment.c_str());
+//        printf("comment(%s)\n", comment.c_str());
     }
 };
 
 int main(int argc, char *argv[])
 {
+#ifndef _WIN32
     const char *f = argc>1 ? argv[1] : "test.xml";
+#else
+    const char *f = fl_select_file(0, "XML files, *.xml");
+    if(!f) return -1;
+#endif
     FILE *fp = fopen(f, "r");
     if(!fp) return -1;
 
@@ -101,8 +103,14 @@ int main(int argc, char *argv[])
     Fl_XmlDoc d;
     d.context()->handler(&h);
 
+	int time1 = Fl::ticks();
     d.load(fp);
+	int time2 = Fl::ticks();
     fclose(fp);
+
+	Fl_String label;
+	label.printf("XML Test - loaded file in %d ms", time2-time1);
+	h.win->copy_label(label.c_str());
 
     return Fl::run();
 }
