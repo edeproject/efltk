@@ -24,7 +24,9 @@
 #include <config.h>
 #include <efltk/fl_draw.h>
 #include <string.h>
-
+#ifdef _WIN32_WCE
+#include <stdlibx.h>
+#endif
 #ifdef _WIN32
 # include "fl_list_fonts_win32.cpp"
 #elif defined(__APPLE__)

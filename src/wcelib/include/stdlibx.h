@@ -4,48 +4,32 @@
 #include <stdlib.h>
 
 #ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <winsock.h>
 #include <errno.h>
 
 #include <tchar.h>
-#include <wceatl.h>
-#include <atlconv.h>
+//#include <wceatl.h>
+//#include <atlconv.h>
 #include <winnetwk.h>
 
 //#define assert(e) 
-inline void abort() { exit(3); }
+void abort();
 
 #define _environ (NULL)
-inline char *getenv( const char *varname ) { return NULL; };
-inline int putenv( const char *envstring ) { return -1; };
+char *getenv( const char *varname );
+int putenv( const char *envstring );
 
-#if _WIN32_WCE < 300
-inline void* calloc(size_t num, size_t size)
-{
-	void *ptr = malloc(num*size);
-	if(ptr)
-		memset(ptr, 0, num*size);
-	return ptr;
-}
-
-inline int isprint(int c) { return _istprint(c);}
-inline int isxdigit(int c) { return _istxdigit(c); }
-inline int isspace( int c ) { return _istspace(c); }
-inline int isupper( int c ) { return _istupper(c); }
-inline int islower( int c ) { return _istlower(c); }
-inline int isalnum( int c ) { return _istalnum(c); }
-inline int isalpha( int c ) { return _istalpha(c); }
-inline int iscntrl( int c ) { return _istcntrl(c); }
-inline int isdigit( int c ) { return _istdigit(c); }
-inline int ispunct( int c ) { return _istpunct(c); }
-#endif
+int _strnicmp(const char *string1,const char *string2,size_t count );
 
 int		_mkdir(const char *);
 int		_rmdir(const char *);
 int		_access(const char *, int);
-inline int access(const char * s, int i) { return _access(s,i); }
-inline int _chdrive(int d) { return 0; }
-inline int _chdir(const char * s) { return 0; }
+int access(const char * s, int i);
+int _chdrive(int d);
+int _chdir(const char * s);
 char *	_mktemp (char *temp);
 int		remove(const char *);
 int		_chmod( const char *filename, int pmode );
@@ -133,47 +117,11 @@ const char *	strrchr(const char *, int);
 size_t strspn( const char *string, const char *strCharSet );
 #endif
 
-int stricmp( const unsigned short*string1, const char* string2 );
-
-LONG RegOpenKeyEx( HKEY hKey, const char* lpSubKey, DWORD ulOptions, REGSAM samDesired, PHKEY phkResult );
-
-LONG RegCreateKeyEx( HKEY hKey, const char* lpSub, DWORD dwr, LPSTR lpcls, DWORD dwo, 
-	REGSAM sam, LPSECURITY_ATTRIBUTES lpsa, PHKEY phk, LPDWORD lpdw );
-
-LONG RegEnumKey(HKEY hKey, DWORD dwIndex, LPTSTR lpName, DWORD cbName);
-
-LONG RegDeleteKey( HKEY hKey, const char* lpSubKey );
-
-LONG RegEnumValueCe( HKEY hKey, DWORD dwIndex, LPTSTR lpValueName, LPDWORD lpcbValueName, 
-	LPDWORD lpReserved, LPDWORD lpType, LPBYTE lpData, LPDWORD lpcbData );
-
-LONG RegQueryValueEx( HKEY hKey, char* lpValueName, 
-	LPDWORD lpReserved, LPDWORD lpType, LPBYTE lpData, LPDWORD lpcbData );
-
-LONG RegSetValueEx( HKEY hKey, const char* lpValueName, DWORD Reserved, DWORD dwType, 
-	const BYTE *lpData, DWORD cbData );
-
-LONG RegDeleteValue( HKEY hKey, const char* lpValueName );
-
-UINT GetWindowsDirectory( char* lpBuffer, UINT uSize );
-
-DWORD GetPrivateProfileString( const char* lpAppName, const char* lpKeyName,
-  const char* lpDefault, char* lpReturned, DWORD nSize, const char*  );
-
-BOOL WritePrivateProfileString(const char* lpAppName, const char* lpKeyName,
-  const char* lpString, const char* );
-
-#else
-
-#endif // __cplusplus
-
-#endif
-
-
 char * getcwd(char *tmp, int size);
 wchar_t * _wgetenv(wchar_t *env);
 int stricmp(const char *string1, const char *string2);
 int strncasecmp(const char *string1, const char *string2,int len);
+int strcasecmp(const char *string1, const char *string2);
 char * strdup(const char *todup);
 char * strerror(int num);
 
@@ -192,3 +140,16 @@ char * strerror(int num);
 # define logf(a)	float(log(float(a)))
 # define log10f(a)	float(log10(float(a)))
 # define sqrtf(a)	float(sqrt(float(a)))
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif
+
+
+
+/*LONG RegQueryValueEx( HKEY hKey, char* lpValueName, LPDWORD lpReserved, LPDWORD lpType, LPBYTE lpData, LPDWORD lpcbData );
+LONG RegOpenKeyEx( HKEY hKey, const char* lpSubKey, DWORD ulOptions, REGSAM samDesired, PHKEY phkResult );
+*/
+

@@ -7,7 +7,7 @@
 
 
 #include <tchar.h>
-#include <wceatl.h>
+//#include <wceatl.h>
 #include <winnetwk.h>
 #include <winbase.h>
 #include <windows.h>
@@ -17,9 +17,15 @@
 #include <stdlibx.h>
 #include <sys/types.h>
 #include <drawacp.h>
+#include <locale.h>
 # define Arc CeArc
 # define Chord CeChord
 # define Pie CePie
+
+#define ENUMLOGFONTW ENUMLOGFONT
+#define ENUMLOGFONTA ENUMLOGFONT
+#define FindNextFileA FindNextFileW
+
 
 	typedef struct tagMINMAXINFO {
 		POINT ptReserved; 

@@ -1,0 +1,5184 @@
+# Microsoft eMbedded Visual Tools Project File - Name="evcpp" - Package Owner=<4>
+# Microsoft eMbedded Visual Tools Generated Build File, Format Version 6.02
+# ** DO NOT EDIT **
+
+# TARGTYPE "Win32 (WCE emulator) Static Library" 0xa604
+
+CFG=evcpp - Win32 (WCE emulator) Debug
+!MESSAGE This is not a valid makefile. To build this project using NMAKE,
+!MESSAGE use the Export Makefile command and run
+!MESSAGE 
+!MESSAGE NMAKE /f "evcpp.vcn".
+!MESSAGE 
+!MESSAGE You can specify a configuration when running NMAKE
+!MESSAGE by defining the macro CFG on the command line. For example:
+!MESSAGE 
+!MESSAGE NMAKE /f "evcpp.vcn" CFG="evcpp - Win32 (WCE emulator) Debug"
+!MESSAGE 
+!MESSAGE Possible choices for configuration are:
+!MESSAGE 
+!MESSAGE "evcpp - Win32 (WCE emulator) Release" (based on "Win32 (WCE emulator) Static Library")
+!MESSAGE "evcpp - Win32 (WCE emulator) Debug" (based on "Win32 (WCE emulator) Static Library")
+!MESSAGE 
+
+# Begin Project
+# PROP AllowPerConfigDependencies 0
+# PROP Scc_ProjName ""
+# PROP Scc_LocalPath ""
+# PROP ATL_Project 2
+CPP=cl.exe
+
+!IF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Release"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "emulatorRel"
+# PROP BASE Intermediate_Dir "emulatorRel"
+# PROP BASE CPU_ID "{32E52003-403E-442D-BE48-DE10F8C6131D}"
+# PROP BASE Platform_ID "{8A9A2F80-6887-11D3-842E-005004848CBA}"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "emulatorRel"
+# PROP Intermediate_Dir "emulatorRel"
+# PROP CPU_ID "{32E52003-403E-442D-BE48-DE10F8C6131D}"
+# PROP Platform_ID "{8A9A2F80-6887-11D3-842E-005004848CBA}"
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /W3 /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "_i386_" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /D "NDEBUG" /D "_LIB" /YX /Gs8192 /GF /O2 /c
+# ADD CPP /nologo /W3 /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "_i386_" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /D "NDEBUG" /D "_LIB" /YX /Gs8192 /GF /O2 /c
+LIB32=link.exe -lib
+# ADD BASE LIB32 /nologo
+# ADD LIB32 /nologo
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+
+!ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir "emulatorDbg"
+# PROP BASE Intermediate_Dir "emulatorDbg"
+# PROP BASE CPU_ID "{32E52003-403E-442D-BE48-DE10F8C6131D}"
+# PROP BASE Platform_ID "{8A9A2F80-6887-11D3-842E-005004848CBA}"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "emulatorDbg"
+# PROP Intermediate_Dir "emulatorDbg"
+# PROP CPU_ID "{32E52003-403E-442D-BE48-DE10F8C6131D}"
+# PROP Platform_ID "{8A9A2F80-6887-11D3-842E-005004848CBA}"
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /W3 /Zi /Od /D "DEBUG" /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "_i386_" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /D "_LIB" /YX /Gs8192 /GF /c
+# ADD CPP /nologo /W3 /Zi /Od /I "../" /I "../src/wcelib/include" /I "./" /D "DEBUG" /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "_i386_" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /D "_LIB" /YX /Gs8192 /GF /c
+LIB32=link.exe -lib
+# ADD BASE LIB32 /nologo
+# ADD LIB32 /nologo
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+
+!ENDIF 
+
+# Begin Target
+
+# Name "evcpp - Win32 (WCE emulator) Release"
+# Name "evcpp - Win32 (WCE emulator) Debug"
+# Begin Group "Source Files"
+
+# PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+# Begin Source File
+
+SOURCE=..\src\core\cmap.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\wcelib\src\drawacp.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\filename_absolute.cpp
+DEP_CPP_FILEN=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\filename.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\filename_expand.cpp
+DEP_CPP_FILENA=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\filename.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\fl_utf8.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\filename_ext.cpp
+DEP_CPP_FILENAM=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\filename.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Util.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\filename_isdir.cpp
+DEP_CPP_FILENAME=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\filename.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Util.h"\
+	".\config.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\filename_list.cpp
+DEP_CPP_FILENAME_=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\filename.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\filename_match.cpp
+DEP_CPP_FILENAME_M=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\filename.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Util.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\filename_setext.cpp
+DEP_CPP_FILENAME_S=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\filename.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Util.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl.cpp
+DEP_CPP_FL_CP=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\filename.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Tooltip.h"\
+	"..\efltk\fl_utf8.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\efltk\Xutf8.h"\
+	"..\src\core\aimm.h"\
+	"..\src\core\Fl_win32.cpp"\
+	"..\src\core\Fl_wince.cpp"\
+	"..\src\core\Fl_x.cpp"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_CP=\
+	"..\efltk\mac.h"\
+	"..\src\core\Fl_mac.cpp"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_abort.cpp
+DEP_CPP_FL_AB=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\fl_utf8.h"\
+	"..\efltk\vsnprintf.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_add_idle.cpp
+DEP_CPP_FL_AD=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Adjuster.cpp
+DEP_CPP_FL_ADJ=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Adjuster.h"\
+	"..\efltk\Fl_Bitmap.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Valuator.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	"..\src\widgets\fastarrow.h"\
+	"..\src\widgets\mediumarrow.h"\
+	"..\src\widgets\slowarrow.h"\
+	
+NODEP_CPP_FL_ADJ=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Align_Group.cpp
+DEP_CPP_FL_AL=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Align_Group.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_arc.cpp
+DEP_CPP_FL_AR=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\math.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_arci.cpp
+DEP_CPP_FL_ARC=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\math.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_ARC=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_arg.cpp
+DEP_CPP_FL_ARG=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\filename.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_ARG=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\fl_ask.cpp
+DEP_CPP_FL_AS=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\fl_ask.h"\
+	"..\efltk\Fl_Box.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Button.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Input.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_Return_Button.h"\
+	"..\efltk\Fl_Secret_Input.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	"..\efltk\vsnprintf.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\core\fl_internal.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_AS=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Bar.cpp
+DEP_CPP_FL_BA=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Bar.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Bitmap.cpp
+DEP_CPP_FL_BI=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Bitmap.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_BI=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_blit.cpp
+DEP_CPP_FL_BL=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_BL=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_blit_1.cpp
+DEP_CPP_FL_BLI=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\core\fl_internal.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_BLI=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_blit_a.cpp
+DEP_CPP_FL_BLIT=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\core\fl_internal.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_BLIT=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_blit_n.cpp
+DEP_CPP_FL_BLIT_=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\core\fl_internal.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_BLIT_=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Bmp.cpp
+DEP_CPP_FL_BM=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\core\fl_internal.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_BM=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Box.cpp
+DEP_CPP_FL_BO=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Box.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Boxtype.cpp
+DEP_CPP_FL_BOX=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_BOX=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Browser.cpp
+DEP_CPP_FL_BR=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Bitmap.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Browser.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Menu_.h"\
+	"..\efltk\Fl_Menu_Item.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_Scrollbar.h"\
+	"..\efltk\Fl_Slider.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Valuator.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_BR=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Button.cpp
+DEP_CPP_FL_BU=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Button.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_BU=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Calendar.cpp
+DEP_CPP_FL_CA=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Box.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Button.h"\
+	"..\efltk\Fl_Calendar.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Menu_Window.h"\
+	"..\efltk\Fl_Popup_Window.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_Single_Window.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	"..\src\core\fl_internal.h"\
+	".\config.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_call_main.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Callback.cpp
+DEP_CPP_FL_CAL=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Check_Button.cpp
+DEP_CPP_FL_CH=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Button.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Check_Button.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Choice.cpp
+DEP_CPP_FL_CHO=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Choice.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Menu_.h"\
+	"..\efltk\Fl_Menu_Item.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_clip.cpp
+DEP_CPP_FL_CL=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_CL=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Clock.cpp
+DEP_CPP_FL_CLO=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Clock.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_color.cpp
+DEP_CPP_FL_CO=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\core\fl_cmap.h"\
+	"..\src\core\fl_color_win32.cpp"\
+	"..\src\core\fl_color_x.cpp"\
+	"..\src\core\Fl_XColor.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_CO=\
+	"..\efltk\mac.h"\
+	"..\src\core\fl_color_mac.cpp"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Color_Chooser.cpp
+DEP_CPP_FL_COL=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Box.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Button.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Choice.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Color_Chooser.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Float_Input.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Input.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Item.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Menu_.h"\
+	"..\efltk\Fl_Menu_Item.h"\
+	"..\efltk\Fl_Numeric_Input.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_Return_Button.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Valuator.h"\
+	"..\efltk\Fl_Value_Input.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	"..\efltk\math.h"\
+	"..\src\core\fl_internal.h"\
+	".\config.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_compose.cpp
+DEP_CPP_FL_COM=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\fl_utf8.h"\
+	".\config.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Config.cpp
+DEP_CPP_FL_CON=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\filename.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Config.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\fl_utf8.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\vsnprintf.h"\
+	"..\src\core\fl_internal.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_cursor.cpp
+DEP_CPP_FL_CU=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_CU=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_curve.cpp
+DEP_CPP_FL_CUR=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\math.h"\
+	".\config.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Data_Fields.cpp
+DEP_CPP_FL_DA=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_Variant.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Data_Source.cpp
+DEP_CPP_FL_DAT=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Date_Time.cpp
+DEP_CPP_FL_DATE=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\src\core\fl_internal.h"\
+	".\config.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Date_Time_Input.cpp
+DEP_CPP_FL_DATE_=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Box.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Button.h"\
+	"..\efltk\Fl_Calendar.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Date_Time_Input.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Input.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Masked_Input.h"\
+	"..\efltk\Fl_Menu_Window.h"\
+	"..\efltk\Fl_Pixmap.h"\
+	"..\efltk\Fl_Popup_Window.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_Single_Window.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_DATE_=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Dial.cpp
+DEP_CPP_FL_DI=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Dial.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Valuator.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\math.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Dialog.cpp
+DEP_CPP_FL_DIA=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\fl_ask.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Button.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Dialog.h"\
+	"..\efltk\Fl_Dialog_Data_Source.h"\
+	"..\efltk\Fl_Double_Window.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Input.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Multi_Tabs.h"\
+	"..\efltk\Fl_Pixmap.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_DIA=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Dialog_Data_Source.cpp
+DEP_CPP_FL_DIAL=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Dialog_Data_Source.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_Variant.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_diamond_box.cpp
+DEP_CPP_FL_DIAM=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Directory_DS.cpp
+DEP_CPP_FL_DIR=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\filename.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Directory_DS.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Variant.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_display.cpp
+DEP_CPP_FL_DIS=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_dnd.cpp
+DEP_CPP_FL_DN=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\core\fl_dnd_win32.cpp"\
+	"..\src\core\fl_dnd_x.cpp"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_DN=\
+	"..\efltk\mac.h"\
+	"..\src\core\fl_dnd_mac.cpp"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Double_Window.cpp
+DEP_CPP_FL_DO=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Double_Window.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_DO=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_draw.cpp
+DEP_CPP_FL_DR=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\math.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_draw_image.cpp
+DEP_CPP_FL_DRA=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\core\fl_draw_image_win32.cpp"\
+	"..\src\core\fl_draw_image_win32_2.cpp"\
+	"..\src\core\fl_draw_image_x.cpp"\
+	"..\src\core\fl_draw_image_x_2.cpp"\
+	"..\src\core\Fl_XColor.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_DRA=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_draw_pixmap.cpp
+DEP_CPP_FL_DRAW=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	".\config.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\fl_engraved_label.cpp
+DEP_CPP_FL_EN=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Float_Input.cpp
+DEP_CPP_FL_FL=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\fl_ask.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Float_Input.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Input.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Numeric_Input.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_font.cpp
+DEP_CPP_FL_FO=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\fl_utf8.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\math.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\efltk\Xutf8.h"\
+	"..\src\core\fl_font_win32.cpp"\
+	"..\src\core\fl_font_x.cpp"\
+	"..\src\core\fl_font_xft.cpp"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_FO=\
+	"..\efltk\mac.h"\
+	"..\src\core\fl_font_mac.cpp"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_get_key.cpp
+DEP_CPP_FL_GE=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\core\Fl_get_key_win32.cpp"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_GE=\
+	"..\efltk\mac.h"\
+	"..\src\core\Fl_get_key_mac.cpp"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Gif.cpp
+DEP_CPP_FL_GI=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\core\fl_internal.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_GI=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_glyph.cpp
+DEP_CPP_FL_GL=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Group.cpp
+DEP_CPP_FL_GR=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Tooltip.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Help_Dialog.cpp
+DEP_CPP_FL_HE=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\filename.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Bar.h"\
+	"..\efltk\Fl_Box.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Button.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Check_Button.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Double_Window.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_File_Dialog.h"\
+	"..\efltk\Fl_FileInput.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Help_Dialog.h"\
+	"..\efltk\Fl_Highlight_Button.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Image_Cache.h"\
+	"..\efltk\Fl_Image_List.h"\
+	"..\efltk\Fl_Input.h"\
+	"..\efltk\Fl_Input_Browser.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Item.h"\
+	"..\efltk\Fl_Item_Group.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_ListView.h"\
+	"..\efltk\Fl_ListView_Header.h"\
+	"..\efltk\Fl_ListView_Item.h"\
+	"..\efltk\Fl_Main_Window.h"\
+	"..\efltk\Fl_Menu_.h"\
+	"..\efltk\Fl_Menu_Bar.h"\
+	"..\efltk\Fl_Menu_Button.h"\
+	"..\efltk\Fl_Menu_Item.h"\
+	"..\efltk\Fl_Menu_Window.h"\
+	"..\efltk\Fl_Pack.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_Return_Button.h"\
+	"..\efltk\Fl_Scrollbar.h"\
+	"..\efltk\Fl_Simple_Html.h"\
+	"..\efltk\Fl_Single_Window.h"\
+	"..\efltk\Fl_Slider.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Tool_Bar.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Valuator.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\core\fl_internal.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_HE=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Highlight_Button.cpp
+DEP_CPP_FL_HI=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Button.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Highlight_Button.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Image.cpp
+DEP_CPP_FL_IM=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Image_Filter.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\fl_utf8.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\core\fl_internal.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_IM=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Image_Filter.cpp
+DEP_CPP_FL_IMA=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Image_Filter.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\math.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\core\fl_internal.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_IMA=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_init.cpp
+DEP_CPP_FL_IN=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Box.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Button.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Config.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_MDI_Window.h"\
+	"..\efltk\Fl_Menu_.h"\
+	"..\efltk\Fl_Menu_Bar.h"\
+	"..\efltk\Fl_Menu_Item.h"\
+	"..\efltk\Fl_Menu_Window.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_Scrollbar.h"\
+	"..\efltk\Fl_Single_Window.h"\
+	"..\efltk\Fl_Slider.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Tooltip.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Valuator.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	"..\efltk\Fl_Workspace.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\core\fl_internal.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_IN=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Input.cpp
+DEP_CPP_FL_INP=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\fl_ask.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Input.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Menu_.h"\
+	"..\efltk\Fl_Menu_Button.h"\
+	"..\efltk\Fl_Menu_Item.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\fl_utf8.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\math.h"\
+	"..\src\core\fl_internal.h"\
+	".\config.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Input_Browser.cpp
+DEP_CPP_FL_INPU=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Browser.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Input.h"\
+	"..\efltk\Fl_Input_Browser.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Menu_.h"\
+	"..\efltk\Fl_Menu_Item.h"\
+	"..\efltk\Fl_Menu_Window.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_Scrollbar.h"\
+	"..\efltk\Fl_Single_Window.h"\
+	"..\efltk\Fl_Slider.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Valuator.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_INPU=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Item.cpp
+DEP_CPP_FL_IT=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Button.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Check_Button.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Divider.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Item.h"\
+	"..\efltk\Fl_Item_Group.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Menu_.h"\
+	"..\efltk\Fl_Menu_Item.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_IT=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_key_name.cpp
+DEP_CPP_FL_KE=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_KE=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_labeltype.cpp
+DEP_CPP_FL_LA=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_LA=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Light_Button.cpp
+DEP_CPP_FL_LI=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Button.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Check_Button.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Light_Button.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_list_fonts.cpp
+DEP_CPP_FL_LIS=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\fl_utf8.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\core\fl_list_fonts_win32.cpp"\
+	"..\src\core\fl_list_fonts_x.cpp"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_LIS=\
+	"..\efltk\mac.h"\
+	"..\src\core\fl_list_fonts_mac.cpp"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Lists.cpp
+DEP_CPP_FL_LIST=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_Ptr_Stack.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\vsnprintf.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_ListView.cpp
+DEP_CPP_FL_LISTV=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Image_List.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_ListView.h"\
+	"..\efltk\Fl_ListView_Header.h"\
+	"..\efltk\Fl_ListView_Item.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_Scrollbar.h"\
+	"..\efltk\Fl_Slider.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Valuator.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_LISTV=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_ListView_Header.cpp
+DEP_CPP_FL_LISTVI=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Image_List.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_ListView.h"\
+	"..\efltk\Fl_ListView_Header.h"\
+	"..\efltk\Fl_ListView_Item.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_Scrollbar.h"\
+	"..\efltk\Fl_Slider.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Valuator.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_LISTVI=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_ListView_Item.cpp
+DEP_CPP_FL_LISTVIE=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Image_List.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_ListView.h"\
+	"..\efltk\Fl_ListView_Header.h"\
+	"..\efltk\Fl_ListView_Item.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_Scrollbar.h"\
+	"..\efltk\Fl_Slider.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Valuator.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_LISTVIE=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_load_plugin.cpp
+DEP_CPP_FL_LO=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\filename.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\fl_load_plugin.h"\
+	"..\efltk\fl_utf8.h"\
+	"..\efltk\Fl_Util.h"\
+	".\config.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_locale.cpp
+DEP_CPP_FL_LOC=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\core\fl_internal.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_LOC=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_lock.cpp
+DEP_CPP_FL_LOCK=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	".\config.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Main_Window.cpp
+DEP_CPP_FL_MA=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Bar.h"\
+	"..\efltk\Fl_Box.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Button.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Double_Window.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Main_Window.h"\
+	"..\efltk\Fl_Menu_.h"\
+	"..\efltk\Fl_Menu_Bar.h"\
+	"..\efltk\Fl_Menu_Button.h"\
+	"..\efltk\Fl_Menu_Item.h"\
+	"..\efltk\Fl_Menu_Window.h"\
+	"..\efltk\Fl_Pack.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_Single_Window.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Tool_Bar.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_map.cpp
+DEP_CPP_FL_MAP=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_MAP=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Menu.cpp
+DEP_CPP_FL_ME=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Choice.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Item.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Menu_.h"\
+	"..\efltk\Fl_Menu_Bar.h"\
+	"..\efltk\Fl_Menu_Item.h"\
+	"..\efltk\Fl_Menu_Window.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_Single_Window.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Tooltip.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	"..\efltk\math.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_ME=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Menu_.cpp
+DEP_CPP_FL_MEN=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Item.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Menu_.h"\
+	"..\efltk\Fl_Menu_Item.h"\
+	"..\efltk\Fl_Menu_Window.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_Single_Window.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Menu_add.cpp
+DEP_CPP_FL_MENU=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Divider.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Item.h"\
+	"..\efltk\Fl_Item_Group.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Menu_.h"\
+	"..\efltk\Fl_Menu_Item.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\src\core\ARRAY.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Menu_Bar.cpp
+DEP_CPP_FL_MENU_=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Item.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Menu_.h"\
+	"..\efltk\Fl_Menu_Bar.h"\
+	"..\efltk\Fl_Menu_Item.h"\
+	"..\efltk\Fl_Menu_Window.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_Single_Window.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	".\config.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Menu_Button.cpp
+DEP_CPP_FL_MENU_B=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Item.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Menu_.h"\
+	"..\efltk\Fl_Menu_Button.h"\
+	"..\efltk\Fl_Menu_Item.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Menu_global.cpp
+DEP_CPP_FL_MENU_G=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Menu_.h"\
+	"..\efltk\Fl_Menu_Item.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Menu_Item.cpp
+DEP_CPP_FL_MENU_I=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Divider.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Item.h"\
+	"..\efltk\Fl_Item_Group.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Menu_.h"\
+	"..\efltk\Fl_Menu_Bar.h"\
+	"..\efltk\Fl_Menu_Button.h"\
+	"..\efltk\Fl_Menu_Item.h"\
+	"..\efltk\Fl_Menu_Window.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_Single_Window.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Menu_Window.cpp
+DEP_CPP_FL_MENU_W=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Menu_.h"\
+	"..\efltk\Fl_Menu_Item.h"\
+	"..\efltk\Fl_Menu_Window.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_Single_Window.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	"..\efltk\math.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_MENU_W=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Multi_Image.cpp
+DEP_CPP_FL_MU=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Multi_Image.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_MU=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Multi_Tabs.cpp
+DEP_CPP_FL_MUL=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Multi_Tabs.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_Scroll.h"\
+	"..\efltk\Fl_Scrollbar.h"\
+	"..\efltk\Fl_Slider.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Valuator.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_MUL=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Numeric_Input.cpp
+DEP_CPP_FL_NU=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\fl_ask.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Input.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Numeric_Input.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\src\core\fl_internal.h"\
+	".\config.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Output.cpp
+DEP_CPP_FL_OU=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Input.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Output.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_oval_box.cpp
+DEP_CPP_FL_OV=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_overlay.cpp
+DEP_CPP_FL_OVE=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_OVE=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_overlay_visual.cpp
+DEP_CPP_FL_OVER=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_OVER=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Overlay_Window.cpp
+DEP_CPP_FL_OVERL=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Double_Window.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Overlay_Window.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_OVERL=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_own_colormap.cpp
+DEP_CPP_FL_OW=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_OW=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Pack.cpp
+DEP_CPP_FL_PA=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Pack.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Pixmap.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_plastic_box.cpp
+DEP_CPP_FL_PL=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Popup_Window.cpp
+DEP_CPP_FL_PO=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Menu_Window.h"\
+	"..\efltk\Fl_Popup_Window.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_Single_Window.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_ProgressBar.cpp
+DEP_CPP_FL_PR=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_ProgressBar.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Radio_Button.cpp
+DEP_CPP_FL_RA=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Button.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Check_Button.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_Radio_Button.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_rect.cpp
+DEP_CPP_FL_RE=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_RE=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Renderer.cpp
+DEP_CPP_FL_REN=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_REN=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Repeat_Button.cpp
+DEP_CPP_FL_REP=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Button.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_Repeat_Button.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Return_Button.cpp
+DEP_CPP_FL_RET=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Button.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_Return_Button.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_rgb.cpp
+DEP_CPP_FL_RG=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_RG=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Roller.cpp
+DEP_CPP_FL_RO=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_Roller.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Valuator.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_round_box.cpp
+DEP_CPP_FL_ROU=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_rounded_box.cpp
+DEP_CPP_FL_ROUN=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Scroll.cpp
+DEP_CPP_FL_SC=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_Scroll.h"\
+	"..\efltk\Fl_Scrollbar.h"\
+	"..\efltk\Fl_Slider.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Valuator.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_scroll_area.cpp
+DEP_CPP_FL_SCR=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_SCR=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Scrollbar.cpp
+DEP_CPP_FL_SCRO=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_Scrollbar.h"\
+	"..\efltk\Fl_Slider.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Valuator.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\math.h"\
+	".\config.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_shadow_box.cpp
+DEP_CPP_FL_SH=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Shaped_Window.cpp
+DEP_CPP_FL_SHA=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Bitmap.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Double_Window.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_Shaped_Window.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_SHA=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\fl_show_colormap.cpp
+DEP_CPP_FL_SHO=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\fl_show_colormap.h"\
+	"..\efltk\Fl_Single_Window.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	".\config.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Simple_Html.cpp
+DEP_CPP_FL_SI=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Image_Cache.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_Scrollbar.h"\
+	"..\efltk\Fl_Simple_Html.h"\
+	"..\efltk\Fl_Slider.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\fl_utf8.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Valuator.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\vsnprintf.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\core\fl_internal.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_SI=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Single_Window.cpp
+DEP_CPP_FL_SIN=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_Single_Window.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Slider.cpp
+DEP_CPP_FL_SL=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_Slider.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Valuator.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\math.h"\
+	".\config.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_stretch.cpp
+DEP_CPP_FL_ST=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_ST=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_String.cpp
+DEP_CPP_FL_STR=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\math.h"\
+	"..\efltk\vsnprintf.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Style.cpp
+DEP_CPP_FL_STY=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\filename.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Config.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\fl_load_plugin.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\math.h"\
+	"..\efltk\vsnprintf.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Style_Set.cpp
+DEP_CPP_FL_STYL=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Style_Set.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\fl_symbols.cpp
+DEP_CPP_FL_SY=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Tabs.cpp
+DEP_CPP_FL_TA=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Tabs.h"\
+	"..\efltk\Fl_Tooltip.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Text_Buffer.cpp
+DEP_CPP_FL_TE=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_Ptr_Stack.h"\
+	"..\efltk\Fl_Text_Buffer.h"\
+	"..\efltk\fl_utf8.h"\
+	".\config.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Text_Display.cpp
+DEP_CPP_FL_TEX=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_Ptr_Stack.h"\
+	"..\efltk\Fl_Scrollbar.h"\
+	"..\efltk\Fl_Slider.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Text_Buffer.h"\
+	"..\efltk\Fl_Text_Display.h"\
+	"..\efltk\fl_utf8.h"\
+	"..\efltk\Fl_Valuator.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\efltk\Xutf8.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_TEX=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Text_Editor.cpp
+DEP_CPP_FL_TEXT=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Menu_.h"\
+	"..\efltk\Fl_Menu_Button.h"\
+	"..\efltk\Fl_Menu_Item.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_Ptr_Stack.h"\
+	"..\efltk\Fl_Scrollbar.h"\
+	"..\efltk\Fl_Slider.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Text_Buffer.h"\
+	"..\efltk\Fl_Text_Display.h"\
+	"..\efltk\Fl_Text_Editor.h"\
+	"..\efltk\Fl_Valuator.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	".\config.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_theme.cpp
+DEP_CPP_FL_TH=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\filename.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Config.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\fl_load_plugin.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\vsnprintf.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_TH=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Thread.cpp
+DEP_CPP_FL_THR=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Thread.h"\
+	"..\efltk\Fl_Thread_Linux.h"\
+	"..\efltk\Fl_Thread_w32.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Tile.cpp
+DEP_CPP_FL_TI=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Tile.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Tool_Bar.cpp
+DEP_CPP_FL_TO=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Bar.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Button.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Divider.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Item.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Menu_.h"\
+	"..\efltk\Fl_Menu_Button.h"\
+	"..\efltk\Fl_Menu_Item.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Tool_Bar.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\math.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Tooltip.cpp
+DEP_CPP_FL_TOO=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Menu_Window.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_Single_Window.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Tooltip.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_utf8.c
+DEP_CPP_FL_UT=\
+	"..\efltk\Xutf8.h"\
+	"..\src\xutf\headers\case.h"\
+	"..\src\xutf\headers\spacing.h"\
+	".\config.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Util.cpp
+DEP_CPP_FL_UTI=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\filename.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Valuator.cpp
+DEP_CPP_FL_VA=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Valuator.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\math.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Value_Input.cpp
+DEP_CPP_FL_VAL=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Float_Input.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Input.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Numeric_Input.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Valuator.h"\
+	"..\efltk\Fl_Value_Input.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\math.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Fl_Value_Slider.cpp
+DEP_CPP_FL_VALU=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Input.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Output.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_Slider.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Valuator.h"\
+	"..\efltk\Fl_Value_Slider.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Variant.cpp
+DEP_CPP_FL_VAR=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_vertex.cpp
+DEP_CPP_FL_VE=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\math.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_VE=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_visual.cpp
+DEP_CPP_FL_VI=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_VI=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Widget.cpp
+DEP_CPP_FL_WI=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\fl_draw.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_WI=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Window.cpp
+DEP_CPP_FL_WIN=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	"..\efltk\Fl_WM.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_WIN=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Window_fullscreen.cpp
+DEP_CPP_FL_WIND=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_WIND=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Window_hotspot.cpp
+DEP_CPP_FL_WINDO=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	"..\efltk\win32.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Window_iconize.cpp
+DEP_CPP_FL_WINDOW=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_Widget_List.h"\
+	"..\efltk\Fl_Window.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	
+NODEP_CPP_FL_WINDOW=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_WM.cpp
+DEP_CPP_FL_WM=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Callback.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Data_Fields.h"\
+	"..\efltk\Fl_Data_Source.h"\
+	"..\efltk\Fl_Date_Time.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Font.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Int_List.h"\
+	"..\efltk\Fl_Labeltype.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_String.h"\
+	"..\efltk\Fl_String_List.h"\
+	"..\efltk\Fl_Style.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\Fl_Variant.h"\
+	"..\efltk\Fl_Widget.h"\
+	"..\efltk\Fl_WM.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_WM=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_Xpm.cpp
+DEP_CPP_FL_XP=\
+	"..\efltk\Enumerations.h"\
+	"..\efltk\Fl.h"\
+	"..\efltk\Fl_Boxtype.h"\
+	"..\efltk\Fl_Color.h"\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\Fl_Flags.h"\
+	"..\efltk\Fl_Image.h"\
+	"..\efltk\Fl_Ptr_List.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
+	"..\efltk\Fl_Util.h"\
+	"..\efltk\win32.h"\
+	"..\efltk\x.h"\
+	"..\src\core\fl_internal.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
+	".\config.h"\
+	
+NODEP_CPP_FL_XP=\
+	"..\efltk\mac.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\wcelib\src\locale.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\numericsort.c
+DEP_CPP_NUMER=\
+	".\config.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\scandir.c
+DEP_CPP_SCAND=\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\fl_utf8.h"\
+	"..\src\core\scandir_win32.c"\
+	".\config.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\wcelib\src\stdlibx.c
+DEP_CPP_STDLI=\
+	"..\efltk\Fl_Export.h"\
+	"..\efltk\fl_utf8.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=.\test2.rc
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\wcelib\src\time.cpp
+DEP_CPP_TIME_=\
+	"..\src\wcelib\include\time.h"\
+	
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\vsnprintf.c
+DEP_CPP_VSNPR=\
+	"..\efltk\vsnprintf.h"\
+	".\config.h"\
+	
+# End Source File
+# End Group
+# Begin Group "Header Files"
+
+# PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=..\src\core\ARRAY.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\wcelib\include\drawacp.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Enumerations.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\fastarrow.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\filename.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Adjuster.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Align_Group.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\fl_ask.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Bar.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Bitmap.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Box.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Boxtype.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Browser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Calendar.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Callback.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Check_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Choice.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Clock.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\fl_cmap.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Color.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Color_Chooser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Config.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Data_Fields.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Data_Source.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Date_Time.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Date_Time_Input.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Dial.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Dialog.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Dialog_Data_Source.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Directory_DS.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Divider.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Double_Window.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\fl_draw.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Export.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_FileInput.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Flags.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Float_Input.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Font.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Gl_Window.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Group.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Help_Dialog.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Highlight_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Hor_Fill_Slider.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Hor_Nice_Slider.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Hor_Slider.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Hor_Value_Slider.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Image.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Image_Cache.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Image_Filter.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Image_List.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Images.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Input.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Input_Browser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Int_Input.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Int_List.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Item.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Item_Group.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Labeltype.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Light_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Line_Dial.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_ListView.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_ListView_Header.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_ListView_Item.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\fl_load_plugin.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Locale.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Main_Window.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Menu_.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Menu_Bar.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Menu_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Menu_Item.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Menu_Window.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\fl_message.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Multi_Browser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Multi_Image.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Multi_Tabs.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Multiline_Input.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Multiline_Output.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Nice_Slider.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Numeric_Input.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Output.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Overlay_Window.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Pack.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Pixmap.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Popup_Window.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_ProgressBar.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Ptr_List.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Ptr_Stack.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_PtrList.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Radio_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Radio_Item.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Radio_Light_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Radio_Round_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Renderer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Repeat_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Return_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Roller.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Round_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Round_Clock.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Scroll.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Scrollbar.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Secret_Input.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Select_Browser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Shaped_Window.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\fl_show_colormap.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Simple_Counter.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Simple_Html.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Single_Window.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Slider.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_String.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_String_List.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Style.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Style_Set.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Tabs.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Text_Buffer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Text_Display.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Text_Editor.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Thread.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Thread_Linux.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Thread_w32.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Threads.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Tile.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Timer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Toggle_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Toggle_Item.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Toggle_Light_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Toggle_Round_Button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Tool_Bar.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Tooltip.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Tree.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\fl_utf8.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Util.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Valuator.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Value_Input.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Value_List.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Value_Map.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Value_Output.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Value_Slider.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Value_Stack.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Variant.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Widget.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Widget_List.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Window.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_WM.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Wordwrap_Input.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Wordwrap_Output.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\core\Fl_XColor.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\gl.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\gl2opengl.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\gl_draw.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\wcelib\include\locale.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\math.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\mediumarrow.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\Pixmaps.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\widgets\slowarrow.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\wcelib\include\stdlibx.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\vsnprintf.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\win32.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\wcelib\include\wince.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\x.h
+# End Source File
+# End Group
+# End Target
+# End Project

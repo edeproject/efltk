@@ -11,6 +11,9 @@
 #include <stdio.h>
 #include <sys/stat.h>
 
+#ifdef _WIN32_WCE
+#include <stdlibx.h>
+#endif
 #include <config.h>
 
 #ifdef _WIN32
@@ -568,6 +571,7 @@ void Fl_Config::remove_sec(const char *section)
 #include "fl_internal.h"
 
 // Converts locale decimal to '.' e.g. "1,5" to "1.5"
+
 char *double_to_str(double v)
 {
     static char ret[128];

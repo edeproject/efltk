@@ -24,7 +24,11 @@
 //
 
 #include <efltk/Fl_Window.h>
-//#include <efltk/x.h>
+#ifdef _WIN32_WCE
+#include <wince.h>
+#else
+#include <efltk/x.h>
+#endif
 
 #include <efltk/Fl.h>
 #include <efltk/Fl_WM.h>

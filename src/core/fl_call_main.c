@@ -64,8 +64,13 @@ extern int main(int, char *[]);
 	extern char **__argv;
 #endif
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+#ifndef _WIN32_WCE
+	int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
                              LPSTR lpCmdLine, int nCmdShow) {
+#else
+		int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+                             LPWSTR lpCmdLine, int nCmdShow) {
+#endif
 #ifdef _DEBUG
   // If we are using compiling in debug mode, open a console window so
   // we can see any printf's, etc...

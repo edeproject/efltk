@@ -125,10 +125,17 @@ char *fl_get_homedir()
 #ifdef _WIN32
 	const char *str2;
     HKEY hKey;
+#ifndef _WIN32_WCE
     if(RegOpenKeyEx(HKEY_CURRENT_USER,"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders",0,KEY_READ,&hKey)==ERROR_SUCCESS)
     {
         DWORD size=4096;
-        LONG result=RegQueryValueEx(hKey, "Local AppData", NULL, NULL, (LPBYTE)path, &size);  // Change "Personal" to "Desktop" if you want...
+		LONG result=RegQueryValueEx(hKey, "Local AppData", NULL, NULL, (LPBYTE)path, &size);  // Change "Personal" to "Desktop" if you want...
+#else
+    if(RegOpenKeyEx(HKEY_CURRENT_USER,L"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders",0,KEY_READ,&hKey)==ERROR_SUCCESS)
+    {
+        DWORD size=4096;
+		LONG result=RegQueryValueEx(hKey, L"Local AppData", NULL, NULL, (LPBYTE)path, &size);  // Change "Personal" to "Desktop" if you want...
+#endif
         RegCloseKey(hKey);
         return path;
     }

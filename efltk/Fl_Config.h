@@ -4,6 +4,10 @@
 #ifndef _FL_CONFIG_H_
 #define _FL_CONFIG_H_
 
+char *double_to_str(double v);
+double str_to_double(const char *v);
+
+
 #include "Enumerations.h"
 #include "Fl_Ptr_List.h"
 #include "Fl_Util.h"

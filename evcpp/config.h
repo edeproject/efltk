@@ -119,7 +119,7 @@
 #define HAVE_VSNPRINTF 0
 
 /* Possibly missing function and inline replacement: */
-#define HAVE_STRCASECMP 0
+#define HAVE_STRCASECMP 1
 
 #if ! HAVE_STRCASECMP
 # define strcasecmp(a,b) stricmp(a,b)

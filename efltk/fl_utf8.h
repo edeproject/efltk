@@ -57,6 +57,7 @@ FL_API char* fl_utf2mbcs(const char * s);
 FL_API char* fl_mbcs2utf(const char *s);
 
 FL_API int fl_is_nt4(void);
+FL_API int fl_is_ce(void);
 FL_API int fl_chmod(const char* f, int mode);
 FL_API int fl_access(const char* f, int mode);
 FL_API int fl_stat( const char *path, struct stat *buffer );

@@ -42,7 +42,7 @@
 #include <winsock.h>
 #include <ctype.h>
 #include <efltk/filename.h>
-
+#include <resource.h>
 // The following include files require GCC 3.x or a non-GNU compiler...
 #if !defined(__GNUC__) || __GNUC__ >= 3
 # include <ole2.h>
@@ -1550,10 +1550,12 @@ void Fl_X::create(Fl_Window* window)
 			wc.cbClsExtra = wc.cbWndExtra = 0;
 			wc.hInstance = fl_display;
 			//if(!window->icon()) window->icon((void *)LoadIcon(NULL, IDI_APPLICATION));
-			wc.hIcon = (HICON)window->icon();			
-			wc.hCursor = fl_default_cursor;
+			wc.hIcon = (HICON)LoadIcon(fl_display, MAKEINTRESOURCE(IDI_TEST2));
+			//wc.hCursor = fl_default_cursor;
+			wc.hCursor = 0;
 			//uchar r,g,b; Fl::get_color(FL_GRAY,r,g,b);
 			//wc.hbrBackground = (HBRUSH)CreateSolidBrush(RGB(r,g,b));
+			wc.hbrBackground = (HBRUSH) GetStockObject(DEFAULT_PALETTE);
 			wc.hbrBackground = NULL;
 			wc.lpszMenuName = NULL;
 			wc.lpszClassName = xclass;
