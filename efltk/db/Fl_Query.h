@@ -80,6 +80,7 @@ public: // acting as a Data Source
 
    virtual unsigned          field_count() const                        { return m_fields.count();     }
    virtual int               field_index(const char *fname) const       { return m_fields.field_index(fname); }
+   virtual void             *user_data() const                          { return m_fields.user_data(); }
 
    // access to the field value by field number, 0..field_count()-1
    virtual const Fl_Variant& operator [] (int fnum) const               { return m_fields[fnum]; }

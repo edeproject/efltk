@@ -116,29 +116,35 @@ bool Fl_IMAP_DS::open() {
     m_imap.cmd_login(m_user,m_password);
 
     // Select the mail box
-    int total_messages;
+    int total_messages, first_message = 1;
     m_imap.cmd_select(m_folder,total_messages);
 
+    if (m_msgid) {
+        first_message = m_msgid;
+        total_messages = m_msgid;
+    }
     if (total_messages) {
-       if (m_callback)
-           m_callback(total_messages,0);
-       for (int msg_id = 1; msg_id <= total_messages; msg_id++) {
-           Fl_Data_Fields   *df = new Fl_Data_Fields;
+        if (m_callback)
+            m_callback(total_messages,0);
+        for (int msg_id = first_message; msg_id <= total_messages; msg_id++) {
+            Fl_Data_Fields   *df = new Fl_Data_Fields;
 
-           if (m_fetchbody)
-               m_imap.cmd_fetch_message(msg_id,*df);
-           else    m_imap.cmd_fetch_headers(msg_id,*df);
+            df->user_data((void *)msg_id);
 
-           m_list.append(df);
+            if (m_fetchbody)
+                m_imap.cmd_fetch_message(msg_id,*df);
+            else    m_imap.cmd_fetch_headers(msg_id,*df);
 
-           if (m_callback)
-               m_callback(total_messages,msg_id);
-       }
-       if (m_callback)
-           m_callback(total_messages,total_messages);
+            m_list.append(df);
+
+            if (m_callback)
+                m_callback(total_messages,msg_id);
+        }
+        if (m_callback)
+            m_callback(total_messages,total_messages);
     } else {
-       if (m_callback)
-           m_callback(100,100);
+        if (m_callback)
+            m_callback(100,100);
     }
 
     first();

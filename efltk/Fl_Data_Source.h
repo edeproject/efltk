@@ -50,6 +50,7 @@ public:
 
     virtual const Fl_Data_Field& field (int field_index) const = 0;
     virtual Fl_Data_Field&       field (int field_index) = 0;
+    virtual void             *user_data() const { return 0L; } 
 
     virtual bool              read_field(const char *fname,Fl_Variant& value) = 0;
     virtual bool              write_field(const char *fname,const Fl_Variant& fvalue) = 0;

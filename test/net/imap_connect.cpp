@@ -12,6 +12,8 @@
 #include <efltk/Fl_Config.h>
 #include <efltk/Fl_Choice.h>
 #include <efltk/Fl_Browser.h>
+#include <efltk/Fl_Box.h>
+#include <efltk/Fl_Text_Editor.h>
 #include <efltk/Fl_Item.h>
 #include <efltk/Fl_Item_Group.h>
 
@@ -26,6 +28,7 @@ Fl_ListView *list_view;
 Fl_ProgressBar *progress;
 Fl_Config *config;
 Fl_Browser *browser;
+Fl_Text_Buffer *messageBuffer;
 
 class Fl_Tree_Item {
     Fl_Ptr_List m_list;
@@ -112,15 +115,20 @@ void cb_progress(int total,int pr) {
     Fl::check();
 }
 
+Fl_String currentFolder;
+
 void cb_browser(Fl_Widget *browser,void *) {
     Fl_Widget   *item = ((Fl_Browser*)browser)->item();
     Fl_String   mailbox = item->label();
+    // Build the full folder name
     for (;;) {
         item = item->parent();
         if (!item) break;
         if (item == browser) break;
         mailbox = item->label() + Fl_String("/") + mailbox;
     };
+    currentFolder = mailbox;
+    // Retrive the message list
     Fl_IMAP_DS  imap_ds;
     fl_try {
         // Filling the list of messages
@@ -132,9 +140,38 @@ void cb_browser(Fl_Widget *browser,void *) {
         list_view->fill(imap_ds);
         list_view->redraw();
     }
-    fl_catch(exception) {
-        puts(exception.text().c_str());
+fl_catch(exception) { puts(exception.text().c_str()); }
+}
+
+void cb_lview(Fl_Widget *sender,void *) {
+    // Use the mailbox defined by prior click
+    // on the folder name in the browser
+    Fl_String   mailbox = currentFolder;
+    if (!currentFolder.length()) return;
+
+    // Get the active line in the message list,
+    // obtain the message id
+    Fl_ListView *l = (Fl_ListView *)sender;
+    Fl_ListView_Item *i = (Fl_ListView_Item *)l->item();
+    if (!i) return;
+    int msgid = (int) i->user_data();
+
+    // Retrive the highlighted message
+    Fl_IMAP_DS  imap_ds;
+    fl_try {
+        // Filling the list of messages
+        imap_ds.host(server->value());
+        imap_ds.user(user->value());
+        imap_ds.password(password->value());
+        imap_ds.folder(mailbox);
+        imap_ds.message(msgid);
+        imap_ds.fetch_body(true);
+        imap_ds.open();
+        Fl_String body = imap_ds["body"].get_string();
+        messageBuffer->text(body.c_str());
+        imap_ds.close();
     }
+fl_catch(exception) { puts(exception.text().c_str()); }
 }
 
 void cb_read(Fl_Widget *,void *) {
@@ -161,9 +198,7 @@ void cb_read(Fl_Widget *,void *) {
         config->write("user",user->value());
         config->write("password",password->value());
     }
-fl_catch(exception) {
-    puts(exception.text().c_str());
-}
+fl_catch(exception) { puts(exception.text().c_str()); }
 }
 
 Fl_Menu_Item default_mboxes[] = {
@@ -190,9 +225,19 @@ int main(int argc,char *argv[]) {
     br.callback(cb_browser);
     browser = &br;
 
-    Fl_ListView lview(10,10,480,380);
-    lview.layout_align(FL_ALIGN_CLIENT);
+    Fl_ListView lview(10,10,480,150);
+    lview.layout_align(FL_ALIGN_TOP);
+    lview.callback(cb_lview);
     list_view = &lview;
+
+    Fl_Text_Buffer textBuf;
+
+    Fl_Text_Editor messageText(10,10,480,30);
+    messageText.layout_align(FL_ALIGN_CLIENT);
+
+    messageText.buffer(&textBuf);
+
+    messageBuffer = &textBuf;
 
     centerGroup.end();
     centerGroup.layout_align(FL_ALIGN_CLIENT);

@@ -30,7 +30,7 @@ typedef void (*Fl_Progress_Callback)(int total,int progress);
 class Fl_IMAP_DS : public Fl_Memory_DS  {
 public:
     // ctor, dtor 
-    Fl_IMAP_DS() : Fl_Memory_DS(), m_showpolicy(0), m_fetchbody(false), m_callback(NULL) { }
+    Fl_IMAP_DS() : Fl_Memory_DS(), m_showpolicy(0), m_fetchbody(false), m_callback(NULL) { m_msgid = 0; }
     virtual ~Fl_IMAP_DS() { close(); }
 
     enum {
@@ -51,12 +51,15 @@ public:
     void password(Fl_String pwd)    { m_password = pwd; }    
     Fl_String password() const      { return m_password; }    
 
-    void folder(const char *d) { m_folder = d; }
+    void folder(const char *d)      { m_folder = d; }
     void folder(const Fl_String &d) { m_folder = d; }
     const Fl_String &folder() const { return m_folder; }
 
-    void fetchbody(bool fb)         { m_fetchbody = fb; }
-    bool fetchbody() const          { return m_fetchbody; }
+    void message(int msgid)         { m_msgid = msgid; }
+    int message()   const                   { return m_msgid; }
+
+    void fetch_body(bool fb)         { m_fetchbody = fb; }
+    bool fetch_body() const          { return m_fetchbody; }
 
     // dataset navigation
     virtual bool              open();
@@ -70,6 +73,7 @@ private:
     Fl_String           m_password;
     bool                m_fetchbody;
     Fl_Progress_Callback m_callback;
+    int                     m_msgid;
 };
 
 #endif

@@ -77,7 +77,7 @@ protected:
 
 class FL_API Fl_Data_Fields {
 public:
-    Fl_Data_Fields() {}
+    Fl_Data_Fields() { m_userData = 0; }
     ~Fl_Data_Fields() { clear(); }
 
     void clear();
@@ -95,7 +95,11 @@ public:
     Fl_Variant&       operator [] (const char *fname);
     const Fl_Variant& operator [] (const char *fname) const;
 
+    void user_data(void *d) { m_userData = d; } 
+    void *user_data() const { return m_userData; } 
+
 private:
+    void             *m_userData;
     Fl_Ptr_List       m_list;
     static const Fl_Variant m_fieldNotFound;
 };

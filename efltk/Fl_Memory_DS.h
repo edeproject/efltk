@@ -40,6 +40,7 @@ public:
 
     virtual const Fl_Data_Field& field (int field_index) const;
     virtual Fl_Data_Field&       field (int field_index);
+    virtual void             *user_data() const { return m_current->user_data(); }
 
     // how many fields do we have in the current record?
     virtual unsigned          field_count() const;

@@ -1106,6 +1106,7 @@ void Fl_ListView::fill(Fl_Data_Source &ds)
     while (!ds.eof()) {
         Fl_ListView_ItemExt *item = new Fl_ListView_ItemExt();
         item->columns(columnCount);
+        item->user_data(ds.user_data());
         for (int col = 0; col < (int)columnCount; col++) {
             Fl_Data_Field& df = ds.field(col);
             if (!df.visible) continue;

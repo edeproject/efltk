@@ -147,27 +147,27 @@ static const char *required_headers[] = {
 };
 
 static void parse_header(const Fl_String& header,Fl_String& header_name,Fl_String& header_value) {
-	if (header[0] == ' ') 
-		return;
+    if (header[0] == ' ')
+        return;
 
-	int p = header.pos(" ");
-	if (p < 1) 
-		return;
-	if (header[p-1] == ':') {
-		header_name = header.sub_str(0,p-1);
-		header_value = header.sub_str(p+1,header.length());
-	}
+    int p = header.pos(" ");
+    if (p < 1)
+        return;
+    if (header[p-1] == ':') {
+        header_name = header.sub_str(0,p-1).lower_case();
+        header_value = header.sub_str(p+1,header.length());
+    }
 }
 
 static Fl_Date_Time decode_date(const Fl_String& dt) {
-	char    temp[40];
-	strcpy(temp,dt.c_str()+5);
+    char    temp[40];
+    strcpy(temp,dt.c_str()+5);
     // 1. get the day of the month
-	char *p1 = temp;
-	char *p2 = strchr(p1,' ');
-	if (!p2) return Fl_Date_Time(0.0);
-	*p2 = 0;
-	int mday = atoi(p1);
+    char *p1 = temp;
+    char *p2 = strchr(p1,' ');
+    if (!p2) return Fl_Date_Time(0.0);
+    *p2 = 0;
+    int mday = atoi(p1);
     // 2. get the month
 	p1 = p2 + 1;
 	int month = 1;
@@ -227,79 +227,82 @@ static Fl_Date_Time decode_date(const Fl_String& dt) {
 }
 
 void Fl_IMAP_Connect::parse_message(Fl_Data_Fields& results,bool headers_only) {
-	results.clear();
-	unsigned i;
-	for (i = 0; required_headers[i]; i++) {
-		Fl_Data_Field *fld = new Fl_Data_Field(required_headers[i]);
-		switch (i) {
-			case 0: fld->width = 16; break;
-			default: fld->width = 32; break;
-		}
-		results.add(fld);
-	}
+    results.clear();
+    unsigned i;
+    for (i = 0; required_headers[i]; i++) {
+        Fl_String headerName = required_headers[i];
+        Fl_Data_Field *fld = new Fl_Data_Field(headerName.lower_case());
+        switch (i) {
+            case 0: fld->width = 16; break;
+            default: fld->width = 32; break;
+        }
+        results.add(fld);
+    }
     // parse headers
-	i = 1;
-	for (; i < m_response.count() - 1; i++) {
-		Fl_String& st = m_response[i];
-		Fl_String header_name, header_value;
-		parse_header(st,header_name,header_value);
-		if (header_name.length()) {
-			int field_index = results.field_index(header_name.c_str());
-			if (field_index >= 0) {
-				if (header_name == "Date")
-					results[field_index].set_date(decode_date(header_value));
-				else    
-					results[field_index].set_string(header_value);
-			}
-		}
-	}
-	if (headers_only) return;
-	Fl_String   body;
-	for (; i < m_response.count() - 1; i++) {
-		body += m_response[i];
-	}
-	Fl_Data_Field& bodyField = results.add(new Fl_Data_Field("Body"));
-	bodyField = body;
+    i = 1;
+    for (; i < m_response.count() - 1; i++) {
+        Fl_String& st = m_response[i];
+        if (!st.length())
+            break;
+        Fl_String header_name, header_value;
+        parse_header(st,header_name,header_value);
+        if (header_name.length()) {
+            int field_index = results.field_index(header_name.c_str());
+            if (field_index >= 0) {
+                if (header_name == "date")
+                    results[field_index].set_date(decode_date(header_value));
+                else
+                    results[field_index].set_string(header_value);
+            }
+        }
+    }
+    if (headers_only) return;
+    Fl_String   body;
+    for (; i < m_response.count() - 1; i++) {
+        body += m_response[i] += "\n";
+    }
+    Fl_Data_Field& bodyField = results.add(new Fl_Data_Field("body"));
+    bodyField = body;
 }
 
 void Fl_IMAP_Connect::cmd_fetch_headers(int msg_id,Fl_Data_Fields& result) {
-	command("FETCH "+Fl_String(msg_id)+" (BODY[HEADER])");
-	parse_message(result,true);
+    command("FETCH "+Fl_String(msg_id)+" (BODY[HEADER])");
+    parse_message(result,true);
 }
 
 void Fl_IMAP_Connect::cmd_fetch_message(int msg_id,Fl_Data_Fields& result) {
-	command("FETCH "+Fl_String(msg_id)+" (BODY[])");
-	parse_message(result,false);
+    command("FETCH "+Fl_String(msg_id)+" (BODY[])");
+    parse_message(result,false);
 }
 
 static Fl_String strip_framing_quotes(Fl_String st) {
-	if (st[0] == '\"')
-		return st.sub_str(1,st.length()-2);
-	else return st;
+    if (st[0] == '\"')
+        return st.sub_str(1,st.length()-2);
+    else return st;
 }
 
 void Fl_IMAP_Connect::parse_folder_list() {
-	Fl_String_List	folder_names;
-	Fl_String prefix = "* LIST ";
-	for (unsigned i = 0; i < m_response.count(); i++) {
-		Fl_String& st = m_response[i];
-		if (st.pos(prefix) == 0) {
-			// passing the attribute(s)
-			const char *p = strstr(st.c_str() + prefix.length(),") ");
-			if (!p) continue;
-			// passing the reference
-			p = strchr(p + 2,' ');
-			if (!p) continue;
+    Fl_String_List	folder_names;
+    Fl_String prefix = "* LIST ";
+    for (unsigned i = 0; i < m_response.count(); i++) {
+        Fl_String& st = m_response[i];
+        if (st.pos(prefix) == 0) {
+            // passing the attribute(s)
+            const char *p = strstr(st.c_str() + prefix.length(),") ");
+            if (!p) continue;
+            // passing the reference
+            p = strchr(p + 2,' ');
+            if (!p) continue;
             p++;
-			// Ok, we found the path
-			folder_names.append(strip_framing_quotes(p));
-		}
-	}
-	m_response = folder_names;
+            // Ok, we found the path
+            folder_names.append(strip_framing_quotes(p));
+        }
+    }
+    m_response = folder_names;
 }
 
 void Fl_IMAP_Connect::cmd_list(Fl_String mail_box_mask,bool decode)  { 
-	command("list",empty_quotes,mail_box_mask);
-	if (decode)
-		parse_folder_list();
+    command("list",empty_quotes,mail_box_mask);
+    if (decode)
+        parse_folder_list();
 }
