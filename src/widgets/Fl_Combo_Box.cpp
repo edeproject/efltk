@@ -258,8 +258,8 @@ Fl_Combo_Box_Panel::Fl_Combo_Box_Panel(Fl_ListView *lv)
 }
 
 void Fl_Combo_Box_Panel::draw() {
-    int focused = -1;
-    if (Fl::focus() == this) focused = 1;
+    bool focused = false;
+    if (Fl::focus() == this) focused = true;
 
     Fl_Color clr = fl_lighter(fl_lighter(parent()->color()));
     if (focused)
