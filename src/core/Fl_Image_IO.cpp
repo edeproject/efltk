@@ -49,10 +49,10 @@ bool Fl_Image::read_image(const char *filename, const uint8 *data, uint32 data_s
 
     bool ret = false;
 
-	if(!filename && !data) 
-		return ret;
-    else if(filename && !fl_file_exists(filename)) {
-		return ret;
+    if(!filename && !data)
+        return ret;
+    else if(!data && filename && !fl_file_exists(filename)) {
+        return ret;
     }
 
     if(xpm_data) {
