@@ -184,7 +184,7 @@ void ETranslate::save(const char *file)
 
     mod_date = Fl_Date_Time::Now().date_string() + " " + Fl_Date_Time::Now().time_string();
 
-    fprintf(fp, "<?xml version=\"1.0\"?>\n");
+    fprintf(fp, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
     fprintf(fp, "<Messages>\n");
     fprintf(fp, " <Info>\n");
     fprintf(fp, "  <Comment>%s</Comment>\n", comment.c_str());

@@ -179,7 +179,7 @@ void Extractor::print_xml(FILE *outfile)
 {
     Fl_String date = Fl_Date_Time::Now().date_string() + " " + Fl_Date_Time::Now().time_string();
 
-    fprintf(outfile, "<?xml version=\"1.0\"?>\n");
+    fprintf(outfile, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
     fprintf(outfile, "<Messages>\n");
     fprintf(outfile, " <Info>\n");
     fprintf(outfile, "  <Comment>Translation for ...</Comment>\n");
