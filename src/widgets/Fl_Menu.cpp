@@ -530,7 +530,7 @@ void MenuWindow::open_childwin(Fl_Widget *widget, int index)
 }
 
 void timeout_open_childwin(void *arg) {
-    if(the_window && the_widget && the_index>=0)
+    if(the_window && the_widget && the_index>=0 && arg==the_window)
         the_window->open_childwin(the_widget, the_index);
 }
 
@@ -698,10 +698,12 @@ int MenuWindow::handle(int event)
 
         if(widget!=the_widget && the_window==this) {
             // Remove timeout, if sub-menu widget we are pointing changes
-            Fl::remove_timeout(timeout_open_childwin, 0);
+            Fl::remove_timeout(timeout_open_childwin, this);
             the_window = 0;
             the_widget = 0;
             the_index = -1;
+        } else if(the_window && the_window!=this) {
+            Fl::remove_timeout(timeout_open_childwin, this);
         }
 
         if(indexes_ && is_parent(index)) {
@@ -709,7 +711,7 @@ int MenuWindow::handle(int event)
             if(widget && !widget->takesevents() && !widget->active()) {
                 // inactive item...
                 if(child_win) {
-                    child_win->hide();
+                    child_win->destroy();
                     if(child_win->animating) return 1;
                     delete child_win;
                     child_win = 0;
@@ -734,7 +736,7 @@ int MenuWindow::handle(int event)
                 the_widget = widget;
                 the_index = index;
                 the_window = this;
-                Fl::add_timeout(delay, timeout_open_childwin, the_window);
+                Fl::add_timeout(delay, timeout_open_childwin, this);
             } else if(delay<=0) {
                 the_widget = 0;
                 the_index = -1;
