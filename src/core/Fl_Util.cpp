@@ -427,22 +427,21 @@ char *fl_cut_line(const char *str, int maxwidth)
     static char buf[4096];
 
     maxwidth-=5; //Just guess...
-    if(maxwidth<0) {		
+    if(maxwidth<0) {
 		return "";
 	}
 
     strncpy(buf, str, sizeof(buf));
     int pos=len+1;
     while(pos-->0) {
-        w = (int)fl_width(buf, pos);
-        if(w<maxwidth) {			
+        w = int(fl_width(buf, pos));
+        if(w<maxwidth) {
 			break;
 		}
-
-		buf[pos] = '\0';
-		buf[pos-1] = '.';
-		buf[pos-2] = '.';
-		buf[pos-3] = '.';
+		if(pos-3>0) buf[pos-3] = '.';
+		if(pos-2>0) buf[pos-2] = '.';
+		if(pos-1>0) buf[pos-1] = '.';
+		if(pos>=0) buf[pos] = '\0';
     }
     return buf;
 }

@@ -24,43 +24,55 @@ public:
     Fl_ListHeader(int X,int Y,int W,int H,const char*l=0);
     ~Fl_ListHeader();
 
-    void clear();
+    virtual void clear();
+	
+	void columns(int count);
+	uint columns();
 
-    void add_column(const char *name, int w) {
-        ++cols;
-        colw[cols-1] = w;
-        coln[cols-1] = strdup(name);
-    }
+    void add_column(const char *name, int w);
+    int width(int col);
+    void width(int col, int w);
+    
+    Fl_Flags column_flags(int col, int f);
+    Fl_Flags column_flags(int col);
+    Fl_Flags column_set_flag(int col, int f);
+    Fl_Flags column_clear_flag(int col, int f);
+    Fl_Flags column_invert_flag(int col, int f);
 
-    void columns(int count);
-    int columns() { return cols; }
+    const char *label();
+    const char *label(int col);
+    void label(int col, const char *text);
+	void copy_label(int col, const char *txt);
 
-    int column_width(int c) { return colw[c]; }
-    void column_width(int c, int w) { colw[c] = w; }
+    Fl_Font label_font(int col);
+	int label_size(int col);
+	void label_size(int col, int size);
+    void label_font(int col, Fl_Font font);
+    void label_color(int col, Fl_Color color);
 
-    const char *column_name(int c) { return coln[c]; }
-    void column_name(int c, const char *name) { if(coln[c]) delete []coln[c]; coln[c] = strdup(name); redraw(); }
+    void image(int col, Fl_Image *im);
+    void image(int col, Fl_Image &im);
+    Fl_Image *image(int col);
 
-    int column_flags(int c) { return colf[c]; }
-    void column_flags(int c, int f) { colf[c] = f; }
-
-    Fl_Image *column_image(int c) { return coli[c]; }
-    void column_image(int c, Fl_Image *im) { coli[c] = im; }
-
-    void draw();
-    void layout();
-    int handle(int ev);
-
-private:
-    int cols;
-    int colw[MAX_COLUMNS]; //widths
-    int colf[MAX_COLUMNS]; //drawing flags
-    char *coln[MAX_COLUMNS]; //labels
-    Fl_Image *coli[MAX_COLUMNS]; //images
+    virtual void draw();
+    virtual void layout();
+    virtual int handle(int ev);
 
 protected:
     int sort_type;
     int sort_col;
+	Fl_Ptr_List attr_list;
+
+	typedef struct {
+		const char *label;
+		Fl_Flags flags;
+		int width;
+		Fl_Font font;
+		int font_size;
+		Fl_Color color;
+		Fl_Image *image;
+	} attr;
+	void add_attr(int col);	
 };
 
 class Fl_ListView : public Fl_Group {
@@ -99,17 +111,18 @@ public:
     int columns() { return _header->columns(); }
     void columns(int cnt) { _header->columns(cnt); }
 
-    int column_width(int c) { return _header->column_width(c); }
-    void column_width(int c, int w) { _header->column_width(c, w); if(w<0) find_def=true; }
+    int column_width(int c) { return _header->width(c); }
+    void column_width(int c, int w) { _header->width(c, w); if(w<0) find_def=true; }
 
-    const char *column_name(int c) { return _header->column_name(c); }
-    void column_name(int c, const char *name) { _header->column_name(c, name); }
+    const char *column_name(int c) { return _header->label(c); }
+    void column_name(int c, const char *name) { _header->copy_label(c, name); }
 
     int column_flags(int c) { return _header->column_flags(c); }
     void column_flags(int c, int f) { _header->column_flags(c,f); }
 
-    Fl_Image *column_image(int c) { return _header->column_image(c); }
-    void column_image(int c, Fl_Image *im) { _header->column_image(c,im); }
+    Fl_Image *column_image(int c) { return _header->image(c); }
+    void column_image(int c, Fl_Image *im) { _header->image(c, im); }
+    void column_image(int c, Fl_Image &im) { _header->image(c, im); }
 
     bool move()  { return ((type() & MOVE_SELECTION)==MOVE_SELECTION);  }
     bool multi() { return ((type() & MULTI_SELECTION)==MULTI_SELECTION); }
@@ -127,7 +140,7 @@ public:
 
     Fl_Widget *item(Fl_Widget *i) { return (item_ = i); }
     Fl_Widget *item() { return item_; }
-    void show_item(Fl_Widget *w);
+    bool show_item(Fl_Widget *w);
 
     Fl_Widget* next();
     Fl_Widget* prev();
@@ -136,11 +149,6 @@ public:
 
     void scroll_up(int pixels = 20);
     void scroll_down(int pixels = 20);
-
-    void clear();
-    void remove(int index);
-    void remove(Fl_Widget& o) { int w = Fl_Group::find(o);  remove(w);}
-    void remove(Fl_Widget* o) { int w = Fl_Group::find(*o); remove(w);}
 
     void sort_selection(); //Call this always before when new multiselection
     void moveselection_up(int dy);
@@ -157,20 +165,29 @@ public:
     int selected() { return selection.count(); }
 
     // Virtual functions
+	virtual void add(Fl_Widget &);
+    virtual void clear();
+    virtual void remove(int index);
+    void remove(Fl_Widget& o) { int w = Fl_Group::find(o);  remove(w);}
+    void remove(Fl_Widget* o) { int w = Fl_Group::find(*o); remove(w);}
+
     virtual int handle(int ev);
     virtual void layout();
     virtual void layout_scrollbars();
 
     virtual void draw();
     virtual void draw_header();
-    virtual void draw_row(int x, int y, int w, int h, Fl_Widget *widget);
+    virtual void draw_row(int x, int y, int w, int h, Fl_Widget *widget, bool selected);
+
+	// Finds default sizes for columns, which has width=-1
+	virtual void find_default_sizes();
 
     // Returns sort mode: ASC,DESC,UNKNOWN
     virtual int sort(int column);
     int sort_type() { return sort_type_; }
 
     Fl_Widget_List &get_selection() { return selection; }
-
+	
     Fl_Scrollbar vscrollbar;
     Fl_Scrollbar hscrollbar;
 
@@ -178,10 +195,15 @@ protected:
     static void hscrollbar_cb(Fl_Widget*, void*);
     static void vscrollbar_cb(Fl_Widget*, void*);
 
+	void calc_index();
+
     Fl_ListHeader head; //Default header
     Fl_ListHeader *_header; //Pointer to current header
 
     Fl_Widget *item_;      // Current item
+
+	bool calc_total_h;
+	int first_vis;
 
     int total_height;
     int yposition_, xposition_;
@@ -193,15 +215,11 @@ protected:
 
     Fl_Widget_List selection;
 
-    // number of first visible item
-    int first_vis;
-
     int X,Y,W,H; //box
     int HX,HY,HW,HH; //header box
 
     bool draw_stripes_;
-    bool find_def; // Set when needs to find default colmn sizes (called by layout)
-    void find_def_sizes();
+    bool find_def; // Set when needs to find default colmn sizes (called by layout)    
 
     int sort_type_;
 };

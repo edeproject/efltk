@@ -58,6 +58,7 @@ public:
 
   Fl_Group* parent() const	{return parent_;}
   void	parent(Fl_Group* w)	{parent_ = w;}
+
   Fl_Window* window() const	;
 
   enum { // values for type():
@@ -299,12 +300,12 @@ protected:
 
 private:
 
-  const char*		label_;
+  const char*   label_;
   Fl_Image*		image_;
   int			shortcut_; // encode in the label?
   unsigned		flags_;
-  const Fl_Style*	style_;
-  const char*		tooltip_; // make this into another widget?
+  const Fl_Style* style_;
+  const char*	tooltip_; // make this into another widget?
   Fl_Group*		parent_;
   int			x_,y_,w_,h_;
   uchar			type_;

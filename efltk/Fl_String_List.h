@@ -12,6 +12,7 @@ public:
     void sort();
 
     void append(Fl_String item);
+	void append(const char*item);
     void prepend(Fl_String item);
     void insert(uint pos, Fl_String &item);
     void insert(uint pos, const Fl_String_List &list);
@@ -22,6 +23,10 @@ public:
     //Return first index of found string. -1 if none
     int index_of(const Fl_String str);
     int contains(const Fl_String str);
+
+	char *to_cstring(const char *separator);
+	Fl_String to_string(const char *separator);
+	void from_string(const char *s, const char *separator);
 
     Fl_String *item(uint index) const { return (Fl_String*)Fl_Ptr_List::item(index); }
     Fl_String &operator [](uint ind) const { return *((Fl_String *)items[ind]); }

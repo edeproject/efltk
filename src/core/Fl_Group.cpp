@@ -93,9 +93,9 @@ void Fl_Group::insert(Fl_Widget &o, int index)
         int n = o.parent()->find(o);
         if (o.parent() == this) {
             if (index > n) index--;
-            if (index == n) return;
+            if (index == n) return;			
         }
-        o.parent()->remove(n);
+		o.parent()->remove(n);
     }
     o.parent(this);
     if(children() == 0) {
@@ -141,6 +141,8 @@ int Fl_Group::find(const Fl_Widget* o) const
         if(o->parent() == this) break;
         o = o->parent();
     }
+	//return o->index();
+
     // Search backwards so if children are deleted in backwards order
     // they are found quickly:
     for (int index = children(); index--;)

@@ -37,13 +37,13 @@ class FL_API Fl_Group : public Fl_Widget {
 public:
 
   int children() const { return array_.size(); }
-  Fl_Widget* child(int n) const { return array_[n]; }
+  Fl_Widget* child(int n) const { return array_.item(n); }
   Fl_Widget_List &array() { return array_; }
 
-  void draw();
   void draw_group_box() const;
-  void layout();
-  int handle(int);
+  virtual void draw();
+  virtual void layout();
+  virtual int handle(int);
 
   void begin() {current_ = this;}
   void end() {current_ = (Fl_Group*)parent();}
@@ -55,16 +55,17 @@ public:
 
   Fl_Group(int,int,int,int, const char * = 0);
   virtual ~Fl_Group();
-  void add(Fl_Widget&);
+  virtual void add(Fl_Widget&);
+  virtual void insert(Fl_Widget&, int index);
+  virtual void remove(int index);
+  virtual void replace(int index, Fl_Widget&);
+  virtual void clear();
+
   void add(Fl_Widget* o) {add(*o);}
-  void insert(Fl_Widget&, int index);
   void insert(Fl_Widget& o, Fl_Widget* before) {insert(o,find(before));}
-  void remove(int index);
   void remove(Fl_Widget& o) {remove(find(o));}
-  void remove(Fl_Widget* o) {remove(find(*o));}
-  void replace(int index, Fl_Widget&);
-  void replace(Fl_Widget& old, Fl_Widget& o) {replace(find(old),o);}
-  void clear();
+  void remove(Fl_Widget* o) {remove(find(*o));}  
+  void replace(Fl_Widget& old, Fl_Widget& o) {replace(find(old),o);}  
 
   void resizable(Fl_Widget& o) {resizable_ = &o;}
   void resizable(Fl_Widget* o) {resizable_ = o;}

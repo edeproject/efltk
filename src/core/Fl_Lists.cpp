@@ -138,6 +138,10 @@ void Fl_String_List::sort() {
     Fl_Ptr_List::sort(fl_string_sort_func);
 }
 
+void Fl_String_List::append(const char *item) {
+    Fl_Ptr_List::append((void *)new Fl_String(item));
+}
+
 void Fl_String_List::append(Fl_String item) {
     Fl_Ptr_List::append((void *)new Fl_String(item));
 }
@@ -181,29 +185,45 @@ int Fl_String_List::contains(const Fl_String str) {
     return ret;
 }
 
-/*
-Fl_String Fl_String_List::to_string(const char *separator)
+char *Fl_String_List::to_cstring(const char *separator)
 {
     char *ret=0;
     if(!size()) return ret;
+    int ret_len=0;
     int str_len=0;
-    int num_len=0;
-    char num[36];
-    snprintf(num, sizeof(num)-1, "%d", item(0));
-    ret = strdup(num);
-    str_len = strlen(num);
-    for(uint n = 1; n < size(); n++) {
-        snprintf(num, sizeof(num)-1, "%s%d", separator, item(n));
-        num_len = strlen(num);
-        str_len += num_len;
-        ret = (char*)realloc(ret, sizeof(char)*str_len);
-        strncpy(ret+(str_len-num_len), num, num_len);
+	int sep_len=strlen(separator);
+	ret = new char[1];
+
+    for(uint n = 0; n < size(); n++) {
+		str_len = item(n)->length();
+		int len;
+		if(n<size()-1) len = str_len+sep_len;
+		else len = str_len;
+		ret_len += len;
+        ret = (char*)realloc(ret, sizeof(char)*ret_len);
+		
+		strncpy(ret+(ret_len-len), item(n)->c_str(), str_len);
+		if(n<size()-1)
+			strncpy(ret+(ret_len-sep_len), separator, sep_len);		
     }
-    ret[str_len]='\0';
+    ret[ret_len]='\0';
     return ret;
 }
 
-void Fl_Int_List::from_string(const char *s, const char *separator)
+Fl_String Fl_String_List::to_string(const char *separator)
+{
+    Fl_String ret;
+    if(!size()) return ret;
+
+    for(uint n = 0; n < size(); n++) {
+		ret += item(n)->c_str();
+		if(n<size()-1)
+			ret += separator;
+    }    
+    return ret;
+}
+
+void Fl_String_List::from_string(const char *s, const char *separator)
 {
     if(!s) return;
 
@@ -211,12 +231,11 @@ void Fl_Int_List::from_string(const char *s, const char *separator)
     char *buf = strdup(s);
     char *p = strtok(buf, separator);
     while (p) {
-        append(atoi(p));
+        append(p);
         p = strtok(NULL, separator);
     }
     free(buf);
 }
-*/
 
 /////////////////////////////////////
 // FL_CSTRING_LIST IMPLEMENTATION: //
@@ -291,4 +310,35 @@ void Fl_Int_List::from_string(const char *s, const char *separator)
         p = strtok(NULL, separator);
     }
     free(buf);
+}
+
+//////////////////////////////////
+// FL_PTR_STACK IMPLEMENTATION: //
+//////////////////////////////////
+
+#include <efltk/Fl_Ptr_Stack.h>
+
+void Fl_Ptr_Stack::push(void *data)
+{
+	items.append(data);
+}
+
+void *Fl_Ptr_Stack::pop()
+{
+	if(empty()) return 0;
+	uint pos = items.size()-1;
+	void *ptr = items[pos];
+	items.remove(pos);
+	return ptr;
+}
+
+void Fl_Ptr_Stack::clear()
+{
+	items.clear();
+}
+
+void *Fl_Ptr_Stack::peek() 
+{
+	if(empty()) return 0;
+	return items[items.size()-1];
 }
