@@ -157,12 +157,24 @@ void Fl_Menu_Window::layout()
 #endif
 }
 
+// Fade effect, blend to opacity (thats NYI)
 void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
 {
-    Fl_Rect rect(x, y, w, h);
+    int ow=w, oh=h; // original W&H
+    int cx=0, cy=0; // copy points from offscreen pixmap
+
+    // Clip xywh to fit screen
+    if(x<0) { cx=-x; w+=x; x=0; }
+    if(y<0) { cy=-y; h+=y; y=0; }
+    if(x+w>Fl::w()) w -= (x+w)-Fl::w();
+    if(y+h>Fl::h()) h -= (y+h)-Fl::h();
+
     int bpp=0;
-    uint8 *data = Fl_Renderer::data_from_window(Fl_Renderer::root_window(), rect, bpp);
-    if(!data) {
+
+    Fl_Rect screen_rect(x, y, w, h);
+    uint8 *screen_data = Fl_Renderer::data_from_window(Fl_Renderer::root_window(), screen_rect, bpp);
+    int screen_pitch = Fl_Renderer::calc_pitch(Fl_Renderer::system_format()->bytespp, w);
+    if(!screen_data) {
         //printf("data_from_window(1) FAILED\n");
         return;
     }
@@ -170,9 +182,9 @@ void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
     // Make sure that fl_gc is NOT NULL!
     make_current();
 
-    Pixmap pm = fl_create_offscreen(w, h);
+    Pixmap pm = fl_create_offscreen(ow, oh);
     fl_begin_offscreen(pm);
-    set_damage(FL_DAMAGE_ALL);
+    set_damage(FL_DAMAGE_ALL|FL_DAMAGE_EXPOSE);
     draw();
     fl_end_offscreen();
 
@@ -180,11 +192,10 @@ void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
 
     animating=true;
 
-    Fl_Rect rect2(0,0,w,h);
-    int bpp2=0;
-    uint8 *data2 = Fl_Renderer::data_from_pixmap(pm, rect2, bpp2);
-    if(!data2) {
-        delete []data;
+    Fl_Rect window_rect(0,0,ow,oh);
+    uint8 *window_data = Fl_Renderer::data_from_pixmap(pm, window_rect, bpp);
+    if(!window_data) {
+        delete []screen_data;
         //printf("data_from_pixmap(2) FAILED\n");
         animating=false;
         return;
@@ -192,51 +203,55 @@ void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
 
     Fl_Renderer::system_init();
 
-    int pitch = Fl_Renderer::calc_pitch(Fl_Renderer::system_format()->bytespp, w);
+    int window_pitch = Fl_Renderer::calc_pitch(Fl_Renderer::system_format()->bytespp, ow);
+
     Fl_PixelFormat fmt;
-    fmt.copy(Fl_Renderer::system_format());	
-	fmt.map_this(Fl_Renderer::system_format());
+    fmt.copy(Fl_Renderer::system_format());
+    fmt.map_this(Fl_Renderer::system_format());
 
 #ifdef _WIN32
-	SetWindowPos(fl_xid(this), HWND_TOPMOST, x, y, w, h, (SWP_NOSENDCHANGING | SWP_NOACTIVATE));
+    SetWindowPos(fl_xid(this), HWND_TOPMOST, x, y, w, h, (SWP_NOSENDCHANGING | SWP_NOACTIVATE));
 #else
     XMoveResizeWindow(fl_display, fl_xid(this), x, y, w, h);
 #endif
-	
+
+    Fl_Rect src_rect(cx,cy,w,h);
+    Fl_Rect dst_rect(0,0,w,h);
+
     int step = 8;
     if(anim_speed()>0) { step=int(floor((step*anim_speed())+.5f)); }
     int alpha=50; //start from alpha value 50...
     bool error=false;
-	opacity = 150;
+    opacity = 150;
     while(!error && alpha<opacity)
     {
-		Fl::check();
+        Fl::check();
 
         if(!animating || !shown() || !visible()) {
             break;
         }
 
         fmt.alpha = alpha;
-        alpha+=step;        
+        alpha+=step;
 
-        if(Fl_Renderer::alpha_blit(data2, &rect2, &fmt, pitch,
-                                   data, &rect2, Fl_Renderer::system_format(), pitch, 0))
+        if(Fl_Renderer::alpha_blit(window_data, &src_rect, &fmt, window_pitch,
+                                   screen_data, &dst_rect, Fl_Renderer::system_format(), screen_pitch, 0))
         {
             make_current();
-            if(!Fl_Renderer::render_to_pixmap(data, &rect2, Fl_Renderer::system_format(), pitch,
-                                              (Pixmap)fl_xid(this), &rect2, fl_gc, 0))
+            if(!Fl_Renderer::render_to_pixmap(screen_data, &dst_rect, Fl_Renderer::system_format(), screen_pitch,
+                                              (Pixmap)fl_xid(this), &dst_rect, fl_gc, 0))
                 error=true;
         } else
             error=true;
 
-		Sleep(15);        
+        Sleep(15);
     }
 
-    delete []data;
-    delete []data2;
+    delete []screen_data;
+    delete []window_data;
 
     /*if(opacity==255)*/
-	{
+    {
 #ifdef _WIN32
         make_current();
         fl_copy_offscreen(0, 0, w, h, pm, 0, 0);
@@ -260,7 +275,7 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
 
     Pixmap pm = fl_create_offscreen(tw, th);
     fl_begin_offscreen(pm);
-    set_damage(FL_DAMAGE_ALL);
+    set_damage(FL_DAMAGE_ALL|FL_DAMAGE_EXPOSE);
     draw();
     fl_end_offscreen();
 

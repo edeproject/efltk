@@ -921,7 +921,7 @@ void Fl_Menu_::relayout_current_menu()
     current_menu->show();
 }
 
-//#define DEBUG
+#define DEBUG
 
 #ifdef DEBUG
 # define MODAL false
@@ -1235,7 +1235,7 @@ int Fl_Choice::popup(int X, int Y, int W, int H)
     }
 
     // show all the menus:
-    for(MenuWindow *t=first_menu; t!=0; t=t->child_win) {
+    for(MenuWindow *t=first_menu->child_win; t!=0; t=t->child_win) {
         t->anim_flags=0;
         t->show();
     }
