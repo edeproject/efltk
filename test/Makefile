@@ -26,12 +26,12 @@
 CPPFILES = demo.cpp sizes.cpp hello.cpp resizable.cpp scroll.cpp image.cpp file_chooser.cpp menubar.cpp \
 	browser.cpp threads.cpp progress.cpp editor.cpp inactive.cpp checkers.cpp \
 	valuators.cpp glpuzzle.cpp boxtype.cpp multi_image.cpp help.cpp mdi_test.cpp \
-           resize.cpp tabs.cpp line_style.cpp doublebuffer.cpp subwindow.cpp \
-           keyboard.cpp label.cpp layout.cpp arc.cpp ask.cpp button.cpp buttons.cpp \
-           clock.cpp color_chooser.cpp cube.cpp cursor.cpp curve.cpp fast_slow.cpp \
-           fonts.cpp fullscreen.cpp gl_overlay.cpp iconize.cpp input.cpp navigation.cpp \
-           output.cpp overlay.cpp pack.cpp radio.cpp shape.cpp tile.cpp CubeMain.cpp CubeView.cpp \
-           preferences.cpp image_manip.cpp listview.cpp alphablend.cpp \
+        resize.cpp tabs.cpp line_style.cpp doublebuffer.cpp subwindow.cpp \
+        keyboard.cpp label.cpp layout.cpp arc.cpp ask.cpp button.cpp buttons.cpp \
+        clock.cpp color_chooser.cpp cube.cpp cursor.cpp curve.cpp fast_slow.cpp \
+        fonts.cpp fullscreen.cpp gl_overlay.cpp iconize.cpp input.cpp navigation.cpp \
+	output.cpp overlay.cpp pack.cpp radio.cpp shape.cpp tile.cpp CubeMain.cpp CubeView.cpp \
+        preferences.cpp image_manip.cpp listview.cpp alphablend.cpp \
 	thread_ball.cpp images.cpp image_loader.cpp multitabs1.cpp multitabs2.cpp \
 	popup_window.cpp symbols.cpp calendar.cpp maskedinput.cpp bitmap.cpp utf8.cpp \
 	dialog.cpp directory.cpp listview_ds.cpp xml_test.cpp xml_test2.cpp \
@@ -62,8 +62,8 @@ include ../makeinclude
 # $(ALL): $(FLLIB) # only true for static library
 
 # FLUID file rules
-#.fl.cpp .fl.h:
-#	../fluid/efluid -c $<
+.fl.cpp .fl.h:
+	LD_LIBRARY_PATH="$LD_LIBRARY_PATH:../lib" ../fluid/efluid -c $<
 
 # Other programs needing special "help"...
 CubeView: CubeMain.o CubeView.o CubeViewUI.o $(FLGLLIB) $(FLCORELIB) $(FLUILIB)
