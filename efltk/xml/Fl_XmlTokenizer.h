@@ -1,52 +1,97 @@
 #ifndef XMLTOKENIZER_H_
 #define XMLTOKENIZER_H_
 
-#include <stdio.h>
-#include <efltk/Fl_String.h>
-#include <efltk/Fl_String_Stack.h>
+#include "../Fl_String.h"
+#include "../Fl_String_Stack.h"
+#include "../Fl_Export.h"
 
-#include "Fl_XmlCtx.h"
+#include <stdio.h> //For FILE
 
 #define BUF_SIZE 4096
 
-/*
- * Base class for iterating through xml stream.
- * Tokenizes stream to tokens.
- * Used internally only.
+/**
+ * Fl_XmlLocator class provides the XML handler with information about 
+ * the position in a file. 
+ */
+class FL_API Fl_XmlLocator
+{
+	friend class Fl_XmlTokenizer;
+public:
+	Fl_XmlLocator() { m_line=m_col=1; }
+	    
+	/**
+	 * Returns line number, where error happened.
+	 */
+	int line() const { return m_line; }
+    
+	/**
+	 * Returns column in line, where error happened.
+	 */
+    int col() const { return m_col; }
+
+    /**
+	 * Returns line in file, where error happened.
+	 */
+    static Fl_String error_line(const char *filename, const Fl_XmlLocator &locator);
+
+private:
+	int m_line, m_col;    
+};
+
+/**
+ * Base class for tokenizing through XML stream.
  */
 class Fl_XmlTokenizer
 {
+	friend class Fl_XmlParser;
 public:
-    Fl_XmlTokenizer(Fl_XmlContext *ctx);
+    Fl_XmlTokenizer();
     virtual ~Fl_XmlTokenizer() { }
 
-    // Set to true to ignore parsing whitespace and new-line characters
-    void cdata_mode(bool val) { cdata_mode_ = val; }
-    bool cdata_mode() { return cdata_mode_ || auto_cdata_; }
-
-    // Dereference operator
-    Fl_String &operator*() { return curtoken; }
-
-    // Next token in stream
-    Fl_XmlTokenizer &operator++()    { get_next(); return *this; }
-    Fl_XmlTokenizer &operator++(int) { get_next(); return *this; }
-
-    // Puts the token back into the stream
-    void put_back(Fl_String &token) { putback_stack.push(token); }
-    void put_back() { putback_stack.push(curtoken); }
-
-    // Get next token, stores it to 'curtoken'
-    void get_next();
-    bool eos();
+	Fl_XmlLocator *locator() const { return m_locator; }
+	void locator(Fl_XmlLocator *locator) { m_locator = locator; }
 
 protected:
     // End of input stream
-    virtual bool _eos() = 0;
+    virtual bool stream_eos() const = 0;
     // Read to buffer
-    virtual int _read(char *buf, int length) = 0;
+    virtual int stream_read(char *buf, int length) = 0;
+
+private:
+    bool eos() const { return stream_eos() && read_buf_len<=0; }
+    
+	// Set to true to ignore parsing whitespaces and new-line characters
+    void cdata_mode(bool val) { cdata_mode_ = val; }
+    bool cdata_mode() const { return cdata_mode_ || auto_cdata_; } 
+	
+	// Set to true when parsing prolog
+    void prolog_mode(bool val) { prolog_mode_ = val; }
+    bool prolog_mode() const { return prolog_mode_; }
+
+	// Set to true when parsing prolog
+    void attr_mode(bool val) { attr_mode_ = val; }
+    bool attr_mode() const { return attr_mode_; }
+
+	// Set to true when parsing preformatted text
+    void pre_mode(bool val) { pre_mode_ = val; }
+    bool pre_mode() const { return pre_mode_; }
+
+    // Dereference operator
+    const Fl_String &operator*() const { return curtoken; }
+
+    // Next token in stream
+    Fl_XmlTokenizer &operator++()    { read_next(); return *this; }
+    Fl_XmlTokenizer &operator++(int) { read_next(); return *this; }
+
+    // Puts the token back into the stream
+    void put_back(const Fl_String &token) { putback_stack.push(token); }
+    void put_back(const char *token) { putback_stack.push(token); }
+    void put_back() { put_back(curtoken); }
 
     // Gets one character from internal buffer
-    char _getchar();
+    char read_char();
+    // Get next token, stores it to 'curtoken'
+    void read_next();
 
     // Read buffer
     void fill_buffer();
@@ -67,55 +112,61 @@ protected:
     Fl_String_Stack putback_stack;
 
     // Internally used to recognize chars in the stream
-    bool is_literal( char c );
-    bool is_whitespace( char c );
-    bool is_newline( char c );
-    bool is_delimiter( char c ); // start-/endchar of a string
+    bool is_literal( char c ) const;
+    bool is_whitespace( char c ) const;
+    bool is_newline( char c ) const;
+    bool is_delimiter( char c ) const; // start-/endchar of a string
 
     // Cdata-mode doesn't care for whitespaces in strings
     // Auto cdata-mode turned on internally, doesnt add new-lines
     bool cdata_mode_, auto_cdata_;
-    bool end_of_stream;
+	bool prolog_mode_, attr_mode_;
+	bool pre_mode_;
 
-    // Context pointer
-    Fl_XmlContext *ctxptr;
+	Fl_XmlLocator *m_locator;
 };
 
 /*
- * Simple XML stream implementation.
- * Handles FILE or memory pointer.
+ * DefaultTokenizer class.
+ * Simple XML tokenizer implementation.
+ * Handles FILE and memory buffer tokenizing.
  */
-class Fl_XmlStreamIterator : public Fl_XmlTokenizer
+class Fl_XmlDefaultTokenizer : public Fl_XmlTokenizer
 {
 public:
     // Contructor with inputbuffer
-    Fl_XmlStreamIterator(Fl_XmlContext *ctx, const char *inputbuffer, long size=0);
-    // Contructor with FILE pointer
-    Fl_XmlStreamIterator(Fl_XmlContext *ctx, FILE *fp);
+    Fl_XmlDefaultTokenizer(const char *buffer, long buffer_len);
+    
+	// Contructor with FILE pointer
+    Fl_XmlDefaultTokenizer(FILE *fp);
 
-    virtual ~Fl_XmlStreamIterator();
+    virtual ~Fl_XmlDefaultTokenizer();
 
 protected:
     // Reads length bytes from stream, removed from stream
-    int _read(char *buf, int length);
+    virtual int stream_read(char *buf, int length);
     // End of stream?
-    bool _eos();
+    virtual bool stream_eos() const;
 
+private:
     void *io_ctx;
 };
 
 //////////////////////////////////
 
-inline bool is_literal(Fl_String &str) {
+inline bool is_literal(const Fl_String &str, bool cdata=false) {
     if(str.length()!=1) return false;
     switch(str[0]) {
-    case '?': case '=': case '!':
-    case '/': case '<': case '>':
+    case '/': case '?': 
+	case '=': case '!':
+	case '>':
+        if(cdata) return false;
+    case '<':
         return true;
     }
     return false;
 }
 
-inline char literal(Fl_String &str) { return str[0]; }
+inline char literal(const Fl_String &str) { return str[0]; }
 
 #endif

@@ -1,53 +1,83 @@
 #include <efltk/xml/Fl_Xml.h>
 #include <efltk/xml/Fl_XmlTokenizer.h>
 
-Fl_XmlTokenizer::Fl_XmlTokenizer(Fl_XmlContext *ctx)
+Fl_String Fl_XmlLocator::error_line(const char *filename, const Fl_XmlLocator &locator)
 {
-    ctxptr = ctx;
+    FILE *fp = fopen(filename, "r");
+    if(!fp) return "";
+
+	int line = locator.line();
+	int col  = locator.col();
+
+    char linebuffer[1024];
+    for(int i=0; i<line-1 && !feof(fp);) {
+        int c = fgetc(fp);
+        if(c=='\n') i++;
+    }
+    fread(linebuffer, 1, 1024, fp);
+    fclose(fp);
+
+    Fl_String line_str(linebuffer);
+    if(line_str.pos('\n')>0)
+        line_str = line_str.sub_str(0, line_str.pos('\n'));
+    
+	if(line_str.length()>=79)
+        line_str.sub_delete(79, line_str.length()-79);
+
+    line_str += "\n";
+    for(int j=2; j<col; j++)
+        line_str += "-";
+    line_str += "^";
+
+    return line_str;
+}
+
+//////////////////////////////
+
+Fl_XmlTokenizer::Fl_XmlTokenizer()
+{
+	m_locator = 0;
+
     putback_char = -1;
     cdata_mode_ = auto_cdata_ = false;
+	prolog_mode_ = false;
+	attr_mode_ = false;
+	pre_mode_ = false;
 
     read_buf_pos = 0;
     read_buf_len = -1;
-    end_of_stream = true;
-}
-
-bool Fl_XmlTokenizer::eos()
-{
-    return end_of_stream;
 }
 
 void Fl_XmlTokenizer::fill_buffer()
 {
     if(read_buf_pos>=read_buf_len) {
-        end_of_stream = _eos();
-        read_buf_len = _read(read_buf, BUF_SIZE);
-        if(read_buf_len<=0) end_of_stream = true;
+        read_buf_len = stream_read(read_buf, BUF_SIZE);
         read_buf_pos = 0;
     }
 }
 
-char Fl_XmlTokenizer::_getchar()
+char Fl_XmlTokenizer::read_char()
 {
+	if(locator()) locator()->m_col++;
     read_buf_pos++;
     fill_buffer();
     return read_buf[read_buf_pos];
 }
 
-void Fl_XmlTokenizer::get_next()
-{
+void Fl_XmlTokenizer::read_next()
+{	
     if(!putback_stack.empty()) {
-        curtoken = putback_stack.pop();
+        curtoken = putback_stack.pop();		
         return;
     }
 
-    //bool ws_added=false; //Is whitespace added already? HTML?
+    bool ws_added = false;
     write_buf_pos = 0;
     curtoken.clear();
 
     char c;
-    while(true)
-    {
+    while(!eos())
+    {		
         if(write_buf_pos>=BUF_SIZE) {
             // Flush buffer!
             curtoken.append(write_buf, write_buf_pos);
@@ -55,22 +85,16 @@ void Fl_XmlTokenizer::get_next()
         }
 
         if(putback_char == -1) {
-            c = _getchar();
-            ctxptr->pos_++;
+            c = read_char();	            
         } else {
             c = putback_char;
-            putback_char = -1;
-            ctxptr->pos_++;
+            putback_char = -1;            
         }
 
-        // Do we have an eof?
-        if(eos()) {
-            if(write_buf_pos>0) {
-                curtoken = c;
-                return;
-            } else
-                break;
-        }
+		if(is_newline(c)) {
+			if(locator()) locator()->m_line++;
+			if(locator()) locator()->m_col = 1;
+		}
 
         // Is it a literal?
         if(is_literal(c)) {
@@ -80,80 +104,73 @@ void Fl_XmlTokenizer::get_next()
                 if(c=='>')
                     if(!cdata_mode_) auto_cdata_ = true;
                 return;
-            }
-            putback_char = c;
-            ctxptr->pos_--;
+            }					
+            putback_char = c;            
             break;
         }
 
-        if(cdata_mode_) {
-            // Fixed CDATA and comments...
-            // Add to write buffer
+        if(cdata_mode_ || (pre_mode() && cdata_mode())) {
+            // Fixed CDATA, comments and preformatted text.
+            // Add straight to write buffer
             write_buf[write_buf_pos++] = c;
             continue;
         }
 
-        // String delimiter and not in cdata mode?
-        if(is_delimiter(c) && !cdata_mode()) {
+        // String delimiter ("/') and in attribute mode?
+        if(is_delimiter(c) && attr_mode()) 
+		{
             write_buf_pos = 0;
-            write_buf[write_buf_pos++] = c;
             char delim = c;
-            do {
-                c = _getchar();
-                ctxptr->pos_++;
-                if(eos()) break;
-                write_buf[write_buf_pos++] = c;
-            } while(c != delim);
+			c = read_char();
+
+			while(c!=delim) {
+				if(eos()) break;
+				write_buf[write_buf_pos++] = c;
+				c = read_char();                
+            }
+
             break;
         }
 
-        // Do not add tabs in HTML mode?!
-        //if(c=='\t' && cdata_mode /*&& htmlmode_*/) continue;
-
-        // Whitespace?
-        if(is_whitespace(c)) {
-            if(write_buf_pos==0)
-                continue;
-            else if(!cdata_mode()) {
-                break;
-            }
-            //if(ws_added) continue;
-            //else ws_added=true;
-        }
-        //else ws_added=false;
-
         // Newline char?
-        if (is_newline(c)) {
-            if(cdata_mode() && write_buf_pos>0)
-                ;//c = ' '; //HTML mode?!
-            else
-                continue;
+        if(is_newline(c)) c=' ';
+        
+        // Whitespace?
+        if(is_whitespace(c)) 
+		{
+            if(write_buf_pos==0)
+				continue;
+            else if(!cdata_mode() || attr_mode())
+                break;
+
+			if(ws_added)	continue;
+			else			ws_added=true;
         }
+		else ws_added=false;		
 
         // Add to write buffer
         write_buf[write_buf_pos++] = c;
-    }
+
+        // Do we have an eos?
+        if(eos()) break;
+	}
 
     curtoken.append(write_buf, write_buf_pos);
-
-    //Trim! HTML?!
-    if( !cdata_mode() && (curtoken[0]==' ' || curtoken[curtoken.length()-1]==' ') )
-        curtoken = curtoken.trim();
 }
 
 // returns if we have a literal char
-bool Fl_XmlTokenizer::is_literal( char c )
+bool Fl_XmlTokenizer::is_literal( char c ) const
 {
     switch(c)
     {
     case '?':
-    case '=':
+		if(prolog_mode()) return true;
+    case '/':		
+    case '=':		
     case '!':
-    case '/':
-        if(cdata_mode())
-            return false;
-    case '<':
-    case '>':
+        if(attr_mode() || cdata_mode()) return false;
+	case '>':		
+	case '<':
         return true;
     }
 
@@ -161,7 +178,7 @@ bool Fl_XmlTokenizer::is_literal( char c )
 }
 
 // returns if we have a white space char
-bool Fl_XmlTokenizer::is_whitespace( char c )
+bool Fl_XmlTokenizer::is_whitespace( char c ) const
 {
     switch(c)
     {
@@ -174,13 +191,11 @@ bool Fl_XmlTokenizer::is_whitespace( char c )
 }
 
 // returns if we have a newline
-bool Fl_XmlTokenizer::is_newline( char c )
+bool Fl_XmlTokenizer::is_newline( char c ) const
 {
     switch(c)
     {
     case '\n':
-        ctxptr->line_++;
-        ctxptr->pos_ = 1;
     case '\r':
         return true;
     }
@@ -189,7 +204,7 @@ bool Fl_XmlTokenizer::is_newline( char c )
 }
 
 // returns if we have a Fl_String delimiter (separating " and ')
-bool Fl_XmlTokenizer::is_delimiter( char c )
+bool Fl_XmlTokenizer::is_delimiter( char c ) const
 {
     switch(c)
     {
@@ -206,8 +221,8 @@ bool Fl_XmlTokenizer::is_delimiter( char c )
 // FOR IO
 #include "../core/fl_internal.h"
 
-Fl_XmlStreamIterator::Fl_XmlStreamIterator(Fl_XmlContext *ctx, const char *inputbuffer, long size)
-: Fl_XmlTokenizer(ctx)
+Fl_XmlDefaultTokenizer::Fl_XmlDefaultTokenizer(const char *inputbuffer, long size)
+: Fl_XmlTokenizer()
 {
     if(!size) size = strlen(inputbuffer);
 
@@ -216,27 +231,27 @@ Fl_XmlStreamIterator::Fl_XmlStreamIterator(Fl_XmlContext *ctx, const char *input
     io_ctx = io;
 }
 
-Fl_XmlStreamIterator::Fl_XmlStreamIterator(Fl_XmlContext *ctx, FILE *fp)
-: Fl_XmlTokenizer(ctx)
+Fl_XmlDefaultTokenizer::Fl_XmlDefaultTokenizer(FILE *fp)
+: Fl_XmlTokenizer()
 {
     Fl_IO *io = new Fl_IO;
     io->init_io(fp, 0, 0);
     io_ctx = io;
 }
 
-Fl_XmlStreamIterator::~Fl_XmlStreamIterator()
+Fl_XmlDefaultTokenizer::~Fl_XmlDefaultTokenizer()
 {
     delete (Fl_IO*)io_ctx;
 }
 
-bool Fl_XmlStreamIterator::_eos()
+bool Fl_XmlDefaultTokenizer::stream_eos() const
 {
     return ((Fl_IO*)io_ctx)->eos();
 }
 
-int Fl_XmlStreamIterator::_read(char *buf, int length)
+int Fl_XmlDefaultTokenizer::stream_read(char *buf, int length)
 {
-    if(!eos()) {
+    if(!stream_eos()) {
         int readed = ((Fl_IO*)io_ctx)->read(buf, length);
         if(readed>0) return readed;
     }

@@ -2,65 +2,276 @@
 #define _FL_XMLDOC_H_
 
 #include "Fl_XmlNode.h"
-#include <stdio.h> //For FILE
+#include "Fl_XmlTokenizer.h"
 
-/*
- * XML document class.
- * can load whole document from FILE pointer or
- * memory pointer.
+#include "../Fl_Buffer.h"
+
+/** 
+ * Maps an entity string to a presentation string.
+ */
+class Fl_XmlEntities {	
+public:
+	/**
+	 * Entities are stored as Fl_XmlEntities::Pair	 
+	 <pre> 
+	 You can access entity name and replacement value by:
+		Pair::id  = name
+		Pair::val = replacement value
+	 </pre>
+	 */
+	typedef const Fl_String_String_Pair Pair;
+
+	Fl_XmlEntities() { }    
+
+	/**
+	 * Removes all mapped entities
+	 */
+	void clear() { m_entitymap.clear(); }
+	
+	/**
+	 * Remove named entity.
+	 * Returns true, if operation success
+	 * @param name entity name to remove
+	 */
+	bool remove_entity(const char *name);
+
+	/**
+	 * Add entity to map, If entity named 'name' exists already in map,
+	 * it's value is replaced with 'replacement'
+	 * @param name, entity to add/change
+	 * @param replacement, value that represents entity
+	 */
+	void set_entity(const char *name, const char *replacement);
+
+	/**
+	 * Return Fl_XmlEntities::Pair for given index.
+	 * Returns NULL if index is out of bound.
+	 * @param index of Pair to return. 
+	 * @see size()
+	 */
+	const Pair *item(int index)	const { return m_entitymap.item(index); }
+	
+	/**
+	 * Returns size of map. This can be used to iterate throught list.
+	 <pre>
+	 for(unsigned n=0; n<entitymap.size(); n++) {
+		Fl_XmlEntities::Pair *pair = entitymap.item(n);
+		printf("%s = %s\n", pair->id.c_str(), pair->val.c_str());
+	 }
+	 </pre>
+	 * @see item(int index)
+	 */
+	unsigned size() const { return m_entitymap.size(); }
+
+private:
+	Fl_String_String_Map m_entitymap;
+};
+
+/**
+ * The Fl_XmlDocType represents tag <DOCTYPE ...> in XML document.
+ * It can return a map of all entities(). 
+ * This class provides the name(), public_id() and system_id() functions. 
+ */
+class Fl_XmlDocType {
+	friend class Fl_XmlParser;
+
+public:	
+	Fl_XmlDocType() { m_html = false; }
+	Fl_XmlDocType(const char *name, const char *public_id=0, const char *system_id=0);
+
+	/**
+	 * Returns the name of the document type as specified in the <!DOCTYPE name> tag.
+	 */
+	const Fl_String &name() const { return m_name; }
+
+	/**
+	 * Returns the public identifier of the external DTD subset.
+	 * Returns empty string if there is no public identifier. 
+	 */
+	const Fl_String &public_id() const { return m_public_id; }
+
+	/**
+	 * Returns the system identifier of the external DTD subset.
+	 * Returns empty string if there is no system identifier. 
+	 */
+	const Fl_String &system_id() const { return m_system_id; }
+
+	/**
+	 * Returns a map of all entities described in the DTD.
+	 * NOTE: Map doesn't hold default entities.
+	 */
+	Fl_XmlEntities &entities() { return m_entities;  }
+
+    /** 
+	 * Encodes string to XML representation.
+	 * I.e. Converts "<test>" to "&lt;test&gt;"
+	 * Returns true, any entities replaced. 	 
+	 * @param str string to convert
+	 * @param ret converted string is stored to this.
+	 */
+    bool encode_entities(const char *str, Fl_String &ret);
+
+    /** 
+	 * Decodes entities in string to their actual values.
+	 * I.e. Converts "&lt;test&gt;" to "<test>"
+	 * Returns true, any entities expanded. 	 
+	 * @param str string to convert
+	 * @param ret converted string is stored to this.
+	 */
+    bool decode_entities(const char *str, Fl_String &ret);
+
+	/** 
+	 * Search for entity with given name
+	 * Returns true, if attribute is found.
+	 * @param name entity to search
+	 */
+    bool has_entity(const char *name) const;
+
+	/**
+	 * Remove named entity from entity map.
+	 * Returns true, if entity removed.
+	 * @param name entity to remove
+	 */
+	bool remove_entity(const char *name) { return m_entities.remove_entity(name); }
+
+	/**
+	 * Return replacement value for named entity.
+	 * If entity is not found, empty string is returned.
+	 * @param name entity name
+	 */
+	Fl_String get_replacement(const char *name) const;
+    
+	/**
+	 * Add entity to map, If entity named 'name' exists already in map,
+	 * it's value is replaced with 'replacement'
+	 * @param name entity to add/change
+	 * @param replacement value that represents entity
+	 */
+	void set_entity(const char *name, const char *replacement) { m_entities.set_entity(name, replacement); }
+
+private:	
+	Fl_XmlEntities m_entities;
+
+	Fl_String m_name;
+	Fl_String m_public_id;
+	Fl_String m_system_id;
+
+	bool m_html;
+};
+
+/**
+ * The Fl_XmlDoc class represents the entire XML document. 
+ * It provides access to document root node, which includes all nodes in XML document tree.
+ * 
+ * Since elements, text nodes, comments, processing instructions, etc...
+ * cannot exist outside the context of a document, the document class also contains 
+ * the factory functions needed to create these objects. 
+ *
+ * The node objects created have an document() function which returns document which is used to create it.
+ * Creation of elements, text nodes, etc... Is done using the various factory functions provided in this class.  
  */
 class Fl_XmlDoc: public Fl_XmlNode
 {
     friend class Fl_XmlParser;
-public:
-    // Allocates new context automatically
-    Fl_XmlDoc();
-    // Context passed as argument
-    Fl_XmlDoc(Fl_XmlContext *pctx);
 
-    // Clears document
+public:
+	/**
+	 * Constructs an empty document, without doctype.
+	 */
+    Fl_XmlDoc();
+	/**
+	 * Constructs an empty document, with doctype.
+	 * @param name of document.
+	 * @param public_id of document, placed on DOCTYPE declaration
+	 * @param system_id of document, placed on DOCTYPE declaration
+	 */
+    Fl_XmlDoc(const char *name, const char *public_id=0, const char *system_id=0);
+
+	/**
+	 * Destroys object and free's all resources
+	 */
+	virtual ~Fl_XmlDoc() { clear(); }
+
+    /**
+	 * Destroys all nodes in document
+	 */
     virtual void clear();
 
-    // Adds child as "root node".
-    // If comment type "root node" is not replaced.
-    virtual void add_node(Fl_XmlNode *node, bool prepend=false);
-    // Adds new root node, returns pointer to it
-    virtual Fl_XmlNode *add_node(Fl_String name, bool prepend=false);
+	/**
+	 * Creates new named node of type Fl_XmlNode::DOM_ELEMENT.
+	 * It can be added to document DOM tree.
+	 * @param tagname name of element
+	 * @see Fl_XmlNode
+	 */
+	Fl_XmlNode *create_element(const char *tagname);
 
-    // Returns a list of processing instruction nodes
-    NodeList &pi_list() { return procinstructions_; }
+	/**
+	 * Creates new named node of type Fl_XmlNode::DOM_TEXT.
+	 * It can be added to document DOM tree.
+	 * @param data content of text node
+	 * @see Fl_XmlNode
+	 */
+	Fl_XmlNode *create_text(const char *data);
 
-    // DTD values of document:
-    // Type of document
-    Fl_String &dtd_type() { return dtds[0]; }
-    void dtd_type(Fl_String s) { dtds[0] = s; }
+	/**
+	 * Creates new named node of type Fl_XmlNode::DOM_COMMENT.
+	 * It can be added to document DOM tree.
+	 * @param data content of comment node
+	 * @see Fl_XmlNode
+	 */
+	Fl_XmlNode *create_comment(const char *data);
 
-    // Location of DTD. PUBLIC or SYSTEM
-    Fl_String &dtd_location() { return dtds[1]; }
-    void dtd_location(Fl_String s) { dtds[1] = s; }
+	/**
+	 * Creates new named node of type Fl_XmlNode::DOM_CDATA_SECTION.
+	 * It can be added to document DOM tree.
+	 * @param data content of CDATA section node
+	 * @see Fl_XmlNode
+	 */
+	Fl_XmlNode *create_CDATA_section(const char *data);                                        
 
-    // URI where dtd file is found
-    Fl_String &dtd_uri() { return dtds[2]; }
-    void dtd_uri(Fl_String s) { dtds[2] = s; }
+	/**
+	 * Creates new named node of type Fl_XmlNode::DOM_PI.
+	 * It can be added to document DOM tree.
+	 * @param target is target of processing instruction
+	 * @param data is data of processing instruction
+	 * @see Fl_XmlNode
+	 */
+	Fl_XmlNode *create_PI(const char *target, const char *data);
 
-    // Returns pointer to root node
+	/**
+	 * Returns doctype of document.
+	 * You can use it to add e.g. custom entities.
+	 <pre>
+	 mydoc->doctype().set_entity("myentity", "myreplacement");
+	 </pre>
+	 */
+	Fl_XmlDocType &doctype() { return m_doctype; }	
+
+    /** 
+	 * Returns pointer to root element of document.
+	 */
     Fl_XmlNode *root_node();
 
-    // Loads XML document from memory pointer.
-    bool load(const char *ptr, int len=0);
+    /**
+	 * Returns indentation in save.
+	 */
+    static int indent_spaces() { return m_indent_spaces; }
+	
+	/**
+	 * Set indentation in save, defaults to 2
+	 * @param i as new indent spaces
+	 */
+    static void indent_spaces(int i) { m_indent_spaces = i; }
 
-    // Loads XML document from FILE pointer.
-    bool load(FILE *fp);
+    /**
+	 * Save document to buffer.
+	 * @param buffer as Fl_Buffer to save document
+	 */	
+    void save(Fl_Buffer &buffer);
 
-    // Saves XML document to string 'str'
-    void save(Fl_String &str);
-
-protected:
-    // Node list of parsed processing instructions
-    NodeList procinstructions_;
-
-    // Dtd's, 0=type, 1=location, 2=uri
-    Fl_String dtds[3];
+private:	
+	Fl_XmlDocType m_doctype;
+	static int m_indent_spaces;
 };
 
 #endif

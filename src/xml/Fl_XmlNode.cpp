@@ -2,119 +2,108 @@
 #include <efltk/xml/Fl_XmlParser.h>
 #include <efltk/xml/Fl_XmlCtx.h>
 
+//////////////////
+
+Fl_XmlAttributes& Fl_XmlAttributes::operator = (const Fl_XmlAttributes& s)
+{
+	for(unsigned n=0; n<s.m_attrmap.size(); n++)
+		m_attrmap.append_pair(s.m_attrmap.item(n));
+	return *this;
+}
+
+bool Fl_XmlAttributes::has_attribute(const char *attr) const
+{	
+    Fl_String *ret = m_attrmap.get_value(attr);
+    return (ret!=0);
+}
+
+Fl_String &Fl_XmlAttributes::get_attribute(const char *attr) const
+{
+	Fl_String *ret = m_attrmap.get_value(attr);
+    if(!ret) return Fl_String::null_object;
+    return *ret;
+}
+
+void Fl_XmlAttributes::set_attribute(const char *attr, const Fl_String &value)
+{
+	m_attrmap.set_value(attr, value);
+}
+
+void Fl_XmlAttributes::set_attribute(const char *attr, const char *value)
+{
+	m_attrmap.set_value(attr, value);
+}
+
+//////////////////
+
 void Fl_XmlNode_List::free_item(Fl_XmlNode *item)
 {
     delete (Fl_XmlNode*)(item);
 }
 
-Fl_XmlNode::Fl_XmlNode(Fl_XmlContext *ctx, Fl_String name)
-: context_(ctx)
-{
-    nodetype_ = FL_XML_TYPE_NODE;
-    nodenamehandle_ = 0;
-    parent_ = 0;
-    if(name.length()>0)
-        nodenamehandle_ = context()->insert_tagname(name);
-}
+//////////////////
 
-Fl_XmlNode::Fl_XmlNode(Fl_XmlContext *ctx, Fl_XmlNode *parent, Fl_String name)
-: context_(ctx)
+Fl_XmlNode::Fl_XmlNode(Fl_XmlDoc *doc)
+: m_document(doc)
 {
-    nodetype_ = FL_XML_TYPE_NODE;
-    nodenamehandle_ = 0;
-    parent_ = parent;
-    parent_->add_node(this);
-
-    if(name.length()>0)
-        nodenamehandle_ = context()->insert_tagname(name);
+    m_nodetype = 0;    
+    m_parent = 0;
 }
 
 Fl_XmlNode::~Fl_XmlNode()
 {
-    if(parent_) parent_->remove_node(this);
+    if(parent()) parent()->remove_child(this);
     clear();
-}
-
-Fl_String Fl_XmlNode::text()
-{
-    Fl_String ret = cdata();
-    for(uint n=0; n<nodelist_.size(); n++) {
-        Fl_XmlNode *np = nodelist_.item(n);
-        ret += np->text();
-    }
-    return ret;
-}
-
-bool Fl_XmlNode::has_attribute(Fl_String attr)
-{
-    Fl_String *ret = attributes_.get_value(attr);
-    return (ret!=0);
-}
-
-Fl_String &Fl_XmlNode::attribute(Fl_String attr)
-{
-    Fl_XmlContext *ctx = context();
-    Fl_String *ret = attributes_.get_value(attr);
-    if(!ret) {
-        static Fl_String empty("");
-        ctx->lasterror_ = FL_XML_NAME_NOT_FOUND;
-        // Throw?!?!
-        return empty;
-    }
-    ctx->lasterror_ = FL_XML_NO_ERROR;
-    return *ret;
-}
-
-void Fl_XmlNode::attribute(Fl_String attr, Fl_String value)
-{
-    attributes_.set_value(attr, value);
-}
-
-// xmlnode methods
-void Fl_XmlNode::copy(const Fl_XmlNode &node)
-{
-    nodenamehandle_	= node.nodenamehandle_;
-    nodetype_		= node.nodetype_;
-    attributes_		= node.attributes_;
-    chardata_		= node.chardata_;
-    nodelist_		= node.nodelist_;
-    parent_		= node.parent_;
 }
 
 void Fl_XmlNode::clear()
 {
-    for(uint n=0; n<nodelist_.size(); n++) {
-        Fl_XmlNode *np = nodelist_.item(n);
+    for(uint n=0; n<children(); n++) {
+        Fl_XmlNode *np = child(n);
         np->parent(0);
         delete np;
     }
-    nodelist_.clear();
+    m_child_nodes.clear();
 }
 
-Fl_String Fl_XmlNode::name()
+void Fl_XmlNode::text(Fl_String &ret)
 {
-    Fl_XmlContext *ctx = context();
-    if(!ctx) return Fl_String("");
-    return ctx->get_tagname( nodenamehandle_ );
+	if(is_text() || is_cdata_section())
+		ret += value();
+
+    for(uint n=0; n<children(); n++) {
+        Fl_XmlNode *np = child(n);
+        np->text(ret);
+    }    
 }
 
-void Fl_XmlNode::name( Fl_String nname )
+Fl_XmlNode *Fl_XmlNode::clone_node(bool deep)
 {
-    Fl_XmlContext *ctx = context();
-    if(ctx) nodenamehandle_ = context()->insert_tagname(nname);
+	Fl_XmlNode *node = new Fl_XmlNode(m_name, m_nodetype, m_document);
+	node->m_attributes	= m_attributes;
+
+	if(deep) {
+		for(unsigned n=0; n<children(); n++) {
+			Fl_XmlNode *np = child(n);
+			Fl_XmlNode *cloned = np->clone_node(true);
+			node->append_child(cloned);
+		}
+	}
+
+	return node;
 }
 
 // currently no path-like childname can be passed
-Fl_XmlNode *Fl_XmlNode::child(Fl_String childname, bool recursive)
+Fl_XmlNode *Fl_XmlNode::child(const char *name, bool recursive) const
 {
     // search for first occurance of node
-    for(uint n=0; n<nodelist_.size(); n++) {
-        Fl_XmlNode *np = nodelist_.item(n);
-        if(np->name() == childname) {
+    for(uint n=0; n < children(); n++) {
+        Fl_XmlNode *np = child(n);
+        if(np->name() == name) {
             return np;
         }
         if(recursive) {
-            Fl_XmlNode *sub_ch = np->child(childname);
+            Fl_XmlNode *sub_ch = np->child(name, recursive);
             if(sub_ch) return sub_ch;
         }
     };
@@ -124,143 +113,179 @@ Fl_XmlNode *Fl_XmlNode::child(Fl_String childname, bool recursive)
 }
 
 // currently no path-like childname can be passed
-NodeList Fl_XmlNode::nodes(Fl_String nodename)
+Fl_XmlNode_List Fl_XmlNode::nodes(const char *name)
 {
-    NodeList nlist;
+    Fl_XmlNode_List nlist;
 
     // search for all occurances of nodename and insert them into the new list
-    for(uint n=0; n<nodelist_.size(); n++) {
-        Fl_XmlNode *np = nodelist_.item(n);
-        if(np->name() == nodename)
+    for(uint n=0; n<children(); n++) {
+        Fl_XmlNode *np = child(n);
+        if(np->name() == name)
             nlist.append(np);
     }
 
     return nlist;
 }
 
-void Fl_XmlNode::add_node(Fl_XmlNode *node, bool prepend)
+// Adds the node 'new_child' to the end of the list 
+// of children of this node. If the 'new_child' is 
+// already in the tree, it is first removed. 
+Fl_XmlNode *Fl_XmlNode::append_child(Fl_XmlNode *new_child)
 {
-    if(prepend)	nodelist_.prepend(node);
-    else nodelist_.append(node);
-    node->parent(this);
+	// Remove, if already in list
+	if(m_child_nodes.index_of(new_child)>-1)
+		m_child_nodes.remove(new_child);	
+
+	// Append to last
+    m_child_nodes.append(new_child);
+    new_child->parent(this);
+
+	return new_child;
 }
 
-Fl_XmlNode *Fl_XmlNode::add_node(Fl_String name, bool prepend)
+// Removes the child node indicated by 'old_child' 
+// from the list of children, and returns it. 
+Fl_XmlNode *Fl_XmlNode::remove_child(Fl_XmlNode *old_child)
 {
-    Fl_XmlNode *tmp = new Fl_XmlNode(context(), name);
-    tmp->parent(this);
-    
-    if(prepend) nodelist_.prepend(tmp);
-    else nodelist_.append(tmp);
+	if(!old_child || child_nodes().index_of(old_child)==-1) {
+		return 0;
+	}
 
-    return tmp;
+    m_child_nodes.remove(old_child);
+	return old_child;
 }
 
-void Fl_XmlNode::remove_node(Fl_XmlNode *ptr)
+// Replaces the child node 'old_child' with 'new_child'
+// in the list of children, and returns the 'old_child' node. 
+// If the 'new_child' is already in the tree, it is first removed. 
+Fl_XmlNode *Fl_XmlNode::replace_child(Fl_XmlNode *new_child, Fl_XmlNode *old_child)
 {
-    if(ptr) nodelist_.remove(ptr);
+	int index = child_nodes().index_of(old_child);
+	if(index==-1) return 0;
+
+	remove_child(new_child);
+
+	m_child_nodes.replace(index, new_child);
+	new_child->parent(this);
+
+	return old_child;
 }
 
-int Fl_XmlNode::remove_nodes(Fl_String name)
+// Inserts the node newChild before the existing child node refChild.
+// If refChild is null, insert newChild at the end of the list of children.
+// --
+// If newChild is a DocumentFragment object, all of its children are inserted, 
+// in the same order, before refChild. If the newChild is already 
+// in the tree, it is first removed. Returns the node being inserted. 
+Fl_XmlNode *Fl_XmlNode::insert_before(Fl_XmlNode *new_child, Fl_XmlNode *ref_child)
 {
-    int removed=0;
-    for(uint n=0; n<nodelist_.size(); n++) {
-        Fl_XmlNode *np = nodelist_.item(n);
-        if(np->name() == name) {
-            delete np;
-            nodelist_.remove(n);
-            removed++;
-        }
-    }
-    return removed;
+	int index = ref_child ? child_nodes().index_of(ref_child) : child_nodes().size()-1;
+	if(index==-1) return 0;
+
+	remove_child(new_child);
+
+	m_child_nodes.insert(index, new_child);
+	new_child->parent(this);
+
+	return new_child;
 }
 
-/* true if success */
-bool Fl_XmlNode::load(const char *ptr, int len)
+#define WRITE_INDENT() if(indent > 0) { tmp = Fl_String(' ', indent); buffer.append(tmp); }
+#define WRITE(text) tmp=(text); buffer.append(tmp)
+
+void Fl_XmlNode::save(Fl_Buffer &buffer, int indent)
 {
-    Fl_XmlContext *ctx = context();
-    if(!ctx) return false;
-
-    Fl_XmlStreamIterator it(ctx, ptr, len);
-    Fl_XmlParser parser(ctx, it);
-    return (parser.parse_node(this)==1);
-}
-
-#define WRITE_INDENT() if(indent > -1) str += Fl_String(' ', indent)
-#define WRITE(text) str += (text);
-
-void Fl_XmlNode::save(Fl_String &str, int indent)
-{
-    Fl_XmlContext *ctx = context();
-    if(!ctx) return;
+	Fl_String tmp;
 
     // output indendation spaces
     WRITE_INDENT();
 
-    if(is_normal()) {
+    if(is_element()) {
         // Output tag name
-        WRITE("<" + ctx->get_tagname(nodenamehandle_));
+        WRITE("<" + name());
         // Output attributes
-        for(uint n=0; n<attributes_.size(); n++) {
-            AttrMap_Pair *p = attributes_.item(n);
-            WRITE(" " + p->id + "=\"" + p->val + "\"");
+		const Fl_XmlAttributes &attr_map = attributes();
+        for(unsigned n=0; n<attr_map.length(); n++)
+        {
+			Fl_XmlAttributes::Pair *attr = attr_map.item(n);			
+
+			Fl_String real_id, real_val;
+			if(!document()->doctype().encode_entities(attr->id, real_id))
+				real_id = attr->id;
+			if(!document()->doctype().encode_entities(attr->val, real_val))
+				real_val = attr->val;
+
+            WRITE(" " + real_id + "=\"" + real_val + "\"");
         }
     }
 
     // depending on the nodetype, do output
-    switch(nodetype_)
+    switch(m_nodetype)
     {
-    case FL_XML_TYPE_CDATA: {
-        WRITE(cdata());
+	case DOM_PI: {
+		WRITE("<?" + name() + " " + value() + "?>\n");
+	}
+	break;
+
+    case DOM_TEXT: {
+		Fl_String text;
+		if(!document()->doctype().encode_entities(value(), text)) {
+			WRITE(value());
+		} else {
+			WRITE(text);
+		}
     }
     break;
 
-    case FL_XML_TYPE_CDATA_SECTION: {
+    case DOM_CDATA_SECTION: {
         // output all subnodes
-        WRITE("<![CDATA[" + cdata() + "]]>\n");
+        WRITE("<![CDATA[" + value() + "]]>\n");
     }
     break;
 
-    case FL_XML_TYPE_COMMENT: {
+    case DOM_COMMENT: {
         // output all subnodes
-        WRITE("<!-- " + cdata() + " -->\n");
+        WRITE("<!-- " + value() + " -->\n");
     }
     break;
 
-    case FL_XML_TYPE_LEAF: {
-        WRITE("/>\n");
-    }
-    break;
+    case DOM_ELEMENT: {
 
-    case FL_XML_TYPE_NODE: {
+		if(has_child_nodes()) {
 
-        bool only_cdata;
-        if(children()==1 && child(0)->type()==FL_XML_TYPE_CDATA) {
-            only_cdata = true;
-            WRITE(">");
-        } else {
-            only_cdata = false;
-            WRITE(">\n");
-        }
+			bool only_cdata;
+			if(children()==1 && child(0)->is_text()) {
+				only_cdata = true;
+				WRITE(">");
+			} else {
+				only_cdata = false;
+				WRITE(">\n");
+			}
 
-        // output all subnodes
-        for(uint n=0; n<nodelist_.size(); n++) {
-            Fl_XmlNode *np = nodelist_.item(n);
-            if(only_cdata)
-                np->save(str, -1);
-            else {
-                np->save(str, indent+Fl_XmlContext::indent_spaces());
-                if(str[str.length()-1] != '\n')
-                    str += '\n';
-            }
-        }
+			// output all subnodes
+			for(uint n=0; n<children(); n++) {
+				Fl_XmlNode *np = child(n);
+				if(only_cdata)
+					np->save(buffer, -1);
+				else {
+					np->save(buffer, indent + Fl_XmlDoc::indent_spaces());
+					if(buffer.data()[buffer.bytes()-1] != '\n')
+						buffer.append('\n');
+	            }
+		    }
+	        // output indendation spaces
+		    if(!only_cdata)
+			    WRITE_INDENT();
 
-        // output indendation spaces
-        if(!only_cdata)
-            WRITE_INDENT();
+			// output closing tag
+			WRITE("</" + name() + ">\n");
 
-        // output closing tag
-        WRITE("</" + ctx->get_tagname(nodenamehandle_) + ">\n");
+		} else {
+
+			//LEAF
+			WRITE("/>\n");
+
+		}
     }
     break;
 
@@ -269,3 +294,4 @@ void Fl_XmlNode::save(Fl_String &str, int indent)
         break;
     }
 }
+
