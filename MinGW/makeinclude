@@ -1,0 +1,163 @@
+# -*- mode: makefile -*-
+# "$Id$"
+#
+# Make include file for the Fast Light Tool Kit (FLTK).
+# @configure_input@
+#
+# Copyright 1998-1999 by Bill Spitzak and others.
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Library General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+# USA.
+#
+# Please report all bugs and problems to "fltk-bugs@easysw.com".
+#
+
+PACKAGE		=efltk
+
+FL_API_VERSION = 2.0
+
+# directories
+EFLTK_BUILDDIR = $(EFLTK_TOPDIR)
+EFLTK_BINDIR   = $(EFLTK_BUILDDIR)/bin
+EFLTK_LIBDIR   = $(EFLTK_BUILDDIR)/lib
+
+SYSTYPE	       = WIN32
+
+prefix		= @prefix@
+exec_prefix	= @exec_prefix@
+bindir		= @bindir@
+datadir		= @datadir@
+includedir	= @includedir@
+libdir		= @libdir@
+mandir		= @mandir@
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+
+# compiler names:
+CXX		=g++
+CC		=gcc
+MAKEDEPEND	=${CXX} -M
+
+STRIP       =strip
+
+#DEBUGFLAG	=-D_DEBUG -g3
+DEBUGFLAG	=-DNDEBUG -O2
+	  
+# flags for compiler:
+# WALL        = -Wcomment -Wformat -Wimplicit-int -Werror-implicit-function-declaration -Wmain -Wmultichar -Wparentheses -Wreturn-type -Wswitch -Wunused
+WALL        = -Wall
+CFLAGS		= -DHAVE_CONFIG_H -DWIN32 -D_WINDOWS -DWIN32_LEAN_AND_MEAN -DWIN32_EXTRA_LEAN -I$(EFLTK_BUILDDIR) -I$(EFLTK_BUILDDIR)/visualc $(WALL) $(DEBUGFLAG)
+CXXFLAGS	= -DHAVE_CONFIG_H -DWIN32 -D_WINDOWS -DWIN32_LEAN_AND_MEAN -DWIN32_EXTRA_LEAN -I$(EFLTK_BUILDDIR) -I$(EFLTK_BUILDDIR)/visualc $(WALL) $(DEBUGFLAG)
+
+# static libs:
+LIBEXT		=.a
+LIBCOMMAND	=ar cr
+RANLIB		=$(LIBCOMMAND)
+
+# shared libs:
+DSOLIBS     =-lgdi32 -luser32 -lmsvcrt -lws2_32 -lcomdlg32 -ladvapi32 -lole32 -loleaut32 -luuid -lmpr -limm32 -lstdc++
+DSOEXT		=.2.0.dll
+DSOSHORTEXT	=.dll
+DSOCOMMAND	=${CXX} --enable-runtime-pseudo-relocs -Wl,--out-implib,\$@.import -shared $(DEBUGFLAG) -o
+DSOCFLAGS	=-DFL_SHARED -DFL_LIBRARY 
+
+THEMECOMMAND	=${CXX} -shared $DEBUGFLAG -o
+LD				=$(CXX)
+
+# efltk libs
+FLLIB		=${EFLTK_BUILDDIR}/lib/libefltk.a
+FLGLLIB		=${EFLTK_BUILDDIR}/lib/libefltk_gl.a
+FLIMAGESLIB	=${EFLTK_BUILDDIR}/lib/libefltk_images.a
+FLXMLLIB	=${EFLTK_BUILDDIR}/lib/libefltk_xml.a
+FLODBCLIB	=${EFLTK_BUILDDIR}/lib/libefltk_odbc.a
+
+#FLLIB			=${EFLTK_BUILDDIR}/lib/libefltk.2.0.dll
+#FLGLLIB		=${EFLTK_BUILDDIR}/lib/libefltk_gl.2.0.dll.a
+#FLIMAGESLIB	=${EFLTK_BUILDDIR}/lib/libefltk_images.2.0.dll.a
+#FLXMLLIB		=${EFLTK_BUILDDIR}/lib/libefltk_xml.2.0.dll.a
+#FLODBCLIB		=${EFLTK_BUILDDIR}/lib/libefltk_odbc.2.0.dll.a
+
+# external libs
+THREADSLIBS	=
+JPEGLIBS	=-ljpeg
+PNGLIBS		=-lpng -lz
+
+# unixODBC stuff
+UNIXODBCLIB =
+
+# libraries to link with:
+GLDLIBS		=$(FLGLLIB) $(GLLIB)
+IMAGELIBS	=$(FLIMAGESLIB) $(JPEGLIBS) $(PNGLIBS)
+XMLLIBS		=$(FLXMLLIB)
+ODBCLIBS	=$(FLODBCLIB) $(UNIXODBCLIB)
+
+#-lkernel32 -lwinspool
+LDLIBS		=$(LDFLAGS) $(FLLIB) -lgdi32 -luser32 -lmsvcrt -lws2_32 -lcomdlg32 -ladvapi32 -lole32 -loleaut32 -luuid -lmpr -limm32 -lstdc++
+GLLIB		=-lopengl32 -lglu32
+
+EXEEXT			=.exe
+BUILDTARGETS	= static programs
+#BUILDTARGETS	= shared programs
+INSTALLTARGETS	=
+
+# Build commands and filename extensions...
+.SUFFIXES:	.0 .1 .3 .c .cxx .h .fl .man .o .z $(EXEEXT)
+
+.o$(EXEEXT):
+	@echo Linking $@...
+	@$(CXX) $(CXXFLAGS) $< $(LINKFLTK) $(LDLIBS) -o $@
+#	$(POSTBUILD) $@ ../FL/mac.r
+
+.c.o:
+	@echo Compiling $<...
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+.cpp.o:
+	@echo Compiling $<...
+	@$(CXX) $(CXXFLAGS) -c $< -o $@
+
+%.static.o : %.cpp
+	@echo Compiling $<...
+	@$(CXX) $(CXXFLAGS) -c $< -o $@
+
+%.static.o : %.c
+	@echo Compiling $<...
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+%.shared.o : %.cpp
+	@echo Compiling $<...
+	@$(CXX) $(DSOCFLAGS) $(CXXFLAGS) -c $< -o $@
+
+%.shared.o : %.c
+	@echo Compiling $<...
+	@$(CC) $(DSOCFLAGS) $(CFLAGS) -c $< -o $@
+
+.man.0 .man.1 .man.3:
+	@echo Formatting $<...
+	-@rm -f $@
+	@$(NROFF) -man $< >$@
+
+.man.z:
+	@echo Formatting $<...
+	-@rm -f $@ t.z
+	@$(NROFF) -man $< >t
+	@pack -f t
+	@mv t.z $@
+
+MAKEINCLUDE_INCLUDED=1
+
+#
+# End of "$Id$".
+#
