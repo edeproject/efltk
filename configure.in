@@ -229,7 +229,7 @@ AC_MSG_CHECKING([for strtok_r])
 AC_TRY_LINK([#include <string.h>],[char *ptr; ptr=strtok_r("  ", ".", &ptr);],
 [AC_DEFINE(HAVE_STRTOK_R) AC_MSG_RESULT(yes)], [AC_MSG_RESULT(no)])]
 
-AC_MSG_CHECKING([if meth.h emulation needed])
+AC_MSG_CHECKING([if math.h emulation not needed])
 AC_TRY_LINK([#include <math.h>],[ floorf(1.0f); fabsf(1.0f); ],
 [AC_DEFINE(HAVE_FLOAT_FUNCTIONS) AC_MSG_RESULT(yes)], [AC_MSG_RESULT(no)])]
 
