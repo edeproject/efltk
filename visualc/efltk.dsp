@@ -482,10 +482,6 @@ SOURCE=..\src\widgets\Fl_Multi_Image.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\widgets\Fl_Multi_Tabs.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\widgets\Fl_Numeric_Input.cpp
 # End Source File
 # Begin Source File
@@ -1095,10 +1091,6 @@ SOURCE=..\efltk\Fl_Multi_Browser.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_Multi_Image.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\efltk\Fl_Multi_Tabs.h
 # End Source File
 # Begin Source File
 
