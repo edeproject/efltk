@@ -13,7 +13,7 @@ static Fl_Named_Style style("ProgressBar", revert, &Fl_ProgressBar::default_styl
 Fl_Named_Style* Fl_ProgressBar::default_style = &::style;
 
 Fl_ProgressBar::Fl_ProgressBar(int x, int y, int w, int h, const char *lbl)
-    : Fl_Widget(x,y,w,h,lbl)
+: Fl_Widget(x,y,w,h,lbl)
 {
     style(default_style);
     mMin = mPresent = 0;
@@ -43,6 +43,6 @@ void Fl_ProgressBar::draw()
         sprintf(buffer, "%d%%", (int) (pct * 100));
         fl_color(text_color());
         fl_font(text_font(), float(text_size()));
-        fl_draw(buffer, (w() - fl_width(buffer))/2, fl_height() + (((h() - 2*bdy) - fl_height())/2));
+        fl_draw(buffer, 0, 0, w(), h(), FL_ALIGN_CENTER);
     }
 }
