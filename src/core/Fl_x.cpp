@@ -917,9 +917,15 @@ bool fl_handle()
             // send a mouse event, with cruft so the grab around modal things works:
             if (Fl::grab_)
             {
-                Fl::handle(event, window);
+                int ret = Fl::handle(event, window);
                 if (Fl::grab_ && !Fl::exit_modal_)
                     XAllowEvents(fl_display, SyncPointer, CurrentTime);
+
+				// If modal is on and 0 is returned, we should turn off modal and
+				// pass the event on to other widgets. The pass-on part is nyi!
+				if(event==FL_PUSH && !ret && Fl::grab_)	{
+					Fl::exit_modal();
+				}
                 return true;
             }
             break;
