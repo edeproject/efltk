@@ -28,6 +28,7 @@ Fl_Data_Field::Fl_Data_Field(const char *name) {
     flags = FL_ALIGN_LEFT;
     m_dataSize = 0;
     visible = true;
+    precision = 3; // default precision, only affects floating point fields
 }
 
 // convertors
@@ -55,7 +56,7 @@ bool Fl_Data_Field::as_bool() const {
         case VAR_TEXT:
         case VAR_BUFFER:     ch = value.get_string()[0];
             return (strchr("YyTt",ch)!=0);                          break;
-        case VAR_DATE:        return bool(value.get_date()!=0);    break;
+        case VAR_DATE:       return bool(value.get_date()!=0);    break;
         case VAR_DATETIME:   return bool(value.get_datetime()!=0);break;
         case VAR_IMAGEPTR:   fl_throw("Can't convert image field");
         case VAR_NONE:       fl_throw("Can't convert field w/o type");
@@ -70,7 +71,7 @@ double Fl_Data_Field::as_float() const {
         case VAR_STRING:
         case VAR_TEXT:
         case VAR_BUFFER:     return atof(value.get_string());     break;
-        case VAR_DATE:        return double(value.get_date());     break;
+        case VAR_DATE:       return double(value.get_date());     break;
         case VAR_DATETIME:   return double(value.get_datetime()); break;
         case VAR_IMAGEPTR:   fl_throw("Can't convert image field");
         case VAR_NONE:       fl_throw("Can't convert field w/o type");
@@ -81,14 +82,26 @@ double Fl_Data_Field::as_float() const {
 Fl_String Fl_Data_Field::as_string() const {
     char print_buffer[32];
     switch (value.type()) {
-        case VAR_INT:        sprintf(print_buffer,"%i",value.get_int());
+        case VAR_INT:        
+            sprintf(print_buffer,"%i",value.get_int());
             return Fl_String(print_buffer);
-        case VAR_FLOAT:      sprintf(print_buffer,"%0.4f",value.get_float());
-            return Fl_String(print_buffer);
+        case VAR_FLOAT:
+            {
+                char formatString[] = "%0.1f";
+                int prec = precision;
+                if (prec < 0) {
+                    formatString[4] = 'e';
+                    prec = -prec;
+                }
+                if (prec > 9) prec = 9;
+                formatString[3] = '0' + prec;
+                sprintf(print_buffer,formatString,value.get_float());
+                return Fl_String(print_buffer);
+            }
         case VAR_STRING:
         case VAR_TEXT:
         case VAR_BUFFER:     return Fl_String(value.get_string());
-        case VAR_DATE:        return value.get_date().date_string();
+        case VAR_DATE:       return value.get_date().date_string();
         case VAR_DATETIME:   return value.get_date().date_string() + " " + value.get_date().time_string();
         case VAR_IMAGEPTR:   fl_throw("Can't convert image field");
         case VAR_NONE:       fl_throw("Can't convert field w/o type");

@@ -68,8 +68,6 @@ bool Fl_Record_DS::load_data() {
     if (!build_queries())
         return false;
 
-    puts(m_selectQuery->sql().c_str());
-
     m_selectQuery->param("key") = m_keyValue;
     m_selectQuery->open();
     if (!m_selectQuery->eof()) {
@@ -97,7 +95,6 @@ bool Fl_Record_DS::save_data() {
         m_saveQuery->param(src.name()) = src.value;
     }
 
-    puts(m_saveQuery->sql().c_str());
     m_updateQuery->param("key") = m_keyValue;
     m_saveQuery->exec();
 

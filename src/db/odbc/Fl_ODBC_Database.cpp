@@ -58,7 +58,6 @@ protected:
     short       m_columnNumber;
     short       m_columnType;
     short       m_columnLength;
-    short       m_columnScale;
 public:
     Fl_ODBC_Field(const char *name,short number,short type,short length,short scale);
     char *check_buffer(unsigned sz);
@@ -69,11 +68,11 @@ public:
  * Driver TO DO: initialize the column information. Depending on native field type,
  * initialize Fl_Data_Field::value to one of the Fl_Variant types
  */
-Fl_ODBC_Field::Fl_ODBC_Field(const char *name,short number,short type,short length,short scale) : Fl_Data_Field(name) {
+Fl_ODBC_Field::Fl_ODBC_Field(const char *name,short number,short type,short length,short precision) : Fl_Data_Field(name) {
     m_columnNumber = number;
     m_columnType = type;
     m_columnLength = length;
-    m_columnScale = scale;
+    this->precision = precision;
     switch (m_columnType) {
         case SQL_C_SLONG:
             value.set_int(0);
@@ -271,12 +270,11 @@ void Fl_ODBC_Database::prepare_query(Fl_Query *query) {
  */
 void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
     int rc;
-    SQLINTEGER  cbLen;
+    //SQLINTEGER  cbLen;
 
     SQLHSTMT    statement = (SQLHSTMT)query_handle(query);
     Fl_Params&  params = query->params();
     unsigned    cnt = params.count();
-    int intParam;
     for (unsigned i = 0; i < cnt; i++) {
         Fl_ODBC_Param *param = (Fl_ODBC_Param *)&params[i];
         unsigned  pcnt = param->bind_count();
@@ -484,12 +482,12 @@ void Fl_ODBC_Database::open_query(Fl_Query *query) {
         char  *columnName = new char[65];
         long  columnType;
         long  columnLength;
-        long  columnScale;
+        long  columnPrecision;
         for (short column = 1; column <= count; column++) {
             query_col_attributes(query,column,SQL_COLUMN_NAME,columnName,64);
             query_col_attributes(query,column,SQL_COLUMN_TYPE,columnType);
             query_col_attributes(query,column,SQL_COLUMN_LENGTH,columnLength);
-            query_col_attributes(query,column,SQL_COLUMN_SCALE,columnScale);
+            query_col_attributes(query,column,SQL_COLUMN_SCALE,columnPrecision);
             columnType = ODBCtypeToCType(columnType);
             if (columnName[0] == 0)
                 sprintf(columnName,"column%02i",column);
@@ -501,7 +499,7 @@ void Fl_ODBC_Database::open_query(Fl_Query *query) {
                     column,
                     columnType,
                     columnLength,
-                    columnScale);
+                    columnPrecision);
 
             if (column == 2)
                 testField = field;

@@ -36,10 +36,20 @@ public:
 
     Fl_Variant value;
 
-    // attributes
-    int      width;
-    Fl_Flags flags;
-    bool     visible;
+    /** Field attributes are used when we need to convert a field
+      * data into something like Fl_ListView. Width defines a width
+      * of the column, flags may contain an alignment of data, 
+      * precision is used when we deal with floating point numbers.
+      * Precision defines # of digits after decimal point. Positive
+      * precision means fixed format, negative means a scientific 
+      * format.
+      * If the visible flag is switched off, the field is not shown 
+      * in Fl_ListView and similar classes.
+      */
+    int         width;
+    int             precision;
+    Fl_Flags    flags;
+    bool        visible;
 
     const Fl_String &name() const                 { return m_name;           }
     Fl_Variant_Type type() const                  { return value.type();     }
