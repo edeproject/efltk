@@ -98,7 +98,6 @@ void Fl_Menu_Bar::draw()
             //update_child(*widget);
             fl_push_matrix();
             fl_translate(widget->x(), widget->y());
-			Fl_Flags saved_flags=widget->flags();
             widget->draw();
             fl_pop_matrix();
 
@@ -184,11 +183,11 @@ void Fl_Menu_Bar::layout()
 
 int Fl_Menu_Bar::handle(int event)
 {
-	static bool menu_up=false;
+    static bool menu_up=false;
     switch(event) {
 
-    case FL_LEAVE:		
-		if(menu_up) return 0;
+    case FL_LEAVE:
+        if(menu_up) return 0;
         highlight_ = selected_ = -1;
         redraw(FL_DAMAGE_HIGHLIGHT);
         return 1;
@@ -197,10 +196,10 @@ int Fl_Menu_Bar::handle(int event)
         value(-1);
         key_event = false;
         if(highlight_>=0) {
-			menu_up=true;
-			popup(0,0,0,0);
-			menu_up=false;
-		}
+            menu_up=true;
+            popup(0,0,0,0);
+            menu_up=false;
+        }
         return 1;
     }
     case FL_ENTER:

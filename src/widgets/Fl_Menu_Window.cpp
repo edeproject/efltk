@@ -33,12 +33,7 @@
 # include <winsock.h>
 #endif
 
-#ifndef _WIN32
-float Fl_Menu_Window::default_step_div = 4.0f;
-#else
-float Fl_Menu_Window::default_step_div = 1.0f;
-#endif
-
+float Fl_Menu_Window::default_step_div = 1.5f;
 bool Fl_Menu_Window::animate_ = true;
 
 Fl_Menu_Window::Fl_Menu_Window(int W, int H, const char *l) 
@@ -151,15 +146,9 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
     set_damage(FL_DAMAGE_ALL);
     draw();
     fl_end_offscreen();
-	
+
     Fl_Window::resize(fx,fy,fw,fh);
     Fl_Window::show();
-	
-#ifndef _WIN32
-	// FIXME: Check does XWindows needs these
-    Fl_Window::layout();
-    Fl::check();
-#endif
 
     float max_steps = max( (tw-fw), (th-fh) );
     float min_steps = max( (fw-tw), (fh-th) );

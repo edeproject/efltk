@@ -50,8 +50,7 @@ void Fl::init()
     Fl_Config cfg(file, true, false);
     if(!cfg.error()) {
 
-		bool b_val;
-        int  i_val;
+        bool b_val;
         float f_val;
 
         // Read Fl_Image defaults:
@@ -61,10 +60,10 @@ void Fl::init()
         // Read Fl_Menu_Window defaults:
         cfg.get("Menus", "Animate", b_val, true);
         Fl_Menu_Window::animate(b_val);
-        cfg.get("Menus", "Speed", i_val, 4);
-        Fl_Menu_Window::default_step_div = i_val;
-		cfg.get("Menus", "Delay", f_val, 0.3f);
-		Fl_Menu_::default_delay(f_val);
+        cfg.get("Menus", "Speed", f_val, 1.5f);
+        Fl_Menu_Window::default_step_div = f_val;
+        cfg.get("Menus", "Delay", f_val, 0.2f);
+        Fl_Menu_::default_delay(f_val);
 
         // Read Fl_Tooltip defaults:
         cfg.get("Tooltips", "Animate", b_val, true);
