@@ -32,7 +32,7 @@
 #define FL_TEXT_MAX_EXP_CHAR_LEN 20
 
 #include "Fl_Export.h"
-#include "Fl_Callback.h"
+#include "Fl_Ptr_Stack.h"
 
 typedef void (*Fl_Text_Modify_Cb)(int pos, int nInserted, int nDeleted,
                                   int nRestyled, const char* deletedText,
@@ -79,7 +79,10 @@ class FL_API Fl_Text_Buffer {
     Fl_Text_Buffer(int requestedSize = 0);
     ~Fl_Text_Buffer();
 
-    char * Fl_Text_Buffer::static_buffer();
+    char *Fl_Text_Buffer::static_buffer();
+
+    int undo();
+    void add_undo(const char *str, int pos, int len, bool inserted, bool replaced);
 
     int length() { return mLength; }
     const char* text();
@@ -223,6 +226,8 @@ class FL_API Fl_Text_Buffer {
                                           int* selEnd);
 
     void update_selections(int pos, int nDeleted, int nInserted);
+
+    Fl_Ptr_Stack undo_stack;
 
     Fl_Text_Selection mPrimary; /* highlighted areas */
     Fl_Text_Selection mSecondary;

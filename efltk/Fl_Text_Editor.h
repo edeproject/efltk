@@ -86,10 +86,14 @@ class FL_API Fl_Text_Editor : public Fl_Text_Display {
     static int kf_delete(int c, Fl_Text_Editor* e);
     static int kf_copy(int c, Fl_Text_Editor* e);
     static int kf_cut(int c, Fl_Text_Editor* e);
+    static int kf_undo(int c, Fl_Text_Editor* e);
     static int kf_paste(int c, Fl_Text_Editor* e);
     static int kf_select_all(int c, Fl_Text_Editor* e);
 
-  protected:
+    void insert(const char* text);
+    void overstrike(const char* text);
+
+protected:
     int handle_key();
     int insert_mode_;
     Key_Binding* key_bindings;
