@@ -179,6 +179,22 @@ int Fl_Choice::handle(int e)
             }
             return 0;
 
+    case FL_MOUSEWHEEL:
+        {
+            int old_focus=Fl_Group::focus();
+            int new_focus=old_focus;
+
+            if(Fl::event_dy()>0) new_focus--; else new_focus++;
+
+            if(new_focus>=children) new_focus=children-1;
+            else if(new_focus<0) new_focus=0;
+
+            Fl_Group::focus(new_focus);
+            redraw();
+            if(new_focus!=old_focus) do_callback();
+
+            return 1;
+        }
         default:
             return 0;
     }
