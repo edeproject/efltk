@@ -3,7 +3,7 @@
 #include <efltk/Fl_ListView_Header.h>
 
 static void revert(Fl_Style* s) {
-    s->box = FL_DOWN_BOX;
+    //s->box = FL_DOWN_BOX;
     s->button_box = FL_NO_BOX;
     s->leading = 2;
 }

@@ -44,7 +44,7 @@ int Fl_Popup_Window::handle(int event)
 	case FL_PUSH:
 		if ( !Fl::event_inside(-2,-2,w()+4,h()+4) ) {
 			clear_value();
-			return 0;
+			Fl::exit_modal();
 		}
 		Fl_Menu_Window::handle(event);
 		return 1;		

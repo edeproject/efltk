@@ -163,12 +163,14 @@ void Fl_ListView_Item::draw_row(unsigned row, int x, int y, int w, int h) const
 
         fl_color(parent()->selection_color());
         fl_rectf(x, y, w, h);
+		return;
 
-    } else if(parent()->draw_stripes()) {
+    }
+	
+	if(parent()->draw_stripes()) {
 
-        Fl_Color c0 = parent()->color();
         Fl_Color c1 = fl_lighter(parent()->button_color());
-        if(row & 1 && c1 != c0) {
+        if(row & 1) {
             // draw odd-numbered items with a dark stripe, plus contrast-enhancing
             // pixel rows on top and bottom:
             fl_color(c1);
@@ -177,15 +179,15 @@ void Fl_ListView_Item::draw_row(unsigned row, int x, int y, int w, int h) const
             fl_color(fl_lighter(c1));
             fl_line(x, y, w, y);
             fl_line(x, y+h-1, w, y+h-1);
-        } else {
-            fl_color(c0);
-            fl_rectf(x, y, w, h);
+			return;
         }
+	}
 
-    } else {
-        fl_color(parent()->color());
-        fl_rectf(x, y, w, h);
-    }
+	fl_push_clip(x, y, w, h);
+	parent()->draw_group_box();
+	fl_pop_clip();
+	//fl_color(parent()->color());
+    //fl_rectf(x, y, w, h);
 }
 
 void Fl_ListView_Item::draw_cell(unsigned row, unsigned col, int width, int height)

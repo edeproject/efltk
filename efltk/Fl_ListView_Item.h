@@ -9,12 +9,20 @@ class Fl_ListView;
 
 class FL_API Fl_ListView_Item {
 public:
+	enum ItemTypes {
+		NORMAL = 0,
+		EXT = 1,
+		CUSTOM = 1000
+	};
+
     Fl_ListView_Item(const char *label1=0,
                      const char *label2=0,
                      const char *label3=0,
                      const char *label4=0,
                      const char *label5=0);
     virtual ~Fl_ListView_Item();
+
+	virtual int type() { return NORMAL; }
 
     const char *label() const;
     const char *label(unsigned col) const;
@@ -44,21 +52,12 @@ public:
     void redraw(uchar c);
     void redraw() { redraw(FL_DAMAGE_ALL); }
 
-    //int h() const;
-    //void h(int height);
-
-//    void index(unsigned idx) { m_index = idx; }
-//    unsigned index() const { return m_index; }
-
     void image(Fl_Image *im) { m_image = im; }
     void image(Fl_Image &im) { m_image = &im; }
     Fl_Image *image() { return m_image; }
     const Fl_Image *image() const { return m_image; }
     void image(unsigned col, Fl_Image &im) { image(im); }
     void image(unsigned col, Fl_Image *im) { image(im); }
-
-    //bool selected() const;
-    //bool inactive() const;
 
     virtual int compare(Fl_ListView_Item *other, int column, int sort_type);
 
@@ -94,6 +93,8 @@ public:
                         const char *label4=0,
                         const char *label5=0);
     virtual ~Fl_ListView_ItemExt();
+
+	virtual int type() { return EXT; }
 
     virtual void columns(unsigned count);
     virtual unsigned columns() const { return Fl_ListView_Item::columns(); }

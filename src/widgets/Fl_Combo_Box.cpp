@@ -187,15 +187,19 @@ Fl_Popup_ListView::Fl_Popup_ListView(Fl_Widget *editControl)
     m_editControl = editControl;
     m_listView = new Fl_ListView(0,0,w(),h());
     m_listView->callback(Fl_Popup_ListView::cb_clicked);
-    m_listView->box(FL_NO_BOX);
     m_listView->layout_align(FL_ALIGN_CLIENT);
     m_listView->layout_spacing(0);
-    box(FL_THIN_UP_BOX);
+	box(FL_THIN_UP_BOX);
     end();
 }
 
 void Fl_Popup_ListView::draw() {
-    Fl_Popup_Window::draw();
+	draw_frame();
+	if((damage() & ~FL_DAMAGE_CHILD))
+		draw_child(*m_listView);
+	else
+		update_child(*m_listView);
+    //Fl_Popup_Window::draw();
 }
 
 bool Fl_Popup_ListView::popup() {
@@ -211,7 +215,8 @@ bool Fl_Popup_ListView::popup() {
         m_listView->size(width,height);
         resize(X, Y+m_editControl->h(), width+box()->dw(), height+box()->dh());
     }
-    int rc = Fl_Popup_Window::show_popup();
+    bool rc = Fl_Popup_Window::show_popup();
+	if(!rc) m_listView->item(0);
     if (m_editControl)
         m_editControl->redraw();
     return rc;
@@ -231,7 +236,8 @@ bool Fl_Popup_ListView::popup(Fl_Widget *editControl, int X, int Y, int W, int H
         resize(X, Y, width, height);
         layout(); // Make sure window moves
     }
-    int rc = Fl_Popup_Window::show_popup();
+    bool rc = Fl_Popup_Window::show_popup();
+	if(!rc) m_listView->item(0);
     if (editControl)
         editControl->redraw();
     return rc;
@@ -269,10 +275,12 @@ void Fl_Combo_Box_Panel::draw()
 
     Fl_ListView *lv = m_comboBox->listview();
 
-    Fl_ListView_Item    *item = (Fl_ListView_ItemExt *)lv->item();
+    Fl_ListView_Item *item = lv->item();
     if (!item) return;
 
-    Fl_ListView_ItemExt *item_ext = dynamic_cast<Fl_ListView_ItemExt *>(item);
+	Fl_ListView_ItemExt *item_ext = 0;
+	if(item->type()==Fl_ListView_Item::EXT)
+		item_ext = (Fl_ListView_ItemExt *)item;
 
     if (!item_ext) {
         fl_font(lv->text_font(), lv->text_size());

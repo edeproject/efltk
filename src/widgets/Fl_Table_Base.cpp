@@ -835,6 +835,11 @@ static int resizing_row = -1; // Row being dragged
 static int min_col_x    = -1;    // Minimum X for dragged column
 static int min_row_y    = -1;    // Minimum Y for dragged row
 
+#define fill_rect(xx,yy,ww,hh) \
+	fl_push_clip( (xx), (yy), (ww), (hh) ); \
+	draw_box(); \
+	fl_pop_clip()
+
 // Draw the entire Fl_Table_Base
 //    Override the draw() routine to draw the table.
 //    Then tell the group to draw over us.
@@ -861,7 +866,7 @@ void Fl_Table_Base::draw()
     // let user's drawing routine prepare for new page
     table_draw(CONTEXT_BEGIN,0,0,tix,tiy,tiw,tih);
 
-    bool damage_all = (damage() & ~FL_DAMAGE_CHILD);
+    bool damage_all = (damage() & ~FL_DAMAGE_CHILD)>0;
     if(damage_all) {
         draw_frame();
     }
@@ -972,37 +977,51 @@ void Fl_Table_Base::draw()
     }
 
     // Set drawing color for rest of method
-    fl_color(color());
+    // fl_color(color());
 
     // Table width smaller than window? Fill remainder with rectangle
     if ( table_w < tiw )
     {
-        fl_rectf(tix+table_w, tiy, tiw-table_w, tih);
+		//fl_rectf(tix+table_w, tiy, tiw-table_w, tih);
+		fill_rect(tix+table_w, tiy, tiw-table_w, tih);        
+		
+		// Col header? fill that too
+		if ( col_header() )
+		{
 
-	// Col header? fill that too
-	if ( col_header() )
-	{
-	    fl_rectf(tix + table_w, 
-	             wiy, 
-		     // get that corner just right..
-                     (tiw - table_w),
-		     col_header_height());
-	}
+			/*fl_rectf(tix + table_w, 
+				wiy, 
+				// get that corner just right..
+                (tiw - table_w),
+				col_header_height());*/
+			fill_rect(tix + table_w, 
+				wiy, 
+				// get that corner just right..
+                (tiw - table_w),
+				col_header_height());
+		}
     }
 
     // Table height smaller than window? Fill remainder with rectangle
     if ( table_h < tih )
     {
-	fl_rectf(tix, tiy + table_h, tiw, tih - table_h);
+		//fl_rectf(tix, tiy + table_h, tiw, tih - table_h);
+		fill_rect(tix, tiy + table_h, tiw, tih - table_h);
 
-	if ( row_header() )
-	{
+		if ( row_header() )
+		{
             // NOTE:
             //     Careful with that lower corner; don't use tih; when eg.
             //     table->box(FL_THIN_UPFRAME) and hscrollbar hidden,
             //     leaves a row of dead pixels.
             //
+			/*
             fl_rectf(wix,
+                     tiy + table_h,
+                     row_header_width(),
+                     (wiy+wih)-(tiy+table_h)-(hscrollbar->visible() ? hscrollbar->h():0));
+			*/
+			fill_rect(wix,
                      tiy + table_h,
                      row_header_width(),
                      (wiy+wih)-(tiy+table_h)-(hscrollbar->visible() ? hscrollbar->h():0));
