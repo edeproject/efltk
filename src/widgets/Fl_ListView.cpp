@@ -236,6 +236,7 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
     static bool on_drag = false;
 
     static int sel_item = 0;
+	static int last_dragged = 0;
     int current_item = 0;
 
     int ret = 0;
@@ -265,10 +266,10 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
         case FL_PUSH:
             if(context==CONTEXT_CELL)
             {
-                current_item = R;
+                last_dragged = current_item = R;
 
-            // Handle selection in table.
-            // Select cell under cursor, and enable drag selection mode.
+				// Handle selection in table.
+				// Select cell under cursor, and enable drag selection mode.
 
                 cur_row = current_item;
                 on_drag = true;
@@ -276,35 +277,35 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
                 if(Fl::event_button() == FL_LEFT_MOUSE && multi())
                 {
                     switch(shiftstate) {
-                        case FL_CTRL: {
-                    // start a new selection block without changing state
-                                select_row(current_item, 2);
-                                sel_item = current_item;
-                                show_row(current_item);
-                                ret = 1;
-                            }
-                            break;
+						case FL_CTRL: {
+							// start a new selection block without changing state
+                            select_row(current_item, 2);
+                            sel_item = current_item;
+                            show_row(current_item);
+                            ret = 1;
+                        }
+                        break;
 
                         case FL_SHIFT: {
-                    // We want to change the selection between
-                    // the top most selected item and the just clicked item.
-                    // start a new selection block without changing state
-                                select_items(sel_item, current_item);
-                                sel_item = current_item;
-                                Fl::event_clicks(0);
-                                show_row(current_item);
-                                ret = 1;
-                            }
-                            break;
+							// We want to change the selection between
+							// the top most selected item and the just clicked item.
+							// start a new selection block without changing state
+                            select_items(sel_item, current_item);
+                            sel_item = current_item;
+                            Fl::event_clicks(0);
+                            show_row(current_item);
+                            ret = 1;
+						}
+                        break;
 
                         default: {
-                                select_only_row(current_item);
-                                sel_item = current_item;
-                                show_row(current_item);
-                                ret = 1;
-                            }
-                            break;
-                    }
+							select_only_row(current_item);
+                            sel_item = current_item;
+                            show_row(current_item);
+                            ret = 1;
+						}
+                        break;
+                    } //switch(shiftstate)
 
                 } else { // LEFT_MOUSE && multi()
 
@@ -324,55 +325,13 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
 
                 if(context==CONTEXT_CELL) current_item = R;
                 else                      current_item = row_at(yposition()+Fl::event_y()-tiy);
-                if(current_item==-1) return 0;
-
-				if(sel_item == current_item) {
-					if(selected()==1 && selected_row(sel_item))
-						return 1;
-				}
+                if(current_item==-1) return 0;				
 
                 if(multi())
                 {					
-					// CTRL does not unselect others
-                    if(shiftstate!=FL_CTRL)
-                    {
-                        // Turn off items that are not in selection
-                        unselect_all();
-
-                        // minimum drawing:
-                        // Maybe leaves some items undamaged..? test test test... :) naah.. Too slow :)
-                        /*
-                        int start=0, end=0;
-                        int from = sel_item, to = current_item;
-                        if(to < from) {
-                            start=to; end=from;
-                        } else {
-                            start=from; end=to;
-                        }
-
-                        Fl_Int_List clear_list;
-                        unsigned n;
-                        for(n=0; n<selection.size(); n++)
-                        {
-                            int item = selection[n];
-                            if(item < start || item > end) {
-                                set_select_flag(item, 0);
-                                child(item)->redraw();
-                                clear_list.append(n);
-                            }
-                        }
-
-                        for(n=0; n<clear_list.size(); n++) {
-                            selection.remove(clear_list[n]);
-                        }*/
-                    }
-
-                    //if(sel_item != current_item || sel_item==0 || sel_item==int(children()-1))
-                    {
-						// Mark items selected
-                        select_items(sel_item, current_item);
-                        show_row( (cur_row = current_item) );
-                    }
+					// Mark items selected
+					select_items(last_dragged, current_item);
+                    show_row( (cur_row = current_item) );
 
                     if(sel_item!=current_item) {
                         if(when() & FL_WHEN_CHANGED) do_callback(FL_DATA_CHANGE);
@@ -381,9 +340,12 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
 
                 } else { // end multi
 
-                    select_only_row(current_item);
+					if(!selected_row(current_item) || selected()>1) {
+						select_only_row(current_item);
+					}                    
                     show_row( (cur_row = current_item) );
                 }
+				last_dragged = current_item;
                 return 1;
             }
 
