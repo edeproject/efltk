@@ -114,7 +114,34 @@ const char* Fl_Input::expand(const char* p, char* buf,int wordwrap) const
             lastspace_out = o;
         }
         if (p >= value_+size_) break;
-        int c = *p++;
+
+        int c = *p++ & 255;
+        if (c < ' ' || c == 127) {
+            if (c=='\n' && input_type()==MULTILINE) {p--; break;}
+            if (c == '\t' && input_type()==MULTILINE) {
+                for (c = (o-buf)%8; c<8 && o<e; c++) *o++ = ' ';
+            } else {
+                *o++ = '^';
+                *o++ = c ^ 0x40;
+            }
+        } else if (c >= 128) {
+#if HAVE_XUTF8
+            unsigned int ucs;
+            fl_utf2ucs((unsigned char*) (p - 1), 2, &ucs);
+            if (ucs == 0xA0) {
+                *o++ = ' ';
+                p++;
+            } else {
+                *o++ = c;
+            }
+#else
+            *o++ = ' ';
+#endif
+        } else {
+            *o++ = c;
+        }
+
+        /*int c = *p++;
 	
         if (c & 0xE0)
         {
@@ -133,7 +160,7 @@ const char* Fl_Input::expand(const char* p, char* buf,int wordwrap) const
                 *o++ = c ^ 0x40;
             }
     
-        }
+        }*/
     }
     *o = 0;
     return p;
@@ -149,9 +176,32 @@ int* returnn                     // return offset into buf here
 ) const
 {
     int n = 0;
-    if (input_type() == SECRET) n = e-p;
-    else while (p<e)
+/*    if (input_type() == SECRET) n = e-p;
+    else*/
+    while (p<e)
     {
+        int c = *p++ & 255;
+        if (c < ' ' || c == 127) {
+            if (c == '\t' && input_type()==FL_MULTILINE_INPUT) n += 8-(n%8);
+            else n += 2;
+        } else if (c >= 128) {
+#if HAVE_XUTF8
+            unsigned int ucs;
+            fl_utf2ucs((unsigned char*) (p - 1), 2, &ucs);
+            if (ucs >= 128 && ucs < 0xA0) {
+                n += 4;
+                p++;
+            } else {
+                n++;
+            }
+#else
+            if(c < 0xA0) n += 4; else n++;
+#endif
+        } else {
+            n++;
+        }
+
+        /*
         int c = *p++;
         if (c & 0xE0)
         {
@@ -161,7 +211,7 @@ int* returnn                     // return offset into buf here
         {
             if (c == '\t' && input_type() == MULTILINE) n += 8-(n%8);
             else n += 2;
-        }
+        }*/
     }
     if (returnn) *returnn = n;
     return fl_width(buf, n);
@@ -629,16 +679,35 @@ int Fl_Input::mouse_position(int X, int Y, int W, int ) const
     const char *l, *r, *t; float f0 = float(Fl::event_x()-xpos);
     for (l = p, r = e; l<r; )
     {
+#if HAVE_XUTF8
+        double f;
+        int cw = fl_utflen((unsigned char*)l, size()-(l-value()));
+        if (cw < 1) cw = 1;
+        t = l+cw;
+        f = X-xscroll_+expandpos(p, t, buf, 0);
+        if (f <= Fl::event_x()) {l = t; f0 = Fl::event_x()-f;}
+        else r = t-cw;
+#else
         t = l+(r-l+1)/2;
         int f = xpos+int(expandpos(p, t, buf, 0)+.5);
         if (f <= Fl::event_x()) {l = t; f0 = float(Fl::event_x()-f);}
         else r = t-1;
+#endif
     }
     // see if closer to character on the right:
     if (l < e)
     {
+#if HAVE_XUTF8
+        double f1;
+        int cw = fl_utflen((unsigned char*)l, size()-(l-value()));
+        if (cw > 0) {
+            f1 = X-xscroll_+expandpos(p, l + cw, buf, 0) - Fl::event_x();
+            if (f1 < f0) l = l+cw;
+        }
+#else
         int f1 = xpos+int(expandpos(p, l+1, buf, 0)+.5)-Fl::event_x();
         if (f1 < f0) l = l+1;
+#endif
     }
     return l-value();
 }
