@@ -34,3 +34,4 @@ void Fl_Database::close() {
    close_connection();
    m_active = false;
 }
+
