@@ -29,35 +29,13 @@ typedef int (*thread_function)(void * arg);
 class Fl_Mutex
 {
 public:
-    Fl_Mutex() {
-#ifndef _WIN32
-        pthread_mutex_init(&cs,NULL);
-#else
-        InitializeCriticalSection(&cs);
-#endif
-    }
-    ~Fl_Mutex() {
-#ifndef _WIN32
-        pthread_mutex_destroy(&cs);
-#else
-        DeleteCriticalSection(&cs);
-#endif
-    }
-    void lock() {
-#ifndef _WIN32
-        pthread_mutex_lock(&cs);
-#else
-        EnterCriticalSection(&cs);
-#endif
-    }
-    void unlock() {
-#ifndef _WIN32
-        pthread_mutex_unlock(&cs);
-#else
-        LeaveCriticalSection(&cs);
-#endif
-    }
+    Fl_Mutex() { init(); }
+    ~Fl_Mutex() { destroy(); }
+    inline void lock();
+    inline void unlock();
 private:
+	inline void init();
+	inline void destroy();
 #ifndef _WIN32
     pthread_mutex_t cs;
 #else
@@ -86,17 +64,12 @@ public:
         _threadHandle = 0; _threadId = 0;_function = 0; _arg = 0;
         _kill_thread = 0; _th_running = 0; _ms_sleep = 0;
     }
-    virtual ~Fl_Thread() {
-#ifdef _WIN32
-        if(_threadHandle) CloseHandle(_threadHandle);
-#endif
-    }
+    virtual ~Fl_Thread() { destroy(); }
 
     inline bool create(thread_function function = 0, void* arg = 0);
     inline void destroy(int exitcode);
     inline void join(int timeout = 100);
-
-    inline void kill_thread() {_kill_thread = true;}
+    inline void kill_thread() { _kill_thread = true; }
 
     inline int get_priority() const;
     inline int set_priority(unsigned int priority);
@@ -108,15 +81,6 @@ public:
     int ms_sleep()			 { return _ms_sleep;  }
 
 private:
-    // static thread linker function
-#ifndef _WIN32
-    static void *st_th_func(void *arg);
-    pthread_t   _threadHandle;
-#else
-    static int st_th_func(void *arg);
-    HANDLE _threadHandle;
-#endif
-
     int internal_th_function();
 
     bool _kill_thread, _th_running;
@@ -125,6 +89,16 @@ private:
     unsigned long	_threadId;
     thread_function _function;
     void *_arg;
+
+    // static thread linker function
+#ifndef _WIN32
+    static void *st_th_func(void *arg);
+    pthread_t _threadHandle;
+#else
+    static int st_th_func(void *arg);
+    HANDLE _threadHandle;
+#endif
+	inline void destroy();
 };
 
 // Include system depend inline functions

@@ -382,6 +382,10 @@ SOURCE=..\src\widgets\Fl_ListView.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\widgets\Fl_ListView_Header.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\widgets\Fl_ListView_Item.cpp
 # End Source File
 # Begin Source File
@@ -931,6 +935,10 @@ SOURCE=..\efltk\Fl_Line_Dial.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_ListView.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_ListView_Header.h
 # End Source File
 # Begin Source File
 

@@ -35,5 +35,26 @@ int Fl_Thread::set_priority(unsigned int priority)
 	return 0;
 }
 
+void Fl_Thread::destroy() { }
+
+/////////////
+// FL_MUTEX
+
+void Fl_Mutex::init() {
+	pthread_mutex_init(&cs,NULL);
+}
+
+void Fl_Mutex::destroy() {
+	pthread_mutex_destroy(&cs);
+}
+
+void Fl_Mutex::lock() {
+	pthread_mutex_lock(&cs);
+}
+
+void Fl_Mutex::unlock() {
+	pthread_mutex_unlock(&cs);
+}
+
 
 #endif

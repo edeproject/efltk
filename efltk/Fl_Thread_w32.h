@@ -67,4 +67,27 @@ int Fl_Thread::set_priority(unsigned int priority)
 	return old;
 }
 
+void Fl_Thread::destroy() {
+	if(_threadHandle) CloseHandle(_threadHandle);
+}
+
+/////////////
+// FL_MUTEX
+
+void Fl_Mutex::init() {
+	InitializeCriticalSection(&cs);
+}
+
+void Fl_Mutex::destroy() {
+	DeleteCriticalSection(&cs);
+}
+
+void Fl_Mutex::lock() {
+	EnterCriticalSection(&cs);
+}
+
+void Fl_Mutex::unlock() { 
+	LeaveCriticalSection(&cs); 
+}
+
 #endif

@@ -70,7 +70,7 @@ int prime_func(void* p)
         char s[128];
         sprintf(s, "%d", n);
         browser->add(s);
-        browser->bottomline(browser->size());
+		browser->select_only_this();
         if (n > value->value()) value->value(n);
         Fl::unlock();
         Fl::awake((void*)(browser == browser1? p:0));	// Cause the browser to redraw ...
@@ -88,12 +88,13 @@ int main()
   value1 = new Fl_Value_Output(100, 175, 200, 25, "Max Prime:");
   w->end();
   w->show();
-  w = new Fl_Window(200, 200, "5 Threads");
+
+  Fl_Window* w2 = new Fl_Window(200, 200, "5 Threads");
   browser2 = new Fl_Browser(0, 0, 200, 175);
-  w->resizable(browser2);
+  w2->resizable(browser2);
   value2 = new Fl_Value_Output(100, 175, 200, 25, "Max Prime:");
-  w->end();
-  w->show();
+  w2->end();
+  w2->show();
   
   browser1->add("Prime numbers:");
   browser2->add("Prime numbers:");
@@ -109,8 +110,7 @@ int main()
   fl_create_thread(prime_thread2[3], prime_func, browser2);
   fl_create_thread(prime_thread2[4], prime_func, browser2);
 
-  //  Fl::run();
-  while (w->visible()) {
+  while(w->visible() && w2->visible()) {
     Fl::wait();
 //    void* m = Fl::thread_message();
 //    printf("Received message: %p\n", m);
