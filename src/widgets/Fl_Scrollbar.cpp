@@ -309,7 +309,7 @@ Fl_Scrollbar::Fl_Scrollbar(int X, int Y, int W, int H, const char* L)
 : Fl_Slider(X, Y, W, H, L)
 {
     style(default_style);
-    step(1);
+    step(0);
     pagesize_ = 1;
     linesize(2);
 }
