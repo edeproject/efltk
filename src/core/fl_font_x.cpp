@@ -105,6 +105,7 @@ void Fl_Device::transformed_draw(const char *str, int n, float x, float y)
     int X = int(floor(x+.5f));
     int Y = int(floor(y+.5f));
 
+#if HAVE_XUTF8
     char glyph[2];       // byte1 and byte2 value of the UTF-8 char
     XChar2b buf[128];    // drawing buffer
     int pos = 0;         // position in buffer
@@ -148,6 +149,9 @@ void Fl_Device::transformed_draw(const char *str, int n, float x, float y)
     }
     if(pos>0)
         XDrawString16(fl_display, fl_window, fl_gc, X, Y, buf, pos);
+#else
+    XDrawString(fl_display, fl_window, fl_gc, X, Y, str, n);
+#endif
 }
 
 void Fl_Device::rtl_draw(const char *str, int n, float x, float y) {
@@ -164,6 +168,7 @@ float Fl_Device::descent() const { return current_font->descent; }
 
 float Fl_Device::width(const char *str, int n) const
 {
+#if HAVE_XUTF8
     char glyph[2];       // byte1 and byte2 value of the UTF-8 char
     XChar2b buf[128];    // measure buffer
     int pos = 0;         // position in buffer
@@ -206,10 +211,14 @@ float Fl_Device::width(const char *str, int n) const
     if(pos>0)
         W += XTextWidth16(current_font, buf, pos);
     return W;
+#else
+    return XTextWidth(current_font, str, n);
+#endif
 }
 
 float Fl_Device::width(unsigned int c) const
 {
+#if HAVE_XUTF8
     unsigned int ucs;
     unsigned int ulen = fl_fast_utf2ucs((unsigned char*)&c, 1, &ucs);
     if (ulen < 1) ulen = 1;
@@ -227,6 +236,12 @@ float Fl_Device::width(unsigned int c) const
     char2[0].byte2 = glyph[0];
     char2[1].byte1 = char2[1].byte2 = 0;
     return XTextWidth16(current_font, char2, 1);
+#else
+    char buff[2];
+    buff[0]=c;
+    buff[1]=0;
+    return fl_width(buff);
+#endif    
 }
 
 Fl_Font fl_create_font(const char *system_name)

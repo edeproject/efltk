@@ -135,7 +135,8 @@ const char* Fl_Input::expand(const char* p, char* buf,int wordwrap) const
                 *o++ = c;
             }
 #else
-            *o++ = ' ';
+//            *o++ = ' ';
+	    *o++ = c;
 #endif
         } else {
             *o++ = c;
@@ -178,7 +179,8 @@ float Fl_Input::expandpos(
                 n++;
             }
 #else
-            if(c < 0xA0) n += 4; else n++;
+//            if(c < 0xA0) n += 4; else n++;
+	    n++;
 #endif
         } else {
             n++;
