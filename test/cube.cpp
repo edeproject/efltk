@@ -42,8 +42,9 @@ public:
   double size;
   double speed;
   cube_box(int x,int y,int w,int h,const char *l=0)
-    :Fl_Box(FL_DOWN_BOX,x,y,w,h,l){
-      label("This demo does\nnot work without GL");
+    :Fl_Box(x,y,w,h,l){
+        box(FL_DOWN_BOX);
+	label("This demo does\nnot work without GL");
   }
 };
 #else
