@@ -1,14 +1,3 @@
-//
-// (c) Yuri Kiryanov, openh323@kiryanov.com and
-//     Yuriy Gorvitovskiy
-//
-// for Openh323, www.Openh323.org
-//
-// Windows CE Port
-//
-// stdlib routines implemented through Windows CE API
-//
-
 #include <winbase.h>
 #include <windows.h>
 #include <crtdbg.h>
@@ -16,7 +5,9 @@
 #include <winbase.h>
 #include <winnt.h>
 //#include <snmp.h>
-
+#include <sys/stat.h>
+#include <efltk/fl_utf8.h>
+#include <efltk/filename.h>
 
 #define DELETE (0x00010000L) // defined in <winnt.h> and undef "msos/ptlib/contain.h"
 
@@ -33,6 +24,8 @@ int iscntrl( int c ) { return _istcntrl(c); }
 int isdigit( int c ) { return _istdigit(c); }
 int ispunct( int c ) { return _istpunct(c); }
 #endif
+
+#include <tchar.h>
 
 long _lseek(int nHandle, long off, int orig)
 {
@@ -266,6 +259,10 @@ void printchar (char n)
 	printf(" %d ",n);	
 }
 
+int unlink(const char *f)
+{
+return 0;
+}
 long strtol (const char *nptr,char **endptr,int ibase)
 {
 	USES_CONVERSION;
@@ -568,3 +565,36 @@ BOOL WritePrivateProfileString(
 	return FALSE;
 }
 
+
+char * getcwd(char *tmp, int size) { 
+  static unsigned short tmp2[FL_PATH_MAX];
+  int length = GetModuleFileName(0,tmp2,sizeof(tmp)*sizeof(short)); 
+  fl_unicode2utf(tmp2,length,tmp);
+  return tmp; 
+}
+
+wchar_t * _wgetenv(wchar_t *env){
+	static wchar_t tmp[FL_PATH_MAX];
+	if(wcscmp(tmp,L"\\Windows"))
+		wcscpy(tmp,L"\\Windows");
+	env = tmp;
+	return env;
+}
+
+int stricmp(const char *string1, const char *string2){
+	return	fl_utf_strcasecmp(string1,string2);
+}
+
+int strncasecmp(const char *string1, const char *string2,int len){
+	return fl_utf_strncasecmp(string1,string2,len);
+}
+
+char * strdup(const char *todup){
+  int len = strlen(todup);
+  char *buf = new char[len];
+  memcpy(buf,todup,len);
+  buf[len] = 0;
+  return buf;
+}
+
+char * strerror(int num){return "unknown wce error";}

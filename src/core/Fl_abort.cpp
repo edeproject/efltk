@@ -59,6 +59,7 @@ static void error(const char *format, ...)
 
 #elif defined(_WIN32_WCE)
 #include <wince.h>
+#include <efltk/fl_utf8.h>
 
 static void warning(const char *format, ...)
 {

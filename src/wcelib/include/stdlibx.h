@@ -163,6 +163,32 @@ DWORD GetPrivateProfileString( const char* lpAppName, const char* lpKeyName,
 BOOL WritePrivateProfileString(const char* lpAppName, const char* lpKeyName,
   const char* lpString, const char* );
 
+#else
+
 #endif // __cplusplus
 
 #endif
+
+
+char * getcwd(char *tmp, int size);
+wchar_t * _wgetenv(wchar_t *env);
+int stricmp(const char *string1, const char *string2);
+int strncasecmp(const char *string1, const char *string2,int len);
+char * strdup(const char *todup);
+char * strerror(int num);
+
+# define floorf(a)	float(floor(float(a)))
+# define ceilf(a)	float(ceil(float(a)))
+# define fmodf(a,b)	float(fmod(float(a),float(b)))
+# define fabsf(a)	float(fabs(float(a)))
+# define sinf(a)	float(sin(float(a)))
+# define cosf(a)	float(cos(float(a)))
+# define tanf(a)	float(tan(float(a)))
+# define asinf(a)	float(asin(float(a)))
+# define acosf(a)	float(acos(float(a)))
+# define atanf(a)	float(atan(float(a)))
+# define atan2f(a,b)	float(atan2(float(a),float(b)))
+# define expf(a)	float(exp(float(a)))
+# define logf(a)	float(log(float(a)))
+# define log10f(a)	float(log10(float(a)))
+# define sqrtf(a)	float(sqrt(float(a)))

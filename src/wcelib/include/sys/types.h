@@ -9,21 +9,11 @@ typedef long off_t;
 
 #ifdef __cplusplus
 
-/*typedef DWORD  SERVICE_STATUS_HANDLE;
-typedef struct _SERVICE_STATUS {
-    DWORD   dwServiceType;
-    DWORD   dwCurrentState;
-    DWORD   dwControlsAccepted;
-    DWORD   dwWin32ExitCode;
-    DWORD   dwServiceSpecificExitCode;
-    DWORD   dwCheckPoint;
-    DWORD   dwWaitHint;
-} SERVICE_STATUS, *LPSERVICE_STATUS;
-
-#define HAVE_STRING_H 1
-*/
 
 #endif 
+
+#define HAVE_STRING_H 1
+
 
 typedef __int64 __time64_t;
 typedef unsigned short _ino_t;          /* i-node number (not used on DOS) */

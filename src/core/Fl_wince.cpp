@@ -41,6 +41,7 @@
 #include <time.h>
 #include <winsock.h>
 #include <ctype.h>
+#include <efltk/filename.h>
 
 // The following include files require GCC 3.x or a non-GNU compiler...
 #if !defined(__GNUC__) || __GNUC__ >= 3
@@ -583,6 +584,7 @@ static Fl_Window *fl_dnd_target_window = 0;
 /**
  * subclass the IDropTarget to receive data from DnD operations
  */
+#if 0
 class FLDropTarget : public IDropTarget
 {
     DWORD m_cRefCount;
@@ -755,7 +757,7 @@ class FLDropTarget : public IDropTarget
         }
 } flDropTarget;
 #endif
-
+#endif //0
 ////////////////////////////////////////////////////////////////
 
 #ifndef TME_LEAVE
@@ -1671,12 +1673,14 @@ void Fl_X::create(Fl_Window* window)
     Fl_X::first = x;
 
     // Drag-n-drop requires GCC 3.x or a non-GNU compiler...
+#if 0
 #if !defined(__GNUC__) || __GNUC__ >= 3
     // Register all windows for potential drag'n'drop operations
     static bool oleInitialized = false;
     if (!oleInitialized) {oleInitialized = true; OleInitialize(0L);}
     RegisterDragDrop(x->xid, &flDropTarget);
 #endif
+#endif //0
 }
 
 

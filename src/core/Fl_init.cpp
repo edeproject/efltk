@@ -14,7 +14,9 @@
 #include <efltk/Fl_Menu_Window.h>
 #include <efltk/Fl_Menu_.h>
 #include <efltk/Fl_Tooltip.h>
+#ifndef _WIN32_WCE
 #include <efltk/Fl_MDI_Window.h>
+#endif
 
 #include <efltk/Fl_Config.h>
 #include "fl_internal.h"
@@ -110,10 +112,12 @@ void Fl::read_defaults()
         Fl_Tooltip::delay(f_val);
 
         // Read Fl_MDI_Window defaults:
+#ifndef _WIN32_WCE
         cfg.get("MDI", "Animate", b_val, true);
         Fl_MDI_Window::animate(b_val);
         cfg.get("MDI", "Opaque", b_val, false);
         Fl_MDI_Window::animate_opaque(b_val);
+#endif
     } 
 #ifdef _WIN32
     else {

@@ -24,7 +24,7 @@
 //
 
 #include <efltk/Fl_Window.h>
-#include <efltk/x.h>
+//#include <efltk/x.h>
 
 #include <efltk/Fl.h>
 #include <efltk/Fl_WM.h>
