@@ -30,43 +30,46 @@
 #include "Fl_Scrollbar.h"
 
 class FL_API Fl_Scroll : public Fl_Group {
+public:
+    Fl_Scroll(int X,int Y,int W,int H,const char*l=0);
 
-  int xposition_, yposition_;
-  int layoutdx, layoutdy;
-  int scrolldx, scrolldy;
-  static void hscrollbar_cb(Fl_Widget*, void*);
-  static void scrollbar_cb(Fl_Widget*, void*);
-  static void draw_clip(void*,int,int,int,int);
-  Fl_End endgroup;
+    enum { // values for type()
+        HORIZONTAL = 1,
+        VERTICAL = 2,
+        BOTH = 3,
+        ALWAYS_ON = 4,
+        HORIZONTAL_ALWAYS = 5,
+        VERTICAL_ALWAYS = 6,
+        BOTH_ALWAYS = 7
+    };
 
-protected:
+    virtual int handle(int);
+    virtual void layout();
+    virtual void draw();
 
-  void layout();
-  void draw();
+    int xposition() const {return xposition_;}
+    int yposition() const {return yposition_;}
+    void position(int, int);
+
+    // Set offset, from edge to widget
+    int edge_offset() { return edge_offset_; }
+    void edge_offset(int v) { edge_offset_ = v; }
+
+private:
+    Fl_End endgroup;
+    int edge_offset_;
+    int xposition_, yposition_;
+    int layoutdx, layoutdy;
+    int scrolldx, scrolldy;
+    static void hscrollbar_cb(Fl_Widget*, void*);
+    static void scrollbar_cb(Fl_Widget*, void*);
+    static void draw_clip(void*,int,int,int,int);
 
 public:
+    void bbox(int&,int&,int&,int&);
+    Fl_Scrollbar scrollbar;
+    Fl_Scrollbar hscrollbar;
 
-  void bbox(int&,int&,int&,int&);
-  Fl_Scrollbar scrollbar;
-  Fl_Scrollbar hscrollbar;
-
-  int handle(int);
-
-  Fl_Scroll(int X,int Y,int W,int H,const char*l=0);
-
-  enum { // values for type()
-    HORIZONTAL = 1,
-    VERTICAL = 2,
-    BOTH = 3,
-    ALWAYS_ON = 4,
-    HORIZONTAL_ALWAYS = 5,
-    VERTICAL_ALWAYS = 6,
-    BOTH_ALWAYS = 7
-  };
-
-  int xposition() const {return xposition_;}
-  int yposition() const {return yposition_;}
-  void position(int, int);
 };
 
 #endif
