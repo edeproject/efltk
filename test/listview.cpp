@@ -74,6 +74,8 @@ void callback(Fl_ListView *l, void *)
 {
     Fl_ListView_Item *i = (Fl_ListView_Item *)l->item();
     if(i) {
+        if (Fl::event() == FL_DATA_CHANGE)
+            printf("Changed: ");
         if(Fl::event_clicks()) printf("Double ");
         printf("Clicked: ");
         for(unsigned a=0; a<l->columns(); a++)
