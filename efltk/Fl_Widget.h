@@ -30,6 +30,7 @@ class FL_API Fl_Widget;
 class FL_API Fl_Window;
 class FL_API Fl_Image;
 class FL_API Fl_Group;
+class FL_API Fl_Device;
 
 typedef void (Fl_Callback )(Fl_Widget*, void*);
 typedef Fl_Callback* Fl_Callback_p; // needed for BORLAND
@@ -47,6 +48,7 @@ typedef void (Fl_Callback1)(Fl_Widget*, long);
  * redraw() after changing any visible properties.
  */
 class FL_API Fl_Widget {
+  friend class Fl_Device;
 public:
 	/// values for widget_type()                        
 	enum {
