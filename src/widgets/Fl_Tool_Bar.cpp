@@ -244,7 +244,7 @@ void Fl_Tool_Bar::draw()
 
         flags(saved);
 
-        if (damage() & (FL_DAMAGE_EXPOSE|FL_DAMAGE_HIGHLIGHT))
+        if (damage() & (FL_DAMAGE_EXPOSE|FL_DAMAGE_HIGHLIGHT|FL_DAMAGE_ALL))
         {
             Fl_Flags f = 0;
             if (pushed) f |= FL_VALUE;
