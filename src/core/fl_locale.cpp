@@ -63,8 +63,10 @@ bool Fl::init_locale(const char *app_domain, const char *directory)
         bindtextdomain(app_domain, directory);
         textdomain(app_domain);
 
+#if HAVE_TEXTDOMAIN_CODESET
         //Set conversions:
         bind_textdomain_codeset(app_domain, "UTF-8");
+#endif
     }
     return Fl::init_locale();
 #else
