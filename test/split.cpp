@@ -47,19 +47,28 @@ int main(int argc, char *argv[])
     group->begin();
 
     button1 = new Fl_Box(5, 5, 40, 290,"Left");
-    split1  = new Fl_Split(45, 5, 5, 290);
 
     button2 = new Fl_Box(255,5,40,290,"Right");
-    split2  = new Fl_Split(250,5,5,290);
 
     button3 = new Fl_Box(50,5,200,20,"Top");
-    split3  = new Fl_Split(50,25,200,5);
 
     button4 = new Fl_Box(50,255,200,40,"Bottom");
+
+    button5 = new Fl_Box(50,30,200,220,"Client");
+
+    // Because the list of the neighbouring widgets is made
+    // in the constructor, the splitters has to be added at the end
+    split3  = new Fl_Split(50,25,200,5);
     split4  = new Fl_Split(50,250,200,5);
+    // because split1 and split2 resizes split3 & 4, they must be added later
+    split1  = new Fl_Split(45, 5, 5, 290);
+    split2  = new Fl_Split(250,5,5,290);
 
-	button5 = new Fl_Box(50,30,200,220,"Client");
-
+    // In some cases you may add other widgets to your window
+    // after Fl_Split. In this case you should call the
+    // find_neighbours() method, like this:
+    // split1->find_neighbours();
+    
     button1->box(FL_THIN_UP_BOX);
     button2->box(FL_THIN_UP_BOX);
     button3->box(FL_THIN_UP_BOX);

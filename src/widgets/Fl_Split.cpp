@@ -12,38 +12,72 @@ static Fl_Named_Style style("Split", revert, &Fl_Split::default_style);
 Fl_Named_Style* Fl_Split::default_style = &::style;
 
 Fl_Split::Fl_Split(int x,int y,int w,int h,const char *l)
-    : Fl_Widget(x,y,w,h,l), ref_(NULL)
+    : Fl_Widget(x,y,w,h,l), ref_(NULL), list_(NULL)
 {
-	style(default_style);    
+    style(default_style);    
     dir_=(w<h);
+    find_neighbours();
 }
 
 Fl_Split::Fl_Split(Fl_Widget * _ref_,int layout_size)
-    : Fl_Widget("",layout_size, (FlagsEnum)_ref_->layout_align()), ref_(_ref_)
+    : Fl_Widget("",layout_size, (FlagsEnum)_ref_->layout_align()), ref_(_ref_), list_(NULL)
 {
     style(default_style);
     // dir_ is set to 1 when the splitter is vertical and is set to 0 when horizontal
     dir_=(layout_align()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT));	
 }
     
+Fl_Split::~Fl_Split()
+{
+    delete list_;
+}
+
+void Fl_Split::find_neighbours()
+{
+    if (list_) list_->clear();
+	else list_=new Fl_Widget_List();
+    for(int i=0; i < parent()->children(); i++){
+        Fl_Widget * c = parent()->child(i);
+        if (c == this) continue;
+        // an ugly check: an Fl_Split should not resize another Fl_Split with
+        // the same direction
+	// I dont like this, neither do M$ vcpp :) imho, it's programmers fault, if this happends.
+        //Fl_Split * s = dynamic_cast<Fl_Split*>(c);
+        //if (s&&s->dir_ == dir_) continue;
+        if (dir_){ // vertical
+            if (c->y() >= y() && c->h() <= h())
+                if ((c->x() + c->w() == x())||
+                    (c->x() == x() + w()))
+                        list_->append(c);
+        } else { // horizontal
+            if (c->x() >= x() && c->w() <= w())
+                if ((c->y() + c->h() == y())||
+                    (c->y() == y() + h()))
+                        list_->append(c);
+        }
+    }
+}
+
 int Fl_Split::handle(int ev)
 {
     static int ox=0,oy=0; // old x and y
     static int dragging=0;// dragging flag
-    static Fl_Widget_List * list;
     int nx=Fl::event_x(); // current x
     int ny=Fl::event_y(); // current y
     int dx,dy;
     Fl_Widget * client=NULL;
+    static int lock=0; // count the number of FL_ENTERS
 
     switch (ev){
         //// When the mouse enters, change the cursor, so the user sees what he can do
         case FL_ENTER:
+	    lock++;
             fl_cursor((dir_)?FL_CURSOR_WE:FL_CURSOR_NS);
             return 1;
         //// When the mouse leaves, reset the cursor
         case FL_LEAVE:
-            fl_cursor(FL_CURSOR_DEFAULT);
+	    if (--lock==0)
+        	fl_cursor(FL_CURSOR_DEFAULT);
             return 1;
         case FL_PUSH:
             fl_cursor(FL_CURSOR_HAND);
@@ -51,37 +85,16 @@ int Fl_Split::handle(int ev)
             dragging=1;
             if (!ref_){
                 // old style
-                list = new Fl_Widget_List();
-                for(int i=0; i < parent()->children(); i++){
-                    Fl_Widget * c = parent()->child(i);
-                    if (c == this) continue;
-                    // an ugly check: an Fl_Split should not resize another Fl_Split with
-                    // the same direction
-					// I dont like this, neither do M$ vcpp :) imho, it's programmers fault, if this happends.
-                    //Fl_Split * s = dynamic_cast<Fl_Split*>(c);
-                    //if (s&&s->dir_ == dir_) continue;
-                    if (dir_){ // vertical
-                        if (c->y() >= y() && c->h() <= h())
-                            if ((c->x() + c->w() == x())||
-                                (c->x() == x() + w()))
-                                    list->append(c);
-                    } else { // horizontal
-                        if (c->x() >= x() && c->w() <= w())
-                            if ((c->y() + c->h() == y())||
-                                (c->y() == y() + h()))
-                                    list->append(c);
-                    }
-                }
+		if (!list_)
+		    find_neighbours();
             }
             return 1;
         case FL_RELEASE:
-            fl_cursor(FL_CURSOR_DEFAULT);
+	    if (nx < 0 || ny < 0 || nx >= w() || ny >= h())
+        	fl_cursor(FL_CURSOR_DEFAULT);
+	    else
+        	fl_cursor((dir_)?FL_CURSOR_WE:FL_CURSOR_NS);
             dragging=0;
-            if (!ref_){
-                // old style
-                delete list;
-                list = NULL;
-            }
             return 1;
         case FL_MOVE:
         case FL_DRAG:
@@ -134,8 +147,8 @@ int Fl_Split::handle(int ev)
                 } else {
                     // old style
                     // first pass: check dx & dy
-                    for(unsigned int i = 0; i <  list->size(); i++){
-                        Fl_Widget *c = (*list)[i];
+                    for(unsigned int i = 0; i <  list_->size(); i++){
+                        Fl_Widget *c = (*list_)[i];
                         if (dir_){ // vertical
                             if (c->x() <= x()){
                                 if (c->w() + dx < 0) dx = - c->w();
@@ -157,8 +170,8 @@ int Fl_Split::handle(int ev)
 
                     // second pass: resize
                     if ((!dir_&&dy)||(dir_&&dx))
-                        for(unsigned int i = 0; i <  list->size(); i++){
-                            Fl_Widget *c = (*list)[i];
+                        for(unsigned int i = 0; i <  list_->size(); i++){
+                            Fl_Widget *c = (*list_)[i];
                             if (dir_){ // vertical
                                 if (c->x() <= x()){
                                     c->size(c->w() + dx, c->h());

@@ -22,7 +22,8 @@
 #ifndef _FL_SPLIT_H_
 #define _FL_SPLIT_H_
 
-#include "Fl_Box.h"
+#include "Fl_Widget.h"
+#include "Fl_Widget_List.h"
 
 //****************************************************************************
 /** \class Fl_Split
@@ -47,27 +48,40 @@ the their size.
 
 In both cases Fl_Split will block the resizing, when a neighbouring
 widget (or the attached, or client widget) will have 0 dimensions.
+
+\note When using the old style layout, the widget makes a list
+with all the neighbouring widgets in the constructor. So place
+this widget as a last one. If you have to add other widgets
+after this one, call find_neighbours() to remake the list.
 *****************************************************************************/
 class Fl_Split: public Fl_Widget
 {
 	Fl_Widget * ref_;
-    int dir_;
+	Fl_Widget_List * list_;
+	int dir_;
 public:
 	static Fl_Named_Style* default_style;
 
 	/// This constructor should be used, when you use the old style widget positioning
-    Fl_Split(int x, int y, int w, int h, const char *l=0);
+	Fl_Split(int x, int y, int w, int h, const char *l=0);
 
-    /**
-     * This constructor should be use with the new layout design
-     * @param _ref_ the widget to attach the Fl_Split to
-     * @param layout_size the width or height of the splitter
-     * \note The layout_align of the splitter will be identicall
-     * with the layout_align of _ref_
-     */
-     Fl_Split(Fl_Widget * _ref_, int layout_size=5);
+	/**
+         * This constructor should be use with the new layout design
+         * @param _ref_ the widget to attach the Fl_Split to
+         * @param layout_size the width or height of the splitter
+         * \note The layout_align of the splitter will be identicall
+         * with the layout_align of _ref_
+         */
+        Fl_Split(Fl_Widget * _ref_, int layout_size=5);
+	
+	~Fl_Split();
      
-	 virtual int handle(int ev);
+	virtual int handle(int ev);
+	
+	/**
+	 * Creates a list with the neighbouring widget.
+	 */
+	void find_neighbours();
 };
 
 #endif
