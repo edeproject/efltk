@@ -431,8 +431,8 @@ MAKEDEPEND="\${CXX} -M"
 dnl# add warnings to compiler switches:
 dnl# do this last so messing with switches does not break tests
 if test -n "$GXX"; then
-    CFLAGS="-Wall -fno-rtti $CFLAGS"
-    CXXFLAGS="-Wall -fno-rtti $CXXFLAGS"
+    CFLAGS="-Wall $CFLAGS"
+    CXXFLAGS="-Wall $CXXFLAGS"
     if test -z "$DEBUGFLAG"; then
     	# Note: Can't use -fomit-frame-pointer - prevents tools like
 	#       libsafe from working!
