@@ -42,13 +42,13 @@ CPPFILES = demo.cpp sizes.cpp hello.cpp resizable.cpp scroll.cpp image.cpp file_
         resize.cpp tabs.cpp line_style.cpp doublebuffer.cpp subwindow.cpp \
         keyboard.cpp label.cpp layout.cpp arc.cpp ask.cpp button.cpp buttons.cpp \
         clock.cpp color_chooser.cpp cube.cpp cursor.cpp curve.cpp fast_slow.cpp \
-        fonts.cpp fullscreen.cpp gl_overlay.cpp iconize.cpp input.cpp navigation.cpp \
+	fonts.cpp fullscreen.cpp gl_overlay.cpp iconize.cpp input.cpp navigation.cpp \
 	output.cpp overlay.cpp pack.cpp radio.cpp shape.cpp tile.cpp CubeMain.cpp CubeView.cpp \
-        preferences.cpp image_manip.cpp listview.cpp alphablend.cpp \
+	preferences.cpp image_manip.cpp listview.cpp alphablend.cpp \
 	thread_ball.cpp images.cpp image_loader.cpp multitabs1.cpp multitabs2.cpp \
 	popup_window.cpp symbols.cpp calendar.cpp maskedinput.cpp bitmap.cpp utf8.cpp \
 	dialog.cpp directory.cpp listview_ds.cpp xml_test.cpp xml_test2.cpp \
-        exceptions.cpp layout2.cpp socket.cpp
+        exceptions.cpp layout2.cpp socket.cpp combobox.cpp
 
 ALL =   demo sizes hello resizable scroll image file_chooser menubar browser \
 	threads progress editor inactive checkers valuators boxtype \
@@ -58,7 +58,7 @@ ALL =   demo sizes hello resizable scroll image file_chooser menubar browser \
         output overlay pack radio tile preferences image_manip \
         listview alphablend thread_ball images image_loader layout2 \
 	multitabs1 multitabs2 popup_window symbols calendar maskedinput bitmap utf8 \
-        dialog directory listview_ds xml_test xml_test2 exceptions socket \
+	dialog directory listview_ds xml_test xml_test2 exceptions socket combobox \
 	glpuzzle cube fullscreen gl_overlay shape CubeView
 
 all: demos
