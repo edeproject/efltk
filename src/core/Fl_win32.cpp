@@ -1118,7 +1118,7 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
         case WM_CLOSE:           // user clicked close box
             if (!window) break;
-            if (!Fl::modal_ || window == Fl::modal_) window->do_callback();
+            if (!Fl::modal_ || window == Fl::modal_) window->do_callback(FL_WND_CLOSE);
             return 1;
 
         case WM_PAINT:
