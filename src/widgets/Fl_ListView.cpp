@@ -286,11 +286,11 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
                 // Handle selection in table.
                 // Select cell under cursor, and enable drag selection mode.
 
-                cur_row = current_item;
                 on_drag = true;
 
                 if(Fl::event_button() == FL_LEFT_MOUSE && multi())
                 {
+                    cur_row = current_item;
                     switch(shiftstate) {
                         case FL_CTRL: {
                             // start a new selection block without changing state
@@ -329,9 +329,6 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
                     show_row(current_item);
                     ret = 1;
                 }
-
-                if (when() & FL_WHEN_CHANGED) do_callback(FL_DATA_CHANGE);
-                else set_changed();
             }
             break;
 
@@ -347,11 +344,6 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
                     // Mark items selected
                     select_items(last_dragged, current_item);
                     show_row( (cur_row = current_item) );
-
-                    if(sel_item!=current_item) {
-                        if(when() & FL_WHEN_CHANGED) do_callback(FL_DATA_CHANGE);
-                        else set_changed();
-                    }
 
                 } else { // end multi
 
@@ -852,7 +844,7 @@ bool Fl_ListView::select_only_row(unsigned row)
         items[row]->redraw();
         if((unsigned)cur_row != row) {
             cur_row = row;
-            if(when()&(FL_WHEN_CHANGED)) Fl_Widget::do_callback(FL_DATA_CHANGE);
+            if(when()&(FL_WHEN_CHANGED)) do_callback(FL_DATA_CHANGE);
             else set_changed();
         }
     }
@@ -871,15 +863,20 @@ void Fl_ListView::select_items(unsigned from, unsigned to)
         end=to+1;
     }
 
+    bool changed = false;
+
     for(int n=start; n<end; n++) {
         if(selection.index_of(n)==-1) {
+            changed = true;
             if(set_select_flag(n, 1))
                 items[n]->redraw();
             selection.append(n);
         }
     }
-    if (when() & FL_WHEN_CHANGED) do_callback(FL_DATA_CHANGE);
-    else set_changed();
+    if(changed) {
+        if (when() & FL_WHEN_CHANGED) do_callback(FL_DATA_CHANGE);
+        else set_changed();
+    }
 }
 
 bool Fl_ListView::unselect_all()
