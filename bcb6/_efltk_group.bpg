@@ -9,7 +9,7 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = libefltk.lib arc.exe ask.exe bitmap.exe boxtype.exe button.exe \
+PROJECTS = libefltk.lib arc.exe ask.exe bitmap.exe boxtype.exe \
   browser.exe button.exe buttons.exe calendar.exe checkers.exe clock.exe
 #------------------------------------------------------------------------------
 default: $(PROJECTS)

@@ -3,58 +3,57 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
-    <PROJECT value="\efltk\lib\libefltk.lib"/>
-    <OBJFILES value="obj\cmap.obj obj\filename_absolute.obj obj\filename_expand.obj 
-      obj\filename_ext.obj obj\filename_isdir.obj obj\filename_list.obj 
-      obj\filename_match.obj obj\filename_setext.obj obj\Fl.obj obj\Fl_abort.obj 
-      obj\Fl_add_idle.obj obj\fl_arc.obj obj\fl_arci.obj obj\Fl_arg.obj 
-      obj\Fl_Bitmap.obj obj\fl_blit.obj obj\fl_blit_1.obj obj\fl_blit_a.obj 
-      obj\fl_blit_n.obj obj\Fl_Bmp.obj obj\Fl_Boxtype.obj obj\fl_clip.obj 
-      obj\fl_color.obj obj\Fl_compose.obj obj\Fl_Config.obj obj\fl_cursor.obj 
-      obj\fl_curve.obj obj\Fl_Data_Fields.obj obj\Fl_Data_Source.obj 
-      obj\Fl_Date_Time.obj obj\fl_diamond_box.obj obj\Fl_display.obj 
-      obj\fl_dnd.obj obj\fl_draw.obj obj\fl_draw_image.obj 
-      obj\fl_draw_pixmap.obj obj\fl_font.obj obj\Fl_get_key.obj obj\Fl_Gif.obj 
-      obj\fl_glyph.obj obj\Fl_Group.obj obj\Fl_Image.obj obj\Fl_Image_Filter.obj 
-      obj\Fl_init.obj obj\Fl_key_name.obj obj\fl_labeltype.obj 
-      obj\fl_list_fonts.obj obj\Fl_Lists.obj obj\fl_load_plugin.obj 
-      obj\fl_locale.obj obj\Fl_lock.obj obj\fl_map.obj obj\fl_oval_box.obj 
-      obj\fl_overlay.obj obj\fl_overlay_visual.obj obj\Fl_own_colormap.obj 
-      obj\Fl_Pixmap.obj obj\fl_plastic_box.obj obj\fl_rect.obj 
-      obj\Fl_Renderer.obj obj\fl_rgb.obj obj\fl_round_box.obj 
-      obj\fl_rounded_box.obj obj\fl_scroll_area.obj obj\fl_shadow_box.obj 
-      obj\fl_stretch.obj obj\Fl_String.obj obj\Fl_Style.obj obj\Fl_Style_Set.obj 
-      obj\fl_theme.obj obj\Fl_Thread.obj obj\Fl_Util.obj obj\Fl_Variant.obj 
-      obj\fl_vertex.obj obj\Fl_visual.obj obj\Fl_Widget.obj obj\Fl_Window.obj 
-      obj\Fl_Window_fullscreen.obj obj\Fl_Window_hotspot.obj 
-      obj\Fl_Window_iconize.obj obj\Fl_WM.obj obj\Fl_Xpm.obj 
-      obj\Fl_Workspace.obj obj\Fl_Align_Group.obj obj\fl_ask.obj obj\Fl_Bar.obj 
-      obj\Fl_Box.obj obj\Fl_Browser.obj obj\Fl_Button.obj obj\Fl_Calendar.obj 
-      obj\Fl_Check_Button.obj obj\Fl_Choice.obj obj\Fl_Clock.obj 
-      obj\Fl_Color_Chooser.obj obj\Fl_Date_Time_Input.obj obj\Fl_Dial.obj 
-      obj\Fl_Dialog.obj obj\Fl_Dialog_Data_Source.obj obj\Fl_Directory_DS.obj 
-      obj\Fl_Double_Window.obj obj\fl_engraved_label.obj obj\Fl_File_Dialog.obj 
-      obj\Fl_FileBrowser.obj obj\Fl_FileInput.obj obj\Fl_Float_Input.obj 
-      obj\Fl_Help_Dialog.obj obj\Fl_Highlight_Button.obj obj\Fl_Input.obj 
-      obj\Fl_Input_Browser.obj obj\Fl_Item.obj obj\Fl_Light_Button.obj 
-      obj\Fl_ListView.obj obj\Fl_ListView_Header.obj obj\Fl_ListView_Item.obj 
-      obj\Fl_Main_Window.obj obj\Fl_Masked_Input.obj obj\Fl_MDI_Bar.obj 
-      obj\Fl_MDI_Window.obj obj\Fl_Menu.obj obj\Fl_Menu_.obj obj\Fl_Menu_add.obj 
-      obj\Fl_Menu_Bar.obj obj\Fl_Menu_Button.obj obj\Fl_Menu_global.obj 
-      obj\Fl_Menu_Item.obj obj\Fl_Menu_Window.obj obj\Fl_Multi_Image.obj 
-      obj\Fl_Multi_Tabs.obj obj\Fl_Numeric_Input.obj obj\Fl_Output.obj 
-      obj\Fl_Overlay_Window.obj obj\Fl_Pack.obj obj\Fl_Popup_Window.obj 
-      obj\Fl_ProgressBar.obj obj\Fl_Radio_Button.obj obj\Fl_Repeat_Button.obj 
-      obj\Fl_Return_Button.obj obj\Fl_Roller.obj obj\Fl_Scroll.obj 
-      obj\Fl_Scrollbar.obj obj\Fl_Shaped_Window.obj obj\fl_show_colormap.obj 
-      obj\Fl_Simple_Html.obj obj\Fl_Single_Window.obj obj\Fl_Slider.obj 
-      obj\fl_symbols.obj obj\Fl_Tabs.obj obj\Fl_Text_Buffer.obj 
-      obj\Fl_Text_Display.obj obj\Fl_Text_Editor.obj obj\Fl_Tile.obj 
-      obj\Fl_Tool_Bar.obj obj\Fl_Tooltip.obj obj\Fl_Valuator.obj 
+    <PROJECT value="..\lib\libefltk.lib"/>
+    <OBJFILES value="obj\filename_absolute.obj obj\filename_expand.obj obj\filename_ext.obj 
+      obj\filename_isdir.obj obj\filename_list.obj obj\filename_match.obj 
+      obj\filename_setext.obj obj\Fl.obj obj\Fl_abort.obj obj\Fl_add_idle.obj 
+      obj\fl_arc.obj obj\fl_arci.obj obj\Fl_arg.obj obj\Fl_Bitmap.obj 
+      obj\fl_blit.obj obj\fl_blit_1.obj obj\fl_blit_a.obj obj\fl_blit_n.obj 
+      obj\Fl_Bmp.obj obj\Fl_Boxtype.obj obj\fl_clip.obj obj\fl_color.obj 
+      obj\Fl_compose.obj obj\Fl_Config.obj obj\fl_cursor.obj obj\fl_curve.obj 
+      obj\Fl_Data_Fields.obj obj\Fl_Data_Source.obj obj\Fl_Date_Time.obj 
+      obj\fl_diamond_box.obj obj\Fl_display.obj obj\fl_dnd.obj obj\fl_draw.obj 
+      obj\fl_draw_image.obj obj\fl_draw_pixmap.obj obj\fl_font.obj 
+      obj\Fl_get_key.obj obj\Fl_Gif.obj obj\fl_glyph.obj obj\Fl_Group.obj 
+      obj\Fl_Image.obj obj\Fl_Image_Filter.obj obj\Fl_init.obj 
+      obj\Fl_key_name.obj obj\fl_labeltype.obj obj\fl_list_fonts.obj 
+      obj\Fl_Lists.obj obj\fl_load_plugin.obj obj\fl_locale.obj obj\Fl_lock.obj 
+      obj\fl_map.obj obj\fl_oval_box.obj obj\fl_overlay.obj 
+      obj\fl_overlay_visual.obj obj\Fl_own_colormap.obj obj\Fl_Pixmap.obj 
+      obj\fl_plastic_box.obj obj\fl_rect.obj obj\Fl_Renderer.obj obj\fl_rgb.obj 
+      obj\fl_round_box.obj obj\fl_rounded_box.obj obj\fl_scroll_area.obj 
+      obj\fl_shadow_box.obj obj\fl_stretch.obj obj\Fl_String.obj 
+      obj\Fl_Style.obj obj\Fl_Style_Set.obj obj\fl_theme.obj obj\Fl_Thread.obj 
+      obj\Fl_Util.obj obj\Fl_Variant.obj obj\fl_vertex.obj obj\Fl_visual.obj 
+      obj\Fl_Widget.obj obj\Fl_Window.obj obj\Fl_Window_fullscreen.obj 
+      obj\Fl_Window_hotspot.obj obj\Fl_Window_iconize.obj obj\Fl_WM.obj 
+      obj\Fl_Xpm.obj obj\Fl_Workspace.obj obj\Fl_Align_Group.obj obj\fl_ask.obj 
+      obj\Fl_Bar.obj obj\Fl_Box.obj obj\Fl_Browser.obj obj\Fl_Button.obj 
+      obj\Fl_Calendar.obj obj\Fl_Check_Button.obj obj\Fl_Choice.obj 
+      obj\Fl_Clock.obj obj\Fl_Color_Chooser.obj obj\Fl_Date_Time_Input.obj 
+      obj\Fl_Dial.obj obj\Fl_Dialog.obj obj\Fl_Dialog_Data_Source.obj 
+      obj\Fl_Directory_DS.obj obj\Fl_Double_Window.obj obj\fl_engraved_label.obj 
+      obj\Fl_File_Dialog.obj obj\Fl_FileBrowser.obj obj\Fl_FileInput.obj 
+      obj\Fl_Float_Input.obj obj\Fl_Help_Dialog.obj obj\Fl_Highlight_Button.obj 
+      obj\Fl_Input.obj obj\Fl_Input_Browser.obj obj\Fl_Item.obj 
+      obj\Fl_Light_Button.obj obj\Fl_ListView.obj obj\Fl_ListView_Header.obj 
+      obj\Fl_ListView_Item.obj obj\Fl_Main_Window.obj obj\Fl_Masked_Input.obj 
+      obj\Fl_MDI_Bar.obj obj\Fl_MDI_Window.obj obj\Fl_Menu.obj obj\Fl_Menu_.obj 
+      obj\Fl_Menu_add.obj obj\Fl_Menu_Bar.obj obj\Fl_Menu_Button.obj 
+      obj\Fl_Menu_global.obj obj\Fl_Menu_Item.obj obj\Fl_Menu_Window.obj 
+      obj\Fl_Multi_Image.obj obj\Fl_Multi_Tabs.obj obj\Fl_Numeric_Input.obj 
+      obj\Fl_Output.obj obj\Fl_Overlay_Window.obj obj\Fl_Pack.obj 
+      obj\Fl_Popup_Window.obj obj\Fl_ProgressBar.obj obj\Fl_Radio_Button.obj 
+      obj\Fl_Repeat_Button.obj obj\Fl_Return_Button.obj obj\Fl_Roller.obj 
+      obj\Fl_Scroll.obj obj\Fl_Scrollbar.obj obj\Fl_Shaped_Window.obj 
+      obj\fl_show_colormap.obj obj\Fl_Simple_Html.obj obj\Fl_Single_Window.obj 
+      obj\Fl_Slider.obj obj\fl_symbols.obj obj\Fl_Tabs.obj 
+      obj\Fl_Text_Buffer.obj obj\Fl_Text_Display.obj obj\Fl_Text_Editor.obj 
+      obj\Fl_Tile.obj obj\Fl_Tool_Bar.obj obj\Fl_Tooltip.obj obj\Fl_Valuator.obj 
       obj\Fl_Value_Input.obj obj\Fl_Value_Slider.obj obj\Fl_Adjuster.obj 
-      obj\numericsort.obj obj\scandir.obj obj\vsnprintf.obj obj\fl_utf8.obj 
-      obj\fl_iconv_converters.obj obj\Fl_Hashs.obj obj\fl_converters.obj 
-      obj\Fl_Exception.obj"/>
+      obj\vsnprintf.obj obj\fl_iconv_converters.obj obj\Fl_Hashs.obj 
+      obj\fl_converters.obj obj\Fl_Exception.obj obj\scandir.obj obj\fl_utf8.obj 
+      obj\Fl_Translator.obj obj\filename.obj"/>
     <RESFILES value=""/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -63,28 +62,30 @@
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
     <PACKAGES value=""/>
-    <PATHCPP value=".;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core"/>
+    <PATHCPP value=".;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\widgets;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core;..\src\core"/>
     <PATHPAS value=".;"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
     <LINKER value="TLib"/>
-    <USERDEFINES value="_DEBUG;_WIN32"/>
+    <USERDEFINES value="_DEBUG,_MSC_DLL,WIN32,_WINDOWS,WIN32_LEAN_AND_MEAN,VC_EXTRA_LEAN,WIN32_EXTRA_LEAN_MBCS,_LIB,_WIN32"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT"/>
     <MAINSOURCE value="libefltk.bpf"/>
-    <INCLUDEPATH value="..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;\efltk"/>
+    <INCLUDEPATH value="..;..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;\efltk"/>
     <LIBPATH value="..\src\widgets;..\src\core;$(BCB)\lib\obj;$(BCB)\lib"/>
-    <WARNINGS value="-w-par"/>
+    <WARNINGS value="-w-par -wasm"/>
     <LISTFILE value=""/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I..\src\widgets -I..\src\core -I$(BCB)\include -I$(BCB)\include\vcl -I. 
-      -I\efltk -src_suffix cpp -D_DEBUG -D_WIN32 -boa"/>
-    <CFLAG1 value="-vGc -vGt -vGd -Od -H=d:\efltk.csm -Hc -P -Vx -Ve -X- -r- -a4 -5 -b -d -k 
-      -y -v -vi- -c -tW -tWM"/>
-    <PFLAGS value="-N2\efltk\bcb6\obj -N0\efltk\bcb6\obj -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <IDLCFLAGS value="-I.. -I..\src\widgets -I..\src\core -I$(BCB)\include -I$(BCB)\include\vcl 
+      -I. -I\efltk -src_suffix cpp 
+      -D_DEBUG,_MSC_DLL,WIN32,_WINDOWS,WIN32_LEAN_AND_MEAN,VC_EXTRA_LEAN,WIN32_EXTRA_LEAN_MBCS,_LIB,_WIN32 
+      -boa"/>
+    <CFLAG1 value="-vGc -vGt -vGd -Od -Q -Vx -Ve -xf -x- -X- -r- -a2 -5 -b -d -k -y -v -vi- 
+      -c -tW -tWM"/>
+    <PFLAGS value="-N2.\obj -N0.\obj -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
     <AFLAGS value="/mx /w2 /zi"/>
-    <LFLAGS value="-l\efltk\lib /P128"/>
+    <LFLAGS value="-l..\lib /P256"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
@@ -94,7 +95,6 @@
   </LINKER>
   <FILELIST>
       <FILE FILENAME="libefltk.bpf" FORMNAME="" UNITNAME="libefltk" CONTAINERID="BPF" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\src\core\cmap.cpp" FORMNAME="" UNITNAME="cmap.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\core\filename_absolute.cpp" FORMNAME="" UNITNAME="filename_absolute.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\core\filename_expand.cpp" FORMNAME="" UNITNAME="filename_expand.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\core\filename_ext.cpp" FORMNAME="" UNITNAME="filename_ext.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -251,29 +251,21 @@
       <FILE FILENAME="..\src\widgets\Fl_Value_Input.cpp" FORMNAME="" UNITNAME="Fl_Value_Input.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\widgets\Fl_Value_Slider.cpp" FORMNAME="" UNITNAME="Fl_Value_Slider.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\widgets\Fl_Adjuster.cpp" FORMNAME="" UNITNAME="Fl_Adjuster.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\src\core\numericsort.c" FORMNAME="" UNITNAME="numericsort.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\src\core\scandir.c" FORMNAME="" UNITNAME="scandir.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\core\vsnprintf.c" FORMNAME="" UNITNAME="vsnprintf.c" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\src\core\fl_utf8.c" FORMNAME="" UNITNAME="fl_utf8" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\core\fl_iconv_converters.cpp" FORMNAME="" UNITNAME="fl_iconv_converters.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\core\Fl_Hashs.cpp" FORMNAME="" UNITNAME="Fl_Hashs.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\core\fl_converters.cpp" FORMNAME="" UNITNAME="fl_converters.cpp" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\src\core\Fl_Exception.cpp" FORMNAME="" UNITNAME="Fl_Exception" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\scandir.cpp" FORMNAME="" UNITNAME="scandir" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\fl_utf8.cpp" FORMNAME="" UNITNAME="fl_utf8" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\Fl_Translator.cpp" FORMNAME="" UNITNAME="Fl_Translator" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\src\core\filename.cpp" FORMNAME="" UNITNAME="filename" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
 
   <FILES>
-    <FILE type="override" value="..\src\core\numericsort.c" translator="Auto">
-      <CFLAG1 value="-P-"/>
-    </FILE>
-    <FILE type="override" value="..\src\core\scandir.c" translator="Auto">
-      <CFLAG1 value="-P"/>
-    </FILE>
     <FILE type="override" value="..\src\core\vsnprintf.c" translator="Auto">
-      <CFLAG1 value=" -P-"/>
-    </FILE>
-    <FILE type="override" value="..\src\core\fl_utf8.c" translator="Auto">
       <CFLAG1 value=" -P-"/>
     </FILE>
   </FILES>
@@ -307,12 +299,13 @@ ProductVersion=1.0.0.0
 Comments=
 
 [HistoryLists\hlIncludePath]
-Count=5
-Item0=..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;\efltk
-Item1=..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;r:\efltk
-Item2=..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;r:\efltk
-Item3=..\src\core;$(BCB)\include;$(BCB)\include\vcl;.
-Item4=..\src\core;$(BCB)\include;$(BCB)\include\vcl
+Count=6
+Item0=..;..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;\efltk
+Item1=..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;\efltk
+Item2=..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;r:\efltk
+Item3=..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;r:\efltk
+Item4=..\src\core;$(BCB)\include;$(BCB)\include\vcl;.
+Item5=..\src\core;$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
 Count=2
@@ -324,30 +317,36 @@ Count=1
 Item0=$(BCB)\source\vcl
 
 [HistoryLists\hlConditionals]
-Count=2
-Item0=_DEBUG;_WIN32
-Item1=_DEBUG
+Count=3
+Item0=_DEBUG,_MSC_DLL,WIN32,_WINDOWS,WIN32_LEAN_AND_MEAN,VC_EXTRA_LEAN,WIN32_EXTRA_LEAN_MBCS,_LIB,_WIN32
+Item1=_DEBUG;_WIN32
+Item2=_DEBUG
 
 [HistoryLists\hlIntOutputDir]
-Count=2
-Item0=\efltk\bcb6\obj
-Item1=R:\efltk\bcb6\obj
+Count=3
+Item0=.\obj
+Item1=\efltk\bcb6\obj
+Item2=R:\efltk\bcb6\obj
 
 [HistoryLists\hlFinalOutputDir]
-Count=3
-Item0=\efltk\lib\
-Item1=R:\efltk\lib\
-Item2=R:\efltk\lib
+Count=4
+Item0=..\lib\
+Item1=\efltk\lib\
+Item2=R:\efltk\lib\
+Item3=R:\efltk\lib
 
 [HistoryLists\hIBPIOutputDir]
-Count=2
-Item0=\efltk\lib
-Item1=R:\efltk\lib
+Count=4
+Item0=..\lib
+Item1=..\lib\
+Item2=\efltk\lib
+Item3=R:\efltk\lib
 
 [HistoryLists\hlTlibPageSize]
-Count=2
-Item0=0x0080
-Item1=0x0010
+Count=3
+Item0=0x0100
+Item1=0x0080
+Item2=0x0010
 
 [Debugging]
 DebugSourceDirs=$(BCB)\source\vcl
@@ -365,7 +364,7 @@ RemoteCWD=
 RemoteDebug=0
 
 [Compiler]
-ShowInfoMsgs=0
+ShowInfoMsgs=1
 LinkDebugVcl=0
 LinkCGLIB=1
 

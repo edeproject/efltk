@@ -4,7 +4,7 @@
   <MACROS>
     <VERSION value="BCB.06.00"/>
     <PROJECT value="\efltk\ask.exe"/>
-    <OBJFILES value="obj\ask.obj"/>
+    <OBJFILES value="E:\efltk\bcb6\obj\ask.obj"/>
     <RESFILES value="ask.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -63,89 +63,173 @@
 
   <IDEOPTIONS>
 [Version Info]
+
 IncludeVerInfo=0
+
 AutoIncBuild=0
+
 MajorVer=1
+
 MinorVer=0
+
 Release=0
+
 Build=0
+
 Debug=0
+
 PreRelease=0
+
 Special=0
+
 Private=0
+
 DLL=0
+
 Locale=1033
+
 CodePage=1252
 
+
+
 [Version Info Keys]
+
 CompanyName=
+
 FileDescription=
+
 FileVersion=1.0.0.0
+
 InternalName=
+
 LegalCopyright=
+
 LegalTrademarks=
+
 OriginalFilename=
+
 ProductName=
+
 ProductVersion=1.0.0.0
+
 Comments=
 
+
+
 [HistoryLists\hlIncludePath]
+
 Count=5
+
 Item0=..\test;$(BCB)\include;$(BCB)\include\vcl;\efltk
+
 Item1=..\test;$(BCB)\include;$(BCB)\include\vcl;R:\efltk
+
 Item2=..\test;R:\efltk\test;$(BCB)\include;$(BCB)\include\vcl;R:\efltk
+
 Item3=R:\efltk\test;$(BCB)\include;$(BCB)\include\vcl;R:\efltk
+
 Item4=R:\efltk\test;$(BCB)\include;$(BCB)\include\vcl
 
+
+
 [HistoryLists\hlLibraryPath]
+
 Count=4
+
 Item0=..\test;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib
+
 Item1=..\test;$(BCB)\Projects\Lib;R:\efltk\test;$(BCB)\lib\obj;$(BCB)\lib
+
 Item2=$(BCB)\Projects\Lib;R:\efltk\test;$(BCB)\lib\obj;$(BCB)\lib
+
 Item3=R:\efltk\test;$(BCB)\lib\obj;$(BCB)\lib
 
+
+
 [HistoryLists\hlDebugSourcePath]
+
 Count=1
+
 Item0=$(BCB)\source\vcl
 
+
+
 [HistoryLists\hlConditionals]
+
 Count=2
+
 Item0=_DEBUG;_WIN32
+
 Item1=_DEBUG
 
+
+
 [HistoryLists\hlIntOutputDir]
+
 Count=2
+
 Item0=\efltk\bcb6\obj
+
 Item1=R:\efltk\bcb6\obj
 
+
+
 [HistoryLists\hlFinalOutputDir]
+
 Count=2
+
 Item0=\efltk\
+
 Item1=R:\efltk\
 
+
+
 [Debugging]
+
 DebugSourceDirs=$(BCB)\source\vcl
 
+
+
 [Parameters]
+
 RunParams=
+
 Launcher=
+
 UseLauncher=0
+
 DebugCWD=
+
 HostApplication=
+
 RemoteHost=
+
 RemotePath=
+
 RemoteLauncher=
+
 RemoteCWD=
+
 RemoteDebug=0
 
+
+
 [Compiler]
+
 ShowInfoMsgs=0
+
 LinkDebugVcl=0
+
 LinkCGLIB=1
 
+
+
 [CORBA]
+
 AddServerUnit=1
+
 AddClientUnit=1
+
 PrecompiledHeaders=1
   </IDEOPTIONS>
 </PROJECT>

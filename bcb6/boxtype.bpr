@@ -3,7 +3,7 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
-    <PROJECT value="\efltk\boxtype.exe"/>
+    <PROJECT value=".\boxtype.exe"/>
     <OBJFILES value="obj\boxtype.obj"/>
     <RESFILES value="boxtype.res"/>
     <IDLFILES value=""/>
@@ -30,20 +30,19 @@
     <USERDEFINES value="_DEBUG;_WIN32"/>
     <SYSDEFINES value="NO_STRICT;_NO_VCL;_RTLDLL;USEPACKAGES"/>
     <MAINSOURCE value="boxtype.bpf"/>
-    <INCLUDEPATH value="..\test;$(BCB)\include;$(BCB)\include\vcl;\efltk"/>
-    <LIBPATH value="..\test;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <INCLUDEPATH value="..\test;$(BCB)\include;$(BCB)\include\vcl;.."/>
+    <LIBPATH value="..\test;..\lib;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I..\test -I$(BCB)\include -I$(BCB)\include\vcl -I\efltk -src_suffix cpp 
+    <IDLCFLAGS value="-I..\test -I$(BCB)\include -I$(BCB)\include\vcl -I.. -src_suffix cpp 
       -D_DEBUG -D_WIN32 -boa"/>
-    <CFLAG1 value="-vGc -vGt -vGd -Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a4 -5 -b 
-      -k -y -v -vi- -tWC -tWM- -c"/>
-    <PFLAGS value="-N2\efltk\bcb6\obj -N0\efltk\bcb6\obj -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <CFLAG1 value="-vGc -vGt -vGd -Od -Vx -Ve -x- -X- -r- -a2 -5 -b -k -y -v -vi- -tWC -tWM- -c"/>
+    <PFLAGS value="-N2.\obj -N0.\obj -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I\efltk\bcb6\obj -D&quot;&quot; -ap -Tpe -x -Gn -v"/>
+    <LFLAGS value="-I.\obj -D&quot;&quot; -ap -Tpe -x -Gn -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
@@ -89,20 +88,25 @@ ProductName=
 ProductVersion=1.0.0.0
 Comments=
 
+[Excluded Packages]
+f:\apps\borland\cbuilder6\Bin\dclite60.bpl=Borland Integrated Translation Environment
+
 [HistoryLists\hlIncludePath]
-Count=5
-Item0=..\test;$(BCB)\include;$(BCB)\include\vcl;\efltk
-Item1=..\test;$(BCB)\include;$(BCB)\include\vcl;R:\efltk
-Item2=..\test;R:\efltk\test;$(BCB)\include;$(BCB)\include\vcl;R:\efltk
-Item3=R:\efltk\test;$(BCB)\include;$(BCB)\include\vcl;R:\efltk
-Item4=R:\efltk\test;$(BCB)\include;$(BCB)\include\vcl
+Count=6
+Item0=..\test;$(BCB)\include;$(BCB)\include\vcl;..
+Item1=..\test;$(BCB)\include;$(BCB)\include\vcl;\efltk
+Item2=..\test;$(BCB)\include;$(BCB)\include\vcl;R:\efltk
+Item3=..\test;R:\efltk\test;$(BCB)\include;$(BCB)\include\vcl;R:\efltk
+Item4=R:\efltk\test;$(BCB)\include;$(BCB)\include\vcl;R:\efltk
+Item5=R:\efltk\test;$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
-Count=4
-Item0=..\test;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib
-Item1=..\test;$(BCB)\Projects\Lib;R:\efltk\test;$(BCB)\lib\obj;$(BCB)\lib
-Item2=$(BCB)\Projects\Lib;R:\efltk\test;$(BCB)\lib\obj;$(BCB)\lib
-Item3=R:\efltk\test;$(BCB)\lib\obj;$(BCB)\lib
+Count=5
+Item0=..\lib;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib
+Item1=..\test;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib
+Item2=..\test;$(BCB)\Projects\Lib;R:\efltk\test;$(BCB)\lib\obj;$(BCB)\lib
+Item3=$(BCB)\Projects\Lib;R:\efltk\test;$(BCB)\lib\obj;$(BCB)\lib
+Item4=R:\efltk\test;$(BCB)\lib\obj;$(BCB)\lib
 
 [HistoryLists\hlDebugSourcePath]
 Count=1
@@ -114,14 +118,16 @@ Item0=_DEBUG;_WIN32
 Item1=_DEBUG
 
 [HistoryLists\hlIntOutputDir]
-Count=2
-Item0=\efltk\bcb6\obj
-Item1=R:\efltk\bcb6\obj
+Count=3
+Item0=.\obj
+Item1=\efltk\bcb6\obj
+Item2=R:\efltk\bcb6\obj
 
 [HistoryLists\hlFinalOutputDir]
-Count=2
-Item0=\efltk\
-Item1=R:\efltk\
+Count=3
+Item0=.\
+Item1=\efltk\
+Item2=R:\efltk\
 
 [Debugging]
 DebugSourceDirs=$(BCB)\source\vcl
