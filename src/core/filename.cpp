@@ -317,9 +317,8 @@ bool fl_file_exists(const char *name) {
     return (access(name, F_OK)==0);
 }
 
-char *fl_get_homedir()
-{
-    char *path = new char[FL_PATH_MAX];
+char *fl_get_homedir() {
+   char *path = new char[FL_PATH_MAX];
 	const char *str1;
 
 #ifdef _WIN32
@@ -354,9 +353,10 @@ char *fl_get_homedir()
     }
 #endif /* _WIN32 */
 
-    if((str1=fl_getenv("HOME"))!=NULL) {
-        memcpy(path, str1, FL_PATH_MAX);
-        return path;
+    str1=fl_getenv("HOME");
+    if (str1) {
+         memcpy(path, str1, strlen(str1)+1);
+         return path;
     }
 
     return 0;
