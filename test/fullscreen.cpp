@@ -64,33 +64,33 @@
 #include <efltk/Fl_Gl_Window.h>
 
 class shape_window : public Fl_Gl_Window {
-  void draw();
+    void draw();
 public:
-  int sides;
-  shape_window(int x,int y,int w,int h,const char *l=0);
+    int sides;
+    shape_window(int x,int y,int w,int h,const char *l=0);
 };
 
 shape_window::shape_window(int x,int y,int w,int h,const char *l) :
 Fl_Gl_Window(x,y,w,h,l) {
-  sides = 3;
+    sides = 3;
 }
 
 void shape_window::draw() {
-  printf("drawing size %d %d\n",w(),h());
-  if (!valid()) {
-    valid(1);
+    printf("drawing size %d %d\n",w(),h());
+    if (!valid()) {
+        valid(1);
 //  printf("init\n");
-    glLoadIdentity();
-    glViewport(0,0,w(),h());
-  }
-  glClear(GL_COLOR_BUFFER_BIT);
-  glColor3f(.5,.6,.7);
-  glBegin(GL_POLYGON);
-  for (int i=0; i<sides; i++) {
-    double ang = i*2*M_PI/sides;
-    glVertex3f(cos(ang),sin(ang),0);
-  }
-  glEnd();
+        glLoadIdentity();
+        glViewport(0,0,w(),h());
+    }
+    glClear(GL_COLOR_BUFFER_BIT);
+    glColor3f(.5,.6,.7);
+    glBegin(GL_POLYGON);
+    for (int i=0; i<sides; i++) {
+        double ang = i*2*M_PI/sides;
+        glVertex3f(cos(ang),sin(ang),0);
+    }
+    glEnd();
 }
 
 #else
@@ -98,38 +98,38 @@ void shape_window::draw() {
 #include <efltk/fl_draw.h>
 
 class shape_window : public Fl_Window {
-  void draw();
+    void draw();
 public:
-  int sides;
-  shape_window(int x,int y,int w,int h,const char *l=0);
+    int sides;
+    shape_window(int x,int y,int w,int h,const char *l=0);
 };
 
 shape_window::shape_window(int x,int y,int w,int h,const char *l) :
 Fl_Window(x,y,w,h,l) {
-  sides = 3;
+    sides = 3;
 }
 
 void shape_window::draw() {
-  fl_color(0);
-  fl_rectf(0,0,w(),h());
-  fl_font((Fl_Font_ *)0,20);
-  fl_color(7);
-  fl_draw("This requires GL",0,0,w(),h(),FL_ALIGN_CENTER);
+    fl_color(0);
+    fl_rectf(0,0,w(),h());
+    fl_font((Fl_Font_ *)0,20);
+    fl_color(7);
+    fl_draw("This requires GL",0,0,w(),h(),FL_ALIGN_CENTER);
 }
 
 #endif
 
 void sides_cb(Fl_Widget *o, void *p) {
-  shape_window *sw = (shape_window *)p;
-  sw->sides = int(((Fl_Slider *)o)->value());
-  sw->redraw();
+    shape_window *sw = (shape_window *)p;
+    sw->sides = int(((Fl_Slider *)o)->value());
+    sw->redraw();
 }
 
 #if HAVE_GL
 void double_cb(Fl_Widget *o, void *p) {
-  shape_window *sw = (shape_window *)p;
-  int d = ((Fl_Button *)o)->value();
-  sw->mode(d ? FL_DOUBLE|FL_RGB : FL_RGB);
+    shape_window *sw = (shape_window *)p;
+    int d = ((Fl_Button *)o)->value();
+    sw->mode(d ? FL_DOUBLE|FL_RGB : FL_RGB);
 }
 #else
 void double_cb(Fl_Widget *, void *) {}
@@ -138,23 +138,23 @@ void double_cb(Fl_Widget *, void *) {}
 int px,py,pw,ph;
 
 void fullscreen_cb(Fl_Widget *o, void *p) {
-  Fl_Window *w = (Fl_Window *)p;
-  int d = ((Fl_Button *)o)->value();
-  if (d) {
-    px = w->x();
-    py = w->y();
-    pw = w->w();
-    ph = w->h();
-    w->fullscreen();
-  } else {
-    w->fullscreen_off(px,py,pw,ph);
-  }
+    Fl_Window *w = (Fl_Window *)p;
+    int d = ((Fl_Button *)o)->value();
+    if (d) {
+        px = w->x();
+        py = w->y();
+        pw = w->w();
+        ph = w->h();
+        w->fullscreen();
+    } else {
+        w->fullscreen_off(px,py,pw,ph);
+    }
 }
 
 #include <stdlib.h>
 
 void exit_cb(Fl_Widget *, void *) {
-  exit(0);
+    exit(0);
 }
 
 #define NUMB 5
@@ -162,67 +162,67 @@ void exit_cb(Fl_Widget *, void *) {
 int twowindow = 0;
 int initfull = 0;
 int arg(int, char **argv, int &i) {
-  if (argv[i][1] == '2') {twowindow = 1; i++; return 1;}
-  if (argv[i][1] == 'f') {initfull = 1; i++; return 1;}
-  return 0;
+    if (argv[i][1] == '2') {twowindow = 1; i++; return 1;}
+    if (argv[i][1] == 'f') {initfull = 1; i++; return 1;}
+    return 0;
 }
 
 int main(int argc, char **argv) {
 
-  int i=0;
-  if (Fl::args(argc,argv,i,arg) < argc)
-    Fl::fatal("Options are:\n -2 = 2 windows\n -f = startup fullscreen\n%s",Fl::help);
+    int i=0;
+    if (Fl::args(argc,argv,i,arg) < argc)
+        Fl::fatal("Options are:\n -2 = 2 windows\n -f = startup fullscreen\n%s",Fl::help);
 
-  Fl_Single_Window window(300,300+30*NUMB); window.end();
+    Fl_Single_Window window(300,300+30*NUMB); window.end();
 
-  shape_window sw(10,10,window.w()-20,window.h()-30*NUMB-20);
+    shape_window sw(10,10,window.w()-20,window.h()-30*NUMB-20);
 #if HAVE_GL
-  sw.mode(FL_RGB);
+    sw.mode(FL_RGB);
 #endif
 
-  Fl_Window *w;
-  if (twowindow) {	// make it's own window
-    sw.resizable(&sw);
-    w = &sw;
-    window.set_modal();	// makes controls stay on top when fullscreen pushed
-    argc--;
-    sw.show();
-  } else {		// otherwise make a subwindow
-    window.add(sw);
-    window.resizable(&sw);
-    w = &window;
-  }
+    Fl_Window *w;
+    if (twowindow) {    // make it's own window
+        sw.resizable(&sw);
+        w = &sw;
+        window.set_modal(); // makes controls stay on top when fullscreen pushed
+        argc--;
+        sw.show();
+    } else {        // otherwise make a subwindow
+        window.add(sw);
+        window.resizable(&sw);
+        w = &window;
+    }
 
-  window.begin();
+    window.begin();
 
-  int y = window.h()-30*NUMB-5;
-  Fl_Hor_Slider slider(50,y,window.w()-60,30,"Sides:");
-  slider.clear_flag(FL_ALIGN_MASK);
-  slider.set_flag(FL_ALIGN_LEFT);
-  slider.callback(sides_cb,&sw);
-  slider.value(sw.sides);
-  slider.step(1);
-  slider.range(3,40);
-  y+=30;
+    int y = window.h()-30*NUMB-5;
+    Fl_Hor_Slider slider(50,y,window.w()-60,30,"Sides:");
+    slider.clear_flag(FL_ALIGN_MASK);
+    slider.set_flag(FL_ALIGN_LEFT);
+    slider.callback(sides_cb,&sw);
+    slider.value(sw.sides);
+    slider.step(1);
+    slider.range(3,40);
+    y+=30;
 
-  Fl_Toggle_Light_Button b1(50,y,window.w()-60,30,"Double Buffered");
-  b1.callback(double_cb,&sw);
-  y+=30;
+    Fl_Toggle_Light_Button b1(50,y,window.w()-60,30,"Double Buffered");
+    b1.callback(double_cb,&sw);
+    y+=30;
 
-  Fl_Toggle_Light_Button b3(50,y,window.w()-60,30,"FullScreen");
-  b3.callback(fullscreen_cb,w);
-  y+=30;
+    Fl_Toggle_Light_Button b3(50,y,window.w()-60,30,"FullScreen");
+    b3.callback(fullscreen_cb,w);
+    y+=30;
 
-  Fl_Button eb(50,y,window.w()-60,30,"Exit");
-  eb.callback(exit_cb);
-  y+=30;
+    Fl_Button eb(50,y,window.w()-60,30,"Exit");
+    eb.callback(exit_cb);
+    y+=30;
 
-  if (initfull) {b3.set(); b3.do_callback();}
+    if (initfull) {b3.set(); b3.do_callback(FL_BUTTON_PRESSED);}
 
-  window.end();
-  window.show(argc,argv);
+    window.end();
+    window.show(argc,argv);
 
-  return Fl::run();
+    return Fl::run();
 }
 
 //

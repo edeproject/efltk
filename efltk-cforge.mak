@@ -11,16 +11,16 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x40038c
+# %FirstUniqueId:	0x4003c4
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
 
 MAKE = make
 
-IDE_BLIND_INCLUDES = -I- -I./ -Iefltk -Isrc -Isrc/images -Isrc/xml -Isrc/db/odbc -Itest -Itest/net -Itest/db
+IDE_BLIND_INCLUDES = -I- -I./ -Iefltk -Isrc -Isrc/images -Isrc/xml -Isrc/db/odbc -Itest -Itest/net -Itest/db -Itools/efluid -Itools/etranslate
 
-DEPEND_INCLUDES = -I- -I./ -Iefltk -Isrc -Isrc/images -Isrc/xml -Isrc/db/odbc -Itest -Itest/net -Itest/db
+DEPEND_INCLUDES = -I- -I./ -Iefltk -Isrc -Isrc/images -Isrc/xml -Isrc/db/odbc -Itest -Itest/net -Itest/db -Itools/efluid -Itools/etranslate
 
 ALLDEFINES = $(ALLINCLUDES)
 
@@ -38,7 +38,7 @@ LD = $(CC)
 
 LDOPTIONS = $(IDE_BLIND_LDOPTIONS) $(LDFLAGS)
 
-LDFLAGS = -L. -L./lib -L/usr/X11R6/lib -lXext -liconv -lodbc
+LDFLAGS = -L. -L./lib -L/usr/X11R6/lib -lXext -liconv -lodbc -lpng -ljpeg
 
 IDE_BLIND_LDOPTIONS = -L./
 
@@ -692,6 +692,50 @@ test/progress ::	test/progress.o
 # %ObjsDir:	test
 test/menubar ::	test/menubar.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+# %UniqueId:	0x40038d
+# %TargetType:	C++_EXE
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	tools/efluid
+# %IncDir:	tools/efluid
+# %ObjsDir:	tools/efluid
+tools/efluid/efluid ::	tools/efluid/Fl_Function_Type.o\
+	tools/efluid/Fl_Group_Type.o\
+	tools/efluid/Fl_Menu_Type.o\
+	tools/efluid/Fl_Type.o\
+	tools/efluid/Fl_Widget_Type.o\
+	tools/efluid/Fl_Window_Type.o\
+	tools/efluid/Fluid_Image.o\
+	tools/efluid/Fluid_Plugins.o\
+	tools/efluid/about_panel.o\
+	tools/efluid/alignment_panel.o\
+	tools/efluid/code.o\
+	tools/efluid/coding_style.o\
+	tools/efluid/coding_style_func.o\
+	tools/efluid/factory.o\
+	tools/efluid/file.o\
+	tools/efluid/fluid.o\
+	tools/efluid/function_panel.o\
+	tools/efluid/widget_panel.o
+	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk -lefltk_images
+
+# %UniqueId:	0x4003ae
+# %TargetType:	C++_EXE
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	tools/etranslate
+# %IncDir:	tools/etranslate
+# %ObjsDir:	tools/etranslate
+tools/etranslate/etranslate ::	tools/etranslate/compile.o\
+	tools/etranslate/etranslate.o\
+	tools/etranslate/extract.o\
+	tools/etranslate/load_etm.o\
+	tools/etranslate/load_pot.o\
+	tools/etranslate/main.o\
+	tools/etranslate/main_ui.o\
+	tools/etranslate/modify_info.o
+	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk -lefltk_xml
 
 # %ObjectFilesLinking
 # %TargetType:	C++_OBJ
@@ -2337,6 +2381,188 @@ test/progress.o : test/progress.cpp
 # %SourceTarget:	0x40038b
 test/menubar.o : test/menubar.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40038d
+# %SourceTarget:	0x40038e
+tools/efluid/Fl_Function_Type.o : tools/efluid/Fl_Function_Type.cpp
+	$(CXX) -c -o $@ $< -Itools/efluid -Itools/efluid $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40038d
+# %SourceTarget:	0x40038f
+tools/efluid/Fl_Group_Type.o : tools/efluid/Fl_Group_Type.cpp
+	$(CXX) -c -o $@ $< -Itools/efluid -Itools/efluid $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40038d
+# %SourceTarget:	0x400390
+tools/efluid/Fl_Menu_Type.o : tools/efluid/Fl_Menu_Type.cpp
+	$(CXX) -c -o $@ $< -Itools/efluid -Itools/efluid $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40038d
+# %SourceTarget:	0x400391
+tools/efluid/Fl_Type.o : tools/efluid/Fl_Type.cpp
+	$(CXX) -c -o $@ $< -Itools/efluid -Itools/efluid $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40038d
+# %SourceTarget:	0x400392
+tools/efluid/Fl_Widget_Type.o : tools/efluid/Fl_Widget_Type.cpp
+	$(CXX) -c -o $@ $< -Itools/efluid -Itools/efluid $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40038d
+# %SourceTarget:	0x400393
+tools/efluid/Fl_Window_Type.o : tools/efluid/Fl_Window_Type.cpp
+	$(CXX) -c -o $@ $< -Itools/efluid -Itools/efluid $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40038d
+# %SourceTarget:	0x400394
+tools/efluid/Fluid_Image.o : tools/efluid/Fluid_Image.cpp
+	$(CXX) -c -o $@ $< -Itools/efluid -Itools/efluid $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40038d
+# %SourceTarget:	0x400395
+tools/efluid/Fluid_Plugins.o : tools/efluid/Fluid_Plugins.cpp
+	$(CXX) -c -o $@ $< -Itools/efluid -Itools/efluid $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40038d
+# %SourceTarget:	0x400396
+tools/efluid/about_panel.o : tools/efluid/about_panel.cpp
+	$(CXX) -c -o $@ $< -Itools/efluid -Itools/efluid $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40038d
+# %SourceTarget:	0x400397
+tools/efluid/alignment_panel.o : tools/efluid/alignment_panel.cpp
+	$(CXX) -c -o $@ $< -Itools/efluid -Itools/efluid $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40038d
+# %SourceTarget:	0x400398
+tools/efluid/code.o : tools/efluid/code.cpp
+	$(CXX) -c -o $@ $< -Itools/efluid -Itools/efluid $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40038d
+# %SourceTarget:	0x400399
+tools/efluid/coding_style.o : tools/efluid/coding_style.cpp
+	$(CXX) -c -o $@ $< -Itools/efluid -Itools/efluid $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40038d
+# %SourceTarget:	0x40039a
+tools/efluid/coding_style_func.o : tools/efluid/coding_style_func.cpp
+	$(CXX) -c -o $@ $< -Itools/efluid -Itools/efluid $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40038d
+# %SourceTarget:	0x40039b
+tools/efluid/factory.o : tools/efluid/factory.cpp
+	$(CXX) -c -o $@ $< -Itools/efluid -Itools/efluid $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40038d
+# %SourceTarget:	0x40039c
+tools/efluid/file.o : tools/efluid/file.cpp
+	$(CXX) -c -o $@ $< -Itools/efluid -Itools/efluid $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40038d
+# %SourceTarget:	0x40039d
+tools/efluid/fluid.o : tools/efluid/fluid.cpp
+	$(CXX) -c -o $@ $< -Itools/efluid -Itools/efluid $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40038d
+# %SourceTarget:	0x40039e
+tools/efluid/function_panel.o : tools/efluid/function_panel.cpp
+	$(CXX) -c -o $@ $< -Itools/efluid -Itools/efluid $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40038d
+# %SourceTarget:	0x4003a0
+tools/efluid/widget_panel.o : tools/efluid/widget_panel.cpp
+	$(CXX) -c -o $@ $< -Itools/efluid -Itools/efluid $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x4003ae
+# %SourceTarget:	0x4003af
+tools/etranslate/compile.o : tools/etranslate/compile.cpp
+	$(CXX) -c -o $@ $< -Itools/etranslate -Itools/etranslate $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x4003ae
+# %SourceTarget:	0x4003b0
+tools/etranslate/etranslate.o : tools/etranslate/etranslate.cpp
+	$(CXX) -c -o $@ $< -Itools/etranslate -Itools/etranslate $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x4003ae
+# %SourceTarget:	0x4003bd
+tools/etranslate/extract.o : tools/etranslate/extract.cpp
+	$(CXX) -c -o $@ $< -Itools/etranslate -Itools/etranslate $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x4003ae
+# %SourceTarget:	0x4003be
+tools/etranslate/load_etm.o : tools/etranslate/load_etm.cpp
+	$(CXX) -c -o $@ $< -Itools/etranslate -Itools/etranslate $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x4003ae
+# %SourceTarget:	0x4003bf
+tools/etranslate/load_pot.o : tools/etranslate/load_pot.cpp
+	$(CXX) -c -o $@ $< -Itools/etranslate -Itools/etranslate $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x4003ae
+# %SourceTarget:	0x4003c0
+tools/etranslate/main.o : tools/etranslate/main.cpp
+	$(CXX) -c -o $@ $< -Itools/etranslate -Itools/etranslate $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x4003ae
+# %SourceTarget:	0x4003c1
+tools/etranslate/main_ui.o : tools/etranslate/main_ui.cpp
+	$(CXX) -c -o $@ $< -Itools/etranslate -Itools/etranslate $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x4003ae
+# %SourceTarget:	0x4003c2
+tools/etranslate/modify_info.o : tools/etranslate/modify_info.cpp
+	$(CXX) -c -o $@ $< -Itools/etranslate -Itools/etranslate $(CXXFLAGS)
 
 
 # DO NOT DELETE
@@ -7666,6 +7892,1513 @@ test/menubar.o :	efltk/fl_draw.h\
 	efltk/Fl_Item_Group.h\
 	efltk/Fl_Output.h\
 	efltk/Fl_Input.h
+tools/efluid/Fl_Function_Type.o :	efltk/fl_ask.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	tools/efluid/function_panel.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Text_Editor.h\
+	efltk/Fl_Text_Display.h\
+	efltk/Fl_Text_Buffer.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_Ptr_Stack.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/fl_draw.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Return_Button.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Check_Button.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Locale.h\
+	efltk/Fl_Translator.h\
+	efltk/Fl.h\
+	tools/efluid/coding_style.h\
+	efltk/Fl_Value_Input.h\
+	efltk/Fl_Float_Input.h\
+	efltk/Fl_Numeric_Input.h\
+	efltk/Fl_Round_Button.h\
+	efltk/Fl_Radio_Button.h\
+	efltk/Fl_Tabs.h\
+	tools/efluid/Fluid_Image.h\
+	tools/efluid/Fluid_Plugins.h\
+	tools/efluid/Fl_Type.h
+tools/efluid/Fl_Group_Type.o :	efltk/Fl_Scroll.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Tabs.h\
+	efltk/Fl_Pack.h\
+	tools/efluid/Fl_Type.h\
+	tools/efluid/Fluid_Image.h\
+	tools/efluid/Fluid_Plugins.h\
+	efltk/Fl_Text_Buffer.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_Ptr_Stack.h\
+	efltk/fl_message.h\
+	efltk/fl_ask.h\
+	efltk/Fl.h
+tools/efluid/Fl_Menu_Type.o :	efltk/fl_draw.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	tools/efluid/Shortcut_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Output.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Browser.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Menu_.h\
+	efltk/Fl_Menu_Item.h\
+	efltk/Fl_Input_Browser.h\
+	efltk/Fl_Menu_Window.h\
+	efltk/Fl_Single_Window.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Menu_Bar.h\
+	efltk/Fl_Choice.h\
+	efltk/Fl_Menu_Button.h\
+	efltk/Fl_Divider.h\
+	efltk/Fl_Item_Group.h\
+	efltk/Fl_Item.h\
+	efltk/fl_message.h\
+	efltk/fl_ask.h\
+	tools/efluid/Fl_Type.h\
+	tools/efluid/Fluid_Image.h\
+	tools/efluid/Fluid_Plugins.h\
+	efltk/Fl_Text_Buffer.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_Ptr_Stack.h\
+	efltk/Fl.h
+tools/efluid/Fl_Type.o :	tools/efluid/Fluid_Image.h\
+	tools/efluid/Fluid_Plugins.h\
+	tools/efluid/Fl_Type.h\
+	efltk/Fl_Text_Buffer.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Ptr_Stack.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	config.h\
+	efltk/fl_draw.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Item.h\
+	efltk/Fl_Multi_Browser.h\
+	efltk/Fl_Browser.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Menu_.h\
+	efltk/Fl_Menu_Item.h\
+	efltk/Fl.h
+tools/efluid/Fl_Widget_Type.o :	efltk/Fl_Color_Chooser.h\
+	efltk/Fl_Value_Input.h\
+	efltk/Fl_Float_Input.h\
+	efltk/Fl_Numeric_Input.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Choice.h\
+	efltk/Fl_Menu_.h\
+	efltk/Fl_Menu_Item.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Return_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Box.h\
+	tools/efluid/widget_panel.h\
+	efltk/Fl_Divider.h\
+	efltk/Fl_Text_Editor.h\
+	efltk/Fl_Text_Display.h\
+	efltk/Fl_Text_Buffer.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_Ptr_Stack.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/fl_draw.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Light_Button.h\
+	efltk/Fl_Check_Button.h\
+	efltk/Fl_Wordwrap_Input.h\
+	tools/efluid/Shortcut_Button.h\
+	efltk/Fl_Tabs.h\
+	efltk/Fl_WM.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Locale.h\
+	efltk/Fl_Translator.h\
+	efltk/Fl.h\
+	tools/efluid/Fluid_Image.h\
+	tools/efluid/Fluid_Plugins.h\
+	efltk/Fl_Style_Set.h\
+	tools/efluid/coding_style.h\
+	efltk/Fl_Round_Button.h\
+	efltk/Fl_Radio_Button.h\
+	efltk/fl_message.h\
+	efltk/fl_ask.h\
+	tools/efluid/Fl_Type.h
+tools/efluid/Fl_Window_Type.o :	efltk/Fl_Menu_Item.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Menu_Bar.h\
+	efltk/Fl_Menu_Window.h\
+	efltk/Fl_Single_Window.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Menu_.h\
+	tools/efluid/widget_panel.h\
+	efltk/Fl_Divider.h\
+	efltk/Fl_Text_Editor.h\
+	efltk/Fl_Text_Display.h\
+	efltk/Fl_Text_Buffer.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_Ptr_Stack.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/fl_draw.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Light_Button.h\
+	efltk/Fl_Check_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Wordwrap_Input.h\
+	efltk/Fl_Input.h\
+	tools/efluid/Shortcut_Button.h\
+	efltk/Fl_Value_Input.h\
+	efltk/Fl_Float_Input.h\
+	efltk/Fl_Numeric_Input.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Choice.h\
+	efltk/Fl_Tabs.h\
+	efltk/Fl_WM.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Locale.h\
+	efltk/Fl_Translator.h\
+	efltk/Fl.h\
+	efltk/Fl_Style_Set.h\
+	tools/efluid/alignment_panel.h\
+	tools/efluid/Fl_Type.h\
+	tools/efluid/Fluid_Image.h\
+	tools/efluid/Fluid_Plugins.h\
+	efltk/fl_message.h\
+	efltk/fl_ask.h\
+	efltk/Fl_Overlay_Window.h\
+	efltk/Fl_Double_Window.h
+tools/efluid/Fluid_Image.o :	tools/efluid/image_file_panel.cpp\
+	tools/efluid/image_file_panel.h\
+	efltk/Fl_Return_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_WM.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Locale.h\
+	efltk/Fl_Translator.h\
+	efltk/Fl.h\
+	efltk/Fl_File_Dialog.h\
+	efltk/Fl_FileBrowser.h\
+	efltk/Fl_Directory_DS.h\
+	efltk/Fl_Memory_DS.h\
+	efltk/Fl_ListView_Item.h\
+	efltk/Fl_Image_List.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl_ListView.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_ListView_Header.h\
+	efltk/Fl_Highlight_Button.h\
+	efltk/Fl_Check_Button.h\
+	efltk/Fl_Item.h\
+	efltk/Fl_Input_Browser.h\
+	efltk/Fl_Menu_Window.h\
+	efltk/Fl_Single_Window.h\
+	efltk/Fl_Menu_.h\
+	efltk/Fl_Menu_Item.h\
+	efltk/Fl_Image_Cache.h\
+	efltk/Fl_Bitmap.h\
+	config.h\
+	tools/efluid/Fluid_Image.h\
+	tools/efluid/Fluid_Plugins.h\
+	tools/efluid/Fl_Type.h\
+	efltk/Fl_Text_Buffer.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_Ptr_Stack.h
+tools/efluid/Fluid_Plugins.o :	efltk/filename.h\
+	efltk/Fl_Util.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Flags.h\
+	config.h\
+	efltk/fl_load_plugin.h\
+	efltk/Fl_Menu_Item.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	tools/efluid/Fluid_Plugins.h\
+	efltk/Fl.h
+tools/efluid/about_panel.o :	tools/efluid/about_panel.h\
+	efltk/Fl_Return_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Double_Window.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Locale.h\
+	efltk/Fl_Translator.h\
+	efltk/Fl.h
+tools/efluid/alignment_panel.o :	tools/efluid/alignment_panel.h\
+	efltk/Fl_Divider.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Check_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Value_Input.h\
+	efltk/Fl_Float_Input.h\
+	efltk/Fl_Numeric_Input.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Tabs.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Locale.h\
+	efltk/Fl_Translator.h\
+	efltk/Fl.h
+tools/efluid/code.o :	efltk/filename.h\
+	efltk/Fl_Util.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Flags.h\
+	tools/efluid/coding_style.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Value_Input.h\
+	efltk/Fl_Float_Input.h\
+	efltk/Fl_Numeric_Input.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Check_Button.h\
+	efltk/Fl_Round_Button.h\
+	efltk/Fl_Radio_Button.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Tabs.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Locale.h\
+	efltk/Fl_Translator.h\
+	efltk/Fl.h\
+	tools/efluid/alignment_panel.h\
+	efltk/Fl_Divider.h\
+	tools/efluid/Fl_Type.h\
+	tools/efluid/Fluid_Image.h\
+	tools/efluid/Fluid_Plugins.h\
+	efltk/Fl_Text_Buffer.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_Ptr_Stack.h
+tools/efluid/coding_style.o :	tools/efluid/coding_style.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Value_Input.h\
+	efltk/Fl_Float_Input.h\
+	efltk/Fl_Numeric_Input.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Check_Button.h\
+	efltk/Fl_Round_Button.h\
+	efltk/Fl_Radio_Button.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Tabs.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Locale.h\
+	efltk/Fl_Translator.h\
+	efltk/Fl.h
+tools/efluid/coding_style_func.o :	config.h\
+	tools/efluid/Fl_Type.h\
+	tools/efluid/Fluid_Image.h\
+	tools/efluid/Fluid_Plugins.h\
+	efltk/Fl_Text_Buffer.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Ptr_Stack.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h
+tools/efluid/factory.o :	efltk/Fl_Browser.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Menu_.h\
+	efltk/Fl_Menu_Item.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Value_Slider.h\
+	efltk/Fl_Value_Output.h\
+	efltk/Fl_Output.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Value_Input.h\
+	efltk/Fl_Float_Input.h\
+	efltk/Fl_Numeric_Input.h\
+	efltk/Fl_Text_Editor.h\
+	efltk/Fl_Text_Display.h\
+	efltk/Fl_Text_Buffer.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_Ptr_Stack.h\
+	efltk/fl_draw.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Roller.h\
+	efltk/Fl_Dial.h\
+	efltk/Fl_Calendar.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Popup_Window.h\
+	efltk/Fl_Menu_Window.h\
+	efltk/Fl_Single_Window.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Clock.h\
+	efltk/Fl_Round_Button.h\
+	efltk/Fl_Radio_Button.h\
+	efltk/Fl_Check_Button.h\
+	efltk/Fl_Light_Button.h\
+	efltk/Fl_Repeat_Button.h\
+	efltk/Fl_Return_Button.h\
+	efltk/Fl_Divider.h\
+	efltk/Fl_Simple_Html.h\
+	efltk/Fl_Image_Cache.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl.h\
+	efltk/Fl_ProgressBar.h\
+	tools/efluid/Fl_Type.h\
+	tools/efluid/Fluid_Image.h\
+	tools/efluid/Fluid_Plugins.h\
+	config.h
+tools/efluid/file.o :	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/fl_message.h\
+	efltk/fl_ask.h\
+	tools/efluid/Fl_Type.h\
+	tools/efluid/Fluid_Image.h\
+	tools/efluid/Fluid_Plugins.h\
+	efltk/Fl_Text_Buffer.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_Ptr_Stack.h\
+	efltk/Fl.h\
+	tools/efluid/alignment_panel.h\
+	efltk/Fl_Divider.h\
+	efltk/Fl_Check_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Value_Input.h\
+	efltk/Fl_Float_Input.h\
+	efltk/Fl_Numeric_Input.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Tabs.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Locale.h\
+	efltk/Fl_Translator.h
+tools/efluid/fluid.o :	efltk/Fl_Images.h\
+	efltk/Fl_Menu_Item.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Style_Set.h\
+	tools/efluid/Fluid_Image.h\
+	tools/efluid/Fluid_Plugins.h\
+	tools/efluid/coding_style.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Value_Input.h\
+	efltk/Fl_Float_Input.h\
+	efltk/Fl_Numeric_Input.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Check_Button.h\
+	efltk/Fl_Round_Button.h\
+	efltk/Fl_Radio_Button.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Tabs.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Locale.h\
+	efltk/Fl_Translator.h\
+	efltk/Fl.h\
+	tools/efluid/Fl_Type.h\
+	efltk/Fl_Text_Buffer.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_Ptr_Stack.h\
+	tools/efluid/about_panel.h\
+	efltk/Fl_Return_Button.h\
+	efltk/Fl_Double_Window.h\
+	efltk/win32.h\
+	config.h\
+	efltk/vsnprintf.h\
+	efltk/filename.h\
+	efltk/Fl_Util.h\
+	efltk/fl_message.h\
+	efltk/fl_ask.h\
+	efltk/Fl_File_Dialog.h\
+	efltk/Fl_FileBrowser.h\
+	efltk/Fl_Directory_DS.h\
+	efltk/Fl_Memory_DS.h\
+	efltk/Fl_ListView_Item.h\
+	efltk/Fl_Image_List.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_ListView.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_ListView_Header.h\
+	efltk/Fl_Highlight_Button.h\
+	efltk/Fl_Item.h\
+	efltk/Fl_Input_Browser.h\
+	efltk/Fl_Menu_Window.h\
+	efltk/Fl_Single_Window.h\
+	efltk/Fl_Menu_.h\
+	efltk/Fl_Image_Cache.h\
+	efltk/fl_draw.h\
+	efltk/Fl_Tooltip.h\
+	efltk/Fl_Menu_Bar.h\
+	efltk/Fl_Pack.h
+tools/efluid/function_panel.o :	tools/efluid/function_panel.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Text_Editor.h\
+	efltk/Fl_Text_Display.h\
+	efltk/Fl_Text_Buffer.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_Ptr_Stack.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/fl_draw.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Return_Button.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Check_Button.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Locale.h\
+	efltk/Fl_Translator.h\
+	efltk/Fl.h
+tools/efluid/widget_panel.o :	tools/efluid/widget_panel.h\
+	efltk/Fl_Divider.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Text_Editor.h\
+	efltk/Fl_Text_Display.h\
+	efltk/Fl_Text_Buffer.h\
+	efltk/Fl_Buffer.h\
+	efltk/Fl_Ptr_Stack.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/fl_draw.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Light_Button.h\
+	efltk/Fl_Check_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Wordwrap_Input.h\
+	efltk/Fl_Input.h\
+	tools/efluid/Shortcut_Button.h\
+	efltk/Fl_Value_Input.h\
+	efltk/Fl_Float_Input.h\
+	efltk/Fl_Numeric_Input.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Choice.h\
+	efltk/Fl_Menu_.h\
+	efltk/Fl_Menu_Item.h\
+	efltk/Fl_Tabs.h\
+	efltk/Fl_WM.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Locale.h\
+	efltk/Fl_Translator.h\
+	efltk/Fl.h
+tools/etranslate/compile.o :	tools/etranslate/compile.h\
+	tools/etranslate/etranslate.h\
+	tools/etranslate/main_ui.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Tabs.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Check_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Multiline_Input.h\
+	efltk/Fl_ListView.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_ListView_Item.h\
+	efltk/Fl_Image_List.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl.h\
+	efltk/Fl_ListView_Header.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Output.h\
+	efltk/Fl_Tool_Bar.h\
+	efltk/Fl_Menu_Button.h\
+	efltk/Fl_Menu_.h\
+	efltk/Fl_Menu_Item.h\
+	efltk/Fl_Bar.h\
+	efltk/Fl_Divider.h\
+	efltk/Fl_Item.h\
+	efltk/Fl_Item_Group.h\
+	efltk/Fl_Menu_Bar.h\
+	efltk/Fl_Menu_Window.h\
+	efltk/Fl_Single_Window.h\
+	efltk/Fl_Main_Window.h\
+	efltk/Fl_Pack.h\
+	efltk/Fl_Double_Window.h\
+	tools/etranslate/globals.h\
+	efltk/Fl_Locale.h\
+	efltk/Fl_Translator.h\
+	efltk/Fl_String_Hash.h\
+	efltk/Fl_Ptr_Hash.h\
+	efltk/fl_ask.h\
+	efltk/Fl_File_Dialog.h\
+	efltk/Fl_FileBrowser.h\
+	efltk/Fl_Directory_DS.h\
+	efltk/Fl_Memory_DS.h\
+	efltk/Fl_Highlight_Button.h\
+	efltk/Fl_Input_Browser.h\
+	efltk/Fl_Image_Cache.h\
+	efltk/xml/Fl_Xml.h\
+	efltk/xml/Fl_XmlTokenizer.h\
+	efltk/Fl_String_Stack.h\
+	efltk/xml/Fl_XmlParser.h\
+	efltk/xml/Fl_XmlHandler.h\
+	efltk/xml/Fl_XmlDoc.h\
+	efltk/Fl_Buffer.h\
+	efltk/xml/Fl_XmlNode.h\
+	efltk/xml/Fl_XmlNode_List.h\
+	efltk/Fl_Map.h
+tools/etranslate/etranslate.o :	tools/etranslate/compile.h\
+	tools/etranslate/etranslate.h\
+	tools/etranslate/main_ui.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Tabs.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Check_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Multiline_Input.h\
+	efltk/Fl_ListView.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_ListView_Item.h\
+	efltk/Fl_Image_List.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl.h\
+	efltk/Fl_ListView_Header.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Output.h\
+	efltk/Fl_Tool_Bar.h\
+	efltk/Fl_Menu_Button.h\
+	efltk/Fl_Menu_.h\
+	efltk/Fl_Menu_Item.h\
+	efltk/Fl_Bar.h\
+	efltk/Fl_Divider.h\
+	efltk/Fl_Item.h\
+	efltk/Fl_Item_Group.h\
+	efltk/Fl_Menu_Bar.h\
+	efltk/Fl_Menu_Window.h\
+	efltk/Fl_Single_Window.h\
+	efltk/Fl_Main_Window.h\
+	efltk/Fl_Pack.h\
+	efltk/Fl_Double_Window.h\
+	tools/etranslate/globals.h\
+	efltk/Fl_Locale.h\
+	efltk/Fl_Translator.h\
+	efltk/Fl_String_Hash.h\
+	efltk/Fl_Ptr_Hash.h\
+	efltk/fl_ask.h\
+	efltk/Fl_File_Dialog.h\
+	efltk/Fl_FileBrowser.h\
+	efltk/Fl_Directory_DS.h\
+	efltk/Fl_Memory_DS.h\
+	efltk/Fl_Highlight_Button.h\
+	efltk/Fl_Input_Browser.h\
+	efltk/Fl_Image_Cache.h\
+	efltk/xml/Fl_Xml.h\
+	efltk/xml/Fl_XmlTokenizer.h\
+	efltk/Fl_String_Stack.h\
+	efltk/xml/Fl_XmlParser.h\
+	efltk/xml/Fl_XmlHandler.h\
+	efltk/xml/Fl_XmlDoc.h\
+	efltk/Fl_Buffer.h\
+	efltk/xml/Fl_XmlNode.h\
+	efltk/xml/Fl_XmlNode_List.h\
+	efltk/Fl_Map.h
+tools/etranslate/extract.o :	tools/etranslate/extract.h\
+	tools/etranslate/etranslate.h\
+	tools/etranslate/main_ui.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Tabs.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Check_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Multiline_Input.h\
+	efltk/Fl_ListView.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_ListView_Item.h\
+	efltk/Fl_Image_List.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl.h\
+	efltk/Fl_ListView_Header.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Output.h\
+	efltk/Fl_Tool_Bar.h\
+	efltk/Fl_Menu_Button.h\
+	efltk/Fl_Menu_.h\
+	efltk/Fl_Menu_Item.h\
+	efltk/Fl_Bar.h\
+	efltk/Fl_Divider.h\
+	efltk/Fl_Item.h\
+	efltk/Fl_Item_Group.h\
+	efltk/Fl_Menu_Bar.h\
+	efltk/Fl_Menu_Window.h\
+	efltk/Fl_Single_Window.h\
+	efltk/Fl_Main_Window.h\
+	efltk/Fl_Pack.h\
+	efltk/Fl_Double_Window.h\
+	tools/etranslate/globals.h\
+	efltk/Fl_Locale.h\
+	efltk/Fl_Translator.h\
+	efltk/Fl_String_Hash.h\
+	efltk/Fl_Ptr_Hash.h\
+	efltk/fl_ask.h\
+	efltk/Fl_File_Dialog.h\
+	efltk/Fl_FileBrowser.h\
+	efltk/Fl_Directory_DS.h\
+	efltk/Fl_Memory_DS.h\
+	efltk/Fl_Highlight_Button.h\
+	efltk/Fl_Input_Browser.h\
+	efltk/Fl_Image_Cache.h\
+	efltk/xml/Fl_Xml.h\
+	efltk/xml/Fl_XmlTokenizer.h\
+	efltk/Fl_String_Stack.h\
+	efltk/xml/Fl_XmlParser.h\
+	efltk/xml/Fl_XmlHandler.h\
+	efltk/xml/Fl_XmlDoc.h\
+	efltk/Fl_Buffer.h\
+	efltk/xml/Fl_XmlNode.h\
+	efltk/xml/Fl_XmlNode_List.h\
+	efltk/Fl_Map.h
+tools/etranslate/load_etm.o :	tools/etranslate/etranslate.h\
+	tools/etranslate/main_ui.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Tabs.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Check_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Multiline_Input.h\
+	efltk/Fl_ListView.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_ListView_Item.h\
+	efltk/Fl_Image_List.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl.h\
+	efltk/Fl_ListView_Header.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Output.h\
+	efltk/Fl_Tool_Bar.h\
+	efltk/Fl_Menu_Button.h\
+	efltk/Fl_Menu_.h\
+	efltk/Fl_Menu_Item.h\
+	efltk/Fl_Bar.h\
+	efltk/Fl_Divider.h\
+	efltk/Fl_Item.h\
+	efltk/Fl_Item_Group.h\
+	efltk/Fl_Menu_Bar.h\
+	efltk/Fl_Menu_Window.h\
+	efltk/Fl_Single_Window.h\
+	efltk/Fl_Main_Window.h\
+	efltk/Fl_Pack.h\
+	efltk/Fl_Double_Window.h\
+	tools/etranslate/globals.h\
+	efltk/Fl_Locale.h\
+	efltk/Fl_Translator.h\
+	efltk/Fl_String_Hash.h\
+	efltk/Fl_Ptr_Hash.h\
+	efltk/fl_ask.h\
+	efltk/Fl_File_Dialog.h\
+	efltk/Fl_FileBrowser.h\
+	efltk/Fl_Directory_DS.h\
+	efltk/Fl_Memory_DS.h\
+	efltk/Fl_Highlight_Button.h\
+	efltk/Fl_Input_Browser.h\
+	efltk/Fl_Image_Cache.h\
+	efltk/xml/Fl_Xml.h\
+	efltk/xml/Fl_XmlTokenizer.h\
+	efltk/Fl_String_Stack.h\
+	efltk/xml/Fl_XmlParser.h\
+	efltk/xml/Fl_XmlHandler.h\
+	efltk/xml/Fl_XmlDoc.h\
+	efltk/Fl_Buffer.h\
+	efltk/xml/Fl_XmlNode.h\
+	efltk/xml/Fl_XmlNode_List.h\
+	efltk/Fl_Map.h
+tools/etranslate/load_pot.o :	tools/etranslate/etranslate.h\
+	tools/etranslate/main_ui.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Tabs.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Check_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Multiline_Input.h\
+	efltk/Fl_ListView.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_ListView_Item.h\
+	efltk/Fl_Image_List.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl.h\
+	efltk/Fl_ListView_Header.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Output.h\
+	efltk/Fl_Tool_Bar.h\
+	efltk/Fl_Menu_Button.h\
+	efltk/Fl_Menu_.h\
+	efltk/Fl_Menu_Item.h\
+	efltk/Fl_Bar.h\
+	efltk/Fl_Divider.h\
+	efltk/Fl_Item.h\
+	efltk/Fl_Item_Group.h\
+	efltk/Fl_Menu_Bar.h\
+	efltk/Fl_Menu_Window.h\
+	efltk/Fl_Single_Window.h\
+	efltk/Fl_Main_Window.h\
+	efltk/Fl_Pack.h\
+	efltk/Fl_Double_Window.h\
+	tools/etranslate/globals.h\
+	efltk/Fl_Locale.h\
+	efltk/Fl_Translator.h\
+	efltk/Fl_String_Hash.h\
+	efltk/Fl_Ptr_Hash.h\
+	efltk/fl_ask.h\
+	efltk/Fl_File_Dialog.h\
+	efltk/Fl_FileBrowser.h\
+	efltk/Fl_Directory_DS.h\
+	efltk/Fl_Memory_DS.h\
+	efltk/Fl_Highlight_Button.h\
+	efltk/Fl_Input_Browser.h\
+	efltk/Fl_Image_Cache.h\
+	efltk/xml/Fl_Xml.h\
+	efltk/xml/Fl_XmlTokenizer.h\
+	efltk/Fl_String_Stack.h\
+	efltk/xml/Fl_XmlParser.h\
+	efltk/xml/Fl_XmlHandler.h\
+	efltk/xml/Fl_XmlDoc.h\
+	efltk/Fl_Buffer.h\
+	efltk/xml/Fl_XmlNode.h\
+	efltk/xml/Fl_XmlNode_List.h\
+	efltk/Fl_Map.h
+tools/etranslate/main.o :	efltk/Fl_Translator.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_String.h\
+	tools/etranslate/compile.h\
+	tools/etranslate/etranslate.h\
+	tools/etranslate/main_ui.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Tabs.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Check_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Multiline_Input.h\
+	efltk/Fl_ListView.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_ListView_Item.h\
+	efltk/Fl_Image_List.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl.h\
+	efltk/Fl_ListView_Header.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Output.h\
+	efltk/Fl_Tool_Bar.h\
+	efltk/Fl_Menu_Button.h\
+	efltk/Fl_Menu_.h\
+	efltk/Fl_Menu_Item.h\
+	efltk/Fl_Bar.h\
+	efltk/Fl_Divider.h\
+	efltk/Fl_Item.h\
+	efltk/Fl_Item_Group.h\
+	efltk/Fl_Menu_Bar.h\
+	efltk/Fl_Menu_Window.h\
+	efltk/Fl_Single_Window.h\
+	efltk/Fl_Main_Window.h\
+	efltk/Fl_Pack.h\
+	efltk/Fl_Double_Window.h\
+	tools/etranslate/globals.h\
+	efltk/Fl_Locale.h\
+	efltk/Fl_String_Hash.h\
+	efltk/Fl_Ptr_Hash.h\
+	efltk/fl_ask.h\
+	efltk/Fl_File_Dialog.h\
+	efltk/Fl_FileBrowser.h\
+	efltk/Fl_Directory_DS.h\
+	efltk/Fl_Memory_DS.h\
+	efltk/Fl_Highlight_Button.h\
+	efltk/Fl_Input_Browser.h\
+	efltk/Fl_Image_Cache.h\
+	efltk/xml/Fl_Xml.h\
+	efltk/xml/Fl_XmlTokenizer.h\
+	efltk/Fl_String_Stack.h\
+	efltk/xml/Fl_XmlParser.h\
+	efltk/xml/Fl_XmlHandler.h\
+	efltk/xml/Fl_XmlDoc.h\
+	efltk/Fl_Buffer.h\
+	efltk/xml/Fl_XmlNode.h\
+	efltk/xml/Fl_XmlNode_List.h\
+	efltk/Fl_Map.h\
+	tools/etranslate/extract.h
+tools/etranslate/main_ui.o :	tools/etranslate/main_ui.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Tabs.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Check_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Multiline_Input.h\
+	efltk/Fl_ListView.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_ListView_Item.h\
+	efltk/Fl_Image_List.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl.h\
+	efltk/Fl_ListView_Header.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Output.h\
+	efltk/Fl_Tool_Bar.h\
+	efltk/Fl_Menu_Button.h\
+	efltk/Fl_Menu_.h\
+	efltk/Fl_Menu_Item.h\
+	efltk/Fl_Bar.h\
+	efltk/Fl_Divider.h\
+	efltk/Fl_Item.h\
+	efltk/Fl_Item_Group.h\
+	efltk/Fl_Menu_Bar.h\
+	efltk/Fl_Menu_Window.h\
+	efltk/Fl_Single_Window.h\
+	efltk/Fl_Main_Window.h\
+	efltk/Fl_Pack.h\
+	efltk/Fl_Double_Window.h\
+	tools/etranslate/globals.h\
+	efltk/Fl_Locale.h\
+	efltk/Fl_Translator.h
+tools/etranslate/modify_info.o :	tools/etranslate/etranslate.h\
+	tools/etranslate/main_ui.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Tabs.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Check_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Multiline_Input.h\
+	efltk/Fl_ListView.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_ListView_Item.h\
+	efltk/Fl_Image_List.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl.h\
+	efltk/Fl_ListView_Header.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Output.h\
+	efltk/Fl_Tool_Bar.h\
+	efltk/Fl_Menu_Button.h\
+	efltk/Fl_Menu_.h\
+	efltk/Fl_Menu_Item.h\
+	efltk/Fl_Bar.h\
+	efltk/Fl_Divider.h\
+	efltk/Fl_Item.h\
+	efltk/Fl_Item_Group.h\
+	efltk/Fl_Menu_Bar.h\
+	efltk/Fl_Menu_Window.h\
+	efltk/Fl_Single_Window.h\
+	efltk/Fl_Main_Window.h\
+	efltk/Fl_Pack.h\
+	efltk/Fl_Double_Window.h\
+	tools/etranslate/globals.h\
+	efltk/Fl_Locale.h\
+	efltk/Fl_Translator.h\
+	efltk/Fl_String_Hash.h\
+	efltk/Fl_Ptr_Hash.h\
+	efltk/fl_ask.h\
+	efltk/Fl_File_Dialog.h\
+	efltk/Fl_FileBrowser.h\
+	efltk/Fl_Directory_DS.h\
+	efltk/Fl_Memory_DS.h\
+	efltk/Fl_Highlight_Button.h\
+	efltk/Fl_Input_Browser.h\
+	efltk/Fl_Image_Cache.h\
+	efltk/xml/Fl_Xml.h\
+	efltk/xml/Fl_XmlTokenizer.h\
+	efltk/Fl_String_Stack.h\
+	efltk/xml/Fl_XmlParser.h\
+	efltk/xml/Fl_XmlHandler.h\
+	efltk/xml/Fl_XmlDoc.h\
+	efltk/Fl_Buffer.h\
+	efltk/xml/Fl_XmlNode.h\
+	efltk/xml/Fl_XmlNode_List.h\
+	efltk/Fl_Map.h
 
 
 # %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x4
@@ -7838,7 +9571,7 @@ test/menubar.o :	efltk/fl_draw.h\
 # %TargetInfo src/widgets/Fl_Popup_Window.cpp	SourceOrHeader,	UniqueId=0x400317,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_ProgressBar.cpp	SourceOrHeader,	UniqueId=0x400318,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Radio_Button.cpp	SourceOrHeader,	UniqueId=0x400319,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo src/widgets/Fl_Repeat_Button.cpp	SourceOrHeader,	UniqueId=0x40031a,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/widgets/Fl_Repeat_Button.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x40031a,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Return_Button.cpp	SourceOrHeader,	UniqueId=0x40031b,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Roller.cpp	SourceOrHeader,	UniqueId=0x40031c,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/widgets/Fl_Scroll.cpp	SourceOrHeader,	UniqueId=0x40031d,	TargetType=C++,	IDEFlags=0x4
@@ -7893,7 +9626,7 @@ test/menubar.o :	efltk/fl_draw.h\
 # %TargetInfo test/listview.cpp	SourceOrHeader,	UniqueId=0x40037f,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/listview_ds.cpp	SourceOrHeader,	UniqueId=0x400381,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/fonts.cpp	SourceOrHeader,	UniqueId=0x400383,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/fullscreen.cpp	SourceOrHeader,	UniqueId=0x400385,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/fullscreen.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400385,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/progress.cpp	SourceOrHeader,	UniqueId=0x400389,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/menubar.cpp	SourceOrHeader,	UniqueId=0x40038b,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
@@ -8133,6 +9866,59 @@ test/menubar.o :	efltk/fl_draw.h\
 # %TargetInfo efltk/net/Fl_Base64.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40037d,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Toggle_Light_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400386,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Hor_Slider.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400387,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo tools/efluid/Fl_Function_Type.cpp	SourceOrHeader,	UniqueId=0x40038e,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/Fl_Group_Type.cpp	SourceOrHeader,	UniqueId=0x40038f,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/Fl_Menu_Type.cpp	SourceOrHeader,	UniqueId=0x400390,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/Fl_Type.cpp	SourceOrHeader,	UniqueId=0x400391,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/Fl_Widget_Type.cpp	SourceOrHeader,	UniqueId=0x400392,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/Fl_Window_Type.cpp	SourceOrHeader,	UniqueId=0x400393,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/Fluid_Image.cpp	SourceOrHeader,	UniqueId=0x400394,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/Fluid_Plugins.cpp	SourceOrHeader,	UniqueId=0x400395,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/about_panel.cpp	SourceOrHeader,	UniqueId=0x400396,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/alignment_panel.cpp	SourceOrHeader,	UniqueId=0x400397,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/code.cpp	SourceOrHeader,	UniqueId=0x400398,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/coding_style.cpp	SourceOrHeader,	UniqueId=0x400399,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/coding_style_func.cpp	SourceOrHeader,	UniqueId=0x40039a,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/factory.cpp	SourceOrHeader,	UniqueId=0x40039b,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/file.cpp	SourceOrHeader,	UniqueId=0x40039c,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/fluid.cpp	SourceOrHeader,	UniqueId=0x40039d,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/function_panel.cpp	SourceOrHeader,	UniqueId=0x40039e,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/image_file_panel.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40039f,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/widget_panel.cpp	SourceOrHeader,	UniqueId=0x4003a0,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/efluid/function_panel.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003a1,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Locale.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003a2,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo tools/efluid/coding_style.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003a3,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Round_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003a4,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo tools/efluid/Fluid_Image.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003a5,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo tools/efluid/Fluid_Plugins.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003a6,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo tools/efluid/Fl_Type.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003a7,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo tools/efluid/Shortcut_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003a8,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Multi_Browser.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003a9,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo tools/efluid/widget_panel.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003aa,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo tools/efluid/alignment_panel.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003ab,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo tools/efluid/image_file_panel.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003ac,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo tools/efluid/about_panel.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003ad,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo tools/etranslate/compile.cpp	SourceOrHeader,	UniqueId=0x4003af,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/etranslate/etranslate.cpp	SourceOrHeader,	UniqueId=0x4003b0,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/etranslate/compile.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003b1,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo tools/etranslate/etranslate.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003b2,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo tools/etranslate/main_ui.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003b3,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Multiline_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003b4,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo tools/etranslate/globals.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003b5,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/xml/Fl_Xml.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003b6,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/xml/Fl_XmlTokenizer.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003b7,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/xml/Fl_XmlParser.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003b8,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/xml/Fl_XmlHandler.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003b9,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/xml/Fl_XmlDoc.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003ba,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/xml/Fl_XmlNode.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003bb,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/xml/Fl_XmlNode_List.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003bc,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo tools/etranslate/extract.cpp	SourceOrHeader,	UniqueId=0x4003bd,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/etranslate/load_etm.cpp	SourceOrHeader,	UniqueId=0x4003be,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/etranslate/load_pot.cpp	SourceOrHeader,	UniqueId=0x4003bf,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/etranslate/main.cpp	SourceOrHeader,	UniqueId=0x4003c0,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/etranslate/main_ui.cpp	SourceOrHeader,	UniqueId=0x4003c1,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/etranslate/modify_info.cpp	SourceOrHeader,	UniqueId=0x4003c2,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo tools/etranslate/extract.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003c3,	TargetType=INC,	IDEFlags=0xe
 
 
 # %UniqueId:	0x400001
@@ -8147,6 +9933,7 @@ test/menubar.o :	efltk/fl_draw.h\
 # %Folder
 # "all" : 
 #	0x4000ec
+#	0x40038c
 #	0x400183
 #
 # %UniqueId:	0x4000ec
@@ -8197,4 +9984,11 @@ test/menubar.o :	efltk/fl_draw.h\
 #	0x40035a
 #	0x40033a
 #	0x400388
+#
+# %UniqueId:	0x40038c
+# %IDEFlags:	0
+# %Folder
+# "tools" : 
+#	0x40038d
+#	0x4003ae
 #

@@ -33,7 +33,7 @@ void Fl_Repeat_Button::repeat_callback(void *v)
 {
     Fl_Button *b = (Fl_Button*)v;
     Fl::add_timeout(REPEAT,repeat_callback,b);
-    b->do_callback(FL_DATA_CHANGE);
+    b->do_callback(FL_BUTTON_PRESSED);
 }
 
 
@@ -55,7 +55,7 @@ int Fl_Repeat_Button::handle(int event)
                 if (newval)
                 {
                     Fl::add_timeout(INITIALREPEAT,repeat_callback,this);
-                    do_callback(FL_DATA_CHANGE);
+                    do_callback(FL_BUTTON_PRESSED);
                 }
                 else
                 {
