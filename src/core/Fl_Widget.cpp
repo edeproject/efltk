@@ -32,18 +32,20 @@
 #include <stdlib.h>              // free
 #include <config.h>
 
-void Fl_Widget::do_callback(Fl_Widget* o, void* arg, int event,int event_argument)
+void Fl_Widget::do_callback(Fl_Widget* o, void* arg, int event,int event_argument,const void *event_data)
 {
     Fl::e_type = event;
     Fl::e_argument = event_argument;
+    Fl::e_data = event_data;
     // Call callback_ only if NO slots connected!
     if (callback_) callback_(o,(void*)arg);
 }
 
-void Fl_Widget::do_callback(Fl_Widget* o, long arg, int event,int event_argument)
+void Fl_Widget::do_callback(Fl_Widget* o, long arg, int event,int event_argument,const void *event_data)
 {       
     Fl::e_type = event;
     Fl::e_argument = event_argument;
+    Fl::e_data = event_data;
     // Call callback_ only if NO slots connected!
     if (callback_) callback_(o,(void*)arg);
 }
