@@ -28,11 +28,13 @@
 /** Fl_Browser */
 class FL_API Fl_Browser : public Fl_Menu_ {
     Fl_End endgroup;
+    void ctor_init();
 public:
 
     static Fl_Named_Style* default_style;
 
     Fl_Browser(int X,int Y,int W,int H,const char*l=0);
+    Fl_Browser(const char* l = 0,int layout_size=20,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
     ~Fl_Browser();
 
     enum { // values for type()
