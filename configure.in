@@ -280,7 +280,9 @@ if test ! "$x_includes" = "NONE" -a ! "$x_includes" = ""; then
 fi
 
 AC_CHECK_LIB(X11,XOpenDisplay)
+AC_CHECK_LIB(X11, Xutf8TextPropertyToTextList, AC_DEFINE(HAVE_X11_UTF_TEXT_PROP), )
 AC_CHECK_LIB(Xext,XdbeQueryExtension)
+
 
 dnl# echo "Ignoring libraries \"$X_PRE_LIBS\" requested by configure."
 

@@ -202,6 +202,9 @@
 /* Does C library contain iconv */
 #define HAVE_LIBC_ICONV 0
 
+/* Do we have Xutf functions in XLib */
+#define HAVE_X11_UTF_TEXT_PROP 0
+
 /* Defined if, math.h float function emulation NOT needed */
 #define HAVE_FLOAT_FUNCTIONS 0
 
