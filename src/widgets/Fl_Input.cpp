@@ -62,15 +62,12 @@ static void cb_menu(Fl_Widget *w, void *d)
     if(!menu_widget) return;
     switch((int)d) {
     case CUT:
-        // Copy to both clipboards...
         menu_widget->copy(true);
-        menu_widget->copy(false);
         menu_widget->cut();
         menu_widget->redraw();
         break;
-    case COPY:
+    case COPY:        
         menu_widget->copy(true);
-        menu_widget->copy(false);
         break;
     case PASTE:
         Fl::paste(*menu_widget, true);
@@ -1251,7 +1248,7 @@ bool Fl_Input::handle_key()
             return true;
 
         case FL_Insert:
-            if (ctrl) copy();
+            if (ctrl) copy(true);
 			if (readonly()) { fl_beep(); return true; }
             else if (shift) Fl::paste(*this, true);
             else return false;   // CUA toggles insert mode on/off
@@ -1262,7 +1259,7 @@ bool Fl_Input::handle_key()
             ctrl = alt;
         case FL_Delete:
             // I don't know what CUA does with ctrl+delete, I made it delete words
-            if (shift) copy();
+            if (shift) copy(true);
 			if (readonly()) { fl_beep(); return true; }
             if (mark() != position()) cut();
             else cut(ctrl ? word_end(position()+1)-position() : 1);
@@ -1313,7 +1310,7 @@ bool Fl_Input::handle_key()
 
         case 'c':
             if (!ctrl && key_is_shortcut()) return true;
-            return copy();
+            return copy(true);
 
         case 'o':                // Emacs insert newline after cursor
             if (key_is_shortcut()) return true;
@@ -1348,13 +1345,13 @@ bool Fl_Input::handle_key()
         case 'w':                // Emacs cut
             if (key_is_shortcut()) return true;
             if (readonly()) { fl_beep(); return true; }
-            copy();
+            copy(true);
             return cut();
 
         case 'x':
             if (!ctrl && key_is_shortcut()) return true;
             if (readonly()) { fl_beep(); return true; }
-            copy();
+            copy(true);
             return cut();
 
         case 'y':                // Emacs paste
@@ -1617,7 +1614,7 @@ int Fl_Input::handle(int event, int X, int Y, int W, int H)
             else if (!Fl::event_is_click())
             {
                 // copy drag-selected text for middle-mouse click:
-                copy(false);
+                copy(true);
             }
             return 1;
 
@@ -1704,6 +1701,8 @@ int Fl_Input::handle(int event, int X, int Y, int W, int H)
 			if (readonly()) { fl_beep(); return true; }
             const char* t = Fl::event_text();
             int n = Fl::event_length();
+			if(n<=0 || !t || !*t) return 0;
+
             // strip trailing nulls:
             while (n > 0 && !t[n-1]) n--;
             // strip all trailing control & whitespace for single-line inputs:
