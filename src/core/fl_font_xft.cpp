@@ -208,6 +208,18 @@ float Fl_Device::width(unsigned int c) const
     return width(&ch, 1);
 }
 
+Fl_Font fl_create_font(const char *system_name)                                 
+{                                                                               
+    Fl_Font_ *f = new Fl_Font_;
+    f->name_ = strdup(system_name);
+    //f->name_ = system_name;
+    f->bold_ = f;
+    f->italic_ = f;
+    f->xlist_ = 0;
+    f->first = 0;
+    return f;
+}
+
 ////////////////////////////////////////////////////////////////
 
 #if USE_OVERLAY
