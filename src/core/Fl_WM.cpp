@@ -44,7 +44,7 @@ Atom _XA_NET_WM_WINDOW_TYPE_NORMAL;
 
 Atom _XA_NET_WM_STRUT;
 
-#if HAVE_XUTF
+#if HAVE_XUTF8
 extern Atom fl_XaUtf8String;
 #else
 # define fl_XaUtf8String XA_STRING
@@ -107,14 +107,14 @@ static void init_atoms()
         const char *name;
     } atom_info[] = {
         { &_XA_NET_SUPPORTED,       "_NET_SUPPORTED" },
-
-        { &_XA_NET_DESKTOP_GEOMETRY,"_NET_DESKTOP_GEOMETRY" },
+        { &_XA_NET_SUPPORTING_WM_CHECK,"_NET_SUPPORTING_WM_CHECK" },
 
         // DESKTOP actions:
         { &_XA_NET_NUM_DESKTOPS,    "_NET_NUMBER_OF_DESKTOPS" },
         { &_XA_NET_DESKTOP_NAMES,   "_NET_DESKTOP_NAMES" },
         { &_XA_NET_CURRENT_DESKTOP, "_NET_CURRENT_DESKTOP" },
         { &_XA_NET_WORKAREA,        "_NET_WORKAREA" },
+        { &_XA_NET_DESKTOP_GEOMETRY,"_NET_DESKTOP_GEOMETRY" },
 
         // WINDOW actions:
         { &_XA_NET_CLIENT_LIST,     "_NET_CLIENT_LIST" },
@@ -125,14 +125,13 @@ static void init_atoms()
         { &_XA_NET_WM_VISIBLE_NAME, "_NET_WM_VISIBLE_NAME" },
         { &_XA_NET_WM_DESKTOP,      "_NET_WM_DESKTOP" },
 
-
         { &_XA_NET_WM_WINDOW_TYPE,  "_NET_WM_WINDOW_TYPE" },
         { &_XA_NET_WM_WINDOW_TYPE_DESKTOP, "_NET_WM_WINDOW_TYPE_DESKTOP" },
         { &_XA_NET_WM_WINDOW_TYPE_DOCK,    "_NET_WM_WINDOW_TYPE_DOCK" },
         { &_XA_NET_WM_WINDOW_TYPE_TOOLBAR, "_NET_WM_WINDOW_TYPE_TOOLBAR" },
         { &_XA_NET_WM_WINDOW_TYPE_MENU,    "_NET_WM_WINDOW_TYPE_MENU" },
         { &_XA_NET_WM_WINDOW_TYPE_UTIL,    "_NET_WM_WINDOW_TYPE_UTILITY" },
-        { &_XA_NET_WM_WINDOW_TYPE_SPLASH,    "_NET_WM_WINDOW_TYPE_SPLASH" },
+        { &_XA_NET_WM_WINDOW_TYPE_SPLASH,  "_NET_WM_WINDOW_TYPE_SPLASH" },
         { &_XA_NET_WM_WINDOW_TYPE_DIALOG,  "_NET_WM_WINDOW_TYPE_DIALOG" },
         { &_XA_NET_WM_WINDOW_TYPE_NORMAL,  "_NET_WM_WINDOW_TYPE_NORMAL" },
         { &_XA_NET_WM_STRUT,       "_NET_WM_STRUT" }
@@ -147,14 +146,77 @@ static void init_atoms()
     atoms_inited = true;
 }
 
+Window fl_wmspec_check_window = None;
+bool fl_netwm_supports(Atom &xproperty)
+{
+    static Atom *atoms = NULL;
+    static int natoms = 0;
+
+    Atom type;
+    int format;
+    ulong nitems;
+    ulong bytes_after;
+    Window *xwindow;
+
+    if(fl_wmspec_check_window != None) {
+        if(atoms == NULL)
+            return false;
+        for(int i=0; i<natoms; i++) {
+            if (atoms[i] == xproperty)
+                return true;
+        }
+        return false;
+    }
+
+    if(atoms) XFree(atoms);
+
+    atoms = NULL;
+    natoms = 0;
+
+    /* This function is very slow on every call if you are not running a
+     * spec-supporting WM. For now not optimized, because it isn't in
+     * any critical code paths, but if you used it somewhere that had to
+     * be fast you want to avoid "GTK is slow with old WMs" complaints.
+     * Probably at that point the function should be changed to query
+     * _NET_SUPPORTING_WM_CHECK only once every 10 seconds or something.
+     */
+    XGetWindowProperty (fl_display, RootWindow(fl_display, fl_screen),
+                        _XA_NET_SUPPORTING_WM_CHECK, 0, ~0L,
+                        False, XA_WINDOW, &type, &format, &nitems,
+                        &bytes_after, (uchar **)&xwindow);
+
+    if(type != XA_WINDOW)
+        return false;
+
+    // Find out if this WM goes away, so we can reset everything.
+    XSelectInput(fl_display, *xwindow, StructureNotifyMask);
+    XFlush(fl_display);
+
+    XGetWindowProperty (fl_display, RootWindow(fl_display, fl_screen),
+                        _XA_NET_SUPPORTED, 0, ~0L,
+                        False, XA_ATOM, &type, &format, (ulong*)&natoms,
+                        &bytes_after, (uchar **)&atoms);
+
+    if(type != XA_ATOM)
+        return false;
+
+    fl_wmspec_check_window = *xwindow;
+    XFree(xwindow);
+
+    // since wmspec_check_window != None this isn't infinite. ;-)
+    return fl_netwm_supports(xproperty);
+}
+
 bool Fl_WM::set_window_strut(Window xid, int left, int right, int top, int bottom)
 {
     init_atoms();
-
-    CARD32 strut[4] = { left, right, top, bottom };
-    int status = XChangeProperty(fl_display, xid, _XA_NET_WM_STRUT, XA_CARDINAL, 32,
-                                 PropModeReplace, (unsigned char *)&strut, sizeof(CARD32)*4);
-    return (status==Success);
+    if(fl_netwm_supports(_XA_NET_WM_STRUT)) {
+        CARD32 strut[4] = { left, right, top, bottom };
+        XChangeProperty(fl_display, xid, _XA_NET_WM_STRUT, XA_CARDINAL, 32,
+                        PropModeReplace, (unsigned char *)&strut, sizeof(CARD32)*4);
+        return true;
+    }
+    return false;
 }
 
 bool Fl_WM::set_window_type(Window xid, int type)
@@ -189,9 +251,9 @@ bool Fl_WM::set_window_type(Window xid, int type)
         wintype[0] = _XA_NET_WM_WINDOW_TYPE_NORMAL;
     };
 
-    int status = XChangeProperty(fl_display, xid, _XA_NET_WM_WINDOW_TYPE, XA_ATOM, 32,
-                                 PropModeReplace, (unsigned char *)&wintype, sizeof(Atom));
-    return (status==Success);
+    XChangeProperty(fl_display, xid, _XA_NET_WM_WINDOW_TYPE, XA_ATOM, 32,
+                    PropModeReplace, (unsigned char *)&wintype, sizeof(Atom));
+    return true;
 }
 
 bool Fl_WM::set_window_icon(Window xid, Fl_Image *icon)
@@ -207,38 +269,61 @@ bool Fl_WM::set_window_icon(Window xid, Fl_Image *icon)
     hints.icon_pixmap = (Pixmap)icon->get_offscreen();
     hints.flags       |= IconPixmapHint;
     XSetWMHints(fl_display, xid, &hints);
+
     return true;
 }
 
-bool Fl_WM::set_window_title(Window xid, char *title, int title_len)
+#include <efltk/fl_utf8.h>
+static char latin1buf[4096];
+
+bool Fl_WM::set_window_title(Window xid, const char *title, int title_len)
 {
-    XChangeProperty(fl_display, xid, XA_WM_NAME,
-                    fl_XaUtf8String, 8, 0, (uchar*)title, title_len);
+    XChangeProperty(fl_display, xid, _XA_NET_WM_NAME, fl_XaUtf8String, 8, PropModeReplace, (uchar*)title, title_len);
+
+    if(title_len>4096) title_len=4096;
+    int latin1len = fl_utf2latin1((uchar *)title, title_len, latin1buf);
+    XChangeProperty(fl_display, xid, XA_WM_NAME, XA_STRING, 8, 0, (uchar*)latin1buf, latin1len);
+
     return true;
 }
 
-bool Fl_WM::set_window_icontitle(Window xid, char *title, int title_len)
+bool Fl_WM::set_window_icontitle(Window xid, const char *title, int title_len)
 {
-    XChangeProperty(fl_display, xid, XA_WM_ICON_NAME,
-                    fl_XaUtf8String, 8, 0, (uchar*)title, title_len);
+    XChangeProperty (fl_display, xid, _XA_NET_WM_ICON_NAME, fl_XaUtf8String, 8, PropModeReplace, (uchar*)title, title_len);
+
+    if(title_len>4096) title_len=4096;
+    int latin1len = fl_utf2latin1((uchar *)title, title_len, latin1buf);
+    XChangeProperty(fl_display, xid, XA_WM_ICON_NAME, XA_STRING, 8, 0, (uchar*)latin1buf, latin1len);
+
     return true;
 }
 
 bool Fl_WM::set_workspace_count(int count)
 {
     init_atoms();
-    int status = sendClientMessage(RootWindow(fl_display, fl_screen), _XA_NET_NUM_DESKTOPS, count);
-    return (status==Success);
+    if(fl_netwm_supports(_XA_NET_NUM_DESKTOPS)) {
+        sendClientMessage(RootWindow(fl_display, fl_screen), _XA_NET_NUM_DESKTOPS, count);
+        return true;
+    }
+    return false;
 }
 
 bool Fl_WM::set_workspace_names(const char **names, int count)
 {
     init_atoms();
-    XTextProperty wnames;
-    if(XStringListToTextProperty((char **)names, count, &wnames)) {
-        XSetTextProperty(fl_display, RootWindow(fl_display, fl_screen), &wnames, _XA_NET_DESKTOP_NAMES);
-        XFree(wnames.value);
-        return true;
+
+    if(fl_netwm_supports(_XA_NET_DESKTOP_NAMES)) {
+        XTextProperty wnames;
+#if HAVE_X11_UTF_TEXT_PROP
+        if(Xutf8TextListToTextProperty(fl_display, (char**)names, count, XUTF8StringStyle, &wnames))
+#else
+        if(XStringListToTextProperty((char **)names, count, &wnames))
+#endif
+        {
+            XSetTextProperty(fl_display, RootWindow(fl_display, fl_screen), &wnames, _XA_NET_DESKTOP_NAMES);
+            XFree(wnames.value);
+            return true;
+        }
     }
     return false;
 }
@@ -246,30 +331,36 @@ bool Fl_WM::set_workspace_names(const char **names, int count)
 bool Fl_WM::set_current_workspace(int number)
 {
     init_atoms();
-    int status = sendClientMessage(RootWindow(fl_display, fl_screen), _XA_NET_CURRENT_DESKTOP, number);
-    return (status==Success);
+    if(fl_netwm_supports(_XA_NET_CURRENT_DESKTOP)) {
+        sendClientMessage(RootWindow(fl_display, fl_screen), _XA_NET_CURRENT_DESKTOP, number);
+        return true;
+    }
+    return false;
 }
 
 bool Fl_WM::set_active_window(Window xid)
 {
     init_atoms();
-    int status = sendClientMessage(xid, _XA_NET_ACTIVE_WINDOW, xid);
-    return (status==Success);
+    if(fl_netwm_supports(_XA_NET_ACTIVE_WINDOW)) {
+        sendClientMessage(xid, _XA_NET_ACTIVE_WINDOW, xid);
+        return true;
+    }
+    return false;
 }
-
 
 /////////////////////////////////////////////
 
-static uint8 *cvt1to32(XImage *xim, int ow, int oh) {
+static uint8 *cvt1to32(XImage *xim, int ow, int oh)
+{
     int pixel;
-    uint8 *data = new uint8[ow*oh*4];
+    int pitch = Fl_Renderer::calc_pitch(4, ow);
+    uint8 *data = new uint8[oh*pitch];
     uint32 *ptr;
     int x,y;
     for(y = 0; y < oh; y++)
     {
-        ptr = (uint32*)data + (y * ow);
-        for(x = 0; x < ow; x++)
-        {
+        ptr = (uint32*) (data + (pitch*y));
+        for(x = 0; x < ow; x++) {
             pixel = XGetPixel(xim, x, y);
             if(pixel) *ptr++ = 0x00000000;
             else *ptr++ = 0xFFFFFFFF;
@@ -413,58 +504,64 @@ bool Fl_WM::get_window_icontitle(Window xid, char *&title)
 bool Fl_WM::get_geometry(int &width, int &height)
 {
     init_atoms();
-    unsigned long size = 0;
-    int status;
-    CARD32 *val;
-    val = (CARD32 *)getProperty(RootWindow(fl_display, fl_screen),
-                                _XA_NET_DESKTOP_GEOMETRY, XA_CARDINAL, &size, &status);
-    if(status==Success && val) {
-        width  = val[0];
-        height = val[1];
-        XFree((char*)val);
+    if(fl_netwm_supports(_XA_NET_DESKTOP_GEOMETRY)) {
+        width = height = 0;
+        unsigned long size = 0;
+        int status;
+        CARD32 *val = (CARD32 *)getProperty(RootWindow(fl_display, fl_screen), _XA_NET_DESKTOP_GEOMETRY, XA_CARDINAL, &size, &status);
+        if(val) {
+            width  = val[0];
+            height = val[1];
+            XFree((char*)val);
+        }
+        return true;
     }
-    return (status==Success);
+    return false;
 }
 
 bool Fl_WM::get_workarea(int &x, int &y, int &width, int &height)
 {
     init_atoms();
-
-    unsigned long size = 0;
-    int status;
-    CARD32 *val;
-    val = (CARD32 *)getProperty(RootWindow(fl_display, fl_screen),
-                                _XA_NET_WORKAREA, XA_CARDINAL, &size, &status);
-    if(status==Success && val) {
-        x      = val[0];
-        y      = val[1];
-        width  = val[2];
-        height = val[3];
-        XFree((char*)val);
+    if(fl_netwm_supports(_XA_NET_WORKAREA)) {
+        x = y = width = height = 0;
+        unsigned long size = 0;
+        CARD32 *val = (CARD32 *)getProperty(RootWindow(fl_display, fl_screen), _XA_NET_WORKAREA, XA_CARDINAL, &size);
+        if(val) {
+            x      = val[0];
+            y      = val[1];
+            width  = val[2];
+            height = val[3];
+            XFree((char*)val);
+        }
+        return true;
     }
-    return (status==Success);
+    return false;
 }
 
 int Fl_WM::get_windows_stacking(Window *&windows)
 {
     init_atoms();
-    unsigned long size = 0;
-    int status;
-    windows = (Window *)getProperty(RootWindow(fl_display, fl_screen),
-                                    _XA_NET_CLIENT_LIST_STACKING, XA_WINDOW, &size, &status);
-    if(status!=Success || !windows) return -1;
-    return size;
+    if(fl_netwm_supports(_XA_NET_CLIENT_LIST_STACKING)) {
+        unsigned long size = 0;
+        windows = (Window *)getProperty(RootWindow(fl_display, fl_screen),
+                                        _XA_NET_CLIENT_LIST_STACKING, XA_WINDOW, &size);
+        if(!windows) return -1;
+        return size;
+    }
+    return -1;
 }
 
 int Fl_WM::get_windows_mapping(Window *&windows)
 {
     init_atoms();
-    unsigned long size = 0;
-    int status;
-    windows = (Window *)getProperty(RootWindow(fl_display, fl_screen),
-                                    _XA_NET_CLIENT_LIST_STACKING, XA_WINDOW, &size, &status);
-    if(status!=Success || !windows) return -1;
-    return size;
+    if(fl_netwm_supports(_XA_NET_CLIENT_LIST)) {
+        unsigned long size = 0;
+        windows = (Window *)getProperty(RootWindow(fl_display, fl_screen),
+                                        _XA_NET_CLIENT_LIST, XA_WINDOW, &size);
+        if(!windows) return -1;
+        return size;
+    }
+    return -1;
 }
 
 int Fl_WM::get_workspace_count()
@@ -488,25 +585,22 @@ Window Fl_WM::get_active_window()
 int Fl_WM::get_workspace_names(char **&names)
 {
     init_atoms();
+    if(!fl_netwm_supports(_XA_NET_DESKTOP_NAMES)) return -1;
 
     XTextProperty wnames;
-    // Try to get NET desktop names
     XGetTextProperty(fl_display, RootWindow(fl_display, fl_screen), &wnames, _XA_NET_DESKTOP_NAMES);
-    char *buffer = (char *)wnames.value;
+
+    int cnt=-1;
+    names = new char*[32];
+    char *buffer = (char*)wnames.value;
     int length = wnames.nitems;
-    int cnt=0;
-
     if(buffer) {
-        names = new char*[1];
-
         char* c = buffer;
-        for (int i = 1; c < buffer+length; i++) {
+        for(cnt = 0; c < buffer+length; cnt++) {
+            if(cnt>31) break;
             char* d = c;
             while(*d) d++;
-            if(strcmp(c, "")) {
-                names[cnt++] = strdup(c);
-                names = (char **)realloc(names, sizeof(char*)*(cnt+1));
-            }
+            names[cnt] = strdup(c);
             c = d+1;
         }
         XFree(wnames.value);

@@ -33,6 +33,7 @@
 #endif
 
 #include <efltk/Fl.h>
+#include <efltk/Fl_WM.h>
 #include <efltk/x.h>
 #include <efltk/fl_utf8.h>
 #include <efltk/Fl_Window.h>
@@ -47,14 +48,18 @@
 
 /* The first ticks value of the application */
 static struct timeval start;
+static bool ticks_started=false;
 
 void fl_start_ticks() {
+    if(ticks_started) return;
     /* Set first ticks value */
     gettimeofday(&start, NULL);
+    ticks_started = true;
 }
 
 uint32 Fl::ticks()
 {
+    if(!ticks_started) fl_start_ticks();
     struct timeval now;
     gettimeofday(&now, NULL);
     return ((now.tv_sec-start.tv_sec)*1000+(now.tv_usec-start.tv_usec)/1000);
@@ -662,7 +667,7 @@ extern "C"
     }
 }
 
-
+extern Window fl_wmspec_check_window;
 bool fl_handle()
 {
     Fl_Window* window = fl_find(fl_xevent.xany.window);
@@ -705,10 +710,16 @@ bool fl_handle()
     }
 #endif
 
+    if(fl_wmspec_check_window != None &&
+       fl_xevent.xany.window == fl_wmspec_check_window &&
+       fl_xevent.type == DestroyNotify)
+    {
+        fl_wmspec_check_window = None;
+        return Fl::handle(event, window);
+    }
 
     switch (fl_xevent.type)
     {
-
         case KeymapNotify:
             memcpy(fl_key_vector, fl_xevent.xkeymap.key_vector, 32);
             break;
@@ -1415,12 +1426,12 @@ int background)
         //window->label(window->label(), window->iconlabel());
         const char *name = window->label()?window->label():"";
         const char *iname = window->iconlabel()?fl_file_filename(name):"";
-        XChangeProperty(fl_display, x->xid, XA_WM_NAME, XA_STRING, 8, 0, (uchar*)name, strlen(name));
-        XChangeProperty(fl_display, x->xid, XA_WM_ICON_NAME, XA_STRING, 8, 0, (uchar*)iname, strlen(iname));
+        Fl_WM::set_window_title(x->xid, name, strlen(name));
+        Fl_WM::set_window_icontitle(x->xid, iname, strlen(iname));
 
         // Makes the close button produce an event:
         XChangeProperty(fl_display, x->xid, WM_PROTOCOLS,
-            XA_ATOM, 32, 0, (uchar*)&WM_DELETE_WINDOW, 1);
+                        XA_ATOM, 32, 0, (uchar*)&WM_DELETE_WINDOW, 1);
 
         // Make it receptive to DnD:
         int version = 4;

@@ -25,8 +25,8 @@ public:
     };
     static bool set_window_type(Window xid, int type);
     static bool set_window_icon(Window xid, Fl_Image *icon);
-    static bool set_window_title(Window xid, char *title, int title_len);
-    static bool set_window_icontitle(Window xid, char *title, int title_len);
+    static bool set_window_title(Window xid, const char *title, int title_len);
+    static bool set_window_icontitle(Window xid, const char *title, int title_len);
 
     static bool set_workspace_count(int count);
     static bool set_workspace_names(const char **names, int count);
