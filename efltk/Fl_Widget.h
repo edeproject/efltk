@@ -36,13 +36,24 @@ typedef Fl_Callback* Fl_Callback_p; // needed for BORLAND
 typedef void (Fl_Callback0)(Fl_Widget*);
 typedef void (Fl_Callback1)(Fl_Widget*, long);
 
+/** 
+ * Fl_Widget is the base class for all widgets in FLTK. You can't create one 
+ * of these because the constructor is not public. However you can subclass it.
+
+ * Unless otherwise noted, the property setting methods such as  color(n) 
+ * or label(s) do not call redraw(), even if they change the widget's appearance. 
+ * This is to make the setting of several properties faster and to allow most 
+ * of them to be small inline functions. It is up to the calling program to call 
+ * redraw() after changing any visible properties.
+ */
 class FL_API Fl_Widget {
 public:
-  enum { // values for widget_type():
-    RESERVED_TYPE	= 0x64,
-    GROUP_TYPE		= 0xe0,
-    WINDOW_TYPE		= 0xf0
-  };
+	/// values for widget_type()                        
+	enum {
+		RESERVED_TYPE	= 0x64,		/**< Widget is reserved type */
+		GROUP_TYPE	= 0xe0, 		/**< Widget is group type */
+		WINDOW_TYPE	= 0xf0  		/**< Widget is window type */
+	};
 
   uchar widget_type()           {return widget_type_; }
   void	widget_type(uchar t)	{widget_type_ = t;}
@@ -246,12 +257,17 @@ public:
   int maxw() { return m_maxw; }
   int maxh() { return m_maxh; }
 
-protected:
-  Fl_Widget(int,int,int,int,const char* =0);
+protected:	
+	/**
+	 * This is the protected constructor for an Fl_Widget, but all derived 
+	 * widgets have a matching public constructor. It takes a value for  
+	 * x(), y(), w() , h(), and an optional value for  label().
+	 */
+	Fl_Widget(int,int,int,int,const char* =0);
 
-  // size_range stuff:
-  short m_minw, m_minh, m_maxw, m_maxh;
-  bool m_size_range;
+	/// size_range stuff:
+	short m_minw, m_minh, m_maxw, m_maxh;
+	bool m_size_range;
 
 private:
   // disable the copy assignment/constructors:
