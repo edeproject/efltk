@@ -115,6 +115,7 @@ Fl_Item_Group::Fl_Item_Group(const char* l) : Fl_Menu_(0,0,0,0,l)
 {
     style(::style);
     align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
+    begin(); //undo end() by Fl_Menu_()
 }
 
 

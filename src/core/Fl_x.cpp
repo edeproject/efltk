@@ -152,15 +152,20 @@ void Fl::remove_fd(int n, int events)
 #if CONSOLIDATE_MOTION
 static Fl_Window* send_motion;
 #endif
+static bool in_a_window; // true if in any of our windows, even destroyed ones
+
 static void do_queued_events(int, void*)
 {
+    in_a_window = true;
+
     while (!Fl::exit_modal_ && XEventsQueued(fl_display,QueuedAfterReading))
     {
         XNextEvent(fl_display, &fl_xevent);
         fl_handle();
     }
     // we send FL_LEAVE only if the mouse did not enter some other window:
-    if (!xmousewin) Fl::handle(FL_LEAVE, 0);
+    if (!in_a_window) Fl::handle(FL_LEAVE, 0);
+    //if (!xmousewin) Fl::handle(FL_LEAVE, 0);
 #if CONSOLIDATE_MOTION
     else if (send_motion == xmousewin)
     {
@@ -604,6 +609,8 @@ bool fl_handle()
             else if (message == fl_XdndEnter)
             {
                 xmousewin = window;
+                in_a_window = true;
+
                 fl_dnd_source_window = data[0];
                 // version number is data[1]>>24
                 if (data[1]&1)
@@ -697,7 +704,9 @@ bool fl_handle()
             }
             else if (message == fl_XdndDrop)
             {
+                in_a_window = true;
                 xmousewin = window;
+
                 fl_dnd_source_window = data[0];
                 fl_event_time = data[2];
                 Window to_window = fl_xevent.xclient.window;
@@ -839,10 +848,13 @@ bool fl_handle()
         goto J1;
 
         case EnterNotify:
-            if (fl_xevent.xcrossing.detail == NotifyInferior) break;
-            // XInstallColormap(fl_display, Fl_X::i(window)->colormap);
             set_event_xy(false);
             Fl::e_state = fl_xevent.xcrossing.state << 16;
+            if (fl_xevent.xcrossing.detail == NotifyInferior) break;
+            //      printf("EnterNotify window %s, xmousewin %s\n",
+            //         window ? window->label() : "NULL",
+            //         xmousewin ? xmousewin->label() : "NULL");
+            // XInstallColormap(fl_display, Fl_X::i(window)->colormap);
             event = FL_ENTER;
             J1:
             xmousewin = window;
@@ -860,7 +872,12 @@ bool fl_handle()
             if (fl_xevent.xcrossing.detail == NotifyInferior) break;
             set_event_xy(false);
             Fl::e_state = fl_xevent.xcrossing.state << 16;
-            if (window == xmousewin) xmousewin = 0;
+            if (fl_xevent.xcrossing.detail == NotifyInferior) break;
+            //      printf("LeaveNotify window %s, xmousewin %s\n",
+            //         window ? window->label() : "NULL",
+            //         xmousewin ? xmousewin->label() : "NULL");
+            in_a_window = false;
+            xmousewin = 0;
             break;
 
         case FocusIn:

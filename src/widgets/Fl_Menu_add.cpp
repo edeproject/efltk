@@ -122,9 +122,6 @@ int flags
 {
     Fl_Group* group = this;
 
-    const char *p;
-    char *q;
-
     int bufsize = strlen(text)+1;
     ARRAY(char, buf, bufsize);
 
@@ -140,9 +137,11 @@ int flags
         if (*text == '_') {text++; flags1 = FL_MENU_DIVIDER;}
 
         // copy to buf, changing \x to x:
-        q = buf; item = buf;
+        char *q = buf; 
+        const char *p;
         for (p=text; *p && *p != '/'; *q++ = *p++) if (*p=='\\') p++;
         *q = 0;
+        item = buf;
 
         // if not followed by slash it is not a menu title:
         if (*p != '/') break;

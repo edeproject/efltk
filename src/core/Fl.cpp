@@ -598,9 +598,15 @@ void Fl::modal(Fl_Widget* widget, bool grab)
     // widget the mouse ends up pointing at. For this to work you should
     // hide any modal windows or widgets before calling this to turn
     // modal state off.
-    if (xmousewin) handle(FL_MOVE, xmousewin);
-    // Don't pop up the tooltip for whatever they are pointing at:
-    Fl_Tooltip::current(belowmouse_);
+    if (xmousewin) {
+        handle(FL_MOVE, xmousewin);
+        // Don't pop up the tooltip for whatever they are pointing at:
+        Fl_Tooltip::current(belowmouse_);
+    }
+    //    printf("modal %s, xmousewin %s, belowmouse %s\n",
+    //       modal_ ? modal_->label() : "NULL",
+    //       xmousewin ? xmousewin->label() : "NULL",
+    //       belowmouse_ ? belowmouse_->label() : "NULL");
 
     exit_modal_ = false;
 }

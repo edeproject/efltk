@@ -1468,7 +1468,7 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
   Fl_Text_Buffer * buf = mBuffer;
   int i, X, Y, startX, charIndex, lineStartPos, lineLen, fontHeight;
   int stdCharWidth, charWidth, startIndex, charStyle, style;
-  int charLen, outStartIndex, outIndex, cursorX, hasCursor = 0;
+  int charLen, outStartIndex, outIndex, hasCursor = 0/*, cursorX=0*/;
   int dispIndexOffset, cursorPos = mCursorPos;
   char expandedChar[ FL_TEXT_MAX_EXP_CHAR_LEN ], outStr[ MAX_DISP_LINE_LEN ];
   char *outPtr;
@@ -1548,49 +1548,39 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
   }
 
   /* Scan character positions from the beginning of the clipping range, and
-     draw parts whenever the style changes (also note if the cursor is on
-     this line, and where it should be drawn to take advantage of the x
-     position which we've gone to so much trouble to calculate) */
+   draw parts whenever the style changes (also note if the cursor is on
+   this line, and where it should be drawn to take advantage of the x
+   position which we've gone to so much trouble to calculate) */
   outPtr = outStr;
   outIndex = outStartIndex;
   X = startX;
   for ( charIndex = startIndex; charIndex < rightCharIndex; charIndex++ ) {
-    if ( lineStartPos + charIndex == cursorPos ) {
-      if ( charIndex < lineLen || ( charIndex == lineLen &&
-                                    cursorPos >= buf->length() ) ) {
-        hasCursor = 1;  // CET - FIXME
-        cursorX = X - 1;
-      } else if ( charIndex == lineLen ) {
-        hasCursor = 1;
-        cursorX = X - 1;
+      charLen = charIndex >= lineLen ? 1 :
+          Fl_Text_Buffer::expand_character( lineStr[ charIndex ], outIndex, expandedChar,
+                                           buf->tab_distance(), buf->null_substitution_character() );
+      charStyle = position_style( lineStartPos, lineLen, charIndex,
+                                 outIndex + dispIndexOffset );
+      for ( i = 0; i < charLen; i++ ) {
+          if ( i != 0 && charIndex < lineLen && lineStr[ charIndex ] == '\t' )
+              charStyle = position_style( lineStartPos, lineLen,
+                                         charIndex, outIndex + dispIndexOffset );
+          if ( charStyle != style ) {
+              draw_string( style, startX, Y, X, outStr, outPtr - outStr );
+              outPtr = outStr;
+              startX = X;
+              style = charStyle;
+          }
+          if ( charIndex < lineLen ) {
+              *outPtr = expandedChar[ i ];
+              charWidth = string_width( &expandedChar[ i ], 1, charStyle );
+          } else
+              charWidth = stdCharWidth;
+          outPtr++;
+          X += charWidth;
+          outIndex++;
       }
-    }
-    charLen = charIndex >= lineLen ? 1 :
-              Fl_Text_Buffer::expand_character( lineStr[ charIndex ], outIndex, expandedChar,
-                                                buf->tab_distance(), buf->null_substitution_character() );
-    charStyle = position_style( lineStartPos, lineLen, charIndex,
-                                outIndex + dispIndexOffset );
-    for ( i = 0; i < charLen; i++ ) {
-      if ( i != 0 && charIndex < lineLen && lineStr[ charIndex ] == '\t' )
-        charStyle = position_style( lineStartPos, lineLen,
-                                    charIndex, outIndex + dispIndexOffset );
-      if ( charStyle != style ) {
-        draw_string( style, startX, Y, X, outStr, outPtr - outStr );
-        outPtr = outStr;
-        startX = X;
-        style = charStyle;
-      }
-      if ( charIndex < lineLen ) {
-        *outPtr = expandedChar[ i ];
-        charWidth = string_width( &expandedChar[ i ], 1, charStyle );
-      } else
-        charWidth = stdCharWidth;
-      outPtr++;
-      X += charWidth;
-      outIndex++;
-    }
-    if ( outPtr - outStr + FL_TEXT_MAX_EXP_CHAR_LEN >= MAX_DISP_LINE_LEN || X >= rightClip )
-      break;
+      if ( outPtr - outStr + FL_TEXT_MAX_EXP_CHAR_LEN >= MAX_DISP_LINE_LEN || X >= rightClip )
+          break;
   }
 
   /* Draw the remaining style segment */
@@ -1601,22 +1591,21 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
      line is scanned above: when the cursor appears at the very end
      of the redisplayed section. */
     //CET - FIXME
-    /*if ( mCursorOn )
-    {
+/*  if ( mCursorOn )
+  {
       if ( hasCursor )
-        draw_cursor( cursorX, Y );	  
+          draw_cursor( cursorX, Y );
       else if ( charIndex < lineLen && ( lineStartPos + charIndex + 1 == cursorPos ) && X == rightClip )
       {
-        if ( cursorPos >= buf->length() )
-          draw_cursor( X - 1, Y );
-        else {
-			if(wrap_uses_character(cursorPos))
-				draw_cursor( X - 1, Y );
-    	    }          
-        }
+          if ( cursorPos >= buf->length() )
+              draw_cursor( X - 1, Y );
+          else {
+              if(wrap_uses_character(cursorPos))
+                  draw_cursor( X - 1, Y );
+          }
       }
-    }*/
-  
+  }
+  */
   if ( lineStr != NULL )
     delete [] (char *)lineStr;
 }
@@ -2197,7 +2186,8 @@ void Fl_Text_Display::scroll(int topLineNum, int horizOffset)
   mTopLineNumHint = topLineNum;
   mHorizOffsetHint = horizOffset;
   relayout();
-  redraw();
+  //redraw();
+  redraw(FL_DAMAGE_VALUE);
 }
 
 void Fl_Text_Display::scroll_(int topLineNum, int horizOffset)
@@ -2225,7 +2215,7 @@ void Fl_Text_Display::scroll_(int topLineNum, int horizOffset)
 
   // redraw all text
   //redraw(FL_DAMAGE_SCROLL);
-  redraw();
+  //redraw();
 }
 
 /*
@@ -2892,9 +2882,11 @@ void Fl_Text_Display::draw()
   // don't even try if there is no associated text buffer!
   if (!buffer()) { draw_box(); return; }
 
+//  printf("DRAW\n");
+
   // draw the non-text, non-scrollbar areas.
   if (damage() & FL_DAMAGE_ALL) {
-      //printf("drawing all\n");
+      printf("drawing all\n");
 
     // draw the box()
     draw_frame();	
@@ -2929,7 +2921,7 @@ void Fl_Text_Display::draw()
     // blank the previous cursor protrusions
   }
   else if (damage() & (FL_DAMAGE_SCROLL | FL_DAMAGE_VALUE)) {
-    //printf("blanking previous cursor extrusions at Y: %d\n", mCursorOldY);
+      printf("blanking previous cursor extrusions at Y: %d\n", mCursorOldY);
 
     // CET - FIXME - save old cursor position instead and just draw side needed?
     fl_push_clip(text_area.x-LEFT_MARGIN,

@@ -714,6 +714,7 @@ static _TRACKMOUSEEVENT mouseevent =
 static bool mouse_event(Fl_Window *window, int what, int button,
 WPARAM wParam, LPARAM lParam)
 {
+    xmousewin = window;
     if (!window) return false;
     static int px, py, pmx, pmy;
     POINT pt;
@@ -722,7 +723,7 @@ WPARAM wParam, LPARAM lParam)
     ClientToScreen(fl_xid(window), &pt);
     Fl::e_x_root = pt.x;
     Fl::e_y_root = pt.y;
-    xmousewin = window;
+    //xmousewin = window;
     while (window->parent())
     {
         Fl::e_x += window->x();
