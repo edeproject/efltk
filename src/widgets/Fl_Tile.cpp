@@ -78,8 +78,8 @@ void Fl_Tile::layout()
         // drag the corner of the resizable() to the new position:
         if (p[5] != p[1] || p[7] != p[3])
             position(p[5], p[7], p[5]+w()-p[1], p[7]+h()-p[3]);
+        Fl_Group::layout();
     }
-    Fl_Group::layout();
 }
 
 
