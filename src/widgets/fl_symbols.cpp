@@ -68,7 +68,7 @@ static int find(const char *name)
     for (;;)
     {
         if (!symbols[pos].notempty) return pos;
-        if (!strcmp(symbols[pos].name,name)) return pos;
+        if (!symbols[pos].name || !strcmp(symbols[pos].name,name)) return pos;
         pos = (pos + hh2) % MAXSYMBOL;
     }
 }

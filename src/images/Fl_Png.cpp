@@ -56,7 +56,7 @@ void SwapData(uint8 *Data, uint SizeOfData, int bpp)
 #endif
 }
 
-static Fl_Image *png_create(void *stream, int size, bool file)
+static Fl_Image *png_create(void *stream, bool file)
 {
   png_structp png_ptr = 0;
   png_infop info_ptr = 0, end_info = 0;

@@ -1,20 +1,15 @@
 #include <efltk/Fl_Image.h>
+#include <efltk/Fl.h>
 
 #include <string.h>
 
 static uint8 *read_ptr = 0;
-static int    readed   = 0;
-static int    read_size= 0;
 static int BmpRead(void *buf, int len)
 {
-    if(readed>=read_size) return 0;
-    if(readed+len>read_size) len = read_size-readed;
-    readed+=len;
     memcpy(buf, read_ptr, len);
     read_ptr+=len;
     return len;
 }
-#define setup_read(ptr, len) read_ptr=(uint8*)ptr; readed=0; read_size=len
 
 bool bmp_is_valid(void *stream, bool file)
 {
@@ -63,10 +58,11 @@ uint32 ReadLe32()
     return tmp;
 }
 
-Fl_Image *bmp_create(void *stream, int size, bool file)
+Fl_Image *bmp_create(void *stream, bool file)
 {	
-	setup_read(stream, size);
+	read_ptr=(uint8*)stream; 
 
+	char *error_str=0;
     Fl_Image *surface=0;
     Fl_Colormap *palette=0;
     int bmpPitch;
@@ -108,7 +104,7 @@ Fl_Image *bmp_create(void *stream, int size, bool file)
     bfOffBits	  = ReadLe32();		
 
     /* Read the Win32 BITMAPINFOHEADER */
-    biSize		 = ReadLe32();
+    biSize		 = ReadLe32();	
 
     if(biSize == 12) /* BITMAPCOREINFO */
     {
@@ -200,7 +196,7 @@ Fl_Image *bmp_create(void *stream, int size, bool file)
         }
         break;
     default:
-        //printf("Compressed BMP files not supported\n");
+		error_str = "Compressed BMP files not supported";
         goto error;
     }
 
@@ -233,8 +229,7 @@ Fl_Image *bmp_create(void *stream, int size, bool file)
     }
 
 
-	read_ptr = ((uint8 *)stream)+bfOffBits;
-	readed   = bfOffBits;
+	read_ptr = ((uint8 *)stream)+bfOffBits;	
 
     bits = (uint8 *)surface->data()+(surface->height()*surface->pitch());
     switch (ExpandBMP) {
@@ -309,7 +304,7 @@ Fl_Image *bmp_create(void *stream, int size, bool file)
     return surface;
 
 error:
-    //printf("error reading bmp\n");
+	Fl::warning("Error reading BMP, reason: %s", error_str?error_str:"Unknown");
     if(surface) delete surface;
     return 0;
 }

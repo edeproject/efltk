@@ -880,13 +880,13 @@ Fl_Image* Fl_Image::read_xpm(const char *filename, const char * const *data)
             return ret;
         }
         if(xpm_reader.is_valid(buffer, true)) {
-            ret = xpm_reader.create(buffer, a.size, true);
+            ret = xpm_reader.create(buffer, true);
         }
         free(buffer);
         fclose(file);
     } else if(data) {
-        if(!xpm_reader.is_valid2((void**)data)) return 0;
-        ret = xpm_reader.create((void*)data, 1, false);
+        if(!xpm_reader.is_valid_xpm((void**)data)) return 0;
+        ret = xpm_reader.create((void*)data, false);
     }
     return ret;
 }
@@ -898,7 +898,6 @@ Fl_Image* Fl_Image::read(const char *filename, const uint8 *data)
     register_reader(&gif_reader);
 
     Fl_Image *ret = 0;
-    int buffer_size=0;
     void *buffer=0;
     bool from_file=false;
 
@@ -906,11 +905,10 @@ Fl_Image* Fl_Image::read(const char *filename, const uint8 *data)
         Fl_FileAttr a;
         if(!a.parse(filename))
             return ret;
-        buffer_size = a.size;
         FILE *file = fopen(filename, "rb");
         if (!file) return ret;
-        buffer = malloc(buffer_size);
-        uint readed = fread(buffer, 1, buffer_size, file);
+        buffer = malloc(a.size);
+        uint readed = fread(buffer, 1, a.size, file);
         if(readed!=a.size) {
             printf("Could not read file: %s\n", filename);
             free(buffer);
@@ -922,15 +920,13 @@ Fl_Image* Fl_Image::read(const char *filename, const uint8 *data)
 
     } else if(data) {
         buffer = (void *)data;
-        buffer_size = sizeof(data);
     } else {
         return ret;
     }
 
     for(ImageReader *r=readers.first(); r!=0; r=readers.next()) {
-        if(r->is_valid && r->is_valid(buffer, from_file))
-        {
-            ret = r->create(buffer, buffer_size, from_file);
+        if(r->is_valid && r->is_valid(buffer, from_file)) {			
+            ret = r->create(buffer, from_file);			
             break;
         }
     }

@@ -36,8 +36,8 @@ class Fl_Image;
 typedef struct _reader
 {
     bool (*is_valid)(void *stream, bool file);
-    bool (*is_valid2)(void **stream); //XPM and similar
-    Fl_Image *(*create)(void *stream, int size, bool file);
+    bool (*is_valid_xpm)(void **stream); //XPM and similar
+    Fl_Image *(*create)(void *stream, bool file);
 } ImageReader;
 
 typedef enum

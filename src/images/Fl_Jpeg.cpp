@@ -11,19 +11,12 @@ extern "C" {
 #include <setjmp.h>
 
 static uint8 *read_ptr = 0;
-static int    readed   = 0;
-static int    read_size= 0;
 static int JpegRead(void *buf, int len)
 {
-    if(readed>=read_size) return 0;
-    if(readed+len>read_size) len = read_size-readed;
-    readed+=len;
     memcpy(buf, read_ptr, len);
     read_ptr+=len;
     return len;
 }
-#define setup_read(ptr, len) read_ptr=(uint8*)ptr; readed=0; read_size=len
-
 
 /* Define this for fast loading and not as good image quality */
 /*#define FAST_JPEG*/
@@ -179,9 +172,9 @@ static void output_no_message(j_common_ptr cinfo)
 
 /* Load a JPEG type image from an stream datasource */
 Fl_Image *jpeg_create(void *stream, int size, bool file)
-{
-    setup_read(stream, size);
-
+{    
+	read_ptr=(uint8*)stream; 
+	
     struct jpeg_decompress_struct cinfo;
     JSAMPROW rowptr[1];
     Fl_Image *surface = NULL;

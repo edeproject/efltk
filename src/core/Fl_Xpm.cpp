@@ -15,15 +15,12 @@ static int    read_size= 0;
 
 static int Read(void *buf, int len)
 {
-    readed+=len;
-    if(readed>read_size) return 0;
-
     memcpy(buf, read_ptr, len);
     read_ptr+=len;
     return len;
 }
 
-bool xpm_is_valid2(void **stream)
+bool xpm_is_valid_xpm(void **stream)
 {
     if(stream) {
         // The header string of an XPMv3 image has the format
@@ -260,19 +257,18 @@ static char *skipnonspace(char *p)
 
 // This is somewhat STUPID :)) but i do this anyway,
 // Convert static xpm array to char buffer what looks like a file :)
-static char *build_xpm(char **stream, int &size)
+static char *build_xpm(char **stream)
 {
 	// <width> <height> <ncolors> <cpp> [ <hotspot_x> <hotspot_y> ]
 	char *check = (char *)stream[0];
 	int w, h, ncol, cpp;	
     if(sscanf(check, "%d %d %d %d", &w, &h, &ncol, &cpp) != 4) {
-		size=0;
 		return 0;
 	}
 	int lines=ncol+h;
 
     char head[] = "{\n";
-    size=sizeof(head)-1;
+    int size=sizeof(head)-1;
     char *buf=new char[size+3];	
     memcpy(buf, head, size);
 	
@@ -298,25 +294,18 @@ static char *build_xpm(char **stream, int &size)
     return buf;
 }
 
-/* Load a XPM type image from an SDL datasource */
-static Fl_Image *xpm_create(void *stream, int size, bool file)
+/* Load a XPM type image from stream */
+static Fl_Image *xpm_create(void *stream, bool file)
 {
     char *file_buffer=0;
-    int file_size=0;
 
     if(!file) {
-        file_buffer = build_xpm((char **)stream, file_size);
-        if(!file_buffer || file_size<1) return 0;
-        read_ptr = (uint8 *)file_buffer;
-        readed   = 0;
-        read_size= file_size;
+        file_buffer = build_xpm((char **)stream);
+        if(!file_buffer) return 0;
+        read_ptr = (uint8 *)file_buffer;        
 
     } else {
-
-        read_ptr = (uint8 *)stream;
-        readed   = 0;
-        read_size= size;
-
+        read_ptr = (uint8 *)stream;                
     }
 
     Fl_Image *image;
@@ -526,7 +515,7 @@ done:
     free(pixels);
     free(keystrings);
     free_colorhash(colors);
-    if(file_buffer && file_size>0) free(file_buffer);
+    if(file_buffer) free(file_buffer);
 
     return image;
 }
@@ -534,7 +523,7 @@ done:
 ImageReader xpm_reader =
 {
     xpm_is_valid,
-    xpm_is_valid2, //is_valid2
+    xpm_is_valid_xpm,
     xpm_create
 };
 

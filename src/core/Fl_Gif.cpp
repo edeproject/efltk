@@ -1,9 +1,10 @@
 /* This is a GIF image file loading framework */
 
-#include <stdio.h>
 #include <string.h>
+#include <stdio.h>
 
 #include <efltk/Fl_Image.h>
+#include <efltk/Fl.h>
 
 /* Code from here to end of file has been adapted from XPaint:   */
 /* +-------------------------------------------------------------------+ */
@@ -26,20 +27,14 @@
 /*    version 2 of the License, or (at your option) any later version.	*/
 
 static uint8 *read_ptr = 0;
-static int    readed   = 0;
-static int    read_size= 0;
-
 static int GifRead(void *buf, int len)
 {
-    readed+=len;
-    if(readed>read_size) return 0;
-
     memcpy(buf, read_ptr, len);
     read_ptr+=len;
     return len;
 }
 
-#define RWSetMsg		printf
+#define RWSetMsg		Fl::warning
 
 #define Image			Fl_Image
 #define ImageNewCmap(w, h, s)	new Fl_Image(w,h,8,0,0,0,0,0,0)
@@ -112,11 +107,9 @@ static bool gif_is_valid(void *stream, bool file)
 	return is_GIF;
 }
 
-Image *gif_create(void *stream, int size, bool file)
+Image *gif_create(void *stream, bool file)
 {
 	read_ptr = (uint8 *)stream;
-    readed   = 0;
-    read_size= size;
 
 	uint8 *src = (uint8*)stream;
 
@@ -135,18 +128,18 @@ Image *gif_create(void *stream, int size, bool file)
         goto done;
     }
     if (!ReadOK(src, buf, 6)) {
-		RWSetMsg("error reading magic number");
+		RWSetMsg("Error reading GIF, reason: can't read magic number");
         goto done;
     }
     if (strncmp((char *) buf, "GIF", 3) != 0) {
-		RWSetMsg("not a GIF file");
+		RWSetMsg("Error reading GIF, reason: not a GIF file");
         goto done;
     }
     strncpy(version, (char *) buf + 3, 3);
     version[3] = '\0';
 
     if ((strcmp(version, "87a") != 0) && (strcmp(version, "89a") != 0)) {
-		RWSetMsg("bad version number, not '87a' or '89a'");
+		RWSetMsg("Error reading GIF, reason: bad version number, not '87a' or '89a'");
         goto done;
     }
     Gif89.transparent = -1;
@@ -155,7 +148,7 @@ Image *gif_create(void *stream, int size, bool file)
     Gif89.disposal = 0;
 
     if (!ReadOK(src, buf, 7)) {
-	RWSetMsg("failed to read screen descriptor");
+		RWSetMsg("Error reading GIF, reason: failed to read screen descriptor");
         goto done;
     }
     GifScreen.Width = LM_to_uint(buf[0], buf[1]);
@@ -168,25 +161,25 @@ Image *gif_create(void *stream, int size, bool file)
     if (BitSet(buf[4], LOCALCOLORMAP)) {	/* Global Colormap */
 	if (ReadColorMap(src, GifScreen.BitPixel, GifScreen.ColorMap,
 			 &GifScreen.GrayScale2)) {
-	    RWSetMsg("error reading global colormap");
+	    RWSetMsg("Error reading GIF, reason: error reading global colormap");
             goto done;
 	}
     }
     do {
 	if (!ReadOK(src, &c, 1)) {
-	    RWSetMsg("EOF / read error on image data");
+	    RWSetMsg("Error reading GIF, reason: EOF / read error on image data");
             goto done;
 	}
 	if (c == ';') {		/* GIF terminator */
 	    if (imageCount < imageNumber) {
-		RWSetMsg("only %d image%s found in file",
+		RWSetMsg("Error reading GIF, reason: only %d image%s found in file",
 			 imageCount, imageCount > 1 ? "s" : "");
                 goto done;
 	    }
 	}
 	if (c == '!') {		/* Extension */
 	    if (!ReadOK(src, &c, 1)) {
-		RWSetMsg("EOF / read error on extention function code");
+		RWSetMsg("Error reading GIF, reason: EOF / read error on extention function code");
                 goto done;
 	    }
 	    DoExtension(src, c);
@@ -198,7 +191,7 @@ Image *gif_create(void *stream, int size, bool file)
 	++imageCount;
 
 	if (!ReadOK(src, buf, 9)) {
-	    RWSetMsg("couldn't read left/top/width/height");
+	    RWSetMsg("Error reading GIF, reason: couldn't read left/top/width/height");
             goto done;
 	}
 	useGlobalColormap = !BitSet(buf[8], LOCALCOLORMAP);
@@ -207,7 +200,7 @@ Image *gif_create(void *stream, int size, bool file)
 
 	if (!useGlobalColormap) {
 	    if (ReadColorMap(src, bitPixel, localColorMap, &grayScale)) {
-		RWSetMsg("error reading local colormap");
+		RWSetMsg("Error reading GIF, reason: error reading local colormap");
                 goto done;
 	    }
 	    image = ReadImage(src, LM_to_uint(buf[4], buf[5]),

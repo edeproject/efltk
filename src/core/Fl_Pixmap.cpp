@@ -43,7 +43,7 @@ void Fl_Pixmap::measure(int& W,int& H) {
 extern ImageReader xpm_reader;
 void Fl_Pixmap::draw(int X, int Y, int W, int H, Fl_Flags flags)
 {
-    if(!id && xpm_reader.is_valid2((void**)data)) {
+    if(!id && xpm_reader.is_valid_xpm((void**)data)) {
         Fl_Image *i = Fl_Image::read_xpm(0, (const char **)data);
         if(i) {
             copy(*i, *this);
