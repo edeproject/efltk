@@ -12,6 +12,8 @@ class Fl_ListView;
 class Fl_ListView_Header : public Fl_Widget
 {
 public:
+	static Fl_Named_Style* default_style;
+
     Fl_ListView_Header(Fl_ListView *parent);
     virtual ~Fl_ListView_Header();
 

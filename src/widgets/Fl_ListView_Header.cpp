@@ -18,9 +18,16 @@ Fl_ListView_Column::Fl_ListView_Column()
 
 //////////////////////////////
 
+static void revert(Fl_Style* s) {
+}
+
+static Fl_Named_Style style("ListView Header", revert, &Fl_ListView_Header::default_style);
+Fl_Named_Style* Fl_ListView_Header::default_style = &::style;
+
 Fl_ListView_Header::Fl_ListView_Header(Fl_ListView *parent)
     : Fl_Widget(0,0,0,0,0)
 {
+	style(default_style);
     m_capture = -1;
 }
 

@@ -96,7 +96,7 @@ void Fl_ListView::table_draw(TableContext context, unsigned R, unsigned C,
             child(drawing_row)->set_damage(0);
     }
     else if(context==CONTEXT_CELL) {
-        fl_push_matrix();
+        fl_push_matrix();		
         fl_translate(X, Y);
 
         Fl_ListView_Item *item = items[R];
