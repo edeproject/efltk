@@ -109,7 +109,7 @@ int main(int argc, char *argv[])
     Fl_XmlDoc d;
     d.context()->handler(&h, false);
 
-    fl_try {
+    try {
 
         int time1 = Fl::ticks();
         d.load(fp);
@@ -122,7 +122,7 @@ int main(int argc, char *argv[])
 		if(!h.win->label())
 			h.win->label(label);
 
-    } fl_catch(exc) {
+    } catch(Fl_Exception &exc) {
         fl_alert(exc.text());
     }
 

@@ -136,7 +136,7 @@ Fl_Mail_Accounts::~Fl_Mail_Accounts() {
 }
 
 bool Fl_Mail_Accounts::exec() {
-    fl_try {
+    try {
         m_config->clear();
         m_config->read_file();
         unsigned accountNumber = m_config->sections.count();
@@ -154,7 +154,7 @@ bool Fl_Mail_Accounts::exec() {
             }
         }
     }
-    fl_catch(exception) {
+    catch(Fl_Exception &exception) {
         fprintf(stderr,exception.text().c_str());
     }
 
@@ -162,7 +162,7 @@ bool Fl_Mail_Accounts::exec() {
     if (rc != FL_DLG_OK)
         return false;
 
-    fl_try {
+    try {
         m_config->clear();
         unsigned accountNumber = m_accountListView->children();
         for (unsigned account = 0; account < accountNumber; account++) {
@@ -182,7 +182,7 @@ bool Fl_Mail_Accounts::exec() {
         }
         m_config->flush();
     }
-    fl_catch(exception2) {
+    catch(Fl_Exception &exception2) {
         fprintf(stderr,exception2.text().c_str());
         return false;
     }

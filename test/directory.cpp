@@ -28,7 +28,7 @@
 int main(int argc, char *argv[]) {
 	Fl_Directory_DS   dds;
 
-	fl_try {
+	try {
 #ifdef _WIN32
 		dds.directory("C:\\");
 #else
@@ -46,9 +46,9 @@ int main(int argc, char *argv[]) {
 		}
 		dds.close();
 	}
-fl_catch (exception) {
-	puts(exception.text().c_str());
-}
+	catch (Fl_Exception &exception) {
+		puts(exception.text().c_str());
+	}
 
 return EXIT_SUCCESS;
 }

@@ -596,6 +596,8 @@ bool Fl_Image::read_image(const char *filename, const uint8 *data, uint32 data_s
         return ret;
     }
 
+	try {
+		
     if(xpm_data && !fp) {
 
         // ONLY XPM DATA READ:
@@ -617,6 +619,10 @@ bool Fl_Image::read_image(const char *filename, const uint8 *data, uint32 data_s
         }
     }
 
+    } catch(...) {
+    	throw;	
+    }
+
     if(ret && format()->Amask) {
         // Default mask for images with alpha mask
         mask_type(FL_MASK_ALPHA);
@@ -626,9 +632,9 @@ bool Fl_Image::read_image(const char *filename, const uint8 *data, uint32 data_s
         m_data_alloc = true;
         m_pitch = Fl_Renderer::calc_pitch(bytespp(), width());
     }
-
+    
     xpm_data=false;
-    if(fp) fclose(fp);
+    if(fp) fclose(fp);    
     return ret;
 }
 

@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
     window.end();
     window.show();
 
-    fl_try {
+    try {
         strcpy(server,"ftp.sunet.se");
         strcpy(userName,"anonymous");
         strcpy(password,"alex@alex.net");
@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
         ftp_ds.password(password);
         lview.fill(ftp_ds);
     }
-    fl_catch(exception) {
+    catch(Fl_Exception &exception) {
         puts(exception.text().c_str());
     }
 

@@ -59,13 +59,13 @@ void Fl_Query::checkDatabaseState() {
 
 void Fl_Query::alloc_stmt() {
     if (m_database && !m_stmt) {
-        fl_try {
+        try {
             m_database->lock();
             m_database->allocate_query(this);
         }
-        fl_catch (exception) {
+        catch (Fl_Exception &exception) {
             m_database->unlock();
-            fl_rethrow;
+            throw;
         }
         m_database->unlock();
     }
@@ -77,13 +77,13 @@ void Fl_Query::free_stmt() {
     m_prepared = false;
 
     if (m_stmt && m_database) {
-        fl_try {
+        try {
             m_database->lock();
             m_database->deallocate_query(this);
         }
-        fl_catch (exception) {
+        catch (Fl_Exception &exception) {
             m_database->unlock();
-            fl_rethrow;
+            throw;
         }
         m_database->unlock();
     }
@@ -94,15 +94,15 @@ void Fl_Query::prepare() {
     if (m_database->capabilities() & FL_DB_STMT_PREPARE == 0)
         return;  // Prepare isn't supported, ignore the attempt
 
-    fl_try {
+    try {
         m_database->lock();
         if (!m_stmt)
             m_database->allocate_query(this);
         m_database->prepare_query(this);
     }
-    fl_catch (exception) {
+    catch (exception) {
         m_database->unlock();
-        fl_rethrow;
+        throw;
     }
 
     m_database->unlock();
@@ -112,15 +112,15 @@ void Fl_Query::prepare() {
 bool Fl_Query::open() {
     checkDatabaseState();
 
-    fl_try {
+    try {
         m_database->lock();
         if (!m_stmt)
             alloc_stmt();
         m_database->open_query(this);
     }
-    fl_catch (exception) {
+    catch (Fl_Exception &exception) {
         m_database->unlock();
-        fl_rethrow;
+        throw;
     }
 
     m_database->unlock();
@@ -137,13 +137,13 @@ void Fl_Query::exec() {
 
 void Fl_Query::fetch() {
     checkDatabaseState();
-    fl_try {
+    try {
         m_database->lock();
         m_database->fetch_query(this);
     }
-    fl_catch (exception) {
+    catch (Fl_Exception &exception) {
         m_database->unlock();
-        fl_rethrow;
+        throw;
     }
 
     m_database->unlock();
@@ -151,13 +151,13 @@ void Fl_Query::fetch() {
 
 bool Fl_Query::close() {
     if (m_database) {
-        fl_try {
+        try {
             m_database->lock();
             m_database->close_query(this);
         }
-        fl_catch (exception) {
+        catch (Fl_Exception &exception) {
             m_database->unlock();
-            fl_rethrow;
+            throw;
         }
 
         m_database->unlock();

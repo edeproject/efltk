@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
     char            password[80];
     char            fileName[80];
 
-    fl_try {
+    try {
         strcpy(server,"ftp.sunet.se");
         strcpy(userName,"anonymous");
         strcpy(password,"alex@alex.net");
@@ -55,8 +55,8 @@ int main(int argc, char *argv[]) {
         for (unsigned i = 0; i < response.count(); i++)
             cout << response[i].c_str() << endl;
     }
-fl_catch(exception) {
-    cout << exception.text().c_str();
-}
-return 0;
+	catch(Fl_Exception &exception) {
+		cout << exception.text().c_str();
+	}
+	return 0;
 }

@@ -73,11 +73,11 @@ Fl_Variant& Fl_Memory_DS::operator [] (int index) {
 
 // read this field data into external value
 bool Fl_Memory_DS::read_field(const char *fname,Fl_Variant& fvalue) {
-    fl_try {
+    try {
         fvalue = (*this)[fname];      
     }
-fl_catch(exc) { return false; }
-return true;
+	catch(Fl_Exception &) { return false; }
+	return true;
 }
 
 // write this field data from external value
@@ -85,8 +85,8 @@ bool Fl_Memory_DS::write_field(const char *fname, const Fl_Variant& fvalue) {
     fl_try {
         (*this)[fname] = fvalue;      
     }
-fl_catch(exc) { return false; }
-return true;
+	catch(Fl_Exception &) { return false; }
+	return true;
 }
 
 

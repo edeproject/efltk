@@ -81,7 +81,7 @@ Fl_String quote_controls(Fl_String str)
 void ETranslate::load_etm(FILE *fp)
 {
     Fl_String text;
-    fl_try {
+    try {
         Fl_XmlDoc xml(&ctx);
         xml.load(fp);
         Fl_XmlNode *node;
@@ -139,7 +139,7 @@ void ETranslate::load_etm(FILE *fp)
         }
         browser->end();
 
-    } fl_catch(exc) {
+    } catch(Fl_Exception &exc) {
         fl_alert(exc.text().c_str());
     }
 }

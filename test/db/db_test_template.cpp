@@ -43,7 +43,7 @@ int main (int argc, char *argv[])
     Fl_String connect_string(argv[1]);
 #endif
 
-    fl_try
+    try
     {
         //"DSN=odbc_demo;UID=username;PWD=password";
         __DRIVER__ db (connect_string);
@@ -108,7 +108,7 @@ int main (int argc, char *argv[])
 	db.close ();
 	printf ("Ok");
     }
-    fl_catch (exception)
+    catch (Fl_Exception &exception)
     {
 #ifdef _WIN32
         fl_alert("Exception! %s\n", exception.text ().c_str ());

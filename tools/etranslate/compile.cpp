@@ -6,9 +6,9 @@ void Compiler::compile(Fl_String infile, Fl_String outfile)
     if(!fpin) {
         return;
     }
-    fl_try {
+    try {
         xml.load(fpin);
-    } fl_catch(exp) {
+    } catch(Fl_Exception &exp) {
         fclose(fpin);
         Fl::fatal(exp.text().c_str());
     }

@@ -63,10 +63,10 @@ void throw_func(bool t)
 
 void cb(Fl_Widget *,void *)
 {
-    fl_try {
+    try {
         throw_func(check->value());
     }
-    fl_catch(exc) {
+    catch(Fl_Exception &exc) {
         fl_alert("MAIN TRY STATEMENT:\n%s", exc.text().c_str());
     }
 }

@@ -24,7 +24,7 @@ void go_callback(Fl_Widget *,void *) {
         host_name.set_length(pos);
     }
 
-    fl_try {
+    try {
         s.open(host_name,80);
 
         read_buffer.check_size(32*1024);
@@ -53,13 +53,14 @@ void go_callback(Fl_Widget *,void *) {
         }
         s.close();
     }
-    fl_catch(exception) 
-{
-    fl_alert(exception.text().c_str());
-    return;
-}
-   //view->value(buffer.data());
-textbuf->text(page_buffer.data());
+    catch(Fl_Exception &exception) 
+	{
+		fl_alert(exception.text().c_str());
+		return;
+	}
+   
+	//view->value(buffer.data());
+	textbuf->text(page_buffer.data());
 }
 
 int main(int argc,char *argv[]) {

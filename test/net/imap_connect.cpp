@@ -152,7 +152,7 @@ void cb_browser(Fl_Widget *browser,void *) {
     currentFolder = mailbox;
     // Retrive the message list
     Fl_IMAP_DS  imap_ds;
-    fl_try {
+    try {
         // Filling the list of messages
         imap_ds.callback(cb_progress);
         imap_ds.host(server->value());
@@ -162,7 +162,7 @@ void cb_browser(Fl_Widget *browser,void *) {
         list_view->fill(imap_ds);
         list_view->redraw();
     }
-fl_catch(exception) { puts(exception.text().c_str()); }
+	catch(Fl_Exception &exception) { puts(exception.text().c_str()); }
 }
 
 void cb_lview(Fl_Widget *sender,void *) {
@@ -180,7 +180,7 @@ void cb_lview(Fl_Widget *sender,void *) {
 
     // Retrive the highlighted message
     Fl_IMAP_DS  imap_ds;
-    fl_try {
+    try {
         // Filling the list of messages
         imap_ds.host(server->value());
         imap_ds.user(user->value());
@@ -193,7 +193,7 @@ void cb_lview(Fl_Widget *sender,void *) {
         messageBuffer->text(body.c_str());
         imap_ds.close();
     }
-fl_catch(exception) { puts(exception.text().c_str()); }
+	catch(Fl_Exception &exception) { puts(exception.text().c_str()); }
 }
 
 void cb_read(Fl_Widget *,void *) {
@@ -203,7 +203,7 @@ void cb_read(Fl_Widget *,void *) {
 
     browser->clear();
 
-    fl_try {
+    try {
         // Obtain the list of the folders
         imap_connect.host(server->value());
         imap_connect.cmd_login(user->value(),password->value());
@@ -220,7 +220,7 @@ void cb_read(Fl_Widget *,void *) {
         config->write("user",user->value());
         config->write("password",password->value());
     }
-fl_catch(exception) { puts(exception.text().c_str()); }
+	catch(Fl_Exception &exception) { puts(exception.text().c_str()); }
 }
 
 Fl_Menu_Item default_mboxes[] = {

@@ -63,7 +63,7 @@ int main(int argc, char **argv)
     Fl_Window *window = new Fl_Window(20,20,300,300);
     window->begin();
 
-    fl_try {
+    try {
 
         int time1 = Fl::ticks();
         doc.load(fp);
@@ -83,7 +83,7 @@ int main(int argc, char **argv)
         tree->end();
         tree->relayout();
 
-    } fl_catch(exp) {
+    } catch(Fl_Exception &exp) {
 
         Fl_String error = doc.context()->get_error();
         error += "\n------------------------\n";

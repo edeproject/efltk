@@ -32,6 +32,8 @@
 #include <efltk/fl_utf8.h>
 #include <efltk/Fl_Window.h>
 #include <efltk/Fl_Style.h>
+
+#include <exception>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -712,6 +714,8 @@ extern "C"
 extern Window fl_wmspec_check_window;
 bool fl_handle()
 {
+	try {
+	
     Fl_Window* window = fl_find(fl_xevent.xany.window);
     int event = 0;
 
@@ -1325,6 +1329,10 @@ bool fl_handle()
         return true;
 
     }
+    
+   	} catch(...) {
+   		terminate();	
+   	}
 
     return Fl::handle(event, window);
 }
