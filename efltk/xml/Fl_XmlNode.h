@@ -16,94 +16,51 @@ class Fl_XmlNode;
 /**
  * The Fl_XmlAttributes class is map for node attributes.
  */
-class Fl_XmlAttributes {
+class Fl_XmlAttributes : public Fl_String_String_Map {
 public:
-	/**
-	 * Attributes are stored as Fl_XmlAttributes::Pair	 
-	 <pre> 
-	 You can access attribute name and value by:
-		Pair::id  = name
-		Pair::val = value
-	 </pre>
-	 */
-	typedef const Fl_String_String_Pair Pair;
+    typedef Fl_String_String_Iterator Iterator;
 
-	/**
-	 * Constructs empty attribute map
-	 */
-	Fl_XmlAttributes() { }
+    /**
+     * Constructs empty attribute map
+     */
+    Fl_XmlAttributes() { }
 
-	/**
-	 * Assign operator. Makes deep copy of map to another.
-	 * @param src as copy source
-	 */
+    /**
+     * Assign operator. Makes deep copy of map to another.
+     * @param src as copy source
+     */
     Fl_XmlAttributes& operator = (const Fl_XmlAttributes& src);
-    
-	/**
-	 * Removes all attributes from map.
-	 */
-	void clear() { m_attrmap.clear(); }
 
-	/**
-	 * Search for named attribute.
-	 * Returns true, if given attribute is found.
-	 * @param attr name of attribute to search
-	 */
-    bool has_attribute(const char *attr) const;
+    /**
+     * Search for named attribute.
+     * Returns true, if given attribute is found.
+     * @param attr name of attribute to search
+     */
+    bool has_attribute(const char *attr) const { return contains(attr); }
 
-	/**
+    /**
      * Returns attribute value for given attribute.
-	 * If not found, empty string is returned. 
-	 * HTML tags can have empty attributes, for those you should use has_attribute() method.
-	 * @param attr name of attribute
-	 */
-	Fl_String &get_attribute(const char *attr) const;
-    
-	/** 
-	 * Set new value to attribute 'attr'.
-	 * If attribute is not found, it's added to map.
-	 * @param attr attribute name
-	 * @param value attribute value
-	 */
-	void set_attribute(const char *attr, const char *value);
+     * If not found, empty string is returned.
+     * HTML tags can have empty attributes, for those you should use has_attribute() method.
+     * @param attr name of attribute
+     */
+    Fl_String &get_attribute(const char *attr) const { return get_value(attr); }
 
-	/** 
-	 * Set new value to attribute 'attr'.
-	 * If attribute is not found, it's added to map.
-	 * @param attr attribute name
-	 * @param value attribute value
-	 */
-	void set_attribute(const char *attr, const Fl_String &value);
+    /**
+     * Set new value to attribute 'attr'.
+     * If attribute is not found, it's added to map.
+     * @param attr attribute name
+     * @param value attribute value
+     */
+    void set_attribute(const char *attr, const char *value) { set_value(attr, value); }
 
-	/**
-	 * Return Fl_XmlAttributes::Pair for given index.
-	 * Returns NULL if index is out of bound.
-	 * @param index of Pair to return. 
-	 * @see size()
-	 */
-	const Pair *item(int index)	const { return m_attrmap.item(index); }
-
-	/**
-	 * Returns size of map. This can be used to iterate throught list.
-	 <pre>
-	 for(unsigned n=0; n<attrmap.size(); n++) {
-		Fl_XmlAttributes::Pair *pair = attrmap.item(n);
-		printf("%s = %s\n", pair->id.c_str(), pair->val.c_str());
-	 }
-	 </pre>
-	 * @see item(int index)
-	 */
-	unsigned size() const	{ return m_attrmap.size(); }
-
-	/**
-	 * Returns size of map.
-	 * This is same as size()
-	 * @see size()
-	 */
-	unsigned length() const	{ return m_attrmap.size(); }
-
-private:
-	Fl_String_String_Map m_attrmap;
+    /**
+     * Set new value to attribute 'attr'.
+     * If attribute is not found, it's added to map.
+     * @param attr attribute name
+     * @param value attribute value
+     */
+    void set_attribute(const char *attr, const Fl_String &value) { set_value(attr, value); }
 };
 
 /** node */
