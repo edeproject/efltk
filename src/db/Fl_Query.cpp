@@ -96,8 +96,8 @@ void Fl_Query::sql(Fl_String _sql) {
    char     *paramStart = s;
    char     *paramEnd;
    int      paramNumber = 0;
-
-   for (unsigned i = 0; i < m_params.count(); i++) {
+   uint i;
+   for (i = 0; i < m_params.count(); i++) {
       Fl_Param& param = m_params[i];
       param.bindClear();
    }
