@@ -50,4 +50,9 @@ public:
     Fl_VertDivider() : Fl_Divider() { type(Fl_Divider::VERTICAL); }
 };
 
+class Fl_Menu_Divider : public Fl_Divider {
+public:
+    Fl_Menu_Divider() : Fl_Divider() { h(2); }
+};
+
 #endif
