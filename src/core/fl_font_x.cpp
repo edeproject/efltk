@@ -152,9 +152,12 @@ void fl_font(Fl_Font font, float psize) {
   unsigned size = unsigned(psize);
 
   // See if the current font is correct:
-  if (font == fl_font_ && psize == fl_size_ &&
-      (f->encoding==fl_encoding_ || !strcmp(f->encoding, fl_encoding_)))
-    return;
+  if (fl_font_ &&
+      (font==fl_font_ || !strcmp(font->name(), fl_font_->name())) &&
+      psize == fl_size_)
+      //&& (f->encoding==fl_encoding_ || !strcmp(f->encoding, fl_encoding_))) //this doesnt work, if change the encoding...
+      return;
+
   fl_font_ = font; fl_size_ = psize;
 
   // search the FontSize we have generated already:
