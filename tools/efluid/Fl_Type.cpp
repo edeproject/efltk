@@ -408,18 +408,21 @@ int storestring(const char *n, Fl_String& p, int nostrip)
 	else			p = N;
 
 	modflag = 1;
-	return !p.empty();
+	return 1;
 }
 
-void Fl_Type::name(const char *n) {
-  if (storestring(n, name_)) widget_browser->redraw();
+void Fl_Type::name(const char *n) 
+{
+	if (storestring(n, name_)) 
+		widget_browser->redraw();
 }
 
-void Fl_Type::label(const char *n) {
-  if (storestring(n,label_,1)) {
-    setlabel(label_);
-    if (!name_) widget_browser->redraw();
-  }
+void Fl_Type::label(const char *n) 
+{
+	if(storestring(n,label_,1)) {
+		setlabel(label_);
+		widget_browser->redraw();
+	}
 }
 
 void Fl_Type::tooltip(const char *n) {
@@ -442,7 +445,7 @@ void Fl_Type::open() {
   printf("Open of '%s' is not yet implemented\n",type_name());
 }
 
-void Fl_Type::setlabel(const char *) {}
+void Fl_Type::setlabel(const char *) { }
 
 Fl_Type::~Fl_Type() {
   for (Fl_Type* f = first_child; f;) {

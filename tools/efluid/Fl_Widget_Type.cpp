@@ -803,9 +803,10 @@ void image_cb(Fl_Button *a, void *v)
         image_inlined_cb(include_image_button, LOAD); // update the button state
     }
 
-    const char* s = current_widget->image ? current_widget->image->name() : "";
-    if (s != a->label()) {
-		a->label(s); a->redraw();
+    const Fl_String &s = current_widget->image->name();
+    if(s != a->label()) {
+		a->label(s); 
+		a->redraw();
 	}
     Fl_Color c = FL_BLACK;
     if (current_widget->image) c = FL_RED;
