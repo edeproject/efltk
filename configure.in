@@ -327,6 +327,11 @@ if test "$enable_asm" != yes; then
         AC_DEFINE(DISABLE_ASM)
 fi
 
+AC_ARG_ENABLE(nls, [  --disable-nls           disable localization],,enable_nls=yes)
+if test "$enable_nls" = yes; then
+        AC_DEFINE(ENABLE_NLS)
+fi
+
 AC_ARG_ENABLE(duffs, [  --disable-duffs         disable duffs looping optimization, make lib ~80kb smaller],,enable_duffs=yes)
 if test "$enable_duffs" = yes; then
 	AC_DEFINE(USE_DUFFS_LOOP)

@@ -184,6 +184,8 @@
 /* Disables all assembly code inside Efltk library. */
 #define DISABLE_ASM 0
 
+/* Enables NLS localization support */
+#define ENABLE_NLS 0
 /*
  * End of "$Id$".
  */

@@ -42,8 +42,8 @@ MAKEDEPEND	=@MAKEDEPEND@
 # flags for C++ compiler:
 # WAS: I removed the -I@srcdir@, please use "xyz" rather than <xyz>
 # for files that are in the same directory as the source file.
-CFLAGS		=@DEBUGFLAG@ -I.. @CFLAGS@
-CXXFLAGS	=@DEBUGFLAG@ -I.. @CXXFLAGS@
+CFLAGS		= -DHAVE_CONFIG_H @DEBUGFLAG@ -I.. @CFLAGS@
+CXXFLAGS	= -DHAVE_CONFIG_H @DEBUGFLAG@ -I.. @CXXFLAGS@
 DSOCFLAGS	=@DSOCFLAGS@
 
 # program to make the archive:
