@@ -60,6 +60,9 @@ private:
 
     Fl_Menu_ *menu_;
     Fl_Widget *menu_but, *right_;
+
+    void ctor_init();    
+
     static void cb_menu(Fl_Widget *w, void *data);
 };
 

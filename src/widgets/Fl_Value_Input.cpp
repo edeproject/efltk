@@ -247,11 +247,8 @@ void Fl_Value_Input::value_damage()
     input.position(0, input.size());
 }
 
-
-Fl_Value_Input::Fl_Value_Input(int x, int y, int w, int h, const char* l)
-: Fl_Valuator(x, y, w, h, l), input(x, y, w, h, 0)
-{
-    //soft_ = 0;
+// ctor initializer - used in both ctors
+void Fl_Value_Input::ctor_init() {
     if (input.parent())          // defeat automatic-add
         input.parent()->remove(input);
 
@@ -262,6 +259,21 @@ Fl_Value_Input::Fl_Value_Input(int x, int y, int w, int h, const char* l)
     set_click_to_focus();
 }
 
+// Traditional ctor
+Fl_Value_Input::Fl_Value_Input(int x, int y, int w, int h, const char* l)
+: Fl_Valuator(x, y, w, h, l), input(x, y, w, h, 0)
+{
+    ctor_init();
+}
+
+// New style ctor
+Fl_Value_Input::Fl_Value_Input(const char* l,int layout_size,Fl_Align layout_al,int label_w)
+: Fl_Valuator(l,layout_size,layout_al,label_w), input("",layout_size,layout_al,-1) 
+{
+    ctor_init();
+}
+
+// dtor
 Fl_Value_Input::~Fl_Value_Input()
 {
     input.parent(0);             // keep it from calling Fl_Group::remove(&input) on this

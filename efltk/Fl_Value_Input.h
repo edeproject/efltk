@@ -44,6 +44,8 @@ public:
     virtual void layout();
 
 private:
+    void ctor_init();
+
     virtual void value_damage(); // cause damage() due to value() changing
     static void input_cb(Fl_Widget*,void*);
 

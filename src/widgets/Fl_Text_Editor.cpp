@@ -80,9 +80,9 @@ static void revert(Fl_Style *s) {
 static Fl_Named_Style style("Text_Editor", revert, &Fl_Text_Editor::default_style);
 Fl_Named_Style* Fl_Text_Editor::default_style = &::style;
 
-Fl_Text_Editor::Fl_Text_Editor(int X, int Y, int W, int H,  const char* l)
-: Fl_Text_Display(X, Y, W, H, l)
-{
+
+// ctor initializer - used in both ctors
+void Fl_Text_Editor::ctor_init() {
     static bool menuinit=false;
     if(!menuinit) {
         if(menu_->parent()) menu_->parent()->remove(menu_);
@@ -105,6 +105,18 @@ Fl_Text_Editor::Fl_Text_Editor(int X, int Y, int W, int H,  const char* l)
     default_key_function(kf_default);
 }
 
+// Traditional ctor
+Fl_Text_Editor::Fl_Text_Editor(int X, int Y, int W, int H,  const char* l)
+: Fl_Text_Display(X, Y, W, H, l)
+{
+    ctor_init();
+}
+
+// New style ctor
+Fl_Text_Editor::Fl_Text_Editor(const char* l,int layout_size,Fl_Align layout_al,int label_w)
+: Fl_Text_Display(l,layout_size,layout_al,label_w) {
+    ctor_init();
+}
 
 Fl_Text_Editor::Key_Binding* Fl_Text_Editor::global_key_bindings = 0;
 

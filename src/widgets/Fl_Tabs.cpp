@@ -530,6 +530,7 @@ static void revert(Fl_Style* s)
 static Fl_Named_Style style("Tabs", revert, &Fl_Tabs::default_style);
 Fl_Named_Style* Fl_Tabs::default_style = &::style;
 
+// ctor initializer - used in both ctors
 void Fl_Tabs::ctor_init() {
     m_tabsMatrix = new Fl_Tabs_Matrix(this);
     push_ = 0;

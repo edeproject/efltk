@@ -101,6 +101,8 @@ protected:
     Key_Binding* key_bindings;
     static Key_Binding* global_key_bindings;
     Key_Func default_key_function_;
+private:
+    void ctor_init();
 };
 
 #endif

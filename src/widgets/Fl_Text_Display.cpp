@@ -75,7 +75,7 @@ static int max( int i1, int i2 );
 static int min( int i1, int i2 );
 static int countlines( const char *string );
 
-Fl_Text_Display::ctor_init() {
+void Fl_Text_Display::ctor_init() {
     set_click_to_focus();
     mMaxsize = 0;
     damage_range1_start = damage_range1_end = -1;

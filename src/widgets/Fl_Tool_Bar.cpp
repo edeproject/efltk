@@ -62,10 +62,8 @@ static void revert(Fl_Style* s)
 static Fl_Named_Style style("Tool_Bar", revert, &Fl_Tool_Bar::default_style);
 Fl_Named_Style* Fl_Tool_Bar::default_style = &::style;
 
-
-Fl_Tool_Bar::Fl_Tool_Bar(int x, int y, int w, int h, const char *label)
-: Fl_Bar(x,y,w,h)
-{
+// ctor initializer - used in both ctors
+void Fl_Tool_Bar::ctor_init() {
     style(default_style);
 
     menu_ = new Fl_Menu_();
@@ -79,6 +77,20 @@ Fl_Tool_Bar::Fl_Tool_Bar(int x, int y, int w, int h, const char *label)
     space_ = 2;
 }
 
+// Traditional ctor
+Fl_Tool_Bar::Fl_Tool_Bar(int x, int y, int w, int h, const char *label)
+: Fl_Bar(x,y,w,h)
+{
+    ctor_init();
+}
+
+// New style ctor
+Fl_Tool_Bar::Fl_Tool_Bar(const char* l,int layout_size,Fl_Align layout_al,int label_w)
+: Fl_Bar(l,layout_size,layout_al,label_w) {
+    ctor_init();
+}
+
+// dtor
 Fl_Tool_Bar::~Fl_Tool_Bar()
 {
     delete menu_but;
@@ -254,5 +266,4 @@ Fl_Widget *Fl_Tool_Bar::add_divider()
     end();
     return l;
 }
-
 

@@ -187,15 +187,23 @@ static void revert(Fl_Style *s)
 static Fl_Named_Style style("Value_Slider", revert, &Fl_Value_Slider::default_style);
 Fl_Named_Style* Fl_Value_Slider::default_style = &::style;
 
+// Traditional ctor
 Fl_Value_Slider::Fl_Value_Slider(int x, int y, int w, int h, const char*l)
 : Fl_Slider(x, y, w, h, l)
 {
     if (!default_style->glyph) default_style->glyph = style()->glyph;
     style(default_style);
     step(.01);
-    //set_click_to_focus();
 }
 
+// New style ctor
+Fl_Value_Slider::Fl_Value_Slider(const char* l,int layout_size,Fl_Align layout_al,int label_w)
+: Fl_Slider(l,layout_size,layout_al,label_w) 
+{
+    if (!default_style->glyph) default_style->glyph = style()->glyph;
+    style(default_style);
+    step(.01);
+}
 
 //
 // End of "$Id$".
