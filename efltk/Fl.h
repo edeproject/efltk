@@ -61,7 +61,7 @@ public: // should be private!
     static int e_keysym;
     static int e_length;
     static char* e_text;
-    static void* e_data;
+    static const void* e_data;
     static int compose_state;
     static Fl_Widget* belowmouse_;
     static Fl_Widget* pushed_;

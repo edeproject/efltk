@@ -46,10 +46,11 @@ float Fl::version() {return FL_VERSION;}
 
 Fl_Widget   *Fl::belowmouse_, *Fl::pushed_, *Fl::focus_, *Fl::modal_;
 int          Fl::damage_, Fl::e_type, Fl::e_argument, Fl::e_x, Fl::e_y, Fl::e_dx, Fl::e_dy,
-	     Fl::e_x_root, Fl::e_y_root, Fl::e_state,  Fl::e_clicks,
-	     Fl::e_is_click, Fl::e_keysym;
-	     
+    Fl::e_x_root, Fl::e_y_root, Fl::e_state,  Fl::e_clicks,
+    Fl::e_is_click, Fl::e_keysym;
+
 char        *Fl::e_text = "";
+const void  *Fl::e_data;
 int          Fl::e_length;
 bool         Fl::grab_, Fl::exit_modal_;
 
@@ -423,11 +424,11 @@ void Fl::flush()
             if (x->region) {XDestroyRegion(x->region); x->region = 0;}
         }
     }
-    #ifdef _WIN32
+#ifdef _WIN32
     //GdiFlush();
-    #else
+#else
     if (fl_display) XFlush(fl_display);
-    #endif
+#endif
 }
 
 
@@ -508,9 +509,9 @@ void fl_fix_focus()
 void Fl_Widget::throw_focus()
 {
     if (contains(Fl::pushed())) Fl::pushed_ = 0;
-    #ifndef _WIN32
+#ifndef _WIN32
     if (contains(fl_selection_requestor)) fl_selection_requestor = 0;
-    #endif
+#endif
     if (contains(Fl::belowmouse())) {Fl::belowmouse_ = 0; Fl::e_is_click = 0;}
     if (this == xmousewin) xmousewin = Fl::first_window();
     if (contains(Fl::focus())) Fl::focus_ = 0;
@@ -538,7 +539,7 @@ void Fl::modal(Fl_Widget* widget, bool grab)
         Fl::event_is_click(0);   // avoid double click
         XAllowEvents(fl_display, event()==FL_PUSH ? ReplayPointer : AsyncPointer, CurrentTime);
         // Qt did not do this...
-        
+
         XFlush(fl_display);      // make sure we are out of danger before continuing...
 #endif
         // because we "pushed back" the FL_PUSH, make it think no buttons are down:
@@ -563,25 +564,25 @@ void Fl::modal(Fl_Widget* widget, bool grab)
 #else
         if(window) {
             if (XGrabPointer(fl_display,
-                             fl_xid(window),
-                             true,            // owner_events
-                             ButtonPressMask|ButtonReleaseMask|
-                             ButtonMotionMask|PointerMotionMask,
-                             GrabModeSync,    // pointer_mode
-                             GrabModeAsync,   // keyboard_mode
-                             None,            // confine_to
-                             None,            // cursor
-                             fl_event_time) == GrabSuccess)
+                    fl_xid(window),
+                    true,            // owner_events
+                    ButtonPressMask|ButtonReleaseMask|
+                    ButtonMotionMask|PointerMotionMask,
+                    GrabModeSync,    // pointer_mode
+                    GrabModeAsync,   // keyboard_mode
+                    None,            // confine_to
+                    None,            // cursor
+                    fl_event_time) == GrabSuccess)
             {
                 //Pointer grab OK
                 //printf("XGrabPointer OK\n");
 
                 if(XGrabKeyboard(fl_display,
-                                 fl_xid(window),
-                                 true,                // owner_events
-                                 GrabModeAsync,       // pointer_mode
-                                 GrabModeAsync,       // keyboard_mode
-                                 fl_event_time) == GrabSuccess)
+                        fl_xid(window),
+                        true,                // owner_events
+                        GrabModeAsync,       // pointer_mode
+                        GrabModeAsync,       // keyboard_mode
+                        fl_event_time) == GrabSuccess)
                 {
                     //printf("XGrabKeyboard OK\n");
                     grab_ = true;
