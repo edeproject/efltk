@@ -585,7 +585,6 @@ DEP_CPP_FL_CP=\
 	"..\efltk\filename.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -616,7 +615,6 @@ DEP_CPP_FL_CP=\
 	"..\src\core\Fl_x.cpp"\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
-	"..\src\wcelib\include\sys\time.h"\
 	"..\src\wcelib\include\wince.h"\
 	".\config.h"\
 	
@@ -663,13 +661,13 @@ DEP_CPP_FL_CP=\
 	"..\src\core\Fl_x.cpp"\
 	"..\src\wcelib\include\drawacp.h"\
 	"..\src\wcelib\include\stdlibx.h"\
-	"..\src\wcelib\include\sys\time.h"\
 	"..\src\wcelib\include\wince.h"\
 	".\config.h"\
 	
 NODEP_CPP_FL_CP=\
 	"..\efltk\mac.h"\
 	"..\src\core\Fl_mac.cpp"\
+	"..\src\wcelib\include\sys\time.h"\
 	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
@@ -834,7 +832,6 @@ DEP_CPP_FL_ADJ=\
 	"..\efltk\Fl_Adjuster.h"\
 	"..\efltk\Fl_Bitmap.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -960,7 +957,6 @@ DEP_CPP_FL_AL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Align_Group.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -1277,7 +1273,6 @@ DEP_CPP_FL_ARG=\
 	"..\efltk\filename.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -1406,7 +1401,6 @@ DEP_CPP_FL_AS=\
 	"..\efltk\Fl_Box.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -1548,7 +1542,6 @@ DEP_CPP_FL_BA=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Bar.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -2147,7 +2140,6 @@ DEP_CPP_FL_BO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Box.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -2258,7 +2250,6 @@ NODEP_CPP_FL_BOX=\
 DEP_CPP_FL_BOX=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -2413,7 +2404,6 @@ DEP_CPP_FL_BR=\
 	"..\efltk\Fl_Bitmap.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Browser.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -2597,7 +2587,6 @@ DEP_CPP_FL_BU=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -2732,7 +2721,6 @@ DEP_CPP_FL_CA=\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
 	"..\efltk\Fl_Calendar.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -2825,49 +2813,6 @@ SOURCE=..\src\core\fl_call_main.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\core\Fl_Callback.cpp
-
-!IF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Release"
-
-DEP_CPP_FL_CAL=\
-	"..\efltk\Enumerations.h"\
-	"..\efltk\Fl_Callback.h"\
-	"..\efltk\Fl_Export.h"\
-	"..\efltk\Fl_Ptr_List.h"\
-	
-
-!ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Debug"
-
-DEP_CPP_FL_CAL=\
-	"..\efltk\Enumerations.h"\
-	"..\efltk\Fl_Callback.h"\
-	"..\efltk\Fl_Export.h"\
-	"..\efltk\Fl_Ptr_List.h"\
-	
-
-!ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Debug"
-
-DEP_CPP_FL_CAL=\
-	"..\efltk\Enumerations.h"\
-	"..\efltk\Fl_Callback.h"\
-	"..\efltk\Fl_Export.h"\
-	"..\efltk\Fl_Ptr_List.h"\
-	
-
-!ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
-
-DEP_CPP_FL_CAL=\
-	"..\efltk\Enumerations.h"\
-	"..\efltk\Fl_Callback.h"\
-	"..\efltk\Fl_Export.h"\
-	"..\efltk\Fl_Ptr_List.h"\
-	
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\widgets\Fl_Check_Button.cpp
 
 !IF  "$(CFG)" == "evcpp - Win32 (WCE emulator) Release"
@@ -2906,7 +2851,6 @@ DEP_CPP_FL_CH=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Check_Button.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -3029,7 +2973,6 @@ DEP_CPP_FL_CHO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Choice.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -3160,7 +3103,6 @@ NODEP_CPP_FL_CL=\
 DEP_CPP_FL_CL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -3291,6 +3233,8 @@ DEP_CPP_FL_CLO=\
 	"..\efltk\Fl_Style.h"\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
+	
+NODEP_CPP_FL_CLO=\
 	"..\src\wcelib\include\sys\time.h"\
 	
 
@@ -3300,7 +3244,6 @@ DEP_CPP_FL_CLO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Clock.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -3318,7 +3261,6 @@ DEP_CPP_FL_CLO=\
 	"..\efltk\Fl_Style.h"\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
-	"..\src\wcelib\include\sys\time.h"\
 	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Debug"
@@ -3345,6 +3287,8 @@ DEP_CPP_FL_CLO=\
 	"..\efltk\Fl_Style.h"\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
+	
+NODEP_CPP_FL_CLO=\
 	"..\src\wcelib\include\sys\time.h"\
 	
 
@@ -3372,6 +3316,8 @@ DEP_CPP_FL_CLO=\
 	"..\efltk\Fl_Style.h"\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
+	
+NODEP_CPP_FL_CLO=\
 	"..\src\wcelib\include\sys\time.h"\
 	
 
@@ -3497,7 +3443,6 @@ DEP_CPP_FL_COL=\
 	"..\efltk\Fl_Box.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Choice.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Color_Chooser.h"\
@@ -3763,7 +3708,6 @@ DEP_CPP_FL_CU=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -4036,7 +3980,6 @@ DEP_CPP_FL_DAT=\
 DEP_CPP_FL_DAT=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -4130,7 +4073,6 @@ DEP_CPP_FL_DATE=\
 	"..\efltk\Fl_String.h"\
 	"..\efltk\Fl_Util.h"\
 	"..\src\core\fl_internal.h"\
-	"..\src\wcelib\include\sys\time.h"\
 	".\config.h"\
 	
 
@@ -4145,8 +4087,10 @@ DEP_CPP_FL_DATE=\
 	"..\efltk\Fl_String.h"\
 	"..\efltk\Fl_Util.h"\
 	"..\src\core\fl_internal.h"\
-	"..\src\wcelib\include\sys\time.h"\
 	".\config.h"\
+	
+NODEP_CPP_FL_DATE=\
+	"..\src\wcelib\include\sys\time.h"\
 	
 
 !ELSEIF  "$(CFG)" == "evcpp - Win32 (WCE ARMV4) Release"
@@ -4225,7 +4169,6 @@ DEP_CPP_FL_DATE_=\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
 	"..\efltk\Fl_Calendar.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -4411,7 +4354,6 @@ DEP_CPP_FL_DI=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -4570,7 +4512,6 @@ DEP_CPP_FL_DIA=\
 	"..\efltk\fl_ask.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -4809,7 +4750,6 @@ DEP_CPP_FL_DIAM=\
 DEP_CPP_FL_DIAM=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -5025,7 +4965,6 @@ DEP_CPP_FL_DN=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -5156,7 +5095,6 @@ DEP_CPP_FL_DO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -5545,7 +5483,6 @@ DEP_CPP_FL_EN=\
 DEP_CPP_FL_EN=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -5654,7 +5591,6 @@ DEP_CPP_FL_FL=\
 	"..\efltk\Fl.h"\
 	"..\efltk\fl_ask.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -6012,7 +5948,6 @@ DEP_CPP_FL_GL=\
 DEP_CPP_FL_GL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -6121,7 +6056,6 @@ DEP_CPP_FL_GR=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -6225,7 +6159,6 @@ DEP_CPP_FL_HE=\
 	"..\efltk\Fl_Box.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Check_Button.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -6417,7 +6350,6 @@ DEP_CPP_FL_HI=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -6507,7 +6439,6 @@ DEP_CPP_FL_IM=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -6699,7 +6630,6 @@ DEP_CPP_FL_IN=\
 	"..\efltk\Fl_Box.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Config.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -6835,7 +6765,6 @@ DEP_CPP_FL_INP=\
 	"..\efltk\Fl.h"\
 	"..\efltk\fl_ask.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -6973,7 +6902,6 @@ DEP_CPP_FL_INPU=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Browser.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -7165,7 +7093,6 @@ DEP_CPP_FL_IT=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Check_Button.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -7340,7 +7267,6 @@ DEP_CPP_FL_KE=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -7482,7 +7408,6 @@ NODEP_CPP_FL_LA=\
 DEP_CPP_FL_LA=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -7629,7 +7554,6 @@ DEP_CPP_FL_LI=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Check_Button.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -7924,7 +7848,6 @@ DEP_CPP_FL_LISTV=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -8115,7 +8038,6 @@ DEP_CPP_FL_LISTVI=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -8306,7 +8228,6 @@ DEP_CPP_FL_LISTVIE=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -8681,7 +8602,6 @@ DEP_CPP_FL_MA=\
 	"..\efltk\Fl_Box.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -8937,7 +8857,6 @@ DEP_CPP_FL_ME=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Choice.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -9123,7 +9042,6 @@ DEP_CPP_FL_MEN=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -9231,7 +9149,6 @@ DEP_CPP_FL_MENU=\
 DEP_CPP_FL_MENU=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -9349,7 +9266,6 @@ DEP_CPP_FL_MENU_=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -9495,7 +9411,6 @@ DEP_CPP_FL_MENU_B=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -9623,7 +9538,6 @@ DEP_CPP_FL_MENU_G=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -9750,7 +9664,6 @@ DEP_CPP_FL_MENU_I=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -9911,7 +9824,6 @@ DEP_CPP_FL_MENU_W=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -10199,7 +10111,6 @@ DEP_CPP_FL_MUL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -10345,7 +10256,6 @@ DEP_CPP_FL_NU=\
 	"..\efltk\Fl.h"\
 	"..\efltk\fl_ask.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -10448,7 +10358,6 @@ DEP_CPP_FL_OU=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -10832,7 +10741,6 @@ DEP_CPP_FL_OVERL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -11068,7 +10976,6 @@ DEP_CPP_FL_PA=\
 DEP_CPP_FL_PA=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -11279,7 +11186,6 @@ DEP_CPP_FL_PO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -11405,7 +11311,6 @@ DEP_CPP_FL_PR=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -11521,7 +11426,6 @@ DEP_CPP_FL_RA=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Check_Button.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -11830,7 +11734,6 @@ DEP_CPP_FL_REP=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -11942,7 +11845,6 @@ DEP_CPP_FL_RET=\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -12131,7 +12033,6 @@ DEP_CPP_FL_RO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -12400,7 +12301,6 @@ DEP_CPP_FL_SC=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -12629,7 +12529,6 @@ DEP_CPP_FL_SCRO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -12650,6 +12549,9 @@ DEP_CPP_FL_SCRO=\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
 	"..\efltk\math.h"\
+	"..\src\wcelib\include\drawacp.h"\
+	"..\src\wcelib\include\stdlibx.h"\
+	"..\src\wcelib\include\wince.h"\
 	".\config.h"\
 	
 
@@ -12841,7 +12743,6 @@ DEP_CPP_FL_SHA=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Bitmap.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -13002,7 +12903,6 @@ DEP_CPP_FL_SHO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -13108,7 +13008,6 @@ DEP_CPP_FL_SI=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -13250,7 +13149,6 @@ DEP_CPP_FL_SIN=\
 DEP_CPP_FL_SIN=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -13370,7 +13268,6 @@ DEP_CPP_FL_SL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -13667,7 +13564,6 @@ DEP_CPP_FL_STY=\
 	"..\efltk\filename.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Config.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -13801,7 +13697,6 @@ DEP_CPP_FL_STYL=\
 DEP_CPP_FL_STYL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -13906,7 +13801,6 @@ DEP_CPP_FL_SY=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -14017,7 +13911,6 @@ DEP_CPP_FL_TA=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -14210,7 +14103,6 @@ DEP_CPP_FL_TEX=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -14220,10 +14112,13 @@ DEP_CPP_FL_TEX=\
 	"..\efltk\Fl_Flags.h"\
 	"..\efltk\Fl_Font.h"\
 	"..\efltk\Fl_Group.h"\
+	"..\efltk\Fl_Image.h"\
 	"..\efltk\Fl_Int_List.h"\
 	"..\efltk\Fl_Labeltype.h"\
 	"..\efltk\Fl_Ptr_List.h"\
 	"..\efltk\Fl_Ptr_Stack.h"\
+	"..\efltk\Fl_PtrList.h"\
+	"..\efltk\Fl_Renderer.h"\
 	"..\efltk\Fl_Scrollbar.h"\
 	"..\efltk\Fl_Slider.h"\
 	"..\efltk\Fl_String.h"\
@@ -14232,6 +14127,7 @@ DEP_CPP_FL_TEX=\
 	"..\efltk\Fl_Text_Buffer.h"\
 	"..\efltk\Fl_Text_Display.h"\
 	"..\efltk\fl_utf8.h"\
+	"..\efltk\Fl_Util.h"\
 	"..\efltk\Fl_Valuator.h"\
 	"..\efltk\Fl_Variant.h"\
 	"..\efltk\Fl_Widget.h"\
@@ -14387,7 +14283,6 @@ DEP_CPP_FL_TEXT=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -14547,7 +14442,6 @@ DEP_CPP_FL_TH=\
 	"..\efltk\filename.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Config.h"\
 	"..\efltk\Fl_Data_Fields.h"\
@@ -14746,7 +14640,6 @@ DEP_CPP_FL_TI=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -14875,7 +14768,6 @@ DEP_CPP_FL_TO=\
 	"..\efltk\Fl_Bar.h"\
 	"..\efltk\Fl_Boxtype.h"\
 	"..\efltk\Fl_Button.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -15019,7 +14911,6 @@ DEP_CPP_FL_TOO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -15281,7 +15172,6 @@ DEP_CPP_FL_VA=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -15398,7 +15288,6 @@ DEP_CPP_FL_VAL=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -15533,7 +15422,6 @@ DEP_CPP_FL_VALU=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -15930,7 +15818,6 @@ DEP_CPP_FL_WI=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -16097,7 +15984,6 @@ DEP_CPP_FL_WIN=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -16250,7 +16136,6 @@ DEP_CPP_FL_WIND=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -16393,7 +16278,6 @@ DEP_CPP_FL_WINDO=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -16526,7 +16410,6 @@ NODEP_CPP_FL_WINDOW=\
 DEP_CPP_FL_WINDOW=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -16674,7 +16557,6 @@ DEP_CPP_FL_WM=\
 	"..\efltk\Enumerations.h"\
 	"..\efltk\Fl.h"\
 	"..\efltk\Fl_Boxtype.h"\
-	"..\efltk\Fl_Callback.h"\
 	"..\efltk\Fl_Color.h"\
 	"..\efltk\Fl_Data_Fields.h"\
 	"..\efltk\Fl_Data_Source.h"\
@@ -17123,10 +17005,6 @@ SOURCE=..\efltk\Fl_Button.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_Calendar.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\efltk\Fl_Callback.h
 # End Source File
 # Begin Source File
 

@@ -11,15 +11,6 @@ Package=<5>
 
 Package=<4>
 {{{
-    Begin Project Dependency
-    Project_Dep_Name iconize
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name images
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name menubars
-    End Project Dependency
 }}}
 
 ###############################################################################
@@ -35,18 +26,6 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name evcpp
     End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "iconize"=.\iconize.vcp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
 }}}
 
 ###############################################################################
@@ -88,6 +67,18 @@ Package=<4>
 ###############################################################################
 
 Project: "menubars"=.\menubars.vcp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "test2"=.\test2\test2.vcp - Package Owner=<4>
 
 Package=<5>
 {{{
