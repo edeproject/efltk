@@ -21,6 +21,7 @@
 //
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 //
+#include <config.h>
 
 #include <efltk/Fl.h>
 #include <efltk/Fl_Text_Buffer.h>
@@ -34,7 +35,6 @@
 #include <limits.h>
 #include <ctype.h>
 
-#include <config.h>
 
 #if USE_XFT
 #include <X11/Xft/Xft.h>
@@ -75,12 +75,33 @@ static void set_fl_font(Fl_Font font, unsigned size) {
     }
 }
 
+static int utf_len(char c)
+{
+  if (!(c & 0x80)) return 1;
+  if (c & 0x40) {
+    if (c & 0x20) {
+      if (c & 0x10) {
+        if (c & 0x08) {
+	  if (c & 0x04) {
+            return 6;
+          }
+          return 5;
+        }
+        return 4;
+      }
+      return 3;
+    }
+    return 2;
+  }
+  return 0;
+}
+
 Fl_Text_Display::Fl_Text_Display(int X, int Y, int W, int H,  const char* l)
 	: Fl_Group(X, Y, W, H, l)
 {
     int i;
 
-    set_click_to_focus();
+    set_click_to_focus(); 
     mMaxsize = 0;
     damage_range1_start = damage_range1_end = -1;
     damage_range2_start = damage_range2_end = -1;
@@ -265,6 +286,28 @@ void Fl_Text_Display::set_font()
 #else
 
 #if !USE_XFT
+
+#if HAVE_XUTF8
+    XUtf8FontStruct *fontStruct = fl_xfont(), *styleFont;
+    mMaxFontBound = fontStruct->fonts[0]->max_bounds.width;
+    mMinFontBound = fontStruct->fonts[0]->min_bounds.width;
+    fontWidth = fontStruct->fonts[0]->max_bounds.width;
+    if (fontWidth != fontStruct->fonts[0]->min_bounds.width) {
+        fontWidth = -1;
+    } else {
+        for (i=0; i<mNStyles; i++)
+        {
+            unsigned size = mStyleTable[i].size;
+            if(text_size()!=size) { fontWidth = -1; break; }
+            set_fl_font(mStyleTable[i].font, mStyleTable[i].size);
+            styleFont = fl_xfont();
+            if(styleFont != NULL && (styleFont->fonts[0]->max_bounds.width != fontWidth || styleFont->fonts[0]->max_bounds.width != styleFont->fonts[0]->min_bounds.width)) {
+                fontWidth = -1;
+                break;
+            }
+        }
+    }
+#else    
     XFontStruct *fontStruct = fl_xfont(), *styleFont;
     mMaxFontBound = fontStruct->max_bounds.width;
     mMinFontBound = fontStruct->min_bounds.width;
@@ -284,6 +327,8 @@ void Fl_Text_Display::set_font()
             }
         }
     }
+#endif    
+
 #else
     extern XftFont* fl_xftfont();
     XftFont *fontStruct = fl_xftfont(), *styleFont;
@@ -593,6 +638,27 @@ void Fl_Text_Display::draw_text( int left, int top, int width, int height )
 
 void Fl_Text_Display::redisplay_range(int start, int end)
 {
+#ifdef HAVE_XUTF8
+    int ok = 0;
+    while (!ok && start > 0) {
+	char c = buffer()->character( start );
+        if (!((c & 0x80) && !(c & 0x40))) {
+	    ok = 1;
+	} else {
+    	    start--;
+	}
+    }
+    if (buffer()) {
+	while (!ok && end < buffer()->length()) {
+	    char c = buffer()->character( end );
+	    if (!((c & 0x80) && !(c & 0x40))) {
+    		ok = 1;
+	    } else {
+    		end++;
+	    }
+	} 	
+    }
+#endif
     if (damage_range1_start == -1 && damage_range1_end == -1) {
         damage_range1_start = start;
         damage_range1_end = end;
@@ -695,6 +761,7 @@ void Fl_Text_Display::insert_position( int newPos )
   mCursorPos = newPos;
 
   /* draw cursor at its new position */
+ 
   redisplay_range(mCursorPos - 1, mCursorPos + 1);
 }
 
@@ -842,6 +909,17 @@ int Fl_Text_Display::position_to_xy( int pos, int* X, int* Y )
   for ( charIndex = 0; charIndex < pos - lineStartPos; charIndex++ ) {
     charLen = Fl_Text_Buffer::expand_character( lineStr[ charIndex ], outIndex, expandedChar,
               mBuffer->tab_distance(), mBuffer->null_substitution_character() );
+#ifdef HAVE_XUTF8	      
+    if (charLen > 1 && (lineStr[ charIndex ] & 0x80)) {
+      int i, ii = 0;;
+      i = utf_len(lineStr[ charIndex ]);
+      while (i > 1) {
+        i--;
+        ii++;
+        expandedChar[ii] = lineStr[ charIndex + ii];
+      }
+    }
+#endif	      
     charStyle = position_style( lineStartPos, lineLen, charIndex,
                                 outIndex );
     xStep += string_width( expandedChar, charLen, charStyle );
@@ -948,6 +1026,17 @@ int Fl_Text_Display::position_to_linecol( int pos, int* lineNum, int* column ) {
 int Fl_Text_Display::in_selection( int X, int Y ) {
   int row, column, pos = xy_to_position( X, Y, CHARACTER_POS );
   Fl_Text_Buffer *buf = mBuffer;
+#ifdef HAVE_XUTF8
+  int ok = 0;
+  while (!ok) {
+    char c = buffer()->character( pos );
+    if (!((c & 0x80) && !(c & 0x40))) {
+      ok = 1;
+    } else {
+      pos++;
+    }
+  }
+#endif
 
   xy_to_rowcol( X, Y, &row, &column, CHARACTER_POS );
   if (range_touches_selection(buf->primary_selection(), mFirstChar, mLastChar))
@@ -1056,16 +1145,40 @@ void Fl_Text_Display::show_insert_position() {
 ** Cursor movement functions
 */
 int Fl_Text_Display::move_right() {
+#if HAVE_XUTF8
+  int ok = 0;
+  while (!ok) {
+    if ( mCursorPos >= mBuffer->length() )
+      return 0;
+    insert_position( mCursorPos + 1 );
+    int pos = insert_position();
+    char c = buffer()->character( pos );
+    if (!((c & 0x80) && !(c & 0x40))) ok = 1;
+  }
+#else
   if ( mCursorPos >= mBuffer->length() )
     return 0;
   insert_position( mCursorPos + 1 );
+#endif  
   return 1;
 }
 
 int Fl_Text_Display::move_left() {
+#if HAVE_XUTF8
+  int ok = 0;
+  while (!ok) {
+    if ( mCursorPos <= 0 )
+      return 0;
+    insert_position( mCursorPos - 1 );
+    int pos = insert_position();
+    char c = buffer()->character( pos );
+    if (!((c & 0x80) && !(c & 0x40))) ok = 1;
+  }
+#else
   if ( mCursorPos <= 0 )
     return 0;
   insert_position( mCursorPos - 1 );
+#endif  
   return 1;
 }
 
@@ -1096,13 +1209,26 @@ int Fl_Text_Display::move_up(int lines)
   }
 
   newPos = mBuffer->skip_displayed_characters( prevLineStartPos, column );
-	
+
   if (mContinuousWrap) 
 	newPos = min(newPos, line_end(prevLineStartPos, true)); 
 
   /* move the cursor */
   insert_position( newPos );
-
+  
+#ifdef HAVE_XUTF8
+   int ok = 0;
+  while (!ok) {
+    int pos = insert_position();
+    char c = buffer()->character( pos );
+    if (!((c & 0x80) && !(c & 0x40))) {
+      ok = 1;
+    } else {
+      insert_position( mCursorPos + 1 );
+    }
+  }
+  
+#endif
   /* if a preferred column wasn't aleady established, establish it */
   mCursorPreferredCol = column;
   return 1;
@@ -1131,6 +1257,20 @@ int Fl_Text_Display::move_down(int lines)
       newPos = min(newPos, line_end(nextLineStartPos, true));
 
   insert_position( newPos );
+
+#ifdef HAVE_XUTF8  
+  int ok = 0;
+  while (!ok) {
+    int pos = insert_position();
+    char c = buffer()->character( pos );
+    if (!((c & 0x80) && !(c & 0x40))) {
+      ok = 1;
+    } else {
+      insert_position( mCursorPos + 1 );
+    }
+  }
+#endif  
+  
   mCursorPreferredCol = column;
   return 1;
 }
@@ -1318,7 +1458,7 @@ void Fl_Text_Display::buffer_modified_cb( int pos, int nInserted, int nDeleted,
   Fl_Text_Buffer *buf = textD->mBuffer;
   int oldFirstChar = textD->mFirstChar;
   int scrolled, origCursorPos = textD->mCursorPos;
-  int wrapModStart, wrapModEnd;  
+  int wrapModStart, wrapModEnd;
 
   // refigure scrollbars & stuff
   textD->relayout();
@@ -1561,6 +1701,17 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
         charLen = charIndex >= lineLen ? 1 :
             Fl_Text_Buffer::expand_character( lineStr[ charIndex ], outIndex,
                                              expandedChar, buf->tab_distance(), buf->null_substitution_character() );
+#ifdef HAVE_XUTF8					     
+	if (charIndex < lineLen && charLen > 1 && (lineStr[ charIndex ] & 0x80)) {
+    	    int i, ii = 0;;
+	    i = utf_len(lineStr[ charIndex ]);
+	    while (i > 1) {
+    		i--;
+	        ii++;
+    		expandedChar[ii] = lineStr[ charIndex + ii];
+    	    }
+	}
+#endif					     
         style = position_style( lineStartPos, lineLen, charIndex,
                                outIndex + dispIndexOffset );
         charWidth = charIndex >= lineLen ? stdCharWidth :
@@ -1587,6 +1738,17 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
         charLen = charIndex >= lineLen ? 1 :
             Fl_Text_Buffer::expand_character( lineStr[ charIndex ], outIndex, expandedChar,
                                              buf->tab_distance(), buf->null_substitution_character() );
+#ifdef HAVE_XUTF8					     
+       if (charIndex < lineLen && charLen > 1 && (lineStr[ charIndex ] & 0x80)) {
+          int i, ii = 0;;
+	  i = utf_len(lineStr[ charIndex ]);
+    	    while (i > 1) {
+    		i--;
+    		ii++;
+		expandedChar[ii] = lineStr[ charIndex + ii];
+    	    }
+	}
+#endif					     
         charStyle = position_style( lineStartPos, lineLen, charIndex,
                                    outIndex + dispIndexOffset );
         for ( i = 0; i < charLen; i++ )
@@ -1607,6 +1769,13 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
             }
             if ( charIndex < lineLen ) {
                 *outPtr = expandedChar[ i ];
+#ifdef HAVE_XUTF8		
+		int l = 1;
+	        if (*outPtr & 0x80) {
+    		    l = utf_len(*outPtr);
+    		}
+    		charWidth = string_width( expandedChar + i, l, charStyle );
+#endif		
                 //charWidth = string_width( &expandedChar[ i ], 1, charStyle );
             } else {
                 charWidth = stdCharWidth;
@@ -1942,6 +2111,17 @@ int Fl_Text_Display::xy_to_position( int X, int Y, int posType )
     {
         charLen = Fl_Text_Buffer::expand_character( lineStr[ charIndex ], outIndex, expandedChar,
                                                    mBuffer->tab_distance(), mBuffer->null_substitution_character() );
+#ifdef HAVE_XUTF8						   
+	if (charLen > 1 && (lineStr[ charIndex ] & 0x80)) {
+    	    int i, ii = 0;;
+	    i = utf_len(lineStr[ charIndex ]);
+	    while (i > 1) {
+	        i--;
+    		ii++;
+	        expandedChar[ii] = lineStr[ charIndex + ii];
+    	    }	
+	}
+#endif						   
         charStyle = position_style( lineStart, lineLen, charIndex, outIndex );
         charWidth = string_width( expandedChar, charLen, charStyle );
         if ( X < xStep + ( posType == CURSOR_POS ? charWidth / 2 : charWidth ) ) {
@@ -3125,6 +3305,19 @@ int Fl_Text_Display::handle(int event) {
         if (Fl::event_state()&FL_SHIFT) return handle(FL_DRAG);
         dragging = 1;
         int pos = xy_to_position(Fl::event_x(), Fl::event_y(), CURSOR_POS);
+	
+#ifdef HAVE_XUTF8
+	int ok = 0;
+  	while (!ok) {
+    	  char c = buffer()->character( pos );
+          if (!((c & 0x80) && !(c & 0x40))) {
+            ok = 1;
+          } else {
+            pos++;
+          }
+        }
+#endif
+	
         dragType = Fl::event_clicks();
         dragPos = pos;
         // See if maybe they are starting to do drag & drop:
@@ -3171,7 +3364,21 @@ int Fl_Text_Display::handle(int event) {
             move_down();
             scroll(mTopLineNum + 1, mHorizOffset);
             pos = insert_position();
-        } else pos = xy_to_position(X, Y, CURSOR_POS);
+        } else {
+	    pos = xy_to_position(X, Y, CURSOR_POS);
+#ifdef HAVE_XUTF8	    
+	    int ok = 0;
+            while (!ok) {
+            char c = buffer()->character( pos );
+            if (!((c & 0x80) && !(c & 0x40))) {
+              ok = 1;
+            } else {
+              pos++;
+            }
+            }
+#endif	    
+	    
+	}    
         fl_text_drag_me(pos, this);
         return 1;
     }
@@ -3185,7 +3392,6 @@ int Fl_Text_Display::handle(int event) {
         if (dragType < 0) {
             buffer()->unselect();
             insert_position(dragPos);
-            show_insert_position();
             dragType = 0;
         }
         // convert from WORD or LINE selection to CHAR

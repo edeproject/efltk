@@ -27,11 +27,15 @@
 // subclass and replacing the replace(...) function, to make a version
 // that rejects changes you don't want to allow.
 
+#include <config.h>
+
 #include <efltk/Fl.h>
 #include <efltk/Fl_Input.h>
 #include <efltk/fl_draw.h>
 #include <efltk/math.h>
 #include <efltk/fl_ask.h>
+#include <efltk/fl_utf8.h>
+
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -110,6 +114,7 @@ const char* Fl_Input::expand(const char* p, char* buf,int wordwrap) const
         }
         if (p >= value_+size_) break;
         int c = *p++;
+	
         if (c & 0xE0)
         {
             *o++ = c;
@@ -126,6 +131,7 @@ const char* Fl_Input::expand(const char* p, char* buf,int wordwrap) const
                 *o++ = '^';
                 *o++ = c ^ 0x40;
             }
+    
         }
     }
     *o = 0;
@@ -659,6 +665,28 @@ void Fl_Input::position(int p, int m)
     if (m<0) m = 0;
     if (m>size()) m = size();
     if (p == position_ && m == mark_) return;
+
+#ifdef HAVE_XUTF8    
+     while (p < position_ && p > 0 && (size() - p) > 0 && 
+	(fl_utflen((unsigned char *)value() + p, size() - p) < 1)) { p--; }
+     int ul = fl_utflen((unsigned char *)value() + p, size() - p);
+     while (p < size() && p > position_ && ul < 0) { 
+	ul = fl_utflen((unsigned char *)value() + p - 1, size() - p + 1); 
+	p--; if (ul > 1)  p += ul;
+     }
+
+     while (m < mark_ && m > 0 && (size() - m) > 0 && 
+	(fl_utflen((unsigned char *)value() + m, size() - m) < 1)) { m--; }
+        ul = fl_utflen((unsigned char *)value() + m, size() - m);
+     while (m < size() && m > mark_ && ul < 0) { 
+	ul = fl_utflen((unsigned char *)value() + m - 1, size() - m + 1); 
+	m--; if (ul > 1) m += ul;
+     }
+
+     if (p == position_ && m == mark_) return;
+#endif    
+    
+    
     if (p != m)
     {
         // new position is a selection:
@@ -744,7 +772,7 @@ static void undobuffersize(int n)
 // all changes go through here, delete characters b-e and insert text:
 bool Fl_Input::replace(int b, int e, const char* text, int ilen)
 {
-
+    int ul;
     was_up_down = false;
 
     if (b<0) b = 0;
@@ -752,16 +780,27 @@ bool Fl_Input::replace(int b, int e, const char* text, int ilen)
     if (b>size_) b = size_;
     if (e>size_) e = size_;
     if (e<b) {int t=b; b=e; e=t;}
-                                 // don't clobber undo for a null operation
+    
+#ifdef HAVE_XUTF8    
+    while (b != e && b > 0 && (size_ - b) > 0 && 
+	(fl_utflen((unsigned char *)value_ + b, size_ - b) < 1)) { b--; }
+    ul = fl_utflen((unsigned char *)value_ + e, size_ - e);
+    while (e < size_ && e > 0 && ul < 1) { 
+	ul = fl_utflen((unsigned char *)value_ + e - 1, size_ - e + 1); 
+	e--; if (ul > 1)  e += ul;
+    }
+#endif
+    
+     // don't clobber undo for a null operation
     if (e<=b && !ilen) return false;
-    #if 0
+#if 0
     // this can be done by a subclass!
     if (size_+ilen-(e-b) > maximum_size_)
     {
         ilen = maximum_size_-size_+(e-b);
         if (ilen < 0) ilen = 0;
     }
-    #endif
+#endif
 
     put_in_buffer(size_+ilen);
 

@@ -21,6 +21,7 @@
 //
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 //
+#include <config.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -69,6 +70,29 @@ static const char *ControlCodeTable[ 32 ] =
     "can", "em", "sub", "esc", "fs", "gs", "rs", "us"
 };
 
+#ifdef HAVE_XUTF8
+static int utf_len(char c)
+{
+  if (!(c & 0x80)) return 1;
+  if (c & 0x40) {
+    if (c & 0x20) {
+      if (c & 0x10) {
+        if (c & 0x08) {
+          if (c & 0x04) {
+            return 6;
+          }
+          return 5;
+        }
+        return 4;
+      }
+      return 3;
+    }
+    return 2;
+  }
+  return 0;
+}
+#endif
+
 /*
  ** Create an empty text buffer of a pre-determined size (use this to
  ** avoid unnecessary re-allocation if you know exactly how much the buffer
@@ -98,9 +122,9 @@ Fl_Text_Buffer::Fl_Text_Buffer( int requestedSize )
     mCbArgs = NULL;
     mNModifyProcs = 0;
     mNullSubsChar = '\0';
-    #ifdef PURIFY
+#ifdef PURIFY
     { int i; for (i = mGapStart; i < mGapEnd; i++) mBuf[ i ] = '.'; }
-    #endif
+#endif
 }
 
 
@@ -165,9 +189,9 @@ void Fl_Text_Buffer::text( const char *t )
     mGapEnd = mGapStart + PREFERRED_GAP_SIZE;
     memcpy( mBuf, t, mGapStart );
     memcpy( &mBuf[ mGapEnd ], &t[ mGapStart ], length - mGapStart );
-    #ifdef PURIFY
+#ifdef PURIFY
     { int i; for ( i = mGapStart; i < mGapEnd; i++ ) mBuf[ i ] = '.'; }
-    #endif
+#endif
 
     /* Zero all of the existing selections */
     update_selections( 0, deletedLength, 0 );
@@ -965,8 +989,25 @@ int Fl_Text_Buffer::word_end( int pos )
  */
 int Fl_Text_Buffer::expand_character( int pos, int indent, char *outStr )
 {
+#if HAVE_XUTF8
+    int ret;
+    char c = character( pos );
+    ret = expand_character( c, indent, outStr,  mTabDist, mNullSubsChar );
+    if (ret > 1 && (c & 0x80)) {
+	int i;
+        i = utf_len(c);
+	while (i > 1) {
+    	    i--;
+            pos++;
+    	    outStr++;
+    	    *outStr = character( pos );
+	}
+    }
+    return ret;
+#else
     return expand_character( character( pos ), indent, outStr,
         mTabDist, mNullSubsChar );
+#endif
 }
 
 
@@ -979,7 +1020,7 @@ int Fl_Text_Buffer::expand_character( int pos, int indent, char *outStr )
  ** equal in length to FL_TEXT_MAX_EXP_CHAR_LEN
  */
 int Fl_Text_Buffer::expand_character( char c, int indent, char *outStr, int tabDist,
-char nullSubsChar )
+								char nullSubsChar )
 {
     int i, nSpaces;
 
@@ -1009,7 +1050,14 @@ char nullSubsChar )
         sprintf( outStr, "<nul>" );
         return 5;
     }
-
+#ifdef HAVE_XUTF8    
+    else if ((c & 0x80) && !(c & 0x40)) {
+	return 0;
+    } else if (c & 0x80) {
+	*outStr = c;
+	return utf_len(c);
+    }
+#endif
     /* Otherwise, just return the character */
     *outStr = c;
     return 1;
@@ -1034,6 +1082,13 @@ int Fl_Text_Buffer::character_width( char c, int indent, int tabDist, char nullS
         return 5;
     else if ( c == nullSubsChar )
         return 5;
+#ifdef HAVE_XUTF8	
+    else if ((c & 0x80) && !(c & 0x40))
+        return 0;
+    else if (c & 0x80) {
+        return utf_len(c);
+    }
+#endif	
     return 1;
 }
 

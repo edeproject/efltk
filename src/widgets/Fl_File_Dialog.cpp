@@ -1374,7 +1374,7 @@ void Fl_File_Dialog::cb_location(Fl_Widget *w, void *d)
 
             bool match = false;
 
-            struct dirent **files;
+            struct dirent **files=0;
             int count = fl_filename_list(dirpath, &files);
             char filen[FL_PATH_MAX];
             for(int n=0; n<count; n++) {

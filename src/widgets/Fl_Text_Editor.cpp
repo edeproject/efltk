@@ -21,6 +21,7 @@
 //
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 //
+#include <config.h>
 
 #include <efltk/Fl.h>
 #include <efltk/Fl_Text_Editor.h>
@@ -166,6 +167,28 @@ default_key_bindings[] =
     { 'v',          FL_CTRL,                  Fl_Text_Editor::kf_paste      },	
     { 0,            0,                        0                             }
 };
+
+static int utf_len(char c)
+{
+  if (!(c & 0x80)) return 1;
+  if (c & 0x40) {
+    if (c & 0x20) {
+      if (c & 0x10) {
+        if (c & 0x08) {
+          if (c & 0x04) {
+            return 6;
+          }
+          return 5;
+        }
+        return 4;
+      }
+      return 3;
+    }
+    return 2;
+  }
+  return 0;
+}
+
 
 void Fl_Text_Editor::add_default_key_bindings(Key_Binding** list)
 {
@@ -331,8 +354,18 @@ int Fl_Text_Editor::kf_ignore(int, Fl_Text_Editor*)
 
 int Fl_Text_Editor::kf_backspace(int, Fl_Text_Editor* e)
 {
-    if (!e->buffer()->selected() && e->move_left())
+    if (!e->buffer()->selected() && e->move_left()) {
+#if HAVE_XUTF8    
+	int l = 1;
+        char c = e->buffer()->character(e->insert_position());
+        if (c & 0x80 && c & 0x40) {
+    	    l = utf_len(c);
+	} 
+	e->buffer()->select(e->insert_position(), e->insert_position()+l);
+#else
         e->buffer()->select(e->insert_position(), e->insert_position()+1);
+#endif	
+    }	
     kill_selection(e);
     e->show_insert_position();
     return 1;
@@ -343,6 +376,7 @@ int Fl_Text_Editor::kf_enter(int, Fl_Text_Editor* e)
 {
     if (e->when() & FL_WHEN_ENTER_KEY) {
         e->do_callback();
+	
     }
 
     kill_selection(e);
@@ -524,8 +558,18 @@ int Fl_Text_Editor::kf_insert(int, Fl_Text_Editor* e)
 
 int Fl_Text_Editor::kf_delete(int, Fl_Text_Editor* e)
 {
-    if (!e->buffer()->selected())
+    if (!e->buffer()->selected()) {
+#if HAVE_XUTF8    
+        int l = 1;
+	char c = e->buffer()->character(e->insert_position());
+        if (c & 0x80 && c & 0x40) {
+	    l = utf_len(c);
+	} 
+	e->buffer()->select(e->insert_position(), e->insert_position()+l);
+#else
         e->buffer()->select(e->insert_position(), e->insert_position()+1);
+#endif	
+    }	
     kill_selection(e);
     e->show_insert_position();
     return 1;
@@ -568,7 +612,7 @@ int Fl_Text_Editor::kf_select_all(int, Fl_Text_Editor* e)
 
 int Fl_Text_Editor::handle_key()
 {
-	if(when()&FL_WHEN_CHANGED) do_callback(); else set_changed();
+    if(when()&FL_WHEN_CHANGED) do_callback(); else set_changed();
 
     // Call fltk's rules to try to turn this into a printing character.
     // This uses the right-hand ctrl key as a "compose prefix" and returns
@@ -586,7 +630,7 @@ int Fl_Text_Editor::handle_key()
         }
         show_insert_position();
         return 1;
-    }	
+    }
 
     int key = Fl::event_key();
     int state = Fl::event_state() & (FL_SHIFT|FL_CTRL|FL_ALT|FL_WIN);
@@ -631,7 +675,7 @@ int Fl_Text_Editor::handle(int event)
             return 3;        // indicate that this widget should get initial focus
 
         case FL_UNFOCUS:
-            if (when() & FL_WHEN_RELEASE) do_callback();
+	    if (when() & FL_WHEN_RELEASE) do_callback();
             return 1;
 
         default:
@@ -644,6 +688,7 @@ int Fl_Text_Editor::handle(int event)
         {
         case FL_HIDE:
             if (when() & FL_WHEN_RELEASE) do_callback();
+	    
             return 1;
 
         case FL_KEY:
