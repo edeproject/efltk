@@ -32,6 +32,7 @@
 #include <efltk/Fl.h>
 #include <efltk/Fl_Window.h>
 #include <efltk/Fl_Style.h>
+#include <efltk/fl_utf8.h>
 #include <efltk/win32.h>
 #include <string.h>
 #include <stdlib.h>
@@ -40,6 +41,13 @@
 #include <time.h>
 #include <winsock.h>
 #include <ctype.h>
+
+// The following include files require GCC 3.x or a non-GNU compiler...
+#if !defined(__GNUC__) || __GNUC__ >= 3
+# include <ole2.h>
+# include <ShellApi.h>
+# include "aimm.h"
+#endif // !__GNUC__ || __GNUC__ >= 3
 
 //
 // USE_ASYNC_SELECT - define it if you have WSAAsyncSelect()...
@@ -214,7 +222,7 @@ void* Fl::thread_message()
 
 
 MSG fl_msg;
-#include <stdio.h>
+IActiveIMMApp *fl_aimm = NULL;
 
 // Wait up to the given time for any events or sockets to become ready,
 // do the callbacks for the events and sockets.
@@ -387,72 +395,140 @@ void Fl::get_mouse(int &x, int &y)
 ////////////////////////////////////////////////////////////////
 // code used for selections:
 
-static char *selection_buffer[2];
-static int selection_length[2];
-static int selection_buffer_length[2];
-static bool i_own_selection;
-
-// call this when you create a selection:
-void Fl::copy(const char *stuff, int len, bool clipboard)
+char *fl_selection_buffer[2];
+int fl_selection_length[2];
+int fl_selection_buffer_length[2];
+char fl_i_own_selection[2];
+UINT fl_codepage = 0;
+static char *buf = NULL;
+static int buf_len = 0;
+static unsigned short *wbuf = NULL;
+char *fl_utf82locale(const char *s, UINT codepage = 0)
 {
-    if (!stuff || len<0) return;
-    if (len+1 > selection_buffer_length[clipboard])
-    {
-        delete[] selection_buffer[clipboard];
-        selection_buffer[clipboard] = new char[len+100];
-        selection_buffer_length[clipboard] = len+100;
-    }
-    memcpy(selection_buffer[clipboard], stuff, len);
-                                 // needed for direct paste
-    selection_buffer[clipboard][len] = 0;
-    selection_length[clipboard] = len;
-    if (clipboard)
-    {
-        // set up for "delayed rendering":
-        if (OpenClipboard(fl_xid(Fl::first_window())))
-        {
-            EmptyClipboard();
-            SetClipboardData(CF_TEXT, NULL);
-            CloseClipboard();
-        }
-        i_own_selection = true;
-    }
+	if (!s) return "";
+	int len, l = 0;
+	len = strlen(s);
+	if (buf_len < len * 2 + 1) {
+		buf_len = len * 2 + 1;
+		buf = (char*) realloc(buf, buf_len);
+		wbuf = (unsigned short*) realloc(wbuf, buf_len * sizeof(short));
+	}
+	if (codepage < 1) codepage = fl_codepage;
+	l = fl_utf2unicode((const unsigned char *)s, len, wbuf);
+	buf[l] = 0;
+	l = WideCharToMultiByte(codepage, 0, (WCHAR*)wbuf, l, buf, 
+		buf_len, NULL, NULL);
+	if (l < 0) l = 0;
+	buf[l] = 0;
+	return buf;	
 }
 
+char *fl_locale2utf8(const char *s, UINT codepage = 0)
+{
+	if (!s) return "";
+	int len, l = 0;
+	len = strlen(s);
+	if (buf_len < len * 5 + 1) {
+		buf_len = len * 5 + 1;
+		buf = (char*) realloc(buf, buf_len);
+		wbuf = (unsigned short*) realloc(wbuf, buf_len * sizeof(short));
+	}
+	if (codepage < 1) codepage = fl_codepage;
+	buf[l] = 0;
+	
+	l = MultiByteToWideChar(codepage, 0, s, len, (WCHAR*)wbuf, buf_len);
+	if (l < 0) l = 0;
+	wbuf[l] = 0;
+	l = fl_unicode2utf(wbuf, l, buf);
+	buf[l] = 0;
+	return buf;	
+}
+
+UINT fl_get_lcid_codepage(LCID id)
+{
+	char buf[8];
+	buf[GetLocaleInfo(id, LOCALE_IDEFAULTANSICODEPAGE, buf, 8)] = 0;
+	return atol(buf);
+}
+
+// call this when you create a selection:
+void Fl::copy(const char *stuff, int len, bool clipboard) 
+{
+	if (!stuff || len<0) return;
+	if (len+1 > fl_selection_buffer_length[clipboard]) {
+		delete[] fl_selection_buffer[clipboard];
+		fl_selection_buffer[clipboard] = new char[len+100];
+		fl_selection_buffer_length[clipboard] = len+100;
+	}
+	memcpy(fl_selection_buffer[clipboard], stuff, len);
+	fl_selection_buffer[clipboard][len] = 0; // needed for direct paste
+	fl_selection_length[clipboard] = len;
+	if (clipboard) {
+		// set up for "delayed rendering":
+		if (OpenClipboard(fl_xid(Fl::first_window()))) {
+			EmptyClipboard();
+			if (fl_is_nt4()) {
+				SetClipboardData(CF_UNICODETEXT, NULL);
+			} else {
+				SetClipboardData(CF_TEXT, NULL);
+			}
+			CloseClipboard();
+		}
+		fl_i_own_selection[clipboard] = 1;
+	}
+}
 
 // Call this when a "paste" operation happens:
-void Fl::paste(Fl_Widget &receiver, bool clipboard)
+void Fl::paste(Fl_Widget &receiver, bool clipboard) 
 {
-    if (!clipboard || i_own_selection)
-    {
-        // We already have it, do it quickly without window server.
-        // Notice that the text is clobbered if set_selection is
-        // called in response to FL_PASTE!
-        Fl::e_text = selection_buffer[clipboard];
-        Fl::e_length = selection_length[clipboard];
-        receiver.handle(FL_PASTE);
-    }
-    else
-    {
-        if (!OpenClipboard(NULL)) return;
-        HANDLE h = GetClipboardData(CF_TEXT);
-        if (h)
-        {
-            Fl::e_text = (LPSTR)GlobalLock(h);
-            LPSTR a,b;
-            a = b = Fl::e_text;
-            while (*a)           // strip the CRLF pairs ($%$#@^)
-            {
-                if (*a == '\r' && a[1] == '\n') a++;
-                else *b++ = *a++;
-            }
-            *b = 0;
-            Fl::e_length = b - Fl::e_text;
-            receiver.handle(FL_PASTE);
-            GlobalUnlock(h);
-        }
-        CloseClipboard();
-    }
+	if (!clipboard || fl_i_own_selection[clipboard]) {
+		// We already have it, do it quickly without window server.
+		// Notice that the text is clobbered if set_selection is
+		// called in response to FL_PASTE!
+		Fl::e_text = fl_selection_buffer[clipboard];
+		Fl::e_length = fl_selection_length[clipboard];
+		receiver.handle(FL_PASTE);
+	} else {
+		if (!OpenClipboard(NULL)) return;
+		HANDLE hh = GetClipboardData(CF_LOCALE);
+		UINT *i = (UINT*)GlobalLock(hh);
+		UINT id = *i;
+		GlobalUnlock(hh);
+		HANDLE h;
+		if (fl_is_nt4()) {
+			h = GetClipboardData(CF_UNICODETEXT);
+		} else {
+			h = GetClipboardData(CF_TEXT);
+		}
+		if (h) {
+			void *g = GlobalLock(h);
+			if (!g) {
+				CloseClipboard();
+				return;
+			}	
+			if (fl_is_nt4()) {
+				int l = wcslen((wchar_t*)g);
+				Fl::e_text = (char*) malloc(l * 5 + 1);
+				Fl::e_text[fl_unicode2utf((unsigned short *)g, l, Fl::e_text)] = 0;
+			} else {	  
+				Fl::e_text = fl_locale2utf8((char *)g, fl_get_lcid_codepage(id));
+			}
+			LPSTR a,b;
+			a = b = Fl::e_text;
+			while (*a) { // strip the CRLF pairs ($%$#@^)
+				if (*a == '\r' && a[1] == '\n') a++;
+				else *b++ = *a++;
+			}
+			*b = 0;
+			Fl::e_length = b - Fl::e_text;
+			receiver.handle(FL_PASTE);
+			GlobalUnlock(h);
+			if(fl_is_nt4()) {
+				free(Fl::e_text);
+			}
+		}
+		CloseClipboard();
+	}
 }
 
 
@@ -461,17 +537,49 @@ void Fl::paste(Fl_Widget &receiver, bool clipboard)
 // this block is usually handed to Windows and Windows deletes it.
 HANDLE fl_global_selection(int clipboard)
 {
-    HANDLE h = GlobalAlloc(GHND, selection_length[clipboard]+1);
-    if (h)
-    {
-        LPSTR p = (LPSTR)GlobalLock(h);
-        memcpy(p, selection_buffer[clipboard], selection_length[clipboard]);
-        p[selection_length[clipboard]] = 0;
-        GlobalUnlock(h);
+	HANDLE h;
+    if (fl_is_nt4()) {
+		int l = fl_utf_nb_char((unsigned char*)fl_selection_buffer[1], fl_selection_length[1]);	
+		h = GlobalAlloc(GHND, (l+1) * sizeof(short));
+        if (h) {
+			unsigned short *g = (unsigned short*) GlobalLock(h);
+			fl_utf2unicode((unsigned char *)fl_selection_buffer[1], fl_selection_length[1], g);
+			g[l] = 0; 
+			GlobalUnlock(h);
+			SetClipboardData(CF_UNICODETEXT, h);
+        }
+	} else {
+		h = GlobalAlloc(GHND, fl_selection_length[1]+1);
+		if (h) {
+			LPSTR p = (LPSTR)GlobalLock(h);
+			fl_selection_buffer[1][fl_selection_length[1]] = 0;	
+			char *s = fl_utf82locale(fl_selection_buffer[1]);
+			memcpy(p, s, strlen(s));
+			p[fl_selection_length[1]] = 0;
+			GlobalUnlock(h);
+			SetClipboardData(CF_TEXT, h);
+		}
     }
     return h;
 }
 
+bool fl_is_ime = false;
+void fl_get_codepage()
+{
+	HKL hkl = GetKeyboardLayout(0);
+	TCHAR ld[8];
+	
+	GetLocaleInfo (LOWORD(hkl), LOCALE_IDEFAULTANSICODEPAGE, ld, 6);
+	DWORD ccp = atol(ld);
+	fl_is_ime = false;
+	
+	fl_codepage = ccp;
+	if (fl_aimm) {
+		fl_aimm->GetCodePageA(GetKeyboardLayout(0), &fl_codepage);
+	} else if (ImmIsIME(hkl)) {
+		fl_is_ime = true;
+	}
+}
 
 ////////////////////////////////////////////////////////////////
 
@@ -913,6 +1021,8 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     //fl_msg.pt = ???
     //fl_msg.lPrivate = ???
 
+	static unsigned short wbuf[200];
+	static long wlen = 0;
     Fl_Window *window = fl_find(hWnd);
 
     switch (uMsg)
@@ -1048,6 +1158,19 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
             }
             break;
 
+		case WM_INPUTLANGCHANGE:
+			fl_get_codepage();
+			break;
+		case WM_IME_COMPOSITION:
+			if (!fl_is_nt4() && lParam & GCS_RESULTCLAUSE) {
+				HIMC himc = ImmGetContext(hWnd);
+				wlen = ImmGetCompositionStringW(himc, GCS_RESULTSTR, wbuf, sizeof(wbuf)) / sizeof(short);
+				if (wlen < 0) wlen = 0;
+				wbuf[wlen] = 0;
+				ImmReleaseContext(hWnd, himc);
+			}
+			break;
+
         case WM_KEYDOWN:
         case WM_SYSKEYDOWN:
         case WM_KEYUP:
@@ -1067,8 +1190,19 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         case WM_CHAR:
         case WM_SYSCHAR:
         {
+			UINT cp = fl_codepage;
+			static char buffer[1024];
+			static unsigned char lead[2] = {0, 0};
+			if (!fl_is_nt4() && uMsg == WM_CHAR) {
+				if (!lead[0] && IsDBCSLeadByteEx(cp, (unsigned char)wParam)) 
+				{
+					lead[0] = (unsigned char)wParam;
+					return 0;
+				}
+			}
+
             static int lastkeysym;
-                                 // keep the mouse button state
+            // keep the mouse button state
             ulong state = Fl::e_state & 0xff000000;
             // if GetKeyState is expensive we might want to comment some of these out:
             if (GetKeyState(VK_SHIFT)&~1) state |= FL_SHIFT;
@@ -1096,25 +1230,51 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
                 break;
             }
             // if same as last key, increment repeat count:
-            if (lParam & (1<<30))
-            {
+            if (lParam & (1<<30)) {
                 Fl::e_clicks++;
                 Fl::e_is_click = 0;
-            }
-            else
-            {
+            } else {
                 Fl::e_clicks = 0;
                 Fl::e_is_click = 1;
             }
             lastkeysym = Fl::e_keysym;
             // translate to text:
-            static char buffer[2];
-            if (uMsg == WM_CHAR || uMsg == WM_SYSCHAR)
-            {
-                buffer[0] = char(wParam);
-                Fl::e_length = 1;
-            }
-            else if (Fl::e_keysym >= FL_KP(0) && Fl::e_keysym <= FL_KP_Last)
+			if (uMsg == WM_CHAR || uMsg == WM_SYSCHAR) {
+				int i = 0;
+				unsigned short ucs[10];
+				int ulen = 0;
+				int len;
+				int l = 1;
+				if (fl_is_nt4()) {
+					unsigned short u = (unsigned short) wParam;
+					Fl::e_length = fl_unicode2utf(&u, 1, buffer);
+					buffer[Fl::e_length] = 0;
+				} else if (!fl_is_ime) {
+      				if (lead[0]) {
+	 					lead[1] = (unsigned char) wParam;
+	 					l = 2;
+      				} else {
+     					lead[0] = (unsigned char) wParam;
+      				}
+      				len = MultiByteToWideChar(fl_codepage, MB_PRECOMPOSED, (char*)lead, l, (wchar_t*)ucs, 10);
+      				len = 1;
+      				lead[0] = 0;
+      				lead[1] = 0;
+      				while (i < len) { 
+        				int l = fl_ucs2utf(ucs[i], buffer + ulen);
+        				if (l > 0) ulen += l;
+        				i++;
+      				}
+      				buffer[ulen] = '\0';
+      				Fl::e_length = ulen;
+				} else {
+					int l = fl_unicode2utf(wbuf, wlen, buffer);
+					if (l < 0) l = 0;
+					buffer[l] = 0;
+      				Fl::e_length = l;
+					wlen = 0;
+				}
+			} else if (Fl::e_keysym >= FL_KP(0) && Fl::e_keysym <= FL_KP_Last)
             {
                 buffer[0] = Fl::e_keysym-FL_KP(0);
                 Fl::e_length = 1;
@@ -1149,9 +1309,8 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
         case WM_SHOWWINDOW:
             if (!window) break;
-            if (wParam)          // Map event
-            {
-                                 // ignore child windows
+            if (wParam) { // Map event            
+				// ignore child windows                                 
                 if (window->parent()) break;
 
                 // figure out where OS really put window
@@ -1163,9 +1322,7 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
                 if (window->resize(wul.x, wul.y, wr.right, wr.bottom))
                     resize_from_system = window;
 
-            }                    // Unmap event
-            else
-            {
+			} else { // Unmap event                        
                 Fl_X::i(window)->wait_for_expose = true;
             }
             MakeWaitReturn();
@@ -1261,11 +1418,11 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
             break;
 
         case WM_DESTROYCLIPBOARD:
-            i_own_selection = false;
-            return 1;
+			fl_i_own_selection[1] = 0;
+			return 1;
 
         case WM_RENDERALLFORMATS:
-            i_own_selection = false;
+			fl_i_own_selection[1] = 0;            
             // Windoze seems unhappy unless I do these two steps. Documentation
             // seems to vary on whether opening the clipboard is necessary or
             // is in fact wrong:
@@ -1368,28 +1525,50 @@ HCURSOR fl_default_cursor;
 
 void Fl_X::create(Fl_Window* window)
 {
-
+	static unsigned short class_namew[1024] = {0};
     static bool registered = false;
+
     if (!registered)
     {
         registered = true;
-        static WNDCLASSEX wc;
-        wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS;
-        wc.lpfnWndProc = (WNDPROC)WndProc;
-        wc.cbClsExtra = wc.cbWndExtra = 0;
-        wc.hInstance = fl_display;
-        if (!window->icon()) window->icon((void *)LoadIcon(NULL, IDI_APPLICATION));
-        wc.hIcon = wc.hIconSm = (HICON)window->icon();
-        if (!fl_default_cursor) fl_default_cursor = LoadCursor(NULL, IDC_ARROW);
-        wc.hCursor = fl_default_cursor;
-        //uchar r,g,b; Fl::get_color(FL_GRAY,r,g,b);
-        //wc.hbrBackground = (HBRUSH)CreateSolidBrush(RGB(r,g,b));
-        wc.hbrBackground = NULL;
-        wc.lpszMenuName = NULL;
-        wc.lpszClassName = Fl_Window::xclass();
-        wc.cbSize = sizeof(WNDCLASSEX);
-        RegisterClassEx(&wc);
-    }
+		if (!fl_default_cursor) fl_default_cursor = LoadCursor(NULL, IDC_ARROW);
+		/*if(fl_is_nt4()) {
+			fl_utf2unicode((const uchar*)Fl_Window::xclass(), strlen(Fl_Window::xclass()), class_namew);
+
+			static WNDCLASSEXW wcw;
+			wcw.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS;
+			wcw.lpfnWndProc = (WNDPROC)WndProc;
+			wcw.cbClsExtra = wcw.cbWndExtra = 0;
+			wcw.hInstance = fl_display;
+			if(!window->icon()) window->icon((void *)LoadIcon(NULL, IDI_APPLICATION));
+			wcw.hIcon = wcw.hIconSm = (HICON)window->icon();
+			wcw.hCursor = fl_default_cursor;			
+			//uchar r,g,b; Fl::get_color(FL_GRAY,r,g,b);
+			//wc.hbrBackground = (HBRUSH)CreateSolidBrush(RGB(r,g,b));
+			wcw.hbrBackground = NULL;
+			wcw.lpszMenuName = NULL;
+			wcw.lpszClassName = class_namew;
+			wcw.cbSize = sizeof(WNDCLASSEXW);
+			RegisterClassExW(&wcw);		
+		} else */
+		{
+			static WNDCLASSEX wc;
+			wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS;
+			wc.lpfnWndProc = (WNDPROC)WndProc;
+			wc.cbClsExtra = wc.cbWndExtra = 0;
+			wc.hInstance = fl_display;
+			if(!window->icon()) window->icon((void *)LoadIcon(NULL, IDI_APPLICATION));
+			wc.hIcon = wc.hIconSm = (HICON)window->icon();			
+			wc.hCursor = fl_default_cursor;
+			//uchar r,g,b; Fl::get_color(FL_GRAY,r,g,b);
+			//wc.hbrBackground = (HBRUSH)CreateSolidBrush(RGB(r,g,b));
+			wc.hbrBackground = NULL;
+			wc.lpszMenuName = NULL;
+			wc.lpszClassName = Fl_Window::xclass();
+			wc.cbSize = sizeof(WNDCLASSEX);
+			RegisterClassEx(&wc);
+		}	
+	}
 
     HWND parent;
     DWORD style;
@@ -1444,25 +1623,51 @@ void Fl_X::create(Fl_Window* window)
     }
 
     Fl_X* x = new Fl_X;
+	window->i = x;
     x->backbuffer.xid = 0;
     x->backbuffer.dc = 0;
-    x->window = window; window->i = x;
+    x->window = window; 	
     x->region = 0;
     x->cursor = fl_default_cursor;
-    x->xid = CreateWindowEx(
-        styleEx,
-        Fl_Window::xclass(), window->label(), style,
-        xp, yp, window->w()+dw, window->h()+dh,
-        parent,
-        NULL,                    // menu
-        fl_display,
-        NULL                     // creation parameters
-        );
+    if (!fl_codepage) fl_get_codepage();
+	
+	/*if (fl_is_nt4()) {		
+		WCHAR *lab = NULL;
+		if(window->label()) {
+			int l = fl_utf_nb_char((unsigned char*)window->label(), strlen(window->label()));
+			lab = (WCHAR*)malloc((l + 1) * sizeof(WCHAR));
+			fl_utf2unicode((unsigned char*)window->label(), l, (unsigned short*)lab);
+			lab[l] = 0;			
+		}
+		x->xid = CreateWindowExW(
+			styleEx,
+			class_namew, lab, style,
+			xp, yp, window->w()+dw, window->h()+dh,
+			parent,
+			NULL, // menu
+			fl_display,
+			NULL // creation parameters
+		);
+		if (lab) free(lab);
+	} else 
+	*/{
+		char *lab = fl_utf82locale(window->label());
+		x->xid = CreateWindowEx(
+			styleEx,
+			Fl_Window::xclass(), lab, style,
+			xp, yp, window->w()+dw, window->h()+dh,
+			parent,
+			NULL, // menu
+			fl_display,
+			NULL // creation parameters
+		);
+	}	
+	
     x->dc = GetDC(x->xid);
     SetTextAlign(x->dc, TA_BASELINE|TA_LEFT);
     SetBkMode(x->dc, TRANSPARENT);
 
-    #if 0                        // WAS: Doing this completely breaks NT, the title bar loses highlight:
+#if 0                        // WAS: Doing this completely breaks NT, the title bar loses highlight:
     if (window->override())
     {
         UINT posflags = SWP_NOMOVE|SWP_NOSIZE|SWP_NOSENDCHANGING;
@@ -1470,19 +1675,19 @@ void Fl_X::create(Fl_Window* window)
             posflags |= SWP_NOACTIVATE;
         SetWindowPos(x->xid, HWND_TOPMOST, 0, 0, 0, 0, posflags);
     }
-    #endif
+#endif
 
     x->wait_for_expose = true;
     x->next = Fl_X::first;
     Fl_X::first = x;
 
     // Drag-n-drop requires GCC 3.x or a non-GNU compiler...
-    #if !defined(__GNUC__) || __GNUC__ >= 3
+#if !defined(__GNUC__) || __GNUC__ >= 3
     // Register all windows for potential drag'n'drop operations
     static bool oleInitialized = false;
     if (!oleInitialized) {oleInitialized = true; OleInitialize(0L);}
     RegisterDragDrop(x->xid, &flDropTarget);
-    #endif
+#endif
 }
 
 
@@ -1536,17 +1741,25 @@ const char *fl_file_filename(const char *name)
 }
 
 
-void Fl_Window::label(const char *name,const char *iname)
+void Fl_Window::label(const char *name, const char *iname)
 {
     Fl_Widget::label(name);
     iconlabel_ = iname;
-    if (i && !parent())
-    {
-        if (!name) name = "";
-        SetWindowText(i->xid, name);
-        // if (!iname) iname = filename_name(name);
-        // should do something with iname here...
-    }
+    if(shown() && !parent()) {
+		if (!name) name = "";
+		if (fl_is_nt4()) {
+			int l = fl_utf_nb_char((unsigned char*)name, strlen(name));
+			WCHAR *lab = (WCHAR*) malloc((l + 1) * sizeof(short));
+			fl_utf2unicode((unsigned char*)name, l, (unsigned short*)lab);
+			lab[l] = 0;
+			SetWindowTextW(i->xid, lab);
+			free(lab);
+		} else {
+			SetWindowText(i->xid, fl_utf82locale(name));
+			 //if (!iname) iname = fl_file_filename(name);
+			// should do something with iname here...
+		}
+	}
 }
 
 
