@@ -60,12 +60,6 @@ static COLORREF	pen_colorref;
 // Current "cosmetic" pen is created with this color
 static COLORREF	cosm_pen_colorref;
 
-// Current selected pen
-static HPEN     cur_pen = 0;
-
-// Current selected brush
-static HBRUSH   cur_brush = 0;
-
 COLORREF fl_wincolor(Fl_Color i) 
 {
 	int index = i;
@@ -151,7 +145,8 @@ HPEN fl_set_geometric_pen()
 		return stockpen;
 	}
 #endif
-	if(!fl_pen || cur_pen!=fl_pen || pen_colorref != fl_colorref) 
+	bool need_select = false;
+	if(!fl_pen || pen_colorref != fl_colorref) 
 	{
 		if(styled) {			
 			LOGBRUSH penbrush = { BS_SOLID, fl_colorref, 0 };
@@ -161,11 +156,10 @@ HPEN fl_set_geometric_pen()
 			fl_pen = CreatePen(PS_SOLID, line_width, fl_colorref);
 		}
 		pen_colorref = fl_colorref;
+		need_select = true;
 	}
 
-	if(cur_pen!=fl_pen) 
-	{
-		cur_pen = fl_pen;
+	if(need_select) {
 		HPEN oldp = (HPEN)SelectObject(fl_gc, fl_pen);
 		DeleteObject(oldp);
 		// Delete cosmetic pen
@@ -183,6 +177,7 @@ HPEN fl_set_cosmetic_pen()
 		return stockpen;
 	}
 #endif
+	bool need_select = false;
 	if(!fl_cosm_pen || cosm_pen_colorref != fl_colorref) 
 	{
 		LOGBRUSH penbrush = { BS_SOLID, fl_colorref, 0 };
@@ -197,11 +192,10 @@ HPEN fl_set_cosmetic_pen()
 		fl_line_drawer.set_pattern(line_width, dash_pattern_size ? dash_pattern : 0, dash_pattern_size);
 
 		cosm_pen_colorref = fl_colorref;
+		need_select = true;
 	}	
 
-	if(cur_pen!=fl_cosm_pen) 
-	{
-		cur_pen = fl_cosm_pen;
+	if(need_select) {
 		HPEN oldp = (HPEN)SelectObject(fl_gc, fl_cosm_pen);
 		DeleteObject(oldp);
 		// Delete geometric pen
@@ -217,15 +211,16 @@ HBRUSH fl_setbrush()
 	SetDCBrushColor(fl_gc, fl_colorref);
 	fl_brush = stockbrush;
 #else
+	bool need_select = false;
     if(!fl_brush || brush_colorref != fl_colorref || brush_dc != fl_gc) 
 	{
         fl_brush = CreateSolidBrush(fl_colorref);
         brush_colorref = fl_colorref;
 		brush_dc = fl_gc;
+		need_select = true;
     }
 
-	if(cur_brush != fl_brush) {
-		cur_brush = fl_brush;
+	if(need_select) {
 		HBRUSH oldb = (HBRUSH)SelectObject(fl_gc, fl_brush);
 		DeleteObject(oldb);
 	}
