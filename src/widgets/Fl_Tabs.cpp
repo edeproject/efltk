@@ -911,8 +911,7 @@ void Fl_Tabs::layout()
 
     if(value() && (!(layout_damage() & FL_LAYOUT_WH) || !m_showTabs)) {
         if((layout_damage() & FL_LAYOUT_XY)) value()->layout_damage(value()->layout_damage()|FL_LAYOUT_XY);       
-        value()->resize(group_x, group_y, group_w, group_h);
-        if(value()->layout_damage()) value()->layout();
+        value()->resize(group_x, group_y, group_w, group_h);        
     }
 
     Fl_Tabs_Matrix *old_tabsMatrix = m_tabsMatrix;
@@ -1093,25 +1092,6 @@ void Fl_Tabs::extend_tabs() {
         }
 }
 
-const Fl_Color Fl_Tabs::auto_color_table[16] = {
-    fl_rgb(0xB0,0xD0,0xD0),
-    fl_rgb(0xC0,0xC0,0xE0),
-    fl_rgb(192,176,160),
-    fl_rgb(0xD0,0xD0,0xB0),
-    fl_rgb(240,190,190),
-    fl_rgb(0xC0,0xB0,0xC0),
-    fl_rgb(0xC0,0xA0,0x90),
-    fl_rgb(0xD0,0xD0,0xE8),
-    fl_rgb(0xE8,0xC0,0xC0),
-    fl_rgb(0xC0,0xE8,0xC0),
-    fl_rgb(0xE8,0xC0,0xE8),
-    fl_rgb(0xE0,0xE0,0xC0),
-    fl_rgb(0xC0,0xE0,0xE0),
-    fl_rgb(0xE0,0xC0,0xE0),
-    fl_rgb(0xA0,0xB8,0xA0),
-    fl_rgb(0xB8,0xC0,0xE8)
-};
-
 Fl_Scroll* Fl_Tabs::create_new_scroll(const char *label) 
 {
     begin();
@@ -1130,7 +1110,7 @@ Fl_Group* Fl_Tabs::create_new_group(const char *label)
     return group;
 }
 
-Fl_Scroll* Fl_Tabs::new_scroll(const char *label,bool autoColor) 
+Fl_Scroll* Fl_Tabs::new_scroll(const char *label) 
 {
     Fl_Scroll* group = create_new_scroll(label);
     group->box(FL_FLAT_BOX);
@@ -1138,12 +1118,6 @@ Fl_Scroll* Fl_Tabs::new_scroll(const char *label,bool autoColor)
     if(children() > 1)
         group->hide();
 
-    if (autoColor) {
-        Fl_Color clr = auto_color_table[m_autoColorIndex&0xF];
-        group->color( clr );
-        m_autoColorIndex++;
-    }
-
     int rowNumber = m_tabsMatrix->count()-1;
     Fl_Tabs_List *row = 0L;
     if (rowNumber < 0) {
@@ -1158,7 +1132,7 @@ Fl_Scroll* Fl_Tabs::new_scroll(const char *label,bool autoColor)
     return group;
 }
 
-Fl_Group* Fl_Tabs::new_group(const char *label,bool autoColor) 
+Fl_Group* Fl_Tabs::new_group(const char *label) 
 {
     Fl_Group* group = create_new_group(label);
     group->box(FL_FLAT_BOX);
@@ -1166,12 +1140,6 @@ Fl_Group* Fl_Tabs::new_group(const char *label,bool autoColor)
     if(children() > 1)
         group->hide();
 
-    if (autoColor) {
-        Fl_Color clr = auto_color_table[m_autoColorIndex&0xF];
-        group->color( clr );
-        m_autoColorIndex++;
-    }
-
     int rowNumber = m_tabsMatrix->count()-1;
     Fl_Tabs_List *row = 0L;
     if (rowNumber < 0) {
@@ -1186,27 +1154,29 @@ Fl_Group* Fl_Tabs::new_group(const char *label,bool autoColor)
     return group;
 }
 
-Fl_Group* Fl_Tabs::last_tab() {
+Fl_Group* Fl_Tabs::last_tab() 
+{
    // find the last children
     int n = children() - 1;
     if (n < 0)
         return 0L;
-    else  return (Fl_Group*) child(n);
+    return (Fl_Group*) child(n);
 }
 
-void Fl_Tabs::show_tabs(bool st) {
+void Fl_Tabs::show_tabs(bool st) 
+{
     if (m_showTabs != st) {
         m_showTabs = st;
-        if (parent())
-            parent()->redraw(FL_DAMAGE_ALL);
+		relayout();
+		redraw();
     }
 }
 
-void Fl_Tabs::tabs_mode(Fl_Align tm) {
+void Fl_Tabs::tabs_mode(Fl_Align tm) 
+{
     if (m_tabsMode != tm) {
         m_tabsMode = tm;
         relayout();
-        if (parent())
-            parent()->redraw(FL_DAMAGE_ALL);
+		redraw();
     }
 }

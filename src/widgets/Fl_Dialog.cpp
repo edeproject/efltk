@@ -337,7 +337,7 @@ int Fl_Dialog::show_modal() {
     return m_modalResult;
 }
 
-Fl_Scroll *Fl_Dialog::new_scroll(const char *lbl,bool autoColor) 
+Fl_Scroll *Fl_Dialog::new_scroll(const char *lbl) 
 {
     if(!m_tabs) return 0;
     if (!m_tabs->children()) {
@@ -345,10 +345,10 @@ Fl_Scroll *Fl_Dialog::new_scroll(const char *lbl,bool autoColor)
     } else {
         m_tabs->show_tabs(true);
     }
-    return m_tabs->new_scroll(lbl, autoColor);
+    return m_tabs->new_scroll(lbl);
 }
 
-Fl_Group *Fl_Dialog::new_group(const char *lbl,bool autoColor) 
+Fl_Group *Fl_Dialog::new_group(const char *lbl) 
 {
     if(!m_tabs) return 0;
     if (!m_tabs->children()) {
@@ -356,7 +356,7 @@ Fl_Group *Fl_Dialog::new_group(const char *lbl,bool autoColor)
     } else {
         m_tabs->show_tabs(true);
     }
-    return m_tabs->new_group(lbl, autoColor);
+    return m_tabs->new_group(lbl);
 }
 
 bool Fl_Dialog::load_data(Fl_Data_Source *ds) 

@@ -325,8 +325,8 @@ int Fl_Text_Editor::kf_default(int c, Fl_Text_Editor* e)
     if (Fl::event_length())
     {
         kill_selection(e);
-        if (e->insert_mode()) e->insert(Fl::event_text());
-        else e->overstrike(Fl::event_text());
+        if (e->insert_mode())	e->insert(Fl::event_text());
+        else					e->overstrike(Fl::event_text());
         e->show_insert_position();
         return 1;
     }
@@ -483,11 +483,11 @@ int Fl_Text_Editor::kf_ctrl_move(int c, Fl_Text_Editor* e)
 {
     if (!e->buffer()->selected())
         e->dragPos = e->insert_position();
-    if (c != FL_Up && c != FL_Down)
-    {
+    
+	if (c != FL_Up && c != FL_Down) {
         e->buffer()->unselect();
-        e->show_insert_position();
     }
+
     switch (c)
     {
         case FL_Home:
@@ -515,6 +515,7 @@ int Fl_Text_Editor::kf_ctrl_move(int c, Fl_Text_Editor* e)
             e->insert_position(e->mLineStarts[e->mNVisibleLines-2]);
             break;
     }
+	e->show_insert_position();
     return 1;
 }
 
@@ -643,9 +644,10 @@ int Fl_Text_Editor::kf_undo(int c, Fl_Text_Editor* e)
     if (pos>-1) {
         e->insert_position(pos);
         e->show_insert_position();
-        if (e->when()&FL_WHEN_CHANGED) 
-            e->do_callback(); 
-        else e->set_changed();
+        
+		if (e->when()&FL_WHEN_CHANGED) 
+				e->do_callback(); 
+        else	e->set_changed();
     }
     return 1;
 }
@@ -683,8 +685,8 @@ int Fl_Text_Editor::handle_key()
         kill_selection(this);
         if (Fl::event_length())
         {
-            if (insert_mode()) insert(Fl::event_text());
-            else overstrike(Fl::event_text());
+            if (insert_mode())	insert(Fl::event_text());
+            else				overstrike(Fl::event_text());
         }
         show_insert_position();
         return 1;
@@ -766,8 +768,8 @@ int Fl_Text_Editor::handle(int event)
                 else set_changed();
 
                 buffer()->remove_selection();
-                if (insert_mode()) insert(Fl::event_text());
-                else overstrike(Fl::event_text());
+                if (insert_mode())	insert(Fl::event_text());
+                else				overstrike(Fl::event_text());
                 show_insert_position();
                 return 1;
 

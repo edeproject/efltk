@@ -135,7 +135,6 @@ public:
 
     // Wrap mode, wrap=[enable/disable]
     // wrap_margin=0 = continuos wrap. or character to wrap.
-    // NOTE: wrap_margin=0 is EXTREMELY SLOW!
     void wrap_mode(int wrap, int wrap_margin);
 
     // Sets line number area, width=0 = disable...
@@ -159,25 +158,20 @@ protected:
 	void draw_cursor();
 	void draw_cursor(int pos);
 
-    void draw_string(int style, int x, int y, int toX, const char *string,
-        int nChars);
-
+    void draw_string(int style, int x, int y, int toX, const char *string, int nChars);
     void draw_line_numbers();
-
-    void draw_vline(int visLineNum, int leftClip, int rightClip,
-        int leftCharIndex, int rightCharIndex);
+    void draw_vline(int visLineNum, int leftClip, int rightClip, int leftCharIndex, int rightCharIndex);
 
     void clear_rect(int style, int x, int y, int width, int height);
     void display_insert();
 
     void offset_line_starts(int newTopLineNum);
-
     void calc_line_starts(int startLine, int endLine);
-
     void update_line_starts(int pos, int charsInserted, int charsDeleted,
         int linesInserted, int linesDeleted, int *scrolled);
 
     void calc_last_char();
+    void calc_longest_vline();
 
     int find_next_char(int pos);
     int find_prev_char(int pos);
@@ -187,22 +181,21 @@ protected:
 
     static void buffer_predelete_cb(int pos, int nDeleted, void* cbArg);
 
-    static void buffer_modified_cb(int pos, int nInserted, int nDeleted,
-        int nRestyled, const char* deletedText,
-        void* cbArg);
+    static void buffer_modified_cb(	int pos, int nInserted, int nDeleted,
+									int nRestyled, const char* deletedText,
+									void* cbArg);
 
     static void h_scrollbar_cb(Fl_Scrollbar* w, Fl_Text_Display* d);
     static void v_scrollbar_cb( Fl_Scrollbar* w, Fl_Text_Display* d);
     void update_v_scrollbar();
     void update_h_scrollbar();
+
     int measure_vline(int visLineNum);
-    int longest_vline();
     int empty_vlines();
     int vline_length(int visLineNum);
     int xy_to_position(int x, int y, int PosType = CHARACTER_POS);
 
-    void xy_to_rowcol(int x, int y, int* row, int* column,
-        int PosType = CHARACTER_POS);
+    void xy_to_rowcol(int x, int y, int* row, int* column, int PosType = CHARACTER_POS);
 
     int position_to_xy(int pos, int* x, int* y);
 
@@ -221,12 +214,11 @@ protected:
         int *linesInserted, int *linesDeleted);
     void measure_deleted_lines(int pos, int nDeleted);
     void wrapped_line_counter(Fl_Text_Buffer *buf, int startPos, int maxPos,
-        int maxLines, bool startPosIsLineStart,
-        int styleBufOffset, int *retPos, int *retLines,
-        int *retLineStart, int *retLineEnd,
-        bool countLastLineMissingNewLine = true);
-    void find_line_end(int pos, bool start_pos_is_line_start, int *lineEnd,
-        int *nextLineStart);
+							int maxLines, bool startPosIsLineStart,
+							int styleBufOffset, int *retPos, int *retLines,
+							int *retLineStart, int *retLineEnd,
+							bool countLastLineMissingNewLine = true);
+    void find_line_end(int pos, bool start_pos_is_line_start, int *lineEnd, int *nextLineStart);
     int measure_proportional_character(char c, int colNum, int pos);
     int wrap_uses_character(int lineEndPos);
     int range_touches_selection(Fl_Text_Selection *sel, int rangeStart,

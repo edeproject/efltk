@@ -161,24 +161,22 @@ public:
      * Returns new scroll group.
      *
      * @param label for tab
-     * @param autoColor sets tab color from autocolor table
      */
-    Fl_Scroll   *new_scroll(const char *label, bool autoColor=false);
+    Fl_Scroll   *new_scroll(const char *label);
 
     /**
-     * Same as new_scroll(const char *label, bool autoColor=false)
-     * @see new_scroll(const char *label, bool autoColor=false)
+     * Same as new_scroll(const char *label)
+     * @see new_scroll(const char *label)
      */
-    Fl_Group    *new_page(const char *label,bool autoColor=false) { return (Fl_Group*)new_scroll(label, autoColor); }
+    Fl_Group    *new_page(const char *label) { return (Fl_Group*)new_scroll(label); }
 
     /**
      * Add new NON-scrollable page to dialog.
      * Returns new group.
      *
      * @param label for tab
-     * @param autoColor sets tab color from autocolor table
      */
-    Fl_Group    *new_group(const char *label, bool autoColor=false);
+    Fl_Group    *new_group(const char *label);
 
     /**
      * Internal handle.

@@ -242,7 +242,7 @@ void Fl_Text_Display::highlight_data(Fl_Text_Buffer *styleBuffer,
      primary font, adjust font-related parameters, and then redisplay */
     set_font();
 
-    relayout(FL_LAYOUT_DAMAGE | FL_LAYOUT_XYWH);
+    relayout(FL_LAYOUT_DAMAGE|FL_LAYOUT_XYWH);
     redraw();
 }
 
@@ -373,19 +373,12 @@ int TextDMaxFontWidth(textDisp *textD, Boolean considerStyles) {
 } 
 #endif
 
-int Fl_Text_Display::longest_vline() {
-    int longest = 0;
-    for (int i = 0; i < mNVisibleLines; i++)
-        longest = max(longest, measure_vline(i));
-    return longest;
-}
-
 /**
  * Change the size of the displayed text area
  */
 void Fl_Text_Display::layout() 
 {
-    if(!visible_r() || !layout_damage() || !buffer() ) {
+    if(!visible_r() || /*!layout_damage() || */!buffer() ) {
         return;
     }
 	//printf("Fl_Text_Display::layout() \n");
@@ -460,7 +453,6 @@ void Fl_Text_Display::layout()
 		mNBufferLines	= count_lines(0, buffer()->length(), true);
         mFirstChar		= line_start(mFirstChar);
 	    mTopLineNum		= count_lines(0, mFirstChar, true) + 1;
-		//offset_line_starts(mTopLineNum);
 		absolute_top_line_number(oldFirstChar);
 	}
 
@@ -487,14 +479,12 @@ void Fl_Text_Display::layout()
 			offset_line_starts(newTop);
 			redraw();
 		}
-    }*/
-	else if(mTopLineNum + mNVisibleLines > mNBufferLines+2) {		
+    }*/	
+	else if((new_vlines!=old_vlines || (layout_damage()&FL_LAYOUT_W)) && mTopLineNum + mNVisibleLines > mNBufferLines+2) {
 		offset_line_starts(max(1, mNBufferLines - mNVisibleLines + 2));		
 	}
 
-    if(!mContinuousWrap || (mContinuousWrap && mWrapMargin>0))
-			mLongestVline = longest_vline();
-	else	mLongestVline = 0;
+	calc_longest_vline();
 
 	// in case horizontal offset is now greater than longest line
     int maxhoffset = max(0, mLongestVline - text_area.w);
@@ -525,7 +515,7 @@ void Fl_Text_Display::draw_text( int left, int top, int width, int height )
 
 	/*
 	if(scrolldy < 0) {
-		// Hack to get scrolling down working :)
+		// Hack to get scrolling down working 
 		top -= fontHeight*2;
 		height += fontHeight*2;
 	}
@@ -651,6 +641,9 @@ void Fl_Text_Display::insert_position( int newPos )
 	
 	mCursorPos = newPos;	
 	
+	update_h_scrollbar();
+	update_v_scrollbar();
+
 	redraw(FL_DAMAGE_VALUE);
 }
 
@@ -671,7 +664,7 @@ void Fl_Text_Display::wrap_mode(int wrap, int wrapMargin)
     mWrapMargin = wrapMargin;
     mContinuousWrap = wrap;
 
-    relayout(FL_LAYOUT_DAMAGE | FL_LAYOUT_XYWH);
+    relayout(FL_LAYOUT_DAMAGE|FL_LAYOUT_XYWH);
     redraw();
 }
 
@@ -995,20 +988,22 @@ void Fl_Text_Display::display_insert()
      to scroll to, otherwise, do the vertical scrolling first, then the
      horizontal */
     if (!position_to_xy( mCursorPos, &X, &Y ))
-    {		
+    {				
         do_scroll(topLine, hOffset);
         if (!position_to_xy( mCursorPos, &X, &Y ))
             return;   /* Give up, it's not worth it (but why does it fail?) */
     }
+	
+    if (X+10 > (text_area.x + text_area.w))
+        hOffset += X-(text_area.x + text_area.w) + 10;
+    else if(X-10 < text_area.x)
+        hOffset += X-text_area.x - 10;
 
-    if (X > text_area.x + text_area.w)
-        hOffset += X-(text_area.x + text_area.w);
-    else if (X < text_area.x)
-        hOffset += X-text_area.x;	
+	if(hOffset<0) hOffset = 0;
 
     /* Do the scroll */
     if(topLine != mTopLineNum || hOffset != mHorizOffset)
-        scroll(topLine, hOffset);		
+        scroll(topLine, hOffset);	
 }
 
 void Fl_Text_Display::show_insert_position() {
@@ -1460,10 +1455,6 @@ void Fl_Text_Display::buffer_modified_cb(int pos, int nInserted, int nDeleted,
 	if((nInserted != 0 || nDeleted != 0) && (linesInserted>0 || linesDeleted>0)) 
 	{						
 		textD->redraw();
-		/////////////////////////////
-		// TODO: 
-		// remove this layout call!!
-		textD->relayout();
 	} else {
 
 		/* If there is a style buffer, check if the modification caused additional
@@ -1479,6 +1470,15 @@ void Fl_Text_Display::buffer_modified_cb(int pos, int nInserted, int nDeleted,
 
     textD->update_v_scrollbar();
     textD->update_h_scrollbar();	
+}
+
+void Fl_Text_Display::calc_longest_vline()
+{	
+	if(!mContinuousWrap || (mContinuousWrap && mWrapMargin>0)) {
+		mLongestVline = 0;
+		for (int i = 0; i < mNVisibleLines; i++)
+			mLongestVline = max(mLongestVline, measure_vline(i));		
+	}
 }
 
 /**
@@ -2160,7 +2160,7 @@ void Fl_Text_Display::offset_line_starts( int newTopLineNum )
 /**
  * Update the line starts array, topLineNum, firstChar and lastChar for text
  * display "textD" after a modification to the text buffer, given by the
- * position where the change began "pos", and the nmubers of characters
+ * position where the change began "pos", and the numbers of characters
  * and lines inserted and deleted.
  */
 void Fl_Text_Display::update_line_starts(
@@ -2323,7 +2323,7 @@ void Fl_Text_Display::calc_line_starts( int startLine, int endLine )
 
 	/* Set any entries beyond the end of the text to -1 */
     for ( ; line <= endLine; line++ )
-        lineStarts[ line ] = -1;
+        lineStarts[ line ] = -1;	
 }
 
 /**
@@ -2343,9 +2343,7 @@ void Fl_Text_Display::scroll(int topLineNum, int horizOffset)
 {
 	do_scroll(topLineNum, horizOffset);
 
-	if(!mContinuousWrap || (mContinuousWrap && mWrapMargin>0))
-			mLongestVline = longest_vline();
-	else	mLongestVline = 0;
+	calc_longest_vline();
 
     update_v_scrollbar();
     update_h_scrollbar();
@@ -2386,9 +2384,7 @@ void Fl_Text_Display::do_scroll(int topLineNum, int horizOffset)
 		// starts array and related counters in the text display
 		offset_line_starts(topLineNum);
 
-		if(!mContinuousWrap || (mContinuousWrap && mWrapMargin>0))
-				mLongestVline = longest_vline();
-		else	mLongestVline = 0;
+		calc_longest_vline();
 		
 		if(!mContinuousWrap) {
 			// in case horizontal offset is now greater than longest line
@@ -2509,6 +2505,8 @@ int Fl_Text_Display::measure_vline( int visLineNum ) {
 #else
 int Fl_Text_Display::measure_vline( int visLineNum )
 {
+	if(mLineStarts[ visLineNum ]<0) return 0;
+
     int i, width = 0, charlen, charCount = 0;
     int lineLen = vline_length( visLineNum );
     int lineStartPos = mLineStarts[ visLineNum ];
@@ -3124,6 +3122,13 @@ void Fl_Text_Display::draw() {
 
     // draw the non-text, non-scrollbar areas.
     if (damage() & FL_DAMAGE_ALL) {
+
+		// Make sure scrollbars are in sync.
+		// - this is fast task
+		calc_longest_vline();
+		update_h_scrollbar();
+		update_v_scrollbar();
+
         //printf("drawing all\n");
 
         // top margin

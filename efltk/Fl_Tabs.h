@@ -32,7 +32,6 @@ class Fl_Tab_Info;
 class FL_API Fl_Tabs : public Fl_Group {
     friend class Fl_Tabs_Matrix;
 public:
-    static const Fl_Color auto_color_table[16];
     static Fl_Named_Style* default_style;
 
     /** Creates new tabs widget using the given position, size, and label string. */
@@ -44,9 +43,9 @@ public:
     /** Destructor */
     virtual ~Fl_Tabs();
 
-    Fl_Group* new_group(const char *label,bool autoColor=false);
-    Fl_Scroll* new_scroll(const char *label,bool autoColor=false);
-    Fl_Group* new_page(const char *label,bool autoColor=false) { return (Fl_Group*)new_scroll(label, autoColor); }
+    Fl_Group* new_group(const char *label);
+    Fl_Scroll* new_scroll(const char *label);
+    Fl_Group* new_page(const char *label) { return (Fl_Group*)new_scroll(label); }
 
     Fl_Widget *value();
     int value(Fl_Widget *);
@@ -67,21 +66,20 @@ public:
     virtual int handle(int);
 
 protected:
-    bool              m_showTabs;
-    int               m_tabsWidth;
-    int               m_tabsHeight;
-    int               m_rowHeight;
-    void draw_tab(Fl_Tab_Info *tab,Fl_Flags flags);
+    bool m_showTabs;
+    int  m_tabsWidth;
+    int  m_tabsHeight;
+    int  m_rowHeight;
+    void draw_tab(Fl_Tab_Info *tab, Fl_Flags flags);
     Fl_Group* last_tab();
 
     void resize_tabs();
     void extend_tabs();
 
-    Fl_Scroll* create_new_scroll(const char *label);
-    Fl_Group* create_new_group(const char *label);
-private:
+    Fl_Scroll*	create_new_scroll(const char *label);
+    Fl_Group*	create_new_group(const char *label);
 
-    /** constructor initializer */
+private:    
     void ctor_init();
 
     Fl_Widget        *value_;
