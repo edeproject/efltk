@@ -47,6 +47,7 @@ public:
 
     virtual void draw();
     virtual void preferred_size(int& w,int &h) const;
+    virtual void reset() { value(""); }
 
 protected:
     static void input_callback(Fl_Widget *,void *);
@@ -74,6 +75,7 @@ public:
     void date_time_value(Fl_Date_Time);
     Fl_Date_Time date_time_value();
 
+    virtual void reset() { value(""); }
     virtual void draw();
     virtual void preferred_size(int& w,int &h) const;
 
@@ -100,6 +102,7 @@ public:
     void date2_value(Fl_Date_Time);
     Fl_Date_Time date2_value();
 
+    virtual void reset() { value(""); value2(""); }
     virtual void draw();
     virtual void preferred_size(int& w,int &h) const;
 

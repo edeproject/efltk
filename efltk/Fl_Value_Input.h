@@ -39,6 +39,7 @@ public:
 
     Fl_Float_Input input;
 
+    virtual void reset() { input.reset(); }
     virtual int handle(int);
     virtual void draw();
     virtual void layout();

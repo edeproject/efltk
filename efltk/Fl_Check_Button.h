@@ -42,6 +42,7 @@ public:
 
     virtual void preferred_size(int& w, int& h) const;
     virtual void draw();
+    virtual void reset() { value(0); }
 };
 
 #endif

@@ -64,6 +64,8 @@ public:
 
     virtual void preferred_size(int& w, int& h) const;
 
+    virtual void reset() { value(""); }
+
     virtual void draw();
     virtual void draw(int x, int y, int w, int h);
     virtual int handle(int);

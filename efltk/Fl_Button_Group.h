@@ -34,6 +34,7 @@ public:
     void value(const Fl_String &s, const char *separator="|");
     void value(const Fl_String_List &sl);
 
+    virtual void reset() { value(""); }
     virtual void layout();
     virtual void preferred_size(int& x,int& y) const;
 

@@ -34,6 +34,8 @@ public:
     /** Creates new toggle button widget using the label, size, alignment, and label width. */
     Fl_Toggle_Button(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP)
     : Fl_Button(l,layout_size,layout_al) { type(TOGGLE); }
+
+    virtual void reset() { value(0); }
 };
 
 #endif

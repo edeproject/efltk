@@ -63,6 +63,7 @@ public:
     virtual int popup(int X, int Y, int W, int H);
     virtual int handle(int);
     virtual void draw();
+    virtual void reset() { value(0); }
 private:
     void ctor_init();
 };

@@ -45,6 +45,7 @@ public:
     void linesize(double a) {linesize_ = float(a);}
 
     virtual int format(char*);
+    virtual void reset() { value(0); }
 
     int handle(int);
 

@@ -47,6 +47,7 @@ public:
     void value(int) const;
 
     virtual void preferred_size(int& w,int &h) const;
+    virtual void reset() { value(-1); }
 
     // Get text from the active item by column
     Fl_String text(int column) const;
