@@ -22,6 +22,7 @@ int main(unsigned argc, char** argv)
     printf("Encoded string: %s\n", strResult.c_str());
 	/* Now let's try to decode encoded string */
 	oBase64.decode(bufDecoded, strResult);
+	printf("Encoded buffer size: %d", bufDecoded.bytes());
 	/* And save result buffer to file */
 	bufDecoded.save_file("test2.dat");
     return 0;
