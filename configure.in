@@ -215,6 +215,7 @@ FLLIB="\${EFLTK_BUILDDIR}/lib/libefltk${DSOEXT}"
 FLGLLIB="\${EFLTK_BUILDDIR}/lib/libefltk_gl${DSOEXT}"
 FLIMAGESLIB="\${EFLTK_BUILDDIR}/lib/libefltk_images${DSOEXT}"
 FLXMLLIB="\${EFLTK_BUILDDIR}/lib/libefltk_xml${DSOEXT}"
+FLODBCLIB="\${EFLTK_BUILDDIR}/lib/libefltk_odbc${DSOEXT}"
 
 CFLAGS="$CFLAGS -DFL_SHARED"
 CXXFLAGS="$CXXFLAGS -DFL_SHARED"
@@ -224,6 +225,7 @@ case $uname in
 	    FLGLLIB="\${EFLTK_BUILDDIR}/lib/libefltk_gl.2.dll.a"
 	    FLIMAGESLIB="\${EFLTK_BUILDDIR}/lib/libefltk_images.2.dll.a"
 	    FLXMLLIB="\${EFLTK_BUILDDIR}/lib/libefltk_xml.2.dll.a"
+	    FLODBCLIB="\${EFLTK_BUILDDIR}/lib/libefltk_odbc.2.dll.a"
 	;;
 esac
 
@@ -233,10 +235,9 @@ if test x$enable_static = xyes; then
 	INSTALLTARGETS="install_static install_programs"
 	FLLIB="\${EFLTK_BUILDDIR}/lib/libefltk${LIBEXT}"
 	FLGLLIB="\${EFLTK_BUILDDIR}/lib/libefltk_gl${LIBEXT}"
-	FLGLUTLIB="\${EFLTK_BUILDDIR}/lib/libefltk_glut${LIBEXT}"
-	FLFORMSLIB="\${EFLTK_BUILDDIR}/lib/libefltk_forms${LIBEXT}"
 	FLIMAGESLIB="\${EFLTK_BUILDDIR}/lib/libefltk_images${LIBEXT}"
-	FLXMLLIB="\${EFLTK_BUILDDIR}/lib/libefltk_ext${LIBEXT}"
+	FLXMLLIB="\${EFLTK_BUILDDIR}/lib/libefltk_xml${LIBEXT}"
+	FLODBCLIB="\${EFLTK_BUILDDIR}/lib/libefltk_odbc${LIBEXT}"
 	CFLAGS="${CFLAGS:=}"
 	CXXFLAGS="${CXXFLAGS:=}"
 fi
@@ -536,12 +537,15 @@ AC_SUBST(SYSTYPE)
 
 AC_SUBST(LD)
 AC_SUBST(LDLIBS)
+
 AC_SUBST(FLLIB)
 AC_SUBST(FLGLLIB)
 AC_SUBST(FLGLUTLIB)
 AC_SUBST(FLFORMSLIB)
 AC_SUBST(FLIMAGESLIB)
 AC_SUBST(FLXMLLIB)
+AC_SUBST(FLODBCLIB)
+
 AC_SUBST(DSOLIBS)
 AC_SUBST(BUILDTARGETS)
 AC_SUBST(INSTALLTARGETS)
