@@ -1,14 +1,22 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
-	<TITLE></TITLE>
-	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.0.1  (Solaris Sparc)">
-	<META NAME="AUTHOR" CONTENT="Alexey Parshin">
-	<META NAME="CREATED" CONTENT="20030208;9244200">
-	<META NAME="CHANGEDBY" CONTENT="Alexey Parshin">
-	<META NAME="CHANGED" CONTENT="20030208;15224700">
-	<STYLE>
+<html>
+<head>
+ 	
+  <meta http-equiv="CONTENT-TYPE"
+ content="text/html; charset=iso-8859-1">
+  <title></title>
+ 	 	
+  <meta name="GENERATOR" content="OpenOffice.org 1.0.1  (Solaris Sparc)">
+ 	
+  <meta name="AUTHOR" content="Alexey Parshin">
+ 	
+  <meta name="CREATED" content="20030208;9244200">
+ 	
+  <meta name="CHANGEDBY" content="Alexey Parshin">
+ 	
+  <meta name="CHANGED" content="20030208;20590500">
+ 	
+  <style>
 	<!--
 		@page { size: 21.59cm 27.94cm; margin-left: 3.18cm; margin-right: 3.18cm; margin-top: 2.54cm; margin-bottom: 2.54cm }
 		TD P { margin-bottom: 0.21cm }
@@ -18,105 +26,192 @@
 		H2.cjk { font-size: 14pt; font-style: italic }
 		H2.ctl { font-size: 14pt; font-style: italic }
 	-->
-	</STYLE>
-</HEAD>
-<BODY LANG="en-US">
-<H2 CLASS="western" ALIGN=CENTER><FONT FACE="Clean"><FONT SIZE=4 STYLE="font-size: 16pt">Data
-Sources</FONT></FONT></H2>
-<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><FONT FACE="Clean"><FONT SIZE=3>by
-Alexey Parshin</FONT></FONT></P>
-<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><BR>
-</P>
-<OL>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Clean"><FONT SIZE=3>What
-	is the Data Source and why do we need it?</FONT></FONT></P>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Clean"><FONT SIZE=3>How
-	can a Data Source be used?</FONT></FONT></P>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Clean"><FONT SIZE=3>Minimal
-	structure of a simple Data Source.</FONT></FONT></P>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Clean"><FONT SIZE=3>Using
-	a Data Source in widgets.</FONT></FONT></P>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Clean"><FONT SIZE=3>Using
-	Fl_Query as a Datasource.</FONT></FONT></P>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Clean"><FONT SIZE=3>Datasource
-	design example &ndash; Fl_Directory_DS.</FONT></FONT></P>
-	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Clean"><FONT SIZE=3>Database
-	driver example &ndash; Fl_Some_Database.</FONT></FONT></P>
-</OL>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
-</P>
-<P STYLE="margin-top: 0.42cm; page-break-after: avoid"><FONT FACE="Clean"><FONT SIZE=4>What
-is the Data Source and why do we need it?</FONT></FONT></P>
-<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Clean"><FONT SIZE=3>Different
-sources of the information require very different ways to retrieve
-that information. The Datasource allows to hide the nature of
-information source behind the standard API, presenting information as
-rows (if applicable) and columns of data. It is very typical that all
-the rows have the same number of column types, and every column keeps
-it's data type from row to row. Datasource provides the abilities to
-open the information source and navigate through it. As soon it's
-opened, it has the list of the columns, or fields. Every field has
-the data type, width (size) and alignment, and, of course, you can
-read from it the actual data. As result, we have an abstraction class
-and can use it without knowing anything about the actual data. From
-the point of the particular widget, it's just a set of rows of
-fields. Widget opens the Datasource, reads the data, closes it. It
-doesn't matter if that Datasource was actually a database Query, or
-an FTP files directory. The widget has all the necessary information.
-</FONT></FONT>
-</P>
-<P STYLE="margin-top: 0.42cm; page-break-after: avoid"><FONT FACE="Clean"><FONT SIZE=4>How
-can a Data Source be used?</FONT></FONT></P>
-<TABLE WIDTH=100% BORDER=0 CELLPADDING=4 CELLSPACING=0>
-	<COL WIDTH=104*>
-	<COL WIDTH=152*>
-	<TR VALIGN=TOP>
-		<TD WIDTH=41%>
-			<P><IMG SRC="DataSource_1.png" NAME="Graphic1" ALIGN=LEFT WIDTH=399 HEIGHT=316 BORDER=0><BR CLEAR=LEFT><BR>
-			</P>
-		</TD>
-		<TD WIDTH=59%>
-			<P><FONT FACE="Clean">There are a lot of different usages of the
-			Datasource in widgets. Some widgets, like List View, can utilize
-			the whole Datasource (DS) simultaneously, by reading and
-			displaying it completely. Some widgets, like Dialog, can use just
-			one row of the DS in a time. And, finally, a lot of widgets can
-			use just one field of the row in DS. I'm not even going to
-			consider a pity group of remaining widgets that can't use DS at
-			all. In eFLTK, every widget has a field_name() method that allows
-			to connect any widget with the field of DS. Where is the DS
-			connection in that schema? Well, widgets are not used by
-			themselves. Usually, widgets are placed in the group, so the group
-			should provide the DS, if widgets inside need it. So, Fl_Group
-			defines data_source() method to connect the group with the DS, and
-			couple of methods to load and unload data to/from widgets. By the
-			way, it means that we may write to some Datasources.</FONT></P>
-		</TD>
-	</TR>
-</TABLE>
-<P><FONT FACE="Clean">So, how do we read data from Datasource, and
-how do we write data to it? Very simple. First, we open the DS:</FONT></P>
-<P><FONT FACE="Clean"><I>my_ds.open();</I></FONT></P>
-<P><FONT FACE="Clean">Datasource uses Fl_Variant to store every
-field. To communicate with DS we first find the field by the field
-name or index (in the DS row):</FONT></P>
-<P><FONT FACE="Clean"><I>Fl_Data_Field&amp; first_name_field =
-my_ds[&ldquo;name&rdquo;];</I></FONT></P>
-<P><FONT FACE="Clean"><I>Fl_Data_Field&amp; last_name_field =
-my_ds[1];</I></FONT></P>
-<P><FONT FACE="Clean">Then we can just read the value from field, or
-write it to the field:</FONT></P>
-<P><FONT FACE="Clean"><I>Fl_String first_name = first_name_field;</I></FONT></P>
-<P><FONT FACE="Clean"><I>Fl_String last_name = &ldquo;New last name&rdquo;;</I></FONT></P>
-<P><FONT FACE="Clean"><I>last_name_field = last_name;</I></FONT></P>
-<P><FONT FACE="Clean">And , finally, we close DS:</FONT></P>
-<P><FONT FACE="Clean"><I>my_ds.close();</I></FONT></P>
-<P><FONT FACE="Clean">Well, this is true for the abstract DS. The
-real Datasources require to define some extra parameters prior to
-open(), like what are we trying to open? In case of the database
-query it would be the text of SQL statement, for Fl_Directory_DS it
-would be the path to the directory, etc..</FONT></P>
-</BODY>
-</HTML>
+	</style>
+</head>
+  <body lang="en-US">
+ 
+<h1 align="center"><big><big><font face="Clean"><font size="4"
+ style="font-size: 16pt;"><big><big><u>Data Sources</u></big></big></font></font></big></big></h1>
+ 
+<p align="center" style="margin-bottom: 0cm;"><font face="Clean"><font
+ size="3">by Alexey Parshin</font></font></p>
+ 
+<p align="center" style="margin-bottom: 0cm;"><br>
+ </p>
+ 
+<ol>
+ 	<li>
+    <p align="left" style="margin-bottom: 0cm;"><font face="Clean"><font
+ size="3">What 	is the Data Source and why do we need it?</font></font></p>
+ 	</li>
+  <li>
+    <p align="left" style="margin-bottom: 0cm;"><font face="Clean"><font
+ size="3">How 	can a Data Source be used?</font></font></p>
+ 	</li>
+  <li>
+    <p align="left" style="margin-bottom: 0cm;"><font face="Clean"><font
+ size="3">Minimal 	structure of a simple Data Source.</font></font></p>
+ 	</li>
+  <li>
+    <p align="left" style="margin-bottom: 0cm;"><font face="Clean"><font
+ size="3">Using 	a Data Source in widgets.</font></font></p>
+ 	</li>
+  <li>
+    <p align="left" style="margin-bottom: 0cm;"><font face="Clean"><font
+ size="3">Using 	Fl_Query as a Datasource.</font></font></p>
+ 	</li>
+  <li>
+    <p align="left" style="margin-bottom: 0cm;"><font face="Clean"><font
+ size="3">Datasource 	design example &#8211; Fl_Directory_DS.</font></font></p>
+ 	</li>
+  <li>
+    <p align="left" style="margin-bottom: 0cm;"><font face="Clean"><font
+ size="3">Database 	driver example &#8211; Fl_Some_Database.</font></font></p>
+ </li>
+</ol>
+ 
+<p align="left" style="margin-bottom: 0cm;"><br>
+ </p>
+ 
+<p align="left" style="margin-bottom: 0cm;"><br>
+ </p>
+ 
+<h2><font face="Clean"><font size="4"><u><b>1. What is the Data Source and
+why do we need it?</b></u></font></font></h2>
+ 
+<p align="left" style="margin-bottom: 0cm;"><font face="Clean"><font
+ size="3">Different sources of the information require very different ways
+to retrieve that information. The Datasource allows to hide the nature of 
+information source behind the standard API, presenting information as rows
+(if applicable) and columns of data. It is very typical that all the rows
+have the same number of column types, and every column keeps it's data type
+from row to row. Datasource provides the abilities to open the information
+source and navigate through it. As soon it's opened, it has the list of the
+columns, or fields. Every field has the data type, width (size) and alignment,
+and, of course, you can read from it the actual data. As result, we have
+an abstraction class and can use it without knowing anything about the actual
+data. From the point of the particular widget, it's just a set of rows of 
+fields. Widget opens the Datasource, reads the data, closes it. It doesn't
+matter if that Datasource was actually a database Query, or an FTP files
+directory. The widget has all the necessary information. </font></font> </p>
+ 
+<h2><font face="Clean"><font size="4"><u><b>2. How can a Data Source be used?</b></u></font></font></h2>
+ 
+<table width="100%" border="0" cellpadding="4" cellspacing="0">
+ 	<col width="104*"> 	<col width="152*"> 	<tbody>
+    <tr valign="top">
+ 		<td width="41%"> 			
+      <p><img src="DataSource_1.png" name="Graphic1" align="left"
+ width="399" height="316" border="0">
+      <br clear="left">
+      <br>
+ 			</p>
+ 		</td>
+ 		<td width="59%"> 			
+      <p><font face="Clean">There are a lot of different usages of the 			Datasource
+in widgets. Some widgets, like List View, can utilize 			the whole Datasource
+(DS) simultaneously, by reading and 			displaying it completely. Some widgets,
+like Dialog, can use just 			one row of the DS in a time. And, finally, a
+lot of widgets can 			use just one field of the row in DS. I'm not even going
+to 			consider a pity group of remaining widgets that can't use DS at 			all.
+In eFLTK, every widget has a field_name() method that allows 			to connect
+any widget with the field of DS. Where is the DS 			connection in that schema?
+Well, widgets are not used by 			themselves. Usually, widgets are placed
+in the group, so the group 			should provide the DS, if widgets inside need
+it. So, Fl_Group 			defines data_source() method to connect the group with
+the DS, and 			couple of methods to load and unload data to/from widgets.
+By the 			way, it means that we may write to some Datasources.</font></p>
+ 			
+      <p><font face="Clean">Fl_Data_Source is the abstraction layer that 			hides
+the essentials of every possible information source from the 			widgets.
+It gives us the nice possibility to develop now the 			programs which will
+use the Datasources that doesn't exist yet.</font></p>
+ 		</td>
+ 	</tr>
+ 
+  </tbody>
+</table>
+ 
+<p><font face="Clean">So, how do we read data from Datasource, and how do
+we write data to it? Very simple. First, we open the DS:</font></p>
+ 
+<p><font face="Arial, sans-serif"><i>my_ds.open();</i></font></p>
+ 
+<p><font face="Clean">Datasource uses Fl_Variant to store every field. To
+communicate with DS we first find the field by the field name or index (in
+the DS row):</font></p>
+ 
+<p><font face="Arial, sans-serif"><i>Fl_Data_Field&amp; first_name_field
+= my_ds[&#8220;name&#8221;];</i></font></p>
+ 
+<p><font face="Arial, sans-serif"><i>Fl_Data_Field&amp; last_name_field =
+my_ds[1];</i></font></p>
+ 
+<p><font face="Clean">Then we can just read the value from field, or write
+it to the field:</font></p>
+ 
+<p><font face="Arial, sans-serif"><i>Fl_String first_name = first_name_field;</i></font></p>
+ 
+<p><font face="Arial, sans-serif"><i>Fl_String last_name = &#8220;New last name&#8221;;</i></font></p>
+ 
+<p><font face="Arial, sans-serif"><i>last_name_field = last_name;</i></font></p>
+ 
+<p><font face="Clean">And , finally, we close DS:</font></p>
+ 
+<p><font face="Arial, sans-serif"><i>my_ds.close();</i></font></p>
+ 
+<p><font face="Clean">Well, this is true for the abstract DS. The real Datasources
+require to define some extra parameters prior to open(), like what are we
+trying to open? In case of the database query it would be the text of SQL
+statement, for Fl_Directory_DS it would be the path to the directory, etc..</font></p>
+ 
+<h2> <font face="Clean"><font size="4"><u><b>3. Minimal structure of a simple
+Data Source.</b></u></font></font></h2>
+ 
+<p style="text-decoration: none;">The Fl_Data_Source is an abstract class.
+It means you can't creat an object that class - you should derive your Data
+Source (DS) from Fl_Data_Source. Fl_Data_Source hase several groups of methods
+the actual DS should implement:</p>
+<ul>
+  <li>open() and close() methods initiate and terminate the data access session<br>
+  </li>
+  <li>navigation methods (first(), next(), etc.. ) allow to move between
+records in opened data source</li>
+  <li>field access methods allow access fields and fields' data</li>
+</ul>
+To say it simple, all the abstract methods in Fl_Data_Source should be implemented.
+The actual implementation may vary. Lets try to take Fl_Directory_DS as an
+example.<br>
+<blockquote><b>Open and close operations.</b><br>
+First, Fl_Directory_DS reads the directory contents into an array of rows
+of Fl_Data_Fields. Every Fl_Data_Fields object has a list of Fl_Data_Fields
+for file name, file size, modification date, etc.. This covers the open()
+method. The close() method simply releases everything allocated during open().
+For the details please check the <i>src/widgets/Fl_Directory_DS.cpp</i>.<br>
+  <br>
+  <b>Navigation methods.</b><br>
+For Fl_Directory_DS the navigation is very simple. The class member variable
+m_current keeps the tracking of current data row in the opened DS. It doesn't
+make any sense for closed DS, of course. So, methods like first()..last()
+simply change the m_current row accordingly.<br>
+  <br>
+  <b>Field access.</b><br>
+Datasource should support the field information and provide field data when
+necessary. As soon as DS is opened, the first data row becomes available.
+At that moment, DS' current data row already should have the Fl_Data_Fields
+initialized. Using Fl_Data_Fields fields, we can always extract the number
+of available fields and information about data type of every field. Of course,
+we still have to provide all this functionality through the Datasource methods,
+but we already have all the necessary information.<br>
+</blockquote>
+ 
+<p align="left" style="margin-bottom: 0cm;">Every real Datasource also would,
+probably, implement several datasource-specific methods. The general idea
+is to provide all the necessary information for the correct open() of the
+DS. For our precious Fl_Directory_DS such methods are directory(), pattern()
+and several others. User should define the directory() and pattern() prior
+to open() so Fl_Directory_DS would know what it has to open and read.<br>
+ </p>
+ <br>
+</body>
+</html>

@@ -37,8 +37,8 @@ public:
     virtual const Fl_Variant& operator [] (const char *field_name) const = 0;
     virtual Fl_Variant&       operator [] (const char *field_name) = 0;
 
-	// how many rows do we have ds?
-	virtual unsigned          record_count() const = 0;
+     // how many rows do we have ds?
+    virtual unsigned          record_count() const = 0;
 
     // how many fields do we have in the current record?
     virtual unsigned          field_count() const = 0;
