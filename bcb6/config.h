@@ -1,5 +1,5 @@
 /* -*- mode: C++ -*-
- * "$Id: config.h,v 1.3 2002/12/21 18:50:19 parshin Exp $"
+ * "$Id: config.h,v 1.5 2003/02/18 03:32:06 parshin Exp $"
  *
  * This file is used to compile fltk. It should not be necessary for
  * programs that use fltk to refer to this file, and this file is not
@@ -200,24 +200,26 @@
 #define HAVE_FLOAT_FUNCTIONS 0
 
 #if !HAVE_FLOAT_FUNCTIONS
-# define floorf(a)	float(floor(float(a)))
-# define ceilf(a)	float(ceil(float(a)))
-# define fmodf(a,b)	float(fmod(float(a),float(b)))
-# define fabsf(a)	float(fabs(float(a)))
-# define sinf(a)	float(sin(float(a)))
-# define cosf(a)	float(cos(float(a)))
-# define tanf(a)	float(tan(float(a)))
-# define asinf(a)	float(asin(float(a)))
-# define acosf(a)	float(acos(float(a)))
-# define atanf(a)	float(atan(float(a)))
-# define atan2f(a,b)	float(atan2(float(a),float(b)))
-# define expf(a)	float(exp(float(a)))
-# define logf(a)	float(log(float(a)))
-# define log10f(a)	float(log10(float(a)))
-# define sqrtf(a)	float(sqrt(float(a)))
+# define floorf(a)  float(floor(float(a)))
+# define ceilf(a)   float(ceil(float(a)))
+# define fmodf(a,b) float(fmod(float(a),float(b)))
+# define fabsf(a)   float(fabs(float(a)))
+# define sinf(a)    float(sin(float(a)))
+# define cosf(a)    float(cos(float(a)))
+# define tanf(a)    float(tan(float(a)))
+# define asinf(a)   float(asin(float(a)))
+# define acosf(a)   float(acos(float(a)))
+# define atanf(a)   float(atan(float(a)))
+# define atan2f(a,b) float(atan2(float(a),float(b)))
+# define expf(a)    float(exp(float(a)))
+# define logf(a)    float(log(float(a)))
+# define log10f(a)  float(log10(float(a)))
+# define sqrtf(a)   float(sqrt(float(a)))
 #endif
 
+// For Windows 95/98/ME:
+#define _WIN32_WINNT 0x0400
 
 /*
- * End of "$Id: config.h,v 1.3 2002/12/21 18:50:19 parshin Exp $".
+ * End of "$Id: config.h,v 1.5 2003/02/18 03:32:06 parshin Exp $".
  */
