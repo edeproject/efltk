@@ -372,16 +372,9 @@ int fl_start_child_process(char *cmd)
     int pid, status;
     int nulldev;
     extern char **environ;
-    char buf[FL_PATH_MAX];
-//    char *c = 0;
-
 
     if (cmd == NULL)
         return (1);
-
-    memcpy(buf,cmd,strlen(cmd));
-//    if( (c=strrchr(buf,'&')) )
-//        *c = '\0';
 
     pid = fork ();
     if (pid == -1)
@@ -392,7 +385,7 @@ int fl_start_child_process(char *cmd)
         // child
         argv[0] = "sh";
         argv[1] = "-c";
-        argv[2] = buf;
+        argv[2] = cmd;
         argv[3] = NULL;
 
         // The following is to avoid X locking when executing
@@ -408,10 +401,8 @@ int fl_start_child_process(char *cmd)
             perror ("/bin/sh");
         _exit (127);
     }
-    // don't need this at the moment
-    // if not, leaves zombies and cannot run some sh commands
-   do
-   {
+    do
+    {
         if (waitpid (pid, &status, 0) == -1)
         {
             if (errno != EINTR)
