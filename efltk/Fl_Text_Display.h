@@ -199,7 +199,6 @@ protected:
    void reset_absolute_top_line_number();
 
    int position_to_linecol(int pos, int* lineNum, int* column);
-   void scroll_(int topLineNum, int horizOffset);
 
    void extend_range_for_styles(int* start, int* end);
 
@@ -253,9 +252,6 @@ protected:
                                    it isn't needed for line # display */
 
    int mHorizOffset;           /* Horizontal scroll pos. in pixels */
-   int mTopLineNumHint;        /* Line number of top displayed line
-                                   of file (first line of file is 1) */
-   int mHorizOffsetHint;       /* Horizontal scroll pos. in pixels */
    int mVisibility;            /* Window visibility (see XVisibility event) */
    int mNStyles;               /* Number of entries in styleTable */
    Style_Table_Entry *mStyleTable; /* Table of fonts and colors for
@@ -281,14 +277,13 @@ protected:
 
    int mMaxFontBound, mMinFontBound; //Min and Max bound of font (non-styled)
 
-   int mOldWidth;
+   int mLongestVline; // Longest vline, measured in layout()
 
    Fl_Color mCursor_color;
 
    Fl_Scrollbar* mHScrollBar;
    Fl_Scrollbar* mVScrollBar;
    int dragPos, dragType, dragging;
-   int display_insert_position_hint;
    struct { int x, y, w, h; } text_area;
 
    int mLineNumLeft, mLineNumWidth;  /* Line number margin and width */
