@@ -3,5 +3,8 @@
 
 #include "Fl_Ptr_List.h"
 
+// backeard compatibility
+#define Fl_PtrList Fl_Ptr_list
+
 #endif
 

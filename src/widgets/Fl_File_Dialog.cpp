@@ -3,6 +3,7 @@
 #include <efltk/Fl_Item.h>
 #include <efltk/vsnprintf.h>
 #include <efltk/fl_ask.h>
+#include <efltk/fl_draw.h>
 
 // For NLS stuff
 #include "../core/fl_internal.h"
@@ -100,7 +101,7 @@ static const char *types[] = {
 
 Fl_FileItem::Fl_FileItem(const char *filename, Fl_FileAttr *a)
 : Fl_ListView_Item(0, 0, 0, 0)
-{	
+{
     strcpy(fname, filename?filename:_("Unknown"));
     label(0, fname);
 
@@ -177,7 +178,7 @@ Fl_FileItem::Fl_FileItem(const char *filename, Fl_FileAttr *a)
 
 Fl_FileItem::~Fl_FileItem()
 {
-	if(attr) delete attr;
+    if(attr) delete attr;
 }
 
 ///////////////////////////////
@@ -435,7 +436,7 @@ void cb_file_dialog(Fl_Widget *w, void *d)
 }
 
 Fl_File_Dialog::Fl_File_Dialog(int w, int h, const char *label, int mode)
-	: FileDialogType(w, h, label)
+: FileDialogType(w, h, label)
 {
     callback(cb_file_dialog, this);
     image_cache.size(10);
@@ -786,7 +787,7 @@ void Fl_File_Dialog::parse_dirs(const char *fp)
 
 void Fl_File_Dialog::read_dir(const char *_path)
 {
-	Fl_Widget *selected=0;
+    Fl_FileItem *selected=0;
     image_cache.clear();
     update_preview(0);
 
@@ -896,7 +897,7 @@ void Fl_File_Dialog::read_dir(const char *_path)
                     Fl_FileAttr *attr = fl_file_attr(filename);
                     if(attr->flags & FL_DIR) {
                         Fl_FileItem *it = new Fl_FileItem(files[n]->d_name, attr);
-                        it->image(0, fold_pix);
+                        it->image(&fold_pix);
                     } else
                         delete attr;
                 }
@@ -918,12 +919,12 @@ void Fl_File_Dialog::read_dir(const char *_path)
                         } else {
                             item = new Fl_FileItem(files[n]->d_name, attr);                            
                         }
-						if(item) {
-							item->image(0, file_pix);
-							if(sel) {								
-								selected = item;
-							}
-						}
+                        if(item) {
+                            item->image(&file_pix);
+                            if(sel) {
+                                selected = item;
+                            }
+                        }
                     } else
                         delete attr;
                 }
@@ -946,21 +947,21 @@ void Fl_File_Dialog::read_dir(const char *_path)
     }
 
     if(mode()!=DIRECTORY) {		
-		ok_->deactivate();
-		if(selected) {
-			listview_->select_only(selected);	
-			listview_->show_item(selected);			
+        ok_->deactivate();
+        if(selected) {
+            listview_->select_only(selected);
+            listview_->show_item(selected);
+        }
+        if(default_filename_) {
+            location(default_filename_);
+            ok_->activate();
 		}
-		if(default_filename_) {
-			location(default_filename_);
-			ok_->activate();
-		}
-	} else {
-		ok_->activate();
-	}
+    } else {
+        ok_->activate();
+    }
 
-	default_filename_ = 0;	
-	listview_->redraw();
+    default_filename_ = 0;
+    listview_->redraw();
 }
 
 bool Fl_File_Dialog::new_dir()

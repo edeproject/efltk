@@ -420,33 +420,35 @@ int fl_start_child_process(char *cmd)
 
 #include <efltk/fl_draw.h>
 
-char *fl_cut_line(const char *str, int maxwidth)
-{	
+const char *fl_cut_line(const char *str, int maxwidth)
+{
     int len = strlen(str);
-	int w=0;
+    int w=0;
     static char buf[4096];
 
-    maxwidth-=5; //Just guess...
+    maxwidth-=6; //Just guess...
     if(maxwidth<0) {
-		return "";
-	}
+        return "";
+    }
+    w = int(fl_width(buf, len));
+    if(w<maxwidth) return str;
 
     strncpy(buf, str, sizeof(buf));
     int pos=len+1;
     while(pos-->0) {
-        w = int(fl_width(buf, pos));
+        w = int(fl_width(buf, pos-2));
         if(w<maxwidth) {
-			break;
-		}
-		if(pos-3>0) buf[pos-3] = '.';
-		if(pos-2>0) buf[pos-2] = '.';
-		if(pos-1>0) buf[pos-1] = '.';
-		if(pos>=0) buf[pos] = '\0';
+            break;
+        }
+        if(pos-3>0) buf[pos-3] = '.';
+        if(pos-2>0) buf[pos-2] = '.';
+        if(pos-1>0) buf[pos-1] = '.';
+        if(pos>=0) buf[pos] = '\0';
     }
     return buf;
 }
 
-char *fl_cut_multiline(const char *buf, int maxwidth)
+const char *fl_cut_multiline(const char *buf, int maxwidth)
 {
     static char ret[4096];
     int ret_size=0;
@@ -454,7 +456,7 @@ char *fl_cut_multiline(const char *buf, int maxwidth)
     char *ptr = (char *)buf;
     char *lines = strtok(ptr,"\n");
     while(lines) {
-        char *tmp = fl_cut_line(lines, maxwidth);
+        const char *tmp = fl_cut_line(lines, maxwidth);
         int tmp_len = strlen(tmp);
 
         strncpy(ret+ret_size, tmp, tmp_len);

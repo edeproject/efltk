@@ -35,6 +35,8 @@
 
 class FL_API Fl_Group : public Fl_Widget {
 public:
+  Fl_Group(int,int,int,int, const char * = 0);
+  virtual ~Fl_Group();
 
   int children() const { return array_.size(); }
   Fl_Widget* child(int n) const { return array_.item(n); }
@@ -45,21 +47,19 @@ public:
   virtual void layout();
   virtual int handle(int);
 
-  void begin() {current_ = this;}
-  void end() {current_ = (Fl_Group*)parent();}
+  void begin() { current_ = this; }
+  void end()   { current_ = (Fl_Group*)parent(); }
   static Fl_Group *current() {return current_;}
   static void current(Fl_Group *g) {current_ = g;}
 
   int find(const Fl_Widget*) const;
   int find(const Fl_Widget& o) const {return find(&o);}
 
-  Fl_Group(int,int,int,int, const char * = 0);
-  virtual ~Fl_Group();
-  virtual void add(Fl_Widget&);
-  virtual void insert(Fl_Widget&, int index);
-  virtual void remove(int index);
-  virtual void replace(int index, Fl_Widget&);
-  virtual void clear();
+  void add(Fl_Widget&);
+  void insert(Fl_Widget&, int index);
+  void remove(int index);
+  void replace(int index, Fl_Widget&);
+  void clear();
 
   void add(Fl_Widget* o) {add(*o);}
   void insert(Fl_Widget& o, Fl_Widget* before) {insert(o,find(before));}

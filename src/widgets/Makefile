@@ -49,6 +49,7 @@ CPPFILES = \
 	Fl_Item.cpp \
 	Fl_Light_Button.cpp \
         Fl_ListView.cpp \
+        Fl_ListView_Header.cpp \
         Fl_ListView_Item.cpp \
         Fl_MDI_Window.cpp \
         Fl_Main_Window.cpp \

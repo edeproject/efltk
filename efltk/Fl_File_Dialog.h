@@ -47,6 +47,10 @@ public:
     char fname[FL_PATH_MAX];
     char size[32];
     char free[32]; //used in device
+
+    uchar type() const { return type_; }
+    void  type(uchar t) { type_ = t; }
+    uchar type_;
 };
 
 #define CLOSE_OK     false

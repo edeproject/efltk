@@ -59,6 +59,9 @@ class FL_API Fl_Config {
 public:
     // List of sections
     SectionList sections;
+    // List of lines in ROOT (no section)
+    // To access these, use section NULL
+    LineList lines;
 
     /////////////////////////
     /////////////////////////
@@ -68,14 +71,14 @@ public:
     } ConfMode;
 
     // Creates/reads/writes app specific config file.
-	//
-	// LINUX:
+    //
+    // LINUX:
     // File is created in ($home)/.ede/apps/($application)/($application).conf
     // Or ($prefix)/share/ede/apps/($application)/($application).conf
-	// WIN32:
-	// ($home)\Local Settings\.ede\apps\($application)/($application).conf
-	// Or ($common files)\($application)\($application).conf
-	//
+    // WIN32:
+    // ($home)\Local Settings\.ede\apps\($application)/($application).conf
+    // Or ($common files)\($application)\($application).conf
+    //
     // depending ConfMode, USER or SYSTEM
     // Vendor is only used to write it down to file.
     Fl_Config(const char *vendor, const char *application, ConfMode mode=USER);

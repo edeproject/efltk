@@ -172,7 +172,10 @@ Fl_Config::Fl_Config(const char *filename, bool read, bool create)
 Fl_Config::~Fl_Config()
 {
     flush();
-    for(uint n=0; n<sections.size(); n++)
+    uint n;
+    for(n=0; n<lines.size(); n++)
+        delete (Line*)lines[n];
+    for(n=0; n<sections.size(); n++)
         delete (Section*)sections[n];
     if(filename_) delete []filename_;
 }
@@ -195,10 +198,8 @@ const char *Fl_Config::strerror(int error)
 bool Fl_Config::read_file(bool create)
 {
     bool error = false;
-    if(filename_)
-    {
-        if(create && !fl_file_exists(filename_))
-        {
+    if(filename_) {
+        if(create && !fl_file_exists(filename_)) {
             FILE *f = fopen(filename_, "w+");
             if(f) {
                 fputs("\n",f);
@@ -214,8 +215,12 @@ bool Fl_Config::read_file(bool create)
 
     // If somebody calls this function two times, we
     // need to clean earlier section list...
-    for(uint n=0; n<sections.size(); n++)
+    uint n;
+    for(n=0; n<lines.size(); n++)
+        delete (Line*)lines[n];
+    for(n=0; n<sections.size(); n++)
         delete (Section*)sections[n];
+    lines.clear();
     sections.clear();
 
     /////
@@ -267,12 +272,11 @@ bool Fl_Config::read_file(bool create)
                     section = create_section(&lines[1]);
                 }
             }
-            else if (lines[0] != '#' && section)
+            else if (lines[0] != '#')
             {
                 tmp = strchr(lines, '=');
                 if(!tmp) tmp = strchr(lines, ':');
-                if(tmp)
-                {
+                if(tmp) {
                     *tmp = '\0';
                     tmp++;
                     create_string(section, lines, tmp);
@@ -334,7 +338,16 @@ bool Fl_Config::flush()
     if(app_)    fprintf( file, "# Application: %s\n", app_ );
     fprintf( file, "\n");
 
-    for(uint n=0; n<sections.size(); n++) {
+    uint n;
+    for(n=0; n<lines.size(); n++) {
+        Line *l = L(lines[n]);
+        if(l && l->key) {
+            fprintf(file, "%s=%s\n", l->key, l->value?l->value:"");
+        }
+    }
+    fprintf(file, "\n");
+
+    for(n=0; n<sections.size(); n++) {
         Section *s = S(sections[n]);
         write_section(0, file, s);
     }
@@ -349,7 +362,7 @@ bool Fl_Config::flush()
 
 Line *Fl_Config::create_string(Section *section, const char * key, const char * value)
 {
-    if(!section || !key || !*key) return 0;
+    if(!key || !*key) return 0;
 
     Line *line = new Line(key, value);
 
@@ -359,7 +372,8 @@ Line *Fl_Config::create_string(Section *section, const char * key, const char * 
     }
     _error=0;
 
-    section->lines.append(line);
+    if(section) section->lines.append(line);
+    else lines.append(line);
     return line;
 }
 

@@ -8,7 +8,7 @@ typedef void* Fl_Ptr_List_Item;
 class FL_API Fl_Ptr_List {
 public:
     Fl_Ptr_List();
-    ~Fl_Ptr_List();
+    virtual ~Fl_Ptr_List();
     void clear();
     void resize(uint newsize);
 
@@ -41,6 +41,9 @@ public:
     Fl_Ptr_List_Item *data() { return items; }
 
 protected:
+    // Free item in list e.g.: delete (SomeClass*)(item);
+    virtual void free_item(Fl_Ptr_List_Item item);
+
     Fl_Ptr_List_Item *items;
     bool auto_delete_;
 
@@ -49,9 +52,6 @@ private:
     uint capacity_;
     uint size_;
 };
-
-// backeard compatibility
-// #define Fl_PtrList Fl_Ptr_list
 
 #endif
 

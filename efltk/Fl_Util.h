@@ -69,8 +69,8 @@ extern FL_API int fl_start_child_process(char *cmd);
 
 extern FL_API void fl_freev (char **str_array);
 
-extern FL_API char *fl_cut_line(const char *str, int maxwidth);
-extern FL_API char *fl_cut_multiline(const char *str, int maxwidth);
+extern FL_API const char *fl_cut_line(const char *str, int maxwidth);
+extern FL_API const char *fl_cut_multiline(const char *str, int maxwidth);
 
 class FL_API Fl_Point
 {

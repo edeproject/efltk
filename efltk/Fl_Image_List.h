@@ -1,5 +1,5 @@
 #ifndef _FL_IMAGE_LIST_H_
-#define _FL_IMAGEE_LIST_H_
+#define _FL_IMAGE_LIST_H_
 
 #include "Fl_Ptr_List.h"
 #include "Fl_Image.h"
@@ -20,6 +20,9 @@ public:
 
     Fl_Image *item(uint index) const { return (Fl_Image*)Fl_Ptr_List::item(index); }
     Fl_Image &operator [](uint ind) const { return *((Fl_Image *)items[ind]); }
+
+protected:
+    void free_item(Fl_Image *item) { delete (Fl_Image*)(item); }
 };
 
 #endif

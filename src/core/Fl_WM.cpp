@@ -320,6 +320,7 @@ static int wm_event_handler(int e)
     if(fl_xevent.type==PropertyNotify)
     {
         action_window = fl_xevent.xproperty.window;
+
         if(fl_xevent.xproperty.atom==_XA_NET_NUM_DESKTOPS)
             action = Fl_WM::DESKTOP_COUNT;
         else if(fl_xevent.xproperty.atom==_XA_NET_DESKTOP_NAMES)

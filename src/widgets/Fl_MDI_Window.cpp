@@ -233,8 +233,8 @@ void Fl_MDI_Titlebar::draw()
 
     fl_font(label_font(), float(label_size()));
 
-    char *txt = fl_cut_line(label(), w()-X);
-	
+    const char *txt = fl_cut_line(label(), w()-X);
+
     const char *saved_label = label();
     label(txt);
 

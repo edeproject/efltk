@@ -20,6 +20,9 @@ public:
     Fl_Widget **data() { return (Fl_Widget**)items; }
 
     Fl_Widget *operator [](uint ind) const { return (Fl_Widget *)items[ind]; }
+
+protected:
+    void free_item(Fl_Widget *item) { delete (Fl_Widget*)(item); }
 };
 
 #endif

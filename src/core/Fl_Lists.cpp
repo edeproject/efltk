@@ -25,26 +25,26 @@ Fl_Ptr_List::~Fl_Ptr_List()
 void Fl_Ptr_List::clear()
 {
     if(items) {
-        if(auto_delete_) for(uint i = 0; i < size_; i++) free(items[i]);
+        if(auto_delete_) for(uint i = 0; i < size_; i++) free_item(items[i]);
         free(items);
     }
     items=0;
     size_=0;
     capacity_=0;
 }
-#include <efltk/Fl.h>
+
 void Fl_Ptr_List::resize(uint newsize)
 {	
-	unsigned newcap;
-	if(blocksize_<=0) newcap = (newsize * 9 / 64 + 1) * 8;
-	else newcap = (newsize/blocksize_+1)*blocksize_;
+    unsigned newcap;
+    if(blocksize_<=0) newcap = (newsize * 9 / 64 + 1) * 8;
+    else newcap = (newsize/blocksize_+1)*blocksize_;
 
-	if(newcap!=capacity_) {		
+    if(newcap!=capacity_) {
 
-		// Delete items, if needed. (see Fl_String_List)
-        if(newsize<size_ && auto_delete_) for (uint i = newsize+1; i < size_; i++) free(items[i]);
+        // Delete items, if needed. (see Fl_String_List)
+        if(newsize<size_ && auto_delete_) for (uint i = newsize+1; i < size_; i++) free_item(items[i]);
 
-		capacity_ = newcap;
+        capacity_ = newcap;
         // Realloc list capacity
         if(items) items = (Fl_Ptr_List_Item *)realloc(items, capacity_ * sizeof(Fl_Ptr_List_Item));
         else items = (Fl_Ptr_List_Item *)malloc(capacity_ * sizeof(Fl_Ptr_List_Item));
@@ -80,13 +80,13 @@ void Fl_Ptr_List::insert(uint pos, Fl_Ptr_List_Item item)
 
 void Fl_Ptr_List::replace(uint pos, Fl_Ptr_List_Item item)
 {
-    if(auto_delete_) free(items[pos]);
+    if(auto_delete_) free_item(items[pos]);
     items[pos] = item;
 }
 
 void Fl_Ptr_List::remove(uint pos)
 {
-    if(auto_delete_) free(items[pos]);
+    if(auto_delete_) free_item(items[pos]);
 
     int mvSize = size_-pos-1;
     if(mvSize > 0) {
@@ -126,6 +126,11 @@ Fl_Ptr_List_Item Fl_Ptr_List::item(uint index) const
 {
     if(index>=size_) return 0;
     return items[index];
+}
+
+void Fl_Ptr_List::free_item(Fl_Ptr_List_Item item)
+{
+    free(item);
 }
 
 ////////////////////////////////////
@@ -241,6 +246,11 @@ void Fl_String_List::from_string(const char *s, const char *separator)
     free(buf);
 }
 
+void Fl_String_List::free_item(Fl_Ptr_List_Item item)
+{
+    delete (Fl_String*)(item);
+}
+
 /////////////////////////////////////
 // FL_CSTRING_LIST IMPLEMENTATION: //
 /////////////////////////////////////
@@ -346,3 +356,4 @@ void *Fl_Ptr_Stack::peek()
 	if(empty()) return 0;
 	return items[items.size()-1];
 }
+
