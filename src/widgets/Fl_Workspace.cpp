@@ -228,10 +228,11 @@ void Fl_MDI_Viewport::redraw_all()
             Fl_MDI_Window *win = (Fl_MDI_Window *)o;
             if(win!=_top) win->active(false);
             if(win->visible()) win->show();
+            win->set_damage(FL_DAMAGE_ALL);
             win->redraw();
         }
     }
-    redraw();
+    Fl::redraw();
 }
 
 void Fl_MDI_Viewport::relayout_all()

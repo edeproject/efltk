@@ -1,5 +1,6 @@
 #include <efltk/Fl_MDI_Window.h>
 #include <efltk/Fl_Image.h>
+#include <efltk/Fl_Item.h>
 
 #include <string.h>
 
@@ -1042,6 +1043,7 @@ class Fl_MDI_MenuButtons : public Fl_Widget
 {
 public:
     Fl_MDI_MenuButtons(Fl_MDI_Window *w, Fl_Menu_Bar *b) : Fl_Widget(0,0,0,0) {
+        type(Fl_Item::NO_EXECUTE);
         index = -1;
         box(FL_THIN_UP_BOX);
         win = w;
@@ -1164,11 +1166,11 @@ void Fl_MDI_Window::delete_menu_buttons()
         delete menubuttons;
         menubuttons = 0;
 
-	    Fl_Menu_Bar *menu = owner()->menu();
-	    if(menu) {
-	        menu->relayout();
-		    menu->redraw();
-		}
+        Fl_Menu_Bar *menu = owner()->menu();
+        if(menu) {
+            menu->relayout();
+            menu->redraw();
+        }
     }
 }
 
@@ -1290,6 +1292,10 @@ void Fl_MDI_Window::maximize(bool val)
     _maximized = val;
     minmax();
 
+    take_focus();
+    active(true);
+    setTop();
+
     _owner->redraw_all();
     _owner->relayout_all();
 }
@@ -1301,7 +1307,7 @@ void Fl_MDI_Window::minimize(bool val)
     if(_maximized) {
         delete_menu_buttons();
         _maximized=false;
-		_titlebar.show();
+        _titlebar.show();
     }
     if(_owner->_max==this) _owner->_max=0;
 
