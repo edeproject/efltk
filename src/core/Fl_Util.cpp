@@ -372,13 +372,17 @@ int fl_start_child_process(char *cmd)
     int pid, status;
     int nulldev;
     extern char **environ;
-    char *c;
+    char buf[FL_PATH_MAX];
+    char *c = 0;
 
-    if( (c=strrchr(cmd,'&')) )
-        *c = '\0';
 
     if (cmd == NULL)
         return (1);
+
+    memcpy(buf,cmd,strlen(cmd));
+    if( (c=strrchr(buf,'&')) )
+        *c = '\0';
+
     pid = fork ();
     if (pid == -1)
         return (-1);
@@ -388,7 +392,7 @@ int fl_start_child_process(char *cmd)
         // child
         argv[0] = "sh";
         argv[1] = "-c";
-        argv[2] = cmd;
+        argv[2] = buf;
         argv[3] = NULL;
 
         // The following is to avoid X locking when executing
