@@ -44,7 +44,7 @@ CC		=@CC@
 MAKEDEPEND	=@MAKEDEPEND@
 
 HAVE_STRIP      =@HAVE_STRIP@
-STRIP           =@STRIP_PATH@ --strip-unneeded
+STRIP           =@STRIP_PATH@ 
 
 # flags for C++ compiler:
 # WAS: I removed the -I@srcdir@, please use "xyz" rather than <xyz>
