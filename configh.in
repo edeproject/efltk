@@ -131,6 +131,9 @@
 #  define strtok_r(a,b,c) strtok(a,b)
 #endif
 
+/* Defined if NO math.h float function emulation needed */
+#define HAVE_FLOAT_FUNCTIONS 0
+
 /* Use the Posix poll() call instead of select() ? */
 #define USE_POLL 0
 
@@ -192,6 +195,24 @@
 
 /* Enables UTF8 */
 #define HAVE_XUTF8 0
+
+#if !HAVE_FLOAT_FUNCTIONS
+# define floorf(a)	floor(a)
+# define ceilf(a)	ceil(a)
+# define fmodf(a,b)	fmod(a,b)
+# define fabsf(a)	fabs(a)
+# define sinf(a)	sin(a)
+# define cosf(a)	cos(a)
+# define tanf(a)	tan(a)
+# define asinf(a)	asin(a)
+# define acosf(a)	acos(a)
+# define atanf(a)	atan(a)
+# define atan2f(a,b)	atan2(a,b)
+# define expf(a)	exp(a)
+# define logf(a)	log(a)
+# define log10f(a)	log10(a)
+# define sqrtf(a)	sqrt(a)
+#endif
 
 /*
  * End of "$Id$".
