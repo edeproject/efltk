@@ -25,6 +25,11 @@
 #include <stdlibx.h>
 #endif
 
+/**
+ * Fl_Query class if very important DB class in eFLTK
+ * it's purpose is make easier work with queries...
+ * (THIS FILE WILL BE COMMENTED MORE IN THE FUTURE :)
+ */
 Fl_Query::Fl_Query(Fl_Database *db,const Fl_String& _sql)
 : Fl_Data_Source(0L) {
     m_prepared = false;
