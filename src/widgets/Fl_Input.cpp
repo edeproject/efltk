@@ -168,8 +168,8 @@ int* returnn                     // return offset into buf here
             unsigned int ucs;
             fl_utf2ucs((unsigned char*) (p - 1), 2, &ucs);
             if (ucs >= 128 && ucs < 0xA0) {
-				int len = fl_utf_charlen((unsigned char)*(p - 1));
-				n += len;
+                int len = fl_utf_charlen((unsigned char)*(p - 1));
+                n += len;
                 p++;
             } else if(ucs == 0xA0) {
 				n++;
@@ -663,11 +663,10 @@ int Fl_Input::mouse_position(int X, int Y, int W, int ) const
     for (l = p, r = e; l<r; )
     {
 #if HAVE_XUTF8
-        double f;
         int cw = fl_utflen((unsigned char*)l, size()-(l-value()));
         if (cw < 1) cw = 1;
         t = l+cw;
-        f = X-xscroll_+expandpos(p, t, buf, 0);
+        int f = xpos+int(expandpos(p, t, buf, 0)+.5);
         if (f <= Fl::event_x()) {l = t; f0 = Fl::event_x()-f;}
         else r = t-cw;
 #else
@@ -681,10 +680,9 @@ int Fl_Input::mouse_position(int X, int Y, int W, int ) const
     if (l < e)
     {
 #if HAVE_XUTF8
-        double f1;
         int cw = fl_utflen((unsigned char*)l, size()-(l-value()));
         if (cw > 0) {
-            f1 = X-xscroll_+expandpos(p, l + cw, buf, 0) - Fl::event_x();
+            int f1 = xpos+int(expandpos(p, l + cw, buf, 0)+.5)-Fl::event_x();
             if (f1 < f0) l = l+cw;
         }
 #else
