@@ -56,7 +56,7 @@ public:
     float anim_speed() { return anim_speed_; }
     void anim_speed(float v) { anim_speed_ = v; }
 
-protected:
+protected:	
     float anim_speed_;
 
     bool animating; //set true, while animating

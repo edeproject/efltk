@@ -16,17 +16,16 @@
  ***************************************************************************/
 #ifndef __Fl_Popup_Window_H__
 #define __Fl_Popup_Window_H__
-#include <efltk/Fl_Window.h>
 
-class Fl_Popup_Window : public Fl_Window {
-protected:
-   int  m_clicked;
-   int  handle(int);
+#include "Fl_Menu_Window.h"
+
+class Fl_Popup_Window : public Fl_Menu_Window {
 public:
-   Fl_Popup_Window(int w, int h, const char *label = 0);
-   Fl_Popup_Window(int x,int y,int w, int h, const char *label = 0);
+	Fl_Popup_Window(int w, int h, const char *label = 0);
+	Fl_Popup_Window(int x,int y,int w, int h, const char *label = 0);	
 
-   bool show_popup();
+	bool show_popup();
+	int handle(int event);
 };
 
 #endif

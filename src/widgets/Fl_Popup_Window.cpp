@@ -15,75 +15,53 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <efltk/Fl.h>
-#include <efltk/fl_draw.h>
 #include <efltk/Fl_Popup_Window.h>
+#include <efltk/Fl.h>
+#include <efltk/Enumerations.h>
+#include <efltk/fl_draw.h>
 
 //===========================================================================
 Fl_Popup_Window::Fl_Popup_Window(int w, int h, const char *label)
-: Fl_Window(w,h,label) {
-   m_clicked = 0;
-   clear_border();
+: Fl_Menu_Window(w,h,label) 
+{
+	set_override();
 }
 
 Fl_Popup_Window::Fl_Popup_Window(int x,int y,int w, int h, const char *label) 
-: Fl_Window(x,y,w,h,label) {
-   m_clicked = 0;
-   clear_border();
+: Fl_Menu_Window(x,y,w,h,label) 
+{
+	set_override();
 }
 
-bool Fl_Popup_Window::show_popup() {
-   m_clicked = 0;
-   fl_cursor(FL_CURSOR_DEFAULT);
-
-   show();
-
-   Fl::modal(this,true);
-
-   while (!Fl::exit_modal_flag()) {
-      Fl::wait();
-   }
-
-   hide();
-
-   Fl::modal(0,false);
-
-   return m_clicked == 1;
+bool Fl_Popup_Window::show_popup() 
+{
+	return exec(0, true);
 }
 
-int Fl_Popup_Window::handle(int event) {
-   int key;
+int Fl_Popup_Window::handle(int event) 
+{	
+	switch( event ) {
+	case FL_PUSH:
+		if ( !Fl::event_inside(-2,-2,w()+4,h()+4) ) {
+			clear_value();
+			return 0;
+		}
+		Fl_Menu_Window::handle(event);
+		return 1;		
 
-   switch( event ) {
-
-   case FL_PUSH:
-      if ( !Fl::event_inside(0,0,w(),h()) ) {
-         m_clicked = -1;
-         Fl::exit_modal();
-         return 1;
-      }
-      break;
-
-   case FL_KEYBOARD:
-      key = Fl::event_key();
-      switch(key) {
-      case FL_Escape:
-      case FL_Tab:
-         m_clicked = -1;
-         Fl::exit_modal();
-         return 1;
-      case FL_Enter:
-         m_clicked = 1;
-         Fl::exit_modal();
-         return 1;
-      }
-      break;
-   }
-
-   if (m_clicked) {
-      Fl::exit_modal();
-      return 1;
-   }
-
-   return Fl_Window::handle(event);
+	case FL_KEYBOARD:
+		switch(Fl::event_key()) {
+		case FL_Escape:
+		case FL_Tab:
+			clear_value();
+			Fl::exit_modal();
+			return 1;
+		case FL_Enter:
+			set_value();         
+			Fl::exit_modal();
+			return 1;
+		}
+		break;
+	}
+	return Fl_Menu_Window::handle(event);	
 }
