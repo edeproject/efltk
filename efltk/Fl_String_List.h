@@ -35,7 +35,7 @@ public:
     void append(Fl_String item);
     void append(const char*item);
     void prepend(Fl_String item);
-    void insert(uint pos, Fl_String &item);
+    void insert(uint pos, const Fl_String &item);
     void insert(uint pos, const Fl_String_List &list);
 
     //Returns number of removed items
