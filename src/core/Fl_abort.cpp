@@ -107,7 +107,7 @@ static void warning(const char *format, ...)
     va_end(args);
 
 	TCHAR *text;
-#if UNICODE
+#ifdef UNICODE
     int len = fl_utf_nb_char((unsigned char*)buf, strlen(buf));
     text = (TCHAR*)malloc((len + 1) * sizeof(TCHAR));
     fl_utf2unicode((unsigned char*)buf, len, (unsigned short*)text);
@@ -118,7 +118,7 @@ static void warning(const char *format, ...)
 
     MessageBox(0, text, TEXT("Warning"), MB_ICONEXCLAMATION|MB_OK);
 
-#if UNICODE
+#ifdef UNICODE
 	free(text);
 #endif
 }
@@ -133,7 +133,7 @@ static void error(const char *format, ...)
     va_end(args);
 
 	TCHAR *text;
-#if UNICODE
+#ifdef UNICODE
     int len = fl_utf_nb_char((unsigned char*)buf, strlen(buf));
     text = (TCHAR*)malloc((len + 1) * sizeof(TCHAR));
     fl_utf2unicode((unsigned char*)buf, len, (unsigned short*)text);
@@ -145,7 +145,7 @@ static void error(const char *format, ...)
     
 	MessageBox(0, text, TEXT("Error"), MB_ICONSTOP|MB_SYSTEMMODAL);
 
-#if UNICODE
+#ifdef UNICODE
 	free(text);
 #endif
 

@@ -125,7 +125,7 @@ Fl_FontSize::Fl_FontSize(const char* name, int size, int charset)
 #endif
 
   TCHAR *family_name;
-#if UNICODE
+#ifdef UNICODE
   int len = fl_utf_nb_char((unsigned char*)name, strlen(name));
   family_name = (TCHAR*)malloc((len + 1) * sizeof(TCHAR));
   fl_utf2unicode((unsigned char*)name, len, (unsigned short*)family_name);

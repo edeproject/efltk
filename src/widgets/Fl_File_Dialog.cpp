@@ -910,7 +910,7 @@ void Fl_File_Dialog::read_dir(const char *_path)
             memset(&net, 0, sizeof(net));    
             netres = &net;
             read_net = true;
-#if UNICODE
+#ifdef UNICODE
 			int len = fl_utf_nb_char((unsigned char*)read_path, strlen(read_path));
 			net.lpRemoteName = (TCHAR*)malloc((len + 1) * sizeof(TCHAR));
 			fl_utf2unicode((unsigned char*)read_path, len, (unsigned short*)net.lpRemoteName);
@@ -1754,7 +1754,7 @@ void Fl_File_Dialog::add_netitem(LPNETRESOURCE net)
 
 	char *remote_name;
 	
-#if UNICODE
+#ifdef UNICODE
 	int len = wcslen(net->lpRemoteName);
 	remote_name = (char*)malloc(len*5+1);
 	fl_unicode2utf(net->lpRemoteName, len, remote_name);
@@ -1775,7 +1775,7 @@ void Fl_File_Dialog::add_netitem(LPNETRESOURCE net)
 	listview_->end();
 
 	free(tmp);
-#if UNICODE
+#ifdef UNICODE
 	free(remote_name);
 #endif
 }

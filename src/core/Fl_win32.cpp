@@ -472,7 +472,7 @@ char *fl_locale2utf8(const char *s, UINT codepage = 0)
 
 int fl_atol(TCHAR *buf)
 {
-#if UNICODE
+#ifdef UNICODE
 	CHAR strTmp[128];
 	wcstombs(strTmp, (const wchar_t *)buf, sizeof(strTmp)); 
 	return atoi(strTmp); 
@@ -1575,7 +1575,7 @@ void Fl_X::create(Fl_Window* window)
     {
         registered = true;
 
-#if UNICODE
+#ifdef UNICODE
 		len = fl_utf2unicode((const uchar*)Fl_Window::xclass(), strlen(Fl_Window::xclass()), (unsigned short*)class_name);		
 #else
 		len = strlen(Fl_Window::xclass());
@@ -1683,7 +1683,7 @@ void Fl_X::create(Fl_Window* window)
 	} else 
 	*/{
 		TCHAR *label = NULL;
-#if UNICODE
+#ifdef UNICODE
 		if(window->label()) {
 			len = fl_utf_nb_char((unsigned char*)window->label(), strlen(window->label()));
 			label = (TCHAR*)malloc((len + 1) * sizeof(TCHAR));
@@ -1702,7 +1702,7 @@ void Fl_X::create(Fl_Window* window)
 			fl_display,
 			NULL // creation parameters
 		);
-#if UNICODE
+#ifdef UNICODE
 		if(label) free(label);
 #endif
 	}	
@@ -1789,7 +1789,7 @@ void set_label(Fl_Window *win, const char *name, const char *iname)
     if(win->shown() && !win->parent()) {
         if (!name) name = "";
 		TCHAR *text;
-#if UNICODE
+#ifdef UNICODE
         int len = fl_utf_nb_char((unsigned char*)name, strlen(name));
         text = (TCHAR*)malloc((len + 1) * sizeof(TCHAR));
         fl_utf2unicode((unsigned char*)name, len, (unsigned short*)text);
@@ -1798,7 +1798,7 @@ void set_label(Fl_Window *win, const char *name, const char *iname)
 		text = fl_utf82locale(name);
 #endif
         SetWindowText(fl_xid(win), text);
-#if UNICODE
+#ifdef UNICODE
         free(text);
 #endif
     }

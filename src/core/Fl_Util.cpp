@@ -135,7 +135,7 @@ char *fl_get_homedir()
 		if(RegQueryValueEx(hKey, TEXT("Local AppData"), NULL, NULL, (LPBYTE)w32path, &size)==ERROR_SUCCESS)
 		{
 			RegCloseKey(hKey);			
-#if UNICODE
+#ifdef UNICODE
 			int len = wcslen(w32path);			
 			fl_unicode2utf(w32path, len, path);
 #else

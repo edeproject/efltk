@@ -119,7 +119,7 @@ int Fl_Font_::encodings(const char**& arrayp) const
 	
 	const char *name = name_+1;
 	TCHAR *family_name;
-#if UNICODE
+#ifdef UNICODE
 	int len = fl_utf_nb_char((unsigned char*)name, strlen(name));
 	family_name = (TCHAR*)malloc((len + 1) * sizeof(TCHAR));
 	fl_utf2unicode((unsigned char*)name, len, (unsigned short*)family_name);
@@ -188,7 +188,7 @@ int Fl_Font_::sizes(int*& sizep) const
 
 	const char *name = name_+1;
 	TCHAR *family_name;
-#if UNICODE
+#ifdef UNICODE
 	int len = fl_utf_nb_char((unsigned char*)name, strlen(name));
 	family_name = (TCHAR*)malloc((len + 1) * sizeof(TCHAR));
 	fl_utf2unicode((unsigned char*)name, len, (unsigned short*)family_name);
