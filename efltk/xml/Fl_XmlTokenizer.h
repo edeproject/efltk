@@ -7,28 +7,33 @@
 
 #include "Fl_XmlCtx.h"
 
-/*base class for iterating through xmltoken */
+/*
+ * Base class for iterating through xml stream.
+ * Tokenizes stream to tokens.
+ * Used internally only.
+ */
 class Fl_XmlTokenizer
 {
 public:
     Fl_XmlTokenizer(Fl_XmlContext *ctx);
     virtual ~Fl_XmlTokenizer() { }
 
-    //set to true to ignore parsing whitespace
+    // Set to true to ignore parsing whitespace and new-line characters
     void cdata_mode(bool val) { cdata_mode_ = val; }
-    bool  cdata_mode() { return cdata_mode_ || auto_cdata_; }
+    bool cdata_mode() { return cdata_mode_ || auto_cdata_; }
 
-    //dereference operator
+    // Dereference operator
     Fl_String &operator*() { return curtoken; }
 
-    //advances in the xml stream
+    // Next token in stream
     Fl_XmlTokenizer &operator++()    { get_next(); return *this; }
     Fl_XmlTokenizer &operator++(int) { get_next(); return *this; }
 
-    //puts the token back into the stream
+    // Puts the token back into the stream
     void put_back(Fl_String &token) { putback_stack.push(token); }
     void put_back() { putback_stack.push(curtoken); }
 
+    // Get next token, stores it to 'curtoken'
     void get_next();
 
     // End of input stream
@@ -41,40 +46,51 @@ public:
 
 protected:
 
+    // Current parsed token
     Fl_String curtoken;
 
-    //char which was put back internally
+    // Char which was put back internally
     char putback_char;
 
-    //stack for put_back()'ed tokens
+    // Stack for put_back()'ed tokens
     Fl_String_Stack putback_stack;
 
-    // internally used to recognize chars in the stream
+    // Internally used to recognize chars in the stream
     bool is_literal( char c );
     bool is_whitespace( char c );
     bool is_newline( char c );
-    bool is_delimiter( char c ); // start-/endchar of a Fl_String
+    bool is_delimiter( char c ); // start-/endchar of a string
 
-    //cdata-mode doesn't care for whitespaces in generic strings
+    // Cdata-mode doesn't care for whitespaces in strings
+    // Auto cdata-mode turned on internally, doesnt add new-lines
     bool cdata_mode_, auto_cdata_;
 
+    // Context pointer
     Fl_XmlContext *ctxptr;
 };
 
-// Iterator through all xmltoken contained in the xml input stream
+/*
+ * Simple XML stream implementation.
+ * Handles FILE or memory pointer.
+ */
 class Fl_XmlStreamIterator : public Fl_XmlTokenizer
 {
 public:
-    // ctor with inputstream
+    // Contructor with inputbuffer
     Fl_XmlStreamIterator(Fl_XmlContext *ctx, const char *inputbuffer, long size=0);
-    // ctor with inputstream
+    // Contructor with FILE pointer
     Fl_XmlStreamIterator(Fl_XmlContext *ctx, FILE *fp);
+
     virtual ~Fl_XmlStreamIterator();
 
+    // End of stream?
     bool eos();
 
+    // Peeks stream, not removes from stream
     Fl_String peek(int length);
+    // Reads length bytes from stream, removed from stream
     Fl_String read(int length);
+    // Gets one character from stream, removed from stream
     char getchar();
 
 protected:

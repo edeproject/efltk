@@ -5,6 +5,9 @@
 
 class Fl_XmlNode;
 
+/*
+ * Node list implementation
+ */
 class Fl_XmlNode_List : public Fl_Ptr_List {
 public:
     Fl_XmlNode_List() : Fl_Ptr_List() { }
