@@ -352,6 +352,7 @@ void Fl_MDI_Window::default_callback(Fl_MDI_Window *win, void* v)
 
 static void revert(Fl_Style* s) {
     s->box = FL_THICK_UP_BOX;
+    s->color = FL_GRAY;
 }
 static Fl_Named_Style style("MDI_Window", revert, &Fl_MDI_Window::default_style);
 Fl_Named_Style* Fl_MDI_Window::default_style = &::style;

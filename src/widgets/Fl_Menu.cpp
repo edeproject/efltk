@@ -1069,7 +1069,8 @@ int Fl_Menu_::popup(int X, int Y, int W, int H)
     }
     Y+=H;
 
-    MenuWindow::default_style->color = color();
+    if(color()!=FL_INVALID_COLOR)
+        MenuWindow::default_style->color = color();
 
     float speed = (anim_speed()==-1||isnan(anim_speed()))?Fl_Menu_::default_anim_speed():anim_speed();
     int effect = (effect_type()==-1)?Fl_Menu_::default_effect_type():effect_type();
@@ -1153,7 +1154,8 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
     // fix possible programmer error...
     Fl_Group::current(0);
 
-    MenuWindow::default_style->color = color();
+    if(color()!=FL_INVALID_COLOR)
+        MenuWindow::default_style->color = color();
 
     float speed = (anim_speed()==-1||isnan(anim_speed()))?Fl_Menu_::default_anim_speed():anim_speed();
     int effect = (effect_type()==-1)?Fl_Menu_::default_effect_type():effect_type();
@@ -1315,7 +1317,8 @@ int Fl_Choice::popup(int X, int Y, int W, int H)
         Y += Fl::event_y_root()-Fl::event_y();
     }
 
-    MenuWindow::default_style->color = color();
+    if(color()!=FL_INVALID_COLOR)
+        MenuWindow::default_style->color = color();
 
     float speed = (anim_speed()==-1||isnan(anim_speed()))?Fl_Menu_::default_anim_speed():anim_speed();
     int effect = (effect_type()==-1)?Fl_Menu_::default_effect_type():effect_type();

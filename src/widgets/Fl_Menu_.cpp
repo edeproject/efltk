@@ -94,6 +94,7 @@ void Fl_Menu_::ctor_init() {
 
     anim_flags_ = TOP_TO_BOTTOM|LEFT_TO_RIGHT;
 
+    color(FL_GRAY);
     callback(default_callback);
     end();
 }
