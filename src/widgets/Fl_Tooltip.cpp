@@ -129,16 +129,24 @@ static void recent_timeout(void*)
     recent_tooltip = false;
 }
 
+static void tooltip_close_timeout(void*)
+{
+    Fl_Tooltip::exit();
+}
+
 extern bool fl_slow_animate; //FL_Menu_Window::animate
 void Fl_Tooltip::tooltip_timeout(void*)
 {
     if(recursion) return;
+
     Fl::remove_timeout(recent_timeout);
+    Fl::remove_timeout(tooltip_close_timeout);
+
     recursion = true;
     Fl_String tip = generator ? generator(Fl_Tooltip::current(), argument) : (const char*)argument;
     if(tip.empty()) {
-        if(window)
-            window->hide();
+
+        if(window) window->hide();
 
     } else {
 
@@ -183,9 +191,10 @@ void Fl_Tooltip::tooltip_timeout(void*)
         window->show();
         window->resize(window->x(), window->y(), window->w(), window->h());
         window->Fl_Menu_Window::layout();
+        Fl::add_timeout(5.0, tooltip_close_timeout);
     }
 
-    Fl::add_timeout(1, recent_timeout);
+    Fl::add_timeout(1.0, recent_timeout);
     recent_tooltip = true;
     recursion = false;
 }

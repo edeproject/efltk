@@ -615,10 +615,10 @@ void Fl::modal(Fl_Widget* widget, bool grab)
         // Don't pop up the tooltip for whatever they are pointing at:
         Fl_Tooltip::current(belowmouse_);
     }
-    //    printf("modal %s, xmousewin %s, belowmouse %s\n",
-    //       modal_ ? modal_->label() : "NULL",
-    //       xmousewin ? xmousewin->label() : "NULL",
-    //       belowmouse_ ? belowmouse_->label() : "NULL");
+    //printf("modal(%s), xmousewin(%s), belowmouse(%s)\n",
+    //       modal_ ? modal_->label().c_str() : "NULL",
+    //       xmousewin ? xmousewin->label().c_str() : "NULL",
+    //       belowmouse_ ? belowmouse_->label().c_str() : "NULL");
 
     exit_modal_ = false;
 }
@@ -669,7 +669,12 @@ bool Fl::handle(int event, Fl_Window* window)
             if (to->contains(belowmouse())) return 0;
         case FL_MOVE:
             //case FL_DRAG: // does not happen
-            if (pushed()) {to = pushed_; event = FL_DRAG; break;}
+            if (pushed()) {
+                to = pushed_;
+                Fl_Tooltip::exit();
+                event = FL_DRAG;
+                break;
+            }
             {
                 Fl_Widget* pbm = belowmouse();
                 if (modal_ && !modal_->contains(to)) to = modal_;
@@ -681,7 +686,10 @@ bool Fl::handle(int event, Fl_Window* window)
             }
 
         case FL_LEAVE:
-            if (!pushed_) {belowmouse(0); Fl_Tooltip::exit();}
+            if (!pushed_) {
+                belowmouse(0);
+                Fl_Tooltip::exit();
+            }
             return true;
 
         case FL_RELEASE:
