@@ -40,7 +40,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #include <efltk/Fl_Boxtype.h>
 #include <efltk/Fl_Pixmap.h>
@@ -76,7 +75,7 @@ public:
                  Fl_Boxtype highlight_b=0,
                  Fl_Boxtype inactive_b=0,
                  Fl_Flags m=0);
-    void draw(const int,int,int,int, Fl_Color, Fl_Flags) const;
+    void draw(int,int,int,int, Fl_Color, Fl_Flags) const;
 };
 
 void Fl_Image_Box::draw(int x, int y, int w, int h,
@@ -122,13 +121,39 @@ Fl_Boxtype_(0), mask(m)
     dy_ = normal_b->dy();
     dw_ = normal_b->dw();
     dh_ = normal_b->dh();
-    fills_rectangle_ = 1;//normal_b->fills_rectangle();
+
+    fills_rectangle_ = 1;//normal_b->fills_rectangle();	
 
     normal_img = normal;
     down_img = value;
     highlight_img = highlight;
     inactive_img = inactive;
 }
+
+class TabButton : public Fl_Boxtype_
+{
+public:
+	TabButton(Fl_Boxtype selected, Fl_Boxtype normal) : Fl_Boxtype_(0) {
+		m_sel = selected;
+		m_norm = normal;
+		dx_ = dy_ = 1;
+		dw_ = dh_ = 2;
+		fills_rectangle_ = 1;
+	}
+	
+	void draw(int x,int y,int w,int h, Fl_Color c, Fl_Flags f) const
+	{		
+		if(f&FL_SELECTED) {			
+			fl_push_clip(x,y,w,h+2);
+			m_sel->draw(x,y,w,h+5,c,f);			
+		} else {
+			fl_push_clip(x,y,w,h);
+			m_norm->draw(x,y+1,w,h+5,c,f);
+		}
+		fl_pop_clip();
+	}
+	Fl_Boxtype m_sel, m_norm;
+};
 
 extern "C" bool fltk_theme()
 {
@@ -141,36 +166,37 @@ extern "C" bool fltk_theme()
     light.state_effect(false);
     light.mask_type(MASK_NONE);
 
+	static Fl_Image_Box up        (&gray, 0, &light, 0 , FL_THIN_UP_BOX, FL_THIN_DOWN_BOX, FL_THIN_UP_BOX);
+	static Fl_Image_Box up_blue   (&blue, 0, &light, 0 , FL_THIN_UP_BOX, FL_THIN_DOWN_BOX, FL_THIN_UP_BOX);
+
+	static Fl_Image_Box down      (&gray, &blue, &light, 0 , FL_THIN_DOWN_BOX);
+	static Fl_Image_Box down_lt   (&light_lt, &light_lt, &light_lt, 0 , FL_THIN_DOWN_BOX);
+
+	static Fl_Image_Box border    (&blue, &light, &light, 0, FL_BORDER_BOX);
+	static Fl_Image_Box border_hl (&gray, &gray, &gray, 0, FL_FLAT_BOX, FL_THIN_DOWN_BOX, FL_THIN_UP_BOX, 0, FL_VALUE);
+
+	static Fl_Image_Box hl        (&blue, &blue, &light, &blue, FL_FLAT_BOX, 0, FL_THIN_UP_BOX);
+
+	static Fl_Image_Box flat      (&gray, &blue, &light, 0, FL_FLAT_BOX);
+	static Fl_Image_Box flat_blue (&blue, 0, 0, 0, FL_FLAT_BOX);
+
+	static Fl_Image_Box menu_up   (&gray, &blue, &light, 0 , FL_UP_BOX);
+
+	static TabButton tab_button(&up_blue, &up);
+
     //  fl_background(0xD0D0E000); // it would be nice to figure out color from image
-    Fl_Boxtype up        = new Fl_Image_Box(&gray, 0, &light, 0 , FL_THIN_UP_BOX, FL_THIN_DOWN_BOX, FL_THIN_UP_BOX);
-    Fl_Boxtype up_blue   = new Fl_Image_Box(&blue, 0, &light, 0 , FL_THIN_UP_BOX, FL_THIN_DOWN_BOX, FL_THIN_UP_BOX);
-    Fl_Boxtype down      = new Fl_Image_Box(&gray, &blue, &light, 0 , FL_THIN_DOWN_BOX);
-    Fl_Boxtype down_lt   = new Fl_Image_Box(&light_lt,&light_lt, &light_lt, 0 , FL_THIN_DOWN_BOX);
 
-    Fl_Boxtype border    = new Fl_Image_Box(&blue, &light, &light, 0, FL_BORDER_BOX);
-    Fl_Boxtype border_hl = new Fl_Image_Box(&gray, &gray, &gray, 0, FL_FLAT_BOX, FL_THIN_DOWN_BOX, FL_THIN_UP_BOX, 0, FL_VALUE);
-
-    Fl_Boxtype hl        = new Fl_Image_Box(&blue, &blue, &light, &blue, FL_FLAT_BOX, 0, FL_THIN_UP_BOX);
-
-    Fl_Boxtype flat      = new Fl_Image_Box(&gray, &blue, &light, 0, FL_FLAT_BOX);
-    Fl_Boxtype flat_blue = new Fl_Image_Box(&blue, 0, 0, 0, FL_FLAT_BOX);
-
-    Fl_Boxtype menu_up   = new Fl_Image_Box(&gray, &blue, &light, 0 , FL_UP_BOX);
-
-    Fl_Style::scrollbar_width = 14;
-    Fl_Widget::default_style->box = down;
-    Fl_Widget::default_style->button_box = up;
+    Fl_Style::scrollbar_width = 16;
+    Fl_Widget::default_style->box = &down;
+    Fl_Widget::default_style->button_box = &up;
     Fl_Widget::default_style->highlight_color = FL_LIGHT2;
 
     Fl_Style* s;
-    if ((s = Fl_Style::find("combo box"))) {
-        s->box = down;
-    }
-    if ((s = Fl_Style::find("listview"))) {
-        s->box = down_lt;
+	if ((s = Fl_Style::find("combo box"))) {
+        s->box = &down;
     }
     if ((s = Fl_Style::find("window"))) {
-        s->box = flat_blue;
+        s->box = &flat_blue;
     }
     if ((s = Fl_Style::find("group"))) {
         s->box = FL_NO_BOX;
@@ -178,63 +204,73 @@ extern "C" bool fltk_theme()
     if ((s = Fl_Style::find("menu"))) {
         s->leading=2;
         s->selection_text_color = fl_color_average(FL_BLUE, FL_BLACK, 0.5);
-        s->box = menu_up;
-        s->button_box = border;
+        s->box = &menu_up;
+        s->button_box = &border;
     }
     if ((s = Fl_Style::find("menu bar"))) {
         s->leading=2;
         s->selection_text_color = fl_color_average(FL_BLUE, FL_BLACK, 0.5);
         s->highlight_label_color = fl_color_average(FL_BLUE, FL_BLACK, 0.5);
         s->highlight_color = FL_GRAY;
-        s->box = flat;
-        s->button_box = border_hl;
+        s->box = &flat;
+        s->button_box = &border_hl;
     }
     if ((s = Fl_Style::find("tool bar"))) {
         s->highlight_color = FL_GRAY;
-        s->box = up_blue;
+        s->box = &up_blue;
     }
     if ((s = Fl_Style::find("button"))) {
         s->selection_text_color = FL_BLACK;
         s->selection_color = FL_BLACK;
-        s->box = up;
+        s->box = &up;
     }
     if((s = Fl_Style::find("browser"))) {
         s->box = FL_THIN_DOWN_BOX;
     }
-    /*if ((s = Fl_Style::find("tabs"))) {
-        s->box = up;
-    }*/
+    if ((s = Fl_Style::find("tabs"))) {
+        //s->box = &up;
+		s->button_box = &tab_button;
+		s->focus_box = FL_DOTTED_FRAME;
+    }
     if ((s = Fl_Style::find("pack"))) {
-        s->box = flat_blue;
+        s->box = &flat_blue;
     }
     if ((s = Fl_Style::find("slider"))) {
         s->box = FL_NO_BOX;
-        s->button_box = up;
+        s->button_box = &up;
         s->focus_box = FL_NO_BOX;
     }
     if ((s = Fl_Style::find("value slider"))) {
         s->box = FL_NO_BOX;
-        s->button_box = up;
+        s->button_box = &up;
         s->focus_box = FL_NO_BOX;
     }
+	if ((s = Fl_Style::find("scrollbar"))) {
+		s->button_box = &up;
+		s->box = FL_THIN_DOWN_BOX;
+	}
     if ((s = Fl_Style::find("listheader"))) {
-        s->button_box = up;
+        s->button_box = &up;
+    }
+    if ((s = Fl_Style::find("listview"))) {
+		s->box = &down_lt;
+		s->color = FL_GRAY;
     }
     if ((s = Fl_Style::find("highlight button"))) {
-        s->box = hl;
+        s->box = &hl;
     }
     if ((s = Fl_Style::find("workspace"))) {
         s->box = FL_THIN_DOWN_BOX;;
     }
     if ((s = Fl_Style::find("mdi viewport"))) {
-        s->box = flat;
+        s->box = &flat;
     }
     if ((s = Fl_Style::find("panel"))) {
-        s->box = up;
+        s->box = &up;
     }
     /*
     if ((s = Fl_Style::find("light button"))) {
-        s->box = box3;
+        s->box = &box3;
     } */
 
     return true;
