@@ -8,16 +8,16 @@
   * Copyright (c) EDE Team. More information about project: http://ede.sf.net
   *
   * Authors (sorted by time they worked on this source file):
-  * 	Alexey Parshin, alexey§fltk.net
-  * 	Dejan Lekic, dejan§nu6.org
+  *     Alexey Parshin, alexey§fltk.net
+  *     Dejan Lekic, dejan§nu6.org
   *
   * Contributors (ie. people that have sent patches, ideas, suggestions):
   *     Mikko Lahteenmaki, mikko§fltk.net
   *
   * PLEASE report any bug, bugfix, improvement or suggestion to 
-  * 	efltk-bugs@fltk.net
+  *     efltk-bugs@fltk.net
   ****************************************************************************/
-  
+
 #ifndef __FL_MAIL_MESSAGE_H__
 #define __FL_MAIL_MESSAGE_H__
 
@@ -51,13 +51,13 @@ public:
  */
 class Fl_Mail_Message_Part 
 {
-	Fl_String_List              m_messageText;
-	Fl_Mail_Message_Part_List   m_messageParts;
-	Fl_String 					m_contentType;
-	Fl_String 					m_contentTransferEncoding;
+    Fl_String_List              m_messageText;
+    Fl_Mail_Message_Part_List   m_messageParts;
+    Fl_String                        m_contentType;
+    Fl_String                        m_contentTransferEncoding;
 protected:
-    virtual void parse_headers(unsigned start,unsigned end);
-    virtual void parse_part();
+    virtual void parse_headers(unsigned start,unsigned end) {}
+    virtual void parse_part() {}
 public:
     Fl_Mail_Message_Part(const Fl_String_List& source,unsigned start,unsigned end);
     virtual ~Fl_Mail_Message_Part() {}

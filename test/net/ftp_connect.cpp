@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
     char           password[80];
 
     Fl_Window   window(600,400,"FTP DS test");
-    Fl_ListView lview(10,10,580,380);
+    Fl_ListView lview("",10,FL_ALIGN_CLIENT);
     window.end();
     window.show();
 
