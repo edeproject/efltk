@@ -361,10 +361,9 @@ AC_DEFUN([AC_WITH_UTF8],
     AC_MSG_RESULT($USE_UTF8)
     AC_SUBST(USE_UTF8)
 
-dnl ALWAYS DISABLED DUE TO MISSING FILES!
-dnl    if test "$USE_UTF8" = "yes"; then
-dnl      AC_DEFINE(HAVE_XUTF8, 1, [Define to 1 if utf8 is requested.])
-dnl    fi      
+    if test "$USE_UTF8" = "yes"; then
+      AC_DEFINE(HAVE_XUTF8, 1, [Define to 1 if utf8 is requested.])
+    fi      
 ])   
 
 
