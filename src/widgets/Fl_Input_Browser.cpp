@@ -321,7 +321,7 @@ void Fl_Input_Browser::draw()
 
 void Fl_Input_Browser::hide_popup()
 {
-    if(win) {
+    if(win && win->visible()) {
         Fl::exit_modal();
     }
 }
