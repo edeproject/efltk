@@ -48,7 +48,7 @@ int Fl_List::children(const Fl_Menu_* menu, const int* indexes, int level)
     while (level--)
     {
         int i = *indexes++;
-        //if (i < 0 || i >= group->children()) return -1;
+        if (i < 0 || i >= group->children()) return -1;
         Fl_Widget* widget = group->child(i);
         if (!widget->is_group()) return -1;
         group = (Fl_Group*)widget;
@@ -63,7 +63,7 @@ Fl_Widget* Fl_List::child(const Fl_Menu_* menu, const int* indexes,int level)
     for (;;)
     {
         int i = *indexes++;
-        //if (i < 0 || i >= group->children()) return 0;
+        if (i < 0 || i >= group->children()) return 0;
         Fl_Widget* widget = group->child(i);
         if (!level--) return widget;
         if (!widget->is_group()) return 0;
