@@ -531,6 +531,7 @@ void Fl_File_Chooser::make_group()
         o->layout_spacing(2);
 
         m_filebrowser = new Fl_File_Browser(0, 0, 100, 100);
+        m_filebrowser->when(FL_WHEN_CHANGED);
         m_filebrowser->callback((Fl_Callback*)cb_list, this);
         m_filebrowser->add_up_item(false);
         m_filebrowser->end();

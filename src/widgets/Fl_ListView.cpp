@@ -72,6 +72,9 @@ void Fl_ListView::clear()
     items.clear();
     row_count(0);
 
+    yposition(0);
+    xposition(0);
+
     relayout();
 }
 
@@ -353,7 +356,7 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
                 } else { // end multi
 
                     if(!selected_row(current_item) || selected()>1) {
-                        select_only_row(current_item, true);
+                        select_only_row(current_item);
                     }                    
                     show_row( (cur_row = current_item) );
                 }
@@ -398,16 +401,14 @@ int Fl_ListView::handle_key()
         case FL_Home: {
                 m_search_str.clear();
                 yposition(0);
-                item(child(0));
-                select_only_row(0, true);
+                select_only_row(0);
                 return 1;
             }
 
         case FL_End: {
                 m_search_str.clear();
                 yposition(table_h - tih);
-                item(child(children()-1));
-                select_only_row(children()-1, true);
+                select_only_row(children()-1);
                 return 1;
             }
 
@@ -417,10 +418,11 @@ int Fl_ListView::handle_key()
                 if(cur_row==-1) index = children()-1;
                 else index = prev_row();
                 if(index>=0) {
+                    cur_row++;
                     if(Fl::event_state(FL_SHIFT|FL_CTRL) && multi())
                         select_row(index, 1);
                     else
-                        select_only_row(index, true);
+                        select_only_row(index);
                     show_row(index);
                     cur_row = index;
                 }
@@ -433,10 +435,11 @@ int Fl_ListView::handle_key()
                 if(cur_row==-1) index = 0;
                 else index = next_row();
                 if(index>=0 && index<int(children())) {
+                    cur_row--;
                     if(Fl::event_state(FL_SHIFT|FL_CTRL) && multi())
                         select_row(index, 1);
                     else
-                        select_only_row(index, true);
+                        select_only_row(index);
                     show_row(index);
                     cur_row = index;
                 }
@@ -457,9 +460,10 @@ int Fl_ListView::handle_key()
                 if(ret)
                 {
                     if(Fl::event_key()==FL_Page_Up)
-                        select_only_row( row_at(yposition()), true );
-                    else if(Fl::event_key()==FL_Page_Down)
-                        select_only_row( row_at(yposition()+tih), true );
+                        select_only_row( row_at(yposition()) );
+                    else if(Fl::event_key()==FL_Page_Down) {
+                        select_only_row(row_at(yposition()+tih));
+                    }
 
                     show_row(cur_row);
                     return 1;
@@ -505,7 +509,7 @@ int Fl_ListView::handle_key()
                             m_search_str = search_str;
                             if(type_in_mode()==TYPE_IN_SELECT) {
 
-                                select_only_row(index, true);
+                                select_only_row(index);
                                 show_row(index);
 
                             } else if(type_in_mode()==TYPE_IN_HIDE) {
@@ -786,8 +790,8 @@ Fl_ListView_Item *Fl_ListView::item(Fl_ListView_Item *i)
 int Fl_ListView::row_at(int Y) const
 {
     if(!children()) return 0;
-    if(Y < 0) return 0;
-    if(Y > table_h) return items.size()-1;
+    if(Y <= 0) return 0;
+    if(Y >= table_h) return items.size()-1;
 
     int R,C;
     position2rowcol(0, Y, R, C);
@@ -840,14 +844,14 @@ bool Fl_ListView::select_row(unsigned row, int value)
     return false;
 }
 
-bool Fl_ListView::select_only_row(unsigned row, bool do_callback)
+bool Fl_ListView::select_only_row(unsigned row)
 {   
     unselect_all();
     if (set_select_flag(row, 1)) {
         selection.append(row);
         items[row]->redraw();
-        cur_row = row;
-        if(do_callback) {
+        if((unsigned)cur_row != row) {
+            cur_row = row;
             if(when()&(FL_WHEN_CHANGED)) Fl_Widget::do_callback(FL_DATA_CHANGE);
             else set_changed();
         }

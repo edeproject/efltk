@@ -427,7 +427,7 @@ void Fl_Table_Base::position2rowcol(int x, int y, int &R, int &C) const
         for(; r < row_count(); r++)
         {
             if(!visible_row(r)) continue;
-            if(y>=Y && y<=Y+row_height(r)) {
+            if(y>Y && y<=Y+row_height(r)) {
                 R = r;
                 break;
             }
@@ -440,7 +440,7 @@ void Fl_Table_Base::position2rowcol(int x, int y, int &R, int &C) const
         for(unsigned c = 0; c < col_count(); c++)
         {
             if(!visible_col(c)) continue;
-            if(x>=X && x<=X+col_width(c)) {
+            if(x>X && x<=X+col_width(c)) {
                 C = c;
                 break;
             }
