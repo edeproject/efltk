@@ -25,6 +25,7 @@
 #include "Fl_Group.h"
 #include "Fl_Scrollbar.h"
 
+/** Fl_Scroll */
 class FL_API Fl_Scroll : public Fl_Group {
     Fl_End endgroup;
 public:

@@ -22,8 +22,9 @@
 #ifndef _FL_DIRECTORY_DS_H_
 #define _FL_DIRECTORY_DS_H_
 
-#include <efltk/Fl_Memory_DS.h>
+#include "Fl_Memory_DS.h"
 
+/** Fl_Directory_DS */
 class Fl_Directory_DS : public Fl_Memory_DS  {
 public:
     // ctor, dtor 

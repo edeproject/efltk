@@ -24,7 +24,8 @@
 
 #include "Fl_Float_Input.h"
 
-class FL_API Fl_Int_Input : public Fl_Float_Input {
+/** Fl_Int_Input */
+class Fl_Int_Input : public Fl_Float_Input {
 public:
     Fl_Int_Input(int x,int y,int w,int h,const char *l = 0) : Fl_Float_Input(x,y,w,h,l) { type(INT); }
 };

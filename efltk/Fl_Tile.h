@@ -24,6 +24,7 @@
 
 #include "Fl_Group.h"
 
+/** Fl_Tile */
 class FL_API Fl_Tile : public Fl_Group {
 public:
     Fl_Tile(int X,int Y,int W,int H,const char*l=0) : Fl_Group(X,Y,W,H,l) {}

@@ -32,6 +32,7 @@
 #include "Fl_File_Dialog.h"
 #include "Fl_Simple_Html.h"
 
+/** Fl_Help_Dialog */
 class Fl_Help_Dialog : public Fl_Main_Window
 {
 public:

@@ -26,7 +26,7 @@
 #include "Fl_String.h"
 #include <stdio.h>
 
-// Fl_String based string list
+/** Fl_String based string list */
 class Fl_String_List : public Fl_Ptr_List {
 public:
 	Fl_String_List() : Fl_Ptr_List() { auto_delete_ = true; }

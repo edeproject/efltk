@@ -24,6 +24,7 @@
 
 #include "Fl_Input.h"
 
+/** Fl_Numeric_Input */
 class FL_API Fl_Numeric_Input : public Fl_Input {
 public:
     Fl_Numeric_Input(int x,int y, int w,int h,const char* l = 0) : Fl_Input(x,y,w,h,l) {when(FL_WHEN_ENTER_KEY|FL_WHEN_RELEASE);}

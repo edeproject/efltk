@@ -24,7 +24,8 @@
 
 #include "Fl_Ptr_List.h"
 
-class Fl_Ptr_Stack {
+/** Fl_Ptr_Stack */
+class FL_API Fl_Ptr_Stack {
 public:
     // Max size, 0=unlimited
     Fl_Ptr_Stack(int max_size=0) { max_size_ = max_size; }

@@ -24,6 +24,7 @@
 
 #include "Fl_Valuator.h"
 
+/** Fl_Dial */
 class FL_API Fl_Dial : public Fl_Valuator {
 
 public:

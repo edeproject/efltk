@@ -26,6 +26,7 @@
 #include "Fl_Image.h"
 #include "Fl_Ptr_List.h"
 
+/** Fl_ListView_Header */
 class Fl_ListView_Header : public Fl_Widget
 {
 public:

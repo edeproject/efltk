@@ -24,6 +24,7 @@
 
 #include "Fl_Item.h"
 
+/** Fl_Toggle_Item */
 class Fl_Toggle_Item : public Fl_Item {
 public:
     Fl_Toggle_Item(const char* l = 0) : Fl_Item(l) { type(TOGGLE); }

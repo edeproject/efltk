@@ -25,6 +25,7 @@
 #include "Fl_Widget.h"
 #include "x.h"
 
+/** Fl_WM */
 class Fl_WM
 {
 public:

@@ -35,6 +35,7 @@ typedef void (*Fl_Glyph)(const Fl_Widget*, int type,
 
 extern "C" { typedef bool (*Fl_Theme)(); }
 
+/** Fl_Style */
 struct FL_API Fl_Style {
     const Fl_Style* parent;
     void  (*revertfunc)(Fl_Style*);
@@ -82,6 +83,7 @@ private:
     static const char* scheme_;
 };
 
+/** Fl_Named_Style */
 struct FL_API Fl_Named_Style : public Fl_Style {
     Fl_Named_Style(const char* name, void (*revert)(Fl_Style*), Fl_Named_Style**);
 
@@ -91,6 +93,7 @@ struct FL_API Fl_Named_Style : public Fl_Style {
     Fl_Named_Style** back_pointer; // used by Fl_Style_Set
 };
 
+/** Fl_Glyphtype */
 enum Fl_Glyphtype {	// glyph types understood by Fl_Widget::default_glyph()
     // the numbers 0-99 are reserved for private glyph functions
     FL_GLYPH_BOX = 100,
@@ -106,6 +109,7 @@ enum Fl_Glyphtype {	// glyph types understood by Fl_Widget::default_glyph()
 
 extern "C" FL_API bool fltk_theme();
 
+/** fl_get_system_colors */
 FL_API bool fl_get_system_colors();
 FL_API const char* fl_find_config_file(char* out, int size, const char* name);
 

@@ -41,6 +41,7 @@ public:
     int16           col_width;
 };
 
+/** Fl_ListView_Item */
 class FL_API Fl_ListView_Item {
 public:
     Fl_ListView_Item(const char *label1=0,
@@ -131,6 +132,7 @@ public:
     Fl_Labeltype col_label_type;
 };
 
+/** Fl_ListView_ItemExt */
 class FL_API Fl_ListView_ItemExt : public Fl_ListView_Item {
 public:
     Fl_ListView_ItemExt(const char *label1=0,

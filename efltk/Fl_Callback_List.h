@@ -34,6 +34,7 @@ typedef struct CallbackDataStruct {
     void *arg;
 } CallbackData;
 
+/** Fl_Callback_List */
 class Fl_Callback_List : public Fl_Ptr_List {
 public:
     Fl_Callback_List() : Fl_Ptr_List() { auto_delete(true); }

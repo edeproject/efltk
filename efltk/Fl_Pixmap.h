@@ -24,13 +24,12 @@
 
 #include "Fl_Image.h"
 
-/*
+/**
  * Fl_Pixmap is good for static XPM's
- * like built-in images, It parses image only
+ * e.g. built-in images, It parses image only
  * when it's needed. i.e. just before first draw.
  * This allows applications run w/o X11 running. (e.g. efluid -c)
  */
-
 class FL_API Fl_Pixmap : public Fl_Image
 {
 public:

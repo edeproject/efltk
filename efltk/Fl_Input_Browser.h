@@ -29,6 +29,7 @@
 class ComboBrowser;
 class ComboWindow;
 
+/** Fl_Input_Browser */
 class Fl_Input_Browser : public Fl_Menu_ {
 public:
     static Fl_Named_Style* default_style;

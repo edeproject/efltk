@@ -24,6 +24,7 @@
 
 #include "Enumerations.h"
 
+/** fl_load_plugin */
 extern FL_API void *fl_load_plugin(const char* name, const char* func);
 
 #endif

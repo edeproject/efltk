@@ -24,7 +24,9 @@
 
 #include "Fl_Widget.h"
 
-// a Fl_Clock_Output can be used to display a program-supplied time:
+/** 
+ * Fl_Clock_Output can be used to display a program-supplied time 
+ */
 class FL_API Fl_Clock_Output : public Fl_Widget {
 public:
     enum { SQUARE = 0, ANALOG = 0, ROUND, DIGITAL };
@@ -47,7 +49,9 @@ private:
     ulong value_;
 };
 
-// a Fl_Clock displays the current time always by using a timeout:
+/** 
+ * Fl_Clock displays the current time always by using a timeout
+ */
 class FL_API Fl_Clock : public Fl_Clock_Output {
 public:
     static Fl_Named_Style* default_style;

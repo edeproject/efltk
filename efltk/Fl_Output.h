@@ -24,6 +24,7 @@
 
 #include "Fl_Input.h"
 
+/** Fl_Output */
 class FL_API Fl_Output : public Fl_Input {
 public:
     static Fl_Named_Style* default_style;

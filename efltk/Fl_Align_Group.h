@@ -24,6 +24,7 @@
 
 #include "Fl_Group.h"
 
+/** Fl_Align_Group */
 class FL_API Fl_Align_Group : public Fl_Group {
 public:
     void layout();

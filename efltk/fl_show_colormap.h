@@ -22,6 +22,7 @@
 #ifndef _FL_SHOW_COLORMAP_H_
 #define _FL_SHOW_COLORMAP_H_
 
+/** fl_show_colormap */
 extern FL_API Fl_Color fl_show_colormap(Fl_Color oldcol);
 
 #endif

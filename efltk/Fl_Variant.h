@@ -27,6 +27,7 @@
 
 class Fl_Image;
 
+/** FL_VAR_TYPES */
 enum FL_VAR_TYPES {
     VAR_NONE     = 0,
     VAR_INT      = 1,
@@ -38,6 +39,7 @@ enum FL_VAR_TYPES {
     VAR_IMAGEPTR = 64
 };
 
+/** Fl_Variant */
 class FL_API Fl_Variant {
 public:
     static Fl_Variant null_object;

@@ -25,6 +25,7 @@
 #include "Fl.h"
 #include "Fl_Widget.h"
 
+/** Fl_Tooltip */
 class FL_API Fl_Tooltip {
     static Fl_Widget* widget;
 public:

@@ -24,6 +24,7 @@
 
 #include "Fl_Double_Window.h"
 
+/** Fl_Overlay_Window */
 class FL_API Fl_Overlay_Window : public Fl_Double_Window {
 public:
     Fl_Overlay_Window(int W, int H, const char *l=0) : Fl_Double_Window(W,H,l) { overlay_ = 0; }

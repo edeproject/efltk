@@ -24,6 +24,7 @@
 
 #include "Fl_Menu_.h"
 
+/** Fl_Menu_Button */
 class FL_API Fl_Menu_Button : public Fl_Menu_ {
 public:
     static Fl_Named_Style* default_style;

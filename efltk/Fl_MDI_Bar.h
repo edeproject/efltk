@@ -25,6 +25,7 @@
 #include "Fl_Group.h"
 #include "Fl_MDI_Window.h"
 
+/** Fl_MDI_Bar */
 class Fl_MDI_Bar : public Fl_Group
 {
 public:

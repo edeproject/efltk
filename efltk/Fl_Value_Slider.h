@@ -24,6 +24,7 @@
 
 #include "Fl_Slider.h"
 
+/** Fl_Value_Slider */
 class FL_API Fl_Value_Slider : public Fl_Slider {
 public:
     static Fl_Named_Style* default_style;

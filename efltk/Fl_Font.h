@@ -102,10 +102,10 @@ extern FL_API Fl_Font_ fl_fonts[16];
 // WIN32: Create single font
 FL_API Fl_Font fl_create_font(const char *system_name);
 
-// Find a font by name + attributes:
+/** Find a font by name + attributes */
 FL_API Fl_Font fl_find_font(const char* name, int attrib = 0);
 
-// Find and return every font on the system.
+/** Find and return every font on the system. */
 FL_API int fl_list_fonts(Fl_Font*& arrayp);
 
 #endif

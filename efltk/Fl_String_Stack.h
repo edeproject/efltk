@@ -24,6 +24,7 @@
 
 #include "Fl_String_List.h"
 
+/** Fl_String_Stack */
 class Fl_String_Stack {
 public:
     // Max size, 0=unlimited

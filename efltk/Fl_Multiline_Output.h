@@ -25,6 +25,8 @@
 #include "Fl_Output.h"
 
 // This class is entirely inline.  If that changes, add FL_API to its declaration
+
+/** Fl_Multiline_Output */
 class Fl_Multiline_Output : public Fl_Output {
 public:
     Fl_Multiline_Output(int x,int y,int w,int h,const char *l = 0) : Fl_Output(x,y,w,h,l) { input_type(MULTILINE); }

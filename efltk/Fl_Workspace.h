@@ -38,7 +38,7 @@ class FL_API Fl_Workspace;
 typedef Fl_Group Fl_WorkType;
 typedef Fl_Window Fl_ViewportType;
 
- /*! 
+ /**
    *  Viewport is MDI window container. It handles most common MDI needs like:
    *    - Redrawing all in once
    *	- Relayouting all in once

@@ -26,6 +26,8 @@
 
 class FL_API Fl_Widget;
 class FL_API Fl_Window;
+
+/** Fl_Screen_Info */
 struct Fl_Screen_Info {
   int x, y, w, h;
   int width;
@@ -37,6 +39,7 @@ struct Fl_Screen_Info {
 
 typedef void (*Fl_Timeout_Handler)(void*);
 
+/** Fl */
 class FL_API Fl {
   Fl() { }; // no constructor!
 

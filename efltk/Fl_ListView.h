@@ -27,6 +27,7 @@
 #include "Fl_Group.h"
 #include "Fl_Scrollbar.h"
 
+/** Fl_ListView */
 class Fl_ListView : public Fl_Group {
 public:
     static Fl_Named_Style* default_style;

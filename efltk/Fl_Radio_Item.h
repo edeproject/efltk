@@ -24,6 +24,7 @@
 
 #include "Fl_Item.h"
 
+/** Fl_Radio_Item */
 class Fl_Radio_Item : public Fl_Item {
 public:
     Fl_Radio_Item(const char* l = 0) : Fl_Item(l) { type(RADIO); }

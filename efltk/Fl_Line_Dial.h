@@ -24,7 +24,8 @@
 
 #include "Fl_Dial.h"
 
-class FL_API Fl_Line_Dial : public Fl_Dial {
+/** Fl_Line_Dial */
+class Fl_Line_Dial : public Fl_Dial {
 public:
     Fl_Line_Dial(int x,int y,int w,int h, const char *l = 0) : Fl_Dial(x,y,w,h,l) { type(LINE); }
 };

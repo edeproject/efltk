@@ -25,6 +25,7 @@
 #include "Fl_Ptr_List.h"
 #include "Fl_Image.h"
 
+/** Fl_Image_List */
 class Fl_Image_List : public Fl_Ptr_List {
 public:
     Fl_Image_List() : Fl_Ptr_List() { }

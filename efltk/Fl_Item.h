@@ -24,6 +24,7 @@
 
 #include "Fl_Widget.h"
 
+/** Fl_Item */
 class FL_API Fl_Item : public Fl_Widget {
 public:
     static Fl_Named_Style* default_style;

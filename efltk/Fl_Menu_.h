@@ -37,6 +37,7 @@ public:
   virtual void flags_changed(const Fl_Menu_*, Fl_Widget*);
 };
 
+/** Fl_Menu_ */
 class FL_API Fl_Menu_ : public Fl_Group {
 public:
     // Constructors does end()

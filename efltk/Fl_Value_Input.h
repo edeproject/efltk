@@ -25,6 +25,7 @@
 #include "Fl_Valuator.h"
 #include "Fl_Float_Input.h"
 
+/** Fl_Value_Input */
 class FL_API Fl_Value_Input : public Fl_Valuator {
 public:
     Fl_Value_Input(int x,int y,int w,int h,const char *l=0);

@@ -26,6 +26,7 @@
 #include "Fl_String_List.h"
 #include "Fl_Ptr_List.h"
 
+/** Fl_Translator */
 class FL_API Fl_Translator
 {
 public:

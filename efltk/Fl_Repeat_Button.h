@@ -24,6 +24,7 @@
 
 #include "Fl_Button.h"
 
+/** Fl_Repeat_Button */
 class FL_API Fl_Repeat_Button : public Fl_Button {
 public:
     Fl_Repeat_Button(int x,int y,int w,int h,const char *l=0) : Fl_Button(x,y,w,h,l) { }

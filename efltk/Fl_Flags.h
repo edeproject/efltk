@@ -35,7 +35,8 @@
 typedef int Fl_Flags;
 typedef Fl_Flags Fl_Align; // for back compatability
 
-enum {
+/** FlagsEnum */
+enum FlagsEnum {
   FL_NO_FLAGS		= 0,
 
 // from Fl_Align, values are comptable with fltk 1.0:

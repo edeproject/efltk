@@ -25,6 +25,7 @@
 #include "Fl_Export.h"
 #include "Fl_String.h"
 
+/** Fl_Date_Time */
 class FL_API Fl_Date_Time {
 public:
     static char   dateInputFormat[32];

@@ -25,6 +25,7 @@
 #include "Fl_Input.h"
 #include "Fl_String.h"
 
+/** Fl_Masked_Input */
 class FL_API Fl_Masked_Input : public Fl_Input {
 public:
     Fl_Masked_Input(int,int,int,int,const char * = 0);

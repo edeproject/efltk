@@ -24,6 +24,7 @@
 
 #include "Fl_Window.h"
 
+/** Fl_Double_Window */
 class FL_API Fl_Double_Window : public Fl_Window {
 public:
     Fl_Double_Window(int W, int H, const char *l = 0);

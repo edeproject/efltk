@@ -25,6 +25,7 @@
 #include "Fl_Image.h"
 #include "Fl_Ptr_List.h"
 
+/** Fl_Image_Cache */
 class Fl_Image_Cache
 {
     typedef struct {

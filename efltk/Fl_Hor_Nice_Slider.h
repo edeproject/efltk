@@ -24,7 +24,8 @@
 
 #include "Fl_Slider.h"
 
-class FL_API Fl_Hor_Nice_Slider : public Fl_Slider {
+/** Fl_Hor_Nice_Slider */
+class Fl_Hor_Nice_Slider : public Fl_Slider {
 public:
     Fl_Hor_Nice_Slider(int x,int y,int w,int h,const char *l=0) : Fl_Slider(x,y,w,h,l) {
         type(HORIZONTAL_NICE); box(FL_FLAT_BOX);

@@ -24,6 +24,7 @@
 
 #include "Fl_Valuator.h"
 
+/** Fl_Roller */
 class FL_API Fl_Roller : public Fl_Valuator {
 public:
     Fl_Roller(int X,int Y,int W,int H,const char* L=0);

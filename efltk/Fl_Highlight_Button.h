@@ -24,6 +24,7 @@
 
 #include "Fl_Button.h"
 
+/** Fl_Highlight_Button */
 class FL_API Fl_Highlight_Button : public Fl_Button {
 public:
     static Fl_Named_Style* default_style;

@@ -34,6 +34,7 @@
 
 class PreviewBox;
 
+/** Fl_File_Chooser */
 class Fl_File_Chooser : public Fl_Group
 {
 public:

@@ -25,6 +25,7 @@
 #include "Fl_Double_Window.h"
 #include "Fl_Bitmap.h"
 
+/** Fl_Shaped_Window */
 class FL_API Fl_Shaped_Window : public Fl_Double_Window {
 public:
     Fl_Shaped_Window(int W, int H, const char *l = 0) : Fl_Double_Window(W,H,l) { shape_ = 0; lw = lh = 0; changed = 0; }

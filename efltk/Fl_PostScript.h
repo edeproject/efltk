@@ -28,6 +28,7 @@
 #include "Enumerations.h"
 #include <stdio.h> // FILE *
 
+/** Fl_PostScript */
 class FL_API Fl_PostScript : public Fl_Printer
 {
     enum SHAPE { NONE=0, LINE, LOOP, POLYGON, POINTS };
@@ -135,6 +136,7 @@ public:
     void transform_distance(float& x, float& y);
 
     void curve(float x, float y, float x1, float y1, float x2, float y2, float x3, float y3);
+
     void arc(float x, float y, float w, float h, float start, float end);
     void pie(int x, int y, int w, int h, float a1, float a2, int what);
     void circle(float x, float y, float r);
@@ -185,7 +187,9 @@ public:
 
     void draw_image(const uchar* d, int x,int y,int w,int h, int delta=3, int ldelta=0){draw_scalled_image(d,x,y,w,h,w,h,delta,ldelta);}
     void draw_image_mono(const uchar* d, int x,int y,int w,int h, int delta=1, int ld=0){draw_scalled_image_mono(d,x,y,w,h,w,h,delta,ld);}
+
     void draw_image(Fl_Draw_Image_Cb call, void* data, int x,int y, int w, int h, int delta=3){draw_scalled_image(call,data, x, y, w, h, w, h, delta);}
+
     void draw_image_mono(Fl_Draw_Image_Cb call, void* data, int x,int y, int w, int h, int delta=1){draw_scalled_image_mono(call, data, x, y, w, h, w, h, delta);}
 
     void rectf(int x, int y, int w, int h, uchar r,  uchar g, uchar b);

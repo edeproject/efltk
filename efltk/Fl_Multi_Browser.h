@@ -25,6 +25,8 @@
 #include "Fl_Browser.h"
 
 // This class is entirely inline.  If that changes, add FL_API to its declaration
+
+/** Fl_Multi_Browser */
 class Fl_Multi_Browser : public Fl_Browser {
 public:
     Fl_Multi_Browser(int x,int y,int w,int h,const char *l=0) : Fl_Browser(x,y,w,h,l) { type(MULTI); }

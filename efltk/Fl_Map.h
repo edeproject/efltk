@@ -30,6 +30,7 @@ struct Fl_MapPair {
     virtual ~Fl_MapPair() { }
 };
 
+/** Fl_Map */
 class Fl_Map {
 public:
     Fl_Map() { }
@@ -64,6 +65,7 @@ struct Fl_String_String_Pair : public Fl_MapPair {
     Fl_String val;
 };
 
+/** Fl_String_String_Map */
 class Fl_String_String_Map : public Fl_Map {
 public:
 	typedef Fl_String_String_Pair Pair;
@@ -91,6 +93,7 @@ struct Fl_Int_String_Pair : public Fl_MapPair {
     Fl_String val;
 };
 
+/** Fl_Int_String_Map */
 class Fl_Int_String_Map : public Fl_Map {
 public:
 	typedef Fl_Int_String_Pair Pair;

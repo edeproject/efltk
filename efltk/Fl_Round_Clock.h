@@ -24,7 +24,8 @@
 
 #include "Fl_Clock.h"
 
-class FL_API Fl_Round_Clock : public Fl_Clock {
+/** Fl_Round_Clock */
+class Fl_Round_Clock : public Fl_Clock {
 public:
     Fl_Round_Clock(int x,int y,int w,int h, const char *l = 0) : Fl_Clock(x,y,w,h,l) { type(ROUND); box(FL_NO_BOX); }
 };

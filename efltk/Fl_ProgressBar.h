@@ -26,6 +26,7 @@
 #include "Fl.h"
 #include "fl_draw.h"
 
+/** Fl_ProgressBar */
 class FL_API Fl_ProgressBar : public Fl_Widget
 {
 public:

@@ -27,6 +27,7 @@
 // key will match in any state
 #define FL_TEXT_EDITOR_ANY_STATE  (-1L)
 
+/** Fl_Text_Editor */
 class FL_API Fl_Text_Editor : public Fl_Text_Display {
   public:
     typedef int (*Key_Func)(int key, Fl_Text_Editor* editor);

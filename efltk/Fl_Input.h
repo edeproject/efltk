@@ -24,6 +24,7 @@
 
 #include "Fl_Widget.h"
 
+/** Fl_Input */
 class FL_API Fl_Input : public Fl_Widget {
 public:
   enum { // values for type()

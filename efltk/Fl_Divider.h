@@ -24,6 +24,7 @@
 
 #include "Fl_Widget.h"
 
+/** Fl_Divider */
 class FL_API Fl_Divider : public Fl_Widget {
 public:
     Fl_Divider(int x, int y, int w, int h, const char *l=0);
@@ -38,6 +39,7 @@ public:
     virtual void draw();
 };
 
+/** Fl_VertDivider */
 class Fl_VertDivider : public Fl_Divider {
 public:
     Fl_VertDivider(int x, int y, int w, int h, const char *l) : Fl_Divider(x,y,w,h,l) { type(Fl_Divider::VERTICAL); }
@@ -45,6 +47,7 @@ public:
     Fl_VertDivider() : Fl_Divider() { type(Fl_Divider::VERTICAL); }
 };
 
+/** Fl_Menu_Divider */
 class Fl_Menu_Divider : public Fl_Divider {
 public:
     Fl_Menu_Divider() : Fl_Divider() { h(2); }

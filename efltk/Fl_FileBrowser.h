@@ -27,6 +27,7 @@
 #include "Fl_ListView_Item.h"
 #include "Fl_Directory_DS.h"
 
+/** Fl_File_Browser */
 class FL_API Fl_File_Browser : public Fl_ListView
 {
 public:

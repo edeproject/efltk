@@ -25,7 +25,8 @@
 #include "Fl_Ptr_List.h"
 #include "Fl_Widget.h"
 
-class Fl_Widget_List : public Fl_Ptr_List {
+/** Fl_Widget_List */
+class FL_API Fl_Widget_List : public Fl_Ptr_List {
 public:
     Fl_Widget_List() : Fl_Ptr_List() { }
 	virtual ~Fl_Widget_List() { clear(); }

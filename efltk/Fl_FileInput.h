@@ -24,6 +24,7 @@
 
 #include "Fl_Input.h"
 
+/** Fl_FileInput */
 class FL_API Fl_FileInput : public Fl_Input
 {
 public:

@@ -24,6 +24,7 @@
 
 #include "Fl_Check_Button.h"
 
+/** Fl_Radio_Button */
 class FL_API Fl_Radio_Button : public Fl_Check_Button {
 public:
     static Fl_Named_Style* default_style;

@@ -24,6 +24,7 @@
 
 #include "Fl_Input.h"
 
+/** Fl_Secret_Input */
 class Fl_Secret_Input : public Fl_Input {
 public:
     Fl_Secret_Input(int x,int y,int w,int h,const char *l = 0) : Fl_Input(x,y,w,h,l) { type(SECRET); }

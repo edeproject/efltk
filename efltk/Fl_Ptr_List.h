@@ -28,7 +28,7 @@ typedef void* Fl_Ptr_List_Item;
 typedef int (*Fl_Foreach_Function)(void *item,void *arg);
 
 /**
- * Fl_Ptr_List is implementation of eFLTK generic pointer-list...
+ * Fl_Ptr_List is implementation of EFLTK generic pointer-list...
  *
  * (More information about this class is comming soon :)
  */

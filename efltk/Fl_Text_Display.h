@@ -29,6 +29,7 @@
 #include <efltk/Fl_Text_Buffer.h>
 #include <efltk/Fl_Int_List.h>
 
+/** Fl_Text_Display */
 class FL_API Fl_Text_Display: public Fl_Group {
 public:
    enum {

@@ -24,12 +24,12 @@
 
 #include "Fl_Button.h"
 
+/** Fl_Return_Button */
 class FL_API Fl_Return_Button : public Fl_Button {
 public:
     static Fl_Named_Style* default_style;
     Fl_Return_Button(int x,int y,int w,int h,const char *l=0);
 
-protected:
     virtual void draw();
 };
 

@@ -25,6 +25,7 @@
 #include "Fl_Bar.h"
 #include "Fl_Menu_Button.h"
 
+/** Fl_Tool_Bar */
 class Fl_Tool_Bar : public Fl_Bar
 {
 public:

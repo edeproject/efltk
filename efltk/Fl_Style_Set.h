@@ -24,6 +24,7 @@
 
 #include "Fl_Style.h"
 
+/** Fl_Style_Set */
 class FL_API Fl_Style_Set {
 public:
     Fl_Style_Set();

@@ -25,6 +25,8 @@
 #include "Fl_Input.h"
 
 // This class is entirely inline.  If that changes, add FL_API to its declaration
+
+/** Fl_Wordwrap_Input */
 class Fl_Wordwrap_Input : public Fl_Input {
 public:
     Fl_Wordwrap_Input(int x,int y,int w,int h,const char *l = 0) : Fl_Input(x,y,w,h,l) { input_type(MULTILINE); wordwrap(1); }

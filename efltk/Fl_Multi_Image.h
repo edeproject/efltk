@@ -24,7 +24,8 @@
 
 #include "Fl_Image.h"
 
-class Fl_Multi_Image : public Fl_Image
+/** Fl_Multi_Image */
+class FL_API Fl_Multi_Image : public Fl_Image
 {
     enum {MAXIMAGES = 8};
     Fl_Image* images[MAXIMAGES];

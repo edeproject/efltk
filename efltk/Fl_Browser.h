@@ -25,6 +25,7 @@
 #include "Fl_Menu_.h"
 #include "Fl_Scrollbar.h"
 
+/** Fl_Browser */
 class FL_API Fl_Browser : public Fl_Menu_ {
     Fl_End endgroup;
 public:

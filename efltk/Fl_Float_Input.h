@@ -24,6 +24,7 @@
 
 #include "Fl_Numeric_Input.h"
 
+/** Fl_Float_Input */
 class FL_API Fl_Float_Input : public Fl_Numeric_Input {
 public:
     enum {FLOAT = 0, INT = 1};

@@ -25,7 +25,7 @@
 #include "Fl_Color.h"
 #include "Fl_Flags.h"
 
-// the abstract base class:
+/** The abstract base class for labels */
 class FL_API Fl_Labeltype_ {
 public:
     Fl_Labeltype_(const char* n) : name(n), next(first) { first = this; }

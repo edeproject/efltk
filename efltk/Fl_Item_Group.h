@@ -24,6 +24,7 @@
 
 #include "Fl_Menu_.h"
 
+/** Fl_Item_Group */
 class FL_API Fl_Item_Group : public Fl_Menu_ {
 public:
   Fl_Item_Group(const char* label = 0);

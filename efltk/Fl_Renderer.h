@@ -41,6 +41,8 @@ enum {
 };
 
 //Internally used only
+
+/** Fl_Colormap_Color */
 typedef struct {
     uint8 r;
     uint8 g;
@@ -48,6 +50,7 @@ typedef struct {
     uint8 a;
 } Fl_Colormap_Color;
 
+/** Fl_Colormap */
 class Fl_Colormap
 {
 public:
@@ -66,7 +69,7 @@ public:
     int ncolors;
 };
 
-/* Everything in the pixel format structure is read-only */
+/** Fl_PixelFormat, Everything in the pixel format structure is read-only */
 class Fl_PixelFormat
 {
 public:
@@ -115,6 +118,7 @@ public:
 #define FL_BLIT_COLOR_KEY     (1<<1) // Blits using colorkey.
 #define FL_BLIT_HW_PALETTE    (1<<2) // Blits using system allocated palette
 
+/** Fl_Renderer */
 class Fl_Renderer {
 public:
     static bool alpha_blit(uint8 *src, Fl_Rect *src_rect, Fl_PixelFormat *src_fmt, int src_pitch,

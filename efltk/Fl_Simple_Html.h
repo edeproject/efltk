@@ -76,10 +76,7 @@ struct Fl_Help_Target
     int	 y;		// Y offset of target
 };
 
-//
-// Fl_Simple_Html class...
-//
-
+/** Fl_Simple_Html class. */
 class Fl_Simple_Html : public Fl_Group	//// Help viewer widget
 {
     Fl_Image_Cache cache; //Image cache

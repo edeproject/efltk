@@ -30,15 +30,15 @@
 
 #include <stdio.h> //For FILE
 
-// Fl_Image quality types:
-enum {	
+/** Fl_Image quality types */
+enum ImageQuality {	
     FL_QUALITY_POOR = 0,
     FL_QUALITY_NORMAL, // Default quality type.
     FL_QUALITY_GOOD,
     FL_QUALITY_BEST
 };
 
-// EFltk image IO struct:
+/** Image IO struct */
 typedef struct
 {
     /* GENERAL: */
@@ -73,7 +73,7 @@ class Fl_Image;
 
 typedef bool (check_mask_pixel)(const Fl_Image *i, uint8 *buf);
 
-/*!
+/**
  IMAGE
  */
 class Fl_Image {

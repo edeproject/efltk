@@ -24,6 +24,7 @@
 
 #include "Fl_Group.h"
 
+/** Fl_Bar */
 class FL_API Fl_Bar : public Fl_Group {
 public:
     static Fl_Named_Style* default_style;

@@ -28,6 +28,7 @@
 
 class Fl_Data_Fields;
 
+/** Fl_Data_Field */
 class FL_API Fl_Data_Field {
     friend class Fl_Data_Fields;
 public:
@@ -76,6 +77,7 @@ protected:
     unsigned   m_dataSize;
 };
 
+/** Fl_Data_Fields */
 class FL_API Fl_Data_Fields {
 public:
     Fl_Data_Fields() { m_userData = 0; }

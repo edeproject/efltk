@@ -26,6 +26,7 @@
 #include "Fl_Menu_.h"
 #include "Fl_Menu_Window.h"
 
+/** Fl_Menu_Bar */
 class Fl_Menu_Bar : public Fl_Menu_ {
 public:
     static Fl_Named_Style* default_style;

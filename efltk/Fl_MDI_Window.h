@@ -44,6 +44,7 @@
 
 class Fl_MDI_Window;
 
+/** Fl_MDI_Titlebar */
 class Fl_MDI_Titlebar : public Fl_Group {
     friend class Fl_MDI_Window;
 public:
@@ -67,6 +68,7 @@ protected:
     Fl_MDI_Window *_owner;
 };
 
+/** Fl_MDI_Window */
 class Fl_MDI_Window : public Fl_Window {
     friend class Fl_MDI_Viewport;
     friend class Fl_Workspace;

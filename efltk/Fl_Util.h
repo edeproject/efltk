@@ -29,29 +29,40 @@
 // Include for compatibility
 #include "filename.h"
 
-// removes leading spaces
+/** removes leading spaces */
 extern FL_API char *fl_trimleft(char *string);
 
-// removes trailing spaces
+/** removes trailing spaces */
 extern FL_API char *fl_trimright(char *string);
 
-// Removes trailing and leading spaces
+/// Removes trailing and leading spaces
 #define fl_trim(string) fl_trimright(fl_trimleft(string))
 
+/** fl_tolower */
 extern FL_API char *fl_tolower(char *string);
+
+/** fl_toupper */
 extern FL_API char *fl_toupper(char *string);
 
+/** fl_strdup_printf */
 extern FL_API char *fl_strdup_printf(char *s1, ...);
 
+/** fl_split */
 extern FL_API char** fl_split(const char *string, const char *delimiter, int max_tokens);
 
+/** fl_start_child_process */
 extern FL_API int fl_start_child_process(char *cmd);
 
-extern FL_API void fl_freev (char **str_array);
+/** fl_freev */
+extern FL_API void fl_freev(char **str_array);
 
+/** fl_cut_line */
 extern FL_API const char *fl_cut_line(const char *str, int maxwidth);
+
+/** fl_cut_multiline */
 extern FL_API const char *fl_cut_multiline(const char *str, int maxwidth);
 
+/** Fl_Point */
 class Fl_Point
 {
 	int x_, y_;
@@ -67,6 +78,7 @@ public:
 	void y(int y) { y_ = y; }
 };
 
+/** Fl_Size */
 class Fl_Size
 {
 	int width_, height_;
@@ -86,6 +98,7 @@ public:
 	void height(int h) { height_ = h; }
 };
 
+/** Fl_Rect */
 class Fl_Rect
 {
     int x_, y_, width_, height_;

@@ -33,6 +33,7 @@ const double FL_PICA = 12;
 
 const int NO_PAGE_FORMATS=30;
 
+/** Fl_Printer */
 class FL_API Fl_Printer : public Fl_Device {
 public:
     enum PAGE_FORMAT{

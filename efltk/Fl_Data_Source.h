@@ -27,6 +27,7 @@
 
 class Fl_Group;
 
+/** Fl_Data_Source */
 class Fl_Data_Source {
 public:
     // ctor, dtor

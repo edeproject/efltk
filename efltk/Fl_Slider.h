@@ -24,6 +24,7 @@
 
 #include "Fl_Valuator.h"
 
+/** Fl_Slider */
 class FL_API Fl_Slider : public Fl_Valuator {
 public:
     static Fl_Named_Style* default_style;

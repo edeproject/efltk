@@ -27,7 +27,8 @@
 
 typedef unsigned Fl_Color;
 
-enum {
+/** Colors */
+enum Colors {
     FL_NO_COLOR	        = 0,
     FL_GRAY_RAMP	= 32,
     FL_GRAY		= 49,	// 'R' default color, 75%
@@ -52,10 +53,11 @@ enum {
     FL_SELECTION_COLOR	= FL_GRAY, // older selection color
     FL_FREE_COLOR      	= 16,
 #endif
-    FL_BLUE_SELECTION_COLOR = 0x88 // _WIN32-like selection color
+    FL_BLUE_SELECTION_COLOR = 0x88 // WIN32-like selection color
 };
 
 #define FL_NUM_GRAY	24
+/** fl_gray_ramp */
 inline Fl_Color fl_gray_ramp(int i) {return (Fl_Color)(i+FL_GRAY_RAMP);}
 
 #define FL_NUM_GREEN	8
@@ -64,22 +66,53 @@ inline Fl_Color fl_gray_ramp(int i) {return (Fl_Color)(i+FL_GRAY_RAMP);}
 #define FL_RED_DELTA	8
 #define FL_NUM_BLUE	5
 #define FL_BLUE_DELTA	40
+
+/** fl_color_cube */
 inline Fl_Color fl_color_cube(int r, int g, int b) { return (Fl_Color)((b*FL_NUM_RED + r) * FL_NUM_GREEN + g + FL_COLOR_CUBE); }
+
+/** fl_rgb */
 inline Fl_Color fl_rgb(unsigned char r, unsigned char g, unsigned char b) { return Fl_Color((r<<24)+(g<<16)+(b<<8)); }
+
+/** fl_rgb */
 FL_API Fl_Color fl_rgb(const char*);
+
+/** fl_color_average */
 FL_API Fl_Color fl_color_average(Fl_Color, Fl_Color, double weight);
+
+/** fl_inactive */
 FL_API Fl_Color fl_inactive(Fl_Color);
+
+/** fl_inactive */
 FL_API Fl_Color fl_inactive(Fl_Color, Fl_Flags f);
+
+/** fl_contrast */
 FL_API Fl_Color fl_contrast(Fl_Color fg, Fl_Color bg);
+
+/** fl_invert */
 FL_API Fl_Color fl_invert(Fl_Color);
+
+/** fl_get_color */
 FL_API Fl_Color fl_get_color(Fl_Color c);
+
+/** fl_get_color */
 FL_API void fl_get_color(Fl_Color c, uchar& r, uchar& g, uchar& b);
+
+/** fl_set_color */
 FL_API void fl_set_color(Fl_Color c, Fl_Color);
+
+/** fl_free_color */
 FL_API void fl_free_color(Fl_Color c);
+
+/** fl_background */
 FL_API void fl_background(Fl_Color);
+
+/** fl_nearest_color */
 FL_API Fl_Color fl_nearest_color(Fl_Color);
 
+/** fl_lighter */
 inline Fl_Color fl_lighter(Fl_Color c) { return fl_color_average(c, FL_WHITE, .67f); }
+
+/** fl_darker */
 inline Fl_Color fl_darker(Fl_Color c) { return fl_color_average(c, FL_BLACK, .67f); }
 
 #endif

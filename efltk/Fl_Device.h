@@ -32,6 +32,7 @@ extern FL_API const char* fl_encoding_;
 
 typedef void (*Fl_Draw_Image_Cb)(void*,int,int,int,uchar*);
 
+/** Fl_Device */
 class FL_API Fl_Device
 {
 public:
@@ -50,11 +51,17 @@ public:
 
     // Clipping:
     virtual void push_clip(int x, int y, int w, int h);
+
     virtual void clip_out(int x, int y, int w, int h);
+
     virtual void push_no_clip();
+
     virtual void pop_clip();
+
     virtual int  not_clipped(int x, int y, int w, int h);
+
     virtual int  clip_box(int _x, int _y, int _w, int _h, int& x, int& y, int& w, int& h);
+
 
     //  line style:
     virtual void line_style(int style, int width=0, char* dashes=0);

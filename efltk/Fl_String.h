@@ -25,6 +25,7 @@
 #include "Enumerations.h"
 #include <string.h>
 
+/** Fl_String */
 class FL_API Fl_String {
     friend FL_API Fl_String operator +(const char*, const Fl_String& rhs);
 public:

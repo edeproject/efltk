@@ -35,6 +35,7 @@ typedef void (*Fl_Text_Modify_Cb)(int pos, int nInserted, int nDeleted,
    void* cbArg);
 typedef void (*Fl_Text_Predelete_Cb)(int pos, int nDeleted, void* cbArg);
 
+/** Fl_Text_Selection */
 class FL_API Fl_Text_Selection {
    friend class Fl_Text_Buffer;
 
@@ -63,8 +64,6 @@ protected:
    int mRectEnd;
 };
 
-class TextBufferSignal;
-
 typedef void (*Fl_Text_Modify_Cb)(int pos, int nInserted, int nDeleted,
    int nRestyled, const char* deletedText,
    void* cbArg);
@@ -73,6 +72,7 @@ typedef void (*Fl_Text_Predelete_Cb)(int pos, int nDeleted, void* cbArg);
 //Forward declare...
 class Fl_UndoNode_Stack;
 
+/** Fl_Text_Buffer */
 class FL_API Fl_Text_Buffer {
 public:
    Fl_Text_Buffer(int requestedSize = 0);

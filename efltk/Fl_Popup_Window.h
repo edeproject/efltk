@@ -24,6 +24,7 @@
 
 #include "Fl_Menu_Window.h"
 
+/** Fl_Popup_Window */
 class Fl_Popup_Window : public Fl_Menu_Window {
 public:
     Fl_Popup_Window(int w, int h, const char *label = 0);

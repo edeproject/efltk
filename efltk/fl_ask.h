@@ -28,7 +28,8 @@
 
 class FL_API Fl_Widget;
 
-enum {
+/** BeepTypes */
+enum BeepTypes {
     FL_BEEP_DEFAULT = 0,
     FL_BEEP_MESSAGE,
     FL_BEEP_ERROR,
@@ -37,12 +38,25 @@ enum {
     FL_BEEP_NOTIFICATION
 };
 
+/** fl_beep */
 FL_API void fl_beep(int type = FL_BEEP_DEFAULT);
+
+/** fl_message */
 FL_API void fl_message(const char *,...);
+
+/** fl_alert */
 FL_API void fl_alert(const char *,...);
+
+/** fl_ask */
 FL_API int fl_ask(const char *,...);
+
+/** fl_choice */
 FL_API int fl_choice(const char *q,const char *b0,const char *b1,const char *b2,...);
+
+/** fl_input */
 FL_API const char *fl_input(const char *label, const char *deflt = 0, ...);
+
+/** fl_password */
 FL_API const char *fl_password(const char *label, const char *deflt = 0, ...);
 
 extern FL_API Fl_Named_Style* fl_icon_style;

@@ -27,6 +27,7 @@
 // value for x,y to indicate window system places window
 #define FL_USEDEFAULT ((int)0x80000000) // same as Win32 value
 
+/** Fl_Window */
 class FL_API Fl_Window : public Fl_Group {
 public:
     static Fl_Named_Style* default_style;

@@ -67,6 +67,7 @@ public:
     int format(char*);
 };
 
+/** Fl_Color_Chooser */
 class FL_API Fl_Color_Chooser : public Fl_Group {
 public:
     static Fl_Named_Style* default_style;

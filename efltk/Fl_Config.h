@@ -37,8 +37,8 @@
 #endif
 
 /* error defines */
-enum {
-    CONF_SUCCESS = 0,  /* successful return */
+enum ConfErrors {
+    CONF_SUCCESS = 0,   /* successful return */
     CONF_ERR_FILE,      /* trouble accessing config file or directory */
     CONF_ERR_SECTION,   /* requested section was not found */
     CONF_ERR_KEY,       /* requested key was not found */
@@ -50,12 +50,15 @@ typedef Fl_Ptr_List SectionList;
 typedef Fl_Ptr_List LineList;
 
 // Classes to iterate throught the config file
+
+/** Line */
 class Line {
 public:
     Line(Fl_String k, Fl_String v) { key = k; value = v; }
     Fl_String key, value;
 };
 
+/** Section */
 class Section
 {
 public:
@@ -70,6 +73,7 @@ public:
     SectionList sections; //Section list
 };
 
+/** Fl_Config */
 class FL_API Fl_Config {
 public:
     // List of sections
@@ -83,20 +87,24 @@ public:
         SYSTEM
     };
 
-    // Creates/reads/writes app specific config file.
-    //
-    // LINUX:
-    // File is created in ($home)/.ede/apps/($application)/($application).conf
-    // Or ($prefix)/share/ede/apps/($application)/($application).conf
-    // WIN32:
-    // ($home)\Local Settings\.ede\apps\($application)/($application).conf
-    // Or ($common files)\($application)\($application).conf
-    //
-    // depending ConfMode, USER or SYSTEM
-    // Vendor is only used to write it down to file.
+    /**
+	 * Creates/reads/writes app specific config file.
+     *
+     * LINUX:<br>
+     * File is created in ($home)/.ede/apps/($application)/($application).conf
+     * Or ($prefix)/share/ede/apps/($application)/($application).conf
+     * <br>WIN32:<br>
+     * ($home)\Local Settings\.ede\apps\($application)/($application).conf
+     * Or ($common files)\($application)\($application).conf
+     *
+     * depending ConfMode, USER or SYSTEM
+     * Vendor is only used to write it down to file.
+	 */
     Fl_Config(const char *vendor, const char *application, int mode=USER);
 
-    //Straight access for some file in filesystem.
+    /**
+	 * Straight access for some file in filesystem.
+	 */
     Fl_Config(const char *filename, bool readfile=true, bool createfile=true);
 
     virtual ~Fl_Config();

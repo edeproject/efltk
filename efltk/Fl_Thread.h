@@ -60,6 +60,7 @@ typedef int (*thread_function)(void * arg);
 /////////////////////////////////////////////
 // MUTEX CLASS
 
+/** Fl_Mutex */
 class Fl_Mutex
 {
 public:
@@ -82,6 +83,7 @@ private:
 /////////////////////////////////////////////
 // THREAD CLASS
 
+/** Fl_Thread */
 class Fl_Thread
 {
 public:

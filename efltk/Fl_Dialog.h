@@ -30,6 +30,7 @@
 class Fl_Button;
 class Fl_Multi_Tabs;
 
+/** Fl_Dialog */
 class FL_API Fl_Dialog : public Fl_Window {
 public:
     Fl_Dialog(int w, int h, const char *label=0, Fl_Data_Source *ds=0);

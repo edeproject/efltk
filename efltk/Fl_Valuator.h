@@ -24,6 +24,7 @@
 
 #include "Fl_Widget.h"
 
+/** Fl_Valuator */
 class FL_API Fl_Valuator : public Fl_Widget {
 public:
     double value() const {return value_;}

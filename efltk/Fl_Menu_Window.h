@@ -24,6 +24,7 @@
 
 #include "Fl_Single_Window.h"
 
+/** Fl_Menu_Window */
 class FL_API Fl_Menu_Window : public Fl_Single_Window {
     enum {NO_OVERLAY = 0x08000000};
 

@@ -36,6 +36,7 @@
 typedef Fl_Window Fl_Main_WindowType;
 //typedef Fl_Double_Window Fl_Main_WindowType;
 
+/** Fl_Main_Window */
 class Fl_Main_Window : public Fl_Main_WindowType
 {
 public:

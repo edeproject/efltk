@@ -25,8 +25,9 @@
 #include "Fl_Radio_Button.h"
 
 // Back-compatability, this is a radio button with check-button behavior
-
 // This class is entirely inline.  If that changes, add FL_API to its declaration
+
+/** Fl_Round_Button */
 class Fl_Round_Button : public Fl_Radio_Button {
 public:
     Fl_Round_Button(int x,int y,int w,int h,const char *l) : Fl_Radio_Button(x,y,w,h,l) { type(TOGGLE); }

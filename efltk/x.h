@@ -131,6 +131,7 @@ extern FL_API Region	XRectangleRegion(int x, int y, int w, int h);
 // the desire to have the id have a longer lifetime than this object,
 // intelligent constructors and destructors are not implemented.
 
+/** Fl_Drawable */
 class FL_API Fl_Drawable {
  public:
   Window xid;

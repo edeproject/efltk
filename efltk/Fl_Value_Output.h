@@ -25,6 +25,7 @@
 #include "Fl_Value_Input.h"
 #include "Fl_Output.h"
 
+/** Fl_Value_Output */
 class FL_API Fl_Value_Output : public Fl_Value_Input {
 public:
     Fl_Value_Output(int x,int y,int w,int h,const char *l = 0) : Fl_Value_Input(x, y, w, h, l) {

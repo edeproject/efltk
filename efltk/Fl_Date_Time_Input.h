@@ -28,6 +28,7 @@
 class Fl_Masked_Input;
 class Fl_Button;
 
+/** Fl_Date_Input */
 class FL_API Fl_Date_Input : public Fl_Group {
 public:
     Fl_Date_Input(int,int,int,int,const char * = 0);

@@ -24,6 +24,7 @@
 
 #include "Fl_Slider.h"
 
+/** Fl_Scrollbar */
 class FL_API Fl_Scrollbar : public Fl_Slider {
 
 public:

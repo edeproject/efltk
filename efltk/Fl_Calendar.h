@@ -27,6 +27,7 @@
 #include "Fl_Box.h"
 #include "Fl_Button.h"
 
+/** Fl_Calendar */
 class Fl_Calendar : public Fl_Group {
 public:
     static Fl_Named_Style* default_style;
