@@ -198,6 +198,10 @@ void fl_transformed_draw(const char *str, int n, float x, float y) {
   SelectObject(fl_gc, oldfont);
 }
 
+void fl_rtl_draw(const char *str, int n, float x, float y){
+    fl_transformed_draw(str, n, x, y);
+}
+
 // Change the encoding to use for the next font selection.
 // Encodings is NYI. We need a way to translate the ISO encoding names
 // to Win32 encoding enumerations. Ie "iso8859-1" turns into ANSI_CHARSET,

@@ -131,6 +131,7 @@ FL_API float fl_descent();
 
 // draw using current font:
 FL_API void fl_transformed_draw(const char*, int n, float x, float y);
+FL_API void fl_rtl_draw(const char *str, int n, float x, float y);
 FL_API void fl_draw(const char*, float x, float y);
 FL_API void fl_draw(const char*, int n, float x, float y);
 
