@@ -9,7 +9,7 @@ ifneq ($(MAKEINCLUDE_INCLUDED), 1)
  endif
 endif
 
-ifeq ($(MYSQLCONFIG), )
+ifeq ($(MYSQLLIBS), )
 CPPFILES =
 LIBNAME =
 else
