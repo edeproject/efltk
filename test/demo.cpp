@@ -339,7 +339,6 @@ int load_the_menu(const char fname[])
   return 1;
 }
 
-#include "tile.xpm"
 int main(int argc, char **argv)
 {
     Fl_Button::default_style->box = FL_PLASTIC_BOX;
