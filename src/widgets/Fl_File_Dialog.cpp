@@ -356,9 +356,7 @@ char **fl_select_files(const char *path_, char *filters, const char *cap)
 {
     const char *caption = cap;
     if(!caption) caption=_("Choose Files:");
-
     Filter **f = Fl_File_Dialog::build_filters(filters);
-
     char **files = select_files(path_, f, caption);
     if(f) {
         for(int n=0; f[n]; n++) delete f[n];
@@ -373,7 +371,6 @@ char *fl_select_file(const char *path_, char *filters, const char *cap)
     if(!caption) caption=_("Choose File:");
 
     Filter **f = Fl_File_Dialog::build_filters(filters);
-
     char *file = select_file(path_, f, caption, Fl_File_Dialog::_DEFAULT);
     if(f) {
         for(int n=0; f[n]; n++) delete f[n];

@@ -14,21 +14,65 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <config.h>
+
 #include <efltk/Fl_Exception.h>
+#include <efltk/Fl.h>
 
-#if __FL_EXCEPTIONS__
+static void default_exception_handler(Fl_Exception &e) {
+	Fl::fatal("Unhandled exception:\n%s", e.text());
+}
 
-Fl_Exception::Fl_Exception(const Fl_String text,const Fl_String file,int line) {
+void (*fl_exception_handler)(Fl_Exception &e) = default_exception_handler;
+
+/////////////////////////////
+// Jump Buf Stack
+
+#define JUMPSTACK_SIZE 1024
+
+Fl_JmpBuf_Stack::Fl_JmpBuf_Stack() {
+	items = 0;
+	jumpbufs = (jmp_buf*)malloc(sizeof(jmp_buf)*JUMPSTACK_SIZE);
+}
+
+Fl_JmpBuf_Stack::~Fl_JmpBuf_Stack() {
+	free((jmp_buf*)jumpbufs);
+}
+
+jmp_buf &Fl_JmpBuf_Stack::push() {
+	int index = items++;
+	if(index>JUMPSTACK_SIZE) Fl::fatal("EFltk exceptions jumpstack size exceed!\n");
+	if(index<0) index=0;
+	return jumpbufs[index];
+}
+
+jmp_buf *Fl_JmpBuf_Stack::pop() {
+	int index = --items;
+	if(index<0) { items=0; return 0; }
+	return &jumpbufs[index];
+}
+
+jmp_buf *Fl_JmpBuf_Stack::peek() {
+	int index = items-1;
+	if(index<0) { items=0; return 0; }
+	return &jumpbufs[index];
+}
+
+/////////////////////////////
+
+Fl_JmpBuf_Stack fl_jmpbuf_stack;
+Fl_Exception fl_last_throwed_exception;
+bool fl_exception_was_throwed;
+
+Fl_Exception::Fl_Exception(const char *text, const char *file, int line) {
    m_file = file;
    m_text = text;
    m_line = line;
 }
 
-Fl_String Fl_Exception::text(bool shortVersion) const {
-   if (!shortVersion && m_line)
-         return "Error in file "+m_file+"["+Fl_String(m_line)+"]: " + m_text;
-   else  return m_text;
+Fl_String Fl_Exception::text(bool shortVersion) const {	
+	if(!shortVersion && m_line) {
+		Fl_String ret;
+		return ret.printf("Error in file \'%s\' [%d]: %s", m_file, m_line, m_text);
+	}
+	return Fl_String(m_text);
 }
-
-#endif

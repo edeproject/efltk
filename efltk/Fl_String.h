@@ -96,9 +96,9 @@ public:
     void set_length(int newLength);
 
     const char *c_str() const { return str_; }
-    const char *str() const { return str_; }
 
-    void printf(const char *str, ...);
+	// Returns reference to this
+    Fl_String &printf(const char *str, ...);
 
     // auto conversion to char* when needed
     operator const char *() { return str_; }

@@ -106,23 +106,23 @@ Fl_Variant& Fl_Directory_DS::operator [] (int index) {
 // read this field data into external value
 bool Fl_Directory_DS::read_field(const char *fname,Fl_Variant& fvalue) {
    fl_try {
-      fvalue = (*this)[fname];
-      return true;
+      fvalue = (*this)[fname];      
    }
    fl_catch(exc) {
       return false;
    }
+   return true;
 }
 
 // write this field data from external value
 bool Fl_Directory_DS::write_field(const char *fname,const Fl_Variant& fvalue) {
    fl_try {
-      (*this)[fname] = fvalue;
-      return true;
+      (*this)[fname] = fvalue;      
    }
    fl_catch(exc) {
       return false;
    }
+   return true;
 }
 
 // dataset navigation

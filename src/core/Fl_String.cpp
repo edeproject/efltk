@@ -276,13 +276,13 @@ Fl_String Fl_String::upper_case() const
 }
 
 extern int fl_va_len(char *format, va_list ap); //Fl_Util.cpp
-void Fl_String::printf(const char *string, ...)
+Fl_String &Fl_String::printf(const char *string, ...)
 {
     char *s;
     int valen = 0;
 
-    if(!string || !strcmp(string, ""))
-        return;
+    if(!string || !*string)
+        return *this;
 
     va_list ap;
     va_start(ap, string);
@@ -298,6 +298,8 @@ void Fl_String::printf(const char *string, ...)
     free((char*)str_);
     str_ = s;
     len_ = strlen(str_);
+
+	return *this;
 }
 
 Fl_String Fl_String::remove(const char *pattern) const

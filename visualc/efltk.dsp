@@ -310,6 +310,10 @@ SOURCE=..\src\widgets\fl_engraved_label.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\core\Fl_Exception.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\widgets\Fl_File_Dialog.cpp
 # End Source File
 # Begin Source File
@@ -859,6 +863,10 @@ SOURCE=..\efltk\Fl_Double_Window.h
 # Begin Source File
 
 SOURCE=..\efltk\fl_draw.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Exception.h
 # End Source File
 # Begin Source File
 
