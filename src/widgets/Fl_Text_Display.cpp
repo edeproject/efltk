@@ -1524,8 +1524,7 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
    int charLen, outStartIndex, outIndex; //hasCursor=0, cursorX=0;
    int dispIndexOffset;//, cursorPos = mCursorPos;
    char expandedChar[ FL_TEXT_MAX_EXP_CHAR_LEN ], outStr[ MAX_DISP_LINE_LEN ];
-   char *outPtr;
-   char *lineStr;
+   char	*outPtr;
 
     /* If line is not displayed, skip it */
    if ( visLineNum < 0 || visLineNum > mNVisibleLines )
@@ -1539,11 +1538,10 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
    lineStartPos = mLineStarts[ visLineNum ];
    if ( lineStartPos == -1 ) {		
       lineLen = 0;
-      lineStr = 0;
+      m_lineBuffer.data()[0] = 0;
    } else {
-        //printf("RANGE %d - %d\n", lineStartPos, lineStartPos + lineLen);
       lineLen = vline_length( visLineNum );
-      lineStr = (char*)buf->text_range( lineStartPos, lineStartPos + lineLen );
+      buf->text_range(m_lineBuffer, lineStartPos, lineStartPos + lineLen);
    }
 
     /* Space beyond the end of the line is still counted in units of characters
@@ -1554,7 +1552,6 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
    stdCharWidth = mMaxFontBound;//TMPFONTWIDTH; //mFontStruct->max_bounds.width;
    if ( stdCharWidth <= 0 ) {
       fprintf( stderr, "Internal Error, bad font measurement\n" );
-      if(lineStr) delete []lineStr;
       return;
    }
 
@@ -1586,16 +1583,16 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
    for ( charIndex = 0; ; charIndex++ )
    {
       charLen = charIndex >= lineLen ? 1 :
-         Fl_Text_Buffer::expand_character( lineStr[ charIndex ], outIndex,
+         Fl_Text_Buffer::expand_character( m_lineBuffer[ charIndex ], outIndex,
             expandedChar, buf->tab_distance() );
 #if HAVE_XUTF8
-      if (charIndex < lineLen && charLen > 1 && (lineStr[ charIndex ] & 0x80)) {
+      if (charIndex < lineLen && charLen > 1 && (m_lineBuffer[ charIndex ] & 0x80)) {
          int i, ii = 0;;
-         i = fl_utf_charlen(lineStr[ charIndex ]);
+         i = fl_utf_charlen(m_lineBuffer[ charIndex ]);
          while (i > 1) {
             i--;
             ii++;
-            expandedChar[ii] = lineStr[ charIndex + ii];
+            expandedChar[ii] = m_lineBuffer[ charIndex + ii];
          }
       }
 #endif
@@ -1623,16 +1620,16 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
    for ( charIndex = startIndex; charIndex < rightCharIndex; charIndex++ )
    {
       charLen = charIndex >= lineLen ? 1 :
-         Fl_Text_Buffer::expand_character( lineStr[ charIndex ], outIndex, expandedChar,
+         Fl_Text_Buffer::expand_character( m_lineBuffer[ charIndex ], outIndex, expandedChar,
             buf->tab_distance() );
 #if HAVE_XUTF8
-      if (charIndex < lineLen && charLen > 1 && (lineStr[ charIndex ] & 0x80)) {
+      if (charIndex < lineLen && charLen > 1 && (m_lineBuffer[ charIndex ] & 0x80)) {
          int i, ii = 0;;
-         i = fl_utf_charlen(lineStr[ charIndex ]);
+         i = fl_utf_charlen(m_lineBuffer[ charIndex ]);
          while (i > 1) {
             i--;
             ii++;
-            expandedChar[ii] = lineStr[ charIndex + ii];
+            expandedChar[ii] = m_lineBuffer[ charIndex + ii];
          }
       }
 #endif
@@ -1640,7 +1637,7 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
             outIndex + dispIndexOffset );
       for ( i = 0; i < charLen; i++ )
       {
-         if ( i != 0 && charIndex < lineLen && lineStr[ charIndex ] == '\t' )
+         if ( i != 0 && charIndex < lineLen && m_lineBuffer[ charIndex ] == '\t' )
             charStyle = position_style( lineStartPos, lineLen,
                   charIndex, outIndex + dispIndexOffset );
          if ( charStyle != style ) {
@@ -1695,8 +1692,6 @@ void Fl_Text_Display::draw_vline(int visLineNum, int leftClip, int rightClip,
       }
   }
   */
-   if(lineStr)
-      delete []lineStr;
 }
 
 /*
@@ -1765,12 +1760,7 @@ void Fl_Text_Display::draw_string( int style, int X, int Y, int toX,
    }
 
    fl_color(background);
-    //Fixes cursor-erases-italic-font bug :) No it doesnt :(
-    /*if (damage() & FL_DAMAGE_SCROLL && X>text_area.x) {
-        fl_rectf( X+1, Y, toX-X-1, mMaxsize );
-    } else {*/
    fl_rectf( X, Y, toX - X , mMaxsize );
-    //}
 
    if(styleRec && styleRec->attr==ATTR_IMAGE && styleRec->image) {
       int iX = X;
@@ -1784,21 +1774,10 @@ void Fl_Text_Display::draw_string( int style, int X, int Y, int toX,
       fl_draw( string, nChars, X, Y + mMaxsize - fl_descent());
    }
 
-    /* Underline if style is UNDERLINE attr is set */
+   // Underline if style is UNDERLINE attr is set 
    if(styleRec && styleRec->attr==ATTR_UNDERLINE)
       fl_line(X, int(Y+mMaxsize-fl_descent()+1), toX-1, int(Y+mMaxsize-fl_descent()+1));
 
-    // CET - FIXME
-    /* If any space around the character remains unfilled (due to use of
-     different sized fonts for highlighting), fill in above or below
-     to erase previously drawn characters */
-    /*
-     if (fs->ascent < mAscent)
-     clear_rect( style, X, Y, toX - X, mAscent - fs->ascent);
-     if (fs->descent < mDescent)
-        clear_rect( style, X, Y + mAscent + fs->descent, toX - x,
-        mDescent - fs->descent);
-        */
 }
 
 /*
@@ -1944,6 +1923,8 @@ int Fl_Text_Display::position_style( int lineStartPos,
 */
 int Fl_Text_Display::string_width( const char *string, int length, int style ) 
 {
+   static int last_style = -1;
+
    int mask = style & STYLE_LOOKUP_MASK;
 
    if (mask) {
@@ -1952,21 +1933,26 @@ int Fl_Text_Display::string_width( const char *string, int length, int style )
          if (si < 0) si = 0;
          else if (si >= mNStyles) si = mNStyles - 1;
 
-         Style_Table_Entry *style = mStyleTable + si;
+         Style_Table_Entry *style_entry = mStyleTable + si;
 
-         if(style->attr == ATTR_IMAGE && style->image) {
+         if(style_entry->attr == ATTR_IMAGE && style_entry->image) {
             int iW=0;
             for(int n=0; n<length; n++) {
-               iW += style->image->width();
+               iW += style_entry->image->width();
             }
             return iW;
          }
 
-         fl_font(style->font, style->size);
+         if (style != last_style)
+            fl_font(style_entry->font, style_entry->size);
       }
    } else {
-      fl_font(text_font(), text_size());
+      if (style != last_style)
+         fl_font(text_font(), text_size());
    }
+
+   last_style = style;
+
    return (int)fl_width( string, length );
 }
 
