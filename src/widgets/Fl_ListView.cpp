@@ -1004,6 +1004,7 @@ void Fl_ListView::columns(unsigned count)
     // Relayout
     m_needsetup = true;
     relayout();
+	redraw();
 }
 
 Fl_ListView_Column *Fl_ListView::add_column(const char *name, int width, Fl_Variant_Type column_type)

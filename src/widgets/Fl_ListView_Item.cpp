@@ -47,13 +47,13 @@ void Fl_ListView_Item::redraw(uchar c)
 
 const char *Fl_ListView_Item::label() const
 {
-    if(!columns()) return Fl_String::null_object;
+    if(!columns()) return "";
     return strings[0];
 }
 
 const char *Fl_ListView_Item::label(unsigned col) const
 {
-    if(col>=columns()) return Fl_String::null_object;
+    if(col>=columns()) return "";
     return strings[col];
 }
 
@@ -83,8 +83,10 @@ void Fl_ListView_Item::columns(unsigned count)
     strings.resize(count);
 }
 
-int Fl_ListView_Item::preferred_width(int col) const
+int Fl_ListView_Item::preferred_width(unsigned col) const
 {
+	if(col>=columns()) return 1;
+
     int w=parent()->col_width(col), h=0;
     if(w<0) w=300;
     fl_font(parent()->text_font(), parent()->text_size());
@@ -94,8 +96,10 @@ int Fl_ListView_Item::preferred_width(int col) const
     return w;
 }
 
-void Fl_ListView_Item::width_changed(unsigned row, int col)
+void Fl_ListView_Item::width_changed(unsigned row, unsigned col)
 {
+	if(col>=columns()) return;
+
     Fl_Flags a = parent()->column(col)->flags() & FL_ALIGN_MASK;
     if(a & FL_ALIGN_WRAP) {
         int w=parent()->col_width(col), h=0;
@@ -214,7 +218,7 @@ void Fl_ListView_Item::draw_cell(unsigned row, unsigned col, int width, int heig
         X += m_image->width()+2;
     }
 
-    const char *str = strings[col];
+    const char *str = label(col);
     if(str && *str) {
         fl_font(parent()->text_font(), parent()->text_size());
         Fl_Color color = (f&FL_SELECTED) ? parent()->selection_text_color() : parent()->text_color();

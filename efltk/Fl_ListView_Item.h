@@ -33,8 +33,8 @@ public:
     virtual unsigned columns() const;
 
     // Layouting:
-    virtual int preferred_width(int col) const;
-    virtual void width_changed(unsigned row, int col);
+    virtual int preferred_width(unsigned col) const;
+    virtual void width_changed(unsigned row, unsigned col);
     virtual void setup(unsigned row);
 
     virtual void draw_cell(unsigned row, unsigned col, int width, int height);
@@ -100,8 +100,8 @@ public:
     virtual unsigned columns() const { return Fl_ListView_Item::columns(); }
 
     // Layouting:
-    virtual int preferred_width(int col) const;
-    virtual void width_changed(unsigned row, int col);
+    virtual int preferred_width(unsigned col) const;
+    virtual void width_changed(unsigned row, unsigned col);
     virtual void setup(unsigned row);
 
     virtual void draw_cell(unsigned row, unsigned col, int width, int height);

@@ -78,8 +78,10 @@ void Fl_ListView_ItemExt::columns(unsigned count)
     }
 }
 
-int Fl_ListView_ItemExt::preferred_width(int col) const
+int Fl_ListView_ItemExt::preferred_width(unsigned col) const
 {
+	if(col>=columns()) return 1;
+
     int w=parent()->col_width(col), h=0;
     if(w<0) w=300;
     fl_font(label_font(col), label_size(col));
@@ -89,8 +91,10 @@ int Fl_ListView_ItemExt::preferred_width(int col) const
     return w;
 }
 
-void Fl_ListView_ItemExt::width_changed(unsigned row, int col)
+void Fl_ListView_ItemExt::width_changed(unsigned row, unsigned col)
 {
+	if(col>=columns()) return;
+
     Fl_Flags a = flags(col) & FL_ALIGN_MASK;
     if(a & FL_ALIGN_WRAP) {
         int w=parent()->col_width(col), h=0;
@@ -160,7 +164,7 @@ void Fl_ListView_ItemExt::draw_cell(unsigned row, unsigned col, int width, int h
 
     fl_push_clip(0, 0, width, height);
 
-    Fl_Flags f = flags(col);
+	Fl_Flags f = (col>=columns()) ? 0 : flags(col);
     if(parent()->selected_row(row)) f |= FL_SELECTED;
     if(parent()->inactive_row(row) || !parent()->active()) f |= FL_INACTIVE;
 
@@ -171,17 +175,19 @@ void Fl_ListView_ItemExt::draw_cell(unsigned row, unsigned col, int width, int h
     box->inset(X,Y,W,H);
     draw_row(row, X, Y, W, H);
 
-    if(f&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT)) {
-        X += 3;
-        W -= 6;
-    }
-    draw_label(col, strings[col], X, Y, W, H, f);
+	if(f&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT)) {
+		X += 3;
+		W -= 6;
+	}
+	draw_label(col, label(col), X, Y, W, H, f);
 
     fl_pop_clip();
 }
 
 void Fl_ListView_ItemExt::draw_label(unsigned col, const char *label, int X, int Y, int W, int H, Fl_Flags flags)
 {
+	if(col>=columns()) return;
+
     fl_font(label_font(col), label_size(col));
 
     Fl_Color color;
