@@ -102,7 +102,7 @@ void Fl_Query::sql(Fl_String _sql) {
    uint i;
    for (i = 0; i < m_params.count(); i++) {
       Fl_Param& param = m_params[i];
-      param.bindClear();
+      param.bind_clear();
    }
 
    Fl_String  odbcSQL = "";
@@ -164,14 +164,14 @@ void Fl_Query::sql(Fl_String _sql) {
       *paramEnd = char(0);
       if (ptr != paramStart) {
          Fl_Param *param;
-         int   index = m_params.paramIndex(paramStart);
+         int   index = m_params.param_index(paramStart);
          if ( index == -1 ) {
             param = new Fl_Param(paramStart);
             m_params.add(param);
          } else {
             param = &m_params[index];
          }
-         param->bindAdd(paramNumber);
+         param->bind_add(paramNumber);
          paramNumber++;
          odbcSQL += "?";
          odbcSQL += delimitter;
@@ -185,7 +185,7 @@ void Fl_Query::sql(Fl_String _sql) {
    free(s);
 
    for (i = m_params.count() - 1; i >= 0; i--)
-   if (!m_params[i].bindCount())
+   if (!m_params[i].bind_count())
       m_params.remove(i);
 
    if (m_sql != odbcSQL) {

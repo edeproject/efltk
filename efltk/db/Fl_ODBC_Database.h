@@ -27,7 +27,12 @@ class Fl_ODBC_Database : public Fl_Database {
    friend class   Fl_Query;
 
 private:
-   ODBCConnection	*m_connect;
+   ODBCConnection *m_connect;
+
+   // ODBC-specific dataset description functions
+   unsigned query_count_cols(Fl_Query *query) const;
+   void query_col_attributes(Fl_Query *query,short column,short descType,long& value);
+   void query_col_attributes(Fl_Query *query,short column,short descType,char *buff,int len);
 
 protected:
    // Operations over query handle
@@ -59,5 +64,7 @@ public:
    virtual void commit_transaction();
    virtual void rollback_transaction();
 };
+
+#define FETCH_BUFFER_SIZE 2048
 
 #endif

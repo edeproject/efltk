@@ -20,18 +20,10 @@
 #include <string.h>
 #include <ctype.h>
 
-static char *lowerCase(char * src) {
-   char * ptr = src;
-   while ( *ptr ) {
-      *ptr = (char) tolower( *ptr );
-      ptr++;
-   }
-   return src;
-}
 //---------------------------------------------------------------------------
-Fl_Param::Fl_Param(char *name) : Fl_Variant() {
-   lowerCase(name);
+Fl_Param::Fl_Param(const char *name) : Fl_Variant() {
    m_name = name;
+   m_name = m_name.lower_case();
 }
 //---------------------------------------------------------------------------
 Fl_Param::~Fl_Param() {
@@ -43,7 +35,7 @@ Fl_Param& Fl_Param::operator = (const Fl_Param& param) {
    return *this;
 }
 //---------------------------------------------------------------------------
-void Fl_Param::bindAdd(unsigned bindIndex) {
+void Fl_Param::bind_add(unsigned bindIndex) {
    m_bindParamIndexes.append((void *)bindIndex);
 }
 //---------------------------------------------------------------------------
@@ -65,7 +57,7 @@ Fl_Param& Fl_Params::operator [] (const unsigned index) const {
    return *(Fl_Param *)m_items[index];
 }
 //---------------------------------------------------------------------------
-int Fl_Params::paramIndex(const char *paramName) {
+int Fl_Params::param_index(const char *paramName) {
    for (unsigned i = 0; i < count(); i++) {
       Fl_Param *item = (Fl_Param *)m_items[i];
       if ( item->name() == paramName )

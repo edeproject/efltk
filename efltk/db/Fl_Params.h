@@ -26,14 +26,14 @@ class Fl_Param : public Fl_Variant {
    Fl_String         m_name;
    Fl_Ptr_List       m_bindParamIndexes;
 public:
-   Fl_Param(char *name);
+   Fl_Param(const char *name);
    ~Fl_Param();
    Fl_Param& operator = (const Fl_Param& param);
    Fl_String  name() const { return m_name; }
-   void       bindClear() { m_bindParamIndexes.clear(); }
-   void       bindAdd(unsigned bindIndex);
-   unsigned   bindCount() { return m_bindParamIndexes.count(); }
-   unsigned   bindIndex(unsigned ind) { return (unsigned)m_bindParamIndexes[ind]; }
+   void       bind_clear() { m_bindParamIndexes.clear(); }
+   void       bind_add(unsigned bindIndex);
+   unsigned   bind_count() { return m_bindParamIndexes.count(); }
+   unsigned   bind_index(unsigned ind) { return (unsigned)m_bindParamIndexes[ind]; }
 };
 
 class Fl_Params {
@@ -42,7 +42,7 @@ class Fl_Params {
 public:
    Fl_Params() {};
    ~Fl_Params() { clear(); }
-   int        paramIndex(const char *paramName);
+   int        param_index(const char *paramName);
    Fl_Param&  operator[] (unsigned index) const;
    Fl_Param&  operator[] (const char *paramName) const;
    Fl_Param&  operator[] (const Fl_String& paramName) const;

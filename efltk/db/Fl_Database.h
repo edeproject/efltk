@@ -53,12 +53,15 @@ protected:
 protected:
    // These methods should be implemented in actual database class
    virtual void open_connection() = 0;
-   virtual void close_connection() 								 { fl_throw("close_connection() not implemented!"); }
+   virtual void close_connection() = 0;
 
 protected:
    // These methods provide access to protected data of Fl_Query
    void *query_handle(const Fl_Query *q) const     { return q->m_stmt; }
    void  query_handle(Fl_Query *q,void *handle)    { q->m_stmt = handle; } 
+
+   void  query_eof(Fl_Query *q,bool eof)           { q->m_eof = eof; }
+   Fl_Data_Fields& query_fields(Fl_Query *q)       { return q->m_fields; }
 
 public:
    Fl_Database(const Fl_String connString)         { m_inTransaction = m_active = false; }

@@ -16,7 +16,9 @@
  ***************************************************************************/
 
 #include <efltk/db/Fl_ODBC_Database.h>
+#include <efltk/db/Fl_Params.h>
 #include <efltk/db/Fl_Query.h>
+#include <stdio.h>
 #include "fl_odbc.h"
 
 static const char
@@ -27,26 +29,40 @@ static inline BOOL successful(int ret) {
    return ret==SQL_SUCCESS || ret==SQL_SUCCESS_WITH_INFO;
 }
 
+class Fl_ODBC_Param : public Fl_Param {
+   friend class Fl_ODBC_Database;
+protected:
+   TIMESTAMP_STRUCT m_timeData;
+public:
+   Fl_ODBC_Param(const char *paramName) : Fl_Param(paramName) {}
+};
+
+
+// Constructor
 Fl_ODBC_Database::Fl_ODBC_Database(const Fl_String connString) 
 : Fl_Database(connString) {
    m_connect = new ODBCConnection;
 }
 
+// Destructor
 Fl_ODBC_Database::~Fl_ODBC_Database() {
-	 close();
-	 close_connection();
+   close();
+   close_connection();
    delete m_connect;
 }
 
+// Create a database connection
 void Fl_ODBC_Database::open_connection() {
    Fl_String finalConnectionString;
    m_connect->connect(m_connString,finalConnectionString,false);
 }
 
+// Close a database connection
 void Fl_ODBC_Database::close_connection() {
    m_connect->disconnect();
 }
 
+// Begin database transaction
 void Fl_ODBC_Database::begin_transaction() {
    if (m_inTransaction)
       fl_throw("Transaction already started.");
@@ -55,6 +71,7 @@ void Fl_ODBC_Database::begin_transaction() {
    m_inTransaction = true;
 }
 
+// Commit database transaction
 void Fl_ODBC_Database::commit_transaction() {
    if (!m_inTransaction)
       fl_throw("Transaction isn't started.");
@@ -64,6 +81,7 @@ void Fl_ODBC_Database::commit_transaction() {
    m_inTransaction = false;
 }
 
+// Rollback database transaction
 void Fl_ODBC_Database::rollback_transaction() {
    if (!m_inTransaction)
       fl_throw("Transaction isn't started.");
@@ -73,6 +91,7 @@ void Fl_ODBC_Database::rollback_transaction() {
    m_inTransaction = false;
 }
 
+// Create query handle
 void Fl_ODBC_Database::allocate_query(Fl_Query *query) {
    deallocate_query(query);
    
@@ -84,6 +103,7 @@ void Fl_ODBC_Database::allocate_query(Fl_Query *query) {
    query_handle(query,qhandle);
 }
 
+// Release query handle
 void Fl_ODBC_Database::deallocate_query(Fl_Query *query) {
    void *qhandle = query_handle(query);
    if (!qhandle) // Not allocated
@@ -93,6 +113,7 @@ void Fl_ODBC_Database::deallocate_query(Fl_Query *query) {
    query_handle(query,SQL_NULL_HSTMT);
 }
 
+// Get error description for the query
 Fl_String Fl_ODBC_Database::query_error(Fl_Query *query) const {
    char  errorDescription[SQL_MAX_MESSAGE_LENGTH];
    char  errorState[SQL_MAX_MESSAGE_LENGTH];
@@ -109,14 +130,221 @@ Fl_String Fl_ODBC_Database::query_error(Fl_Query *query) const {
    return errorDescription;
 }
 
+// Prepare query handle
 void Fl_ODBC_Database::prepare_query(Fl_Query *query) {
    if (!successful(SQLPrepare(query_handle(query),(UCHAR FAR *)(LPCSTR)query->sql().c_str(),SQL_NTS))) {
-      Fl_String error = query_error(query);
-      fl_throw(error);
+      fl_throw(query_error(query));
    }
 }
 
+// Bind binary query parameters to query handle
+void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
+   int rc;
+
+   SQLHSTMT    statement = (SQLHSTMT)query_handle(query);
+   Fl_Params&  params = query->params();
+   unsigned    cnt = params.count();
+   for (unsigned i = 0; i < cnt; i++) {
+      Fl_ODBC_Param *param = (Fl_ODBC_Param *)&params[i];
+      unsigned  pcnt = param->bind_count();
+      for (unsigned j = 0; j < pcnt; j++) {
+
+         short paramType, sqlType, scale = 0;
+         void  *buff = param->data();
+         long  len = 0;
+         short paramNumber = short(param->bind_index(j) + 1);
+
+         short parameterMode = SQL_PARAM_INPUT;
+         switch (param->type()) {
+         case VAR_INT:
+            paramType = SQL_C_SLONG;
+            sqlType   = SQL_INTEGER;
+            break;
+         case VAR_FLOAT:
+            paramType = SQL_C_DOUBLE;
+            sqlType   = SQL_DOUBLE;
+            break;
+         case VAR_STRING:
+            buff      = (void *)param->get_string();
+            len       = param->size();
+            paramType = SQL_C_CHAR;
+            sqlType   = SQL_CHAR;
+            break;
+         case VAR_TEXT:
+            buff      = (void *)param->get_string();
+            len       = param->size();
+            paramType = SQL_C_CHAR;
+            sqlType   = SQL_LONGVARCHAR;
+            break;
+         case VAR_BUFFER:
+            buff      = (void *)param->get_string();
+            len       = param->size();
+            paramType = SQL_C_BINARY;
+            sqlType   = SQL_LONGVARBINARY;
+            break;
+         case VAR_DATETIME:
+            {
+               paramType = SQL_C_TIMESTAMP;
+               sqlType   = SQL_TIMESTAMP;
+               len = sizeof(TIMESTAMP_STRUCT);
+               TIMESTAMP_STRUCT *t = &param->m_timeData;
+               Fl_Date_Time dt = param->get_date();
+               short ms;
+               buff = t;
+               if (dt) {
+                  dt.decode_date((short *)&t->year,(short *)&t->month,(short *)&t->day);
+                  dt.decode_time((short *)&t->hour,(short *)&t->minute,(short *)&t->second,&ms);
+                  t->fraction = 0;
+               } else {
+                  paramType = SQL_C_CHAR;
+                  sqlType   = SQL_CHAR;
+                  *(char *)buff = 0;
+               }
+            }
+            break;
+         default:
+            fl_throw("Unknown type of parameter " + Fl_String(paramNumber));
+         }
+         rc = SQLBindParameter(statement,paramNumber,parameterMode,paramType,sqlType,len,scale,buff,short(len),NULL/*&cbValue*/);
+         if (rc != 0)
+            fl_throw("Can't bind parameter " + Fl_String(paramNumber));
+      }
+   }
+}
+
+// Get the number of columns in result dataset
+unsigned Fl_ODBC_Database::query_count_cols(Fl_Query *query) const {
+   short count;
+
+   if (!successful(SQLNumResultCols(query_handle(query),&count)))
+      fl_throw(query_error(query));
+
+   return count;
+}
+
+// Get the column information
+void Fl_ODBC_Database::query_col_attributes(Fl_Query *query,short column,short descType,long& value) {
+   int m_retcode = SQLColAttributes(query_handle(query),column,descType,0,0,0,(SQLINTEGER *)&value);
+
+   if (!successful(m_retcode))
+      fl_throw(query_error(query));
+}
+
+// Get the extended column information
+void Fl_ODBC_Database::query_col_attributes(Fl_Query *query,short column,short descType,LPSTR buff,int len) {
+   short available;
+   if (!buff || len <= 0)
+      fl_throw("Invalid buffer");
+
+   int m_retcode = SQLColAttributes(query_handle(query),(short)column,descType,buff,(short)len,&available,0);
+
+   if (!successful(m_retcode))
+      fl_throw(query_error(query));
+}
+
+// Conversion of ODBC data type to C data type
+static short ODBCtypeToCType(int odbcType) {
+   switch(odbcType) {
+   case SQL_BIGINT:
+   case SQL_TINYINT:
+   case SQL_SMALLINT:
+   case SQL_INTEGER:    return SQL_C_SLONG;
+
+   case SQL_NUMERIC:
+   case SQL_REAL:
+   case SQL_DECIMAL:
+   case SQL_DOUBLE:
+   case SQL_FLOAT:      return SQL_C_DOUBLE;
+
+   case SQL_LONGVARCHAR:
+   case SQL_VARCHAR:
+   case SQL_CHAR:       return SQL_C_CHAR;
+
+   // ODBC 3.0 only
+   case SQL_TYPE_TIME:
+   case SQL_TYPE_TIMESTAMP:
+   case SQL_TYPE_DATE:  return SQL_C_TIMESTAMP;
+
+   case SQL_TIME:
+   case SQL_TIMESTAMP:
+   case SQL_DATE:       return SQL_C_TIMESTAMP;
+
+   case SQL_BINARY:
+   case SQL_LONGVARBINARY:
+   case SQL_VARBINARY:  return SQL_C_BINARY;
+
+
+   case SQL_BIT:        return SQL_C_BIT;
+   }
+   return VAR_NONE;
+}
+
+// Execute query and fetch results, if any
 void Fl_ODBC_Database::open_query(Fl_Query *query) {
+   // Open the database if necessary
+   if (!active()) open();
+
+   // Allocate query handle if necessary
+   if (active() && !query_handle(query)) allocate_query(query);
+
+   if (query->active())
+      fl_throw("Query is already opened");
+
+   // Binary binding of parameters
+   bind_parameters(query);
+
+   if (!query->prepared()) {
+      prepare_query(query);
+   }
+
+   if (!successful(SQLExecute(query_handle(query)))) {
+      Fl_String error = query_error(query);
+      fl_throw(error);
+   }
+
+   m_active = true;
+
+   short count = (short) query_count_cols(query);
+
+   Fl_Data_Fields& fields = query_fields(query);
+
+   fields.clear();
+
+   if (count < 1) {
+      close();
+      return;
+   } else {
+      // Reading the column attributes
+      char  *columnName = new char[65];
+      long  columnType;
+      long  columnLength;
+      long  columnScale;
+      for (short column = 1; column <= count; column++) {
+         query_col_attributes(query,column,SQL_COLUMN_NAME,columnName,64);
+         query_col_attributes(query,column,SQL_COLUMN_TYPE,columnType);
+         query_col_attributes(query,column,SQL_COLUMN_LENGTH,columnLength);
+         query_col_attributes(query,column,SQL_COLUMN_SCALE,columnScale);
+         columnType = ODBCtypeToCType(columnType);
+         if (columnName[0] == 0)
+            sprintf(columnName,"column%02i",column);
+         if (columnLength > FETCH_BUFFER_SIZE)
+            columnLength = FETCH_BUFFER_SIZE;
+/*
+         Fl_Data_Field *field = new Fl_Query_Field(
+            columnName,
+            column,
+            columnType,
+            (int)columnLength,
+            (int)columnScale);
+         m_fields.add(field);
+*/
+      }
+      delete [] columnName;
+   }
+
+   query_eof(query,false);
+
+   fetch_query(query);
 }
 
 void Fl_ODBC_Database::fetch_query(Fl_Query *query) {
@@ -125,5 +353,3 @@ void Fl_ODBC_Database::fetch_query(Fl_Query *query) {
 void Fl_ODBC_Database::close_query(Fl_Query *query) {
 }
 
-void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
-}

@@ -25,16 +25,17 @@ class Fl_Database;
 
 class Fl_Query : public Fl_Data_Source {
    friend class Fl_Database;
-private:
+protected:
    bool              m_prepared;
    bool              m_active;
    bool              m_eof;
    Fl_Params         m_params;
 
    void checkDatabaseState();
-protected:
+
    Fl_Database *     m_database;    // Parent database
-   void *            m_stmt;        // statement handle
+   void *            m_stmt;        // Statement handle
+   Fl_Data_Fields    m_fields;      // Data fields
 protected:
    Fl_String         m_sql;
 
@@ -53,9 +54,11 @@ public:
    void exec();
    void fetch();
    bool close();
-   Fl_String sql() { return m_sql; }
+   const Fl_String& sql()               { return m_sql; }
+   Fl_Params& params()                  { return m_params; }
 public:
    bool             eof() const         { return m_eof; }
+   bool             prepared() const    { return m_prepared; }
    unsigned         param_count() const { return m_params.count(); }
    Fl_Param&        param(const char *paramName) const;
    Fl_Param&        param(const Fl_String& paramName) const;
