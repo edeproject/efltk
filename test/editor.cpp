@@ -61,14 +61,14 @@ Fl_Text_Buffer     *textbuf = 0;
 Fl_Text_Buffer     *stylebuf = 0;
 Fl_Text_Display::Style_Table_Entry
     styletable[] = {	// Style table
-        { FL_BLACK, FL_COURIER,        14 }, // A - Unfinished
-        { FL_BLACK, FL_COURIER,        14 }, // B - Plain
-        { FL_DARK3, FL_COURIER_ITALIC, 14 }, // C - Line comments
-        { FL_DARK3, FL_COURIER_ITALIC, 14 }, // D - Block comments
-        { fl_color_average(FL_BLACK, FL_YELLOW, 0.5), FL_COURIER,        14 }, // E - Strings
-        { fl_color_average(FL_BLACK, FL_GREEN, 0.5),  FL_COURIER,        14 }, // F - Directives
-        { fl_color_average(FL_BLACK, FL_RED, 0.5),    FL_COURIER,   14 }, // G - Types
-        { fl_color_average(FL_BLACK, FL_BLUE, 0.5),   FL_COURIER,   14 }  // H - Keywords
+        { FL_BLACK, FL_COURIER,        12 }, // A - Unfinished
+        { FL_BLACK, FL_COURIER,        12 }, // B - Plain
+        { FL_DARK3, FL_COURIER_ITALIC, 12 }, // C - Line comments
+        { FL_DARK3, FL_COURIER_ITALIC, 12 }, // D - Block comments
+        { fl_color_average(FL_BLACK, FL_YELLOW, 0.5), FL_COURIER,        12 }, // E - Strings
+        { fl_color_average(FL_BLACK, FL_GREEN, 0.5),  FL_COURIER,        12 }, // F - Directives
+        { fl_color_average(FL_BLACK, FL_RED, 0.5),    FL_COURIER,   12 }, // G - Types
+        { fl_color_average(FL_BLACK, FL_BLUE, 0.5),   FL_COURIER,   12 }  // H - Keywords
     };
 
 const char *code_keywords[] = {	// List of known C/C++ keywords...
@@ -821,7 +821,7 @@ Fl_Window* new_view() {
     m->end();
 
     w->editor = new Fl_Text_Editor(0, 30, 660, 370);
-    w->editor->text_size(14);
+    w->editor->text_size(12);
     //w->editor->cursor_style(Fl_Text_Editor::BLOCK_CURSOR);
     //w->editor->cursor_color(FL_RED);
     //w->editor->wrap_mode(1, 0);
