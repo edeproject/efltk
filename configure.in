@@ -424,15 +424,15 @@ MAKEDEPEND="\${CXX} -M"
 dnl# add warnings to compiler switches:
 dnl# do this last so messing with switches does not break tests
 if test -n "$GXX"; then
-    CFLAGS="-Wall $CFLAGS"
-    CXXFLAGS="-Wall $CXXFLAGS"
+    CFLAGS="-Wall -fno-rtti $CFLAGS"
+    CXXFLAGS="-Wall -fno-rtti $CXXFLAGS"
     if test -z "$DEBUGFLAG"; then
     	# Note: Can't use -fomit-frame-pointer - prevents tools like
 	#       libsafe from working!
 	# WAS: I removed the -fforce-mem, -fforce-addr, -fcaller-saves
 	#      They all seemed to make either no difference or enlarged
 	#      the code by a few hundred bytes.
-        DEBUGFLAG="-O2 "
+        DEBUGFLAG="-Os "
     fi
 
     # See if GCC supports -fno-exceptions...
@@ -475,12 +475,12 @@ else
         	CFLAGS="-fullwarn $CFLAGS"
         	CXXFLAGS="-fullwarn $CXXFLAGS"
 		if test -z "$DEBUGFLAG"; then
-	            DEBUGFLAG="-O2 -OPT:Olimit=3000"
+	            DEBUGFLAG="-Os -OPT:Olimit=3000"
 		fi
 	    else
         	CXXFLAGS="+w +pp $CXXFLAGS"
 		if test -z "$DEBUGFLAG"; then
-	            DEBUGFLAG="-O2 -Olimit=3000"
+	            DEBUGFLAG="-Os -Olimit=3000"
 		fi
 	    fi
 	    ;;
@@ -493,7 +493,7 @@ else
 	SunOS*)
 	    # Solaris
 	    if test -z "$DEBUGFLAG"; then
-		DEBUGFLAG="-O"
+		DEBUGFLAG="-Os"
 	    fi
 	    ;;
 	*)
@@ -504,7 +504,7 @@ else
 	    echo "for your platform, or set the CFLAGS and CXXFLAGS options"
 	    echo "before running configure."
 	    if test -z "$DEBUGFLAG"; then
-		DEBUGFLAG="-O"
+		DEBUGFLAG="-Os"
 	    fi
 	    ;;
     esac
