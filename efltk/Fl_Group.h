@@ -136,14 +136,17 @@ public:
     void resizable(Fl_Widget* o) { m_resizable = o; }
     Fl_Widget* resizable() const { return m_resizable; }
     void add_resizable(Fl_Widget& o) { m_resizable = &o; add(o); }
-    
-	void init_sizes();
-	int *store_sizes();
+
+    void init_sizes();
+    int *store_sizes();
 
     void focus(int i) { m_focus = i; }
     void focus(Fl_Widget* w) { focus(find(w)); }
     int focus() const { return m_focus; }
     static int navigation_key();
+
+    // dialog support methods
+    virtual void reset();
 
     // data source support methods
     void data_source(Fl_Data_Source *ds);

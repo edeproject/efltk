@@ -17,14 +17,15 @@ void Fl_Dialog_DS::scan_widgets(Fl_Group *group) {
             scan_widgets((Fl_Group *)widget);
     }
     if (group == parent())
-        m_widgetScanned = true;
+        m_widgetsScanned = true;
 }
 
 // Set the field value
 Fl_Variant& Fl_Dialog_DS::operator [] (const char *field_name) {
-    if (!m_widgetScanned) scan_widgets();
+    if (!m_widgetsScanned) scan_widgets();
     int fieldIndex = field_index(field_name);
     if (fieldIndex < 0)
         fl_throw("Sorry, the field " + Fl_String(field_name) + " doesn't exist in that dialog.");
     return m_fields[field_name];
 }
+

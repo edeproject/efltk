@@ -316,7 +316,7 @@ void Fl_Dialog::buttons_callback(Fl_Button *btn, long id)
                 return;
         }
         catch (Fl_Exception& e) {
-			Fl::warning("Can't save data. " + e.text());
+            Fl::warning("Can't save data. " + e.text());
             return;
         }
     }
@@ -366,22 +366,22 @@ void Fl_Dialog::enable_button(int button_mask,bool enabled)
     for(unsigned i = 0; i < m_buttonList.size(); i++) {
         Fl_Button *btn = (Fl_Button*)m_buttonList[i];
         if(button_mask & btn->argument()) {
-			if (enabled)
-				btn->activate();
-			else
-				btn->deactivate();			
-		}
+            if (enabled)
+                btn->activate();
+            else
+                btn->deactivate();          
+        }
     }
 }
 
 void Fl_Dialog::submit(int button_id)
 {
-	for(unsigned i = 0; i < m_buttonList.size(); i++) {
+    for(unsigned i = 0; i < m_buttonList.size(); i++) {
         Fl_Button *btn = (Fl_Button*)m_buttonList[i];
         if(button_id == btn->argument()) {
-			btn->do_callback(btn->argument());
-			return; // Only one allowed
-		}
+            btn->do_callback(btn->argument());
+            return; // Only one allowed
+        }
     }
 }
 
@@ -555,6 +555,11 @@ Fl_Group *Fl_Dialog::new_group(const char *lbl,bool autoColor)
 bool Fl_Dialog::load_data(Fl_Data_Source *ds) 
 {
     if (!ds) ds = m_dataSource;
+
+    // Clean the widgets data before loading. 
+    // Useful if we have incomplete information in datasource
+    m_tabs->reset();
+
     return ds->load();
 }
 

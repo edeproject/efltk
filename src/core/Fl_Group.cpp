@@ -841,6 +841,14 @@ void Fl_Group::data_source(Fl_Data_Source *ds)
     m_data_source->parent(this);
 }
 
+void Fl_Group::reset() {
+    unsigned cnt = children();
+    for (unsigned i = 0; i < cnt; i++) {
+        Fl_Widget   *widget = child(i);
+        widget->reset();
+    }
+}
+
 bool Fl_Group::load_data(Fl_Data_Source *ds) {
     if (!ds)
         ds = m_data_source;
