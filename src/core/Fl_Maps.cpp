@@ -47,7 +47,7 @@ Fl_Map_Iterator &Fl_Map_Iterator::first()
 Fl_Map_Iterator &Fl_Map_Iterator::last()
 {
     m_y = m_x = 0;
-    for(unsigned y=m_map->hash_size()-1; y >= 0 ; y--)
+    for(int y=m_map->hash_size()-1; y >= 0 ; y--)
     {
         Fl_Ptr_List &wlist = m_map->m_lists[y];
         if(wlist.size()>0) {
