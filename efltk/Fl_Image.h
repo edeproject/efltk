@@ -79,17 +79,19 @@ public:
      @param H As a height of image
      @param fmt As a Pixel format to use in image
      @param data As pre-allocated data of image, or 0 (allocated by Fl_Image)
+     @param allow_free, if this flag is set, Fl_Image will de-allocate date on clear() (destructor)
      */
-    Fl_Image(int W, int H, Fl_PixelFormat *fmt, uint8 *data=0);
+    Fl_Image(int W, int H, Fl_PixelFormat *fmt, uint8 *data=0, bool allow_free=true);
     /*!
      @param W As a width of image
      @param H As a height of image
      @param bits_pp As a bits per pixel (8,15,16,24,32)
      @param data As pre-allocated data of image, or 0 (allocated by Fl_Image)
+     @param allow_free, if this flag is set, Fl_Image will de-allocate date on clear() (destructor)
 
      You may also want to provide color masks, e.g. ARGB 32-bit image they are Rmask=0x00FF0000, Gmask=0x0000FF00, Bmask=0x000000FF, Amask=0xFF000000
      */
-    Fl_Image(int W, int H, int bits_pp, uint8 *data, uint32 Rmask=0, uint32 Gmask=0, uint32 Bmask=0, uint32 Amask=0);
+    Fl_Image(int W, int H, int bits_pp, uint8 *data, bool allow_free=true, uint32 Rmask=0, uint32 Gmask=0, uint32 Bmask=0, uint32 Amask=0);
     /*!
      @param W As a width of image
      @param H As a height of image

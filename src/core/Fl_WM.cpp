@@ -311,6 +311,7 @@ bool Fl_WM::get_window_icon(Window xid, Fl_Image *&icon, int w, int h)
     }
 
     if(!image) {
+        if(wm_hints) delete wm_hints;
         return false;
     }
 
@@ -321,7 +322,7 @@ bool Fl_WM::get_window_icon(Window xid, Fl_Image *&icon, int w, int h)
         xim = Fl_Renderer::ximage_from_pixmap(wm_hints->icon_mask, r);
         if(xim) {
             uint8 *data = cvt1to32(xim, xim->width, xim->height);
-            mask = new Fl_Image(xim->width, xim->height, 32, data, 0,0,0,0);
+            mask = new Fl_Image(xim->width, xim->height, 32, data);
             mask->no_screen(true);
             XDestroyImage(xim);
         }
@@ -337,6 +338,8 @@ bool Fl_WM::get_window_icon(Window xid, Fl_Image *&icon, int w, int h)
             delete smask;
         }
     }
+
+    if(wm_hints) delete wm_hints;
 
     icon = image;
     if(image->width()!=w || image->height()!=h) {

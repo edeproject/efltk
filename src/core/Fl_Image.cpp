@@ -87,9 +87,10 @@ Fl_Image::Fl_Image(const char * const *data, int quality)
 	read_image(0, data);
 }
 
-Fl_Image::Fl_Image(int W, int H, Fl_PixelFormat *fmt, uint8 *data)
+Fl_Image::Fl_Image(int W, int H, Fl_PixelFormat *fmt, uint8 *data, bool allow_free)
 {
     init(W, H, fmt->bitspp, data, fmt->Rmask, fmt->Gmask, fmt->Bmask, fmt->Amask);
+    _data_alloc = allow_free;
 }
 
 Fl_Image::Fl_Image(int W, int H, int bits_pp)
@@ -114,9 +115,10 @@ Fl_Image::Fl_Image(int W, int H, int bits_pp)
     init(W, H, bits_pp, 0, Rmask, Gmask, Bmask, Amask);
 }
 
-Fl_Image::Fl_Image(int W, int H, int bits_pp, uint8 *data, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask)
+Fl_Image::Fl_Image(int W, int H, int bits_pp, uint8 *data, bool allow_free, uint32 Rmask, uint32 Gmask, uint32 Bmask, uint32 Amask)
 {
     init(W, H, bits_pp, data, Rmask, Gmask, Bmask, Amask);
+    _data_alloc = allow_free;
 }
 
 Fl_Image::Fl_Image(Fl_Image &i)
