@@ -1316,7 +1316,7 @@ void Fl_Text_Display::buffer_predelete_cb(int pos, int nDeleted, void *cbArg)
 void Fl_Text_Display::buffer_modified_cb( int pos, int nInserted, int nDeleted,
 										int nRestyled, const char *deletedText, void *cbArg ) 
 {
-  int linesInserted, linesDeleted, startDispPos, endDispPos;
+    int linesInserted, linesDeleted, startDispPos, endDispPos;
   Fl_Text_Display *textD = ( Fl_Text_Display * ) cbArg;
   Fl_Text_Buffer *buf = textD->mBuffer;
   int oldFirstChar = textD->mFirstChar;
@@ -1326,119 +1326,120 @@ void Fl_Text_Display::buffer_modified_cb( int pos, int nInserted, int nDeleted,
   // refigure scrollbars & stuff
   textD->relayout();
 
+  // don't need to do anything else if not visible?
+  if (!textD->visible_r()) return;
+
   /* buffer modification cancels vertical cursor motion column */
   if ( nInserted != 0 || nDeleted != 0 )
-    textD->mCursorPreferredCol = -1;
+      textD->mCursorPreferredCol = -1;
 
-	/* Count the number of lines inserted and deleted, and in the case 
-       of continuous wrap mode, how much has changed */ 
-    if (textD->mContinuousWrap) { 
-		textD->find_wrap_range(deletedText, pos, nInserted, nDeleted, 
-					          &wrapModStart, &wrapModEnd, &linesInserted, &linesDeleted); 
-    } else { 
-				
-		linesInserted = nInserted == 0 ? 0 :
-				buf->count_lines( pos, pos + nInserted );
-                //textD->buffer()->count_lines( pos, pos + nInserted );
-		linesDeleted = nDeleted == 0 ? 0 : countlines( deletedText );
-	}
+  /* Count the number of lines inserted and deleted, and in the case
+   of continuous wrap mode, how much has changed */
+  if (textD->mContinuousWrap) {
+      textD->find_wrap_range(deletedText, pos, nInserted, nDeleted,
+                             &wrapModStart, &wrapModEnd, &linesInserted, &linesDeleted);
+  } else {
+
+      linesInserted = nInserted == 0 ? 0 :
+          buf->count_lines( pos, pos + nInserted );
+      //textD->buffer()->count_lines( pos, pos + nInserted );
+      linesDeleted = nDeleted == 0 ? 0 : countlines( deletedText );
+  }
 
   /* Update the line starts and topLineNum */
   if ( nInserted != 0 || nDeleted != 0 ) {
-	if (textD->mContinuousWrap) { 
-		textD->update_line_starts( wrapModStart, wrapModEnd-wrapModStart, 
-					               nDeleted + pos-wrapModStart + (wrapModEnd-(pos+nInserted)), 
-								    linesInserted, linesDeleted, &scrolled ); 
-    } else { 
-	
-		textD->update_line_starts( pos, nInserted, nDeleted, linesInserted,
-			                       linesDeleted, &scrolled );
-	}
+      if (textD->mContinuousWrap) {
+          textD->update_line_starts( wrapModStart, wrapModEnd-wrapModStart,
+                                    nDeleted + pos-wrapModStart + (wrapModEnd-(pos+nInserted)),
+                                    linesInserted, linesDeleted, &scrolled );
+      } else {
+
+          textD->update_line_starts( pos, nInserted, nDeleted, linesInserted,
+                                    linesDeleted, &scrolled );
+      }
 
   } else
-    scrolled = 0;
+      scrolled = 0;
 
- /* If we're counting non-wrapped lines as well, maintain the absolute 
-          (non-wrapped) line number of the text displayed */ 
-  if (textD->maintaining_absolute_top_line_number() && 
-     (nInserted != 0 || nDeleted != 0)) { 
-		 if (pos + nDeleted < oldFirstChar) 
-			 textD->mAbsTopLineNum += buf->count_lines(pos, pos + nInserted) - countlines(deletedText); 
-         else if (pos < oldFirstChar) 
-             textD->reset_absolute_top_line_number(); 
-  } 
-    
-
+  /* If we're counting non-wrapped lines as well, maintain the absolute
+   (non-wrapped) line number of the text displayed */
+  if (textD->maintaining_absolute_top_line_number() &&
+      (nInserted != 0 || nDeleted != 0)) {
+      if (pos + nDeleted < oldFirstChar)
+          textD->mAbsTopLineNum += buf->count_lines(pos, pos + nInserted) - countlines(deletedText);
+      else if (pos < oldFirstChar)
+          textD->reset_absolute_top_line_number();
+  }
 
   /* Update the line count for the whole buffer */
   textD->mNBufferLines += linesInserted - linesDeleted;
 
   /* Update the cursor position */
   if ( textD->mCursorToHint != NO_HINT ) {
-    textD->mCursorPos = textD->mCursorToHint;
-    textD->mCursorToHint = NO_HINT;
+      textD->mCursorPos = textD->mCursorToHint;
+      textD->mCursorToHint = NO_HINT;
   } else if ( textD->mCursorPos > pos ) {
-    if ( textD->mCursorPos < pos + nDeleted )
-      textD->mCursorPos = pos;
-    else
-      textD->mCursorPos += nInserted - nDeleted;
+      if ( textD->mCursorPos < pos + nDeleted )
+          textD->mCursorPos = pos;
+      else
+          textD->mCursorPos += nInserted - nDeleted;
   }
 
   // don't need to do anything else if not visible?
-  if (!textD->visible_r()) return;
+  //if (!textD->visible_r()) return;
 
   /* If the changes caused scrolling, re-paint everything and we're done. */
   if ( scrolled ) {
-    textD->redraw(FL_DAMAGE_VALUE);
-    if ( textD->mStyleBuffer )   /* See comments in extendRangeForStyleMods */
-      textD->mStyleBuffer->primary_selection()->selected(0);
-    return;
+      textD->redraw(FL_DAMAGE_VALUE);
+      if ( textD->mStyleBuffer )   /* See comments in extendRangeForStyleMods */
+          textD->mStyleBuffer->primary_selection()->selected(0);
+      return;
   }
 
   /* If the changes didn't cause scrolling, decide the range of characters
-     that need to be re-painted.  Also if the cursor position moved, be
-     sure that the redisplay range covers the old cursor position so the
-     old cursor gets erased, and erase the bits of the cursor which extend
-     beyond the left and right edges of the text. */
-  
+   that need to be re-painted.  Also if the cursor position moved, be
+   sure that the redisplay range covers the old cursor position so the
+   old cursor gets erased, and erase the bits of the cursor which extend
+   beyond the left and right edges of the text. */
+
   //startDispPos = pos;
   startDispPos = textD->mContinuousWrap ? wrapModStart : pos;
 
   if ( origCursorPos == startDispPos && textD->mCursorPos != startDispPos )
-    startDispPos = min( startDispPos, origCursorPos - 1 );
+      startDispPos = min( startDispPos, origCursorPos - 1 );
   if ( linesInserted == linesDeleted ) {
-    if ( nInserted == 0 && nDeleted == 0 )
-      endDispPos = pos + nRestyled;
-    else {
-      //endDispPos = buf->line_end( pos + nInserted ) + 1;
+      if ( nInserted == 0 && nDeleted == 0 )
+          endDispPos = pos + nRestyled;
+      else {
+          //endDispPos = buf->line_end( pos + nInserted ) + 1;
 
-		endDispPos = textD->mContinuousWrap ? wrapModEnd :
-	                  buf->line_end( pos + nInserted ) + 1;
+          endDispPos = textD->mContinuousWrap ? wrapModEnd :
+              buf->line_end( pos + nInserted ) + 1;
 
-      // CET - FIXME      if ( origCursorPos >= startDispPos &&
-      //                ( origCursorPos <= endDispPos || endDispPos == buf->length() ) )
-    }
+          // CET - FIXME      if ( origCursorPos >= startDispPos &&
+          //                ( origCursorPos <= endDispPos || endDispPos == buf->length() ) )
+      }
 
-	//if (linesInserted > 1) textD->draw_line_numbers(false);
+      //if (linesInserted > 1) textD->draw_line_numbers(false);
 
   } else {
-    endDispPos = textD->mLastChar + 1;
-    // CET - FIXME   if ( origCursorPos >= pos )
-	 /* If more than one line is inserted/deleted, a line break may have 
-              been inserted or removed in between, and the line numbers may 
-              have changed. If only one line is altered, line numbers cannot 
-              be affected (the insertion or removal of a line break always 
-              results in at least two lines being redrawn). */ 
-     
-    //textD->draw_line_numbers(false);
+      endDispPos = textD->mLastChar + 1;
+      // CET - FIXME   if ( origCursorPos >= pos )
+      /* If more than one line is inserted/deleted, a line break may have
+       been inserted or removed in between, and the line numbers may
+       have changed. If only one line is altered, line numbers cannot
+       be affected (the insertion or removal of a line break always
+       results in at least two lines being redrawn). */
+
+      //textD->draw_line_numbers(false);
   }
 
   /* If there is a style buffer, check if the modification caused additional
-     changes that need to be redisplayed.  (Redisplaying separately would
-     cause double-redraw on almost every modification involving styled
-     text).  Extend the redraw range to incorporate style changes */
+   changes that need to be redisplayed.  (Redisplaying separately would
+   cause double-redraw on almost every modification involving styled
+   text).  Extend the redraw range to incorporate style changes */
   if ( textD->mStyleBuffer )
-    textD->extend_range_for_styles( &startDispPos, &endDispPos );
+      textD->extend_range_for_styles( &startDispPos, &endDispPos );
 
   /* Redisplay computed range */
   textD->redisplay_range( startDispPos, endDispPos );
