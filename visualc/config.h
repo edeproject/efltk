@@ -189,6 +189,10 @@
 
 /* Enables NLS localization support */
 #define ENABLE_NLS 0
+
+/* Enables UTF8 */
+#define HAVE_XUTF8 0
+
 /*
  * End of "$Id$".
  */

@@ -14,12 +14,13 @@ static void cb_OK(Fl_Return_Button*, void*) {
 
 int main (int argc, char **argv) {
 
-	const int TABY = 20;
+	const int TABY = 0;
 
   Fl_Window* w;
    {Fl_Window* o = foo_window = new Fl_Window(320, 305);
     w = o;
      {Fl_Tabs* o = new Fl_Tabs(10, 10, 300, 200);
+	 o->box(FL_THIN_UP_BOX);
        {Fl_Group* o = new Fl_Group(0, TABY, 300, 180, "Label1");
         new Fl_Input(50, 14, 240, 22, "input:");
         new Fl_Input(50, 36, 240, 22, "input2:");

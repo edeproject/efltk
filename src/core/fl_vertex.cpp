@@ -41,7 +41,7 @@ struct Matrix {
 };
 
 static Matrix m = {1, 0, 0, 1, 0, 0, 0, 0, true};
-static Matrix stack[10];
+static Matrix stack[64];
 static int sptr = 0;
 
 void fl_push_matrix() {stack[sptr++] = m;}

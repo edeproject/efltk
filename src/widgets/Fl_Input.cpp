@@ -778,14 +778,14 @@ bool Fl_Input::replace(int b, int e, const char* text, int ilen)
     
      // don't clobber undo for a null operation
     if (e<=b && !ilen) return false;
-#if 0
-    // this can be done by a subclass!
-    if (size_+ilen-(e-b) > maximum_size_)
-    {
-        ilen = maximum_size_-size_+(e-b);
-        if (ilen < 0) ilen = 0;
-    }
-#endif
+
+    // this can be done by a subclass!... Theres no harm to do it here!
+	if(maximum_size_>0) {
+		if (size_+ilen-(e-b) > maximum_size_) {
+			ilen = maximum_size_-size_+(e-b);
+			if (ilen < 0) ilen = 0;
+		}
+	}
 
     put_in_buffer(size_+ilen);
 
@@ -946,6 +946,7 @@ Fl_Input::Fl_Input(int x, int y, int w, int h, const char* l)
     clear_flag(FL_ALIGN_MASK);
     set_flag(FL_ALIGN_LEFT);
     set_click_to_focus();
+	maximum_size_ = -1;
     mark_ = position_ = size_ = 0;
     bufsize = 0;
     buffer  = 0;

@@ -66,6 +66,8 @@ public:
   const char* value() const {return value_;}
   char index(int i) const {return value_[i];}
   int size() const {return size_;}
+  int maximum_size() { return maximum_size_; }
+  void maximum_size(int m) { maximum_size_ = m; }
 
   int position() const {return position_;}
   int mark() const {return mark_;}
@@ -98,6 +100,7 @@ private:
   char* buffer;
 
   int size_;
+  int maximum_size_;
   int bufsize;
   int position_;
   int mark_;

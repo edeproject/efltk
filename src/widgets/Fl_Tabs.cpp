@@ -529,8 +529,8 @@ static void revert(Fl_Style* s)
 {
     s->box = FL_UP_BOX;
     s->button_box = &tabbox;
-    //s->focus_box = &tabfocusbox;
-	s->focus_box = FL_NO_BOX;
+    s->focus_box = &tabfocusbox;
+	//s->focus_box = FL_NO_BOX;
     s->color = FL_GRAY;
     s->selection_color = FL_GRAY;
 }

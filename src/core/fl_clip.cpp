@@ -27,7 +27,7 @@
 #include <efltk/fl_draw.h>
 #include <efltk/x.h>
 
-#define STACK_SIZE 11
+#define STACK_SIZE 64
 #define STACK_MAX (STACK_SIZE - 2)
 static Region rstack[STACK_SIZE];
 static int rstackptr=0;
