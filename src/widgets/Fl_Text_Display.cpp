@@ -1923,7 +1923,7 @@ int Fl_Text_Display::position_style( int lineStartPos,
 */
 int Fl_Text_Display::string_width( const char *string, int length, int style ) 
 {
-   static int last_style = -1;
+   //static int last_style = -1;
 
    int mask = style & STYLE_LOOKUP_MASK;
 
@@ -1943,15 +1943,15 @@ int Fl_Text_Display::string_width( const char *string, int length, int style )
             return iW;
          }
 
-         if (style != last_style)
-            fl_font(style_entry->font, style_entry->size);
+         //if (style != last_style)
+         fl_font(style_entry->font, style_entry->size);
       }
    } else {
-      if (style != last_style)
-         fl_font(text_font(), text_size());
+      //if (style != last_style)
+      fl_font(text_font(), text_size());
    }
 
-   last_style = style;
+   //last_style = style;
 
    return (int)fl_width( string, length );
 }
@@ -2911,6 +2911,7 @@ int Fl_Text_Display::measure_proportional_character(char c, int colNum, int pos)
          style = (unsigned char)styleBuf->character(pos);
       }
    }
+   // bottleneck is here!
    return string_width(expChar, charLen, style);
 }
 

@@ -36,7 +36,6 @@
 in the buffer where text might be inserted
 if the user is typing sequential chars ) */
 
-static void subsChars( char *string, int length, char fromChar, char toChar );
 static void insertColInLine( const char *line, char *insLine, int column, int insWidth,
    int tabDist, int useTabs, char *outStr, int *outLen,
    int *endOffset );
@@ -58,14 +57,6 @@ static char *expandTabs( const char *text, int startIndent, int tabDist, int *ne
 static char *unexpandTabs( char *text, int startIndent, int tabDist, int *newLen );
 static int max( int i1, int i2 );
 static int min( int i1, int i2 );
-
-static const char *ControlCodeTable[ 32 ] =
-{
-   "nul", "soh", "stx", "etx", "eot", "enq", "ack", "bel",
-   "bs", "ht", "nl", "vt", "np", "cr", "so", "si",
-   "dle", "dc1", "dc2", "dc3", "dc4", "nak", "syn", "etb",
-   "can", "em", "sub", "esc", "fs", "gs", "rs", "us"
-};
 
 class UndoNode
 {
@@ -1089,7 +1080,7 @@ int Fl_Text_Buffer::expand_character( int pos, int indent, char *outStr )
    return ret;
 #else
    return expand_character( character( pos ), indent, outStr,
-      mTabDist, mNullSubsChar );
+      mTabDist );
 #endif
 }
 
@@ -1115,20 +1106,8 @@ int Fl_Text_Buffer::expand_character( char c, int indent, char *outStr, int tabD
       return nSpaces;
    }
 
-    /* Convert control codes to readable character sequences */
-    /*... is this safe with international character sets? */
-   if ( ( ( unsigned char ) c ) <= 31 )
-   {
-      sprintf( outStr, "<%s>", ControlCodeTable[ c ] );
-      return strlen( outStr );
-   }
-   else if ( c == 127 )
-   {
-      sprintf( outStr, "<del>" );
-      return 5;
-   }
 #if HAVE_XUTF8
-   else if ((c & 0x80) && !(c & 0x40)) {
+   if ((c & 0x80) && !(c & 0x40)) {
       return 0;
    } else if (c & 0x80) {
       *outStr = c;
@@ -1151,11 +1130,7 @@ int Fl_Text_Buffer::character_width( char c, int indent, int tabDist )
    switch (c) {
       case '\t':
          return tabDist - ( indent % tabDist );
-      case 127:
-         return 5;
       default:
-         if ( ( ( unsigned char ) c ) <= 31 )
-            return strlen( ControlCodeTable[ c ] ) + 2;
 #if HAVE_XUTF8
          if (c & 0x80) {
             if (c & 0x40)
@@ -1221,8 +1196,8 @@ int Fl_Text_Buffer::count_lines( int startPos, int endPos )
    pos = startPos;
    while ( pos < mGapStart )
    {
-      if ( pos == endPos )
-         return lineCount;
+      //if ( pos == endPos )
+      //return lineCount;
       if ( mBuf[ pos++ ] == '\n' )
          lineCount++;
    }
