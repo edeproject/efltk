@@ -61,7 +61,7 @@
 #include <efltk/Fl_Color.h>
 #include <efltk/vsnprintf.h>
 
-#ifdef HAVE_XUTF8
+#if HAVE_XUTF8
 #include <efltk/fl_utf8.h>
 #endif
 
@@ -720,7 +720,7 @@ void Fl_Simple_Html::draw()
 					if (qch < 0)
 						*s++ = '&';
 					else {
-#ifdef HAVE_XUTF8					
+#if HAVE_XUTF8					
 						int l;
 				                l = fl_ucs2utf((unsigned int) qch, s);
         					if (l < 1) l = 1;
@@ -1380,7 +1380,7 @@ void Fl_Simple_Html::format()
 				*s++ = '&';
 			}
 			else {
-#ifdef HAVE_XUTF8					
+#if HAVE_XUTF8					
 				int l;
 		                l = fl_ucs2utf((unsigned int) qch, s);
 				if (l < 1) l = 1;
@@ -1807,7 +1807,7 @@ void Fl_Simple_Html::format_table(int *table_width,	// O - Total table width
 				if (qch < 0)
 					*s++ = '&';
 				else {
-#ifdef HAVE_XUTF8					
+#if HAVE_XUTF8					
 					int l;
 			                l = fl_ucs2utf((unsigned int) qch, s);
     					if (l < 1) l = 1;

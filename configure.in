@@ -91,7 +91,7 @@ case $uname in
     SunOS* | UNIX_S*)
 	  DSOCOMMAND="\${CXX} -Wl,-h,\${DSONAME} -G $DEBUGFLAG -o"
 	  THEMECOMMAND="\${CXX} -G $DEBUGFLAG -o"
-	  DSOCFLAGS="-KPIC"
+	  DSOCFLAGS="-fPIC"
 	  ;;
     HP-UX*)
 	  DSOCOMMAND="ld -b -z +h \${DSONAME} $DEBUGFLAG -o"
