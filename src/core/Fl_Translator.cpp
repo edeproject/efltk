@@ -15,8 +15,8 @@ class MessageHash : public Fl_String_Hash
 {
 public:
     MessageHash() { }
-    void load_etb(FILE *fp);
-    void load_mo(FILE *fp);
+    bool load_etb(FILE *fp);
+    bool load_mo(FILE *fp);
 };
 
 typedef struct {
@@ -117,8 +117,7 @@ catalog *load_binary_file(const char *domain, const char *full_path, locale *loc
     else if(strstr(full_path, ".mo")) load=LOAD_MO;
 
     if(load==LOAD_NONE || !fl_file_exists(full_path)) {
-        fl_throw("");
-        return 0; //Just in case..
+        return 0;
     }
 
     catalog *cat = new catalog;
@@ -126,19 +125,19 @@ catalog *load_binary_file(const char *domain, const char *full_path, locale *loc
     FILE *fp = fopen(full_path, "r");
     if(!fp) {
         delete cat;
-        fl_throw(strerror(errno));
-        return 0; //Just in case..
+        return 0;
     }
-    fl_try {
-        if(load==LOAD_ETB)
-            cat->hash.load_etb(fp);
-        else
-            cat->hash.load_mo(fp);
 
-    } fl_catch(exc) {
-        delete cat; fclose(fp);
-        fl_rethrow; //Rethrow!
-        return 0; //Just in case..
+    bool ret;
+    if(load==LOAD_ETB)
+        ret = cat->hash.load_etb(fp);
+    else
+        ret = cat->hash.load_mo(fp);
+
+    if(!ret) {
+        delete cat;
+        fclose(fp);
+        return 0;
     }
 
     fclose(fp);
@@ -290,18 +289,14 @@ char *Fl_Translator::bindtextdomain(const char *domainname, const char *dirname)
 
     catalog *cat=0;
     if(file.length()>0) {
-        fl_try {
-            cat = load_binary_file(domainname, file.c_str(), loc);
-        } fl_catch(exc) {
-            if(exc.text(true) != "")
-                Fl::warning(exc.text().c_str());
+        cat = load_binary_file(domainname, file.c_str(), loc);
+        if(!cat) {
             delete loc;
             return 0;
         }
-        catalogs_.prepend(cat);
-        return (char*)cat->path.c_str();
     }
-    return 0;
+    catalogs_.prepend(cat);
+    return (char*)cat->path.c_str();
 }
 
 const char *Fl_Translator::load_translation(const char *domainname)
@@ -320,11 +315,8 @@ const char *Fl_Translator::load_translation(const char *domainname)
         if(file.length()==0) file = get_filename(domainname, dirname, "mo", *loc, false);
         if(file.length()==0) continue;
 
-        fl_try {
-            cat = load_binary_file(domainname, file.c_str(), loc);
-        } fl_catch(exc) {
-            if(exc.text(true) != "")
-                Fl::warning(exc.text().c_str());
+        cat = load_binary_file(domainname, file.c_str(), loc);
+        if(!cat) {
             delete loc;
             return 0;
         }
@@ -342,11 +334,8 @@ const char *Fl_Translator::load_translation_file(const char *desired_domain, con
     parse_locale(last_locale, *loc);
 
     catalog *cat=0;
-    fl_try {
-        cat = load_binary_file(desired_domain, path, loc);
-    } fl_catch(exc) {
-        if(exc.text(true) != "")
-            Fl::warning(exc.text().c_str());
+    cat = load_binary_file(desired_domain, path, loc);
+    if(!cat) {
         delete loc;
         return 0;
     }
@@ -371,19 +360,20 @@ static const uint32 etb_magic      = 0xF4382150;
 static const uint32 etb_magic_swap = 0x502138F4;
 static const uint32 etb_version    = 0x10000001;
 
-void MessageHash::load_etb(FILE *fp)
+bool MessageHash::load_etb(FILE *fp)
 {
     clear();
 
     long size;
-    if(fseek(fp, 0, SEEK_END)!=0) fl_throw(strerror(errno));
-    if( (size = ftell(fp)) == -1) fl_throw(strerror(errno));
-    if(fseek(fp, 0, SEEK_SET)!=0) fl_throw(strerror(errno));
+    if(fseek(fp, 0, SEEK_END)!=0) { fl_throw(strerror(errno)); return false; }
+    if( (size = ftell(fp)) == -1) { fl_throw(strerror(errno)); return false; }
+    if(fseek(fp, 0, SEEK_SET)!=0) { fl_throw(strerror(errno)); return false; }
 
     char *data = (char *) malloc(size);
     if(fread(data, size, 1, fp)==0 && errno!=0) {
         free(data);
         fl_throw(strerror(errno));
+        return false;
     }
 
     etb_header *head = (etb_header*)data;
@@ -391,11 +381,13 @@ void MessageHash::load_etb(FILE *fp)
 
     if(magic!=etb_magic && magic!=etb_magic_swap) {
         free(data);
-        fl_throw("ETB translation file, magic number failure");
+        Fl::warning("ETB translation file, magic number failure");
+        return false;
     }
     if(head->version!=etb_version) {
         free(data);
-        fl_throw("ETB translation file, incorrect version");
+        Fl::warning("ETB translation file, incorrect version");
+        return false;
     }
 
     bool swap = (magic!=etb_magic);
@@ -427,6 +419,7 @@ void MessageHash::load_etb(FILE *fp)
     }
 
     free(data);
+    return true;
 }
 
 ////////////////////////////////////////////
@@ -451,28 +444,31 @@ struct string_desc {
 /* The magic number of the GNU message catalog format.  */
 #define MO_MAGIC 0x950412de
 #define MO_MAGIC_SWAPPED 0xde120495
-void MessageHash::load_mo(FILE *fp)
+bool MessageHash::load_mo(FILE *fp)
 {
     clear();
 
     long size;
-    if(fseek(fp, 0, SEEK_END)!=0) fl_throw(strerror(errno));
-    if( (size = ftell(fp)) == -1) fl_throw(strerror(errno));
-    if(fseek(fp, 0, SEEK_SET)!=0) fl_throw(strerror(errno));
+    if(fseek(fp, 0, SEEK_END)!=0) { fl_throw(strerror(errno)); return false; }
+    if( (size = ftell(fp)) == -1) { fl_throw(strerror(errno)); return false; }
+    if(fseek(fp, 0, SEEK_SET)!=0) { fl_throw(strerror(errno)); return false; }
 
     struct mo_file_header *data = (struct mo_file_header *) malloc (size);
     if(fread(data, size, 1, fp)==0 && errno!=0) {
         free(data);
         fl_throw(strerror(errno));
+        return false;
     }
 
     if(data->magic!=MO_MAGIC && data->magic != MO_MAGIC_SWAPPED) {
         free(data);
-        fl_throw("MO translation file, magic number failure");
+        Fl::warning("MO translation file, magic number failure");
+        return false;
     }
     if(data->revision!=0) {
         free(data);
-        fl_throw("MO translation file, incorrect revision");
+        Fl::warning("MO translation file, incorrect revision");
+        return false;
     }
 
     bool swap = (data->magic!=MO_MAGIC);
@@ -517,5 +513,6 @@ void MessageHash::load_mo(FILE *fp)
     }
 
     free(data);
+    return true;
 }
 
