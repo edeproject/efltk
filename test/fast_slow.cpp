@@ -20,7 +20,7 @@ int main (int argc, char **argv) {
     w = o;
      {Fl_Slider* o = control = new Fl_Slider(90, 200, 30, 200, "move\nthis");
       o->callback((Fl_Callback*)cb_control);
-      o->when(FL_WHEN_CHANGED|FL_WHEN_RELEASE|FL_WHEN_NOT_CHANGED);
+      o->when(FL_LOGICAL_EVENTS|FL_PHYSICAL_EVENTS);
     }
      {Fl_Slider* o = fast = new Fl_Slider(140, 200, 30, 200, "fast\nredraw");
       o->set_output();
