@@ -134,12 +134,12 @@ void fl_transformed_draw(const char *str, int n, float x, float y)
             XDrawString16(fl_display, fl_window, fl_gc, X, Y, buf, pos);
             X += XTextWidth16(current_font, buf, pos);
             pos = 0;
-            (*buf).byte1 = glyph[0];
-            (*buf).byte2 = glyph[1];
+            (*buf).byte1 = glyph[1];
+            (*buf).byte2 = glyph[0];
             X -= XTextWidth16(current_font, buf, 1);
         } else {
-            (*(buf + pos)).byte1 = glyph[0];
-            (*(buf + pos)).byte2 = glyph[1];
+            (*(buf + pos)).byte1 = glyph[1];
+            (*(buf + pos)).byte2 = glyph[0];
         }
 
         pos++;
@@ -191,12 +191,12 @@ float fl_width(const char *str, int n)
         if(no_spc) {
             W += XTextWidth16(current_font, buf, pos);
             pos = 0;
-            (*buf).byte1 = glyph[0];
-            (*buf).byte2 = glyph[1];
+            (*buf).byte1 = glyph[1];
+            (*buf).byte2 = glyph[0];
             W -= XTextWidth16(current_font, buf, 1);
         } else {
-            (*(buf + pos)).byte1 = glyph[0];
-            (*(buf + pos)).byte2 = glyph[1];
+            (*(buf + pos)).byte1 = glyph[1];
+            (*(buf + pos)).byte2 = glyph[0];
         }
 
         pos++;
@@ -223,8 +223,8 @@ float fl_width(unsigned int c)
     }
 
     XChar2b char2[2];
-    char2[0].byte1 = glyph[0];
-    char2[0].byte2 = glyph[1];
+    char2[0].byte1 = glyph[1];
+    char2[0].byte2 = glyph[0];
     char2[1].byte1 = char2[1].byte2 = 0;
     return XTextWidth16(current_font, char2, 1);
 }

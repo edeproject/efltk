@@ -685,7 +685,7 @@ static void BlitNtoNPixelAlpha(BlitInfo *info)
     uint8 sR, sG, sB, sA;
     uint8 dR, dG, dB, dA;
 
-    bool hw=info->hw_surface;
+    //bool hw=info->hw_surface;
 
     /* FIXME: for 8bpp source alpha, this doesn't get opaque values
      quite right. for <8bpp source alpha, it gets them very wrong

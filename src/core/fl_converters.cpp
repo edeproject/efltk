@@ -6,6 +6,7 @@
 #include <stdio.h>
 
 #include <efltk/fl_utf8.h>
+#include <efltk/Fl_String.h>
 
 ////////////////////////////////////////
 
@@ -37,6 +38,8 @@
 #include "headers/koi8_r.h"
 #include "headers/koi8_u.h"
 
+#ifndef _WIN32
+
 #include "headers/symbol_.h"
 #include "headers/dingbats_.h"
 
@@ -45,16 +48,20 @@ const int fl_ucs2fontmap(char *s, unsigned int ucs, int enc)
     int ret = -1;
     int len = 0;
 
+    s[0] = 0;
+    s[1] = 0;
+
     switch(enc) {
     case 0:	/* iso10646-1 */
-        s[0] = (char) ((ucs & 0xFF00) >> 8);
-        s[1] = (char) (ucs & 0xFF);
+        s[0] = (char) (ucs & 0xFF);
+        s[1] = (char) ((ucs & 0xFF00) >> 8);
         len = 2;
         ret = enc;
         break;
 
     case 1:	/* iso8859-1 */
         if ((len=iso8859_1_wctomb(NULL, (unsigned char*)s, ucs, 2)) > 0) {
+            //printf("! %c %c\n", s[0], s[1]);
             ret = enc;
         }
         break;
@@ -164,72 +171,72 @@ const int fl_ucs2fontmap(char *s, unsigned int ucs, int enc)
     case 19:	/* symbol */
         if (ucs <= 0x00F7) {
             if (ucs >= 0x0020) {
-                s[0] = 0;
-                s[1] = unicode_to_symbol_1b_0020[ucs - 0x0020];
-                if (s[1]) {
+                s[0] = unicode_to_symbol_1b_0020[ucs - 0x0020];
+                s[1] = 0;
+                if(s[0]) {
                     len = 1;
                     ret = enc;
                 }
             }
         } else if (ucs <= 0x0192) {
             if (ucs >= 0x0192) {
-                s[0] = 0;
-                s[1] = unicode_to_symbol_1b_0192[ucs - 0x0192];
-                if (s[1]) {
+                s[0] = unicode_to_symbol_1b_0192[ucs - 0x0192];
+                s[1] = 0;
+                if (s[0]) {
                     len = 1;
                     ret = enc;
                 }
             }
         } else if (ucs <= 0x03D6) {
             if (ucs >= 0x0391) {
-                s[0] = 0;
-                s[1] = unicode_to_symbol_1b_0391[ucs - 0x0391];
-                if (s[1]) {
+                s[0] = unicode_to_symbol_1b_0391[ucs - 0x0391];
+                s[1] = 0;
+                if (s[0]) {
                     len = 1;
                     ret = enc;
                 }
             }
         } else if (ucs <= 0x232A) {
             if (ucs >= 0x2022) {
-                s[0] = 0;
-                s[1] = unicode_to_symbol_1b_2022[ucs - 0x2022];
-                if (s[1]) {
+                s[0] = unicode_to_symbol_1b_2022[ucs - 0x2022];
+                s[1] = 0;
+                if (s[0]) {
                     len = 1;
                     ret = enc;
                 }
             }
         } else if (ucs <= 0x25CA) {
             if (ucs >= 0x25CA) {
-                s[0] = 0;
-                s[1] = unicode_to_symbol_1b_25CA[ucs - 0x25CA];
-                if (s[1]) {
+                s[0] = unicode_to_symbol_1b_25CA[ucs - 0x25CA];
+                s[1] = 0;
+                if (s[0]) {
                     len = 1;
                     ret = enc;
                 }
             }
         } else if (ucs <= 0x2666) {
             if (ucs >= 0x2660) {
-                s[0] = 0;
-                s[1] = unicode_to_symbol_1b_2660[ucs - 0x2660];
-                if (s[1]) {
+                s[0] = unicode_to_symbol_1b_2660[ucs - 0x2660];
+                s[1] = 0;
+                if (s[0]) {
                     len = 1;
                     ret = enc;
                 }
             }
         } else if (ucs <= 0xF6DB) {
             if (ucs >= 0xF6D9) {
-                s[0] = 0;
-                s[1] = unicode_to_symbol_1b_F6D9[ucs - 0xF6D9];
-                if (s[1]) {
+                s[0] = unicode_to_symbol_1b_F6D9[ucs - 0xF6D9];
+                s[1] = 0;
+                if (s[0]) {
                     len = 1;
                     ret = enc;
                 }
             }
         } else if (ucs <= 0xF8FE) {
             if (ucs >= 0xF8E5) {
-                s[0] = 0;
-                s[1] = unicode_to_symbol_1b_F8E5[ucs - 0xF8E5];
-                if (s[1]) {
+                s[0] = unicode_to_symbol_1b_F8E5[ucs - 0xF8E5];
+                s[1] = 0;
+                if (s[0]) {
                     len = 1;
                     ret = enc;
                 }
@@ -240,54 +247,54 @@ const int fl_ucs2fontmap(char *s, unsigned int ucs, int enc)
     case 20:	/* dingbats */
         if (ucs <= 0x00A0) {
             if (ucs >= 0x0020) {
-                s[0] = 0;
-                s[1] = unicode_to_dingbats_1b_0020[ucs - 0x0020];
-                if (s[1]) {
+                s[0] = unicode_to_dingbats_1b_0020[ucs - 0x0020];
+                s[1] = 0;
+                if (s[0]) {
                     len=1;
                     ret = enc;
                 }
             }
         } else if (ucs <= 0x2195) {
             if (ucs >= 0x2192) {
-                s[0] = 0;
-                s[1] = unicode_to_dingbats_1b_2192[ucs - 0x2192];
-                if (s[1]) {
+                s[0] = unicode_to_dingbats_1b_2192[ucs - 0x2192];
+                s[1] = 0;
+                if (s[0]) {
                     len = 1;
                     ret = enc;
                 }
             }
         } else if (ucs <= 0x2469) {
             if (ucs >= 0x2460) {
-                s[0] = 0;
-                s[1] = unicode_to_dingbats_1b_2460[ucs - 0x2460];
-                if (s[1]) {
+                s[0] = unicode_to_dingbats_1b_2460[ucs - 0x2460];
+                s[1] = 0;
+                if (s[0]) {
                     len = 1;
                     ret = enc;
                 }
             }
         } else if (ucs <= 0x2666) {
             if (ucs >= 0x25A0) {
-                s[0] = 0;
-                s[1] = unicode_to_dingbats_1b_25A0[ucs - 0x25A0];
-                if (s[1]) {
+                s[0] = unicode_to_dingbats_1b_25A0[ucs - 0x25A0];
+                s[1] = 0;
+                if (s[0]) {
                     len = 1;
                     ret = enc;
                 }
             }
         } else if (ucs <= 0x27BE) {
             if (ucs >= 0x2701) {
-                s[0] = 0;
-                s[1] = unicode_to_dingbats_1b_2701[ucs - 0x2701];
-                if (s[1]) {
+                s[0] = unicode_to_dingbats_1b_2701[ucs - 0x2701];
+                s[1] = 0;
+                if (s[0]) {
                     len = 1;
                     ret = enc;
                 }
             }
         } else if (ucs <= 0xF8E4) {
             if (ucs >= 0xF8D7) {
-                s[0] = 0;
-                s[1] = unicode_to_dingbats_1b_F8D7[ucs - 0xF8D7];
-                if (s[1]) {
+                s[0] = unicode_to_dingbats_1b_F8D7[ucs - 0xF8D7];
+                s[1] = 0;
+                if (s[0]) {
                     len = 1;
                     ret = enc;
                 }
@@ -307,58 +314,57 @@ const int fl_ucs2fontmap(char *s, unsigned int ucs, int enc)
     }
 #endif
 
-    if(len==1 && s[0]!=0) {
-        s[1] = s[0];
-        s[0] = 0;
-    }
-
     return ret;
 }
 
 const int fl_encoding_number(const char *enc)
 {
-    if (!enc || !strncasecmp(enc, "iso10646-1", 10)) {
+    if(!enc) return 0;
+
+    Fl_String e(enc);
+    e = e.upper_case();
+
+    if(!strncmp(e, "ISO10646-1", 10)) {
         return 0;
-    } else if (!strcasecmp(enc, "iso8859-1")) {
+    } else if(e=="ISO8859-1") {
         return 1;
-    } else if (!strcasecmp(enc, "iso8859-2")) {
+    } else if(e=="ISO8859-2") {
         return 2;
-    } else if (!strcasecmp(enc, "iso8859-3")) {
+    } else if(e=="ISO8859-3") {
         return 3;
-    } else if (!strcasecmp(enc, "iso8859-4")) {
+    } else if(e=="ISO8859-4") {
         return 4;
-    } else if (!strcasecmp(enc, "iso8859-5")) {
+    } else if(e=="ISO8859-5") {
         return 5;
-    } else if (!strcasecmp(enc, "iso8859-6")) {
+    } else if(e=="ISO8859-6") {
         return 6;
-    } else if (!strcasecmp(enc, "iso8859-7")) {
+    } else if(e=="ISO8859-7") {
         return 7;
-    } else if (!strcasecmp(enc, "iso8859-8")) {
+    } else if(e=="ISO8859-8") {
         return 8;
-    } else if (!strcasecmp(enc, "iso8859-9")) {
+    } else if(e=="ISO8859-9") {
         return 9;
-    } else if (!strcasecmp(enc, "iso8859-9e")) {
+    } else if(e=="ISO8859-9e") {
         return 10;
-    } else if (!strcasecmp(enc, "iso8859-10")) {
+    } else if(e=="ISO8859-10") {
         return 11;
-    } else if (!strcasecmp(enc, "iso8859-11")) {
+    } else if(e=="ISO8859-11") {
         return 12;
-    } else if (!strcasecmp(enc, "iso8859-13")) {
+    } else if(e=="ISO8859-13") {
         return 13;
-    } else if (!strcasecmp(enc, "iso8859-14")) {
+    } else if(e=="ISO8859-14") {
         return 14;
-    } else if (!strcasecmp(enc, "iso8859-15")) {
+    } else if(e=="ISO8859-15") {
         return 15;
-    } else if (!strcasecmp(enc, "iso8859-16")) {
+    } else if(e=="ISO8859-16") {
         return 16;
-    } else if (!strcasecmp(enc, "koi8-r")) {
+    } else if(e=="KOI8-R") {
         return 17;
-    } else if (!strcasecmp(enc, "koi8-u")) {
+    } else if(e=="KOI8-U") {
         return 18;
-    } else if (!strcasecmp(enc, "symbol")) {
+    } else if(e=="SYMBOL") {
         return 19;
-    } else if (!strcasecmp(enc, "dingbats") || !strcasecmp(enc, "zapfdingbats") ||
-               !strcasecmp(enc, "zapf dingbats") || !strcasecmp(enc, "itc zapf dingbats")) {
+    } else if(e=="DINGBATS" || e=="ZAPFDINGBATS" || e=="ZAPF DINGBATS" || e=="ITC ZAPF DINGBATS") {
         return 20;
     }
 
@@ -366,17 +372,17 @@ const int fl_encoding_number(const char *enc)
     int cached_index;
     iconv_t iconv;
     /* Try to find correct converter name for iconv */
-    enc = xlfd_to_iconv(enc);
+    e = xlfd_to_iconv(e);
 
     /* Search cache */
-    cached_index = ucs_cache.find(enc);
+    cached_index = ucs_cache.find(e);
     if(cached_index>=0) return cached_index;
 
     /* Create new */
-    iconv = iconv_open(enc, "UCS-4");
+    iconv = iconv_open(e, "UCS-2LE");
     if(iconv!=NULL && iconv!=(iconv_t)-1) {
         //printf("iconv: %s\n", enc);
-        return ucs_cache.add((conv_t)iconv, enc);
+        return ucs_cache.add((conv_t)iconv, e);
     }
 #endif /* HAVE_ICONV */
 
@@ -384,35 +390,39 @@ const int fl_encoding_number(const char *enc)
     return -1;
 }
 
+#endif /* _WIN32 */
+
 ///////////////////////////////////////////////
 ///////////////////////////////////////////////
 
 struct builtin_converter {
     int (*xxx_mbtowc)(conv_t conv, ucs4_t *pwc, unsigned char const *s, int n);
-    const char *name[2];
+    const char *name;
 };
 
 static builtin_converter converters[] = {
-    { iso8859_1_mbtowc, { "iso8859-1", "iso-8859-1" } },
-    { iso8859_2_mbtowc, { "iso8859-2", "iso-8859-2" } },
-    { iso8859_3_mbtowc, { "iso8859-3", "iso-8859-3" } },
-    { iso8859_4_mbtowc, { "iso8859-4", "iso-8859-4" } },
-    { iso8859_5_mbtowc, { "iso8859-5", "iso-8859-5" } },
-    { iso8859_6_mbtowc, { "iso8859-6", "iso-8859-6" } },
-    { iso8859_7_mbtowc, { "iso8859-7", "iso-8859-7" } },
-    { iso8859_8_mbtowc, { "iso8859-8", "iso-8859-8" } },
-    { iso8859_9_mbtowc, { "iso8859-9", "iso-8859-9" } },
-    { iso8859_9e_mbtowc, { "iso8859-9e", "iso-8859-9e" } },
-    { iso8859_10_mbtowc, { "iso8859-10", "iso-8859-10" } },
-    { iso8859_11_mbtowc, { "iso8859-11", "iso-8859-11" } },
-    { iso8859_13_mbtowc, { "iso8859-13", "iso-8859-13" } },
-    { iso8859_14_mbtowc, { "iso8859-14", "iso-8859-14" } },
-    { iso8859_15_mbtowc, { "iso8859-15", "iso-8859-15" } },
-    { iso8859_16_mbtowc, { "iso8859-16", "iso-8859-16" } },
+    { iso8859_1_mbtowc, "8859-1" },
+    { iso8859_2_mbtowc, "8859-2" },
+    { iso8859_3_mbtowc, "8859-3" },
+    { iso8859_4_mbtowc, "8859-4" },
+    { iso8859_5_mbtowc, "8859-5" },
+    { iso8859_6_mbtowc, "8859-6" },
+    { iso8859_7_mbtowc, "8859-7" },
+    { iso8859_8_mbtowc, "8859-8" },
+    { iso8859_9_mbtowc, "8859-9" },
+    { iso8859_9e_mbtowc, "8859-9e" },
+    { iso8859_10_mbtowc, "8859-10" },
+    { iso8859_11_mbtowc, "8859-11" },
+    { iso8859_13_mbtowc, "8859-13" },
+    { iso8859_14_mbtowc, "8859-14" },
+    { iso8859_15_mbtowc, "8859-15" },
+    { iso8859_16_mbtowc, "8859-16" },
 
-    { koi8_r_mbtowc, { "koi8-r", 0 } },
-    { koi8_u_mbtowc, { "koi8-u", 0 } }
+    { 0, "8-RU" },
+    { koi8_r_mbtowc, "8-R" },
+    { koi8_u_mbtowc, "8-U" }
 };
+
 static int converters_size = sizeof(converters)/sizeof(converters[0]);
 
 static int converter_loop(builtin_converter *converter,
@@ -434,31 +444,31 @@ static int converter_loop(builtin_converter *converter,
 
 int fl_find_converter(const char *from_codeset)
 {
+    Fl_String from(from_codeset);
+    from = from.upper_case();
+
     for(int n=0; n<converters_size; n++) {
-        if(converters[n].name[1] && !strcasecmp(from_codeset, converters[n].name[1])) {
-            return n;
-            break;
-        }
-        if(converters[n].name[0] && !strcasecmp(from_codeset, converters[n].name[0])) {
-            return n;
+        if(from.pos(converters[n].name)>=0) {
+            if(converters[n].xxx_mbtowc) return n;
             break;
         }
     }
+
 #if HAVE_ICONV
     int cached_index;
     iconv_t iconv;
 
     /* Try to find correct converter name for iconv */
-    from_codeset = xlfd_to_iconv(from_codeset);
+    from = xlfd_to_iconv(from);
 
     /* Search cache */
-    cached_index = utf8_cache.find(from_codeset);
+    cached_index = utf8_cache.find(from);
     if(cached_index>=0) return cached_index;
 
     /* Create new */
-    iconv = iconv_open("UTF-8", from_codeset);
+    iconv = iconv_open("UTF-8", from);
     if(iconv!=NULL && iconv!=(iconv_t)-1) {
-        return utf8_cache.add((conv_t)iconv, from_codeset);
+        return utf8_cache.add((conv_t)iconv, from);
     }
 #endif /* HAVE_ICONV */
 
