@@ -151,7 +151,7 @@ Fl_Variant& Fl_Data_Fields::operator [] (const char *fname) {
    Fl_Data_Field *field=0;
    int index = field_index(fname);
    if (index < 0) {
-	  field = &add(fname);
+      fl_throw("Field name not found");
    } else {
       field = (Fl_Data_Field *)m_list[index];
    }
@@ -161,7 +161,7 @@ Fl_Variant& Fl_Data_Fields::operator [] (const char *fname) {
 const Fl_Variant& Fl_Data_Fields::operator [] (const char *fname) const {
    int index = field_index(fname);
    if (index < 0) {
-	   fl_throw("Field name not found");
+      fl_throw("Field name not found");
    }
    Fl_Data_Field *field = (Fl_Data_Field *)m_list[index];
    return field->value;
