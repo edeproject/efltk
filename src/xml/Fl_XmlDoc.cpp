@@ -7,6 +7,7 @@ Fl_XmlDoc::Fl_XmlDoc()
 {
     nodetype_ = FL_XML_TYPE_DOC;
     context_ = new Fl_XmlContext();
+    parent_ = 0;
     nodenamehandle_ = context_->insert_tagname("root document");
 }
 
@@ -16,6 +17,7 @@ Fl_XmlDoc::Fl_XmlDoc( Fl_XmlContext *ctx )
 {
     nodetype_ = FL_XML_TYPE_DOC;
     context_ = ctx;
+    parent_ = 0;
     nodenamehandle_ = context_->insert_tagname("root document");
 }
 
@@ -64,6 +66,7 @@ void Fl_XmlDoc::clear()
     uint n;
     for(n=0; n<procinstructions_.size(); n++) {
         np = procinstructions_.item(n);
+        np->parent(0);
         delete np;
     }
     procinstructions_.clear();

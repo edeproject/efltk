@@ -83,7 +83,7 @@ bool Fl_XmlParser::parse_document( Fl_XmlDoc &doc, Fl_XmlContext *ctxptr)
     if (handle) ctxptr->handler()->start_document();
 
     // parse the only one subnode
-    Fl_XmlNode *subnode = new Fl_XmlNode();
+    Fl_XmlNode *subnode = new Fl_XmlNode(ctxptr);
 
     bool ret = parse_node(*subnode, ctxptr);
 
@@ -156,7 +156,7 @@ bool Fl_XmlParser::parse_doctype( Fl_XmlDoc &doc, Fl_XmlContext *ctxptr)
                         } else if(tmp[0]=='-' && tmp[1]=='-') {
                             //COMMENT??
                             tokenizer.put_back();
-                            Fl_XmlNode *com_node = new Fl_XmlNode();
+                            Fl_XmlNode *com_node = new Fl_XmlNode(ctxptr);
                             if(!parse_comment(*com_node, ctxptr)) {
                                 delete com_node;
                                 return false;
@@ -211,7 +211,7 @@ bool Fl_XmlParser::parse_header( Fl_XmlDoc &doc, Fl_XmlContext *ctxptr)
                 // now a doctype tag or a comment may follow
                 if(token3[0] == '-' && token3[1] == '-') {
                     tokenizer.put_back();
-                    Fl_XmlNode *com_node = new Fl_XmlNode();
+                    Fl_XmlNode *com_node = new Fl_XmlNode(ctxptr);
                     if(!parse_comment(*com_node, ctxptr)) {
                         delete com_node;
                         return false;
@@ -246,7 +246,7 @@ bool Fl_XmlParser::parse_header( Fl_XmlDoc &doc, Fl_XmlContext *ctxptr)
             }
 
             // parse processing instruction
-            Fl_XmlNode *pinode = new Fl_XmlNode();
+            Fl_XmlNode *pinode = new Fl_XmlNode(ctxptr);
             pinode->parent(&doc);
             Fl_String tagname( token );
             pinode->nodenamehandle_ = ctxptr->insert_tagname( tagname );
@@ -452,7 +452,7 @@ bool Fl_XmlParser::parse_node( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
     // loop to parse all subnodes
     while(true) {
 
-        Fl_XmlNode *subnode = new Fl_XmlNode();
+        Fl_XmlNode *subnode = new Fl_XmlNode(ctxptr);
         subnode->parent(&node);
 
         // try to parse possible sub nodes
