@@ -37,9 +37,12 @@
 // though we are not going to look at anything other than the name. This
 // code seems to force the 64-bit version to be used:
 
-#define _GNU_SOURCE
+#include <stdio.h> //Include before __USE_LARGEFILE64
+#define __USE_LARGEFILE64 
+#define __USE_GNU 
 #include <features.h>
 #include <sys/types.h>
+
 #include <dirent.h>
 #define dirent dirent64
 #define scandir scandir64
