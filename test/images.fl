@@ -1,0 +1,65 @@
+# data file for the FLTK User Interface Designer (FLUID)
+version 2,0003 
+header_name {.h} 
+code_name {.cpp} 
+gridx 5 
+gridy 5 
+snap 3
+decl {\#include <config.h>} {} 
+
+Function {make_window()} {open
+} {
+  Fl_Window {} {open
+    xywh {39 398 430 304} visible
+  } {
+    Fl_Box {} {
+      label XPM
+      xywh {5 5 195 55} align 20 label_font 1 image not_inlined {/home/Laza/develop/efltk/test/rgb.xpm}
+    }
+    Fl_Box {} {
+      label BMP
+      xywh {5 65 190 55} align 20 label_font 1 image not_inlined {/home/Laza/develop/efltk/test/rgb.bmp}
+    }
+    Fl_Box {} {
+      label GIF
+      xywh {5 125 190 55} align 20 label_font 1 image not_inlined {/home/Laza/develop/efltk/test/rgb.gif}
+    }
+    Fl_Box {} {
+      label PNG
+      xywh {5 185 195 55} align 20 label_font 1 image not_inlined {/home/Laza/develop/efltk/test/rgb.png}
+      extra_code {\#if !HAVE_PNG
+o->label("PNG support not compiled");
+\#endif}
+    }
+    Fl_Box {} {
+      label JPEG
+      xywh {5 245 200 55} align 20 label_font 1 image not_inlined {/home/Laza/develop/efltk/test/rgb.jpg}
+      extra_code {\#if !HAVE_PNG
+o->label("PNG support not compiled");
+\#endif}
+    }
+    Fl_Box {} {
+      label {EFltk image test.
+All should look exactly same.
+50 pixels of each color, RGB from left to right.
+
+This ofcourse means, that all formats are compiled in.
+
+XPM, BMP and GIF should always work.}
+      xywh {220 10 200 195} align 149 box ENGRAVED_BOX
+    }
+    Fl_Button {} {
+      label EXIT
+      callback {o->window()->hide();} selected
+      xywh {220 215 200 80} label_font 1 label_type ENGRAVED_LABEL label_size 36
+    }
+  }
+} 
+
+Function {main(int argc, char *argv[])} {open return_type int
+} {
+  code {fl_init_images_lib();
+Fl_Window *w = make_window();
+w->show();
+return Fl::run();} {}
+} 
