@@ -182,6 +182,52 @@ static void BlitRGBtoRGBSurfaceAlpha128(BlitInfo *info)
     }
 }
 
+/* fast RGB888->RGB888 blending with surface alpha  (3 bytes per pixel only) */
+static void BlitRGBtoRGBSurfaceAlpha_24(BlitInfo *info)
+{
+    unsigned alpha = info->src->alpha;
+	int width = info->d_width;
+	int height = info->d_height;
+    uint8 *srcp = (uint8 *)info->s_pixels;
+    int srcskip = info->s_skip;
+    uint8 *dstp = (uint8 *)info->d_pixels;
+    int dstskip = info->d_skip;
+
+	uint32 s, d;
+    uint32 s1, d1;
+	uint32 dp;
+    while(height--) {
+		DUFFS_LOOP4(
+        {
+			//s = *((uint32*)srcp);
+			//d = *((uint32*)dstp);
+			s = (srcp[0]<<16)|(srcp[1]<<8)|srcp[2];
+			d = (dstp[0]<<16)|(dstp[1]<<8)|dstp[2];
+
+			if(alpha==128) {				
+				dp = ((((s & 0xfefefe) + (d & 0xfefefe)) >> 1) + (s & d & 0x010101)) | 0xff000000;			
+			} else {
+				s1 = s & 0xff00ff;
+				d1 = d & 0xff00ff;
+				d1 = (d1 + ((s1 - d1) * alpha >> 8)) & 0xff00ff;
+	            s &= 0x00ff00;
+				d &= 0x00ff00;
+			    d = (d + ((s - d) * alpha >> 8)) & 0x00ff00;				
+				dp = d1 | d | 0xff000000;
+			}	
+			
+			dstp[0] = ((dp & 0xFF0000)>>16);
+			dstp[1] = ((dp & 0xFF00)>>8);
+			dstp[2] = (dp & 0xFF);
+
+			srcp+=info->src->bytespp;
+			dstp+=info->dst->bytespp;
+		}, width);
+        srcp += srcskip;
+        dstp += dstskip;
+	}    
+}
+
 /* fast RGB888->(A)RGB888 blending with surface alpha */
 static void BlitRGBtoRGBSurfaceAlpha(BlitInfo *info)
 {
@@ -717,7 +763,15 @@ Blit_Function get_blit_a(Fl_PixelFormat *src_fmt, Fl_PixelFormat *dst_fmt, int f
                 }
             case 3:
             default:
-                once("BlitNtoNSurfaceAlpha");
+				if(sf->Rmask == df->Rmask
+                   && sf->Gmask == df->Gmask
+                   && sf->Bmask == df->Bmask
+                   && (sf->Rmask | sf->Gmask | sf->Bmask) == 0xffffff
+                   && sf->bytespp == 3) {
+					once("BlitRGBtoRGBSurfaceAlpha_24");
+					return BlitRGBtoRGBSurfaceAlpha_24;
+				}
+				once("BlitNtoNSurfaceAlpha");
                 return BlitNtoNSurfaceAlpha;
             }
         }

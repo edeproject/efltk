@@ -623,8 +623,12 @@ Fl_Date_Time Fl_Date_Time::System() {
    gettimeofday(&tp,0L);
    double mcsec = tp.tv_usec / 1000000.0 / (3600 * 24);
 #else
-   double mcsec = (GetTickCount() % 1000) / 1000 / (3600 * 24);
-#endif
+   // This works now almost.. We cant right value, since GetTickCount() has nothing to do
+   // with actual time, it's milliseconds since boot. Problem becomes when measuring time
+   // less then second. If "time_t tt" is still in same second, but second is changed in 
+   // GetTickCount()... Any solution to this?? -Mikko
+   double mcsec = (GetTickCount() % 1000) / 1000.0;// / (3600 * 24);   
+#endif   
    return datetime + mcsec;
 }
 

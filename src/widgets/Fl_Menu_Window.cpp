@@ -150,6 +150,12 @@ void Fl_Menu_Window::layout()
 #endif
 }
 
+#ifdef _WIN32
+# define GetMs() GetTickCount()
+#else
+# define GetMs() int( (double)Fl_Date_Time::Now()*1000.0 )
+#endif
+
 // Fade effect, blend to opacity (thats NYI)
 void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
 {	
@@ -193,9 +199,10 @@ void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
         animating=false;
         return;
     }
-    Fl_PixelFormat window_fmt;
+    Fl_PixelFormat window_fmt;	
     window_fmt.copy(Fl_Renderer::system_format());
     window_fmt.map_this(Fl_Renderer::system_format());
+	window_fmt.alpha = 30;        
     int window_pitch = Fl_Renderer::calc_pitch(window_fmt.bytespp, ow);
 
 #ifdef _WIN32
@@ -207,24 +214,23 @@ void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
     Fl_Rect src_rect(cx,cy,w,h);
     Fl_Rect dst_rect(0,0,w,h);
 
-    int step = 8;
-    if(anim_speed()>0) { step=int(floor((step*anim_speed())+.5f)); }
-    int alpha=50; //start from alpha value 50...
-    bool error=false;
-    opacity = 150;
-    if(step<0) step=8;
+	int anim_time = 200; //milliseconds
 
-    while(!error && alpha<opacity)
+    if(anim_speed()>0) { anim_time = int(floor((anim_time*anim_speed())+.5f)); }
+    bool error=false;
+	int sleep_time=int(anim_time/20);
+
+    while(!error && anim_time>0)
     {
         Fl::check();
 
         if(!animating || !shown() || !visible()) {
             break;
-        }
+        }		
+        
+		window_fmt.alpha += 6;
 
-        window_fmt.alpha = alpha;
-        alpha+=step;
-        if(alpha>255) alpha=255;
+		int time1 = GetMs();
 
         if(Fl_Renderer::alpha_blit(window_data, &src_rect, &window_fmt, window_pitch,
                                    screen_data, &dst_rect, Fl_Renderer::system_format(), screen_pitch, 0))
@@ -234,15 +240,16 @@ void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
                                               (Pixmap)fl_xid(this), &dst_rect, fl_gc, 0))
                 error=true;
         } else
-            error=true;
+            error=true;		
+        Fl::sleep_ms(sleep_time);
 
-        Fl::sleep_ms(15);
+		int time2 = GetMs();
+		anim_time -= (time2-time1);
     }
 
     delete []screen_data;
     delete []window_data;
 
-    /*if(opacity==255)*/
     if(shown()) {
 #ifdef _WIN32
         make_current();
