@@ -21,14 +21,14 @@
 #include <efltk/Fl_Dialog.h>
 
 
-// THESE ARE REPLACED BY Fl_Stobk_Button?
+// THESE ARE REPLACED BY Fl_Stock_Button?
 struct Fl_Dialog_Button_Template {
    int         id;
    const char *label;
 //   Fl_Pixmap   pixmap;
 };
 
-// THESE ARE REPLACED BY Fl_Stobk_Button?
+// THESE ARE REPLACED BY Fl_Stock_Button?
 static const Fl_Dialog_Button_Template buttonTemplates[] = {
    { FL_DLG_OK,     "Ok" },
    { FL_DLG_CANCEL, "Cancel" },
