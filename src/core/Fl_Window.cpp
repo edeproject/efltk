@@ -278,7 +278,7 @@ bool Fl_Window::exec(const Fl_Window* w, bool grab)
     Fl::modal(saved_modal, saved_grab);
 
     // WIN32 doesnt raise "parent_win", when exiting modal
-    parent_win->show();
+    if(parent_win) parent_win->show();
 
     return value();
 }
