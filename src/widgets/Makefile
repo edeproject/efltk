@@ -1,5 +1,4 @@
 CPPFILES = \
-	Fl_Adjuster.cpp \
 	Fl_Align_Group.cpp \
 	Fl_Bar.cpp \
 	Fl_Browser.cpp \
