@@ -35,7 +35,7 @@
 #include <efltk/filename.h>
 #include <efltk/Fl_String.h>
 
-#if defined(__linux_)
+#if defined(__linux__)
 
 # define __USE_LARGEFILE64
 # define __USE_GNU
@@ -52,9 +52,6 @@
 						int (*select)(dirent *),
 						int (*compar)(dirent **, dirent **));
 #endif
-
-int fl_alphasort(struct dirent **a, struct dirent **b) { return strcmp((*a)->d_name, (*b)->d_name); }
-int fl_casealphasort(struct dirent **a, struct dirent **b) { return strcasecmp((*a)->d_name, (*b)->d_name); }
 
 int fl_filename_list(const char *dir, dirent ***list, Fl_File_Sort_F *sort) 
 {
