@@ -36,11 +36,11 @@
 #endif
 
 // The current color:
-Fl_Color    fl_color_;
-COLORREF    fl_colorref;
-HPALETTE    fl_palette;
-HBRUSH      fl_brush;
-HPEN        fl_pen;
+Fl_Color fl_color_	= 0;
+COLORREF fl_colorref= 0;
+HPALETTE fl_palette = 0;
+HBRUSH   fl_brush	= 0;
+HPEN     fl_pen		= 0;
 
 static COLORREF	brush_for;
 static COLORREF	pen_for;
@@ -103,11 +103,11 @@ void Fl_Device::line_style(int style, int width, char* dashes)
 	if (!width) width = 1;
 	line_width = width;
 
+#endif
 	if (fl_pen) {
 		DeleteObject(fl_pen);
 		fl_pen = 0;
 	}
-#endif
 }
 
 #ifdef _USE_FAST_BRUSH_
@@ -124,20 +124,36 @@ HPEN fl_setpen()
 		return stockpen;
 	}
 #endif
-	if (!fl_pen) goto J1;
-	if (pen_for != fl_colorref) {
-		DeleteObject(fl_pen);
-J1:
+	HPEN pen_to_delete = 0;
+	if(!fl_pen || pen_for != fl_colorref) 
+	{
+		if(fl_pen) {
+			pen_to_delete = fl_pen;
+		}
+
 		if (lstyle) {
-			LOGBRUSH penbrush = {BS_SOLID, fl_colorref, 0};
+			LOGBRUSH penbrush = { BS_SOLID, fl_colorref, 0 };
 			fl_pen = ExtCreatePen(lstyle|PS_GEOMETRIC, line_width, &penbrush,
-   	 		dash_pattern_size, dash_pattern_size?dash_pattern:0);
+   	 							dash_pattern_size, dash_pattern_size?dash_pattern:0);
 		} else {
 			fl_pen = CreatePen(PS_SOLID, line_width, fl_colorref);
 		}
 		pen_for = fl_colorref;
 	}
-	SelectObject(fl_gc, fl_pen);
+
+	static HPEN selected_pen = 0;
+	if(selected_pen!=fl_pen) 
+	{
+		selected_pen = fl_pen;
+		HPEN oldp = (HPEN)SelectObject(fl_gc, fl_pen);
+		if(oldp != pen_to_delete) {
+			// hmm.. This seems to happend under W9x! 
+			// Strange, huh??!!
+			DeleteObject(pen_to_delete);
+		}
+		DeleteObject(oldp);
+	}
+
 	return fl_pen;
 }
 
@@ -147,21 +163,35 @@ HBRUSH fl_setbrush()
     SelectObject(fl_gc, stockbrush);
     SetDCBrushColor(fl_gc, fl_colorref);
 #else
-    if (!fl_brush) goto J1;
-    if (brush_for != fl_colorref) {
-        DeleteObject(fl_brush);
-J1:
+	HBRUSH brush_to_delete = 0;
+    if(!fl_brush || brush_for != fl_colorref) {
+        if(fl_brush) {
+			brush_to_delete = fl_brush;
+		}			
+
         fl_brush = CreateSolidBrush(fl_colorref);
         brush_for = fl_colorref;
     }
-    SelectObject(fl_gc, fl_brush);
+
+	static HBRUSH selected_br = 0;
+	if(selected_br!=fl_brush) 
+	{		
+		selected_br = fl_brush;
+		HBRUSH oldb = (HBRUSH)SelectObject(fl_gc, fl_brush);
+		if(oldb != brush_to_delete) {
+			// hmm.. This seems to happend under W9x! 
+			// Strange, huh??!!
+			DeleteObject(brush_to_delete);
+		}
+		DeleteObject(oldb);		
+	}
 #endif
     return fl_brush;
 }
 
 void Fl_Device::color(Fl_Color i)
 {
-	if(i==fl_color_) 
+	if(fl_color_ == i)  
 		return;
 
 	fl_color_ = i;
@@ -179,8 +209,7 @@ static void fl_free_color(Fl_Color) {
 // 'select_palette()' - Make a color palette for 8-bit displays if necessary
 // Thanks to Michael Sweet @ Easy Software Products for this
 
-HPALETTE
-fl_select_palette(void)
+HPALETTE fl_select_palette(void)
 {
 	static char beenhere;
 	if (!beenhere) {
