@@ -234,8 +234,8 @@ int Fl_Tabs::handle(int event)
             }
             Fl_Widget* item = which(Fl::event_x(), Fl::event_y());
             //Fl::belowmouse(this);
-            if (item) Fl_Tooltip::enter_area(this,0,H<0?h()+H:0,w(),H<0?-H:H,
-                item->tooltip());
+            if (item) Fl_Tooltip::enter(this, 0, H<0?h()+H:0, w(), H<0?-H:H,
+                                        item->tooltip());
             return 1;
         }
 

@@ -95,7 +95,7 @@ public:
   void	image(Fl_Image& a)	{image_ = &a;}
 
   const char *tooltip() const	{return tooltip_; }
-  void	tooltip(const char *t);
+  void  tooltip(const char *t)  { tooltip_ = t; }
 
   int shortcut() const		{return shortcut_;}
   void shortcut(int s)		{shortcut_ = s;}

@@ -497,6 +497,7 @@ void Fl_File_Dialog::make_group(int w, int h)
         path_ = new Fl_Input_Browser(125, 5, w-140, 25);
         path_->type(Fl_Input_Browser::NONEDITABLE);
         path_->end();
+
         Fl_Group::current()->resizable(path_);
 
         o->end();
@@ -549,6 +550,7 @@ void Fl_File_Dialog::make_group(int w, int h)
         location_->maxh(200);
         location_->callback(cb_location, this);
         location_->when(FL_WHEN_CHANGED | FL_WHEN_ENTER_KEY_ALWAYS);
+        location_->end();
 
         Fl_Group::current()->resizable(location_);
 
@@ -564,8 +566,8 @@ void Fl_File_Dialog::make_group(int w, int h)
 
         filter_ = new Fl_Input_Browser(60, 0, w-130, 23, _("Filter:"));
         filter_->type(Fl_Input_Browser::NONEDITABLE);
-
         filter_->end();
+
         Fl_Group::current()->resizable(filter_);
 
         cancel_ = new Fl_Button(w-65, 0, 55, 23, _("&Cancel"));

@@ -32,7 +32,7 @@
 #include <stdlib.h>              // free
 #include <config.h>
 
-void Fl_Widget::default_callback(Fl_Widget*, void*) {}
+void Fl_Widget::default_callback(Fl_Widget* w, void*) {w->set_changed();}
 
 Fl_Widget::Fl_Widget(int X, int Y, int W, int H, const char* L)
 {
@@ -236,6 +236,13 @@ int Fl_Widget::handle(int event)
             // number of older fltk programs that set FL_NO_BOX on windows to
             // stop them from blinking (this is not necessary in fltk2.0):
             if (box()!=FL_NO_BOX || is_window()) {Fl::belowmouse(this); return true;}
+            return 0;
+
+        case FL_HIDE:
+        case FL_DEACTIVATE:
+            throw_focus();
+            return 0;
+
         default:
             return 0;
     }
@@ -390,7 +397,6 @@ void Fl_Widget::deactivate()
         set_flag(FL_INACTIVE);
         redraw_label(); redraw();
         handle(FL_DEACTIVATE);
-        throw_focus();
     }
     else
     {
@@ -429,8 +435,7 @@ void Fl_Widget::hide()
         // we must redraw the enclosing group that has an opaque box:
         for (Fl_Widget *p = parent(); p; p = p->parent())
             if (p->box() != FL_NO_BOX || !p->parent()) {p->redraw(); break;}
-            handle(FL_HIDE);
-        throw_focus();
+        handle(FL_HIDE);
     }
     else
     {

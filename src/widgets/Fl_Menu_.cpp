@@ -84,7 +84,6 @@ Fl_Menu_::Fl_Menu_(int x,int y,int w, int h,const char* l)
     anim_speed_ = Fl_Menu_Window::default_step_div;
 
     callback(default_callback);
-    end();
 }
 
 
@@ -153,7 +152,8 @@ void Fl_Menu_::execute(Fl_Widget* widget)
 // Normally the callback for the menu is set to this:
 void Fl_Menu_::default_callback(Fl_Widget* widget, void*)
 {
-    ((Fl_Menu_*)widget)->item()->do_callback();
+    Fl_Widget* item = ((Fl_Menu_*)widget)->item();
+    if(item) item->do_callback();
 }
 
 

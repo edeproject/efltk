@@ -860,7 +860,7 @@ bool fl_handle()
             if (fl_xevent.xcrossing.detail == NotifyInferior) break;
             set_event_xy(false);
             Fl::e_state = fl_xevent.xcrossing.state << 16;
-            xmousewin = 0;
+            if (window == xmousewin) xmousewin = 0;
             break;
 
         case FocusIn:

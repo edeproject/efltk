@@ -30,6 +30,7 @@
 #include "Fl_Widget.h"
 
 class FL_API Fl_Tooltip {
+    static Fl_Widget* widget;
 public:
   static float delay() { return delay_; }
   static void delay(float f) { delay_ = f; }
@@ -41,15 +42,14 @@ public:
   static bool animate() { return animate_; }
   static void animate(bool v) { animate_ = v; }
 
-  // This is called when the pointer enters a widget,
-  // Also enter(0) gets rid of any displayed or pending tooltip:
-  static void (*enter)(Fl_Widget* w);
-
-  // A widget may also pop up tooltips for internal parts by calling this:
-  static void enter_area(Fl_Widget* w, int X, int Y, int W, int H, const char* tip);
-
-  // This is called when a widget is destroyed or hidden:
-  static void (*exit)(Fl_Widget *w);
+  typedef const char* (*Generator)(Fl_Widget*, void*);
+  static void enter(Fl_Widget* w, int X, int Y, int W, int H, Generator, void* = 0);
+  static void enter(Fl_Widget* w, int X, int Y, int W, int H, const char* t)
+    { enter(w, X, Y, W, H, 0, (void*)t); }
+  static void enter(Fl_Widget* w);
+  static void exit();
+  static Fl_Widget* current() {return widget;}
+  static void current(Fl_Widget*);
 
   static Fl_Named_Style* default_style;
   static Fl_Font font()		{ return default_style->label_font; }

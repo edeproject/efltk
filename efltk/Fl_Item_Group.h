@@ -27,9 +27,9 @@
 #ifndef Fl_Item_Group_H
 #define Fl_Item_Group_H
 
-#include "Fl_Group.h"
+#include "Fl_Menu_.h"
 
-class FL_API Fl_Item_Group : public Fl_Group {
+class FL_API Fl_Item_Group : public Fl_Menu_ {
 public:
   void draw();
   void layout();

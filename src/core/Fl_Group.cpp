@@ -275,8 +275,7 @@ int Fl_Group::handle(int event)
     }
 
     // Try to give all other events to every child, starting at focus:
-
-    if (!numchildren) return false;
+    if (numchildren) {
     // Try to give to each child, starting at focus:
     int previous = focus_;
     if (previous < 0 || previous >= numchildren) previous = 0;
@@ -294,9 +293,7 @@ int Fl_Group::handle(int event)
         // Ignore if focus is not a child of this, but work if there is no focus:
         if (Fl::focus()==this || Fl::focus() && !contains(Fl::focus())) return 0;
         int key = navigation_key();
-        if (!key) return false;
-
-        for (i = previous;;)
+        if (key) for (i = previous;;)
         {
             if (key == FL_Left || key == FL_Up)
             {
@@ -327,8 +324,8 @@ int Fl_Group::handle(int event)
             if (child(i)->take_focus()) return true;
         }
     }
-
-    return false;
+    }
+    return Fl_Widget::handle(event);
 }
 
 
