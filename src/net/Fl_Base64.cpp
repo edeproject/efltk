@@ -36,6 +36,9 @@ static char B64Chars[64] = {
 
 #define base64val(c) Index_64[(unsigned int)(c)]
 #define base64chars(c) B64Chars[(unsigned int)(c & 0x3F)]
+
+/* ------------------------------------------------------------------------- */
+/* ENCODE INTERFACE															 */
 /* ------------------------------------------------------------------------- */
 
 /**
@@ -55,14 +58,18 @@ void Fl_Base64::encode(Fl_Buffer& bufDest, const Fl_Buffer& bufSource)
 
     while (len >= 3)
     {
-        c = base64chars(current[0] >> 2);
-        bufDest.append(&c, 1);
-        c = base64chars(((current[0] & 0x03) << 4) | (current[1] >> 4));
-        bufDest.append(&c, 1);
-        c = base64chars(((current[1] & 0x0f) << 2) | (current[2] >> 6));
-        bufDest.append(&c, 1);
-        c = base64chars(current[2] & 0x3f);
-        bufDest.append(&c, 1);
+        c = base64chars((current[0] & 0xFC) >> 2);
+        bufDest.append(c);
+
+        c = base64chars(((current[0] & 0x03) << 4) | ((current[1] & 0xF0) >> 4));
+        bufDest.append(c);
+
+        c = base64chars(((current[1] & 0x0F) << 2) | ((current[2] & 0xC0) >> 6));
+        bufDest.append(c);
+
+        c = base64chars(current[2] & 0x3F);
+        bufDest.append(c);
+
         len     -= 3;
         current += 3;   /* move pointer 3 characters forward */
     } /* while */
@@ -108,27 +115,32 @@ void Fl_Base64::encode(Fl_String& strDest, const Fl_Buffer& bufSource)
 {
     Fl_Buffer bufOut;
     encode(bufOut, bufSource);
-    if (!strDest.empty()) 
-        strDest.clear();
+    
+	if(!strDest.empty()) strDest.clear();
     strDest.append(bufOut.data(), bufOut.bytes());
 } /* encode(Fl_String& strDest, const Fl_Buffer& bufSource) */
+
+
+
+/* ------------------------------------------------------------------------- */
+/* DECODE INTERFACE															 */
 /* ------------------------------------------------------------------------- */
 
-int Fl_Base64::decode(Fl_Buffer &bufDest, const Fl_Buffer& bufSource)
+static int internal_decode(Fl_Buffer &bufDest, const uchar *src, unsigned src_len)
 {
-    unsigned char *current;
+    const unsigned char *current = src;
     unsigned char c;
     int ch, j=0;
 
-    if (bufSource.bytes() <= 0)
-        return -1;                      /* If source buffer is empty return -1  */
-    if ((bufSource.bytes() % 4) != 0)   /* Source buffer MUST be dividable by 4 */
-        return -1;                      /* (no reminders)                       */
+    if (src_len <= 0)
+        return -1;            /* If source buffer is empty return -1  */
     
+	if ((src_len % 4) != 0)   /* Source buffer MUST be dividable by 4 */		
+		return -1;            /* (no reminders)                       */    
+	
 	bufDest.reset();
-    current = (unsigned char *)bufSource.data();
 
-    for (unsigned i=0; i < bufSource.bytes(); i++)
+    for (unsigned i=0; i < src_len; i++)
     {
         ch = current[i];
 
@@ -173,15 +185,23 @@ int Fl_Base64::decode(Fl_Buffer &bufDest, const Fl_Buffer& bufSource)
     } /* for */
     return j;
 } /* decode(Fl_Buffer &bufDest, const Fl_Buffer &bufSource) */
+
+
+int Fl_Base64::decode(Fl_Buffer &bufDest, const Fl_Buffer& bufSource)
+{
+	return internal_decode(bufDest, (const uchar *)bufSource.data(), bufSource.bytes());
+} /* decode(Fl_Buffer &bufDest, const Fl_Buffer &bufSource) */
+
 /* ------------------------------------------------------------------------- */
 
 int Fl_Base64::decode(Fl_Buffer &bufDest, const Fl_String& strSource)
 {
-    Fl_Buffer bufIn;
-    bufIn.set(strSource, strSource.length());	
-    return decode(bufDest, bufIn);
+    return internal_decode(bufDest, (const uchar *)strSource, strSource.length());
 } /* decode(Fl_Buffer &bufDest, const Fl_String &strSource) */
+
 /* ------------------------------------------------------------------------- */
+
+
 
 /***** $Id$
  *     Project: eFLTK
