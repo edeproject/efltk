@@ -40,7 +40,7 @@ CPPFILES = demo.cpp sizes.cpp hello.cpp resizable.cpp scroll.cpp image.cpp file_
 	browser.cpp threads.cpp progress.cpp editor.cpp inactive.cpp checkers.cpp \
 	valuators.cpp glpuzzle.cpp boxtype.cpp multi_image.cpp help.cpp mdi_test.cpp \
 	resize.cpp tabs.cpp line_style.cpp doublebuffer.cpp subwindow.cpp \
-	keyboard.cpp label.cpp layout.cpp arc.cpp ask.cpp button.cpp buttons.cpp \
+	keyboard.cpp label.cpp layout.cpp arc.cpp ask.cpp buttons.cpp \
 	clock.cpp color_chooser.cpp cube.cpp cursor.cpp curve.cpp fast_slow.cpp \
 	fonts.cpp fullscreen.cpp gl_overlay.cpp iconize.cpp input.cpp navigation.cpp \
 	output.cpp overlay.cpp pack.cpp radio.cpp shape.cpp tile.cpp CubeMain.cpp CubeView.cpp \
@@ -55,7 +55,7 @@ CPPFILES = demo.cpp sizes.cpp hello.cpp resizable.cpp scroll.cpp image.cpp file_
 ALL =   demo sizes hello resizable scroll image file_chooser menubar browser \
 	threads progress editor inactive checkers valuators boxtype \
 	multi_image help mdi_test resize tabs line_style doublebuffer subwindow \
-	keyboard label layout arc ask button buttons clock color_chooser \
+	keyboard label layout arc ask buttons clock color_chooser \
 	cursor curve fast_slow fonts iconize input navigation input_browser \
 	output overlay pack radio tile preferences image_manip labelwidth \
 	labelwidth2 button_groups listview_sort date_time_widgets \
