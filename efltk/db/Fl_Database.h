@@ -65,6 +65,7 @@ protected:
 
 public:
    Fl_Database(const Fl_String connString)         { m_inTransaction = m_active = false; }
+   virtual ~Fl_Database()                          {}
    void open(const Fl_String connString="");
    void close();
    Fl_String connect_string() const                { return m_connString; }

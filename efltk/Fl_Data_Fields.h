@@ -76,6 +76,7 @@ public:
     int  field_index(const char * fname) const;
 
     Fl_Data_Field& add(const char *fname);
+    Fl_Data_Field& add(Fl_Data_Field *fld);
 
     const Fl_Data_Field& field(unsigned index) const;
     Fl_Data_Field&       field(unsigned index);
