@@ -13,7 +13,6 @@ CPPFILES = \
 	Fl_Date_Time_Input.cpp \
 	Fl_Dial.cpp \
 	Fl_Dialog.cpp \
-	Fl_Dialog_Data_Source.cpp \
 	Fl_Directory_DS.cpp \
 	Fl_Double_Window.cpp \
 	Fl_FileBrowser.cpp \
