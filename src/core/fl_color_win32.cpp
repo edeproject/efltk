@@ -1,9 +1,10 @@
 //
 // "$Id$"
 //
-// _WIN32 color functions for the Fast Light Tool Kit (FLTK).
+// WIN32 color functions for the Extended Fast Light Tool Kit (eFLTK).
 //
 // Copyright 1998-1999 by Bill Spitzak and others.
+// Copyright 2001-2003 by EDE Team.
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Library General Public
@@ -20,10 +21,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA.
 //
-// Please report all bugs and problems to "fltk-bugs@easysw.com".
-//
 
-// This file does not compile independently, it is included by fl_color.cxx
+// This file does not compile independently, it is included by fl_color.cpp
 
 #include "fl_internal.h"
 
@@ -125,8 +124,11 @@ void Fl_Device::line_style(int style, int width, char* dashes)
 	styled = (cap_style || pen_style);
 
 	// Reset pens
-	if (fl_pen) { DeleteObject(fl_pen); fl_pen = 0; }
-	if (fl_cosm_pen) { DeleteObject(fl_cosm_pen); fl_cosm_pen = 0; }
+	if (fl_pen)			{ DeleteObject(fl_pen); fl_pen = 0; }
+	if (fl_cosm_pen)	{ DeleteObject(fl_cosm_pen); fl_cosm_pen = 0; }
+
+	// Set pattern for line drawer
+	fl_line_drawer.set_pattern(line_width, dash_pattern_size ? dash_pattern : 0, dash_pattern_size);
 #endif
 }
 
@@ -145,7 +147,6 @@ HPEN fl_set_geometric_pen()
 		return stockpen;
 	}
 #endif
-	bool need_select = false;
 	if(!fl_pen || pen_colorref != fl_colorref) 
 	{
 		if(styled) {			
@@ -156,15 +157,14 @@ HPEN fl_set_geometric_pen()
 			fl_pen = CreatePen(PS_SOLID, line_width, fl_colorref);
 		}
 		pen_colorref = fl_colorref;
-		need_select = true;
+	} else {
+		SelectObject(fl_gc, fl_pen);
+		return fl_pen;
 	}
 
-	if(need_select) {
-		HPEN oldp = (HPEN)SelectObject(fl_gc, fl_pen);
-		DeleteObject(oldp);
-		// Delete cosmetic pen
-		if (fl_cosm_pen) { DeleteObject(fl_cosm_pen); fl_cosm_pen = 0; }
-	}
+	HPEN oldp = (HPEN)SelectObject(fl_gc, fl_pen);
+	DeleteObject(oldp);
+
 	return fl_pen;
 }
 
@@ -177,7 +177,6 @@ HPEN fl_set_cosmetic_pen()
 		return stockpen;
 	}
 #endif
-	bool need_select = false;
 	if(!fl_cosm_pen || cosm_pen_colorref != fl_colorref) 
 	{
 		LOGBRUSH penbrush = { BS_SOLID, fl_colorref, 0 };
@@ -187,20 +186,17 @@ HPEN fl_set_cosmetic_pen()
 		} else {			
 			// Pen must be geometric, if line_width>1			
 			fl_cosm_pen = ExtCreatePen(PS_SOLID | cap_style | PS_GEOMETRIC, line_width, &penbrush, 0,0);					
-		}
-
-		fl_line_drawer.set_pattern(line_width, dash_pattern_size ? dash_pattern : 0, dash_pattern_size);
+		}		
 
 		cosm_pen_colorref = fl_colorref;
-		need_select = true;
-	}	
-
-	if(need_select) {
-		HPEN oldp = (HPEN)SelectObject(fl_gc, fl_cosm_pen);
-		DeleteObject(oldp);
-		// Delete geometric pen
-		if(fl_pen) { DeleteObject(fl_pen); fl_pen = 0; }
+	} else {
+		SelectObject(fl_gc, fl_cosm_pen);
+		return fl_cosm_pen;
 	}
+
+	HPEN oldp = (HPEN)SelectObject(fl_gc, fl_cosm_pen);
+	DeleteObject(oldp);
+
 	return fl_cosm_pen;
 }
 
@@ -267,7 +263,6 @@ HPALETTE fl_select_palette(void)
 		pPal->palNumEntries = nColors;
 		
 		// Build 256 colors from the standard FLTK colormap...
-		
 		for (int i = 0; i < nColors; i ++) {
 			pPal->palPalEntry[i].peRed   = (fl_cmap[i] >> 24) & 255;
 			pPal->palPalEntry[i].peGreen = (fl_cmap[i] >> 16) & 255;
