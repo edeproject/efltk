@@ -235,6 +235,17 @@ Fl_String& Fl_String::operator += (const Fl_String& s)
 
     return *this;
 }
+
+Fl_String &Fl_String::append(const char *str, int len)
+{
+    int oldlen = len_;
+    len_ += len;
+    str_ = (char *) realloc(str_, len_+1);
+    strncpy(str_+oldlen, str, len);
+    str_[len_] = '\0';
+    return *this;
+}
+
 //------------------------------------------------------------------------------
 // usefull methods
 //------------------------------------------------------------------------------

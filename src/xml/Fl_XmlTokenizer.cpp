@@ -6,6 +6,32 @@ Fl_XmlTokenizer::Fl_XmlTokenizer(Fl_XmlContext *ctx)
     ctxptr = ctx;
     putback_char = -1;
     cdata_mode_ = auto_cdata_ = false;
+
+    read_buf_pos = 0;
+    read_buf_len = -1;
+    end_of_stream = true;
+}
+
+bool Fl_XmlTokenizer::eos()
+{
+    return end_of_stream;
+}
+
+void Fl_XmlTokenizer::fill_buffer()
+{
+    if(read_buf_pos>=read_buf_len) {
+        end_of_stream = _eos();
+        read_buf_len = _read(read_buf, BUF_SIZE);
+        if(read_buf_len<=0) end_of_stream = true;
+        read_buf_pos = 0;
+    }
+}
+
+char Fl_XmlTokenizer::_getchar()
+{
+    read_buf_pos++;
+    fill_buffer();
+    return read_buf[read_buf_pos];
 }
 
 void Fl_XmlTokenizer::get_next()
@@ -16,13 +42,19 @@ void Fl_XmlTokenizer::get_next()
     }
 
     //bool ws_added=false; //Is whitespace added already? HTML?
-    bool finished = false;
-    Fl_String generic;
+    write_buf_pos = 0;
+    curtoken.clear();
 
-    // get next char
     char c;
-    do {
-        if (putback_char == -1 ) {
+    while(true)
+    {
+        if(write_buf_pos>=BUF_SIZE) {
+            // Flush buffer!
+            curtoken.append(write_buf, write_buf_pos);
+            write_buf_pos = 0;
+        }
+
+        if(putback_char == -1) {
             c = _getchar();
             ctxptr->pos_++;
         } else {
@@ -31,21 +63,20 @@ void Fl_XmlTokenizer::get_next()
             ctxptr->pos_++;
         }
 
-        // do we have an eof?
+        // Do we have an eof?
         if(eos()) {
-            if(generic.length()!=0) {
+            if(write_buf_pos>0) {
                 curtoken = c;
                 return;
             } else
                 break;
         }
 
-        // is it a literal?
+        // Is it a literal?
         if(is_literal(c)) {
             if(!cdata_mode_) auto_cdata_ = false;
-            if(generic.length()==0) {
+            if(write_buf_pos==0) {
                 curtoken = c;
-                // quick fix for removing set_cdata_mode() functionality
                 if(c=='>')
                     if(!cdata_mode_) auto_cdata_ = true;
                 return;
@@ -56,20 +87,22 @@ void Fl_XmlTokenizer::get_next()
         }
 
         if(cdata_mode_) {
-            //Fixed CDATA and comments...
-            generic += c;
+            // Fixed CDATA and comments...
+            // Add to write buffer
+            write_buf[write_buf_pos++] = c;
             continue;
         }
 
-        // string delimiter and not in cdata mode?
+        // String delimiter and not in cdata mode?
         if(is_delimiter(c) && !cdata_mode()) {
-            generic = c;
+            write_buf_pos = 0;
+            write_buf[write_buf_pos++] = c;
             char delim = c;
             do {
                 c = _getchar();
                 ctxptr->pos_++;
                 if(eos()) break;
-                generic += c;
+                write_buf[write_buf_pos++] = c;
             } while(c != delim);
             break;
         }
@@ -77,37 +110,35 @@ void Fl_XmlTokenizer::get_next()
         // Do not add tabs in HTML mode?!
         //if(c=='\t' && cdata_mode /*&& htmlmode_*/) continue;
 
-        // a whitespace?
+        // Whitespace?
         if(is_whitespace(c)) {
-            if(generic.length()==0)
+            if(write_buf_pos==0)
                 continue;
             else if(!cdata_mode()) {
                 break;
             }
-
             //if(ws_added) continue;
             //else ws_added=true;
         }
         //else ws_added=false;
 
-        // a newline char?
+        // Newline char?
         if (is_newline(c)) {
-            if(cdata_mode() && generic.length()!=0)
+            if(cdata_mode() && write_buf_pos>0)
                 ;//c = ' '; //HTML mode?!
             else
                 continue;
         }
-        // add to generic Fl_String
-        generic += c;
 
-    } while (!finished);
+        // Add to write buffer
+        write_buf[write_buf_pos++] = c;
+    }
+
+    curtoken.append(write_buf, write_buf_pos);
 
     //Trim! HTML?!
-    if( !cdata_mode() && (generic[0]==' ' || generic[generic.length()-1]==' ') )
-        generic = generic.trim();
-
-    // set the generic string
-    curtoken = generic;
+    if( !cdata_mode() && (curtoken[0]==' ' || curtoken[curtoken.length()-1]==' ') )
+        curtoken = curtoken.trim();
 }
 
 // returns if we have a literal char
@@ -172,6 +203,7 @@ bool Fl_XmlTokenizer::is_delimiter( char c )
 
 //////////////////////////////////
 
+// FOR IO
 #include "../core/fl_internal.h"
 
 Fl_XmlStreamIterator::Fl_XmlStreamIterator(Fl_XmlContext *ctx, const char *inputbuffer, long size)
@@ -197,50 +229,17 @@ Fl_XmlStreamIterator::~Fl_XmlStreamIterator()
     delete (Fl_IO*)io_ctx;
 }
 
-bool Fl_XmlStreamIterator::eos()
+bool Fl_XmlStreamIterator::_eos()
 {
     return ((Fl_IO*)io_ctx)->eos();
 }
 
-Fl_String Fl_XmlStreamIterator::peek(int length)
+int Fl_XmlStreamIterator::_read(char *buf, int length)
 {
     if(!eos()) {
-        int pos = ((Fl_IO*)io_ctx)->tell();
-        char *tmp = (char *)malloc(length+1);
-        int readed = ((Fl_IO*)io_ctx)->read(tmp, length);
-        ((Fl_IO*)io_ctx)->seek(pos);
-        if(readed==length) {
-            tmp[length] = '\0';
-            return Fl_String(tmp, length, true);
-        } else
-            delete []tmp;
+        int readed = ((Fl_IO*)io_ctx)->read(buf, length);
+        if(readed>0) return readed;
     }
-    return Fl_String((char)EOF);
+    return -1;
 }
-
-Fl_String Fl_XmlStreamIterator::read(int length)
-{
-    if(!eos()) {
-        char *tmp = (char *)malloc(length+1);
-        int readed = ((Fl_IO*)io_ctx)->read(tmp, length);
-        if(readed==length) {
-			tmp[length] = '\0';
-            return Fl_String(tmp, length, true);
-        } else
-            delete []tmp;
-    }
-    return Fl_String((char)EOF);
-}
-
-char Fl_XmlStreamIterator::_getchar()
-{
-    if(!eos()) {
-        char c;
-        int readed = ((Fl_IO*)io_ctx)->read(&c, 1);
-        if(readed==1)
-            return c;
-    }
-    return EOF;
-}
-
 

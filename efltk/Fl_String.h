@@ -70,6 +70,8 @@ public:
     Fl_String& operator += (const char s);
 
     // usefull methods
+    Fl_String &append(const char *str, int len);
+
     void clear();
     Fl_String trimRight() const;
     Fl_String trimLeft()  const;

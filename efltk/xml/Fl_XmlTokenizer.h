@@ -7,6 +7,8 @@
 
 #include "Fl_XmlCtx.h"
 
+#define BUF_SIZE 4096
+
 /*
  * Base class for iterating through xml stream.
  * Tokenizes stream to tokens.
@@ -35,16 +37,25 @@ public:
 
     // Get next token, stores it to 'curtoken'
     void get_next();
-
-    // End of input stream
-    virtual bool eos() = 0;
-
-    // Stream access
-    virtual Fl_String peek(int length) = 0;
-    virtual Fl_String read(int length) = 0;
-    virtual char _getchar() = 0;
+    bool eos();
 
 protected:
+    // End of input stream
+    virtual bool _eos() = 0;
+    // Read to buffer
+    virtual int _read(char *buf, int length) = 0;
+
+    // Gets one character from internal buffer
+    char _getchar();
+
+    // Read buffer
+    void fill_buffer();
+    char read_buf[BUF_SIZE];
+    int read_buf_len, read_buf_pos;
+
+    // Write buffer
+    char write_buf[BUF_SIZE];
+    int write_buf_pos;
 
     // Current parsed token
     Fl_String curtoken;
@@ -64,6 +75,7 @@ protected:
     // Cdata-mode doesn't care for whitespaces in strings
     // Auto cdata-mode turned on internally, doesnt add new-lines
     bool cdata_mode_, auto_cdata_;
+    bool end_of_stream;
 
     // Context pointer
     Fl_XmlContext *ctxptr;
@@ -83,17 +95,12 @@ public:
 
     virtual ~Fl_XmlStreamIterator();
 
-    // End of stream?
-    bool eos();
-
-    // Peeks stream, not removes from stream
-    Fl_String peek(int length);
-    // Reads length bytes from stream, removed from stream
-    Fl_String read(int length);
-    // Gets one character from stream, removed from stream
-    char _getchar();
-
 protected:
+    // Reads length bytes from stream, removed from stream
+    int _read(char *buf, int length);
+    // End of stream?
+    bool _eos();
+
     void *io_ctx;
 };
 

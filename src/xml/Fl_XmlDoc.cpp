@@ -79,8 +79,8 @@ bool Fl_XmlDoc::load( const char *ptr, int len )
 {
     context_->reset_error();
     Fl_XmlStreamIterator it(context_, ptr, len);
-    Fl_XmlParser parser(it);
-    return parser.parse_document( *this, context_ );
+    Fl_XmlParser parser(context_, it);
+    return parser.parse_document(*this);
 }
 
 /* true if success */
@@ -88,8 +88,8 @@ bool Fl_XmlDoc::load(FILE *fp)
 {
     context_->reset_error();
     Fl_XmlStreamIterator it(context_, fp);
-    Fl_XmlParser parser(it);
-    return parser.parse_document( *this, context_ );
+    Fl_XmlParser parser(context_, it);
+    return parser.parse_document(*this);
 }
 
 #define WRITE_INDENT if(indent > -1) for(int i=0;i<indent;i++) str += ' ';

@@ -166,8 +166,8 @@ bool Fl_XmlNode::load(const char *ptr, int len)
     if(!ctx) return false;
 
     Fl_XmlStreamIterator it(ctx, ptr, len);
-    Fl_XmlParser parser(it);
-    return (parser.parse_node( *this, context() )==1);
+    Fl_XmlParser parser(ctx, it);
+    return (parser.parse_node(this)==1);
 }
 
 #define WRITE_INDENT() if(indent > -1) str += Fl_String(' ', indent)

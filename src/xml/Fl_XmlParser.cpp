@@ -1,5 +1,6 @@
 #include <config.h>
 
+#include <efltk/Fl_Exception.h>
 #include <efltk/xml/Fl_XmlParser.h>
 #include <efltk/xml/Fl_XmlCtx.h>
 #include <efltk/xml/Fl_XmlDoc.h>
@@ -69,42 +70,49 @@ bool is_html_block(Fl_String &tag) {
 ///////////////////////////
 
 // xmlparser methods
-Fl_XmlParser::Fl_XmlParser(Fl_XmlTokenizer &tok)
-: tokenizer(tok)
+Fl_XmlParser::Fl_XmlParser(Fl_XmlContext *ctx, Fl_XmlTokenizer &tok)
+: tokenizer(tok), ctxptr(ctx)
 {
 }
 
-bool Fl_XmlParser::parse_document( Fl_XmlDoc &doc, Fl_XmlContext *ctxptr)
+void Fl_XmlParser::throw_error(int error)
 {
-    bool handle = ctxptr->handle_events();
+    ctxptr->lasterror_ = error;
+    fl_throw(ctxptr->error_string(error));
+}
 
-    if(!parse_header( doc, ctxptr ))
+bool Fl_XmlParser::parse_document(Fl_XmlDoc &doc)
+{
+    if(!parse_header(doc))
         return false;
 
     // start parsing the content of file
-    if(handle)
+    if(ctxptr->handle_events())
         ctxptr->handler()->start_document(doc.dtd_type(), doc.dtd_location(), doc.dtd_uri());
 
     // parse the only one subnode
-    Fl_XmlNode *subnode = new Fl_XmlNode(ctxptr);
+    Fl_XmlNode *subnode = 0;
+    if(ctxptr->store_tree()) subnode = new Fl_XmlNode(ctxptr);
 
-    int ret = parse_node(*subnode, ctxptr);
+    int ret = parse_node(subnode);
 
     // if successful, put node into nodelist
-    if(ret==1) {
-        doc.add_child( subnode );
-    } else {
-        delete subnode;
+    if(ctxptr->store_tree()) {
+        if(ret==1) {
+            doc.add_child( subnode );
+        } else {
+            delete subnode;
+        }
     }
 
-    if(handle)
+    if(ctxptr->handle_events())
         ctxptr->handler()->end_document();
 
     return (ret==1);
 }
 
 // parses the doctype
-bool Fl_XmlParser::parse_doctype( Fl_XmlDoc &doc, Fl_XmlContext *ctxptr)
+bool Fl_XmlParser::parse_doctype(Fl_XmlDoc &doc)
 {
     Fl_String token;
 
@@ -160,14 +168,15 @@ bool Fl_XmlParser::parse_doctype( Fl_XmlDoc &doc, Fl_XmlContext *ctxptr)
 
                             tmp = *tokenizer++;
                             if(tmp != '>') {
-                                ctxptr->lasterror_ = FL_XML_CLOSETAG_EXPECTED;
+                                throw_error(FL_XML_CLOSETAG_EXPECTED);
                                 return false;
                             }
                         } else if(tmp[0]=='-' && tmp[1]=='-') {
                             //COMMENT??
                             tokenizer.put_back();
-                            Fl_XmlNode *com_node = new Fl_XmlNode(ctxptr);
-                            if(!parse_comment(*com_node, ctxptr)) {
+                            Fl_XmlNode *com_node = 0;
+                            if(ctxptr->store_tree()) com_node = new Fl_XmlNode(ctxptr);
+                            if(!parse_comment(com_node)) {
                                 delete com_node;
                                 return false;
                             }
@@ -183,7 +192,7 @@ bool Fl_XmlParser::parse_doctype( Fl_XmlDoc &doc, Fl_XmlContext *ctxptr)
     } while(token != '>');
 
     if(token != '>') {
-        ctxptr->lasterror_ = FL_XML_CLOSETAG_EXPECTED;
+        throw_error(FL_XML_CLOSETAG_EXPECTED);
         return false;
     }
 
@@ -191,13 +200,13 @@ bool Fl_XmlParser::parse_doctype( Fl_XmlDoc &doc, Fl_XmlContext *ctxptr)
 }
 
 // parses the header, i.e. processing instructions and doctype tag
-bool Fl_XmlParser::parse_header( Fl_XmlDoc &doc, Fl_XmlContext *ctxptr)
+bool Fl_XmlParser::parse_header(Fl_XmlDoc &doc)
 {
     while(true)
     {
         Fl_String token1 = *tokenizer++;
         if(token1 != '<') {
-            ctxptr->lasterror_ = FL_XMP_OPENTAG_EXPECTED;
+            throw_error(FL_XMP_OPENTAG_EXPECTED);
             return false;
         }
 
@@ -221,8 +230,9 @@ bool Fl_XmlParser::parse_header( Fl_XmlDoc &doc, Fl_XmlContext *ctxptr)
                 // now a doctype tag or a comment may follow
                 if(token3[0] == '-' && token3[1] == '-') {
                     tokenizer.put_back();
-                    Fl_XmlNode *com_node = new Fl_XmlNode(ctxptr);
-                    if(!parse_comment(*com_node, ctxptr)) {
+                    Fl_XmlNode *com_node = 0;
+                    if(ctxptr->store_tree()) com_node = new Fl_XmlNode(ctxptr);
+                    if(!parse_comment(com_node)) {
                         delete com_node;
                         return false;
                     }
@@ -234,15 +244,15 @@ bool Fl_XmlParser::parse_header( Fl_XmlDoc &doc, Fl_XmlContext *ctxptr)
                     Fl_String doctypestr = token3.upper_case();
 
                     if(doctypestr == "DOCTYPE") {
-                        if(!parse_doctype(doc, ctxptr))
+                        if(!parse_doctype(doc))
                             return false;
                     } else {
-                        ctxptr->lasterror_ = FL_XML_PI_DOCTYPE_EXPECTED;
+                        throw_error(FL_XML_PI_DOCTYPE_EXPECTED);
                         return false;
                     }
                 }
             } else {
-                ctxptr->lasterror_ = FL_XML_PI_DOCTYPE_EXPECTED;
+                throw_error(FL_XML_PI_DOCTYPE_EXPECTED);
                 return false;
             }
             break;
@@ -251,7 +261,7 @@ bool Fl_XmlParser::parse_header( Fl_XmlDoc &doc, Fl_XmlContext *ctxptr)
         case '?': {
             Fl_String token = *tokenizer++;
             if(is_literal(token)) {
-                ctxptr->lasterror_ = FL_XML_PI_DOCTYPE_EXPECTED;
+                throw_error(FL_XML_PI_DOCTYPE_EXPECTED);
                 return false;
             }
 
@@ -261,19 +271,19 @@ bool Fl_XmlParser::parse_header( Fl_XmlDoc &doc, Fl_XmlContext *ctxptr)
             Fl_String tagname( token );
             pinode->nodenamehandle_ = ctxptr->insert_tagname( tagname );
 
-            parse_attributes( &pinode->attributes(), ctxptr );
+            parse_attributes( &pinode->attributes() );
 
             doc.procinstructions_.append( pinode );
 
             if(ctxptr->handle_events()) ctxptr->handler()->processing_instruction(*pinode);
 
             if(*tokenizer++ != '?') {
-                ctxptr->lasterror_ = FL_XML_PI_DOCTYPE_EXPECTED;
+                throw_error(FL_XML_PI_DOCTYPE_EXPECTED);
                 return false;
             }
 
             if(*tokenizer++ != '>') {
-                ctxptr->lasterror_ = FL_XML_CLOSETAG_EXPECTED;
+                throw_error(FL_XML_CLOSETAG_EXPECTED);
                 return false;
             }
 
@@ -282,7 +292,7 @@ bool Fl_XmlParser::parse_header( Fl_XmlDoc &doc, Fl_XmlContext *ctxptr)
 
         default:
             // unknown literal encountered
-            ctxptr->lasterror_ = FL_XML_PI_DOCTYPE_EXPECTED;
+            throw_error(FL_XML_PI_DOCTYPE_EXPECTED);
             return false;
 
         } // end switch
@@ -292,9 +302,8 @@ bool Fl_XmlParser::parse_header( Fl_XmlDoc &doc, Fl_XmlContext *ctxptr)
 }
 
 // parses the contents of the current node
-int Fl_XmlParser::parse_node( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
+int Fl_XmlParser::parse_node(Fl_XmlNode *node)
 {
-    bool handle = ctxptr->handle_events();
     Fl_String token1, token2;
 
     token1 = *tokenizer++;
@@ -309,7 +318,15 @@ int Fl_XmlParser::parse_node( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
         // check if we have cdata
         if(!is_literal(token1))
         {
-			Fl_String &cdata = node.parent()->cdata();
+            Fl_String *cdata_pointer;
+            if(ctxptr->store_tree()) {
+                cdata_pointer = &node->parent()->cdata();
+            } else {
+                static Fl_String temp_cdata;
+                cdata_pointer = &temp_cdata;
+            }
+            Fl_String &cdata = *cdata_pointer;
+
             // parse cdata section(s) and return
             cdata.clear();
 
@@ -319,12 +336,12 @@ int Fl_XmlParser::parse_node( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
             }
             tokenizer.put_back();
 
-            if (handle) ctxptr->handler()->cdata(cdata);
+            if (ctxptr->handle_events()) ctxptr->handler()->cdata(cdata);
             return 2; //CDATA PARSED!
         }
         // no cdata, try to continue parsing node content
         if(token1 != '<') {
-            ctxptr->lasterror_ = FL_XML_OPENTAG_CDATA_EXPECTED;
+            throw_error(FL_XML_OPENTAG_CDATA_EXPECTED);
             return false; // Open tag expected
         }
 
@@ -342,37 +359,43 @@ int Fl_XmlParser::parse_node( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
             }
 
             case '!': {
-                // peek next 2 chars
-                Fl_String tmp = tokenizer.peek(2);
+                token2 = *tokenizer++;
+                // now a doctype tag or a comment may follow
 
-                if(tmp[0] == '-' && tmp[1] == '-') {
-
-                    if(!parse_comment(node, ctxptr))
+                if(token2[0] == '-' && token2[1] == '-') {
+                    tokenizer.put_back();
+                    if(!parse_comment(node))
                         return false;
                     return true;
 
-                } 
-				else if(tmp[0] == '[') {
+                }
+                else if(token2[0] == '[') {
 
-                    token1 = tokenizer.peek(7); // Read check
-                    if(!strncmp(token1.c_str(), "[CDATA[", 7))
+                    if(!strncmp(token2.c_str(), "[CDATA[", 7))
                     {
-						// parse cdata section(s) and return
-						Fl_String &cdata = node.parent()->cdata();                        
+                        Fl_String *cdata_pointer;
+                        if(ctxptr->store_tree()) {
+                            cdata_pointer = &node->parent()->cdata();
+                        } else {
+                            static Fl_String temp_cdata;
+                            cdata_pointer = &temp_cdata;
+                        }
+
+                        Fl_String &cdata = *cdata_pointer;
+                        // parse cdata section(s) and return
                         cdata.clear();
 
-                        token1 = tokenizer.read(7); // Read [CDATA away
                         tokenizer.cdata_mode(true);
                         while(!tokenizer.eos()) {
                             cdata += *tokenizer++;
-                            if(cdata[cdata.length()-1]=='>')
+                            if(!strncmp(&cdata[cdata.length()-3], "]]>", 3))
                                 break;
                         }
                         tokenizer.cdata_mode(false);
 
                         cdata.sub_delete(cdata.length()-3, 3); //Delete "]]>"
 
-                        if (handle) ctxptr->handler()->cdata(cdata);
+                        if(ctxptr->handle_events()) ctxptr->handler()->cdata(cdata);
                         return 2; //CDATA PARSED!
                     }
 
@@ -387,7 +410,7 @@ int Fl_XmlParser::parse_node( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
             break;
 
             default:
-                ctxptr->lasterror_ = FL_XML_TAGNAME_EXPECTED;
+                throw_error(FL_XML_TAGNAME_EXPECTED);
                 return false; // Tagname expected
             }
         }
@@ -396,13 +419,14 @@ int Fl_XmlParser::parse_node( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
     // Store tagname
     Fl_String tagname( token2 );
     // insert tag name and set handle for it
-    node.nodenamehandle_ = ctxptr->insert_tagname( tagname );
+    if(node)
+        node->nodenamehandle_ = ctxptr->insert_tagname( tagname );
 
     // HMTL
     if(ctxptr->html_mode())
     {
         // Check for endless blocks, w/o end tag
-        /*Fl_String name = node.parent()->name();
+        /*Fl_String name = node->parent()->name();
          if(is_html_block(name)) {
          if(is_html_block(tagname)) {
          tokenizer.put_back(token2);
@@ -414,14 +438,22 @@ int Fl_XmlParser::parse_node( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
     }
 
     // notify event handler
-    if(handle) ctxptr->handler()->start_node(tagname);
+    if(ctxptr->handle_events()) ctxptr->handler()->start_node(tagname);
     //printf("START %s\n", tagname.c_str());
 
     // parse attributes
-    if(!parse_attributes(&node.attributes(), ctxptr))
+    AttrMap *map;
+    if(ctxptr->store_tree())
+        map = &node->attributes();
+    else {
+        static AttrMap temp_map;
+        temp_map.clear();
+        map = &temp_map;
+    }
+    if(!parse_attributes(map))
         return false;
 
-    if(handle) ctxptr->handler()->parsed_attributes(tagname, node.attributes());
+    if(ctxptr->handle_events()) ctxptr->handler()->parsed_attributes(tagname, *map);
 
     // check for leaf
     token1 = *tokenizer++;
@@ -430,7 +462,7 @@ int Fl_XmlParser::parse_node( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
     if(ctxptr->html_mode()) {
         if(is_html_leaf(tagname)) {
             //tokenizer.put_back(token1);
-            if(handle) ctxptr->handler()->end_node(tagname);
+            if(ctxptr->handle_events()) ctxptr->handler()->end_node(tagname);
             return true;
         }
     }
@@ -440,11 +472,11 @@ int Fl_XmlParser::parse_node( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
         // node has finished
         token2 = *tokenizer++;
         if(token2 != '>' ) {
-            ctxptr->lasterror_ = FL_XML_CLOSETAG_EXPECTED;
+            throw_error(FL_XML_CLOSETAG_EXPECTED);
             return false; // Close Tag expected
         }
 
-        if(handle) ctxptr->handler()->end_node(tagname);
+        if(ctxptr->handle_events()) ctxptr->handler()->end_node(tagname);
 
         // return, let the caller continue to parse
         return true;
@@ -452,37 +484,39 @@ int Fl_XmlParser::parse_node( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
 
     // now a closing bracket must follow
     if(token1 != '>') {
-        ctxptr->lasterror_ = FL_XML_CLOSETAG_EXPECTED;
+        throw_error(FL_XML_CLOSETAG_EXPECTED);
         return false; // Close Tag expected
     }
 
     // loop to parse all subnodes
-	bool failed = false;
-	Fl_XmlNode *subnode = 0;
+    bool failed = false;
+    Fl_XmlNode *subnode = 0;
     while(!failed) {
 
-		if(!subnode) {
-			subnode = new Fl_XmlNode(ctxptr);
-			subnode->parent(&node);
-		}
+        if(!subnode && ctxptr->store_tree()) {
+            subnode = new Fl_XmlNode(ctxptr);
+            subnode->parent(node);
+        }
 
-		switch(parse_node( *subnode, ctxptr ))
-		{
-		default:
-		case 0:	
-			failed = true; 
-			break;
-		case 1:
-			node.add_node(subnode);
-			subnode = 0;
-			break;
-		case 2:
-			// CDATA parsed!
-			break;
-		}
+        switch(parse_node(subnode))
+        {
+        default:
+        case 0:
+            failed = true;
+            break;
+        case 1:
+            if(subnode && ctxptr->store_tree()) {
+                node->add_node(subnode);
+                subnode = 0;
+            }
+            break;
+        case 2:
+            // CDATA parsed!
+            break;
+        }
     }
-	if(subnode) 
-		delete subnode;
+    if(subnode)
+        delete subnode;
 
     if(ctxptr->lasterror_)
         return false;
@@ -491,36 +525,36 @@ int Fl_XmlParser::parse_node( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
     Fl_String token5 = *tokenizer++;
     tokenizer++;
     if(token5 != '<' && *tokenizer != '/') {
-        ctxptr->lasterror_ = FL_XMP_OPENTAG_EXPECTED;
+        throw_error(FL_XMP_OPENTAG_EXPECTED);
         return false;
     }
 
     tokenizer++;
     token1 = *tokenizer;
     if(is_literal(token1)) {
-        ctxptr->lasterror_ = FL_XML_TAGNAME_EXPECTED;
+        throw_error(FL_XML_TAGNAME_EXPECTED);
         return false;
     }
 
     // check if open and close tag names are identical
     if(token1 != token2) {
-        ctxptr->lasterror_ = FL_XML_TAGNAME_MISMATCH;
+        throw_error(FL_XML_TAGNAME_MISMATCH);
         return false;
     }
 
     tokenizer++;
     if (*tokenizer != '>') {
-        ctxptr->lasterror_ = FL_XMP_OPENTAG_EXPECTED;
+        throw_error(FL_XMP_OPENTAG_EXPECTED);
         return false;
     }
 
-    if(handle) ctxptr->handler()->end_node(token1);
+    if(ctxptr->handle_events()) ctxptr->handler()->end_node(token1);
 
     return true;
 }
 
 // parses tag attributes
-bool Fl_XmlParser::parse_attributes( AttrMap *attr, Fl_XmlContext *ctxptr )
+bool Fl_XmlParser::parse_attributes(AttrMap *attr)
 {
     Fl_String token1;
     Fl_String name, value;
@@ -545,14 +579,14 @@ bool Fl_XmlParser::parse_attributes( AttrMap *attr, Fl_XmlContext *ctxptr )
                 attr->append_pair(AttrMap::pair(name, str));
                 return true;
             } else {
-                ctxptr->lasterror_ = FL_XML_EQUAL_EXPECTED;
+                throw_error(FL_XML_EQUAL_EXPECTED);
                 return false; // '=' expected: key=value
             }
         }
 
         token1 = *tokenizer++;
         if(is_literal(token1)) {
-            ctxptr->lasterror_ = FL_XML_VALUE_EXPECTED;
+            throw_error(FL_XML_VALUE_EXPECTED);
             return false;
         }
 
@@ -569,17 +603,15 @@ bool Fl_XmlParser::parse_attributes( AttrMap *attr, Fl_XmlContext *ctxptr )
     return true;
 }
 
-bool Fl_XmlParser::parse_comment( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
+bool Fl_XmlParser::parse_comment(Fl_XmlNode *node)
 {
-    bool handle = ctxptr->handle_events();
-
     Fl_String part;
     Fl_String comment;
 
     tokenizer.cdata_mode(true);
     while(true) {
         if(tokenizer.eos()) {
-            ctxptr->lasterror_ = FL_XML_COMMENT_END_MISSING;
+            throw_error(FL_XML_COMMENT_END_MISSING);
             return false;
         }
 
@@ -592,7 +624,7 @@ bool Fl_XmlParser::parse_comment( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
         part = *tokenizer;
 
         if( comment.length()==0 && (part[0]!='-' || part[1]!='-') ) {
-            ctxptr->lasterror_ = FL_XML_COMMENT_START_EXPECTED;
+            throw_error(FL_XML_COMMENT_START_EXPECTED);
             return false;
         }
 
@@ -602,14 +634,21 @@ bool Fl_XmlParser::parse_comment( Fl_XmlNode &node, Fl_XmlContext *ctxptr )
 
     comment.sub_delete(0, 2);
     comment.sub_delete(comment.length()-2, 2);
-    node.cdata(comment.trim());
+    if(node && ctxptr->store_tree())
+    {
+        node->cdata(comment.trim());
+        Fl_String tagname("comment");
+        node->nodenamehandle_ = ctxptr->insert_tagname( tagname );
+        node->type(FL_XML_TYPE_COMMENT);
 
-    Fl_String tagname("comment");
-    node.nodenamehandle_ = ctxptr->insert_tagname( tagname );
-    node.type(FL_XML_TYPE_COMMENT);
+        if(ctxptr->handle_events())
+            ctxptr->handler()->comment(node->cdata());
 
-    if(handle)
-        ctxptr->handler()->comment(node.cdata());
+    } else {
+
+        if(ctxptr->handle_events())
+            ctxptr->handler()->comment(comment);
+    }
 
     return true;
 }

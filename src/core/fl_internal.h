@@ -170,25 +170,29 @@ public:
         buf_offset=0;
     }
 
-	uint read(void *b, int len) {
-            if(fp) {
-                return fread(b, 1, len, fp);
-            } else if(buf) {
+    uint read(void *b, int len) {
+        if(fp) {
+            return fread(b, 1, len, fp);
+        } else if(buf && buf_size>0) {
+            uint32 pos = buf_offset+len;
+            if(pos>buf_size) len = len-(pos-buf_size);
+            if(len>0) {
+                memcpy(b, buf+buf_offset, len);
                 buf_offset+=len;
-                if(buf_offset<=buf_size) {
-                    memcpy(b, buf+(buf_offset-len), len);
-                    return len;
-                }
+                return len;
             }
-            return 0;
         }
+        return 0;
+    }
     uint write(void *b, int len) {
         if(fp) {
             return fwrite(b, 1, len, fp);
-        } else if(buf) {
-            buf_offset+=len;
-            if(buf_offset<=buf_size) {
-                memcpy(buf+(buf_offset-len), b, len);
+        } else if(buf && buf_size>0) {
+            uint32 pos = buf_offset+len;
+            if(pos>buf_size) len = len-(pos-buf_size);
+            if(len>0) {
+                memcpy(buf+buf_offset, b, len);
+                buf_offset+=len;
                 return len;
             }
         }
