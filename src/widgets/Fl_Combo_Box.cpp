@@ -138,7 +138,7 @@ static Fl_Pixmap   refresh_pixmap(refresh_small_xpm);
 
 class Fl_Combo_Box_Button : public Fl_Button {
 public:
-    Fl_Combo_Box_Button() : Fl_Button (0,0,10,10) {}
+    Fl_Combo_Box_Button(Fl_Combo_Box *cb) : Fl_Button (0,0,10,10), combo(cb) {}
     void preferred_size(int& w,int& h) const { 
         fl_font(parent()->text_font(),parent()->text_size());
         h = int(fl_height()+fl_descent()) + 2;
@@ -149,6 +149,9 @@ public:
             return false;
         return Fl_Button::handle(event);
     }
+    void draw() { box(combo->button_box()); Fl_Button::draw(); }
+
+    Fl_Combo_Box *combo;
 };
 
 class Fl_Popup_ListView : public Fl_Popup_Window {
@@ -257,20 +260,11 @@ Fl_Combo_Box_Panel::Fl_Combo_Box_Panel(Fl_ListView *lv)
     box(FL_FLAT_BOX);
 }
 
-void Fl_Combo_Box_Panel::draw() {
-    bool focused = false;
-    if (Fl::focus() == this) focused = true;
-
-    Fl_Color clr = fl_lighter(fl_lighter(parent()->color()));
-    if (focused)
-        clr = selection_color();
-
-    box()->draw(0, 0, w(), h(), clr);
+void Fl_Combo_Box_Panel::draw()
+{
+    draw_box();
 
     int dd = 2;
-    int xx = 0;
-    int yy = dd * 2;
-    int hh = h()- dd * 3;
 
     Fl_ListView_Item    *item = (Fl_ListView_ItemExt *)m_listView->item();
     if (!item) return;
@@ -278,29 +272,32 @@ void Fl_Combo_Box_Panel::draw() {
     Fl_ListView_ItemExt *item_ext = dynamic_cast<Fl_ListView_ItemExt *>(item);
 
     if (!item_ext) {
-        fl_font(text_font(),text_size());
-        fl_color(text_color());
+        fl_font(m_listView->text_font(), m_listView->text_size());
     }
 
-    fl_push_clip(xx, 0, w(), h());
+    int X=0, Y=0, W=w(), H=h();
+    box()->inset(X,Y,W,H);
 
     for (unsigned c = 0; c < item->columns(); c++) {
         int ww = m_listView->column_width(c);
-        fl_push_clip(xx+dd,yy,ww-dd,hh);
+        fl_push_clip(X+dd, Y, ww-dd, H);
         if (item_ext) {
             fl_font(item_ext->label_font(c),item_ext->label_size(c));
             fl_color(item_ext->label_color(c));
-        }
-        fl_draw(item->label(c),xx+dd,yy,ww-dd,hh,FL_ALIGN_LEFT);
+        } else
+            fl_color(m_listView->text_color());
+
+        fl_draw(item->label(c), X+dd, Y, ww-dd, H, FL_ALIGN_LEFT);
 
         fl_pop_clip();
 
-        fl_line(xx + ww,0,xx + ww,h());
+        fl_color(fl_gray_ramp(20));
+        fl_line(X + ww-1, Y, X + ww-1, H);
+        fl_color(fl_gray_ramp(10));
+        fl_line(X + ww, Y, X + ww, H);
 
-        xx += ww;
+        X += ww;
     }
-
-    fl_pop_clip();
 }
 
 int Fl_Combo_Box_Panel::handle(int event) {
@@ -337,10 +334,21 @@ int button_to_event(int argument) {
     return FL_NO_EVENT;
 }
 
+static void revert(Fl_Style* s)
+{
+    s->color = FL_WHITE;
+    s->box = FL_DOWN_BOX;
+    s->button_box = FL_THIN_UP_BOX;
+}
+
+static Fl_Named_Style style("Combo_Box", revert, &Fl_Combo_Box::default_style);
+Fl_Named_Style* Fl_Combo_Box::default_style = &::style;
+
 // ctor initializer - used in both ctors
-void Fl_Combo_Box::ctor_init() {
+void Fl_Combo_Box::ctor_init()
+{
     align(FL_ALIGN_LEFT);
-    box(FL_THIN_DOWN_BOX);
+    style(default_style);
     layout_spacing(0);
     end();
 
@@ -349,7 +357,7 @@ void Fl_Combo_Box::ctor_init() {
     Fl_Group::begin();
 
     for (int i = 0; i < 5; i++) {
-        Fl_Button *b = new Fl_Combo_Box_Button();
+        Fl_Button *b = new Fl_Combo_Box_Button(this);
         m_buttons[i] = b;
         b->layout_align(FL_ALIGN_RIGHT);
         b->callback(cb_button);
