@@ -28,7 +28,7 @@
 // VK_x symbols.
 
 #include <efltk/Fl.h>
-#include <efltk/win32.h>
+#include <efltk/x.h>
 #include <ctype.h>
 
 // convert an Fltk (X) keysym to a MSWindows VK symbol:
