@@ -236,42 +236,43 @@ int Fl_Group::handle(int event)
         // keyboard navigation
         if (!numchildren) break;
         int key = navigation_key();
-        if (!key) break;
+        if (!key) break;		
 
-        int previous = m_focus;
+        int previous = m_focus;		
         if (previous < 0 || previous >= numchildren) previous = 0;
+		printf("PREV: %d\n", previous);
         for (i = previous;;)
         {
-            {
-                if (key == FL_Left || key == FL_Up)
-                {
-                    if (i) --i;
-                    else
-                    {
-                        if (parent()) return false;
-                        i = numchildren-1;
-                    }
-                }
+	        if (key == FL_Left || key == FL_Up) {
+				if (i) --i;
                 else
                 {
-                    ++i;
-                    if (i >= numchildren)
-                    {
-                        if (parent()) return false;
-                        i = 0;
-                    }
+					if (parent()) return false;
+                    i = numchildren-1;
                 }
-                if (i == previous) break;
-                if (key == FL_Down || key == FL_Up)
-                {
-                    // for up/down, the widgets have to overlap horizontally:
-                    Fl_Widget* o = child(i);
-                    Fl_Widget* p = child(previous);
-                    if (o->x() >= p->x()+p->w() || o->x()+o->w() <= p->x()) continue;
+			} else {
+				++i;
+                if (i >= numchildren) {
+					if (parent()) return false;
+                    i = 0;
                 }
-                if (child(i)->take_focus()) return true;
+			}
+
+            if (i == previous) {				
+				break;
+			}
+
+            if (key == FL_Down || key == FL_Up)
+            {
+				// for up/down, the widgets have to overlap horizontally:
+				Fl_Widget* o = child(i);
+                Fl_Widget* p = child(previous);
+                if (o->x() >= p->x()+p->w() || o->x()+o->w() <= p->x()) continue;
             }
-            break;
+				
+            if (child(i)->take_focus()) {					
+				return true;
+			}			
         }
     }
 
