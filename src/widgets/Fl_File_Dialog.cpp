@@ -967,10 +967,10 @@ void Fl_File_Dialog::read_dir(const char *_path)
 
 #ifndef _WIN32
                     if(attr->flags & FL_LINK) {
-                        char tmp[FL_PATH_MAX]; int len=0;
-                        if((len=readlink(filename, tmp, sizeof(tmp)))) {
-                            tmp[len] = '\0';
-                            if(fl_is_dir(tmp)) attr->flags |= FL_DIR;
+                        struct stat st;
+                        stat(filename, &st);
+                        if((st.st_mode & S_IFDIR) == S_IFDIR) {
+                            attr->flags |= FL_DIR;
                         }
                     }
 #endif
@@ -1163,11 +1163,11 @@ void Fl_File_Dialog::folder_clicked(Fl_FileItem *i)
             sprintf(tmp, "%s", i->label());
 
 #ifndef _WIN32
-        if(i->attr->flags & FL_LINK) {
+        /*if(i->attr->flags & FL_LINK) {
             int len=0;
             if((len=readlink(tmp, tmp, sizeof(tmp)))) tmp[len] = '\0';
             else return;
-        }
+        }*/
 #endif
         read_dir(tmp);
     }
