@@ -322,8 +322,8 @@ Fl_Divider *Fl_Tool_Bar::add_divider()
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
 
-Fl_Tool_Button::TbShowMode Fl_Tool_Button::m_def_showmode = Fl_Tool_Button::TB_SHOW_AUTO;
-Fl_Tool_Button::TbTextPos Fl_Tool_Button::m_def_textpos = Fl_Tool_Button::TB_TEXT_AUTO;
+Fl_Tool_Button::TbShowMode Fl_Tool_Button::m_def_showmode = Fl_Tool_Button::SHOW_AUTO;
+Fl_Tool_Button::TbTextPos Fl_Tool_Button::m_def_textpos = Fl_Tool_Button::POS_AUTO;
 
 static void button_revert(Fl_Style* s)
 {
@@ -339,8 +339,8 @@ Fl_Tool_Button::Fl_Tool_Button(Fl_Tool_Bar *bar)
 {
     style(Fl_Tool_Button::default_style);
 
-    m_showmode = TB_SHOW_DEFAULT;
-    m_textpos  = TB_TEXT_DEFAULT;
+    m_showmode = SHOW_DEFAULT;
+    m_textpos  = POS_DEFAULT;
 }
 
 Fl_Tool_Button *Fl_Tool_Button::create(Fl_Tool_Bar *bar, Fl_Image *image, const char *label, const char *tooltip, long id)
@@ -374,15 +374,15 @@ void Fl_Tool_Button::draw()
     Fl_Image *saved_im = image();
 
     TbShowMode sm = showmode();
-    if(sm==TB_SHOW_DEFAULT) sm = default_showmode();
+    if(sm==SHOW_DEFAULT) sm = default_showmode();
 
-    if(sm==TB_SHOW_AUTO) {
-        if(image()) sm = TB_SHOW_IMAGE;
-        else        sm = TB_SHOW_TEXT;
+    if(sm==SHOW_AUTO) {
+        if(image()) sm = SHOW_IMAGE;
+        else        sm = SHOW_TEXT;
     }
 
-    if(!(sm&TB_SHOW_IMAGE)) image(0);
-    if(!(sm&TB_SHOW_TEXT)) {
+    if(!(sm&SHOW_IMAGE)) image(0);
+    if(!(sm&SHOW_TEXT)) {
         saved_l = label();
         label("");
     }
@@ -397,28 +397,28 @@ void Fl_Tool_Button::draw()
 void Fl_Tool_Button::layout()
 {
     TbTextPos tp = textpos();
-    if(tp==TB_TEXT_DEFAULT) tp = default_textpos();
+    if(tp==POS_DEFAULT) tp = default_textpos();
 
     TbShowMode sm = showmode();
-    if(sm==TB_SHOW_DEFAULT) sm = default_showmode();
+    if(sm==SHOW_DEFAULT) sm = default_showmode();
 
-    if(sm==TB_SHOW_AUTO) {
-        if(image()) sm = TB_SHOW_IMAGE;
-        else        sm = TB_SHOW_TEXT;
+    if(sm==SHOW_AUTO) {
+        if(image()) sm = SHOW_IMAGE;
+        else        sm = SHOW_TEXT;
     }
 
-    if(tp==TB_TEXT_BOTTOM) align(FL_ALIGN_INSIDE|FL_ALIGN_TOP);
-    else if(tp==TB_TEXT_RIGHT) align(FL_ALIGN_INSIDE|FL_ALIGN_LEFT);
+    if(tp==POS_BOTTOM) align(FL_ALIGN_INSIDE|FL_ALIGN_TOP);
+    else if(tp==POS_RIGHT) align(FL_ALIGN_INSIDE|FL_ALIGN_LEFT);
     else align(0);
 
 AGAIN:
     int bw, bh, lw=0, lh=0;
     m_bar->get_button_sizes(m_bar->tb_size(), bw, bh);
 
-    if(sm&TB_SHOW_TEXT)
+    if(sm&SHOW_TEXT)
         measure_label(lw, lh);
 
-    if(image() && sm&TB_SHOW_IMAGE) {
+    if(image() && sm&SHOW_IMAGE) {
         lw += image()->width()+2;
         lh += image()->height()+2;
     }
@@ -426,7 +426,7 @@ AGAIN:
     lw += box()->dw() + 4;
     if(lw < bw) lw = bw;
 
-    if(tp == TB_TEXT_AUTO) {
+    if(tp == POS_AUTO) {
         if(lh > bh) {
             // Text and image didn't fit to box, try with left alignment.
             if(!align()) {
