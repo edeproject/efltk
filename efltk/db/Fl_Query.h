@@ -46,7 +46,9 @@ protected:
    Fl_Query(const Fl_Query& ) : Fl_Data_Source(0L) {};
 
 public:
-   Fl_Query(Fl_Database *db,Fl_String sql = "");
+   // ctor, dtor
+   Fl_Query(Fl_Database *db,const Fl_String& sql);
+   Fl_Query(Fl_Database *db,const char *sql = "");
    ~Fl_Query() { close(); free_stmt(); }
 public:
    void prepare();
@@ -59,17 +61,39 @@ public:
 public:
    bool             eof() const         { return m_eof; }
    bool             prepared() const    { return m_prepared; }
-   unsigned         param_count() const { return m_params.count(); }
-   Fl_Param&        param(const char *paramName) const;
-   Fl_Param&        param(const Fl_String& paramName) const;
-   Fl_Param&        param(unsigned paramIndex) const;
+   unsigned         param_count() const                     { return m_params.count(); }
+   Fl_Param&        param(const char *paramName) const      { return m_params[paramName]; }
+   Fl_Param&        param(const Fl_String& paramName) const { return m_params[paramName]; }
+   Fl_Param&        param(unsigned paramIndex) const        { return m_params[paramIndex]; }
 
    Fl_String        sql() const         { return m_sql; }
-   void             sql(Fl_String _sql);
+   void             sql(const Fl_String& _sql);
+   void             sql(const char * _sql);
 
    Fl_Database     *database() const    { return m_database; }
 
    bool             active() const      { return m_active; }
+
+public: // acting as a Data Source
+   virtual const Fl_Variant& operator [] (const char *field_name) const { return m_fields[field_name]; }
+   virtual Fl_Variant&       operator [] (const char *field_name)       { return m_fields[field_name]; }
+
+   virtual unsigned          field_count() const                        { return m_fields.count();     }
+   virtual int               field_index(const char *fname) const       { return m_fields.field_index(fname); }
+
+   // access to the field value by field number, 0..field_count()-1
+   virtual const Fl_Variant& operator [] (int fnum) const               { return m_fields[fnum]; }
+   virtual Fl_Variant&       operator [] (int fnum)                     { return m_fields[fnum]; }
+
+   // access to the field by field number, 0..field_count()-1
+   virtual const Fl_Data_Field& field (int field_index) const           { return m_fields.field(field_index); }
+   virtual Fl_Data_Field&       field (int field_index)                 { return m_fields.field(field_index); }
+
+   // Not supported yet:
+   virtual bool              read_field(const char *,Fl_Variant&)       { return false; }
+   virtual bool              write_field(const char *,const Fl_Variant&){ return false; }
+   virtual bool              load_data()                                { return false; }
+   virtual bool              save_data()                                { return false; }
 };
 
 #endif

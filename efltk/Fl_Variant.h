@@ -55,6 +55,8 @@ public:
     void set_image_ptr(const Fl_Image * value);
     void set_date(Fl_Date_Time value);
 
+    void resize_buffer(int sz);
+
     int    get_int() const;
     double get_float() const;
     const char *get_string() const;

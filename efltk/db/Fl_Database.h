@@ -65,7 +65,7 @@ protected:
    Fl_Data_Fields& query_fields(Fl_Query *q)       { return q->m_fields; }
 
 public:
-   Fl_Database(const Fl_String connString)         { m_inTransaction = m_active = false; }
+   Fl_Database(const Fl_String connString)         { m_inTransaction = m_active = false; m_connString = connString; }
    virtual ~Fl_Database()                          {}
    void open(const Fl_String connString="");
    void close();

@@ -31,22 +31,29 @@ class Fl_Data_Fields;
 class FL_API Fl_Data_Field {
     friend class Fl_Data_Fields;
 public:
-    Fl_Data_Field(const char *name)    { m_name = name; width = -1; align = FL_ALIGN_LEFT; }
+    Fl_Data_Field(const char *name);
+
     Fl_Variant value;
 
     // attributes
     int      width;
     Fl_Align align;
 
-    const char *name() const           { return m_name.c_str();   }
-    int type() const       { return value.type();     }
+    const char *name()     const                  { return m_name.c_str();   }
+    int type()             const                  { return value.type();     }
+
+    unsigned buffer_size() const                  { return value.size();     }
+    unsigned data_size()   const                  { return m_dataSize;       }
+    void data_size(unsigned sz)                   { m_dataSize = sz;         }
+
+    bool is_null() const                          { return m_dataSize == 0;  }
 
     // convertors
-    operator int () const              { return as_int();         }
-    operator double () const           { return as_float();       }
-    operator Fl_String () const        { return as_string();      }
-    operator Fl_Date_Time () const     { return as_date();        }
-    operator const Fl_Image * () const { return as_image();       }
+    operator int () const                         { return as_int();         }
+    operator double () const                      { return as_float();       }
+    operator Fl_String () const                   { return as_string();      }
+    operator Fl_Date_Time () const                { return as_date();        }
+    operator const Fl_Image * () const            { return as_image();       }
 
     // assignments
     Fl_Data_Field& operator = (int v)             { value = v; return *this; }
@@ -63,7 +70,8 @@ public:
     const Fl_Image *as_image() const;
 
 protected:
-    Fl_String m_name;
+    Fl_String  m_name;
+    unsigned   m_dataSize;
 };
 
 class FL_API Fl_Data_Fields {
