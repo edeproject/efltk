@@ -262,6 +262,9 @@ void Fl_Combo_Box_Panel::draw() {
     if (Fl::focus() == this) focused = 1;
 
     Fl_Color clr = fl_lighter(fl_lighter(parent()->color()));
+    if (focused)
+        clr = selection_color();
+
     box()->draw(0, 0, w(), h(), clr);
 
     int dd = 2;
