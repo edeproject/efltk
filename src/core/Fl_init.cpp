@@ -54,9 +54,20 @@ void clean_up()
     // Call some cleanup handlers!
 }
 
+// This is used on future...
+bool gettext_converts = false;
+
 void Fl::init()
 {
     atexit(clean_up);
+
+    // Initialize the i18n stuff
+    setlocale(LC_ALL, "");
+    bindtextdomain("efltk", PREFIX"/share/locale");
+    char *charset = bind_textdomain_codeset("efltk", "UTF-8");
+    if(!strcmp(charset, "UTF-8")) {
+        gettext_converts = true;
+    }
 
     char *file = 0;
     file = Fl_Config::find_config_file("efltk.conf", false, Fl_Config::USER);
