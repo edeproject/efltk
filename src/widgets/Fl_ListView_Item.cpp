@@ -6,14 +6,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-class Fl_ListItem_Attr
-{
-public:
-    const char *label;
-    bool copied;
-    int16 width;
-};
-
 Fl_ListView_Item::Fl_ListView_Item(const char *label1,
                                    const char *label2,
                                    const char *label3,
@@ -44,6 +36,30 @@ Fl_ListView_Item::Fl_ListView_Item(const char *label1,
         Fl_ListView::current->add(*this);
 }
 
+Fl_ListView_Item::~Fl_ListView_Item()
+{
+    for(uint n=0; n<attr_list.size(); n++) {
+        Fl_ListItem_Attr *a = (Fl_ListItem_Attr*)attr_list[n];
+        if(a->col_label && a->col_label_copied)
+            free((void *)a->col_label);
+    }
+}
+
+Fl_ListItem_Attr *Fl_ListView_Item::create_attr(int col)
+{
+    Fl_ListItem_Attr *a = new Fl_ListItem_Attr;
+    a->col_label = 0;
+    a->col_label_copied = false;
+    a->col_width = 0;
+	return a;
+}
+
+void Fl_ListView_Item::add_attr(int col)
+{
+    attr_list[col] = create_attr(col);
+}
+
+
 bool Fl_ListView_Item::selected()
 {
     return (parent()->get_selection().index_of(this)>-1);
@@ -67,28 +83,10 @@ void Fl_ListView_Item::columns(uint count)
     } else {
         for(uint n=new_size; n<old_size; n++) {
             Fl_ListItem_Attr *a = (Fl_ListItem_Attr*)attr_list[n];
-            if(a->label && a->copied) free((void *)a->label);
+            if(a->col_label && a->col_label_copied) free((void *)a->col_label);
             delete (Fl_ListItem_Attr*)a;
         }
         attr_list.resize(new_size);
-    }
-}
-
-void Fl_ListView_Item::add_attr(int col)
-{
-    Fl_ListItem_Attr *a = new Fl_ListItem_Attr;
-    a->label = 0;
-    a->copied = false;
-    a->width = 0;
-    attr_list[col] = a;
-}
-
-Fl_ListView_Item::~Fl_ListView_Item()
-{
-    for(uint n=0; n<attr_list.size(); n++) {
-        Fl_ListItem_Attr *a = (Fl_ListItem_Attr*)attr_list[n];
-        if(a->label && a->copied)
-            free((void *)a->label);
     }
 }
 
@@ -100,13 +98,13 @@ void Fl_ListView_Item::copy_label(int col, const char *txt)
 {
     check_columns(col);
     Fl_ListItem_Attr *a = (Fl_ListItem_Attr*)attr_list[col];
-    if(a->copied) free((void*)a->label);
+    if(a->col_label_copied) free((void*)a->col_label);
     if(txt) {
-        a->label = strdup(txt);
-        a->copied = true;
+        a->col_label = strdup(txt);
+        a->col_label_copied = true;
     } else {
-        a->label = 0;
-        a->copied = false;
+        a->col_label = 0;
+        a->col_label_copied = false;
     }
 }
 
@@ -122,25 +120,27 @@ void Fl_ListView_Item::draw_cell(int col, int w, bool sel)
     Fl_Boxtype box = parent()->button_box();
     box->draw(0, 0, w, h(), fl_inactive(parent()->button_color(), f), FL_INVISIBLE);
     Fl_ListItem_Attr *a = (Fl_ListItem_Attr*)attr_list[col];
-    const char *txt = a->label;
+    const char *txt = a->col_label;
     if(txt) {
-        fl_font(parent()->text_font(), parent()->text_size());
-        fl_color(fl_inactive(sel?parent()->selection_text_color():parent()->text_color(), f));
-
         int x=2;
         int iw=0;
 
+		int y = h()/2;
+
         if(col==0 && image_) {
-            image_->draw(x, h()/2-image_->height()/2, image_->width(), image_->height(), f|(sel?FL_SELECTED:0));
+            image_->draw(x, y-image_->height()/2, image_->width(), image_->height(), f|(sel?FL_SELECTED:0));
             iw = image_->width()+2;
             x+=iw;
         }
 
+		fl_font(parent()->text_font(), parent()->text_size());
+		fl_color(fl_inactive(sel?parent()->selection_text_color():parent()->text_color(), f));
+
         //HMM... cutting should be optional
         if(strchr(txt, '\n')) txt = fl_cut_multiline(txt, w-iw-6);
         else txt = fl_cut_line(txt, w-iw-6);
-
-        fl_draw(txt, x, int(fl_descent()/2), w-x, h(), f&FL_ALIGN_MASK);
+		
+        fl_draw(txt, x, y-parent()->leading()-fl_height()/2, w-x, h(), f&FL_ALIGN_MASK);
     }
     fl_pop_clip();
 }
@@ -154,61 +154,57 @@ void Fl_ListView_Item::layout()
     fl_font(parent()->text_font() , parent()->text_size());
     for(uint n=0; n<attr_list.size(); n++) {
         Fl_ListItem_Attr *a = (Fl_ListItem_Attr*)attr_list[n];
-        if(a->label) {
+        if(a->col_label) {
             int w=300,h=0;
-            fl_measure(a->label, w, h, FL_ALIGN_LEFT);
+            fl_measure(a->col_label, w, h, FL_ALIGN_LEFT);
             if(h>H) H=h;
-            a->width = w;
+            a->col_width = w;
         }
+
+		if(image_ && n==0) {
+			int w,h;
+            image_->measure(w,h);
+            a->col_width += w;
+            if(h>H) H=h;
+		}
     }
-    h(int(H+fl_descent()));
+    h(int(H+parent()->leading()));
 }
 
 int Fl_ListView_Item::column_width(int col)
 {
     if((uint)col>=attr_list.size()) return -1;
     Fl_ListItem_Attr *a = (Fl_ListItem_Attr*)attr_list[col];
-    return a->width;
+    return a->col_width;
 }
 
 const char *Fl_ListView_Item::label()
 {
     if(attr_list.size()==0) return 0;
     Fl_ListItem_Attr *a = (Fl_ListItem_Attr*)attr_list[0];
-    return a->label;
+    return a->col_label;
 }
 
 const char *Fl_ListView_Item::label(int col)
 {
     if((uint)col>=attr_list.size()) return 0;
     Fl_ListItem_Attr *a = (Fl_ListItem_Attr*)attr_list[col];
-    return a->label;
+    return a->col_label;
 }
 
 void Fl_ListView_Item::label(int col, const char *text)
 {
     check_columns(col);
     Fl_ListItem_Attr *a = (Fl_ListItem_Attr*)attr_list[col];
-    if(a->label && a->copied) free((void*)a->label);
-    a->copied = false;
-    a->label = text;
+    if(a->col_label && a->col_label_copied) free((void*)a->col_label);
+    a->col_label_copied = false;
+    a->col_label = text;
 }
 
 ///////////////////////////////////////////
 ///////////////////////////////////////////
 ///////////////////////////////////////////
 ///////////////////////////////////////////
-
-class Fl_ListItem_AttrExt : public Fl_ListItem_Attr
-{
-public:
-    Fl_Flags flags;
-    Fl_Font font;
-    int font_size;
-    Fl_Color color;
-    Fl_Image *image;
-    Fl_Labeltype label_type;
-};
 
 Fl_ListView_ItemExt::Fl_ListView_ItemExt(const char *label1,
                                          const char *label2,
@@ -217,6 +213,8 @@ Fl_ListView_ItemExt::Fl_ListView_ItemExt(const char *label1,
                                          const char *label5)
 : Fl_ListView_Item(0,0,0,0,0)
 {
+	leading_ = parent()->leading();
+
     int cols = 0;
     if(label5) cols=5;
     else if(label4) cols=4;
@@ -237,131 +235,131 @@ Fl_ListView_ItemExt::~Fl_ListView_ItemExt()
 
 }
 
-void Fl_ListView_ItemExt::add_attr(int col)
+Fl_ListItem_Attr *Fl_ListView_ItemExt::create_attr(int col)
 {
     Fl_ListItem_AttrExt *a = new Fl_ListItem_AttrExt;
-    a->label = 0;
-    a->copied = false;
-    a->width = 0;
-    a->image = 0;
-    a->flags = parent()->column_flags(col);
-    a->font = parent()->text_font();
-    a->font_size = parent()->text_size();
-    a->color = parent()->text_color();
-    a->label_type = parent()->label_type();
-    attr_list[col] = a;
+    a->col_label = 0;
+    a->col_label_copied = false;
+    a->col_width = 0;
+    a->col_image = 0;
+    a->col_flags = parent()->column_flags(col);
+    a->col_font = parent()->text_font();
+    a->col_font_size = parent()->text_size();
+    a->col_color = parent()->text_color();
+    a->col_label_type = parent()->label_type();
+	return a;
 }
 
 Fl_Font Fl_ListView_ItemExt::label_font(int col)
 {
     if((uint)col>=attr_list.size()) return 0;
     Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr_list[col];
-    return a->font;
+    return a->col_font;
 }
 
 int Fl_ListView_ItemExt::label_size(int col)
 {
     if((uint)col>=attr_list.size()) return 0;
     Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr_list[col];
-    return a->font_size;
+    return a->col_font_size;
 }
 
 void Fl_ListView_ItemExt::label_font(int col, Fl_Font font)
 {
     check_columns(col);
     Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr_list[col];
-    a->font = font;
+    a->col_font = font;
 }
 
 void Fl_ListView_ItemExt::label_size(int col, int size)
 {
     check_columns(col);
     Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr_list[col];
-    a->font_size = size;
+    a->col_font_size = size;
 }
 
 void Fl_ListView_ItemExt::label_color(int col, Fl_Color color)
 {
     check_columns(col);
     Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr_list[col];
-    a->color = color;
+    a->col_color = color;
 }
 
 Fl_Color Fl_ListView_ItemExt::label_color(int col)
 {
     if((uint)col>=attr_list.size()) return 0;
     Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr_list[col];
-    return a->color;
+    return a->col_color;
 }
 
 void Fl_ListView_ItemExt::label_type(int col, Fl_Labeltype type)
 {
     check_columns(col);
     Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr_list[col];
-    a->label_type = type;
+    a->col_label_type = type;
 }
 
 Fl_Labeltype Fl_ListView_ItemExt::label_type(int col)
 {
     if((uint)col>=attr_list.size()) return 0;
     Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr_list[col];
-    return a->label_type;
+    return a->col_label_type;
 }
 
 void Fl_ListView_ItemExt::image(int col, Fl_Image *im)
 {
     check_columns(col);
     Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr_list[col];
-    a->image = im;
+    a->col_image = im;
 }
 
 void Fl_ListView_ItemExt::image(int col, Fl_Image &im)
 {
     check_columns(col);
     Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr_list[col];
-    a->image = &im;
+    a->col_image = &im;
 }
 
 Fl_Image *Fl_ListView_ItemExt::image(int col)
 {
     if((uint)col>=attr_list.size()) return 0;
     Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr_list[col];
-    return a->image;
+    return a->col_image;
 }
 
 Fl_Flags Fl_ListView_ItemExt::flags(int col)
 {
     if((uint)col>=attr_list.size()) return 0;
     Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr_list[col];
-    return a->flags;
+    return a->col_flags;
 }
 
 Fl_Flags Fl_ListView_ItemExt::flags(int col, int f)
 {
     check_columns(col);
     Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr_list[col];
-    return a->flags = f;
+    return a->col_flags = f;
 }
 
 Fl_Flags Fl_ListView_ItemExt::set_flag(int col, int f)
 {
     check_columns(col);
     Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr_list[col];
-    return a->flags |= f;
+    return a->col_flags |= f;
 }
 
 Fl_Flags Fl_ListView_ItemExt::clear_flag(int col, int f)
 {
     check_columns(col);
     Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr_list[col];
-    return a->flags &= ~f;
+    return a->col_flags &= ~f;
 }
 
 Fl_Flags Fl_ListView_ItemExt::invert_flag(int col, int f)
 {
     check_columns(col);
     Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr_list[col];
-    return a->flags ^= f;
+    return a->col_flags ^= f;
 }
 
 void Fl_ListView_ItemExt::draw_cell(int col, int w, bool sel)
@@ -373,14 +371,14 @@ void Fl_ListView_ItemExt::draw_cell(int col, int w, bool sel)
     Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr_list[col];
 
     Fl_Flags f = parent()->flags();
-    Fl_Flags item_f = a->flags | (f&FL_INACTIVE) | (sel?FL_SELECTED:0);
+    Fl_Flags item_f = a->col_flags | (f&FL_INACTIVE) | (sel?FL_SELECTED:0);
 
     // Draw user defined border
     Fl_Boxtype box = parent()->button_box();
     box->draw(0, 0, w, h(), fl_inactive(parent()->button_color(), f), FL_INVISIBLE);
 
-    const char *txt = a->label;
-    Fl_Image *im = a->image;
+    const char *txt = a->col_label;
+    Fl_Image *im = a->col_image;
     if(txt) {
 
         int iw=0;
@@ -388,7 +386,7 @@ void Fl_ListView_ItemExt::draw_cell(int col, int w, bool sel)
             iw = im->width()+2;
         }
 
-        fl_font(a->font, a->font_size);
+        fl_font(a->col_font, a->col_font_size);
         int x=2;
         //HMM... cutting should be optional
         if(strchr(txt, '\n')) txt = fl_cut_multiline(txt, w-iw-6);
@@ -411,21 +409,21 @@ void Fl_ListView_ItemExt::layout()
     int H = 0;
     for(uint n=0; n<attr_list.size(); n++) {
         Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr_list[n];
-        if(a->label) {
+        if(a->col_label) {
             int w=300,h=0;
-            fl_font(a->font , a->font_size);
-            fl_measure(a->label, w, h, a->flags);
+            fl_font(a->col_font , a->col_font_size);
+            fl_measure(a->col_label, w, h, a->col_flags);
             if(h>H) H=h;
-            a->width = w;
+            a->col_width = w;
         }
-        if(a->image) {
+        if(a->col_image) {
             int w,h;
-            a->image->measure(w,h);
-            a->width += w;
+            a->col_image->measure(w,h);
+            a->col_width += w;
             if(h>H) H=h;
         }
     }
-    h(int(H+fl_descent()));
+    h(int(H+leading_));
 }
 
 // Anybody can call this to force the label to draw anywhere, this is
@@ -433,7 +431,7 @@ void Fl_ListView_ItemExt::layout()
 void Fl_ListView_ItemExt::draw_label(const char *label, int X, int Y, int W, int H, Fl_Flags flags, void *attr)
 {
     Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr;
-    fl_font(a->font, a->font_size);
+    fl_font(a->col_font, a->col_font_size);
 
     Fl_Color color;
     // yes, inside label is affected by selection or highlight:
@@ -442,17 +440,17 @@ void Fl_ListView_ItemExt::draw_label(const char *label, int X, int Y, int W, int
     else if (flags&FL_HIGHLIGHT && (color = parent()->highlight_label_color()))
         ;
     else
-        color = a->color;
+        color = a->col_color;
 
-    if(a->image) {
+    if(a->col_image) {
         fl_color(fl_inactive(color, flags));
 
         if(flags & FL_ALIGN_TILED || flags & FL_ALIGN_SCALE) {
-            a->image->draw(X, Y, W, H, flags);
+            a->col_image->draw(X, Y, W, H, flags);
         } else {
             int w = W;
             int h = H;
-            a->image->measure(w, h);
+            a->col_image->measure(w, h);
 
             // If all the flags are off, draw the image and label centered "nicely"
             // by measuring their total size and centering that rectangle:
@@ -492,7 +490,7 @@ void Fl_ListView_ItemExt::draw_label(const char *label, int X, int Y, int W, int
             else if (flags & FL_ALIGN_TOP) cy = 0;
             else cy = h/2-H/2;
 
-            a->image->draw(X-cx, Y-cy, W, H, 0,0,0,0,flags);
+            a->col_image->draw(X-cx, Y-cy, W, H, 0,0,0,0,flags);
 
             // figure out the rectangle that remains for text:
             if (flags & FL_ALIGN_LEFT) { X += (w+2); W -= (w+4); }
@@ -507,6 +505,6 @@ void Fl_ListView_ItemExt::draw_label(const char *label, int X, int Y, int W, int
     }
 
     if(label && *label) {
-        a->label_type->draw(label, X, Y, W, H, color, flags);
+        a->col_label_type->draw(label, X, Y, W, H, color, flags);
     }
 }

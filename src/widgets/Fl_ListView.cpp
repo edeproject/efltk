@@ -7,6 +7,7 @@
 static void revert(Fl_Style* s) {
     s->box = FL_DOWN_BOX;
     s->button_box = FL_NO_BOX;
+	s->leading = 2;
 }
 static Fl_Named_Style style("ListView", revert, &Fl_ListView::default_style);
 Fl_Named_Style* Fl_ListView::default_style = &::style;

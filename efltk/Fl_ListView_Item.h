@@ -13,6 +13,15 @@
 
 class Fl_ListView;
 
+// ListView_Item attributes for each column
+class Fl_ListItem_Attr
+{
+public:
+    const char *col_label;
+    bool col_label_copied;
+    int16 col_width;
+};
+
 class Fl_ListView_Item {
 public:
     Fl_ListView_Item(const char *label1=0,
@@ -62,15 +71,35 @@ public:
     int index() { return index_; }
 
 protected:
+    Fl_Ptr_List attr_list;
+
+	// Creates and intializes attr class, 
+	// extended listitems with more column specific attributes must override this
+	virtual Fl_ListItem_Attr *create_attr(int col);
+
+private:
     int y_, h_;
     int index_;
     uchar damage_;
     Fl_Image *image_;
     void *user_data_;
     Fl_ListView *parent_;
+    void add_attr(int col);
+};
 
-    Fl_Ptr_List attr_list;
-    virtual void add_attr(int col);
+//////////////////////////////////////////
+//////////////////////////////////////////
+
+// ListView_ItemExt attributes for each column
+class Fl_ListItem_AttrExt : public Fl_ListItem_Attr
+{
+public:
+    Fl_Flags col_flags;
+    Fl_Font col_font;
+    int col_font_size;
+    Fl_Color col_color;
+    Fl_Image *col_image;
+    Fl_Labeltype col_label_type;
 };
 
 class Fl_ListView_ItemExt : public Fl_ListView_Item {
@@ -84,6 +113,9 @@ public:
 
     virtual void draw_cell(int col, int width, bool selected);
     virtual void layout();
+
+	int leading() { return leading_; }
+	void leading(int l) { leading_ = l; }
 
     Fl_Flags flags(int col, int f);
     Fl_Flags flags(int col);
@@ -108,10 +140,14 @@ public:
     Fl_Image *image(int col);
 
 protected:
-    void add_attr(int col);
+	int leading_;
+	virtual Fl_ListItem_Attr *create_attr(int col);
 private:
     void draw_label(const char *label, int X, int Y, int W, int H, Fl_Flags flags, void *a);
 };
+
+//////////////////////////////////////////
+//////////////////////////////////////////
 
 class Fl_ListItem_List : public Fl_Ptr_List {
 public:
