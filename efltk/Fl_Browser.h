@@ -74,9 +74,9 @@ public:
     bool item_is_parent() const;
 
     bool set_focus();
-    bool set_item_selected(bool value = true, Fl_Event_Type do_callback = FL_NO_EVENT);
-    bool select_only_this(Fl_Event_Type do_callback = FL_NO_EVENT);
-    bool deselect(Fl_Event_Type do_callback = FL_NO_EVENT);
+    bool set_item_selected(bool value = true, int do_callback = 0);
+    bool select_only_this(int do_callback = 0);
+    bool deselect(int do_callback = 0);
 
     enum linepos { NOSCROLL, TOP, MIDDLE, BOTTOM };
     bool make_item_visible(linepos = NOSCROLL);

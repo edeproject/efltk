@@ -42,18 +42,14 @@ static const int monthChanges[4] = {
 
 // Callback function for day buttons
 void Fl_Calendar::cbDayButtonClicked(Fl_Widget *button, void *param) {
-    if (Fl::event() == FL_BUTTON_PRESSED) {
-        Fl_Calendar *c = (Fl_Calendar *)button->parent()->parent();
-        c->dayButtonClicked((unsigned)param);
-    }
+    Fl_Calendar *c = (Fl_Calendar *)button->parent()->parent();
+    c->dayButtonClicked((unsigned)param);
 }
 
 // Callback function for switch buttons
 void Fl_Calendar::cbSwitchButtonClicked(Fl_Widget *button, void *param) {
-    if (Fl::event() == FL_BUTTON_PRESSED) {
-        Fl_Calendar *c = (Fl_Calendar *)button->parent();
-        c->switchButtonClicked((int)param);
-    }
+    Fl_Calendar *c = (Fl_Calendar *)button->parent();
+    c->switchButtonClicked((int)param);
 }
 
 void Fl_Calendar::dayButtonClicked(unsigned day) {
@@ -303,7 +299,7 @@ void cb_clicked(Fl_Widget *w, void *d) {
 }
 
 Fl_Popup_Calendar::Fl_Popup_Calendar(Fl_Widget *dateControl)
-: Fl_Popup_Window(150,150,"Calendar")
+    : Fl_Popup_Window(150,150,"Calendar")
 {
     style(default_style);
     m_dateControl = dateControl;

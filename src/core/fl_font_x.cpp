@@ -41,7 +41,9 @@ extern const int fl_ucs2fontmap(char *s, unsigned int ucs, int enc);
 
 class Fl_FontSize {
 public:
-    Fl_FontSize* next;	   // linked list for a single Fl_Font_
+    Fl_FontSize* next;	// linked list for a single Fl_Font_
+
+    Fl_FontSize(const char* xfontname);
 
     XFontStruct* font;
     const char* encoding;
@@ -49,9 +51,7 @@ public:
 
     unsigned minsize;	// smallest point size that should use this
     unsigned maxsize;	// largest point size that should use this
-
-    Fl_FontSize(const char* xfontname);
-    ~Fl_FontSize();
+    //  ~Fl_FontSize();
 };
 
 static Fl_FontSize *fl_fontsize;
@@ -78,15 +78,15 @@ Fl_FontSize::Fl_FontSize(const char* name)
     }
     encoding = 0;
     encoding_num = -1;
-
-    append_font(this);
 }
 
+#if 0 // this is never called!
 Fl_FontSize::~Fl_FontSize()
 {
     if (this == fl_fontsize) fl_fontsize = 0;
     XFreeFont(fl_display, font);
 }
+#endif
 
 ////////////////////////////////////////////////////////////////
 // Things you can do once the font+size has been selected:
@@ -241,58 +241,15 @@ float Fl_Device::width(unsigned int c) const
 #endif    
 }
 
-// return dash number N, or pointer to ending null if none:
-const char *font_word(const char* p, int n)
-{
-  while (*p) {if (*p=='-') {if (!--n) break;} p++;}
-  return p;
-}
-
-int font_word_pos(const char* p, int n)
-{
-    int pos=0;
-    while(*p) { if (*p=='-') { if (!--n) break; } p++; pos++; }
-    return n==0 ? pos : -1;
-}
-
-const char *fl_font_change_attrib(const char *name, int word, const char *replace)
-{
-    int att = font_word_pos(name, word);
-    if(att==-1) return strdup(name);
-    att++;
-
-    int att_end = font_word_pos(name, word+1);
-    if(att_end==-1) att_end = strlen(name);
-
-    int len = att_end-att;
-
-    Fl_String newname;
-    newname.append(name, att);
-    newname.append(replace, strlen(replace));
-    newname.append(name+att+len, strlen(name)-att_end);
-
-    return strdup(newname.c_str());
-}
-
 Fl_Font fl_create_font(const char *system_name)
 {
     Fl_Font_ *f = new Fl_Font_;
     f->name_ = strdup(system_name);
+    //f->name_ = system_name;
+    f->bold_ = f;
+    f->italic_ = f;
     f->xlist_ = 0;
     f->first = 0;
-
-    Fl_Font_ *italic = new Fl_Font_;
-    italic->name_ = fl_font_change_attrib(f->name_, 4, "o");
-    italic->xlist_ = 0;
-    italic->first = 0;
-    f->italic_ = italic;
-
-    Fl_Font_ *bold = new Fl_Font_;
-    bold->name_ = fl_font_change_attrib(f->name_, 3, "bold");
-    bold->xlist_ = 0;
-    bold->first = 0;
-    f->bold_ = bold;
-
     return f;
 }
 
@@ -317,6 +274,14 @@ Fl_Font fl_create_font(const char *system_name)
 // bitmap font unless all the extra fields are filled in correctly.
 //
 // Fltk uses pixelsize, not "pointsize".  This is what everybody wants!
+
+
+// return dash number N, or pointer to ending null if none:
+const char *font_word(const char* p, int n)
+{
+  while (*p) {if (*p=='-') {if (!--n) break;} p++;}
+  return p;
+}
 
 // return a pointer to a number we think is "point size":
 char* fl_find_fontsize(char* name)
@@ -441,6 +406,8 @@ static char *find_direct_font(const char *fname, int size)
     return name;
 }
 
+
+
 uint Fl_Font_::cache_xlist()
 {
     fl_open_display();
@@ -460,11 +427,12 @@ Fl_FontSize *Fl_Font_::load_font(float psize)
     } else {
         unsigned size = unsigned(psize);
 	char *name = 0;
-        if (name_ && name_[strlen(name_)-1] != '*') {
-            name = find_direct_font(name_, size);
-        } else {
-            name = find_best_font(this, name_, size);
-        }
+	if (name_ && name_[strlen(name_)-1] != '*') {
+    	    name = find_direct_font(name_, size);
+	}    
+	else {
+	    name = find_best_font(this, name_, size);
+	}   
         // okay, make the font:
         f = new Fl_FontSize(name);
         const char *enc = font_word(name, 13);

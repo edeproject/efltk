@@ -226,6 +226,7 @@ Fl_File_Browser::Fl_File_Browser(int x,int y,int w,int h,const char *l)
     m_up_item = 0;
 
     callback(default_callback);
+    when(FL_WHEN_ENTER_KEY | FL_WHEN_RELEASE);
     data_source(&m_dir_ds);
 }
 
@@ -237,6 +238,7 @@ Fl_File_Browser::Fl_File_Browser(const char* l,int layout_size,Fl_Align layout_a
     m_up_item = 0;
 
     callback(default_callback);
+    when(FL_WHEN_ENTER_KEY | FL_WHEN_RELEASE);
     data_source(&m_dir_ds);
 }
 
@@ -323,7 +325,7 @@ int                                         // O - Number of files loaded
 
     clear();
     clear_columns();
-    sort_col(1);
+	sort_col(1);
 
     m_up_item = 0;
 

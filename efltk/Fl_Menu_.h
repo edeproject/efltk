@@ -70,7 +70,7 @@ public:
     virtual int popup(int x,int y,int w=0,int h=0);
     int handle_shortcut();
     static void default_callback(Fl_Widget*, void*);
-    void execute(Fl_Widget*, Fl_Event_Type ev);
+    void execute(Fl_Widget*);
     void global();
 
     Fl_Widget* find(const char* label) const;

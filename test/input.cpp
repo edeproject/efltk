@@ -115,19 +115,18 @@ int main(int argc, char **argv) {
   }
   int y1 = y;
 
-// silly replacements for the FL_WHEN_* constants, but at least now compiles
   Fl_Button *b;
   b = new Fl_Toggle_Button(10,y,200,23,"FL_WHEN_&CHANGED");
   b->tooltip("Do callback each time the text changes");
-  b->callback(toggle_cb, FL_DATA_CHANGE); y += 23;
+  b->callback(toggle_cb, FL_WHEN_CHANGED); y += 23;
   b = new Fl_Toggle_Button(10,y,200,23,"FL_WHEN_&RELEASE");
-  b->callback(toggle_cb, FL_MOUSE_RELEASE); y += 23;
+  b->callback(toggle_cb, FL_WHEN_RELEASE); y += 23;
   b->tooltip("Do callback when widget loses focus");
   b = new Fl_Toggle_Button(10,y,200,23,"FL_WHEN_&ENTER_KEY");
-  b->callback(toggle_cb, FL_BUTTON_PRESSED); y += 23;
+  b->callback(toggle_cb, FL_WHEN_ENTER_KEY); y += 23;
   b->tooltip("Do callback when user hits Enter key");
   b = new Fl_Toggle_Button(10,y,200,23,"FL_WHEN_&NOT_CHANGED");
-  b->callback(toggle_cb, FL_MOUSE_LEAVE); y += 23;
+  b->callback(toggle_cb, FL_WHEN_NOT_CHANGED); y += 23;
   b->tooltip("Do callback even if the text is not changed");
   y += 5;
 

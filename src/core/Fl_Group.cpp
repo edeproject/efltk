@@ -674,31 +674,23 @@ void Fl_Group::layout()
             if (extend_h) 
                 extend_h = max( h() / 5, extend_h + offset * 2 ); // grow by necessary extend, or +20%
 
-            if((extend_w || extend_h) && m_auto_grow!=FL_GROUP_NO_GROW) {
-                int W=w(),H=h();
-                switch (m_auto_grow) {
+            if (extend_w || extend_h)
+            switch (m_auto_grow) {
                 case FL_GROUP_NO_GROW:
                     break;
+
                 case FL_GROUP_GROW_HORIZONTAL:
-                    W = w() + extend_w;
+                    size(w() + extend_w,h());
                     break;
+
                 case FL_GROUP_GROW_VERTICAL:
-                    H = h() + extend_h;
+                    size(w(),h() + extend_h);
                     break;
+
                 case FL_GROUP_GROW_BOTH:
-                    W = w() + extend_w;
-                    H = h() + extend_h;
+                    size(w() + extend_w,h() + extend_h);
                     break;
-                }
-                if(is_window()) {
-                    // Set minimum sizes for window size range.
-                    ((Fl_Window*)this)->size_range(W,H);
-                    if(size(W,H))
-                        layout(); // Do layout() only, if size changed
-                } else {
-                    size(W,H);
-                }
-            }
+            } 
         }
 
         // use the remaining space for the only client-size widget, if any

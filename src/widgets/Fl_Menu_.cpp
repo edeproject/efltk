@@ -101,7 +101,7 @@ void Fl_Menu_::ctor_init() {
 
 // Default ctor
 Fl_Menu_::Fl_Menu_()
-: Fl_Group(0,0,0,0,0), list_(&default_list), item_(0)
+    : Fl_Group(0,0,0,0,0), list_(&default_list), item_(0)
 {
     ctor_init();
 }
@@ -150,7 +150,7 @@ Fl_Widget* Fl_Menu_::child(int n) const
 FL_API int fl_dont_execute = 0;  // hack for fluid
 
 // Do the callback for the current item:
-void Fl_Menu_::execute(Fl_Widget* widget, Fl_Event_Type ev)
+void Fl_Menu_::execute(Fl_Widget* widget)
 {
     item(widget);
     if (fl_dont_execute) return;
@@ -179,7 +179,7 @@ void Fl_Menu_::execute(Fl_Widget* widget, Fl_Event_Type ev)
         if (widget->value()) widget->clear_value(); else widget->set_value();
     }
 
-    do_callback(this, user_data(), ev);
+    do_callback(FL_MENU_ITEM);
 }
 
 
@@ -187,7 +187,7 @@ void Fl_Menu_::execute(Fl_Widget* widget, Fl_Event_Type ev)
 void Fl_Menu_::default_callback(Fl_Widget* widget, void*)
 {
     Fl_Widget* item = ((Fl_Menu_*)widget)->item();
-    if(item) item->do_callback(FL_MENU_ITEM);
+    if(item) item->do_callback(FL_MENU_DEFAULT);
 }
 
 
@@ -299,7 +299,7 @@ int Fl_Menu_::handle_shortcut()
             if (widget) value(i);
         }
     }
-    if (widget) {execute(widget, FL_MENU_COMMAND); return 1;}
+    if (widget) {execute(widget); return 1;}
     return 0;
 }
 

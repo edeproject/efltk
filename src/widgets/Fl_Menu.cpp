@@ -1123,7 +1123,7 @@ int Fl_Menu_::popup(int X, int Y, int W, int H)
 
     // Execute whatever item the user picked:
     focus(menustate.indexes, menustate.level);
-    execute(item(), FL_MENU_COMMAND);
+    execute(item());
 
     return true;
 }
@@ -1276,7 +1276,7 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
 
     // Execute whatever item the user picked:
     focus(menustate.indexes, menustate.level);
-    execute(item(), FL_MENU_COMMAND);
+    execute(item());
 
     return true;
 }
@@ -1406,7 +1406,7 @@ int Fl_Choice::popup(int X, int Y, int W, int H)
 
     // Execute whatever item the user picked:
     focus(menustate.indexes, menustate.level);
-    execute(item(), FL_MENU_COMMAND);
+    execute(item());
 
     return true;
 }

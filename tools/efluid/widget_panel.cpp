@@ -27,14 +27,12 @@ Fl_Window* make_widget_panel() {
    {Fl_Window* o = new Fl_Window(380, 405);
     w = o;
      {Fl_Tabs* o = panel_tabs = new Fl_Tabs(0, 3, 380, 353);
-      o->color((Fl_Color)0xfffffffe);
       o->callback((Fl_Callback*)propagate_tabs);
-       {Fl_Group* o = new Fl_Group(1, 24, 378, 328, _("GUI"));
+       {Fl_Group* o = new Fl_Group(0, 20, 380, 333, _("GUI"));
         o->callback((Fl_Callback*)propagate_group);
-        o->hide();
          {Fl_Input* o = new Fl_Input(80, 8, 176, 22, _("Class"));
           o->callback((Fl_Callback*)user_class_cb, (void*)(4));
-          o->when(FL_LOGICAL_EVENTS);
+          o->when(FL_WHEN_CHANGED);
           o->tooltip(_("This allows you to name a user-defined class that this widget is an instance \
 of, rather than an fltk built-in class. You will need to add a #include declar\
 ation so that the definition of your class is included in the fluid output."));
@@ -46,7 +44,7 @@ ation so that the definition of your class is included in the fluid output."));
         }
          {Fl_Input* o = new Fl_Input(80, 31, 285, 22, _("Label"));
           o->callback((Fl_Callback*)label_cb);
-          o->when(FL_LOGICAL_EVENTS);
+          o->when(FL_WHEN_CHANGED);
           o->tooltip(_("Text displayed on or next to the widget"));
           o->take_focus();
         }
@@ -270,7 +268,7 @@ rtcut-setting mode:\n   Click the mouse on this again, or on some other field.")
         o->parent()->resizable(o);
         o->end();
       }
-       {Fl_Group* o = new Fl_Group(1, 24, 378, 328, _("Style"));
+       {Fl_Group* o = new Fl_Group(0, 20, 380, 333, _("Style"));
         o->callback((Fl_Callback*)propagate_group);
         o->hide();
          {Fl_Choice* o = new Fl_Choice(100, 10, 250, 23, _("box")); o->begin();
@@ -329,7 +327,7 @@ eft chip in the color chooser) to disable highlighting."));
           o->step(1);
           o->value(14);
           o->callback((Fl_Callback*)label_size_cb);
-          o->when(FL_LOGICAL_EVENTS);
+          o->when(FL_WHEN_ENTER_KEY);
           o->tooltip(_("Size of the font to use for the label"));
         }
          {Fl_Light_Button* o = new Fl_Light_Button(100, 193, 125, 23, _("Label Color"));
@@ -355,7 +353,7 @@ black top-left chip in the color chooser) to leave the label colors unchanged.")
           o->step(1);
           o->value(14);
           o->callback((Fl_Callback*)text_size_cb);
-          o->when(FL_LOGICAL_EVENTS);
+          o->when(FL_WHEN_ENTER_KEY);
           o->tooltip(_("Size of the font to use for text displayed inside the widget"));
         }
          {Fl_Light_Button* o = new Fl_Light_Button(100, 250, 125, 23, _("Text Color"));
@@ -380,11 +378,12 @@ black top-left chip in the color chooser) to leave the label colors unchanged.")
         }
         o->end();
       }
-       {Fl_Group* o = new Fl_Group(1, 24, 378, 328, _("C++"));
+       {Fl_Group* o = new Fl_Group(0, 20, 380, 333, _("C++"));
         o->callback((Fl_Callback*)propagate_group);
+        o->hide();
          {Fl_Input* o = new Fl_Input(90, 8, 200, 22, _("Name"));
           o->callback((Fl_Callback*)name_cb);
-          o->when(FL_LOGICAL_EVENTS);
+          o->when(FL_WHEN_CHANGED);
           o->tooltip(_("The variable or member name in which to store a pointer to this widget."));
         }
          {Fl_Check_Button* o = new Fl_Check_Button(295, 8, 70, 22, _("public"));
@@ -412,7 +411,7 @@ e given below."));
         }
          {Fl_Choice* o = new Fl_Choice(275, 271, 90, 22, _("When")); o->begin();
           o->callback((Fl_Callback*)when_cb);
-          o->when(FL_LOGICAL_EVENTS);
+          o->when(FL_WHEN_NEVER);
           o->tooltip(_("What actions cause the callback to be called."));
           o->end();
         }

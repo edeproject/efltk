@@ -43,9 +43,7 @@ int snap = 3;
 
 int include_H_from_C = 1;
 
-void alignment_cb(Fl_Value_Input *i, long v)
-{
-    if(Fl::event() != FL_VALUATOR_CHANGED) return;
+void alignment_cb(Fl_Value_Input *i, long v) {
     //int n = (int)strtol(i->value(),0,0);
     int n = (int)i->value();
   if (n < 0) n = 0;
@@ -210,43 +208,34 @@ void Fl_Window_Type::open() {
 // control panel items:
 #include "widget_panel.h"
 
-void modal_cb(Fl_Check_Button* i, void* v)
-{
-    if(Fl::event() != FL_BUTTON_PRESSED) return;
-
-    if (v == LOAD) {
-        if (!current_widget->is_window()) {i->hide(); return;}
-        i->show();
-        i->value(((Fl_Window_Type *)current_widget)->modal);
-    } else {
-        ((Fl_Window_Type *)current_widget)->modal = i->value();
-    }
+void modal_cb(Fl_Check_Button* i, void* v) {
+  if (v == LOAD) {
+    if (!current_widget->is_window()) {i->hide(); return;}
+    i->show();
+    i->value(((Fl_Window_Type *)current_widget)->modal);
+  } else {
+    ((Fl_Window_Type *)current_widget)->modal = i->value();
+  }
 }
 
-void non_modal_cb(Fl_Check_Button* i, void* v)
-{
-    if(Fl::event() != FL_BUTTON_PRESSED) return;
-
-    if (v == LOAD) {
-        if (!current_widget->is_window()) {i->hide(); return;}
-        i->show();
-        i->value(((Fl_Window_Type *)current_widget)->non_modal);
-    } else {
-        ((Fl_Window_Type *)current_widget)->non_modal = i->value();
-    }
+void non_modal_cb(Fl_Check_Button* i, void* v) {
+  if (v == LOAD) {
+    if (!current_widget->is_window()) {i->hide(); return;}
+    i->show();
+    i->value(((Fl_Window_Type *)current_widget)->non_modal);
+  } else {
+    ((Fl_Window_Type *)current_widget)->non_modal = i->value();
+  }
 }
 
-void border_cb(Fl_Check_Button* i, void* v)
-{
-    if(Fl::event() != FL_BUTTON_PRESSED) return;
-
-    if (v == LOAD) {
-        if (!current_widget->is_window()) {i->hide(); return;}
-        i->show();
-        i->value(((Fl_Window_Type *)current_widget)->border);
-    } else {
-        ((Fl_Window_Type *)current_widget)->border = i->value();
-    }
+void border_cb(Fl_Check_Button* i, void* v) {
+  if (v == LOAD) {
+    if (!current_widget->is_window()) {i->hide(); return;}
+    i->show();
+    i->value(((Fl_Window_Type *)current_widget)->border);
+  } else {
+    ((Fl_Window_Type *)current_widget)->border = i->value();
+  }
 }
 
 ////////////////////////////////////////////////////////////////

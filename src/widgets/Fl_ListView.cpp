@@ -1,10 +1,9 @@
 #include <efltk/Fl_ListView.h>
 #include <efltk/fl_draw.h>
 #include <efltk/Fl_ListView_Header.h>
-#include <efltk/Fl_Events.h>
 
 static void revert(Fl_Style* s) {
-        //s->box = FL_DOWN_BOX;
+    //s->box = FL_DOWN_BOX;
     s->button_box = FL_NO_BOX;
     s->leading = 2;
 }
@@ -17,10 +16,12 @@ Fl_ListView *Fl_ListView::current=0;
 void Fl_ListView::ctor_init()
 {
     accept_focus(true);
+    when(FL_WHEN_NOT_CHANGED|FL_DATA_CHANGE);
     style(default_style);
 
     m_header = new Fl_ListView_Header(this);
     m_type_in_mode = TYPE_IN_SELECT;
+    //m_type_in_mode = TYPE_IN_HIDE;
 
     m_sort_type = Fl_ListView::SORT_NONE;
     m_sort_col = -1;
@@ -70,9 +71,6 @@ void Fl_ListView::clear()
     items.clear();
     row_count(0);
 
-    yposition(0);
-    xposition(0);
-
     relayout();
 }
 
@@ -81,7 +79,7 @@ void Fl_ListView::draw_row(unsigned row, int w, int h) const
     if(selected_row(row)) {
 
         Fl_Color c = selection_color();
-                // If not focused, make color grayed
+        // If not focused, make color grayed
         if(!focused()) c = fl_color_average(c, FL_GRAY, 0.40);
 
         fl_color(c);
@@ -93,8 +91,8 @@ void Fl_ListView::draw_row(unsigned row, int w, int h) const
 
         Fl_Color c1 = fl_lighter(button_color());
         if(row & 1) {
-                        // draw odd-numbered items with a dark stripe, plus contrast-enhancing
-                        // pixel rows on top and bottom:
+            // draw odd-numbered items with a dark stripe, plus contrast-enhancing
+            // pixel rows on top and bottom:
             fl_color(c1);
             fl_rectf(0, 0, w, h);
 
@@ -108,8 +106,8 @@ void Fl_ListView::draw_row(unsigned row, int w, int h) const
     fl_push_clip(0, 0, w, h);
     draw_group_box();
     fl_pop_clip();
-        //fl_color(parent()->color());
-        //fl_rectf(x, y, w, h);
+    //fl_color(parent()->color());
+    //fl_rectf(x, y, w, h);
 }
 
 void Fl_ListView::table_draw(TableContext context, unsigned R, unsigned C,
@@ -140,7 +138,7 @@ void Fl_ListView::table_draw(TableContext context, unsigned R, unsigned C,
 
         Fl_ListView_Item *item = items[R];              
 
-                // Draw row
+        // Draw row
         if(C==leftcol && (damage_all || item->damage()&FL_DAMAGE_ALL)) {
             draw_row(R, table_w, row_height(R));
         }
@@ -189,13 +187,13 @@ void Fl_ListView::layout()
 
         unsigned n;
         for(n=0; n < row_count(); n++) {
-                        //child(n)->index(n); //Set indexes also..
+            //child(n)->index(n); //Set indexes also..
             if(row_height(n)==0) {
                 items[n]->setup(n);
             }
         }
 
-                // Find col width for -1 columns
+        // Find col width for -1 columns
         for(n=0; n<(unsigned)columns(); n++) {
             if(col_width(n)<0)
                 col_width(n, preferred_col_width(n));
@@ -281,17 +279,17 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
             {
                 last_dragged = current_item = R;
 
-                                // Handle selection in table.
-                                // Select cell under cursor, and enable drag selection mode.
+                // Handle selection in table.
+                // Select cell under cursor, and enable drag selection mode.
 
+                cur_row = current_item;
                 on_drag = true;
 
                 if(Fl::event_button() == FL_LEFT_MOUSE && multi())
                 {
-                    cur_row = current_item;
                     switch(shiftstate) {
                         case FL_CTRL: {
-                                                        // start a new selection block without changing state
+                            // start a new selection block without changing state
                                 select_row(current_item, 2);
                                 sel_item = current_item;
                                 show_row(current_item);
@@ -300,9 +298,9 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
                             break;
 
                         case FL_SHIFT: {
-                                                        // We want to change the selection between
-                                                        // the top most selected item and the just clicked item.
-                                                        // start a new selection block without changing state
+                            // We want to change the selection between
+                            // the top most selected item and the just clicked item.
+                            // start a new selection block without changing state
                                 select_items(sel_item, current_item);
                                 sel_item = current_item;
                                 Fl::event_clicks(0);
@@ -327,6 +325,9 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
                     show_row(current_item);
                     ret = 1;
                 }
+
+                if (when() & FL_WHEN_CHANGED) do_callback(FL_DATA_CHANGE);
+                else set_changed();
             }
             break;
 
@@ -339,9 +340,14 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
 
                 if(multi())
                 {                   
-                                        // Mark items selected
+                    // Mark items selected
                     select_items(last_dragged, current_item);
                     show_row( (cur_row = current_item) );
+
+                    if(sel_item!=current_item) {
+                        if(when() & FL_WHEN_CHANGED) do_callback(FL_DATA_CHANGE);
+                        else set_changed();
+                    }
 
                 } else { // end multi
 
@@ -359,8 +365,15 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
                 on_drag = false;
                 ret = 1;
             }
-            if (context==CONTEXT_CELL) 
-                do_callback(FL_LIST_ITEM_EXEC);
+
+            if (when() & FL_WHEN_RELEASE && context==CONTEXT_CELL) {
+                if (Fl::event_clicks()) {
+                    do_callback(event);
+                    Fl::event_clicks(0);
+                    return 1;
+                }
+                do_callback(event);
+            }
             break;
 
         case FL_KEY:
@@ -384,6 +397,7 @@ int Fl_ListView::handle_key()
         case FL_Home: {
                 m_search_str.clear();
                 yposition(0);
+                item(child(0));
                 select_only_row(0);
                 return 1;
             }
@@ -391,6 +405,7 @@ int Fl_ListView::handle_key()
         case FL_End: {
                 m_search_str.clear();
                 yposition(table_h - tih);
+                item(child(children()-1));
                 select_only_row(children()-1);
                 return 1;
             }
@@ -401,13 +416,16 @@ int Fl_ListView::handle_key()
                 if(cur_row==-1) index = children()-1;
                 else index = prev_row();
                 if(index>=0) {
-                    cur_row++;
                     if(Fl::event_state(FL_SHIFT|FL_CTRL) && multi())
                         select_row(index, 1);
                     else
                         select_only_row(index);
                     show_row(index);
                     cur_row = index;
+                }
+                if ((when()&FL_WHEN_RELEASE) && (changed() || (when()&FL_WHEN_NOT_CHANGED))) {
+                    clear_changed();
+                    do_callback(FL_DATA_CHANGE);
                 }
                 return 1;
             }
@@ -418,7 +436,6 @@ int Fl_ListView::handle_key()
                 if(cur_row==-1) index = 0;
                 else index = next_row();
                 if(index>=0 && index<int(children())) {
-                    cur_row--;
                     if(Fl::event_state(FL_SHIFT|FL_CTRL) && multi())
                         select_row(index, 1);
                     else
@@ -426,15 +443,18 @@ int Fl_ListView::handle_key()
                     show_row(index);
                     cur_row = index;
                 }
+                if ((when()&FL_WHEN_RELEASE) && (changed() || (when()&FL_WHEN_NOT_CHANGED))) {
+                    clear_changed();
+                    do_callback(FL_DATA_CHANGE);
+                }
                 return 1;
             }
-            /*            
+
         case FL_Enter:
             if (!(when() & FL_WHEN_ENTER_KEY)) break;
             clear_changed();
             do_callback(FL_DATA_CHANGE);
             return 1;
-                */
 
         default: {
                 int ret=0;
@@ -445,16 +465,15 @@ int Fl_ListView::handle_key()
                 {
                     if(Fl::event_key()==FL_Page_Up)
                         select_only_row( row_at(yposition()) );
-                    else if(Fl::event_key()==FL_Page_Down) {
-                        select_only_row(row_at(yposition()+tih));
-                    }
+                    else if(Fl::event_key()==FL_Page_Down)
+                        select_only_row( row_at(yposition()+tih) );
 
                     show_row(cur_row);
                     return 1;
                 }
                 else if(m_type_in_mode) {
 
-                        // Type-in search
+            // Type-in search
                     bool bs = false;
                     switch (Fl::event_key())
                     {
@@ -477,7 +496,7 @@ int Fl_ListView::handle_key()
 
                     int i;
 
-                        // insert any text:
+            // insert any text:
                     if(Fl::compose(i) || bs)
                     {
                         if(!bs && !i && !Fl::event_length())
@@ -488,7 +507,7 @@ int Fl_ListView::handle_key()
                             search_str.append(Fl::event_text(), Fl::event_length());
 
                         int index = find_text_row(search_str);
-                                //printf("Search str: (%s) / %d\n", search_str.c_str(), index);
+                //printf("Search str: (%s) / %d\n", search_str.c_str(), index);
                         if(index>-1) {
                             m_search_str = search_str;
                             if(type_in_mode()==TYPE_IN_SELECT) {
@@ -774,8 +793,8 @@ Fl_ListView_Item *Fl_ListView::item(Fl_ListView_Item *i)
 int Fl_ListView::row_at(int Y) const
 {
     if(!children()) return 0;
-    if(Y <= 0) return 0;
-    if(Y >= table_h) return items.size()-1;
+    if(Y < 0) return 0;
+    if(Y > table_h) return items.size()-1;
 
     int R,C;
     position2rowcol(0, Y, R, C);
@@ -834,11 +853,10 @@ bool Fl_ListView::select_only_row(unsigned row)
     if (set_select_flag(row, 1)) {
         selection.append(row);
         items[row]->redraw();
-        bool row_changed = (unsigned)cur_row != row;
         cur_row = row;
-        if (row_changed)
+        if (when() & (FL_WHEN_CHANGED|FL_DATA_CHANGE)) 
             do_callback(FL_DATA_CHANGE);
-        set_changed();
+        else set_changed();
     }
     cur_row = row;
     return true;
@@ -855,19 +873,15 @@ void Fl_ListView::select_items(unsigned from, unsigned to)
         end=to+1;
     }
 
-    bool changed = false;
-
     for(int n=start; n<end; n++) {
         if(selection.index_of(n)==-1) {
-            changed = true;
             if(set_select_flag(n, 1))
                 items[n]->redraw();
             selection.append(n);
         }
     }
-
-    if(changed) 
-        do_callback(FL_DATA_CHANGE);
+    if (when() & FL_WHEN_CHANGED) do_callback(FL_DATA_CHANGE);
+    else set_changed();
 }
 
 bool Fl_ListView::unselect_all()
@@ -929,8 +943,8 @@ void Fl_ListView::selectable_row(unsigned row, bool val)
 int Fl_ListView::find(const Fl_ListView_Item *item) const
 {
     if(!item) return children();
-        // Search backwards so if children are deleted in backwards order
-        // they are found quickly:
+    // Search backwards so if children are deleted in backwards order
+    // they are found quickly:
     for(int index = children(); index--;)
         if(child(index) == item)
             return index;
@@ -948,21 +962,21 @@ void Fl_ListView::insert(Fl_ListView_Item &item, int pos)
         item.parent()->remove(n);
     }
 
-        // Update parent and index
+    // Update parent and index
     item.parent(this);
 
     if(children() == 0) {
-                // allocate for 1 child
+        // allocate for 1 child
         items.append(&item);
     } else {
         items.insert(pos, &item);
     }
 
-        // Update row count in table
+    // Update row count in table
     if(items.size() != row_count())
         row_count(items.size());
 
-        // Relayout
+    // Relayout
     m_needsetup = true;
     relayout();
 }
@@ -984,7 +998,7 @@ void Fl_ListView::remove(int index)
 
     row_count(items.size());
 
-        // Relayout
+    // Relayout
     m_needsetup = true;
     relayout();
 }
@@ -1009,7 +1023,7 @@ void Fl_ListView::columns(unsigned count)
     }
 
     col_count(new_size);
-        // Relayout
+    // Relayout
     m_needsetup = true;
     relayout();
     redraw();
@@ -1024,7 +1038,7 @@ Fl_ListView_Column *Fl_ListView::add_column(const char *name, int width, Fl_Vari
     col_count(m_columns.size());
     col_width(m_columns.size()-1, width);
 
-        // Relayout
+    // Relayout
     m_needsetup = true;
     relayout();
 
@@ -1037,7 +1051,7 @@ void Fl_ListView::remove_column(unsigned index)
     m_columns.remove(index);
     col_count(m_columns.size());
 
-        // Relayout
+    // Relayout
     m_needsetup = true;
     relayout();
 
@@ -1058,7 +1072,7 @@ bool Fl_ListView::remove_column(const char *name)
         col_count(m_columns.size());
         delete col;
 
-                // Relayout
+        // Relayout
         m_needsetup = true;
         relayout();
 
@@ -1077,7 +1091,7 @@ void Fl_ListView::clear_columns()
     m_columns.clear();
     col_count(0);
 
-        // Relayout
+    // Relayout
     m_needsetup = true;
     relayout();
 }
@@ -1128,21 +1142,21 @@ void Fl_ListView::find_default_sizes()
 
 void Fl_ListView::fill(Fl_Data_Source &ds, const char *user_data_column_name_)
 {
-        // Try to memorize the current selected row so we can restore it after fill.
+    // Try to memorize the current selected row so we can restore it after fill.
     int selected_data = 0L;
     Fl_ListView_Item *selected_item = item();
     if (selected_item)
         selected_data = selected_item->argument();
 
-        // Final version should replace the existing rows (truncate them,if necessary).
+    // Final version should replace the existing rows (truncate them,if necessary).
     clear();
 
     if (!ds.open()) return;
 
     Fl_String user_data_column_name(user_data_column_name_);
 
-        // First version is very primitive.
-        // Final version should replace the existing columns, if necessary.
+    // First version is very primitive.
+    // Final version should replace the existing columns, if necessary.
 
     int user_data_column = -1;
 
@@ -1158,9 +1172,9 @@ void Fl_ListView::fill(Fl_Data_Source &ds, const char *user_data_column_name_)
             continue;
         }
 
-                // Check if the column of that name/type exists already.
-                // If exists, leave it intact. This way user may resize
-                // columns and we won't destroy the user' column widths
+        // Check if the column of that name/type exists already.
+        // If exists, leave it intact. This way user may resize
+        // columns and we won't destroy the user' column widths
         int width = 100;
         if (df.width >= 0) {
             width = df.width * text_size() * 2 / 3;
@@ -1184,7 +1198,7 @@ void Fl_ListView::fill(Fl_Data_Source &ds, const char *user_data_column_name_)
     begin();
 
     while (!ds.eof()) {
-                //Fl_ListView_ItemExt *item = new Fl_ListView_ItemExt();
+        //Fl_ListView_ItemExt *item = new Fl_ListView_ItemExt();
         Fl_ListView_Item *item = new Fl_ListView_Item();
         item->columns(columnCount);
         item->user_data(ds.user_data());
@@ -1195,7 +1209,7 @@ void Fl_ListView::fill(Fl_Data_Source &ds, const char *user_data_column_name_)
             if (int(col) == user_data_column) {
                 item->argument(df.as_int());
             } else {
-                                //item->flags(col, df.flags);
+                //item->flags(col, df.flags);
                 if (df.type() == VAR_IMAGEPTR) item->image(actualColumn, (Fl_Image *)df.as_image());
                 else item->label(actualColumn, df.as_string());
                 actualColumn++;

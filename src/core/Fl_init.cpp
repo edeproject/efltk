@@ -12,9 +12,6 @@
 
 #include <efltk/Fl.h>
 
-#include <efltk/Fl_Window.h>
-#include <efltk/x.h>
-
 #include <efltk/Fl_Image.h>
 #include <efltk/Fl_Menu_Window.h>
 #include <efltk/Fl_Menu_.h>
@@ -52,29 +49,18 @@
 
 #endif
 
-extern void fl_font_rid();
-
-// clean up
-static struct Cleanup { ~Cleanup(); } cleanup;
-
-Cleanup::~Cleanup()
+void clean_up()
 {
 #ifdef _WIN32
     WSACleanup();
 #endif
-
-    // nasty but works (I think) - deallocates GDI resources in windows
-    while(Fl_X* x = Fl_X::first) x->window->destroy();
-
-    // get rid of allocated font resources
-    fl_font_rid();
-
     // TODO:
     // Call some cleanup handlers!
 }
 
 void fl_private_init()
 {
+    atexit(clean_up);
     Fl::read_defaults();
 
 #ifdef _WIN32

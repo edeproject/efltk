@@ -137,10 +137,8 @@ Fl_Named_Style* fl_message_style = &m_style;
 static int button_number;
 static void set_button_number(Fl_Widget* w, long a)
 {
-    if (Fl::event() == FL_BUTTON_PRESSED) {
-        button_number = a;
-        w->window()->hide();
-    }
+    button_number = a;
+    w->window()->hide();
 }
 
 #define ICON_W 50

@@ -322,9 +322,7 @@ void tooltip_cb(Fl_Wordwrap_Input* i, void *v) {
     { i->label_color(c); i->redraw_label(); }
 }
 
-void x_cb(Fl_Value_Input* i, void *v)
-{
-    if(Fl::event() != FL_VALUATOR_CHANGED) return;
+void x_cb(Fl_Value_Input* i, void *v) {
     int x;
     if (v != LOAD) {
         x = int(i->value());
@@ -340,9 +338,7 @@ void x_cb(Fl_Value_Input* i, void *v)
     i->value(x);
 }
 
-void y_cb(Fl_Value_Input* i, void *v)
-{
-    if(Fl::event() != FL_VALUATOR_CHANGED) return;
+void y_cb(Fl_Value_Input* i, void *v) {
     int y;
     if (v != LOAD) {
         y = int(i->value());
@@ -358,9 +354,7 @@ void y_cb(Fl_Value_Input* i, void *v)
     i->value (y);
 }
 
-void width_cb(Fl_Value_Input* i, void *v)
-{
-    if(Fl::event() != FL_VALUATOR_CHANGED) return;
+void width_cb(Fl_Value_Input* i, void *v) {
     int width;
     if (v != LOAD) {
         width = int(i->value());
@@ -376,9 +370,7 @@ void width_cb(Fl_Value_Input* i, void *v)
     i->value (width);
 }
 
-void height_cb(Fl_Value_Input* i, void *v)
-{
-    if(Fl::event() != FL_VALUATOR_CHANGED) return;
+void height_cb(Fl_Value_Input* i, void *v) {
     int height;
     if (v != LOAD) {
         height = int(i->value());
@@ -530,28 +522,16 @@ void focus_box_cb(Fl_Choice* i, void *v) {
 ////////////////////////////////////////////////////////////////
 
 static const Enumeration whenmenu[] = {
-    //{"None",   "NO",    (void*)0},
-    {"Default", "LOGICAL",  (void*)0},
-    {"Logical", "LOGICAL",  (void*)int(FL_LOGICAL_EVENTS)},
-    {"Physical", "PHYSICAL", (void*)int(FL_PHYSICAL_EVENTS)},
-    {"Mouse", "MOUSE", (void*)int(FL_MOUSE_EVENTS)},
-    {"Key", "KEY", (void*)int(FL_KEY_EVENTS)},
-    {"Focus", "FOCUS", (void*)int(FL_FOCUS_EVENTS)},
-    {"D'n'D", "DND", (void*)int(FL_DND_EVENTS)},
-    {"Menu", "MENU", (void*)int(FL_MENU_EVENTS)},
-    {"Edit", "EDIT", (void*)int(FL_EDIT_EVENTS)},
-    {"Button", "BUTTON", (void*)int(FL_BUTTON_EVENTS)},
-    {"Valuator", "VALUATOR", (void*)int(FL_VALUATOR_EVENTS)},
-    {"Widget", "WIDGET", (void*)int(FL_WIDGET_EVENTS)},
-    {"List", "LIST", (void*)int(FL_LIST_EVENTS)},
-    {"Data", "DATA", (void*)int(FL_DATA_EVENTS)},
-    {"Window", "WINDOW", (void*)int(FL_WINDOW_EVENTS)},
-    {"Dialog", "DIALOG", (void*)int(FL_DIALOG_EVENTS)},
+    {"never",   "NEVER",    (void*)FL_WHEN_NEVER},
+    {"Changed", "CHANGED",  (void*)FL_WHEN_CHANGED},
+    {"Release", "RELEASE",  (void*)FL_WHEN_RELEASE},
+    {"Release always","RELEASE_ALWAYS",(void*)FL_WHEN_RELEASE_ALWAYS},
+    {"Enter key",   "ENTER_KEY",    (void*)FL_WHEN_ENTER_KEY},
+    {"Enter key always","ENTER_KEY_ALWAYS",(void*)FL_WHEN_ENTER_KEY_ALWAYS},
     {0}
 };
 
-void when_cb(Fl_Choice* i, void *v)
-{
+void when_cb(Fl_Choice* i, void *v) {
     if (v == LOAD) {
         if (current_widget->is_menu_item()) {i->hide(); return;}
         set_menu(i, whenmenu);
@@ -601,10 +581,7 @@ void Fl_Widget_Type::resizable(uchar value) {
     }
 }
 
-void resizable_cb(Fl_Check_Button* i,void* v)
-{
-    if(Fl::event() != FL_BUTTON_PRESSED) return;
-
+void resizable_cb(Fl_Check_Button* i,void* v) {
     if (v == LOAD) {
         if (current_widget->is_menu_item()) {i->hide(); return;}
         if (numselected > 1) {i->hide(); return;}
@@ -619,10 +596,7 @@ void resizable_cb(Fl_Check_Button* i,void* v)
     i->redraw();
 }
 
-void hotspot_cb(Fl_Check_Button* i,void* v)
-{
-    if(Fl::event() != FL_BUTTON_PRESSED) return;
-
+void hotspot_cb(Fl_Check_Button* i,void* v) {
     if (v == LOAD) {
         if (numselected > 1 || current_widget->is_menu_item()) {i->hide(); return;}
         i->show();
@@ -645,10 +619,7 @@ void hotspot_cb(Fl_Check_Button* i,void* v)
     i->redraw();
 }
 
-void visible_cb(Fl_Check_Button* i, void* v)
-{
-    if(Fl::event() != FL_BUTTON_PRESSED) return;
-
+void visible_cb(Fl_Check_Button* i, void* v) {
     if (v == LOAD) {
         i->value(current_widget->o->visible());
     } else {
@@ -665,10 +636,7 @@ void visible_cb(Fl_Check_Button* i, void* v)
     i->redraw();
 }
 
-void active_cb(Fl_Check_Button* i, void* v)
-{
-    if(Fl::event() != FL_BUTTON_PRESSED) return;
-
+void active_cb(Fl_Check_Button* i, void* v) {
     if (v == LOAD) {
         i->value(current_widget->o->active());
     } else {
@@ -707,8 +675,7 @@ static const Enumeration fontmenu[] = {
     {0}
 };
 
-void label_font_cb(Fl_Choice* i, void *v)
-{
+void label_font_cb(Fl_Choice* i, void *v) {
     if (v == LOAD) {
         set_menu(i, fontmenu);
         int n = current_widget->o->label_font() - fl_fonts;
@@ -729,10 +696,7 @@ void label_font_cb(Fl_Choice* i, void *v)
     { i->label_color(c); i->redraw_label(); }
 }
 
-void label_size_cb(Fl_Value_Input* i, void *v)
-{
-    if(Fl::event() != FL_VALUATOR_CHANGED) return;
-
+void label_size_cb(Fl_Value_Input* i, void *v) {
     int n;
     if (v == LOAD) {
         n = current_widget->o->label_size();
@@ -753,10 +717,7 @@ void label_size_cb(Fl_Value_Input* i, void *v)
     { i->text_color(c); i->redraw();}
 }
 
-void image_cb(Fl_Button *a, void *v)
-{
-    if(Fl::event() != FL_BUTTON_PRESSED) return;
-
+void image_cb(Fl_Button *a, void *v) {
     if (v != LOAD) {
         Fluid_Image *i = ui_find_image(current_widget->image);
         if (i == current_widget->image) return; // user hit "Cancel"
@@ -783,8 +744,7 @@ static const Enumeration labeltypemenu[] = {
     {"None",    "NO_LABEL", (void*)(FL_NO_LABEL)},
     {0}};
 
-void label_type_cb(Fl_Choice* i, void *v)
-{
+void label_type_cb(Fl_Choice* i, void *v) {
     if (v == LOAD) {
         set_menu(i, labeltypemenu);
         const Enumeration* e = from_value((void*)(current_widget->o->label_type()), labeltypemenu);
@@ -808,10 +768,7 @@ void label_type_cb(Fl_Choice* i, void *v)
 
 ////////////////////////////////////////////////////////////////
 
-void color_cb(Fl_Light_Button* i, void *v)
-{
-    if(Fl::event() != FL_BUTTON_PRESSED) return;
-
+void color_cb(Fl_Light_Button* i, void *v) {
     Fl_Color c = current_widget->o->color();
     if (v == LOAD) {
 //     if (current_widget->is_slider()) i->label("Back Color");
@@ -832,10 +789,7 @@ void color_cb(Fl_Light_Button* i, void *v)
     i->redraw();
 }
 
-void selection_color_cb(Fl_Light_Button* i, void *v)
-{
-    if(Fl::event() != FL_BUTTON_PRESSED) return;
-
+void selection_color_cb(Fl_Light_Button* i, void *v) {
     Fl_Color c = current_widget->o->selection_color();
     if (v == LOAD) {
         if (current_widget->is_light_button() ||
@@ -857,10 +811,7 @@ void selection_color_cb(Fl_Light_Button* i, void *v)
     i->redraw();
 }
 
-void button_color_cb(Fl_Light_Button* i, void *v)
-{
-    if(Fl::event() != FL_BUTTON_PRESSED) return;
-
+void button_color_cb(Fl_Light_Button* i, void *v) {
     Fl_Color c = current_widget->o->button_color();
     if (v == LOAD) {
         i->show();
@@ -878,10 +829,7 @@ void button_color_cb(Fl_Light_Button* i, void *v)
     i->redraw();
 }
 
-void label_color_cb(Fl_Light_Button* i, void *v)
-{
-    if(Fl::event() != FL_BUTTON_PRESSED) return;
-
+void label_color_cb(Fl_Light_Button* i, void *v) {
     Fl_Color c = current_widget->o->label_color();
     if (v != LOAD) {
         if (!fl_color_chooser(i->label().c_str(), c)) return;
@@ -899,8 +847,7 @@ void label_color_cb(Fl_Light_Button* i, void *v)
     i->redraw();
 }
 
-void text_font_cb(Fl_Choice* i, void* v)
-{
+void text_font_cb(Fl_Choice* i, void* v) {
     Fl_Font n;
     if (v == LOAD) {
         set_menu(i, fontmenu);
@@ -925,9 +872,7 @@ void text_font_cb(Fl_Choice* i, void* v)
     { i->label_color(c); i->redraw_label(); }
 }
 
-void text_size_cb(Fl_Value_Input* i, void* v)
-{
-    if(Fl::event() != FL_VALUATOR_CHANGED) return;
+void text_size_cb(Fl_Value_Input* i, void* v) {
     int s;
     if (v == LOAD) {
         s = current_widget->o->text_size();
@@ -949,10 +894,7 @@ void text_size_cb(Fl_Value_Input* i, void* v)
     { i->text_color(c); i->redraw(); }
 }
 
-void text_color_cb(Fl_Light_Button* i, void* v)
-{
-    if(Fl::event() != FL_BUTTON_PRESSED) return;
-
+void text_color_cb(Fl_Light_Button* i, void* v) {
     Fl_Color c;
     if (v == LOAD) {
         if (current_widget->is_menu_item()) i->label("Shortcut Color");
@@ -976,10 +918,7 @@ void text_color_cb(Fl_Light_Button* i, void* v)
     i->redraw();
 }
 
-void selected_text_color_cb(Fl_Light_Button* i, void* v)
-{
-    if(Fl::event() != FL_BUTTON_PRESSED) return;
-
+void selected_text_color_cb(Fl_Light_Button* i, void* v) {
     Fl_Color c;
     if (v == LOAD) {
         i->label("Selected Text Color");
@@ -1001,10 +940,7 @@ void selected_text_color_cb(Fl_Light_Button* i, void* v)
     i->redraw();
 }
 
-void highlight_color_cb(Fl_Light_Button* i, void *v)
-{
-    if(Fl::event() != FL_BUTTON_PRESSED) return;
-
+void highlight_color_cb(Fl_Light_Button* i, void *v) {
     Fl_Color c = FL_BLACK;
     if (v == LOAD) {
         c = current_widget->o->highlight_color();
@@ -1024,10 +960,7 @@ void highlight_color_cb(Fl_Light_Button* i, void *v)
     i->redraw();
 }
 
-void highlight_label_color_cb(Fl_Light_Button* i, void *v)
-{
-    if(Fl::event() != FL_BUTTON_PRESSED) return;
-
+void highlight_label_color_cb(Fl_Light_Button* i, void *v) {
     Fl_Color c = FL_BLACK;
     if (v == LOAD) {
         i->label("Highlight Label Color");
@@ -1068,10 +1001,7 @@ static const Enumeration alignmenu[] = {
 
     {0}};
 
-void align_cb(Fl_Button* i, void *v)
-{
-    if(Fl::event() != FL_BUTTON_PRESSED) return;
-
+void align_cb(Fl_Button* i, void *v) {
     Fl_Flags b = Fl_Flags(i->argument());
     if (v == LOAD) {
         i->value(current_widget->o->flags() & b);
@@ -1097,10 +1027,7 @@ void align_cb(Fl_Button* i, void *v)
     }
 }
 
-void image_inlined_cb(Fl_Check_Button* i, void *v)
-{
-    if(Fl::event() != FL_BUTTON_PRESSED) return;
-
+void image_inlined_cb(Fl_Check_Button* i, void *v) {
     if (v==LOAD) {
         if(current_widget->image) {
             i->value(current_widget->image->inlined);
@@ -1119,8 +1046,7 @@ void image_inlined_cb(Fl_Check_Button* i, void *v)
 
 ////////////////////////////////////////////////////////////////
 
-void callback_cb(Fl_Text_Editor* i, void *v)
-{
+void callback_cb(Fl_Text_Editor* i, void *v) {
     if (v == LOAD) {
       //i->static_value(current_widget->callback());
       //i->buffer(&current_widget->callback_);
@@ -1140,8 +1066,7 @@ void callback_cb(Fl_Text_Editor* i, void *v)
     }
 }
 
-void user_data_cb(Fl_Input *i, void *v)
-{
+void user_data_cb(Fl_Input *i, void *v) {
     if (v == LOAD) {
         i->static_value(current_widget->user_data());
     } else {
@@ -1156,8 +1081,7 @@ void user_data_cb(Fl_Input *i, void *v)
     { i->label_color(c); i->redraw_label(); }
 }
 
-void user_data_type_cb(Fl_Input *i, void *v)
-{
+void user_data_type_cb(Fl_Input *i, void *v) {
     static const char *dflt = "void*";
     if (v == LOAD) {
         const char *c = current_widget->user_data_type();
@@ -1181,8 +1105,7 @@ void user_data_type_cb(Fl_Input *i, void *v)
     { i->label_color(c); i->redraw_label(); }
 }
 
-void extra_code_input_cb(Fl_Text_Editor* i, void* v)
-{
+void extra_code_input_cb(Fl_Text_Editor* i, void* v) {
     if (v == LOAD) {
       //i->static_value(current_widget->extra_code());
       //i->buffer(&current_widget->extra_code_);
@@ -1204,8 +1127,7 @@ void extra_code_input_cb(Fl_Text_Editor* i, void* v)
     { i->label_color(c); i->redraw_label(); }
 }
 
-void user_class_cb(Fl_Input* i, void* v)
-{
+void user_class_cb(Fl_Input* i, void* v) {
     if (v == LOAD) {
         const char* s = 0;
         for_all_selected_widgets() {
@@ -1233,9 +1155,7 @@ void user_class_cb(Fl_Input* i, void* v)
 ////////////////////////////////////////////////////////////////
 // Kludges to the panel for subclasses:
 
-void slider_size_cb(Fl_Value_Input* i, void* v)
-{
-    if(Fl::event() != FL_VALUATOR_CHANGED) return;
+void slider_size_cb(Fl_Value_Input* i, void* v) {
     if (v == LOAD) {
         if (current_widget->is_valuator()!=2) {i->hide(); return;}
         i->show();
@@ -1253,9 +1173,7 @@ void slider_size_cb(Fl_Value_Input* i, void* v)
     }
 }
 
-void min_cb(Fl_Value_Input* i, void* v)
-{
-    if(Fl::event() != FL_VALUATOR_CHANGED) return;
+void min_cb(Fl_Value_Input* i, void* v) {
     if (v == LOAD) {
         if (!current_widget->is_valuator()) {i->hide(); return;}
         i->show();
@@ -1277,9 +1195,7 @@ void min_cb(Fl_Value_Input* i, void* v)
     { i->label_color(c); i->redraw_label(); }
 }
 
-void max_cb(Fl_Value_Input* i, void* v)
-{
-    if(Fl::event() != FL_VALUATOR_CHANGED) return;
+void max_cb(Fl_Value_Input* i, void* v) {
     if (v == LOAD) {
         if (!current_widget->is_valuator()) {i->hide(); return;}
         i->show();
@@ -1301,9 +1217,7 @@ void max_cb(Fl_Value_Input* i, void* v)
     { i->label_color(c); i->redraw_label(); }
 }
 
-void step_cb(Fl_Value_Input* i, void* v)
-{
-    if(Fl::event() != FL_VALUATOR_CHANGED) return;
+void step_cb(Fl_Value_Input* i, void* v) {
     if (v == LOAD) {
         if (!current_widget->is_valuator()) {i->hide(); return;}
         i->show();
@@ -1325,9 +1239,7 @@ void step_cb(Fl_Value_Input* i, void* v)
     { i->label_color(c); i->redraw_label(); }
 }
 
-void line_cb(Fl_Value_Input* i, void* v)
-{
-    if(Fl::event() != FL_VALUATOR_CHANGED) return;
+void line_cb(Fl_Value_Input* i, void* v) {
     if (v == LOAD) {
         if (!current_widget->is_valuator()) {i->hide(); return;}
         i->show();
@@ -1349,9 +1261,7 @@ void line_cb(Fl_Value_Input* i, void* v)
     { i->label_color(c); i->redraw_label(); }
 }
 
-void value_cb(Fl_Value_Input* i, void* v)
-{
-    if(Fl::event() != FL_VALUATOR_CHANGED) return;
+void value_cb(Fl_Value_Input* i, void* v) {
     if (v == LOAD) {
         if (current_widget->is_valuator()) {
             i->show();
@@ -1415,12 +1325,11 @@ void subtype_cb(Fl_Choice* i, void* v) {
 // callback to only the changed widgets, and recursively call
 // themselves:
 
-void propagate_group(Fl_Group* g, void* v)
-{
+void propagate_group(Fl_Group* g, void* v) {
     if (v == LOAD) {
         for (int i=g->children(); i--;) {
             Fl_Widget* o = g->child(i);
-            o->do_callback(o, LOAD, (Fl_Event_Type)Fl::event());
+            o->do_callback(o,LOAD,Fl::event());
         }
     } else {
         for (int i=g->children(); i--;) {
@@ -1428,12 +1337,12 @@ void propagate_group(Fl_Group* g, void* v)
             if (o->changed() || o->callback()==(Fl_Callback*)propagate_group ||
                 o->callback()==(Fl_Callback*)propagate_tabs)
             {
-                o->do_callback((Fl_Event_Type)Fl::event());
+                o->do_callback(Fl::event());
                 if (haderror) return;
                 o->clear_changed();
             }
         }
-    }
+    }    
 }
 
 // Fluid insists on giving the correct type to arguments so we need
@@ -1449,10 +1358,7 @@ inline Fluid_Plugin** next_panel(Fluid_Plugin** pp, Fluid_Plugin* &p)
     return pp;
 }
 
-void set_cb(Fl_Button*, void*)
-{
-    if(Fl::event() != FL_BUTTON_PRESSED) return;
-
+void set_cb(Fl_Button*, void*) {
     haderror = 0;
     propagate_group(the_panel, 0);
     Fluid_Plugin *p, **pp;
@@ -1460,10 +1366,7 @@ void set_cb(Fl_Button*, void*)
         if(p->panel_is_orphan) propagate_group(p->panel, 0);
 }
 
-void ok_cb(Fl_Button* o, void* v)
-{
-    if(Fl::event() != FL_BUTTON_PRESSED) return;
-
+void ok_cb(Fl_Button* o, void* v) {
     set_cb(o,v);
     if (!haderror)
         the_panel->hide();
@@ -1471,10 +1374,7 @@ void ok_cb(Fl_Button* o, void* v)
 
 static void load_panel();
 
-void default_cb(Fl_Button*, void* v)
-{
-    if(Fl::event() != FL_BUTTON_PRESSED) return;
-
+void default_cb(Fl_Button*, void* v) {
     if (v == LOAD) return;
     const Fl_Style* default_style =
         ((Fl_Widget_Type*)(current_widget->factory))->o->style();
@@ -1488,10 +1388,7 @@ void default_cb(Fl_Button*, void* v)
     current_widget->redraw();
 }
 
-void revert_cb(Fl_Button*, void*)
-{
-    if(Fl::event() != FL_BUTTON_PRESSED) return;
-
+void revert_cb(Fl_Button*, void*) {
     if (!current_widget) return;
   // We have to revert all dynamically changing fields:
   // but for now only the first label works...
@@ -1502,17 +1399,13 @@ void revert_cb(Fl_Button*, void*)
         if(p->panel_is_orphan) propagate_group(p->panel, LOAD);
 }
 
-void cancel_cb(Fl_Button* o, void* v)
-{
-    if(Fl::event() != FL_BUTTON_PRESSED) return;
-
+void cancel_cb(Fl_Button* o, void* v) {
     revert_cb(o, v);
     the_panel->hide();
 }
 
 void toggle_overlays(Fl_Widget *,void *); // in Fl_Window_Type.C
 void overlay_cb(Fl_Check_Button*o,void *v) {
-    if(Fl::event() != FL_BUTTON_PRESSED) return;
     toggle_overlays(o,v);
 }
 
@@ -1891,7 +1784,7 @@ void Fl_Widget_Type::write_widget_code() {
         write_c(");\n");
     }
     if (o->when() != tplate->when())
-        write_c("%so->when(FL_%s_EVENTS);\n", indent(), number_to_text(o->when(), whenmenu));
+        write_c("%so->when(FL_WHEN_%s);\n", indent(), number_to_text(o->when(), whenmenu));
     if (!o->visible() && o->parent())
         write_c("%so->hide();\n", indent());
     if (!o->active())
@@ -2286,7 +2179,7 @@ int Fl_Widget_Type::read_fdesign(const char* name, const char* value) {
         o->label_color(v);
     } else if (!strcmp(name,"return")) {
         if (!lookup_symbol(value,v,0)) return 0;
-        //o->when(v|FL_WHEN_RELEASE);
+        o->when(v|FL_WHEN_RELEASE);
     } else if (!strcmp(name,"alignment")) {
         if (!lookup_symbol(value,v)) {
       // convert old numeric values:

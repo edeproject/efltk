@@ -252,30 +252,32 @@ enum { // Values for Fl::visual(), Fl::gl_visual(), Fl_Gl_Window::mode()
 };
 
 // damage
-enum {
-    FL_DAMAGE_VALUE = 0x01,
-    FL_DAMAGE_PUSHED    = 0x02,
-    FL_DAMAGE_SCROLL    = 0x04,
-    FL_DAMAGE_OVERLAY   = 0x04, // reused value
+enum Fl_Damage {
+    FL_DAMAGE_NONE        = 0,
+    FL_DAMAGE_VALUE       = 0x01,
+    FL_DAMAGE_PUSHED      = 0x02,
+    FL_DAMAGE_SCROLL      = 0x04,
+    FL_DAMAGE_OVERLAY     = 0x04, // reused value
     FL_DAMAGE_HIGHLIGHT   = 0x08,
     FL_DAMAGE_CHILD       = 0x10,
     FL_DAMAGE_CHILD_LABEL = 0x20,
     FL_DAMAGE_EXPOSE      = 0x40,
-    FL_DAMAGE_CONTENTS  = 0x40, // reused value
+    FL_DAMAGE_CONTENTS    = 0x40, // reused value
     FL_DAMAGE_ALL         = 0x80
 };
 
 // layout damage
-enum {
-    FL_LAYOUT_X     = 0x01,
-    FL_LAYOUT_Y     = 0x02,
-    FL_LAYOUT_XY        = 0x03,
-    FL_LAYOUT_W     = 0x04,
-    FL_LAYOUT_H     = 0x08,
-    FL_LAYOUT_WH        = 0x0C,
-    FL_LAYOUT_XYWH  = 0x0F,
-    FL_LAYOUT_CHILD = 0x10,
-    FL_LAYOUT_DAMAGE    = 0x80
+enum Fl_Layout_Damage {
+    FL_LAYOUT_NONE    = 0,
+    FL_LAYOUT_X       = 0x01,
+    FL_LAYOUT_Y       = 0x02,
+    FL_LAYOUT_XY      = 0x03,
+    FL_LAYOUT_W       = 0x04,
+    FL_LAYOUT_H       = 0x08,
+    FL_LAYOUT_WH      = 0x0C,
+    FL_LAYOUT_XYWH    = 0x0F,
+    FL_LAYOUT_CHILD   = 0x10,
+    FL_LAYOUT_DAMAGE  = 0x80
 };
 
 // effect types for menus/tooltips
@@ -287,8 +289,8 @@ enum {
 
 /* Prevent Visual C++ 6.0 from printing out stupid warnings */
 #if defined(_MSC_VER) && (_MSC_VER >= 600)
-#pragma warning(disable: 4550)
-#pragma warning(disable: 4244)
+# pragma warning(disable: 4550)
+# pragma warning(disable: 4244)
 #endif
 
 #endif

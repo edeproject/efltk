@@ -33,10 +33,7 @@
 Fl_Font fl_font_;
 float fl_size_;
 const char *fl_encoding_ = "iso8859-1";
-
-static Fl_Ptr_List *all_fonts=0;
-#define append_font(f) if(!all_fonts) all_fonts=new Fl_Ptr_List(); all_fonts->append(f)
-
+  
 #ifdef _WIN32
 # include "fl_font_win32.cpp"
 #elif defined(__APPLE__)
@@ -69,20 +66,6 @@ float Fl_Device::width(const char* str) const {
 float Fl_Device::width(const Fl_String &str) const {
     return fl_width(str.c_str(), str.length());
 }
-
-// Deallocate fonts on exit. Warning: it will crash if you try
-// to do any fonts after this, because the pointers are not changed!
-void fl_font_rid()
-{
-    if(all_fonts) {
-        for(unsigned n=0; n<all_fonts->size(); n++) {
-            Fl_FontSize* fontsize = (Fl_FontSize*)(*all_fonts)[n];
-            delete fontsize;
-        }
-        delete all_fonts;
-    }
-}
-
 
 //
 // End of "$Id$".

@@ -66,11 +66,11 @@ Fl_Window* make_alignment_window() {
         }
          {Fl_Input* o = header_file_input = new Fl_Input(100, 45, 90, 23, _("Header File:"));
           o->callback((Fl_Callback*)header_input_cb, (void*)(1));
-          o->when(FL_LOGICAL_EVENTS);
+          o->when(FL_WHEN_CHANGED);
         }
          {Fl_Input* o = code_file_input = new Fl_Input(100, 72, 90, 23, _("Code File:"));
           o->callback((Fl_Callback*)code_input_cb, (void*)(1));
-          o->when(FL_LOGICAL_EVENTS);
+          o->when(FL_WHEN_CHANGED);
         }
          {Fl_Check_Button* o = include_H_from_C_button = new Fl_Check_Button(10, 106, 190, 22, _("#include \"header\" in code"));
           o->value(1);

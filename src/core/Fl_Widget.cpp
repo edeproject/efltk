@@ -32,21 +32,20 @@
 #include <stdlib.h>              // free
 #include <config.h>
 
-void Fl_Widget::do_callback(Fl_Widget* o, void* arg, Fl_Event_Type event,int event_argument,const void *event_data)
+void Fl_Widget::do_callback(Fl_Widget* o, void* arg, int event,int event_argument)
 {
-    if(!callback_) return;
-    int event_class = (event&FL_EVENTS_MASK);
-    if(event_class & when()) {
-        Fl::e_type = event;
-        Fl::e_argument = event_argument;
-        Fl::e_data = event_data;
-        callback_(o, arg);
-    }
+    Fl::e_type = event;
+    Fl::e_argument = event_argument;
+    // Call callback_ only if NO slots connected!
+    if (callback_) callback_(o,(void*)arg);
 }
 
-void Fl_Widget::do_callback(Fl_Widget* o, long arg, Fl_Event_Type event,int event_argument,const void *event_data)
-{
-    do_callback(o, (void*)arg, event, event_argument, event_data);
+void Fl_Widget::do_callback(Fl_Widget* o, long arg, int event,int event_argument)
+{       
+    Fl::e_type = event;
+    Fl::e_argument = event_argument;
+    // Call callback_ only if NO slots connected!
+    if (callback_) callback_(o,(void*)arg);
 }
 
 void Fl_Widget::default_callback(Fl_Widget* w, void*) {w->set_changed();}
@@ -70,7 +69,7 @@ void Fl_Widget::ctor_init(int X, int Y, int W, int H, const char* L)
     widget_type_ = 0;
     damage_   = FL_DAMAGE_ALL;
     layout_damage_= FL_LAYOUT_DAMAGE;
-    when_     = FL_LOGICAL_EVENTS;
+    when_     = FL_WHEN_RELEASE;
 
     if(L) label_ = L;
     if (Fl_Group::current()) Fl_Group::current()->add(this);

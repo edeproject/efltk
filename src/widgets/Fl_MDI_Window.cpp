@@ -313,7 +313,7 @@ int Fl_MDI_Titlebar::handle(int event)
             }
 
         case FL_RELEASE: {
-                do_callback(FL_DATA_CHANGE);
+                if (when()&FL_WHEN_CHANGED || when()&FL_WHEN_RELEASE) do_callback(event);
                 fl_cursor(FL_CURSOR_DEFAULT);
                 moving=false;
                 return 1;
@@ -328,6 +328,12 @@ int Fl_MDI_Titlebar::handle(int event)
                 }
                 return 1;
             }
+    /*    case FL_MOVE: {
+     return 0;
+     }
+     case FL_ENTER: {
+     return 0;
+     }*/
 
         case FL_LEAVE: {
                 fl_cursor(FL_CURSOR_DEFAULT);

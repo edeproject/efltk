@@ -29,10 +29,9 @@
 
 // this is public so fl_draw_symbol can call it:
 void fl_glyph_return(const Fl_Widget*, int,
-                     int x,int y,int w,int h, Fl_Flags)
+    int x,int y,int w,int h, Fl_Flags)
 {
     int size = w; if (h<size) size = h;
-    size--;
     int d = (size+2)/4; if (d<3) d = 3;
     int t = (size+9)/12; if (t<1) t = 1;
     int x0 = x+((w-2*d-2*t-1)>>1);
@@ -55,9 +54,8 @@ void fl_glyph_return(const Fl_Widget*, int,
     fl_vertex(x1+d, y0-t);
     fl_vertex(x1+d, y0-d);
     fl_vertex(x1+d+2*t, y0-d);
-    fl_color(FL_DARK3);
-    fl_stroke();
-#else // solid arrow written by Carl
+    fl_color(FL_DARK3); fl_stroke();
+#else                        // solid arrow written by Carl
     fl_color(fl_inactive(fc, f));
     fl_polygon(x0,y0, x1,y0+d, x1, y0-d);
     fl_rectf(x1,y0-t,d,2*t+1);
@@ -68,26 +66,22 @@ void fl_glyph_return(const Fl_Widget*, int,
 
 void Fl_Return_Button::draw()
 {
-    Fl_Button::draw(0, -2*text_size());
+    Fl_Button::draw(0,-2*text_size());
 }
 
-void Fl_Return_Button::preferred_size(int &w, int &h) const
-{
-    Fl_Button::preferred_size(w,h);
-    w += 2*text_size()+4;
-}
 
 static void revert(Fl_Style* s)
 {
     s->glyph = fl_glyph_return;
 }
 
+
 static Fl_Named_Style style("Return_Button", revert, &Fl_Return_Button::default_style);
 Fl_Named_Style* Fl_Return_Button::default_style = &::style;
 
 // Traditional ctor
 Fl_Return_Button::Fl_Return_Button(int x,int y,int w,int h,const char *l)
-    : Fl_Button(x,y,w,h,l)
+: Fl_Button(x,y,w,h,l)
 {
     default_style->parent = style();
     style(default_style);

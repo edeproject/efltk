@@ -10,28 +10,23 @@ void cb_menu(Fl_Menu_ *w, ETranslate *e)
 
 void cb_listview(Fl_ListView *w, ETranslate *e)
 {
-    if(Fl::event()==FL_LIST_ITEM_SELECTED)
-        e->show_translation((TranslateItem*)w->item());
+    e->show_translation((TranslateItem*)w->item());
 }
 
 void cb_save_button(Fl_Button *, ETranslate *e)
 {
-    if(Fl::event()==FL_BUTTON_PRESSED) {
-        e->save_translation();
-        e->next_unfinished();
-    }
+    e->save_translation();
+    e->next_unfinished();
 }
 
 void cb_modify_button(Fl_Button *, ETranslate *e)
 {
-    if(Fl::event()==FL_BUTTON_PRESSED)
-        e->show_modify_window();
+    e->show_modify_window();
 }
 
 void cb_toolbar_button(Fl_Button *w, void *)
 {
-    if(Fl::event()==FL_BUTTON_PRESSED)
-        app->handle_action(w->argument());
+    app->handle_action(w->argument());
 }
 
 ETranslate::ETranslate()
@@ -117,6 +112,8 @@ void ETranslate::handle_action(int a)
 
 void ETranslate::load(const char *file)
 {
+    browser->clear();
+
     if(!file) {
         const char *f = fl_select_file(filename.c_str(),
                                        _("Translation Files, *.{etm|po|pot},"
@@ -126,8 +123,6 @@ void ETranslate::load(const char *file)
         if(!f) return;
         file = f;
     }
-
-    browser->clear();
 
     FILE *fp = fopen(file, "r");
     if(!fp) return;
