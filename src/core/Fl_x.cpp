@@ -1425,7 +1425,7 @@ int background)
         // Set the label:
         //window->label(window->label(), window->iconlabel());
         const char *name = window->label()?window->label():"";
-        const char *iname = window->iconlabel()?fl_file_filename(name):"";
+        const char *iname = window->iconlabel()?window->iconlabel():fl_file_filename(name);
         Fl_WM::set_window_title(x->xid, name, strlen(name));
         Fl_WM::set_window_icontitle(x->xid, iname, strlen(iname));
 
@@ -1564,22 +1564,23 @@ void Fl_Window::copy_label(const char* name) {
     Fl_Widget::copy_label(name);
     if (i && !parent()) {
         if (!name) name = "";
-        XChangeProperty(fl_display, i->xid, XA_WM_NAME, XA_STRING, 8, 0, (uchar*)name, strlen(name));
+        Fl_WM::set_window_title(i->xid, name, strlen(name));
     }
+    iconlabel(iconlabel_); //fltk compatibility
 }
 void Fl_Window::label(const char *name) {
     Fl_Widget::label(name);
     if (i && !parent()) {
         if (!name) name = "";
-        XChangeProperty(fl_display, i->xid, XA_WM_NAME, XA_STRING, 8, 0, (uchar*)name, strlen(name));
+        Fl_WM::set_window_title(i->xid, name, strlen(name));
     }
+    iconlabel(iconlabel_); //fltk compatibility
 }
 void Fl_Window::iconlabel(const char *iname) {
     iconlabel_ = iname;
     if (i && !parent()) {
         if (!iname) iname = fl_file_filename(label());
-        XChangeProperty(fl_display, i->xid, XA_WM_ICON_NAME, XA_STRING, 8, 0, (uchar*)iname, strlen(iname));
-        //NET-WM!
+        Fl_WM::set_window_icontitle(i->xid, iname, strlen(iname));
     }
 }
 
