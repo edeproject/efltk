@@ -225,317 +225,318 @@ uint8 *Fl_Renderer::system_convert(Fl_PixelFormat *src_fmt, Fl_Size *src_size, u
 
 
 bool fl_format_equal(Fl_PixelFormat *A, Fl_PixelFormat *B) {
-	return ( A->bitspp==B->bitspp && A->Rmask==B->Rmask && A->Amask==B->Amask );
+    return ( A->bitspp==B->bitspp && A->Rmask==B->Rmask && A->Amask==B->Amask );
 }
 
 /* Load pixel of the specified format from a buffer and get its R-G-B values */
 /* FIXME: rescale values to 0..255 here? */
 void fl_rgb_from_pixel(uint32 pixel, Fl_PixelFormat *fmt, uint8 &r, uint8 &g, uint8 &b)
 {
-	r = (((pixel&fmt->Rmask)>>fmt->Rshift)<<fmt->Rloss)&0xFF;
-	g = (((pixel&fmt->Gmask)>>fmt->Gshift)<<fmt->Gloss)&0xFF;
-	b = (((pixel&fmt->Bmask)>>fmt->Bshift)<<fmt->Bloss)&0xFF;
+    r = (((pixel&fmt->Rmask)>>fmt->Rshift)<<fmt->Rloss)&0xFF;
+    g = (((pixel&fmt->Gmask)>>fmt->Gshift)<<fmt->Gloss)&0xFF;
+    b = (((pixel&fmt->Bmask)>>fmt->Bshift)<<fmt->Bloss)&0xFF;
 }
 
 void fl_rgb_from_rgb565(uint16 pixel, uint8 &r, uint8 &g, uint8 &b)
 {
-	r = (((pixel&0xF800)>>11)<<3);
-	g = (((pixel&0x07E0)>>5)<<2);
-	b = ((pixel&0x001F)<<3);
+    r = (((pixel&0xF800)>>11)<<3);
+    g = (((pixel&0x07E0)>>5)<<2);
+    b = ((pixel&0x001F)<<3);
 }
 
 void fl_rgb_from_rgb555(uint16 pixel, uint8 &r, uint8 &g, uint8 &b)
 {
-	r = (((pixel&0x7C00)>>10)<<3);
-	g = (((pixel&0x03E0)>>5)<<3);
-	b = ((pixel&0x001F)<<3);
+    r = (((pixel&0x7C00)>>10)<<3);
+    g = (((pixel&0x03E0)>>5)<<3);
+    b = ((pixel&0x001F)<<3);
 }
 
 void fl_rgb_from_rgb888(uint32 pixel, uint8 &r, uint8 &g, uint8 &b)
 {
-	r = ((pixel&0xFF0000)>>16);
-	g = ((pixel&0xFF00)>>8);
-	b = (pixel&0xFF);
+    r = ((pixel&0xFF0000)>>16);
+    g = ((pixel&0xFF00)>>8);
+    b = (pixel&0xFF);
 }
 
 void fl_retrieve_rgb_pixel(uint8 *buf, int bpp, uint32 &pixel)
 {
     switch (bpp) {
-		case 2:
-			pixel = *((uint16 *)(buf));
-			break;
+    case 2:
+        pixel = *((uint16 *)(buf));
+        break;
 
-		case 3: {
-		    uint8 *B = (uint8 *)buf;
+    case 3: {
+        uint8 *B = (uint8 *)buf;
 #if !WORDS_BIGENDIAN
-	        pixel = B[0] + (B[1] << 8) + (B[2] << 16);
+        pixel = B[0] + (B[1] << 8) + (B[2] << 16);
 #else
-			pixel = (B[0] << 16) + (B[1] << 8) + B[2]; 
+        pixel = (B[0] << 16) + (B[1] << 8) + B[2];
 #endif
-			}
-			break;
+    }
+    break;
 
-		case 4:
-			pixel = *((uint32 *)buf);
-			break;
+    case 4:
+        pixel = *((uint32 *)buf);
+        break;
 
-		default:
-			pixel = 0; /* appease gcc */
-			break;
-	}
+    default:
+        pixel = 0; /* appease gcc */
+        break;
+    }
 }
 
 void fl_disemble_rgb(uint8 *buf, int bpp, Fl_PixelFormat *fmt, uint32 &pixel, uint8 &R, uint8 &G, uint8 &B)
 {
     switch (bpp) {
-	case 1:
-		R = fmt->palette->colors[*buf].r;
-		G = fmt->palette->colors[*buf].g;
-		B = fmt->palette->colors[*buf].b;
-		pixel = (R<<16)|(G<<8)|B;
-		break;
-    
-	case 2:
-		pixel = *((uint16 *)(buf));
-		fl_rgb_from_pixel(pixel, fmt, R, G, B);
-		break;
-    
-	case 3: {
-			uint8 *BUF = (uint8 *)buf;			   
+    case 1:
+        R = fmt->palette->colors[*buf].r;
+        G = fmt->palette->colors[*buf].g;
+        B = fmt->palette->colors[*buf].b;
+        pixel = (R<<16)|(G<<8)|B;
+        break;
+
+    case 2:
+        pixel = *((uint16 *)(buf));
+        fl_rgb_from_pixel(pixel, fmt, R, G, B);
+        break;
+
+    case 3: {
+        uint8 *BUF = (uint8 *)buf;
 #if !WORDS_BIGENDIAN
-			pixel = BUF[0] + (BUF[1] << 8) + (BUF[2] << 16);
+        pixel = BUF[0] + (BUF[1] << 8) + (BUF[2] << 16);
 #else
-			pixel = (BUF[0] << 16) + (BUF[1] << 8) + BUF[2];
+        pixel = (BUF[0] << 16) + (BUF[1] << 8) + BUF[2];
 #endif
-			fl_rgb_from_pixel(pixel, fmt, R, G, B);
-		}
-		break;
-
-	case 4:
-		pixel = *((uint32 *)buf);
-		fl_rgb_from_pixel(pixel, fmt, R, G, B);
-		break;
-
-	default:
-		pixel = 0;	/* prevent gcc from complaining */
-		break;
+        fl_rgb_from_pixel(pixel, fmt, R, G, B);
     }
-} 
+    break;
+
+    case 4:
+        pixel = *((uint32 *)buf);
+        fl_rgb_from_pixel(pixel, fmt, R, G, B);
+        break;
+
+    default:
+        pixel = 0;	/* prevent gcc from complaining */
+        break;
+    }
+}
 
 /* Assemble R-G-B values into a specified pixel format and store them */
 void fl_pixel_from_rgb(uint32 &pixel, Fl_PixelFormat *fmt, uint8 r, uint8 g, uint8 b)
 {
-	pixel = ((r>>fmt->Rloss)<<fmt->Rshift)|
-			((g>>fmt->Gloss)<<fmt->Gshift)|
-			((b>>fmt->Bloss)<<fmt->Bshift);
+    pixel = ((r>>fmt->Rloss)<<fmt->Rshift)|
+        ((g>>fmt->Gloss)<<fmt->Gshift)|
+        ((b>>fmt->Bloss)<<fmt->Bshift);
 }
 
 void fl_rgb565_from_rgb(uint16 &pixel, uint8 r, uint8 g, uint8 b)
 {
-	pixel = ((r>>3)<<11)|((g>>2)<<5)|(b>>3);
+    pixel = ((r>>3)<<11)|((g>>2)<<5)|(b>>3);
 }
 
 void fl_rgb555_from_rgb(uint16 &pixel, uint8 r, uint8 g, uint8 b)
 {
-	pixel = ((r>>3)<<10)|((g>>3)<<5)|(b>>3);
+    pixel = ((r>>3)<<10)|((g>>3)<<5)|(b>>3);
 }
 
 void fl_rgb888_from_rgb(uint32 &pixel, uint8 r, uint8 g, uint8 b)
 {
-	pixel = (r<<16)|(g<<8)|b;
+    pixel = (r<<16)|(g<<8)|b;
 }
 
 void fl_assemble_rgb(uint8 *buf, int bpp, Fl_PixelFormat *fmt, uint8 r, uint8 g, uint8 b)
 {
     switch (bpp) {
     case 2: {
-      uint32 pixel;
-      fl_pixel_from_rgb(pixel, fmt, r, g, b);
-      *((uint16 *)buf) = (uint16)pixel;
+        uint32 pixel;
+        fl_pixel_from_rgb(pixel, fmt, r, g, b);
+        *((uint16 *)buf) = (uint16)pixel;
     }
     break;
 
     case 3: {
 #if !WORDS_BIGENDIAN
-      *((buf)+fmt->Rshift/8) = r;		
-      *((buf)+fmt->Gshift/8) = g;		
-      *((buf)+fmt->Bshift/8) = b;		
+        *((buf)+fmt->Rshift/8) = r;
+        *((buf)+fmt->Gshift/8) = g;
+        *((buf)+fmt->Bshift/8) = b;
 #else
-      *((buf)+2-fmt->Rshift/8) = r;		
-      *((buf)+2-fmt->Gshift/8) = g;		
-      *((buf)+2-fmt->Bshift/8) = b;		
-#endif						
+        *((buf)+2-fmt->Rshift/8) = r;
+        *((buf)+2-fmt->Gshift/8) = g;
+        *((buf)+2-fmt->Bshift/8) = b;
+#endif
     }
     break;
 
     case 4: {
-      uint32 pixel;
-      fl_pixel_from_rgb(pixel, fmt, r, g, b);
-      *((uint32 *)buf) = pixel;
+        uint32 pixel;
+        fl_pixel_from_rgb(pixel, fmt, r, g, b);
+        *((uint32 *)buf) = pixel;
     }
     break;
 
-	default:
-		break;
+    default:
+        break;
     }
 }
 
 void fl_assemble_rgb_amask(uint8 *buf, int bpp, Fl_PixelFormat *fmt, uint8 r, uint8 g, uint8 b, uint8 Amask)
 {
-	switch (bpp) {
-		case 2: {
-			uint16 *bufp;
-			uint32 pixel;						
-			bufp = (uint16 *)buf;
-			fl_pixel_from_rgb(pixel, fmt, r, g, b);
-			*bufp = uint16(pixel) | (*bufp & Amask);
-		}							
-		break;
+    switch (bpp) {
+    case 2: {
+        uint16 *bufp;
+        uint32 pixel;
+        bufp = (uint16 *)buf;
+        fl_pixel_from_rgb(pixel, fmt, r, g, b);
+        *bufp = uint16(pixel) | (*bufp & Amask);
+    }
+    break;
 
-		case 3: {
+    case 3: {
 #if !WORDS_BIGENDIAN
-	        *((buf)+fmt->Rshift/8) = r;
-			*((buf)+fmt->Gshift/8) = g;
-			*((buf)+fmt->Bshift/8) = b;
+        *((buf)+fmt->Rshift/8) = r;
+        *((buf)+fmt->Gshift/8) = g;
+        *((buf)+fmt->Bshift/8) = b;
 #else
-	        *((buf)+2-fmt->Rshift/8) = r;
-			*((buf)+2-fmt->Gshift/8) = g;
-			*((buf)+2-fmt->Bshift/8) = b;
+        *((buf)+2-fmt->Rshift/8) = r;
+        *((buf)+2-fmt->Gshift/8) = g;
+        *((buf)+2-fmt->Bshift/8) = b;
 #endif
-		}
-		break;
+    }
+    break;
 
-		case 4: {
-			uint32 *bufp;
-			uint32 pixel;									
-			bufp = (uint32 *)buf;
-			fl_pixel_from_rgb(pixel, fmt, r, g, b);
-			*bufp = pixel | (*bufp & Amask);
-		}
-		break;
+    case 4: {
+        uint32 *bufp;
+        uint32 pixel;
+        bufp = (uint32 *)buf;
+        fl_pixel_from_rgb(pixel, fmt, r, g, b);
+        *bufp = pixel | (*bufp & Amask);
+    }
+    break;
 
-		default:
-			break;
-	}
+    default:
+        break;
+    }
 }
 
 /* FIXME: Should we rescale alpha into 0..255 here? */
 void fl_rgba_from_pixel(uint32 pixel, Fl_PixelFormat *fmt, uint8 &r, uint8 &g, uint8 &b, uint8 &a)
 {
-	r = ((pixel&fmt->Rmask)>>fmt->Rshift)<<fmt->Rloss;
-	g = ((pixel&fmt->Gmask)>>fmt->Gshift)<<fmt->Gloss;
-	b = ((pixel&fmt->Bmask)>>fmt->Bshift)<<fmt->Bloss;
-	a = ((pixel&fmt->Amask)>>fmt->Ashift)<<fmt->Aloss;
+    r = ((pixel&fmt->Rmask)>>fmt->Rshift)<<fmt->Rloss;
+    g = ((pixel&fmt->Gmask)>>fmt->Gshift)<<fmt->Gloss;
+    b = ((pixel&fmt->Bmask)>>fmt->Bshift)<<fmt->Bloss;
+    a = ((pixel&fmt->Amask)>>fmt->Ashift)<<fmt->Aloss;
 }
 
 void fl_rgba_from_8888(uint32 pixel, Fl_PixelFormat *fmt, uint8 &r, uint8 &g, uint8 &b, uint8 &a)
 {
-	r = (pixel&fmt->Rmask)>>fmt->Rshift;
-	g = (pixel&fmt->Gmask)>>fmt->Gshift;
-	b = (pixel&fmt->Bmask)>>fmt->Bshift;
-	a = (pixel&fmt->Amask)>>fmt->Ashift;
+    r = (pixel&fmt->Rmask)>>fmt->Rshift;
+    g = (pixel&fmt->Gmask)>>fmt->Gshift;
+    b = (pixel&fmt->Bmask)>>fmt->Bshift;
+    a = (pixel&fmt->Amask)>>fmt->Ashift;
 }
 
 void fl_rgba_from_rgba8888(uint32 pixel, uint8 &r, uint8 &g, uint8 &b, uint8 &a)
 {
-	r = (pixel>>24);
-	g = ((pixel>>16)&0xFF);
-	b = ((pixel>>8)&0xFF);
-	a = (pixel&0xFF);
+    r = (pixel>>24);
+    g = ((pixel>>16)&0xFF);
+    b = ((pixel>>8)&0xFF);
+    a = (pixel&0xFF);
 }
 
 void fl_rgba_from_argb8888(uint32 pixel, uint8 &r, uint8 &g, uint8 &b, uint8 &a)
 {
-	r = ((pixel>>16)&0xFF);
-	g = ((pixel>>8)&0xFF);
-	b = (pixel&0xFF);
-	a = (pixel>>24);
+    r = ((pixel>>16)&0xFF);
+    g = ((pixel>>8)&0xFF);
+    b = (pixel&0xFF);
+    a = (pixel>>24);
 }
 
 void fl_rgba_from_abgr8888(uint32 pixel, uint8 &r, uint8 &g, uint8 &b, uint8 &a)
 {
-	r = (pixel&0xFF);
-	g = ((pixel>>8)&0xFF);
-	b = ((pixel>>16)&0xFF);
-	a = (pixel>>24);
+    r = (pixel&0xFF);
+    g = ((pixel>>8)&0xFF);
+    b = ((pixel>>16)&0xFF);
+    a = (pixel>>24);
 }
 
 void fl_disemble_rgba(uint8 *buf, int bpp, Fl_PixelFormat *fmt, uint32 &pixel, uint8 &r, uint8 &g, uint8 &b, uint8 &a)
 {
-	switch (bpp) {
-		case 2:
-			pixel = *((uint16 *)buf);
-			break;
+    switch (bpp) {
+    case 2:
+        pixel = *((uint16 *)buf);
+        break;
 
-		case 3:	{
-			/* FIXME: broken code (no alpha) */
-		    uint8 *b = (uint8 *)buf;
+    case 3:	{
+        /* FIXME: broken code (no alpha) */
+        uint8 *b = (uint8 *)buf;
 #if !WORDS_BIGENDIAN
-	        pixel = b[0] + (b[1] << 8) + (b[2] << 16);
+        pixel = b[0] + (b[1] << 8) + (b[2] << 16);
 #else
-	        pixel = (b[0] << 16) + (b[1] << 8) + b[2];
+        pixel = (b[0] << 16) + (b[1] << 8) + b[2];
 #endif
-		}
-		break;
+    }
+    break;
 
-		case 4:
-			pixel = *((uint32 *)buf);
-			break;
+    case 4:
+        pixel = *((uint32 *)buf);
+        break;
 
-		default:
-			pixel = 0; /* stop gcc complaints */
-			break;
-	}			
-	
-	fl_rgba_from_pixel(pixel, fmt, r, g, b, a);
-	pixel &= ~fmt->Amask;
+    default:
+        pixel = 0; /* stop gcc complaints */
+        break;
+    }
+
+    fl_rgba_from_pixel(pixel, fmt, r, g, b, a);
+    pixel &= ~fmt->Amask;
 }
 
 /* FIXME: this isn't correct, especially for Alpha (maximum != 255) */
 void fl_pixel_from_rgba(uint32 &pixel, Fl_PixelFormat *fmt, uint8 r, uint8 g, uint8 b, uint8 a)
 {
-	pixel = ((r>>fmt->Rloss)<<fmt->Rshift)|
-			((g>>fmt->Gloss)<<fmt->Gshift)|
-			((b>>fmt->Bloss)<<fmt->Bshift)|
-			((a<<fmt->Aloss)<<fmt->Ashift);
+    pixel = (((r)>>fmt->Rloss)<<fmt->Rshift)|
+        ((g>>fmt->Gloss)<<fmt->Gshift)|
+        ((b>>fmt->Bloss)<<fmt->Bshift)|
+        ((a<<fmt->Aloss)<<fmt->Ashift);
 }
 
 void fl_assemble_rgba(uint8 *buf, int bpp, Fl_PixelFormat *fmt, uint8 r, uint8 g, uint8 b, uint8 a)
 {
-	switch (bpp) {
-		case 2: {
-			uint32 pixel;
-			fl_pixel_from_rgba(pixel, fmt, r, g, b, a);
-			*((uint16 *)buf) = (uint16)pixel;
-		}
-		break;
+    switch (bpp) {
+    case 2: {
+        uint16 pixel;
+        fl_pixel_from_rgba((uint32&)pixel, fmt, r, g, b, a);
+        *((uint16 *)buf) = pixel;
+    }
+    break;
 
-		case 3: { /* FIXME: broken code (no alpha) */
+    case 3: { /* FIXME: broken code (no alpha) */
 #if !WORDS_BIGENDIAN
-	    *((buf)+fmt->Rshift/8) = r;
-		*((buf)+fmt->Gshift/8) = g;
-		*((buf)+fmt->Bshift/8) = b;
+        *((buf)+fmt->Rshift/8) = r;
+        *((buf)+fmt->Gshift/8) = g;
+        *((buf)+fmt->Bshift/8) = b;
 #else
-		*((buf)+2-fmt->Rshift/8) = r;
-		*((buf)+2-fmt->Gshift/8) = g;
-		*((buf)+2-fmt->Bshift/8) = b;
+        *((buf)+2-fmt->Rshift/8) = r;
+        *((buf)+2-fmt->Gshift/8) = g;
+        *((buf)+2-fmt->Bshift/8) = b;
 #endif
-		}
-		break;
+    }
+    break;
 
-		case 4: {
-			uint32 pixel;
-			fl_pixel_from_rgba(pixel, fmt, r, g, b, a);
-			*((uint32 *)buf) = pixel;
-		}
-		break;
-	}
+    case 4: {
+        uint32 pixel;
+        fl_pixel_from_rgba(pixel, fmt, r, g, b, a);
+        *((uint32 *)buf) = pixel;
+    }
+    break;
+    }
 }
 
 /* Blend the RGB values of two pixels based on a source alpha value */
 void fl_alpha_blend(uint8 sR, uint8 sG, uint8 sB, uint8 A, uint8 &dR, uint8 &dG, uint8 &dB)
 {
-	dR = (((sR-dR)*(A))>>8)+dR;
-	dG = (((sG-dG)*(A))>>8)+dG;
-	dB = (((sB-dB)*(A))>>8)+dB;
+    dR = (((sR-dR)*(A))>>8)+dR;
+    dG = (((sG-dG)*(A))>>8)+dG;
+    dB = (((sB-dB)*(A))>>8)+dB;
 }
+

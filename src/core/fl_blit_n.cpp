@@ -94,7 +94,7 @@ static void Blit_RGB888_RGB555(BlitInfo *info)
 }
 /* Special optimized blit for RGB 8-8-8 --> RGB 5-6-5 */
 #define RGB888_RGB565(dst, src) { \
-    *(uint16 *)(dst) = (((*src)&0x00F80000)>>8)| \
+    *(uint16 *)dst) = (((*src)&0x00F80000)>>8)| \
     (((*src)&0x0000FC00)>>5)| \
     (((*src)&0x000000F8)>>3); \
 }
@@ -113,9 +113,15 @@ static void Blit_RGB888_RGB565(BlitInfo *info)
     dst = (uint16 *)info->d_pixels;
     dstskip = info->d_skip/2;
 
+    uint8 r,g,b;
+
     while ( height-- ) {
         DUFFS_LOOP(
-                   RGB888_RGB555(dst, src);
+                   //BROKEN!
+                   //RGB888_RGB555(dst, src);
+                   // We must use less optimized version :(
+                   fl_rgb_from_rgb888(*src, r, g, b);
+                   fl_rgb565_from_rgb(*dst, r, g, b);
                    ++src;
                    ++dst;
                    , width);

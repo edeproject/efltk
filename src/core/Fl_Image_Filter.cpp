@@ -70,7 +70,7 @@ bool FilterBrightness::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelF
     int srcbpp = srcfmt->bytespp;
 
     uint32 pixel=0;
-    uint8 R=0, G=0, B=0, A=255;
+    int16 R=0, G=0, B=0, A=255;
 
     int val = (int)(val1 * 255);
 
@@ -80,19 +80,21 @@ bool FilterBrightness::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelF
     while ( height-- ) {
         DUFFS_LOOP4(
                     {
-                        if(srcbpp==1) fl_disemble_rgb(ptr, srcbpp, srcfmt, pixel, R, G, B);
-                        else fl_disemble_rgba(ptr, srcbpp, srcfmt, pixel, R, G, B, A);
+                        if(srcbpp==1) fl_disemble_rgb(ptr, srcbpp, srcfmt, pixel, (uint8&)R, (uint8&)G, (uint8&)B);
+                        else fl_disemble_rgba(ptr, srcbpp, srcfmt, pixel, (uint8&)R, (uint8&)G, (uint8&)B, (uint8&)A);
 
-                        R += val;
+                        R+=val;
+                        G+=val;
+                        B+=val;
                         if(R > 255) R = 255;
-                        G += val;
                         if(G > 255) G = 255;
-                        B += val;
                         if(B > 255) B = 255;
+                        if(R < 0) R=0;
+                        if(G < 0) G=0;
+                        if(B < 0) B=0;
 
                         if(SYSTEM_8BIT) { ERROR_DIFF(R,G,B,*ptr); }
                         else { fl_assemble_rgba(ptr, srcbpp, srcfmt, R, G, B, A); }
-
 
                         ptr+=srcbpp;
                     }, width);
@@ -115,7 +117,7 @@ bool FilterContrast::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFor
     int srcbpp = srcfmt->bytespp;
 
     uint32 pixel=0;
-    uint8 R=0, G=0, B=0, A=255;
+    int16 R=0, G=0, B=0, A=255;
 
     ERROR_DIFF_START();
 
@@ -123,17 +125,18 @@ bool FilterContrast::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFor
     while ( height-- ) {
         DUFFS_LOOP4(
                     {
-                        if(srcbpp==1) fl_disemble_rgb(ptr, srcbpp, srcfmt, pixel, R, G, B);
-                        else fl_disemble_rgba(ptr, srcbpp, srcfmt, pixel, R, G, B, A);
+                        if(srcbpp==1) fl_disemble_rgb(ptr, srcbpp, srcfmt, pixel, (uint8&)R, (uint8&)G, (uint8&)B);
+                        else fl_disemble_rgba(ptr, srcbpp, srcfmt, pixel, (uint8&)R, (uint8&)G, (uint8&)B, (uint8&)A);
 
                         R = (int((R - 127) * val1)) + 127;
-                        if(R>255) R = 255;
-
                         G = (int((G - 127) * val2)) + 127;
-                        if(G>255) G = 255;
-
                         B = (int((B - 127) * val3)) + 127;
-                        if(B>255) B = 255;
+                        if(R > 255) R = 255;
+                        if(G > 255) G = 255;
+                        if(B > 255) B = 255;
+                        if(R < 0) R=0;
+                        if(G < 0) G=0;
+                        if(B < 0) B=0;
 
                         if(SYSTEM_8BIT) { ERROR_DIFF(R,G,B,*ptr); }
                         else { fl_assemble_rgba(ptr, srcbpp, srcfmt, R, G, B, A); }
@@ -163,7 +166,7 @@ bool FilterGamma::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFormat
     int srcbpp = srcfmt->bytespp;
 
     uint32 pixel=0;
-    uint8 R=0, G=0, B=0, A=255;
+    int16 R=0, G=0, B=0, A=255;
 
     ERROR_DIFF_START();
 
@@ -171,17 +174,18 @@ bool FilterGamma::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelFormat
     while ( height-- ) {
         DUFFS_LOOP4(
                     {
-                        if(srcbpp==1) fl_disemble_rgb(ptr, srcbpp, srcfmt, pixel, R, G, B);
-                        else fl_disemble_rgba(ptr, srcbpp, srcfmt, pixel, R, G, B, A);
+                        if(srcbpp==1) fl_disemble_rgb(ptr, srcbpp, srcfmt, pixel, (uint8&)R, (uint8&)G, (uint8&)B);
+                        else fl_disemble_rgba(ptr, srcbpp, srcfmt, pixel, (uint8&)R, (uint8&)G, (uint8&)B, (uint8&)A);
 
                         R = (int)(pow(((float)R / 255), (1 / val1)) * 255);
-                        if(R>255) R = 255;
-
                         G = (int)(pow(((float)G / 255), (1 / val2)) * 255);
-                        if(G>255) G = 255;
-
                         B = (int)(pow(((float)B / 255), (1 / val3)) * 255);
-                        if(B>255) B = 255;
+                        if(R > 255) R = 255;
+                        if(G > 255) G = 255;
+                        if(B > 255) B = 255;
+                        if(R < 0) R=0;
+                        if(G < 0) G=0;
+                        if(B < 0) B=0;
 
                         if(SYSTEM_8BIT) { ERROR_DIFF(R,G,B,*ptr); }
                         else { fl_assemble_rgba(ptr, srcbpp, srcfmt, R, G, B, A); }
@@ -207,7 +211,7 @@ bool FilterDesaturate::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelF
     int srcbpp = srcfmt->bytespp;
 
     uint32 pixel=0;
-    uint8 R=0, G=0, B=0, A=255;
+    int16 R=0, G=0, B=0, A=255;
 
     ERROR_DIFF_START();
 
@@ -216,18 +220,18 @@ bool FilterDesaturate::execute(uint8 **data, Fl_Rect &rect, int pitch, Fl_PixelF
         DUFFS_LOOP4(
                     {
                         if(srcbpp==1) {
-                            fl_disemble_rgb(ptr, srcbpp, srcfmt, pixel, R, G, B);								
+                            fl_disemble_rgb(ptr, srcbpp, srcfmt, pixel, (uint8&)R, (uint8&)G, (uint8&)B);
                         } else {
-                            fl_disemble_rgba(ptr, srcbpp, srcfmt, pixel, R, G, B, A);                                                        
+                            fl_disemble_rgba(ptr, srcbpp, srcfmt, pixel, (uint8&)R, (uint8&)G, (uint8&)B, (uint8&)A);
                         }
-	
-						R = G = B = (31 * R + 61 * G + 8 * B) / 100;
 
-						if(SYSTEM_8BIT) {
-							ERROR_DIFF(R,G,B,*ptr);
-						} else {
-							fl_assemble_rgba(ptr, srcbpp, srcfmt, R, G, B, A);
-						}
+                        R = G = B = (31 * R + 61 * G + 8 * B) / 100;
+
+                        if(SYSTEM_8BIT) {
+                            ERROR_DIFF(R,G,B,*ptr);
+                        } else {
+                            fl_assemble_rgba(ptr, srcbpp, srcfmt, R, G, B, A);
+                        }
                         ptr+=srcbpp;
                     }, width);
         ptr += srcskip;
