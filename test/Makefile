@@ -101,6 +101,9 @@ help: help.cpp $(FLCORELIB) $(FLUILIB)
 threads: threads.cpp $(FLCORELIB) $(FLUILIB)
 	$(CXX) -I.. $(CXXFLAGS) $< $(LDLIBS) $(THREADSLIBS) -o $@
 
+directory: directory.cpp $(FLCORELIB)
+	$(CXX) -I.. $(CXXFLAGS) $< $(LDLIBS) -lstdc++ -o $@
+
 # If you have libjpeg installed, you might want to try this test program:
 
 jpeg_image: jpeg_image.cpp
