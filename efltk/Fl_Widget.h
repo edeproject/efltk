@@ -27,6 +27,7 @@
 #define Fl_Widget_H
 
 #include "Fl_Style.h"
+#include "Fl_Exception.h"
 #include "Fl_Data_Source.h"
 
 class FL_API Fl_Callback_;
