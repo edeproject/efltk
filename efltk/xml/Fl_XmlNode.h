@@ -86,7 +86,7 @@ public:
     // Returns char data of node
     Fl_String &cdata() { return chardata_; }
     // Sets char data
-    void cdata(Fl_String &cdata) { chardata_ = cdata; }
+    void cdata(Fl_String cdata) { chardata_ = cdata; }
 
     // Removes node 'ptr'
     void remove_node(Fl_XmlNode *ptr);
