@@ -100,16 +100,22 @@
 
 #define WM_FLSELECT (WM_USER+0x0400)
 
+static bool ticks_started=false;
 static DWORD start;
 #define TIME_WRAP_VALUE	(~(DWORD)0)
 
 void fl_start_ticks() {
+	if(ticks_started) return;
+
     /* Set first ticks value */
     start = GetTickCount();
+	ticks_started = true;
 }
 
 uint32 Fl::ticks()
 {
+	if(!ticks_started) fl_start_ticks();
+
     DWORD now, ticks;
     now = GetTickCount();
     if ( now < start ) ticks = (TIME_WRAP_VALUE-start) + now;
@@ -773,7 +779,7 @@ class FLDropTarget : public IDropTarget
                 for ( i=0; i<nf; i++ ) nn += DragQueryFile( hdrop, i, 0, 0 );
                 nn += nf;
                 Fl::e_length = nn-1;
-                unsigned short *dst = (unsigned short*)malloc((nn+1)*sizeof(unsigned short));
+                WCHAR *dst = (WCHAR*)malloc((nn+1)*sizeof(WCHAR));
                 for ( i=0; i<nf; i++ )
                 {					
                     n = DragQueryFileW( hdrop, i, dst, nn );
@@ -786,7 +792,7 @@ class FLDropTarget : public IDropTarget
                 }
                 *dst = 0;
 				Fl::e_text = (char*)malloc((nn+1)*4);
-				Fl::e_text[fl_unicode2utf(dst, nn, Fl::e_text)] = '\0';
+				Fl::e_text[fl_unicode2utf((unsigned short*)dst, nn, Fl::e_text)] = '\0';
 				
                 target->handle(FL_PASTE);
                 free( Fl::e_text );

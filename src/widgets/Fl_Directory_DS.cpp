@@ -21,7 +21,9 @@
 #include <efltk/Fl_Directory_DS.h>
 
 #ifndef _WIN32
+
 # include <dirent.h>
+
 #else
 
 # include <windows.h>
@@ -29,8 +31,8 @@
 # include <direct.h>
 
 # define S_ISLNK(m)      (false)
+# define S_ISEXEC(m)     (((m) & _S_IFMT) == _S_IEXEC)
 #ifndef __GNUC__
-# define S_ISEXEC(m)      (((m) & _S_IFMT) == _S_IEXEC)
 # define S_ISREG(m)      (((m) & _S_IFMT) == _S_IFREG)
 # define S_ISDIR(m)      (((m) & _S_IFMT) == _S_IFDIR)
 # define S_ISBLK(m)      (((m) & _S_IFMT) == _S_IFBLK)

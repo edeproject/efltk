@@ -28,10 +28,10 @@
 
 void* fl_load_plugin(const char* name, const char* symbol)
 {
-	wchar_t wbuf[FL_PATH_MAX];
-	wchar_t wbuf2[FL_PATH_MAX];
-	if(name) fl_utf2unicode((const uchar*)name,strlen(name),wbuf);else return 0;
-	if(symbol) fl_utf2unicode((const uchar*)symbol,strlen(symbol),wbuf2);
+	WCHAR wbuf[FL_PATH_MAX];
+	WCHAR wbuf2[FL_PATH_MAX];
+	if(name) fl_utf2unicode((const uchar*)name,strlen(name), (unsigned short*)wbuf); else return 0;
+	if(symbol) fl_utf2unicode((const uchar*)symbol,strlen(symbol), (unsigned short*)wbuf2);
     HINSTANCE handle = LoadLibraryW(wbuf);
 	if (handle)
     {

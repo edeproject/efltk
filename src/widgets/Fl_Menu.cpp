@@ -44,7 +44,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__GNUC__)
 # define isnan(x) false
 #endif
 

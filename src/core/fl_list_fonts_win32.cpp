@@ -23,6 +23,8 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
+#define UNICODE 1
+
 #include <efltk/Fl.h>
 #include <efltk/win32.h>
 #include <ctype.h>
@@ -114,7 +116,7 @@ int Fl_Font_::encodings(const char**& arrayp) const
     HDC dc = fl_getDC();
     LOGFONTW lf;
     memset(&lf, 0, sizeof(lf));
-	fl_utf2unicode((const uchar*)name_+1,32,lf.lfFaceName);
+	fl_utf2unicode((const uchar*)name_+1, 32, (unsigned short*)lf.lfFaceName);
 	lf.lfCharSet = DEFAULT_CHARSET;
 
 #ifndef _WIN32_WCE
@@ -170,7 +172,7 @@ int Fl_Font_::sizes(int*& sizep) const
     HDC dc = fl_getDC();
 	LOGFONTW lf;
 	memset(&lf, 0, sizeof(lf));
-	fl_utf2unicode((const uchar*)name_+1, 32, lf.lfFaceName);
+	fl_utf2unicode((const uchar*)name_+1, 32, (unsigned short*)lf.lfFaceName);
 
 	lf.lfCharSet = DEFAULT_CHARSET;
 
@@ -250,7 +252,7 @@ static int CALLBACK enumcb(
     if(lplf->lfCharSet != ANSI_CHARSET) return 1;	
 
 	static char utf8buf[LF_FULLFACESIZE*6];
-	utf8buf[fl_unicode2utf(((ENUMLOGFONTW*)lplf)->elfFullName, LF_FULLFACESIZE, utf8buf)];
+	utf8buf[fl_unicode2utf((unsigned short*)((ENUMLOGFONTW*)lplf)->elfFullName, LF_FULLFACESIZE, utf8buf)];
 	const char *name = utf8buf;	
 
     bool bNeedBold = (lplf->lfWeight <= FW_NORMAL);

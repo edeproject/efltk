@@ -99,9 +99,9 @@ Fl_FontSize::Fl_FontSize(const char* name, int size, int charset)
   default: name--;
   }  
 
-  static unsigned short ucsbuf[LF_FACESIZE*2];
-  ucsbuf[fl_utf2unicode((uchar *)name, LF_FACESIZE, ucsbuf)] = '\0';
-  unsigned short *unicode_name = ucsbuf;	
+  static WCHAR ucsbuf[LF_FACESIZE*2];
+  ucsbuf[fl_utf2unicode((uchar *)name, LF_FACESIZE, (unsigned short*)ucsbuf)] = '\0';
+  WCHAR *unicode_name = ucsbuf;	
 
   HFONT font;
   LOGFONTW lFont;
