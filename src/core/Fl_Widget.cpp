@@ -55,12 +55,6 @@ void Fl_Widget::connect(int event, Fl_Signal_Callback *cb)
     signal_.connect(cb, 0, event);
 }
 
-void Fl_Widget::emit_signal(int event, void *opt_data)
-{
-    signal_.emit(event, this, user_data_, opt_data);
-}
-        
-
 void Fl_Widget::ctor_init(int X, int Y, int W, int H, const char* L)
 {
     style_    = default_style;

@@ -162,15 +162,17 @@ public:
     void  when(uchar i)       { when_ = i; }
 
     void do_callback(Fl_Widget *o, void *arg, void * widget_data = 0)
-        { emit_signal(FL_VALUE_CHANGED, widget_data); do_callback_(); }
+        { if (!emit_signal(FL_VALUE_CHANGED, widget_data)) do_callback_(); }
     void do_callback(Fl_Widget *o, long arg, void * widget_data = 0)
-        { emit_signal(FL_VALUE_CHANGED, widget_data); do_callback_(); }
+        { if (!emit_signal(FL_VALUE_CHANGED, widget_data)) do_callback_(); }
     void do_callback(void * widget_data = 0)
-        { emit_signal(FL_VALUE_CHANGED, widget_data); do_callback_(); }
+        { if (!emit_signal(FL_VALUE_CHANGED, widget_data)) do_callback_(); }
 
     void connect(int event, void * obj, Fl_Signal_Callback *cb);
     void connect(int event, Fl_Signal_Callback *cb);
-    void emit_signal(int event, void *opt_data=0);
+    int emit_signal(int event, void *opt_data=0){
+	return signal_.emit(event, this, user_data_, opt_data);
+    }
 
     Fl_Signal *signal() { return &signal_; }
 
