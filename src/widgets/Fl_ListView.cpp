@@ -77,7 +77,11 @@ void Fl_ListView::draw_row(unsigned row, int w, int h) const
 {
     if(selected_row(row)) {
 
-        fl_color(selection_color());
+		Fl_Color c = selection_color();
+		// If not focused, make color grayed
+		if(!focused()) c = fl_color_average(c, FL_GRAY, 0.40);
+
+        fl_color(c);
         fl_rectf(0, 0, w, h);
         return;
     }
@@ -255,6 +259,12 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
         case FL_FOCUS:
             reset_search();
         case FL_UNFOCUS:
+			if(!selection.empty()) {
+				for(unsigned n=0; n<selection.size(); n++) {
+					items[selection[n]]->set_damage(FL_DAMAGE_ALL);					
+				}	
+				redraw();
+			}
             return 1; //Keyboard focus
 
         case FL_MOVE:
