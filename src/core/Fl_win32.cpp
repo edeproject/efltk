@@ -312,46 +312,35 @@ static inline int fl_wait(double time_to_wait)
 #endif                       // USE_ASYNC_SELECT
 
     fl_unlock_function();
-    if (time_to_wait < 2147483.648)
-    {
+
+    if (time_to_wait < 2147483.648) {
         have_message = PeekMessage(&fl_msg, NULL, 0, 0, PM_REMOVE);
-        if (!have_message)
+        if(!have_message)
         {
-            int t = (int)(time_to_wait * 1000.0 + .5);
-            if (t <= 0)          // too short to measure
-            {
-                fl_lock_function(); return 0;
-            }
-            timerid = SetTimer(NULL, 0, t, NULL);
-            have_message = GetMessage(&fl_msg, NULL, 0, 0);
-            KillTimer(NULL, timerid);
+            int t = (int)(time_to_wait * 1000.0 + .5);			
+            if(t > 0) {
+				// Got some time to wait
+		        timerid = SetTimer(NULL, 0, t, NULL);
+				have_message = GetMessage(&fl_msg, NULL, 0, 0);
+				KillTimer(NULL, timerid);
+				if(fl_msg.message == WM_TIMER) have_message = 0; // TIMEOUT!
+			}
         }
-    }
-    else
-    {
+    } else {
         have_message = GetMessage(&fl_msg, NULL, 0, 0);
     }
+
     fl_lock_function();
+
+	if(!have_message) {
+		// No messages in given time (if not infinite),
+		// Return 0 to notify that timeout exceed.
+		return 0;
+	}
 
     // Execute the message we got, and all other pending messages:
     while (have_message)
     {
-#ifdef USE_ASYNC_SELECT
-        if (fl_msg.message == WM_FLSELECT)
-        {
-            // Got notification for socket
-			for (unsigned i = 0; i < fd.size(); i ++)
-            {
-				struct FD *f = (struct FD*)fd[i];
-                if(f->fd == (int)fl_msg.wParam)
-				{
-					(f->cb)(f->fd, f->arg);
-					break;
-				}
-			}
-            // looks like it is best to do the dispatch-message anyway:
-        }
-#endif
         if (fl_msg.message == WM_USER)
         {
             // This is used by Fl::awake() and by WndProc() in an attempt
@@ -366,9 +355,16 @@ static inline int fl_wait(double time_to_wait)
             DispatchMessage(&fl_msg);
         }
         have_message = PeekMessage(&fl_msg, NULL, 0, 0, PM_REMOVE);
+		if(fl_msg.hwnd && !fl_find(fl_msg.hwnd)) {
+			// This is not for us, send it back and return immediately!
+			// Only case I have seen this happend is DND operations, 
+			// more specific IDropTarger::DragEnter
+			SendMessage(fl_msg.hwnd, fl_msg.message, fl_msg.wParam, fl_msg.lParam);
+			break;
+		}		
     }
 
-    // This should return 0 if only timer events were handled:
+    // Return 1, since there's some events we have handled.
     return 1;
 }
 
@@ -526,9 +522,9 @@ void Fl::copy(const char *stuff, int len, bool clipboard)
 		// set up for "delayed rendering":
 		if (OpenClipboard(fl_xid(Fl::first_window()))) {
 			EmptyClipboard();
-			if (fl_is_nt4()) {
+			/*if (fl_is_nt4()) {
 				SetClipboardData(CF_UNICODETEXT, NULL);
-			} else {
+			} else */{
 				SetClipboardData(CF_TEXT, NULL);
 			}
 			CloseClipboard();
@@ -555,9 +551,9 @@ void Fl::paste(Fl_Widget &receiver, bool clipboard)
 		UINT id = *i;
 		GlobalUnlock(hh);
 		HANDLE h;
-		if (fl_is_nt4()) {
+		/*if (fl_is_nt4()) {
 			h = GetClipboardData(CF_UNICODETEXT);
-		} else {
+		} else */{
 			h = GetClipboardData(CF_TEXT);
 		}
 		if (h) {
@@ -597,7 +593,7 @@ void Fl::paste(Fl_Widget &receiver, bool clipboard)
 HANDLE fl_global_selection(int clipboard)
 {
 	HANDLE h;
-    if (fl_is_nt4()) {
+    /*if (fl_is_nt4()) {
 		int l = fl_utf_nb_char((unsigned char*)fl_selection_buffer[1], fl_selection_length[1]);	
 		h = GlobalAlloc(GHND, (l+1) * sizeof(short));
         if (h) {
@@ -607,7 +603,7 @@ HANDLE fl_global_selection(int clipboard)
 			GlobalUnlock(h);
 			SetClipboardData(CF_UNICODETEXT, h);
         }
-	} else {
+	} else */{
 		h = GlobalAlloc(GHND, fl_selection_length[1]+1);
 		if (h) {
 			LPSTR p = (LPSTR)GlobalLock(h);
