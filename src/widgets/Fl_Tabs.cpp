@@ -609,6 +609,11 @@ int Fl_Tabs::handle(int event) {
 
     switch (event) {
 
+		case FL_RELEASE:
+			if(when() & FL_WHEN_RELEASE)
+				do_callback();
+		break;
+
         case FL_PUSH:
             switch (m_tabsMode) {
                 case FL_ALIGN_TOP:  if (ey > m_tabsHeight) goto DEFAULT;
@@ -657,7 +662,7 @@ int Fl_Tabs::handle(int event) {
                 } else {
                     i++; if (i >= children()) i = 0;
                 }
-                value(child(i)); do_callback();
+                value(child(i));
                 return 1;
             }
             if (!selected) return 0;
@@ -702,20 +707,27 @@ Fl_Widget* Fl_Tabs::value() {
 }
 
 // Setting the value hides all other children, and makes this one
-// visible, iff it is really a child:
-int Fl_Tabs::value(Fl_Widget *newvalue) {
-    int ret = 0;
+// visible, if it is really a child:
+int Fl_Tabs::value(Fl_Widget *newvalue) 
+{	
+	if(!contains(newvalue)) return 0;
+	if(value_==newvalue) { value_->show(); return 0; }
+
     for (int i = 0; i < children(); i++) {
         Fl_Widget* o = child(i);
-        if (o == newvalue) {
-            if (!o->visible()) ret = 1;
+        if (o == newvalue) {			
             o->show();
         } else {
             o->hide();
         }
     }
+
+	if(when() & FL_WHEN_CHANGED)
+		do_callback();
+
     relayout();
-    return ret;
+	redraw();
+    return 1;
 }
 
 enum {LEFT, RIGHT, SELECTED};
