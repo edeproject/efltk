@@ -83,7 +83,7 @@ CubeMain.o: CubeViewUI.h CubeView.h
 CubeView.o: CubeView.h
 
 glpuzzle: glpuzzle.cpp $(FLUILIB) $(FLGLLIB) $(FLCORELIB)
-	$(CXX) -I.. $(CXXFLAGS) $< $(GLDLIBS) $(LDLIBS) -o $@
+	$(CXX) -I.. $(CXXFLAGS) $< $(GLDLIBS) $(LDLIBS) -o $@ -lsupc++
 cube: cube.cpp $(FLGLLIB) $(FLCORELIB) $(FLUILIB)
 	$(CXX) -I.. $(CXXFLAGS) $< $(GLDLIBS) $(LDLIBS) -o $@
 fullscreen: fullscreen.cpp $(FLGLLIB) $(FLCORELIB) $(FLUILIB)

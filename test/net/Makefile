@@ -4,10 +4,6 @@
 
 include ../../makeinclude
 
-ifneq ($(UNIXODBCLIB), )
-# Add ODBC, if not disabled..
-endif
-
 CPPFILES = ftp_socket.cpp imap_connect.cpp
 ALL = ftp_socket imap_connect
 

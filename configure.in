@@ -216,6 +216,7 @@ FLGLLIB="\${EFLTK_BUILDDIR}/lib/libefltk_gl${DSOEXT}"
 FLIMAGESLIB="\${EFLTK_BUILDDIR}/lib/libefltk_images${DSOEXT}"
 FLXMLLIB="\${EFLTK_BUILDDIR}/lib/libefltk_xml${DSOEXT}"
 FLODBCLIB="\${EFLTK_BUILDDIR}/lib/libefltk_odbc${DSOEXT}"
+FLNETLIB="\${EFLTK_BUILDDIR}/lib/libefltk_net${DSOEXT}"
 
 CFLAGS="$CFLAGS -DFL_SHARED"
 CXXFLAGS="$CXXFLAGS -DFL_SHARED"
@@ -226,6 +227,7 @@ case $uname in
 	    FLIMAGESLIB="\${EFLTK_BUILDDIR}/lib/libefltk_images.2.dll.a"
 	    FLXMLLIB="\${EFLTK_BUILDDIR}/lib/libefltk_xml.2.dll.a"
 	    FLODBCLIB="\${EFLTK_BUILDDIR}/lib/libefltk_odbc.2.dll.a"
+	    FLNETLIB="\${EFLTK_BUILDDIR}/lib/libefltk_net.2.dll.a"
 	;;
 esac
 
@@ -238,6 +240,7 @@ if test x$enable_static = xyes; then
 	FLIMAGESLIB="\${EFLTK_BUILDDIR}/lib/libefltk_images${LIBEXT}"
 	FLXMLLIB="\${EFLTK_BUILDDIR}/lib/libefltk_xml${LIBEXT}"
 	FLODBCLIB="\${EFLTK_BUILDDIR}/lib/libefltk_odbc${LIBEXT}"
+	FLNETLIB="\${EFLTK_BUILDDIR}/lib/libefltk_net${LIBEXT}"
 fi
 
 dnl# AC_PROG_INSTALL
@@ -584,6 +587,7 @@ AC_SUBST(FLFORMSLIB)
 AC_SUBST(FLIMAGESLIB)
 AC_SUBST(FLXMLLIB)
 AC_SUBST(FLODBCLIB)
+AC_SUBST(FLNETLIB)
 
 AC_SUBST(DSOLIBS)
 AC_SUBST(BUILDTARGETS)
