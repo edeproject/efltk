@@ -846,7 +846,7 @@ bool Fl_ListView::select_only_row(unsigned row)
             if (row_changed)
                 do_callback(FL_DATA_CHANGE);
         }
-        else set_changed();
+        set_changed();
     }
     cur_row = row;
     return true;
