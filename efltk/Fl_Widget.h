@@ -80,7 +80,7 @@ public:
     void style(const Fl_Style& s) { style_ = &s; }
     bool copy_style(const Fl_Style* s);
 
-    static void default_glyph(const Fl_Widget *w, int glyph, int x, int y, int w, int h, Fl_Flags flags);
+    static void default_glyph(const Fl_Widget *widget, int glyph, int x, int y, int w, int h, Fl_Flags flags);
 
     Fl_Group *parent() const    { return parent_; }
     void    parent(Fl_Group* w) { parent_ = w; }

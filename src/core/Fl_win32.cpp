@@ -1132,7 +1132,7 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
             if (!window) break;
             //if (!Fl::modal_ || window == Fl::modal_)
             if (!Fl::grab() && !(Fl::modal() && window != Fl::modal()))
-                window->do_callback(FL_WINDOW_CLOSE);
+                window->do_callback();
             return 1;
 
         case WM_PAINT:
