@@ -50,7 +50,7 @@ CPPFILES = demo.cpp sizes.cpp hello.cpp resizable.cpp scroll.cpp image.cpp file_
 	dialog.cpp directory.cpp listview_ds.cpp xml_test.cpp xml_test2.cpp \
 	exceptions.cpp layout2.cpp socket.cpp combobox.cpp labelwidth.cpp \
 	labelwidth2.cpp button_groups.cpp date_time_widgets.cpp input_browser.cpp \
-	split.cpp
+	split.cpp group_grow.cpp
 
 ALL =   demo sizes hello resizable scroll image file_chooser menubar browser \
 	threads progress editor inactive checkers valuators boxtype \
@@ -62,6 +62,7 @@ ALL =   demo sizes hello resizable scroll image file_chooser menubar browser \
 	listview alphablend thread_ball images image_loader layout2 split \
 	tabs1 tabs2 popup_window symbols calendar maskedinput bitmap utf8 \
 	dialog directory listview_ds xml_test xml_test2 exceptions socket combobox \
+	group_grow \
 	glpuzzle cube fullscreen gl_overlay shape CubeView
 
 all: demos

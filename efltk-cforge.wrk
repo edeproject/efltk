@@ -1,7 +1,7 @@
 #
 #	File is generated automatically! Don't edit it!
 #
-# %IdeVersion:	3111
+# %IdeVersion:	3115
 #
 # %IdeAuthor:	Alexey Parshin
 #
@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x40042c
+# %FirstUniqueId:	0x400431
 PROJECT_DIR = /develop/CVS/efltk/
 
 IDE_WORKING_DIR = /develop/CVS/efltk/
@@ -30,7 +30,7 @@ IDE_BLIND_LIBS = -L./
 
 MAKEFLAGS = $(MAKEOPTIONS)
 
-MAKEOPTIONS = -j4
+MAKEOPTIONS = 
 
 CCLINK = $(CC)
 
@@ -38,11 +38,11 @@ LD = $(CC)
 
 LDOPTIONS = $(LDFLAGS) $(IDE_BLIND_LDOPTIONS)
 
-LDFLAGS = -L. -L./lib -L/usr/X11R6/lib -lXext -liconv -lodbc -lpng -ljpeg -lm -lz -lstdc++
+LDFLAGS = -L. -L./lib -L/usr/X11R6/lib -lX11 -lXext -liconv -lodbc -lpng -ljpeg -lm -lz -lstdc++ -lsocket -lnsl
 
 IDE_BLIND_LDOPTIONS = -L./
 
-IDE_PROJECT_TOOLS = MAKE CCLINK G++ IDE_C_PARSER GCC TAGS IDE_CXX_PARSER WEB_BROWSER
+IDE_PROJECT_TOOLS = MAKE CCLINK G++ IDE_C_PARSER GCC TAGS IDE_CXX_PARSER WEB_BROWSER BASH
 
 IDE_RCS_TYPE = cvs
 
@@ -103,6 +103,10 @@ IDE_CXX_PARSER_OPTIONS = -I/usr/local/lib/gcc-lib/sparc-sun-solaris2.8/2.95.3/..
 WEB_BROWSER = $(BROWSER)
 
 WEB_BROWSER_FLAGS = 
+
+BASH = sh
+
+BASHFLAGS = 
 
 lib/libefltk.so  :: 	lib/Fl.o\
 	lib/Fl_Align_Group.o\
@@ -500,10 +504,14 @@ test/split  :: 	test/split.o
 	$(WEB_BROWSER) $$full_name
 
 test/hello  :: 	test/hello.o
-	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES)
+	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 test/tabs  :: 	test/tabs.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+group_grow  :: 	test/group_grow.o\
+	test/Fl_Group.o
+	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %ObjectFilesLinking
 lib/Fl_ODBC_Database.o : src/db/odbc/Fl_ODBC_Database.cpp
@@ -1630,6 +1638,14 @@ lib/layout_sizes.o : src/widgets/layout_sizes.cpp
 	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
 
 
+test/group_grow.o : test/group_grow.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+test/Fl_Group.o : src/core/Fl_Group.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
 # DO NOT DELETE
 
 lib/Fl_ODBC_Database.o :	src/db/odbc/fl_odbc.h\
@@ -2510,7 +2526,7 @@ lib/Fl_Gif.o :	src/core/fl_internal.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h
-lib/Fl_Group.o :	efltk/Fl_Tooltip.h\
+lib/Fl_Group.o :	src/widgets/layout_sizes.h\
 	efltk/Fl_Widget.h\
 	efltk/Fl_Data_Source.h\
 	efltk/Fl_Data_Fields.h\
@@ -2529,6 +2545,7 @@ lib/Fl_Group.o :	efltk/Fl_Tooltip.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h\
+	efltk/Fl_Tooltip.h\
 	efltk/Fl.h\
 	efltk/fl_draw.h\
 	efltk/Fl_Device.h\
@@ -6814,7 +6831,7 @@ lib/Fl_FTP_Connect.o :	efltk/net/Fl_FTP_Connect.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
 	efltk/Fl_String_List.h
-test/imap_connect.o :	test/net/mail_accounts.h\
+test/imap_connect.o :	test/mail_accounts.h\
 	efltk/Fl_Dialog.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
@@ -7209,7 +7226,7 @@ lib/Fl_Mail_Message.o :	efltk/net/Fl_Mail_Message.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_String_List.h\
 	efltk/Fl_String.h
-test/mail_accounts.o :	test/net/mail_accounts.h\
+test/mail_accounts.o :	test/mail_accounts.h\
 	efltk/Fl_Dialog.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
@@ -9814,3 +9831,27 @@ lib/layout_sizes.o :	src/widgets/layout_sizes.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h
+test/group_grow.o :	efltk/Fl_Button.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Window.h\
+	efltk/Fl.h

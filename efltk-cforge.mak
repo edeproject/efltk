@@ -1,7 +1,7 @@
 #
 #	File is generated automatically! Don't edit it!
 #
-# %IdeVersion:	3111
+# %IdeVersion:	3115
 #
 # %IdeAuthor:	Alexey Parshin
 #
@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x40042c
+# %FirstUniqueId:	0x400431
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -30,7 +30,7 @@ IDE_BLIND_LIBS = -L./
 
 MAKEFLAGS = $(MAKEOPTIONS)
 
-MAKEOPTIONS = -j4
+MAKEOPTIONS = 
 
 CCLINK = $(CC)
 
@@ -38,11 +38,11 @@ LD = $(CC)
 
 LDOPTIONS = $(LDFLAGS) $(IDE_BLIND_LDOPTIONS)
 
-LDFLAGS = -L. -L./lib -L/usr/X11R6/lib -lXext -liconv -lodbc -lpng -ljpeg -lm -lz -lstdc++
+LDFLAGS = -L. -L./lib -L/usr/X11R6/lib -lX11 -lXext -liconv -lodbc -lpng -ljpeg -lm -lz -lstdc++ -lsocket -lnsl
 
 IDE_BLIND_LDOPTIONS = -L./
 
-IDE_PROJECT_TOOLS = MAKE CCLINK G++ IDE_C_PARSER GCC TAGS IDE_CXX_PARSER WEB_BROWSER
+IDE_PROJECT_TOOLS = MAKE CCLINK G++ IDE_C_PARSER GCC TAGS IDE_CXX_PARSER WEB_BROWSER BASH
 
 IDE_RCS_TYPE = cvs
 
@@ -103,6 +103,10 @@ IDE_CXX_PARSER_OPTIONS = -I/usr/local/lib/gcc-lib/sparc-sun-solaris2.8/2.95.3/..
 WEB_BROWSER = $(BROWSER)
 
 WEB_BROWSER_FLAGS = 
+
+BASH = sh
+
+BASHFLAGS = 
 
 # %UniqueId:	0x400002
 # %TargetType:	DLL
@@ -871,7 +875,7 @@ test/split  :: 	test/split.o
 # %IncDir:	test
 # %ObjsDir:	test
 test/hello  :: 	test/hello.o
-	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES)
+	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %UniqueId:	0x400423
 # %TargetType:	C_EXE
@@ -882,6 +886,17 @@ test/hello  :: 	test/hello.o
 # %ObjsDir:	test
 test/tabs  :: 	test/tabs.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+# %UniqueId:	0x40042f
+# %TargetType:	C++_EXE
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	test
+# %IncDir:	test
+# %ObjsDir:	test
+group_grow  :: 	test/group_grow.o\
+	test/Fl_Group.o
+	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %ObjectFilesLinking
 # %TargetType:	C++_OBJ
@@ -2851,6 +2866,20 @@ lib/layout_sizes.o : src/widgets/layout_sizes.cpp
 	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
 
 
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40042f
+# %SourceTarget:	0x400430
+test/group_grow.o : test/group_grow.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40042f
+# %SourceTarget:	0x400293
+test/Fl_Group.o : src/core/Fl_Group.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
 # DO NOT DELETE
 
 lib/Fl_ODBC_Database.o :	src/db/odbc/fl_odbc.h\
@@ -3731,7 +3760,7 @@ lib/Fl_Gif.o :	src/core/fl_internal.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h
-lib/Fl_Group.o :	efltk/Fl_Tooltip.h\
+lib/Fl_Group.o :	src/widgets/layout_sizes.h\
 	efltk/Fl_Widget.h\
 	efltk/Fl_Data_Source.h\
 	efltk/Fl_Data_Fields.h\
@@ -3750,6 +3779,7 @@ lib/Fl_Group.o :	efltk/Fl_Tooltip.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h\
+	efltk/Fl_Tooltip.h\
 	efltk/Fl.h\
 	efltk/fl_draw.h\
 	efltk/Fl_Device.h\
@@ -8035,7 +8065,7 @@ lib/Fl_FTP_Connect.o :	efltk/net/Fl_FTP_Connect.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
 	efltk/Fl_String_List.h
-test/imap_connect.o :	test/net/mail_accounts.h\
+test/imap_connect.o :	test/mail_accounts.h\
 	efltk/Fl_Dialog.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
@@ -8430,7 +8460,7 @@ lib/Fl_Mail_Message.o :	efltk/net/Fl_Mail_Message.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_String_List.h\
 	efltk/Fl_String.h
-test/mail_accounts.o :	test/net/mail_accounts.h\
+test/mail_accounts.o :	test/mail_accounts.h\
 	efltk/Fl_Dialog.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
@@ -11035,6 +11065,30 @@ lib/layout_sizes.o :	src/widgets/layout_sizes.h\
 	efltk/Fl_Labeltype.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h
+test/group_grow.o :	efltk/Fl_Button.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Window.h\
+	efltk/Fl.h
 
 
 # %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x6
@@ -11341,7 +11395,7 @@ lib/layout_sizes.o :	src/widgets/layout_sizes.h\
 # %TargetInfo efltk/Fl_Color.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400079,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Boxtype.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40007a,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Window.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40007b,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Group.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40007c,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Group.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40007c,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Widget_List.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40007d,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Widget.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40007e,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Data_Source.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40007f,	TargetType=INC,	IDEFlags=0xe
@@ -11568,9 +11622,9 @@ lib/layout_sizes.o :	src/widgets/layout_sizes.h\
 # %TargetInfo tools/etranslate/extract.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003c3,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Combo_Box.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003c5,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Button_Group.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003cd,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo test/net/mail_accounts.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003ce,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo test/net/file_small.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x4003cf,	TargetType=XPM,	IDEFlags=0xe
-# %TargetInfo test/net/folder_small.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d0,	TargetType=XPM,	IDEFlags=0xe
+# %TargetInfo test/mail_accounts.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003ce,	TargetType=INC,	IDEFlags=0xc
+# %TargetInfo test/net/file_small.xpm	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4003cf,	TargetType=XPM,	IDEFlags=0xe
+# %TargetInfo test/net/folder_small.xpm	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4003d0,	TargetType=XPM,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Check_Buttons.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d2,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Radio_Buttons.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4003d3,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Int_Input.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4003e8,	TargetType=INC,	IDEFlags=0xe
@@ -11586,6 +11640,7 @@ lib/layout_sizes.o :	src/widgets/layout_sizes.h\
 # %TargetInfo efltk/Fl_Rect.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400429,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Point.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40042a,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Size.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40042b,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo test/group_grow.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400430,	TargetType=C++,	IDEFlags=0x6
 
 
 # %UniqueId:	0x400001
@@ -11663,6 +11718,7 @@ lib/layout_sizes.o :	src/widgets/layout_sizes.h\
 #	0x40033a
 #	0x4003ed
 #	0x400423
+#	0x40042f
 #
 # %UniqueId:	0x40038c
 # %IDEFlags:	0

@@ -47,6 +47,14 @@
  * EFLTK have also addiotinal layout_align() functions, which allows you set automatic widget resizing.
  * @see layout_align(Fl_Align)
  */
+
+enum Fl_Group_Grow_Mode {
+    FL_GROUP_NO_GROW = 0,
+    FL_GROUP_GROW_HORIZONTAL,
+    FL_GROUP_GROW_VERTICAL,
+    FL_GROUP_GROW_BOTH
+};
+
 class FL_API Fl_Group : public Fl_Widget {
 public:
 
@@ -157,22 +165,33 @@ public:
     uchar layout_spacing() const { return m_layout_spacing; }
     void layout_spacing(const uchar offset) { m_layout_spacing = offset; }
 
+    Fl_Group_Grow_Mode auto_grow() const { return m_auto_grow; }
+    void auto_grow(Fl_Group_Grow_Mode agm) { m_auto_grow = agm; }
+
 protected:
     void draw_child(Fl_Widget&) const;
     void update_child(Fl_Widget&) const;
     void draw_outside_label(Fl_Widget&) const;    
 
 private:
+
+    /** ctor initializer - used in both ctors */
+    void ctor_init();
+
     uchar m_layout_spacing;
     int m_focus;
 
-    Fl_Widget_List m_array;
-    Fl_Int_List m_sizes; // remembered initial sizes of children
+    Fl_Widget_List     m_array;
+    Fl_Int_List        m_sizes; // remembered initial sizes of children
 
-    Fl_Widget *m_resizable;
-    Fl_Data_Source *m_data_source;
+    Fl_Widget         *m_resizable;
+    Fl_Data_Source    *m_data_source;
 
-    static Fl_Group *m_current;
+    static Fl_Group   *m_current;
+
+    Fl_Group_Grow_Mode m_auto_grow;
+    int                m_auto_grow_min_width;
+    int                m_auto_grow_min_height;
 };
 
 // This dummy class can be used in constructors to set the parent
