@@ -134,6 +134,7 @@ MenuWindow::MenuWindow(Fl_Widget *widget, Fl_Menu_ *menu, int *indexes, int leve
     set_override();
     style(default_style);
 
+    child_win = 0;
     add_items = false;
     widget_ = widget;
     menu_ = menu;
@@ -813,6 +814,7 @@ int Fl_Menu_::popup(int X, int Y, int W, int H)
 
     if(w.child_win) {
         delete w.child_win;
+        w.child_win=0;
     }
 
     Fl::modal(saved_modal, saved_grab);
@@ -941,6 +943,7 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
     w.hide();
     if(w.child_win) {
         delete w.child_win;
+        w.child_win=0;
     }
     selected_ = -1;
     redraw(FL_DAMAGE_HIGHLIGHT);
