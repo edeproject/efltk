@@ -30,6 +30,7 @@
 #include <efltk/Fl_Window.h>
 #include <efltk/Fl_Wordwrap_Input.h>
 #include <efltk/Fl_Style_Set.h>
+#include <efltk/Fl_Color_Chooser.h>
 
 #include "Fluid_Plugins.h"
 #include "Fluid_Image.h"
@@ -283,7 +284,6 @@ void sort(Fl_Type *parent) {
 // The control panels!
 
 #include "widget_panel.h"
-#include <efltk/Fl_Color_Chooser.h>
 
 // All the callbacks use the argument to indicate whether to load or store.
 // This avoids the need for pointers to all the widgets, and keeps the
@@ -312,10 +312,10 @@ void name_cb(Fl_Input* o, void *v) {
     } else {
         if (numselected == 1) {
             current_widget->name(o->value());
-      // I don't update window title, as it probably is being closed
-      // and wm2 (a window manager) barfs if you retitle and then
-      // hide a window:
-      // o->window()->label(current_widget->title());
+			// I don't update window title, as it probably is being closed
+			// and wm2 (a window manager) barfs if you retitle and then
+			// hide a window:
+			// o->window()->label(current_widget->title());
         }
     }
 
@@ -363,7 +363,8 @@ void label_cb(Fl_Input* i, void *v)
 }
 
 static Fl_String oldtooltip;
-void tooltip_cb(Fl_Wordwrap_Input* i, void *v) {
+void tooltip_cb(Fl_Wordwrap_Input* i, void *v) 
+{
     if (v == LOAD) {
         if (current_widget->o->is_window()) { i->hide(); return; }
         i->show();
@@ -379,13 +380,15 @@ void tooltip_cb(Fl_Wordwrap_Input* i, void *v) {
     if (i->label_color() != c) { i->label_color(c); i->redraw_label(); }
 }
 
-void x_cb(Fl_Value_Input* i, void *v) {
+void x_cb(Fl_Value_Input* i, void *v) 
+{
     int x;
     if (v != LOAD) {
         x = int(i->value());
         if (x <= -1) x = -1;
         for_all_selected_widgets() {
             Fl_Widget_Type* q = (Fl_Widget_Type*)o;
+			if(q->o->parent()) q->o->parent()->init_sizes();
             q->o->position(x, q->o->y());
             q->redraw();      
         }
@@ -395,13 +398,15 @@ void x_cb(Fl_Value_Input* i, void *v) {
     i->value(x);
 }
 
-void y_cb(Fl_Value_Input* i, void *v) {
+void y_cb(Fl_Value_Input* i, void *v) 
+{
     int y;
     if (v != LOAD) {
         y = int(i->value());
         if (y <= -1) y = -1;
         for_all_selected_widgets() {
             Fl_Widget_Type* q = (Fl_Widget_Type*)o;
+			if(q->o->parent()) q->o->parent()->init_sizes();
             q->o->position(q->o->x(), y);
             q->redraw();
         }
@@ -411,13 +416,15 @@ void y_cb(Fl_Value_Input* i, void *v) {
     i->value (y);
 }
 
-void width_cb(Fl_Value_Input* i, void *v) {
+void width_cb(Fl_Value_Input* i, void *v) 
+{
     int width;
     if (v != LOAD) {
         width = int(i->value());
         if (width <= 0) width = 0;
         for_all_selected_widgets() {
             Fl_Widget_Type* q = (Fl_Widget_Type*)o;
+			if(q->o->parent()) q->o->parent()->init_sizes();
             q->o->size(width, q->o->h());
             q->redraw();
         }
@@ -427,13 +434,15 @@ void width_cb(Fl_Value_Input* i, void *v) {
     i->value (width);
 }
 
-void height_cb(Fl_Value_Input* i, void *v) {
+void height_cb(Fl_Value_Input* i, void *v) 
+{
     int height;
     if (v != LOAD) {
         height = int(i->value());
         if (height <= 0) height = 0;
         for_all_selected_widgets() {
             Fl_Widget_Type* q = (Fl_Widget_Type*)o;
+			if(q->o->parent()) q->o->parent()->init_sizes();
             q->o->size(q->o->w(), height);
             q->redraw();
         }  
@@ -443,7 +452,8 @@ void height_cb(Fl_Value_Input* i, void *v) {
     i->value (height);
 }
 
-void set_xy_cb(Fl_Check_Button* i, void *v) {
+void set_xy_cb(Fl_Check_Button* i, void *v) 
+{
     if (v == LOAD) {
         if (current_widget->is_window())
             i->show();
