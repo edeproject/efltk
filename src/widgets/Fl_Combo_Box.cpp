@@ -299,6 +299,8 @@ void Fl_Combo_Box_Panel::draw()
         fl_font(lv->text_font(), lv->text_size());
     }
 
+	fl_push_clip(X,Y,W,H);
+
 	Fl_Color text_color;
     for (unsigned c = 0; c < item->columns(); c++) {
         if (!lv->visible_col(c))
@@ -328,6 +330,7 @@ void Fl_Combo_Box_Panel::draw()
 
         X += ww;
     }
+	fl_pop_clip();
 }
 
 int Fl_Combo_Box_Panel::handle(int event) {
