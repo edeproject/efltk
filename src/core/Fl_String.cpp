@@ -163,13 +163,15 @@ bool Fl_String::casecmp(Fl_String &s) {
 Fl_String Fl_String::operator + (const char * s) const
 {
     char *temp;
-    int len = 0;
-    if(s) len = length() + strlen(s) + 1;
-    else len = length() + 1;
+    int len = length();
+    int slen = 0;
+    if(s) { slen=strlen(s); len += slen; }
 
-    temp = (char*)malloc(len);
-    strcpy(temp, str_);
-    if(s) strcat(temp, s);
+    temp = (char*)malloc(len+1);
+    strncpy(temp, str_, length());
+    if(s) strncpy(temp+length(), s, slen);
+
+    temp[len] = '\0';
 
     Fl_String s1(temp, len, true);
     return s1;
@@ -177,10 +179,12 @@ Fl_String Fl_String::operator + (const char * s) const
 
 Fl_String Fl_String::operator + (const Fl_String& s) const
 {
-    int len = length() + s.length() + 1;
-    char *temp = (char*)malloc(len);
-    strcpy(temp, str_);
-    if(s.length()) strcat(temp, s.c_str());
+    int len = length() + s.length();
+    char *temp = (char*)malloc(len+1);
+    strncpy(temp, str_, length());
+    if(s.length()) strncpy(temp+length(), s.c_str(), s.length());
+
+    temp[len] = '\0';
 
     Fl_String s1(temp, len, true);
     return s1;
@@ -189,18 +193,24 @@ Fl_String Fl_String::operator + (const Fl_String& s) const
 Fl_String& Fl_String::operator += (const char * s)
 {
     if(s) {
-        len_ += strlen(s);
-        str_ = (char *)realloc(str_, len_ + 1);
-        strcat(str_, s);
+        int oldlen = len_;
+        int slen = strlen(s);
+        len_ += slen;
+        str_ = (char *)realloc(str_, len_+1);
+        strncpy(str_+oldlen, s, slen);
+        str_[len_] = '\0';
     }
     return *this;
 }
 
 Fl_String& Fl_String::operator += (const Fl_String& s)
 {
+    int oldlen = len_;
     len_ += s.length();
-    str_ = (char *) realloc(str_, len_ + 1);
-    if(s.length()) strcat(str_, s.str_);
+    str_ = (char *) realloc(str_, len_+1);
+    if(s.length()) strncpy(str_+oldlen, s.str_, s.length());
+    str_[len_] = '\0';
+
     return *this;
 }
 //------------------------------------------------------------------------------
@@ -208,8 +218,10 @@ Fl_String& Fl_String::operator += (const Fl_String& s)
 //------------------------------------------------------------------------------
 void Fl_String::clear()
 {
-    str_ = (char *) realloc(str_, sizeof(char));
+    free((char*)str_);
+    str_ = (char*)malloc(1);
     str_[0] = '\0';
+    len_ = 0;
 }
 
 Fl_String Fl_String::trimRight() const
