@@ -1890,7 +1890,11 @@ void Fl_Widget_Type::write_code1()
 
     if (member_of && !callback().empty() && !is_name(callback())) {
         const char* cn = callback_name();
-        const char* ut = user_data_type().empty() ? "void*" : user_data_type();
+        const char* ut;
+        if (user_data_type().empty())
+            ut = "void*";
+        else
+            ut = user_data_type();
         write_public(0);
         write_h("%sinline void %s_i(%s*, %s);\n", indent(), cn, subclass, ut);
         write_h("%sstatic void %s(%s*, %s);\n", indent(), cn, subclass, ut);
