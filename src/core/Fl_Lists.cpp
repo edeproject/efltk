@@ -5,6 +5,9 @@
 /////////////////////////////////
 // FL_PTR_LIST IMPLEMENTATION: //
 /////////////////////////////////
+#ifdef _WIN32_WCE
+#include <wince.h>
+#endif
 
 #include <efltk/Fl_Ptr_List.h>
 

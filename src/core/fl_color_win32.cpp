@@ -28,6 +28,9 @@
 #include <config.h>
 #include <efltk/win32.h>
 #include <stdio.h>
+#ifdef _WIN32_WCE
+extern 
+#endif
 
 // The current color:
 Fl_Color    fl_color_;

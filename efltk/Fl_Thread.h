@@ -9,7 +9,9 @@
 
 #ifdef _WIN32
 
+#ifndef _WIN32_WCE
 # include <process.h>
+#endif
 # include <windows.h>
 # include <limits.h>
 

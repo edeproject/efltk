@@ -98,9 +98,10 @@
 
 #define WM_FLSELECT (WM_USER+0x0400)
 
-void Fl::sleep_ms(int ms) {
+/*void Fl::sleep_ms(int ms) {
     Sleep(ms);
 }
+*/
 #include <stdio.h>
 void fl_open_display()
 {

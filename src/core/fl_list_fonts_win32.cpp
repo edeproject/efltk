@@ -29,7 +29,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <config.h>
-
+#include <efltk/fl_utf8.h>
 #include <stdio.h>
 
 // turn a stored font name into a pretty name:
@@ -63,7 +63,9 @@ static const char *charset_to_str(DWORD ch)
 		case EASTEUROPE_CHARSET:	return "Eastern Europe";
 		case GB2312_CHARSET:		return "Gb2312";
 		case GREEK_CHARSET:			return "Greek";
+#ifndef _WIN32_WCE
 		case HANGUL_CHARSET:		return "Hangul";
+#endif
 		case MAC_CHARSET:			return "MAC";
 		case OEM_CHARSET:			return "OEM";
 		case RUSSIAN_CHARSET:		return "Russian";
@@ -110,12 +112,22 @@ int Fl_Font_::encodings(const char**& arrayp) const
 	enc_font = (Fl_Font_*)this;
 
     HDC dc = fl_getDC();
+#ifndef _WIN32_WCE
     LOGFONT lf;
+#else
+    LOGFONTW lf;
+#endif
     memset(&lf, 0, sizeof(lf));
 	strncpy(lf.lfFaceName, name_+1, 32);
 	lf.lfCharSet = DEFAULT_CHARSET;
 
+
+#ifndef _WIN32_WCE
     EnumFontFamiliesEx(dc, &lf, (FONTENUMPROC)encoding_enumcb, 0, 0);
+#else
+    
+	EnumFontFamilies(dc, NULL, (FONTENUMPROC)encoding_enumcb, 0);
+#endif
 
 	if(charsets_->size()==0) charsets_->append("Unknown");
 	else charsets_->sort();
@@ -161,12 +173,21 @@ int Fl_Font_::sizes(int*& sizep) const
 	size_font = (Fl_Font_*)this;
 
     HDC dc = fl_getDC();
+#ifndef _WIN32_WCE
 	LOGFONT lf;
-    memset(&lf, 0, sizeof(lf));
-	strncpy(lf.lfFaceName, name_+1, 32);
+	memset(&lf, 0, sizeof(lf));
+#else
+	LOGFONTW lf;
+	memset(&lf, 0, sizeof(lf));
+	fl_utf2unicode((const uchar*)name_+1,32,lf.lfFaceName);
+#endif
+//	strncpy(lf.lfFaceName, name_+1, 32);
 	lf.lfCharSet = DEFAULT_CHARSET;
+#ifndef _WIN32_WCE	
 	EnumFontFamiliesEx(dc, &lf, (FONTENUMPROC)size_enumcb, 0, 0);    
-
+#else
+	EnumFontFamilies(dc, lf.lfFaceName, (FONTENUMPROC)size_enumcb,0);    
+#endif
 	if(sizes_->size()==0) sizes_->append(0);
 	else sizes_->sort();
 
@@ -282,7 +303,7 @@ int fl_list_fonts(Fl_Font*& arrayp)
 #ifndef _WIN32_WCE
     EnumFontFamiliesEx(dc, &lf, (FONTENUMPROC)enumcb, 0, 0);
 #else
-    EnumFontFamilies(dc, &lf, (FONTENUMPROC)enumcb, 0);
+    EnumFontFamilies(dc, NULL, (FONTENUMPROC)enumcb, 0);
 #endif
     
     qsort(font_array, num_fonts, sizeof(Fl_Font), sort_function);

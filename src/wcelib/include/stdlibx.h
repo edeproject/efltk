@@ -51,13 +51,6 @@ int		remove(const char *);
 int		_chmod( const char *filename, int pmode );
 int		rename( const char *oldname, const char *newname );
 
-#define _S_IREAD        0000400         /* read permission, owner */
-#define _S_IWRITE       0000200         /* write permission, owner */
-
-#define S_IREAD  _S_IREAD
-#define S_IWRITE _S_IWRITE
-
-
 #define _O_RDONLY       0x0000  /* open for reading only */
 #define _O_WRONLY       0x0001  /* open for writing only */
 #define _O_RDWR         0x0002  /* open for reading and writing */

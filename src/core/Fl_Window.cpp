@@ -169,8 +169,10 @@ int Fl_Window::handle(int event)
             // If we've captured the mouse, we don't want do activate any
             // other windows from the code, or we lose the capture.
             // Also, we don't want to activate the window for tooltips.
+#ifndef _WIN32_WCE
             else if (fl_show_iconic)
                 showtype = SW_SHOWMINNOACTIVE,fl_show_iconic = false;
+#endif
             else if (Fl::grab() || override())
                 showtype = SW_SHOWNOACTIVATE;
             else
@@ -237,7 +239,9 @@ void Fl_Window::show()
     {
         // raise/deiconize windows already-visible windows
 #ifdef _WIN32
+# ifndef _WIN32_WCE
         if (IsIconic(i->xid)) OpenIcon(i->xid);
+# endif
         if (!Fl::grab() && !override()) BringWindowToTop(i->xid);
 #else
         XMapRaised(fl_display, i->xid);

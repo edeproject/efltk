@@ -31,8 +31,9 @@
 #if defined(_WIN32)
 
 #include <windows.h>
+#ifndef _WIN32_WCE
 #include <process.h>
-
+#endif
 // these pointers are in Fl_win32.cxx:
 extern void (*fl_lock_function)();
 extern void (*fl_unlock_function)();

@@ -139,7 +139,11 @@ void Fl_Menu_Window::layout()
 {
 #ifdef _WIN32
     if(shown())
+#ifndef _WIN32_WCE
         SetWindowPos(fl_xid(this), HWND_TOPMOST, x(), y(), w(), h(), (SWP_NOSENDCHANGING | SWP_NOACTIVATE));
+#else
+        SetWindowPos(fl_xid(this), HWND_TOPMOST, x(), y(), w(), h(), (SWP_NOACTIVATE));
+#endif
     Fl_Group::layout();
 #else
     Fl_Window::layout();
@@ -149,6 +153,7 @@ void Fl_Menu_Window::layout()
 // Fade effect, blend to opacity (thats NYI)
 void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
 {	
+#ifndef _WIN32_WCE
     Fl_Renderer::system_init();
 
     int ow=w, oh=h; // original W&H
@@ -254,12 +259,18 @@ void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
 
     animating=false;
     fl_delete_offscreen(pm);
+#else
+	Fl_Window::resize(x,y,w,h);
+	Fl_Window::show();
+#endif // _WIN32_WCE
 }
 
 bool fl_slow_animate = false; //Used by tooltips
 void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
                              int tx, int ty, int tw, int th)
 {
+#ifndef _WIN32_WCE
+
 #undef max
 #define max(a,b) (a) > (b) ? (a) : (b)
 
@@ -344,6 +355,12 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
 
     fl_delete_offscreen(pm);
     animating=false;
+
+#else
+	Fl_Window::resize(tx,ty,tw,th);
+	Fl_Window::show();
+#endif // _WIN32_WCE
+
 }
 
 //

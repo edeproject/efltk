@@ -417,10 +417,10 @@ void Fl_Date_Time::decode_date(const double dat, short& year, short& month, shor
 //----------------------------------------------------------------
 Fl_Date_Time::Fl_Date_Time (short year,short month,short day,short hour,short minute,short second) {
    double t;
-   
+   int i;
    // NLS stuff
-   for (int i=0; i<7;i++) dayname[i]=_(dayname[i]);
-   for (int i=0; i<12;i++) mname[i]=_(mname[i]);   
+   for (i=0; i<7;i++) dayname[i]=_(dayname[i]);
+   for (i=0; i<12;i++) mname[i]=_(mname[i]);   
   
    encode_date(m_dateTime,year,month,day);
    encode_time(t,hour,minute,second);

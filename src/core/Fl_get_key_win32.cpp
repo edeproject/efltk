@@ -140,9 +140,13 @@ bool Fl::event_key_state(int k)
 
 bool Fl::get_key_state(int k)
 {
+#ifndef _WIN32_WCE
     uchar foo[256];
     GetKeyboardState(foo);
     return (foo[fltk2ms(k)]&~1) != 0;
+#else
+	return (GetKeyState(fltk2ms(k)) &~1) != 0;
+#endif
 }
 
 

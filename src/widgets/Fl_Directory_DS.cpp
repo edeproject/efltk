@@ -23,7 +23,21 @@
 #ifndef _WIN32
 # include <dirent.h>
 #else
+
+# include <windows.h>
+# include <io.h>
+# include <direct.h>
+
+# define S_ISLNK(m)      (false)
+#ifndef __GNUC__
+# define S_ISEXEC(m)      (((m) & _S_IFMT) == _S_IEXEC)
+# define S_ISREG(m)      (((m) & _S_IFMT) == _S_IFREG)
+# define S_ISDIR(m)      (((m) & _S_IFMT) == _S_IFDIR)
+# define S_ISBLK(m)      (((m) & _S_IFMT) == _S_IFBLK)
+#endif /* __GNUC__ */
+
 # define lstat stat
+
 #endif
 
 static Fl_Variant    notFound;
@@ -129,14 +143,14 @@ bool Fl_Directory_DS::open() {
          df["size"] = (int) st.st_size;
          df["modified"] = Fl_Date_Time::convert(st.st_mtime);
 
-         bool executable = (st.st_mode & S_IEXEC) == S_IEXEC;
+         bool executable = S_ISEXEC(st.st_mode);
 
          Fl_String modeName;
-         if ((st.st_mode & S_IFDIR) == S_IFDIR) {
+         if(S_ISDIR(st.st_mode)) {
             modeName = "directory";
             executable = false;
          }
-         if ((st.st_mode & S_IFREG) == S_IFREG)
+         if(S_ISREG(st.st_mode))
             modeName = "file";
 #ifndef _WIN32
          if ((st.st_mode & S_IFLNK) == S_IFLNK) {

@@ -4,8 +4,9 @@
 #define _WINCE_H
 
 # ifdef _WIN32_WCE  // Double check
-#   include <efltk/fl_utf8.h>
-#	include <efltk/filename.h>
+
+#include <efltk/fl_utf8.h>
+#include <efltk/filename.h>
 #include <tchar.h>
 #include <wceatl.h>
 #include <winnetwk.h>
@@ -15,7 +16,12 @@
 #include <Atlconv.h>
 #include <winbase.h>
 #include <winnt.h>
+#include <stdlib.h>
 
+#include <drawacp.h>
+# define Arc CeArc
+# define Chord CeChord
+# define Pie CePie
 
 	static char * getcwd(char *tmp, int size) { 
 	  static unsigned short tmp2[FL_PATH_MAX];
@@ -23,7 +29,6 @@
 	  fl_unicode2utf(tmp2,length,tmp);
 	  return tmp; 
 	}
-
 
 	static wchar_t * _wgetenv(wchar_t *env){
 		static wchar_t tmp[FL_PATH_MAX];
@@ -34,52 +39,19 @@
 	}
 
 	static int stricmp(const char *string1, const char *string2){
-	  static unsigned short tmp1[FL_PATH_MAX];
-	  static unsigned short tmp2[FL_PATH_MAX];
-	  fl_utf2unicode((const unsigned char*)string1,strlen(string1),tmp1);
-	  fl_utf2unicode((const unsigned char*)string2,strlen(string2),tmp2);
-
-	  return _wcsicmp(tmp1,tmp2);		
+		return	fl_utf_strcasecmp(string1,string2);
 	}
 
-/*	
-	int __cdecl stricmp(const unsigned short* s1, const char* s2)
-	{
-		USES_CONVERSION;
-		return wcsicmp(s1, A2T(s2));
+	static int strncasecmp(const char *string1, const char *string2,int len){
+		return fl_utf_strncasecmp(string1,string2,len);
 	}
-*/
-
-	static float cosf(float x){
-		double xx = (double)x;
-		return (float)cos(xx);
-	}
-
-	static float sinf(float x){
-		double xx = (double)x;
-		return (float)sin(xx);
-	}
-
-	static float acosf(float x){
-		double xx = (double)x;
-		return (float)acos(xx);
-	}
-	static float asinf(float x){
-		double xx = (double)x;
-		return (float)asin(xx);
-	}
-
 
 	static char * strdup(const char *todup){
-	  wchar_t *wbuf		= (wchar_t*) malloc(strlen(todup) *sizeof(wchar_t));
-	  char *retdup	= (char*) malloc(strlen(todup)+1);
-	  if(!wbuf)
-		  return 0;
-	  fl_utf2unicode((const unsigned char*)todup,strlen(todup),wbuf);
-	  fl_unicode2utf(wbuf,wcslen(wbuf),retdup);
-	  free(wbuf);
-	  return retdup;
-		
+	  int len = strlen(todup);
+	  char *buf = new char[len];
+	  memcpy(buf,todup,len);
+	  buf[len] = 0;
+	  return buf;
 	}
 
 	typedef struct tagMINMAXINFO {
@@ -90,11 +62,23 @@
 		POINT ptMaxTrackSize; 
 	} MINMAXINFO; 
 
-	float atan2f( float y, float x ){
-		return (float) atan2((double)y,(double)x);
-	
-	}
+	static char * strerror(int num){return "unknown wce error";}
 
+# define floorf(a)	float(floor(float(a)))
+# define ceilf(a)	float(ceil(float(a)))
+# define fmodf(a,b)	float(fmod(float(a),float(b)))
+# define fabsf(a)	float(fabs(float(a)))
+# define sinf(a)	float(sin(float(a)))
+# define cosf(a)	float(cos(float(a)))
+# define tanf(a)	float(tan(float(a)))
+# define asinf(a)	float(asin(float(a)))
+# define acosf(a)	float(acos(float(a)))
+# define atanf(a)	float(atan(float(a)))
+# define atan2f(a,b)	float(atan2(float(a),float(b)))
+# define expf(a)	float(exp(float(a)))
+# define logf(a)	float(log(float(a)))
+# define log10f(a)	float(log10(float(a)))
+# define sqrtf(a)	float(sqrt(float(a)))
 
 # endif
 #endif //_WINCE_H

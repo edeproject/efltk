@@ -18,6 +18,9 @@
 #include <efltk/Fl_Variant.h>
 #include <string.h>
 #include <stdlib.h>
+#ifdef _WIN32_WCE
+#include <wince.h>
+#endif
 
 void Fl_Variant::free_buffers() {
    if (m_type == VAR_STRING || m_type == VAR_BUFFER) {

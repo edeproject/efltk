@@ -485,13 +485,23 @@ void Fl_MDI_Window::layout()
     }
 
 #ifdef _WIN32
-    unsigned int flags;
+
+    
+	unsigned int flags;
     if(layout_damage() & FL_LAYOUT_WH)
+#ifndef _WIN32_WCE
         flags = SWP_NOSENDCHANGING | SWP_NOZORDER | SWP_NOACTIVATE;
     else if(layout_damage() & FL_LAYOUT_XY)
         flags = SWP_NOSENDCHANGING | SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOSIZE;
+#else
+        flags = SWP_NOZORDER | SWP_NOACTIVATE;
+    else if(layout_damage() & FL_LAYOUT_XY)
+        flags = SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOSIZE;
+#endif
     else
         flags = 0;
+
+
 #else
     unsigned int flags = 1;
 #endif

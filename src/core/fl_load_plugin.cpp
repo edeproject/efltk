@@ -18,6 +18,8 @@
 #include <efltk/fl_load_plugin.h>
 #include <stdio.h>
 #include <config.h>
+#include <efltk/filename.h>
+#include <efltk/fl_utf8.h>
 
 #if defined(_WIN32)
 
@@ -26,11 +28,19 @@
 
 void* fl_load_plugin(const char* name, const char* symbol)
 {
-    HINSTANCE handle = LoadLibrary(name);
-    if (handle)
+	wchar_t wbuf[FL_PATH_MAX];
+	wchar_t wbuf2[FL_PATH_MAX];
+	if(name) fl_utf2unicode((const uchar*)name,strlen(name),wbuf);else return 0;
+	if(symbol) fl_utf2unicode((const uchar*)symbol,strlen(symbol),wbuf2);
+    HINSTANCE handle = LoadLibraryW(wbuf);
+	if (handle)
     {
         if (!symbol) return (void*)handle;
-        void* f = (void*)GetProcAddress(handle, symbol);
+#ifndef _WIN32_WCE
+		void* f = (void*)GetProcAddress(handle, name);
+#else
+		void* f = (void*)GetProcAddressW(handle, wbuf2);
+#endif 
         if (f) return f;
         fprintf(stderr, "%s: function %s missing\n", name, symbol);
         return 0;

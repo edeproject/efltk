@@ -398,10 +398,13 @@ void fl_fill() {
   if (circle_w > 0)
     Chord(fl_gc, circle_x, circle_y, circle_x+circle_w+1, circle_y+circle_h+1,
 	  0,0, 0,0);
+#ifndef _WIN32_WCE
   if (loops) {
     fl_closepath();
     PolyPolygon(fl_gc, point, loop, loops);
-  } else if (points > 2) {
+  } else 
+#endif
+	  if (points > 2) {
     Polygon(fl_gc, point, points);
   }
 #else
@@ -439,10 +442,13 @@ void fl_fill_stroke(Fl_Color color) {
   if (circle_w > 0)
     Chord(fl_gc, circle_x, circle_y, circle_x+circle_w+1, circle_y+circle_h+1,
 	  0,0, 0,0);
+#ifndef _WIN32_WCE
   if (loops) {
     fl_closepath();
     PolyPolygon(fl_gc, point, loop, loops);
-  } else if (points > 2) {
+  } else 
+#endif
+	  if (points > 2) {
     Polygon(fl_gc, point, points);
   }
   SelectObject(fl_gc, oldpen);

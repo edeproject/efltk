@@ -52,6 +52,10 @@
 // Include necessary header files...
 //
 
+#ifdef _WIN32_WCE
+#include <wince.h>
+#endif
+
 #include <config.h>
 
 #include <efltk/Fl_Simple_Html.h>
@@ -2379,7 +2383,7 @@ int	Fl_Simple_Html::load(const char *f)// I - Filename to load (may also have ta
     {
       fseek(fp, 0, SEEK_END);
       len = ftell(fp);
-      rewind(fp);
+      fseek( fp, 0L, SEEK_SET );
 
       value_ = (const char *)calloc(len + 1, 1);
       fread((void *)value_, 1, len, fp);
@@ -2432,18 +2436,18 @@ void Fl_Simple_Html::layout()
 //
 void Fl_Simple_Html::topline(const char *n)	// I - Target name
 {
-  Fl_Help_Target key,	// Target name key
-		*target;		// Pointer to matching target
-
+  Fl_Help_Target *target = 0;		// Pointer to matching target
 
   if (ntargets_ == 0)
     return;
 
-  strncpy(key.name, n, sizeof(key.name) - 1);
-  key.name[sizeof(key.name) - 1] = '\0';
-
-  target = (Fl_Help_Target *)bsearch(&key, targets_, ntargets_, sizeof(Fl_Help_Target),
-                                 (compare_func_t)compare_targets);
+  for(int num=0; num<ntargets_; num++) {
+	Fl_Help_Target *t = &targets_[num];
+	if(!strcasecmp(t->name, n)) {
+		target = t;
+		break;
+	}
+  }
 
   if (target != NULL)
     topline(target->y);

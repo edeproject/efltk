@@ -123,13 +123,17 @@ void Fl_Renderer::system_init()
 */
 static int SussScreenDepth()
 {
+#ifdef _WIN32_WCE
+	return 24;
+#endif
+
 #ifdef NO_GETDIBITS
 	int depth;
 	HDC hdc;
 
-	hdc = GetDC(SDL_Window);
+	hdc = fl_getDC();
 	depth = GetDeviceCaps(hdc, PLANES) * GetDeviceCaps(hdc, BITSPIXEL);
-	ReleaseDC(SDL_Window, hdc);
+	//ReleaseDC(SDL_Window, hdc);
 #ifndef _WIN32_WCE
 	// AFAIK 16 bit CE devices have indeed RGB 565
 	if ( depth == 16 ) {

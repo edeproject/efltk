@@ -478,9 +478,9 @@ size_t strftime(
    const struct tm *timeptr 
    ){
 
-	static char buf[FL_MAX_PATH];
+	static char buf[1024];
 
-	if( maxsize > FL_MAX_PATH)
+	if( maxsize > 1024)
 		return 0;
 
 

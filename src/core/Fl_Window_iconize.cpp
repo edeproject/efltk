@@ -30,19 +30,18 @@ extern bool fl_show_iconic;      // in Fl_x.C/Fl_win32.C
 
 void Fl_Window::iconize()
 {
-    if (!i)
-    {
+    if (!i) {
         fl_show_iconic = true;
         show();
-    }
-    else
-    {
-        #ifdef _WIN32
-        ShowWindow(i->xid, SW_SHOWMINNOACTIVE);
-        #else
+    } else {
+#ifdef _WIN32
+# ifndef _WIN32_WCE
+		ShowWindow(i->xid, SW_SHOWMINNOACTIVE);
+# endif
+#else
         XIconifyWindow(fl_display, i->xid, fl_screen);
         i->wait_for_expose = true;
-        #endif
+#endif
         set_visible();
     }
 }

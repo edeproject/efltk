@@ -96,7 +96,7 @@ Fl_Calendar::Fl_Calendar(int x,int y,int w,int h,const char *lbl)
    m_monthNameBox->box(FL_NO_BOX);
 
    // NLS stuff
-   for (int i=0; i<7;i++) weekDayLabels[i]=_(weekDayLabels[i]);
+   for (i=0; i<7;i++) weekDayLabels[i]=_(weekDayLabels[i]);
    
    // Weekday headers
    for (i = 0; i < 7; i++) {

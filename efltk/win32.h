@@ -32,6 +32,7 @@
 
 #ifdef _WIN32_WCE
 #include <wince.h>
+#include <efltk/Fl_Color.h>
 #else
 #include <windows.h>
 #endif

@@ -17,7 +17,6 @@
 
 #include <efltk/math.h>
 #include <config.h>
-
 #include <string.h>
 #include <stdarg.h>
 #include <ctype.h>
@@ -28,6 +27,9 @@
 #include <efltk/Fl_String.h>
 #include <efltk/Fl_Util.h>
 
+#ifdef _WIN32_WCE
+#include <wince.h>
+#endif
 //------------------------------------------------------------------------------
 // constructors & destructors
 //------------------------------------------------------------------------------

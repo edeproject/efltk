@@ -8,9 +8,13 @@
 #include <string.h>
 #include <malloc.h>
 #include <ctype.h>
-
 #include <sys/stat.h>
 #include <time.h>
+
+#ifdef _WIN32_WCE
+#include <wince.h>
+#endif
+
 
 #ifdef _WIN32
 
@@ -58,7 +62,9 @@ bool Fl_FileAttr::parse(const char *filename)
 #ifdef _WIN32
 	capacity=0;
 	free=0;					
-    if(strlen(filename) < 4 && filename[1]==':') {
+#ifdef _WIN32_WCE
+#else
+	if(strlen(filename) < 4 && filename[1]==':') {
         char nbuf[4];nbuf[0] = filename[0];nbuf[1]=':';nbuf[2]='\\';nbuf[3]='\0';
 
         // Don't even try to read floppy, etc...
@@ -71,7 +77,10 @@ bool Fl_FileAttr::parse(const char *filename)
         flags |= FL_DEVICE;
         return true;
     }
-#endif
+
+#endif // _WIN32_WCE
+
+#endif //_WIN32
 
     const char *file = filename;
 #if defined(_WIN32) || defined(__EMX__)
