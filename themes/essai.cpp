@@ -160,6 +160,9 @@ extern "C" bool fltk_theme()
     Fl_Widget::default_style->highlight_color = FL_LIGHT2;
 
     Fl_Style* s;
+    if ((s = Fl_Style::find("combo box"))) {
+        s->box = down;
+    }
     if ((s = Fl_Style::find("window"))) {
         s->box = flat_blue;
     }
