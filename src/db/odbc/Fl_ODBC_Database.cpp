@@ -19,19 +19,48 @@
 #include <efltk/db/Fl_Query.h>
 #include "fl_odbc.h"
 
+Fl_ODBC_Database::Fl_ODBC_Database(const Fl_String connString) 
+: Fl_Database(connString) {
+   m_connect = new ODBCConnection;
+}
+
+Fl_ODBC_Database::~Fl_ODBC_Database() {
+   delete m_connect;
+}
+
 void Fl_ODBC_Database::open_connection() {
+   Fl_String finalConnectionString;
+   m_connect->connect(m_connString,finalConnectionString,false);
 }
 
 void Fl_ODBC_Database::close_connection() {
+   m_connect->disconnect();
 }
 
 void Fl_ODBC_Database::begin_transaction() {
+   if (m_inTransaction)
+      fl_throw("Transaction already started.");
+
+   m_connect->beginTransaction();
+   m_inTransaction = true;
 }
 
 void Fl_ODBC_Database::commit_transaction() {
+   if (!m_inTransaction)
+      fl_throw("Transaction isn't started.");
+
+   m_connect->commit();
+   m_connect->setConnectOption(SQL_AUTOCOMMIT,SQL_AUTOCOMMIT_ON);   
+   m_inTransaction = false;
 }
 
 void Fl_ODBC_Database::rollback_transaction() {
+   if (!m_inTransaction)
+      fl_throw("Transaction isn't started.");
+
+   m_connect->rollback();
+   m_connect->setConnectOption(SQL_AUTOCOMMIT,SQL_AUTOCOMMIT_ON);   
+   m_inTransaction = false;
 }
 
 void Fl_ODBC_Database::allocate_query(Fl_Query *query) {
