@@ -89,6 +89,9 @@ FL_API void fl_free_color(Fl_Color c);
 FL_API void fl_background(Fl_Color);
 FL_API Fl_Color fl_nearest_color(Fl_Color);
 
+inline Fl_Color fl_lighter(Fl_Color c) { return fl_color_average(c, FL_WHITE, .67f); }
+inline Fl_Color fl_darker(Fl_Color c) { return fl_color_average(c, FL_BLACK, .67f); }
+
 #endif
 
 //
