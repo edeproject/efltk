@@ -48,7 +48,7 @@ protected:
 public:
    // ctor, dtor
    Fl_Query(Fl_Database *db,const Fl_String& sql);
-   Fl_Query(Fl_Database *db,const char *sql = "");
+   Fl_Query(Fl_Database *db=0L,const char *sql="");
    ~Fl_Query() { close(); free_stmt(); }
 public:
    void prepare();
@@ -71,6 +71,7 @@ public:
    void             sql(const char * _sql);
 
    Fl_Database     *database() const    { return m_database; }
+   void             database(Fl_Database *db) { if (m_database != db) { close(); m_database = db;} }
 
    bool             active() const      { return m_active; }
 
