@@ -105,8 +105,8 @@ void Fl_Menu_Bar::draw()
         else if(i==highlight_) f|=FL_HIGHLIGHT;
 
         if( (damage()&(~FL_DAMAGE_HIGHLIGHT)) ||
-                (selected_==i || last_selected_==i) ||
-                (highlight_==i || last_highlight_==i) )
+            (selected_==i || last_selected_==i) ||
+            (highlight_==i || last_highlight_==i) )
         {
             Fl_Color save_color = widget->highlight_label_color();
             widget->highlight_label_color(highlight_label_color());
@@ -146,11 +146,11 @@ void Fl_Menu_Bar::layout()
         if (!(layout_damage() & FL_LAYOUT_DAMAGE)) return;
     }
 
-	bool calc_layout = do_layout || (layout_align()!=0);
+    bool calc_layout = do_layout || (layout_align()!=0);
 
-	int h = this->h();
+    int h = this->h();
 
-	if(calc_layout) h = 0;
+    if(calc_layout) h = 0;
 
     lines=1;    
     int X=box()->dx()+leading()/2;
@@ -208,16 +208,16 @@ void Fl_Menu_Bar::layout()
     }
 
     if(calc_layout) {
-		if(h < 18) h = 18;
-		this->h(h);
-	}
+        if(h < 18) h = 18;
+        this->h(h);
+    }
 
     Fl_Widget::layout();
 }
 
-void Fl_Menu_Bar::preferred_size(int w, int h) const
+void Fl_Menu_Bar::preferred_size(int& w, int& h) const
 {
-	h = this->h();
+    //h = this->h();
 }
 
 int Fl_Menu_Bar::handle(int event)
