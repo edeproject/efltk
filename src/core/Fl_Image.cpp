@@ -490,7 +490,7 @@ void Fl_Image::_draw(int dx, int dy, int dw, int dh,
 
             id = (void *)fl_create_offscreen(width(), height());
             m_id_alloc = true;
-            if(!mask) {
+            if(!mask) {				
                 mask = (void *)create_bitmap_mask();
                 m_mask_alloc = (mask!=0);
             }
@@ -778,7 +778,7 @@ Pixmap Fl_Image::create_bitmap_mask(check_mask_pixel *func) const
 		bit = 1;
         DUFFS_LOOP4(
 		{
-			if(func(this, ptr)) {
+			if(!func(this, ptr)) {
 				*bitptr |= bit;
                 mask_found = true;
 			}

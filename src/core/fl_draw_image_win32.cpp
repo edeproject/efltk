@@ -275,42 +275,44 @@ void Fl_Image::to_screen(int XP, int YP, int WP, int HP, int, int)
 	HDC dst_dc = fl_getDC();
 
     if(mask) {
-		COLORREF white_ref = RGB(255,255,255);
-		COLORREF black_ref = RGB(0,0,0);
+		COLORREF text_color = SetTextColor(dst_dc, RGB(0,0,0)); // This is needed cause we use SRCPAINT
+
         if(id) {
-            // both color and mask:
+            // both color and mask:	
 			
-			COLORREF text_color = SetTextColor(dst_dc, black_ref); // This is needed cause we use SRCPAINT
-			SetBkColor(dst_dc, white_ref); // Transparent color in mask is white..
+			// We really should cache these...
+			HDC id_dc = CreateCompatibleDC(fl_gc);		SelectObject(id_dc, id);
+			HDC mask_dc = CreateCompatibleDC(fl_gc);	SelectObject(mask_dc, mask);
 
-			HDC mask_dc = fl_makeDC((Pixmap)mask);
-            HDC id_dc = fl_makeDC((Pixmap)id);
+			Fl_Color old_color = fl_color();
+			fl_color(0);
+			fl_setbrush(); // mask is drawed using brush color			
 
-			BitBlt(dst_dc, X, Y, W, H, mask_dc, cx, cy, SRCAND);
+			BitBlt(id_dc, 0, 0, W, H, mask_dc, 0, 0, SRCAND);
+			BitBlt(dst_dc, X, Y, W, H, mask_dc, cx, cy, 0xE20746L);
 			BitBlt(dst_dc, X, Y, W, H, id_dc, cx, cy, SRCPAINT);
-
-            DeleteDC(mask_dc);
-            DeleteDC(id_dc);
 			
-			// Restore old text color
-			SetTextColor(dst_dc, text_color);			
-
+			DeleteDC(id_dc);
+			DeleteDC(mask_dc);
+			
+			fl_color(old_color);
+			
         } else {					
             // mask only
 			HDC mask_dc = CreateCompatibleDC(fl_gc);
             SelectObject(mask_dc, (HGDIOBJ)mask);
 
-            COLORREF old_color = SetTextColor(dst_dc, black_ref);
-			SetBkColor(dst_dc, white_ref); // Transparent color in mask is white..
+			SetBkColor(dst_dc, RGB(255,255,255));
 			fl_setbrush(); // mask is drawed using brush color
 			
             // secret bitblt code found in old MSWindows reference manual:
 			BitBlt(dst_dc, X, Y, W, H, mask_dc, cx, cy, 0xE20746L);
 			
-			// Restore old values
-			SetTextColor(dst_dc, old_color);
 			DeleteDC(mask_dc);
         }
+
+		// Restore old text color
+		SetTextColor(dst_dc, text_color);			
     }
     else if (id) {
         // pix only, no mask
