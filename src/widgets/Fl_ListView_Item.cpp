@@ -125,6 +125,22 @@ int Fl_ListView_Item::compare_dates(Fl_ListView_Item *other, int column, int sor
     return index()-other->index();
 }
 
+int Fl_ListView_Item::compare_datetimes(Fl_ListView_Item *other, int column, int sort_type)
+{
+    const Fl_String &txt = label(column);
+    const Fl_String &other_txt = other->label(column);
+
+    switch(sort_type) {
+        case Fl_ListView::SORT_ASC:
+            return Fl_Date_Time(txt.c_str()) > Fl_Date_Time(other_txt.c_str());
+        case Fl_ListView::SORT_DESC:
+            return Fl_Date_Time(txt.c_str()) < Fl_Date_Time(other_txt.c_str());
+        default:
+            break;
+    }
+    return index()-other->index();
+}
+
 bool Fl_ListView_Item::selected() const
 {
     return (parent()->get_selection().index_of(this)>-1);

@@ -134,7 +134,6 @@ lib/libefltk.so ::	lib/Fl.o\
 	lib/Fl_Float_Input.o\
 	lib/Fl_Gif.o\
 	lib/Fl_Group.o\
-	lib/Fl_Hashs.o\
 	lib/Fl_Help_Dialog.o\
 	lib/Fl_Highlight_Button.o\
 	lib/Fl_Input.o\
@@ -281,8 +280,7 @@ lib/libefltk_images.so ::	lib/Fl_Images.o\
 	rm -f $@
 	$(LD) -shared -o $@ $^ $(LDOPTIONS)
 
-lib/libefltk_xml.so ::	lib/Fl_XmlCtx.o\
-	lib/Fl_XmlDoc.o\
+lib/libefltk_xml.so ::	lib/Fl_XmlDoc.o\
 	lib/Fl_XmlNode.o\
 	lib/Fl_XmlParser.o\
 	lib/Fl_XmlTokenizer.o
@@ -476,6 +474,9 @@ test/input ::	test/input.o
 test/input_browser ::	test/input_browser.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
+config.h ::
+	./build.g++
+
 # %ObjectFilesLinking
 lib/Fl_ODBC_Database.o : src/db/odbc/Fl_ODBC_Database.cpp
 	$(CXX) -c -o $@ $< -Isrc/db/odbc -Isrc/db/odbc $(CXXFLAGS)
@@ -483,10 +484,6 @@ lib/Fl_ODBC_Database.o : src/db/odbc/Fl_ODBC_Database.cpp
 
 lib/fl_odbc.o : src/db/odbc/fl_odbc.cpp
 	$(CXX) -c -o $@ $< -Isrc/db/odbc -Isrc/db/odbc $(CXXFLAGS)
-
-
-lib/Fl_XmlCtx.o : src/xml/Fl_XmlCtx.cpp
-	$(CXX) -c -o $@ $< -Isrc/xml -Isrc/xml $(CXXFLAGS)
 
 
 lib/Fl_XmlDoc.o : src/xml/Fl_XmlDoc.cpp
@@ -618,10 +615,6 @@ lib/Fl_Gif.o : src/core/Fl_Gif.cpp
 
 
 lib/Fl_Group.o : src/core/Fl_Group.cpp
-	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
-
-
-lib/Fl_Hashs.o : src/core/Fl_Hashs.cpp
 	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
 
 
@@ -1590,11 +1583,9 @@ lib/Fl_XmlParser.o :	efltk/xml/Fl_XmlNode.h\
 	efltk/xml/Fl_XmlTokenizer.h\
 	efltk/Fl_String_Stack.h\
 	efltk/Fl_String_List.h\
-	efltk/xml/Fl_XmlCtx.h\
 	efltk/xml/Fl_XmlParser.h\
 	efltk/xml/Fl_XmlHandler.h\
 	efltk/xml/Fl_Xml.h\
-	efltk/Fl_Ptr_Hash.h\
 	efltk/Fl_Exception.h\
 	config.h
 lib/Fl_XmlTokenizer.o :	src/core/fl_internal.h\
@@ -2474,12 +2465,6 @@ lib/Fl_Group.o :	efltk/Fl_Tooltip.h\
 	efltk/Fl_Group.h\
 	efltk/Fl_Widget_List.h\
 	efltk/Fl_Window.h
-lib/Fl_Hashs.o :	efltk/Fl_String_Hash.h\
-	efltk/Fl_Ptr_Hash.h\
-	efltk/Fl_Ptr_List.h\
-	efltk/Enumerations.h\
-	efltk/Fl_Export.h\
-	efltk/Fl_String.h
 lib/Fl_Image.o :	src/core/fl_internal.h\
 	efltk/Fl_Translator.h\
 	efltk/Fl_Ptr_List.h\
@@ -2703,8 +2688,6 @@ lib/Fl_Translator.o :	efltk/fl_utf8.h\
 	efltk/Fl_String.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Flags.h\
-	efltk/Fl_String_Hash.h\
-	efltk/Fl_Ptr_Hash.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Fl_Translator.h\
 	efltk/Fl_String_List.h\
@@ -3665,8 +3648,6 @@ lib/fl_font.o :	src/core/fl_font_x.cpp\
 	efltk/filename.h\
 	efltk/fl_draw.h\
 	efltk/Fl.h\
-	efltk/Fl_String_Hash.h\
-	efltk/Fl_Ptr_Hash.h\
 	src/core/fl_font_xft.cpp\
 	src/core/fl_font_win32.cpp\
 	config.h\
@@ -8455,8 +8436,6 @@ tools/etranslate/compile.o :	tools/etranslate/compile.h\
 	tools/etranslate/globals.h\
 	efltk/Fl_Locale.h\
 	efltk/Fl_Translator.h\
-	efltk/Fl_String_Hash.h\
-	efltk/Fl_Ptr_Hash.h\
 	efltk/fl_ask.h\
 	efltk/Fl_File_Dialog.h\
 	efltk/Fl_FileBrowser.h\
@@ -8539,8 +8518,6 @@ tools/etranslate/etranslate.o :	tools/etranslate/compile.h\
 	tools/etranslate/globals.h\
 	efltk/Fl_Locale.h\
 	efltk/Fl_Translator.h\
-	efltk/Fl_String_Hash.h\
-	efltk/Fl_Ptr_Hash.h\
 	efltk/fl_ask.h\
 	efltk/Fl_File_Dialog.h\
 	efltk/Fl_FileBrowser.h\
@@ -8623,8 +8600,6 @@ tools/etranslate/extract.o :	tools/etranslate/extract.h\
 	tools/etranslate/globals.h\
 	efltk/Fl_Locale.h\
 	efltk/Fl_Translator.h\
-	efltk/Fl_String_Hash.h\
-	efltk/Fl_Ptr_Hash.h\
 	efltk/fl_ask.h\
 	efltk/Fl_File_Dialog.h\
 	efltk/Fl_FileBrowser.h\
@@ -8706,8 +8681,6 @@ tools/etranslate/load_etm.o :	tools/etranslate/etranslate.h\
 	tools/etranslate/globals.h\
 	efltk/Fl_Locale.h\
 	efltk/Fl_Translator.h\
-	efltk/Fl_String_Hash.h\
-	efltk/Fl_Ptr_Hash.h\
 	efltk/fl_ask.h\
 	efltk/Fl_File_Dialog.h\
 	efltk/Fl_FileBrowser.h\
@@ -8789,8 +8762,6 @@ tools/etranslate/load_pot.o :	tools/etranslate/etranslate.h\
 	tools/etranslate/globals.h\
 	efltk/Fl_Locale.h\
 	efltk/Fl_Translator.h\
-	efltk/Fl_String_Hash.h\
-	efltk/Fl_Ptr_Hash.h\
 	efltk/fl_ask.h\
 	efltk/Fl_File_Dialog.h\
 	efltk/Fl_FileBrowser.h\
@@ -8873,8 +8844,6 @@ tools/etranslate/main.o :	efltk/Fl_Translator.h\
 	efltk/Fl_Double_Window.h\
 	tools/etranslate/globals.h\
 	efltk/Fl_Locale.h\
-	efltk/Fl_String_Hash.h\
-	efltk/Fl_Ptr_Hash.h\
 	efltk/fl_ask.h\
 	efltk/Fl_File_Dialog.h\
 	efltk/Fl_FileBrowser.h\
@@ -9019,8 +8988,6 @@ tools/etranslate/modify_info.o :	tools/etranslate/etranslate.h\
 	tools/etranslate/globals.h\
 	efltk/Fl_Locale.h\
 	efltk/Fl_Translator.h\
-	efltk/Fl_String_Hash.h\
-	efltk/Fl_Ptr_Hash.h\
 	efltk/fl_ask.h\
 	efltk/Fl_File_Dialog.h\
 	efltk/Fl_FileBrowser.h\
@@ -9182,8 +9149,7 @@ lib/Fl_Button_Group.o :	efltk/db/Fl_Query.h\
 	efltk/Fl_Slider.h\
 	efltk/Fl_Valuator.h\
 	efltk/Fl.h
-lib/Fl_XmlNode.o :	efltk/xml/Fl_XmlCtx.h\
-	efltk/xml/Fl_XmlParser.h\
+lib/Fl_XmlNode.o :	efltk/xml/Fl_XmlParser.h\
 	efltk/xml/Fl_XmlTokenizer.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_String_Stack.h\
@@ -9199,7 +9165,6 @@ lib/Fl_XmlNode.o :	efltk/xml/Fl_XmlCtx.h\
 	efltk/Fl_Map.h\
 	efltk/xml/Fl_Xml.h
 lib/Fl_XmlDoc.o :	src/xml/html_entities.h\
-	efltk/Fl_Ptr_Hash.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Export.h\
@@ -9215,8 +9180,7 @@ lib/Fl_XmlDoc.o :	src/xml/html_entities.h\
 	efltk/xml/Fl_XmlNode.h\
 	efltk/xml/Fl_XmlNode_List.h\
 	efltk/Fl_Map.h\
-	efltk/xml/Fl_Xml.h\
-	efltk/xml/Fl_XmlCtx.h
+	efltk/xml/Fl_Xml.h
 test/labelwidth2.o :	efltk/Fl_Box.h\
 	efltk/Fl_Widget.h\
 	efltk/Fl_Data_Source.h\

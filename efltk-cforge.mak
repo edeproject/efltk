@@ -141,7 +141,6 @@ lib/libefltk.so ::	lib/Fl.o\
 	lib/Fl_Float_Input.o\
 	lib/Fl_Gif.o\
 	lib/Fl_Group.o\
-	lib/Fl_Hashs.o\
 	lib/Fl_Help_Dialog.o\
 	lib/Fl_Highlight_Button.o\
 	lib/Fl_Input.o\
@@ -302,8 +301,7 @@ lib/libefltk_images.so ::	lib/Fl_Images.o\
 # %SrcDir:	src/xml
 # %IncDir:	src/xml
 # %ObjsDir:	lib
-lib/libefltk_xml.so ::	lib/Fl_XmlCtx.o\
-	lib/Fl_XmlDoc.o\
+lib/libefltk_xml.so ::	lib/Fl_XmlDoc.o\
 	lib/Fl_XmlNode.o\
 	lib/Fl_XmlParser.o\
 	lib/Fl_XmlTokenizer.o
@@ -826,6 +824,16 @@ test/input ::	test/input.o
 test/input_browser ::	test/input_browser.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
+# %UniqueId:	0x4000f1
+# %TargetType:	ANY
+# %IDEFlags:	0xc
+# %ComplexTarget
+# %SrcDir:	
+# %IncDir:	
+# %ObjsDir:	
+config.h ::
+	./build.g++
+
 # %ObjectFilesLinking
 # %TargetType:	C++_OBJ
 # %ParentTarget:	0x4000f8
@@ -839,13 +847,6 @@ lib/Fl_ODBC_Database.o : src/db/odbc/Fl_ODBC_Database.cpp
 # %SourceTarget:	0x4000ce
 lib/fl_odbc.o : src/db/odbc/fl_odbc.cpp
 	$(CXX) -c -o $@ $< -Isrc/db/odbc -Isrc/db/odbc $(CXXFLAGS)
-
-
-# %TargetType:	C++_OBJ
-# %ParentTarget:	0x4000f2
-# %SourceTarget:	0x4000f9
-lib/Fl_XmlCtx.o : src/xml/Fl_XmlCtx.cpp
-	$(CXX) -c -o $@ $< -Isrc/xml -Isrc/xml $(CXXFLAGS)
 
 
 # %TargetType:	C++_OBJ
@@ -1076,13 +1077,6 @@ lib/Fl_Gif.o : src/core/Fl_Gif.cpp
 # %ParentTarget:	0x400002
 # %SourceTarget:	0x400293
 lib/Fl_Group.o : src/core/Fl_Group.cpp
-	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
-
-
-# %TargetType:	C++_OBJ
-# %ParentTarget:	0x400002
-# %SourceTarget:	0x400294
-lib/Fl_Hashs.o : src/core/Fl_Hashs.cpp
 	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
 
 
@@ -2747,11 +2741,9 @@ lib/Fl_XmlParser.o :	efltk/xml/Fl_XmlNode.h\
 	efltk/xml/Fl_XmlTokenizer.h\
 	efltk/Fl_String_Stack.h\
 	efltk/Fl_String_List.h\
-	efltk/xml/Fl_XmlCtx.h\
 	efltk/xml/Fl_XmlParser.h\
 	efltk/xml/Fl_XmlHandler.h\
 	efltk/xml/Fl_Xml.h\
-	efltk/Fl_Ptr_Hash.h\
 	efltk/Fl_Exception.h\
 	config.h
 lib/Fl_XmlTokenizer.o :	src/core/fl_internal.h\
@@ -3631,12 +3623,6 @@ lib/Fl_Group.o :	efltk/Fl_Tooltip.h\
 	efltk/Fl_Group.h\
 	efltk/Fl_Widget_List.h\
 	efltk/Fl_Window.h
-lib/Fl_Hashs.o :	efltk/Fl_String_Hash.h\
-	efltk/Fl_Ptr_Hash.h\
-	efltk/Fl_Ptr_List.h\
-	efltk/Enumerations.h\
-	efltk/Fl_Export.h\
-	efltk/Fl_String.h
 lib/Fl_Image.o :	src/core/fl_internal.h\
 	efltk/Fl_Translator.h\
 	efltk/Fl_Ptr_List.h\
@@ -3860,8 +3846,6 @@ lib/Fl_Translator.o :	efltk/fl_utf8.h\
 	efltk/Fl_String.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Flags.h\
-	efltk/Fl_String_Hash.h\
-	efltk/Fl_Ptr_Hash.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Fl_Translator.h\
 	efltk/Fl_String_List.h\
@@ -4822,8 +4806,6 @@ lib/fl_font.o :	src/core/fl_font_x.cpp\
 	efltk/filename.h\
 	efltk/fl_draw.h\
 	efltk/Fl.h\
-	efltk/Fl_String_Hash.h\
-	efltk/Fl_Ptr_Hash.h\
 	src/core/fl_font_xft.cpp\
 	src/core/fl_font_win32.cpp\
 	config.h\
@@ -9612,8 +9594,6 @@ tools/etranslate/compile.o :	tools/etranslate/compile.h\
 	tools/etranslate/globals.h\
 	efltk/Fl_Locale.h\
 	efltk/Fl_Translator.h\
-	efltk/Fl_String_Hash.h\
-	efltk/Fl_Ptr_Hash.h\
 	efltk/fl_ask.h\
 	efltk/Fl_File_Dialog.h\
 	efltk/Fl_FileBrowser.h\
@@ -9696,8 +9676,6 @@ tools/etranslate/etranslate.o :	tools/etranslate/compile.h\
 	tools/etranslate/globals.h\
 	efltk/Fl_Locale.h\
 	efltk/Fl_Translator.h\
-	efltk/Fl_String_Hash.h\
-	efltk/Fl_Ptr_Hash.h\
 	efltk/fl_ask.h\
 	efltk/Fl_File_Dialog.h\
 	efltk/Fl_FileBrowser.h\
@@ -9780,8 +9758,6 @@ tools/etranslate/extract.o :	tools/etranslate/extract.h\
 	tools/etranslate/globals.h\
 	efltk/Fl_Locale.h\
 	efltk/Fl_Translator.h\
-	efltk/Fl_String_Hash.h\
-	efltk/Fl_Ptr_Hash.h\
 	efltk/fl_ask.h\
 	efltk/Fl_File_Dialog.h\
 	efltk/Fl_FileBrowser.h\
@@ -9863,8 +9839,6 @@ tools/etranslate/load_etm.o :	tools/etranslate/etranslate.h\
 	tools/etranslate/globals.h\
 	efltk/Fl_Locale.h\
 	efltk/Fl_Translator.h\
-	efltk/Fl_String_Hash.h\
-	efltk/Fl_Ptr_Hash.h\
 	efltk/fl_ask.h\
 	efltk/Fl_File_Dialog.h\
 	efltk/Fl_FileBrowser.h\
@@ -9946,8 +9920,6 @@ tools/etranslate/load_pot.o :	tools/etranslate/etranslate.h\
 	tools/etranslate/globals.h\
 	efltk/Fl_Locale.h\
 	efltk/Fl_Translator.h\
-	efltk/Fl_String_Hash.h\
-	efltk/Fl_Ptr_Hash.h\
 	efltk/fl_ask.h\
 	efltk/Fl_File_Dialog.h\
 	efltk/Fl_FileBrowser.h\
@@ -10030,8 +10002,6 @@ tools/etranslate/main.o :	efltk/Fl_Translator.h\
 	efltk/Fl_Double_Window.h\
 	tools/etranslate/globals.h\
 	efltk/Fl_Locale.h\
-	efltk/Fl_String_Hash.h\
-	efltk/Fl_Ptr_Hash.h\
 	efltk/fl_ask.h\
 	efltk/Fl_File_Dialog.h\
 	efltk/Fl_FileBrowser.h\
@@ -10176,8 +10146,6 @@ tools/etranslate/modify_info.o :	tools/etranslate/etranslate.h\
 	tools/etranslate/globals.h\
 	efltk/Fl_Locale.h\
 	efltk/Fl_Translator.h\
-	efltk/Fl_String_Hash.h\
-	efltk/Fl_Ptr_Hash.h\
 	efltk/fl_ask.h\
 	efltk/Fl_File_Dialog.h\
 	efltk/Fl_FileBrowser.h\
@@ -10339,8 +10307,7 @@ lib/Fl_Button_Group.o :	efltk/db/Fl_Query.h\
 	efltk/Fl_Slider.h\
 	efltk/Fl_Valuator.h\
 	efltk/Fl.h
-lib/Fl_XmlNode.o :	efltk/xml/Fl_XmlCtx.h\
-	efltk/xml/Fl_XmlParser.h\
+lib/Fl_XmlNode.o :	efltk/xml/Fl_XmlParser.h\
 	efltk/xml/Fl_XmlTokenizer.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_String_Stack.h\
@@ -10356,7 +10323,6 @@ lib/Fl_XmlNode.o :	efltk/xml/Fl_XmlCtx.h\
 	efltk/Fl_Map.h\
 	efltk/xml/Fl_Xml.h
 lib/Fl_XmlDoc.o :	src/xml/html_entities.h\
-	efltk/Fl_Ptr_Hash.h\
 	efltk/Fl_Ptr_List.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Export.h\
@@ -10372,8 +10338,7 @@ lib/Fl_XmlDoc.o :	src/xml/html_entities.h\
 	efltk/xml/Fl_XmlNode.h\
 	efltk/xml/Fl_XmlNode_List.h\
 	efltk/Fl_Map.h\
-	efltk/xml/Fl_Xml.h\
-	efltk/xml/Fl_XmlCtx.h
+	efltk/xml/Fl_Xml.h
 test/labelwidth2.o :	efltk/Fl_Box.h\
 	efltk/Fl_Widget.h\
 	efltk/Fl_Data_Source.h\
@@ -10649,7 +10614,6 @@ test/input_browser.o :	efltk/Fl_Input_Browser.h\
 
 # %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/db/odbc/fl_odbc.cpp	SourceOrHeader,	UniqueId=0x4000ce,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/xml/Fl_XmlCtx.cpp	SourceOrHeader,	UniqueId=0x4000f9,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/xml/Fl_XmlDoc.cpp	SourceOrHeader,	UniqueId=0x4000fa,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/xml/Fl_XmlNode.cpp	SourceOrHeader,	UniqueId=0x4000fb,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/xml/Fl_XmlParser.cpp	SourceOrHeader,	UniqueId=0x4000fc,	TargetType=C++,	IDEFlags=0x6
@@ -10683,7 +10647,6 @@ test/input_browser.o :	efltk/Fl_Input_Browser.h\
 # %TargetInfo src/core/Fl_Exception.cpp	SourceOrHeader,	UniqueId=0x400291,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Gif.cpp	SourceOrHeader,	UniqueId=0x400292,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Group.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400293,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/core/Fl_Hashs.cpp	SourceOrHeader,	UniqueId=0x400294,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Image.cpp	SourceOrHeader,	UniqueId=0x400295,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Image_Filter.cpp	SourceOrHeader,	UniqueId=0x400296,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Lists.cpp	SourceOrHeader,	UniqueId=0x400297,	TargetType=C++,	IDEFlags=0x6
@@ -10768,7 +10731,7 @@ test/input_browser.o :	efltk/Fl_Input_Browser.h\
 # %TargetInfo src/opengl/gl_draw.cpp	SourceOrHeader,	UniqueId=0x4002e6,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/opengl/gl_start.cpp	SourceOrHeader,	UniqueId=0x4002e7,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Align_Group.cpp	SourceOrHeader,	UniqueId=0x4002e9,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/widgets/Fl_Bar.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4002ea,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Bar.cpp	SourceOrHeader,	UniqueId=0x4002ea,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Box.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4002eb,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Browser.cpp	SourceOrHeader,	UniqueId=0x4002ec,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Button.cpp	SourceOrHeader,	UniqueId=0x4002ed,	TargetType=C++,	IDEFlags=0x6
@@ -10792,7 +10755,7 @@ test/input_browser.o :	efltk/Fl_Input_Browser.h\
 # %TargetInfo src/widgets/Fl_Input_Browser.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4002ff,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Item.cpp	SourceOrHeader,	UniqueId=0x400300,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Light_Button.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400301,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/widgets/Fl_ListView.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400302,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_ListView.cpp	SourceOrHeader,	UniqueId=0x400302,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_ListView_Header.cpp	SourceOrHeader,	UniqueId=0x400303,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_ListView_Item.cpp	SourceOrHeader,	UniqueId=0x400304,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_MDI_Bar.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400305,	TargetType=C++,	IDEFlags=0x6
@@ -10965,10 +10928,8 @@ test/input_browser.o :	efltk/Fl_Input_Browser.h\
 # %TargetInfo efltk/fl_draw.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400091,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo src/core/fl_internal.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400092,	TargetType=INC,	IDEFlags=0x6
 # %TargetInfo efltk/Fl_Translator.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400093,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Config.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400094,	TargetType=INC,	IDEFlags=0xc
+# %TargetInfo efltk/Fl_Config.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400094,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/vsnprintf.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400095,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_String_Hash.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400096,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Ptr_Hash.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400097,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Image_Filter.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400098,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_String_Stack.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400099,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Callback_List.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40009a,	TargetType=INC,	IDEFlags=0xe
@@ -11018,7 +10979,6 @@ test/input_browser.o :	efltk/Fl_Input_Browser.h\
 # %TargetInfo src/core/headers/spacing.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000c6,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo src/db/odbc/fl_odbc.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000cf,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo src/xml/html_entities.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000d9,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_XmlCtx.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000da,	TargetType=INC,	IDEFlags=0xc
 # %TargetInfo efltk/Fl_XmlHandler.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000db,	TargetType=INC,	IDEFlags=0xc
 # %TargetInfo efltk/Fl_XmlNode.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000dc,	TargetType=INC,	IDEFlags=0xc
 # %TargetInfo efltk/Fl_XmlNode_List.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000dd,	TargetType=INC,	IDEFlags=0xc
@@ -11032,7 +10992,6 @@ test/input_browser.o :	efltk/Fl_Input_Browser.h\
 # %TargetInfo efltk/Fl_Radio_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000e7,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Repeat_Button.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4000e8,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Return_Button.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000e9,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo config.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4000f1,	TargetType=INC,	IDEFlags=0xc
 # %TargetInfo efltk/Fl_Align_Group.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40014b,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Bar.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40014c,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Browser.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40014d,	TargetType=INC,	IDEFlags=0xe
@@ -11057,7 +11016,7 @@ test/input_browser.o :	efltk/Fl_Input_Browser.h\
 # %TargetInfo efltk/Fl_FileBrowser.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400161,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_ListView_Item.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400162,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Image_List.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400163,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_ListView.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400164,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_ListView.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400164,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_ListView_Header.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400165,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_FileInput.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400166,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo src/widgets/Pixmaps.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400167,	TargetType=INC,	IDEFlags=0xe
@@ -11080,7 +11039,7 @@ test/input_browser.o :	efltk/Fl_Input_Browser.h\
 # %TargetInfo efltk/Fl_ProgressBar.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400178,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Roller.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400179,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Shaped_Window.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40017a,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Tabs.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40017b,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Tabs.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40017b,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Text_Buffer.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40017c,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Text_Display.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40017d,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Text_Editor.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40017e,	TargetType=INC,	IDEFlags=0xe
@@ -11175,7 +11134,6 @@ test/input_browser.o :	efltk/Fl_Input_Browser.h\
 # %TargetInfo test/net/mail_accounts.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003ce,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo test/net/file_small.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x4003cf,	TargetType=XPM,	IDEFlags=0xe
 # %TargetInfo test/net/folder_small.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d0,	TargetType=XPM,	IDEFlags=0xe
-# %TargetInfo efltk/xml/Fl_XmlCtx.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d1,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Check_Buttons.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d2,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Radio_Buttons.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4003d3,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Int_Input.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4003e8,	TargetType=INC,	IDEFlags=0xe
@@ -11200,6 +11158,7 @@ test/input_browser.o :	efltk/Fl_Input_Browser.h\
 # %IDEFlags:	0
 # %Folder
 # "efltk" : 
+#	0x4000f1
 #	0x400002
 #	0x4000ed
 #	0x4000f2
@@ -11241,13 +11200,13 @@ test/input_browser.o :	efltk/Fl_Input_Browser.h\
 #	0x4003e6
 #	0x4003da
 #	0x4003dc
+#	0x4003c8
+#	0x4003d8
 #	0x400380
 #	0x4003e0
 #	0x40037e
 #	0x40033f
 #	0x400364
-#	0x4003c8
-#	0x4003d8
 #	0x4003e4
 #	0x40038a
 #	0x40033a
