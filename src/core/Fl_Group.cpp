@@ -507,14 +507,14 @@ void Fl_Group::layout()
                     if (m_use_preffered_sizes) 
                         o->preferred_size(pref_w,pref_h);
 
-                    o->resize(xx+label_w,yy,pref_w,pref_h);
-
                     label_h = o->h();
                     if (m_use_label_widths) {
                         label_h = o->label_height();
                         if (label_h < o->h())
                             label_h = o->h();
                     }
+
+                    o->resize(xx+label_w,yy,pref_w,pref_h);
 
                     yy += label_h+offset*2;
                     hh -= label_h+offset*2;
@@ -531,10 +531,8 @@ void Fl_Group::layout()
 
                     pref_w = ww - label_w;
                     pref_h = o->h();
-                    if (m_use_preffered_sizes) 
+                    if (m_use_preffered_sizes)
                         o->preferred_size(pref_w,pref_h);
-
-                    o->resize(xx+label_w,yy+hh-label_h,pref_w,pref_h);
 
                     label_h = o->h();
                     if (m_use_label_widths) {
@@ -542,6 +540,8 @@ void Fl_Group::layout()
                         if (label_h < o->h())
                             label_h = o->h();
                     }
+
+                    o->resize(xx+label_w, yy+hh-label_h, pref_w, pref_h);
 
                     hh -= label_h+offset*2;
                     break;

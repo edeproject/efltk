@@ -109,7 +109,7 @@ void Fl_Widget::draw_label(int X, int Y, int W, int H, Fl_Flags flags) const
     if (flags & FL_ALIGN_CLIP) fl_push_clip(X, Y, W, H);
 
     if (label_width_ > 0) {
-        flags |= FL_ALIGN_WRAP | FL_ALIGN_TOP;
+        flags |= FL_ALIGN_WRAP;// | FL_ALIGN_TOP;
         int x_right = X + W;
         if (W > label_width_) 
             W = label_width_;
