@@ -32,7 +32,11 @@ class Fl_Calendar : public Fl_Group {
 public:
     static Fl_Named_Style* default_style;
 
+    /** The traditional constructor creates the calendar using the position, size, and label. */
     Fl_Calendar(int x,int y,int w,int h,const char *lbl=0L);
+
+    /** The new style constructor creates the calendar using the label, size, alignment, and label_width. */
+    Fl_Calendar(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
 
     virtual void layout();
     virtual void draw();
@@ -57,6 +61,8 @@ private:
     Fl_Date_Time  m_date;
     Fl_String     m_headerLabel;
     int           m_activeButtonIndex;
+
+    void ctor_init(int x,int y,int w,int h);
 };
 
 class Fl_Popup_Calendar : public Fl_Popup_Window {

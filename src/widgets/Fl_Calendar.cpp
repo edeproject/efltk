@@ -86,25 +86,25 @@ static void revert(Fl_Style* s) {
 static Fl_Named_Style style("Calendar", revert, &Fl_Calendar::default_style);
 Fl_Named_Style* Fl_Calendar::default_style = &::style;
 
-Fl_Calendar::Fl_Calendar(int x,int y,int w,int h,const char *lbl)
-: Fl_Group(x,y,w,h,lbl) {
+// ctor initializer - used in both ctors
+void Fl_Calendar::ctor_init(int x,int y,int w,int h) {
     style(default_style);
     unsigned i;
-   // Header box
+    // Header box
     m_headerBox = new Fl_Group(x,y,w,32);
     m_monthNameBox = new Fl_Box(x,0,w-64,16);
     m_monthNameBox->box(FL_NO_BOX);
 
-   // NLS stuff
+    // NLS stuff
     for (i=0; i<7;i++) weekDayLabels[i]=_(weekDayLabels[i]);
 
-   // Weekday headers
+    // Weekday headers
     for (i = 0; i < 7; i++) {
         m_dayNameBoxes[i] = new Fl_Box(x+i*16,y+16,16,16,weekDayLabels[i]);
     }
     m_headerBox->end();
 
-   // Day buttons, correct positions are set by resize()
+    // Day buttons, correct positions are set by resize()
     m_buttonBox = new Fl_Group(0,32,w,64);
     m_buttonBox->box(FL_FLAT_BOX);
     for (i = 0; i < 31; i++) {
@@ -114,7 +114,7 @@ Fl_Calendar::Fl_Calendar(int x,int y,int w,int h,const char *lbl)
     }
     m_buttonBox->end();
 
-   // Switch buttons, correct positions are set by resize()
+    // Switch buttons, correct positions are set by resize()
     for (i = 0; i < 4; i++) {
         m_switchButtons[i] = new Fl_Button(x,y,16,16,switchLabels[i]);
         m_switchButtons[i]->callback(Fl_Calendar::cbSwitchButtonClicked, (void *)monthChanges[i]);
@@ -123,6 +123,19 @@ Fl_Calendar::Fl_Calendar(int x,int y,int w,int h,const char *lbl)
 
     end();
     date(Fl_Date_Time::Now());
+}
+
+// Traditional ctor
+Fl_Calendar::Fl_Calendar(int x,int y,int w,int h,const char *lbl)
+: Fl_Group(x,y,w,h,lbl) {
+    ctor_init(x,y,w,h);
+}
+
+// New style ctor
+Fl_Calendar::Fl_Calendar(const char* l,int layout_size,Fl_Align layout_al,int label_w)
+: Fl_Group (l,layout_size,layout_al,label_w) 
+{
+    ctor_init(0,0,w(),h());
 }
 
 void Fl_Calendar::layout() {
@@ -147,7 +160,7 @@ void Fl_Calendar::layout() {
         m_dayNameBoxes[i]->resize(i*bw,bh+2,bw,bh);
     }
 
-   // compute the month start date
+    // compute the month start date
     short year, month, day;
     if ((double)m_date < 1) m_date = Fl_Date_Time::Now();
     m_date.decode_date(&year,&month,&day);
@@ -156,7 +169,7 @@ void Fl_Calendar::layout() {
 
     m_monthNameBox->label(m_headerLabel.c_str());
 
-   // resize day buttons
+    // resize day buttons
     m_buttonBox->resize(xx,bh*2+yy+2,ww,hh-bh*2);
     int dayOffset   = monthDate.day_of_week()-1;
     int daysInMonth = monthDate.days_in_month();
@@ -178,9 +191,8 @@ void Fl_Calendar::layout() {
 
     int sby = m_buttonBox->y() + m_buttonBox->h();
 
-    for (i = 0; i < 2; i++) {
+    for (i = 0; i < 2; i++)
         m_switchButtons[i]->resize(xx+i*bw,sby,bw,bh);
-    }
 
     int x1 = ww - bw * 2;
     for (i = 2; i < 4; i++) {
