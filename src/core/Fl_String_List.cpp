@@ -136,6 +136,7 @@ int Fl_String_List::remove(Fl_String i)
 //Return first index of found string. -1 if none
 int Fl_String_List::index_of(const Fl_String &str) const
 {
+    /*
     // Do binary search
     int bottom=0, top=size()-1, mid;
     int L = ( top + bottom ) / 2 ;
@@ -150,6 +151,13 @@ int Fl_String_List::index_of(const Fl_String &str) const
             bottom = mid + 1;
         else
             top = mid-1;
+    }
+     */
+    const char *s = str.c_str();
+    unsigned cnt = size();
+    for (unsigned i = 0; i < cnt; i++) {
+        if (strcmp(s, items[i]) == 0)
+            return (int)i;
     }
 
     return -1;
