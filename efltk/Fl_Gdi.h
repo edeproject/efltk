@@ -32,9 +32,9 @@
 
 
 extern FL_API Fl_Color fl_color_;
-extern FL_API int fl_size_;
-extern FL_API int fl_font_;
-extern FL_API HDC fl_gc;
+extern FL_API float    fl_size_;
+extern FL_API Fl_font  fl_font_;
+extern FL_API HDC      fl_gc;
 /*
 struct Fl_Ext{
 		int WOx, VEx, WEx, VOx;
@@ -113,9 +113,9 @@ public:
 
 	// Those need to be refined  -  need to be uncached for offscreen cteation 
 	// note: masking do not seems to work directly
-	  void draw_Pixmap(Fl_Pixmap * pxm,int XP, int YP, int WP, int HP, int cx, int cy);
-	  void draw_RGB(Fl_RGB_Image * rgb,int XP, int YP, int WP, int HP, int cx, int cy);
-	  void draw_Bitmap(Fl_Bitmap * bmp,int XP, int YP, int WP, int HP, int cx, int cy);
+//	  void draw_Pixmap(Fl_Pixmap * pxm,int XP, int YP, int WP, int HP, int cx, int cy);
+//	  void draw_RGB(Fl_RGB_Image * rgb,int XP, int YP, int WP, int HP, int cx, int cy);
+//	  void draw_Bitmap(Fl_Bitmap * bmp,int XP, int YP, int WP, int HP, int cx, int cy);
 
 	Fl_Gdi(HDC gc, DEVMODE * mode);
 	  ~Fl_Gdi();
