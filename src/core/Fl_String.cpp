@@ -408,7 +408,7 @@ float Fl_String::to_float(float defvalue) const
 {
     Fl_String t = trim();
     if(!t.length()) return defvalue;
-    float value = strtof(t.c_str(), NULL);
+    float value = (float)strtod(t.c_str(), NULL);
     if(errno == ERANGE) return defvalue;
     return value;
 }
