@@ -279,7 +279,7 @@ void Fl_Combo_Box_Panel::draw() {
         fl_color(text_color());
     }
 
-    //fl_push_clip(xx, 0, w(), hh);
+    fl_push_clip(xx, 0, w(), h());
 
     for (unsigned c = 0; c < item->columns(); c++) {
         int ww = m_listView->column_width(c);
@@ -297,7 +297,7 @@ void Fl_Combo_Box_Panel::draw() {
         xx += ww;
     }
 
-    //fl_pop_clip();
+    fl_pop_clip();
 }
 
 int Fl_Combo_Box_Panel::handle(int event) {
@@ -343,7 +343,7 @@ void Fl_Combo_Box::ctor_init() {
 
     m_popup = new Fl_Popup_ListView;
 
-    begin();
+    Fl_Group::begin();
 
     for (int i = 0; i < 5; i++) {
         Fl_Button *b = new Fl_Combo_Box_Button();
@@ -377,7 +377,7 @@ void Fl_Combo_Box::ctor_init() {
     m_panel = new Fl_Combo_Box_Panel(listview());
     m_panel->layout_align(FL_ALIGN_CLIENT);
 
-    end();
+    Fl_Group::end();
 }
 
 // Traditional ctor

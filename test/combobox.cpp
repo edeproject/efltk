@@ -18,13 +18,13 @@ void cb_callback(Fl_Widget *combo_box,void *) {
     puts(msg);
 }
 
-void fill_list(Fl_ListView *lv) {
-    lv->add_column("Animal",50);
-    lv->add_column("Type",50);
+void fill_list(Fl_Combo_Box *cb) {
+    cb->listview()->add_column("Animal",50);
+    cb->listview()->add_column("Type",50);
 
     Fl_ListView_Item *item;
 
-    lv->begin();
+    cb->begin();
 
     item = new Fl_ListView_Item("Bear","Mammal");
     item->argument(1);
@@ -35,7 +35,7 @@ void fill_list(Fl_ListView *lv) {
     item = new Fl_ListView_Item("Albatros","Bird");
     item->argument(3);
 
-    lv->end();
+    cb->end();
 }
 
 int main(int argc, char *argv[]) {
@@ -43,12 +43,11 @@ int main(int argc, char *argv[]) {
     window.layout_spacing(4);
 
     Fl_Combo_Box    cb1("Regular combo box");
-    fill_list(cb1.listview());
+    fill_list(&cb1);
     cb1.callback(cb_callback);
-    cb1.end();
 
     Fl_Combo_Box    cb2("CB with all buttons");
-    fill_list(cb2.listview());
+    fill_list(&cb2);
     cb2.buttons(FL_CBB_INSERT|FL_CBB_EDIT|FL_CBB_DELETE|FL_CBB_REFRESH);
     cb2.callback(cb_callback);
 

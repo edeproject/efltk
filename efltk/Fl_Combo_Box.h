@@ -34,6 +34,10 @@ public:
 
     Fl_ListView *listview() const;
 
+    /** begin() starts a group of items, end() finishes it */
+    virtual void begin() { listview()->begin(); }
+    virtual void end() { Fl_Group::end(); }
+
     void buttons(int buttons_set=FL_CBB_BROWSE);
 
     void fill(Fl_Data_Source& ds,int user_data_column=-1) { listview()->fill(ds,user_data_column); }
