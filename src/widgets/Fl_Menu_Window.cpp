@@ -249,7 +249,7 @@ void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
     delete []window_data;
 
     /*if(opacity==255)*/
-    {
+    if(shown()) {
 #ifdef _WIN32
         make_current();
         fl_copy_offscreen(0, 0, w, h, pm, 0, 0);
