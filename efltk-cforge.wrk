@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x400437
+# %FirstUniqueId:	0x400455
 PROJECT_DIR = /develop/CVS/efltk/
 
 IDE_WORKING_DIR = /develop/CVS/efltk/
@@ -199,6 +199,7 @@ lib/libefltk.so  :: 	lib/Fl.o\
 	lib/Fl_Slider.o\
 	lib/Fl_Socket.o\
 	lib/Fl_Split.o\
+	lib/Fl_Stock_Images.o\
 	lib/Fl_String.o\
 	lib/Fl_String_List.o\
 	lib/Fl_Style.o\
@@ -494,7 +495,7 @@ test/input_browser  :: 	test/input_browser.o
 test/split  :: 	test/split.o
 	$(CC) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
-/distr/develop/CVS/efltk/doc/EventsProposal.html  :: 
+doc/EventsProposal.html  :: 
 	case $@ in \
 	/*) full_name=$@ ;;\
 	*) full_name=`pwd`/$@ ;;\
@@ -509,6 +510,15 @@ test/tabs  :: 	test/tabs.o
 
 group_grow  :: 	test/group_grow.o\
 	test/Fl_Group.o
+	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+main_window  :: 	test/main_window.o
+	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+mdi_test  :: 	test/mdi_test.o
+	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
+
+test/tabs2  :: 	test/tabs2.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
 # %ObjectFilesLinking
@@ -1634,6 +1644,22 @@ test/Fl_Group.o : src/core/Fl_Group.cpp
 
 lib/Fl_Config_Dialog_DS.o : src/widgets/Fl_Config_Dialog_DS.cpp
 	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+lib/Fl_Stock_Images.o : src/widgets/Fl_Stock_Images.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+test/main_window.o : test/main_window.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+test/mdi_test.o : test/mdi_test.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+test/tabs2.o : /cvs/efltk/test/tabs2.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
 # DO NOT DELETE
@@ -5153,6 +5179,9 @@ lib/Fl_ListView.o :	efltk/Fl_ListView_Header.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h\
+	efltk/Fl_Size.h\
+	efltk/Fl_Point.h\
+	efltk/Fl_Rect.h\
 	efltk/fl_draw.h\
 	efltk/Fl_ListView.h\
 	efltk/Fl_ListView_Column.h\
@@ -6830,32 +6859,47 @@ lib/Fl_FTP_Connect.o :	efltk/net/Fl_FTP_Connect.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
 	efltk/Fl_String_List.h
-test/imap_connect.o :	test/mail_accounts.h\
+test/imap_connect.o :	test/net/mail_accounts.h\
 	efltk/Fl_Dialog.h\
-	efltk/Fl_Variant.h\
-	efltk/Fl_Date_Time.h\
-	efltk/Fl_String.h\
-	efltk/Enumerations.h\
-	efltk/Fl_Export.h\
-	efltk/Fl_Widget_List.h\
-	efltk/Fl_Widget.h\
+	efltk/Fl_Dialog_DS.h\
 	efltk/Fl_Data_Source.h\
 	efltk/Fl_Data_Fields.h\
 	efltk/Fl_Flags.h\
 	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Config.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
 	efltk/Fl_Exception.h\
 	efltk/Fl_Style.h\
 	efltk/Fl_Font.h\
-	efltk/Fl_Int_List.h\
 	efltk/Fl_String_List.h\
 	efltk/Fl_Labeltype.h\
-	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h\
+	efltk/Fl_Map.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl_Size.h\
+	efltk/Fl_Point.h\
+	efltk/Fl_Rect.h\
+	efltk/Fl_Pixmap.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
 	efltk/Fl_Scroll.h\
 	efltk/Fl_Scrollbar.h\
 	efltk/Fl_Slider.h\
 	efltk/Fl_Valuator.h\
-	efltk/Fl_Group.h\
 	efltk/Fl_Window.h\
 	test/net/file_small.xpm\
 	test/net/folder_small.xpm\
@@ -6872,12 +6916,8 @@ test/imap_connect.o :	test/mail_accounts.h\
 	efltk/Fl_Buffer.h\
 	efltk/Fl_Ptr_Stack.h\
 	efltk/fl_draw.h\
-	efltk/Fl_Device.h\
 	efltk/Fl_Browser.h\
 	efltk/Fl_Choice.h\
-	efltk/Fl_Config.h\
-	efltk/Fl_Util.h\
-	efltk/filename.h\
 	efltk/Fl_ProgressBar.h\
 	efltk/Fl.h\
 	efltk/Fl_Button.h\
@@ -6885,14 +6925,11 @@ test/imap_connect.o :	test/mail_accounts.h\
 	efltk/Fl_Input.h\
 	efltk/Fl_Box.h\
 	efltk/Fl_ListView.h\
-	efltk/Fl_ListView_Item.h\
-	efltk/Fl_Image_List.h\
-	efltk/Fl_Image.h\
-	efltk/Fl_PtrList.h\
-	efltk/Fl_Renderer.h\
-	efltk/x.h\
-	efltk/win32.h\
+	efltk/Fl_ListView_Column.h\
 	efltk/Fl_ListView_Header.h\
+	efltk/Fl_ListView_Item.h\
+	efltk/Fl_Packed_Strings.h\
+	efltk/Fl_Table_Base.h\
 	efltk/net/Fl_IMAP_DS.h\
 	efltk/net/Fl_IMAP_Connect.h\
 	efltk/Fl_Socket.h\
@@ -7197,55 +7234,64 @@ lib/Fl_Mail_Message.o :	efltk/net/Fl_Mail_Message.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_String_List.h\
 	efltk/Fl_String.h
-test/mail_accounts.o :	test/mail_accounts.h\
+test/mail_accounts.o :	test/net/mail_accounts.h\
 	efltk/Fl_Dialog.h\
-	efltk/Fl_Variant.h\
-	efltk/Fl_Date_Time.h\
-	efltk/Fl_String.h\
-	efltk/Enumerations.h\
-	efltk/Fl_Export.h\
-	efltk/Fl_Widget_List.h\
-	efltk/Fl_Widget.h\
+	efltk/Fl_Dialog_DS.h\
 	efltk/Fl_Data_Source.h\
 	efltk/Fl_Data_Fields.h\
 	efltk/Fl_Flags.h\
 	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Config.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
 	efltk/Fl_Exception.h\
 	efltk/Fl_Style.h\
 	efltk/Fl_Font.h\
-	efltk/Fl_Int_List.h\
 	efltk/Fl_String_List.h\
 	efltk/Fl_Labeltype.h\
-	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h\
+	efltk/Fl_Map.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl_Size.h\
+	efltk/Fl_Point.h\
+	efltk/Fl_Rect.h\
+	efltk/Fl_Pixmap.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
 	efltk/Fl_Scroll.h\
 	efltk/Fl_Scrollbar.h\
 	efltk/Fl_Slider.h\
 	efltk/Fl_Valuator.h\
-	efltk/Fl_Group.h\
 	efltk/Fl_Window.h\
 	efltk/fl_ask.h\
 	efltk/Fl_Return_Button.h\
 	efltk/Fl_Button.h\
-	efltk/Fl_Config.h\
-	efltk/Fl_Util.h\
-	efltk/filename.h\
 	efltk/Fl_Choice.h\
 	efltk/Fl_Menu_.h\
 	efltk/Fl_Menu_Item.h\
 	efltk/Fl_Secret_Input.h\
 	efltk/Fl_Input.h\
 	efltk/Fl_ListView.h\
+	efltk/Fl_ListView_Column.h\
+	efltk/Fl_ListView_Header.h\
 	efltk/Fl_ListView_Item.h\
-	efltk/Fl_Image_List.h\
-	efltk/Fl_Image.h\
-	efltk/Fl_PtrList.h\
-	efltk/Fl_Renderer.h\
-	efltk/x.h\
-	efltk/win32.h\
-	efltk/Fl_Device.h\
-	efltk/Fl.h\
-	efltk/Fl_ListView_Header.h
+	efltk/Fl_Packed_Strings.h\
+	efltk/Fl_Table_Base.h\
+	efltk/Fl_Box.h\
+	efltk/Fl.h
 lib/Fl_Base64.o :	efltk/net/Fl_Base64.h\
 	efltk/Fl_Buffer.h\
 	efltk/Fl_String.h\
@@ -7459,6 +7505,9 @@ test/menubar.o :	efltk/fl_draw.h\
 	efltk/win32.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h\
+	efltk/Fl_Size.h\
+	efltk/Fl_Point.h\
+	efltk/Fl_Rect.h\
 	efltk/Fl_Tooltip.h\
 	efltk/Fl.h\
 	efltk/Fl_Choice.h\
@@ -7473,6 +7522,7 @@ test/menubar.o :	efltk/fl_draw.h\
 	efltk/Fl_Window.h\
 	efltk/Fl_Main_Window.h\
 	efltk/Fl_Tool_Bar.h\
+	efltk/Fl_Divider.h\
 	efltk/Fl_Bar.h\
 	efltk/Fl_Pack.h\
 	efltk/Fl_Box.h\
@@ -8969,44 +9019,49 @@ tools/etranslate/modify_info.o :	tools/etranslate/etranslate.h\
 	efltk/Fl_Map.h
 lib/Fl_Combo_Box.o :	efltk/Fl_Combo_Box.h\
 	efltk/Fl_ListView.h\
-	efltk/Fl_Scrollbar.h\
-	efltk/Fl_Slider.h\
-	efltk/Fl_Valuator.h\
-	efltk/Fl_Widget.h\
-	efltk/Fl_Data_Source.h\
-	efltk/Fl_Data_Fields.h\
-	efltk/Fl_Flags.h\
-	efltk/Fl_Ptr_List.h\
+	efltk/Fl_ListView_Column.h\
+	efltk/Fl_String.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Export.h\
-	efltk/Fl_Variant.h\
-	efltk/Fl_Date_Time.h\
-	efltk/Fl_String.h\
-	efltk/Fl_Exception.h\
-	efltk/Fl_Style.h\
-	efltk/Fl_Font.h\
-	efltk/Fl_Int_List.h\
-	efltk/Fl_String_List.h\
-	efltk/Fl_Labeltype.h\
-	efltk/Fl_Color.h\
-	efltk/Fl_Boxtype.h\
-	efltk/Fl_Group.h\
-	efltk/Fl_Widget_List.h\
-	efltk/Fl_ListView_Item.h\
-	efltk/Fl_Image_List.h\
+	efltk/Fl_ListView_Header.h\
+	efltk/Fl_Ptr_List.h\
 	efltk/Fl_Image.h\
+	efltk/Fl_Flags.h\
 	efltk/Fl_PtrList.h\
 	efltk/Fl_Renderer.h\
 	efltk/x.h\
 	efltk/win32.h\
+	efltk/Fl_Color.h\
 	efltk/Fl_Device.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Boxtype.h\
 	efltk/Fl_Util.h\
 	efltk/filename.h\
+	efltk/Fl_Size.h\
+	efltk/Fl_Point.h\
+	efltk/Fl_Rect.h\
+	efltk/Fl_ListView_Item.h\
+	efltk/Fl_Packed_Strings.h\
+	efltk/Fl_Table_Base.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Box.h\
 	efltk/Fl.h\
-	efltk/Fl_ListView_Header.h\
 	efltk/fl_draw.h\
 	efltk/Fl_Pixmap.h\
-	efltk/Fl_Box.h\
 	efltk/Fl_Input.h\
 	efltk/Fl_Popup_Window.h\
 	efltk/Fl_Menu_Window.h\
@@ -9905,3 +9960,225 @@ lib/Fl_Config_Dialog_DS.o :	efltk/Fl_Config_Dialog_DS.h\
 	efltk/Fl_Size.h\
 	efltk/Fl_Point.h\
 	efltk/Fl_Rect.h
+lib/Fl_Stock_Images.o :	src/widgets/images/stock_save.xpm\
+	src/widgets/images/stock_right.xpm\
+	src/widgets/images/stock_printer.xpm\
+	src/widgets/images/stock_print.xpm\
+	src/widgets/images/stock_open.xpm\
+	src/widgets/images/stock_ok.xpm\
+	src/widgets/images/stock_no.xpm\
+	src/widgets/images/stock_new.xpm\
+	src/widgets/images/stock_left.xpm\
+	src/widgets/images/stock_insert.xpm\
+	src/widgets/images/stock_help.xpm\
+	src/widgets/images/stock_edit.xpm\
+	src/widgets/images/stock_delete.xpm\
+	src/widgets/images/stock_cancel.xpm\
+	efltk/Fl_Pixmap.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl_Size.h\
+	efltk/Fl_Point.h\
+	efltk/Fl_Rect.h\
+	efltk/Fl_Stock_Images.h
+test/main_window.o :	efltk/fl_ask.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Box.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Radio_Buttons.h\
+	efltk/Fl_Button_Group.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Map.h\
+	efltk/Fl_Stock_Images.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl_Size.h\
+	efltk/Fl_Point.h\
+	efltk/Fl_Rect.h\
+	efltk/Fl_Main_Window.h\
+	efltk/Fl_Tool_Bar.h\
+	efltk/Fl_Divider.h\
+	efltk/Fl_Menu_Button.h\
+	efltk/Fl_Menu_.h\
+	efltk/Fl_Menu_Item.h\
+	efltk/Fl_Bar.h\
+	efltk/Fl_Menu_Bar.h\
+	efltk/Fl_Menu_Window.h\
+	efltk/Fl_Single_Window.h\
+	efltk/Fl_Window.h\
+	efltk/Fl.h\
+	efltk/Fl_Pack.h\
+	efltk/Fl_Double_Window.h
+test/mdi_test.o :	efltk/Fl_File_Dialog.h\
+	efltk/Fl_FileBrowser.h\
+	efltk/Fl_Directory_DS.h\
+	efltk/Fl_Memory_DS.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_ListView_Item.h\
+	efltk/Fl_Packed_Strings.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl_Size.h\
+	efltk/Fl_Point.h\
+	efltk/Fl_Rect.h\
+	efltk/Fl_ListView.h\
+	efltk/Fl_ListView_Column.h\
+	efltk/Fl_ListView_Header.h\
+	efltk/Fl_Table_Base.h\
+	efltk/Fl_Scrollbar.h\
+	efltk/Fl_Slider.h\
+	efltk/Fl_Valuator.h\
+	efltk/Fl_Box.h\
+	efltk/Fl.h\
+	efltk/Fl_Highlight_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Check_Button.h\
+	efltk/Fl_Dialog.h\
+	efltk/Fl_Dialog_DS.h\
+	efltk/Fl_Config.h\
+	efltk/Fl_Map.h\
+	efltk/Fl_Pixmap.h\
+	efltk/Fl_Scroll.h\
+	efltk/Fl_Window.h\
+	efltk/Fl_Item.h\
+	efltk/Fl_Input_Browser.h\
+	efltk/Fl_Menu_Window.h\
+	efltk/Fl_Single_Window.h\
+	efltk/Fl_Menu_.h\
+	efltk/Fl_Menu_Item.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Image_Cache.h\
+	efltk/Fl_MDI_Bar.h\
+	efltk/Fl_MDI_Window.h\
+	efltk/Fl_Workspace.h\
+	efltk/fl_draw.h\
+	efltk/Fl_Menu_Bar.h\
+	efltk/Fl_Main_Window.h\
+	efltk/Fl_Tool_Bar.h\
+	efltk/Fl_Divider.h\
+	efltk/Fl_Menu_Button.h\
+	efltk/Fl_Bar.h\
+	efltk/Fl_Pack.h\
+	efltk/Fl_Double_Window.h\
+	efltk/Fl_Browser.h\
+	efltk/Fl_Radio_Button.h
+test/tabs2.o :	/cvs/efltk/test/multitabs_glyph3.xpm\
+	/cvs/efltk/test/multitabs_glyph2.xpm\
+	/cvs/efltk/test/multitabs_glyph1.xpm\
+	efltk/Fl_Pixmap.h\
+	efltk/Fl_Image.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_PtrList.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Renderer.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_Util.h\
+	efltk/filename.h\
+	efltk/Fl_Size.h\
+	efltk/Fl_Point.h\
+	efltk/Fl_Rect.h\
+	efltk/Fl_Tabs.h\
+	/cvs/efltk/test/tabs.h\
+	efltk/Fl_Return_Button.h\
+	efltk/Fl_Button.h\
+	efltk/Fl_Clock.h\
+	efltk/Fl_Wordwrap_Input.h\
+	efltk/Fl_Input.h\
+	efltk/Fl_Window.h\
+	efltk/Fl.h

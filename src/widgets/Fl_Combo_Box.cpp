@@ -138,17 +138,19 @@ static Fl_Pixmap   refresh_pixmap(refresh_small_xpm);
 
 class Fl_Combo_Box_Button : public Fl_Button {
 public:
-    Fl_Combo_Box_Button(Fl_Combo_Box *cb) : Fl_Button (0,0,10,10), combo(cb) {}
+    Fl_Combo_Box_Button(Fl_Combo_Box *cb) : Fl_Button (0,0,10,10), combo(cb) { accept_focus(false); }
     void preferred_size(int& w,int& h) const { 
         fl_font(parent()->text_font(),parent()->text_size());
         h = int(fl_height()+fl_descent()) + 2;
         w = 15 + box()->dw() + 1; 
     }
+    /*
     int handle(int event) { // button should never take focus
         if (event == FL_FOCUS)
             return false;
         return Fl_Button::handle(event);
     }
+*/
     void draw() { box(combo->button_box()); Fl_Button::draw(); }
 
     Fl_Combo_Box *combo;
