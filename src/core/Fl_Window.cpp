@@ -443,6 +443,7 @@ void Fl_Window::destroy()
     }
 
     // Make sure no events are sent to this window:
+	if(flags()&FL_MODAL) Fl::modal(0, false);
     throw_focus();
     clear_visible();
 

@@ -54,6 +54,7 @@ void Fl_Device::pie(int x,int y,int w,int h,float a1,float a2, int what)
 	int ya = y+h/2-int(h*sinf(a1*float(M_PI/180.0)));
 	int xb = x+w/2+int(w*cosf(a2*float(M_PI/180.0)));
 	int yb = y+h/2-int(h*sinf(a2*float(M_PI/180.0)));
+	fl_set_geometric_pen();
 	switch (what) {
 	case FL_PIE:
 		fl_setbrush();
@@ -63,9 +64,8 @@ void Fl_Device::pie(int x,int y,int w,int h,float a1,float a2, int what)
 		fl_setbrush();
 		Chord(fl_gc, x, y, x+w, y+h, xa, ya, xb, yb); 
 		break;
-	case FL_ARC:		
-		fl_set_geometric_pen();
-		Arc(fl_gc, x, y, x+w, y+h, xa, ya, xb, yb); 
+	case FL_ARC:
+		Arc(fl_gc, x, y, x+w, y+h, xa, ya, xb, yb);
 		break;
 	}
 #else

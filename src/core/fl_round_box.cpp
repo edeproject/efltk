@@ -32,91 +32,91 @@
 #include <efltk/fl_draw.h>
 #include <string.h>
 
-enum {UPPER_LEFT, LOWER_RIGHT, CLOSED, FILL};
+enum { UPPER_LEFT, LOWER_RIGHT, CLOSED, FILL };
 
 // Draw the oval shape. This is ugly because I need to cut the path
 // up into individual arcs so the drawing library uses the server
 // arc code.
-
 static void lozenge(int which, int x,int y,int w,int h, Fl_Color color)
 {
     w--; h--;
     int d = w <= h ? w : h;
     if (d <= 1) return;
-    fl_color((Fl_Color)color);
+    
+	fl_color(color);
     int what = (which==FILL ? FL_PIE : FL_ARC);
-    if (which >= CLOSED)
-    {
+
+    if (which >= CLOSED) {
         fl_pie(x+w-d, y, d, d, float(w<=h ? 0 : -90), float(w<=h ? 180 : 90), what);
         fl_pie(x, y+h-d, d, d, float(w<=h ? 180 : 90), float(w<=h ? 360 : 270), what);
     }
-    else if (which == UPPER_LEFT)
-    {
+    else if (which == UPPER_LEFT) {
         fl_pie(x+w-d, y, d, d, float(45), float(w<=h ? 180 : 90), what);
         fl_pie(x, y+h-d, d, d, float(w<=h ? 180 : 90), float(225), what);
-    }                            // LOWER_RIGHT
-    else
-    {
+    } else {
+		// LOWER_RIGHT
         fl_pie(x, y+h-d, d, d, float(225), float(w<=h ? 360 : 270), what);
         fl_pie(x+w-d, y, d, d, float(w<=h ? 360 : 270), float(360+45), what);
     }
-    if (which == FILL)
-    {
+
+    if (which == FILL) {
         if (w < h)
             fl_rectf(x, y+d/2, w, h-(d&-2));
         else if (w > h)
             fl_rectf(x+d/2, y, w-(d&-2), h);
-    }
-    else
-    {
-        if (w < h)
-        {
+    } else {
+        if (w < h) {
             if (which != UPPER_LEFT) fl_line(x+w, y+d/2, x+w, y+h-d/2);
             if (which != LOWER_RIGHT) fl_line(x, y+d/2, x, y+h-d/2);
         }
-        else if (w > h)
-        {
+        else if (w > h) {
             if (which != UPPER_LEFT) fl_line(x+d/2, y+h, x+w-d/2, y+h);
             if (which != LOWER_RIGHT) fl_line(x+d/2, y, x+w-d/2, y);
         }
     }
 }
 
-
 extern void fl_to_inactive(const char* s, char* to);
 
-void Fl_Round_Box::draw(int x, int y, int w, int h,
-Fl_Color c, Fl_Flags f) const
+void Fl_Round_Box::draw(int x, int y, int w, int h, Fl_Color c, Fl_Flags f) const
 {
     const char* s = (f & FL_VALUE) ? down->data() : data();
-    char buf[26]; if (f&FL_INACTIVE && Fl_Style::draw_boxes_inactive)
-    {
+    char buf[26]; 
+	
+	if((f&FL_INACTIVE) && Fl_Style::draw_boxes_inactive) {
         fl_to_inactive(s, buf); s = buf;
     }
-    if (!(f & FL_INVISIBLE))
-    {
+
+    if (!(f & FL_INVISIBLE)) {
         // draw the interior, assumming the edges are the same thickness
         // as the normal square box:
         int d = strlen(s)/4;
-        if (w > 2*d && h > 2*(d-1))
-            lozenge(FILL, x+d, y+d-1, w-2*d, h-2*(d-1), c);
+        if (w > 2*d && h > 2*(d-1)) {
+			lozenge(FILL, x+d, y+d-1, w-2*d, h-2*(d-1), c);
+		}
     }
+
     const char* t;
-    if (*s == '2')
-    {
+    if (*s == '2') {
         t = s+1; s += 3;
-    }
-    else
-    {
+    } else {
         t = s+2;
     }
-    int s_length = strlen(s);
-    int t_length = strlen(t);
-    int offset = 0;
-    while (offset < s_length && offset < t_length && w > 0 && h > 0) {
+
+	// Bitch slow...
+		/*int s_length = strlen(s);
+		int t_length = strlen(t);
+		int offset = 0;
+		while (offset < s_length && offset < t_length && w > 0 && h > 0) {
         Fl_Color c1 = s[offset] + (FL_GRAY_RAMP-'A');
         Fl_Color c2 = t[offset] + (FL_GRAY_RAMP-'A');
         offset += 4;
+		*/
+
+	while (*s && *t && w > 0 && h > 0) {
+		Fl_Color c1 = *s + (FL_GRAY_RAMP-'A'); s += 4;
+		Fl_Color c2 = *t + (FL_GRAY_RAMP-'A'); t += 4;
+
         lozenge(UPPER_LEFT,  x+1, y,   w-2, h, *s&&*t ? c1 : c);
         lozenge(UPPER_LEFT,  x,   y,   w,   h, c1);
         lozenge(LOWER_RIGHT, x+1, y,   w-2, h, *s&&*t ? c2 : c);
@@ -125,13 +125,11 @@ Fl_Color c, Fl_Flags f) const
     }
 }
 
-
 Fl_Round_Box::Fl_Round_Box(const char* n, const char* s, const Fl_Frame_Box* d)
 : Fl_Frame_Box(n, s, d)
 {
     fills_rectangle_ = 0;
 }
-
 
 const Fl_Round_Box fl_round_down_box("round down", "2WWMMPPAA");
 const Fl_Round_Box fl_round_up_box("round up", "2AAWWMMTT", &fl_round_down_box);
