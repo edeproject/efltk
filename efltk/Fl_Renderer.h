@@ -121,9 +121,9 @@ public:
     // Returns root/desktop window handle
     static Window root_window();
 
-    // Returns data, either from PIXMAP or WINDOW. depth of data is stored in 'bitspp' argument
-    static uint8 *data_from_pixmap(Pixmap src, Fl_Rect &rect, Fl_PixelFormat &fmt);
-    static uint8 *data_from_window(Window src, Fl_Rect &rect, Fl_PixelFormat &fmt);
+    // Returns data, either from PIXMAP or WINDOW. data is in "desired" format
+    static uint8 *data_from_pixmap(Pixmap src, Fl_Rect &rect, Fl_PixelFormat *desired);
+    static uint8 *data_from_window(Window src, Fl_Rect &rect, Fl_PixelFormat *desired);
 
 #ifndef _WIN32
     // Special XWindows method

@@ -256,7 +256,7 @@ static void Tmp_HandleXError(Display * d, XErrorEvent * ev)
     _x_err=1;
 }
 
-uint8 *ximage_to_data(XImage *im, Fl_PixelFormat &fmt)
+uint8 *ximage_to_data(XImage *im, Fl_PixelFormat *desired)
 {
     int W=im->width;
     int H=im->height;
@@ -269,9 +269,9 @@ uint8 *ximage_to_data(XImage *im, Fl_PixelFormat &fmt)
         im->blue_mask = visual->blue_mask;
     }
 
-
-    fmt.realloc(im->depth, im->red_mask, im->green_mask, im->blue_mask, 0);
-    int pitch = Fl_Renderer::calc_pitch(fmt.bytespp, W);
+    Fl_PixelFormat fmt;
+    fmt.init(im->depth, im->red_mask, im->green_mask, im->blue_mask, 0);
+    int pitch = Fl_Renderer::calc_pitch(desired->bytespp, W);
 
     uint32 pixel;
     uint8 *data = new uint8[H*pitch];
@@ -283,14 +283,14 @@ uint8 *ximage_to_data(XImage *im, Fl_PixelFormat &fmt)
         for(x = 0; x < W; x++) {
             pixel = XGetPixel(im, x, y);
             fl_rgb_from_pixel(pixel, &fmt, r,g,b);
-            fl_assemble_rgb(ptr, fmt.bytespp, &fmt, r, g, b);
-            ptr+=fmt.bytespp;
+            fl_assemble_rgb(ptr, desired->bytespp, desired, r, g, b);
+            ptr+=desired->bytespp;
         }
     }
     return data;
 }
 
-uint8 *Fl_Renderer::data_from_window(Window src, Fl_Rect &rect, Fl_PixelFormat &fmt)
+uint8 *Fl_Renderer::data_from_window(Window src, Fl_Rect &rect, Fl_PixelFormat *desired)
 {
     // Init renderer
     Fl_Renderer::system_init();
@@ -370,12 +370,12 @@ uint8 *Fl_Renderer::data_from_window(Window src, Fl_Rect &rect, Fl_PixelFormat &
     XSetErrorHandler((XErrorHandler) prev_erh);
     if(!im) return 0;
 
-    uint8 *im_pixels = ximage_to_data(im, fmt);
+    uint8 *im_pixels = ximage_to_data(im, desired);
     XDestroyImage(im);
     return im_pixels;
 }
 
-uint8 *Fl_Renderer::data_from_pixmap(Pixmap src, Fl_Rect &rect, Fl_PixelFormat &fmt)
+uint8 *Fl_Renderer::data_from_pixmap(Pixmap src, Fl_Rect &rect, Fl_PixelFormat *desired)
 {
     // Init renderer
     Fl_Renderer::system_init();
@@ -383,7 +383,7 @@ uint8 *Fl_Renderer::data_from_pixmap(Pixmap src, Fl_Rect &rect, Fl_PixelFormat &
     XImage *im = ximage_from_pixmap(src, rect);
     if(!im) return 0;
 
-    uint8 *im_pixels = ximage_to_data(im, fmt);
+    uint8 *im_pixels = ximage_to_data(im, desired);
     XDestroyImage(im);
     return im_pixels;
 }
