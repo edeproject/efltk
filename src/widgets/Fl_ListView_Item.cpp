@@ -151,8 +151,6 @@ void Fl_ListView_Item::draw_cell(int col, int w, bool sel)
 // Measure the space the draw() will take:
 void Fl_ListView_Item::layout()
 {
-    if(h()) return;
-
     int H = 0;
     fl_font(parent()->text_font() , parent()->text_size());
     for(uint n=0; n<attr_list.size(); n++) {
@@ -421,8 +419,6 @@ void Fl_ListView_ItemExt::draw_cell(int col, int w, bool sel)
 // Measure the space the draw() will take:
 void Fl_ListView_ItemExt::layout()
 {
-    if(h()) return;
-
     int H = 0;
     for(uint n=0; n<attr_list.size(); n++) {
         Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr_list[n];
