@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x40041a
+# %FirstUniqueId:	0x40041c
 PROJECT_DIR = /develop/CVS/efltk/
 
 IDE_WORKING_DIR = /develop/CVS/efltk/
@@ -494,6 +494,9 @@ test/split  :: 	test/split.o
 	*) full_name=`pwd`/$@ ;;\
 	esac; \
 	$(WEB_BROWSER) $$full_name
+
+test/hello  :: 	test/hello.o
+	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES)
 
 # %ObjectFilesLinking
 lib/Fl_ODBC_Database.o : src/db/odbc/Fl_ODBC_Database.cpp
@@ -1594,6 +1597,10 @@ lib/Fl_Record_DS.o : src/db/Fl_Record_DS.cpp
 
 lib/Fl_String_List.o : src/core/Fl_String_List.cpp
 	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+test/hello.o : test/hello.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
 # DO NOT DELETE
@@ -9597,3 +9604,30 @@ lib/Fl_String_List.o :	efltk/Fl_String_Stack.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_Ptr_List.h
+test/hello.o :	efltk/Fl_Box.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_WM.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl.h\
+	efltk/Fl_Window.h

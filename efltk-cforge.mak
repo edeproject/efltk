@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x400419
+# %FirstUniqueId:	0x40041c
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -847,7 +847,7 @@ test/split  :: 	test/split.o
 
 # %UniqueId:	0x400418
 # %TargetType:	HTML
-# %IDEFlags:	0xe
+# %IDEFlags:	0xc
 # %ComplexTarget
 # %SrcDir:	
 # %IncDir:	
@@ -859,7 +859,15 @@ test/split  :: 	test/split.o
 	esac; \
 	$(WEB_BROWSER) $$full_name
 
-.PRECIOUS  : 	/distr/develop/CVS/efltk/doc/EventsProposal.html
+# %UniqueId:	0x40041a
+# %TargetType:	C++_EXE
+# %IDEFlags:	0x8
+# %ComplexTarget
+# %SrcDir:	test
+# %IncDir:	test
+# %ObjsDir:	test
+test/hello  :: 	test/hello.o
+	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES)
 
 # %ObjectFilesLinking
 # %TargetType:	C++_OBJ
@@ -2785,6 +2793,13 @@ lib/Fl_Record_DS.o : src/db/Fl_Record_DS.cpp
 # %SourceTarget:	0x4003fa
 lib/Fl_String_List.o : src/core/Fl_String_List.cpp
 	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x40041a
+# %SourceTarget:	0x40041b
+test/hello.o : test/hello.cpp
+	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
 
 
 # DO NOT DELETE
@@ -6026,14 +6041,14 @@ lib/Fl_File_Dialog.o :	src/widgets/Pixmaps.h\
 	efltk/Fl_Image_Cache.h
 lib/Fl_Float_Input.o :	efltk/Fl_Float_Input.h\
 	efltk/Fl_Numeric_Input.h\
+	efltk/Fl_Flags.h\
 	efltk/Fl_Input.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
 	efltk/Fl_Widget.h\
 	efltk/Fl_Data_Source.h\
 	efltk/Fl_Data_Fields.h\
-	efltk/Fl_Flags.h\
 	efltk/Fl_Ptr_List.h\
-	efltk/Enumerations.h\
-	efltk/Fl_Export.h\
 	efltk/Fl_Variant.h\
 	efltk/Fl_Date_Time.h\
 	efltk/Fl_String.h\
@@ -6160,6 +6175,7 @@ lib/Fl_Input.o :	efltk/Fl_Menu_Button.h\
 	efltk/Fl_Widget_List.h\
 	src/core/fl_internal.h\
 	efltk/Fl_Translator.h\
+	config.h\
 	efltk/fl_utf8.h\
 	efltk/fl_ask.h\
 	efltk/fl_draw.h\
@@ -10787,6 +10803,33 @@ lib/Fl_String_List.o :	efltk/Fl_String_Stack.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Export.h\
 	efltk/Fl_Ptr_List.h
+test/hello.o :	efltk/Fl_Box.h\
+	efltk/Fl_Widget.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_Exception.h\
+	efltk/Fl_Style.h\
+	efltk/Fl_Font.h\
+	efltk/Fl_Int_List.h\
+	efltk/Fl_String_List.h\
+	efltk/Fl_Labeltype.h\
+	efltk/Fl_Color.h\
+	efltk/Fl_Boxtype.h\
+	efltk/Fl_WM.h\
+	efltk/x.h\
+	efltk/win32.h\
+	efltk/Fl_Device.h\
+	efltk/Fl_Group.h\
+	efltk/Fl_Widget_List.h\
+	efltk/Fl.h\
+	efltk/Fl_Window.h
 
 
 # %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x6
@@ -10823,7 +10866,7 @@ lib/Fl_String_List.o :	efltk/Fl_String_Stack.h\
 # %TargetInfo src/core/Fl_Date_Time.cpp	SourceOrHeader,	UniqueId=0x400290,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Exception.cpp	SourceOrHeader,	UniqueId=0x400291,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Gif.cpp	SourceOrHeader,	UniqueId=0x400292,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/core/Fl_Group.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400293,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/core/Fl_Group.cpp	SourceOrHeader,	UniqueId=0x400293,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Image.cpp	SourceOrHeader,	UniqueId=0x400295,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Image_Filter.cpp	SourceOrHeader,	UniqueId=0x400296,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Lists.cpp	SourceOrHeader,	UniqueId=0x400297,	TargetType=C++,	IDEFlags=0x6
@@ -10928,7 +10971,7 @@ lib/Fl_String_List.o :	efltk/Fl_String_Stack.h\
 # %TargetInfo src/widgets/Fl_Float_Input.cpp	SourceOrHeader,	UniqueId=0x4002fb,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Help_Dialog.cpp	SourceOrHeader,	UniqueId=0x4002fc,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Highlight_Button.cpp	SourceOrHeader,	UniqueId=0x4002fd,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/widgets/Fl_Input.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4002fe,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/widgets/Fl_Input.cpp	SourceOrHeader,	UniqueId=0x4002fe,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Input_Browser.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4002ff,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Item.cpp	SourceOrHeader,	UniqueId=0x400300,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Light_Button.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400301,	TargetType=C++,	IDEFlags=0x6
@@ -11055,6 +11098,7 @@ lib/Fl_String_List.o :	efltk/Fl_String_Stack.h\
 # %TargetInfo src/db/Fl_Data_Dialog.cpp	SourceOrHeader,	UniqueId=0x4003f6,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/db/Fl_Record_DS.cpp	SourceOrHeader,	UniqueId=0x4003f7,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_String_List.cpp	SourceOrHeader,	UniqueId=0x4003fa,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/hello.cpp	SourceOrHeader,	UniqueId=0x40041b,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x6
@@ -11087,9 +11131,9 @@ lib/Fl_String_List.o :	efltk/Fl_String_Stack.h\
 # %TargetInfo efltk/Fl_Color.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400079,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Boxtype.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40007a,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Window.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40007b,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Group.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40007c,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Group.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40007c,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Widget_List.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40007d,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Widget.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40007e,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Widget.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40007e,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Data_Source.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x40007f,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Data_Fields.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400080,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Variant.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400081,	TargetType=INC,	IDEFlags=0xe
@@ -11185,7 +11229,7 @@ lib/Fl_String_List.o :	efltk/Fl_String_Stack.h\
 # %TargetInfo efltk/Fl_Item.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400152,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Color_Chooser.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400153,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Value_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400154,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Float_Input.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400155,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Float_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400155,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Numeric_Input.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400156,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400157,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Masked_Input.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400158,	TargetType=INC,	IDEFlags=0xe
@@ -11385,7 +11429,11 @@ lib/Fl_String_List.o :	efltk/Fl_String_Stack.h\
 #	0x400370
 #	0x400384
 #	0x400382
+#	0x40033f
+#	0x40041a
+#	0x400364
 #	0x4003e6
+#	0x4003e9
 #	0x4003da
 #	0x4003dc
 #	0x4003c8
@@ -11393,13 +11441,10 @@ lib/Fl_String_List.o :	efltk/Fl_String_Stack.h\
 #	0x400380
 #	0x4003e0
 #	0x40037e
-#	0x40033f
-#	0x400364
 #	0x4003e4
 #	0x40038a
-#	0x40033a
 #	0x400388
-#	0x4003e9
+#	0x40033a
 #	0x4003ed
 #
 # %UniqueId:	0x40038c
