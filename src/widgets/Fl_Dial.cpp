@@ -23,13 +23,13 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
+#include <efltk/math.h>
 #include <config.h>
 #include <efltk/Fl.h>
 #include <efltk/Fl_Dial.h>
 #include <efltk/Fl_Group.h>
 #include <efltk/fl_draw.h>
 #include <stdlib.h>
-#include <efltk/math.h>
 
 // All angles are measured with 0 to the right and counter-clockwise
 
