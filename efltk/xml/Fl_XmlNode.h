@@ -366,7 +366,7 @@ private:
 
 	// Un-implement these.    
     Fl_XmlNode(const Fl_XmlNode &node) { }
-	Fl_XmlNode& operator = (const Fl_XmlNode& s) { }
+	Fl_XmlNode& operator = (const Fl_XmlNode& s) { return *this; }
 };
 
 #define FL_XML_TYPE_DOC				Fl_XmlNode::DOM_DOCUMENT
