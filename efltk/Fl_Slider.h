@@ -29,18 +29,22 @@ class FL_API Fl_Slider : public Fl_Valuator {
 public:
     static Fl_Named_Style* default_style;
 
+    /** Creates new slider widget using the given position, size, and label string. */
     Fl_Slider(int x,int y,int w,int h, const char *l = 0);
 
+    /** Creates new slider widget using the label, size, alignment, and label_width. */
+    Fl_Slider(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100);
+
     enum { // bit flags for type():
-        VERTICAL		= 0,
-        HORIZONTAL		= 1,
-        TICK_ABOVE		= 2,
-        TICK_LEFT		= TICK_ABOVE,
-        TICK_BELOW		= 4,
-        TICK_RIGHT		= TICK_BELOW,
-        TICK_BOTH		= TICK_ABOVE|TICK_BELOW,
-        LOG			= 8,
-        FILL		= 16 // for back compatability only
+        VERTICAL        = 0,
+        HORIZONTAL      = 1,
+        TICK_ABOVE      = 2,
+        TICK_LEFT       = TICK_ABOVE,
+        TICK_BELOW      = 4,
+        TICK_RIGHT      = TICK_BELOW,
+        TICK_BOTH       = TICK_ABOVE|TICK_BELOW,
+        LOG         = 8,
+        FILL        = 16 // for back compatability only
     };
 
     bool horizontal() const {return (type()&HORIZONTAL)!=0;}

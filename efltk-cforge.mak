@@ -139,7 +139,6 @@ lib/libefltk.so ::	lib/Fl.o\
 	lib/Fl_FileInput.o\
 	lib/Fl_File_Dialog.o\
 	lib/Fl_Float_Input.o\
-	lib/Fl_Gdi.o\
 	lib/Fl_Gif.o\
 	lib/Fl_Group.o\
 	lib/Fl_Hashs.o\
@@ -2230,13 +2229,6 @@ test/Fl_Buffer.o : src/core/Fl_Buffer.cpp
 # %SourceTarget:	0x400346
 test/db/db_odbc.o : test/db/db_odbc.cpp
 	$(CXX) -c -o $@ $< -Itest/db -Itest/db $(CXXFLAGS)
-
-
-# %TargetType:	C++_OBJ
-# %ParentTarget:	0x400002
-# %SourceTarget:	0x400347
-lib/Fl_Gdi.o : src/core/Fl_Gdi.cpp
-	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
 
 
 # %TargetType:	C++_OBJ
@@ -7801,34 +7793,6 @@ test/db/db_odbc.o :	efltk/db/Fl_ODBC_Database.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl.h
-lib/Fl_Gdi.o :	efltk/x.h\
-	efltk/win32.h\
-	efltk/Fl_Color.h\
-	efltk/Fl_Flags.h\
-	efltk/Enumerations.h\
-	efltk/Fl_Export.h\
-	efltk/Fl_Device.h\
-	efltk/Fl_Group.h\
-	efltk/Fl_Int_List.h\
-	efltk/Fl_Ptr_List.h\
-	efltk/Fl_Widget_List.h\
-	efltk/Fl_Widget.h\
-	efltk/Fl_Data_Source.h\
-	efltk/Fl_Data_Fields.h\
-	efltk/Fl_Variant.h\
-	efltk/Fl_Date_Time.h\
-	efltk/Fl_String.h\
-	efltk/Fl_Exception.h\
-	efltk/Fl_Style.h\
-	efltk/Fl_Font.h\
-	efltk/Fl_String_List.h\
-	efltk/Fl_Labeltype.h\
-	efltk/Fl_Boxtype.h\
-	efltk/Fl_Printer.h\
-	efltk/Fl_Gdi.h\
-	efltk/fl_draw.h\
-	efltk/Fl.h\
-	config.h
 lib/Fl_PostScript.o :	efltk/x.h\
 	efltk/win32.h\
 	efltk/Fl_Color.h\
@@ -10837,7 +10801,6 @@ test/input.o :	efltk/fl_show_colormap.h\
 # %TargetInfo test/socket.cpp	SourceOrHeader,	UniqueId=0x40033b,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/net/ftp_connect.cpp	SourceOrHeader,	UniqueId=0x400340,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/db/db_odbc.cpp	SourceOrHeader,	UniqueId=0x400346,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/core/Fl_Gdi.cpp	SourceOrHeader,	UniqueId=0x400347,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_PostScript.cpp	SourceOrHeader,	UniqueId=0x40034b,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_Printer.cpp	SourceOrHeader,	UniqueId=0x40034d,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/curve.cpp	SourceOrHeader,	UniqueId=0x40034f,	TargetType=C++,	IDEFlags=0x6
@@ -10899,6 +10862,7 @@ test/input.o :	efltk/fl_show_colormap.h\
 # %TargetInfo test/listview_sort.cpp	SourceOrHeader,	UniqueId=0x4003e1,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/date_time_widgets.cpp	SourceOrHeader,	UniqueId=0x4003e3,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo test/maskedinput.cpp	SourceOrHeader,	UniqueId=0x4003e5,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo test/input.cpp	SourceOrHeader,	UniqueId=0x4003e7,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x6
@@ -11168,7 +11132,6 @@ test/input.o :	efltk/fl_show_colormap.h\
 # %TargetInfo efltk/xml/Fl_XmlCtx.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d1,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Check_Buttons.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003d2,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Radio_Buttons.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4003d3,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo test/input.cpp	SourceOrHeader,	UniqueId=0x4003e7,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo efltk/Fl_Int_Input.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4003e8,	TargetType=INC,	IDEFlags=0xe
 
 

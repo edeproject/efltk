@@ -132,7 +132,6 @@ lib/libefltk.so ::	lib/Fl.o\
 	lib/Fl_FileInput.o\
 	lib/Fl_File_Dialog.o\
 	lib/Fl_Float_Input.o\
-	lib/Fl_Gdi.o\
 	lib/Fl_Gif.o\
 	lib/Fl_Group.o\
 	lib/Fl_Hashs.o\
@@ -1281,10 +1280,6 @@ test/Fl_Buffer.o : src/core/Fl_Buffer.cpp
 
 test/db/db_odbc.o : test/db/db_odbc.cpp
 	$(CXX) -c -o $@ $< -Itest/db -Itest/db $(CXXFLAGS)
-
-
-lib/Fl_Gdi.o : src/core/Fl_Gdi.cpp
-	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
 
 
 lib/Fl_PostScript.o : src/core/Fl_PostScript.cpp
@@ -6651,34 +6646,6 @@ test/db/db_odbc.o :	efltk/db/Fl_ODBC_Database.h\
 	efltk/Fl_Color.h\
 	efltk/Fl_Boxtype.h\
 	efltk/Fl.h
-lib/Fl_Gdi.o :	efltk/x.h\
-	efltk/win32.h\
-	efltk/Fl_Color.h\
-	efltk/Fl_Flags.h\
-	efltk/Enumerations.h\
-	efltk/Fl_Export.h\
-	efltk/Fl_Device.h\
-	efltk/Fl_Group.h\
-	efltk/Fl_Int_List.h\
-	efltk/Fl_Ptr_List.h\
-	efltk/Fl_Widget_List.h\
-	efltk/Fl_Widget.h\
-	efltk/Fl_Data_Source.h\
-	efltk/Fl_Data_Fields.h\
-	efltk/Fl_Variant.h\
-	efltk/Fl_Date_Time.h\
-	efltk/Fl_String.h\
-	efltk/Fl_Exception.h\
-	efltk/Fl_Style.h\
-	efltk/Fl_Font.h\
-	efltk/Fl_String_List.h\
-	efltk/Fl_Labeltype.h\
-	efltk/Fl_Boxtype.h\
-	efltk/Fl_Printer.h\
-	efltk/Fl_Gdi.h\
-	efltk/fl_draw.h\
-	efltk/Fl.h\
-	config.h
 lib/Fl_PostScript.o :	efltk/x.h\
 	efltk/win32.h\
 	efltk/Fl_Color.h\

@@ -27,7 +27,13 @@
 /** Fl_Hor_Slider */
 class Fl_Hor_Slider : public Fl_Slider {
 public:
-    Fl_Hor_Slider(int x,int y,int w,int h,const char *l=0) : Fl_Slider(x,y,w,h,l) { type(HORIZONTAL); }
+    /** Creates new horizontal slider widget using the given position, size, and label string. */
+    Fl_Hor_Slider(int x,int y,int w,int h,const char *l=0) 
+    : Fl_Slider(x,y,w,h,l) { type(HORIZONTAL); }
+
+    /** Creates new horizontal slider widget using the label, size, alignment, and label_width. */
+    Fl_Hor_Slider(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100)
+    : Fl_Slider(l,layout_size,layout_al,label_w) { type(HORIZONTAL); }
 };
 
 #endif

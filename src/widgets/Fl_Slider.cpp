@@ -416,7 +416,7 @@ bool Fl_Slider::draw(int ix, int iy, int iw, int ih, Fl_Flags flags, bool slot)
             slw = slot_size_;
         }
         button_box()->draw(slx, sly, slw, slh, FL_BLACK,
-                           flags&FL_INACTIVE|FL_VALUE);
+            flags&FL_INACTIVE|FL_VALUE);
         fl_clip_out(slx, sly, slw, slh);
     }
     return true;
@@ -436,64 +436,64 @@ int Fl_Slider::handle(int event, int x, int y, int w, int h)
             redraw(FL_DAMAGE_HIGHLIGHT);
             handle_push();
         case FL_DRAG:
-        {
+            {
             // figure out the space the slider moves in and where the event is:
-            int mx;
-            if (horizontal())
-            {
-                w = w-box()->dw();
-                mx = Fl::event_x()-x-box()->dx();
-            }
-            else
-            {
-                w = h-box()->dh();
-                mx = Fl::event_y()-y-box()->dy();
-            }
-            if (w <= slider_size_) return 1;
-            static int offcenter;
-            int X = slider_position(value(), w);
-            if (event == FL_PUSH)
-            {
-                offcenter = mx-X;
-                // we are done if they clicked on the slider:
-                if (offcenter >= (slider_size() ? 0 : -8) && offcenter <= slider_size_)
-                    return 1;
-                if (Fl::event_button() > 1)
+                int mx;
+                if (horizontal())
                 {
-                    // Move the near end of the slider to the cursor. This is good
-                    // for scrollbars.
-                    offcenter = (offcenter < 0) ? 0 : slider_size_;
+                    w = w-box()->dw();
+                    mx = Fl::event_x()-x-box()->dx();
                 }
                 else
                 {
-                    // Center the slider under the cursor, what most toolkits do
-                    offcenter = slider_size_/2;
+                    w = h-box()->dh();
+                    mx = Fl::event_y()-y-box()->dy();
                 }
-            }
-            double v;
+                if (w <= slider_size_) return 1;
+                static int offcenter;
+                int X = slider_position(value(), w);
+                if (event == FL_PUSH)
+                {
+                    offcenter = mx-X;
+                // we are done if they clicked on the slider:
+                    if (offcenter >= (slider_size() ? 0 : -8) && offcenter <= slider_size_)
+                        return 1;
+                    if (Fl::event_button() > 1)
+                    {
+                    // Move the near end of the slider to the cursor. This is good
+                    // for scrollbars.
+                        offcenter = (offcenter < 0) ? 0 : slider_size_;
+                    }
+                    else
+                    {
+                    // Center the slider under the cursor, what most toolkits do
+                        offcenter = slider_size_/2;
+                    }
+                }
+                double v;
             RETRY:
-            X = mx-offcenter;
-            if (X < 0)
-            {
-                X = 0;
-                offcenter = mx; if (offcenter < 0) offcenter = 0;
-            }
-            else if (X > (w-slider_size_))
-            {
-                X = w-slider_size_;
-                offcenter = mx-X; if (offcenter > slider_size_) offcenter = slider_size_;
-            }
-            v = position_value(X, w);
-            handle_drag(v);
+                X = mx-offcenter;
+                if (X < 0)
+                {
+                    X = 0;
+                    offcenter = mx; if (offcenter < 0) offcenter = 0;
+                }
+                else if (X > (w-slider_size_))
+                {
+                    X = w-slider_size_;
+                    offcenter = mx-X; if (offcenter > slider_size_) offcenter = slider_size_;
+                }
+                v = position_value(X, w);
+                handle_drag(v);
             // make sure a click outside the sliderbar moves it:
-            if (event == FL_PUSH && value() == previous_value())
-            {
-                offcenter = slider_size_/2;
-                event = FL_DRAG;
-                goto RETRY;
+                if (event == FL_PUSH && value() == previous_value())
+                {
+                    offcenter = slider_size_/2;
+                    event = FL_DRAG;
+                    goto RETRY;
+                }
+                return 1;
             }
-            return 1;
-        }
         case FL_RELEASE:
             handle_release();
             redraw(FL_DAMAGE_HIGHLIGHT);
@@ -521,7 +521,7 @@ int Fl_Slider::handle(int event, int x, int y, int w, int h)
 int Fl_Slider::handle(int event) {return handle(event,0,0,w(),h());}
 
 static void glyph(const Fl_Widget* widget, int glyph,
-int x,int y,int w,int h, Fl_Flags flags)
+    int x,int y,int w,int h, Fl_Flags flags)
 {
     if (!glyph) flags &= ~FL_VALUE;
     Fl_Widget::default_glyph(widget, glyph, x, y, w, h, flags);
@@ -564,6 +564,7 @@ static void revert(Fl_Style *s)
 static Fl_Named_Style style("Slider", revert, &Fl_Slider::default_style);
 Fl_Named_Style* Fl_Slider::default_style = &::style;
 
+// Traditional ctor
 Fl_Slider::Fl_Slider(int x, int y, int w, int h, const char* l)
 : Fl_Valuator(x, y, w, h, l)
 {
@@ -572,6 +573,14 @@ Fl_Slider::Fl_Slider(int x, int y, int w, int h, const char* l)
     slider_size_ = 12;
 }
 
+// New style ctor
+Fl_Slider::Fl_Slider(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP,int label_w=100)
+: Fl_Valuator(l,layout_size,layout_al,label_w)
+{
+    style(default_style);
+    tick_size_ = 4;
+    slider_size_ = 12;
+}
 
 //
 // End of "$Id$".

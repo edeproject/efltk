@@ -37,12 +37,19 @@ static void revert(Fl_Style* s)
 static Fl_Named_Style style("Highlight_Button", revert, &Fl_Highlight_Button::default_style);
 Fl_Named_Style* Fl_Highlight_Button::default_style = &::style;
 
+// Traditional ctor
 Fl_Highlight_Button::Fl_Highlight_Button(int x,int y,int w,int h,const char *l)
 : Fl_Button(x,y,w,h,l)
 {
     style(default_style);
 }
 
+// New style ctor
+Fl_Highlight_Button::Fl_Highlight_Button(const char* l = 0,int layout_size=30,Fl_Align layout_al=FL_ALIGN_TOP)
+: Fl_Button(l,layout_size,layout_al)
+{
+    style(default_style);
+}
 
 //
 // End of "$Id$".
