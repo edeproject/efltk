@@ -151,7 +151,7 @@ static XftFont* fontopen(const char* name, bool core)
                        XFT_ENCODING, XftTypeString, fl_encoding_, // hmmm?
                        XFT_PIXEL_SIZE, XftTypeDouble, (double)fl_size_,
                        core ? XFT_CORE : 0, XftTypeBool, false,
-                       XFT_ANTIALIAS, XftTypeBool, (fl_size_<12)?false:true,
+                       XFT_ANTIALIAS, XftTypeBool, (fl_size_<12&&fl_size_>8)?false:true,
                        //XFT_RENDER, XftTypeBool, false,
                        0);
 }
