@@ -1,3 +1,224 @@
+2002-10-28 16:50  laza2000
+
+	* configure.in: -g2 away...
+
+2002-10-28 16:37  laza2000
+
+	* configure.in, src/core/Fl_Image.cpp, src/core/Fl_Renderer.cpp,
+	src/core/fl_labeltype.cpp, src/core/fl_map.cpp, test/browser.cpp:
+	Fixed release mode compile
+
+2002-10-28 15:34  laza2000
+
+	* src/core/: Fl_Image_Filter.cpp, Fl_Renderer.cpp, Fl_Xpm.cpp,
+	fl_blit_n.cpp:	- blit RGB888 -> RGB565
+	 - Fixed Image filters
+
+2002-10-28 13:47  laza2000
+
+	* src/core/Fl_Image.cpp: Fixed copy constructor: Fl_Image(Fl_Image
+	&i)
+
+2002-10-28 13:32  laza2000
+
+	* lib/README.libs: Added README.libs, so CVS will have lib
+	directory always
+
+2002-10-28 13:29  laza2000
+
+	* efltk/Enumerations.h, src/core/Fl_Image_Filter.cpp,
+	src/core/Fl_Xpm.cpp, src/core/fl_cursor.cpp, src/images/Fl_Png.cpp,
+	test/color_chooser.cpp, test/image_manip.cpp, test/listview.cpp:  -
+	Fixed some broken tests
+	 - Linux fixes
+
+2002-10-28 13:12  laza2000
+
+	* README, efltk/Enumerations.h, efltk/Fl_File_Dialog.h,
+	efltk/Fl_Image.h, efltk/Fl_ListView_Item.h, efltk/Fl_Pixmap.h,
+	efltk/Fl_Renderer.h, fluid/Fluid_Image.cxx, headers/utils/conv_gen,
+	headers/utils/convert_map, headers/utils/create_table,
+	src/core/Fl_Bmp.cpp, src/core/Fl_Gif.cpp, src/core/Fl_Image.cpp,
+	src/core/Fl_Image_Filter.cpp, src/core/Fl_Pixmap.cpp,
+	src/core/Fl_Renderer.cpp, src/core/Fl_Window.cpp,
+	src/core/Fl_Xpm.cpp, src/core/Fl_init.cpp, src/core/fl_blit.cpp,
+	src/core/fl_blit_1.cpp, src/core/fl_blit_a.cpp,
+	src/core/fl_blit_n.cpp, src/core/fl_cursor.cpp,
+	src/core/fl_dnd_x.cpp, src/core/fl_draw_image_win32.cpp,
+	src/core/fl_font_win32.cpp, src/core/fl_internal.h,
+	src/core/fl_map.cpp, src/images/Fl_Images.cpp,
+	src/images/Fl_Jpeg.cpp, src/images/Fl_Png.cpp,
+	src/widgets/Fl_File_Dialog.cpp, src/widgets/Fl_Float_Input.cpp,
+	src/widgets/Fl_Input_Browser.cpp, src/widgets/Fl_Menu_Bar.cpp,
+	src/widgets/Fl_Text_Display.cpp, test/ede-small.gif,
+	test/image.cpp, visualc/config.h, visualc/efltk.dsp,
+	visualc/efltk_images.dsp, visualc/efluid.dsp,
+	visualc/file_chooser.dsp: Extended EFltk image support a lot. This
+	adds write support and makes read operations faster and more safe.
+	Added: Fl_Image::read_image / Fl_Image::write_image,
+	Fl_Image::quality, Fl_Image constructors can read images like:
+	Fl_Image some_image(filename); Anyway, no write methods implemented
+	in Image IOs yet...  Just support for them.
+	
+	Removed all macros from Fl_Renderer.h and made them functions. 
+	Like: 'PIXEL_FROM_RGB' become 'fl_pixel_from_rgb'. This makes all
+	pixel operations typesafe.
+	
+	All image IOs improved a lot!
+	
+	Some minor bug fixes every where in library :) Added more authors
+	to README Added list of platforms where efltk is known to compile
+	
+	Fixed some MSVC project files.
+
+2002-10-27 22:50  parshin
+
+	* src/core/Fl_Data_Source.cpp: [no log message]
+
+2002-10-27 18:36  parshin
+
+	* efltk/Fl_Data_Source.h: [no log message]
+
+2002-10-27 03:48  parshin
+
+	* src/core/Fl_Data_Source.cpp: [no log message]
+
+2002-10-27 03:44  parshin
+
+	* src/core/Fl_Group.cpp, src/core/Fl_Widget.cpp, src/core/Makefile,
+	efltk/Fl_Data_Source.h, efltk/Fl_Group.h: [no log message]
+
+2002-10-27 03:00  parshin
+
+	* src/core/: Fl_Group.cpp, Fl_Widget.cpp: [no log message]
+
+2002-10-27 02:59  parshin
+
+	* efltk/: Fl_Data_Source.h, Fl_Widget.h: Files Fl_Data_Source.h,
+	Fl_Widget.h, Fl_Group.h are modified to use Fl_Data_Source. Mikko,
+	please, tell me if you read this message.
+	
+	Alexey.
+
+2002-10-27 02:39  parshin
+
+	* src/core/Fl_Group.cpp: [no log message]
+
+2002-10-27 02:34  parshin
+
+	* efltk/Fl_Group.h: [no log message]
+
+2002-10-26 23:44  leka
+
+	* test/threads.cpp: Small fix (math).
+
+2002-10-25 18:15  leka
+
+	* src/widgets/Fl_Scrollbar.cpp: Again problem with math... Fixed.
+
+2002-10-25 18:12  leka
+
+	* src/widgets/Fl_Dial.cpp: This is small fix - on my Linux box(es)
+	I had problems with math... (Again)
+
+2002-10-25 11:55  laza2000
+
+	* efltk/math.h, src/widgets/Fl_File_Dialog.cpp,
+	src/widgets/Fl_Input.cpp:  - Fixed Fl_Input draw(x,y,w,h), fixes
+	Fl_Value_Input
+	 - FileDialog activates OK button, if default file specified
+
+2002-10-25 08:00  parshin
+
+	* efltk/Fl_Data_Source.h: Fl_Data_Source.h is a base class for
+	future implementation on its base the actual data sources as:
+	
+	  Fl_DB_Query_DS
+	  Fl_DB_Table_DS
+	  Fl_Flat_File_DS
+	  Fl_INI_File_DS
+	
+	etc..
+	
+	This version is very simple. The implementation requires at least
+	the following things to be done:
+	
+	1) Fl_Group should have the property data_source(Fl_Data_Source *)
+	2) Every input or output widget should have    - property
+	field_name(const char *)
+
+2002-10-25 05:26  parshin
+
+	* src/widgets/Fl_Scrollbar.cpp: [no log message]
+
+2002-10-25 05:11  parshin
+
+	* src/widgets/Fl_Dial.cpp: [no log message]
+
+2002-10-25 04:19  leka
+
+	* efltk/math.h, src/core/Fl_Style.cpp, src/core/fl_arc.cpp,
+	src/core/fl_curve.cpp, src/core/fl_font.cpp,
+	src/core/fl_vertex.cpp, src/widgets/Fl_Input.cpp,
+	test/doublebuffer.cpp, test/fullscreen.cpp, test/gl_overlay.cpp,
+	test/scroll.cpp, test/shape.cpp: I finally managed to compile
+	verything on my Linux box. Mostly change is to include math.h
+	before config.h .
+
+2002-10-25 03:41  leka
+
+	* test/: CubeView.cpp, threads.cpp: The same problem as with
+	efltk/math.h . I hope this fixed everything, however there are some
+	strange warnings - I'll take a closer look at them tomorrow.
+
+2002-10-25 03:39  leka
+
+	* efltk/math.h: On Linux math.h should not be included in this
+	file. I am pretty sure this is tha same case with SGI as well. We
+	will see that (I home somebody will test eFLTK on SGI in the
+	future, and report problem.
+
+2002-10-25 01:11  parshin
+
+	* test/fullscreen.cpp: Replaced fl_font(0,20) with
+	fl_font((Fl_Font_ *)0,20). Otherwise, the compiler was confused
+	with two possible forms of fl_font.
+
+2002-10-25 01:03  parshin
+
+	* test/doublebuffer.cpp: Include:
+	
+	#include <config.h>
+
+2002-10-25 01:01  parshin
+
+	* test/scroll.cpp: Included line: #include <config.h>
+
+2002-10-24 22:54  laza2000
+
+	* README, src/core/Fl_Image_Filter.cpp, src/core/makedepend:
+	makefiles to empty, by default
+
+2002-10-24 22:46  laza2000
+
+	* configure.in: Added check for GCC3.x and -lsupc++
+
+2002-10-24 22:28  leka
+
+	* src/core/makedepend: Please don't commit this file... It should
+	be erased from CVS since it's automatically generated.	
+	-------------------------------------------------------------------
+	---
+
+2002-10-24 22:25  laza2000
+
+	* src/widgets/: Fl_File_Dialog.cpp, fl_ask.cpp: Fixes for GCC
+	2.91.x series (Dejan's PUG) :))
+
+2002-10-24 22:16  laza2000
+
+	* ChangeLog: Updated changelog...
+
 2002-10-24 22:11  laza2000
 
 	* configh.in: Added #ifndef and #define
