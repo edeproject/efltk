@@ -245,7 +245,6 @@ int fl_list_fonts(Fl_Font*& arrayp)
 
 ////////////////////////////////////////////////////////////////
 // Return all the encodings for this font:
-
 int Fl_Font_::encodings(const char**& arrayp) const
 {
     if(((Fl_Font_*)this)->cache_xlist()==0) return 0;

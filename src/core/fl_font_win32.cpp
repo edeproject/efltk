@@ -172,7 +172,7 @@ static int fl_charset = DEFAULT_CHARSET;
 
 void fl_font(Fl_Font font, float psize) 
 {
-	fl_charset = str_to_charset(fl_encoding_);	
+    fl_charset = str_to_charset(fl_encoding_);
 
   // only integers supported right now, I think there is a newer
   // interface that takes arbitrary sizes, though...
@@ -322,10 +322,7 @@ void fl_rtl_draw(const char *str, int n, float x, float y)
 
 // Change the encoding to use for the next font selection.
 void fl_encoding(const char* f) {
-  if (f != fl_encoding_) {
     fl_encoding_ = f;
-    // charset = decode_the_encoding(f);
-  }
 }
 
 ////////////////////////////////////////////////////////////////

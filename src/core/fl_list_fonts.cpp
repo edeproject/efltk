@@ -43,6 +43,7 @@
 // into an array and fl_list_fonts can add all the missing ones to the
 // array. This is sufficiently painful that I have not done this yet.
 
+extern const char *font_word(const char* p, int n);
 Fl_Font fl_find_font(const char* name, int attributes )
 {
     if (!name || !*name) return 0;
@@ -56,35 +57,35 @@ Fl_Font fl_find_font(const char* name, int attributes )
     {
         length -= 5; attributes |= FL_BOLD;
     }
+
     Fl_Font font = 0;
+    Fl_Font* list;
+    int num_fonts = 0;
+
     // always try the built-in fonts first, becasue fl_list_fonts is *slow*...
-    int i; for (i = 0; i < 16; i += (i < 12 ? 4 : 1)) {
+    int i;
+    for (i = 0; i < 16; i += (i < 12 ? 4 : 1)) {
         font = fl_fonts+i;
         const char* fontname = font->name();
-        if (!strncasecmp(name, fontname, length) && !fontname[length]) goto GOTIT;
+        if (!strncasecmp(name, fontname, length) && !fontname[length])
+            goto GOTIT;
     }
     // now try all the fonts on the server, using a binary search:
     font = 0;
+    num_fonts = fl_list_fonts(list);
+    for(i=0; i<num_fonts; i++)
     {
-        Fl_Font* list; int b = fl_list_fonts(list); int a = 0;
-        while (a < b)
+        Fl_Font_ *testfont = (Fl_Font_*)list[i];
+        const char* fontname = testfont->name();
+        if(!strncasecmp(name, fontname, length))
         {
-            int c = (a+b)/2;
-            Fl_Font testfont = list[c];
-            const char* fontname = testfont->name();
-			int d = strncasecmp(name, fontname, length);
-            if (!d)
-            {				
-                // If we match a prefix of the font return it unless a better match found
-                font = testfont;
-                if (!fontname[length]) goto GOTIT;
-            }
-            if (d > 0) a = c+1;
-            else b = c;
+            font = testfont;
+            // If we match a prefix of the font return it unless a better match found
+            if(!fontname[length]) goto GOTIT;
         }
     }
     if (!font) return 0;
-    GOTIT:
+GOTIT:
     if (attributes & FL_BOLD) font = font->bold_;
     if (attributes & FL_ITALIC) font = font->italic_;
     return font;

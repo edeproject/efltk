@@ -138,6 +138,11 @@ extern "C" bool fltk_theme()
 
             conf.set_section(cent);
 
+            // font encoding
+            if(!conf.read("font encoding", valstr, 0, sizeof(valstr))) {
+                fl_encoding(strdup(valstr)); // LEAK!
+            }
+
             // box around widget
             if(!conf.read("box", valstr, 0, sizeof(valstr))) {
                 if( (boxtype = Fl_Boxtype_::find(valstr)) ) style->box = boxtype;
@@ -214,12 +219,6 @@ extern "C" bool fltk_theme()
             // leading
             if(!conf.read("leading", valstr, 0, sizeof(valstr))) {
                 style->leading = (int)strtol(valstr,0,0);
-            }
-
-            // font encoding
-            static char encoding[128];
-            if(!conf.read("font encoding", encoding, 0, sizeof(encoding))) {
-                fl_encoding(encoding);
             }
         }
     }

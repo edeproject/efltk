@@ -209,8 +209,8 @@ Fl_Font fl_create_font(const char *system_name)
 
 
 // return dash number N, or pointer to ending null if none:
-static const char *
-font_word(const char* p, int n) {
+const char *font_word(const char* p, int n)
+{
   while (*p) {if (*p=='-') {if (!--n) break;} p++;}
   return p;
 }
@@ -236,7 +236,7 @@ char* fl_find_fontsize(char* name)
 int fl_correct_encoding(const char* name) {
   if (*name != '-') return 0;
   const char* c = font_word(name,13);
-  return (*c++ && !strcmp(c, fl_encoding_));
+  return (*c++ && !strcasecmp(c, fl_encoding_));
 }
 
 #define MAXSIZE 32767
@@ -262,7 +262,6 @@ static char *find_best_font(Fl_Font_ *f, const char *fname, int size, int index)
     for(int n=offset; n < offset+cnt; n++)
     {
         char* thisname = list[n];
-
         if (fl_correct_encoding(thisname)) {
             if (!found_encoding) ptsize = 0; // force it to choose this
             found_encoding = true;
@@ -390,13 +389,14 @@ Fl_FontSize *Fl_Font_::load_font(float psize)
     // we pretend it has the current encoding even if it does not, so that
     // it is quickly matched when searching for it again with the same
     // encoding:
-    f->encoding = fl_encoding_;
 
+    f->encoding = fl_encoding_;
     f->minsize = size;
     f->maxsize = size;
 
     f->next = first;
     first = f;
+
     delete []name;
 
     return f;
@@ -404,32 +404,30 @@ Fl_FontSize *Fl_Font_::load_font(float psize)
 
 void fl_font(Fl_Font font, float psize)
 {
-  Fl_FontSize* f = fl_fontsize;
+    Fl_FontSize* f = fl_fontsize;
 
-  // only integers supported right now (this can be improved):
-  psize = int(psize+.5);
-  unsigned size = unsigned(psize);
+    // only integers supported right now (this can be improved):
+    psize = int(psize+.5);
+    unsigned size = unsigned(psize);
 
-  // See if the current font is correct:
-  if (fl_font_ && font==fl_font_ &&
-      psize == fl_size_)
-      //&& (f->encoding==fl_encoding_ || !strcmp(f->encoding, fl_encoding_))) //this doesnt work, if you change the encoding...
-      return;
+    // See if the current font is correct:
+    if(fl_font_ && font==fl_font_ && psize == fl_size_
+       && (!f->encoding || !strcmp(f->encoding, fl_encoding_)))
+        return;
 
-  fl_font_ = font; fl_size_ = psize;
+    fl_font_ = font;
+    fl_size_ = psize;
 
-  // search the FontSize we have generated already:
-  for (f = font->first; f; f = f->next) {
-      if (f->minsize <= size && f->maxsize >= size
-          && (f->encoding==fl_encoding_ ||
-              !f->encoding || !strcmp(f->encoding, fl_encoding_))
-         )
-      {
-          set_current_fontsize(f);
-          return;
-      }
-  }
-
+    // search the FontSize we have generated already:
+    for (f = font->first; f; f = f->next) {
+        if(f->minsize <= size && f->maxsize >= size
+           && (!f->encoding || !strcmp(f->encoding, fl_encoding_))
+          )
+        {
+            set_current_fontsize(f);
+            return;
+        }
+    }
 
   Fl_Font_ *t = (Fl_Font_*)font; // cast away const
   f = t->load_font(size);
@@ -438,7 +436,7 @@ void fl_font(Fl_Font font, float psize)
 
 // Change the encoding to use for the next font selection.
 void fl_encoding(const char* f) {
-  fl_encoding_ = f;
+    fl_encoding_ = f;
 }
 
 ////////////////////////////////////////////////////////////////
