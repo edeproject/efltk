@@ -233,9 +233,10 @@ void MenuWindow::relayout(int *indexes, int level)
     empty = true;
     add_items = true;
 
-    Fl_Menu_ *menu = (Fl_Menu_*)current_widget(level_-1);
-    if(menu && menu->about_to_show)
+    Fl_Menu_ *menu = (Fl_Menu_*)widget_;
+    if(menu && menu->is_group() && menu->about_to_show) {
         menu->about_to_show(menu, menu->user_data());
+    }
 
     layout();
     redraw();
@@ -561,9 +562,12 @@ void MenuWindow::close_childwin()
     if(child_win) {
         child_win->animating = false;
 
-        Fl_Menu_ *menu = (Fl_Menu_*)current_widget(level_-1);
-        if(menu && menu->about_to_hide)
-            menu->about_to_hide(menu, menu->user_data());
+        if(child_win->widget_ && child_win->widget_->is_group()) {
+            Fl_Menu_ *menu = (Fl_Menu_*)child_win->widget_;
+            if(menu && menu->about_to_hide) {
+                menu->about_to_hide(menu, menu->user_data());
+            }
+        }
 
         child_win->hide();
         delete child_win;
@@ -572,7 +576,7 @@ void MenuWindow::close_childwin()
 }
 
 void MenuWindow::open_childwin(Fl_Widget *widget, int index)
-{	
+{
     if(child_win && child_win->widget_!=widget) {
 
         close_childwin();
@@ -1015,7 +1019,7 @@ void MenuWindow::show(Fl_Window *w)
     show();
 }
 
-//#define DEBUG_MENUS
+#define DEBUG_MENUS
 
 #ifdef DEBUG_MENUS
 # define MODAL false
