@@ -283,7 +283,8 @@ bool Fl_Window::exec(const Fl_Window* w, bool grab)
 
     clear_value();
     child_of(parent_win);
-    Fl_Widget* saved_modal = Fl::modal(); bool saved_grab = Fl::grab();
+    Fl_Widget* saved_modal = Fl::modal();
+    bool saved_grab = Fl::grab();
     Fl::modal(this, grab);
     show();
     while (Fl::modal() && !Fl::exit_modal_flag()) Fl::wait();

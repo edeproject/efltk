@@ -657,7 +657,7 @@ bool Fl::handle(int event, Fl_Window* window)
 
         case FL_PUSH:
             if (pushed()) to = pushed();
-			// This is bad... It brings up underlying window tooltip, if tooltip recently was up
+            // This is bad... It brings up underlying window tooltip, if tooltip recently was up
             //Fl_Tooltip::enter(to);
             break;
 
@@ -675,8 +675,8 @@ bool Fl::handle(int event, Fl_Window* window)
                 if (modal_ && !modal_->contains(to)) to = modal_;
                 bool ret = to && to->send(FL_MOVE);
                 if (pbm != belowmouse() || ret) {
-					Fl_Tooltip::enter(belowmouse());
-				}
+                    Fl_Tooltip::enter(belowmouse());
+                }
                 return ret;
             }
 

@@ -450,7 +450,14 @@ Fl_MDI_Window::~Fl_MDI_Window()
 
 void Fl_MDI_Window::caption(const char *cap)
 { 
-    Fl_Window::copy_label(cap);
+    Fl_Window::label(cap);
+    _titlebar.redraw();
+    if(_owner->taskbar()) _owner->taskbar()->update_task(this);
+}
+
+void Fl_MDI_Window::caption(const Fl_String &cap)
+{
+    Fl_Window::label(cap);
     _titlebar.redraw();
     if(_owner->taskbar()) _owner->taskbar()->update_task(this);
 }

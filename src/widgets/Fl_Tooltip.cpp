@@ -60,14 +60,16 @@ public:
     }
     void draw();
     void layout();
+
     // You have to destroy the window or it will not raise next time:
-    //void hide() { destroy(); }
+    void hide() { animating=false; destroy(); }
 
     int handle(int e) {
         switch(e) {
         case FL_ENTER:
-            Fl_Tooltip::exit();
             recent_tooltip = false;
+            Fl_Tooltip::exit();
+            return 1;
         }
         return Fl_Menu_Window::handle(e);
     }
@@ -77,17 +79,17 @@ static Fl_TooltipBox *window = 0;
 
 void Fl_TooltipBox::layout()
 {
-    // Dont do nothing, if animating
+    // Dont do anything, if animating
     if(animating) return;
 
     if(!visible()) {
-        // Fond new pos/size for NON-visible windows
+        // Find new pos/size for NON-visible windows
         fl_font(label_font(), float(label_size()));
 
         int ww, hh;
 
         ww = MAX_WIDTH;
-        fl_measure(label(), ww, hh, FL_ALIGN_LEFT|FL_ALIGN_WRAP|FL_ALIGN_INSIDE);
+        fl_measure(label(), ww, hh, FL_ALIGN_WRAP|FL_ALIGN_INSIDE);
         ww += 6; hh += 6;
 
         // find position on the screen of the widget:
@@ -128,16 +130,16 @@ static void recent_timeout(void*)
 }
 
 extern bool fl_slow_animate; //FL_Menu_Window::animate
-static void tooltip_timeout(void*)
+void Fl_Tooltip::tooltip_timeout(void*)
 {
-    if (recursion) return;
+    if(recursion) return;
     Fl::remove_timeout(recent_timeout);
     recursion = true;
-    const char* tip = generator ?
-        generator(Fl_Tooltip::current(), argument) :
-        (const char*)argument;
-    if (!tip || !*tip) {
-        if (window) window->hide();
+    Fl_String tip = generator ? generator(Fl_Tooltip::current(), argument) : (const char*)argument;
+    if(tip.empty()) {
+        if(window)
+            window->hide();
+
     } else {
 
         //if (Fl::grab()) return;
@@ -172,6 +174,11 @@ static void tooltip_timeout(void*)
             }
         }
         window->no_layout = false;
+
+        if(!Fl_Tooltip::widget) {
+            window->hide();
+            return;
+        }
 
         window->show();
         window->resize(window->x(), window->y(), window->w(), window->h());
@@ -222,20 +229,20 @@ void Fl_Tooltip::current(Fl_Widget* w)
 }
 
 // Hide any visible tooltip.
-void Fl_Tooltip::exit() 
+void Fl_Tooltip::exit()
 {
-  if (!widget) return;  
+    if (!widget) return;
 
-  widget = 0;
-  Fl::remove_timeout(tooltip_timeout);
-  Fl::remove_timeout(recent_timeout);
-  if (window) window->hide();
-  if (recent_tooltip) {
-    if (Fl::event_state() & FL_BUTTONS)
-      recent_tooltip = 0;
-    else
-      Fl::add_timeout(.2f, recent_timeout);
-  }
+    widget = 0;
+    Fl::remove_timeout(tooltip_timeout);
+    Fl::remove_timeout(recent_timeout);
+    if(window) window->hide();
+    if(recent_tooltip) {
+        if (Fl::event_state() & FL_BUTTONS)
+            recent_tooltip = 0;
+        else
+            Fl::add_timeout(.2f, recent_timeout);
+    }
 }
 
 // Get ready to display a tooltip. The widget and the xywh box inside

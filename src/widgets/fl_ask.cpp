@@ -194,7 +194,7 @@ static int innards(int iconlabel, const char *istr, int itype,
     window.resizable(message);
     //  w->size_range(window.w(), window.h(), 0, window.h());
 
-    char buffer[1024];
+    char buffer[1024] = {0};
     if (!strcmp(fmt,"%s"))
     {
         message.label(va_arg(ap, const char*));
@@ -239,7 +239,7 @@ static int innards(int iconlabel, const char *istr, int itype,
 
     button_number = 0;
     window.exec();
-    
+
      // don't destroy it yet
     if (input) input->parent()->remove(input);
     return button_number;

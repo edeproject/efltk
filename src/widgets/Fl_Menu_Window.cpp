@@ -152,7 +152,7 @@ void Fl_Menu_Window::layout()
 
 // Fade effect, blend to opacity (thats NYI)
 void Fl_Menu_Window::fade(int x, int y, int w, int h, uchar opacity)
-{	
+{
 #ifndef _WIN32_WCE
     Fl_Renderer::system_init();
 
@@ -311,10 +311,6 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
 
     while(anim_time>0 && steps-->0) {
 
-        if(!animating || !shown() || !visible()) {
-            break;
-        }
-
         rx+=(sx*xinc);
         ry+=(sy*yinc);
         rw+=(sw*winc);
@@ -328,6 +324,10 @@ void Fl_Menu_Window::animate(int fx, int fy, int fw, int fh,
         if(X!=ox || Y!=oy || W!=ow || H!=oh) {
             uint32 time1 = Fl::ticks();
             Fl::check();
+
+            if(!animating || !shown() || !visible()) {
+                break;
+            }
 
             // Make sure we copy to this window!
             make_current();

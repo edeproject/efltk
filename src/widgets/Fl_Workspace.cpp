@@ -84,7 +84,7 @@ void Fl_MDI_Viewport::top(Fl_MDI_Window *win)
         }
 
 		if(_top && maximum()==_top) {
-			_top->state_ = Fl_MDI_Window::NORMAL;
+        		_top->state_ = Fl_MDI_Window::NORMAL;
 			_top->titlebar()->show();
 			_top->resize(_top->_ox, _top->_oy, _top->_ow, _top->_oh);			
 			_top->relayout();
@@ -311,7 +311,7 @@ Fl_MDI_Window *Fl_MDI_Viewport::find(const char *caption)
         Fl_Widget* o = child(n);
         if(((o->flags() & FL_MDI_WINDOW) == FL_MDI_WINDOW)) {
             Fl_MDI_Window *win = (Fl_MDI_Window *)o;
-            if(strcmp(caption, win->caption()) == 0)
+            if(caption==win->label())
                 return win;
         }
     }

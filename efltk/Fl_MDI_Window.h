@@ -96,10 +96,11 @@ public:
 
     // Caption functions
     void caption(const char *cap);
-    const char *caption() { return label().c_str(); }
+    void caption(const Fl_String &cap);
+    const Fl_String &caption() const  { return label(); }
 
     //void titlebar(Fl_Box *b) { _titlebar = b; }
-    Fl_MDI_Titlebar* titlebar() {return &_titlebar;}
+    Fl_MDI_Titlebar* titlebar() { return &_titlebar; }
 
     bool toplevel() { return _toplevel; }
 

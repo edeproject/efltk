@@ -14,9 +14,9 @@ Fl_Named_Style* Fl_MDI_Bar::default_style = &::style;
 Fl_MDI_Bar::Fl_MDI_Bar(int x, int y, int w, int h, const char *l)
 : Fl_Group(x,y,w,h,l)
 {
-	style(default_style);
-	max_button_width_ = 100;
-	spacing_ = 1;
+    style(default_style);
+    max_button_width_ = 100;
+    spacing_ = 1;
 }
 
 Fl_MDI_Bar::~Fl_MDI_Bar()
@@ -32,18 +32,18 @@ static void fl_mdi_bar_button_cb(Fl_Button *button, Fl_MDI_Window *win)
 
 void Fl_MDI_Bar::add_task(Fl_MDI_Window *win)
 {
-	begin();
+    begin();
 
-	Fl_Button *b = new Fl_Button(0, 0, 0, 0, win->caption());
-	b->callback((Fl_Callback*)fl_mdi_bar_button_cb, win);
-	b->clear_click_to_focus();
-	b->align(FL_ALIGN_INSIDE|FL_ALIGN_LEFT|FL_ALIGN_CLIP);
-	b->color(button_color());
+    Fl_Button *b = new Fl_Button(0, 0, 0, 0, win->label());
+    b->callback((Fl_Callback*)fl_mdi_bar_button_cb, win);
+    b->clear_click_to_focus();
+    b->align(FL_ALIGN_INSIDE|FL_ALIGN_LEFT|FL_ALIGN_CLIP);
+    b->color(button_color());
 
-	end();
+    end();
 
-	redraw();
-	relayout();	
+    redraw();
+    relayout();
 }
 
 Fl_Widget *Fl_MDI_Bar::find_task(Fl_MDI_Window *win)
@@ -72,14 +72,14 @@ void Fl_MDI_Bar::remove_task(Fl_MDI_Window *win)
 
 void Fl_MDI_Bar::update_task(Fl_MDI_Window *win)
 {
-	for(int n=0; n<children(); n++) {
-		Fl_Widget *w = child(n);
-		if(w->user_data()==win) {
-			w->label(win->caption());
-			redraw();			
-			return;
-		}		
-	}
+    for(int n=0; n<children(); n++) {
+        Fl_Widget *w = child(n);
+        if(w->user_data()==win) {
+            w->label(win->label());
+            redraw();
+            return;
+        }
+    }
 }
 
 void Fl_MDI_Bar::update_tasks()

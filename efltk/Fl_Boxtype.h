@@ -41,11 +41,10 @@ public:
 
     virtual void draw(int,int,int,int, Fl_Color, Fl_Flags=0) const = 0;
 
-    const Fl_Boxtype_ *next;
+    const char *name;
     static const Fl_Boxtype_ *first;
     static const Fl_Boxtype_ *find(const char* name);
-
-    const char *name;
+    const Fl_Boxtype_ *next;
 
 protected:
     int dx_, dy_, dw_, dh_;

@@ -85,13 +85,13 @@ protected:
     int* sizes();
 
 private:
+    int focus_;
+
     Fl_Widget_List array_;
     Fl_Int_List sizes_; // remembered initial sizes of children
 
     Fl_Widget* resizable_;
     Fl_Data_Source* data_source_;
-
-    int focus_;
 
     static Fl_Group *current_;
 };

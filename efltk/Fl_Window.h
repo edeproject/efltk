@@ -40,8 +40,8 @@ public:
     void window_type(int type) { window_type_ = type; }
     int window_type() { return window_type_; }
 
-    const Fl_String label() const     { return Fl_Widget::label(); }
-    const Fl_String iconlabel() const { return iconlabel_; }
+    const Fl_String &label() const     { return Fl_Widget::label(); }
+    const Fl_String &iconlabel() const { return iconlabel_; }
 
     void copy_label(const char *l) { label(l); }
     void copy_label(const Fl_String &l) { label(l); }
