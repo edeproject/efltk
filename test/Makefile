@@ -61,8 +61,8 @@ include ../makeinclude
 # $(ALL): $(FLLIB) # only true for static library
 
 # FLUID file rules
-.fl.cpp .fl.h:
-	../fluid/efluid -c $<
+#.fl.cpp .fl.h:
+#	../fluid/efluid -c $<
 
 # Other programs needing special "help"...
 CubeView: CubeMain.o CubeView.o CubeViewUI.o $(FLGLLIB) $(FLCORELIB) $(FLUILIB)
