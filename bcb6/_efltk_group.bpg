@@ -11,8 +11,8 @@ BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
 PROJECTS = libefltk.lib arc.exe ask.exe bitmap.exe boxtype.exe browser.exe \
   button.exe buttons.exe calendar.exe checkers.exe clock.exe db_odbc.exe \
-  listview.exe line_style.exe listview_ds.exe tabs.exe tabs1.exe tabs2.exe \
-  split.exe split.exe
+  dialog.exe listview.exe line_style.exe listview_ds.exe tabs.exe tabs1.exe \
+  tabs2.exe split.exe
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -102,6 +102,14 @@ split.exe: split.bpr
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
 split.exe: split.bpr
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+dialog.exe: dialog.bpr
+  $(ROOT)\bin\bpr2mak $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+dialog.exe: dialog.bpr
   $(ROOT)\bin\bpr2mak $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
