@@ -3,7 +3,7 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
-    <PROJECT value="R:\efltk\lib\libefltk.lib"/>
+    <PROJECT value="\efltk\lib\libefltk.lib"/>
     <OBJFILES value="obj\cmap.obj obj\filename_absolute.obj obj\filename_expand.obj 
       obj\filename_ext.obj obj\filename_isdir.obj obj\filename_list.obj 
       obj\filename_match.obj obj\filename_setext.obj obj\Fl.obj obj\Fl_abort.obj 
@@ -69,7 +69,7 @@
     <USERDEFINES value="_DEBUG;_WIN32"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT"/>
     <MAINSOURCE value="libefltk.bpf"/>
-    <INCLUDEPATH value="..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;r:\efltk"/>
+    <INCLUDEPATH value="..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;\efltk"/>
     <LIBPATH value="..\src\widgets;..\src\core;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
     <LISTFILE value=""/>
@@ -77,12 +77,12 @@
   </MACROS>
   <OPTIONS>
     <IDLCFLAGS value="-I..\src\widgets -I..\src\core -I$(BCB)\include -I$(BCB)\include\vcl -I. 
-      -Ir:\efltk -src_suffix cpp -D_DEBUG -D_WIN32 -boa"/>
+      -I\efltk -src_suffix cpp -D_DEBUG -D_WIN32 -boa"/>
     <CFLAG1 value="-vGc -vGt -vGd -Od -H=$(BCB)\lib\vcl60.csm -Hc -P -Vx -Ve -X- -r- -a4 -5 
       -b -d -k -y -v -vi- -c -tW -tWM"/>
-    <PFLAGS value="-N2R:\efltk\bcb6\obj -N0R:\efltk\bcb6\obj -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <PFLAGS value="-N2\efltk\bcb6\obj -N0\efltk\bcb6\obj -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
     <AFLAGS value="/mx /w2 /zi"/>
-    <LFLAGS value="-lR:\efltk\lib /P128"/>
+    <LFLAGS value="-l\efltk\lib /P128"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
@@ -258,16 +258,16 @@
   </BUILDTOOLS>
 
   <FILES>
-    <FILE type="override" value="..\src\core\fl_utf8.c" translator="Auto">
+    <FILE type="override" value="..\src\core\numericsort.c" translator="Auto">
       <CFLAG1 value=" -P-"/>
     </FILE>
-    <FILE type="override" value="..\src\core\numericsort.c" translator="Auto">
+    <FILE type="override" value="..\src\core\vsnprintf.c" translator="Auto">
       <CFLAG1 value=" -P-"/>
     </FILE>
     <FILE type="override" value="..\src\core\scandir.c" translator="Auto">
       <CFLAG1 value=" -P-"/>
     </FILE>
-    <FILE type="override" value="..\src\core\vsnprintf.c" translator="Auto">
+    <FILE type="override" value="..\src\core\fl_utf8.c" translator="Auto">
       <CFLAG1 value=" -P-"/>
     </FILE>
   </FILES>
@@ -301,11 +301,12 @@ ProductVersion=1.0.0.0
 Comments=
 
 [HistoryLists\hlIncludePath]
-Count=4
-Item0=..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;r:\efltk
-Item1=..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;r:\efltk
-Item2=..\src\core;$(BCB)\include;$(BCB)\include\vcl;.
-Item3=..\src\core;$(BCB)\include;$(BCB)\include\vcl
+Count=5
+Item0=..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;\efltk
+Item1=..\src\widgets;..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;r:\efltk
+Item2=..\src\core;$(BCB)\include;$(BCB)\include\vcl;.;r:\efltk
+Item3=..\src\core;$(BCB)\include;$(BCB)\include\vcl;.
+Item4=..\src\core;$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
 Count=2
@@ -322,17 +323,20 @@ Item0=_DEBUG;_WIN32
 Item1=_DEBUG
 
 [HistoryLists\hlIntOutputDir]
-Count=1
-Item0=R:\efltk\bcb6\obj
+Count=2
+Item0=\efltk\bcb6\obj
+Item1=R:\efltk\bcb6\obj
 
 [HistoryLists\hlFinalOutputDir]
-Count=2
-Item0=R:\efltk\lib\
-Item1=R:\efltk\lib
+Count=3
+Item0=\efltk\lib\
+Item1=R:\efltk\lib\
+Item2=R:\efltk\lib
 
 [HistoryLists\hIBPIOutputDir]
-Count=1
-Item0=R:\efltk\lib
+Count=2
+Item0=\efltk\lib
+Item1=R:\efltk\lib
 
 [HistoryLists\hlTlibPageSize]
 Count=2

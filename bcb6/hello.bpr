@@ -4,7 +4,7 @@
   <MACROS>
     <VERSION value="BCB.06.00"/>
     <PROJECT value="R:\efltk\hello.exe"/>
-    <OBJFILES value="obj\hello.obj"/>
+    <OBJFILES value="R:\efltk\bcb6\obj\hello.obj"/>
     <RESFILES value="hello.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -14,12 +14,12 @@
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
     <PACKAGES value="vcl.bpi rtl.bpi dbrtl.bpi vcldb.bpi vclx.bpi bdertl.bpi vcldbx.bpi 
-      dsnap.bpi dsnapcrba.bpi dsnapcon.bpi dbexpress.bpi vc.bpi Sparx4.bpi 
-      bcbsmp.bpi sparx4rep.bpi dclocx.bpi adortl.bpi ibxpress.bpi cds.bpi 
-      bdecds.bpi qrpt.bpi teeui.bpi teedb.bpi tee.bpi dss.bpi teeqr.bpi 
-      visualclx.bpi visualdbclx.bpi vclie.bpi xmlrtl.bpi inet.bpi inetdbbde.bpi 
-      inetdbxpress.bpi inetdb.bpi nmfast.bpi webdsnap.bpi bcbie.bpi websnap.bpi 
-      soaprtl.bpi dbxcds.bpi indy.bpi bcb2kaxserver.bpi sparx4ots.bpi"/>
+      dsnap.bpi dsnapcrba.bpi dsnapcon.bpi dbexpress.bpi bcbsmp.bpi dclocx.bpi 
+      adortl.bpi ibxpress.bpi cds.bpi bdecds.bpi qrpt.bpi teeui.bpi teedb.bpi 
+      tee.bpi dss.bpi teeqr.bpi visualclx.bpi visualdbclx.bpi vclie.bpi 
+      xmlrtl.bpi inet.bpi inetdbbde.bpi inetdbxpress.bpi inetdb.bpi nmfast.bpi 
+      webdsnap.bpi bcbie.bpi websnap.bpi soaprtl.bpi dbxcds.bpi indy.bpi 
+      bcb2kaxserver.bpi"/>
     <PATHCPP value=".;..\test"/>
     <PATHPAS value=".;"/>
     <PATHRC value=".;"/>

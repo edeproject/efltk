@@ -194,7 +194,7 @@
 
 /* Enables UTF8 */
 #define HAVE_XUTF8 1
-#define UNICODE 1
+#undef UNICODE
 
 /* Defined if, math.h float function emulation NOT needed */
 #define HAVE_FLOAT_FUNCTIONS 0
