@@ -29,66 +29,24 @@ static int max(int a,int b) {
 int widget_layout_width(const Fl_Widget *w,int pref_w)
 {
 	if (pref_w < 0) pref_w = w->w();
-	if (!(w->align() & FL_ALIGN_INSIDE) && (w->align() & 15)) {
-		int label_w = w->label_width();
-		if (label_w < 0) label_w = 0;
-		if (w->align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) 
-			return max(label_w, pref_w);
-		return pref_w + label_w;
-	}
 	return pref_w;
 }
 
 int widget_layout_height(const Fl_Widget *w,int pref_h)
 {
 	if (pref_h < 0) pref_h = w->h();
-	if (!(w->align() & FL_ALIGN_INSIDE) && (w->align() & 15)) {
-		int label_w = w->label_width();
-        if (label_w < 0) return pref_h;
-		int label_h = w->label_height();
-		if (label_h < 0) label_h = 0;		
-		if (w->align() & (FL_ALIGN_LEFT|FL_ALIGN_RIGHT)) 
-			return max(label_h, pref_h);
-		return pref_h + label_h;
-	}
 	return pref_h;
 }
 
 void widget_layout_position(const Fl_Widget *w,int x,int y,int& wx,int& wy) {
     wx = x;
 	wy = y;
-	int label_w = w->label_width();
-	if (label_w < 0 || !(w->align() & 15)) return;
-
-	if (w->align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) {
-		if (!(w->align() & FL_ALIGN_INSIDE)) {
-			if (w->align() & FL_ALIGN_TOP)
-				wy = y + w->label_height();
-		}
-	} else {
-		if (!(w->align() & FL_ALIGN_INSIDE)) {
-			if (w->align() & FL_ALIGN_LEFT)
-				wx = x + label_w;
-		}
-	}
 }
 
 // similar to widget_layout_position: finds the width and height in the layout rect
 void widget_layout_size(const Fl_Widget *w,int ow,int oh,int& nw,int& nh) {
     nw = ow;
     nh = oh;
-	int label_w = w->label_width();
-	if (label_w < 0 || !(w->align() & 15)) return;
-	if (w->align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) {
-		if (!(w->align() & FL_ALIGN_INSIDE))
-            if (w->layout_align() & (FL_ALIGN_LEFT|FL_ALIGN_RIGHT)){
-    			nh -= w->label_height();
-            }
-	} else {
-		if (!(w->align() & FL_ALIGN_INSIDE))
-            if (w->layout_align() & (FL_ALIGN_TOP|FL_ALIGN_BOTTOM))
-    			nw -= label_w;
-	}
     if (nw < 0) nw = 0;
     if (nh < 0) nh = 0;
 }
@@ -98,14 +56,6 @@ bool widget_layout_resize(Fl_Widget *o,int x,int y,int& w,int& h)
 {
 	int new_w = w;
 	int new_h = h;
-
-	if (o->label_width() >=0) { // Inlude label into computations
-		if (o->align() & (FL_ALIGN_LEFT|FL_ALIGN_RIGHT)) {
-			new_w = w - o->label_width();
-		} else {
-			new_h = h - o->label_height();
-		}
-	}
 
 	// Find out if widget wants to take it
 	o->preferred_size(new_w, new_h);

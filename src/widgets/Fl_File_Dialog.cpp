@@ -557,6 +557,9 @@ void Fl_File_Chooser::make_group()
         o->layout_align(FL_ALIGN_BOTTOM);
         o->layout_spacing(2);
 
+		Fl_Box *filler = new Fl_Box(0,0,0,0,0);
+		filler->layout_align(FL_ALIGN_LEFT);
+
         m_file_input = new Fl_Input_Browser(60, 0, 100, 0, _("Location:"));
         m_file_input->h(m_file_input->text_size()+12);
         m_file_input->callback((Fl_Callback*)cb_location, this);
@@ -579,8 +582,10 @@ void Fl_File_Chooser::make_group()
         int filter_label_w = int(fl_width(m_filter_input->label()));
 
         int label_w = 10 + ( (filter_label_w>file_label_w) ? filter_label_w : file_label_w);
-        m_file_input->label_width(label_w);
-        m_filter_input->label_width(label_w);
+        
+		filler->w(label_w);
+		//m_file_input->label_width(label_w);
+        //m_filter_input->label_width(label_w);
 
         int H = m_file_input->h()+m_filter_input->h()+12;
         if(H > o->h()) o->h(H);
