@@ -35,6 +35,7 @@ public:
     ~Fl_ListView_Header();
 
     void add_column(const char *name, int w);
+    void add_column(const Fl_String &name, int w);
 
     virtual void clear();
 
@@ -50,20 +51,23 @@ public:
     Fl_Flags column_clear_flag(int col, int f);
     Fl_Flags column_invert_flag(int col, int f);
 
-    const char *column_label();
-    const char *column_label(int col);
-    void column_label(int col, const char *text);
-    void column_copy_label(int col, const char *txt);
+    const Fl_String &column_label() const;
+    const Fl_String &column_label(int col) const;
 
-    Fl_Font column_label_font(int col);
-    int column_label_size(int col);
-    void column_label_size(int col, int size);
+    void column_label(int col, const char *text);
+    void column_label(int col, const Fl_String &text);
+    void column_copy_label(int col, const char *txt) { column_label(col, txt); }
+
+    Fl_Font column_label_font(int col) const;
+    int column_label_size(int col) const;
+    void column_label_size(int col, int size) const;
     void column_label_font(int col, Fl_Font font);
     void column_label_color(int col, Fl_Color color);
 
     void column_image(int col, Fl_Image *im);
     void column_image(int col, Fl_Image &im);
     Fl_Image *column_image(int col);
+    const Fl_Image *column_image(int col) const;
 
     virtual void draw();
     virtual void layout();

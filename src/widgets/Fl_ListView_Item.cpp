@@ -77,12 +77,12 @@ int Fl_ListView_Item::compare(Fl_ListView_Item *other, int column, int sort_type
     return abs_index()-other->abs_index();
 }
 
-bool Fl_ListView_Item::selected()
+bool Fl_ListView_Item::selected() const
 {
     return (parent()->get_selection().index_of(this)>-1);
 }
 
-uint Fl_ListView_Item::columns()
+uint Fl_ListView_Item::columns() const
 {
     return attr_list.size();
 }
@@ -175,21 +175,21 @@ void Fl_ListView_Item::layout()
     h(int(H+parent()->leading()));
 }
 
-int Fl_ListView_Item::column_width(int col)
+int Fl_ListView_Item::column_width(int col) const
 {
     if((uint)col>=attr_list.size()) return -1;
     Fl_ListItem_Attr *a = (Fl_ListItem_Attr*)attr_list[col];
     return a->col_width;
 }
 
-const Fl_String &Fl_ListView_Item::label()
+const Fl_String &Fl_ListView_Item::label() const
 {
     if(attr_list.size()==0) return Fl_String::null_object;
     Fl_ListItem_Attr *a = (Fl_ListItem_Attr*)attr_list[0];
     return a->col_label;
 }
 
-const Fl_String &Fl_ListView_Item::label(int col)
+const Fl_String &Fl_ListView_Item::label(int col) const
 {
     if((uint)col>=attr_list.size()) return Fl_String::null_object;
     Fl_ListItem_Attr *a = (Fl_ListItem_Attr*)attr_list[col];
@@ -258,17 +258,17 @@ Fl_ListItem_Attr *Fl_ListView_ItemExt::create_attr(int col)
     a->col_font_size	= parent() ? parent()->text_size()			: Fl_Widget::default_style->text_size;
     a->col_color		= parent() ? parent()->text_color()			: Fl_Widget::default_style->text_color;
     a->col_label_type	= parent() ? parent()->label_type()			: Fl_Widget::default_style->label_type;
-	return a;
+    return a;
 }
 
-Fl_Font Fl_ListView_ItemExt::label_font(int col)
+Fl_Font Fl_ListView_ItemExt::label_font(int col) const
 {
     if((uint)col>=attr_list.size()) return 0;
     Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr_list[col];
     return a->col_font;
 }
 
-int Fl_ListView_ItemExt::label_size(int col)
+int Fl_ListView_ItemExt::label_size(int col) const
 {
     if((uint)col>=attr_list.size()) return 0;
     Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr_list[col];
@@ -296,7 +296,7 @@ void Fl_ListView_ItemExt::label_color(int col, Fl_Color color)
     a->col_color = color;
 }
 
-Fl_Color Fl_ListView_ItemExt::label_color(int col)
+Fl_Color Fl_ListView_ItemExt::label_color(int col) const
 {
     if((uint)col>=attr_list.size()) return 0;
     Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr_list[col];
@@ -310,7 +310,7 @@ void Fl_ListView_ItemExt::label_type(int col, Fl_Labeltype type)
     a->col_label_type = type;
 }
 
-Fl_Labeltype Fl_ListView_ItemExt::label_type(int col)
+Fl_Labeltype Fl_ListView_ItemExt::label_type(int col) const
 {
     if((uint)col>=attr_list.size()) return 0;
     Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr_list[col];
@@ -331,6 +331,13 @@ void Fl_ListView_ItemExt::image(int col, Fl_Image &im)
     a->col_image = &im;
 }
 
+const Fl_Image *Fl_ListView_ItemExt::image(int col) const
+{
+    if((uint)col>=attr_list.size()) return 0;
+    Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr_list[col];
+    return a->col_image;
+}
+
 Fl_Image *Fl_ListView_ItemExt::image(int col)
 {
     if((uint)col>=attr_list.size()) return 0;
@@ -338,7 +345,7 @@ Fl_Image *Fl_ListView_ItemExt::image(int col)
     return a->col_image;
 }
 
-Fl_Flags Fl_ListView_ItemExt::flags(int col)
+Fl_Flags Fl_ListView_ItemExt::flags(int col) const
 {
     if((uint)col>=attr_list.size()) return 0;
     Fl_ListItem_AttrExt *a = (Fl_ListItem_AttrExt*)attr_list[col];

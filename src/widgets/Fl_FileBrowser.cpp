@@ -193,7 +193,7 @@ static Fl_Pixmap hd_pix(datas_harddisk);
 # define R_OK 04
 #endif
 
-void Fl_File_Browser::default_callback(Fl_Widget *w, void *d)
+void Fl_File_Browser::default_callback(Fl_Widget *w, void *)
 {
     Fl_File_Browser *b = (Fl_File_Browser*)w;
     if(!b->item()) return;
@@ -210,10 +210,10 @@ void Fl_File_Browser::default_callback(Fl_Widget *w, void *d)
         if(fl_is_dir(dir)) {
             b->load(dir);
             b->redraw();
+            b->relayout();
         }
 
     } else {
-
         b->up();
     }
 }
@@ -227,7 +227,7 @@ Fl_File_Browser::Fl_File_Browser(
 : Fl_ListView(x, y, w, h, l)
 {
 	m_add_up_item = true;
-	m_up_item = 0;
+        m_up_item = 0;
 
 	callback(default_callback);
 	when(FL_WHEN_ENTER_KEY | FL_WHEN_RELEASE);
@@ -284,8 +284,26 @@ void Fl_File_Browser::up()
     if(pos==-1) dir="";
     else dir = dir.sub_str(0, pos+1);
 
-    redraw();
     load(dir);
+    redraw();
+}
+
+// Returns relative selected filename.
+const Fl_String &Fl_File_Browser::filename() const
+{
+    if(item() && item()!=up_item()) {
+        return item()->label(1);
+    }
+    return Fl_String::null_object;
+}
+
+// Returns absolute path of selected filename.
+Fl_String Fl_File_Browser::filename_full() const
+{
+    if(item() && item()!=up_item()) {
+        return directory()+item()->label(1);
+    }
+    return Fl_String("");
 }
 
 // 'Fl_FileBrowser::load()' - Load a directory into the browser.
@@ -293,7 +311,7 @@ int                                         // O - Number of files loaded
 Fl_File_Browser::load(const Fl_String &dir) // I - Directory to load
 {	
     Fl_String old_dir(directory());
-    directory(dir);
+    m_dir_ds.directory(dir);
 
     clear();
     header()->clear();
@@ -448,3 +466,4 @@ Fl_File_Browser::load(const Fl_String &dir) // I - Directory to load
 
     return children()-1;
 }
+

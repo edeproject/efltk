@@ -56,7 +56,14 @@ void Fl_ListView_Header::add_attr(int col)
 void Fl_ListView_Header::add_column(const char *name, int w)
 {
     columns(columns()+1);
-    column_copy_label(columns()-1, name);
+    column_label(columns()-1, name);
+    column_width(columns()-1, w);
+}
+
+void Fl_ListView_Header::add_column(const Fl_String &name, int w)
+{
+    columns(columns()+1);
+    column_label(columns()-1, name);
     column_width(columns()-1, w);
 }
 
@@ -133,23 +140,18 @@ Fl_Flags Fl_ListView_Header::column_invert_flag(int col, int f)
     return a->flags ^= f;
 }
 
-const char *Fl_ListView_Header::column_label()
+const Fl_String &Fl_ListView_Header::column_label() const
 {
-    if(attr_list.size()==0) return 0;
+    if(attr_list.size()==0) return Fl_String::null_object;
     Fl_ListHeader_Attr *a = (Fl_ListHeader_Attr*)attr_list[0];
     return a->label;
 }
 
-const char *Fl_ListView_Header::column_label(int col)
+const Fl_String &Fl_ListView_Header::column_label(int col) const
 {
-    if((uint)col>=attr_list.size()) return 0;
+    if(attr_list.size()==0) return Fl_String::null_object;
     Fl_ListHeader_Attr *a = (Fl_ListHeader_Attr*)attr_list[col];
     return a->label;
-}
-
-void Fl_ListView_Header::column_copy_label(int col, const char *txt)
-{
-	column_label(col, txt);
 }
 
 void Fl_ListView_Header::column_label(int col, const char *text)
@@ -159,14 +161,21 @@ void Fl_ListView_Header::column_label(int col, const char *text)
     a->label = text;
 }
 
-Fl_Font Fl_ListView_Header::column_label_font(int col)
+void Fl_ListView_Header::column_label(int col, const Fl_String &text)
+{
+    if((uint)col>=attr_list.size()) return;
+    Fl_ListHeader_Attr *a = (Fl_ListHeader_Attr*)attr_list[col];
+    a->label = text;
+}
+
+Fl_Font Fl_ListView_Header::column_label_font(int col) const
 {
     if((uint)col>=attr_list.size()) return 0;
     Fl_ListHeader_Attr *a = (Fl_ListHeader_Attr*)attr_list[col];
     return a->font;
 }
 
-int Fl_ListView_Header::column_label_size(int col)
+int Fl_ListView_Header::column_label_size(int col) const
 {
     if((uint)col>=attr_list.size()) return 0;
     Fl_ListHeader_Attr *a = (Fl_ListHeader_Attr*)attr_list[col];
@@ -180,7 +189,7 @@ void Fl_ListView_Header::column_label_font(int col, Fl_Font font)
     a->font = font;
 }
 
-void Fl_ListView_Header::column_label_size(int col, int size)
+void Fl_ListView_Header::column_label_size(int col, int size) const
 {
     if((uint)col>=attr_list.size()) return;
     Fl_ListHeader_Attr *a = (Fl_ListHeader_Attr*)attr_list[col];

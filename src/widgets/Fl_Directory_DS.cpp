@@ -231,7 +231,7 @@ bool Fl_Directory_DS::write_field(const char *fname, const Fl_Variant& fvalue)
 }
 
 // Returns typename
-Fl_String Fl_Directory_DS::get_file_type(struct stat &st, const Fl_String &filename, const Fl_Image *&image) const
+Fl_String Fl_Directory_DS::get_file_type(const struct stat &st, const Fl_Image *&image) const
 {
 	bool executable = S_ISEXEC(st.st_mode);
 	image = &documentPixmap;
@@ -246,24 +246,8 @@ Fl_String Fl_Directory_DS::get_file_type(struct stat &st, const Fl_String &filen
 		if (executable) modeName = _("Executable");
 		else modeName = _("File");
 	}
-#ifndef _WIN32
-	if ((st.st_mode & S_IFLNK) == S_IFLNK) {
-		stat(filename.c_str(), &st);
-		if (S_ISDIR(st.st_mode)) {
-			modeName = _("Directory");
-			image = &folderPixmap;
-			executable = false;
-		}
-		else if ((st.st_mode & S_IFREG) == S_IFREG) {
-			image = &documentPixmap;
-			if (executable) modeName = _("Program");
-			else modeName = _("File");
-		}
-		modeName += ' ';
-		modeName += _("link");
-	}
-#endif
-	if(executable) image = &executablePixmap;
+
+        if(executable) image = &executablePixmap;
 
 	return modeName;
 }
@@ -303,7 +287,8 @@ bool Fl_Directory_DS::open()
                 if(!strcmp(files[n]->d_name, "..") || !strcmp(files[n]->d_name, ".")) continue;
 
                 Fl_Data_Fields   *df = new Fl_Data_Fields;
-                char			 *file = files[n]->d_name;
+                char		 *file = files[n]->d_name;
+                bool is_link     = false;
 
                 if((showpolicy()&HIDE_DOT_FILES) && file[0]=='.') continue;
 
@@ -311,13 +296,25 @@ bool Fl_Directory_DS::open()
 
                 lstat(fullName.c_str(), &st);
 
+#ifndef _WIN32
+                if ((st.st_mode & S_IFLNK) == S_IFLNK) {
+                    is_link = true;
+                    stat(fullName.c_str(), &st);
+                }
+#endif
+
                 if(!S_ISDIR(st.st_mode) && !m_pattern.empty() && !fl_file_match(files[n]->d_name, m_pattern)) continue;
                 if(!(showpolicy()&NO_SORT) && !S_ISDIR(st.st_mode) && again==2) continue;
                 if((showpolicy()&HIDE_FILES) && !S_ISDIR(st.st_mode)) continue;
                 if((showpolicy()&HIDE_DIRECTORIES) && S_ISDIR(st.st_mode)) continue;
 
                 const Fl_Image *pixmapPtr = 0;
-                Fl_String modeName = get_file_type(st, fullName, pixmapPtr);
+                Fl_String modeName = get_file_type(st, pixmapPtr);
+
+                if(is_link) {
+                    modeName += ' ';
+                    modeName += _("link");
+                }
 
                 df->add("")				= pixmapPtr;
                 df->add(N_("Name"))		= file;

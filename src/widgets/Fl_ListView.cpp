@@ -70,7 +70,7 @@ void Fl_ListView::end()
     Fl_Group::end();
 }
 
-Fl_ListView_Item *Fl_ListView::find_userdata(void *data, uint start_index)
+Fl_ListView_Item *Fl_ListView::find_userdata(void *data, uint start_index) const
 {
 	for(uint n=start_index; n<children(); n++) {
 		if(items[n]->user_data()==data) 
@@ -79,7 +79,7 @@ Fl_ListView_Item *Fl_ListView::find_userdata(void *data, uint start_index)
 	return 0;
 }
 
-Fl_ListView_Item *Fl_ListView::find_text(const char *text, uint column, uint start_index)
+Fl_ListView_Item *Fl_ListView::find_text(const char *text, uint column, uint start_index) const
 {
 	for(uint n=start_index; n<children(); n++) {
 		const char *itext = items[n]->label(column);
@@ -157,7 +157,7 @@ bool Fl_ListView::show_item(Fl_ListView_Item *w)
 }
 
 // set current item to one at or before Y pixels from top of browser
-Fl_ListView_Item* Fl_ListView::item_at(int Y)
+Fl_ListView_Item* Fl_ListView::item_at(int Y) const
 {
     if(Y < 0) Y = 0;
     if(!children()) return 0;
@@ -178,7 +178,7 @@ void Fl_ListView::damage_item(Fl_ListView_Item *item)
     item->set_damage(FL_DAMAGE_ALL);
 }
 
-void Fl_ListView::draw_row(int x, int y, int w, int h, Fl_ListView_Item *widget, bool selected)
+void Fl_ListView::draw_row(int x, int y, int w, int h, Fl_ListView_Item *widget, bool selected) const
 {    
     if(selected) {
 
@@ -213,7 +213,7 @@ void Fl_ListView::draw_row(int x, int y, int w, int h, Fl_ListView_Item *widget,
     }
 }
 
-void Fl_ListView::draw_item(Fl_ListView_Item *widget)
+void Fl_ListView::draw_item(Fl_ListView_Item *widget) const
 {
     bool selected = SEL(widget);
     int y = widget->y() - yposition_+Y;
@@ -241,7 +241,7 @@ void Fl_ListView::draw_clip_cb(void* v,int X, int Y, int W, int H)
     ((Fl_ListView*)v)->draw_clip(X,Y,W,H);
 }
 
-void Fl_ListView::draw_clip(int x, int y, int w, int h)
+void Fl_ListView::draw_clip(int x, int y, int w, int h) const
 {
     if(!children()) {
         fl_color(color());
@@ -277,7 +277,7 @@ void Fl_ListView::draw_clip(int x, int y, int w, int h)
     fl_pop_clip();
 }
 
-void Fl_ListView::draw_header()
+void Fl_ListView::draw_header() const
 {
     if(!(damage() & FL_DAMAGE_ALL) && !(_header->damage() & FL_DAMAGE_ALL))
         return;
@@ -415,7 +415,7 @@ void Fl_ListView::layout_scrollbars()
     if(children()>0) hscrollbar.linesize(child(0)->h());
 }
 
-void Fl_ListView::calc_index()
+void Fl_ListView::calc_index() const
 {
     // THIS IS SLOW!!!!
     // only multi-moving calls this
@@ -429,7 +429,7 @@ void Fl_ListView::calc_index()
     }
 }
 
-uint Fl_ListView::find_safe_top()
+uint Fl_ListView::find_safe_top() const
 {
     // THIS IS LAME!!! :) but fast...
     if(!children() || yposition_<100) return 0;
@@ -501,7 +501,7 @@ void Fl_ListView::layout()
 
     layout_scrollbars();
 
-    if((layout_damage() & FL_LAYOUT_XYWH) && _header->visible()) {
+    if(layout_damage() && _header->visible()) {
         _header->resize(HX, HY, HW, HH);
         _header->layout();
     }
@@ -534,6 +534,7 @@ void Fl_ListView::xposition(int X)
 void Fl_ListView::yposition(int Y)
 {
     if(Y == yposition_) return;
+
     ((Fl_Slider*)(&vscrollbar))->value(Y);
 	int dy = yposition_-Y;
 	if(dy) {
@@ -705,12 +706,10 @@ int Fl_ListView::handle(int event)
                 // If different item, set clicks to 0
                 if(i != item())	Fl::event_clicks(0);
 
-				item(i);
+                item(i);
                 damage_item(i);                
                 show_item(i);
-
-                if(when() & FL_WHEN_CHANGED) do_callback();
-				else set_changed();
+                int ret = 0;
 
                 if(Fl::event_button() == FL_LEFT_MOUSE && multi())
                 {
@@ -720,10 +719,10 @@ int Fl_ListView::handle(int event)
                         // start a new selection block without changing state
                         drag_type = !SEL(i);
                         select(i, drag_type);
-                        sel_item = i;						
-						show_item(i);						
-						redraw(FL_DAMAGE_CHILD);
-                        return 1;
+                        sel_item = i;
+                        show_item(i);
+                        redraw(FL_DAMAGE_CHILD);
+                        ret = 1;
                     }
                     else if(Fl::event_state(FL_SHIFT)) {
                         // We want to change the selection between
@@ -736,7 +735,7 @@ int Fl_ListView::handle(int event)
                         Fl::event_clicks(0);
                         show_item(i);
                         redraw(FL_DAMAGE_CHILD);
-                        return 1;
+                        ret = 1;
                     } else {
                         //Normal push
                         select_only(i);
@@ -744,18 +743,24 @@ int Fl_ListView::handle(int event)
                         sel_item  = i;
                         show_item(i);
                         redraw(FL_DAMAGE_CHILD);
-                        return 1;
+                        ret = 1;
                     }
 
                 } else { // LEFT_MOUSE && multi()
 
                     select_only(i);
                     sel_item  = i;
-					show_item(i);						
-					redraw(FL_DAMAGE_CHILD);
-                    return 1;
-
+                    show_item(i);
+                    redraw(FL_DAMAGE_CHILD);
+                    ret = 1;
                 }
+
+                if(when() & FL_WHEN_CHANGED)
+                    do_callback();
+                else
+                    set_changed();
+
+                return ret;
             }
         }  // end case FL_PUSH / FL_DRAG
         return 1;
@@ -989,9 +994,11 @@ void Fl_ListView::clear()
         delete w;
     }
     items.clear();
-
     selection.clear();
 
+    first_vis = -1;
+    scrolldy = scrolldx = 0;
+    yposition_ = xposition_ = 0;
     item_ = 0;
     total_height = 0;
 }

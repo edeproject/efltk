@@ -53,7 +53,7 @@ public:
     void insert(Fl_Widget&, int index);
     void remove(int index);
     void replace(int index, Fl_Widget&);
-    void clear();
+    virtual void clear();
 
     void add(Fl_Widget* o) { add(*o); }
     void insert(Fl_Widget& o, Fl_Widget* before) { insert(o,find(before)); }

@@ -50,7 +50,7 @@ public:
                      const char *label5=0);
     virtual ~Fl_ListView_Item();
 
-    bool selected();
+    bool selected() const;
 
     void *user_data() const { return user_data_; }
     void user_data(void* v) { user_data_ = v; }
@@ -62,49 +62,50 @@ public:
     void redraw(uchar c);
     void redraw() { redraw(FL_DAMAGE_ALL); }
 
-    Fl_ListView *parent() { return parent_; }
+    Fl_ListView *parent() const { return parent_; }
     void parent(Fl_ListView *l) { parent_ = l; }
 
-    int column_width(int col);
+    int column_width(int col) const;
 
     void check_columns(uint count);
     void columns(uint count);
-    uint columns();
+    uint columns() const;
     
     virtual void draw_cell(int col, int width, bool selected);
     virtual void layout();
 
-    const Fl_String &label();
-    const Fl_String &label(int col);
+    const Fl_String &label() const;
+    const Fl_String &label(int col) const;
     void label(int col, const char *text);
     void label(int col, const Fl_String &text);
     void copy_label(int col, const char *txt) { label(col, txt); }
 
     void image(Fl_Image *im) { image_ = im; }
     Fl_Image *image() { return image_; }
+    const Fl_Image *image() const { return image_; }
     void image(int col, Fl_Image &im) { image(&im); }
 
-    int y() { return y_; }
+    int y() const { return y_; }
     void y(int Y) { y_ = Y; }
-    int h() { return h_; }
+    int h() const { return h_; }
     void h(int H) { h_ = H; }
 
 	// Current index on the list
     void index(int i) { index_ = i; }
-    int index() { return index_; }
+    int index() const { return index_; }
 
-	// Returns absolute index, i.e. adding order
-	void abs_index(int i) { abs_index_ = i; }
-	int abs_index() { return abs_index_; }
+    // Returns absolute index, i.e. adding order
+    void abs_index(int i) { abs_index_ = i; }
+    int abs_index() const { return abs_index_; }
 
-	virtual int compare(Fl_ListView_Item *other, int column, int sort_type);
+    virtual int compare(Fl_ListView_Item *other, int column, int sort_type);
 
 protected:
     Fl_Ptr_List attr_list;
 
-	// Creates and intializes attr class, 
-	// extended listitems with more column specific attributes must override this
-	virtual Fl_ListItem_Attr *create_attr(int col);
+    // Creates and intializes attr class,
+    // extended listitems with more column specific attributes must override this
+    virtual Fl_ListItem_Attr *create_attr(int col);
 
 private:
     int y_, h_;
@@ -143,19 +144,19 @@ public:
     virtual void draw_cell(int col, int width, bool selected);
     virtual void layout();
 
-	int leading() { return leading_; }
-	void leading(int l) { leading_ = l; }
+    int leading() const { return leading_; }
+    void leading(int l) { leading_ = l; }
 
     Fl_Flags flags(int col, int f);
-    Fl_Flags flags(int col);
+    Fl_Flags flags(int col) const ;
     Fl_Flags set_flag(int col, int f);
     Fl_Flags clear_flag(int col, int f);
     Fl_Flags invert_flag(int col, int f);
 
-    Fl_Font label_font(int col);
-    Fl_Labeltype label_type(int col);
-    int label_size(int col);
-    Fl_Color label_color(int col);
+    Fl_Font label_font(int col) const;
+    Fl_Labeltype label_type(int col) const;
+    int label_size(int col) const;
+    Fl_Color label_color(int col) const;
 
     void label_size(int col, int size);
     void label_font(int col, Fl_Font font);
@@ -167,10 +168,11 @@ public:
     void image(int col, Fl_Image *im);
     void image(int col, Fl_Image &im);
     Fl_Image *image(int col);
+    const Fl_Image *image(int col) const;
 
 protected:
-	int leading_;
-	virtual Fl_ListItem_Attr *create_attr(int col);
+    int leading_;
+    virtual Fl_ListItem_Attr *create_attr(int col);
 private:
     void draw_label(const char *label, int X, int Y, int W, int H, Fl_Flags flags, void *a);
 };
@@ -181,7 +183,7 @@ private:
 class Fl_ListItem_List : public Fl_Ptr_List {
 public:
     Fl_ListItem_List() : Fl_Ptr_List() { }
-	virtual ~Fl_ListItem_List() { clear(); }
+    virtual ~Fl_ListItem_List() { clear(); }
 
     void append(Fl_ListView_Item *item) { Fl_Ptr_List::append((void *)item); }
     void prepend(Fl_ListView_Item *item) { Fl_Ptr_List::prepend((void *)item); }
