@@ -79,7 +79,7 @@ void fl_restore_clip()
 void fl_clip_region(Region r)
 {
     Region oldr = rstack[rstackptr];
-    if(oldr && r) XDestroyRegion(oldr);
+    if(oldr) XDestroyRegion(oldr);
     rstack[rstackptr] = r;
     fl_restore_clip();
 }
