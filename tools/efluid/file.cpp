@@ -360,6 +360,8 @@ double read_version;
 extern Fl_Type *Fl_Type_make(const char *tn);
 extern void set_theme(const char* s);
 
+extern int pasteoffset;
+
 static void read_children(Fl_Type *p, int paste) {
   Fl_Type::current = p;
   for (;;) {
@@ -464,7 +466,13 @@ static void read_children(Fl_Type *p, int paste) {
       read_error("Missing child list for %s\n",t->title());
       goto REUSE_C;
     }
-    read_children(t, 0);}
+    // Start of ugly hack
+    int saved_pasteoffset=pasteoffset;
+    pasteoffset=0;
+    read_children(t, 0);
+    pasteoffset=saved_pasteoffset;
+    // End of Ugly hack
+    }
     Fl_Type::current = p;
   CONTINUE:;
   }
