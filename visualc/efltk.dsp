@@ -494,6 +494,10 @@ SOURCE=..\src\core\fl_plastic_box.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\widgets\Fl_Popup_Window.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\widgets\Fl_ProgressBar.cpp
 # End Source File
 # Begin Source File
@@ -1027,6 +1031,10 @@ SOURCE=..\efltk\Fl_Pack.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_Pixmap.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Popup_Window.h
 # End Source File
 # Begin Source File
 
