@@ -185,6 +185,7 @@ Fl_Font fl_create_font(const char *system_name)
     f->bold_ = f;
     f->italic_ = f;
     f->xlist_cached_ = false;
+    f->first = 0;
     return f;
 }
 
