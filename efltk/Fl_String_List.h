@@ -24,19 +24,20 @@
 
 #include "Fl_Ptr_List.h"
 #include "Fl_String.h"
+#include <stdio.h>
 
 // Fl_String based string list
 class Fl_String_List : public Fl_Ptr_List {
 public:
     Fl_String_List() : Fl_Ptr_List() { auto_delete_ = true; }
-	~Fl_String_List() { clear(); }
+    ~Fl_String_List() { clear(); }
 
     void sort();
 
     void append(const Fl_String &item);
     void append(const char *item);
-    
-	void prepend(const Fl_String &item);
+
+    void prepend(const Fl_String &item);
     void prepend(const char *item);
 
     void insert(uint pos, const Fl_String &item);
@@ -49,13 +50,15 @@ public:
     int index_of(const Fl_String &str) const;
     int index_of(const char *str) const;
 
-	// Returns allocated char* string of list
+    // Returns allocated char* string of list
     char *to_cstring(const char *separator) const;
     Fl_String to_string(const char *separator) const;
     void from_string(const char *str, const char *separator);
 
     Fl_String *item(uint index) const { return (Fl_String*)Fl_Ptr_List::item(index); }
     Fl_String &operator [](uint ind) const { return *((Fl_String *)items[ind]); }
+
+    void print(FILE *fp=stdout) const;
 protected:
     void free_item(Fl_Ptr_List_Item item);
 };
@@ -76,6 +79,8 @@ public:
 
     const char *item(uint index) const { return (const char *)Fl_Ptr_List::item(index); }
     const char *operator [](uint ind) const { return (const char *)items[ind]; }
+
+    void print(FILE *fp=stdout) const;
 };
 
 #endif

@@ -20,14 +20,14 @@ Fl_Ptr_List::Fl_Ptr_List()
     blocksize_ = 0;
     items = 0;
     capacity_ = 0;
-	size_ = 0;
+    size_ = 0;
     resize(0);
 }
 
 Fl_Ptr_List::~Fl_Ptr_List()
 {
- 
-	clear();
+
+    clear();
 }
 
 void Fl_Ptr_List::clear()
@@ -51,7 +51,7 @@ void Fl_Ptr_List::resize(uint newsize)
     if(newsize<size_ && auto_delete_) for (uint i = newsize+1; i < size_; i++) free_item(items[i]);
 
     if(newcap!=capacity_) {
-	    capacity_ = newcap;
+        capacity_ = newcap;
         // Realloc list capacity
         if(items) items = (Fl_Ptr_List_Item *)realloc(items, capacity_ * sizeof(Fl_Ptr_List_Item));
         else items = (Fl_Ptr_List_Item *)malloc(capacity_ * sizeof(Fl_Ptr_List_Item));
@@ -62,12 +62,12 @@ void Fl_Ptr_List::resize(uint newsize)
 
 void Fl_Ptr_List::append(Fl_Ptr_List_Item item)
 {
-	if(size_ == capacity_) {
-      resize(size_ + 1);
-   	  items[size_ - 1] = item;
-	} else {
-   	  items[size_++] = item;
-	}
+    if(size_ == capacity_) {
+        resize(size_ + 1);
+        items[size_ - 1] = item;
+    } else {
+        items[size_++] = item;
+    }
 }
 
 void Fl_Ptr_List::prepend(Fl_Ptr_List_Item item)
@@ -77,12 +77,12 @@ void Fl_Ptr_List::prepend(Fl_Ptr_List_Item item)
 
 void Fl_Ptr_List::insert(uint pos, Fl_Ptr_List_Item item)
 {
-	if(size_ == capacity_) resize(size_ + 1);
-	else size_++;
-	int mvSize = (size_-1-pos);
-	if(mvSize > 0)
-		memmove(items+pos+1, items+pos, mvSize*sizeof(Fl_Ptr_List_Item));
-	items[pos] = item;
+    if(size_ == capacity_) resize(size_ + 1);
+    else size_++;
+    int mvSize = (size_-1-pos);
+    if(mvSize > 0)
+        memmove(items+pos+1, items+pos, mvSize*sizeof(Fl_Ptr_List_Item));
+    items[pos] = item;
 }
 
 void Fl_Ptr_List::replace(uint pos, Fl_Ptr_List_Item item)
@@ -142,31 +142,31 @@ void Fl_Ptr_List::free_item(Fl_Ptr_List_Item item)
 
 Fl_Ptr_List& Fl_Ptr_List::operator = (const Fl_Ptr_List &list) 
 {
-	items = 0;
+    items = 0;
     capacity_ = 0;
-	size_ = 0;
+    size_ = 0;
     auto_delete_ = list.auto_delete_;
-	blocksize_ = list.blocksize_;
+    blocksize_ = list.blocksize_;
 
-	resize(list.size());
-	for(uint n=0; n<list.size(); n++) {
-		items[n] = list[n];
-	}
-	return *this;
+    resize(list.size());
+    for(uint n=0; n<list.size(); n++) {
+        items[n] = list[n];
+    }
+    return *this;
 }
 
 Fl_Ptr_List::Fl_Ptr_List(const Fl_Ptr_List &list)
 {
     items = 0;
     capacity_ = 0;
-	size_ = 0;
+    size_ = 0;
     auto_delete_ = list.auto_delete_;
-	blocksize_ = list.blocksize_;
+    blocksize_ = list.blocksize_;
 
-	resize(list.size());
-	for(uint n=0; n<list.size(); n++) {
-		items[n] = list[n];
-	}	
+    resize(list.size());
+    for(uint n=0; n<list.size(); n++) {
+        items[n] = list[n];
+    }	
 }
 
 ////////////////////////////////////
@@ -236,20 +236,20 @@ char *Fl_String_List::to_cstring(const char *separator) const
     if(!size()) return ret;
     int ret_len=0;
     int str_len=0;
-	int sep_len=strlen(separator);
-	ret = new char[1];
+    int sep_len=strlen(separator);
+    ret = new char[1];
 
     for(uint n = 0; n < size(); n++) {
-		str_len = item(n)->length();
-		int len;
-		if(n<size()-1) len = str_len+sep_len;
-		else len = str_len;
-		ret_len += len;
+        str_len = item(n)->length();
+        int len;
+        if(n<size()-1) len = str_len+sep_len;
+        else len = str_len;
+        ret_len += len;
         ret = (char*)realloc(ret, sizeof(char)*ret_len);
-		
-		memcpy(ret+(ret_len-len), item(n)->c_str(), str_len);
-		if(n<size()-1)
-			memcpy(ret+(ret_len-sep_len), separator, sep_len);		
+
+        memcpy(ret+(ret_len-len), item(n)->c_str(), str_len);
+        if(n<size()-1)
+            memcpy(ret+(ret_len-sep_len), separator, sep_len);		
     }
     ret[ret_len]='\0';
     return ret;
@@ -261,9 +261,9 @@ Fl_String Fl_String_List::to_string(const char *separator) const
     if(!size()) return ret;
 
     for(uint n = 0; n < size(); n++) {
-		ret += item(n)->c_str();
-		if(n<size()-1)
-			ret += separator;
+        ret += item(n)->c_str();
+        if(n<size()-1)
+            ret += separator;
     }    
     return ret;
 }
@@ -279,23 +279,30 @@ void Fl_String_List::from_string(const char *str, const char *separator)
         unsigned separator_len = strlen(separator);
         do {
             unsigned len = s - str;
-			Fl_String string(str, len);
-			append(string);
-            
-			str = s + separator_len;
+            Fl_String string(str, len);
+            append(string);
+
+            str = s + separator_len;
             s = strstr(str, separator);
         }
         while(s);
 
-		if(*str) {
-			append(str);
-		}
+        if(*str) {
+            append(str);
+        }
     }
 }
 
 void Fl_String_List::free_item(Fl_Ptr_List_Item item)
 {
     delete (Fl_String*)(item);
+}
+
+void Fl_String_List::print(FILE *fp) const 
+{
+    unsigned cnt = count();
+    for (unsigned i = 0; i < cnt; i++)
+        fputs(item(i)->c_str(),fp);
 }
 
 /////////////////////////////////////
@@ -308,6 +315,13 @@ int char_sort_func(const void *s1, const void *s2) {
 
 void Fl_CString_List::sort() {
     Fl_Ptr_List::sort(char_sort_func);
+}
+
+void Fl_CString_List::print(FILE *fp) const
+{
+    unsigned cnt = count();
+    for (unsigned i = 0; i < cnt; i++)
+        fputs(item(i),fp);
 }
 
 /////////////////////////////////
@@ -502,4 +516,3 @@ void Fl_String_Stack::check_size()
         items.resize(max_size_);
     }
 }
-

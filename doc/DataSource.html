@@ -1,22 +1,14 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<html>
-<head>
- 	
-  <meta http-equiv="CONTENT-TYPE"
- content="text/html; charset=iso-8859-1">
-  <title></title>
- 	 	
-  <meta name="GENERATOR" content="OpenOffice.org 1.0.1  (Solaris Sparc)">
- 	
-  <meta name="AUTHOR" content="Alexey Parshin">
- 	
-  <meta name="CREATED" content="20030208;9244200">
- 	
-  <meta name="CHANGEDBY" content="Alexey Parshin">
- 	
-  <meta name="CHANGED" content="20030209;8371700">
- 	
-  <style>
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.0.1  (Solaris Sparc)">
+	<META NAME="AUTHOR" CONTENT="Alexey Parshin">
+	<META NAME="CREATED" CONTENT="20030208;9244200">
+	<META NAME="CHANGEDBY" CONTENT="Alexey Parshin">
+	<META NAME="CHANGED" CONTENT="20030212;8204000">
+	<STYLE>
 	<!--
 		@page { size: 21.59cm 27.94cm; margin-left: 3.18cm; margin-right: 3.18cm; margin-top: 2.54cm; margin-bottom: 2.54cm }
 		TD P { margin-bottom: 0.21cm }
@@ -26,302 +18,326 @@
 		H2.cjk { font-size: 14pt; font-style: italic }
 		H2.ctl { font-size: 14pt; font-style: italic }
 	-->
-	</style>
-</head>
-  <body lang="en-US">
- 
-<h1>Data Sources</h1>
- 
-<p align="left" style="margin-bottom: 0cm;"><font face="Clean"><font
- size="3">by Alexey Parshin</font></font></p>
- 
-<p align="left" style="margin-bottom: 0cm;"><br>
- </p>
- 
-<p align="left" style="margin-bottom: 0cm;"><br>
- </p>
- 
-<p align="left" style="margin-bottom: 0cm;"><br>
- </p>
- 
-<p align="center" style="margin-bottom: 0cm;"><br>
- </p>
- 
-<ol>
- 	<li>
-    <p align="left" style="margin-bottom: 0cm;"><font face="Clean"><font
- size="3">What 	is the Data Source and why do we need it?</font></font></p>
- 	</li>
-  <li>
-    <p align="left" style="margin-bottom: 0cm;"><font face="Clean"><font
- size="3">How 	can a Data Source be used?</font></font></p>
- 	</li>
-  <li>
-    <p align="left" style="margin-bottom: 0cm;"><font face="Clean"><font
- size="3">Minimal 	structure of a simple Data Source.</font></font></p>
- 	</li>
-  <li>
-    <p align="left" style="margin-bottom: 0cm;"><font face="Clean"><font
- size="3">Using 	a Data Source in widgets.</font></font></p>
- 	</li>
-  <li>
-    <p align="left" style="margin-bottom: 0cm;"><font face="Clean"><font
- size="3">Using 	Fl_Query as a Datasource.</font></font></p>
- 	</li>
-  <li>
-    <p align="left" style="margin-bottom: 0cm;"><font face="Clean"><font
- size="3">Datasource 	design example &#8211; Fl_Directory_DS.</font></font></p>
- 	</li>
-  <li>
-    <p align="left" style="margin-bottom: 0cm;"><font face="Clean"><font
- size="3">Database 	driver example &#8211; Fl_Some_Database.</font></font></p>
- </li>
-</ol>
- 
-<p align="left" style="margin-bottom: 0cm;"><br>
- </p>
- 
-<p align="left" style="margin-bottom: 0cm;"><br>
- </p>
- 
-<h2 class="western"><br>
-<br>
- </h2>
- 
-<h2 class="western"><br>
-<br>
- </h2>
- 
-<h2 class="western">1. What is the Data Source and why do we need it?</h2>
- 
-<p align="left" style="margin-bottom: 0cm;"><font face="Clean"><font
- size="3">Different sources of the information require very different ways
-to retrieve that information. The Datasource allows to hide the nature of 
-information source behind the standard API, presenting information as rows
-(if applicable) and columns of data. It is very typical that all the rows
-have the same number of column types, and every column keeps it's data type
-from row to row. Datasource provides the abilities to open the information
-source and navigate through it. As soon it's opened, it has the list of the
-columns, or fields. Every field has the data type, width (size) and alignment,
-and, of course, you can read from it the actual data. As result, we have
-an abstraction class and can use it without knowing anything about the actual
-data. From the point of the particular widget, it's just a set of rows of 
-fields. Widget opens the Datasource, reads the data, closes it. It doesn't
-matter if that Datasource was actually a database Query, or an FTP files
-directory. The widget has all the necessary information. </font></font> </p>
- 
-<h2 class="western">2. How can a Data Source be used?</h2>
- 
-<table width="100%" border="0" cellpadding="4" cellspacing="0">
- 	<col width="104*"> 	<col width="152*"> 	<tbody>
-    <tr valign="top">
- 		<td width="41%"> 			
-      <p><img src="DataSource_1.png" name="Graphic1" align="left"
- width="399" height="316" border="0">
-      <br clear="left">
-      <br>
- 			</p>
- 		</td>
- 		<td width="59%"> 			
-      <p><font face="Clean">There are a lot of different usages of the 			Datasource
-in widgets. Some widgets, like List View, can utilize 			the whole Datasource
-(DS) simultaneously, by reading and 			displaying it completely. Some widgets,
-like Dialog, can use just 			one row of the DS in a time. And, finally, a
-lot of widgets can 			use just one field of the row in DS. I'm not even going
-to 			consider a pity group of remaining widgets that can't use DS at 			all.
-In eFLTK, every widget has a field_name() method that allows 			to connect
-any widget with the field of DS. Where is the DS 			connection in that schema?
-Well, widgets are not used by 			themselves. Usually, widgets are placed
-in the group, so the group 			should provide the DS, if widgets inside need
-it. So, Fl_Group 			defines data_source() method to connect the group with
-the DS, and 			couple of methods to load and unload data to/from widgets.
-By the 			way, it means that we may write to some Datasources.</font></p>
- 			
-      <p><font face="Clean">Fl_Data_Source is the abstraction layer that 			hides
-the essentials of every possible information source from the 			widgets.
-It gives us the nice possibility to develop now the 			programs which will
-use the Datasources that doesn't exist yet.</font></p>
- 		</td>
- 	</tr>
- 
-  </tbody>
-</table>
- 
-<p><font face="Clean">So, how do we read data from Datasource, and how do
-we write data to it? Very simple. First, we open the DS:</font></p>
- 
-<blockquote>
-  <p><font face="Arial, sans-serif"><i>my_ds.open();</i></font></p>
-</blockquote>
- 
-<p><font face="Clean">Datasource uses Fl_Variant to store every field. To
-communicate with DS we first find the field by the field name or index (in
-the DS row):</font></p>
- 
-<blockquote>
-  <p><font face="Arial, sans-serif"><i>Fl_Data_Field&amp; first_name_field
-= my_ds[&#8220;name&#8221;];</i></font></p>
-  <p><font face="Arial, sans-serif"><i>Fl_Data_Field&amp; last_name_field
-= my_ds[1];</i></font></p>
-</blockquote>
-  
-<p><font face="Clean">Then we can just read the value from field, or write
-it to the field:</font></p>
- 
-<blockquote>
-  <p><font face="Arial, sans-serif"><i>Fl_String first_name = first_name_field;</i></font></p>
-  <p><font face="Arial, sans-serif"><i>Fl_String last_name = &#8220;New last name&#8221;;</i></font></p>
-  <p><font face="Arial, sans-serif"><i>last_name_field = last_name;</i></font></p>
-</blockquote>
-   
-<p><font face="Clean">And , finally, we close DS:</font></p>
- 
-<blockquote>
-  <p><font face="Arial, sans-serif"><i>my_ds.close();</i></font></p>
-</blockquote>
- 
-<p><font face="Clean">Well, this is true for the abstract DS. The real Datasources
-require to define some extra parameters prior to open(), like what are we
-trying to open? In case of the database query it would be the text of SQL
-statement, for Fl_Directory_DS it would be the path to the directory, etc..</font></p>
- 
-<h2 class="western">3. Minimal structure of a simple Data Source.</h2>
- 
-<p style="text-decoration: none;"><font face="Clean">The Fl_Data_Source is
-an abstract class. It means you can't create an object that class - you should
-derive your Data Source (DS) from Fl_Data_Source. Fl_Data_Source has several
-groups of methods the actual DS should implement:</font></p>
- 
-<ul>
- 	<li>
-    <p style="margin-bottom: 0cm;"><font face="Clean">open() and 	close()
-methods initiate and terminate the data access session</font></p>
- 	</li>
-  <li>
-    <p style="margin-bottom: 0cm;"><font face="Clean">navigation 	methods
-(first(), next(), etc.. ) allow to move between records in 	opened data source
-    </font> 	</p>
- 	</li>
-  <li>
-    <p><font face="Clean">field access methods allow access fields 	and fields'
-data </font> 	</p>
- </li>
-</ul>
- 
-<p><font face="Clean">To say it simple, all the abstract methods in Fl_Data_Source
-should be implemented. The actual implementation may vary. Lets try to take
-Fl_Directory_DS as an example.</font></p>
- 
-<blockquote><font face="Clean"><b>Open and close operations.</b><br>
-First, Fl_Directory_DS reads the directory contents into an array of rows
-of Fl_Data_Fields. Every Fl_Data_Fields object has a list of Fl_Data_Fields
-for file name, file size, modification date, etc.. This covers the open()
-method. The close() method simply releases everything allocated during open().
-For the details please check the <i>src/widgets/Fl_Directory_DS.cpp</i>.<br>
-  <br>
-  <b>Navigation methods.</b><br>
-For Fl_Directory_DS the navigation is very simple. The class member variable
-m_current keeps the tracking of current data row in the opened DS. It doesn't
-make any sense for closed DS, of course. So, methods like first()..last()
-simply change the m_current row accordingly.<br>
-  <br>
-  <b>Field access.</b><br>
-Datasource should support the field information and provide field data when 
-necessary. As soon as DS is opened, the first data row becomes available.
-At that moment, DS' current data row already should have the Fl_Data_Fields
-initialized. Using Fl_Data_Fields fields, we can always extract the number
-of available fields and information about data type of every field. Of course,
-we still have to provide all this functionality through the Datasource methods,
-but we already have all the necessary information.</font></blockquote>
- 
-<p align="left" style="margin-bottom: 0cm;"><font face="Clean">Every real
-Datasource also would, probably, implement several Datasource-specific methods.
-The general idea is to provide all the necessary information for the correct
-open() of the DS. For our precious Fl_Directory_DS such methods are directory(),
-pattern() and several others. User should define the directory() and pattern() 
-prior to open() so Fl_Directory_DS would know what it has to open and read.</font></p>
- 
-<h2 class="western">4. Using a Datasource in widgets.</h2>
- 
-<p><font face="Clean">There are several ways to use a Datasource. Widgets
-like Fl_ListView that represent multiple data rows may implement fill(Fl_Data_Source&amp;)
-method. In the fill() method, widget usually opens the Datasource, reads
-the data row-by-row, and closes the Datasource. The reading is the most important
-part in that sequence. If all rows in the Datasource have same structure,
-we can determine the way how to represent the data, from the first row. For 
-the Fl_ListView it means - read the first row, get the number of columns
-from the field_count() function, then iterate through the fields (columns,
-in other words) and get all the information we need to display each column
-properly. The following code shows the process: </font> </p>
- 
-<blockquote>
-  <p><font face="Arial, sans-serif"><i>// First, open the Datasource</i></font></p>
-  <p><font face="Arial, sans-serif"><i>if (!ds.open()) return;</i></font></p>
-  <p><font face="Arial, sans-serif"><i>// Clear the existing rows</i></font></p>
-  <p><font face="Arial, sans-serif"><i>clear();</i></font></p>
-  <p><font face="Arial, sans-serif"><i>// Get the column number</i></font></p>
-  <p><font face="Arial, sans-serif"><i>unsigned columnCount = ds.field_count();</i></font></p>
-  <p><font face="Arial, sans-serif"><i>if (!columnCount) return;</i></font></p>
-  <p><font face="Arial, sans-serif"><i>// For each column, get the data format
-and create the column</i></font></p>
-  <p><font face="Arial, sans-serif"><i>for (unsigned col = 0; col &lt; columnCount;
-col++) {</i></font></p>
-  <blockquote>
-    <p><font face="Arial, sans-serif"><i>Fl_Data_Field&amp; df = ds.field(col);</i></font></p>
-    <p><font face="Arial, sans-serif"><i>if (!df.visible) continue;</i></font></p>
-    <p><font face="Arial, sans-serif"><i>int width = 100;</i></font></p>
-    <p><font face="Arial, sans-serif"><i>if (df.width &gt;= 0) {</i></font></p>
-    <blockquote>
-      <p><font face="Arial, sans-serif"><i>width = df.width * text_size()
-* 2 / 3;</i></font></p>
-    </blockquote>
-    <p><font face="Arial, sans-serif"><i>}</i></font></p>
-    <p><font face="Arial, sans-serif"><i>add_column(df.name(),width);</i></font></p>
-    <p><font face="Arial, sans-serif"><i>column_flags(col,df.flags);</i></font></p>
-  </blockquote>
-  <p><font face="Arial, sans-serif"><i>}</i></font></p>
-</blockquote>
-                  
-<p style="font-style: normal;"><font face="Clean">Ok, now we have columns.
-Lets fill them with data. After the Datasource is opened, the first row of
-data (if any) is already available, and we can read it. Of course, the Datasource
-may be empty and contain now rows. To make sure we are working with the valid
-row, first check the result of ds.eof() function. If it returns false, we
-can continue and read the data. For Fl_ListView, every item has the same
-number of columns (for most practical cases). For every data row, Fl_ListView
-reads every field and stores the information from that field in the ListView
-item that represents the row. After the row is read we just go to the next
-data row. The code below illustrates it.</font></p>
- 
-<blockquote>
-  <p><font face="Arial, sans-serif"><i>// Read every row until eof()</i></font></p>
-  <p><font face="Arial, sans-serif"><i>while (!ds.eof()) {</i></font></p>
-  <blockquote>
-    <p><font face="Arial, sans-serif"><i>// Create a new ListView item for
-a data row</i></font></p>
-    <p><font face="Arial, sans-serif"><i>Fl_ListView_ItemExt *item = new Fl_ListView_ItemExt();</i></font></p>
-    <p><font face="Arial, sans-serif"><i>item-&gt;columns(columnCount);</i></font></p>
-    <p><font face="Arial, sans-serif"><i>// Read every field of the data row
-and put it in the ListView</i></font></p>
-    <p><font face="Arial, sans-serif"><i>for (int col = 0; col &lt; (int)columnCount;
-col++) {</i></font></p>
-    <blockquote>
-      <p><font face="Arial, sans-serif"><i>Fl_Data_Field&amp; df = ds.field(col);</i></font></p>
-      <p><font face="Arial, sans-serif"><i>if (!df.visible) continue;</i></font></p>
-      <p><font face="Arial, sans-serif"><i>item-&gt;flags(col, df.flags);</i></font></p>
-      <p><font face="Arial, sans-serif"><i>if(df.type() == VAR_IMAGEPTR) item-&gt;image(col,
-(Fl_Image *)df.as_image());</i></font></p>
-      <p><font face="Arial, sans-serif"><i>else item-&gt;label(col, ds.field(col).as_string());</i></font></p>
-    </blockquote>
-    <p><font face="Arial, sans-serif"><i>}</i></font></p>
-    <p><font face="Arial, sans-serif"><i>// After the row is read, go to the
-next data row</i></font></p>
-    <p><font face="Arial, sans-serif"><i>ds.next();</i></font></p>
-  </blockquote>
-  <p><font face="Arial, sans-serif"><i>}</i></font></p>
-  <p><font face="Arial, sans-serif"><i>// Close the dataset</i></font></p>
-  <p><font face="Arial, sans-serif"><i>ds.close();</i></font></p>
-</blockquote>
-                  <br>
-</body>
-</html>
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US">
+<H1>Data Sources</H1>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Clean"><FONT SIZE=3>by
+Alexey Parshin</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0cm"><BR>
+</P>
+<OL>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Clean"><FONT SIZE=3>What
+	is the Data Source and why do we need it?</FONT></FONT></P>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Clean"><FONT SIZE=3>How
+	can a Data Source be used?</FONT></FONT></P>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Clean"><FONT SIZE=3>Minimal
+	structure of a simple Data Source.</FONT></FONT></P>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Clean"><FONT SIZE=3>Using
+	a Data Source in widgets.</FONT></FONT></P>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Clean"><FONT SIZE=3>Using
+	Fl_Query as a Datasource.</FONT></FONT></P>
+	<LI><P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Clean"><FONT SIZE=3>Exceptions
+	in Datasources.</FONT></FONT></P>
+</OL>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><BR>
+</P>
+<H2 CLASS="western"><BR><BR>
+</H2>
+<H2 CLASS="western"><BR><BR>
+</H2>
+<H2 CLASS="western">1. What is the Data Source and why do we need it?</H2>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Clean"><FONT SIZE=3>Different
+sources of the information require very different ways to retrieve
+that information. The Datasource allows to hide the nature of
+information source behind the standard API, presenting information as
+rows (if applicable) and columns of data. It is very typical that all
+the rows have the same number of column types, and every column keeps
+it's data type from row to row. Datasource provides the abilities to
+open the information source and navigate through it. As soon it's
+opened, it has the list of the columns, or fields. Every field has
+the data type, width (size) and alignment, and, of course, you can
+read from it the actual data. As result, we have an abstraction class
+and can use it without knowing anything about the actual data. From
+the point of the particular widget, it's just a set of rows of
+fields. Widget opens the Datasource, reads the data, closes it. It
+doesn't matter if that Datasource was actually a database Query, or
+an FTP files directory. The widget has all the necessary information.
+</FONT></FONT>
+</P>
+<H2 CLASS="western">2. How can a Data Source be used?</H2>
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=4 CELLSPACING=0>
+	<COL WIDTH=104*>
+	<COL WIDTH=152*>
+	<TR VALIGN=TOP>
+		<TD WIDTH=41%>
+			<P><IMG SRC="DataSource_1.png" NAME="Graphic1" ALIGN=LEFT WIDTH=399 HEIGHT=316 BORDER=0><BR CLEAR=LEFT><BR>
+			</P>
+		</TD>
+		<TD WIDTH=59%>
+			<P><FONT FACE="Clean">There are a lot of different usages of the
+			Datasource in widgets. Some widgets, like List View, can utilize
+			the whole Datasource (DS) simultaneously, by reading and
+			displaying it completely. Some widgets, like Dialog, can use just
+			one row of the DS in a time. And, finally, a lot of widgets can
+			use just one field of the row in DS. I'm not even going to
+			consider a pity group of remaining widgets that can't use DS at
+			all. In eFLTK, every widget has a field_name() method that allows
+			to connect any widget with the field of DS. Where is the DS
+			connection in that schema? Well, widgets are not used by
+			themselves. Usually, widgets are placed in the group, so the group
+			should provide the DS, if widgets inside need it. So, Fl_Group
+			defines data_source() method to connect the group with the DS, and
+			couple of methods to load and unload data to/from widgets. By the
+			way, it means that we may write to some Datasources.</FONT></P>
+			<P><FONT FACE="Clean">Fl_Data_Source is the abstraction layer that
+			hides the essentials of every possible information source from the
+			widgets. It gives us the nice possibility to develop now the
+			programs which will use the Datasources that doesn't exist yet.</FONT></P>
+		</TD>
+	</TR>
+</TABLE>
+<P><FONT FACE="Clean">So, how do we read data from Datasource, and
+how do we write data to it? Very simple. First, we open the DS:</FONT></P>
+<BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>my_ds.open();</I></FONT></BLOCKQUOTE>
+<P><FONT FACE="Clean">Datasource uses Fl_Variant to store every
+field. To communicate with DS we first find the field by the field
+name or index (in the DS row):</FONT></P>
+<BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>Fl_Data_Field&amp;
+first_name_field = my_ds[&ldquo;name&rdquo;];</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>Fl_Data_Field&amp;
+last_name_field = my_ds[1];</I></FONT></BLOCKQUOTE>
+<P><FONT FACE="Clean">Then we can just read the value from field, or
+write it to the field:</FONT></P>
+<BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>Fl_String first_name =
+first_name_field;</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>Fl_String last_name =
+&ldquo;New last name&rdquo;;</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>last_name_field =
+last_name;</I></FONT></BLOCKQUOTE>
+<P><FONT FACE="Clean">And , finally, we close DS:</FONT></P>
+<BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>my_ds.close();</I></FONT></BLOCKQUOTE>
+<P><FONT FACE="Clean">Well, this is true for the abstract DS. The
+real Datasources require to define some extra parameters prior to
+open(), like what are we trying to open? In case of the database
+query it would be the text of SQL statement, for Fl_Directory_DS it
+would be the path to the directory, etc..</FONT></P>
+<H2 CLASS="western">3. Minimal structure of a simple Data Source.</H2>
+<P STYLE="text-decoration: none"><FONT FACE="Clean">The
+Fl_Data_Source is an abstract class. It means you can't create an
+object that class - you should derive your Data Source (DS) from
+Fl_Data_Source. Fl_Data_Source has several groups of methods the
+actual DS should implement:</FONT></P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Clean">open() and
+	close() methods initiate and terminate the data access session</FONT></P>
+	<LI><P STYLE="margin-bottom: 0cm"><FONT FACE="Clean">navigation
+	methods (first(), next(), etc.. ) allow to move between records in
+	opened data source </FONT>
+	</P>
+	<LI><P><FONT FACE="Clean">field access methods allow access fields
+	and fields' data </FONT>
+	</P>
+</UL>
+<P><FONT FACE="Clean">To say it simple, all the abstract methods in
+Fl_Data_Source should be implemented. The actual implementation may
+vary. Lets try to take Fl_Directory_DS as an example.</FONT></P>
+<BLOCKQUOTE><FONT FACE="Clean"><B>Open and close operations.</B><BR>First,
+Fl_Directory_DS reads the directory contents into an array of rows of
+Fl_Data_Fields. Every Fl_Data_Fields object has a list of
+Fl_Data_Fields for file name, file size, modification date, etc..
+This covers the open() method. The close() method simply releases
+everything allocated during open(). For the details please check the
+<I>src/widgets/Fl_Directory_DS.cpp</I>.<BR><BR><B>Navigation
+methods.</B><BR>For Fl_Directory_DS the navigation is very simple.
+The class member variable m_current keeps the tracking of current
+data row in the opened DS. It doesn't make any sense for closed DS,
+of course. So, methods like first()..last() simply change the
+m_current row accordingly.<BR><BR><B>Field access.</B><BR>Datasource
+should support the field information and provide field data when
+necessary. As soon as DS is opened, the first data row becomes
+available. At that moment, DS' current data row already should have
+the Fl_Data_Fields initialized. Using Fl_Data_Fields fields, we can
+always extract the number of available fields and information about
+data type of every field. Of course, we still have to provide all
+this functionality through the Datasource methods, but we already
+have all the necessary information.</FONT></BLOCKQUOTE>
+<P ALIGN=LEFT STYLE="margin-bottom: 0cm"><FONT FACE="Clean">Every
+real Datasource also would, probably, implement several
+Datasource-specific methods. The general idea is to provide all the
+necessary information for the correct open() of the DS. For our
+precious Fl_Directory_DS such methods are directory(), pattern() and
+several others. User should define the directory() and pattern()
+prior to open() so Fl_Directory_DS would know what it has to open and
+read.</FONT></P>
+<H2 CLASS="western">4. Using a Datasource in widgets.</H2>
+<P><FONT FACE="Clean">There are several ways to use a Datasource.
+Widgets like Fl_ListView that represent multiple data rows may
+implement fill(Fl_Data_Source&amp;) method. In the fill() method,
+widget usually opens the Datasource, reads the data row-by-row, and
+closes the Datasource. The reading is the most important part in that
+sequence. If all rows in the Datasource have same structure, we can
+determine the way how to represent the data, from the first row. For
+the Fl_ListView it means - read the first row, get the number of
+columns from the field_count() function, then iterate through the
+fields (columns, in other words) and get all the information we need
+to display each column properly. The following code shows the
+process: </FONT>
+</P>
+<BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>// First, open the
+Datasource</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>if (!ds.open()) return;</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>// Clear the existing
+rows</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>clear();</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>// Get the column
+number</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>unsigned columnCount =
+ds.field_count();</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>if (!columnCount)
+return;</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>// For each column, get
+the data format and create the column</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>for (unsigned col = 0;
+col &lt; columnCount; col++) {</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>Fl_Data_Field&amp;
+df = ds.field(col);</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>if
+(!df.visible) continue;</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>int
+width = 100;</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>if
+(df.width &gt;= 0) {</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE STYLE="margin-left: 3cm; margin-right: 3cm"><FONT FACE="Arial, sans-serif"><I>width
+= df.width * text_size() * 2 / 3;</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>}</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>add_column(df.name(),width);</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>column_flags(col,df.flags);</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>}</I></FONT></BLOCKQUOTE>
+<P STYLE="font-style: normal"><FONT FACE="Clean">Ok, now we have
+columns. Lets fill them with data. After the Datasource is opened,
+the first row of data (if any) is already available, and we can read
+it. Of course, the Datasource may be empty and contain now rows. To
+make sure we are working with the valid row, first check the result
+of ds.eof() function. If it returns false, we can continue and read
+the data. For Fl_ListView, every item has the same number of columns
+(for most practical cases). For every data row, Fl_ListView reads
+every field and stores the information from that field in the
+ListView item that represents the row. After the row is read we just
+go to the next data row. The code below illustrates it.</FONT></P>
+<BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>// Read every row until
+eof()</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>while (!ds.eof()) {</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>//
+Create a new ListView item for a data row</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>Fl_ListView_ItemExt
+*item = new Fl_ListView_ItemExt();</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>item-&gt;columns(columnCount);</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>//
+Read every field of the data row and put it in the ListView</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>for
+(int col = 0; col &lt; (int)columnCount; col++) {</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE STYLE="margin-left: 3cm; margin-right: 3cm"><FONT FACE="Arial, sans-serif"><I>Fl_Data_Field&amp;
+df = ds.field(col);</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE STYLE="margin-left: 3cm; margin-right: 3cm"><FONT FACE="Arial, sans-serif"><I>if
+(!df.visible) continue;</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE STYLE="margin-left: 3cm; margin-right: 3cm"><FONT FACE="Arial, sans-serif"><I>item-&gt;flags(col,
+df.flags);</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE STYLE="margin-left: 3cm; margin-right: 3cm"><FONT FACE="Arial, sans-serif"><I>if(df.type()
+== VAR_IMAGEPTR) item-&gt;image(col, (Fl_Image *)df.as_image());</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE STYLE="margin-left: 3cm; margin-right: 3cm"><FONT FACE="Arial, sans-serif"><I>else
+item-&gt;label(col, ds.field(col).as_string());</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>}</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>//
+After the row is read, go to the next data row</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE STYLE="margin-left: 2cm; margin-right: 2cm"><FONT FACE="Arial, sans-serif"><I>ds.next();</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>}</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE><FONT FACE="Arial, sans-serif"><I>// Close the dataset</I></FONT></BLOCKQUOTE>
+<BLOCKQUOTE><I><FONT FACE="Arial, sans-serif">ds.close();</FONT></I></BLOCKQUOTE>
+<P><FONT FACE="Clean">That's it. After the Datasource is closed, it
+releases the allocated resources and may be opened again, returning
+us to the beginning of data.</FONT></P>
+<H2 CLASS="western">5. Using Fl_Query as a Datasource.</H2>
+<P><FONT FACE="Clean">Fl_Query is one of my favorite Datasources. It
+utilizes the best of the Datasource properties &ndash; the ability to
+adjust to different query results for different SQL statements. The
+Fl_Query class is derived from Fl_Datasource so it works exactly
+(well, almost exactly) as any other Datasource. The difference is -
+Fl_Query is the abstract class. It doesn't do any job by itself.
+Instead, we connect it to Fl_Database and let Fl_Database do
+everything for us, starting from actual connection to the database
+and to the execution of the particular query. Here is the list of
+parameters to define prior to open Fl_Query:</FONT></P>
+<UL>
+	<LI><P><FONT FACE="Clean">define the database connection, using
+	database() method</FONT></P>
+	<LI><P><FONT FACE="Clean">define the SQL statement, using sql()
+	method</FONT></P>
+	<LI><P><FONT FACE="Clean">if SQL statement contains parameters,
+	define them using param() method</FONT></P>
+</UL>
+<P ALIGN=LEFT><FONT FACE="Clean">Now, after we defined query
+completely, we may try to open it. If everything is done correctly,
+the query opens and can be used pretty much as any other Datasource.
+The only difference in that part is that some of the database drivers
+allow to navigate only forward, not backward. And, of course, we
+should close query after using it.</FONT></P>
+<P ALIGN=LEFT><FONT FACE="Clean">Here is the example of using query:</FONT></P>
+<P STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>//
+First, define a database connection</I></FONT></P>
+<P STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>Fl_String
+connect_string  &quot;DSN=odbc_demo;UID=username;PWD=password&quot;;</I></FONT></P>
+<P STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>Fl_ODBC_Database
+db (connect_string);</I></FONT></P>
+<P STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><BR>
+</P>
+<P STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>//
+Second, define query. Database and SQL are defined in the constructor</I></FONT></P>
+<P ALIGN=LEFT STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>Fl_Query	query(&amp;db,&rdquo;SELECT
+department, fname, lname FROM employees WHERE department = :dept&rdquo;);</I></FONT></P>
+<P ALIGN=LEFT STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>//
+'dept' is the query parameter. Define the value for this parameter</I></FONT></P>
+<P ALIGN=LEFT STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>query.param(&ldquo;dept&rdquo;)
+= 'Human Resources&rdquo;;</I></FONT></P>
+<P ALIGN=LEFT STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>//
+Open the Datasource</I></FONT></P>
+<P ALIGN=LEFT STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>query.open();</I></FONT></P>
+<P ALIGN=LEFT STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>//
+Read the data to the end</I></FONT></P>
+<P ALIGN=LEFT STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>while
+(!query.eof()) {</I></FONT></P>
+<P ALIGN=LEFT STYLE="margin-left: 4.41cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>//
+Print every column</I></FONT></P>
+<P ALIGN=LEFT STYLE="margin-left: 4.41cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>printf(
+&ldquo;%s, %s %s \n&rdquo;, </I></FONT>
+</P>
+<P ALIGN=LEFT STYLE="margin-left: 6.61cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>query[&ldquo;department&rdquo;].get_string(),
+</I></FONT>
+</P>
+<P ALIGN=LEFT STYLE="margin-left: 6.61cm; margin-bottom: 0cm"><I><FONT FACE="Arial, sans-serif">query[&ldquo;fname&rdquo;].get_string(),</FONT></I></P>
+<P ALIGN=LEFT STYLE="margin-left: 6.61cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>query[&ldquo;lname&rdquo;].get_string()</I></FONT></P>
+<P ALIGN=LEFT STYLE="margin-left: 4.41cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>);</I></FONT></P>
+<P ALIGN=LEFT STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>}
+</I></FONT>
+</P>
+<P ALIGN=LEFT STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>//
+Close the query</I></FONT></P>
+<P ALIGN=LEFT STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><FONT FACE="Arial, sans-serif"><I>query.close();</I></FONT></P>
+<P ALIGN=LEFT STYLE="margin-left: 2.2cm; margin-bottom: 0cm"><BR>
+</P>
+</BODY>
+</HTML>

@@ -11,7 +11,7 @@
 #
 # %IdeDesc:	
 #
-# %FirstUniqueId:	0x400367
+# %FirstUniqueId:	0x400369
 PROJECT_DIR = .
 
 IDE_WORKING_DIR = $(PROJECT_DIR)
@@ -235,6 +235,7 @@ lib/libefltk.so ::	lib/Fl.o\
 	lib/Fl_MDI_Window.o\
 	lib/Fl_Main_Window.o\
 	lib/Fl_Masked_Input.o\
+	lib/Fl_Memory_DS.o\
 	lib/Fl_Menu.o\
 	lib/Fl_Menu_.o\
 	lib/Fl_Menu_Bar.o\
@@ -592,7 +593,6 @@ test/multitabs1 ::	test/multitabs1.o
 # %IncDir:	test
 # %ObjsDir:	test
 test/imap_connect ::	test/imap_connect.o\
-	test/Fl_Socket.o\
 	test/Fl_IMAP_Connect.o
 	$(CXX) -o $@ $^ $(LDOPTIONS) $(LOCAL_LIBRARIES) -lefltk
 
@@ -1991,7 +1991,7 @@ test/socket.o : test/socket.cpp
 
 
 # %TargetType:	C++_OBJ
-# %ParentTarget:	0x40033a
+# %ParentTarget:	0x400364
 # %SourceTarget:	0x400342
 test/Fl_Socket.o : src/core/Fl_Socket.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
@@ -2121,6 +2121,13 @@ test/imap_connect.o : test/net/imap_connect.cpp
 # %SourceTarget:	0x400363
 test/Fl_IMAP_Connect.o : src/net/Fl_IMAP_Connect.cpp
 	$(CXX) -c -o $@ $< -Itest -Itest $(CXXFLAGS)
+
+
+# %TargetType:	C++_OBJ
+# %ParentTarget:	0x400002
+# %SourceTarget:	0x400367
+lib/Fl_Memory_DS.o : src/widgets/Fl_Memory_DS.cpp
+	$(CXX) -c -o $@ $< -Iefltk -Isrc $(CXXFLAGS)
 
 
 # DO NOT DELETE
@@ -6834,30 +6841,56 @@ lib/Fl_FTP_Connect.o :	efltk/net/Fl_FTP_Connect.h\
 	efltk/Fl_Date_Time.h\
 	efltk/Fl_String_List.h
 test/imap_connect.o :	efltk/net/Fl_IMAP_Connect.h\
-	efltk/Fl_Buffer.h\
-	efltk/Fl_String.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Export.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_String_List.h\
 	efltk/Fl_Socket.h\
+	efltk/Fl_Buffer.h\
 	efltk/Fl_Exception.h
 test/Fl_IMAP_Connect.o :	efltk/net/Fl_IMAP_Connect.h\
-	efltk/Fl_String_List.h\
-	efltk/Fl_String.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Export.h\
-	efltk/Fl_Ptr_List.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_String_List.h\
 	efltk/Fl_Socket.h\
 	efltk/Fl_Buffer.h\
 	efltk/Fl_Exception.h
 lib/Fl_IMAP_Connect.o :	efltk/net/Fl_IMAP_Connect.h\
-	efltk/Fl_String_List.h\
-	efltk/Fl_String.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
 	efltk/Enumerations.h\
 	efltk/Fl_Export.h\
-	efltk/Fl_Ptr_List.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	efltk/Fl_String.h\
+	efltk/Fl_String_List.h\
 	efltk/Fl_Socket.h\
 	efltk/Fl_Buffer.h\
 	efltk/Fl_Exception.h
+lib/Fl_Memory_DS.o :	efltk/Fl_Exception.h\
+	efltk/Fl_Export.h\
+	efltk/Fl_String.h\
+	efltk/Enumerations.h\
+	efltk/Fl_Memory_DS.h\
+	efltk/Fl_Data_Source.h\
+	efltk/Fl_Data_Fields.h\
+	efltk/Fl_Flags.h\
+	efltk/Fl_Ptr_List.h\
+	efltk/Fl_Variant.h\
+	efltk/Fl_Date_Time.h\
+	config.h
 
 
 # %TargetInfo src/db/odbc/Fl_ODBC_Database.cpp	SourceOrHeader,	UniqueId=0x4000cd,	TargetType=C++,	IDEFlags=0x4
@@ -7071,6 +7104,8 @@ lib/Fl_IMAP_Connect.o :	efltk/net/Fl_IMAP_Connect.h\
 # %TargetInfo src/net/Fl_FTP_Connect.cpp	SourceOrHeader,	UniqueId=0x400356,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/multitabs2.cpp	SourceOrHeader,	UniqueId=0x40035b,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo test/multitabs1.cpp	SourceOrHeader,	UniqueId=0x400362,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo src/net/Fl_IMAP_Connect.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400363,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo test/net/imap_connect.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400365,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x4
@@ -7107,7 +7142,7 @@ lib/Fl_IMAP_Connect.o :	efltk/net/Fl_IMAP_Connect.h\
 # %TargetInfo efltk/Fl_Widget_List.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40007d,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Widget.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40007e,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Data_Source.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40007f,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo efltk/Fl_Data_Fields.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400080,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/Fl_Data_Fields.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400080,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Variant.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400081,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Date_Time.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400082,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Exception.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400083,	TargetType=INC,	IDEFlags=0xe
@@ -7297,9 +7332,9 @@ lib/Fl_IMAP_Connect.o :	efltk/net/Fl_IMAP_Connect.h\
 # %TargetInfo test/multitabs_glyph1.xpm	SourceOrHeader,	IncludeFile,	UniqueId=0x40035e,	TargetType=XPM,	IDEFlags=0xe
 # %TargetInfo test/tabs.h	SourceOrHeader,	IncludeFile,	UniqueId=0x40035f,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/Fl_Wordwrap_Input.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400360,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo src/net/Fl_IMAP_Connect.cpp	SourceOrHeader,	UniqueId=0x400363,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo test/net/imap_connect.cpp	SourceOrHeader,	UniqueId=0x400365,	TargetType=C++,	IDEFlags=0x4
-# %TargetInfo efltk/net/Fl_IMAP_Connect.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400366,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo efltk/net/Fl_IMAP_Connect.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x400366,	TargetType=INC,	IDEFlags=0xe
+# %TargetInfo src/widgets/Fl_Memory_DS.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x400367,	TargetType=C++,	IDEFlags=0x4
+# %TargetInfo efltk/Fl_Memory_DS.h	SourceOrHeader,	IncludeFile,	UniqueId=0x400368,	TargetType=INC,	IDEFlags=0xe
 
 
 # %UniqueId:	0x400001
@@ -7350,8 +7385,8 @@ lib/Fl_IMAP_Connect.o :	efltk/net/Fl_IMAP_Connect.h\
 #	0x40033a
 #	0x400354
 #	0x400352
-#	0x40033f
 #	0x400345
+#	0x40033f
 #	0x400361
 #	0x40035a
 #	0x400364

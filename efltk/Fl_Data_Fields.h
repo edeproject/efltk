@@ -40,7 +40,7 @@ public:
     Fl_Flags flags;
     bool     visible;
 
-    const Fl_String &name() const                  { return m_name;			}
+    const Fl_String &name() const                  { return m_name;         }
     int type()              const                  { return value.type();   }
 
     unsigned buffer_size() const                  { return value.size();     }
@@ -81,7 +81,7 @@ public:
     ~Fl_Data_Fields() { clear(); }
 
     void clear();
-    int  count() const { return m_list.count(); }
+    unsigned count() const { return m_list.count(); }
     int  field_index(const char * fname) const;
 
     Fl_Data_Field& add(const char *fname);

@@ -1,55 +1,197 @@
 #include <efltk/net/Fl_IMAP_Connect.h>
 #include <stdio.h>
 
+// Implementation is based on
+// http://www.course.molina.com.br/RFC/Orig/rfc2060.txt
+
 Fl_IMAP_Connect::Fl_IMAP_Connect() {
     m_port = 143;
-    m_type = SOCK_STREAM;
-    m_protocol = IPPROTO_TCP;
-    m_ident = 0;
-    m_loggedin = false;
+    m_ident = 1;
 }
 
 Fl_IMAP_Connect::~Fl_IMAP_Connect() {
     close();
 }
 
-void Fl_IMAP_Connect::get_response(Fl_String ident) {
-    char	readBuffer[255];
-
-    m_response.clear();
+#define RSP_BLOCK_SIZE 255
+bool Fl_IMAP_Connect::get_response(Fl_String ident) {
+    char    readBuffer[RSP_BLOCK_SIZE+1];
 
     for (;;) {
-        read_line(readBuffer,255);
-        m_response.append(readBuffer);
+        int len = read_line(readBuffer,RSP_BLOCK_SIZE);
+        Fl_String longLine = readBuffer;
+        if (len == RSP_BLOCK_SIZE && readBuffer[RSP_BLOCK_SIZE]!='\n') {
+            do {
+                len = read_line(readBuffer,RSP_BLOCK_SIZE);
+                longLine += readBuffer;
+            } while(len == RSP_BLOCK_SIZE);
+        }
+        m_response.append(longLine);
+        if (ident[0] == 0) return true;
 
-        if (readBuffer[0] == '*')
+        if (longLine[0] == '*')
             continue;
-        if (strstr(readBuffer,ident.c_str()) == 0)
-            break;
-        fl_throw("Invalid command tag in the server response");
+        if (longLine[0] == '+')
+            return true;
+        if (longLine.pos(ident)==0) {
+            int p = ident.length();
+            while (longLine[p] == ' ') p++;
+            switch (longLine[p]) {
+                case 'O': // OK
+                    return true;
+                case 'N': // NO
+                    return false;
+                case 'B': // BAD
+                    return false;
+            }
+        }
+    }
+    return false;
+}
+
+const Fl_String Fl_IMAP_Connect::empty_quotes;
+
+static Fl_String quotes(Fl_String st) {
+    return "\"" + st + "\"";
+}
+
+Fl_String Fl_IMAP_Connect::send_command(Fl_String cmd) {
+    Fl_String ident;
+    ident.printf("a%03i",m_ident++);
+    ident += " ";
+    cmd = ident + cmd + "\n";
+    if (!active())
+        fl_throw("Socket isn't open");
+    write(cmd.c_str(),cmd.length());
+    return ident;
+}
+
+void Fl_IMAP_Connect::command(Fl_String cmd,const Fl_String& arg1,const Fl_String& arg2) {
+    if (arg1.length() || &arg1 == &empty_quotes)
+        cmd += " " + quotes(arg1);
+    if (arg2.length() || &arg2 == &empty_quotes)
+        cmd += " " + quotes(arg2);
+    m_response.clear();
+    Fl_String ident = send_command(cmd);
+    //m_response.append(ident + cmd + "\n");
+    get_response(ident);
+}
+
+void Fl_IMAP_Connect::cmd_login(Fl_String user,Fl_String password) {
+    close();
+    open();
+    m_response.clear();
+    get_response("");
+    command("login "+user+" "+password);
+}
+/*
+void Fl_IMAP_Connect::cmd_append(Fl_String mail_box,const Fl_String_List& message) {
+    Fl_String cmd = "append " + mail_box + " (\\Seen) {310}";
+    Fl_String ident = send_command(cmd);
+    m_response.clear();
+    m_response.append(ident+cmd+"\n");
+    get_response("");
+    for (unsigned i = 0; i < message.count(); i++) {
+        Fl_String row = message[i] + "\n";
+        write(row.c_str(),row.length());
+    }
+    write(NULL,0);
+    get_response(ident);
+}
+*/
+
+void Fl_IMAP_Connect::cmd_select(Fl_String mail_box,int& total_msgs) {
+    command("select",mail_box);
+    for (unsigned i = 0; i < m_response.count(); i++) {
+        Fl_String& st = m_response[i];
+        if (st[0] == '*') {
+            int p = st.pos("EXISTS");
+            if (p > 0) {
+                total_msgs = st.sub_str(2,p - 2).to_int();
+                break;
+            }
+        }
     }
 }
 
-void Fl_IMAP_Connect::command(Fl_String cmd) {
-    Fl_String ident;
-    ident.printf("A%05i ",m_ident++);
-    if (!active())
-        fl_throw("Socket isn't open");
-    write((cmd + "\n").c_str(),cmd.length()+1);
-    get_response(ident);
-    for (unsigned i = 0; i < m_response.count(); i++)
-        printf(m_response[i].c_str());
+void Fl_IMAP_Connect::parse_search(Fl_String& result) {
+    result = "";
+    for (unsigned i = 0; i < m_response.count(); i++) {
+        Fl_String& st = m_response[i];
+        if (st.pos("* SEARCH") == 0)
+            result += st.sub_str(8,st.length());
+    }
 }
 
-void Fl_IMAP_Connect::login(Fl_String user,Fl_String password) {
-    if (m_loggedin) return;
-    open();
-    command("LOGIN "+user+" "+password);
-    m_loggedin = true;
+void Fl_IMAP_Connect::cmd_search_all(Fl_String& result) {
+    command("search all");
+    parse_search(result);
 }
 
-void Fl_IMAP_Connect::logoff() {
-    if (!m_loggedin) return;
-    command("LOGOUT");
-    m_loggedin = false;
+void Fl_IMAP_Connect::cmd_search_new(Fl_String& result) {
+    command("search unseen");
+    parse_search(result);
+}
+
+static const char *required_headers[] = {
+    "Date",
+    "From",
+    "Subject",
+    "To",
+    "CC",
+    "Content-Type",
+    "Reply-To",
+    "Return-Path",
+    NULL
+};
+
+static void parse_header(const Fl_String& header,Fl_String& header_name,Fl_String& header_value) {
+    if (header[0] == ' ') 
+        return;
+
+    int p = header.pos(" ");
+    if (p < 1) 
+        return;
+    if (header[p-1] == ':') {
+        header_name = header.sub_str(0,p-1);
+        header_value = header.sub_str(p+1,header.length());
+    }
+}
+
+void Fl_IMAP_Connect::parse_message(Fl_Data_Fields& results,bool headers_only) {
+    results.clear();
+    for (unsigned i = 0; required_headers[i]; i++) {
+        results.add(new Fl_Data_Field(required_headers[i]));
+    }
+    // parse headers
+    unsigned i = 1;
+    for (; i < m_response.count() - 1; i++) {
+        Fl_String& st = m_response[i];
+        if (st[0] == '\n' || st[0] == '\r')
+            break;
+        Fl_String header_name, header_value;
+        parse_header(st,header_name,header_value);
+        if (header_name.length()) {
+            int field_index = results.field_index(header_name.c_str());
+            if (field_index >= 0)
+                results[field_index].set_string(header_value);
+        }
+    }
+    if (headers_only) return;
+    Fl_String   body;
+    for (; i < m_response.count() - 1; i++) {
+        body += m_response[i];
+    }
+    Fl_Data_Field& bodyField = results.add(new Fl_Data_Field("Body"));
+    bodyField = body;
+}
+
+void Fl_IMAP_Connect::cmd_fetch_headers(int msg_id,Fl_Data_Fields& result) {
+    command("FETCH "+Fl_String(msg_id)+" (BODY[HEADER])");
+    parse_message(result,true);
+}
+
+void Fl_IMAP_Connect::cmd_fetch_message(int msg_id,Fl_Data_Fields& result) {
+    command("FETCH "+Fl_String(msg_id)+" (BODY[])");
+    parse_message(result,false);
 }
