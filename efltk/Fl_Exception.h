@@ -17,8 +17,6 @@
 #ifndef __EXCEPTION_H__
 #define __EXCEPTION_H__
 
-#if __FL_EXCEPTIONS__
-
 #include <efltk/Fl_String.h>
 
 class Fl_Exception {
@@ -30,6 +28,8 @@ public:
 	Fl_String text(bool shortVersion=false) const;
 };
 
+#if __FL_EXCEPTIONS__
+
 #define fl_try try
 #define fl_catch(exception_variable) catch(Fl_Exception& exception_variable)
 #define fl_throw(a) throw a
@@ -37,7 +37,7 @@ public:
 #else
 
 #define fl_try 
-#define fl_catch(exception_variable) if (false)
+#define fl_catch(exception_variable) for (Fl_Exception exception_variable("");false;)
 #define fl_throw(a) 
 
 #endif
