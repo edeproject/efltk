@@ -67,70 +67,70 @@ int Fl_Button::handle(int event)
 
     switch (event)
     {
-    case FL_LEAVE:
-    case FL_ENTER:
-        if (highlight_color() && takesevents()) redraw(FL_DAMAGE_HIGHLIGHT);
-    case FL_MOVE:
-        return 1;
-    case FL_PUSH:		
-        if(!already_pushed) oldval = value();
-        already_pushed = true;
-    case FL_DRAG:
-        if (Fl::event_inside(0,0,w(),h()))
-        {
-            held_down = this;
-            if (type() == RADIO) newval = true;
-            else newval = !oldval;
-        }
-        else
-        {
+        case FL_LEAVE:
+        case FL_ENTER:
+            if (highlight_color() && takesevents()) redraw(FL_DAMAGE_HIGHLIGHT);
+        case FL_MOVE:
+            return 1;
+        case FL_PUSH:       
+            if(!already_pushed) oldval = value();
+            already_pushed = true;
+        case FL_DRAG:
+            if (Fl::event_inside(0,0,w(),h()))
+            {
+                held_down = this;
+                if (type() == RADIO) newval = true;
+                else newval = !oldval;
+            }
+            else
+            {
+                held_down = 0;
+                newval = oldval;
+            }
+            if (value(newval) && when()&FL_WHEN_CHANGED) do_callback(event);
+            return 1;
+        case FL_RELEASE:
+            redraw(FL_DAMAGE_VALUE);
             held_down = 0;
-            newval = oldval;
-        }
-        if (value(newval) && when()&FL_WHEN_CHANGED) do_callback();
-        return 1;
-    case FL_RELEASE:
-        redraw(FL_DAMAGE_VALUE);
-        held_down = 0;
-        already_pushed = false;
-        if (value() == oldval) return 1;
-        if (type() == RADIO)
-            setonly();
-        else if (type())     // TOGGLE
+            already_pushed = false;
+            if (value() == oldval) return 1;
+            if (type() == RADIO)
+                setonly();
+            else if (type())     // TOGGLE
             ;                // leave it as set
-        else
-        {
-            value(oldval);
-            if (when() & FL_WHEN_CHANGED) do_callback();
-        }
-        if (when() & FL_WHEN_RELEASE) do_callback(); else set_changed();
-        return 1;
-    
-    case FL_UNFOCUS:		
-	case FL_FOCUS:
-        redraw(FL_DAMAGE_HIGHLIGHT);
+            else
+            {
+                value(oldval);
+                if (when() & FL_WHEN_CHANGED) do_callback(event);
+            }
+            if (when() & FL_WHEN_RELEASE) do_callback(event); else set_changed();
+            return 1;
+
+        case FL_UNFOCUS:        
+        case FL_FOCUS:
+            redraw(FL_DAMAGE_HIGHLIGHT);
         // grab initial focus if we are an Fl_Return_Button:
-        return shortcut()=='\r' ? 2 : 1;
-    case FL_KEY:
-        if (Fl::event_key() == ' ' || Fl::event_key() == FL_Enter) goto EXECUTE;
-        return 0;
-    case FL_SHORTCUT:
-        if (!test_shortcut()) return 0;
-    EXECUTE:
-        if (type() == RADIO && !value())
-        {
-            setonly();
-            if (when() & FL_WHEN_CHANGED) do_callback();
-        }                    // TOGGLE
-        else if (type())
-        {
-            value(!value());
-            if (when() & FL_WHEN_CHANGED) do_callback();
-        }
-        if (when() & FL_WHEN_RELEASE) do_callback(); else set_changed();
-        return 1;
-    default:
-        return 0;
+            return shortcut()=='\r' ? 2 : 1;
+        case FL_KEY:
+            if (Fl::event_key() == ' ' || Fl::event_key() == FL_Enter) goto EXECUTE;
+            return 0;
+        case FL_SHORTCUT:
+            if (!test_shortcut()) return 0;
+        EXECUTE:
+            if (type() == RADIO && !value())
+            {
+                setonly();
+                if (when() & FL_WHEN_CHANGED) do_callback(event);
+            }                    // TOGGLE
+            else if (type())
+            {
+                value(!value());
+                if (when() & FL_WHEN_CHANGED) do_callback(event);
+            }
+            if (when() & FL_WHEN_RELEASE) do_callback(event); else set_changed();
+            return 1;
+        default:
+            return 0;
     }
 }
 
@@ -196,7 +196,7 @@ void Fl_Button::draw(int glyph, int glyph_width) const
           // only will redraw correctly and with minimum blinking.
                                        } else */
         if ((damage()&FL_DAMAGE_EXPOSE) ||
-            (damage()&FL_DAMAGE_HIGHLIGHT) && !focused())
+                (damage()&FL_DAMAGE_HIGHLIGHT) && !focused())
         {
             // erase the background behind where the label will draw:
             fl_push_clip(0, 0, w, h);
@@ -214,8 +214,8 @@ void Fl_Button::draw(int glyph, int glyph_width) const
         bool drawed = false;
         if(image() && !image()->get_mask()) {
             if((align()&FL_ALIGN_TILED || align()&FL_ALIGN_SCALE) &&
-               ( !(align()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT|FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) || (align()&FL_ALIGN_INSIDE) )
-              ) {
+                    ( !(align()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT|FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) || (align()&FL_ALIGN_INSIDE) )
+                ) {
                 // We can draw only frame, if drawing image tiled or scale
                 // And no mask defined to image...
                 draw_frame();
@@ -255,8 +255,8 @@ void Fl_Button::draw(int glyph, int glyph_width) const
     if (focused())
     {
         focus_box()->draw(x+1, y+1, w-2, h-2,
-                          flags&FL_SELECTED ? selection_text_color():label_color(),
-                          FL_INVISIBLE);
+            flags&FL_SELECTED ? selection_text_color():label_color(),
+            FL_INVISIBLE);
     }
 }
 

@@ -90,7 +90,7 @@ void Fl_Valuator::handle_drag(double v)
         value_ = v;
         value_damage();
         if (when() & FL_WHEN_CHANGED || !Fl::pushed()) {
-            do_callback();
+            do_callback(FL_DATA_CHANGE);
         }
         else set_changed();
     }
@@ -107,7 +107,7 @@ void Fl_Valuator::handle_release()
         clear_changed();
         // now do the callback only if slider in new position or always is on:
         if (value_ != previous_value_ || when() & FL_WHEN_NOT_CHANGED)
-            do_callback();
+            do_callback(FL_RELEASE);
     }
 }
 
@@ -137,39 +137,39 @@ int Fl_Valuator::handle(int event)
             redraw(FL_DAMAGE_HIGHLIGHT);
             return 1;
         case FL_KEY:
-        {
-            float i;
-            switch (Fl::event_key())
             {
-                case FL_Down:
-                case FL_Left:
-                    i = -linesize();
-                    goto J1;
-                case FL_Up:
-                case FL_Right:
-                    i = linesize();
+                float i;
+                switch (Fl::event_key())
+                {
+                    case FL_Down:
+                    case FL_Left:
+                        i = -linesize();
+                        goto J1;
+                    case FL_Up:
+                    case FL_Right:
+                        i = linesize();
                     J1:
-                    if (Fl::event_state()&(FL_SHIFT|FL_CTRL|FL_ALT)) i *= 10;
-                    if (maximum() < minimum()) i = -i;
-                    handle_drag(value()+i);
-                    return 1;
-                case FL_Home:
-                    handle_drag(minimum());
-                    return 1;
-                case FL_End:
-                    handle_drag(maximum());
-                    return 1;
+                        if (Fl::event_state()&(FL_SHIFT|FL_CTRL|FL_ALT)) i *= 10;
+                        if (maximum() < minimum()) i = -i;
+                        handle_drag(value()+i);
+                        return 1;
+                    case FL_Home:
+                        handle_drag(minimum());
+                        return 1;
+                    case FL_End:
+                        handle_drag(maximum());
+                        return 1;
+                }
+                return 0;
             }
-            return 0;
-        }
         case FL_MOUSEWHEEL:
             {
-            previous_value_ = value_;
+                previous_value_ = value_;
             // For normal valuators, each click is linesize(), wheel_scroll_lines
             // is ignored. However Fl_Scrollbar does use wheel_scroll_lines.
-            handle_drag(value()+Fl::event_dy()*linesize());
-            return 1;
-        }
+                handle_drag(value()+Fl::event_dy()*linesize());
+                return 1;
+            }
     }
     return 0;
 }

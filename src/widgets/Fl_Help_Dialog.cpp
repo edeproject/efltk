@@ -4,31 +4,31 @@
 #include "../core/fl_internal.h"
 
 static const char *datas_open[] = {
-  "16 16 8 1",
-  " 	c None",
-  ".	c #5D5D5D",
-  "+	c #000000",
-  "@	c #A0A0A0",
-  "#	c #C3C3C3",
-  "$	c #DCDCDC",
-  "%	c #FFA858",
-  "&	c #FFDCA8",
-  "      ++++      ",
-  "     ++ ++++ +  ",
-  "    +     ++++  ",
-  "           +++  ",
-  "          ++++  ",
-  " ++++           ",
-  "+%&&%+++++++    ",
-  "+&&&&%%%%%%%+   ",
-  "+&&+++++++++++++",
-  "+&%+$$$$$$$$$$$+",
-  "+&+$####@#@#@@+ ",
-  "+%+$###@#@#@@@+ ",
-  "++$###@#@#@@@+  ",
-  "++$##@#@#@@@@+  ",
-  "+$##@#@#@@@@+   ",
-  "+++++++++++++   "};
+    "16 16 8 1",
+    "   c None",
+    ".  c #5D5D5D",
+    "+  c #000000",
+    "@  c #A0A0A0",
+    "#  c #C3C3C3",
+    "$  c #DCDCDC",
+    "%  c #FFA858",
+    "&  c #FFDCA8",
+    "      ++++      ",
+    "     ++ ++++ +  ",
+    "    +     ++++  ",
+    "           +++  ",
+    "          ++++  ",
+    " ++++           ",
+    "+%&&%+++++++    ",
+    "+&&&&%%%%%%%+   ",
+    "+&&+++++++++++++",
+    "+&%+$$$$$$$$$$$+",
+    "+&+$####@#@#@@+ ",
+    "+%+$###@#@#@@@+ ",
+    "++$###@#@#@@@+  ",
+    "++$##@#@#@@@@+  ",
+    "+$##@#@#@@@@+   ",
+    "+++++++++++++   "};
 
 static Fl_Pixmap open_pix(datas_open);
 
@@ -36,22 +36,22 @@ static bool no_prevpush = false;
 
 void Fl_Help_Dialog::cb_close(Fl_Widget*, void *d) 
 {
-	((Fl_Help_Dialog *)d)->do_callback();
+    ((Fl_Help_Dialog *)d)->do_callback(FL_WND_CLOSE);
 }
 
 void Fl_Help_Dialog::cb_back(Fl_Button*, void *d) 
 {
-	((Fl_Help_Dialog *)d)->previous_url();
+    ((Fl_Help_Dialog *)d)->previous_url();
 }
 
 void Fl_Help_Dialog::cb_next(Fl_Button*, void *d) 
 {
-	((Fl_Help_Dialog *)d)->next_url();
+    ((Fl_Help_Dialog *)d)->next_url();
 }
 
 void Fl_Help_Dialog::cb_open(Fl_Button*, void *d) 
 {
-	((Fl_Help_Dialog *)d)->open_file();	
+    ((Fl_Help_Dialog *)d)->open_file(); 
 }
 
 void Fl_Help_Dialog::cb_html_link(Fl_Widget *w, void *d)
@@ -64,7 +64,7 @@ void Fl_Help_Dialog::cb_html_link(Fl_Widget *w, void *d)
 }
 
 Fl_Help_Dialog::Fl_Help_Dialog(int x, int y, int w, int h, const char *l)
-	: Fl_Main_Window(x,y,w,h,l)
+: Fl_Main_Window(x,y,w,h,l)
 {
     make_group(w,h);
     init();
@@ -117,7 +117,7 @@ char *Fl_Help_Dialog::pop_prev()
 
 void Fl_Help_Dialog::push_next(const char *url)
 {
-	if(!url) return;
+    if(!url) return;
     if(next_hist[0] && !strcmp(url, next_hist[0])) return;
 
     if(next_hist[9]) delete []next_hist[9];
@@ -127,7 +127,7 @@ void Fl_Help_Dialog::push_next(const char *url)
     }
     next_hist[0] = strdup(url);
 
-	next->activate();
+    next->activate();
 }
 
 char *Fl_Help_Dialog::pop_next()
@@ -253,4 +253,3 @@ void Fl_Help_Dialog::next_url()
         delete []url;
     }
 }
-

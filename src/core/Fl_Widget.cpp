@@ -32,16 +32,18 @@
 #include <stdlib.h>              // free
 #include <config.h>
 
-void Fl_Widget::do_callback(Fl_Widget* o, void* arg)
-{	
-	// Call callback_ only if NO slots connected!
-	if(callback_) callback_(o,(void*)arg);
+void Fl_Widget::do_callback(Fl_Widget* o, void* arg, uchar event)
+{   
+    event_ = event;
+    // Call callback_ only if NO slots connected!
+    if(callback_) callback_(o,(void*)arg);
 }
 
-void Fl_Widget::do_callback(Fl_Widget* o, long arg)
-{		
-	// Call callback_ only if NO slots connected!
-	if(callback_) callback_(o,(void*)arg);
+void Fl_Widget::do_callback(Fl_Widget* o, long arg, uchar event)
+{       
+    event_ = event;
+    // Call callback_ only if NO slots connected!
+    if(callback_) callback_(o,(void*)arg);
 }
 
 void Fl_Widget::default_callback(Fl_Widget* w, void*) {w->set_changed();}
@@ -191,10 +193,10 @@ void Fl_Widget::redraw(uchar flags)
     damage_ |= flags;
     if (!is_window())
         for (Fl_Widget* widget = parent(); widget; widget = widget->parent())
-    {
-        widget->damage_ |= FL_DAMAGE_CHILD;
-        if (widget->is_window()) break;
-    }
+        {
+            widget->damage_ |= FL_DAMAGE_CHILD;
+            if (widget->is_window()) break;
+        }
     Fl::damage(FL_DAMAGE_CHILD);
 }
 
@@ -501,7 +503,7 @@ bool Fl::test_shortcut(int shortcut)
 
     // kludge so that Ctrl+'_' works (as opposed to Ctrl+'^_'):
     if ((shift&FL_CTRL) && key >= 0x3f && key <= 0x5F
-        && Fl::event_text()[0]==(key^0x40)) return true;
+            && Fl::event_text()[0]==(key^0x40)) return true;
     return false;
 }
 
@@ -549,8 +551,8 @@ void Fl_Widget::draw_box() const
 {
     if(image() && !image()->get_mask()) {
         if((align()&FL_ALIGN_TILED || align()&FL_ALIGN_SCALE) &&
-           ( !(align()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT|FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) || (align()&FL_ALIGN_INSIDE) )
-          ) {
+                ( !(align()&(FL_ALIGN_LEFT|FL_ALIGN_RIGHT|FL_ALIGN_TOP|FL_ALIGN_BOTTOM)) || (align()&FL_ALIGN_INSIDE) )
+            ) {
             // We can draw only frame, if drawing image tiled or scale
             // And no mask defined to image...
             draw_frame();

@@ -100,7 +100,7 @@ Fl_Menu_::Fl_Menu_()
 }
 
 Fl_Menu_::Fl_Menu_(int x,int y,int w, int h,const char* l)
-    : Fl_Group(x,y,w,h,l), list_(&default_list), item_(0)
+: Fl_Group(x,y,w,h,l), list_(&default_list), item_(0)
 {
     about_to_show = about_to_hide = 0;
     delay_ = -1;
@@ -171,7 +171,7 @@ void Fl_Menu_::execute(Fl_Widget* widget)
         if (widget->value()) widget->clear_value(); else widget->set_value();
     }
 
-    do_callback();
+    do_callback(FL_MENU_ITEM);
 }
 
 
@@ -179,7 +179,7 @@ void Fl_Menu_::execute(Fl_Widget* widget)
 void Fl_Menu_::default_callback(Fl_Widget* widget, void*)
 {
     Fl_Widget* item = ((Fl_Menu_*)widget)->item();
-    if(item) item->do_callback();
+    if(item) item->do_callback(FL_MENU_DEFAULT);
 }
 
 

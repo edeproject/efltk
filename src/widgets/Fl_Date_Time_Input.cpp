@@ -50,7 +50,7 @@ static const char * calendar_xpm[] = {
 void Fl_Date_Input::input_callback(Fl_Widget *di,void *) {
     Fl_Group *parent = (Fl_Group *) di->parent();
     if (parent)
-        parent->do_callback();
+        parent->do_callback(FL_DATA_CHANGE);
 }
 
 void Fl_Date_Input::button_callback(Fl_Widget *button,void *) {

@@ -46,50 +46,50 @@ static Fl_Pixmap refresh_pix(datas_refresh);
 
 /*
 uint uint64_to_uint(uint64 size) {
-	size /= 1024;
-	return (uint)size;
+    size /= 1024;
+    return (uint)size;
 }
 
 int Fl_FileItem::compare(Fl_ListView_Item *other, int column, int sort_type)
 {
 #ifdef _WIN32
-	if(type()==DEVICE && ((Fl_FileItem*)other)->type()==DEVICE) {						
-		switch(column) {
-		case 2: {
-				uint c1 = uint64_to_uint(attr->capacity);
-				uint c2 = uint64_to_uint(((Fl_FileItem*)other)->attr->capacity);
-				if(sort_type==Fl_ListView::SORT_ASC) return c1-c2;
-				else if(sort_type==Fl_ListView::SORT_DESC) return c2-c1;
-			}
-			break;
-		case 3: {
-				uint c1 = uint64_to_uint(attr->free);
-				uint c2 = uint64_to_uint(((Fl_FileItem*)other)->attr->free);
-				if(sort_type==Fl_ListView::SORT_ASC) return c1-c2;
-				else if(sort_type==Fl_ListView::SORT_DESC) return c2-c1;
-			}
-			break;
-		default:
-			break;
-		}
+    if(type()==DEVICE && ((Fl_FileItem*)other)->type()==DEVICE) {                       
+        switch(column) {
+        case 2: {
+                uint c1 = uint64_to_uint(attr->capacity);
+                uint c2 = uint64_to_uint(((Fl_FileItem*)other)->attr->capacity);
+                if(sort_type==Fl_ListView::SORT_ASC) return c1-c2;
+                else if(sort_type==Fl_ListView::SORT_DESC) return c2-c1;
+            }
+            break;
+        case 3: {
+                uint c1 = uint64_to_uint(attr->free);
+                uint c2 = uint64_to_uint(((Fl_FileItem*)other)->attr->free);
+                if(sort_type==Fl_ListView::SORT_ASC) return c1-c2;
+                else if(sort_type==Fl_ListView::SORT_DESC) return c2-c1;
+            }
+            break;
+        default:
+            break;
+        }
 
-	} else 
+    } else 
 #endif
-	{
-		switch(column) {
-		case 1:
-			if(sort_type==Fl_ListView::SORT_ASC) return (attr->size - ((Fl_FileItem*)other)->attr->size);
-			else if(sort_type==Fl_ListView::SORT_DESC) return (((Fl_FileItem*)other)->attr->size - attr->size);
-			break;
-		case 3:
-			if(sort_type==Fl_ListView::SORT_ASC) return (attr->modified - ((Fl_FileItem*)other)->attr->modified);
-			else if(sort_type==Fl_ListView::SORT_DESC) return (((Fl_FileItem*)other)->attr->modified - attr->modified);
-			break;
-		default:
-			break;
-		}
-	}
-	return Fl_ListView_Item::compare(other, column, sort_type);
+    {
+        switch(column) {
+        case 1:
+            if(sort_type==Fl_ListView::SORT_ASC) return (attr->size - ((Fl_FileItem*)other)->attr->size);
+            else if(sort_type==Fl_ListView::SORT_DESC) return (((Fl_FileItem*)other)->attr->size - attr->size);
+            break;
+        case 3:
+            if(sort_type==Fl_ListView::SORT_ASC) return (attr->modified - ((Fl_FileItem*)other)->attr->modified);
+            else if(sort_type==Fl_ListView::SORT_DESC) return (((Fl_FileItem*)other)->attr->modified - attr->modified);
+            break;
+        default:
+            break;
+        }
+    }
+    return Fl_ListView_Item::compare(other, column, sort_type);
 }
 */
 ///////////////////////////////
@@ -118,7 +118,7 @@ static char **select_files(const char *m_path_input, const char *filters, const 
     Fl_String read_path(m_path_input);
 
     if(read_path.empty()) {
-		
+
         char tmp[FL_PATH_MAX];
         fl_getcwd(tmp, sizeof(tmp));
         read_path = tmp;
@@ -141,10 +141,10 @@ static char **select_files(const char *m_path_input, const char *filters, const 
 
     switch(w.show_modal())
     {
-    case Fl_Dialog::BTN_OK:
-        break;
-    default:
-        return 0;
+        case Fl_Dialog::BTN_OK:
+            break;
+        default:
+            return 0;
     }
 
     char **tmp = chooser->get_selected();
@@ -199,10 +199,10 @@ static char *select_file(const char *m_path_input, const char *filters, const ch
 
     switch(w.show_modal())
     {
-    case Fl_Dialog::BTN_OK:
-        break;
-    default:
-        return 0;
+        case Fl_Dialog::BTN_OK:
+            break;
+        default:
+            return 0;
     }
 
     Fl_String path;
@@ -253,112 +253,112 @@ class PreviewBox : public Fl_Widget
 {
 public:
     PreviewBox(int x, int y, int w, int h) : Fl_Widget(x,y,w,h,0) { 
-		color(FL_WHITE); 
-	    image_cache.size(10);
-	    image_cache.autodelete(true);	
-	}
-	~PreviewBox() {
-		image_cache.clear();
-	}
-	
-	Fl_String info;
-    Fl_Image_Cache image_cache;
-	
-	void update_preview(const Fl_String &filename)
-	{
-		image(0);
-		label("");
-		info = "";
-		
-		if(filename.empty()) {
-			redraw();
-			return;
-		}
+        color(FL_WHITE); 
+        image_cache.size(10);
+        image_cache.autodelete(true);   
+    }
+    ~PreviewBox() {
+        image_cache.clear();
+    }
 
-		Fl_File_Attr *a = fl_file_attr(filename);
-		int size = a ? a->size : 0;
-		
-		bool loaded = false;
-		if(fl_file_match(filename, "*.{gif|bmp|xpm|png|jpg|jpeg}")) 
-		{
-			Fl_Image *im = 0;
-			im = image_cache.get(filename);
-			if(!im) {
-				// Not in cache
-				fl_cursor(FL_CURSOR_WAIT);
-				Fl::check();
-				im= Fl_Image::read(filename);
-			}
-			if(im) {		
-				if(im->format()->Amask) {
-					// If image has alpha pixel, blend it to preview box backgroud
-					Fl_Image *blended = im->back_blend(color());
+    Fl_String info;
+    Fl_Image_Cache image_cache;
+
+    void update_preview(const Fl_String &filename)
+    {
+        image(0);
+        label("");
+        info = "";
+
+        if(filename.empty()) {
+            redraw();
+            return;
+        }
+
+        Fl_File_Attr *a = fl_file_attr(filename);
+        int size = a ? a->size : 0;
+
+        bool loaded = false;
+        if(fl_file_match(filename, "*.{gif|bmp|xpm|png|jpg|jpeg}")) 
+        {
+            Fl_Image *im = 0;
+            im = image_cache.get(filename);
+            if(!im) {
+                // Not in cache
+                fl_cursor(FL_CURSOR_WAIT);
+                Fl::check();
+                im= Fl_Image::read(filename);
+            }
+            if(im) {        
+                if(im->format()->Amask) {
+                    // If image has alpha pixel, blend it to preview box backgroud
+                    Fl_Image *blended = im->back_blend(color());
                     delete im;
                     im = blended;
-				}
-				
-				info.printf("%s\n\n%s %d x %d\n%s %d",
-					fl_file_filename(filename).c_str(),
-					_("Size:"), im->width(), im->height(),
-					_("File Size:"), size);
-				
-				im->system_convert();
-				image_cache.add(im, filename);
-				image(im);
-				redraw();
-				loaded = true;
-			}
-		} else {
-			
-			fl_cursor(FL_CURSOR_WAIT);
-			Fl::check();
-			
-			FILE *fp;
-			int	 bytes;
-			char *ptr;
-			
-			fp = fl_fopen(filename, "rb");
-			if (fp != NULL) {
-				// Try reading the first 1k of data for a label...
-				char buf[1024];
-				bytes = fread(buf, 1, sizeof(buf) - 1, fp);
-				buf[bytes] = '\0';
-				fclose(fp);
-				loaded = true;
-				label(buf);
-			}
-			
-			// Scan the buffer for printable chars...
-			for(ptr = (char*)label().c_str(); *ptr && (isprint(*ptr) || isspace(*ptr)); ptr ++);
-			
-			if(*ptr || ptr == label().c_str()) {
-				loaded = false;
-			} else {
-				// remove '\r' from text EOL
-				for(ptr = (char*)label().c_str(); *ptr; ptr++) if(*ptr=='\r') *ptr=' ';
-					
-				align(FL_ALIGN_CLIP|FL_ALIGN_INSIDE|FL_ALIGN_LEFT|FL_ALIGN_TOP);
-				label_font(FL_COURIER);			
-			}
-			
-			info.printf("%s\n\n%s %d", 
-				fl_file_filename(filename).c_str(), 
-				_("File Size:"), size);
-		}
-		
-		if(!loaded) {
-			label("?"); 
-			align(FL_ALIGN_CLIP);
-			label_font(FL_HELVETICA);
-		}
-		
-		redraw();
-		fl_cursor(FL_CURSOR_DEFAULT);
-		Fl::check();
-	}
+                }
+
+                info.printf("%s\n\n%s %d x %d\n%s %d",
+                    fl_file_filename(filename).c_str(),
+                    _("Size:"), im->width(), im->height(),
+                    _("File Size:"), size);
+
+                im->system_convert();
+                image_cache.add(im, filename);
+                image(im);
+                redraw();
+                loaded = true;
+            }
+        } else {
+
+            fl_cursor(FL_CURSOR_WAIT);
+            Fl::check();
+
+            FILE *fp;
+            int  bytes;
+            char *ptr;
+
+            fp = fl_fopen(filename, "rb");
+            if (fp != NULL) {
+                // Try reading the first 1k of data for a label...
+                char buf[1024];
+                bytes = fread(buf, 1, sizeof(buf) - 1, fp);
+                buf[bytes] = '\0';
+                fclose(fp);
+                loaded = true;
+                label(buf);
+            }
+
+            // Scan the buffer for printable chars...
+            for(ptr = (char*)label().c_str(); *ptr && (isprint(*ptr) || isspace(*ptr)); ptr ++);
+
+            if(*ptr || ptr == label().c_str()) {
+                loaded = false;
+            } else {
+                // remove '\r' from text EOL
+                for(ptr = (char*)label().c_str(); *ptr; ptr++) if(*ptr=='\r') *ptr=' ';
+
+                align(FL_ALIGN_CLIP|FL_ALIGN_INSIDE|FL_ALIGN_LEFT|FL_ALIGN_TOP);
+                label_font(FL_COURIER);         
+            }
+
+            info.printf("%s\n\n%s %d", 
+                fl_file_filename(filename).c_str(), 
+                _("File Size:"), size);
+        }
+
+        if(!loaded) {
+            label("?"); 
+            align(FL_ALIGN_CLIP);
+            label_font(FL_HELVETICA);
+        }
+
+        redraw();
+        fl_cursor(FL_CURSOR_DEFAULT);
+        Fl::check();
+    }
 
     void draw() 
-	{
+    {
         if(!(damage()&(FL_DAMAGE_ALL|FL_DAMAGE_EXPOSE))) return;
 
         draw_frame();
@@ -393,7 +393,7 @@ public:
             X=(w()/2)-W/2;
             if(X<5) X=5;
             Y=5;
-			prevH = Y+H;
+            prevH = Y+H;
 
             im->mask_type(MASK_NONE);
             im->draw(X,Y,W,H,FL_ALIGN_SCALE);
@@ -420,14 +420,14 @@ public:
             draw_label(X, Y, W, prevH, align());
         }
 
-		prevH += 10;
-		FL_THIN_UP_BOX->draw(5, prevH, w()-10, 2, fl_darker(color()), 0);
-		prevH += 10;
+        prevH += 10;
+        FL_THIN_UP_BOX->draw(5, prevH, w()-10, 2, fl_darker(color()), 0);
+        prevH += 10;
 
-		fl_font(Fl_Widget::default_style->label_font, Fl_Widget::default_style->label_size);
-		label_type()->draw(info, 5, prevH, w()-10, H-prevH, label_color(), FL_ALIGN_TOP|FL_ALIGN_LEFT|FL_ALIGN_WRAP);
+        fl_font(Fl_Widget::default_style->label_font, Fl_Widget::default_style->label_size);
+        label_type()->draw(info, 5, prevH, w()-10, H-prevH, label_color(), FL_ALIGN_TOP|FL_ALIGN_LEFT|FL_ALIGN_WRAP);
 
-		fl_pop_clip();
+        fl_pop_clip();
     }
 };
 
@@ -438,62 +438,62 @@ public:
 
 void normalize_path(Fl_String &path)
 {
-	Fl_String ret;
+    Fl_String ret;
     char ch=0;
     int cnt=0;
-    for(int n=0; n<path.length(); n++)	
+    for(int n=0; n<path.length(); n++)  
     {
-		ch = path[n];
+        ch = path[n];
 #ifdef _WIN32
-		if(ch=='/') ch='\\'; //Convert slashes..
+        if(ch=='/') ch='\\'; //Convert slashes..
 #endif
         if(ch==slash) cnt++; else cnt=0;
         if(cnt>1) continue;
         ret += ch;
     }
-	path = ret;
+    path = ret;
 }
 
 Fl_File_Chooser::Fl_File_Chooser(int x, int y, int w, int h, const char *label, int mode)
-	: Fl_Group(x, y, w, h, label)
+: Fl_Group(x, y, w, h, label)
 {
-	m_ok_button = 0;
+    m_ok_button = 0;
     m_mode = mode;
     make_group();
-	filters(0);
+    filters(0);
 }
 
 Fl_File_Chooser::~Fl_File_Chooser()
 {
-	for(int n=0; n<m_filter_input->children(); n++) {
-		free((char*)m_filter_input->child(n)->user_data());
-	}	
+    for(int n=0; n<m_filter_input->children(); n++) {
+        free((char*)m_filter_input->child(n)->user_data());
+    }   
 }
 
 bool Fl_File_Chooser::show_dialog(const char *caption)
 {
-	Fl_Button *saved_ok = ok_button();
-	Fl_Group *saved_parent = parent();
+    Fl_Button *saved_ok = ok_button();
+    Fl_Group *saved_parent = parent();
 
-	Fl_Dialog w(this->h()+40, this->w()+20, caption);
-	w.size_range(300, 300);
-	w.buttons(Fl_Dialog::BTN_OK|Fl_Dialog::BTN_CANCEL, Fl_Dialog::BTN_OK);
-	w.resizable(w);
+    Fl_Dialog w(this->h()+40, this->w()+20, caption);
+    w.size_range(300, 300);
+    w.buttons(Fl_Dialog::BTN_OK|Fl_Dialog::BTN_CANCEL, Fl_Dialog::BTN_OK);
+    w.resizable(w);
 
-	Fl_Group::current()->add(this);
-	ok_button(w.button(Fl_Dialog::BTN_OK));
+    Fl_Group::current()->add(this);
+    ok_button(w.button(Fl_Dialog::BTN_OK));
 
-	w.end();
+    w.end();
 
-	refresh();
-	bool ret = (w.show_modal()==Fl_Dialog::BTN_OK);
+    refresh();
+    bool ret = (w.show_modal()==Fl_Dialog::BTN_OK);
 
-	parent()->remove(this);
+    parent()->remove(this);
 
-	ok_button(saved_ok);
-	parent(saved_parent);
+    ok_button(saved_ok);
+    parent(saved_parent);
 
-	return ret;
+    return ret;
 }
 
 void Fl_File_Chooser::make_group()
@@ -600,44 +600,44 @@ void Fl_File_Chooser::make_group()
         o->end();
     }
 
-	layout_damage(FL_LAYOUT_XYWH);
+    layout_damage(FL_LAYOUT_XYWH);
 }
 
 char **Fl_File_Chooser::get_selected()
 {
     if(!m_filebrowser->multi() || m_filebrowser->get_selection().count()<1)
         return 0;
- 
-	char **list = new char*[m_filebrowser->get_selection().size()+1];
-	int files = 0;
+
+    char **list = new char*[m_filebrowser->get_selection().size()+1];
+    int files = 0;
     for(uint n=0; n<m_filebrowser->get_selection().size(); n++) {
         Fl_ListView_Item *w = m_filebrowser->get_selection()[n];
-		Fl_String file = directory() + w->label(1);
+        Fl_String file = directory() + w->label(1);
 
-		struct stat s;
-		if(stat(file, &s)<0 || S_ISDIR(s.st_mode)) continue;
+        struct stat s;
+        if(stat(file, &s)<0 || S_ISDIR(s.st_mode)) continue;
 
-		list[files] = new char[file.length()+1];
-		memcpy(list[files], file.c_str(), file.length()+1);
-		files++;
+        list[files] = new char[file.length()+1];
+        memcpy(list[files], file.c_str(), file.length()+1);
+        files++;
     }
-	list[files] = 0;
-	return list;
+    list[files] = 0;
+    return list;
 }
 
 void Fl_File_Chooser::get_selected(Fl_String_List &list)
 {
     if(!m_filebrowser->multi() || m_filebrowser->get_selection().count()<1)
         return;
- 
+
     for(uint n=0; n<m_filebrowser->get_selection().size(); n++) {
         Fl_ListView_Item *w = m_filebrowser->get_selection()[n];
-		Fl_String file = directory() + w->label(1);
+        Fl_String file = directory() + w->label(1);
 
-		struct stat s;
-		if(stat(file, &s)<0 || S_ISDIR(s.st_mode)) continue;
+        struct stat s;
+        if(stat(file, &s)<0 || S_ISDIR(s.st_mode)) continue;
 
-		list.append(file);
+        list.append(file);
     }
 }
 
@@ -678,35 +678,35 @@ void Fl_File_Chooser::filters(const char *filters)
 }
 
 void Fl_File_Chooser::parse_dirs(const Fl_String &fp)
-{	
-	m_path_input->clear();
-	Fl_Item *item=0;
+{   
+    m_path_input->clear();
+    Fl_Item *item=0;
 
-	if(fp.empty() || !strcmp(fp, _("My Computer"))) {
-		m_path_input->begin();
-		m_path_input->add(_("My Computer"));
-		m_path_input->value(fp.empty() ? _("My Computer") : fp.c_str());
-		m_path_input->end();
-		m_path_input->redraw();
-		return;
-	}
+    if(fp.empty() || !strcmp(fp, _("My Computer"))) {
+        m_path_input->begin();
+        m_path_input->add(_("My Computer"));
+        m_path_input->value(fp.empty() ? _("My Computer") : fp.c_str());
+        m_path_input->end();
+        m_path_input->redraw();
+        return;
+    }
 
-	m_path_input->begin();
+    m_path_input->begin();
 
-	unsigned n=fp.length();
-	while(n-->0) {
-		char ch = fp.c_str()[n];
-		if(ch == slash) {
-			item = new Fl_Item(fp.sub_str(0, n+1));
-		}
-	}
+    unsigned n=fp.length();
+    while(n-->0) {
+        char ch = fp.c_str()[n];
+        if(ch == slash) {
+            item = new Fl_Item(fp.sub_str(0, n+1));
+        }
+    }
 
-	new Fl_Divider(0,10);
-	m_path_input->add(_("My Computer"));
+    new Fl_Divider(0,10);
+    m_path_input->add(_("My Computer"));
 
-	m_path_input->end();
-	m_path_input->value(m_path_input->child(0)->label());
-	m_path_input->redraw();
+    m_path_input->end();
+    m_path_input->value(m_path_input->child(0)->label());
+    m_path_input->redraw();
 }
 
 void Fl_File_Chooser::directory(const Fl_String &path)
@@ -757,46 +757,46 @@ void Fl_File_Chooser::directory(const Fl_String &path)
 
 Fl_String Fl_File_Chooser::new_dir()
 {
-    const char	*dir; 
+    const char  *dir; 
     // Get a directory name from the user
     if ((dir = fl_input(_("New Directory?"))) == NULL)
         return "";
 
-	Fl_String newdir;
+    Fl_String newdir;
 
     // Make it relative to the current directory as needed...
 #ifdef _WIN32
     if(dir[1] != ':')
 #else
-    if(dir[0] != '/')
+        if(dir[0] != '/')
 #endif /* _WIN32 || __EMX__ */
-    {
-		newdir = directory();
-    }
-	newdir += dir;
+        {
+            newdir = directory();
+        }
+    newdir += dir;
 
     // Create the directory; ignore EEXIST errors...
 #ifdef _WIN32
     if(mkdir(newdir)!=0) {
 #else
-	if(mkdir(newdir, 0755)!=0) {
+        if(mkdir(newdir, 0755)!=0) {
 #endif
-        if(errno != EEXIST) {
-            fl_alert(_("Unable to create directory!"));
-            return "";
+            if(errno != EEXIST) {
+                fl_alert(_("Unable to create directory!"));
+                return "";
+            }
         }
-	}
 
-    directory(newdir); // Show the new directory...
-    return newdir;
-}
+        directory(newdir); // Show the new directory...
+        return newdir;
+    }
 
-void Fl_File_Chooser::up() 
+    void Fl_File_Chooser::up() 
 {
     filebrowser()->up();
-	if(directory().empty()) m_up->deactivate();
+    if(directory().empty()) m_up->deactivate();
     else m_up->activate();
-	parse_dirs(directory());
+    parse_dirs(directory());
 }
 
 void Fl_File_Chooser::file_clicked(Fl_ListView_Item *i)
@@ -809,27 +809,27 @@ void Fl_File_Chooser::file_clicked(Fl_ListView_Item *i)
         if(m_filebrowser->get_selection().size() == 1) {
             item = (Fl_ListView_ItemExt *)m_filebrowser->item();
             if(item) m_file_input->value(item->label(1));
-		} else if(m_filebrowser->get_selection().size() > 1) {
-			Fl_String files;
-	        int items=0;
-		    for(uint n=0; n<m_filebrowser->get_selection().size(); n++) 
-			{
-				item = m_filebrowser->get_selection()[n];
+        } else if(m_filebrowser->get_selection().size() > 1) {
+            Fl_String files;
+            int items=0;
+            for(uint n=0; n<m_filebrowser->get_selection().size(); n++) 
+            {
+                item = m_filebrowser->get_selection()[n];
 
-				Fl_String full(directory() + item->label(1));
-				struct stat s;
-				if(stat(full, &s)<0 || S_ISDIR(s.st_mode)) continue;
+                Fl_String full(directory() + item->label(1));
+                struct stat s;
+                if(stat(full, &s)<0 || S_ISDIR(s.st_mode)) continue;
 
-				if(items > 4) {
-					files += "....";
-					break;
-				}
-				if(!item->label(1).empty()) {
-					files += item->label(1);
-					files += " ";
-					items++;
-				}
-			}
+                if(items > 4) {
+                    files += "....";
+                    break;
+                }
+                if(!item->label(1).empty()) {
+                    files += item->label(1);
+                    files += " ";
+                    items++;
+                }
+            }
             m_file_input->value(files);
         }
     }
@@ -840,7 +840,7 @@ void Fl_File_Chooser::file_clicked(Fl_ListView_Item *i)
     }
 
     if(Fl::event_clicks() || Fl::event_key()==FL_Enter) {
-		if(ok_button()) ok_button()->do_callback();
+        if(ok_button()) ok_button()->do_callback(FL_DIALOG_BTN);
     } else {
         item = (Fl_ListView_ItemExt *)m_filebrowser->item();
         if(item && preview()) {
@@ -855,14 +855,14 @@ void Fl_File_Chooser::folder_clicked(Fl_ListView_Item *i)
     if(ok_button()) ok_button()->activate();
     m_file_input->value("");
 
-	if(Fl::event_clicks() || Fl::event_key()==FL_Enter) {
-		Fl_String path(directory()+i->label(1));
+    if(Fl::event_clicks() || Fl::event_key()==FL_Enter) {
+        Fl_String path(directory()+i->label(1));
 #if 0//def _WIN32
-		if(i->type()==Fl_FileItem::NETWORK)
-			sprintf(tmp, "\\\\%s", i->label());
+        if(i->type()==Fl_FileItem::NETWORK)
+            sprintf(tmp, "\\\\%s", i->label());
 #endif
-		directory(path);
-	}
+        directory(path);
+    }
 }
 
 //CALLBACKS!!
@@ -872,20 +872,20 @@ void Fl_File_Chooser::cb_list(Fl_Widget *w, void *d)
     Fl_ListView_Item *item = (Fl_ListView_Item *)l->item();
 
 #ifdef _WIN32
-	// Lame way to prevent device status, if not clickking it..
-	if(item->label(1)[1] == ':' && (!Fl::event_clicks() && Fl::event_key()!=FL_Enter))
-		return; 
+    // Lame way to prevent device status, if not clickking it..
+    if(item->label(1)[1] == ':' && (!Fl::event_clicks() && Fl::event_key()!=FL_Enter))
+        return; 
 #endif
 
-	if(item == l->up_item()) {
-		if(Fl::event_clicks() || Fl::event_key()==FL_Enter) FD->up();
-	} else if(item) {
-		Fl_String path(FD->directory()+item->label(1));		
+    if(item == l->up_item()) {
+        if(Fl::event_clicks() || Fl::event_key()==FL_Enter) FD->up();
+    } else if(item) {
+        Fl_String path(FD->directory()+item->label(1));     
 
-		if(access(path, 04)!=0) return;
+        if(access(path, 04)!=0) return;
 
-		if(fl_is_dir(path)) FD->folder_clicked(item);
-		else FD->file_clicked(item);
+        if(fl_is_dir(path)) FD->folder_clicked(item);
+        else FD->file_clicked(item);
     }
 }
 
@@ -902,24 +902,24 @@ void Fl_File_Chooser::get_filename(Fl_String path, Fl_String &buf)
 
     if(buf[checkp]!=check && !directory().empty()
 #if 0//ef _WIN32
-		&& strncmp(buf.c_str(), "\\\\", 2) //Check for network path..
+            && strncmp(buf.c_str(), "\\\\", 2) //Check for network path..
 #endif
-		) 
-	{
-		buf = directory();
-		buf += path;
-	}
+        ) 
+    {
+        buf = directory();
+        buf += path;
+    }
 }
 
 void Fl_File_Chooser::get_filepath(Fl_String path, Fl_String &buf)
-{	
+{   
     char check; int checkp;
 #ifdef _WIN32
     check=':'; checkp=1;
 #else
     check='/'; checkp=0;
-#endif	
-    
+#endif  
+
     buf = fl_file_expand(path);
 
     if(buf[checkp]!=check && !directory().empty())
@@ -975,18 +975,18 @@ void Fl_File_Chooser::cb_location(Fl_Widget *w, void *d)
 
         if(fl_is_dir(filename)
 #if 0//def _WIN32
-           || !strncmp(filename, "\\\\", 2) //Check for network path..
+                || !strncmp(filename, "\\\\", 2) //Check for network path..
 #endif
-          ) {
+            ) {
             FD->directory(filename);
             loc->value("");
         }
         else if(FD->mode()<=Fl_File_Chooser::_SAVE)  
-		{
+        {
             if(!fl_is_dir(filename) && (FD->mode()==Fl_File_Chooser::_DEFAULT ? fl_file_exists(filename) : true)) {
 
                 if(Fl::modal()==FD->window()) {
-                    if(FD->ok_button()) FD->ok_button()->do_callback();
+                    if(FD->ok_button()) FD->ok_button()->do_callback(FL_DIALOG_BTN);
                 }
                 else
                     FD->directory(dirpath);
@@ -1024,7 +1024,7 @@ void Fl_File_Chooser::cb_location(Fl_Widget *w, void *d)
         loc->clear();
 
         if(!dirpath.empty()) 
-		{
+        {
             loc->begin();
 
             bool match = false;
@@ -1036,7 +1036,7 @@ void Fl_File_Chooser::cb_location(Fl_Widget *w, void *d)
 
                 if(strcmp(file, ".") && strcmp(file, "..") && fl_file_match(file, pattern)) {
 
-					Fl_String filen(dirpath + file);
+                    Fl_String filen(dirpath + file);
                     if(FD->mode()==Fl_File_Chooser::_DIRECTORY && !fl_is_dir(filen)) {
                         continue;
                     }
@@ -1056,8 +1056,8 @@ void Fl_File_Chooser::cb_location(Fl_Widget *w, void *d)
                 loc->hide_popup();
             }
         } else {
-			loc->hide_popup();
-		}
+            loc->hide_popup();
+        }
     }
 }
 
@@ -1066,32 +1066,32 @@ void Fl_File_Chooser::cb_location(Fl_Widget *w, void *d)
 
 void Fl_File_Chooser::preview(bool show)
 {
-	m_preview->value(show);
+    m_preview->value(show);
 
-	if(!show) {
-		m_preview_box->image_cache.clear();
-		m_preview_box->update_preview("");
+    if(!show) {
+        m_preview_box->image_cache.clear();
+        m_preview_box->update_preview("");
 
-		m_preview_box->hide();
+        m_preview_box->hide();
 
-	} else {
+    } else {
 
-		m_preview_box->show();
-		
-		Fl_ListView_Item *item = filebrowser()->item();
-		if(item && !directory().empty()) {
-			Fl_String path(directory()+item->label(1));
-			m_preview_box->update_preview(path);
-		}
-	}
+        m_preview_box->show();
 
-	filebrowser()->parent()->relayout(FL_LAYOUT_WH);
-	redraw();
+        Fl_ListView_Item *item = filebrowser()->item();
+        if(item && !directory().empty()) {
+            Fl_String path(directory()+item->label(1));
+            m_preview_box->update_preview(path);
+        }
+    }
+
+    filebrowser()->parent()->relayout(FL_LAYOUT_WH);
+    redraw();
 }
 
 void Fl_File_Chooser::update_preview(const Fl_String filename) 
 {
-	m_preview_box->update_preview(filename);
+    m_preview_box->update_preview(filename);
 }
 
 int Fl_File_Chooser::handle(int e)
@@ -1107,11 +1107,11 @@ int Fl_File_Chooser::handle(int e)
 
 void Fl_File_Chooser::layout()
 {
-	if(preview()) {
-		int W = int(w()*0.30f);
-		m_preview_box->w(W);
-	}
-	Fl_Group::layout();
+    if(preview()) {
+        int W = int(w()*0.30f);
+        m_preview_box->w(W);
+    }
+    Fl_Group::layout();
 }
 
 ////////////////////////////
@@ -1124,110 +1124,109 @@ void Fl_File_Chooser::layout()
 // This sucks... I hate pure windoze programming...
 bool Fl_File_Chooser::enum_netresources(Fl_Callback *cb, LPNETRESOURCE lpnr, DWORD scope)
 { 
-	DWORD dwResult, dwResultEnum;
-	HANDLE hEnum;
-	DWORD cbBuffer = 16384;	// 16K is a good size
-	DWORD cEntries = (DWORD)-1;	// enumerate all possible entries
-	LPNETRESOURCE lpnrLocal;// pointer to enumerated structures
-	DWORD i;
-  
-	// Call the WNetOpenEnum function to begin the enumeration.
-	dwResult = WNetOpenEnum(scope,
-							RESOURCETYPE_DISK,	// disk resources
-							0,					// enumerate all resources
-							lpnr,				// NULL first time the function is called
-							&hEnum);			// handle to the resource
+    DWORD dwResult, dwResultEnum;
+    HANDLE hEnum;
+    DWORD cbBuffer = 16384; // 16K is a good size
+    DWORD cEntries = (DWORD)-1; // enumerate all possible entries
+    LPNETRESOURCE lpnrLocal;// pointer to enumerated structures
+    DWORD i;
 
-	if(dwResult != NO_ERROR) {  
-		// Process errors with an application-defined error handler.
-		//NetErrorHandler(hwnd, dwResult, (LPSTR)"WNetOpenEnum");
-		return false;
-	}
+    // Call the WNetOpenEnum function to begin the enumeration.
+    dwResult = WNetOpenEnum(scope,
+            RESOURCETYPE_DISK,  // disk resources
+            0,                  // enumerate all resources
+            lpnr,               // NULL first time the function is called
+            &hEnum);            // handle to the resource
 
-	lpnrLocal = new NETRESOURCE[cbBuffer];
-	do {  
-	    // Initialize the buffer.
-		memset(lpnrLocal, 0, cbBuffer*sizeof(NETRESOURCE));
+    if(dwResult != NO_ERROR) {  
+        // Process errors with an application-defined error handler.
+        //NetErrorHandler(hwnd, dwResult, (LPSTR)"WNetOpenEnum");
+        return false;
+    }
 
-		// Call the WNetEnumResource function to continue the enumeration.
-		dwResultEnum = WNetEnumResource(hEnum,      // resource handle
-                                    &cEntries,  // defined locally as -1
-                                    lpnrLocal,  // LPNETRESOURCE
-                                    &cbBuffer); // buffer size
+    lpnrLocal = new NETRESOURCE[cbBuffer];
+    do {  
+        // Initialize the buffer.
+        memset(lpnrLocal, 0, cbBuffer*sizeof(NETRESOURCE));
 
-		// If the call succeeds, loop through the structures.
-	    if (dwResultEnum == NO_ERROR) {
-			for(i = 0; i < cEntries; i++) {
-				// Call an application-defined function to
-				// display the contents of the NETRESOURCE structures.
-				cb(this, (void *)(&lpnrLocal[i]));
-			}
-		}
-	    else if (dwResultEnum != ERROR_NO_MORE_ITEMS) // Process errors.
-		{
-			//NetErrorHandler(hwnd, dwResultEnum, (LPSTR)"WNetEnumResource");
-			break;
-		}
-	
-	} while(dwResultEnum != ERROR_NO_MORE_ITEMS);
+        // Call the WNetEnumResource function to continue the enumeration.
+        dwResultEnum = WNetEnumResource(hEnum,      // resource handle
+                &cEntries,  // defined locally as -1
+                lpnrLocal,  // LPNETRESOURCE
+                &cbBuffer); // buffer size
 
-	delete []lpnrLocal;
-	dwResult = WNetCloseEnum(hEnum);
-  
-	if(dwResult != NO_ERROR) { 
-		//NetErrorHandler(hwnd, dwResult, (LPSTR)"WNetCloseEnum");
-		return false;
-	}
+        // If the call succeeds, loop through the structures.
+        if (dwResultEnum == NO_ERROR) {
+            for(i = 0; i < cEntries; i++) {
+                // Call an application-defined function to
+                // display the contents of the NETRESOURCE structures.
+                cb(this, (void *)(&lpnrLocal[i]));
+            }
+        }
+        else if (dwResultEnum != ERROR_NO_MORE_ITEMS) // Process errors.
+        {
+            //NetErrorHandler(hwnd, dwResultEnum, (LPSTR)"WNetEnumResource");
+            break;
+        }
 
-	return true;
+    } while(dwResultEnum != ERROR_NO_MORE_ITEMS);
+
+    delete []lpnrLocal;
+    dwResult = WNetCloseEnum(hEnum);
+
+    if(dwResult != NO_ERROR) { 
+        //NetErrorHandler(hwnd, dwResult, (LPSTR)"WNetCloseEnum");
+        return false;
+    }
+
+    return true;
 }
 
-static void cb_add_netitem(Fl_Widget *w, void *d) {	
-	((Fl_File_Chooser *)w)->add_netitem((LPNETRESOURCE)d);	
+static void cb_add_netitem(Fl_Widget *w, void *d) { 
+    ((Fl_File_Chooser *)w)->add_netitem((LPNETRESOURCE)d);  
 }
 
 void Fl_File_Chooser::add_netitem(LPNETRESOURCE net)
 {
-	if(!net->lpRemoteName) return;
+    if(!net->lpRemoteName) return;
 /*
-	filebrowser()->begin();
+    filebrowser()->begin();
 
-	char *remote_name;
-	
+    char *remote_name;
+
 #ifdef UNICODE
-	int len = wcslen(net->lpRemoteName);
-	remote_name = (char*)malloc(len*5+1);
-	fl_unicode2utf((unsigned short*)net->lpRemoteName, len, remote_name);
+    int len = wcslen(net->lpRemoteName);
+    remote_name = (char*)malloc(len*5+1);
+    fl_unicode2utf((unsigned short*)net->lpRemoteName, len, remote_name);
 #else
-	remote_name = net->lpRemoteName;
+    remote_name = net->lpRemoteName;
 #endif
 
-	char *tmp = strdup(remote_name);
-	char *p = strrchr(tmp, '\\');
-	tmp+=(p-tmp)+1;
+    char *tmp = strdup(remote_name);
+    char *p = strrchr(tmp, '\\');
+    tmp+=(p-tmp)+1;
 
-	Fl_ListV *i = new Fl_FileItem(tmp, 0);
+    Fl_ListV *i = new Fl_FileItem(tmp, 0);
     i->type(Fl_FileItem::NETWORK);
-	if(scope==RESOURCE_GLOBALNET)
-		i->image(0, fold_pix);		
-	else
-		i->image(0, hd_pix);
-	filebrowser()->end();
+    if(scope==RESOURCE_GLOBALNET)
+        i->image(0, fold_pix);      
+    else
+        i->image(0, hd_pix);
+    filebrowser()->end();
 
-	free(tmp);
+    free(tmp);
 #ifdef UNICODE
-	free(remote_name);
+    free(remote_name);
 #endif*/
 }
 
 void Fl_File_Chooser::read_network(LPNETRESOURCE net)
 {
-	scope = RESOURCE_CONTEXT;
-	if(net) scope = RESOURCE_GLOBALNET;		
+    scope = RESOURCE_CONTEXT;
+    if(net) scope = RESOURCE_GLOBALNET;     
 
-	filebrowser()->clear();	
-	enum_netresources(cb_add_netitem, net, scope);	
+    filebrowser()->clear(); 
+    enum_netresources(cb_add_netitem, net, scope);  
 }
 
 #endif
-

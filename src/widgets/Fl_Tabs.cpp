@@ -59,7 +59,7 @@ int Fl_Tabs::tab_positions(int* p, int* w)
             w[i] = wt+TABSLOPE+EXTRASPACE;
             //if (2*TABSLOPE > w[i]) w[i] = 2*TABSLOPE;
         } else
-        w[i] = 2*TABSLOPE;
+            w[i] = 2*TABSLOPE;
         p[i+1] = p[i]+w[i]+1;
     }
     int r = this->w()-TABSLOPE-1;
@@ -165,29 +165,29 @@ int Fl_Tabs::handle(int event)
             // otherwise this indicates that somebody is trying to give focus to this
             switch (navigation_key())
             {
-            case FL_Left:
-            case FL_Up:
-                if (tab_height() < 0) goto GOTO_TABS; else goto GOTO_CONTENTS;
-            case FL_Right:
-            case FL_Down:
-                if (tab_height() < 0) goto GOTO_CONTENTS; else goto GOTO_TABS;
-            default:
-            GOTO_CONTENTS:
+                case FL_Left:
+                case FL_Up:
+                    if (tab_height() < 0) goto GOTO_TABS; else goto GOTO_CONTENTS;
+                case FL_Right:
+                case FL_Down:
+                    if (tab_height() < 0) goto GOTO_CONTENTS; else goto GOTO_TABS;
+                default:
+                GOTO_CONTENTS:
                 // Try to give the contents the focus. Also preserve a return value
                 // of 2 (which indicates the contents have a text field):
-                if (selected)
-                {
-                    int n = selected->handle(FL_FOCUS);
-                    if (n)
+                    if (selected)
                     {
-                        if (!selected->contains(Fl::focus())) Fl::focus(selected);
-                        return n;
+                        int n = selected->handle(FL_FOCUS);
+                        if (n)
+                        {
+                            if (!selected->contains(Fl::focus())) Fl::focus(selected);
+                            return n;
+                        }
                     }
-                }
-            GOTO_TABS:
-                focus(-1);
+                GOTO_TABS:
+                    focus(-1);
                 // moving right moves focus to the tabs.
-                return true;
+                    return true;
             }
 
         case FL_UNFOCUS:
@@ -196,24 +196,25 @@ int Fl_Tabs::handle(int event)
 
             // handle mouse events in the tabs:
         case FL_PUSH:
-        {
-            int H = tab_height();
-            if (H >= 0)
             {
-                if (Fl::event_y() > H) break;
+                int H = tab_height();
+                if (H >= 0)
+                {
+                    if (Fl::event_y() > H) break;
+                }
+                else
+                {
+                    if (Fl::event_y() < h()+H) break;
+                }
             }
-            else
-            {
-                if (Fl::event_y() < h()+H) break;
-            }
-        }
         case FL_DRAG:
         case FL_RELEASE:
             selected = which(Fl::event_x(), Fl::event_y());
             if (event == FL_RELEASE && !Fl::pushed())
             {
                 push(0);
-                if (selected && value(selected)) do_callback();
+                if (selected && value(selected)) 
+                    do_callback(event);
             }
             else
             {
@@ -224,21 +225,21 @@ int Fl_Tabs::handle(int event)
             // handle pointing at the tabs to bring up tooltip:
         case FL_ENTER:
         case FL_MOVE:
-        {
-            int H = tab_height();
-            if (H >= 0)
             {
-                if (Fl::event_y() > H) break;
-            }
-            else
-            {
-                if (Fl::event_y() < h()+H) break;
-            }
-            Fl_Widget* item = which(Fl::event_x(), Fl::event_y());
+                int H = tab_height();
+                if (H >= 0)
+                {
+                    if (Fl::event_y() > H) break;
+                }
+                else
+                {
+                    if (Fl::event_y() < h()+H) break;
+                }
+                Fl_Widget* item = which(Fl::event_x(), Fl::event_y());
             //Fl::belowmouse(this);
-            if (item) Fl_Tooltip::enter(this, 0, H<0?h()+H:0, w(), H<0?-H:H, item->tooltip().c_str());
-            return 1;
-        }
+                if (item) Fl_Tooltip::enter(this, 0, H<0?h()+H:0, w(), H<0?-H:H, item->tooltip().c_str());
+                return 1;
+            }
 
         case FL_KEY:
             switch (Fl::event_key())
@@ -253,11 +254,12 @@ int Fl_Tabs::handle(int event)
                 default:
                     return 0;
             }
-            MOVE:
+        MOVE:
             for (i = children()-1; i>0; i--) if (child(i)->visible()) break;
             if (backwards) {i = i ? i-1 : children()-1;}
             else {i++; if (i >= children()) i = 0;}
-            value(child(i)); do_callback();
+            value(child(i)); 
+            do_callback(event);
             return 1;
 
         case FL_SHORTCUT:
@@ -375,7 +377,7 @@ void Fl_Tabs::draw()
 
     // draw the tabs if needed:
     if (damage() & (FL_DAMAGE_VALUE|FL_DAMAGE_ALL))
-    {		        
+    {               
         selected = tab_positions(p,w);        
 
         for(i=0; i<selected; i++)
@@ -397,37 +399,37 @@ void Fl_Tabs::draw()
 
 
 void Fl_Tabs::draw_tab(int x1, int x2, int W, int H, Fl_Widget* o, int what)
-{	
-  bool sel = (what == SELECTED);
+{   
+    bool sel = (what == SELECTED);
 
-  if ((x2 < x1+W) && what == RIGHT) x1 = x2 - W;
-  
-  Fl_Color c = (!sel && o==push_) ? fl_color_average(selection_color(), o->selection_color(), 0.8) : o->color();
-  Fl_Flags f=sel?FL_SELECTED:0;
+    if ((x2 < x1+W) && what == RIGHT) x1 = x2 - W;
 
-  if (H >= 0) {
-      H--;
-      int adjust = (sel?box()->dy()+1:0);
-      button_box()->draw(x1, 0, W, H+adjust, c, f|FL_ALIGN_TOP);
-      o->draw_label(x1, button_box()->dy(), W, H, FL_ALIGN_CENTER);
-      if (focused() && o->visible())
-          focus_box()->draw(x1+button_box()->dx(),
-                            button_box()->dy(),
-                            W-button_box()->dw(),
-                            H-button_box()->dh()+adjust,
-                            FL_BLACK, FL_INVISIBLE|FL_ALIGN_TOP|f);
-  } else {
-      H = -H;
-      int adjust = (sel?(box()->dh()-box()->dy()):0);
-      button_box()->draw(x1, h()-H-adjust+1, W, H+adjust-2, c, f|FL_ALIGN_BOTTOM);
-      o->draw_label(x1, h()-H, W, H-1, FL_ALIGN_CENTER);
-      if(focused() && o->visible())
-          focus_box()->draw(x1+button_box()->dx(),
-                            h()-H+button_box()->dy()-adjust,
-                            W-button_box()->dw(),
-                            H-button_box()->dh()+adjust-1,
-                            FL_BLACK, FL_INVISIBLE|FL_ALIGN_BOTTOM|f);
-  }
+    Fl_Color c = (!sel && o==push_) ? fl_color_average(selection_color(), o->selection_color(), 0.8) : o->color();
+    Fl_Flags f=sel?FL_SELECTED:0;
+
+    if (H >= 0) {
+        H--;
+        int adjust = (sel?box()->dy()+1:0);
+        button_box()->draw(x1, 0, W, H+adjust, c, f|FL_ALIGN_TOP);
+        o->draw_label(x1, button_box()->dy(), W, H, FL_ALIGN_CENTER);
+        if (focused() && o->visible())
+            focus_box()->draw(x1+button_box()->dx(),
+                button_box()->dy(),
+                W-button_box()->dw(),
+                H-button_box()->dh()+adjust,
+                FL_BLACK, FL_INVISIBLE|FL_ALIGN_TOP|f);
+    } else {
+        H = -H;
+        int adjust = (sel?(box()->dh()-box()->dy()):0);
+        button_box()->draw(x1, h()-H-adjust+1, W, H+adjust-2, c, f|FL_ALIGN_BOTTOM);
+        o->draw_label(x1, h()-H, W, H-1, FL_ALIGN_CENTER);
+        if(focused() && o->visible())
+            focus_box()->draw(x1+button_box()->dx(),
+                h()-H+button_box()->dy()-adjust,
+                W-button_box()->dw(),
+                H-button_box()->dh()+adjust-1,
+                FL_BLACK, FL_INVISIBLE|FL_ALIGN_BOTTOM|f);
+    }
 }
 
 #define CORNER 5
@@ -457,7 +459,7 @@ public:
             fl_line(cX, y, x+w, y);
             C('M');
             fl_line(x+w, y, x+w, y+h-1);
-			
+
             x++; y++; w--; h--;
             fl_color(color);
             fl_newpath();
@@ -468,7 +470,7 @@ public:
             fl_fill();
 
         } else {
-						
+
             int cX=x+CORNER;
             int cY=y+h-CORNER;
             C('W');
@@ -533,7 +535,7 @@ static void revert(Fl_Style* s)
     s->box = FL_UP_BOX;
     s->button_box = &tabbox;
     s->focus_box = &tabfocusbox;
-	//s->focus_box = FL_NO_BOX;
+    //s->focus_box = FL_NO_BOX;
     s->color = FL_GRAY;
     s->selection_color = FL_GRAY;
 }
@@ -547,7 +549,7 @@ Fl_Tabs::Fl_Tabs(int X,int Y,int W, int H, const char *l)
 {
     style(default_style);
     push_ = 0;
-	tabH = 0;
+    tabH = 0;
 }
 
 

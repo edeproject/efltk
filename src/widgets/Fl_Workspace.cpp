@@ -16,13 +16,13 @@ static Fl_Named_Style style("MDI_Viewport", revert, &Fl_MDI_Viewport::default_st
 Fl_Named_Style* Fl_MDI_Viewport::default_style = &::style;
 
 Fl_MDI_Viewport::Fl_MDI_Viewport(int x, int y, int w, int h, const char *label)
-    : Fl_ViewportType(x,y,w,h, label)
+: Fl_ViewportType(x,y,w,h, label)
 {
     style(default_style);
 
     callback(cb_none);
 
-	_bar = 0;
+    _bar = 0;
     _menu = 0;
     _aot = 0;
     _max = 0;
@@ -33,36 +33,36 @@ Fl_MDI_Viewport::Fl_MDI_Viewport(int x, int y, int w, int h, const char *label)
 
 void Fl_MDI_Viewport::taskbar(Fl_MDI_Bar *bar)
 { 
-	if(_bar) _bar->clear();	
+    if(_bar) _bar->clear(); 
 
-	_bar = bar; 	
-	_bar->clear();
+    _bar = bar;     
+    _bar->clear();
 
     for(int n=0; n<children(); n++) {
         if(((child(n)->flags() & FL_MDI_WINDOW) == FL_MDI_WINDOW))
         {
             Fl_MDI_Window *win = (Fl_MDI_Window *)child(n);
-			_bar->add_task(win);
+            _bar->add_task(win);
         }
-	}
+    }
 
 }
 
 Fl_MDI_Bar *Fl_MDI_Viewport::taskbar() 
-{ 	
-	return _bar; 
+{   
+    return _bar; 
 }
 
 
 void Fl_MDI_Viewport::top(Fl_MDI_Window *win)
 {
-	if(win && win->toplevel()) {
-		win->show();
-		return;
-	}
+    if(win && win->toplevel()) {
+        win->show();
+        return;
+    }
 
     if(win && win!=_top) {
-		
+
         // Insert new top to last of the stack
         insert(*win, children());
 
@@ -76,41 +76,41 @@ void Fl_MDI_Viewport::top(Fl_MDI_Window *win)
 #else
             BringWindowToTop(fl_xid(win));
 #endif
-        }		
+        }       
         if(_top) {
             // set to inactive and redraw old _top
             _top->active(false);
             _top->redraw();
         }
 
-		if(_top && maximum()==_top) {
-        		_top->state_ = Fl_MDI_Window::NORMAL;
-			_top->titlebar()->show();
-			_top->resize(_top->_ox, _top->_oy, _top->_ow, _top->_oh);			
-			_top->relayout();
+        if(_top && maximum()==_top) {
+            _top->state_ = Fl_MDI_Window::NORMAL;
+            _top->titlebar()->show();
+            _top->resize(_top->_ox, _top->_oy, _top->_ow, _top->_oh);           
+            _top->relayout();
 
-			if(win->resizable()) {			
-				_max = win;
-				if(menu()) win->titlebar()->hide();
-				win->add_menu_buttons();
-				win->state_ = Fl_MDI_Window::MAXIMIZED;
-				win->_ox=win->x(); win->_oy=win->y(); win->_ow=win->w(); win->_oh=win->h();
-				win->resize(0, 0, w(), h());
-			} else 
-				_max = 0;
-		}
+            if(win->resizable()) {          
+                _max = win;
+                if(menu()) win->titlebar()->hide();
+                win->add_menu_buttons();
+                win->state_ = Fl_MDI_Window::MAXIMIZED;
+                win->_ox=win->x(); win->_oy=win->y(); win->_ow=win->w(); win->_oh=win->h();
+                win->resize(0, 0, w(), h());
+            } else 
+                _max = 0;
+        }
 
         // Set new top, and redraw it
         _top = win;
         _top->active(true);
-        _top->redraw();		
+        _top->redraw();     
 
-		if(_aot) insert(*win,_aot);
+        if(_aot) insert(*win,_aot);
 
-		focus(win);
+        focus(win);
 
-		if(_bar) _bar->update_tasks();
-        do_callback();
+        if(_bar) _bar->update_tasks();
+        do_callback(FL_DATA_CHANGE);
     }
 }
 
@@ -125,18 +125,18 @@ void Fl_MDI_Viewport::maximum(Fl_MDI_Window *w)
 int Fl_MDI_Viewport::handle(int ev)
 {
     switch(ev) {
-    case FL_SHOW:
-        Fl_ViewportType::handle(ev);
-        relayout_all();
-        redraw_all();
-        return 1;
-    case FL_FOCUS: return 1; //Grab keyboard focus
+        case FL_SHOW:
+            Fl_ViewportType::handle(ev);
+            relayout_all();
+            redraw_all();
+            return 1;
+        case FL_FOCUS: return 1; //Grab keyboard focus
 
-    case FL_KEYUP: {
-        if(Fl::event_state(FL_CTRL))
-            if(Fl::event_key()==FL_Tab)
-                cycle_windows();
-    }
+        case FL_KEYUP: {
+                if(Fl::event_state(FL_CTRL))
+                    if(Fl::event_key()==FL_Tab)
+                        cycle_windows();
+            }
     };
 
     return Fl_ViewportType::handle(ev);
@@ -164,7 +164,7 @@ void Fl_MDI_Viewport::attach(Fl_MDI_Window *w)
     if(w->toplevel())
         w->attach(this);
 
-	if(_bar) _bar->add_task(w);
+    if(_bar) _bar->add_task(w);
 }
 
 void Fl_MDI_Viewport::detach(Fl_MDI_Window *w)
@@ -173,7 +173,7 @@ void Fl_MDI_Viewport::detach(Fl_MDI_Window *w)
         return;
 
     w->detach();
-	if(_bar) _bar->remove_task(w);
+    if(_bar) _bar->remove_task(w);
 }
 
 void Fl_MDI_Viewport::close_all()
@@ -184,10 +184,10 @@ void Fl_MDI_Viewport::close_all()
         if(((o->flags() & FL_MDI_WINDOW) == FL_MDI_WINDOW))
         {
             Fl_MDI_Window *win = (Fl_MDI_Window *)o;
-            win->do_callback();
+            win->do_callback(FL_WND_CLOSE);
         }
     }
-	if(_bar) _bar->update_tasks();
+    if(_bar) _bar->update_tasks();
 }
 
 void Fl_MDI_Viewport::cb_draw_clip(void* v,int X, int Y, int W, int H)
@@ -412,13 +412,13 @@ Fl_Workspace::Fl_Workspace(int x, int y, int w, int h, const char *label)
     vscrollbar->linesize(10);
 
     _viewport = new Fl_MDI_Viewport(box()->dy(), box()->dx(), w-box()->dw(), h-box()->dh());
-	_viewport->parent(this);
-    
-	_viewport->begin();
+    _viewport->parent(this);
+
+    _viewport->begin();
 }
 
 Fl_Workspace::~Fl_Workspace()
-{	
+{   
 }
 
 void Fl_Workspace::focus_moves_pos(bool val)
@@ -453,29 +453,29 @@ void Fl_Workspace::show_window(Fl_MDI_Window *w)
 
 void Fl_Workspace::cb_vscrollbar(Fl_Widget *o, void *d) 
 {
-	Fl_Workspace *s = (Fl_Workspace*)d;
-	s->position(s->xposition(), int(((Fl_Scrollbar*)o)->value()));
+    Fl_Workspace *s = (Fl_Workspace*)d;
+    s->position(s->xposition(), int(((Fl_Scrollbar*)o)->value()));
 }
 
 void Fl_Workspace::cb_hscrollbar(Fl_Widget *o, void *d) 
 {
-	Fl_Workspace *s = (Fl_Workspace*)d;	
-	s->position(int(((Fl_Scrollbar*)o)->value()), s->yposition());
+    Fl_Workspace *s = (Fl_Workspace*)d; 
+    s->position(int(((Fl_Scrollbar*)o)->value()), s->yposition());
 }
 
 void Fl_Workspace::position(int X, int Y) 
 {
-	int dx = xposition_-X;
-	int dy = yposition_-Y;
-	if (!dx && !dy) return;
-	
-	xposition_ = X;
-	yposition_ = Y;
-	
-	layoutdx += dx;
-	layoutdy += dy;
-	
-	relayout();		
+    int dx = xposition_-X;
+    int dy = yposition_-Y;
+    if (!dx && !dy) return;
+
+    xposition_ = X;
+    yposition_ = Y;
+
+    layoutdx += dx;
+    layoutdy += dy;
+
+    relayout();     
 }
 
 int Fl_Workspace::handle(int ev)
@@ -528,9 +528,9 @@ void Fl_Workspace::layout()
     viewport()->scrolldy(dy);
     layoutdx = layoutdy = 0;
 
-    int mL = 0;	//Left most pos
+    int mL = 0; //Left most pos
     int mR = w()-box()->dw();//Right most pos
-    int mT = 0;	//Top most pos
+    int mT = 0; //Top most pos
     int mB = h()-box()->dh();//Bottom most pos
 
     if(vscrollbar->visible()) { mR-=sw; }
@@ -660,18 +660,18 @@ void Fl_Workspace::tileH()
             Fl_MDI_Window *w = (Fl_MDI_Window *)widget;
             if(!w->minimized() && w->visible())
             {
-				if(w->maximized()) {
-					w->state_ = Fl_MDI_Window::NORMAL;
-					w->titlebar()->show();
-				}
+                if(w->maximized()) {
+                    w->state_ = Fl_MDI_Window::NORMAL;
+                    w->titlebar()->show();
+                }
                 w->resize(f_x,f_y,m_width,m_height);
-                f_y += m_height;				
+                f_y += m_height;                
                 w->relayout();
             }
         }
         i++;
     }
-	viewport()->maximum(0);
+    viewport()->maximum(0);
 }
 
 void Fl_Workspace::tileV()
@@ -695,10 +695,10 @@ void Fl_Workspace::tileV()
             Fl_MDI_Window *w = (Fl_MDI_Window *)widget;
             if(!w->minimized() && w->visible())
             {
-				if(w->maximized()) {
-					w->state_ = Fl_MDI_Window::NORMAL;
-					w->titlebar()->show();
-				}
+                if(w->maximized()) {
+                    w->state_ = Fl_MDI_Window::NORMAL;
+                    w->titlebar()->show();
+                }
                 w->resize(f_x,f_y,m_width, m_height);
                 f_x += m_width;
                 w->relayout();
@@ -716,7 +716,7 @@ void Fl_Workspace::cascade()
         return;
 
     int i=0;
-	int f_x=0, f_y=0;
+    int f_x=0, f_y=0;
     Fl_Widget *widget;
     while(i<viewport()->children())
     {
@@ -726,19 +726,18 @@ void Fl_Workspace::cascade()
             Fl_MDI_Window *w = (Fl_MDI_Window *)widget;
             if(!w->minimized() && w->visible())
             {
-				if(w->maximized()) {
-					w->state_ = Fl_MDI_Window::NORMAL;
-					w->titlebar()->show();
-				}
+                if(w->maximized()) {
+                    w->state_ = Fl_MDI_Window::NORMAL;
+                    w->titlebar()->show();
+                }
                 w->resize(f_x, f_y, width()-(width()/4), height()-(height()/4));
                 f_x += w->titlebar()->h()+1;
-				f_y += w->titlebar()->h()+1;
-                
+                f_y += w->titlebar()->h()+1;
+
                 w->relayout();
             }
         }
         i++;
     }
-	viewport()->maximum(0);
+    viewport()->maximum(0);
 }
-

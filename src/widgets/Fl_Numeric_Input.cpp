@@ -42,12 +42,12 @@ void Fl_Numeric_Input::value(double v)
 {
     char buf[100];
     sprintf(buf, "%g", v);
-    #if 0
+#if 0
     if (v > 1 || v < -1)
         sprintf(buf, "%.4g", v);
     else
         sprintf(buf, "%.3g", v);
-    #endif
+#endif
     Fl_Input::value(buf);
 }
 
@@ -76,21 +76,21 @@ int Fl_Numeric_Input::handle(int event)
             break;
         case FL_MOUSEWHEEL:
             return handle_arrow(Fl::event_dy());
-    case FL_PUSH:
-        if (Fl::event_state(FL_ALT))
-            clickmouse = Fl::event_x();
-        break;
-
-    case FL_DRAG:
-        if(Fl::event_state(FL_ALT|FL_CTRL)) {
-            int dx = (Fl::event_x()-clickmouse)/5;
-            if (dx<=-1 || dx>=1) {
+        case FL_PUSH:
+            if (Fl::event_state(FL_ALT))
                 clickmouse = Fl::event_x();
-                return handle_arrow(dx);
+            break;
+
+        case FL_DRAG:
+            if(Fl::event_state(FL_ALT|FL_CTRL)) {
+                int dx = (Fl::event_x()-clickmouse)/5;
+                if (dx<=-1 || dx>=1) {
+                    clickmouse = Fl::event_x();
+                    return handle_arrow(dx);
+                }
+                return 1;
             }
-            return 1;
-        }
-        break;
+            break;
 
     }
     return Fl_Input::handle(event);
@@ -106,7 +106,7 @@ int Fl_Numeric_Input::handle_arrow(int dir)
 {
     if (readonly()) { fl_beep(); return 0; }
 
-	if(!locale) locale = localeconv();
+    if(!locale) locale = localeconv();
     decimal = locale->decimal_point[0];
 
     // locate the character to change:
@@ -140,7 +140,7 @@ int Fl_Numeric_Input::handle_arrow(int dir)
         }
         replace(q,q,'0');
     }
-    __INT:
+__INT:
 
     // if it's a negative number we reverse direction:
     for (p = q-1; p >= 0; p--)
@@ -152,7 +152,7 @@ int Fl_Numeric_Input::handle_arrow(int dir)
 
     if (dir > 0)
     {
-        UP_CASE:
+    UP_CASE:
         // up to a larger absolute value, which is much simpler:
         for (p = q; p >= 0; p--)
         {
@@ -224,12 +224,12 @@ int Fl_Numeric_Input::handle_arrow(int dir)
             replace(p, p+1, '9');
         }
     }
-    DONE:
+DONE:
     position(q, q+1);
     when(save_when);
     if (save_when&(FL_WHEN_CHANGED|FL_WHEN_ENTER_KEY) && changed())
     {
-        clear_changed(); do_callback();
+        clear_changed(); do_callback(FL_KEY);
     }
     return 1;
 }

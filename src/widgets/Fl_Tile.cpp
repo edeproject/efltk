@@ -89,11 +89,11 @@ static void set_cursor(Fl_Tile*t, Fl_Cursor c)
     static Fl_Cursor cursor;
     if (cursor == c) return;
     cursor = c;
-    #ifdef __sgi
+#ifdef __sgi
     t->window()->cursor(c,FL_RED,FL_WHITE);
-    #else
+#else
     t->window()->cursor(c);
-    #endif
+#endif
 }
 
 
@@ -110,9 +110,9 @@ int Fl_Tile::handle(int event)
     static int sdrag;
     static int sdx, sdy;
     static int sx, sy;
-    #define DRAGH 1
-    #define DRAGV 2
-    #define GRABAREA 4
+#define DRAGH 1
+#define DRAGV 2
+#define GRABAREA 4
 
     int mx = Fl::event_x();
     int my = Fl::event_y();
@@ -123,46 +123,46 @@ int Fl_Tile::handle(int event)
         case FL_MOVE:
         case FL_ENTER:
         case FL_PUSH:
-        {
-            int mindx = 100;
-            int mindy = 100;
-            int oldx = 0;
-            int oldy = 0;
-            int* q = sizes();
-            int* p = q+8;
-            int numchildren = children();
-            for (int i=0; i < numchildren; p += 4, i++)
             {
-                Fl_Widget* o = child(i);
-                if (o == resizable()) continue;
-                if (p[1]<q[1] && o->y()<=my+GRABAREA && o->y()+o->h()>=my-GRABAREA)
+                int mindx = 100;
+                int mindy = 100;
+                int oldx = 0;
+                int oldy = 0;
+                int* q = sizes();
+                int* p = q+8;
+                int numchildren = children();
+                for (int i=0; i < numchildren; p += 4, i++)
                 {
-                    int t = mx - (o->x()+o->w());
-                    if (abs(t) < mindx)
+                    Fl_Widget* o = child(i);
+                    if (o == resizable()) continue;
+                    if (p[1]<q[1] && o->y()<=my+GRABAREA && o->y()+o->h()>=my-GRABAREA)
                     {
-                        sdx = t;
-                        mindx = abs(t);
-                        oldx = p[1];
+                        int t = mx - (o->x()+o->w());
+                        if (abs(t) < mindx)
+                        {
+                            sdx = t;
+                            mindx = abs(t);
+                            oldx = p[1];
+                        }
+                    }
+                    if (p[3]<q[3] && o->x()<=mx+GRABAREA && o->x()+o->w()>=mx-GRABAREA)
+                    {
+                        int t = my - (o->y()+o->h());
+                        if (abs(t) < mindy)
+                        {
+                            sdy = t;
+                            mindy = abs(t);
+                            oldy = p[3];
+                        }
                     }
                 }
-                if (p[3]<q[3] && o->x()<=mx+GRABAREA && o->x()+o->w()>=mx-GRABAREA)
-                {
-                    int t = my - (o->y()+o->h());
-                    if (abs(t) < mindy)
-                    {
-                        sdy = t;
-                        mindy = abs(t);
-                        oldy = p[3];
-                    }
-                }
+                sdrag = 0; sx = sy = 0;
+                if (mindx <= GRABAREA) {sdrag = DRAGH; sx = oldx;}
+                if (mindy <= GRABAREA) {sdrag |= DRAGV; sy = oldy;}
+                set_cursor(this, cursors[sdrag]);
+                if (sdrag) return 1;
+                return Fl_Group::handle(event);
             }
-            sdrag = 0; sx = sy = 0;
-            if (mindx <= GRABAREA) {sdrag = DRAGH; sx = oldx;}
-            if (mindy <= GRABAREA) {sdrag |= DRAGV; sy = oldy;}
-            set_cursor(this, cursors[sdrag]);
-            if (sdrag) return 1;
-            return Fl_Group::handle(event);
-        }
 
         case FL_LEAVE:
             set_cursor(this, FL_CURSOR_DEFAULT);
@@ -172,29 +172,29 @@ int Fl_Tile::handle(int event)
             // This is necessary if CONSOLIDATE_MOTION in Fl_x.C is turned off:
             // if (damage()) return 1; // don't fall behind
         case FL_RELEASE:
-        {
-            if (!sdrag) return 0;// should not happen
-            Fl_Widget* r = resizable(); if (!r) r = this;
-            int newx;
-            if (sdrag&DRAGH)
             {
-                newx = Fl::event_x()-sdx;
-                if (newx < r->x()) newx = r->x();
-                else if (newx > r->x()+r->w()) newx = r->x()+r->w();
-            } else
-            newx = sx;
-            int newy;
-            if (sdrag&DRAGV)
-            {
-                newy = Fl::event_y()-sdy;
-                if (newy < r->y()) newy = r->y();
-                else if (newy > r->y()+r->h()) newy = r->y()+r->h();
-            } else
-            newy = sy;
-            position(sx,sy,newx,newy);
-            do_callback();
-            return 1;
-        }
+                if (!sdrag) return 0;// should not happen
+                Fl_Widget* r = resizable(); if (!r) r = this;
+                int newx;
+                if (sdrag&DRAGH)
+                {
+                    newx = Fl::event_x()-sdx;
+                    if (newx < r->x()) newx = r->x();
+                    else if (newx > r->x()+r->w()) newx = r->x()+r->w();
+                } else
+                    newx = sx;
+                int newy;
+                if (sdrag&DRAGV)
+                {
+                    newy = Fl::event_y()-sdy;
+                    if (newy < r->y()) newy = r->y();
+                    else if (newy > r->y()+r->h()) newy = r->y()+r->h();
+                } else
+                    newy = sy;
+                position(sx,sy,newx,newy);
+                do_callback(event);
+                return 1;
+            }
 
     }
 

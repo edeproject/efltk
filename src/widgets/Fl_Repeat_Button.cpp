@@ -33,7 +33,7 @@ void Fl_Repeat_Button::repeat_callback(void *v)
 {
     Fl_Button *b = (Fl_Button*)v;
     Fl::add_timeout(REPEAT,repeat_callback,b);
-    b->do_callback();
+    b->do_callback(FL_DATA_CHANGE);
 }
 
 
@@ -49,13 +49,13 @@ int Fl_Repeat_Button::handle(int event)
         case FL_PUSH:
         case FL_DRAG:
             newval = Fl::event_inside(0, 0, w(), h());
-            J1:
+        J1:
             if (value(newval))
             {
                 if (newval)
                 {
                     Fl::add_timeout(INITIALREPEAT,repeat_callback,this);
-                    do_callback();
+                    do_callback(FL_DATA_CHANGE);
                 }
                 else
                 {

@@ -46,31 +46,31 @@ static void cb_menu(Fl_Widget *w, void *d)
     if(!menu_widget) return;
     char *selection = 0;
     switch((int)d) {
-    case COPY:
-        selection = (char *)menu_widget->buffer()->selection_text();
-        if(*selection) {
-            Fl::copy(selection, strlen(selection), true);
-        }
-        delete []selection;
-        break;
-    case CUT:
-        selection = (char *)menu_widget->buffer()->selection_text();
-        if(*selection) {
-            Fl::copy(selection, strlen(selection), true);
-            menu_widget->buffer()->remove_selection();
-        }
-        delete []selection;
-        break;
-    case PASTE:
-        Fl::paste(*menu_widget, true);
-        break;
-    default:
-        break;
+        case COPY:
+            selection = (char *)menu_widget->buffer()->selection_text();
+            if(*selection) {
+                Fl::copy(selection, strlen(selection), true);
+            }
+            delete []selection;
+            break;
+        case CUT:
+            selection = (char *)menu_widget->buffer()->selection_text();
+            if(*selection) {
+                Fl::copy(selection, strlen(selection), true);
+                menu_widget->buffer()->remove_selection();
+            }
+            delete []selection;
+            break;
+        case PASTE:
+            Fl::paste(*menu_widget, true);
+            break;
+        default:
+            break;
     };
 }
 
 static void revert(Fl_Style *s) {
-	s->text_font = FL_COURIER;
+    s->text_font = FL_COURIER;
     s->box = FL_DOWN_BOX;
     s->color = FL_WHITE;
     s->button_box = FL_BORDER_BOX;
@@ -159,37 +159,37 @@ default_key_bindings[] =
     { FL_Page_Up,   FL_CTRL|FL_SHIFT,         Fl_Text_Editor::kf_c_s_move   },
     { FL_Page_Down, FL_CTRL|FL_SHIFT,         Fl_Text_Editor::kf_c_s_move   },
     { 'a',          FL_CTRL,                  ctrl_a                        },
-    //{ 'z',          FL_CTRL,                  Fl_Text_Editor::undo	  },
+    //{ 'z',          FL_CTRL,                  Fl_Text_Editor::undo      },
     { FL_Insert,    FL_SHIFT,                 Fl_Text_Editor::kf_paste      },
     { FL_Delete,    FL_SHIFT,                 Fl_Text_Editor::kf_cut        },
     { 'z',          FL_CTRL,                  Fl_Text_Editor::kf_undo        },
     { 'x',          FL_CTRL,                  Fl_Text_Editor::kf_cut        },
     { 'c',          FL_CTRL,                  Fl_Text_Editor::kf_copy       },
-	{ FL_Insert,    FL_CTRL,                  Fl_Text_Editor::kf_copy       },
-    { 'v',          FL_CTRL,                  Fl_Text_Editor::kf_paste      },	
+    { FL_Insert,    FL_CTRL,                  Fl_Text_Editor::kf_copy       },
+    { 'v',          FL_CTRL,                  Fl_Text_Editor::kf_paste      },  
     { 0,            0,                        0                             }
 };
 
 #if HAVE_XUTF8
 static int utf_len(char c)
 {
-  if (!(c & 0x80)) return 1;
-  if (c & 0x40) {
-    if (c & 0x20) {
-      if (c & 0x10) {
-        if (c & 0x08) {
-          if (c & 0x04) {
-            return 6;
-          }
-          return 5;
+    if (!(c & 0x80)) return 1;
+    if (c & 0x40) {
+        if (c & 0x20) {
+            if (c & 0x10) {
+                if (c & 0x08) {
+                    if (c & 0x04) {
+                        return 6;
+                    }
+                    return 5;
+                }
+                return 4;
+            }
+            return 3;
         }
-        return 4;
-      }
-      return 3;
+        return 2;
     }
-    return 2;
-  }
-  return 0;
+    return 0;
 }
 #endif
 
@@ -266,20 +266,20 @@ int Fl_Text_Editor::kf_default(int c, Fl_Text_Editor* e)
         case 'n': key = FL_Down; goto MOVE;
         case 'e': key = FL_End; goto MOVE;
         MOVE:
-        if (Fl::event_state(FL_ALT))
-        {
-            if (Fl::event_state(FL_SHIFT))
-                return Fl_Text_Editor::kf_c_s_move(key,e);
+            if (Fl::event_state(FL_ALT))
+            {
+                if (Fl::event_state(FL_SHIFT))
+                    return Fl_Text_Editor::kf_c_s_move(key,e);
+                else
+                    return Fl_Text_Editor::kf_ctrl_move(key,e);
+            }
             else
-                return Fl_Text_Editor::kf_ctrl_move(key,e);
-        }
-        else
-        {
-            if (Fl::event_state(FL_SHIFT))
-                return Fl_Text_Editor::kf_shift_move(key,e);
-            else
-                return Fl_Text_Editor::kf_move(key,e);
-        }
+            {
+                if (Fl::event_state(FL_SHIFT))
+                    return Fl_Text_Editor::kf_shift_move(key,e);
+                else
+                    return Fl_Text_Editor::kf_move(key,e);
+            }
         case 'd':
             return Fl_Text_Editor::kf_delete(c,e);
         case 'h':
@@ -320,7 +320,7 @@ int Fl_Text_Editor::kf_default(int c, Fl_Text_Editor* e)
 
 
 Fl_Text_Editor::Key_Func
-Fl_Text_Editor::bound_key_function(int key, int state, Key_Binding* list)
+    Fl_Text_Editor::bound_key_function(int key, int state, Key_Binding* list)
 {
     Key_Binding* current;
     for (current = list; current; current = current->next)
@@ -333,7 +333,7 @@ Fl_Text_Editor::bound_key_function(int key, int state, Key_Binding* list)
 
 
 void
-Fl_Text_Editor::remove_all_key_bindings(Key_Binding** list)
+    Fl_Text_Editor::remove_all_key_bindings(Key_Binding** list)
 {
     Key_Binding *current, *next;
     for (current = *list; current; current = next)
@@ -346,7 +346,7 @@ Fl_Text_Editor::remove_all_key_bindings(Key_Binding** list)
 
 
 void
-Fl_Text_Editor::remove_key_binding(int key, int state, Key_Binding** list)
+    Fl_Text_Editor::remove_key_binding(int key, int state, Key_Binding** list)
 {
     Key_Binding *current, *last = 0;
     for (current = *list; current; last = current, current = current->next)
@@ -359,8 +359,8 @@ Fl_Text_Editor::remove_key_binding(int key, int state, Key_Binding** list)
 
 
 void
-Fl_Text_Editor::add_key_binding(int key, int state, Key_Func function,
-Key_Binding** list)
+    Fl_Text_Editor::add_key_binding(int key, int state, Key_Func function,
+    Key_Binding** list)
 {
     Key_Binding* kb = new Key_Binding;
     kb->key = key;
@@ -385,16 +385,16 @@ int Fl_Text_Editor::kf_backspace(int, Fl_Text_Editor* e)
 {
     if (!e->buffer()->selected() && e->move_left()) {
 #if HAVE_XUTF8    
-	int l = 1;
+        int l = 1;
         char c = e->buffer()->character(e->insert_position());
         if (c & 0x80 && c & 0x40) {
-    	    l = utf_len(c);
-	} 
-	e->buffer()->select(e->insert_position(), e->insert_position()+l);
+            l = utf_len(c);
+        } 
+        e->buffer()->select(e->insert_position(), e->insert_position()+l);
 #else
         e->buffer()->select(e->insert_position(), e->insert_position()+1);
-#endif	
-    }	
+#endif  
+    }   
     kill_selection(e);
     e->show_insert_position();
     return 1;
@@ -404,8 +404,7 @@ int Fl_Text_Editor::kf_backspace(int, Fl_Text_Editor* e)
 int Fl_Text_Editor::kf_enter(int, Fl_Text_Editor* e)
 {
     if (e->when() & FL_WHEN_ENTER_KEY) {
-        e->do_callback();
-	
+        e->do_callback(FL_ENTER);   
     }
 
     kill_selection(e);
@@ -590,15 +589,15 @@ int Fl_Text_Editor::kf_delete(int, Fl_Text_Editor* e)
     if (!e->buffer()->selected()) {
 #if HAVE_XUTF8    
         int l = 1;
-	char c = e->buffer()->character(e->insert_position());
+        char c = e->buffer()->character(e->insert_position());
         if (c & 0x80 && c & 0x40) {
-	    l = utf_len(c);
-	} 
-	e->buffer()->select(e->insert_position(), e->insert_position()+l);
+            l = utf_len(c);
+        } 
+        e->buffer()->select(e->insert_position(), e->insert_position()+l);
 #else
         e->buffer()->select(e->insert_position(), e->insert_position()+1);
-#endif	
-    }	
+#endif  
+    }   
     kill_selection(e);
     e->show_insert_position();
     return 1;
@@ -626,10 +625,12 @@ int Fl_Text_Editor::kf_cut(int c, Fl_Text_Editor* e)
 int Fl_Text_Editor::kf_undo(int c, Fl_Text_Editor* e)
 {
     int pos = e->buffer()->undo();
-    if(pos>-1) {
+    if (pos>-1) {
         e->insert_position(pos);
         e->show_insert_position();
-        if(e->when()&FL_WHEN_CHANGED) e->do_callback(); else e->set_changed();
+        if (e->when()&FL_WHEN_CHANGED) 
+            e->do_callback(FL_DATA_CHANGE); 
+        else e->set_changed();
     }
     return 1;
 }
@@ -651,7 +652,9 @@ int Fl_Text_Editor::kf_select_all(int, Fl_Text_Editor* e)
 
 int Fl_Text_Editor::handle_key()
 {
-    if(when()&FL_WHEN_CHANGED) do_callback(); else set_changed();
+    if (when()&FL_WHEN_CHANGED) 
+        do_callback(FL_DATA_CHANGE); 
+    else set_changed();
 
     // Call fltk's rules to try to turn this into a printing character.
     // This uses the right-hand ctrl key as a "compose prefix" and returns
@@ -674,7 +677,7 @@ int Fl_Text_Editor::handle_key()
 
     if (key >= FL_Shift_L && key <= FL_Meta_R) {
        //puts ("Modifier pressed");
-       return false;
+        return false;
     }
 
     int state = Fl::event_state() & (FL_SHIFT|FL_CTRL|FL_ALT|FL_WIN);
@@ -694,60 +697,64 @@ int Fl_Text_Editor::handle(int event)
     {
         switch (event)
         {
-        case FL_PUSH:
-            if (Fl::event_button() == 2)
-            {
-                dragType = -1;
-                Fl::paste(*this,false);
-            } else if(Fl::event_button()==3) {
-                char *selection = (char *)buffer()->selection_text();
-                if(!*selection) {
-                    menu_->find("Cut")->deactivate();
-                    menu_->find("Copy")->deactivate();
-                } else {
-                    menu_->find("Cut")->activate();
-                    menu_->find("Copy")->activate();
+            case FL_PUSH:
+                if (Fl::event_button() == 2)
+                {
+                    dragType = -1;
+                    Fl::paste(*this,false);
+                } else if(Fl::event_button()==3) {
+                    char *selection = (char *)buffer()->selection_text();
+                    if(!*selection) {
+                        menu_->find("Cut")->deactivate();
+                        menu_->find("Copy")->deactivate();
+                    } else {
+                        menu_->find("Cut")->activate();
+                        menu_->find("Copy")->activate();
+                    }
+                    delete []selection;
+                    menu_widget = this;
+                    menu_->popup(Fl::event_x(), Fl::event_y());
+                    menu_widget = 0;
                 }
-                delete []selection;
-                menu_widget = this;
-                menu_->popup(Fl::event_x(), Fl::event_y());
-                menu_widget = 0;
-            }
-            return 1;
+                return 1;
 
-        case FL_FOCUS:
-            return 3;        // indicate that this widget should get initial focus
+            case FL_FOCUS:
+                return 3;        // indicate that this widget should get initial focus
 
-        case FL_UNFOCUS:
-	    if (when() & FL_WHEN_RELEASE) do_callback();
-            return 1;
+            case FL_UNFOCUS:
+                if (when() & FL_WHEN_RELEASE) 
+                    do_callback(event);
+                return 1;
 
-        default:
-            return 1;
+            default:
+                return 1;
         }
     }
     else
     {
         switch (event)
         {
-        case FL_HIDE:
-            if (when() & FL_WHEN_RELEASE) do_callback();
-	    
-            return 1;
+            case FL_HIDE:
+                if (when() & FL_WHEN_RELEASE) 
+                    do_callback(event);
+                return 1;
 
-        case FL_KEY:
-            return handle_key();
+            case FL_KEY:
+                return handle_key();
 
-        case FL_PASTE:
-            if(!Fl::event_length() || !Fl::event_text()) return 0;
+            case FL_PASTE:
+                if(!Fl::event_length() || !Fl::event_text()) 
+                    return 0;
 
-            if(when()&FL_WHEN_CHANGED) do_callback(); else set_changed();
+                if(when()&FL_WHEN_CHANGED) 
+                    do_callback(FL_DATA_CHANGE); 
+                else set_changed();
 
-            buffer()->remove_selection();
-            if (insert_mode()) insert(Fl::event_text());
-            else overstrike(Fl::event_text());
-            show_insert_position();
-            return 1;
+                buffer()->remove_selection();
+                if (insert_mode()) insert(Fl::event_text());
+                else overstrike(Fl::event_text());
+                show_insert_position();
+                return 1;
 
             // CET - FIXME - this will clobber the window's current cursor state!
             //    case FL_ENTER:

@@ -1329,7 +1329,7 @@ void propagate_group(Fl_Group* g, void* v) {
     if (v == LOAD) {
       for (int i=g->children(); i--;) {
           Fl_Widget* o = g->child(i);
-          o->do_callback(o,LOAD);
+          o->do_callback(o,LOAD,g->event());
     }
   } else {
     for (int i=g->children(); i--;) {
@@ -1337,7 +1337,7 @@ void propagate_group(Fl_Group* g, void* v) {
       if (o->changed() || o->callback()==(Fl_Callback*)propagate_group ||
           o->callback()==(Fl_Callback*)propagate_tabs)
       {
-	o->do_callback();
+	o->do_callback(g->event());
 	if (haderror) return;
 	o->clear_changed();
       }

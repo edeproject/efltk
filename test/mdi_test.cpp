@@ -67,7 +67,7 @@ void test_cb(Fl_Widget* w, void*) {
         printf("Menu: %s - %s\n", m->label().c_str(), Fl::key_name(m->shortcut()));
     else
         printf("Menu: %s\n", m->label().c_str());
-    m->do_callback();
+    m->do_callback(FL_MENU_ITEM);
 }
 
 void cb_anim(Fl_Widget *w, void *data) {

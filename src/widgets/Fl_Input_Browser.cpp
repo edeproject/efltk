@@ -26,16 +26,16 @@ public:
 // Use this to copy all the items out of one group into another:
 class Share_List : public Fl_List {
 public:
-  Fl_Menu_* other;
-  int children(const Fl_Menu_*, const int* indexes, int level) {
-    return other->children(indexes, level);
-  }
-  Fl_Widget* child(const Fl_Menu_*, const int* indexes, int level) {
-    return other->child(indexes, level);
-  }
-  void flags_changed(const Fl_Menu_*, Fl_Widget* widget) {
-    other->list()->flags_changed(other,widget);
-  }
+    Fl_Menu_* other;
+    int children(const Fl_Menu_*, const int* indexes, int level) {
+        return other->children(indexes, level);
+    }
+    Fl_Widget* child(const Fl_Menu_*, const int* indexes, int level) {
+        return other->child(indexes, level);
+    }
+    void flags_changed(const Fl_Menu_*, Fl_Widget* widget) {
+        other->list()->flags_changed(other,widget);
+    }
 } share_list; // only one instance of this.
 
 //////////////////////////////////////////////
@@ -60,16 +60,16 @@ int ComboBrowser::handle(int event)
     if(Fl::event_key()==FL_Down && (!item() || children()==1)) {
         item(child(0));
         Fl_Group::focus(item());
-    }	
+    }   
 
     if((event==FL_SHORTCUT||event==FL_KEY) && !(combo->type()&Fl_Input_Browser::NONEDITABLE)) {
         if( (Fl::event_key()!=FL_Escape) &&
-           (Fl::event_key()!=FL_Up) &&
-           (Fl::event_key()!=FL_Down) &&
-           !(Fl::event_key()==FL_Enter && item()) )
+                (Fl::event_key()!=FL_Up) &&
+                (Fl::event_key()!=FL_Down) &&
+                !(Fl::event_key()==FL_Enter && item()) )
             return combo->input()->handle(FL_KEY);
     }
-	
+
     static bool was_wheel=false;
     if(was_wheel) {
         was_wheel=false;
@@ -77,47 +77,47 @@ int ComboBrowser::handle(int event)
     }
 
     switch (event) {
-    case FL_MOUSEWHEEL: {
-        was_wheel=true;
-        break;
-    }
+        case FL_MOUSEWHEEL: {
+                was_wheel=true;
+                break;
+            }
 
-    case FL_KEY:
-	case FL_SHORTCUT:
-        if(Fl::event_key() == FL_Escape) {
-            combo->hide_popup();
-            return 1;
-        }
-		break;
+        case FL_KEY:
+        case FL_SHORTCUT:
+            if(Fl::event_key() == FL_Escape) {
+                combo->hide_popup();
+                return 1;
+            }
+            break;
 
-    case FL_PUSH: {
-        Fl_Rect size_grip(w()-SIZE_GRIP, h(), SIZE_GRIP, SIZE_GRIP);
-        if(size_grip.posInRect(Fl::event_x(), Fl::event_y())) return 1;
+        case FL_PUSH: {
+                Fl_Rect size_grip(w()-SIZE_GRIP, h(), SIZE_GRIP, SIZE_GRIP);
+                if(size_grip.posInRect(Fl::event_x(), Fl::event_y())) return 1;
 
-        if(Fl::event_x() > w() || Fl::event_x() < x() ||
-           Fl::event_y() > h() || Fl::event_y() < y() ) {
-            combo->hide_popup();
-            if(Fl::event_y() < y()-combo->h()) combo->send(FL_PUSH);
-            return 1;
-        }
-        break;
-    }
+                if(Fl::event_x() > w() || Fl::event_x() < x() ||
+                        Fl::event_y() > h() || Fl::event_y() < y() ) {
+                    combo->hide_popup();
+                    if(Fl::event_y() < y()-combo->h()) combo->send(FL_PUSH);
+                    return 1;
+                }
+                break;
+            }
 
-    case FL_MOVE:
-        event = FL_DRAG;
+        case FL_MOVE:
+            event = FL_DRAG;
 
-    case FL_RELEASE:
-    case FL_DRAG:
+        case FL_RELEASE:
+        case FL_DRAG:
         // this causes a drag-in to the widget to work:
-        if (Fl::event_inside(0, 0, w(), h()))
-            Fl::pushed(this);
-        else {
-			Fl::pushed(0);
-			return 0;
-		}
+            if (Fl::event_inside(0, 0, w(), h()))
+                Fl::pushed(this);
+            else {
+                Fl::pushed(0);
+                return 0;
+            }
 
-    default:
-        break;
+        default:
+            break;
     }
 
     return Fl_Browser::handle(event);
@@ -142,7 +142,7 @@ void ComboBrowser::browser_cb(Fl_Widget *w, void *data)
     combo->redraw(FL_DAMAGE_VALUE);
     combo->hide_popup();
 
-    combo->do_callback();
+    combo->do_callback(FL_DATA_CHANGE);
 }
 
 //////////////////////////////////////////////
@@ -153,40 +153,40 @@ int ComboWindow::handle(int event)
     static bool resizing = false;
 
     switch (event) {
-    case FL_PUSH: {
-        Fl_Rect size_grip(w()-SIZE_GRIP, h()-SIZE_GRIP, SIZE_GRIP, SIZE_GRIP);
-        if(size_grip.posInRect(Fl::event_x(), Fl::event_y())) {
-            resizing = true;            
-			return 1;
-        }		
-		break;
-    }
+        case FL_PUSH: {
+                Fl_Rect size_grip(w()-SIZE_GRIP, h()-SIZE_GRIP, SIZE_GRIP, SIZE_GRIP);
+                if(size_grip.posInRect(Fl::event_x(), Fl::event_y())) {
+                    resizing = true;            
+                    return 1;
+                }       
+                break;
+            }
 
-    case FL_DRAG:
-        if(resizing) {
-            int W=Fl::event_x(), H=Fl::event_y();
-            if(W < combo->w()) W = combo->w();
-            if(H < combo->h()) H = combo->h();
-            size(W, H);
-            combo->list->Fl_Group::size(W-box()->dw(), H-SIZE_GRIP-box()->dh());
+        case FL_DRAG:
+            if(resizing) {
+                int W=Fl::event_x(), H=Fl::event_y();
+                if(W < combo->w()) W = combo->w();
+                if(H < combo->h()) H = combo->h();
+                size(W, H);
+                combo->list->Fl_Group::size(W-box()->dw(), H-SIZE_GRIP-box()->dh());
+                return 1;
+            }
+            break;
+
+        case FL_RELEASE:
+            if(resizing) {
+                resizing=false;
+                return 1;
+            }
+            break;
+
+        case FL_KEY:
+        case FL_MOVE:
+            if(combo->list) combo->list->handle(event);
             return 1;
-        }
-		break;
 
-    case FL_RELEASE:
-        if(resizing) {
-            resizing=false;
-            return 1;
-        }
-		break;
-
-    case FL_KEY:
-    case FL_MOVE:
-        if(combo->list) combo->list->handle(event);
-        return 1;
-
-	default:
-		break;
+        default:
+            break;
     }
     return Fl_Menu_Window::handle(event);
 }
@@ -209,7 +209,7 @@ static Fl_Named_Style style("Input_Browser", 0, &Fl_Input_Browser::default_style
 Fl_Named_Style* Fl_Input_Browser::default_style = &::style;
 
 void Fl_Input_Browser::input_cb(Fl_Input *in, Fl_Input_Browser *data) {
-    data->do_callback();
+    data->do_callback(FL_DATA_CHANGE);
 }
 
 #define popup_minw 100
@@ -237,7 +237,7 @@ Fl_Input_Browser::Fl_Input_Browser(int x, int y, int w, int h, const char *l)
 Fl_Input_Browser::~Fl_Input_Browser()
 {
     input()->parent(0);    
-	if(win) delete win;
+    if(win) delete win;
 }
 
 int Fl_Input_Browser::handle(int e)
@@ -269,18 +269,18 @@ int Fl_Input_Browser::handle(int e)
     }
 
     switch (e) {
-    case FL_PUSH: {
-		if(!win || !win->visible())
-			popup();
-        return 1;
-    }
+        case FL_PUSH: {
+                if(!win || !win->visible())
+                    popup();
+                return 1;
+            }
 
-    case FL_FOCUS:
-    case FL_UNFOCUS:
-        if (type()&NONEDITABLE) break;
-        return input()->handle(e);
+        case FL_FOCUS:
+        case FL_UNFOCUS:
+            if (type()&NONEDITABLE) break;
+            return input()->handle(e);
 
-    case FL_ENTER: case FL_MOVE: return 1;
+        case FL_ENTER: case FL_MOVE: return 1;
     }
     return 0;
 }
@@ -331,31 +331,31 @@ void Fl_Input_Browser::popup()
     bool resize_only = false;
 
     if(!win || !win->visible()) 
-	{
+    {
         Fl_Group::current(0);
-		
-		if(!win) {
-			win = new ComboWindow(0,0,0,0);
-			win->set_override();
 
-			win->begin();
-			list = new ComboBrowser(0,0,0,0);
-			list->box(FL_FLAT_BOX);
-			list->callback(ComboBrowser::browser_cb, this);
-	        list->when(FL_WHEN_CHANGED | FL_WHEN_RELEASE_ALWAYS | FL_WHEN_ENTER_KEY_ALWAYS);        
-			list->end();
+        if(!win) {
+            win = new ComboWindow(0,0,0,0);
+            win->set_override();
 
-			win->end();
-			win->box(FL_BORDER_BOX);
-        
-			win->combo = this;
-	        list->combo = this;
-		}        
-      
-		share_list.other = this;
+            win->begin();
+            list = new ComboBrowser(0,0,0,0);
+            list->box(FL_FLAT_BOX);
+            list->callback(ComboBrowser::browser_cb, this);
+            list->when(FL_WHEN_CHANGED | FL_WHEN_RELEASE_ALWAYS | FL_WHEN_ENTER_KEY_ALWAYS);        
+            list->end();
+
+            win->end();
+            win->box(FL_BORDER_BOX);
+
+            win->combo = this;
+            list->combo = this;
+        }        
+
+        share_list.other = this;
         list->list(&share_list);
 
-		list->indented((type()&INDENTED) != 0);
+        list->indented((type()&INDENTED) != 0);
         win->color(list->color());
 
     } else
@@ -374,7 +374,7 @@ void Fl_Input_Browser::popup()
     for (Fl_Widget *o = parent(); o; o = o->parent()) {
         X += o->x(); Y += o->y();
     }
-    
+
     int down = Fl::h() - Y;
     int up = Y-h();
     if(H > down) {
@@ -397,7 +397,7 @@ void Fl_Input_Browser::popup()
     }
 
     win->resize(X,Y,W,H);
-	win->layout();
+    win->layout();
     //int winW=W, winH=H;
     X=0,Y=0;
     win->box()->inset(X,Y,W,H);
@@ -417,4 +417,3 @@ void Fl_Input_Browser::popup()
     clear_value();
     redraw(FL_DAMAGE_VALUE);
 }
-

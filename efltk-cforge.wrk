@@ -5490,6 +5490,7 @@ lib/Fl_Workspace.o :	efltk/Fl_MDI_Bar.h\
 	efltk/Fl_Workspace.h\
 	efltk/x.h\
 	efltk/win32.h\
+	efltk/Fl_Device.h\
 	efltk/fl_draw.h\
 	efltk/Fl_Menu_Bar.h\
 	efltk/Fl_Menu_Window.h\

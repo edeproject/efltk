@@ -79,7 +79,7 @@ void Fl_Window::_Fl_Window()
     iconlabel_ = 0;
     //resizable(0); // new default for group
     child_of_ = 0;
-    
+
     callback((Fl_Callback*)default_callback);
 }
 
@@ -131,65 +131,65 @@ int Fl_Window::handle(int event)
         case FL_SHOW:
             {
             // Emulate the undocumented back-compatability modal() stuff:
-            if (flags()&(FL_MODAL|FL_NON_MODAL))
-            {
+                if (flags()&(FL_MODAL|FL_NON_MODAL))
+                {
                 // this may unmap window if it changes
-                child_of(Fl::first_window());
-                if (flags()&FL_MODAL) Fl::modal(this, false);
-            }
-
-            if(!shown()) {
-                Fl_Style::load_theme();
-                fl_open_display();
-                layout();
-
-                // back-compatability automatic size_range() based on resizable():
-                if (!parent() && !has_size_range()) {
-                    if (resizable()) {
-                        // find the innermost nested resizable():
-                        Fl_Widget *o = resizable();
-                        while (o->is_group()) {
-                            Fl_Widget* p = ((Fl_Group*)o)->resizable();
-                            if (!p || p == o) break;
-                            o = p;
-                        }
-                        int minw = w(); if (o->w() > 72) minw -= (o->w()-72);
-                        int minh = h(); if (o->h() > 72) minh -= (o->h()-72);
-                        size_range(minw, minh, 0, 0);
-                    } else {
-                        size_range(w(), h(), w(), h());
-                    }
+                    child_of(Fl::first_window());
+                    if (flags()&FL_MODAL) Fl::modal(this, false);
                 }
 
-                create();
-                if(window_type_) Fl_WM::set_window_type(i->xid, window_type_);
-            }
+                if(!shown()) {
+                    Fl_Style::load_theme();
+                    fl_open_display();
+                    layout();
+
+                // back-compatability automatic size_range() based on resizable():
+                    if (!parent() && !has_size_range()) {
+                        if (resizable()) {
+                        // find the innermost nested resizable():
+                            Fl_Widget *o = resizable();
+                            while (o->is_group()) {
+                                Fl_Widget* p = ((Fl_Group*)o)->resizable();
+                                if (!p || p == o) break;
+                                o = p;
+                            }
+                            int minw = w(); if (o->w() > 72) minw -= (o->w()-72);
+                            int minh = h(); if (o->h() > 72) minh -= (o->h()-72);
+                            size_range(minw, minh, 0, 0);
+                        } else {
+                            size_range(w(), h(), w(), h());
+                        }
+                    }
+
+                    create();
+                    if(window_type_) Fl_WM::set_window_type(i->xid, window_type_);
+                }
 
             // make the child windows map first
-            Fl_Group::handle(event);
+                Fl_Group::handle(event);
 
 #ifdef _WIN32
-            int showtype;
-            if (parent())
-                showtype = SW_RESTORE;
+                int showtype;
+                if (parent())
+                    showtype = SW_RESTORE;
             // If we've captured the mouse, we don't want do activate any
             // other windows from the code, or we lose the capture.
             // Also, we don't want to activate the window for tooltips.
 #ifndef _WIN32_WCE
-            else if (fl_show_iconic)
-                showtype = SW_SHOWMINNOACTIVE,fl_show_iconic = false;
+                else if (fl_show_iconic)
+                    showtype = SW_SHOWMINNOACTIVE,fl_show_iconic = false;
 #endif
-            else if (Fl::grab() || override())
-                showtype = SW_SHOWNOACTIVATE;
-            else
-                showtype = SW_SHOWNORMAL;
+                else if (Fl::grab() || override())
+                    showtype = SW_SHOWNOACTIVATE;
+                else
+                    showtype = SW_SHOWNORMAL;
 
-            ShowWindow(i->xid, showtype);
+                ShowWindow(i->xid, showtype);
 #else
-            XMapWindow(fl_display, i->xid);
+                XMapWindow(fl_display, i->xid);
 #endif
-            return 1;
-        }
+                return 1;
+            }
 
         case FL_HIDE:
             if (flags()&FL_MODAL) Fl::modal(0, false);
@@ -199,30 +199,30 @@ int Fl_Window::handle(int event)
 
     int ret = Fl_Group::handle(event); if (ret) return ret;
 
-	// unused events can close windows or raise them:
-	if (!parent()) {
-		switch (event) {
-		case FL_KEY:
-		case FL_SHORTCUT:
-			if(Fl::event_clicks()) break; // make repeating key not close everything 
-			if(test_shortcut()) { do_callback(); return 1; } 
-			break; 
-		/*case FL_PUSH: 
-			THIS MUST BE AN OPTION
-			// clicks outside windows exit the modal state. I give a bit of border 
-			// so if they are trying to resize the modal window an miss they don't 
-			// exit: 
-			if (Fl::event_x() < -4 || Fl::event_x() > w()+4 || 
-				Fl::event_y() < -4 || Fl::event_y() > h()+4) { 
-				if (Fl::modal()) Fl::exit_modal(); */
+    // unused events can close windows or raise them:
+    if (!parent()) {
+        switch (event) {
+            case FL_KEY:
+            case FL_SHORTCUT:
+                if(Fl::event_clicks()) break; // make repeating key not close everything 
+                if(test_shortcut()) { do_callback(FL_KEYBOARD); return 1; } 
+                break; 
+        /*case FL_PUSH: 
+            THIS MUST BE AN OPTION
+            // clicks outside windows exit the modal state. I give a bit of border 
+            // so if they are trying to resize the modal window an miss they don't 
+            // exit: 
+            if (Fl::event_x() < -4 || Fl::event_x() > w()+4 || 
+                Fl::event_y() < -4 || Fl::event_y() > h()+4) { 
+                if (Fl::modal()) Fl::exit_modal(); */
 #ifndef _WIN32
-				// Unused clicks raise windows:        
-				//else XMapRaised(fl_display, i->xid);
-				if (event == FL_PUSH) XMapRaised(fl_display, i->xid);
+                // Unused clicks raise windows:        
+                //else XMapRaised(fl_display, i->xid);
+                if (event == FL_PUSH) XMapRaised(fl_display, i->xid);
 #endif
-			//}
-		}
-	}
+            //}
+        }
+    }
     return 0;
 }
 
@@ -358,15 +358,15 @@ void Fl_X::expose(int X, int Y, int W, int H)
     else
     {
         // merge with the region:
-        #ifndef _WIN32
+#ifndef _WIN32
         XRectangle R;
         R.x = X; R.y = Y; R.width = W; R.height = H;
         XUnionRectWithRegion(&R, region, region);
-        #else
+#else
         Region R = XRectangleRegion(X, Y, W, H);
         CombineRgn(region, region, R, RGN_OR);
         XDestroyRegion(R);
-        #endif
+#endif
     }
     // make Fl::flush() search for this window:
     Fl::damage(FL_DAMAGE_EXPOSE);

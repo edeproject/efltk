@@ -597,7 +597,7 @@ int Fl_ListView::handle(int event)
     // for moving and selecting
     static Fl_ListView_Item *sel_item=0;
 
-    switch(event)
+    switch (event)
     {
         case FL_FOCUS:
         case FL_UNFOCUS:
@@ -686,7 +686,7 @@ int Fl_ListView::handle(int event)
                     }
 
                     if(sel_item!=i) {
-                        if(when() & FL_WHEN_CHANGED) do_callback();
+                        if(when() & FL_WHEN_CHANGED) do_callback(FL_DATA_CHANGE);
                         else set_changed();
                     }
                     return 1;
@@ -746,8 +746,8 @@ int Fl_ListView::handle(int event)
                         ret = 1;
                     }
 
-                    if(when() & FL_WHEN_CHANGED)
-                        do_callback();
+                    if (when() & FL_WHEN_CHANGED)
+                        do_callback(FL_DATA_CHANGE);
                     else
                         set_changed();
 
@@ -761,13 +761,13 @@ int Fl_ListView::handle(int event)
                 HANDLE_HEADER;
                 header_pushed=false;
 
-                if(when() & FL_WHEN_RELEASE) {
-                    if(Fl::event_clicks()) {
-                        do_callback();
+                if (when() & FL_WHEN_RELEASE) {
+                    if (Fl::event_clicks()) {
+                        do_callback(event);
                         Fl::event_clicks(0);
                         return 1;
                     }
-                    do_callback();
+                    do_callback(event);
                 }
             }
             return 1;
@@ -808,9 +808,9 @@ int Fl_ListView::handle(int event)
                                 show_item(i);
                                 redraw(FL_DAMAGE_CONTENTS);
                             }
-                            if((when()&FL_WHEN_RELEASE) && (changed() || (when()&FL_WHEN_NOT_CHANGED))) {
+                            if ((when()&FL_WHEN_RELEASE) && (changed() || (when()&FL_WHEN_NOT_CHANGED))) {
                                 clear_changed();
-                                do_callback();
+                                do_callback(event);
                             }
                             return 1;
                         }
@@ -831,9 +831,9 @@ int Fl_ListView::handle(int event)
                                 show_item(i);
                                 redraw(FL_DAMAGE_CONTENTS);
                             }
-                            if((when()&FL_WHEN_RELEASE) && (changed() || (when()&FL_WHEN_NOT_CHANGED))) {
+                            if ((when()&FL_WHEN_RELEASE) && (changed() || (when()&FL_WHEN_NOT_CHANGED))) {
                                 clear_changed();
-                                do_callback();
+                                do_callback(event);
                             }
                             return 1;
                         }
@@ -841,7 +841,7 @@ int Fl_ListView::handle(int event)
                     case FL_Enter:
                         if (!(when() & FL_WHEN_ENTER_KEY)) break;
                         clear_changed();
-                        do_callback();
+                        do_callback(event);
                         return 1;
 
                     default:
@@ -1126,23 +1126,36 @@ void Fl_ListView::fill(Fl_Data_Source &ds,int user_data_column)
 
     // First version is very primitive.
     // Final version should replace the existing columns, if necessary.
-    header()->clear();
-    //header()->button_box(FL_VERT_SHADE_UP_BOX);
 
     unsigned columnCount = ds.field_count();
     if (!columnCount) return;
     unsigned actualColumn = 0;
     for (unsigned col = 0; col < columnCount; col++) {
         Fl_Data_Field& df = ds.field(col);
+
         if (!df.visible || int(col) == user_data_column) continue;
-        int width = 100;
-        if (df.width >= 0) {
-            width = df.width * text_size() * 2 / 3;
+
+        // Check if the column of that name/type exists already.
+        // If exists, leave it intact. This way user may resize
+        // columns and we won't destroy the user' column widths
+        bool keepColumnWidth = false;
+        if ((int)actualColumn < columns()) {
+            if (df.name() == column_name(actualColumn) && df.type() == column_type(actualColumn)) 
+                keepColumnWidth = true;
         }
-        add_column(df.name(),width);
+
+        if (!keepColumnWidth) {
+            int width = 100;
+            if (df.width >= 0) {
+                width = df.width * text_size() * 2 / 3;
+            }
+            add_column(df.name(),width,df.type());
+        }
+
         column_flags(actualColumn,df.flags);
         actualColumn++;
     }
+    columns(actualColumn);
 
     begin();
 

@@ -40,11 +40,11 @@ void Fl_Tool_Bar::cb_menu(Fl_Widget *w, void *data)
 {
     Fl_Menu_Button *m = (Fl_Menu_Button *)w;
     Fl_Widget *item = m->item();
-    if(item && item->user_data()) {
+    if (item && item->user_data()) {
         Fl_Widget *toolw = (Fl_Widget *)item->user_data();
         if(item->value()) toolw->set_value();
         else toolw->clear_value();
-        toolw->do_callback();
+        toolw->do_callback(FL_MENU_ITEM);
     }
 }
 
@@ -64,7 +64,7 @@ Fl_Named_Style* Fl_Tool_Bar::default_style = &::style;
 
 
 Fl_Tool_Bar::Fl_Tool_Bar(int x, int y, int w, int h, const char *label)
-    : Fl_Bar(x,y,w,h)
+: Fl_Bar(x,y,w,h)
 {
     style(default_style);
 
@@ -115,7 +115,7 @@ void Fl_Tool_Bar::layout()
             //w->hide();
             break;
         } else
-            ;//w->show();
+        ;//w->show();
     }
 
     if(menu_->children()) menu_->clear();
@@ -210,15 +210,15 @@ void Fl_Tool_Bar::draw()
 
 int Fl_Tool_Bar::handle(int ev)
 {
-	if(menu_but->visible() && Fl::event_inside(menu_but->x(), menu_but->y(), menu_but->w(), menu_but->h())) {
-		int ret = menu_but->handle(ev);
-		return ret;
-	}
-	return Fl_Bar::handle(ev);
+    if(menu_but->visible() && Fl::event_inside(menu_but->x(), menu_but->y(), menu_but->w(), menu_but->h())) {
+        int ret = menu_but->handle(ev);
+        return ret;
+    }
+    return Fl_Bar::handle(ev);
 }
 
 void Fl_Tool_Bar::button_glyph(const Fl_Widget* widget, int glyph,
-                               int x,int y,int w,int h, Fl_Flags flags)
+    int x,int y,int w,int h, Fl_Flags flags)
 {
     int X=0, Y=0, W=w, H=h;
     widget->box()->inset(X,Y,W,H);
@@ -254,6 +254,5 @@ Fl_Widget *Fl_Tool_Bar::add_divider()
     end();
     return l;
 }
-
 
 

@@ -144,11 +144,11 @@ int Fl_Choice::handle(int e)
             // user-friendly.
             //  Fl::event_is_click(0);
             if (click_to_focus()) take_focus();
-            EXECUTE:
-                if (popup(0, 0, w(), h())) {
-                    take_focus();
-                    redraw(FL_DAMAGE_VALUE);
-                }
+        EXECUTE:
+            if (popup(0, 0, w(), h())) {
+                take_focus();
+                redraw(FL_DAMAGE_VALUE);
+            }
             return 1;
 
         case FL_SHORTCUT:
@@ -165,36 +165,36 @@ int Fl_Choice::handle(int e)
                     goto EXECUTE;
 
                 case FL_Up:
-                {
-                    int i = value(); if (i < 0) i = children;
-                    while (i > 0) {--i; if (try_item(this, i)) return 1;}
-                    return 1;
-                }
+                    {
+                        int i = value(); if (i < 0) i = children;
+                        while (i > 0) {--i; if (try_item(this, i)) return 1;}
+                        return 1;
+                    }
                 case FL_Down:
-                {
-                    int i = value();
-                    while (++i < children) if (try_item(this,i)) return 1;
-                    return 1;
-                }
+                    {
+                        int i = value();
+                        while (++i < children) if (try_item(this,i)) return 1;
+                        return 1;
+                    }
             }
             return 0;
 
-    case FL_MOUSEWHEEL:
-        {
-            int old_focus=Fl_Group::focus();
-            int new_focus=old_focus;
+        case FL_MOUSEWHEEL:
+            {
+                int old_focus=Fl_Group::focus();
+                int new_focus=old_focus;
 
-            if(Fl::event_dy()>0) new_focus--; else new_focus++;
+                if(Fl::event_dy()>0) new_focus--; else new_focus++;
 
-            if(new_focus>=children) new_focus=children-1;
-            else if(new_focus<0) new_focus=0;
+                if(new_focus>=children) new_focus=children-1;
+                else if(new_focus<0) new_focus=0;
 
-            Fl_Group::focus(new_focus);
-            redraw();
-            if(new_focus!=old_focus) do_callback();
+                Fl_Group::focus(new_focus);
+                redraw();
+                if (new_focus!=old_focus) do_callback(FL_DATA_CHANGE);
 
-            return 1;
-        }
+                return 1;
+            }
         default:
             return 0;
     }
@@ -206,7 +206,7 @@ int Fl_Choice::handle(int e)
 #if MOTIF_STYLE
 // Glyph erases the area and draws a long, narrow box:
 static void glyph(const Fl_Widget* widget, int,
-int x,int y,int w,int h, Fl_Flags)
+    int x,int y,int w,int h, Fl_Flags)
 {
     fl_color(widget->button_color());
     fl_rectf(x,y,w,h);
@@ -220,7 +220,7 @@ int x,int y,int w,int h, Fl_Flags)
 // Attempt to draw an up/down arrow like the Mac uses, since the
 // popup menu is more like how the Mac works:
 static void glyph(const Fl_Widget* widget, int,
-                  int x,int y,int w,int h, Fl_Flags flags)
+    int x,int y,int w,int h, Fl_Flags flags)
 {
     Fl_Widget::default_style->glyph(widget, 0, x, y, w, h, flags);
     x += 3;
@@ -240,7 +240,7 @@ static void revert(Fl_Style* s)
     s->box = s->button_box = Fl_Widget::default_style->button_box;
     s->glyph = ::glyph;
 #endif
-    #if MAC_STYLE
+#if MAC_STYLE
     s->glyph = ::glyph;
 #endif
     s->color = FL_WHITE;
@@ -251,7 +251,7 @@ static Fl_Named_Style style("Choice", revert, &Fl_Choice::default_style);
 Fl_Named_Style* Fl_Choice::default_style = &::style;
 
 Fl_Choice::Fl_Choice(int x,int y,int w,int h, const char *l)
-    : Fl_Menu_(x,y,w,h,l)
+: Fl_Menu_(x,y,w,h,l)
 {
     value(0);
     style(default_style);
