@@ -135,6 +135,8 @@ void cb_when_enter_key(Fl_Widget* b, void* ptr) {
 
 int main(int argc,char** argv) {
 
+    Fl_Renderer::system_init();
+
   Fl_Window win(240, 304, "Browser Example");
 
   Fl_Browser tree(10, 10, 220, 180);

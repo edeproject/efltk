@@ -540,7 +540,7 @@ void Fl_Image::set_mask(Pixmap m)
 Pixmap Fl_Image::create_alpha_mask(Fl_Rect &rect, uint8 *data, int pitch, Fl_PixelFormat *format, uint8 threshold)
 {
     if(!format->Amask) {
-        printf("No alpha channel\n");
+        //printf("No alpha channel\n");
         return 0;
     }
     if(rect.w() < 1 || rect.h() < 1) {

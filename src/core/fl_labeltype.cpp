@@ -160,7 +160,7 @@ void Fl_Widget::draw_label(int X, int Y, int W, int H, Fl_Flags flags) const
             else if (flags & FL_ALIGN_TOP) cy = 0;
             else cy = h/2-H/2;
 
-            image_->draw(X-cx, Y-cy, W, H, flags);
+            image_->draw(X-cx, Y-cy, W, H, 0,0,0,0,flags);
 
             // figure out the rectangle that remains for text:
             if (flags & FL_ALIGN_LEFT) { X += (w+2); W -= (w+4); }

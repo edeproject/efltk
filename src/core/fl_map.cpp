@@ -140,7 +140,6 @@ bool Fl_PixelFormat::map_this(Fl_PixelFormat *dstfmt)
         case 1:
             /* Palette --> Palette */
             table = Map1to1(palette, dstfmt->palette, identity);
-
             if(!identity) {
                 if(!table) {
                   return false;

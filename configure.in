@@ -424,7 +424,7 @@ if test -n "$GXX"; then
 	# WAS: I removed the -fforce-mem, -fforce-addr, -fcaller-saves
 	#      They all seemed to make either no difference or enlarged
 	#      the code by a few hundred bytes.
-        DEBUGFLAG="-O2 "
+        DEBUGFLAG="-O2 -g2"
     fi
 
     # See if GCC supports -fno-exceptions...

@@ -34,10 +34,10 @@ Fl_PixelFormat::Fl_PixelFormat()
     Rloss = Gloss = Bloss = Aloss = 0;
     Rshift = Gshift = Bshift = Ashift = 0;
     Rmask = Gmask = Bmask = Amask = 0;
-    
-	colorkey = 0;
+
+    colorkey = 0;
     alpha = 255;
-	masktype = FL_MASK_NONE;
+    masktype = FL_MASK_NONE;
 
     dst=0;
     table=0;
@@ -95,6 +95,8 @@ void Fl_PixelFormat::copy(Fl_PixelFormat *fmt)
 
 void Fl_PixelFormat::init(int bits_pp, uint32 R_mask, uint32 G_mask, uint32 B_mask, uint32 A_mask)
 {
+    if(bits_pp<=0) return;
+
 	uint32 mask;
 
 	/* Set up the format */
@@ -504,9 +506,9 @@ void fl_assemble_rgba(uint8 *buf, int bpp, Fl_PixelFormat *fmt, uint8 r, uint8 g
 {
     switch (bpp) {
     case 2: {
-        uint16 pixel;
-        fl_pixel_from_rgba((uint32&)pixel, fmt, r, g, b, a);
-        *((uint16 *)buf) = pixel;
+        uint32 pixel;
+        fl_pixel_from_rgba(pixel, fmt, r, g, b, a);
+        *((uint16 *)buf) = (uint16)pixel;
     }
     break;
 
