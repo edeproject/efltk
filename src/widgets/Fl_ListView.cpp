@@ -17,7 +17,6 @@ Fl_ListView *Fl_ListView::current=0;
 void Fl_ListView::ctor_init()
 {
     accept_focus(true);
-    when(FL_WHEN_CHANGED);
     style(default_style);
 
     m_header = new Fl_ListView_Header(this);
@@ -361,7 +360,7 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
                 ret = 1;
             }
 
-            if (when() & FL_WHEN_RELEASE && context==CONTEXT_CELL) {
+            if (context==CONTEXT_CELL) {
                 if (Fl::event_clicks()) {
                     do_callback(event);
                     Fl::event_clicks(0);
@@ -436,12 +435,13 @@ int Fl_ListView::handle_key()
                 }
                 return 1;
             }
-
+            /*            
         case FL_Enter:
             if (!(when() & FL_WHEN_ENTER_KEY)) break;
             clear_changed();
             do_callback(FL_DATA_CHANGE);
             return 1;
+                */
 
         default: {
                 int ret=0;
@@ -843,10 +843,8 @@ bool Fl_ListView::select_only_row(unsigned row)
         items[row]->redraw();
         bool row_changed = (unsigned)cur_row != row;
         cur_row = row;
-        if (when()&(FL_WHEN_CHANGED)) {
-            if (row_changed)
-                do_callback(FL_DATA_CHANGE);
-        }
+        if (row_changed)
+            do_callback(FL_DATA_CHANGE);
         set_changed();
     }
     cur_row = row;
@@ -874,10 +872,9 @@ void Fl_ListView::select_items(unsigned from, unsigned to)
             selection.append(n);
         }
     }
-    if(changed) {
-        if (when() & FL_WHEN_CHANGED) do_callback(FL_DATA_CHANGE);
-        else set_changed();
-    }
+
+    if(changed) 
+        do_callback(FL_DATA_CHANGE);
 }
 
 bool Fl_ListView::unselect_all()
