@@ -45,10 +45,6 @@ Fl_Window *Fl_Widget::window() const
 
 void Fl_Window::draw() {Fl_Group::draw();}
 
-void Fl_Window::label(const char *name) {label(name, iconlabel());}
-
-void Fl_Window::iconlabel(const char *iname) {label(label(), iname);}
-
 void Fl_Window::default_callback(Fl_Window* window, void*)
 {
     window->hide();

@@ -44,12 +44,13 @@ public:
   void window_type(int type) { window_type_ = type; }
   int window_type() { return window_type_; }
 
-  const char* label() const	{return Fl_Widget::label();}
-  const char* iconlabel() const	{return iconlabel_;}
+  const char* label() const	{ return Fl_Widget::label(); }
+  const char* iconlabel() const	{ return iconlabel_; }
   void label(const char*);
   void iconlabel(const char*);
   void label(const char* label, const char* iconlabel);
-  void copy_label(const char* c) {Fl_Widget::copy_label(c); label(label());}
+  void copy_label(const char* c);
+
   const void* icon() const	{return icon_;}
   void icon(const void * ic)	{icon_ = ic;}
   static const char* xclass()	{return xclass_;}

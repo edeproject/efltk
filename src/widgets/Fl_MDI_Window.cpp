@@ -448,9 +448,9 @@ Fl_MDI_Window::~Fl_MDI_Window()
 
 void Fl_MDI_Window::caption(const char *cap)
 { 
-	Fl_Widget::copy_label(cap); 
-	_titlebar.redraw(); 
-	if(_owner->taskbar()) _owner->taskbar()->update_task(this);
+    Fl_Window::copy_label(cap);
+    _titlebar.redraw();
+    if(_owner->taskbar()) _owner->taskbar()->update_task(this);
 }
 
 Fl_Group *Fl_MDI_Window::view(Fl_Group *v)
@@ -967,8 +967,7 @@ void Fl_MDI_Window::detach()
     if(_owner->top() == this)
         _owner->_top = 0;
 
-
-	state_ = NORMAL;
+    state_ = NORMAL;
     _titlebar.hide();
 
     _toplevel = true;

@@ -1311,6 +1311,14 @@ void Fl_Window::layout()
     Fl_Group::layout();
 }
 
+// returns pointer to the filename, or null if name ends with '/'
+const char *fl_file_filename(const char *name)
+{
+    const char *p,*q;
+    for (p=q=name; *p;) if (*p++ == '/') q = p;
+    return q;
+}
+
 
 ////////////////////////////////////////////////////////////////
 // Innards of Fl_Window::create()
@@ -1401,7 +1409,12 @@ int background)
             (unsigned char *)window->xclass(), strlen(window->xclass()));
 
         // Set the label:
-        window->label(window->label(), window->iconlabel());
+        //window->label(window->label(), window->iconlabel());
+        const char *name = window->label()?window->label():"";
+        const char *iname = window->iconlabel()?fl_file_filename(name):"";
+        XChangeProperty(fl_display, x->xid, XA_WM_NAME, XA_STRING, 8, 0, (uchar*)name, strlen(name));
+        XChangeProperty(fl_display, x->xid, XA_WM_ICON_NAME, XA_STRING, 8, 0, (uchar*)iname, strlen(iname));
+
         // Makes the close button produce an event:
         XChangeProperty(fl_display, x->xid, WM_PROTOCOLS,
             XA_ATOM, 32, 0, (uchar*)&WM_DELETE_WINDOW, 1);
@@ -1527,30 +1540,34 @@ bool Fl_Window::iconic() const
 
 ////////////////////////////////////////////////////////////////
 
-// returns pointer to the filename, or null if name ends with '/'
-const char *fl_file_filename(const char *name)
+void Fl_Window::label(const char* label, const char* iconlabel)
 {
-    const char *p,*q;
-    for (p=q=name; *p;) if (*p++ == '/') q = p;
-    return q;
+    this->label(label);
+    this->iconlabel(iconlabel);
 }
 
-
-void Fl_Window::label(const char *name,const char *iname)
-{
-    Fl_Widget::label(name);
-    iconlabel_ = iname;
-    if (i && !parent())
-    {
+void Fl_Window::copy_label(const char* name) {
+    Fl_Widget::copy_label(name);
+    if (i && !parent()) {
         if (!name) name = "";
-        XChangeProperty(fl_display, i->xid, XA_WM_NAME,
-            XA_STRING, 8, 0, (uchar*)name, strlen(name));
-        if (!iname) iname = fl_file_filename(name);
-        XChangeProperty(fl_display, i->xid, XA_WM_ICON_NAME,
-            XA_STRING, 8, 0, (uchar*)iname, strlen(iname));
+        XChangeProperty(fl_display, i->xid, XA_WM_NAME, XA_STRING, 8, 0, (uchar*)name, strlen(name));
     }
 }
-
+void Fl_Window::label(const char *name) {
+    Fl_Widget::label(name);
+    if (i && !parent()) {
+        if (!name) name = "";
+        XChangeProperty(fl_display, i->xid, XA_WM_NAME, XA_STRING, 8, 0, (uchar*)name, strlen(name));
+    }
+}
+void Fl_Window::iconlabel(const char *iname) {
+    iconlabel_ = iname;
+    if (i && !parent()) {
+        if (!iname) iname = fl_file_filename(label());
+        XChangeProperty(fl_display, i->xid, XA_WM_ICON_NAME, XA_STRING, 8, 0, (uchar*)iname, strlen(iname));
+        //NET-WM!
+    }
+}
 
 ////////////////////////////////////////////////////////////////
 // Drawing context

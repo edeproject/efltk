@@ -1734,28 +1734,42 @@ const char *fl_file_filename(const char *name)
     return q;
 }
 
-
-void Fl_Window::label(const char *name, const char *iname)
+void set_label(Fl_Window *win, char *name, const char *iname)
 {
-    Fl_Widget::label(name);
-    iconlabel_ = iname;
-    if(shown() && !parent()) {
-		if (!name) name = "";
-		if (fl_is_nt4()) {
-			int l = fl_utf_nb_char((unsigned char*)name, strlen(name));
-			WCHAR *lab = (WCHAR*) malloc((l + 1) * sizeof(short));
-			fl_utf2unicode((unsigned char*)name, l, (unsigned short*)lab);
-			lab[l] = 0;
-			SetWindowTextW(i->xid, lab);
-			free(lab);
-		} else {
-			SetWindowText(i->xid, fl_utf2locale(name));
-			 //if (!iname) iname = fl_file_filename(name);
-			// should do something with iname here...
-		}
-	}
+    if(win->shown() && !win->parent()) {
+        if (!name) name = "";
+        if (fl_is_nt4()) {
+            int l = fl_utf_nb_char((unsigned char*)name, strlen(name));
+            WCHAR *lab = (WCHAR*) malloc((l + 1) * sizeof(short));
+            fl_utf2unicode((unsigned char*)name, l, (unsigned short*)lab);
+            lab[l] = 0;
+            SetWindowTextW(fl_xid(win), lab);
+            free(lab);
+        } else {
+            SetWindowText(fl_xid(win), fl_utf82locale(name));
+            //if (!iname) iname = fl_file_filename(name);
+            // should do something with iname here...
+        }
+    }
 }
 
+void Fl_Window::label(const char* label, const char* iconlabel)
+{
+    this->label(label);
+    this->iconlabel(iconlabel);
+}
+void Fl_Window::copy_label(const char* name) {
+    Fl_Widget::copy_label(name);
+    set_label(this, name, iconlabel_);
+}
+void Fl_Window::label(const char *name) {
+    Fl_Widget::label(name);
+    set_label(this, name, iconlabel_);
+}
+void Fl_Window::iconlabel(const char *iname) {
+    iconlabel_ = iname;
+    set_label(this, label(), iname);
+}
 
 ////////////////////////////////////////////////////////////////
 // Drawing context
