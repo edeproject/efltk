@@ -30,6 +30,8 @@
 #include "Fl_Widget.h"
 #endif
 
+#include "Fl_Data_Source.h"
+
 class FL_API Fl_Group : public Fl_Widget {
 public:
 
@@ -73,6 +75,12 @@ public:
   int focus() const {return focus_;}
   static int navigation_key();
 
+  // data source support methods
+  void data_source(Fl_Data_Source *ds) { data_source_ = ds; }
+  Fl_Data_Source* data_source() const { return data_source_; }
+  int load();
+  int save();
+
 protected:
 
   void draw_child(Fl_Widget&) const;
@@ -88,6 +96,8 @@ private:
 
   Fl_Widget* resizable_;
   int *sizes_; // remembered initial sizes of children
+
+  Fl_Data_Source* data_source_;
 
   static Fl_Group *current_;
 

@@ -673,6 +673,19 @@ void Fl_Group::draw_outside_label(Fl_Widget& w) const
     w.draw_label(X,Y,W,H,(Fl_Flags)align);
 }
 
+// data source support methods
+int Fl_Group::load {
+    if (!data_source_)
+	return false;
+    return data_source_->load();
+}
+
+int Fl_Group::save {
+    if (!data_source_)
+	return false;
+    return data_source_->save();
+}
+
 //
 // End of "$Id$".
 //
