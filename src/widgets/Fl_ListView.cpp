@@ -489,10 +489,10 @@ int Fl_ListView::handle_key()
                 Fl_String search_str = m_search_str;
                 if(!bs)
                     search_str.append(Fl::event_text(), Fl::event_length());
-                //printf("Search str: (%s)\n", search_str.c_str());
 
                 int index = find_text_row(search_str);
-                if(index) {
+                //printf("Search str: (%s) / %d\n", search_str.c_str(), index);
+                if(index>-1) {
                     m_search_str = search_str;
                     if(type_in_mode()==TYPE_IN_SELECT) {
 
@@ -687,7 +687,7 @@ int Fl_ListView::find_userdata_row(void *data, unsigned start_index, unsigned en
         if(items[n]->user_data()==data)
             return n;
     }
-    return 0;
+    return -1;
 }
 
 Fl_ListView_Item *Fl_ListView::find_userdata(void *data, unsigned start_index, unsigned end_index) const
@@ -717,7 +717,7 @@ int Fl_ListView::find_text_row(const char *text, int column, unsigned start_inde
     if(end_index <= start_index || end_index >= row_count())
         end_index = row_count() - 1;
 
-    unsigned col = (column<0) ? sort_col() : column;
+    int col = (column<0) ? sort_col() : column;
     if(col<0) col = 0;
 
     Fl_String tmp(text);
@@ -727,7 +727,7 @@ int Fl_ListView::find_text_row(const char *text, int column, unsigned start_inde
         if(match_text(search, items[n]->label(col)))
             return n;
     }
-    return 0;
+    return -1;
 }
 
 Fl_ListView_Item *Fl_ListView::find_text(const char *text, int column, unsigned start_index, unsigned end_index) const
@@ -737,7 +737,7 @@ Fl_ListView_Item *Fl_ListView::find_text(const char *text, int column, unsigned 
     if(end_index <= start_index || end_index >= row_count())
         end_index = row_count() - 1;
 
-    unsigned col = (column<0) ? sort_col() : column;
+    int col = (column<0) ? sort_col() : column;
     if(col<0) col = 0;
 
     Fl_String tmp(text);
