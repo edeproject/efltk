@@ -146,7 +146,7 @@ HPEN fl_setpen()
 	{
 		selected_pen = fl_pen;
 		HPEN oldp = (HPEN)SelectObject(fl_gc, fl_pen);
-		if(oldp != pen_to_delete) {
+		if(pen_to_delete && oldp != pen_to_delete) {			
 			// hmm.. This seems to happend under W9x! 
 			// Strange, huh??!!
 			DeleteObject(pen_to_delete);
@@ -173,18 +173,13 @@ HBRUSH fl_setbrush()
         brush_for = fl_colorref;
     }
 
-	static HBRUSH selected_br = 0;
-	if(selected_br!=fl_brush) 
-	{		
-		selected_br = fl_brush;
-		HBRUSH oldb = (HBRUSH)SelectObject(fl_gc, fl_brush);
-		if(oldb != brush_to_delete) {
-			// hmm.. This seems to happend under W9x! 
-			// Strange, huh??!!
-			DeleteObject(brush_to_delete);
-		}
-		DeleteObject(oldb);		
+	HBRUSH oldb = (HBRUSH)SelectObject(fl_gc, fl_brush);
+	if(brush_to_delete && oldb != brush_to_delete) {
+		// hmm.. This seems to happend under W9x! 
+		// Strange, huh??!!
+		DeleteObject(brush_to_delete);
 	}
+	DeleteObject(oldb);		
 #endif
     return fl_brush;
 }

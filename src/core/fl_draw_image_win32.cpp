@@ -314,7 +314,7 @@ void Fl_Image::to_screen(int XP, int YP, int WP, int HP, int, int)
             DeleteDC(new_gc);
 # else
             fl_color(0);
-			fl_setbrush();
+			fl_setbrush();			
             SetTextColor(fl_gc, 0);
             HDC new_gc = make_DC(fl_gc, (Pixmap)mask, fl_palette);
             HDC new_gc2= make_DC(fl_gc, (Pixmap)id, fl_palette);
