@@ -69,6 +69,11 @@ Fl_Date_Time str_to_date(const char *date, short col_type)
 	return Fl_Date_Time();
 }
 
+Fl_String date_to_string(Fl_Date_Time date)
+{
+	return Fl_String::null_object;
+}
+
 /////////////////////////////////////
 
 /**
@@ -125,7 +130,7 @@ void Fl_MySQL_Database::open_query(Fl_Query *query)
         fl_throw(mysql_error(m_connection));
     }
 
-	MYSQL_RES *res = mysql_use_result(m_connection);
+	MYSQL_RES *res = mysql_use_result(m_connection);	
 	if(!res) // mysql_store_result() returned nothing; should it have?
     {
         if(mysql_field_count(m_connection) == 0)
@@ -141,7 +146,8 @@ void Fl_MySQL_Database::open_query(Fl_Query *query)
         }
     }
 
-    query_active(query,true);
+	query_handle(query, res);
+    query_active(query, true);
 
     Fl_Data_Fields& fields = query_fields(query);
     fields.clear();
@@ -223,7 +229,7 @@ void Fl_MySQL_Database::close_query(Fl_Query *query)
     query_active(query, false);
     query_eof(query, true);
 
-	MYSQL_RES *res = query_handle(query);
+	MYSQL_RES *res = (MYSQL_RES *)query_handle(query);
 	if(res) mysql_free_result(res);
 
     Fl_Data_Fields& fields = query_fields(query);
@@ -235,22 +241,141 @@ void Fl_MySQL_Database::bind_parameters(Fl_Query *query)
 
 }
 
+Fl_String get_value(const char *key, const Fl_String &buf)
+{
+	int pos = buf.pos(key);
+	if(pos==-1) return Fl_String::null_object;
+	int pos2 = buf.pos('=', pos);
+	pos2++;
+	int pos3 = buf.pos(';', pos2);
+	if(pos3==-1) pos3 = buf.length();
+
+	return buf.sub_str(pos2, pos3-pos2);
+}
+
 void Fl_MySQL_Database::open_connection()
 {
+	const Fl_String &buf = this->m_connString;
 
+	// Check parameters
+	if(!buf.length())
+		fl_throw("Can't connect: connection string is empty");
+
+	// If we are  already connected, disconnect
+	if(m_connection) close_connection();
+
+	m_connection = mysql_init(m_connection);
+	if(!m_connection) {
+		fl_throw(mysql_error(m_connection));
+	}
+	
+	Fl_String host	= get_value("HOST", buf);
+	Fl_String user	= get_value("UID", buf);
+	Fl_String pass	= get_value("PWD", buf);
+	Fl_String db	= get_value("DB", buf);
+	int port		= get_value("PORT", buf).to_int();
+
+	if(host.empty()) host = "localhost";
+
+	if(!mysql_real_connect(m_connection, 
+		host.c_str(), 
+		user.empty()	? NULL : user.c_str(), 
+		pass.empty()	? NULL : pass.c_str(), 
+		db.empty()		? NULL : db.c_str(), 
+		port, 
+		0, //unix_socket, 
+		0  //client_flag
+		))
+	{
+		fl_throw(mysql_error(m_connection));
+	}
 }
 
 void Fl_MySQL_Database::close_connection()
 {
-
+	if(m_connection) {
+		mysql_close(m_connection);
+		m_connection = 0;
+	}
 }
 
 void Fl_MySQL_Database::parse_parameters(Fl_Query *query, Fl_String &real_sql)
 {
+	const Fl_String &sql = query->sql();
+	const Fl_Params &params = query->params();
 
+	int param_num = 0;
+	for(int n=0; n<sql.length(); n++) {
+		if(sql[n] == '?') {
+			Fl_String param;
+			get_param(params, param_num++, param);
+			real_sql += param;
+		} else
+			real_sql += sql[n];
+	}
+}
+
+static Fl_Param *find_param(const Fl_Params &params, unsigned param_num)
+{
+	Fl_Param *param = 0;
+    for(unsigned i = 0; i < params.count(); i++) {
+        Fl_Param *param = &params[i];
+        for (unsigned j = 0; j < param->bind_count(); j++) {
+			if(param->bind_index(j) == param_num)
+				return param;
+		}
+	}
+	return 0;
 }
 
 void Fl_MySQL_Database::get_param(const Fl_Params &params, unsigned param_num, Fl_String &ret)
 {
+	Fl_Param *param = find_param(params, param_num);
+	if(!param) {
+		fl_throw("Parameter at index (" + Fl_String(param_num) + ") not found.");
+	}
+	switch(param->type()) 
+	{
+	case VAR_INT:
+		ret = Fl_String(param->get_int());
+		break;
 
+	case VAR_FLOAT: {
+		char tmp[32];
+		sprintf(tmp, "%g", param->get_float());
+		ret = tmp;
+		}
+		break;		
+		
+	case VAR_DATETIME:
+		ret = '\'';
+		ret += date_to_string(param->get_date());
+		ret += '\'';
+		break;
+		
+	case VAR_BUFFER: {
+		ret = '\'';
+
+		char *to = (char*)malloc((param->size()*2+1) * sizeof(char));
+		unsigned long to_len = mysql_real_escape_string(m_connection, to, (const char *)param->get_buffer(), param->size()); 
+		ret.append(to, to_len);
+		free((char*)to);
+
+		ret += '\'';
+		}
+		break;
+
+	case VAR_STRING:			
+	case VAR_TEXT:
+	default:
+		ret = '\'';
+
+		char *to = (char*)malloc((param->size()*2+1) * sizeof(char));
+		unsigned long to_len = mysql_real_escape_string(m_connection, to, param->get_string(), param->size()); 
+		ret.append(to, to_len);
+		free((char*)to);
+
+		ret += '\'';		
+		break;
+    }
 }
