@@ -1,0 +1,18 @@
+# data file for the FLTK User Interface Designer (FLUID)
+version 2.0003 
+header_name {.h} 
+code_name {.cpp} 
+gridx 5 
+gridy 5 
+snap 3
+decl {\#include "SciCalc.h"} {public
+} 
+
+Function {main(int ac,char *av)} {open return_type int
+} {
+  code {SciCalc *calc = new SciCalc();
+	calc->run();
+	delete calc;
+	return 0;} {selected
+  }
+} 

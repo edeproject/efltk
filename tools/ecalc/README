@@ -1,0 +1,13 @@
+This small calculator app is ported to eFLTK.
+It's based on flCalc - Copyright 2000 by Yves Usson. 
+
+<snip>
+The scientific calculator for the FLE desktop environment
+flCalc is a small program emulating a pocket calculator. 
+It is rewritten from a program by Mark Overmars (author of the old FORMS library) 
+and using code written by Robin Humble. 
+
+http://www-timc.imag.fr/Yves.Usson/personnel/mysofts.html
+</snip>
+
+Mikko Lahteenmaki
