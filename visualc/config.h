@@ -191,14 +191,18 @@
 #define ENABLE_NLS 1
 
 /* Enables UTF8 */
-/* THIS IS MUST IN WIN32 */
+/* THIS IS MUST DEFINED IN WIN32 */
 #define HAVE_XUTF8 1
 
 // FOR W2K, XP and similar
-// If you want binary to be executable also in w98/w95
-// do NOT define UNICODE
-#undef UNICODE
+// If you want binary to work also under Windows 9x,
+// Do NOT define "UNICODE 1"
 //#define UNICODE 1
+
+// FOR W2K, XP and similar
+// If you want binary to work also under Windows 9x,
+// Do NOT define "_WIN32_WINNT 0x0500"
+//#define _WIN32_WINNT 0x0500
 
 /*
  * End of "$Id$".

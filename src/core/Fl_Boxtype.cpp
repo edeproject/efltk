@@ -32,6 +32,7 @@
 #include <efltk/Fl_Style.h>
 #include <efltk/Fl_Widget.h>
 #include <efltk/fl_draw.h>
+#include <efltk/fl_utf8.h>
 #include <efltk/x.h>
 
 #include <string.h>
@@ -44,7 +45,7 @@ void Fl_Dotted_Frame::draw(int x,int y,int w,int h, Fl_Color c, Fl_Flags) const
 {
     if (w <= 1 || h <= 1) return;
     fl_color(c);
-    #ifndef _WIN32
+#ifndef _WIN32
     // X version uses stipple pattern because there seem to be too many
     // servers with bugs when drawing dotted lines:
     static const char pattern[] = {0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA};
@@ -65,11 +66,25 @@ void Fl_Dotted_Frame::draw(int x,int y,int w,int h, Fl_Color c, Fl_Flags) const
     XSetFillStyle(fl_display, fl_gc, FillSolid);
     // put line width back to zero:
     //XSetLineAttributes(fl_display, fl_gc, 0, LineSolid, CapButt, JoinMiter);
-    #else
-    fl_line_style(FL_DOT);
-    fl_rect(x, y, w, h);
-    fl_line_style(0);
-    #endif
+#else
+	if(!fl_is_nt4()) {
+		// Windows 95/98/ME do not implement the dotted line style, so draw
+		// every other pixel around the focus area...
+		int i, xx, yy;
+		w--; h--;
+
+		for (xx = 0, i = 1; xx < w; xx ++, i ++)	if (i & 1) fl_point(x + xx, y);
+		for (yy = 0; yy < h; yy ++, i ++)			if (i & 1) fl_point(x + w, y + yy);
+		for (xx = w; xx > 0; xx --, i ++)			if (i & 1) fl_point(x + xx, y + h);
+		for (yy = h; yy > 0; yy --, i ++)			if (i & 1) fl_point(x, y + yy);
+
+	} else {
+		// But 2k/XP does..
+		fl_line_style(FL_DOT);
+		fl_rect(x, y, w, h);
+		fl_line_style(0);
+	}
+#endif
 }
 
 

@@ -38,7 +38,7 @@ void Fl_Variant::set_int(int value) {
     free_buffers();
     m_type = VAR_INT;
     m_size = sizeof(value);
-
+	
     m_data.intData = value;
 }
 //---------------------------------------------------------------------------

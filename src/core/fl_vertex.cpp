@@ -375,86 +375,95 @@ void Fl_Device::points() {
   inline_newpath();
 }
 
-void Fl_Device::stroke() {
+void Fl_Device::stroke() 
+{
 #ifdef _WIN32
-  if (circle_w > 0)
-    Arc(fl_gc, circle_x, circle_y, circle_x+circle_w+1, circle_y+circle_h+1,
-	0,0, 0,0);
-  int loop_start = 0;
-  for (int n = 0; n < loops; n++) {
-    int loop_size = loop[n];
-    Polyline(fl_gc, point_+loop_start, loop_size);
-    loop_start += loop_size;
-  }
-  int loop_size = points_-loop_start;
-  if (loop_size > 1)
-    Polyline(fl_gc, point_+loop_start, loop_size);
+	fl_setpen();
+	if (circle_w > 0)
+		Arc(fl_gc, circle_x, circle_y, circle_x+circle_w+1, circle_y+circle_h+1,
+			0,0, 0,0);
+	int loop_start = 0;
+	for (int n = 0; n < loops; n++) {
+		int loop_size = loop[n];
+		Polyline(fl_gc, point_+loop_start, loop_size);
+		loop_start += loop_size;
+	}
+	int loop_size = points_-loop_start;
+	if (loop_size > 1)
+		Polyline(fl_gc, point_+loop_start, loop_size);
 #else
-  if (circle_w > 0)
-    XDrawArc(fl_display, fl_window, fl_gc,
-	     circle_x, circle_y, circle_w, circle_h, 0, 360*64);
-  int loop_start = 0;
-  for (int n = 0; n < loops; n++) {
-    int loop_size = loop[n];
-    XDrawLines(fl_display, fl_window, fl_gc, point_+loop_start, loop_size, 0);
-    loop_start += loop_size;
-  }
-  int loop_size = points_-loop_start;
-  if (loop_size > 1)
-    XDrawLines(fl_display, fl_window, fl_gc, point_+loop_start, loop_size, 0);
+	if (circle_w > 0)
+		XDrawArc(fl_display, fl_window, fl_gc,
+				circle_x, circle_y, circle_w, circle_h, 0, 360*64);
+	int loop_start = 0;
+	for (int n = 0; n < loops; n++) {
+		int loop_size = loop[n];
+		XDrawLines(fl_display, fl_window, fl_gc, point_+loop_start, loop_size, 0);
+		loop_start += loop_size;
+	}
+	int loop_size = points_-loop_start;
+	if (loop_size > 1)
+		XDrawLines(fl_display, fl_window, fl_gc, point_+loop_start, loop_size, 0);
 #endif
-  inline_newpath();
+	inline_newpath();
 }
 
 // Warning: result is different on X and Win32! Use fl_fill_stroke().
 // There may be a way to tell Win32 to do what X does, perhaps by making
 // the current pen invisible?
-void Fl_Device::fill() {
+void Fl_Device::fill() 
+{
 #ifdef _WIN32
-  if (circle_w > 0)
-    Chord(fl_gc, circle_x, circle_y, circle_x+circle_w+1, circle_y+circle_h+1,
-	  0,0, 0,0);
+	fl_setbrush();
+	fl_setpen();
+	if (circle_w > 0)
+		Chord(fl_gc, circle_x, circle_y, circle_x+circle_w+1, circle_y+circle_h+1,
+				0,0, 0,0);
 #ifndef _WIN32_WCE
-  if (loops) {
-    fl_closepath();
-    PolyPolygon(fl_gc, point_, loop, loops);
-  } else 
+	if (loops) {
+		fl_closepath();
+		PolyPolygon(fl_gc, point_, loop, loops);
+	} else 
 #endif
-	  if (points_ > 2) {
-    Polygon(fl_gc, point_, points_);
-  }
+	if (points_ > 2) {
+		Polygon(fl_gc, point_, points_);
+	}
 #else
-  if (circle_w > 0)
-    XFillArc(fl_display, fl_window, fl_gc,
-	     circle_x, circle_y, circle_w, circle_h, 0, 64*360);
-  if (loops) fl_closepath();
-  if (points_ > 2) {
-    if (loops > 2) {
-      // back-trace the lines between each "disconnected" part so they
-      // are actually connected:
-      if (points_+loops-2 >= point_array_size) add_n_points(loops-2);
-      int n = points_-1;
-      for (int i = loops; --i > 1;) {
-	n -= loop[i];
-	point_[points_++] = point_[n];
-      }
-    }
-    XFillPolygon(fl_display, fl_window, fl_gc, point_, points_, 0, 0);
-  }
+	if (circle_w > 0)
+		XFillArc(fl_display, fl_window, fl_gc,
+				circle_x, circle_y, circle_w, circle_h, 0, 64*360);
+	if (loops) fl_closepath();
+	if (points_ > 2) {
+		if (loops > 2) {
+			// back-trace the lines between each "disconnected" part so they
+			// are actually connected:
+			if (points_+loops-2 >= point_array_size) add_n_points(loops-2);
+			int n = points_-1;
+			for (int i = loops; --i > 1;) {
+				n -= loop[i];
+				point_[points_++] = point_[n];
+			}
+		}
+		XFillPolygon(fl_display, fl_window, fl_gc, point_, points_, 0, 0);
+	}
 #endif
-  inline_newpath();
+	inline_newpath();
 }
 
 // This seems to produce very similar results on X and Win32. Also
 // should be faster than seperate fill & stroke on Win32 and on
 // PostScript/PDF style systems.
-void Fl_Device::fill_stroke(Fl_Color color) {
+void Fl_Device::fill_stroke(Fl_Color color) 
+{
 #ifdef _WIN32
-  COLORREF saved = fl_colorref;
+	fl_setbrush();
+	fl_color(color);
+	fl_setpen();
+  /*COLORREF saved = fl_colorref;
   fl_colorref = fl_wincolor(color);
   HPEN newpen = fl_create_pen();
   fl_colorref = saved;
-  HPEN oldpen = (HPEN)SelectObject(fl_gc, newpen);
+  HPEN oldpen = (HPEN)SelectObject(fl_gc, newpen);*/
   if (circle_w > 0)
     Chord(fl_gc, circle_x, circle_y, circle_x+circle_w+1, circle_y+circle_h+1,
 	  0,0, 0,0);
@@ -467,8 +476,8 @@ void Fl_Device::fill_stroke(Fl_Color color) {
 	  if (points_ > 2) {
     Polygon(fl_gc, point_, points_);
   }
-  SelectObject(fl_gc, oldpen);
-  DeleteObject(newpen);
+  //SelectObject(fl_gc, oldpen);
+  //DeleteObject(newpen);
   inline_newpath();
 #else
   if (circle_w > 0)

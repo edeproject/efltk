@@ -124,77 +124,92 @@ void Fl_Window::size_range(int minw, int minh, int maxw, int maxh, int dw, int d
     size_range_();
 }
 
+#ifdef _WIN32
+static void keep_app_active() {
+	// activate some other window so the active app does not change!
+	if(Fl::grab()) return;
+	for (Fl_X *x = Fl_X::first; x; x = x->next)
+		if (!x->window->parent() && x->window->visible()) {
+			//BringWindowToTop(x->xid);
+			SetActiveWindow(x->xid);
+			break;
+		}
+}
+#endif
+
 int Fl_Window::handle(int event)
 {
     switch (event)
     {
-        case FL_SHOW:
-            {
-            // Emulate the undocumented back-compatability modal() stuff:
-                if (flags()&(FL_MODAL|FL_NON_MODAL))
-                {
-                // this may unmap window if it changes
-                    child_of(Fl::first_window());
-                    if (flags()&FL_MODAL) Fl::modal(this, false);
-                }
-
-                if(!shown()) {
-                    Fl_Style::load_theme();
-                    fl_open_display();
-                    layout();
-
-                // back-compatability automatic size_range() based on resizable():
-                    if (!parent() && !has_size_range()) {
-                        if (resizable()) {
-                        // find the innermost nested resizable():
-                            Fl_Widget *o = resizable();
-                            while (o->is_group()) {
-                                Fl_Widget* p = ((Fl_Group*)o)->resizable();
-                                if (!p || p == o) break;
-                                o = p;
-                            }
-                            int minw = w(); if (o->w() > 72) minw -= (o->w()-72);
-                            int minh = h(); if (o->h() > 72) minh -= (o->h()-72);
-                            size_range(minw, minh, 0, 0);
-                        } else {
-                            size_range(w(), h(), w(), h());
-                        }
-                    }
-
-                    create();
-                    if(window_type_) Fl_WM::set_window_type(i->xid, window_type_);
-                }
-
-            // make the child windows map first
-                Fl_Group::handle(event);
-
+	case FL_SHOW: {
+		// Emulate the undocumented back-compatability modal() stuff:
+		if (flags()&(FL_MODAL|FL_NON_MODAL))
+		{
+			// this may unmap window if it changes
+			child_of(Fl::first_window());
+			if (flags()&FL_MODAL) Fl::modal(this, false);
+		}
+		
+		if(!shown()) {
+			Fl_Style::load_theme();
+			fl_open_display();
+			layout();
+			
+			// back-compatability automatic size_range() based on resizable():
+			if (!parent() && !has_size_range()) {
+				if (resizable()) {
+					// find the innermost nested resizable():
+					Fl_Widget *o = resizable();
+					while (o->is_group()) {
+						Fl_Widget* p = ((Fl_Group*)o)->resizable();
+						if (!p || p == o) break;
+						o = p;
+					}
+					int minw = w(); if (o->w() > 72) minw -= (o->w()-72);
+					int minh = h(); if (o->h() > 72) minh -= (o->h()-72);
+					size_range(minw, minh, 0, 0);
+				} else {
+					size_range(w(), h(), w(), h());
+				}
+			}
+			
+			create();
+			if(window_type_) Fl_WM::set_window_type(i->xid, window_type_);
+		}
+		
+		// make the child windows map first
+		Fl_Group::handle(event);
+		
 #ifdef _WIN32
-                int showtype;
-                if (parent())
-                    showtype = SW_RESTORE;
-            // If we've captured the mouse, we don't want do activate any
-            // other windows from the code, or we lose the capture.
-            // Also, we don't want to activate the window for tooltips.
+		int showtype;
+		if (parent())
+			showtype = SW_RESTORE;
+		// If we've captured the mouse, we don't want do activate any
+		// other windows from the code, or we lose the capture.
+		// Also, we don't want to activate the window for tooltips.
 #ifndef _WIN32_WCE
-                else if (fl_show_iconic)
-                    showtype = SW_SHOWMINNOACTIVE,fl_show_iconic = false;
+		else if (!Fl::modal() && fl_show_iconic)
+			showtype = SW_SHOWMINNOACTIVE,fl_show_iconic = false;
 #endif
-                else if (Fl::grab() || override())
-                    showtype = SW_SHOWNOACTIVATE;
-                else
-                    showtype = SW_SHOWNORMAL;
-
-                ShowWindow(i->xid, showtype);
+		else if (Fl::grab() || override())
+			showtype = SW_SHOWNOACTIVATE;
+		else
+			showtype = SW_SHOWNORMAL;
+		
+		ShowWindow(i->xid, showtype);
 #else
-                XMapWindow(fl_display, i->xid);
+		XMapWindow(fl_display, i->xid);
 #endif
-                return 1;
-            }
-
-        case FL_HIDE:
-            if (flags()&FL_MODAL) Fl::modal(0, false);
-            if (i) XUnmapWindow(fl_display, i->xid);
-            break;
+		return 1;
+				  }
+		
+	case FL_HIDE:
+		if (flags()&FL_MODAL) Fl::modal(0, false);
+		if (i) XUnmapWindow(fl_display, i->xid);
+#ifdef _WIN32
+		keep_app_active();
+#endif
+		break;
     }
 
     int ret = Fl_Group::handle(event); if (ret) return ret;
@@ -431,6 +446,10 @@ void Fl_Window::destroy()
     if (x->region) XDestroyRegion(x->region);
     XDestroyWindow(fl_display, x->xid);
     delete x;
+
+#ifdef _WIN32
+  keep_app_active();
+#endif
 }
 
 

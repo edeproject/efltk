@@ -34,6 +34,7 @@ void Fl_Device::rect(int x, int y, int w, int h)
     if (w<=0 || h<=0) return;
     fl_transform(x,y);
 #ifdef _WIN32
+	fl_setpen();
     MoveToEx(fl_gc, x, y, 0L);
     LineTo(fl_gc, x+w-1, y);
     LineTo(fl_gc, x+w-1, y+h-1);
@@ -52,7 +53,14 @@ void Fl_Device::rectf(int x, int y, int w, int h)
     RECT rect;
     rect.left = x; rect.top = y;
     rect.right = x + w; rect.bottom = y + h;
-    FillRect(fl_gc, &rect, fl_brush);
+#if 1 
+     // From the MFC CDC class, apparently this is faster: 
+     SetBkColor(fl_gc, fl_colorref); 
+     ExtTextOut(fl_gc, 0, 0, ETO_OPAQUE, &rect, NULL, 0, NULL); 
+#else 
+     FillRect(fl_gc, &rect, fl_brush()); 
+#endif 
+
 #else
     XFillRectangle(fl_display, fl_window, fl_gc, x, y, w, h);
 #endif
@@ -71,6 +79,7 @@ void Fl_Device::line(int x, int y, int x1, int y1)
     fl_transform(x,y);
     fl_transform(x1,y1);
 #ifdef _WIN32
+	fl_setpen();
     MoveToEx(fl_gc, x, y, 0L);
     LineTo(fl_gc, x1, y1);
     // Draw the last point *again* because the GDI line drawing

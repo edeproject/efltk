@@ -362,7 +362,7 @@ int Fl_ListView::table_handle(TableContext context, unsigned R, unsigned C, int 
 						}*/
 					}
 
-					if(sel_item != current_item || sel_item==0 || sel_item==int(children()-1))
+					//if(sel_item != current_item || sel_item==0 || sel_item==int(children()-1))
 					{
                 // Mark items selected
 						select_items(sel_item, current_item);

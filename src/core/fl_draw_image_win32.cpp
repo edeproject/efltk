@@ -314,6 +314,7 @@ void Fl_Image::to_screen(int XP, int YP, int WP, int HP, int, int)
             DeleteDC(new_gc);
 # else
             fl_color(0);
+			fl_setbrush();
             SetTextColor(fl_gc, 0);
             HDC new_gc = make_DC(fl_gc, (Pixmap)mask, fl_palette);
             HDC new_gc2= make_DC(fl_gc, (Pixmap)id, fl_palette);
@@ -330,6 +331,7 @@ void Fl_Image::to_screen(int XP, int YP, int WP, int HP, int, int)
             HDC tempdc = CreateCompatibleDC(fl_gc);
             SelectObject(tempdc, (HGDIOBJ)mask);
             SetTextColor(fl_gc, 0); // VP : seems necessary at least under win95
+			fl_setbrush();
             //SelectObject(fl_gc, fl_brush);
             // secret bitblt code found in old MSWindows reference manual:
             BitBlt(fl_gc, X, Y, W, H, tempdc, cx, cy, 0xE20746L);

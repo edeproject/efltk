@@ -92,9 +92,13 @@ extern FL_API HFONT	fl_xfont();
 extern FL_API TEXTMETRIC* fl_textmetric();
 extern FL_API COLORREF	fl_colorref;
 extern FL_API COLORREF	fl_wincolor(Fl_Color i);
-extern FL_API HPEN	fl_pen;
-extern FL_API HPEN	fl_create_pen();
-extern FL_API HBRUSH	fl_brush;
+
+extern FL_API HPEN	 fl_pen;
+extern FL_API HPEN	 fl_setpen();
+
+extern FL_API HBRUSH fl_brush;
+extern FL_API HBRUSH fl_setbrush();
+
 extern FL_API void	fl_clip_region(Region);
 extern FL_API Region	fl_clip_region();
 
