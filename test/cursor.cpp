@@ -72,27 +72,27 @@ Fl_Menu_Item choices[] = {
 };
 
 void setcursor(Fl_Widget *o, void *) {
-    if (Fl::event() == FL_DATA_CHANGE) {
-        Fl_Value_Slider *slider = (Fl_Value_Slider *)o;
-        cursor = Fl_Cursor((int)slider->value());
-        fl_cursor(cursor,fg,bg);
-    }
+    //if (Fl::event() == FL_DATA_CHANGE) {
+    Fl_Value_Slider *slider = (Fl_Value_Slider *)o;
+    cursor = Fl_Cursor((int)slider->value());
+    fl_cursor(cursor,fg,bg);
+    //}
 }
 
 void setfg(Fl_Widget *o, void *) {
-    if (Fl::event() == FL_DATA_CHANGE) {
-        Fl_Value_Slider *slider = (Fl_Value_Slider *)o;
-        fg = Fl_Color((int)slider->value());
-        fl_cursor(cursor,fg,bg);
-    }
+    //if (Fl::event() == FL_DATA_CHANGE) {
+    Fl_Value_Slider *slider = (Fl_Value_Slider *)o;
+    fg = Fl_Color((int)slider->value());
+    fl_cursor(cursor,fg,bg);
+    //}
 }
 
 void setbg(Fl_Widget *o, void *) {
-    if (Fl::event() == FL_DATA_CHANGE) {
-        Fl_Value_Slider *slider = (Fl_Value_Slider *)o;
-        bg = Fl_Color((int)slider->value());
-        fl_cursor(cursor,fg,bg);
-    }
+    //if (Fl::event() == FL_DATA_CHANGE) {
+    Fl_Value_Slider *slider = (Fl_Value_Slider *)o;
+    bg = Fl_Color((int)slider->value());
+    fl_cursor(cursor,fg,bg);
+    //}
 }
 
 int main(int argc, char **argv) {
@@ -111,6 +111,7 @@ int main(int argc, char **argv) {
     slider1.value(0);
     slider1.callback(setcursor);
     slider1.value(cursor);
+    slider1.when(FL_MOUSE_EVENTS|FL_LOGICAL_EVENTS);
 
     Fl_Hor_Value_Slider slider2(80,220,310,30,"fgcolor:");
     slider2.clear_flag(FL_ALIGN_MASK);
@@ -120,6 +121,7 @@ int main(int argc, char **argv) {
     slider2.value(0);
     slider2.callback(setfg);
     slider2.value(fg);
+    slider2.when(FL_MOUSE_EVENTS|FL_LOGICAL_EVENTS);
 
     Fl_Hor_Value_Slider slider3(80,260,310,30,"bgcolor:");
     slider3.clear_flag(FL_ALIGN_MASK);
@@ -129,25 +131,7 @@ int main(int argc, char **argv) {
     slider3.value(0);
     slider3.callback(setbg);
     slider3.value(bg);
-
-#if 0
-  // draw the manual's diagram of cursors...
-    window.size(400,800);
-    int y = 300;
-    char buf[100]; char *p = buf;
-    for (Fl_Menu_Item* m = choices; m->label(); m++) {
-        Fl_Box* b = new Fl_Box(35,y,150,25,m->label());
-        b->clear_flag(FL_ALIGN_MASK);
-        b->set_flag(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
-        int n = (int)(m->argument());
-        if (n == FL_CURSOR_NONE) break;
-        if (n == FL_CURSOR_DEFAULT) n = FL_CURSOR_ARROW;
-        p[0] = (char)((n-1)*2);
-        p[1] = 0;
-        b = new CharBox(15,y,20,20,p); p+=2;
-        y += 25;
-    }
-#endif
+    slider3.when(FL_MOUSE_EVENTS|FL_LOGICAL_EVENTS);
 
     window.resizable(window);
     window.end();
