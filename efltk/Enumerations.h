@@ -103,6 +103,9 @@ enum {  // events
 
     // dialog events
     FL_DIALOG_BTN       = 40,
+    FL_DIALOG_OK        = 41,
+    FL_DIALOG_CANCEL    = 42,
+    FL_DIALOG_HELP      = 43,
 
     // data events
     FL_DATA_CHANGE      = 50,
