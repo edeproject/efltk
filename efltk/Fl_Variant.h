@@ -48,6 +48,13 @@ public:
     static Fl_Variant null_object;
 
     Fl_Variant() { m_type = VAR_NONE; }
+    Fl_Variant(int v);
+    Fl_Variant(float v);
+    Fl_Variant(const char* v);
+    Fl_Variant(const Fl_String& v);
+    Fl_Variant(const void *v,int sz);
+    Fl_Variant(Fl_Date_Time value);
+
     ~Fl_Variant() { free_buffers(); }
 
     bool null() { return (m_type==VAR_NONE); }

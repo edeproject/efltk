@@ -36,11 +36,59 @@ void Fl_Variant::free_buffers() {
     }
 }
 //---------------------------------------------------------------------------
+// Various constructors
+
+Fl_Variant::Fl_Variant(int value) {
+    m_type = VAR_INT;
+    m_size = sizeof(value);
+    m_data.intData = value;
+}
+
+Fl_Variant::Fl_Variant(float value) {
+    m_type = VAR_FLOAT;
+    m_size = sizeof(value);
+    m_data.floatData = value;
+}
+
+Fl_Variant::Fl_Variant(const char* value) {
+    if (value) {
+        m_size = strlen(value) + 1;
+        m_data.stringData = strdup(value);
+    } else {
+        m_data.stringData = NULL;
+        m_size = 0;
+    }
+    m_type = VAR_STRING;
+}
+
+Fl_Variant::Fl_Variant(const Fl_String& value) {
+    m_size = value.length() + 1;
+    m_data.stringData = strdup(value.c_str());
+    m_type = VAR_STRING;
+}
+
+Fl_Variant::Fl_Variant(const void *value,int sz) {
+    m_type = VAR_BUFFER;
+    if (value) {
+        m_size = sz;
+        m_data.stringData = (char *)malloc(sz);
+        memcpy(m_data.stringData,value,sz);
+    } else {
+        m_data.stringData = NULL;
+        m_size = 0;
+    }
+}
+
+Fl_Variant::Fl_Variant(Fl_Date_Time value) {
+    m_type = VAR_DATETIME;
+    m_size = sizeof(value);
+    m_data.floatData = value;
+}
+//---------------------------------------------------------------------------
 void Fl_Variant::set_int(int value) {
     free_buffers();
     m_type = VAR_INT;
     m_size = sizeof(value);
-
     m_data.intData = value;
 }
 //---------------------------------------------------------------------------
@@ -53,12 +101,9 @@ void Fl_Variant::set_float(double value) {
 //---------------------------------------------------------------------------
 void Fl_Variant::set_string(const char * value,int maxlen) {
     if (m_type == VAR_STRING && maxlen && m_size == maxlen+1) {
-
         if (value) strncpy(m_data.stringData,value,m_size);
         else m_data.stringData[0] = 0;
-
     } else {
-
         free_buffers();
         if (value) {
             if (maxlen) {
@@ -291,4 +336,3 @@ const Fl_Image *Fl_Variant::as_image() const {
         case VAR_IMAGEPTR:   return m_data.imagePtr;
     }
 }
-
