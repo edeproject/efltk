@@ -29,7 +29,7 @@
 #include <efltk/Fl_Window.h>
 
 #if defined(_WIN32)
-#include <efltk/win32.h>
+#include <efltk/x.h>
 #endif
 
 void Fl_Window::hotspot(const Fl_Widget *o, bool offscreen)
