@@ -598,6 +598,10 @@ SOURCE=..\src\widgets\Fl_Slider.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\core\Fl_Socket.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\core\fl_stretch.cpp
 # End Source File
 # Begin Source File
@@ -1203,6 +1207,10 @@ SOURCE=..\efltk\Fl_Single_Window.h
 # Begin Source File
 
 SOURCE=..\efltk\Fl_Slider.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\efltk\Fl_Socket.h
 # End Source File
 # Begin Source File
 
