@@ -462,6 +462,10 @@ int MenuWindow::forward(int menu)
 }
 
 static bool initial_;
+void timeout_initial(void *) {
+    initial_=false;
+}
+
 int MenuWindow::handle(int event)
 {
     if(child_win && child_win->close_flag) {
@@ -568,10 +572,10 @@ int MenuWindow::handle(int event)
     }
 
     case FL_DRAG:
+    case FL_MOVE:
         initial_ = false;
     case FL_PUSH:
-    case FL_MOVE: {
-
+    {
         Fl_Menu_::key_event = false;
         key_event = false;
 
@@ -808,6 +812,8 @@ int Fl_Menu_::popup(int X, int Y, int W, int H)
     bool saved_grab = Fl::grab();
     w.show(Fl::first_window());
 
+    Fl::add_timeout(0.25f, timeout_initial);
+
     Fl::modal(&w, MODAL);
     while(Fl::modal() && !Fl::exit_modal_flag()) Fl::wait();
 
@@ -857,6 +863,8 @@ int Fl_Menu_Bar::popup(int X, int Y, int W, int H)
     Fl_Widget* saved_modal = Fl::modal();
     bool saved_grab = Fl::grab();
     int cur_index = -1;
+
+    Fl::add_timeout(0.25f, timeout_initial);
 
     for(Fl::modal(&w, MODAL); !Fl::exit_modal_flag(); Fl::wait())
     {
@@ -1041,6 +1049,8 @@ int Fl_Choice::popup(int X, int Y, int W, int H)
     bool saved_grab = Fl::grab();
     w.show(Fl::first_window());
     Fl::modal(&w, MODAL);
+
+    Fl::add_timeout(0.25f, timeout_initial);
 
     while(Fl::modal() && !Fl::exit_modal_flag()) Fl::wait();
 
