@@ -27,6 +27,10 @@
 #include <sys/stat.h>
 #include <stdlib.h>
 
+#ifndef _WIN32
+# include <unistd.h>
+#endif
+
 // REPLACE WITH XPM, now it's GIF
 static const unsigned char exec_xpm[889] = {
 71,73,70,56,57,97,16,0,16,0,247,0,0,5,5,5,133,133,133,197,197,197,251,251,
@@ -227,7 +231,7 @@ bool Fl_Directory_DS::write_field(const char *fname, const Fl_Variant& fvalue)
 }
 
 // Returns typename
-Fl_String Fl_Directory_DS::get_file_type(const struct stat &st, const Fl_String &filename, const Fl_Image *&image) const
+Fl_String Fl_Directory_DS::get_file_type(struct stat &st, const Fl_String &filename, const Fl_Image *&image) const
 {
 	bool executable = S_ISEXEC(st.st_mode);
 	image = &documentPixmap;
