@@ -29,7 +29,7 @@
 
 #include <config.h>
 
-#ifdef HAVE_XUTF8
+#if HAVE_XUTF8
 #include "fl_utf8_x.h"
 #include "../../headers/spacing.h"
 #include <efltk/fl_utf8.h>
@@ -561,6 +561,7 @@ int fl_utf2ucs( const unsigned char *buf, int len, unsigned int *ucs)
 
 #define fl_utf_strncasecmp strncasecmp
 #define fl_tolower tolower
+#define fl_toupper toupper
 //#define fl_rtl_draw fl_draw
 
 // todo - rest of compatibility
