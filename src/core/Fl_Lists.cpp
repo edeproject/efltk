@@ -55,8 +55,12 @@ void Fl_Ptr_List::resize(uint newsize)
 
 void Fl_Ptr_List::append(Fl_Ptr_List_Item item)
 {
-    resize(size_+1);
-    items[size_-1] = item;
+	if(size_ == capacity_) {
+      resize(size_ + 1);
+   	  items[size_ - 1] = item;
+	} else {
+   	  items[size_++] = item;
+	}
 }
 
 void Fl_Ptr_List::prepend(Fl_Ptr_List_Item item)
@@ -66,12 +70,12 @@ void Fl_Ptr_List::prepend(Fl_Ptr_List_Item item)
 
 void Fl_Ptr_List::insert(uint pos, Fl_Ptr_List_Item item)
 {
-    resize(size_+1);
-
-    int mvSize = (size_-1-pos);
-    if(mvSize > 0)
-        memmove(items+pos+1, items+pos, mvSize*sizeof(Fl_Ptr_List_Item));
-    items[pos] = item;
+	if(size_ == capacity_) resize(size_ + 1);
+	else size_++;
+	int mvSize = (size_-1-pos);
+	if(mvSize > 0)
+		memmove(items+pos+1, items+pos, mvSize*sizeof(Fl_Ptr_List_Item));
+	items[pos] = item;
 }
 
 void Fl_Ptr_List::replace(uint pos, Fl_Ptr_List_Item item)
