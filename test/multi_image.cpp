@@ -46,7 +46,7 @@ int main(int argc, char** argv)
 #include <efltk/Fl_Bitmap.h>
 
 /* XPM */
-static char *clear_tick_up[] = {
+static const char *clear_tick_up[] = {
 /* width height ncolors chars_per_pixel */
 "32 32 20 1",
 /* colors */
@@ -106,7 +106,7 @@ static char *clear_tick_up[] = {
 };
 
 /* XPM */
-static char *clear_tick_hi[] = {
+static const char *clear_tick_hi[] = {
 /* width height ncolors chars_per_pixel */
 "32 32 20 1",
 /* colors */
@@ -166,7 +166,7 @@ static char *clear_tick_hi[] = {
 };
 
 /* XPM */
-static char *clear_tick_dn[] = {
+static const char *clear_tick_dn[] = {
 /* width height ncolors chars_per_pixel */
 "32 32 20 1",
 /* colors */
@@ -226,7 +226,7 @@ static char *clear_tick_dn[] = {
 };
 
 /* XPM */
-static char *clear_tick_up_focus[] = {
+static const char *clear_tick_up_focus[] = {
 /* width height ncolors chars_per_pixel */
 "32 32 69 1",
 /* colors */
@@ -335,7 +335,7 @@ static char *clear_tick_up_focus[] = {
 };
 
 /* XPM */
-static char *clear_tick_dn_focus[] = {
+static const char *clear_tick_dn_focus[] = {
 /* width height ncolors chars_per_pixel */
 "32 32 94 2",
 /* colors */
@@ -468,11 +468,11 @@ static char *clear_tick_dn_focus[] = {
 " X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X"
 };
 
-Fl_Image dn_focus = *Fl_Image::read(0, (uint8*)clear_tick_dn_focus);
-Fl_Image up_focus = *Fl_Image::read(0, (uint8*)clear_tick_up_focus);
-Fl_Image dn = *Fl_Image::read(0, (uint8*)clear_tick_dn);
-Fl_Image hi = *Fl_Image::read(0, (uint8*)clear_tick_hi);
-Fl_Image up = *Fl_Image::read(0, (uint8*)clear_tick_up);
+Fl_Image dn_focus = *Fl_Image::read_xpm(0, clear_tick_dn_focus);
+Fl_Image up_focus = *Fl_Image::read_xpm(0, clear_tick_up_focus);
+Fl_Image dn = *Fl_Image::read_xpm(0, clear_tick_dn);
+Fl_Image hi = *Fl_Image::read_xpm(0, clear_tick_hi);
+Fl_Image up = *Fl_Image::read_xpm(0, clear_tick_up);
 
 #define clear_tick_mask_width 32
 #define clear_tick_mask_height 32

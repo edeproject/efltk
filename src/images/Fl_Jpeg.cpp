@@ -245,6 +245,7 @@ done:
 ImageReader jpeg_reader =
 {
     jpeg_is_valid,
+    0,
     jpeg_create
 };
 

@@ -128,7 +128,7 @@ static const char *broken_xpm[] =
 		  NULL
 		};
 
-static Fl_Image broken_image = *Fl_Image::read(0, (uint8*)broken_xpm);
+static Fl_Image broken_image = *Fl_Image::read_xpm(0, broken_xpm);
 
 //
 // 'Fl_Simple_Html::add_block()' - Add a text block to the list.
@@ -2040,8 +2040,8 @@ Fl_Image *Fl_Simple_Html::get_image(const char *name, int W, int H)
 
   ip = cache.get(localname);
   if(!ip) {
-      if((ip = Fl_Image::read(localname, 0)) == NULL)
-          ip = Fl_Image::read(0, (uint8 *)broken_xpm);
+      if((ip = Fl_Image::read(localname)) == NULL)
+          ip = Fl_Image::read_xpm(0, broken_xpm);
 
       // Speed up drawing
       ip->system_convert();

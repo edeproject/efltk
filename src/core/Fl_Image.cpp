@@ -847,11 +847,42 @@ void Fl_Image::draw(int dx, int dy, int dw, int dh,
 extern ImageReader xpm_reader;
 extern ImageReader bmp_reader;
 extern ImageReader gif_reader;
-Fl_Image* Fl_Image::read(const char *filename, const uint8 *data, uint data_size)
+
+Fl_Image* Fl_Image::read_xpm(const char *filename, const char **data)
 {
     register_reader(&xpm_reader);
-    register_reader(&gif_reader);
     register_reader(&bmp_reader);
+    register_reader(&gif_reader);
+
+    Fl_Image *ret=0;
+    if(filename && fl_file_exists(filename)) {
+        Fl_FileAttr a;
+        if(!a.parse(filename)) return false;
+        FILE *file = fopen(filename, "rb");
+        if(!file) return false;
+        void *buffer = malloc(a.size);
+        uint readed = fread(buffer, 1, a.size, file);
+        if(readed!=a.size) {
+            printf("Could not read XPM file: %s\n", filename);
+            free(buffer);
+            return false;
+        }
+        if(xpm_reader.is_valid(buffer, true)) {
+            ret = xpm_reader.create(buffer, a.size, true);
+        }
+        free(buffer);
+    } else if(data) {
+        if(!xpm_reader.is_valid2((void**)data)) return 0;
+        ret = xpm_reader.create((void*)data, 1, false);
+    }
+    return ret;
+}
+
+Fl_Image* Fl_Image::read(const char *filename, const uint8 *data)
+{
+    register_reader(&xpm_reader);
+    register_reader(&bmp_reader);
+    register_reader(&gif_reader);
 
     Fl_Image *ret = 0;
     int buffer_size=0;
@@ -876,17 +907,10 @@ Fl_Image* Fl_Image::read(const char *filename, const uint8 *data, uint data_size
 
     } else if(data) {
         buffer = (void *)data;
-        if(data_size<1)
-            buffer_size = sizeof(data);
-        else
-            buffer_size = data_size;
+        buffer_size = sizeof(data);
     } else {
-        return 0;
+        return false;
     }
-
-    if(!buffer || buffer_size < 1) {
-		return false;
-	}	
 
     for(ImageReader *r=readers.first(); r!=0; r=readers.next()) {
         if(r->is_valid && r->is_valid(buffer, from_file))
@@ -894,7 +918,7 @@ Fl_Image* Fl_Image::read(const char *filename, const uint8 *data, uint data_size
             ret = r->create(buffer, buffer_size, from_file);
             break;
         }
-    }	
+    }
 
     if(ret && ret->bitspp() >= 32 && ret->format()->Amask) {
         // Default for images with alpha mask
@@ -902,8 +926,6 @@ Fl_Image* Fl_Image::read(const char *filename, const uint8 *data, uint data_size
     }
 
     if(from_file && buffer) free(buffer);
-
-	//if(ret) printf("Loaded %s, %d %dx%d n: %d\n",filename, ret->bitspp(), ret->w, ret->h, ret->colormap() ? ret->colormap()->ncolors : 0);
-
     return ret;
 }
+

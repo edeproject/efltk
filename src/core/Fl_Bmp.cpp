@@ -638,6 +638,7 @@ static void read_24b_rgb(uint8 *input, int input_size, uint8 *output, uint32 w, 
 ImageReader bmp_reader =
 {
     bmp_is_valid,
+    0, //is_valid2
     bmp_create
 };
 

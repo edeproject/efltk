@@ -47,7 +47,7 @@ Fl_Bitmap bitmap(escherknot_bits, escherknot_width, escherknot_height);
 ////////////////////////////////////////////////////////////////
 
 #include "porsche.xpm"
-Fl_Image pixmap = *Fl_Image::read(0, (uint8*)porsche_xpm);
+Fl_Image pixmap = *Fl_Image::read_xpm(0, porsche_xpm);
 
 ////////////////////////////////////////////////////////////////
 

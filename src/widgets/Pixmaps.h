@@ -4,7 +4,7 @@
 //Changed all files to XPM
 
 // File Dialog
-static char * datas_file[] = {
+static const char * datas_file[] = {
 "16 16 4 1",
 " 	c None",
 ".	c #000000",
@@ -27,7 +27,7 @@ static char * datas_file[] = {
 "   @@@@@@@@@@@  ",
 "                "};
 
-static char * datas_filefolder[] = {
+static const char * datas_filefolder[] = {
 "16 16 5 1",
 " 	c None",
 ".	c #FFE79C",
@@ -51,7 +51,7 @@ static char * datas_filefolder[] = {
 "                ",
 "                "};
 
-static char * datas_home[] = {
+static const char * datas_home[] = {
 "24 24 90 1",
 " 	c None",
 ".	c #000000",
@@ -168,7 +168,7 @@ static char * datas_home[] = {
 "     ..............+    ",
 "                        "};
 
-static char * datas_new[] = {
+static const char * datas_new[] = {
 "24 24 104 2",
 "  	c None",
 ". 	c #DEDB4A",
@@ -299,7 +299,7 @@ static char * datas_new[] = {
 "  -.i P &.&.&.&.&.&.&.P P P ;.;.;.-.            ",
 "                                                "};
 
-static char * datas_refresh[] = {
+static const char * datas_refresh[] = {
 "24 24 83 1",
 " 	c None",
 ".	c #104D00",
@@ -409,7 +409,7 @@ static char * datas_refresh[] = {
 "        BRbQQK%         ",
 "                        "};
 
-static char * datas_up[] = {
+static const char * datas_up[] = {
 "24 24 77 1",
 " 	c None",
 ".	c #083C52",
@@ -514,7 +514,7 @@ static char * datas_up[] = {
 "                        "};
 
 #ifdef _WIN32
-static char * datas_cd[] = {
+static const char * datas_cd[] = {
 "16 16 29 1",
 " 	c None",
 ".	c #737173",
@@ -562,7 +562,7 @@ static char * datas_cd[] = {
 " ]]]]]]]]]]]]   ",
 "                "};
 
-static char * datas_floppy[] = {
+static const char * datas_floppy[] = {
 "16 16 11 1",
 " 	c None",
 ".	c #848684",
@@ -592,7 +592,7 @@ static char * datas_floppy[] = {
 " ############   ",
 "                "};
 
-static char * datas_harddisk[] = {
+static const char * datas_harddisk[] = {
 "16 16 12 1",
 " 	c None",
 ".	c #737173",

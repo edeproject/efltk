@@ -244,6 +244,7 @@ bool setup_png_transformations(png_structp png_ptr, png_infop info_ptr, png_colo
 ImageReader png_reader =
 {
     png_is_valid,
+    0,
     png_create
 };
 

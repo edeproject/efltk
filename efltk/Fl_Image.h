@@ -35,7 +35,8 @@ class Fl_Image;
 
 typedef struct _reader
 {
-    bool  (*is_valid)(void *stream, bool file);
+    bool (*is_valid)(void *stream, bool file);
+    bool (*is_valid2)(void **stream); //XPM and similar
     Fl_Image *(*create)(void *stream, int size, bool file);
 } ImageReader;
 
@@ -54,8 +55,9 @@ class Fl_Image {
     friend class Fl_Image_Filter;
 
 public:
-    //If you provide data, you may want to provide also data size, otherwise it's sizeof(data)
-    static Fl_Image *read(const char *filename, const uint8 *data = 0, uint data_size=0);
+    static Fl_Image *read(const char *filename, const uint8 *data = 0);
+    // XPM and similar...
+    static Fl_Image *read_xpm(const char *filename, const char **data=0);
 
     Fl_Image() { }
 

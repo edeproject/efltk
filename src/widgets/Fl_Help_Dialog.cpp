@@ -196,7 +196,7 @@ void Fl_Help_Dialog::make_group(int w, int h)
 		b->deactivate();
 
 		b = new Fl_Highlight_Button(5, 2, 30, 25);
-		b->image(Fl_Image::read(0, (uchar*)datas_open));
+		b->image(Fl_Image::read_xpm(0, datas_open));
         b->box(FL_HIGHLIGHT_UP_BOX);
         b->callback((Fl_Callback*)cb_open, this);
         b->tooltip("Open");

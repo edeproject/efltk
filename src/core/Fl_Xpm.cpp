@@ -21,10 +21,9 @@ static int Read(void *buf, int len)
     return len;
 }
 
-/* See if an image is contained in a data source */
-bool xpm_is_valid(void *stream, bool file)
+bool xpm_is_valid2(void **stream)
 {
-    if(!file) {
+    if(stream) {
         // The header string of an XPMv3 image has the format
         // <width> <height> <ncolors> <cpp> [ <hotspot_x> <hotspot_y> ]
         char *ptr = ((char **)stream)[0];
@@ -35,15 +34,19 @@ bool xpm_is_valid(void *stream, bool file)
             return false;
         return true;
     }
+    return false;
+}
 
-    if(stream) {
+/* See if an image is contained in a data source */
+bool xpm_is_valid(void *stream, bool file)
+{
+    if(stream && file) {
         uint8 type[10];
         memcpy(type, stream, 10);
         if(memcmp(type, "/* XPM */", 9) == 0) {
             return true;
         }
     }
-
     return false;
 }
 
@@ -143,6 +146,7 @@ static int add_colorhash(struct color_hash *hash,
 }
 
 /* fast lookup that works if cpp == 1 */
+/* Or maybe not... */
 #define QUICK_COLORHASH(hash, key) ((hash)->table[*(uint8 *)(key)]->color)
 
 static uint32 get_colorhash(struct color_hash *hash, const char *key, int cpp)
@@ -286,7 +290,8 @@ static char *build_xpm(char **stream, int &size)
         }
         strncpy(ptr, "\",\n", 3);		
     }
-    strncpy(buf+size, "}\0", 2);
+    strncpy(buf+size-2, "\n}\0", 3);
+
     return buf;
 }
 
@@ -489,11 +494,11 @@ static Fl_Image *xpm_create(void *stream, int size, bool file)
         s = pixels;
         if(indexed) {
             /* optimization for some common cases */
-            if(cpp == 1)
+            /*if(cpp == 1)
                 for(x = 0; x < w; x++)
                     dst[x] = QUICK_COLORHASH(colors,
                                              s + x);
-            else
+            else*/
                 for(x = 0; x < w; x++)
                     dst[x] = get_colorhash(colors,
                                            s + x * cpp,
@@ -526,6 +531,7 @@ done:
 ImageReader xpm_reader =
 {
     xpm_is_valid,
+    xpm_is_valid2, //is_valid2
     xpm_create
 };
 

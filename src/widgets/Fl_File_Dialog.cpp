@@ -25,17 +25,17 @@
 
 #include "Pixmaps.h"
 
-static Fl_Image *home_pix    = Fl_Image::read(0, (uint8 *)datas_home);
-static Fl_Image *new_pix     = Fl_Image::read(0, (uint8 *)datas_new);
-static Fl_Image *up_pix      = Fl_Image::read(0, (uint8 *)datas_up);
-static Fl_Image *refresh_pix = Fl_Image::read(0, (uint8 *)datas_refresh);
+static Fl_Image *home_pix    = Fl_Image::read_xpm(0, datas_home);
+static Fl_Image *new_pix     = Fl_Image::read_xpm(0, datas_new);
+static Fl_Image *up_pix      = Fl_Image::read_xpm(0, datas_up);
+static Fl_Image *refresh_pix = Fl_Image::read_xpm(0, datas_refresh);
 
-static Fl_Image *file_pix  = Fl_Image::read(0, (uint8 *)datas_file);
-static Fl_Image *fold_pix  = Fl_Image::read(0, (uint8 *)datas_filefolder);
+static Fl_Image *file_pix  = Fl_Image::read_xpm(0, datas_file);
+static Fl_Image *fold_pix  = Fl_Image::read_xpm(0, datas_filefolder);
 #ifdef _WIN32
-static Fl_Image *cd_pix    = Fl_Image::read(0, (uint8 *)datas_cd);
-static Fl_Image *flop_pix  = Fl_Image::read(0, (uint8 *)datas_floppy);
-static Fl_Image *hd_pix    = Fl_Image::read(0, (uint8 *)datas_harddisk);
+static Fl_Image *cd_pix    = Fl_Image::read_xpm(0, datas_cd);
+static Fl_Image *flop_pix  = Fl_Image::read_xpm(0, datas_floppy);
+static Fl_Image *hd_pix    = Fl_Image::read_xpm(0, datas_harddisk);
 #endif
 
 ////////////////////////////

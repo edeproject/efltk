@@ -553,5 +553,6 @@ static Image *ReadImage(uint8 * src, int len, int height, int cmapSize,
 ImageReader gif_reader =
 {
     gif_is_valid,
+    0, //is_valid2
     gif_create
 };

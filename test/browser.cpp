@@ -17,8 +17,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-Fl_Image *folderSmall = Fl_Image::read(0, (uint8*)folder_small);
-Fl_Image *fileSmall   = Fl_Image::read(0, (uint8*)file_small);
+Fl_Image *folderSmall = Fl_Image::read_xpm(0, folder_small);
+Fl_Image *fileSmall   = Fl_Image::read_xpm(0, file_small);
 
 void
 cb_test(Fl_Widget* browser, void*) {
