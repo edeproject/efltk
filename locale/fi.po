@@ -1,0 +1,214 @@
+# Finnish translation of PACKAGE.
+# Copyright (C) 2002 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Mikko L. <Laza@Flashmail.com>, 2002.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2002-09-16 00:56+0300\n"
+"PO-Revision-Date: 2002-09-16 01:44+0300\n"
+"Last-Translator: Mikko L. <Laza@Flashmail.com>\n"
+"Language-Team: Finnish <fi@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-15\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: fl_ask.cpp:174
+msgid "No"
+msgstr "Ei"
+
+#: fl_ask.cpp:175
+msgid "Yes"
+msgstr "Kyllä"
+
+#: fl_ask.cpp:176 Fl_File_Dialog.cpp:540
+msgid "OK"
+msgstr "OK"
+
+#: fl_ask.cpp:177
+msgid "Cancel"
+msgstr "Peruuta"
+
+#: Fl_File_Dialog.cpp:46 Fl_File_Dialog.cpp:64 Fl_File_Dialog.cpp:158
+msgid "bytes"
+msgstr "bittä"
+
+#: Fl_File_Dialog.cpp:51 Fl_File_Dialog.cpp:68
+msgid "Kb"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:55 Fl_File_Dialog.cpp:72
+msgid "Mb"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:80 Fl_File_Dialog.cpp:99
+msgid "Unknown"
+msgstr "Tuntematon"
+
+#: Fl_File_Dialog.cpp:82 Fl_File_Dialog.cpp:496
+msgid "File"
+msgstr "Tiedosto"
+
+#: Fl_File_Dialog.cpp:83
+msgid "Dir"
+msgstr "Hakemisto"
+
+#: Fl_File_Dialog.cpp:84
+msgid "Link"
+msgstr "Linkki"
+
+#: Fl_File_Dialog.cpp:86
+msgid "CD-Rom"
+msgstr "CD-Asema"
+
+#: Fl_File_Dialog.cpp:87
+msgid "Removable"
+msgstr "Irroitettava"
+
+#: Fl_File_Dialog.cpp:88
+msgid "Local Disk"
+msgstr "Paikallinen Levy"
+
+#: Fl_File_Dialog.cpp:89
+msgid "Network Disk"
+msgstr "Verkko Levy"
+
+#: Fl_File_Dialog.cpp:90
+msgid "RAM Disk"
+msgstr "RAM Levy"
+
+#: Fl_File_Dialog.cpp:270
+msgid "Choose Files:"
+msgstr "Valitse Tiedostoja:"
+
+#: Fl_File_Dialog.cpp:285
+msgid "Choose File:"
+msgstr "Valitse Tiedosto:"
+
+#: Fl_File_Dialog.cpp:300
+msgid "Choose Directory:"
+msgstr "Valitse Hakemisto:"
+
+#: Fl_File_Dialog.cpp:309
+msgid "Save File:"
+msgstr "Talenna Tiedosto:"
+
+#: Fl_File_Dialog.cpp:497 Fl_File_Dialog.cpp:843
+msgid "Size"
+msgstr "Koko"
+
+#: Fl_File_Dialog.cpp:498 Fl_File_Dialog.cpp:822 Fl_File_Dialog.cpp:844
+msgid "Type"
+msgstr "Tyyppi"
+
+#: Fl_File_Dialog.cpp:499 Fl_File_Dialog.cpp:845
+msgid "Modified"
+msgstr "Muokattu"
+
+#: Fl_File_Dialog.cpp:523
+msgid "Show Preview"
+msgstr "Näytä esikatselu"
+
+#: Fl_File_Dialog.cpp:533
+msgid "Location:"
+msgstr "Sijainti:"
+
+#: Fl_File_Dialog.cpp:549
+msgid "Filter:"
+msgstr "Suodatus:"
+
+#: Fl_File_Dialog.cpp:555
+msgid "&Cancel"
+msgstr "&Peruuta"
+
+#: Fl_File_Dialog.cpp:632
+msgid "All Files (*)"
+msgstr "Kaikki Tiedostot (*)"
+
+#: Fl_File_Dialog.cpp:664 Fl_File_Dialog.cpp:707 Fl_File_Dialog.cpp:709
+#: Fl_File_Dialog.cpp:711 Fl_File_Dialog.cpp:742 Fl_File_Dialog.cpp:784
+msgid "My Computer"
+msgstr "Oma Tietokone"
+
+#: Fl_File_Dialog.cpp:664 Fl_File_Dialog.cpp:667 Fl_File_Dialog.cpp:693
+#: Fl_File_Dialog.cpp:772
+msgid "My Home"
+msgstr "Omat Tiedostot"
+
+#: Fl_File_Dialog.cpp:707 Fl_File_Dialog.cpp:710 Fl_File_Dialog.cpp:743
+#: Fl_File_Dialog.cpp:789 Fl_File_Dialog.cpp:1146
+msgid "My Network"
+msgstr "Verkkoyhteydet"
+
+#: Fl_File_Dialog.cpp:823
+msgid "Used Space"
+msgstr "Käytetty tila"
+
+#: Fl_File_Dialog.cpp:824
+msgid "Free Space"
+msgstr "Vapaa Tila"
+
+#: Fl_File_Dialog.cpp:920
+msgid "New Directory?"
+msgstr "Uusi Hakemisto?"
+
+#: Fl_File_Dialog.cpp:943
+msgid "Unable to create directory!"
+msgstr "Ei voitu luoda hakemistoa!"
+
+#: Fl_File_Dialog.cpp:1434
+msgid "Size:"
+msgstr "Koko:"
+
+#: Fl_File_Dialog.cpp:1434 Fl_File_Dialog.cpp:1476
+msgid "File Size:"
+msgstr "Tiedosto Koko:"
+
+#: Fl_Help_Dialog.cpp:155
+msgid "&File"
+msgstr "&Tiedosto"
+
+#: Fl_Help_Dialog.cpp:158 Fl_Help_Dialog.cpp:178
+msgid "Open"
+msgstr "Avaa"
+
+#: Fl_Help_Dialog.cpp:162
+msgid "Close"
+msgstr "Sulje"
+
+#: Fl_Help_Dialog.cpp:188
+msgid "Back"
+msgstr "Takaisin"
+
+#: Fl_Help_Dialog.cpp:198
+msgid "Next"
+msgstr "Seuraava"
+
+#: Fl_Help_Dialog.cpp:213
+msgid "Html files, *.{html|htm}, All files, *"
+msgstr "Html Tiedostot, *.{html|htm}, Kaikki Tiedostot, *"
+
+#: Fl_Help_Dialog.cpp:213
+msgid "Open Help File"
+msgstr "Avaa Apu Tiedosto"
+
+#: Fl_Simple_Html.cpp:2321 Fl_Simple_Html.cpp:2350
+#, c-format
+msgid ""
+"<HTML><HEAD><TITLE>%s</TITLE></HEAD><BODY><H1>%s</H1><P>%s \"%s\" - "
+"%s.</P></BODY>"
+msgstr ""
+
+#: Fl_Simple_Html.cpp:2326 Fl_Simple_Html.cpp:2355
+msgid "Error"
+msgstr "Virhe"
+
+#: Fl_Simple_Html.cpp:2327 Fl_Simple_Html.cpp:2356
+msgid "Unable to follow the link"
+msgstr "Ei voitu seurata linkkiä"
+
+#: Fl_Simple_Html.cpp:2328
+msgid "no handler exists for this URI scheme"
+msgstr "Ei löydy käsittelijää tällä URI tyypille"
+

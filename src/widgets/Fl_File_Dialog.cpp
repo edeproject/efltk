@@ -4,6 +4,10 @@
 #include <efltk/fl_ask.h>
 #include <efltk/filename.h>
 
+// For NLS stuff
+#include <efltk/Fl_Locale.h>
+#include "../core/fl_internal.h"
+
 #include <errno.h>
 #include <ctype.h>
 #include <sys/types.h>
@@ -18,6 +22,9 @@
 # include <unistd.h>
 # include <pwd.h>
 #endif /* _WIN32 */
+
+#include <config.h>
+
 
 #ifndef EEXIST
 # define EEXIST 17
@@ -43,16 +50,16 @@ static Fl_Image *hd_pix    = Fl_Image::read_xpm(0, datas_harddisk);
 
 double get_file_size(uint size, char **prefix)
 {
-	*prefix="bytes";
+	*prefix=_("bytes");
 	double s = (double)size;
 
 	if(s>1024) {
 		s /= 1024;
-		*prefix="Kb";
+		*prefix=_("Kb");
 	}
 	if(s>1024) {
 		s /= 1024;		
-		*prefix="Mb";
+		*prefix=_("Mb");
 	}
 	return s;
 }
@@ -61,15 +68,15 @@ double get_file_size(uint size, char **prefix)
 
 uint get_dev_size(uint64 size, char **prefix)
 {
-	*prefix="bytes";	
+	*prefix=_("bytes");
 
 	if(size>1024) {
 		size /= 1024;
-		*prefix="Kb";
+		*prefix=_("Kb");
 	}
 	if(size>1024) {
 		size /= 1024;		
-		*prefix="Mb";
+		*prefix=_("Mb");
 	}
 	return (uint)size;
 }
@@ -77,17 +84,17 @@ uint get_dev_size(uint64 size, char **prefix)
 #endif
 
 static const char *types[] = {
-	"Unknown",
+    _("Unknown"),
 	
-	"File",
-	"Dir",
-	"Link",	
+    _("File"),
+    _("Dir"),
+    _("Link"),
 
-	"CD-Rom",
-	"Removable",
-	"Local Disk",
-	"Network Disk",
-	"RAM Disk"
+    _("CD-Rom"),
+    _("Removable"),
+    _("Local Disk"),
+    _("Network Disk"),
+    _("RAM Disk")
 };
 
 //////////////////////////
@@ -96,7 +103,7 @@ static const char *types[] = {
 Fl_FileItem::Fl_FileItem(const char *filename, Fl_FileAttr *a)
 : Fl_ListView_Item(0, 0, 0, 0)
 {
-	strcpy(fname, filename?filename:"Unknown");
+	strcpy(fname, filename?filename:_("Unknown"));
 	label(0, fname);
 
 	attr = a;
@@ -155,7 +162,7 @@ Fl_FileItem::Fl_FileItem(const char *filename, Fl_FileAttr *a)
 		double s = get_file_size(a->size, &prefix);
 	
 		if(s>0) {
-			if(!strcmp(prefix, "bytes"))
+			if(!strcmp(prefix, _("bytes")))
 				sprintf(size, "%.0f %s", s, prefix);	
 			else
 				sprintf(size, "%.1f %s", s, prefix);
@@ -178,6 +185,13 @@ Fl_FileItem::~Fl_FileItem()
 ///////////////////////////////
 // Static select functions:
 
+#define DEBUG
+#ifdef DEBUG
+# define MODAL false
+#else
+# define MODAL true
+#endif
+
 static char **select_files(const char *path_, Filter **filters, const char *cap, int mode=0)
 {
     Fl_File_Dialog d(Fl_File_Dialog::initial_w ,Fl_File_Dialog::initial_h , cap, mode);
@@ -199,7 +213,7 @@ static char **select_files(const char *path_, Filter **filters, const char *cap,
 
     d.filters(filters);
     d.read_dir(read_path);
-    d.exec();
+    d.exec(0, MODAL);
 
     char **tmp = 0;
     int len;
@@ -244,7 +258,7 @@ static char *select_file(const char *path_, Filter **filters, const char *cap, i
 
     d.filters(filters);
     d.read_dir(read_path);
-    d.exec();
+    d.exec(0, MODAL);
 
     char *ret = 0;
     int len = 0;
@@ -267,7 +281,7 @@ static char *select_file(const char *path_, Filter **filters, const char *cap, i
 char **fl_select_files(const char *path_, char *filters, const char *cap)
 {
     const char *caption = cap;
-    if(!caption) caption="Choose Files:";
+    if(!caption) caption=_("Choose Files:");
 
     Filter **f = Fl_File_Dialog::build_filters(filters);
 
@@ -282,7 +296,7 @@ char **fl_select_files(const char *path_, char *filters, const char *cap)
 char *fl_select_file(const char *path_, char *filters, const char *cap)
 {
     const char *caption = cap;
-    if(!caption) caption="Choose File:";
+    if(!caption) caption=_("Choose File:");
 
     Filter **f = Fl_File_Dialog::build_filters(filters);
 
@@ -297,7 +311,7 @@ char *fl_select_file(const char *path_, char *filters, const char *cap)
 char *fl_select_dir(const char *path_, const char *cap)
 {
     const char *caption = cap;
-    if(!caption) caption="Choose Directory:";
+    if(!caption) caption=_("Choose Directory:");
 
     char *dir = select_file(path_, 0, caption, Fl_File_Dialog::DIRECTORY);
     return dir;
@@ -306,7 +320,7 @@ char *fl_select_dir(const char *path_, const char *cap)
 char *fl_save_file(const char *path_, char *filters, const char *cap)
 {
     const char *caption = cap;
-    if(!caption) caption="Save File:";
+    if(!caption) caption=_("Save File:");
 
     Filter **f = Fl_File_Dialog::build_filters(filters);
 
@@ -488,15 +502,15 @@ void Fl_File_Dialog::make_group(int w, int h)
     } //end top
 
     {
-        Fl_Group* o = new Fl_Group(5, 45, w-10, h-140);
+        Fl_Group* o = new Fl_Group(5, 45, w-10, h-130);
         o->box(FL_FLAT_BOX);
         int W=o->w(), H=o->h();
 
         listview_ = new Fl_ListView(0, 0, W-5, H);
-        listview_->add_column("File");
-        listview_->add_column("Size",80);
-        listview_->add_column("Type",80);
-        listview_->add_column("Modified",120);
+        listview_->add_column(_("File"));
+        listview_->add_column(_("Size"),80);
+        listview_->add_column(_("Type"),80);
+        listview_->add_column(_("Modified"),120);
         listview_->column_flags(0,FL_ALIGN_LEFT);
         listview_->column_flags(1,FL_ALIGN_LEFT);
         listview_->column_flags(2,FL_ALIGN_LEFT);
@@ -520,24 +534,25 @@ void Fl_File_Dialog::make_group(int w, int h)
         resizable(o);
 
         // Outside of group
-        preview_but_ = new Fl_Check_Button(5, 45+H, W, 18, "Show Preview");
+        preview_but_ = new Fl_Check_Button(5, 45+H, W, 18, _("Show Preview"));
         preview_but_->text_size(10);
         preview_but_->value(Fl_File_Dialog::initial_preview);
         if(mode()==DIRECTORY) preview_but_->deactivate();
     }
 
     {
-        Fl_Group* o = new Fl_Group(5, h-70, w-10, 30);
+        Fl_Group* o = new Fl_Group(5, h-65, w-10, 30);
 
         //location_ = new Fl_FileInput(55, 0, w-120, 25, "Location:");
-        location_ = new Fl_Input_Browser(55, 0, w-120, 25, "Location:");
+        location_ = new Fl_Input_Browser(60, 0, w-130, 23, _("Location:"));
         location_->maxh(200);
         location_->callback(cb_location, this);
         location_->when(FL_WHEN_CHANGED | FL_WHEN_ENTER_KEY_ALWAYS);
 
         Fl_Group::current()->resizable(location_);
 
-        ok_ = new Fl_Return_Button(w-60, 0, 50, 25, "OK");
+        ok_ = new Fl_Return_Button(w-65, 0, 55, 23, _("OK"));
+        ok_->deactivate();
         ok_->shortcut(0xff0d);
 
         o->end();
@@ -546,13 +561,13 @@ void Fl_File_Dialog::make_group(int w, int h)
     {
         Fl_Group* o = new Fl_Group(5, h-35, w-10, 30);
 
-        filter_ = new Fl_Input_Browser(40, 0, w-105, 25, "Filter:");
+        filter_ = new Fl_Input_Browser(60, 0, w-130, 23, _("Filter:"));
         filter_->type(Fl_Input_Browser::NONEDITABLE);
 
         filter_->end();
         Fl_Group::current()->resizable(filter_);
 
-        cancel_ = new Fl_Button(w-60, 0, 50, 25, "&Cancel");
+        cancel_ = new Fl_Button(w-65, 0, 55, 23, _("&Cancel"));
 
         o->end();
     }
@@ -611,8 +626,8 @@ void Fl_File_Dialog::init()
 	listview_->callback(cb_list, this);
 	preview_but_->callback(cb_preview, this);
 		
-	filter_->add("(*) All Files");
-	filter_->value("(*) All Files");
+	filter_->add(_("All Files (*)"));
+	filter_->value(_("All Files (*)"));
 	filter_->callback(cb_filter, this);
 
 	path_->callback(cb_dirc, this);
@@ -629,11 +644,11 @@ void Fl_File_Dialog::filters(Filter **filters)
 
     if(!filters) {
         static Filter tmp;
-        tmp.pattern = "*"; tmp.type_str = "All Files (*)";
+        tmp.pattern = "*"; tmp.type_str = _("All Files (*)");
         _cur_filter = &tmp;
 
         i = new Fl_Item();
-        i->copy_label("(All Files)");
+        i->copy_label(tmp.type_str);
         i->user_data(&tmp);
 
     } else {
@@ -661,10 +676,10 @@ void Fl_File_Dialog::parse_dirs(const char *fp)
     path_->clear();
     Fl_Item *item=0;
 
-    if(!fp || !strcmp(fp, "My Computer") || !strcmp(fp, "My Home")) {
+    if(!fp || !strcmp(fp, _("My Computer")) || !strcmp(fp, _("My Home"))) {
         path_->begin();
         //path_->add("My Computer");
-        path_->add("My Home");
+        path_->add(_("My Home"));
         path_->value(path_->child(0)->label());
         path_->end();
         path_->redraw();
@@ -690,7 +705,7 @@ void Fl_File_Dialog::parse_dirs(const char *fp)
 
     new Fl_Divider(0,10);
     //path_->add("My Computer");
-    path_->add("My Home");
+    path_->add(_("My Home"));
 
     path_->end();
     path_->value(path_->child(0)->label());
@@ -704,11 +719,11 @@ void Fl_File_Dialog::parse_dirs(const char *fp)
 	path_->clear();
 	Fl_Item *item=0;
 
-	if(!fp || !*fp || !strcmp(fp, "My Computer") || !strcmp(fp, "My Network")) {
+	if(!fp || !*fp || !strcmp(fp, _("My Computer")) || !strcmp(fp, _("My Network"))) {
 		path_->begin();
-		path_->add("My Computer");
-		path_->add("My Network");
-		path_->value(fp?fp:"My Computer");
+		path_->add(_("My Computer"));
+		path_->add(_("My Network"));
+		path_->value(fp?fp:_("My Computer"));
 		path_->end();
 		path_->redraw();
 		return;
@@ -739,8 +754,8 @@ void Fl_File_Dialog::parse_dirs(const char *fp)
 	}
 
 	new Fl_ComboDivider();
-	path_->add("My Computer");
-	path_->add("My Network");
+	path_->add(_("My Computer"));
+	path_->add(_("My Network"));
 
 	path_->end();
 	path_->value(path_->child(0)->label());
@@ -769,7 +784,7 @@ void Fl_File_Dialog::read_dir(const char *_path)
         _path = "/";
         ok_->deactivate();
     }
-    if(!strcmp(read_path, "My Home")) {
+    if(!strcmp(read_path, _("My Home"))) {
         char *home = fl_get_homedir();
         strncpy(read_path, home, FL_PATH_MAX);
         delete []home;
@@ -781,13 +796,13 @@ void Fl_File_Dialog::read_dir(const char *_path)
     bool get_drives = false;
     bool read_net = false; LPNETRESOURCE netres=0;
 	
-    if(!*read_path || !strcmp(read_path, "My Computer"))
+    if(!*read_path || !strcmp(read_path, _("My Computer")))
     {
         get_drives = true;
         _path=0;
     } else
-    if(!strcmp(read_path, "My Network")) {
-		read_net = true;
+    if(!strcmp(read_path, _("My Network"))) {
+        read_net = true;
         _path=0;
     } else
     if(read_path[0]=='\\' && read_path[1]=='\\') {		
@@ -819,9 +834,9 @@ void Fl_File_Dialog::read_dir(const char *_path)
 #ifdef _WIN32
     if(get_drives)
     {
-        listview_->column_name(1, "Type");
-        listview_->column_name(2, "Used Space");
-        listview_->column_name(3, "Free Space");
+        listview_->column_name(1, _("Type"));
+        listview_->column_name(2, _("Used Space"));
+        listview_->column_name(3, _("Free Space"));
         DWORD drvs = GetLogicalDrives();
         char drive[4];
         Fl_FileItem *it;
@@ -840,9 +855,9 @@ void Fl_File_Dialog::read_dir(const char *_path)
     else
 #endif
     {
-        listview_->column_name(1, "Size");
-        listview_->column_name(2, "Type");
-        listview_->column_name(3, "Modified");
+        listview_->column_name(1, _("Size"));
+        listview_->column_name(2, _("Type"));
+        listview_->column_name(3, _("Modified"));
         char filename[FL_PATH_MAX];
         char **files = fl_get_files((char *)fullpath());
 
@@ -903,12 +918,8 @@ void Fl_File_Dialog::read_dir(const char *_path)
         listview_->relayout();
     }
 
-    Fl_Widget *i = listview_->children()>0?listview_->child(0):0;
-    if(i) {
-        listview_->select_only(i);
-        Fl::event_clicks(0);
-        cb_list(listview_, this);
-    }
+    if(mode()!=DIRECTORY) ok_->deactivate();
+    else ok_->activate();
 }
 
 bool Fl_File_Dialog::new_dir()
@@ -917,7 +928,7 @@ bool Fl_File_Dialog::new_dir()
     char pathname[FL_PATH_MAX];	// Full path_ of directory
 
     // Get a directory name from the user
-    if ((dir = fl_input("New Directory?")) == NULL)
+    if ((dir = fl_input(_("New Directory?"))) == NULL)
         return false;
 
     // Make it relative to the current directory as needed...
@@ -940,7 +951,7 @@ bool Fl_File_Dialog::new_dir()
     if(mkdir(pathname, 0755)!=0)
 #endif
         if(errno != EEXIST) {
-            fl_alert("Unable to create directory!");
+            fl_alert(_("Unable to create directory!"));
             return false;
         }
 
@@ -1035,16 +1046,16 @@ void Fl_File_Dialog::folder_clicked(Fl_FileItem *i)
 //CALLBACKS!!
 void Fl_File_Dialog::cb_list(Fl_Widget *w, void *d)
 {
-	Fl_ListView *l = (Fl_ListView *)w;
-	Fl_FileItem *i = (Fl_FileItem *)l->item();
+    Fl_ListView *l = (Fl_ListView *)w;
+    Fl_FileItem *i = (Fl_FileItem *)l->item();
 
-	if(i) {
-		if(i->type()>=Fl_FileItem::DIR)
-			FD->folder_clicked(i);
-		else
-			FD->file_clicked(i);
+    if(i) {
+        if(i->type()>=Fl_FileItem::DIR)
+            FD->folder_clicked(i);
+        else
+            FD->file_clicked(i);
 
-	}
+    }
 }
 
 void Fl_File_Dialog::cb_ok(Fl_Widget *, void *d) 
@@ -1067,11 +1078,18 @@ void Fl_File_Dialog::cb_ok(Fl_Widget *, void *d)
 
     if(FD->mode()==DIRECTORY) {
         // Complete dirpath with selected item
-        if(i && i->type()==Fl_FileItem::DIR) {
+        /*if(i && i->type()==Fl_FileItem::DIR) {
             if(FD->get_filename(i->label(), file))
                 FD->fullpath(file);
-        }
+        }*/
         if(FD->fullpath()) { FD->close(CLOSE_OK); return; }
+    }
+
+    if(i && i->type()>=Fl_FileItem::DIR) {
+        // Open directory
+        Fl::event_clicks(1);
+        FD->folder_clicked(i);
+        return;
     }
 
     if(FD->get_filename(FD->location_->value(), file)) {
@@ -1094,18 +1112,8 @@ void Fl_File_Dialog::cb_ok(Fl_Widget *, void *d)
         }
     }
 
-    if(i) {
-
-        if(i->type()>=Fl_FileItem::DIR) {
-            // Open directory
-            Fl::event_clicks(1);
-            FD->folder_clicked(i);
-            return;
-        } else if(FD->listview()->multi()) {
-
-            FD->close(CLOSE_OK);
-            return;
-        }
+    if(i && FD->listview()->multi()) {
+        FD->close(CLOSE_OK);
     }
 }
 
@@ -1143,7 +1151,7 @@ void Fl_File_Dialog::cb_up(Fl_Widget *, void *d)
 		*slash_ = '\0';
 #ifdef _WIN32
 		if(*(slash_-1)=='\\') 
-			FD->read_dir("My Network");
+			FD->read_dir(_("My Network"));
 		else
 #endif
 			FD->read_dir(buf);
@@ -1430,9 +1438,11 @@ void Fl_File_Dialog::update_preview(const char *filename)
                     }
 
                     snprintf(preview_info, sizeof(preview_info)-1,
-                             "%s\n\nSize: %d x %d\nFile Size: %s",
+                             "%s\n\n%s %d x %d\n%s %s",
                              ((Fl_ListView_Item *)listview()->item())->label(),
+                             _("Size:"),
                              im->width(), im->height(),
+                              _("File Size:"),
                              ((Fl_ListView_Item *)listview()->item())->label(1));
 
                     im->system_convert();
@@ -1470,8 +1480,9 @@ void Fl_File_Dialog::update_preview(const char *filename)
 			loaded = false;
 		} else {
 			snprintf(preview_info, sizeof(preview_info)-1, 
-				"%s\n\nFile Size: %s", 
-				((Fl_ListView_Item *)listview()->item())->label(),				
+				"%s\n\n%s %s",
+                                 ((Fl_ListView_Item *)listview()->item())->label(),
+                                 _("File Size:"),
 				((Fl_ListView_Item *)listview()->item())->label(1));
 
 			// remove '\r' from text EOL

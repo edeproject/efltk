@@ -24,7 +24,7 @@
 
 SHELL=/bin/sh
 
-DIRS = src/core src/widgets src/images src/opengl fluid themes test efltk
+DIRS = src/core src/widgets src/images src/opengl fluid themes efltk locale test
 
 GENERATED = makeinclude efltk-config
 

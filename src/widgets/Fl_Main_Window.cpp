@@ -1,9 +1,20 @@
 #include <efltk/Fl_Main_Window.h>
 
+static void revert(Fl_Style* s)
+{
+    s->color = FL_GRAY;
+    s->box = FL_FLAT_BOX;
+}
+static Fl_Named_Style style("Main_Window", revert, &Fl_Main_Window::default_style);
+Fl_Named_Style* Fl_Main_Window::default_style = &::style;
+
 Fl_Main_Window::Fl_Main_Window(int x, int y, int w, int h, const char *l)
     : Fl_Main_WindowType(x,y,w,h,l)
 {
+    style(default_style);
+
     pack_ = new Fl_Pack(0,0,w,h);
+    pack_->box(FL_NO_BOX);
     pack_->end();
 
     menu_ = 0;
@@ -17,7 +28,10 @@ Fl_Main_Window::Fl_Main_Window(int x, int y, int w, int h, const char *l)
 Fl_Main_Window::Fl_Main_Window(int w, int h, const char *l)
     : Fl_Main_WindowType(w,h,l)
 {
+    style(default_style);
+
     pack_ = new Fl_Pack(0,0,w,h);
+    pack_->box(FL_NO_BOX);
     pack_->end();
 
     menu_ = 0;

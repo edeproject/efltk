@@ -37,8 +37,11 @@
 #include <efltk/Fl_Window.h>
 #include <efltk/Fl_Input.h>
 #include <efltk/Fl_Secret_Input.h>
-
 #include <efltk/vsnprintf.h>
+
+#include <efltk/Fl_Locale.h>
+#include "../core/fl_internal.h"
+
 #include <string.h>
 
 static void m_revert(Fl_Style* s)
@@ -171,10 +174,11 @@ const char *b2)
 
 
 // pointers you can use to change fltk to a foreign language:
-const char* fl_no = "No";
-const char* fl_yes= "Yes";
-const char* fl_ok = "OK";
-const char* fl_cancel= "Cancel";
+// These localized now...
+const char* fl_no = _("No");
+const char* fl_yes= _("Yes");
+const char* fl_ok = _("OK");
+const char* fl_cancel= _("Cancel");
 
 // fltk functions:
 

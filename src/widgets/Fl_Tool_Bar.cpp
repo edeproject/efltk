@@ -4,6 +4,7 @@
 #include <efltk/Fl.h>
 #include <efltk/Fl_Item.h>
 #include <efltk/Fl_Button.h>
+#include <efltk/math.h>
 
 class ToolMenuButton : public Fl_Widget
 {
@@ -50,7 +51,8 @@ int Fl_Tool_Bar::button_h = 24;
 
 static void revert(Fl_Style* s)
 {
-    s->button_box = FL_THIN_UP_BOX;
+    s->button_box = FL_UP_BOX;
+    s->button_color = FL_BLACK;
     s->glyph = Fl_Tool_Bar::button_glyph;
     s->color = FL_GRAY;
 }
@@ -70,14 +72,14 @@ Fl_Tool_Bar::Fl_Tool_Bar(int x, int y, int w, int h, const char *label)
     menu_but = new ToolMenuButton();
     menu_but->hide();
     ((ToolMenuButton*)menu_but)->menu = menu_;
-	if(menu_but->parent()) menu_but->parent()->remove(menu_but);
+    if(menu_but->parent()) menu_but->parent()->remove(menu_but);
 
     space_ = 2;
 }
 
 Fl_Tool_Bar::~Fl_Tool_Bar()
 {
-	delete menu_but;
+    delete menu_but;
 }
 
 void Fl_Tool_Bar::layout()
@@ -189,9 +191,14 @@ void Fl_Tool_Bar::draw()
 
         flags(saved);
 
-        if(damage() & (FL_DAMAGE_EXPOSE|FL_DAMAGE_HIGHLIGHT)) {
-            draw_glyph(0, 0, 0, glyph_size(), h(), flags());
+        if (damage() & (FL_DAMAGE_EXPOSE|FL_DAMAGE_HIGHLIGHT))
+        {
+            Fl_Flags f = 0;
+            if (pushed) f |= FL_VALUE;
+            if (highlighted) f |= FL_HIGHLIGHT;
+            draw_glyph(0, 0, 0, glyph_size(), h(), f);
         }
+
     } else
         Fl_Bar::draw();
 }
@@ -210,18 +217,16 @@ void Fl_Tool_Bar::button_glyph(const Fl_Widget* widget, int glyph,
 {
     int X=0, Y=0, W=w, H=h;
     widget->box()->inset(X,Y,W,H);
-    widget->box()->inset(X,Y,W,H);
 
     if(h>w) {
-        int c = W/2;		
-        widget->button_box()->draw(c-2,Y,2,H, widget->button_color(), flags);
-        widget->button_box()->draw(c+2,Y,2,H, widget->button_color(), flags);
+        int c = int(floor((w/2)+.5));
+        widget->button_box()->draw(c-2, Y+2, 2, H-4, widget->button_color(), flags);
+        widget->button_box()->draw(c+1, Y+2, 2, H-4, widget->button_color(), flags);
 
     } else {
-
-        int c = H/2;
-        widget->button_box()->draw(X,c-1,W,2, widget->button_color(), flags);
-        widget->button_box()->draw(X,c+2,W,2, widget->button_color(), flags);
+        int c = int((floor((h/2)+.5)));
+        widget->button_box()->draw(X+2, c-2, W, 2, widget->button_color(), flags);
+        widget->button_box()->draw(X+2, c+1, W, 2, widget->button_color(), flags);
     }
 }
 

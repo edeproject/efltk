@@ -1,0 +1,223 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#: fl_ask.cpp:222 Fl_FileBrowser.cpp:265 Fl_File_Dialog.cpp:812
+#: Fl_File_Dialog.cpp:1013 Fl_File_Dialog.cpp:1247 Fl_Input.cpp:896
+#: Fl_Input.cpp:969 fl_symbols.cpp:357 Fl_Text_Buffer.cpp:405
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2002-09-16 00:56+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: fl_ask.cpp:174
+msgid "No"
+msgstr ""
+
+#: fl_ask.cpp:175
+msgid "Yes"
+msgstr ""
+
+#: fl_ask.cpp:176 Fl_File_Dialog.cpp:540
+msgid "OK"
+msgstr ""
+
+#: fl_ask.cpp:177
+msgid "Cancel"
+msgstr ""
+
+
+
+#: Fl_File_Dialog.cpp:46 Fl_File_Dialog.cpp:64 Fl_File_Dialog.cpp:158
+msgid "bytes"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:51 Fl_File_Dialog.cpp:68
+msgid "Kb"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:55 Fl_File_Dialog.cpp:72
+msgid "Mb"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:80 Fl_File_Dialog.cpp:99
+msgid "Unknown"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:82 Fl_File_Dialog.cpp:496
+msgid "File"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:83
+msgid "Dir"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:84
+msgid "Link"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:86
+msgid "CD-Rom"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:87
+msgid "Removable"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:88
+msgid "Local Disk"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:89
+msgid "Network Disk"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:90
+msgid "RAM Disk"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:270
+msgid "Choose Files:"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:285
+msgid "Choose File:"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:300
+msgid "Choose Directory:"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:309
+msgid "Save File:"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:497 Fl_File_Dialog.cpp:843
+msgid "Size"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:498 Fl_File_Dialog.cpp:822 Fl_File_Dialog.cpp:844
+msgid "Type"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:499 Fl_File_Dialog.cpp:845
+msgid "Modified"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:523
+msgid "Show Preview"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:533
+msgid "Location:"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:549
+msgid "Filter:"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:555
+msgid "&Cancel"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:632
+msgid "All Files (*)"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:664 Fl_File_Dialog.cpp:707 Fl_File_Dialog.cpp:709
+#: Fl_File_Dialog.cpp:711 Fl_File_Dialog.cpp:742 Fl_File_Dialog.cpp:784
+msgid "My Computer"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:664 Fl_File_Dialog.cpp:667 Fl_File_Dialog.cpp:693
+#: Fl_File_Dialog.cpp:772
+msgid "My Home"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:707 Fl_File_Dialog.cpp:710 Fl_File_Dialog.cpp:743
+#: Fl_File_Dialog.cpp:789 Fl_File_Dialog.cpp:1146
+msgid "My Network"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:823
+msgid "Used Space"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:824
+msgid "Free Space"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:920
+msgid "New Directory?"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:943
+msgid "Unable to create directory!"
+msgstr ""
+
+
+#: Fl_File_Dialog.cpp:1434
+msgid "Size:"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:1434 Fl_File_Dialog.cpp:1476
+msgid "File Size:"
+msgstr ""
+
+
+
+#: Fl_Help_Dialog.cpp:155
+msgid "&File"
+msgstr ""
+
+#: Fl_Help_Dialog.cpp:158 Fl_Help_Dialog.cpp:178
+msgid "Open"
+msgstr ""
+
+#: Fl_Help_Dialog.cpp:162
+msgid "Close"
+msgstr ""
+
+#: Fl_Help_Dialog.cpp:188
+msgid "Back"
+msgstr ""
+
+#: Fl_Help_Dialog.cpp:198
+msgid "Next"
+msgstr ""
+
+#: Fl_Help_Dialog.cpp:213
+msgid "Html files, *.{html|htm}, All files, *"
+msgstr ""
+
+#: Fl_Help_Dialog.cpp:213
+msgid "Open Help File"
+msgstr ""
+
+
+#: Fl_Simple_Html.cpp:2321 Fl_Simple_Html.cpp:2350
+#, c-format
+msgid ""
+"<HTML><HEAD><TITLE>%s</TITLE></HEAD><BODY><H1>%s</H1><P>%s \"%s\" - %s.</P></"
+"BODY>"
+msgstr ""
+
+#: Fl_Simple_Html.cpp:2326 Fl_Simple_Html.cpp:2355
+msgid "Error"
+msgstr ""
+
+#: Fl_Simple_Html.cpp:2327 Fl_Simple_Html.cpp:2356
+msgid "Unable to follow the link"
+msgstr ""
+
+#: Fl_Simple_Html.cpp:2328
+msgid "no handler exists for this URI scheme"
+msgstr ""

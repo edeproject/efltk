@@ -3,7 +3,7 @@
 #include <string.h>
 #include <config.h>
 
-#include "fl_errordiff.h"
+#include "fl_internal.h"
 
 /* Special optimized blit for RGB 8-8-8 --> RGB 3-3-2 */
 #define RGB888_RGB332(dst, src) { \

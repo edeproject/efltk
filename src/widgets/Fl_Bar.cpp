@@ -28,8 +28,9 @@
 
 static void revert(Fl_Style *s)
 {
-    //s->box = FL_UP_BOX;
     s->box = FL_FLAT_BOX;
+    s->button_box = FL_UP_BOX;
+    s->button_color = FL_BLACK;
     s->color = FL_GRAY;
     s->label_size = 10;
 }
@@ -41,12 +42,13 @@ Fl_Named_Style* Fl_Bar::default_style = &::style;
 Fl_Bar::Fl_Bar(int x, int y, int w, int h, const char* title)
 : Fl_Group(x, y, w, h,title)
 {
-    type(HORIZONTAL);
     style(default_style);
+
+    type(HORIZONTAL);
     open_ = true;
     highlighted = false;
     pushed = false;
-    glyph_size_ = 10;
+    glyph_size_ = 12;
     saved_size = h;
     align(FL_ALIGN_LEFT|FL_ALIGN_INSIDE);
 }
@@ -54,7 +56,7 @@ Fl_Bar::Fl_Bar(int x, int y, int w, int h, const char* title)
 
 void Fl_Bar::glyph_box(int& x, int& y, int& w, int& h)
 {
-                                 //box()->inset(x,y,w,h);
+    //box()->inset(x,y,w,h);
     x = y = 0; w = this->w(); h = this->h();
     if (type() & 1)              // horizontal
     {
@@ -67,6 +69,7 @@ void Fl_Bar::glyph_box(int& x, int& y, int& w, int& h)
 }
 
 
+#include <stdio.h>
 int Fl_Bar::handle(int event)
 {
     int x,y,w,h;
@@ -165,7 +168,6 @@ void Fl_Bar::draw()
     }
 }
 
-
 bool Fl_Bar::opened(bool v)
 {
     if (open_)
@@ -194,6 +196,10 @@ bool Fl_Bar::opened(bool v)
     }
     relayout();
     redraw();
+    if(parent()) {
+        parent()->redraw();
+        parent()->relayout();
+    }
     return true;
 }
 

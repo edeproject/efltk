@@ -1,5 +1,8 @@
 #include <efltk/Fl_Help_Dialog.h>
 
+#include <efltk/Fl_Locale.h>
+#include "../core/fl_internal.h"
+
 static const char *datas_open[] = {
   "16 16 8 1",
   " 	c None",
@@ -152,14 +155,14 @@ void Fl_Help_Dialog::make_group(int w, int h)
 {
     menu()->begin();
     {
-        Fl_Item_Group *g = new Fl_Item_Group("&File");
+        Fl_Item_Group *g = new Fl_Item_Group(_("&File"));
         Fl_Item *i;
 
-        i= new Fl_Item("Open");
+        i= new Fl_Item(_("Open"));
         i->shortcut(FL_CTRL+'o');
         i->callback((Fl_Callback*)cb_open, this);
 
-        i = new Fl_Item("Close");
+        i = new Fl_Item(_("Close"));
         i->shortcut(FL_CTRL+'c');
         i->callback((Fl_Callback*)cb_close, this);
         g->end();
@@ -175,7 +178,7 @@ void Fl_Help_Dialog::make_group(int w, int h)
         b->image(Fl_Image::read_xpm(0, datas_open));
         //b->box(FL_HIGHLIGHT_UP_BOX);
         b->callback((Fl_Callback*)cb_open, this);
-        b->tooltip("Open");
+        b->tooltip(_("Open"));
         b->take_focus();
 
 
@@ -185,7 +188,7 @@ void Fl_Help_Dialog::make_group(int w, int h)
         b->label_color(FL_DARK3);
         b->highlight_label_color(FL_GRAY);
         b->callback((Fl_Callback*)cb_back, this);
-        b->tooltip("Back");
+        b->tooltip(_("Back"));
         b->deactivate();
 
         b = next = new Fl_Highlight_Button(65, 2, 30, 25, "@->");
@@ -195,7 +198,7 @@ void Fl_Help_Dialog::make_group(int w, int h)
         b->label_color(FL_DARK3);
         b->highlight_label_color(FL_GRAY);
         b->callback((Fl_Callback*)cb_next, this);
-        b->tooltip("Next");
+        b->tooltip(_("Next"));
         b->deactivate();
 
         toolbar()->end();
@@ -210,7 +213,7 @@ void Fl_Help_Dialog::make_group(int w, int h)
 
 void Fl_Help_Dialog::open_file()
 {
-    const char *f = fl_select_file(htmlWidget->filename(), "Html files, *.{html|htm}, All files, *", "Open Help File");
+    const char *f = fl_select_file(htmlWidget->filename(), _("Html files, *.{html|htm}, All files, *"), _("Open Help File"));
     load_file(f);
 }
 

@@ -45,8 +45,11 @@ DSOEXT=""
 DSOSHORTEXT=""
 DSOLIBS=""
 THEMELIBS=""
-dnl# Get the operating system and version number...
 
+PACKAGE="efltk"
+AC_SUBST(PACKAGE)
+
+dnl# Get the operating system and version number...
 uname=`uname`
 uversion=`uname -r | sed -e 's/-.*$//g;s/\.//g'`
 dnl# uversion=`uname -r | sed -e '1,$s/\.//g'`
@@ -446,14 +449,20 @@ else
     esac
 fi
 
-PREFIX=${prefix}
+dnl Fix "libdir" variable...
+if test "$prefix" = NONE; then
+    prefix=/usr/local
+    #dnl prefix=${ac_default_prefix}
+fi
+
+if test "$exec_prefix" = NONE; then
+    exec_prefix="\${prefix}"
+fi
+
 AC_SUBST(DEBUGFLAG)
 
-dnl# if test "$PREFIX" = "NONE"; then
-dnl#     AC_DEFINE_UNQUOTED(CONFIGDIR, "${ac_default_prefix}/share/fltk")
-dnl# else
-dnl#     AC_DEFINE_UNQUOTED(CONFIGDIR, "${prefix}/share/fltk")
-dnl# fi
+AC_DEFINE_UNQUOTED(PREFIX, "${prefix}")
+AC_DEFINE_UNQUOTED(CONFIGDIR, "${prefix}/share/ede")
 
 AC_SUBST(DSOEXT)
 AC_SUBST(DSOSHORTEXT)

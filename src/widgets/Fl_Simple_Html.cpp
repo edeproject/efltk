@@ -59,6 +59,9 @@
 #include <efltk/Fl_Color.h>
 #include <efltk/vsnprintf.h>
 
+#include <efltk/Fl_Locale.h>
+#include "../core/fl_internal.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -2317,13 +2320,17 @@ int	Fl_Simple_Html::load(const char *f)// I - Filename to load (may also have ta
       strncmp(localname, "news:", 5) == 0)
   {
     // Remote link wasn't resolved...
-    snprintf(error, sizeof(error),
-            "<HTML><HEAD><TITLE>Error</TITLE></HEAD>"
-            "<BODY><H1>Error</H1>"
-			"<P>Unable to follow the link \"%s\" - "
-			"no handler exists for this URI scheme.</P></BODY>",
-			localname);
-    value_ = strdup(error);
+      snprintf(error, sizeof(error),
+               "<HTML><HEAD><TITLE>%s</TITLE></HEAD>"
+               "<BODY><H1>%s</H1>"
+               "<P>%s \"%s\" - "
+               "%s.</P></BODY>",
+
+               _("Error"), _("Error"),
+               _("Unable to follow the link"),
+               _("no handler exists for this URI scheme"),
+               localname);
+      value_ = strdup(error);
   }
   else
   {
@@ -2343,11 +2350,14 @@ int	Fl_Simple_Html::load(const char *f)// I - Filename to load (may also have ta
     else
     {
       snprintf(error, sizeof(error),
-               "<HTML><HEAD><TITLE>Error</TITLE></HEAD>"
-               "<BODY><H1>Error</H1>"
-	       "<P>Unable to follow the link \"%s\" - "
-	       "%s.</P></BODY>",
-	       localname, strerror(errno));
+               "<HTML><HEAD><TITLE>%s</TITLE></HEAD>"
+               "<BODY><H1>%s</H1>"
+               "<P>%s \"%s\" - "
+               "%s.</P></BODY>",
+
+               _("Error"), _("Error"),
+               _("Unable to follow the link"),
+               localname, strerror(errno));
       value_ = strdup(error);
     }
   }

@@ -191,7 +191,6 @@ extern "C" bool fltk_theme()
     if ((s = Fl_Style::find("tool bar"))) {
         s->highlight_color = FL_GRAY;
         s->box = up_blue;
-        s->button_box = border_hl;
     }
     if ((s = Fl_Style::find("button"))) {
         s->selection_text_color = FL_BLACK;

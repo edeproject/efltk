@@ -1,0 +1,17 @@
+EFLTK Locale support
+--------------------
+
+This directory contains all EFltk translation (.po)
+files. Example file, which contains all strings to
+translate is "messages.po.example"
+
+Format:
+ - Filename is "locale".po, e.g. for Finnish it's "fi.po"
+
+
+Translators:
+	Mikko Lahteenmaki <Laza@Flashmail.com> - Finnish
+
+
+-----------------
+Mikko Lahteenmaki

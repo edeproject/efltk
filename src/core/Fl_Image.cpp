@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 
-#include "fl_errordiff.h"
+#include "fl_internal.h"
 
 Fl_PtrList<ImageReader> readers;
 

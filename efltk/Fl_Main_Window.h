@@ -18,6 +18,8 @@ typedef Fl_Window Fl_Main_WindowType;
 class Fl_Main_Window : public Fl_Main_WindowType
 {
 public:
+    static Fl_Named_Style* default_style;
+
     Fl_Main_Window(int x, int y, int w, int h, const char *l=0);
     Fl_Main_Window(int w, int h, const char *l=0);
     ~Fl_Main_Window();

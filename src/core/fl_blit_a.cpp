@@ -1,6 +1,6 @@
 #include <efltk/Fl_Renderer.h>
 
-#include "fl_errordiff.h"
+#include "fl_internal.h"
 
 /* Functions to perform alpha blended blitting */
 

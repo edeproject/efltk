@@ -30,11 +30,12 @@
 
 class FL_API Fl_Bar : public Fl_Group {
   bool open_;
-  bool highlighted;
-  bool pushed;
   int glyph_size_;
   int saved_size;
   void glyph_box(int& x, int& y, int& w, int& h);
+protected:
+    bool highlighted;
+    bool pushed;
 public:
   Fl_Bar(int x,int y,int w ,int h,const char *l = 0);
   static Fl_Named_Style* default_style;

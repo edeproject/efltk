@@ -33,10 +33,10 @@
 
 class FL_API Fl_Window : public Fl_Group {
 public:
+  static Fl_Named_Style* default_style;
 
   Fl_Window(int,int,int,int, const char* = 0);
   Fl_Window(int,int, const char* = 0);
-  static Fl_Named_Style* default_style;
   virtual ~Fl_Window();
 
   // Types from Fl_WM.h

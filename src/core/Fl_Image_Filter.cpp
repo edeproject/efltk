@@ -3,7 +3,7 @@
 
 #include <math.h>
 
-#include "fl_errordiff.h"
+#include "fl_internal.h"
 
 #define SYSTEM_8BIT (Fl_Renderer::system_format()->bytespp==1)
 
