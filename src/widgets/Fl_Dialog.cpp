@@ -19,6 +19,7 @@
 
 #include <efltk/Fl.h>
 #include <efltk/Fl_Button.h>
+#include <efltk/Fl_Box.h>
 #include <efltk/Fl_Input.h>
 #include <efltk/Fl_Multi_Tabs.h>
 #include <efltk/Fl_Pixmap.h>
@@ -357,6 +358,9 @@ Fl_Dialog::Fl_Dialog(int ww, int hh, const char *label, Fl_Data_Source *ds)
 {
 	m_defaultButton = 0;
 	m_buttonPanel = new Fl_Group(0,0,10,10);
+	Fl_Box *resize = new Fl_Box(0,-1,10,1);
+	resize->hide();
+	m_buttonPanel->resizable(resize);
 	m_buttonPanel->layout_align(FL_ALIGN_BOTTOM);
 	m_buttonPanel->layout_spacing(3);
 	m_buttonPanel->end();
@@ -441,6 +445,8 @@ void Fl_Dialog::buttons(int buttons_mask,int default_button)
 	m_buttons = buttons_mask;
 	clear_buttons();
 
+	int maxh = 25;
+
 	m_buttonPanel->begin();
 	for(i = 0; buttonTemplates[i].id; i++) 
 	{
@@ -450,18 +456,14 @@ void Fl_Dialog::buttons(int buttons_mask,int default_button)
 		{
 			if (id == default_button) {
 				Fl_Group *default_box = new Fl_Group(0,0,10,10);
-				default_box->layout_align(FL_ALIGN_RIGHT);
 				default_box->color(FL_BLACK);
 				default_box->box(FL_THIN_DOWN_BOX);
-				
 				btn = new Fl_Button(0,0,10,10, _(buttonTemplate.label));
-				btn->layout_align(FL_ALIGN_CLIENT);
 				default_box->end();
 				default_box->user_data((void *)id);
 				m_defaultButton = btn;
 			} else {
 				btn = new Fl_Button(0,0,10,10, _(buttonTemplate.label));
-				btn->layout_align(FL_ALIGN_RIGHT);
 			}
 			
 			if (id == FL_DLG_HELP)
@@ -472,33 +474,38 @@ void Fl_Dialog::buttons(int buttons_mask,int default_button)
 			btn->argument(id);
 			btn->image(buttonTemplate.pixmap);
 			m_buttonList.append(btn);
+
+			fl_font(btn->label_font(), btn->label_size());
+			int hh = int(fl_height());
+			if (btn->image()) {
+				int ih = btn->image()->height();
+				if (ih > hh) hh = ih;
+			}
+			hh += btn->box()->dh() * 2;
+			if (hh > maxh) maxh = hh;
 		}
 	}
 	m_buttonPanel->end();
 
-	int maxh = 25;
-	for (i = 0; i < m_buttonList.size(); i++) {
+	// resize buttons
+	int bx = (w()-layout_spacing()*2) + 3;
+	for (i = 0; i < m_buttonList.size(); i++) 
+	{
 		Fl_Widget *btn = m_buttonList[i];
 		fl_font(btn->label_font(), btn->label_size());
-		
-		int hh = int(fl_height());		
 		int ww = int(fl_width(btn->label()));
 
-		if (btn->image()) ww += btn->image()->width() + 3;
+		if (btn->image())
+			ww += btn->image()->width() + 3;
 		ww += btn->box()->dw() * 2 + 4;
-		
+		bx -= ww + 6;
 		if (btn == m_defaultButton) {
 			Fl_Widget *default_box = btn->parent();
-			default_box->w(ww+4);
+			default_box->resize(bx-2,3,ww+4,maxh+4);
+			btn->resize(2,2,ww,maxh);
+		} else {
+			btn->resize(bx,5,ww,maxh);
 		}
-		btn->w(ww);
-
-		if (btn->image()) {
-			int ih = btn->image()->height();
-			if (ih > hh) hh = ih;
-		}
-		hh += btn->box()->dh();
-		if (hh > maxh) maxh = hh;
 	}
 
 	// resize button panel

@@ -674,7 +674,7 @@ void Fl_File_Chooser::parse_dirs(const Fl_String &fp)
 	m_path_input->clear();
 	Fl_Item *item=0;
 
-	if(fp.empty() || fp==_("My Computer")) {
+	if(fp.empty() || !strcmp(fp, _("My Computer"))) {
 		m_path_input->begin();
 		m_path_input->add(_("My Computer"));
 		m_path_input->value(fp.empty() ? _("My Computer") : fp.c_str());
@@ -709,7 +709,7 @@ void Fl_File_Chooser::directory(const Fl_String &path)
     m_preview_box->image_cache.clear();
     m_preview_box->update_preview("");
 
-	if(path==_("My Computer"))
+	if(!strcmp(path, _("My Computer")))
 		filebrowser()->load("");
 	else
 		filebrowser()->load(path);
