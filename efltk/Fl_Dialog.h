@@ -38,12 +38,14 @@ class FL_API Fl_Dialog : public Fl_Window {
    typedef Fl_Window inherited;
 
    static void buttons_callback(Fl_Widget *,void *);
+   static void help_callback(Fl_Widget *,void *);
 
    Fl_Button      *m_defaultButton;
    Fl_Group       *m_buttonPanel;
    Fl_Multi_Tabs  *m_tabs;
    Fl_Widget_List  m_buttonList;
    int             m_buttons;
+   int             m_modalResult;
 
 public:
    Fl_Dialog(int w,int h);
@@ -51,8 +53,7 @@ public:
    const Fl_Variant operator [] (const char *field_name) const;
    Fl_Variant operator [] (const char *field_name);
 
-   // This is not needed? User can use show(), and for modal exec()
-   //int   show_modal();
+   int   show_modal();
 
    bool  valid();
    void  buttons(int buttons_mask,int default_button);

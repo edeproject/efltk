@@ -30,7 +30,7 @@
 
 static void cb_test(Fl_Widget*, void*) {
    Fl_Dialog dlg(200,100);
-   dlg.buttons(FL_DLG_OK|FL_DLG_CANCEL,FL_DLG_OK);
+   dlg.buttons(FL_DLG_OK|FL_DLG_CANCEL|FL_DLG_HELP,FL_DLG_OK);
    dlg.exec(0, false);
 }
 
