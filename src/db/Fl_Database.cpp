@@ -18,7 +18,7 @@
 #include <efltk/db/Fl_Database.h>
 #include <efltk/db/Fl_Query.h>
 
-Fl_Database::Fl_Database(const Fl_String connString,bool threadSafe=false) { 
+Fl_Database::Fl_Database(const Fl_String connString,bool threadSafe) { 
    m_inTransaction = m_active = false; 
    m_connString = connString;
    if (threadSafe)
