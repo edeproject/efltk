@@ -11018,6 +11018,8 @@ lib/Fl_Record_DS.o :	efltk/db/Fl_Record_DS.h\
 # %TargetInfo test/split.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4003ee,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Split.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4003ef,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/widgets/Fl_Dialog_DS.cpp	SourceOrHeader,	UseWorkingFile,	UniqueId=0x4003f3,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/db/Fl_Data_Dialog.cpp	SourceOrHeader,	UniqueId=0x4003f6,	TargetType=C++,	IDEFlags=0x6
+# %TargetInfo src/db/Fl_Record_DS.cpp	SourceOrHeader,	UniqueId=0x4003f7,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/fl_iconv_converters.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x4001e5,	TargetType=C++,	IDEFlags=0x4
 # %TargetInfo src/core/Fl_get_key_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x400029,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo src/core/Fl_win32.cpp	SourceOrHeader,	IncludeFile,	UniqueId=0x40002f,	TargetType=C++,	IDEFlags=0x6
@@ -11286,8 +11288,6 @@ lib/Fl_Record_DS.o :	efltk/db/Fl_Record_DS.h\
 # %TargetInfo efltk/Fl_Split.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4003ec,	TargetType=INC,	IDEFlags=0x6
 # %TargetInfo config.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003f0,	TargetType=INC,	IDEFlags=0xc
 # %TargetInfo efltk/Fl_Dialog_DS.h	SourceOrHeader,	IncludeFile,	UseWorkingFile,	UniqueId=0x4003f1,	TargetType=INC,	IDEFlags=0xe
-# %TargetInfo src/db/Fl_Data_Dialog.cpp	SourceOrHeader,	UniqueId=0x4003f6,	TargetType=C++,	IDEFlags=0x6
-# %TargetInfo src/db/Fl_Record_DS.cpp	SourceOrHeader,	UniqueId=0x4003f7,	TargetType=C++,	IDEFlags=0x6
 # %TargetInfo efltk/db/Fl_Data_Dialog.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003f8,	TargetType=INC,	IDEFlags=0xe
 # %TargetInfo efltk/db/Fl_Record_DS.h	SourceOrHeader,	IncludeFile,	UniqueId=0x4003f9,	TargetType=INC,	IDEFlags=0xe
 

@@ -255,7 +255,6 @@ void Fl_ODBC_Database::prepare_query(Fl_Query *query) {
 void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
     int                 rc;
     //SQLINTEGER        cbLen;
-    TIMESTAMP_STRUCT    timeData;
 
     SQLHSTMT    statement = (SQLHSTMT)query_handle(query);
     Fl_Params&  params = query->params();
@@ -299,16 +298,15 @@ void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
                     break;
                 case VAR_DATE:
                     {
-                        paramType = SQL_C_TIMESTAMP;
-                        sqlType   = SQL_TIMESTAMP;
-                        len = sizeof(TIMESTAMP_STRUCT);
+                        paramType = SQL_C_DATE;
+                        sqlType   = SQL_DATE;
+                        len = sizeof(DATE_STRUCT);
                         //cbLen = len;
-                        TIMESTAMP_STRUCT *t = &timeData;
+                        DATE_STRUCT *t = (DATE_STRUCT *)param->date_time_buffer();
                         Fl_Date_Time dt = param->get_date();
                         buff = t;
                         if (dt) {
                             dt.decode_date((short *)&t->year,(short *)&t->month,(short *)&t->day);
-                            t->hour = t->minute = t->second = t->fraction = 0;
                         } else {
                             paramType = SQL_C_CHAR;
                             sqlType   = SQL_CHAR;
@@ -321,7 +319,7 @@ void Fl_ODBC_Database::bind_parameters(Fl_Query *query) {
                         paramType = SQL_C_TIMESTAMP;
                         sqlType   = SQL_TIMESTAMP;
                         len = sizeof(TIMESTAMP_STRUCT);
-                        TIMESTAMP_STRUCT *t = &timeData;
+                        TIMESTAMP_STRUCT *t = (TIMESTAMP_STRUCT *)param->date_time_buffer();
                         Fl_Date_Time dt = param->get_date();
                         short ms;
                         buff = t;

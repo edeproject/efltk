@@ -22,13 +22,24 @@
 #include "../Fl_Variant.h"
 #include "../Fl_Ptr_List.h"
 
+/** Fl_Param class
+  * used in database applications to define database query
+  * parameters. 
+  */
+
 class Fl_Param : public Fl_Variant {
     Fl_String         m_name;
     Fl_Ptr_List       m_bindParamIndexes;
-
+    bool                     m_null;
+    char              m_dateTimeBuffer[32];
 public:
     Fl_Param(const char *name);
     ~Fl_Param();
+
+    void is_null(bool n) { m_null = n; }
+    bool is_null() const { return m_null; }
+
+    char *date_time_buffer() { return m_dateTimeBuffer; }
 
     const Fl_String& name() const { return m_name; }
     void       bind_clear() { m_bindParamIndexes.clear(); }
