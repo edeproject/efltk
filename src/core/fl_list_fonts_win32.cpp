@@ -114,11 +114,13 @@ int Fl_Font_::encodings(const char**& arrayp) const
     HDC dc = fl_getDC();
 #ifndef _WIN32_WCE
     LOGFONT lf;
-#else
-    LOGFONTW lf;
-#endif
     memset(&lf, 0, sizeof(lf));
 	strncpy(lf.lfFaceName, name_+1, 32);
+#else
+    LOGFONTW lf;
+    memset(&lf, 0, sizeof(lf));
+	fl_utf2unicode((const uchar*)name_+1,32,lf.lfFaceName);
+#endif
 	lf.lfCharSet = DEFAULT_CHARSET;
 
 
