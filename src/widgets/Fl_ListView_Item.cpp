@@ -165,7 +165,7 @@ void Fl_ListView_Item::draw_cell(int col, int w, bool sel)
         if(strchr(txt, '\n')) txt = fl_cut_multiline(txt, w-iw-6);
         else txt = fl_cut_line(txt, w-iw-6);
 		
-        fl_draw(txt, x, y-parent()->leading()-fl_height()/2, w-x, h(), f&FL_ALIGN_MASK);
+        fl_draw(txt, x, int(y-parent()->leading()-fl_height()/2), w-x, h(), f&FL_ALIGN_MASK);
     }
     fl_pop_clip();
 }
