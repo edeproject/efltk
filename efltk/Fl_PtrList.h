@@ -132,13 +132,14 @@ public:
                     if(prev) prev->next = next;
                     if(next) next->prev = prev;
                     remove = iter;
+                    break;
                 }
             } while(iter = iter->next);
         }
 
         // Assing new 'Current' pointer, if needed.
         if(remove && remove==Current) Current=remove->prev;
-        if(remove && remove==First) First=remove->prev;
+        if(remove && remove==First) First=remove->next;
         if(remove && remove==Last) Last=remove->prev;
 
         if(remove) {
