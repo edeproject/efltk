@@ -61,14 +61,14 @@ Fl_Text_Buffer     *textbuf = 0;
 Fl_Text_Buffer     *stylebuf = 0;
 Fl_Text_Display::Style_Table_Entry
     styletable[] = {	// Style table
-        { FL_BLACK, FL_COURIER,        12 }, // A - Unfinished
-        { FL_BLACK, FL_COURIER,        12 }, // B - Plain
-        { FL_DARK3, FL_COURIER_ITALIC, 12 }, // C - Line comments
-        { FL_DARK3, FL_COURIER_ITALIC, 12 }, // D - Block comments
-        { fl_color_average(FL_BLACK, FL_YELLOW, 0.5), FL_COURIER,        12 }, // E - Strings
-        { fl_color_average(FL_BLACK, FL_GREEN, 0.5),  FL_COURIER,        12 }, // F - Directives
-        { fl_color_average(FL_BLACK, FL_RED, 0.5),    FL_COURIER,   12 }, // G - Types
-        { fl_color_average(FL_BLACK, FL_BLUE, 0.5),   FL_COURIER,   12 }  // H - Keywords
+        { FL_BLACK, FL_HELVETICA,        12 }, // A - Unfinished
+        { FL_BLACK, FL_HELVETICA,        12 }, // B - Plain
+        { FL_DARK3, FL_HELVETICA_ITALIC, 12 }, // C - Line comments
+        { FL_DARK3, FL_HELVETICA_ITALIC, 12 }, // D - Block comments
+        { fl_color_average(FL_BLACK, FL_YELLOW, 0.5), FL_HELVETICA,        12 }, // E - Strings
+        { fl_color_average(FL_BLACK, FL_GREEN, 0.5),  FL_HELVETICA,        12 }, // F - Directives
+        { fl_color_average(FL_BLACK, FL_RED, 0.5),    FL_HELVETICA,   12 }, // G - Types
+        { fl_color_average(FL_BLACK, FL_BLUE, 0.5),   FL_HELVETICA,   12 }  // H - Keywords
     };
 
 const char *code_keywords[] = {	// List of known C/C++ keywords...
@@ -446,11 +446,7 @@ style_update(int        pos,		// I - Position of update
     text  = (char *)textbuf->text_range(start, end);
     style = (char *)stylebuf->text_range(start, end);
     last  = style[end - start - 1];
-
     style_parse(text, style, end - start);
-
-    stylebuf->replace(start, end, style);
-    ((Fl_Text_Editor *)cbArg)->redisplay_range(start, end);
 
     if (last != style[end - start - 1])
     {
@@ -462,12 +458,13 @@ style_update(int        pos,		// I - Position of update
         end   = textbuf->length();
         text  = (char *)textbuf->text_range(start, end);
         style = (char *)stylebuf->text_range(start, end);
-
         style_parse(text, style, end - start);
-
         stylebuf->replace(start, end, style);
-        ((Fl_Text_Editor *)cbArg)->redisplay_range(start, end);
-    }
+
+    } else
+        stylebuf->replace(start, end, style);
+
+    ((Fl_Text_Editor *)cbArg)->redisplay_range(start, end);
     free(text);
     free(style);
 }
