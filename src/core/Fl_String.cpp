@@ -52,6 +52,7 @@ Fl_String::Fl_String(const char *s, int maxlen, bool pre_allocated)
         }
         len_ = maxlen;
     } else {
+        if(!s) s="";
         if(pre_allocated) str_ = (char*)s;
         else str_ = strdup(s);
         len_ = strlen(str_);
