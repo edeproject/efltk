@@ -207,10 +207,14 @@ void Fl_MDI_Titlebar::layout()
 
     int mid = h()/2-(bh/2);
     int X=bh+2;
-    _close.resize(w()-X, mid, bh, bh);
-    X+=bh+1;
-    _max.resize(w()-X, mid, bh, bh);
-    X+=bh+1;
+	if(_close.visible()) {
+		_close.resize(w()-X, mid, bh, bh);
+		X+=bh+1;
+	}
+	if(_max.visible()) {
+		_max.resize(w()-X, mid, bh, bh);
+		X+=bh+1;
+	}
     _min.resize(w()-X, mid, bh, bh);
 }
 
@@ -533,10 +537,10 @@ void Fl_MDI_Window::layout()
 
             if(!prv->resizable() && (_titlebar._max.visible() || _titlebar._min.visible())) {
                 _titlebar._max.hide();
-                _titlebar._min.hide();
+                //_titlebar._min.hide();
             } else if(prv->resizable() && (!_titlebar._max.visible() || !_titlebar._min.visible())) {
                 _titlebar._max.show();
-                _titlebar._min.show();
+                //_titlebar._min.show();
             }
         }
     } else {
@@ -1091,11 +1095,10 @@ public:
     {
         switch(e) {
         case FL_RELEASE: {
-            if(index!=-1) {
+            if(index!=-1) {                
                 if(Fl::event_inside(buttons[index].x(),buttons[index].y(),buttons[index].w(),buttons[index].h()))
-                    action(index);
-                index = -1;
-                bar->redraw();
+                    action(index);				
+				return 1;
             }
             break;
         }
@@ -1160,6 +1163,12 @@ void Fl_MDI_Window::delete_menu_buttons()
     if(menubuttons) {
         delete menubuttons;
         menubuttons = 0;
+
+	    Fl_Menu_Bar *menu = owner()->menu();
+	    if(menu) {
+	        menu->relayout();
+		    menu->redraw();
+		}
     }
 }
 
@@ -1292,6 +1301,7 @@ void Fl_MDI_Window::minimize(bool val)
     if(_maximized) {
         delete_menu_buttons();
         _maximized=false;
+		_titlebar.show();
     }
     if(_owner->_max==this) _owner->_max=0;
 
