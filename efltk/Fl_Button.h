@@ -34,10 +34,11 @@ class FL_API Fl_Button : public Fl_Widget {
 public:
     static Fl_Named_Style* default_style;
 
-    enum { // values for type(), should match Fl_Button
+    enum { // values for type(), should match Fl_Item
         NORMAL = 0,
-        TOGGLE = RESERVED_TYPE+1,
-        RADIO  = RESERVED_TYPE+2,
+        TOGGLE = 1,
+        RADIO  = 2,
+
         HIDDEN = 3
     };
 

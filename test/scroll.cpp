@@ -74,6 +74,7 @@ void type_cb(Fl_Widget*, void* v) {
   thescroll->type((long)v);
   thescroll->relayout();
   thescroll->redraw();
+  printf("Group %d\n", thescroll->is_group());
 }
 
 Fl_Menu_Item choices[] = {

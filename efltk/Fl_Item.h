@@ -36,12 +36,12 @@ public:
 
     enum { // values for type(), should match Fl_Button
         NORMAL = 0,
-        TOGGLE = RESERVED_TYPE+1,
-        RADIO  = RESERVED_TYPE+2,
+        TOGGLE = 1,
+        RADIO  = 2,
 
         //Menubar doesnt try to execute this, it will send events there.
         //This allows widgets like, MDI buttons in menubar
-        NO_EXECUTE = RESERVED_TYPE+3
+        NO_EXECUTE = 3
     };
 
     Fl_Item(const char* label = 0);

@@ -27,7 +27,7 @@ public:
     static bool set_workspace_count(int count);
     static bool set_workspace_names(const char **names, int count);
     static bool set_current_workspace(int number);
-    //static bool set_active_window(Window xid);
+    static bool set_active_window(Window xid);
 
     ////////////////
     // Get functions:
@@ -40,7 +40,7 @@ public:
     static int get_workspace_count();
     static int get_workspace_names(char **&names);
     static int get_current_workspace();
-    //static Window get_active_window();
+    static Window get_active_window();
 
     ////////////////
     // Callback:

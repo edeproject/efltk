@@ -80,6 +80,7 @@ Fl_Widget::Fl_Widget(int X, int Y, int W, int H, const char* L)
 #endif
     x_ = X; y_ = Y; w_ = W; h_ = H;
     type_     = 0;
+    widget_type_ = 0;
     damage_   = FL_DAMAGE_ALL;
     layout_damage_= FL_LAYOUT_DAMAGE;
     when_     = FL_WHEN_RELEASE;

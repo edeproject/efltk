@@ -30,11 +30,11 @@
 
 #if HAVE_XUTF8
 # include <efltk/Xutf8.h>
-# include <efltk/fl_utf8.h>
 #endif
 
 #include <efltk/Fl.h>
 #include <efltk/x.h>
+#include <efltk/fl_utf8.h>
 #include <efltk/Fl_Window.h>
 #include <efltk/Fl_Style.h>
 #include <ctype.h>
@@ -275,12 +275,14 @@ int fl_screen;
 XVisualInfo *fl_visual;
 Colormap fl_colormap;
 
-static Atom WM_DELETE_WINDOW;
-static Atom WM_PROTOCOLS;
+Atom FLTKChangeScheme;
+Atom FLTKChangeSettings;
+
+Atom WM_DELETE_WINDOW;
+Atom WM_PROTOCOLS;
 Atom fl_MOTIF_WM_HINTS;
-static Atom FLTKChangeScheme;
-static Atom TARGETS;
-static Atom CLIPBOARD;
+Atom TARGETS;
+Atom CLIPBOARD;
 Atom fl_XdndAware;
 Atom fl_XdndSelection;
 Atom fl_XdndEnter;
@@ -294,8 +296,9 @@ Atom fl_XdndFinished;
 Atom fl_textplain;
 Atom fl_texturilist;
 //Atom fl_XdndProxy;
+#if HAVE_XUTF8
 Atom fl_XaUtf8String;
-
+#endif
 extern "C"
 {
     static int io_error_handler(Display*) {Fl::fatal("X I/O error"); return 0;}
@@ -311,7 +314,7 @@ extern "C"
     }
 }
 
-#ifdef HAVE_XUTF8
+#if HAVE_XUTF8
 XIM fl_xim_im;
 XIC fl_xim_ic;
 char fl_ping_xim = 0;
@@ -377,6 +380,7 @@ void fl_open_display(Display* d)
     WM_PROTOCOLS          = XInternAtom(d, "WM_PROTOCOLS",    0);
     fl_MOTIF_WM_HINTS     = XInternAtom(d, "_MOTIF_WM_HINTS", 0);
     FLTKChangeScheme      = XInternAtom(d, "FLTKChangeScheme",    0);
+    FLTKChangeSettings    = XInternAtom(d, "FLTKChangeSettings",  0);
     TARGETS               = XInternAtom(d, "TARGETS",     0);
     CLIPBOARD     = XInternAtom(d, "CLIPBOARD",       0);
     fl_XdndAware          = XInternAtom(d, "XdndAware",       0);
@@ -392,7 +396,9 @@ void fl_open_display(Display* d)
     fl_textplain          = XInternAtom(d, "text/plain",      0);
     fl_texturilist        = XInternAtom(d, "text/uri-list",   0);
     //fl_XdndProxy        = XInternAtom(d, "XdndProxy",		0);
+#if HAVE_XUTF8
     fl_XaUtf8String	= XInternAtom(d, "UTF8_STRING",		0);
+#endif
 
     fl_screen = DefaultScreen(d);
 
@@ -520,12 +526,13 @@ void Fl::paste(Fl_Widget &receiver, bool clipboard)
     // otherwise get the window server to return it:
     fl_selection_requestor = &receiver;
     Atom property = clipboard ? CLIPBOARD : XA_PRIMARY;
-    //XConvertSelection(fl_display, property, XA_STRING, property,
-    //fl_xid(Fl::first_window()), fl_event_time);
-    // TO UTF-8:
+#if HAVE_XUTF8
     XConvertSelection(fl_display, property, fl_XaUtf8String, property,
                       fl_xid(Fl::first_window()), fl_event_time);
-
+#else
+    XConvertSelection(fl_display, property, XA_STRING, property,
+                      fl_xid(Fl::first_window()), fl_event_time);
+#endif
 }
 
 
@@ -700,11 +707,15 @@ bool fl_handle()
                 return true;
 
             }
+            else if (message == FLTKChangeSettings)
+            {
+                Fl::read_defaults();
+                break;
+            }
             else if (message == FLTKChangeScheme)
             {
                 Fl_Style::reload_theme();
-                return true;
-
+                break;
             }
             else if (message == fl_XdndEnter)
             {
@@ -1209,7 +1220,11 @@ bool fl_handle()
             e.property = fl_xevent.xselectionrequest.property;
             if (e.target == TARGETS)
             {
+#if HAVE_XUTF8
                 Atom a = fl_XaUtf8String; //XA_STRING;
+#else
+                Atom a = XA_STRING;
+#endif
                 XChangeProperty(fl_display, e.requestor, e.property,
                     XA_ATOM, sizeof(Atom)*8, 0, (unsigned char*)&a,
                     sizeof(Atom));

@@ -68,18 +68,22 @@ int getIntProperty(Window w, Atom a, Atom type, int deflt) {
 
 int sendClientMessage(Window w, Atom a, long x)
 {
-    XEvent ev;
-    long mask;
-    memset(&ev, 0, sizeof(ev));
-    ev.xclient.type = ClientMessage;
-    ev.xclient.window = w;
-    ev.xclient.message_type = a;
-    ev.xclient.format = 32;
-    ev.xclient.data.l[0] = x;
-    ev.xclient.data.l[1] = CurrentTime;
-    mask = 0L;
-    if(w == RootWindow(fl_display, fl_screen)) mask = SubstructureRedirectMask;
-    return XSendEvent(fl_display, RootWindow(fl_display, fl_screen), False, mask, &ev);
+    XEvent xev;
+    memset(&xev, 0, sizeof(xev));
+    xev.xclient.type = ClientMessage;
+    xev.xclient.serial = 0;
+    xev.xclient.send_event = True;
+    xev.xclient.window = w;
+    xev.xclient.display = fl_display;
+    xev.xclient.message_type = _XA_NET_ACTIVE_WINDOW;
+    xev.xclient.format = 32;
+    xev.xclient.data.l[0] = x;
+    xev.xclient.data.l[1] = CurrentTime;
+    int ret = XSendEvent (fl_display, RootWindow(fl_display, fl_screen), False,
+                          SubstructureRedirectMask | SubstructureNotifyMask,
+                          &xev);
+    XSync(fl_display, True);
+    return ret;
 }
 
 static void init_atoms()
@@ -205,6 +209,14 @@ bool Fl_WM::set_current_workspace(int number)
     return (status==Success);
 }
 
+bool Fl_WM::set_active_window(Window xid)
+{
+    init_atoms();
+    int status = sendClientMessage(xid, _XA_NET_ACTIVE_WINDOW, xid);
+    return (status==Success);
+}
+
+
 /////////////////////////////////////////////
 
 bool Fl_WM::get_geometry(int &width, int &height)
@@ -274,6 +286,12 @@ int Fl_WM::get_current_workspace()
 {
     init_atoms();
     return getIntProperty(RootWindow(fl_display, fl_screen), _XA_NET_CURRENT_DESKTOP, XA_CARDINAL, -1);
+}
+
+Window Fl_WM::get_active_window()
+{
+    init_atoms();
+    return getIntProperty(RootWindow(fl_display, fl_screen), _XA_NET_ACTIVE_WINDOW, XA_WINDOW, -1);
 }
 
 int Fl_WM::get_workspace_names(char **&names)

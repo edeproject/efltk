@@ -37,39 +37,37 @@ class FL_API Fl_Image;
 class FL_API Fl_Group;
 
 class FL_API Fl_Widget : public Fl_Callback_Object {
-  // disable the copy assignment/constructors:
-  Fl_Widget & operator=(const Fl_Widget &);
-  Fl_Widget(const Fl_Widget &);
-
 public:
-
-  virtual void draw();
-  virtual int handle(int);
-  int send(int event);
-  virtual void layout();
-  virtual ~Fl_Widget();
-
-  const Fl_Style* style() const {return style_;}
-  void	style(const Fl_Style* s) {style_ = s;}
-  void	style(const Fl_Style& s) {style_ = &s;}
-  bool	copy_style(const Fl_Style* s);
-  static Fl_Named_Style* default_style;
-  static void default_glyph(const Fl_Widget*,int,int,int,int,int,Fl_Flags);
-
-  Fl_Group* parent() const	{return parent_;}
-  void	parent(Fl_Group* w)	{parent_ = w;}
-
-  Fl_Window* window() const	;
-
-  enum { // values for type():
+  enum { // values for widget_type():
     RESERVED_TYPE	= 0x64,
     GROUP_TYPE		= 0xe0,
     WINDOW_TYPE		= 0xf0
   };
+  uchar widget_type()           {return widget_type_; }
+  void	widget_type(uchar t)	{widget_type_ = t;}
+  bool	is_group() const	{return widget_type_ >= GROUP_TYPE;}
+  bool	is_window() const	{return widget_type_ >= WINDOW_TYPE;}
+
   uchar	type() const		{return type_;}
   void	type(uchar t)		{type_ = t;}
-  bool	is_group() const	{return type_ >= GROUP_TYPE;}
-  bool	is_window() const	{return type_ >= WINDOW_TYPE;}
+
+  virtual void draw();
+  virtual int handle(int);
+  virtual void layout();
+  virtual ~Fl_Widget();
+  int send(int event);
+
+  static Fl_Named_Style* default_style;
+  const Fl_Style* style() const {return style_;}
+  void	style(const Fl_Style* s) {style_ = s;}
+  void	style(const Fl_Style& s) {style_ = &s;}
+  bool	copy_style(const Fl_Style* s);
+
+  static void default_glyph(const Fl_Widget*,int,int,int,int,int,Fl_Flags);
+
+  Fl_Group* parent() const	{return parent_;}
+  void	parent(Fl_Group* w)	{parent_ = w;}
+  Fl_Window* window() const;
 
   int	x() const		{return x_;}
   void	x(int v)		{x_ = v;}
@@ -299,30 +297,31 @@ public:
 #endif
 
 protected:
-
   Fl_Widget(int,int,int,int,const char* =0);
 
 private:
+  // disable the copy assignment/constructors:
+  Fl_Widget & operator=(const Fl_Widget &);
+  Fl_Widget(const Fl_Widget &);
 
-  const char*   label_;
-  Fl_Image*		image_;
-  int			shortcut_; // encode in the label?
   unsigned		flags_;
-  const Fl_Style* style_;
-  const char*	tooltip_; // make this into another widget?
-  Fl_Group*		parent_;
+  int			shortcut_; // encode in the label?
   int			x_,y_,w_,h_;
-  uchar			type_;
+  uchar			type_, widget_type_;
   uchar			damage_;
   uchar			layout_damage_;
   uchar			when_;
 
+  const char*   field_name_; // data source support
+  const char*	tooltip_; // make this into another widget?
+  const char*   label_;
+  Fl_Image*	image_;
+  Fl_Group*	parent_;
+  const Fl_Style* style_;
+
   Fl_Callback *callback_;
-  void *user_data_;  
-  
-  const char*           field_name_; // data source support
-  
   Fl_Callback_Signal *signal_;  
+  void *user_data_;  
 };
 
 #endif

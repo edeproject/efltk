@@ -57,7 +57,7 @@ resizable_(0),                   // fltk 1.0 used (this)
 sizes_(0),
 data_source_(0L)
 {
-    type(GROUP_TYPE);
+    widget_type(GROUP_TYPE);
     style(::group_style);
     align(FL_ALIGN_TOP);
     // Subclasses may want to construct child objects as part of their

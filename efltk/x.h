@@ -85,6 +85,11 @@ extern FL_API Colormap	fl_colormap;
 extern FL_API XEvent	fl_xevent;
 extern FL_API bool	fl_handle();
 
+// Send this to all (E)FLTK app windows, to make them reload scheme
+extern Atom FLTKChangeScheme;
+// Send this to all EFLTK app windows, to make them reload settings
+extern Atom FLTKChangeSettings;
+
 // set by last fl_xevent with a timestamp:
 extern FL_API ulong	fl_event_time;
 

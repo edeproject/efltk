@@ -71,7 +71,7 @@ Fl_Named_Style* Fl_Window::default_style = &::style;
 void Fl_Window::_Fl_Window()
 {
     style(default_style);
-    type(WINDOW_TYPE);
+    widget_type(WINDOW_TYPE);
     window_type_ = 0;
     i = 0;
     icon_ = 0;
