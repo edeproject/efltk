@@ -9,11 +9,13 @@
 // stdlib routines implemented through Windows CE API
 //
 
-#include <ptlib.h>
+#include <winbase.h>
+#include <windows.h>
+#include <crtdbg.h>
 #include <Atlconv.h>
 #include <winbase.h>
 #include <winnt.h>
-#include <snmp.h>
+//#include <snmp.h>
 
 
 #define DELETE (0x00010000L) // defined in <winnt.h> and undef "msos/ptlib/contain.h"

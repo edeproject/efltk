@@ -5,8 +5,17 @@
 
 # ifdef _WIN32_WCE  // Double check
 #   include <efltk/fl_utf8.h>
-#	include <windows.h>
 #	include <efltk/filename.h>
+#include <tchar.h>
+#include <wceatl.h>
+#include <winnetwk.h>
+#include <winbase.h>
+#include <windows.h>
+#include <crtdbg.h>
+#include <Atlconv.h>
+#include <winbase.h>
+#include <winnt.h>
+
 
 	static char * getcwd(char *tmp, int size) { 
 	  static unsigned short tmp2[FL_PATH_MAX];

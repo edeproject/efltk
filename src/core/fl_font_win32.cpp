@@ -28,7 +28,9 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <efltk/math.h>
-
+#ifdef _WIN32_WCE
+#include <wince.h>
+#endif
 
 
 #if HAVE_XUTF8
@@ -70,7 +72,9 @@ static DWORD str_to_charset(const char *str)
 	EIF("Eastern Europe")	EASTEUROPE_CHARSET;
 	EIF("Gb2312")			GB2312_CHARSET;
 	EIF("Greek")			GREEK_CHARSET;
+#ifndef _WIN32_WCE
 	EIF("Hangul")			HANGUL_CHARSET;
+#endif
 	EIF("MAC")				MAC_CHARSET;
 	EIF("OEM")				OEM_CHARSET;
 	EIF("Russian")			RUSSIAN_CHARSET;
@@ -102,6 +106,7 @@ Fl_FontSize::Fl_FontSize(const char* name, int size, int charset)
   default: name--;
   }
 
+#ifndef _WIN32_WCE  
   HFONT font = CreateFont(
     -size,	    // use "char size"
     0,		    // logical average character width
@@ -118,6 +123,33 @@ Fl_FontSize::Fl_FontSize(const char* name, int size, int charset)
     DEFAULT_PITCH,	// pitch and family
     name		// pointer to typeface name string
   );
+#else
+    HFONT font;
+    LOGFONT lFont;
+
+    lFont.lfHeight         = -size;
+    lFont.lfWidth          = 0L;
+    lFont.lfEscapement     = 0L;
+    lFont.lfOrientation    = 0L;
+    lFont.lfWeight         = weight;
+    lFont.lfItalic         = italic;
+    lFont.lfUnderline      = FALSE;
+    lFont.lfStrikeOut      = FALSE;
+    lFont.lfCharSet        = charset;       // Non-alphatic on Compaq Aero
+    lFont.lfCharSet        = ANSI_CHARSET;
+//    lFont.lfCharSet        = OEM_CHARSET;           // CE doesn'tunderstand
+    lFont.lfOutPrecision   = OUT_DEFAULT_PRECIS;
+//    lFont.lfOutPrecision   = OUT_DEVICE_PRECIS;   // CE doesn't understand
+    lFont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
+    lFont.lfQuality        = DEFAULT_QUALITY;
+//    lFont.lfQuality        = PROOF_QUALITY;       // CE doesn't understand
+    lFont.lfPitchAndFamily = DEFAULT_PITCH & FF_DONTCARE;
+	wchar_t wname[255];
+	fl_utf2unicode((const unsigned char*)name,strlen(name),wname);
+	wcscpy(lFont.lfFaceName,wname);
+    // WinCE doesn't support CreateFont
+    font = ::CreateFontIndirect( &lFont );
+#endif
 
   HDC dc = fl_getDC();
   SelectObject(dc, font);
@@ -285,7 +317,12 @@ void fl_transformed_draw(const char *str, int n, float x, float y)
 		if (l < 1) l = 1;
 		i += l;
 		skod = (const WCHAR*)&ucs;
+#ifndef _WIN32_WCE
 		TextOutW(fl_gc, int(floorf(x+.5f)), int(floorf(y+.5f)), skod, 1);
+#else
+		RECT rect = {int(floorf(x+.5f)), int(floorf(y+.5f)), 0,0};
+		DrawText(fl_gc,skod,wcslen(skod),&rect,DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP);
+#endif
 		x += lx;
 	}
 #else
@@ -307,8 +344,13 @@ void fl_rtl_draw(const char *str, int n, float x, float y)
 	    lx = int(fl_width(wstr[i]));
 		x -= lx;
 		skod = (const WCHAR*)wstr + i;
+#ifndef _WIN32_WCE
 		TextOutW(fl_gc, int(floorf(x+.5f)), int(floorf(y+.5f)),
 				skod, 1);
+#else
+		RECT rect = {int(floorf(x+.5f)),int(floorf(y+.5f)), 0,0};
+		DrawText(fl_gc,skod,wcslen(skod),&rect,DT_SINGLELINE | DT_TOP | DT_LEFT | DT_NOCLIP);	
+#endif
 		if (fl_nonspacing(wstr[i])) {
 			x += lx;
 		}
