@@ -118,6 +118,13 @@ bool Fl_XmlParser::parse_doctype( Fl_XmlDoc &doc, Fl_XmlContext *ctxptr)
         }
         if(token=='>')
             return true;
+
+        //Strip quotes
+        if(token[0]=='\"' && token[token.length()-1]=='\"') {
+            token.sub_delete(0,1);
+            token.sub_delete(token.length()-1,1);
+        }
+
         doc.dtds[n] = token;
     }
 
