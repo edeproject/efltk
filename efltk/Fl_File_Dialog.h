@@ -26,7 +26,7 @@
 #include "Fl_Image_Cache.h"
 #include "Fl_Input_Browser.h"
 #include "Fl_Item.h"
-#include "Fl_Box.h"
+#include "Fl_Dialog.h"
 #include "Fl_Group.h"
 #include "Fl_Check_Button.h"
 #include "Fl_Highlight_Button.h"
@@ -35,7 +35,7 @@
 class PreviewBox;
 
 /** Fl_File_Chooser */
-class Fl_File_Chooser : public Fl_Group
+class Fl_File_Chooser : public Fl_Dialog
 {
 public:
     // Modes:
@@ -46,12 +46,9 @@ public:
     };
 
     // ctor / dtor
-    Fl_File_Chooser(int x, int y, int w, int h, const char *label=0, int mode=0);
+    //Fl_File_Chooser(int x, int y, int w, int h, const char *label=0, int mode=0);
+	Fl_File_Chooser(int w, int h, const char *label=0, int mode=0);
     ~Fl_File_Chooser();
-
-    // Popup dialog for this file chooser.
-    // Returns true, if OK pressed
-    bool show_dialog(const char *caption);
 
     // When Opening directory, it tries to find 'default filename' and mark item as selected.
     void default_filename(const Fl_String &f) { m_default_filename = f; }
@@ -102,11 +99,6 @@ public:
     // Get file listview object
     Fl_File_Browser *filebrowser() { return m_filebrowser; }
 
-    // Set / Get ok button.
-    // File chooser activates/deactivates it, depending on state
-    Fl_Button *ok_button() const { return m_ok_button; }
-    void ok_button(Fl_Button *b) { m_ok_button = b; }
-
     // Go one dir up
     void up();
     // Refresh contents
@@ -135,6 +127,8 @@ public:
      #endif
      */
 
+	virtual bool save_data(Fl_Data_Source *ds=0);
+
 protected:
     // Creates group
     void make_group();
@@ -156,14 +150,12 @@ protected:
 
 private:
     PreviewBox *m_preview_box;
-    Fl_Button *m_ok_button;
     Fl_String m_default_filename;
     int m_mode;
 
     void file_clicked(Fl_ListView_Item *i);
     void folder_clicked(Fl_ListView_Item *i);
 
-    static void cb_ok_button     (Fl_Button *btn, Fl_File_Chooser *ch);
     static void cb_list          (Fl_File_Browser *w, Fl_File_Chooser *d);
     static inline void cb_preview(Fl_Widget *w, Fl_File_Chooser *d) { d->preview(bool(w->value()==1)); }
 
