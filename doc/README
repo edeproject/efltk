@@ -1,0 +1,109 @@
+EFLTK - Extended Fast Light Toolkit Version 2.0.4
+
+-------------------------------------------------
+
+WHAT IS EFLTK?
+	EFltk is a LGPL'd C++ graphical user interface toolkit for 
+	X (UNIX(r)), OpenGL(r), and Microsoft(r) Windows(r). 
+	It is based on FLTK2 (see README.fltk) and is currently
+	developed by Equinox Desktop Environment Team (ede.sf.net)
+
+CHANGES BETWEEN FLTK2 AND EFLTK
+	See 'ChangeLog' file for description of changes.
+
+DOCUMENTATION
+	Sorry, no API documentation yet.
+  Please see header files and/or FLTK2 documentation
+  at http://www.fltk.org/documentation.html
+
+BUILDING AND INSTALLING EFLTK
+
+	EFltk is developed and tested with following machines:
+	- MS Windows 98, 2000, XP
+	- Redhat Linux 7.3/GCC 3.2, RedHat 8.0/GCC 3.2, Debian GNU/Linux 3.0
+	- Solaris 8/GCC 3.2 (Sparc) 
+
+	Unix style machines:
+		type: ./build.gcc --'options'
+		Where 'options' can be e.g. --enable-gl
+		type: su -c "make install"
+
+	Windows:
+		MSVC++ is supported 'efltk/visualc'
+		MINGW 2.0 is also supported 'elfkt/MinGW'
+		Dev-C++ package is available through vUpdate
+
+INTERNET RESOURCES
+
+	EFLTK is available on the 'net in a bunch of locations:
+
+	- WWW:   http://ede.sourceforge.net
+		 http://ede.ho.com	
+
+	- CVS:	 http://www.sourceforge.net/projects/ede
+
+	- EMail:
+		 Mikko Lahteenmaki <Laza@Flashmail.com>
+		 Dejan Lekic <dejan@nu6.org>
+
+REPORTING BUGS
+
+	To report a bug in EFLTK, send an email to "Laza@Flashmail.com",
+        or use our bug tracking system at sourceforge.
+	Please include the EFLTK version, operating system & version, and
+	compiler that you are using when describing the bug or problem.
+
+	For general support and questions, please use the EFLTK mailing
+	list at "ede-users@lists.sourceforge.net".
+
+THANKS TO
+	- Whole FLTK team for great work! <www.fltk.org>
+	- SDL <www.libsdl.org>
+        
+COPYRIGHT
+
+	EFLTK is copyright (C) 2002 by the following individuals:
+	Mikko Lahteenmaki <Laza@Flashmail.com>
+
+	Bo Henriksen
+	Alexey Parshin
+	Dejan Lekic
+
+	UTF-8:
+	Jean-Marc Lienher
+	Martin Pekar
+
+	FLTK is copyright (C) 1998-2002 by the following individuals:
+	Bill Spitzak <spitzak@cinenet.net>
+	Craig P. Earls <cpearls@mit.edu>
+	Curtis Edwards <curtise@fa.disney.com>
+	Gustavo Hime <hime@centroin.com.br>
+	Robert Kesterson <robertk@robertk.com>
+	Matthias Melcher <matthias@mediaone.net>
+	Vincent Penne <vincent.penne@wanadoo.fr>
+	Michael Sweet <mike@easysw.com>
+	Carl Thompson <cet@carlthompson.net>
+
+	This library is free software; you can redistribute it and/or
+	modify it under the terms of the GNU Library General Public License
+	as published by the Free Software Foundation; either version 2 of
+	the License, or (at your option) any later version. You may also
+	release programs that use the unmodified FLTK library without any
+	restrictions according to the LPGL exceptions granted in the FLTK
+	LIBRARY LICENSE.
+
+	This library is distributed in the hope that it will be useful, but
+	WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	Library General Public License for more details.
+
+	You should have received a copy of the GNU Library General Public
+	License along with this library; if not, write to the Free Software
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+	USA.
+
+TRADEMARKS
+
+	Microsoft and Windows are registered trademarks of Microsoft
+	Corportation. UNIX is a registered trademark of the X/Open Group,
+	Inc.  OpenGL is a registered trademark of Silicon Graphics, Inc.
