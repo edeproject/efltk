@@ -196,8 +196,7 @@ public:
 	uint seek(uint pos) {
 		if(fp) {
 			return fseek(fp, pos, SEEK_SET);
-		} else if(buf) {
-			if(pos<0) pos = 0;
+		} else if(buf) {			
 			if(pos>buf_size) pos = buf_size;
 			buf_offset = pos;
 			return pos;

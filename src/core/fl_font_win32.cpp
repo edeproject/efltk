@@ -246,7 +246,7 @@ float fl_width(unsigned int ucs) {
      	fl_fontsize->width[r] = new int[0x0400];        
 		unsigned short i=0, ii = r * 0x400;
 		for (; i < 0x400; i++) {
-			GetTextExtentPoint32W(dc, &ii, 1, &s);
+			GetTextExtentPoint32W(dc, (const WCHAR*)&ii, 1, &s);
 			fl_fontsize->width[r][i] = s.cx;
 			ii++;
 		}		
@@ -280,7 +280,7 @@ void fl_transformed_draw(const char *str, int n, float x, float y)
 		ucs = u; 
 		if (l < 1) l = 1;
 		i += l;
-		TextOutW(fl_gc, x, y, &ucs, 1);
+		TextOutW(fl_gc, int(floorf(x+.5f)), int(floorf(y+.5f)), (const WCHAR*)&ucs, 1);
 		x += lx;
 	}
 #else
@@ -301,7 +301,7 @@ void fl_rtl_draw(const char *str, int n, float x, float y)
 	    lx = int(fl_width(wstr[i]));
 		x -= lx;
 		TextOutW(fl_gc, int(floorf(x+.5f)), int(floorf(y+.5f)),
-				wstr + i, 1);
+				(const WCHAR*)wstr + i, 1);
 		if (fl_nonspacing(wstr[i])) {
 			x += lx;
 		}

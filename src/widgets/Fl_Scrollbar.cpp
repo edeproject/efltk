@@ -235,8 +235,8 @@ void Fl_Scrollbar::draw()
     int X=0; int Y=0; int W=w(); int H=h(); box()->inset(X,Y,W,H);
     int ix = X; int iy = Y; int iw = W; int ih = H;
 
-    char pushed_ = this==Fl::pushed() ? which_pushed : NOTHING;
-    char highlight_ = this==Fl::belowmouse() ? which_highlight : NOTHING;
+    char pushed_ = (char)(this==Fl::pushed() ? which_pushed : 0); //NOTHING=0
+    char highlight_ = (char)(this==Fl::belowmouse() ? which_highlight : 0); //NOTHING=0
 
     // 1 = left/top   2 = right/bottom   5 = slider button
     Fl_Flags f1 = 0, f2 = 0, f5 = 0;

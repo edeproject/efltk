@@ -366,9 +366,8 @@ Fl_Color_Chooser::Fl_Color_Chooser(int X, int Y, int W, int H, const char* L)
 }
 
 Fl_Color Fl_Color_Chooser::value() const {
-  Fl_Color ret =
-    fl_rgb(uchar(255*r()+.5f), uchar(255*g()+.5f), uchar(255*b()+.5f));
-  return ret ? ret : FL_BLACK;
+  Fl_Color ret = fl_rgb(uchar(255*r()+.5f), uchar(255*g()+.5f), uchar(255*b()+.5f));
+  return (ret ? ret : (Fl_Color)FL_BLACK);
 }
 
 void Fl_Color_Chooser::value(Fl_Color c) {

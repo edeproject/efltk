@@ -135,7 +135,7 @@ Fl_ListView_Item* Fl_ListView::next()
 Fl_ListView_Item* Fl_ListView::prev()
 {
     if(!item() || item()->index()==0) return 0;
-    uint prev_i = item()->index()-1;
+    int prev_i = item()->index()-1;
     if(prev_i < 0) return 0;
     Fl_ListView_Item *w = child(prev_i);
     item(w);
