@@ -142,7 +142,7 @@ public:
     void preferred_size(int& w,int& h) const { 
         fl_font(parent()->text_font(),parent()->text_size());
         h = int(fl_height()+fl_descent()) + 2;
-        w = 15 + box()->dw(); 
+        w = 15 + box()->dw() + 1; 
     }
     int handle(int event) { // button should never take focus
         if (event == FL_FOCUS)
@@ -279,7 +279,7 @@ void Fl_Combo_Box_Panel::draw() {
         fl_color(text_color());
     }
 
-    fl_push_clip(xx, yy, w(), hh);
+    //fl_push_clip(xx, 0, w(), hh);
 
     for (unsigned c = 0; c < item->columns(); c++) {
         int ww = m_listView->column_width(c);
@@ -297,7 +297,7 @@ void Fl_Combo_Box_Panel::draw() {
         xx += ww;
     }
 
-    fl_pop_clip();
+    //fl_pop_clip();
 }
 
 int Fl_Combo_Box_Panel::handle(int event) {
