@@ -1,26 +1,7 @@
 //
-// "$Id$"
+// Curve demo for eFLTK
 //
-// Curve test program for the Fast Light Tool Kit (FLTK).
-//
-// Copyright 1998-1999 by Bill Spitzak and others.
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Library General Public
-// License as published by the Free Software Foundation; either
-// version 2 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Library General Public License for more details.
-//
-// You should have received a copy of the GNU Library General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA.
-//
-// Please report all bugs and problems to "fltk-bugs@easysw.com".
+// $Id$
 //
 
 #include <efltk/Fl.h>
@@ -44,14 +25,17 @@ bool points = false;
 bool double_buffer = false;
 
 class Drawing : public Fl_Widget {
-
-    void do_drawing() 
+    Pixmap back_buffer;
+public:
+    void do_drawing()
     {
         int X=0, Y=0, W=w(), H=h();
 
+        draw_box();
+        box()->inset(X,Y,W,H);
+
         fl_push_clip(X,Y,W,H);
-        fl_color(FL_DARK3);
-        fl_rectf(X,Y,W,H);
+
         fl_push_matrix();
 
         if(args[9]!=1.0) {
@@ -120,10 +104,10 @@ class Drawing : public Fl_Widget {
         Fl_Widget::layout();
     }
 
-    Pixmap back_buffer;
-
-public:
-    Drawing(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H) { back_buffer = 0; }
+    Drawing(int X,int Y,int W,int H) : Fl_Widget(X,Y,W,H) {
+        color(FL_DARK3);
+        back_buffer = 0;
+    }
 };
 
 Drawing *d;
@@ -151,7 +135,7 @@ void anim_timeout(void *)
 
     d->redraw();
 
-    Fl::repeat_timeout(0.05f, anim_timeout);
+    Fl::repeat_timeout(0.03f, anim_timeout);
 }
 
 void anim_cb(Fl_Button *o, void*) 
@@ -171,7 +155,7 @@ void anim_cb(Fl_Button *o, void*)
 }
 
 void db_cb(Fl_Button *o, void*) {
-    if (Fl::event() == FL_BUTTON_PRESSED) {
+    if(Fl::event() == FL_BUTTON_PRESSED) {
         double_buffer = o->value();
         d->relayout();
         d->redraw();
@@ -180,8 +164,10 @@ void db_cb(Fl_Button *o, void*) {
 
 void points_cb(Fl_Button *o, void*) 
 {
-    points = o->value();
-    d->redraw();
+    if(Fl::event() == FL_BUTTON_PRESSED) {
+        points = o->value();
+        d->redraw();
+    }
 }
 
 void slider_cb(Fl_Slider *s, long v) 
@@ -241,7 +227,3 @@ int main(int argc, char** argv)
 
     return Fl::run();
 }
-
-//
-// End of "$Id$".
-//
