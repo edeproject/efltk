@@ -250,7 +250,7 @@ void MenuWindow::layout()
         size(W,H);
     }
 
-    Fl_Menu_Window::layout();
+	Fl_Menu_Window::layout();
 }
 
 Fl_Widget *MenuWindow::get_widget(int index)
@@ -817,19 +817,15 @@ int MenuWindow::handle(int event)
         break;
     }
 
-    return Fl_Window::handle(event);
+    return Fl_Menu_Window::handle(event);
 }
 
 void MenuWindow::show()
 {
     if(!indexes_ || empty) {
-#ifdef _WIN32
-        hide();
-#else
         resize(-1,-1,1,1);
         Fl_Menu_Window::layout();
         Fl_Menu_Window::show();
-#endif
         return;
     }
 

@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <errno.h>
 
+#include <efltk/vsnprintf.h>
 #include <efltk/Fl_String.h>
 #include <efltk/Fl_Util.h>
 

@@ -144,7 +144,7 @@ void Fl_Menu_Window::layout()
 {
 #ifdef _WIN32
     if(shown())
-        SetWindowPos(fl_xid(this), HWND_TOPMOST, x(), y(), w(), h(), (SWP_NOSENDCHANGING | SWP_NOZORDER | SWP_NOACTIVATE));
+        SetWindowPos(fl_xid(this), HWND_TOPMOST, x(), y(), w(), h(), (SWP_NOSENDCHANGING | SWP_NOACTIVATE));
     Fl_Group::layout();
 #else
     Fl_Window::layout();
