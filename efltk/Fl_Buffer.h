@@ -21,7 +21,11 @@
 #include <efltk/Fl_Export.h>
 #include <efltk/Fl_String.h>
 
-class FL_API Fl_Buffer {
+/**
+ * Fl_Buffer is core buffer class in eFLTK.
+ */
+class FL_API Fl_Buffer 
+{
 protected:
     unsigned m_size;
     unsigned m_bytes;
@@ -71,6 +75,10 @@ public:
     void read_file(Fl_String fileName);
 };
 
+/**
+ * Fl_String_Buffer is Fl_Buffer derived class
+ * used for all kind of string buffering...
+ */
 class FL_API Fl_String_Buffer : public Fl_Buffer {
 public:
     Fl_String_Buffer(unsigned sz=16) : Fl_Buffer(sz) {}
