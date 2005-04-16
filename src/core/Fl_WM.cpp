@@ -50,6 +50,22 @@ Atom _XA_NET_WM_WINDOW_TYPE_NORMAL = 0;
 
 Atom _XA_NET_WM_STRUT = 0;
 
+/* Todo:
+_NET_DESKTOP_LAYOUT - needed by pagers
+_NET_SHOWING_DESKTOP - needed for show desktop
+_NET_MOVERESIZE_WINDOW, _NET_WM_MOVERESIZE - needed 
+for moving/resizing from taskbar or pager
+_NET_RESTACK_WINDOW - needed by pagers
+_NET_FRAME_EXTENTS, _NET_REQUEST_FRAME_EXTENTS - inform 
+window about it future size
+_NET_WM_STATE_*, _NET_WM_ACTION_*, _NET_WM_ALLOWED_ACTIONS_*
+ - needed to control minimize, maximize etc.
+_NET_WM_STRUT_PARTIAL - some apps may use this (but not many)
+_NET_WM_ICON_GEOMETRY - for cool effects with minimization etc.
+_NET_WM_PID - used to kill programs that aren't responding
+_NET_WM_USER_TIME, _NET_WM_PING, _NET_WM_SYNC_REQUEST
+*/
+
 #if HAVE_XUTF8
 extern Atom fl_XaUtf8String;
 #else
