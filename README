@@ -1,5 +1,4 @@
-EFLTK - Extended Fast Light Toolkit Version 2.0.4
-
+EFLTK - Extended Fast Light Toolkit Version 2.0.5
 -------------------------------------------------
 
 WHAT IS EFLTK?
@@ -13,8 +12,8 @@ CHANGES BETWEEN FLTK2 AND EFLTK
 
 DOCUMENTATION
 	Sorry, no API documentation yet.
-  Please see header files and/or FLTK2 documentation
-  at http://www.fltk.org/documentation.html
+  	Please see header files and/or FLTK2 documentation
+  	at http://www.fltk.org/documentation.html
 
 REQUIREMENTS
 	* the packages may have other names depends on your distribution
@@ -31,9 +30,8 @@ BUILDING AND INSTALLING EFLTK
 	- Mandrake Linux 9.0/GCC 3.2
 
 	Unix style machines:
-		type: ./build.gcc --'options'
-		Where 'options' can be e.g. --enable-gl
-		type: su -c "make install"
+		type: ./configure --'options' where 'options' can be e.g. --enable-gl
+		run make and make install (second option as root)
 
 	Windows:
 		MSVC++ is supported 'efltk/visualc'
@@ -42,12 +40,8 @@ BUILDING AND INSTALLING EFLTK
 INTERNET RESOURCES
 
 	EFLTK is available on the 'net in a bunch of locations:
-
 	- WWW:   http://ede.sourceforge.net
-
 	- CVS:	 http://www.sourceforge.net/projects/ede
-
-	- EMail: Laza@Flashmail.com
 
 REPORTING BUGS
 
