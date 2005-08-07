@@ -36,6 +36,7 @@
 #include <config.h>
 #include <efltk/Fl_Color.h>
 #include <efltk/fl_draw.h>
+#include <efltk/Fl_Renderer.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
