@@ -181,7 +181,7 @@ bool setup_png_transformations(png_structp png_ptr, png_infop info_ptr, png_colo
 
     /* Get the image info */
     png_get_IHDR(png_ptr, info_ptr,
-                 (ulong*)&width, (ulong*)&height,
+                 (png_uint_32*)&width, (png_uint_32*)&height,
                  &bit_depth,
                  &col_type,
                  &interlace_type,
@@ -234,7 +234,7 @@ bool setup_png_transformations(png_structp png_ptr, png_infop info_ptr, png_colo
     /* Update the info the reflect our transformations */
     png_read_update_info(png_ptr, info_ptr);
     png_get_IHDR(png_ptr, info_ptr,
-                 (ulong*)&width, (ulong*)&height,
+                 (png_uint_32*)&width, (png_uint_32*)&height,
                  &bit_depth,
                  &col_type,
                  &interlace_type,
