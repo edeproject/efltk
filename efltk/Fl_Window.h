@@ -28,6 +28,7 @@
 #define FL_USEDEFAULT ((int)0x80000000) // same as Win32 value
 
 /** Fl_Window */
+class Fl_X;
 class FL_API Fl_Window : public Fl_Group {
 public:
     static Fl_Named_Style* default_style;
