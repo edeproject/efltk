@@ -153,7 +153,7 @@ static XftFont* fontopen(const char* name, bool core)
                        core ? XFT_CORE : 0, XftTypeBool, false,
                        XFT_ANTIALIAS, XftTypeBool, (fl_size_<12&&fl_size_>8)?false:true,
                        //XFT_RENDER, XftTypeBool, false,
-                       0);
+                       NULL);
 }
 
 Fl_FontSize::Fl_FontSize(const char* name)
