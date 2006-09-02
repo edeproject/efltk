@@ -1,3 +1,10 @@
+2005-08-07 - 2006-08-30 vljubovic
+	* Small fix in Xft to prevent crashes
+	* gcc 4 compilation fix
+	* Fix broken cast in new libpng
+	* Compilation of FTP classes on BSD are broken, so they are disabled
+	* Fix for FreeBSD @ amd64 platform compilation
+
 2005-02-03 16:15  karijes
 	* Added uninstall option
 	* Little files cleanup
