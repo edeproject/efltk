@@ -78,7 +78,7 @@ public:
    Fl_Text_Buffer(int requestedSize = 0);
    ~Fl_Text_Buffer();
 
-   char *Fl_Text_Buffer::static_buffer();
+   char *static_buffer();
 
     // Undo stack size: (default 50)
    int undo_size();

@@ -23,8 +23,8 @@ class Fl_Combo_Box : public Fl_Group {
 
     void ctor_init();
 protected:
-    static void Fl_Combo_Box::cb_browse(Fl_Widget *w, void *data);
-    static void Fl_Combo_Box::cb_button(Fl_Widget *w, void *data);
+    static void cb_browse(Fl_Widget *w, void *data);
+    static void cb_button(Fl_Widget *w, void *data);
 public:
     static Fl_Named_Style* default_style;
 
