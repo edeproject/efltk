@@ -87,7 +87,7 @@ void Fl_XmlTokenizer::read_next()
         if(putback_char == -1) {
             c = read_char();	            
         } else {
-            c = putback_char;
+            c = (char)putback_char;
             putback_char = -1;            
         }
 

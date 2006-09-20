@@ -129,7 +129,7 @@ private:
     Fl_String curtoken;
 
     // Char which was put back internally
-    char putback_char;
+    int putback_char;
 
     // Stack for put_back()'ed tokens
     Fl_String_Stack putback_stack;
