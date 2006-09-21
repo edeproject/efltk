@@ -1,0 +1,263 @@
+
+# include Jamrules
+SubDir TOP ;
+
+COREFILES = Fl.cpp 
+	Fl_Bitmap.cpp 
+	Fl_Bmp.cpp 
+	Fl_Boxtype.cpp 
+	Fl_Buffer.cpp 
+	Fl_Config.cpp 
+	Fl_Data_Fields.cpp 
+	Fl_Data_Source.cpp 
+	Fl_Date_Time.cpp 
+	Fl_Exception.cpp 
+	Fl_Gif.cpp 
+	Fl_Group.cpp 
+	Fl_Image.cpp 
+	Fl_Image_Filter.cpp 
+	Fl_Image_IO.cpp 
+	Fl_Lists.cpp 
+	Fl_Maps.cpp 
+	Fl_Packed_Strings.cpp 
+	Fl_Pixmap.cpp 
+	Fl_Renderer.cpp 
+	Fl_Socket.cpp 
+	Fl_String.cpp 
+	Fl_String_List.cpp 
+	Fl_Style.cpp 
+	Fl_Style_Set.cpp 
+	Fl_Thread.cpp 
+	Fl_Translator.cpp 
+	Fl_Util.cpp 
+	Fl_Variant.cpp 
+	Fl_WM.cpp 
+	Fl_Widget.cpp 
+	Fl_Window.cpp 
+	Fl_Window_fullscreen.cpp 
+	Fl_Window_hotspot.cpp 
+	Fl_Window_iconize.cpp 
+	Fl_Xpm.cpp 
+	Fl_abort.cpp 
+	Fl_add_idle.cpp 
+	Fl_arg.cpp 
+	Fl_compose.cpp 
+	Fl_display.cpp 
+	Fl_get_key.cpp 
+	Fl_init.cpp 
+	Fl_key_name.cpp 
+	Fl_lock.cpp 
+	Fl_own_colormap.cpp 
+	Fl_visual.cpp 
+	KStoUCS.cpp 
+	filename.cpp 
+	filename_list.cpp 
+	filename_match.cpp 
+	fl_arc.cpp 
+	fl_arci.cpp 
+	fl_oval_box.cpp 
+	fl_plastic_box.cpp 
+	fl_round_box.cpp 
+	fl_rounded_box.cpp 
+	fl_shadow_box.cpp 
+	fl_diamond_box.cpp 
+	fl_blit.cpp 
+	fl_blit_1.cpp 
+	fl_blit_a.cpp 
+	fl_blit_n.cpp 
+	fl_clip.cpp 
+	fl_color.cpp 
+	fl_converters.cpp 
+	fl_cursor.cpp 
+	fl_curve.cpp 
+	fl_dnd.cpp 
+	fl_draw.cpp 
+	fl_draw_image.cpp 
+	fl_draw_pixmap.cpp 
+	fl_font.cpp 
+	fl_glyph.cpp 
+	fl_labeltype.cpp 
+	fl_list_fonts.cpp 
+	fl_load_plugin.cpp 
+	fl_locale.cpp 
+	fl_map.cpp 
+	fl_overlay.cpp 
+	fl_overlay_visual.cpp 
+	fl_rect.cpp 
+	fl_rgb.cpp 
+	fl_scroll_area.cpp 
+	fl_stretch.cpp 
+	fl_vertex.cpp 
+	fl_utf8.cpp 
+	fl_theme.cpp 
+	scandir.cpp 
+	Fl_Printer.cpp 
+	Fl_PostScript.cpp Fl_Gdi.cpp ;
+
+# -------------------------------------------------
+WIDGESFILES = Fl_Align_Group.cpp 
+	Fl_Bar.cpp 
+	Fl_Browser.cpp 
+	Fl_Box.cpp 
+	Fl_Button.cpp 
+	Fl_Button_Group.cpp 
+	Fl_Calendar.cpp 
+	Fl_Check_Button.cpp 
+	Fl_Choice.cpp 
+	Fl_Clock.cpp 
+	Fl_Color_Chooser.cpp 
+	Fl_Combo_Box.cpp 
+	Fl_Config_Dialog_DS.cpp 
+	Fl_Date_Time_Input.cpp 
+	Fl_Dial.cpp 
+	Fl_Dialog.cpp 
+	Fl_Dialog_DS.cpp 
+	Fl_Directory_DS.cpp 
+	Fl_Double_Window.cpp 
+	Fl_FileBrowser.cpp 
+	Fl_FileInput.cpp 
+	Fl_File_Dialog.cpp 
+	Fl_Float_Input.cpp 
+	Fl_Help_Dialog.cpp 
+	Fl_Highlight_Button.cpp 
+	Fl_Input.cpp 
+	Fl_Input_Browser.cpp 
+	Fl_Item.cpp 
+	Fl_Light_Button.cpp 
+	Fl_ListView.cpp 
+	Fl_ListView_Item.cpp 
+	Fl_ListView_ItemExt.cpp 
+	Fl_ListView_Header.cpp 
+	Fl_MDI_Window.cpp 
+	Fl_Main_Window.cpp 
+	Fl_Masked_Input.cpp 
+	Fl_MDI_Bar.cpp 
+	Fl_Memory_DS.cpp 
+	Fl_Menu.cpp 
+	Fl_Menu_.cpp 
+	Fl_Menu_add.cpp 
+	Fl_Menu_Bar.cpp 
+	Fl_Menu_Button.cpp 
+	Fl_Menu_Item.cpp 
+	Fl_Menu_Window.cpp 
+	Fl_Menu_global.cpp 
+	Fl_Multi_Image.cpp 
+	Fl_Numeric_Input.cpp 
+	Fl_Output.cpp 
+	Fl_Overlay_Window.cpp 
+	Fl_Pack.cpp 
+	Fl_Popup_Window.cpp 
+	Fl_ProgressBar.cpp 
+	Fl_Radio_Button.cpp 
+	Fl_Repeat_Button.cpp 
+	Fl_Return_Button.cpp 
+	Fl_Roller.cpp 
+	Fl_Scroll.cpp 
+	Fl_Scrollbar.cpp 
+	Fl_Shaped_Window.cpp 
+	Fl_Simple_Html.cpp 
+	Fl_Single_Window.cpp 
+	Fl_Slider.cpp 
+	Fl_Split.cpp 
+    Fl_Stock_Images.cpp 
+	Fl_Text_Buffer.cpp 
+	Fl_Text_Display.cpp 
+	Fl_Text_Editor.cpp 
+	Fl_Table_Base.cpp 
+	Fl_Tabs.cpp 
+	Fl_Tile.cpp 
+	Fl_Tool_Bar.cpp 
+	Fl_Tooltip.cpp  
+	Fl_Valuator.cpp 
+	Fl_Value_Input.cpp 
+	Fl_Value_Slider.cpp 
+	Fl_Workspace.cpp 
+	fl_ask.cpp 
+	fl_engraved_label.cpp 
+	fl_show_colormap.cpp 
+	fl_symbols.cpp 
+	layout_sizes.cpp ;
+
+
+# -------------------------------------------------
+IMAGESFILES = Fl_Images.cpp
+	Fl_Jpeg.cpp
+	Fl_Png.cpp ;
+
+# -------------------------------------------------
+OPENGLFILES = Fl_Gl_Choice.cpp 
+	Fl_Gl_Overlay.cpp 
+	Fl_Gl_Window.cpp 
+	gl_draw.cpp 
+	gl_start.cpp ;
+
+# -------------------------------------------------
+DBFILES = Fl_Data_Dialog.cpp 
+	Fl_Database.cpp 
+	Fl_Query.cpp 
+	Fl_Params.cpp 
+	Fl_Record_DS.cpp ;
+
+# -------------------------------------------------
+NETFILES = Fl_IMAP_Connect.cpp 
+	Fl_IMAP_DS.cpp 
+	Fl_Base64.cpp ;
+
+# -------------------------------------------------
+XMLFILES = Fl_XmlDoc.cpp 
+	Fl_XmlNode.cpp 
+	Fl_XmlParser.cpp 
+	Fl_XmlTokenizer.cpp ;
+
+# -------------------------------------------------
+EFLUIDFILES = Fl_Function_Type.cpp 
+	Fl_Menu_Type.cpp 
+	Fl_Group_Type.cpp 
+	Fl_Widget_Type.cpp 
+	Fl_Type.cpp 
+	Fl_Window_Type.cpp 
+	Fluid_Image.cpp 
+	Fluid_Plugins.cpp 
+	code.cpp 
+	factory.cpp 
+	file.cpp 
+	fluid.cpp 
+	about_panel.cpp 
+	widget_panel.cpp 
+	alignment_panel.cpp 
+	function_panel.cpp 
+	coding_style.cpp 
+	coding_style_func.cpp ;
+
+# -------------------------------------------------
+ETRANSLATEFILES = main.cpp
+	main_ui.cpp
+	etranslate.cpp
+	load_etm.cpp
+	load_pot.cpp
+	extract.cpp
+	modify_info.cpp
+	compile.cpp ;
+
+# -------------------------------------------------
+ECALCFILES = Main.cpp SciCalc.cpp ;
+
+
+BuildLibrary $(FLLIB) 		: "$(COREFILES_DIR)/$(COREFILES)" "$(WIDGESFILES_DIR)/$(WIDGESFILES)" ;
+BuildLibrary $(FLIMAGESLIB)	: "$(IMAGESFILES_DIR)/$(IMAGESFILES)" ;
+BuildLibrary $(FLGLLIB) 	: "$(OPENGLFILES_DIR)/$(OPENGLFILES)" ;
+BuildLibrary $(FLNETLIB) 	: "$(NETFILES_DIR)/$(NETFILES)" ;
+BuildLibrary $(FLXMLLIB) 	: "$(XMLFILES_DIR)/$(XMLFILES)" ;
+
+# Library libefltk_db     : "$(DBFILES_DIR)/$(DBFILES)" ;
+#Library libefltk_net     : "$(NETFILES_DIR)/$(NETFILES)" ;
+
+SUFEXE = ;
+LINKLIBS on $(EFLUID) = $(LDLIBS) $(IMAGELIBS) ;
+Main $(EFLUID) : $(EFLUID_DIR)/$(EFLUIDFILES) ;
+
+LINKLIBS on $(ETRANSLATE) = $(XMLLIBS) $(LDLIBS) $(IMAGELIBS) ;
+Main $(ETRANSLATE) : $(ETRANSLATE_DIR)/$(ETRANSLATEFILES) ;
+
+LINKLIBS on $(ECALC) = $(LDLIBS) ;
+Main $(ECALC) : $(ECALC_DIR)/$(ECALCFILES) ;
