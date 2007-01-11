@@ -427,7 +427,7 @@ const Fl_String &fl_homedir()
 	
 	char *homedir = fl_get_homedir();
 	home.append(homedir, strlen(homedir));
-	free((char*)homedir);
+	delete [] homedir;
 	return home;
 }
 

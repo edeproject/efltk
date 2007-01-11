@@ -1,3 +1,7 @@
+2007-01-11 4:00
+
+	* Closed few memleaks
+
 2005-08-07 - 2006-08-30 vljubovic
 	* Small fix in Xft to prevent crashes
 	* gcc 4 compilation fix

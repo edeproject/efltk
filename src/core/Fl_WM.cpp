@@ -464,7 +464,7 @@ bool Fl_WM::get_window_icon(Window xid, Fl_Image *&icon, int w, int h)
     }
 
     if(!image) {
-        if(wm_hints) delete wm_hints;
+        if(wm_hints) XFree(wm_hints);
         return false;
     }
 
@@ -492,7 +492,7 @@ bool Fl_WM::get_window_icon(Window xid, Fl_Image *&icon, int w, int h)
         }
     }
 
-    if(wm_hints) delete wm_hints;
+    if(wm_hints) XFree(wm_hints);
 
     icon = image;
     if((w>0 && h>0) && image->width()!=w || image->height()!=h) {
