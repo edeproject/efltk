@@ -1,4 +1,8 @@
-2007-01-11 4:00
+2007-02-14 3:08 karijes
+
+	* Fixed new/malloc mismatch in Fl_Image.cpp
+
+2007-01-11 4:00 karijes
 
 	* Closed few memleaks
 

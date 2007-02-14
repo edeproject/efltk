@@ -112,7 +112,7 @@ void Fl_Image::init(int W, int H, int bits_pp, uint8 *data, uint32 Rmask, uint32
         if(!m_data) {
             m_data_alloc = true;
             // Allocate uint8 data array and initialize it to 0
-            m_data = new uint8[H*m_pitch];
+            m_data = (uint8*)malloc(sizeof(uint8) * (H*m_pitch));
             memset(m_data, 0, H*m_pitch);
         }
     }
