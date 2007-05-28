@@ -32,6 +32,7 @@ class FL_API Fl_Menu_;
 
 class FL_API Fl_List {
 public:
+    virtual ~Fl_List(){};
     virtual int children(const Fl_Menu_*, const int* indexes, int level);
     virtual Fl_Widget* child(const Fl_Menu_*, const int* indexes, int level);
     virtual void flags_changed(const Fl_Menu_*, Fl_Widget*);

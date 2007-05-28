@@ -45,7 +45,7 @@ static void cb_menu(Fl_Widget *w, void *d)
 {
     if(!menu_widget) return;
     char *selection = 0;
-    switch((int)d) {
+    switch((long)d) {
         case COPY:
             selection = (char *)menu_widget->buffer()->selection_text();
             if(*selection) {

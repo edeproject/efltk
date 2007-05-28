@@ -43,7 +43,7 @@ public:
     char *to_string(const char *separator=",");
     void from_string(const char * s, const char * separator=",");
 
-    int item(uint index) const { return (int)Fl_Ptr_List::item(index); }
+    int item(uint index) const { return (long)Fl_Ptr_List::item(index); }
     int &operator [](uint ind) const { return (int&)items[ind]; }
 };
 

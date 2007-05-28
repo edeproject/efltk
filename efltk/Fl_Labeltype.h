@@ -28,6 +28,7 @@
 /** The abstract base class for labels */
 class FL_API Fl_Labeltype_ {
 public:
+    virtual ~Fl_Labeltype_(){};
     Fl_Labeltype_(const char* n) : name(n), next(first) { first = this; }
 
     virtual void draw(const char*, int,int,int,int, Fl_Color, Fl_Flags) const;

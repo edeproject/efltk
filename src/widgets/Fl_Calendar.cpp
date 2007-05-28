@@ -43,13 +43,13 @@ static const int monthChanges[4] = {
 // Callback function for day buttons
 void Fl_Calendar::cbDayButtonClicked(Fl_Widget *button, void *param) {
     Fl_Calendar *c = (Fl_Calendar *)button->parent()->parent();
-    c->dayButtonClicked((unsigned)param);
+    c->dayButtonClicked((unsigned long)param);
 }
 
 // Callback function for switch buttons
 void Fl_Calendar::cbSwitchButtonClicked(Fl_Widget *button, void *param) {
     Fl_Calendar *c = (Fl_Calendar *)button->parent();
-    c->switchButtonClicked((int)param);
+    c->switchButtonClicked((long)param);
 }
 
 void Fl_Calendar::dayButtonClicked(unsigned day) {

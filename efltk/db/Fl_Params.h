@@ -45,7 +45,7 @@ public:
     void       bind_clear() { m_bindParamIndexes.clear(); }
     void       bind_add(unsigned bindIndex);
     unsigned   bind_count() { return m_bindParamIndexes.count(); }
-    unsigned   bind_index(unsigned ind) { return (unsigned)m_bindParamIndexes[ind]; }
+    unsigned   bind_index(unsigned ind) { return (unsigned long)m_bindParamIndexes[ind]; }
 
     // ASSIGNMENT OPERATORS
     Fl_Variant& operator =(const Fl_Variant &C) {

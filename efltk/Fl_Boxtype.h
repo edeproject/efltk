@@ -29,6 +29,7 @@
 class FL_API Fl_Boxtype_
 {
 public:
+    virtual ~Fl_Boxtype_(){};
     Fl_Boxtype_() : name(0) { }
     Fl_Boxtype_(const char* n) : name(n), next(first) { first = this; }
 

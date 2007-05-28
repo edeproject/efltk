@@ -159,14 +159,14 @@ char **fl_split(const char *string,
 char *fl_tolower(char *string)
 {
     char *ptr = string;
-    while(*ptr) *ptr++=tolower(*ptr);
+    while(*ptr) *ptr++ =tolower(*ptr);
     return string;
 }
 
 char *fl_toupper(char *string)
 {
     char *ptr = string;
-    while(*ptr) *ptr++=toupper(*ptr);
+    while(*ptr) *ptr++ =toupper(*ptr);
     return string;
 }
 

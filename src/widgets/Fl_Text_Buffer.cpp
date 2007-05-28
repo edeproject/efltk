@@ -1577,7 +1577,7 @@ void Fl_Text_Buffer::insert_column_( int column, int startPos, const char *insTe
 void Fl_Text_Buffer::remove_rectangular_( int start, int end, int rectStart,
    int rectEnd, int *replaceLen, int *endPos )
 {
-   int nLines, lineStart, lineEnd, len, endOffset;
+   int nLines, lineStart, lineEnd, len, endOffset = 0;
    char *outStr, *outPtr, *expText;
    char *text, *line;
 

@@ -67,7 +67,7 @@ const Enumeration* from_value(void* data, const Enumeration* table)
 const Enumeration* from_value(int data, const Enumeration* table)
 {
   for (;table->menu_entry; table++)
-    if (int(table->compiled) == data) return table;
+    if (long(table->compiled) == data) return table;
   return 0;
 }
 
@@ -99,7 +99,7 @@ int number_from_text(const char* text, const Enumeration* table)
 {
   if (table) {
     const Enumeration* t = from_text(text, table);
-    if (t) return int(t->compiled);
+    if (t) return long(t->compiled);
   }
   return strtol(text, 0, 0);
 }

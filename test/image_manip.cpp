@@ -28,7 +28,7 @@ void slider_cb(Fl_Widget *w, void *d)
 
 void button_cb(Fl_Widget *w, void *d)
 {
-    int b = (int)d;
+    int b = (long)d;
     switch(b) {
     case 1:
         slider[0]->activate();

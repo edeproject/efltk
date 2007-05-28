@@ -1509,8 +1509,8 @@ void Fl_Simple_Html::format_table(int *table_width, // O - Total table width
         *start;                 // Start of element
 
     int minwidths[MAX_COLUMNS];         // Minimum widths for each column
-    unsigned char   size;               // Current font and size
-    Fl_Font font;
+    unsigned char   size = 0;           // Current font and size
+    Fl_Font font = 0;
 
     // Clear widths...
     *table_width = 0;

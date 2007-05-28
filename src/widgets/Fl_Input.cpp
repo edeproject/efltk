@@ -59,7 +59,7 @@ static Fl_Menu_ *menu_ = &menu;
 static void cb_menu(Fl_Widget *w, void *d)
 {
     if(!menu_widget) return;
-    switch((int)d) {
+    switch((long)d) {
         case CUT:
             menu_widget->copy(true);
             menu_widget->cut();

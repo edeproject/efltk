@@ -363,8 +363,8 @@ private:
 public:
     /* Define default slots */
     DEFSLOT_O(Fl_Widget, Fl_Widget, slot_label, const char *);
-    DEFSLOT_O(Fl_Widget, Fl_Widget, slot_active, int);
-    DEFSLOT_O(Fl_Widget, Fl_Widget, slot_visibility, int);
+    DEFSLOT_O(Fl_Widget, Fl_Widget, slot_active, long);
+    DEFSLOT_O(Fl_Widget, Fl_Widget, slot_visibility, long);
 
 	/**
 	 * Change label of widget. This function redraws label also.

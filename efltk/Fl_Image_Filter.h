@@ -48,6 +48,7 @@ class Fl_Image;
 class Fl_Image_Filter
 {
 public:
+    virtual ~Fl_Image_Filter(){};
     static bool apply_to_this(Fl_Image *image, Fl_Rect *rect, Fl_Image_Filter *filter);
     static bool apply_to_this(Fl_Image *image, Fl_Rect *rect, Fl_Image_Filter *filter, float val1);
     static bool apply_to_this(Fl_Image *image, Fl_Rect *rect, Fl_Image_Filter *filter, float val1, float val2);

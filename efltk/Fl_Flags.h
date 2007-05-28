@@ -89,7 +89,7 @@ public:
     Fl_Flags(long flags) : m_flags(flags) { }
     Fl_Flags(unsigned flags) : m_flags(flags) { }
     Fl_Flags(int flags) : m_flags(flags) { }
-    Fl_Flags(void* flags) : m_flags((int)flags) { }
+    Fl_Flags(void* flags) : m_flags((long)flags) { }
     Fl_Flags() : m_flags(0) { }
 
     bool is_set(int flags) const { return (m_flags&flags)!=0; }

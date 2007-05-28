@@ -608,7 +608,7 @@ void when_cb(Fl_Choice* i, void *v) {
         i->value(e ? e-whenmenu : 0);
     } else {
         int m = i->value();
-        int n = int(whenmenu[m].compiled);
+        long n = long(whenmenu[m].compiled);
         for_all_selected_widgets() {
             modflag = 1;
             Fl_Widget_Type* q = (Fl_Widget_Type*)o;
@@ -1209,7 +1209,7 @@ void layoutalign_cb(Fl_Choice* i, void *v)
         int fval = 0, val = current_widget->o->layout_align();
         const Enumeration *e;
         for(e = layoutalignmenu; e->menu_entry; e++, fval++){
-            if (val == (int)e->compiled) break;
+            if (val == (long)e->compiled) break;
         }
         if (e->menu_entry == 0) fval = 0;
         i->value(fval);
@@ -1218,7 +1218,7 @@ void layoutalign_cb(Fl_Choice* i, void *v)
 
         for_all_selected_widgets() {
             Fl_Widget_Type* q = (Fl_Widget_Type*)o;
-            int al = (int)layoutalignmenu[i->value()].compiled;
+            long al = (long)layoutalignmenu[i->value()].compiled;
             int oal = q->o->layout_align();
             if (al != oal) {
                 q->o->layout_align((Fl_AlignEnum)al);
@@ -1515,7 +1515,7 @@ void subtype_cb(Fl_Choice* i, void* v) {
         i->redraw();
     } else {
         const Enumeration* table = current_widget->subtypes();
-        int n = int(table[i->value()].compiled);
+        long n = long(table[i->value()].compiled);
         for_all_selected_widgets() {
             modflag = 1;
             Fl_Widget_Type* q = (Fl_Widget_Type*)o;
@@ -1569,7 +1569,7 @@ inline Fluid_Plugin** next_panel(Fluid_Plugin** pp, Fluid_Plugin* &p)
 void set_cb(Fl_Button*, void*) {
     haderror = 0;
     propagate_group(the_panel, 0);
-    Fluid_Plugin *p, **pp;
+    Fluid_Plugin *p = NULL, **pp;
     for(pp = next_panel(plugins, p); pp-plugins<nbplugins; pp = next_panel(pp+1, p))
         if(p->panel_is_orphan) propagate_group(p->panel, 0);
 }
@@ -1605,7 +1605,7 @@ void revert_cb(Fl_Button*, void*) {
 		current_widget->tooltip(oldtooltip);
 	}
     propagate_group(the_panel, LOAD);
-    Fluid_Plugin *p, **pp;
+    Fluid_Plugin *p = NULL, **pp;
     for(pp = next_panel(plugins, p); pp-plugins<nbplugins; pp = next_panel(pp+1, p))
         if(p->panel_is_orphan) propagate_group(p->panel, LOAD);
 }
@@ -1636,7 +1636,7 @@ static void load_panel() {
         }
     }
     if (numselected) {
-        Fluid_Plugin *p, **pp;
+        Fluid_Plugin *p = NULL, **pp;
         for(pp = next_panel(plugins, p); pp-plugins<nbplugins; pp = next_panel(pp+1, p))
             p->please_show_panel = 0;
         propagate_group(the_panel, LOAD);
@@ -1672,7 +1672,7 @@ void Fl_Widget_Type::open()
 {
     if (!the_panel) {
         the_panel = make_widget_panel();
-        Fluid_Plugin *p, **pp;
+        Fluid_Plugin *p = NULL, **pp;
         for(pp = next_panel(plugins, p); pp-plugins<nbplugins; pp = next_panel(pp+1, p))
         {
             p->make_panel();
