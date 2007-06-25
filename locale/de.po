@@ -1,0 +1,349 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2007 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the EFLTK package.
+# Ralf Eichinger <ralf.eichinger@pixotec.de>, 2007.
+#
+#: fl_ask.cpp:222 Fl_FileBrowser.cpp:265 Fl_File_Dialog.cpp:812
+#: Fl_File_Dialog.cpp:1013 Fl_File_Dialog.cpp:1247 Fl_Input.cpp:896
+#: Fl_Input.cpp:969 fl_symbols.cpp:357 Fl_Text_Buffer.cpp:405
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: efltk 1.0\n"
+"POT-Creation-Date: 2002-09-16 00:56+0300\n"
+"PO-Revision-Date: 2007-02-23 15:00+0100\n"
+"Last-Translator: Ralf Eichinger <ralf.eichinger@pixotec.de>\n"
+"Language-Team: German <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: Fl_File_Dialog.cpp:540
+msgid "OK"
+msgstr "OK"
+
+#: Fl_File_Dialog.cpp:46 Fl_File_Dialog.cpp:64 Fl_File_Dialog.cpp:158
+msgid "bytes"
+msgstr "Bytes"
+
+#: Fl_File_Dialog.cpp:51 Fl_File_Dialog.cpp:68
+msgid "Kb"
+msgstr "KB"
+
+#: Fl_File_Dialog.cpp:55 Fl_File_Dialog.cpp:72
+msgid "Mb"
+msgstr "MB"
+
+#: Fl_File_Dialog.cpp:80 Fl_File_Dialog.cpp:99
+msgid "Unknown"
+msgstr "Unbekannt"
+
+#: Fl_File_Dialog.cpp:82 Fl_File_Dialog.cpp:496
+msgid "File"
+msgstr "Datei"
+
+#: Fl_File_Dialog.cpp:83
+msgid "Dir"
+msgstr "Verz."
+
+#: Fl_File_Dialog.cpp:84
+msgid "Link"
+msgstr "Link"
+
+#: Fl_File_Dialog.cpp:86
+msgid "CD-Rom"
+msgstr "CD-Rom"
+
+#: Fl_File_Dialog.cpp:87
+msgid "Removable"
+msgstr "Entfernbar"
+
+#: Fl_File_Dialog.cpp:88
+msgid "Local Disk"
+msgstr "Lokale Platte"
+
+#: Fl_File_Dialog.cpp:89
+msgid "Network Disk"
+msgstr "Netzwerk-Laufwerk"
+
+#: Fl_File_Dialog.cpp:90
+msgid "RAM Disk"
+msgstr "RAM Speicher"
+
+#: Fl_File_Dialog.cpp:270
+msgid "Choose Files:"
+msgstr "Wähle Dateien:"
+
+#: Fl_File_Dialog.cpp:285
+msgid "Choose File:"
+msgstr "Wähle Datei:"
+
+#: Fl_File_Dialog.cpp:300
+msgid "Choose Directory:"
+msgstr "Wähle Verzeichnis:"
+
+#: Fl_File_Dialog.cpp:309
+msgid "Save File:"
+msgstr "Speichere Datei:"
+
+#: Fl_File_Dialog.cpp:497 Fl_File_Dialog.cpp:843
+msgid "Size"
+msgstr "Größe"
+
+#: Fl_File_Dialog.cpp:498 Fl_File_Dialog.cpp:822 Fl_File_Dialog.cpp:844
+msgid "Type"
+msgstr "Typ"
+
+#: Fl_File_Dialog.cpp:499 Fl_File_Dialog.cpp:845
+msgid "Modified"
+msgstr "Geändert"
+
+#: Fl_File_Dialog.cpp:523
+msgid "Show Preview"
+msgstr "Zeige Vorschau"
+
+#: Fl_File_Dialog.cpp:533
+msgid "Location:"
+msgstr "Speicherort:"
+
+#: Fl_File_Dialog.cpp:549
+msgid "Filter:"
+msgstr "Filter:"
+
+#: Fl_File_Dialog.cpp:555
+msgid "&Cancel"
+msgstr "&Abbrechen"
+
+#: Fl_File_Dialog.cpp:632
+msgid "All Files (*)"
+msgstr "Alle Dateien (*)"
+
+#: Fl_File_Dialog.cpp:664 Fl_File_Dialog.cpp:707 Fl_File_Dialog.cpp:709
+#: Fl_File_Dialog.cpp:711 Fl_File_Dialog.cpp:742 Fl_File_Dialog.cpp:784
+msgid "My Computer"
+msgstr "Mein Computer"
+
+#: Fl_File_Dialog.cpp:664 Fl_File_Dialog.cpp:667 Fl_File_Dialog.cpp:693
+#: Fl_File_Dialog.cpp:772
+msgid "My Home"
+msgstr "Mein Heimatverzeichnis"
+
+#: Fl_File_Dialog.cpp:707 Fl_File_Dialog.cpp:710 Fl_File_Dialog.cpp:743
+#: Fl_File_Dialog.cpp:789 Fl_File_Dialog.cpp:1146
+msgid "My Network"
+msgstr "Mein Netzwerk"
+
+#: Fl_File_Dialog.cpp:823
+msgid "Used Space"
+msgstr "Verbrauchter Speicherplatz"
+
+#: Fl_File_Dialog.cpp:824
+msgid "Free Space"
+msgstr "Freier Speicherplatz"
+
+#: Fl_File_Dialog.cpp:920
+msgid "New Directory?"
+msgstr "Neues Verzeichnis?"
+
+#: Fl_File_Dialog.cpp:943
+msgid "Unable to create directory!"
+msgstr "Konnte Verzeichnis nicht anlegen!"
+
+
+#: Fl_File_Dialog.cpp:1434
+msgid "Size:"
+msgstr "Größe:"
+
+#: Fl_File_Dialog.cpp:1434 Fl_File_Dialog.cpp:1476
+msgid "File Size:"
+msgstr "Dateigröße:"
+
+#: Fl_Help_Dialog.cpp:155
+msgid "&File"
+msgstr "&Datei"
+
+#: Fl_Help_Dialog.cpp:158 Fl_Help_Dialog.cpp:178
+msgid "Open"
+msgstr "Öffnen"
+
+#: Fl_Help_Dialog.cpp:162
+msgid "Close"
+msgstr "Schließen"
+
+#: Fl_Help_Dialog.cpp:188
+msgid "Back"
+msgstr "Zurück"
+
+#: Fl_Help_Dialog.cpp:198
+msgid "Next"
+msgstr "Weiter"
+
+#: Fl_Help_Dialog.cpp:213
+msgid "Html files, *.{html|htm}, All files, *"
+msgstr "HTML Dateien, *.{html|htm}, Alle Dateien, *"
+
+#: Fl_Help_Dialog.cpp:213
+msgid "Open Help File"
+msgstr "Öffne Hilfedatei"
+
+#: Fl_Simple_Html.cpp:2321 Fl_Simple_Html.cpp:2350
+#, c-format
+msgid ""
+"<HTML><HEAD><TITLE>%s</TITLE></HEAD><BODY><H1>%s</H1><P>%s \"%s\" - %s.</P></"
+"BODY>"
+msgstr ""
+"<HTML><HEAD><TITLE>%s</TITLE></HEAD><BODY><H1>%s</H1><P>%s \"%s\" - %s.</P></"
+"BODY>"
+
+#: Fl_Simple_Html.cpp:2326 Fl_Simple_Html.cpp:2355
+msgid "Error"
+msgstr "Fehler"
+
+#: Fl_Simple_Html.cpp:2327 Fl_Simple_Html.cpp:2356
+msgid "Unable to follow the link"
+msgstr "Kann den Link nicht aufrufen"
+
+#: Fl_Simple_Html.cpp:2328
+msgid "no handler exists for this URI scheme"
+msgstr "Für dieses URI-Schema existiert kein zugeordnetes Programm"
+
+#: Fl_Input.cpp:995
+msgid "Cut"
+msgstr "Ausschneiden"
+
+#: Fl_Input.cpp:996
+msgid "Copy"
+msgstr "Kopieren"
+
+#: Fl_Input.cpp:997
+msgid "Paste"
+msgstr "Einfügen"
+
+#: fl_ask.cpp:166
+msgid "Information"
+msgstr "Information"
+
+#: fl_ask.cpp:170
+msgid "Warning"
+msgstr "Warnung"
+
+#: fl_ask.cpp:174
+msgid "Question"
+msgstr "Frage"
+
+#: fl_ask.cpp:254 fl_ask.cpp:263 fl_ask.cpp:292
+msgid "&OK"
+msgstr "&OK"
+
+#: fl_ask.cpp:272
+msgid "&No"
+msgstr "&Nein"
+
+#: fl_ask.cpp:272
+msgid "&Yes"
+msgstr "&Ja"
+
+#: Fl_Date_Time.cpp:36
+msgid "Sunday"
+msgstr "Sonntag"
+
+#: Fl_Date_Time.cpp:36
+msgid "Monday"
+msgstr "Montag"
+
+#: Fl_Date_Time.cpp:36
+msgid "Tuesday"
+msgstr "Dienstag"
+
+#: Fl_Date_Time.cpp:36
+msgid "Wednesday"
+msgstr "Mittwoch"
+
+#: Fl_Date_Time.cpp:37
+msgid "Thursday"
+msgstr "Donnerstag"
+
+#: Fl_Date_Time.cpp:37
+msgid "Friday"
+msgstr "Freitag"
+
+#: Fl_Date_Time.cpp:37
+msgid "Saturday"
+msgstr "Samstag"
+
+#: Fl_Date_Time.cpp:41
+msgid "January"
+msgstr "Januar"
+
+#: Fl_Date_Time.cpp:41
+msgid "February"
+msgstr "Februar"
+
+#: Fl_Date_Time.cpp:41
+msgid "March"
+msgstr "März"
+
+#: Fl_Date_Time.cpp:41
+msgid "April"
+msgstr "April"
+
+#: Fl_Date_Time.cpp:41
+msgid "May"
+msgstr "Mai"
+
+#: Fl_Date_Time.cpp:41
+msgid "June"
+msgstr "Juni"
+
+#: Fl_Date_Time.cpp:42
+msgid "July"
+msgstr "Juli"
+
+#: Fl_Date_Time.cpp:42
+msgid "August"
+msgstr "August"
+
+#: Fl_Date_Time.cpp:42
+msgid "September"
+msgstr "September"
+
+#: Fl_Date_Time.cpp:42
+msgid "October"
+msgstr "Oktober"
+
+#: Fl_Date_Time.cpp:42
+msgid "November"
+msgstr "November"
+
+#: Fl_Date_Time.cpp:42
+msgid "December"
+msgstr "Dezember"
+
+#: Fl_Calendar.cpp:25
+msgid "Su"
+msgstr "So"
+
+#: Fl_Calendar.cpp:25
+msgid "Mo"
+msgstr "Mo"
+
+#: Fl_Calendar.cpp:25
+msgid "Tu"
+msgstr "Di"
+
+#: Fl_Calendar.cpp:25
+msgid "We"
+msgstr "Mi"
+
+#: Fl_Calendar.cpp:25
+msgid "Th"
+msgstr "Do"
+
+#: Fl_Calendar.cpp:25
+msgid "Fr"
+msgstr "Fr"
+
+#: Fl_Calendar.cpp:25
+msgid "Sa"
+msgstr "Sa"
+
