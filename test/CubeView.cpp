@@ -25,9 +25,9 @@
 
 #include "CubeView.h"
 
-#ifndef __linux
-# include <math.h>
-#endif
+//#ifndef __linux
+//# include <math.h>
+//#endif
 
 #include <config.h>
 
