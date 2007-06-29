@@ -78,8 +78,8 @@ programs: demos
 # $(ALL): $(FLLIB) # only true for static library
 
 # FLUID file rules
-#.fl.cpp .fl.h:
-#	$(EFLTK_BINDIR)/efluid -c $<
+.fl.cpp .fl.h:
+	LD_LIBRARY_PATH=$(EFLTK_LIBDIR) $(EFLTK_BINDIR)/efluid -c $<
 
 # Other programs needing special "help"...
 CubeView: CubeMain.o CubeView.o CubeViewUI.o $(FLGLLIB) $(FLCORELIB) $(FLUILIB)
