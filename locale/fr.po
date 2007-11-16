@@ -1,0 +1,345 @@
+# French translation of ede.
+# Copyright (C) 2007 THE ede'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the ede package.
+# emmanuel coutant <ecoutan@cegetel.net>, 2007.
+# , fuzzy
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: ede 1.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2002-09-16 00:56+0300\n"
+"PO-Revision-Date: 2007-01-08 20:25+0100\n"
+"Last-Translator: emmanuel coutant <ecoutan@cegetel.net>\n"
+"Language-Team: French\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: Fl_File_Dialog.cpp:540
+msgid "OK"
+msgstr "OK"
+
+#: Fl_File_Dialog.cpp:46 Fl_File_Dialog.cpp:64 Fl_File_Dialog.cpp:158
+msgid "bytes"
+msgstr "octets"
+
+#: Fl_File_Dialog.cpp:51 Fl_File_Dialog.cpp:68
+msgid "Kb"
+msgstr "Ko"
+
+#: Fl_File_Dialog.cpp:55 Fl_File_Dialog.cpp:72
+msgid "Mb"
+msgstr "Mo"
+
+#: Fl_File_Dialog.cpp:80 Fl_File_Dialog.cpp:99
+msgid "Unknown"
+msgstr "Inconnu"
+
+#: Fl_File_Dialog.cpp:82 Fl_File_Dialog.cpp:496
+msgid "File"
+msgstr "Fichier"
+
+#: Fl_File_Dialog.cpp:83
+msgid "Dir"
+msgstr "Rep"
+
+#: Fl_File_Dialog.cpp:84
+msgid "Link"
+msgstr "Lien"
+
+#: Fl_File_Dialog.cpp:86
+msgid "CD-Rom"
+msgstr "CD-Rom"
+
+#: Fl_File_Dialog.cpp:87
+msgid "Removable"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:88
+msgid "Local Disk"
+msgstr "Disque Local"
+
+#: Fl_File_Dialog.cpp:89
+msgid "Network Disk"
+msgstr "Disque Réseau"
+
+#: Fl_File_Dialog.cpp:90
+msgid "RAM Disk"
+msgstr ""
+
+#: Fl_File_Dialog.cpp:270
+msgid "Choose Files:"
+msgstr "Choisissez les fichiers:"
+
+#: Fl_File_Dialog.cpp:285
+msgid "Choose File:"
+msgstr "Choix du fichier:"
+
+#: Fl_File_Dialog.cpp:300
+msgid "Choose Directory:"
+msgstr "Choix du répertoire:"
+
+#: Fl_File_Dialog.cpp:309
+msgid "Save File:"
+msgstr "Enregistrer le fichier:"
+
+#: Fl_File_Dialog.cpp:497 Fl_File_Dialog.cpp:843
+msgid "Size"
+msgstr "Taille"
+
+#: Fl_File_Dialog.cpp:498 Fl_File_Dialog.cpp:822 Fl_File_Dialog.cpp:844
+msgid "Type"
+msgstr "Type"
+
+#: Fl_File_Dialog.cpp:499 Fl_File_Dialog.cpp:845
+msgid "Modified"
+msgstr "Modifié"
+
+#: Fl_File_Dialog.cpp:523
+msgid "Show Preview"
+msgstr "Aperçu"
+
+#: Fl_File_Dialog.cpp:533
+msgid "Location:"
+msgstr "Emplacement:"
+
+#: Fl_File_Dialog.cpp:549
+msgid "Filter:"
+msgstr "Filtre:"
+
+#: Fl_File_Dialog.cpp:555
+msgid "&Cancel"
+msgstr "A&nnuler"
+
+#: Fl_File_Dialog.cpp:632
+msgid "All Files (*)"
+msgstr "Tous les fichiers"
+
+#: Fl_File_Dialog.cpp:664 Fl_File_Dialog.cpp:707 Fl_File_Dialog.cpp:709
+#: Fl_File_Dialog.cpp:711 Fl_File_Dialog.cpp:742 Fl_File_Dialog.cpp:784
+msgid "My Computer"
+msgstr "Poste de travail"
+
+#: Fl_File_Dialog.cpp:664 Fl_File_Dialog.cpp:667 Fl_File_Dialog.cpp:693
+#: Fl_File_Dialog.cpp:772
+msgid "My Home"
+msgstr "Dossier personnel"
+
+#: Fl_File_Dialog.cpp:707 Fl_File_Dialog.cpp:710 Fl_File_Dialog.cpp:743
+#: Fl_File_Dialog.cpp:789 Fl_File_Dialog.cpp:1146
+msgid "My Network"
+msgstr "Réseau"
+
+#: Fl_File_Dialog.cpp:823
+msgid "Used Space"
+msgstr "Espace utilisé"
+
+#: Fl_File_Dialog.cpp:824
+msgid "Free Space"
+msgstr "Espace libre"
+
+#: Fl_File_Dialog.cpp:920
+msgid "New Directory?"
+msgstr "Nouveau répertoire?"
+
+#: Fl_File_Dialog.cpp:943
+msgid "Unable to create directory!"
+msgstr "Impossible de créer un répertoire!"
+
+#: Fl_File_Dialog.cpp:1434
+msgid "Size:"
+msgstr "Taille:"
+
+#: Fl_File_Dialog.cpp:1434 Fl_File_Dialog.cpp:1476
+msgid "File Size:"
+msgstr "Taille de fichier:"
+
+#: Fl_Help_Dialog.cpp:155
+msgid "&File"
+msgstr "&Fichier"
+
+#: Fl_Help_Dialog.cpp:158 Fl_Help_Dialog.cpp:178
+msgid "Open"
+msgstr "Ouvrir"
+
+#: Fl_Help_Dialog.cpp:162
+msgid "Close"
+msgstr "Fermer"
+
+#: Fl_Help_Dialog.cpp:188
+msgid "Back"
+msgstr "Retour"
+
+#: Fl_Help_Dialog.cpp:198
+msgid "Next"
+msgstr "Suivant"
+
+#: Fl_Help_Dialog.cpp:213
+msgid "Html files, *.{html|htm}, All files, *"
+msgstr "Fichiers Html,·*.{html|htm},·Tous fichiers,·*"
+
+#: Fl_Help_Dialog.cpp:213
+msgid "Open Help File"
+msgstr "Ouvrir le fichier d'aide"
+
+#: Fl_Simple_Html.cpp:2321 Fl_Simple_Html.cpp:2350
+#, c-format
+msgid ""
+"<HTML><HEAD><TITLE>%s</TITLE></HEAD><BODY><H1>%s</H1><P>%s \"%s\" - %s.</P></"
+"BODY>"
+msgstr ""
+
+#: Fl_Simple_Html.cpp:2326 Fl_Simple_Html.cpp:2355
+msgid "Error"
+msgstr "Erreur"
+
+#: Fl_Simple_Html.cpp:2327 Fl_Simple_Html.cpp:2356
+msgid "Unable to follow the link"
+msgstr "Impossible de suivre le lien"
+
+#: Fl_Simple_Html.cpp:2328
+msgid "no handler exists for this URI scheme"
+msgstr ""
+
+#: Fl_Input.cpp:995
+msgid "Cut"
+msgstr "Couper"
+
+#: Fl_Input.cpp:996
+msgid "Copy"
+msgstr "Copier"
+
+#: Fl_Input.cpp:997
+msgid "Paste"
+msgstr "Coller"
+
+#: fl_ask.cpp:166
+msgid "Information"
+msgstr "Information"
+
+#: fl_ask.cpp:170
+msgid "Warning"
+msgstr "Attention"
+
+#: fl_ask.cpp:174
+msgid "Question"
+msgstr "Question"
+
+#: fl_ask.cpp:254 fl_ask.cpp:263 fl_ask.cpp:292
+msgid "&OK"
+msgstr "&OK"
+
+#: fl_ask.cpp:272
+msgid "&No"
+msgstr "&Non"
+
+#: fl_ask.cpp:272
+msgid "&Yes"
+msgstr "O&ui"
+
+#: Fl_Date_Time.cpp:36
+msgid "Sunday"
+msgstr "Dimanche"
+
+#: Fl_Date_Time.cpp:36
+msgid "Monday"
+msgstr "Lundi"
+
+#: Fl_Date_Time.cpp:36
+msgid "Tuesday"
+msgstr "Mardi"
+
+#: Fl_Date_Time.cpp:36
+msgid "Wednesday"
+msgstr "Mercredi"
+
+#: Fl_Date_Time.cpp:37
+msgid "Thursday"
+msgstr "Jeudi"
+
+#: Fl_Date_Time.cpp:37
+msgid "Friday"
+msgstr "Vendredi"
+
+#: Fl_Date_Time.cpp:37
+msgid "Saturday"
+msgstr "Samedi"
+
+#: Fl_Date_Time.cpp:41
+msgid "January"
+msgstr "Janvier"
+
+#: Fl_Date_Time.cpp:41
+msgid "February"
+msgstr "Février"
+
+#: Fl_Date_Time.cpp:41
+msgid "March"
+msgstr "Mars"
+
+#: Fl_Date_Time.cpp:41
+msgid "April"
+msgstr "Avril"
+
+#: Fl_Date_Time.cpp:41
+msgid "May"
+msgstr "Mai"
+
+#: Fl_Date_Time.cpp:41
+msgid "June"
+msgstr "Juin"
+
+#: Fl_Date_Time.cpp:42
+msgid "July"
+msgstr "Juillet"
+
+#: Fl_Date_Time.cpp:42
+msgid "August"
+msgstr "Aout"
+
+#: Fl_Date_Time.cpp:42
+msgid "September"
+msgstr "Septembre"
+
+#: Fl_Date_Time.cpp:42
+msgid "October"
+msgstr "Octobre"
+
+#: Fl_Date_Time.cpp:42
+msgid "November"
+msgstr "Novembre"
+
+#: Fl_Date_Time.cpp:42
+msgid "December"
+msgstr "Décembre"
+
+#: Fl_Calendar.cpp:25
+msgid "Su"
+msgstr "Di"
+
+#: Fl_Calendar.cpp:25
+msgid "Mo"
+msgstr "Lu"
+
+#: Fl_Calendar.cpp:25
+msgid "Tu"
+msgstr "Ma"
+
+#: Fl_Calendar.cpp:25
+msgid "We"
+msgstr "Me"
+
+#: Fl_Calendar.cpp:25
+msgid "Th"
+msgstr "Je"
+
+#: Fl_Calendar.cpp:25
+msgid "Fr"
+msgstr "Ve"
+
+#: Fl_Calendar.cpp:25
+msgid "Sa"
+msgstr "Sa"
+
