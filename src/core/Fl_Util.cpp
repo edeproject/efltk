@@ -158,15 +158,27 @@ char **fl_split(const char *string,
 
 char *fl_tolower(char *string)
 {
+    if(string == NULL)
+        return NULL;
+
     char *ptr = string;
-    while(*ptr) *ptr++ =tolower(*ptr);
+    while(*ptr) {
+        *ptr = tolower(*ptr);
+        ptr++;
+    }
     return string;
 }
 
 char *fl_toupper(char *string)
 {
+    if(string == NULL)
+        return NULL;
+
     char *ptr = string;
-    while(*ptr) *ptr++ =toupper(*ptr);
+    while(*ptr) {
+        *ptr = toupper(*ptr);
+        ptr++;
+    }
     return string;
 }
 
@@ -209,10 +221,10 @@ char *fl_trimright(char *string)
 void fl_freev(char **str_array)
 {
     if(str_array) {
-        for(int n=0; str_array[n]!=0; n++) {			
-            delete []str_array[n];			
-		}
-		delete []str_array;
+        for(int n=0; str_array[n]!=0; n++) {            
+            delete []str_array[n];          
+        }
+        delete []str_array;
     }
 }
 
@@ -272,7 +284,7 @@ int fl_start_child_process(char *cmd, bool wait)
 // for backward compatibility
 int fl_start_child_process(char *cmd)
 {
-	return fl_start_child_process(cmd, true);
+    return fl_start_child_process(cmd, true);
 }
 
 //////////////////////////////////////////////////
