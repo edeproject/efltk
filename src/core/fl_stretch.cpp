@@ -36,7 +36,7 @@ void copy_row3(uint8 *src, int src_w, uint8 *dst, int dst_w)
     (defined(i386) && defined(__GNUC__))) && !DISABLE_ASM
 # define USE_ASM_STRETCH
 #endif
-
+#undef USE_ASM_STRETCH
 #ifdef USE_ASM_STRETCH
 
 #if defined(_WIN32) || defined(i386)

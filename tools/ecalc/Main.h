@@ -4,5 +4,5 @@
 #define Main_h
 #include <efltk/Fl.h>
 #include "SciCalc.h"
-int main(int ac,char *av);
+int main(int ac,char **av);
 #endif

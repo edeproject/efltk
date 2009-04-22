@@ -1,3 +1,7 @@
+2009-04-22 13:43 karijes
+
+	* Applied patch from Thierry to compile nicely on gcc >= 4.3.2
+
 2007-11-16 10:45 karijes
 
 	* French translation by Emmanuel Coutant
